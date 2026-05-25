@@ -1,0 +1,223 @@
+"""
+analysis/stock_report_builder.py - Markdown stock analysis report builder.
+
+Assembles a complete stock analysis report from multi-timeframe analysis results.
+"""
+
+import os
+import logging
+from datetime import datetime
+
+logger = logging.getLogger(__name__)
+
+_DATA_INSUFFICIENT_WARNING = "資料不足，只能做盤中初估，不能當正式短中長線操作依據"
+
+
+class StockReportBuilder:
+    """
+    Builds Markdown stock analysis reports from analyzer outputs.
+    """
+
+    def build(self, symbol, name=None, bull_score_data=None,
+              daytrade_result=None, short_result=None,
+              mid_result=None, long_result=None):
+        """
+        Build a complete Markdown analysis report.
+
+        Parameters
+        ----------
+        symbol : str
+            Stock symbol.
+        name : str, optional
+            Stock name in Chinese.
+        bull_score_data : dict, optional
+            Output from ScreenerPipeline.get_top_candidates() row.
+        daytrade_result : dict, optional
+            Output from DaytradeAnalyzer.analyze().
+        short_result : dict, optional
+            Output from ShortTermAnalyzer.analyze().
+        mid_result : dict, optional
+            Output from MidTermAnalyzer.analyze().
+        long_result : dict, optional
+            Output from LongTermAnalyzer.analyze().
+
+        Returns
+        -------
+        str
+            Formatted Markdown report text.
+        """
+        sym = str(symbol)
+        stock_name = name or sym
+        ts = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+
+        # Check overall data sufficiency
+        has_sufficient_data = any([
+            bull_score_data is not None,
+            daytrade_result is not None and daytrade_result.get('data_completeness', 0) >= 40,
+            short_result is not None and short_result.get('data_completeness', 0) >= 50,
+        ])
+
+        lines = []
+        lines.append(f"# 股票分析報告：{sym} {stock_name}")
+        lines.append(f"報告時間：{ts}")
+        lines.append("")
+
+        if not has_sufficient_data:
+            lines.append(f"> ⚠️ **{_DATA_INSUFFICIENT_WARNING}**")
+            lines.append("")
+
+        # Section 1: Bull Stock Score
+        lines.append("## 一、飆股候選評分")
+        if bull_score_data:
+            score = bull_score_data.get('bull_stock_score', 'N/A')
+            is_bull = bull_score_data.get('is_bull_candidate', False)
+            is_second = bull_score_data.get('is_second_wave_buy_point', False)
+            themes = bull_score_data.get('theme_tags', [])
+            theme_str = '、'.join(themes[:5]) if themes else '未分類'
+            reason = bull_score_data.get('reason_summary', '-')
+            risk = bull_score_data.get('risk_summary', '-')
+
+            lines.append(f"- 綜合分數：{score}/100")
+            lines.append(f"- 是否飆股候選：{'✅ 是' if is_bull else '❌ 否'}")
+            lines.append(f"- 是否第二波買點：{'✅ 是' if is_second else '❌ 否'}")
+            lines.append(f"- 主題標籤：{theme_str}")
+            lines.append(f"- 主題分：{bull_score_data.get('theme_score', 'N/A')}/20")
+            lines.append(f"- 基本面分：{bull_score_data.get('fundamental_score', 'N/A')}/15")
+            lines.append(f"- 技術面分：{bull_score_data.get('technical_score', 'N/A')}/15")
+            lines.append(f"- 籌碼分：{bull_score_data.get('chip_score', 'N/A')}/15")
+            lines.append(f"- 選股理由：{reason}")
+            lines.append(f"- 風險提示：{risk}")
+        else:
+            lines.append("- 尚無篩選資料（請先執行 screener）")
+        lines.append("")
+
+        # Section 2: Life Cycle
+        lines.append("## 二、生命週期定位")
+        lines.append(self._infer_lifecycle(bull_score_data, daytrade_result, short_result, mid_result))
+        lines.append("")
+
+        # Section 3: Daytrade
+        lines.append("## 三、當沖策略")
+        if daytrade_result:
+            self._append_strategy_section(lines, daytrade_result)
+        else:
+            lines.append("- 無即時盤口資料，無法生成當沖建議")
+        lines.append("")
+
+        # Section 4: Short term
+        lines.append("## 四、短線策略（5-20日）")
+        if short_result:
+            self._append_strategy_section(lines, short_result)
+        else:
+            lines.append("- 短線資料不足")
+        lines.append("")
+
+        # Section 5: Mid term
+        lines.append("## 五、中線策略（1-3月）")
+        if mid_result:
+            self._append_strategy_section(lines, mid_result)
+        else:
+            lines.append("- 中線資料不足")
+        lines.append("")
+
+        # Section 6: Long term
+        lines.append("## 六、長線策略（3-12月）")
+        if long_result:
+            self._append_strategy_section(lines, long_result)
+        else:
+            lines.append("- 長線資料不足")
+        lines.append("")
+
+        # Section 7: Data completeness
+        lines.append("## 七、資料完整度")
+        for label, result in [
+            ('當沖', daytrade_result),
+            ('短線', short_result),
+            ('中線', mid_result),
+            ('長線', long_result),
+        ]:
+            if result:
+                comp = result.get('data_completeness', 0)
+                w = result.get('warning', '')
+                status = '✅' if comp >= 50 else '⚠️'
+                lines.append(f"- {label}: {status} {comp:.0f}%{' — ' + w if w else ''}")
+            else:
+                lines.append(f"- {label}: ❌ 無資料")
+
+        if not has_sufficient_data:
+            lines.append("")
+            lines.append(f"> **{_DATA_INSUFFICIENT_WARNING}**")
+
+        lines.append("")
+        lines.append("---")
+        lines.append("*本報告由 TW Quant Cockpit v1 自動生成，僅供研究參考，不構成投資建議。*")
+
+        return '\n'.join(lines)
+
+    def _append_strategy_section(self, lines, result):
+        """Append strategy section lines from an analyzer result dict."""
+        decision = result.get('decision', 'N/A')
+        confidence = result.get('confidence', 0)
+        add_price = result.get('add_position_price')
+        exit_price = result.get('exit_price')
+        stop_price = result.get('stop_loss_price')
+        no_entry = result.get('no_entry_conditions', [])
+        reasoning = result.get('reasoning', '-')
+        warning = result.get('warning')
+
+        lines.append(f"- 操作決策：**{decision}**（信心度 {confidence}%）")
+        lines.append(f"- 補倉價位：{add_price if add_price else 'N/A'}")
+        lines.append(f"- 出倉價位：{exit_price if exit_price else 'N/A'}")
+        lines.append(f"- 停損價位：{stop_price if stop_price else 'N/A'}")
+        if no_entry:
+            lines.append(f"- 不可進場條件：{' / '.join(no_entry)}")
+        lines.append(f"- 判斷依據：{reasoning}")
+        if warning:
+            lines.append(f"- ⚠️ 資料警告：{warning}")
+
+    def _infer_lifecycle(self, bull_data, daytrade, short, mid):
+        """Infer stock lifecycle phase from available data."""
+        if bull_data:
+            score = float(bull_data.get('bull_stock_score', 50))
+            if score >= 80:
+                return "**主升段** — 飆股候選，強勢股，建議持有或加碼"
+            elif score >= 65:
+                return "**初升段 / 第二波** — 強勢整理後確認，可布局"
+            elif score >= 50:
+                return "**盤整觀察** — 等待突破確認"
+            else:
+                return "**弱勢 / 避開** — 建議觀望"
+
+        if short and short.get('decision') in ('BUY_BREAKOUT', 'BUY_PULLBACK'):
+            return "**初升段** — 短線信號積極，技術面轉強"
+        if mid and mid.get('decision') == 'AVOID':
+            return "**修正段** — 中線偏空，謹慎操作"
+
+        return "**不明** — 資料不足，無法判斷生命週期"
+
+    def save(self, report_text, output_dir, filename=None):
+        """
+        Save the report to a file.
+
+        Parameters
+        ----------
+        report_text : str
+            Report Markdown content.
+        output_dir : str
+            Directory to save the file.
+        filename : str, optional
+            Filename. Defaults to stock_report_{timestamp}.md
+        """
+        try:
+            os.makedirs(output_dir, exist_ok=True)
+            if not filename:
+                ts = datetime.now().strftime('%Y%m%d_%H%M%S')
+                filename = f"stock_report_{ts}.md"
+            filepath = os.path.join(output_dir, filename)
+            with open(filepath, 'w', encoding='utf-8') as f:
+                f.write(report_text)
+            logger.info("Report saved to %s", filepath)
+            return filepath
+        except Exception as exc:
+            logger.error("Failed to save report: %s", exc)
+            return None

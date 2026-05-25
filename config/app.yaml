@@ -1,0 +1,21 @@
+mode: mock
+
+trading:
+  enable_real_order: false
+  max_subscribe_symbols: 10
+
+paths:
+  watchlist: config/watchlist.csv
+  database: trading_data.db
+  parquet_root: data/parquet
+  report_root: data/reports
+
+screener:
+  top_n: 8
+  min_score: 65
+
+sim:
+  initial_capital: 1000000
+  commission_rate: 0.001425
+  sell_tax_rate: 0.003
+  slippage_rate: 0.001
