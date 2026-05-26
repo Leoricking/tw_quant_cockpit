@@ -1,19 +1,19 @@
 """
-gui/dashboard.py - TW Quant Cockpit v1 Main Dashboard (PySide6).
+gui/dashboard.py - TW Quant Cockpit v0.2 Main Dashboard (PySide6).
 
 Launch via:
-    python main.py cockpit
+    python main.py cockpit [--mode mock|real]
 
 Features:
-  - 大盤狀態區  (Market status bar)
-  - 股票監控表  (Stock monitoring table)
-  - 飆股候選   (Bull candidates panel)
-  - 個股五檔   (Order book panel)
-  - 分析評分   (Scores panel)
-  - AI 建議    (Decision panel)
-  - 模擬持倉   (Paper positions panel)
-  - 今日損益   (Today P&L)
-  - Log 視窗   (Log window)
+  - 上方工具列   ControlPanel (mode switch, refresh, import, report)
+  - 大盤狀態區   MarketStatusBar
+  - 左側列表    CandidatesPanel (clickable stock list)
+  - 中間詳情    StockDetailPanel + DataStatusPanel (tabbed)
+  - 右側策略    StrategyPanel (4 timeframes)
+  - 下方面板    ReportPanel | LogPanel (tabbed)
+  - 個股五檔    OrderBookPanel
+  - 分析評分    ScorePanel
+  - 模擬持倉    PositionsPanel
 
 All data comes from MockBroker / screener_pipeline in mock mode.
 Real-order execution is NOT implemented and is explicitly blocked.
@@ -42,6 +42,22 @@ try:
 except ImportError:
     _PYSIDE6_AVAILABLE = False
     logger.error("PySide6 not installed. Run: pip install PySide6")
+
+# ---------------------------------------------------------------------------
+# Phase 5 panel imports (all guarded — panels self-degrade if PySide6 missing)
+# ---------------------------------------------------------------------------
+try:
+    from gui.gui_state import GUIState
+    from gui.control_panel import ControlPanel
+    from gui.stock_detail_panel import StockDetailPanel
+    from gui.data_status_panel import DataStatusPanel
+    from gui.strategy_panel import StrategyPanel
+    from gui.import_panel import ImportPanel
+    from gui.report_panel import ReportPanel
+    _PHASE5_PANELS = True
+except Exception as _p5_exc:
+    logger.warning("Phase 5 panels unavailable: %s", _p5_exc)
+    _PHASE5_PANELS = False
 
 
 # ---------------------------------------------------------------------------
@@ -716,11 +732,16 @@ class _QLogHandler(logging.Handler if _PYSIDE6_AVAILABLE else object):
 # ---------------------------------------------------------------------------
 
 class CockpitWindow(QMainWindow if _PYSIDE6_AVAILABLE else object):
-    """TW Quant Cockpit v1 Main Window."""
+    """TW Quant Cockpit v0.2 Main Window."""
 
-    def __init__(self):
+    def __init__(self, mode: str = 'mock'):
         if _PYSIDE6_AVAILABLE:
             super().__init__()
+
+        # Shared GUI state
+        self._gui_state = GUIState() if _PHASE5_PANELS else None
+        if self._gui_state:
+            self._gui_state.set_mode(mode)
 
         self._broker = None
         self._screener = None
@@ -729,6 +750,7 @@ class CockpitWindow(QMainWindow if _PYSIDE6_AVAILABLE else object):
         self._candidates = []
         self._ticks = {}
         self._selected_symbol = None
+        self._mode = mode
 
         self._init_backends()
         if _PYSIDE6_AVAILABLE:
@@ -764,8 +786,9 @@ class CockpitWindow(QMainWindow if _PYSIDE6_AVAILABLE else object):
     # ---- UI Build ----
 
     def _build_ui(self):
-        self.setWindowTitle("TW Quant Cockpit v1  [MOCK MODE — 禁止實盤下單]")
-        self.resize(1400, 900)
+        mode_label = "REAL MODE" if self._mode == 'real' else "MOCK MODE"
+        self.setWindowTitle(f"TW Quant Cockpit v0.2  [{mode_label} — 禁止實盤下單]")
+        self.resize(1600, 950)
         self.setStyleSheet("background:#12121E; color:#DDDDDD;")
 
         central = QWidget()
@@ -774,14 +797,26 @@ class CockpitWindow(QMainWindow if _PYSIDE6_AVAILABLE else object):
         root.setSpacing(4)
         root.setContentsMargins(6, 6, 6, 6)
 
+        # ---- Top: ControlPanel ----
+        if _PHASE5_PANELS:
+            self._ctrl_panel = ControlPanel(gui_state=self._gui_state)
+            self._ctrl_panel.mode_changed.connect(self._on_mode_changed)
+            self._ctrl_panel.refresh_screener_requested.connect(self._on_refresh_screener)
+            self._ctrl_panel.data_check_requested.connect(self._on_data_check)
+            self._ctrl_panel.report_requested.connect(self._on_generate_report)
+            self._ctrl_panel.import_requested.connect(self._on_import_csv)
+            root.addWidget(self._ctrl_panel)
+        else:
+            self._ctrl_panel = None
+
         # ---- Market status bar ----
         self._market_bar = MarketStatusBar()
         root.addWidget(self._market_bar)
 
-        # ---- Main content splitter (left | right) ----
+        # ---- Main content splitter ----
         h_split = QSplitter(Qt.Horizontal)
 
-        # LEFT: stock table + candidates
+        # LEFT: candidates list
         left = QWidget()
         left_layout = QVBoxLayout(left)
         left_layout.setContentsMargins(0, 0, 0, 0)
@@ -790,37 +825,74 @@ class CockpitWindow(QMainWindow if _PYSIDE6_AVAILABLE else object):
         left_layout.addWidget(self._stock_table, stretch=3)
 
         self._candidates_panel = CandidatesPanel()
+        # Wire row-click to stock selection
+        self._candidates_panel._table.cellClicked.connect(self._on_candidate_clicked)
         left_layout.addWidget(self._candidates_panel, stretch=2)
 
         h_split.addWidget(left)
 
-        # RIGHT: tabs for details
-        right_tabs = QTabWidget()
-        right_tabs.setMaximumWidth(450)
-        right_tabs.setStyleSheet("QTabBar::tab { background:#252540; color:#AAAAFF; padding:4px 10px; } QTabBar::tab:selected { background:#3344AA; color:#FFFFFF; }")
+        # MIDDLE: detail tabs (詳情 + 策略 + 五檔 + 評分 + 持倉)
+        mid_tabs = QTabWidget()
+        _tab_style = (
+            "QTabBar::tab { background:#252540; color:#AAAAFF; padding:4px 10px; } "
+            "QTabBar::tab:selected { background:#3344AA; color:#FFFFFF; }"
+        )
+        mid_tabs.setStyleSheet(_tab_style)
+
+        # 詳情 tab: StockDetailPanel + DataStatusPanel stacked vertically
+        if _PHASE5_PANELS:
+            detail_widget = QWidget()
+            detail_layout = QVBoxLayout(detail_widget)
+            detail_layout.setContentsMargins(0, 0, 0, 0)
+            detail_layout.setSpacing(4)
+            self._detail_panel = StockDetailPanel()
+            self._data_status_panel = DataStatusPanel()
+            detail_layout.addWidget(self._detail_panel, stretch=2)
+            detail_layout.addWidget(self._data_status_panel, stretch=3)
+            mid_tabs.addTab(detail_widget, "詳情")
+
+            self._strategy_panel = StrategyPanel()
+            mid_tabs.addTab(self._strategy_panel, "策略")
+        else:
+            self._detail_panel = None
+            self._data_status_panel = None
+            self._strategy_panel = None
 
         self._ob_panel = OrderBookPanel()
-        right_tabs.addTab(self._ob_panel, "五檔")
+        mid_tabs.addTab(self._ob_panel, "五檔")
 
         self._score_panel = ScorePanel()
-        right_tabs.addTab(self._score_panel, "評分")
+        mid_tabs.addTab(self._score_panel, "評分")
 
         self._pos_panel = PositionsPanel()
-        right_tabs.addTab(self._pos_panel, "持倉")
+        mid_tabs.addTab(self._pos_panel, "持倉")
 
-        h_split.addWidget(right_tabs)
+        h_split.addWidget(mid_tabs)
         h_split.setStretchFactor(0, 3)
-        h_split.setStretchFactor(1, 1)
+        h_split.setStretchFactor(1, 2)
 
         root.addWidget(h_split, stretch=5)
 
-        # ---- Bottom: log panel ----
+        # ---- Bottom: Report | Log tabs ----
+        bottom_tabs = QTabWidget()
+        bottom_tabs.setMaximumHeight(200)
+        bottom_tabs.setStyleSheet(_tab_style)
+
+        if _PHASE5_PANELS:
+            self._report_panel = ReportPanel(gui_state=self._gui_state)
+            self._report_panel.report_requested.connect(self._on_generate_report)
+            bottom_tabs.addTab(self._report_panel, "Report")
+        else:
+            self._report_panel = None
+
         self._log_panel = LogPanel()
-        root.addWidget(self._log_panel, stretch=1)
+        bottom_tabs.addTab(self._log_panel, "Log")
+
+        root.addWidget(bottom_tabs, stretch=1)
 
         # ---- Status bar ----
         sb = QStatusBar()
-        sb.showMessage("⚠ 第一版禁止實盤自動下單。本系統僅供研究、模擬交易與決策輔助，不構成投資建議。")
+        sb.showMessage("⚠ 禁止實盤自動下單。本系統僅供研究、模擬交易與決策輔助，不構成投資建議。")
         sb.setStyleSheet("color:#FF8888; background:#1A0A0A")
         self.setStatusBar(sb)
 
@@ -829,8 +901,206 @@ class CockpitWindow(QMainWindow if _PYSIDE6_AVAILABLE else object):
         handler.setFormatter(logging.Formatter('%(levelname)s | %(name)s | %(message)s'))
         logging.getLogger().addHandler(handler)
 
-        self._log_panel.append("TW Quant Cockpit v1 啟動 [MOCK MODE]")
-        self._log_panel.append("⚠ 第一版禁止實盤自動下單")
+        self._log_panel.append(f"TW Quant Cockpit v0.2 啟動 [{mode_label}]")
+        self._log_panel.append("⚠ 禁止實盤自動下單")
+
+    # ---- Mode / UI event handlers ----
+
+    def _on_mode_changed(self, new_mode: str):
+        self._mode = new_mode
+        if self._gui_state:
+            self._gui_state.set_mode(new_mode)
+        logger.info("Mode switched to: %s", new_mode)
+        # Restart worker with new mode
+        if self._worker:
+            self._worker.stop()
+            self._worker.quit()
+            self._worker.wait(3000)
+            self._worker = None
+        self._start_worker()
+
+    def _on_candidate_clicked(self, row: int, col: int):
+        """Called when user clicks a row in the candidates table."""
+        try:
+            item = self._candidates_panel._table.item(row, 0)
+            if item:
+                sym = item.text().strip()
+                if sym:
+                    self._on_stock_selected(sym)
+        except Exception as exc:
+            logger.warning("Candidate click error: %s", exc)
+
+    def _on_stock_selected(self, symbol: str):
+        """Central handler when a stock is selected."""
+        self._selected_symbol = symbol
+        if self._gui_state:
+            self._gui_state.set_symbol(symbol)
+
+        # Update detail panel
+        cand = next(
+            (c for c in self._candidates if str(c.get('symbol', '')) == symbol),
+            {}
+        )
+        tick = self._ticks.get(symbol, {})
+
+        if self._detail_panel:
+            self._detail_panel.update(cand, tick=tick)
+
+        # Order book
+        bidask = tick.get('bidask', {})
+        self._ob_panel.update(symbol, bidask)
+
+        # Scores
+        self._score_panel.update(symbol, cand)
+
+        # Strategy + data check
+        self._update_strategy_for_symbol(symbol, cand)
+
+    def _update_strategy_for_symbol(self, symbol: str, candidate: dict = None):
+        """Run data-check and strategy analysis for the selected symbol, update panels."""
+        if not _PHASE5_PANELS:
+            return
+        try:
+            mode = self._mode
+            data_sources = None
+
+            # Attempt to load real data sources info
+            if mode == 'real':
+                try:
+                    from data.real_data_loader import RealDataLoader
+                    loader = RealDataLoader()
+                    all_data = loader.load_all(symbol)
+                    data_sources = all_data.get('_sources')
+                    if self._detail_panel:
+                        self._detail_panel.update(
+                            candidate or {}, tick=self._ticks.get(symbol, {}),
+                            data_sources=data_sources
+                        )
+                except Exception as exc:
+                    logger.warning("RealDataLoader for %s: %s", symbol, exc)
+
+            # Data quality check
+            try:
+                from data.data_quality_checker import DataQualityChecker
+                checker = DataQualityChecker()
+                dq_result = checker.check_stock(symbol)
+                if self._gui_state:
+                    self._gui_state.cache_data_check(symbol, dq_result)
+                if self._data_status_panel:
+                    self._data_status_panel.update(dq_result)
+            except Exception as exc:
+                logger.warning("DataQualityChecker for %s: %s", symbol, exc)
+
+            # Strategy analysis
+            if self._strategy_panel:
+                try:
+                    from analysis.strategy_analyzer import StrategyAnalyzer
+                    analyzer = StrategyAnalyzer(mode=mode)
+                    daytrade = analyzer.analyze(symbol, timeframe='daytrade')
+                    short_r  = analyzer.analyze(symbol, timeframe='short')
+                    mid_r    = analyzer.analyze(symbol, timeframe='mid')
+                    long_r   = analyzer.analyze(symbol, timeframe='long')
+                    self._strategy_panel.update(
+                        daytrade=daytrade, short=short_r,
+                        mid=mid_r, long_=long_r, mode=mode
+                    )
+                except Exception as exc:
+                    logger.warning("StrategyAnalyzer for %s: %s", symbol, exc)
+                    self._strategy_panel.clear()
+
+        except Exception as exc:
+            logger.error("_update_strategy_for_symbol error: %s", exc)
+
+    def _on_refresh_screener(self):
+        """Manual refresh: restart the worker immediately."""
+        if self._worker:
+            self._worker.stop()
+            self._worker.quit()
+            self._worker.wait(3000)
+            self._worker = None
+        self._start_worker()
+        self._log_panel.append("手動刷新篩選…")
+
+    def _on_data_check(self):
+        """Run data-check for selected symbol and show in DataStatusPanel."""
+        sym = self._selected_symbol
+        if not sym:
+            self._log_panel.append("請先選擇一支股票再執行 Data Check。")
+            return
+        self._update_strategy_for_symbol(sym, next(
+            (c for c in self._candidates if str(c.get('symbol', '')) == sym), {}
+        ))
+        self._log_panel.append(f"Data Check 完成：{sym}")
+
+    def _on_generate_report(self, symbol: str = None):
+        """Generate stock report for the given or currently selected symbol."""
+        sym = symbol or self._selected_symbol
+        if not sym:
+            if self._report_panel:
+                self._report_panel.show_status("請先選擇一支股票再產生報告。")
+            return
+        if self._report_panel:
+            self._report_panel.show_status(f"正在產生 {sym} 報告…")
+        try:
+            import os
+            mode = self._mode
+            from analysis.stock_report_builder import StockReportBuilder
+            builder = StockReportBuilder()
+
+            cand = next(
+                (c for c in self._candidates if str(c.get('symbol', '')) == sym), {}
+            )
+            bull_score_data = {
+                'score': cand.get('bull_stock_score'),
+                'deduction_reasons': cand.get('deduction_reasons', []),
+            }
+
+            data_sources = None
+            if mode == 'real':
+                try:
+                    from data.real_data_loader import RealDataLoader
+                    all_data = RealDataLoader().load_all(sym)
+                    data_sources = all_data.get('_sources')
+                except Exception:
+                    pass
+
+            report_text = builder.build(
+                symbol=sym,
+                name=cand.get('name', sym),
+                bull_score_data=bull_score_data,
+                mode=mode,
+                data_sources=data_sources,
+            )
+
+            base = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+            reports_dir = os.path.join(base, 'data', 'reports')
+            os.makedirs(reports_dir, exist_ok=True)
+            ts = datetime.now().strftime('%Y%m%d_%H%M%S')
+            out_path = os.path.join(reports_dir, f"{sym}_report_{ts}.txt")
+            with open(out_path, 'w', encoding='utf-8') as f:
+                f.write(report_text)
+
+            if self._report_panel:
+                self._report_panel.show_report(report_text, file_path=out_path, symbol=sym)
+            if self._gui_state:
+                self._gui_state.last_report_path = out_path
+            self._log_panel.append(f"報告已產生：{out_path}")
+
+        except Exception as exc:
+            msg = f"報告產生失敗：{exc}"
+            logger.error(msg)
+            if self._report_panel:
+                self._report_panel.show_status(msg)
+
+    def _on_import_csv(self):
+        """Open the ImportPanel modal dialog."""
+        if not _PHASE5_PANELS:
+            return
+        try:
+            dlg = ImportPanel(parent=self)
+            dlg.exec()
+        except Exception as exc:
+            logger.error("ImportPanel error: %s", exc)
 
     # ---- Worker ----
 
@@ -838,13 +1108,18 @@ class CockpitWindow(QMainWindow if _PYSIDE6_AVAILABLE else object):
         if not _PYSIDE6_AVAILABLE:
             return
 
+        mode = self._mode
+
         class _ScreenerWrapper:
-            @staticmethod
-            def run():
+            def __init__(self, m):
+                self._mode = m
+
+            def run(self):
                 try:
                     from screener.screener_pipeline import ScreenerPipeline
                     p = ScreenerPipeline()
-                    p.run(mock_data=True)
+                    use_mock = (self._mode != 'real')
+                    p.run(mock_data=use_mock)
                     return p.get_top_candidates(n=8)
                 except Exception:
                     return []
@@ -889,7 +1164,7 @@ class CockpitWindow(QMainWindow if _PYSIDE6_AVAILABLE else object):
 
         self._worker = DataWorker(
             broker=_BrokerWrapper(self._broker),
-            screener_pipeline=_ScreenerWrapper(),
+            screener_pipeline=_ScreenerWrapper(mode),
             paper_trader=_PaperWrapper(self._paper_trader),
             interval=5,
         )
@@ -909,21 +1184,34 @@ class CockpitWindow(QMainWindow if _PYSIDE6_AVAILABLE else object):
             self._candidates = candidates
             self._ticks = ticks
 
+            if self._gui_state:
+                self._gui_state.last_candidates = candidates
+                self._gui_state.update_refresh_time()
+
             self._market_bar.update(market, ts)
             self._stock_table.update(ticks, candidates, positions)
             self._candidates_panel.update(candidates)
             self._pos_panel.update(positions, pnl_summary)
 
-            # Update detail panels for first candidate or selected symbol
+            # Update detail panels for selected symbol (or first candidate)
             sym = self._selected_symbol
             if not sym and candidates:
                 sym = str(candidates[0].get('symbol', ''))
             if sym:
-                tick = ticks.get(sym, {})
                 cand = next((c for c in candidates if str(c.get('symbol', '')) == sym), {})
+                tick = ticks.get(sym, {})
                 bidask = tick.get('bidask', {})
                 self._ob_panel.update(sym, bidask)
                 self._score_panel.update(sym, cand)
+                if self._detail_panel:
+                    self._detail_panel.update(cand, tick=tick)
+
+            # Refresh ControlPanel status if available
+            if self._ctrl_panel:
+                try:
+                    self._ctrl_panel.set_refresh_time(ts)
+                except Exception:
+                    pass
 
         except Exception as exc:
             logger.error("Dashboard update error: %s\n%s", exc, traceback.format_exc())
@@ -941,7 +1229,7 @@ class CockpitWindow(QMainWindow if _PYSIDE6_AVAILABLE else object):
 # Entry point
 # ---------------------------------------------------------------------------
 
-def launch():
+def launch(mode: str = 'mock'):
     """Launch the Cockpit GUI. Called by main.py cockpit command."""
     if not _PYSIDE6_AVAILABLE:
         print("ERROR: PySide6 is required to run the Cockpit GUI.")
@@ -964,7 +1252,7 @@ def launch():
     palette.setColor(QPalette.HighlightedText, QColor("#FFFFFF"))
     app.setPalette(palette)
 
-    window = CockpitWindow()
+    window = CockpitWindow(mode=mode)
     window.show()
 
     sys.exit(app.exec())

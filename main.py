@@ -388,14 +388,15 @@ def cmd_screener(args: argparse.Namespace) -> None:
     print("[!] For research and simulation only. Not investment advice.")
 
 
-def cmd_cockpit(_args: argparse.Namespace) -> None:
+def cmd_cockpit(args: argparse.Namespace) -> None:
     """Launch the TW Quant Cockpit PySide6 GUI."""
     logger = logging.getLogger("main.cockpit")
-    logger.info("Launching TW Quant Cockpit GUI...")
+    mode = getattr(args, 'mode', 'mock')
+    logger.info("Launching TW Quant Cockpit GUI [mode=%s]...", mode)
 
     try:
         from gui.dashboard import launch
-        launch()
+        launch(mode=mode)
     except ImportError as exc:
         logger.error("Failed to import gui.dashboard: %s", exc)
         print("ERROR: PySide6 may not be installed. Run: pip install PySide6")
@@ -861,7 +862,9 @@ def _build_parser() -> argparse.ArgumentParser:
                        help="Data mode: mock (demo) or real (DB/FinMind). Default: mock")
 
     # --- cockpit ---
-    subparsers.add_parser("cockpit", help="Launch TW Quant Cockpit GUI (PySide6)")
+    p_cockpit = subparsers.add_parser("cockpit", help="Launch TW Quant Cockpit GUI (PySide6)")
+    p_cockpit.add_argument("--mode", default="mock", choices=["mock", "real"],
+                           help="Data mode: mock (demo) or real (CSV). Default: mock")
 
     # --- paper ---
     subparsers.add_parser("paper", help="Show paper trading positions and P&L")
