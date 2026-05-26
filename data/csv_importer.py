@@ -53,7 +53,8 @@ class CSVImporter:
         -------
         dict
             Import summary with keys: success, data_type, input_file,
-            output_file, rows_imported, rows_total, missing_columns, warnings.
+            output_file, rows_imported, rows_total, duplicates_removed,
+            missing_columns, warnings, errors, clean_summary.
         """
         from data.csv_schema import get_schema, SUPPORTED_DATA_TYPES
 
@@ -64,13 +65,16 @@ class CSVImporter:
             'output_file': '',
             'rows_imported': 0,
             'rows_total': 0,
+            'duplicates_removed': 0,
             'missing_columns': [],
             'warnings': [],
+            'errors': [],
+            'clean_summary': {},
         }
 
         if data_type not in SUPPORTED_DATA_TYPES:
             result['warnings'].append(
-                f"不支援的資料類型：{data_type}。支援：{SUPPORTED_DATA_TYPES}"
+                f"Unsupported data type: {data_type}. Supported: {SUPPORTED_DATA_TYPES}"
             )
             return result
 
@@ -80,38 +84,63 @@ class CSVImporter:
         try:
             import pandas as pd
         except ImportError:
-            result['warnings'].append("pandas 未安裝。請執行：pip install pandas")
+            result['warnings'].append("pandas not installed. Run: pip install pandas")
             return result
 
-        # Read input file
+        # 1. Read input file (multi-encoding)
         df = self._read_with_encoding(file_path, result['warnings'])
         if df is None:
             return result
 
         result['rows_total'] = len(df)
 
-        # Normalize column names (Chinese → English)
+        # 2. Normalize column names (Chinese -> English)
         df = self.normalize_columns(data_type, df)
 
-        # Validate required columns
+        # 3. Validate required columns
         validation = self.validate_columns(data_type, df)
         if not validation['ok']:
             result['missing_columns'] = validation['missing']
-            result['warnings'].append(
-                f"缺少必要欄位：{validation['missing']}，匯入中止。"
+            result['errors'].append(
+                f"Missing required columns: {validation['missing']} — import aborted."
             )
+            result['warnings'] = result['errors']  # keep backward compat
             return result
 
         if validation.get('extra'):
-            result['warnings'].append(f"忽略未知欄位：{validation['extra']}")
+            result['warnings'].append(f"Ignoring unknown columns: {validation['extra']}")
 
-        # Normalize numeric and date types
-        df = self.normalize_types(data_type, df)
+        # 4. CSVCleaner: normalize symbols, dates, numerics, dedup, sort, anomalies
+        try:
+            from data.csv_cleaner import CSVCleaner
+            cleaner = CSVCleaner()
+            df, clean_summary = cleaner.clean_dataframe(data_type, df)
+            result['clean_summary'] = clean_summary
+            result['duplicates_removed'] = clean_summary.get('duplicates_removed', 0)
+            result['warnings'].extend(clean_summary.get('warnings', []))
+            result['errors'].extend(clean_summary.get('errors', []))
+            # Abort on critical errors (empty symbol)
+            if clean_summary.get('errors') and df.empty:
+                result['errors'].append("No valid rows remain after cleaning — import aborted.")
+                return result
+        except ImportError:
+            # Fallback: basic type normalization only
+            df = self.normalize_types(data_type, df)
 
-        # Save to standard CSV
+        # 5. Validate cleaned DataFrame has required columns
+        validation2 = self.validate_columns(data_type, df)
+        if not validation2['ok']:
+            result['missing_columns'] = validation2['missing']
+            result['errors'].append(
+                f"After cleaning, missing columns: {validation2['missing']} — import aborted."
+            )
+            return result
+
+        # 6. Save to standard CSV
         out_file = self.save_standard_csv(data_type, df, append=append)
         if out_file is None:
-            result['warnings'].append("儲存標準 CSV 失敗。")
+            result['errors'].append("Failed to save standard CSV.")
+            result['warnings'].append("Failed to save standard CSV.")
             return result
 
         result['success'] = True

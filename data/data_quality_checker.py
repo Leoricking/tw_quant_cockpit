@@ -231,3 +231,59 @@ class DataQualityChecker:
 
         df.attrs['symbol_count'] = len(df)
         return df
+
+    def get_audit_summary(self) -> dict:
+        """
+        Return a brief audit summary for integration into data-check output.
+
+        Uses DataAuditor for a fast structural check of all data types.
+        Returns dict with: invalid_daily_rows, duplicate_rows,
+        missing_data_types, readiness_stage, import_recommendation.
+        """
+        try:
+            from data.data_auditor import DataAuditor
+            auditor = DataAuditor()
+            audit   = auditor.audit_all()
+            readiness = audit.get('readiness', {})
+
+            daily_info = audit.get('daily', {})
+            invalid_ohlc = (
+                daily_info.get('invalid_close', 0)
+                + daily_info.get('high_lt_low', 0)
+            )
+            dup_rows = sum(
+                audit.get(dt, {}).get('duplicate_rows', 0)
+                for dt in ['daily', 'institutional', 'margin',
+                           'monthly_revenue', 'holder', 'trust_cost']
+            )
+            missing_types = [
+                dt for dt in ['daily', 'institutional', 'margin',
+                               'monthly_revenue', 'holder', 'trust_cost']
+                if not audit.get(dt, {}).get('found', False)
+            ]
+
+            stage = readiness.get('validation_stage', 'FUNCTIONAL_TEST')
+            short_ct = readiness.get('short_ready_count', 0)
+            if short_ct == 0:
+                rec = "Run: python main.py data-audit and import-plan for guidance."
+            elif readiness.get('mid_ready_count', 0) == 0:
+                rec = "Import institutional/margin/revenue/holder for mid-term readiness."
+            else:
+                rec = "Data coverage adequate. Run: python main.py validate-score --mode real"
+
+            return {
+                'invalid_daily_rows':   invalid_ohlc,
+                'duplicate_rows':       dup_rows,
+                'missing_data_types':   missing_types,
+                'readiness_stage':      stage,
+                'import_recommendation': rec,
+            }
+        except Exception as exc:
+            logger.debug("get_audit_summary failed: %s", exc)
+            return {
+                'invalid_daily_rows': 0,
+                'duplicate_rows': 0,
+                'missing_data_types': [],
+                'readiness_stage': 'UNKNOWN',
+                'import_recommendation': 'Run: python main.py data-audit',
+            }

@@ -921,6 +921,208 @@ Shows per-symbol row counts, Short/Mid/Long readiness flags, missing data count.
 
 > **[!] 不構成投資建議。仍禁止實盤自動下單（TWQC_ENABLE_REAL_ORDER=false）。**
 
+### v0.3.3 — 大樣本資料實際匯入與資料清洗 (implemented)
+
+#### 為什麼需要資料清洗？
+
+XQ Global、Excel 匯出的 CSV 常見以下問題：
+
+- 股票代號被 Excel 轉成整數（0050 → 50）
+- 日期為民國年格式（113/01/02）或緊湊格式（1130102）
+- 數字有千分位（1,234,567）
+- 百分比欄位帶有 % 符號
+- 編碼為 Big5 / CP950（非 UTF-8）
+- N/A / -- / 空白 / null 混用
+- 重複的 symbol+date 資料列
+- 欄位名稱為中文（日期、股票代號、收盤價等）
+
+v0.3.3 新增 CSVCleaner 自動處理以上所有問題。
+
+#### clean-csv — 清理 CSV（不匯入標準路徑）
+
+```bash
+# 預覽清理結果，不寫出任何檔案
+python main.py clean-csv --type daily --file D:\XQ\daily.csv --dry-run
+
+# 清理並儲存到指定路徑
+python main.py clean-csv --type daily --file D:\XQ\daily.csv --output D:\XQ\daily_clean.csv
+
+python main.py clean-csv --type institutional --file D:\XQ\institutional.csv --dry-run
+python main.py clean-csv --type margin       --file D:\XQ\margin.csv --dry-run
+python main.py clean-csv --type monthly_revenue --file D:\XQ\revenue.csv --dry-run
+python main.py clean-csv --type holder       --file D:\XQ\holder.csv --dry-run
+python main.py clean-csv --type trust_cost   --file D:\XQ\trust_cost.csv --dry-run
+python main.py clean-csv --type profile      --file D:\XQ\profile.csv --dry-run
+```
+
+`clean-csv` 只做清理預覽，**不寫入** `data/import/` 標準路徑。要正式匯入請用 `import-csv`。
+
+輸出範例：
+
+```
+TW Quant Cockpit CSV Clean
+
+Type    : daily
+Input   : D:\XQ\daily.csv
+Mode    : dry-run (no output written)
+Input rows : 5000
+Output rows        : 4980
+Duplicates removed : 20
+Warnings           : 2
+Errors             : 0
+```
+
+#### import-csv 與 clean-csv 差異
+
+| 指令 | 清理 | 寫入標準 CSV | 說明 |
+|------|------|-------------|------|
+| `clean-csv --dry-run` | 是 | 否 | 預覽清理結果 |
+| `clean-csv --output FILE` | 是 | 否（寫到指定路徑） | 輸出到自訂路徑 |
+| `import-csv` | 是（整合 CSVCleaner） | 是 | 正式匯入，含清理 |
+| `batch-import` | 是 | 是 | 批次正式匯入，含清理 |
+
+#### batch-import --dry-run
+
+```bash
+# 模擬匯入，不寫入標準 CSV
+python main.py batch-import --bundle D:\XQ\twqc_bundle --dry-run
+
+# 正式匯入並輸出批次報告
+python main.py batch-import --bundle D:\XQ\twqc_bundle --export-report
+```
+
+#### data-audit — 資料品質稽核
+
+```bash
+python main.py data-audit
+python main.py data-audit --stock 2383
+python main.py data-audit --export
+```
+
+`data-audit` 讀取目前所有已匯入的 CSV，輸出：
+
+- Universe 總覽（檔數、驗證階段、統計信心）
+- 各資料類型的覆蓋度（達到門檻的股票數）
+- 資料品質問題（無效 OHLC、重複列、負值量）
+- Short / Mid / Long 就緒數量
+
+`--export` 輸出 Markdown 與 CSV 到 `data/import_reports/`（列為 .gitignore，不 commit）。
+
+輸出範例：
+
+```
+TW Quant Cockpit Data Audit
+
+  Universe:
+    symbols          : 50
+    validation stage : BASIC_VALIDATION
+    confidence       : OBSERVATIONAL
+
+  Coverage:
+    daily >= 120     : 47 symbols
+    institutional >= 40 : 45 symbols
+    margin >= 40     : 45 symbols
+    revenue >= 12    : 30 symbols
+    holder >= 4      : 40 symbols
+    trust_cost >= 20 : 38 symbols
+
+  Problems:
+    missing data types : none
+    invalid OHLC       : 0
+    duplicate rows     : 0
+    negative volume    : 0
+
+  Readiness:
+    short-ready      : 45 symbols
+    mid-ready        : 28 symbols
+    long-ready       : 28 symbols
+```
+
+#### import-plan — 匯入優先計畫
+
+```bash
+python main.py import-plan
+python main.py import-plan --export
+```
+
+依目前 data-audit 結果，產生下一步匯入建議：
+
+```
+TW Quant Cockpit Import Plan
+
+Current:
+  symbols           : 5
+  stage             : FUNCTIONAL_TEST
+
+Priority 1 (short-term analysis requirements):
+  - Profile: need 45 more symbols (current: 5, min: 50)
+  - Daily K: 2 symbol(s) need >= 120 trading days
+
+Priority 2 (for mid-term analysis):
+  - Institutional: 2 symbol(s) need >= 40 days
+  ...
+
+Commands:
+  python main.py build-universe --template top50 --replace
+  python main.py batch-import --bundle D:\XQ\twqc_bundle
+  ...
+```
+
+#### 大樣本匯入建議流程（50～200 檔）
+
+```bash
+# Step 1: 建立 universe（50 檔起步）
+python main.py build-universe --template top50 --replace
+
+# Step 2: 批次 dry-run 預覽（確認 CSV 格式正確）
+python main.py batch-import --bundle D:\XQ\twqc_bundle --dry-run
+
+# Step 3: 正式批次匯入
+python main.py batch-import --bundle D:\XQ\twqc_bundle
+
+# Step 4: 稽核資料品質
+python main.py data-audit --export
+
+# Step 5: 查看匯入優先建議
+python main.py import-plan
+
+# Step 6: 執行回測驗證
+python main.py validate-score --mode real
+```
+
+#### 50～200 檔資料需求
+
+| 資料類型 | 最少列數 | 建議列數 | 說明 |
+|---------|---------|---------|------|
+| 日K | 120 日 / 股 | 250+ 日 | 長線正式判斷需要 |
+| 法人 | 40 日 / 股 | 120+ 日 | 短/中線分析 |
+| 融資 | 40 日 / 股 | 120+ 日 | 短/中線分析 |
+| 月營收 | 12 月 / 股 | 24+ 月 | 中/長線分析 |
+| 大戶散戶 | 4 期 / 股 | 8+ 期 | 中/長線分析 |
+| 投信成本 | 20 日 / 股 | 40+ 日 | 補充指標 |
+
+50 檔 x 120 日 = 6,000 列日K 為最小可行規模。
+
+#### 資料品質規則
+
+詳細規則請見 `docs/data_quality_rules.md`。
+
+XQ / Excel 欄位對應請見 `docs/xq_csv_mapping_guide.md`。
+
+#### New Source Files (v0.3.3)
+
+| 檔案 | 說明 |
+|------|------|
+| `data/csv_cleaner.py` | XQ / Excel CSV 清洗、正規化、異常偵測 |
+| `data/data_auditor.py` | 資料品質稽核，輸出 summary + export |
+| `data/import_plan.py` | 依稽核結果產生匯入優先計畫 |
+| `data/import_reporter.py` | 輸出 Markdown / CSV 報告 |
+| `docs/xq_csv_mapping_guide.md` | XQ / Excel 欄位對應說明 |
+| `docs/data_quality_rules.md` | 資料品質規則與門檻說明 |
+
+> **[!] 不構成投資建議。仍禁止實盤自動下單（TWQC_ENABLE_REAL_ORDER=false）。**
+> 回測結果不得作為正式投資結論。樣本不足時，系統仍會顯示 INSUFFICIENT 警告。
+
 ### v0.4 (planned)
 - Shioaji real-time quote subscription (read-only)
 - Real 5-level order book display

@@ -33,6 +33,9 @@ trading_master.zip
 reports/score_validation_report_*.md
 reports/buy_point_validation_report_*.md
 
+# Import / audit / plan reports (generated artifacts)
+data/import_reports/
+
 # User-imported real CSV data (not sample files) — keep locally, exclude from repo
 data/import/daily/daily_k.csv
 data/import/institutional/institutional.csv

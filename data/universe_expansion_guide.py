@@ -155,6 +155,25 @@ class UniverseExpansionGuide:
             print(f'  {key:<22}: {status}')
         print('')
 
+        # Audit summary integration
+        try:
+            from data.data_quality_checker import DataQualityChecker
+            audit_sum = DataQualityChecker().get_audit_summary()
+            inv  = audit_sum.get('invalid_daily_rows', 0)
+            dup  = audit_sum.get('duplicate_rows', 0)
+            miss = audit_sum.get('missing_data_types', [])
+            if inv or dup or miss:
+                print('  Data quality notes:')
+                if inv:
+                    print(f'  invalid OHLC rows    : {inv}')
+                if dup:
+                    print(f'  duplicate rows       : {dup}')
+                if miss:
+                    print(f'  missing types        : {", ".join(miss)}')
+                print('')
+        except Exception:
+            pass
+
         # Contextual next-step recommendations based on current stage
         print('  Next steps:')
         if sym < 50:

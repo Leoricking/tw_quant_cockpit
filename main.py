@@ -24,6 +24,12 @@ TW Quant Cockpit v0.2 Phase 4 commands
 import-csv    : Import XQ/Excel/manual CSV into standard data/import/ structure
 data-check    : Check data completeness for a stock or the full universe
 
+TW Quant Cockpit v0.3.3 commands
+----------------------------------
+clean-csv     : Clean and normalize a CSV file (XQ/Excel) without importing
+data-audit    : Audit all imported data for quality and coverage
+import-plan   : Show prioritized import plan based on current data gaps
+
 Usage examples
 --------------
     python main.py download
@@ -1127,9 +1133,11 @@ def cmd_batch_import(args: argparse.Namespace) -> None:
     """Batch import CSV files from a folder or bundle directory."""
     from data.batch_importer import BatchImporter
 
-    logger  = logging.getLogger("main.batch_import")
-    bi      = BatchImporter()
-    replace = getattr(args, 'replace', False)
+    logger         = logging.getLogger("main.batch_import")
+    bi             = BatchImporter()
+    replace        = getattr(args, 'replace', False)
+    dry_run        = getattr(args, 'dry_run', False)
+    export_report  = getattr(args, 'export_report', False)
 
     data_type  = getattr(args, 'type', None)
     folder_arg = getattr(args, 'folder', None)
@@ -1139,10 +1147,15 @@ def cmd_batch_import(args: argparse.Namespace) -> None:
     print('=' * 60)
     print('  TW Quant Cockpit Batch Import')
     print('=' * 60)
+    if dry_run:
+        print('  Mode     : dry-run (no data written)')
 
     try:
         if bundle_arg:
-            result = bi.import_bundle(bundle_arg, replace=replace)
+            result = bi.import_bundle(
+                bundle_arg, replace=replace,
+                dry_run=dry_run, export_report=export_report,
+            )
             print(f"  Bundle   : {bundle_arg}")
             print(f"  Success  : {result.get('success')}")
             print('')
@@ -1157,7 +1170,9 @@ def cmd_batch_import(args: argparse.Namespace) -> None:
             warnings = result.get('warnings', [])
 
         elif data_type and folder_arg:
-            result = bi.import_folder(data_type, folder_arg, replace=replace)
+            result = bi.import_folder(
+                data_type, folder_arg, replace=replace, dry_run=dry_run
+            )
             ok    = len(result.get('success_files', []))
             fail  = len(result.get('failed_files', []))
             rows  = result.get('total_rows_imported', 0)
@@ -1171,6 +1186,21 @@ def cmd_batch_import(args: argparse.Namespace) -> None:
             for f in result.get('failed_files', []):
                 print(f"  FAIL {f['file']}: {f['error']}")
             warnings = result.get('warnings', [])
+
+            if export_report:
+                try:
+                    from data.import_reporter import ImportReporter
+                    from datetime import datetime
+                    import os as _os
+                    _base = _os.path.dirname(_os.path.abspath(__file__))
+                    _dir  = _os.path.join(_base, 'data', 'import_reports')
+                    _os.makedirs(_dir, exist_ok=True)
+                    _ts   = datetime.now().strftime('%Y%m%d_%H%M%S')
+                    _out  = _os.path.join(_dir, f'batch_import_report_{_ts}.md')
+                    ImportReporter().write_batch_import_report(result, _out)
+                    print(f"  Report   : {_out}")
+                except Exception as rep_exc:
+                    logger.warning("export_report failed: %s", rep_exc)
 
         else:
             print('  ERROR: specify --type + --folder or --bundle')
@@ -1206,6 +1236,206 @@ def cmd_universe_check(args: argparse.Namespace) -> None:  # noqa: ARG001
     except Exception as exc:
         logging.getLogger("main.universe_check").error("universe-check failed: %s", exc, exc_info=True)
         print(f"ERROR: {exc}")
+
+
+# ---------------------------------------------------------------------------
+# v0.3.3 — Clean CSV Command
+# ---------------------------------------------------------------------------
+
+def cmd_clean_csv(args: argparse.Namespace) -> None:
+    """Clean and normalize a CSV file without importing to standard path."""
+    from data.csv_cleaner import CSVCleaner
+    from data.csv_importer import CSVImporter
+
+    logger_cmd = logging.getLogger("main.clean_csv")
+    data_type = getattr(args, 'type', None)
+    file_path = getattr(args, 'file', None)
+    output    = getattr(args, 'output', None)
+    dry_run   = getattr(args, 'dry_run', False)
+
+    print('')
+    print('=' * 60)
+    print('  TW Quant Cockpit CSV Clean')
+    print('=' * 60)
+    print(f'  Type    : {data_type}')
+    print(f'  Input   : {file_path}')
+    if output:
+        print(f'  Output  : {output}')
+    if dry_run:
+        print('  Mode    : dry-run (no output written)')
+
+    try:
+        importer = CSVImporter()
+        cleaner  = CSVCleaner()
+
+        # Read file
+        warnings = []
+        df = importer._read_with_encoding(file_path, warnings)
+        if df is None:
+            print(f'  ERROR   : Cannot read file: {file_path}')
+            if warnings:
+                for w in warnings:
+                    print(f'  - {w}')
+            sys.exit(1)
+
+        print(f'  Input rows : {len(df)}')
+
+        # Normalize columns
+        df = importer.normalize_columns(data_type, df)
+
+        # Validate columns
+        validation = importer.validate_columns(data_type, df)
+        if not validation['ok']:
+            print(f'  ERROR   : Missing required columns: {validation["missing"]}')
+            sys.exit(1)
+        if validation.get('extra'):
+            print(f'  Ignored columns : {validation["extra"]}')
+
+        # Clean
+        cleaned_df, summary = cleaner.clean_dataframe(data_type, df)
+
+        print(f'  Output rows        : {summary["output_rows"]}')
+        print(f'  Duplicates removed : {summary["duplicates_removed"]}')
+
+        w_list = summary.get('warnings', [])
+        e_list = summary.get('errors', [])
+        print(f'  Warnings           : {len(w_list)}')
+        print(f'  Errors             : {len(e_list)}')
+
+        if w_list:
+            print('')
+            print('  Warnings:')
+            for w in w_list[:10]:
+                print(f'    - {w}')
+
+        if e_list:
+            print('')
+            print('  Errors:')
+            for e in e_list[:10]:
+                print(f'    - {e}')
+
+        if not dry_run and output:
+            cleaned_df.to_csv(output, index=False, encoding='utf-8-sig')
+            print(f'')
+            print(f'  Saved to: {output}')
+
+        print('=' * 60)
+        print('[!] For research and simulation only. Not investment advice.')
+
+    except Exception as exc:
+        logger_cmd.error("clean-csv failed: %s", exc, exc_info=True)
+        print(f'  ERROR: {exc}')
+        sys.exit(1)
+
+
+# ---------------------------------------------------------------------------
+# v0.3.3 — Data Audit Command
+# ---------------------------------------------------------------------------
+
+def cmd_data_audit(args: argparse.Namespace) -> None:
+    """Audit all imported data for quality and coverage."""
+    from data.data_auditor import DataAuditor
+
+    logger_cmd = logging.getLogger("main.data_audit")
+    stock      = getattr(args, 'stock', None)
+    export     = getattr(args, 'export', False)
+
+    print('')
+    print('=' * 60)
+    print('  TW Quant Cockpit Data Audit')
+    print('=' * 60)
+
+    try:
+        auditor = DataAuditor()
+
+        if stock:
+            result = auditor.audit_symbol(stock)
+            print(f'  Symbol: {stock}')
+            print('')
+            for dt, info in result.items():
+                if dt == 'symbol':
+                    continue
+                rows = info.get('rows', 0) if isinstance(info, dict) else 0
+                print(f'  {dt:<22}: {rows} rows')
+        else:
+            result   = auditor.audit_all()
+            readiness = result.get('readiness', {})
+
+            print(f'  Universe:')
+            print(f'    symbols          : {readiness.get("profile_count", 0)}')
+            print(f'    validation stage : {readiness.get("validation_stage", "N/A")}')
+            print(f'    confidence       : {readiness.get("statistical_confidence", "N/A")}')
+            print('')
+            print(f'  Coverage:')
+            print(f'    daily >= 120     : {readiness.get("daily_120", 0)} symbols')
+            print(f'    institutional >= 40 : {readiness.get("institutional_40", 0)} symbols')
+            print(f'    margin >= 40     : {readiness.get("margin_40", 0)} symbols')
+            print(f'    revenue >= 12    : {readiness.get("revenue_12", 0)} symbols')
+            print(f'    holder >= 4      : {readiness.get("holder_4", 0)} symbols')
+            print(f'    trust_cost >= 20 : {readiness.get("trust_cost_20", 0)} symbols')
+            print('')
+            daily_info = result.get('daily', {})
+            dup_daily  = daily_info.get('duplicate_rows', 0)
+            inv_close  = daily_info.get('invalid_close', 0)
+            high_lt_low = daily_info.get('high_lt_low', 0)
+            neg_vol    = daily_info.get('negative_volume', 0)
+            missing_types = [
+                dt for dt in ['daily', 'institutional', 'margin',
+                               'monthly_revenue', 'holder', 'trust_cost']
+                if not result.get(dt, {}).get('found', False)
+            ]
+            print(f'  Problems:')
+            print(f'    missing data types : {", ".join(missing_types) if missing_types else "none"}')
+            print(f'    invalid OHLC       : {inv_close + high_lt_low}')
+            print(f'    duplicate rows     : {dup_daily}')
+            print(f'    negative volume    : {neg_vol}')
+            print('')
+            print(f'  Readiness:')
+            print(f'    short-ready      : {readiness.get("short_ready_count", 0)} symbols')
+            print(f'    mid-ready        : {readiness.get("mid_ready_count", 0)} symbols')
+            print(f'    long-ready       : {readiness.get("long_ready_count", 0)} symbols')
+
+        if export and not stock:
+            paths = auditor.export_audit_report()
+            print('')
+            print(f'  Exported:')
+            print(f'    Markdown : {paths["markdown"]}')
+            print(f'    CSV      : {paths["csv"]}')
+
+        print('=' * 60)
+        print('[!] For research and simulation only. Not investment advice.')
+
+    except Exception as exc:
+        logger_cmd.error("data-audit failed: %s", exc, exc_info=True)
+        print(f'  ERROR: {exc}')
+        sys.exit(1)
+
+
+# ---------------------------------------------------------------------------
+# v0.3.3 — Import Plan Command
+# ---------------------------------------------------------------------------
+
+def cmd_import_plan(args: argparse.Namespace) -> None:
+    """Show prioritized import plan based on current data gaps."""
+    from data.import_plan import ImportPlan
+
+    logger_cmd = logging.getLogger("main.import_plan")
+    export     = getattr(args, 'export', False)
+
+    try:
+        plan_builder = ImportPlan()
+        if export:
+            paths = plan_builder.export_plan()
+            plan_builder._print(paths['plan'])
+            print(f'')
+            print(f'  Exported: {paths["file"]}')
+        else:
+            plan_builder.print_plan()
+
+    except Exception as exc:
+        logger_cmd.error("import-plan failed: %s", exc, exc_info=True)
+        print(f'  ERROR: {exc}')
+        sys.exit(1)
 
 
 # ---------------------------------------------------------------------------
@@ -1421,6 +1651,55 @@ def _build_parser() -> argparse.ArgumentParser:
         action="store_true",
         help="Replace existing data (default: append and deduplicate)",
     )
+    p_bi.add_argument(
+        "--dry-run",
+        action="store_true",
+        help="Read and clean files but do not write to standard CSV",
+    )
+    p_bi.add_argument(
+        "--export-report",
+        action="store_true",
+        help="Write a Markdown batch import report to data/import_reports/",
+    )
+
+    # --- clean-csv ---
+    p_cc = subparsers.add_parser(
+        "clean-csv",
+        help="Clean and normalize a CSV file without importing to standard path",
+    )
+    p_cc.add_argument(
+        "--type", required=True,
+        choices=["profile", "daily", "institutional", "margin",
+                 "monthly_revenue", "holder", "trust_cost"],
+        help="Data type of the CSV",
+    )
+    p_cc.add_argument("--file", required=True, help="Path to input CSV file")
+    p_cc.add_argument("--output", default=None, help="Path to output cleaned CSV (optional)")
+    p_cc.add_argument(
+        "--dry-run", action="store_true",
+        help="Check only, do not write output file",
+    )
+
+    # --- data-audit ---
+    p_da = subparsers.add_parser(
+        "data-audit",
+        help="Audit all imported data for quality and coverage",
+    )
+    p_da.add_argument("--stock", default=None, help="Audit a single stock symbol, e.g. 2383")
+    p_da.add_argument(
+        "--export", action="store_true",
+        help="Export audit report to data/import_reports/ (Markdown + CSV)",
+    )
+
+    # --- import-plan ---
+    p_ip = subparsers.add_parser(
+        "import-plan",
+        help="Show prioritized import plan based on current data gaps",
+    )
+    p_ip.add_argument(
+        "--export", action="store_true",
+        help="Export import plan to data/import_reports/ (Markdown)",
+    )
 
     return parser
 
@@ -1467,6 +1746,10 @@ def main() -> None:
         # TW Quant Cockpit v0.3.2
         "build-universe":       cmd_build_universe,
         "batch-import":         cmd_batch_import,
+        # TW Quant Cockpit v0.3.3
+        "clean-csv":            cmd_clean_csv,
+        "data-audit":           cmd_data_audit,
+        "import-plan":          cmd_import_plan,
     }
 
     if args.command is None:
