@@ -19,6 +19,11 @@ paper         : Show paper trading positions and P&L
 stock-report  : Generate multi-timeframe analysis report for a single stock
 mock-realtime : Run mock real-time market data simulation (no Shioaji required)
 
+TW Quant Cockpit v0.2 Phase 4 commands
+----------------------------------------
+import-csv    : Import XQ/Excel/manual CSV into standard data/import/ structure
+data-check    : Check data completeness for a stock or the full universe
+
 Usage examples
 --------------
     python main.py download
@@ -484,11 +489,13 @@ def cmd_stock_report(args: argparse.Namespace) -> None:
         price_data = None
         chip_data = None
         fundamental_data = None
+        data_sources = None
 
         if mode == 'real':
             from data.real_data_loader import RealDataLoader
             loader = RealDataLoader()
             all_data = loader.load_all(sym)
+            data_sources = all_data.get('_sources')
             profile = all_data.get('profile')
             if profile:
                 stock_name = profile.get('name')
@@ -555,6 +562,7 @@ def cmd_stock_report(args: argparse.Namespace) -> None:
             short_result=short_result,
             mid_result=mid_result,
             long_result=long_result,
+            data_sources=data_sources,
         )
 
         # Print to console
@@ -574,6 +582,142 @@ def cmd_stock_report(args: argparse.Namespace) -> None:
     except Exception as exc:
         logger.error("stock-report failed: %s", exc)
         print(f"ERROR: {exc}")
+        sys.exit(1)
+
+
+def cmd_import_csv(args: argparse.Namespace) -> None:
+    """Import a CSV file into the standard data/import/ structure."""
+    from data.csv_importer import CSVImporter
+
+    logger = logging.getLogger("main.import_csv")
+
+    data_type = getattr(args, 'type', None)
+    file_path = getattr(args, 'file', None)
+    replace = getattr(args, 'replace', False)
+
+    if not data_type:
+        logger.error("--type is required.")
+        sys.exit(1)
+    if not file_path:
+        logger.error("--file is required.")
+        sys.exit(1)
+
+    append = not replace
+    importer = CSVImporter()
+    result = importer.import_csv(data_type=data_type, file_path=file_path, append=append)
+
+    print("\n" + "=" * 55)
+    print("  TW Quant Cockpit — CSV 匯入")
+    print("=" * 55)
+    print(f"  匯入類型：{result['data_type']}")
+    print(f"  輸入檔案：{result['input_file']}")
+    print(f"  輸出檔案：{result['output_file']}")
+    print(f"  匯入筆數：{result['rows_imported']}")
+    print(f"  總筆數：  {result['rows_total']}")
+    missing = result.get('missing_columns', [])
+    print(f"  缺少欄位：{missing if missing else '無'}")
+    warnings = result.get('warnings', [])
+    if warnings:
+        for w in warnings:
+            print(f"  警告：{w}")
+    else:
+        print("  警告：無")
+    status = "✅ 成功" if result['success'] else "❌ 失敗"
+    print(f"  狀態：{status}")
+    print("=" * 55)
+
+    if not result['success']:
+        sys.exit(1)
+
+
+def cmd_data_check(args: argparse.Namespace) -> None:
+    """Check data completeness for a stock or the entire universe."""
+    from data.data_quality_checker import DataQualityChecker
+
+    logger = logging.getLogger("main.data_check")
+
+    stock = getattr(args, 'stock', None)
+    check_all = getattr(args, 'all', False)
+
+    checker = DataQualityChecker()
+
+    if stock:
+        result = checker.check_stock(str(stock))
+
+        print("\n" + "=" * 55)
+        print("  TW Quant Cockpit Data Check")
+        print("=" * 55)
+        print(f"\n  股票：{result['symbol']} {result['name']}\n")
+
+        def _ok(val, threshold):
+            return "OK" if val >= threshold else f"不足（需 {threshold} 筆）"
+
+        profile_status = "OK" if result['profile_ok'] else "缺少"
+        print(f"  Profile:          {profile_status}")
+        print(f"  Daily K:          {result['daily_rows']} rows  {_ok(result['daily_rows'], 20)}")
+        print(f"  Institutional:    {result['institutional_rows']} rows  {_ok(result['institutional_rows'], 5)}")
+        print(f"  Margin:           {result['margin_rows']} rows  {_ok(result['margin_rows'], 5)}")
+        print(f"  Monthly Revenue:  {result['monthly_revenue_rows']} rows  {_ok(result['monthly_revenue_rows'], 6)}")
+        print(f"  Holder:           {result['holder_rows']} rows  {_ok(result['holder_rows'], 2)}")
+        print(f"  Trust Cost:       {result['trust_cost_rows']} rows  {_ok(result['trust_cost_rows'], 3)}")
+
+        print("\n  正式判斷允許：")
+        dt_note = "否，缺 intraday / bidask" if not result['daytrade_allowed'] else "是"
+        print(f"  當沖：{dt_note}")
+        print(f"  短線：{'是' if result['short_allowed'] else '否'}")
+        print(f"  中線：{'是' if result['mid_allowed'] else '否'}")
+        print(f"  長線：{'是' if result['long_allowed'] else '否'}")
+
+        missing = [m for m in result['missing'] if m not in ('intraday', 'bidask')]
+        if missing:
+            print("\n  缺失資料：")
+            for m in missing:
+                print(f"  - {m}")
+
+        recs = result.get('recommendations', [])
+        if recs:
+            print("\n  建議：")
+            for r in recs:
+                print(f"  - {r}")
+
+        print("=" * 55)
+
+    elif check_all:
+        logger.info("Checking full universe...")
+        df = checker.check_universe()
+
+        if df is None or (hasattr(df, 'empty') and df.empty):
+            print("No stocks found in profile CSV. Run import-csv --type profile first.")
+            return
+
+        print("\n" + "=" * 90)
+        print("  TW Quant Cockpit Data Check — Universe")
+        print("=" * 90)
+        print(f"  {'代號':>6}  {'名稱':<8}  {'日K':>5}  {'法人':>5}  {'融資':>5}  "
+              f"{'月收':>5}  {'大戶':>5}  {'投信成':>6}  短 中 長")
+        print("  " + "-" * 80)
+
+        for _, row in df.iterrows():
+            sym = str(row.get('symbol', ''))
+            name = str(row.get('name', ''))[:8]
+            daily = int(row.get('daily_rows', 0))
+            inst = int(row.get('institutional_rows', 0))
+            margin = int(row.get('margin_rows', 0))
+            rev = int(row.get('monthly_revenue_rows', 0))
+            holder = int(row.get('holder_rows', 0))
+            tc = int(row.get('trust_cost_rows', 0))
+            s = '✓' if row.get('short_allowed') else '✗'
+            m = '✓' if row.get('mid_allowed') else '✗'
+            l = '✓' if row.get('long_allowed') else '✗'
+            print(f"  {sym:>6}  {name:<8}  {daily:>5}  {inst:>5}  {margin:>5}  "
+                  f"{rev:>5}  {holder:>5}  {tc:>6}  {s} {m} {l}")
+
+        print("=" * 90)
+        print(f"  共 {len(df)} 檔 | ✓=正式判斷允許 ✗=資料不足")
+        print("=" * 90)
+
+    else:
+        print("請指定 --stock <代號> 或 --all")
         sys.exit(1)
 
 
@@ -733,6 +877,32 @@ def _build_parser() -> argparse.ArgumentParser:
     p_mr.add_argument("--duration", type=int, default=60, help="Simulation duration in seconds (default: 60)")
     p_mr.add_argument("--interval", type=int, default=2, help="Tick interval in seconds (default: 2)")
 
+    # --- import-csv ---
+    p_ic = subparsers.add_parser(
+        "import-csv",
+        help="Import XQ/Excel/manual CSV into standard data/import/ structure",
+    )
+    p_ic.add_argument(
+        "--type", required=True,
+        choices=["profile", "daily", "institutional", "margin",
+                 "monthly_revenue", "holder", "trust_cost"],
+        help="Data type to import",
+    )
+    p_ic.add_argument("--file", required=True, help="Path to input CSV file")
+    p_ic.add_argument(
+        "--replace", action="store_true",
+        help="Replace existing standard CSV (default: append and deduplicate)",
+    )
+
+    # --- data-check ---
+    p_dc = subparsers.add_parser(
+        "data-check",
+        help="Check data completeness for a stock or the full universe",
+    )
+    grp = p_dc.add_mutually_exclusive_group(required=True)
+    grp.add_argument("--stock", default=None, help="Stock symbol, e.g. 2383")
+    grp.add_argument("--all", action="store_true", help="Check all stocks in profile universe")
+
     return parser
 
 
@@ -761,11 +931,14 @@ def main() -> None:
         "report": cmd_report,
         "ui": cmd_ui,
         # TW Quant Cockpit v1
-        "screener": cmd_screener,
-        "cockpit": cmd_cockpit,
-        "paper": cmd_paper,
+        "screener":     cmd_screener,
+        "cockpit":      cmd_cockpit,
+        "paper":        cmd_paper,
         "stock-report": cmd_stock_report,
         "mock-realtime": cmd_mock_realtime,
+        # TW Quant Cockpit v0.2 Phase 4
+        "import-csv":   cmd_import_csv,
+        "data-check":   cmd_data_check,
     }
 
     if args.command is None:

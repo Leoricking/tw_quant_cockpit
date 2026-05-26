@@ -472,6 +472,120 @@ all_data = loader.load_all('2454')
 # Returns: {profile, daily_k, institutional, margin, monthly_revenue, holder}
 ```
 
+### v0.2 Phase 4 — CSV 匯入工具與 data-check (implemented)
+
+#### import-csv — 匯入真實 CSV
+
+```bash
+python main.py import-csv --type daily           --file D:\XQ\daily.csv
+python main.py import-csv --type institutional   --file D:\XQ\institutional.csv
+python main.py import-csv --type margin          --file D:\XQ\margin.csv
+python main.py import-csv --type monthly_revenue --file D:\XQ\revenue.csv
+python main.py import-csv --type holder          --file D:\XQ\holder.csv
+python main.py import-csv --type trust_cost      --file D:\XQ\trust_cost.csv
+python main.py import-csv --type profile         --file D:\XQ\profile.csv
+python main.py import-csv --type daily           --file D:\XQ\daily.csv --replace
+```
+
+**參數：**
+- `--type`：必填。支援 `profile` / `daily` / `institutional` / `margin` / `monthly_revenue` / `holder` / `trust_cost`
+- `--file`：必填。輸入 CSV 路徑
+- `--replace`：選填。覆蓋既有標準 CSV（預設：append 並去重）
+
+**支援資料類型與標準欄位：**
+
+| 類型 | 標準欄位 | 輸出路徑 |
+|------|---------|---------|
+| profile | symbol,name,market,industry,theme_tags,is_mainstream_theme,sector | data/import/profile/stock_profile.csv |
+| daily | date,symbol,open,high,low,close,volume | data/import/daily/daily_k.csv |
+| institutional | date,symbol,foreign_net_buy,trust_net_buy,dealer_net_buy | data/import/institutional/institutional.csv |
+| margin | date,symbol,margin_balance,margin_change,short_balance,short_change | data/import/margin/margin.csv |
+| monthly_revenue | month,symbol,revenue,mom,yoy,accumulated_yoy | data/import/monthly_revenue/monthly_revenue.csv |
+| holder | date,symbol,major_holder_ratio,retail_holder_ratio,major_change,retail_change | data/import/holder/holder.csv |
+| trust_cost | date,symbol,trust_buy_shares,trust_buy_amount,trust_avg_cost,close,price_vs_trust_cost_pct | data/import/trust_cost/trust_cost.csv |
+
+**中文欄位別名（自動轉換）：**
+
+```
+股票代號 / 代號 / 證券代號  →  symbol
+股票名稱 / 名稱             →  name
+日期                        →  date
+開盤價 / 開盤               →  open
+收盤價 / 收盤               →  close
+外資買賣超 / 外資           →  foreign_net_buy
+投信買賣超 / 投信           →  trust_net_buy
+年月 / 月份                 →  month
+...（完整清單見 data/csv_schema.py）
+```
+
+#### data-check — 資料完整度檢查
+
+```bash
+python main.py data-check --stock 2383
+python main.py data-check --all
+```
+
+單檔輸出範例：
+```
+TW Quant Cockpit Data Check
+
+  股票：2383 台光電
+
+  Profile:          OK
+  Daily K:          120 rows  OK
+  Institutional:     40 rows  OK
+  Margin:            40 rows  OK
+  Monthly Revenue:   12 rows  OK
+  Holder:             4 rows  OK
+  Trust Cost:        40 rows  OK
+
+  正式判斷允許：
+  當沖：否，缺 intraday / bidask
+  短線：是
+  中線：是
+  長線：是
+```
+
+**正式判斷門檻：**
+
+| 時間框架 | 條件 |
+|---------|------|
+| 當沖 | intraday + bidask（Phase 4 尚未支援，永遠 False） |
+| 短線 | daily ≥ 20 + institutional ≥ 5 + margin ≥ 5 |
+| 中線 | daily ≥ 60 + monthly_revenue ≥ 6 + institutional ≥ 5 + margin ≥ 5 + holder ≥ 2 |
+| 長線 | daily ≥ 120 + monthly_revenue ≥ 12 + holder ≥ 2 |
+
+#### Real / Mock 模式差異
+
+| 模式 | 資料來源 | 標示 | 說明 |
+|------|---------|------|------|
+| `--mode real` + 標準 CSV | 使用者匯入 | 🟢 REAL DATA CSV | 允許依完整度進行正式判斷 |
+| `--mode real` + sample CSV | 內建範例 | 🟡 REAL DATA SAMPLE | 僅供驗證資料流程，不代表真實市場 |
+| `--mode real` + 無資料 | — | 🔴 REAL MODE — 缺真實資料 | 買點/操作價格顯示「—」 |
+| `--mode mock` | 穩定亂數 | 🟡 MOCK DATA | 示範模式，固定隨機種子 |
+
+#### sample CSV 與正式 CSV 差異
+
+| 項目 | sample CSV | 正式 CSV |
+|------|-----------|---------|
+| 位置 | `data/import/{type}/{name}_sample.csv` | `data/import/{type}/{name}.csv` |
+| 來源 | 內建示範資料 | 使用者以 `import-csv` 匯入 |
+| 優先級 | 最低（fallback） | 最高（優先讀） |
+| 用途 | 驗證資料流程 / 初始測試 | 實際研究 / 正式分析 |
+
+> ⚠️ sample CSV 不代表真實市場數據。stock-report 報告會顯示警告。
+
+#### 兆豐 API 尚未接入
+
+Phase 4 **不**接兆豐 API。兆豐 API 計劃放入 v0.4：
+
+> **v0.4（計畫中）**：Mega API / 即時行情 / 五檔 / Paper Trading Realtime
+
+Phase 4 的重點是讓 XQ / Excel / 手動整理的 CSV 匯入、資料完整度檢查、與分析流程全部穩定，
+再於 v0.4 接即時行情 API。
+
+> ⚠️ **第一版仍禁止實盤自動下單。本系統僅供研究、模擬交易與決策輔助。**
+
 ### v0.2 (remaining planned)
 - Connect real FinMind data for screener fundamental filter
 - Integrate real chip data (foreign/trust/dealer net buy) via API

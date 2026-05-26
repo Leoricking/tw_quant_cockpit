@@ -23,17 +23,43 @@ logger = logging.getLogger(__name__)
 _BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 _IMPORT_DIR = os.path.join(_BASE_DIR, "import")
 
+# Standard CSV filenames (created by import-csv command)
+_STANDARD_FILES = {
+    'profile':         'stock_profile.csv',
+    'daily':           'daily_k.csv',
+    'institutional':   'institutional.csv',
+    'margin':          'margin.csv',
+    'monthly_revenue': 'monthly_revenue.csv',
+    'holder':          'holder.csv',
+    'trust_cost':      'trust_cost.csv',
+}
 
-def _glob_csvs(subdir: str):
-    """Return all *.csv paths under data/import/<subdir>/."""
-    folder = os.path.join(_IMPORT_DIR, subdir)
-    if not os.path.isdir(folder):
-        return []
-    return [
-        os.path.join(folder, f)
-        for f in os.listdir(folder)
-        if f.endswith(".csv")
-    ]
+# Sample CSV filenames (bundled demo data)
+_SAMPLE_FILES = {
+    'profile':         'stock_profile_sample.csv',
+    'daily':           'daily_k_sample.csv',
+    'institutional':   'institutional_sample.csv',
+    'margin':          'margin_sample.csv',
+    'monthly_revenue': 'monthly_revenue_sample.csv',
+    'holder':          'holder_sample.csv',
+    'trust_cost':      'trust_cost_sample.csv',
+}
+
+
+def _resolve_csv(subdir: str):
+    """
+    Return (path, is_sample) for the best available CSV file.
+
+    Prefers the user-imported standard CSV. Falls back to sample CSV.
+    Returns (None, None) if neither exists.
+    """
+    std = os.path.join(_IMPORT_DIR, subdir, _STANDARD_FILES.get(subdir, ''))
+    smp = os.path.join(_IMPORT_DIR, subdir, _SAMPLE_FILES.get(subdir, ''))
+    if _STANDARD_FILES.get(subdir) and os.path.isfile(std):
+        return std, False
+    if _SAMPLE_FILES.get(subdir) and os.path.isfile(smp):
+        return smp, True
+    return None, None
 
 
 def _read_csv_rows(path: str):
@@ -70,23 +96,28 @@ class RealDataLoader:
         """
         Load stock profile (name, market, industry, theme_tags, is_mainstream_theme, sector).
 
+        Prefers user-imported standard CSV over bundled sample CSV.
         Returns dict or None.
         """
         sym = str(symbol)
-        for path in _glob_csvs("profile"):
-            for row in _read_csv_rows(path):
-                if row.get("symbol") == sym:
-                    tags_raw = row.get("theme_tags", "")
-                    tags = [t.strip() for t in tags_raw.split("/") if t.strip()]
-                    return {
-                        "symbol": sym,
-                        "name": row.get("name", sym),
-                        "market": row.get("market", ""),
-                        "industry": row.get("industry", ""),
-                        "theme_tags": tags,
-                        "is_mainstream_theme": row.get("is_mainstream_theme", "0") in ("1", "true", "True"),
-                        "sector": row.get("sector", ""),
-                    }
+        path, is_sample = _resolve_csv("profile")
+        if not path:
+            return None
+        for row in _read_csv_rows(path):
+            if row.get("symbol") == sym:
+                tags_raw = row.get("theme_tags", "")
+                tags = [t.strip() for t in tags_raw.split("/") if t.strip()]
+                return {
+                    "symbol": sym,
+                    "name": row.get("name", sym),
+                    "market": row.get("market", ""),
+                    "industry": row.get("industry", ""),
+                    "theme_tags": tags,
+                    "is_mainstream_theme": row.get("is_mainstream_theme", "0") in ("1", "true", "True"),
+                    "sector": row.get("sector", ""),
+                    "source_file": path,
+                    "is_sample": is_sample,
+                }
         return None
 
     # ------------------------------------------------------------------
@@ -97,25 +128,29 @@ class RealDataLoader:
         """
         Load daily OHLCV bars (newest last) with bar count metadata.
 
+        Prefers user-imported standard CSV over bundled sample CSV.
         Returns dict or None:
-            bars (list of dict), n_bars (int), has_60d (bool), has_20d (bool)
+            bars (list of dict), n_bars (int), has_60d (bool), has_20d (bool),
+            source_file (str), is_sample (bool)
         """
         sym = str(symbol)
+        path, is_sample = _resolve_csv("daily")
+        if not path:
+            return None
         rows = []
-        for path in _glob_csvs("daily"):
-            for row in _read_csv_rows(path):
-                if row.get("symbol") == sym:
-                    try:
-                        rows.append({
-                            "date":   row.get("date", ""),
-                            "open":   _safe_float(row.get("open")),
-                            "high":   _safe_float(row.get("high")),
-                            "low":    _safe_float(row.get("low")),
-                            "close":  _safe_float(row.get("close")),
-                            "volume": _safe_float(row.get("volume")),
-                        })
-                    except Exception as exc:
-                        logger.debug("load_daily_k parse error for %s: %s", sym, exc)
+        for row in _read_csv_rows(path):
+            if row.get("symbol") == sym:
+                try:
+                    rows.append({
+                        "date":   row.get("date", ""),
+                        "open":   _safe_float(row.get("open")),
+                        "high":   _safe_float(row.get("high")),
+                        "low":    _safe_float(row.get("low")),
+                        "close":  _safe_float(row.get("close")),
+                        "volume": _safe_float(row.get("volume")),
+                    })
+                except Exception as exc:
+                    logger.debug("load_daily_k parse error for %s: %s", sym, exc)
 
         if not rows:
             return None
@@ -128,6 +163,8 @@ class RealDataLoader:
             "has_20d": n >= 20,
             "has_60d": n >= 60,
             "has_120d": n >= 120,
+            "source_file": path,
+            "is_sample": is_sample,
         }
 
     # ------------------------------------------------------------------
@@ -138,27 +175,30 @@ class RealDataLoader:
         """
         Load institutional net buy/sell with 3d/5d rolling sums and sell streak.
 
+        Prefers user-imported standard CSV over bundled sample CSV.
         Returns dict or None:
             foreign_net_3d, foreign_net_5d,
             trust_net_3d, trust_net_5d,
             dealer_net_3d, dealer_net_5d,
             institution_continuous_sell_days,
-            rows
+            rows, source_file, is_sample
         """
         sym = str(symbol)
+        path, is_sample = _resolve_csv("institutional")
+        if not path:
+            return None
         rows = []
-        for path in _glob_csvs("institutional"):
-            for row in _read_csv_rows(path):
-                if row.get("symbol") == sym:
-                    try:
-                        rows.append({
-                            "date":           row.get("date", ""),
-                            "foreign_net_buy": _safe_float(row.get("foreign_net_buy")),
-                            "trust_net_buy":   _safe_float(row.get("trust_net_buy")),
-                            "dealer_net_buy":  _safe_float(row.get("dealer_net_buy")),
-                        })
-                    except Exception as exc:
-                        logger.debug("load_institutional parse error for %s: %s", sym, exc)
+        for row in _read_csv_rows(path):
+            if row.get("symbol") == sym:
+                try:
+                    rows.append({
+                        "date":            row.get("date", ""),
+                        "foreign_net_buy": _safe_float(row.get("foreign_net_buy")),
+                        "trust_net_buy":   _safe_float(row.get("trust_net_buy")),
+                        "dealer_net_buy":  _safe_float(row.get("dealer_net_buy")),
+                    })
+                except Exception as exc:
+                    logger.debug("load_institutional parse error for %s: %s", sym, exc)
 
         if not rows:
             return None
@@ -183,6 +223,8 @@ class RealDataLoader:
             "dealer_net_5d":   sum(r["dealer_net_buy"]  for r in last5),
             "institution_continuous_sell_days": sell_days,
             "rows": rows,
+            "source_file": path,
+            "is_sample": is_sample,
         }
 
     # ------------------------------------------------------------------
@@ -193,26 +235,29 @@ class RealDataLoader:
         """
         Load margin balance with 3d/5d change and overheat risk.
 
+        Prefers user-imported standard CSV over bundled sample CSV.
         Returns dict or None:
             margin_balance, margin_3d_change, margin_5d_change,
             margin_increase_pct, margin_overheat_risk (bool),
-            short_balance, rows
+            short_balance, rows, source_file, is_sample
         """
         sym = str(symbol)
+        path, is_sample = _resolve_csv("margin")
+        if not path:
+            return None
         rows = []
-        for path in _glob_csvs("margin"):
-            for row in _read_csv_rows(path):
-                if row.get("symbol") == sym:
-                    try:
-                        rows.append({
-                            "date":           row.get("date", ""),
-                            "margin_balance": _safe_float(row.get("margin_balance")),
-                            "margin_change":  _safe_float(row.get("margin_change")),
-                            "short_balance":  _safe_float(row.get("short_balance")),
-                            "short_change":   _safe_float(row.get("short_change")),
-                        })
-                    except Exception as exc:
-                        logger.debug("load_margin parse error for %s: %s", sym, exc)
+        for row in _read_csv_rows(path):
+            if row.get("symbol") == sym:
+                try:
+                    rows.append({
+                        "date":           row.get("date", ""),
+                        "margin_balance": _safe_float(row.get("margin_balance")),
+                        "margin_change":  _safe_float(row.get("margin_change")),
+                        "short_balance":  _safe_float(row.get("short_balance")),
+                        "short_change":   _safe_float(row.get("short_change")),
+                    })
+                except Exception as exc:
+                    logger.debug("load_margin parse error for %s: %s", sym, exc)
 
         if not rows:
             return None
@@ -230,14 +275,16 @@ class RealDataLoader:
         margin_overheat_risk = margin_increase_pct > 10.0 and margin_5d > 0
 
         return {
-            "margin_balance":      latest["margin_balance"],
-            "margin_3d_change":    margin_3d,
-            "margin_5d_change":    margin_5d,
-            "margin_increase_pct": round(margin_increase_pct, 2),
+            "margin_balance":       latest["margin_balance"],
+            "margin_3d_change":     margin_3d,
+            "margin_5d_change":     margin_5d,
+            "margin_increase_pct":  round(margin_increase_pct, 2),
             "margin_overheat_risk": margin_overheat_risk,
-            "short_balance":       latest["short_balance"],
-            "short_change":        latest["short_change"],
+            "short_balance":        latest["short_balance"],
+            "short_change":         latest["short_change"],
             "rows": rows,
+            "source_file": path,
+            "is_sample": is_sample,
         }
 
     # ------------------------------------------------------------------
@@ -248,25 +295,29 @@ class RealDataLoader:
         """
         Load monthly revenue with growth metrics.
 
+        Prefers user-imported standard CSV over bundled sample CSV.
         Returns dict or None:
             latest_revenue, latest_revenue_yoy, latest_revenue_mom,
-            accumulated_revenue_yoy, revenue_growth_pass (bool), rows
+            accumulated_revenue_yoy, revenue_growth_pass (bool),
+            rows, source_file, is_sample
         """
         sym = str(symbol)
+        path, is_sample = _resolve_csv("monthly_revenue")
+        if not path:
+            return None
         rows = []
-        for path in _glob_csvs("monthly_revenue"):
-            for row in _read_csv_rows(path):
-                if row.get("symbol") == sym:
-                    try:
-                        rows.append({
-                            "month":           row.get("month", ""),
-                            "revenue":         _safe_float(row.get("revenue")),
-                            "mom":             _safe_float(row.get("mom")),
-                            "yoy":             _safe_float(row.get("yoy")),
-                            "accumulated_yoy": _safe_float(row.get("accumulated_yoy")),
-                        })
-                    except Exception as exc:
-                        logger.debug("load_monthly_revenue parse error for %s: %s", sym, exc)
+        for row in _read_csv_rows(path):
+            if row.get("symbol") == sym:
+                try:
+                    rows.append({
+                        "month":           row.get("month", ""),
+                        "revenue":         _safe_float(row.get("revenue")),
+                        "mom":             _safe_float(row.get("mom")),
+                        "yoy":             _safe_float(row.get("yoy")),
+                        "accumulated_yoy": _safe_float(row.get("accumulated_yoy")),
+                    })
+                except Exception as exc:
+                    logger.debug("load_monthly_revenue parse error for %s: %s", sym, exc)
 
         if not rows:
             return None
@@ -280,15 +331,17 @@ class RealDataLoader:
         revenue_growth_pass = (yoy >= 30.0) and (acc_yoy >= 20.0)
 
         return {
-            "latest_revenue":         latest["revenue"],
-            "latest_revenue_yoy":     yoy,
-            "latest_revenue_mom":     mom,
+            "latest_revenue":          latest["revenue"],
+            "latest_revenue_yoy":      yoy,
+            "latest_revenue_mom":      mom,
             "accumulated_revenue_yoy": acc_yoy,
-            "revenue_growth_pass":    revenue_growth_pass,
+            "revenue_growth_pass":     revenue_growth_pass,
             # Keys expected by FundamentalFeatures
             "yoy":             yoy,
             "accumulated_yoy": acc_yoy,
             "rows": rows,
+            "source_file": path,
+            "is_sample": is_sample,
         }
 
     # ------------------------------------------------------------------
@@ -299,26 +352,30 @@ class RealDataLoader:
         """
         Load major/retail holder data with trend and concentration score.
 
+        Prefers user-imported standard CSV over bundled sample CSV.
         Returns dict or None:
             major_holder_ratio, retail_holder_ratio,
             major_holder_trend (+1 rising, -1 falling, 0 flat),
-            retail_holder_trend, chip_concentration_score (0-10)
+            retail_holder_trend, chip_concentration_score (0-10),
+            rows, source_file, is_sample
         """
         sym = str(symbol)
+        path, is_sample = _resolve_csv("holder")
+        if not path:
+            return None
         rows = []
-        for path in _glob_csvs("holder"):
-            for row in _read_csv_rows(path):
-                if row.get("symbol") == sym:
-                    try:
-                        rows.append({
-                            "date":               row.get("date", ""),
-                            "major_holder_ratio": _safe_float(row.get("major_holder_ratio")),
-                            "retail_holder_ratio": _safe_float(row.get("retail_holder_ratio")),
-                            "major_change":       _safe_float(row.get("major_change")),
-                            "retail_change":      _safe_float(row.get("retail_change")),
-                        })
-                    except Exception as exc:
-                        logger.debug("load_holder parse error for %s: %s", sym, exc)
+        for row in _read_csv_rows(path):
+            if row.get("symbol") == sym:
+                try:
+                    rows.append({
+                        "date":                row.get("date", ""),
+                        "major_holder_ratio":  _safe_float(row.get("major_holder_ratio")),
+                        "retail_holder_ratio": _safe_float(row.get("retail_holder_ratio")),
+                        "major_change":        _safe_float(row.get("major_change")),
+                        "retail_change":       _safe_float(row.get("retail_change")),
+                    })
+                except Exception as exc:
+                    logger.debug("load_holder parse error for %s: %s", sym, exc)
 
         if not rows:
             return None
@@ -346,14 +403,16 @@ class RealDataLoader:
             score = 6.0
 
         return {
-            "major_holder_ratio":    latest["major_holder_ratio"],
-            "retail_holder_ratio":   latest["retail_holder_ratio"],
-            "major_change":          latest["major_change"],
-            "retail_change":         latest["retail_change"],
-            "major_holder_trend":    major_trend,
-            "retail_holder_trend":   retail_trend,
+            "major_holder_ratio":       latest["major_holder_ratio"],
+            "retail_holder_ratio":      latest["retail_holder_ratio"],
+            "major_change":             latest["major_change"],
+            "retail_change":            latest["retail_change"],
+            "major_holder_trend":       major_trend,
+            "retail_holder_trend":      retail_trend,
             "chip_concentration_score": round(score, 1),
             "rows": rows,
+            "source_file": path,
+            "is_sample": is_sample,
         }
 
     # ------------------------------------------------------------------
@@ -364,28 +423,32 @@ class RealDataLoader:
         """
         Load investment trust average cost and price proximity.
 
+        Prefers user-imported standard CSV over bundled sample CSV.
         Returns dict or None:
             trust_avg_cost_3d, trust_avg_cost_5d,
             latest_close, price_vs_trust_cost_pct (latest),
             trust_cost_support (bool: price is within 3% above avg cost),
-            trust_cost_broken (bool: price fell below avg cost)
+            trust_cost_broken (bool: price fell below avg cost),
+            rows, source_file, is_sample
         """
         sym = str(symbol)
+        path, is_sample = _resolve_csv("trust_cost")
+        if not path:
+            return None
         rows = []
-        for path in _glob_csvs("trust_cost"):
-            for row in _read_csv_rows(path):
-                if row.get("symbol") == sym:
-                    try:
-                        rows.append({
-                            "date":                  row.get("date", ""),
-                            "trust_buy_shares":      _safe_float(row.get("trust_buy_shares")),
-                            "trust_buy_amount":      _safe_float(row.get("trust_buy_amount")),
-                            "trust_avg_cost":        _safe_float(row.get("trust_avg_cost")),
-                            "close":                 _safe_float(row.get("close")),
-                            "price_vs_trust_cost_pct": _safe_float(row.get("price_vs_trust_cost_pct")),
-                        })
-                    except Exception as exc:
-                        logger.debug("load_trust_cost parse error for %s: %s", sym, exc)
+        for row in _read_csv_rows(path):
+            if row.get("symbol") == sym:
+                try:
+                    rows.append({
+                        "date":                    row.get("date", ""),
+                        "trust_buy_shares":        _safe_float(row.get("trust_buy_shares")),
+                        "trust_buy_amount":        _safe_float(row.get("trust_buy_amount")),
+                        "trust_avg_cost":          _safe_float(row.get("trust_avg_cost")),
+                        "close":                   _safe_float(row.get("close")),
+                        "price_vs_trust_cost_pct": _safe_float(row.get("price_vs_trust_cost_pct")),
+                    })
+                except Exception as exc:
+                    logger.debug("load_trust_cost parse error for %s: %s", sym, exc)
 
         if not rows:
             return None
@@ -417,6 +480,8 @@ class RealDataLoader:
             "trust_cost_support":      trust_cost_support,
             "trust_cost_broken":       trust_cost_broken,
             "rows": rows,
+            "source_file": path,
+            "is_sample": is_sample,
         }
 
     # ------------------------------------------------------------------
@@ -430,13 +495,42 @@ class RealDataLoader:
         Returns dict with keys:
             profile, daily_k, institutional, margin, monthly_revenue, holder, trust_cost
         Each value is a dict/list or None when data is absent.
+        Also includes '_sources' key with per-type source file paths and is_sample flags.
         """
+        profile         = self.load_profile(symbol)
+        daily_k         = self.load_daily_k(symbol)
+        institutional   = self.load_institutional(symbol)
+        margin          = self.load_margin(symbol)
+        monthly_revenue = self.load_monthly_revenue(symbol)
+        holder          = self.load_holder(symbol)
+        trust_cost      = self.load_trust_cost(symbol)
+
+        # Collect per-type source metadata
+        sources = {}
+        for key, data in (
+            ('profile',         profile),
+            ('daily',           daily_k),
+            ('institutional',   institutional),
+            ('margin',          margin),
+            ('monthly_revenue', monthly_revenue),
+            ('holder',          holder),
+            ('trust_cost',      trust_cost),
+        ):
+            if data is not None:
+                sources[key] = {
+                    'source_file': data.get('source_file', ''),
+                    'is_sample':   data.get('is_sample', True),
+                }
+            else:
+                sources[key] = None
+
         return {
-            "profile":         self.load_profile(symbol),
-            "daily_k":         self.load_daily_k(symbol),
-            "institutional":   self.load_institutional(symbol),
-            "margin":          self.load_margin(symbol),
-            "monthly_revenue": self.load_monthly_revenue(symbol),
-            "holder":          self.load_holder(symbol),
-            "trust_cost":      self.load_trust_cost(symbol),
+            "profile":         profile,
+            "daily_k":         daily_k,
+            "institutional":   institutional,
+            "margin":          margin,
+            "monthly_revenue": monthly_revenue,
+            "holder":          holder,
+            "trust_cost":      trust_cost,
+            "_sources":        sources,
         }

@@ -95,7 +95,11 @@ class DataWorker(QThread if _PYSIDE6_AVAILABLE else object):
                     self.data_ready.emit(payload)
             except Exception as exc:
                 logger.error("DataWorker error: %s", exc)
-            time.sleep(self.interval)
+            # Sleep in short chunks so stop() takes effect quickly
+            elapsed = 0.0
+            while self._running and elapsed < self.interval:
+                time.sleep(0.2)
+                elapsed += 0.2
 
     def stop(self):
         self._running = False
@@ -927,7 +931,8 @@ class CockpitWindow(QMainWindow if _PYSIDE6_AVAILABLE else object):
     def closeEvent(self, event):
         if self._worker:
             self._worker.stop()
-            self._worker.wait(2000)
+            self._worker.quit()
+            self._worker.wait(3000)
         if _PYSIDE6_AVAILABLE:
             super().closeEvent(event)
 

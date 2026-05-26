@@ -20,7 +20,8 @@ class StockReportBuilder:
 
     def build(self, symbol, name=None, bull_score_data=None,
               daytrade_result=None, short_result=None,
-              mid_result=None, long_result=None, mode: str = 'mock'):
+              mid_result=None, long_result=None, mode: str = 'mock',
+              data_sources: dict = None):
         """
         Build a complete Markdown analysis report.
 
@@ -60,10 +61,25 @@ class StockReportBuilder:
         # Overall data mode (prefer explicit mode arg, then infer from results)
         all_results = [r for r in (daytrade_result, short_result, mid_result, long_result) if r]
         if mode == 'real':
-            has_real_prices = any(r.get('data_source') == 'real' for r in all_results)
-            overall_mode = ('🟢 REAL DATA'
-                            if has_real_prices
-                            else '🔴 REAL MODE — 缺真實資料，價格目標不可信')
+            # Determine if using standard CSV, sample CSV, or no real data
+            if data_sources:
+                any_sample = any(
+                    v and v.get('is_sample', True)
+                    for v in data_sources.values()
+                    if v is not None
+                )
+                any_real = any(v is not None for v in data_sources.values())
+                if any_real and not any_sample:
+                    overall_mode = '🟢 REAL DATA CSV'
+                elif any_real:
+                    overall_mode = '🟡 REAL DATA SAMPLE'
+                else:
+                    overall_mode = '🔴 REAL MODE — 缺真實資料，價格目標不可信'
+            else:
+                has_real_prices = any(r.get('data_source') == 'real' for r in all_results)
+                overall_mode = ('🟢 REAL DATA'
+                                if has_real_prices
+                                else '🔴 REAL MODE — 缺真實資料，價格目標不可信')
         else:
             overall_mode = '🟡 MOCK DATA — 示範模式，非正式分析'
 
@@ -71,6 +87,39 @@ class StockReportBuilder:
         lines.append(f"# 股票分析報告：{sym} {stock_name}")
         lines.append(f"報告時間：{ts}　　資料模式：**{overall_mode}**")
         lines.append("")
+
+        # Data source section (real mode only)
+        if mode == 'real' and data_sources:
+            lines.append("## 資料來源")
+            _type_labels = {
+                'profile':         'profile',
+                'daily':           'daily',
+                'institutional':   'institutional',
+                'margin':          'margin',
+                'monthly_revenue': 'monthly_revenue',
+                'holder':          'holder',
+                'trust_cost':      'trust_cost',
+            }
+            has_any_sample = False
+            for key, label in _type_labels.items():
+                src = data_sources.get(key)
+                if src and src.get('source_file'):
+                    tag = ' (sample)' if src.get('is_sample') else ''
+                    if src.get('is_sample'):
+                        has_any_sample = True
+                    lines.append(f"- {label}: {src['source_file']}{tag}")
+                else:
+                    lines.append(f"- {label}: — （無資料）")
+            lines.append("")
+            if has_any_sample:
+                lines.append(
+                    "> ⚠️ 目前使用 sample CSV，僅供驗證資料流程，不代表真實市場。"
+                )
+            else:
+                lines.append(
+                    "> 🟢 使用者匯入標準 CSV，允許依資料完整度進行正式判斷。"
+                )
+            lines.append("")
 
         if not has_sufficient_data:
             lines.append(f"> ⚠️ **{_DATA_INSUFFICIENT_WARNING}**")
