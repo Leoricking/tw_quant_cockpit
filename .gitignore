@@ -23,10 +23,15 @@ logs/
 *.log
 data/parquet/
 data/reports/
+data/backtest_results/
 data/paper_state.json
 dist/
 *.zip
 trading_master.zip
+
+# Backtest / validation report outputs (generated artifacts)
+reports/score_validation_report_*.md
+reports/buy_point_validation_report_*.md
 
 # User-imported real CSV data (not sample files) — keep locally, exclude from repo
 data/import/daily/daily_k.csv

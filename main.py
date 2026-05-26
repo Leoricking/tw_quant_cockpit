@@ -787,6 +787,178 @@ def cmd_mock_realtime(args: argparse.Namespace) -> None:
 
 
 # ---------------------------------------------------------------------------
+# v0.3 — Score / Buy-Point / Screener Validation Commands
+# ---------------------------------------------------------------------------
+
+def cmd_validate_score(args: argparse.Namespace) -> None:
+    """Validate bull_stock_score effectiveness against historical forward returns."""
+    logger = logging.getLogger("main.validate_score")
+    mode   = getattr(args, 'mode',   'real')
+    start  = getattr(args, 'start',  None)
+    end    = getattr(args, 'end',    None)
+    top_n  = getattr(args, 'top',    8)
+    output = getattr(args, 'output', None)
+    logger.info("validate-score [mode=%s start=%s end=%s]", mode, start, end)
+
+    try:
+        from backtest.score_validation import ScoreValidator
+        from reports.score_validation_report import ScoreValidationReport
+
+        sv      = ScoreValidator(mode=mode, start=start, end=end, top_n=top_n)
+        results = sv.run()
+
+        status = results.get('status')
+        if status == 'insufficient_data':
+            print(results.get('message', '資料不足，無法完成可靠統計。'))
+            return
+
+        paths = sv.save_results(results, output_dir=output)
+        rpt   = ScoreValidationReport(results)
+        rpt_path = rpt.save()
+
+        print("\n" + "=" * 60)
+        print("  TW Quant Cockpit — Score Validation Results")
+        print("=" * 60)
+        print(f"  驗證期間：{results.get('start','—')} ～ {results.get('end','—')}")
+        print(f"  股票數：{results.get('n_symbols', 0)}")
+        print(f"  記錄筆數：{results.get('n_records', 0)}")
+        src_tag = '🟡 SAMPLE' if results.get('is_sample') else '🟢 REAL CSV'
+        print(f"  資料來源：{src_tag}")
+
+        bucket_df = results.get('score_bucket_df')
+        if bucket_df is not None and not bucket_df.empty:
+            print("\n  Score Bucket Performance (20日報酬%)")
+            print(f"  {'區間':<10} {'樣本':>5} {'平均%':>8} {'勝率%':>8} {'備註'}")
+            print("  " + "-" * 50)
+            for _, row in bucket_df.iterrows():
+                note = row.get('sample_note', '')
+                avg  = row.get('avg_return_20d')
+                wr   = row.get('win_rate_20d')
+                avg_s = f"{avg:+.2f}%" if avg is not None and not str(avg) == 'nan' else '—'
+                wr_s  = f"{wr:.1f}%"   if wr  is not None and not str(wr)  == 'nan' else '—'
+                print(f"  {str(row.get('score_bucket','')):<10} {row.get('sample_count',0):>5} {avg_s:>8} {wr_s:>8}  {note}")
+
+        print(f"\n  輸出 CSV：{paths.get('score_bucket_df', paths.get('raw', '—'))}")
+        print(f"  Markdown 報告：{rpt_path}")
+        print("\n[!] 本系統僅供研究與模擬交易，不構成投資建議。")
+
+    except Exception as exc:
+        logger.error("validate-score failed: %s", exc, exc_info=True)
+        print(f"ERROR: {exc}")
+
+
+def cmd_backtest_buy_points(args: argparse.Namespace) -> None:
+    """Backtest historical A/B/C buy-point signals."""
+    logger = logging.getLogger("main.backtest_buy_points")
+    mode   = getattr(args, 'mode',   'real')
+    start  = getattr(args, 'start',  None)
+    end    = getattr(args, 'end',    None)
+    stock  = getattr(args, 'stock',  None)
+    output = getattr(args, 'output', None)
+    logger.info("backtest-buy-points [mode=%s start=%s end=%s stock=%s]", mode, start, end, stock)
+
+    try:
+        from backtest.buy_point_backtester import BuyPointBacktester
+        from reports.buy_point_validation_report import BuyPointValidationReport
+
+        bt      = BuyPointBacktester(mode=mode, start=start, end=end, stock=stock)
+        results = bt.run()
+
+        status = results.get('status')
+        if status == 'insufficient_data':
+            print(results.get('message', '資料不足，無法完成可靠統計。'))
+            return
+
+        paths = bt.save_results(results, output_dir=output)
+        rpt   = BuyPointValidationReport(results)
+        rpt_path = rpt.save()
+
+        print("\n" + "=" * 60)
+        print("  TW Quant Cockpit — Buy Point Validation Results")
+        print("=" * 60)
+        print(f"  訊號總數：{results.get('n_signals', 0)}")
+        src_tag = '🟡 SAMPLE' if results.get('is_sample') else '🟢 REAL CSV'
+        print(f"  資料來源：{src_tag}")
+
+        grade_df = results.get('grade_df')
+        if grade_df is not None and not grade_df.empty:
+            print(f"\n  {'等級':<5} {'訊號':>5} {'勝率20日%':>10} {'平均20日%':>10} {'獲利因子':>8} {'備註'}")
+            print("  " + "-" * 55)
+            for _, row in grade_df.iterrows():
+                note = row.get('sample_note', '')
+                wr   = row.get('win_rate_20d')
+                ret  = row.get('avg_return_20d')
+                pf   = row.get('profit_factor')
+                wr_s  = f"{wr:.1f}%"  if wr  is not None and not str(wr) == 'nan' else '—'
+                ret_s = f"{ret:+.2f}%" if ret is not None and not str(ret)== 'nan' else '—'
+                pf_s  = f"{pf:.2f}"   if pf  is not None and not str(pf) == 'nan' else '—'
+                print(f"  {row.get('buy_point_grade',''):<5} {row.get('signal_count',0):>5} {wr_s:>10} {ret_s:>10} {pf_s:>8}  {note}")
+
+        print(f"\n  輸出 CSV：{paths.get('grade', '—')}")
+        print(f"  Markdown 報告：{rpt_path}")
+        print("\n[!] 本系統僅供研究與模擬交易，不構成投資建議。")
+
+    except Exception as exc:
+        logger.error("backtest-buy-points failed: %s", exc, exc_info=True)
+        print(f"ERROR: {exc}")
+
+
+def cmd_backtest_screener(args: argparse.Namespace) -> None:
+    """Replay historical screener scores and measure forward return by score bucket."""
+    logger = logging.getLogger("main.backtest_screener")
+    mode   = getattr(args, 'mode',   'real')
+    start  = getattr(args, 'start',  None)
+    end    = getattr(args, 'end',    None)
+    top_n  = getattr(args, 'top',    8)
+    output = getattr(args, 'output', None)
+    logger.info("backtest-screener [mode=%s start=%s end=%s top_n=%d]", mode, start, end, top_n)
+
+    try:
+        from backtest.screener_backtester import ScreenerBacktester
+        from reports.score_validation_report import ScoreValidationReport
+
+        bt      = ScreenerBacktester(mode=mode, start=start, end=end, top_n=top_n)
+        results = bt.run()
+
+        status = results.get('status')
+        if status == 'insufficient_data':
+            print(results.get('message', '資料不足，無法完成可靠統計。'))
+            return
+
+        paths = bt.export_results(results.get('raw_df'), output_dir=output)
+        rpt   = ScoreValidationReport(results)
+        rpt_path = rpt.save()
+
+        print("\n" + "=" * 60)
+        print("  TW Quant Cockpit — Screener Backtest Results")
+        print("=" * 60)
+        print(f"  驗證期間：{results.get('start','—')} ～ {results.get('end','—')}")
+        print(f"  股票數：{results.get('n_symbols', 0)}")
+        print(f"  記錄筆數：{results.get('n_records', 0)}")
+        src_tag = '🟡 SAMPLE' if results.get('is_sample') else '🟢 REAL CSV'
+        print(f"  資料來源：{src_tag}")
+
+        bucket_df = results.get('bucket_df')
+        if bucket_df is not None and not bucket_df.empty:
+            print(f"\n  {'區間':<10} {'樣本':>5} {'平均20日%':>10} {'勝率20日%':>10}")
+            print("  " + "-" * 40)
+            for _, row in bucket_df.iterrows():
+                avg = row.get('avg_return_20d')
+                wr  = row.get('win_rate_20d')
+                avg_s = f"{avg:+.2f}%" if avg is not None and not str(avg) == 'nan' else '—'
+                wr_s  = f"{wr:.1f}%"   if wr  is not None and not str(wr)  == 'nan' else '—'
+                print(f"  {str(row.get('score_bucket','')):<10} {row.get('sample_count',0):>5} {avg_s:>10} {wr_s:>10}")
+
+        print(f"\n  輸出 CSV：{paths.get('raw', '—')}")
+        print(f"  Markdown 報告：{rpt_path}")
+        print("\n[!] 本系統僅供研究與模擬交易，不構成投資建議。")
+
+    except Exception as exc:
+        logger.error("backtest-screener failed: %s", exc, exc_info=True)
+        print(f"ERROR: {exc}")
+
+
+# ---------------------------------------------------------------------------
 # Argument parser
 # ---------------------------------------------------------------------------
 
@@ -906,6 +1078,42 @@ def _build_parser() -> argparse.ArgumentParser:
     grp.add_argument("--stock", default=None, help="Stock symbol, e.g. 2383")
     grp.add_argument("--all", action="store_true", help="Check all stocks in profile universe")
 
+    # --- validate-score ---
+    p_vs = subparsers.add_parser(
+        "validate-score",
+        help="Validate bull_stock_score effectiveness against historical forward returns",
+    )
+    p_vs.add_argument("--mode",   default="real", choices=["mock", "real"],
+                      help="Data mode (default: real)")
+    p_vs.add_argument("--start",  default=None,   help="Start date YYYY-MM-DD (optional)")
+    p_vs.add_argument("--end",    default=None,   help="End date YYYY-MM-DD (optional)")
+    p_vs.add_argument("--top",    type=int, default=8, help="Top-N filter (default: 8)")
+    p_vs.add_argument("--output", default=None,   help="Output directory (default: data/backtest_results/)")
+
+    # --- backtest-buy-points ---
+    p_bbp = subparsers.add_parser(
+        "backtest-buy-points",
+        help="Backtest A/B/C buy-point signals against historical outcomes",
+    )
+    p_bbp.add_argument("--mode",   default="real", choices=["mock", "real"],
+                       help="Data mode (default: real)")
+    p_bbp.add_argument("--start",  default=None,   help="Start date YYYY-MM-DD (optional)")
+    p_bbp.add_argument("--end",    default=None,   help="End date YYYY-MM-DD (optional)")
+    p_bbp.add_argument("--stock",  default=None,   help="Single symbol (optional; default: all)")
+    p_bbp.add_argument("--output", default=None,   help="Output directory (default: data/backtest_results/)")
+
+    # --- backtest-screener ---
+    p_bs = subparsers.add_parser(
+        "backtest-screener",
+        help="Replay historical screener scores and measure forward return by score bucket",
+    )
+    p_bs.add_argument("--mode",   default="real", choices=["mock", "real"],
+                      help="Data mode (default: real)")
+    p_bs.add_argument("--start",  default=None,   help="Start date YYYY-MM-DD (optional)")
+    p_bs.add_argument("--end",    default=None,   help="End date YYYY-MM-DD (optional)")
+    p_bs.add_argument("--top",    type=int, default=8, help="Top-N filter (default: 8)")
+    p_bs.add_argument("--output", default=None,   help="Output directory (default: data/backtest_results/)")
+
     return parser
 
 
@@ -942,6 +1150,10 @@ def main() -> None:
         # TW Quant Cockpit v0.2 Phase 4
         "import-csv":   cmd_import_csv,
         "data-check":   cmd_data_check,
+        # TW Quant Cockpit v0.3
+        "validate-score":       cmd_validate_score,
+        "backtest-buy-points":  cmd_backtest_buy_points,
+        "backtest-screener":    cmd_backtest_screener,
     }
 
     if args.command is None:

@@ -638,7 +638,82 @@ All panels share a `GUIState` singleton:
 - Persist paper trading state across sessions
 - Alert system for breakout candidates
 
-### v0.3 (planned)
+### v0.3 — Backtest Validation & Score Effectiveness (implemented)
+
+Three new CLI commands validate the scoring system and buy-point logic against historical forward returns.
+
+#### New CLI Commands
+
+| 指令 | 說明 |
+|------|------|
+| `python main.py validate-score --mode real --top 8` | 分數有效性驗證 |
+| `python main.py backtest-buy-points --mode real` | A/B/C 買點回測 |
+| `python main.py backtest-screener --mode real --top 8` | 選股系統回測 |
+
+#### validate-score
+
+```
+python main.py validate-score [--mode mock|real] [--start YYYY-MM-DD] [--end YYYY-MM-DD] [--top N] [--output DIR]
+```
+
+Runs `ScoreValidator` against all symbols in the universe:
+- **Score Bucket Performance**: 80-100 / 65-79 / 50-64 / <50 vs 5/10/20-day forward returns
+- **Factor Effectiveness**: per-factor correlation with forward returns, top/bottom quantile spread
+- **No-Entry Condition Effectiveness**: validates `-5%` stop-loss avoidance rules
+- **Trust Cost Validation**: above/below trust cost line vs forward returns
+- **Margin Risk Validation**: high/low margin ratio cohorts vs forward returns
+- Generates `data/backtest_results/score_bucket_*.csv`, `factor_effectiveness_*.csv`, etc.
+- Generates `reports/score_validation_report_{date}.md`
+
+#### backtest-buy-points
+
+```
+python main.py backtest-buy-points [--mode mock|real] [--start YYYY-MM-DD] [--end YYYY-MM-DD] [--stock TICKER] [--output DIR]
+```
+
+Runs `BuyPointBacktester` — detects A/B/C buy-point signals and simulates 20-day trades:
+- **Grade A**: MA10 回測（≤2% below MA10, price bouncing above MA20）
+- **Grade B**: MA5 回測（≤1.5% below MA5, above MA10）
+- **Grade C**: Platform breakout（close above 20-day rolling high, volume ratio ≥ 1.5×）
+- Trade simulation: 20-day hold, stop-loss −5%, take-profit +10%
+- Win rate, average/median return, drawdown, profit factor per grade
+- Sample size warnings: n < 10 → no conclusion; n < 30 → insufficient sample
+
+#### backtest-screener
+
+```
+python main.py backtest-screener [--mode mock|real] [--start YYYY-MM-DD] [--end YYYY-MM-DD] [--top N] [--output DIR]
+```
+
+Delegates to `ScreenerBacktester` (wraps `ScoreValidator`) — shows score bucket performance table.
+
+#### Output Files
+
+| 檔案 | 說明 |
+|------|------|
+| `data/backtest_results/score_bucket_*.csv` | Score bucket performance |
+| `data/backtest_results/factor_effectiveness_*.csv` | Factor correlation |
+| `data/backtest_results/no_entry_effectiveness_*.csv` | No-entry condition stats |
+| `data/backtest_results/trust_cost_validation_*.csv` | Trust cost line stats |
+| `data/backtest_results/margin_risk_validation_*.csv` | Margin risk stats |
+| `data/backtest_results/buy_point_trades_*.csv` | Per-trade outcomes |
+| `data/backtest_results/buy_point_grade_summary_*.csv` | Grade A/B/C summary |
+| `reports/score_validation_report_{date}.md` | Score validation Markdown report |
+| `reports/buy_point_validation_report_{date}.md` | Buy-point Markdown report |
+
+> ⚠️ Backtest results and reports are excluded from the repository (generated artifacts). Run the commands locally to regenerate.
+
+#### New Source Files
+
+| 檔案 | 說明 |
+|------|------|
+| `backtest/score_validation.py` | `ScoreValidator` — rolling features, no look-ahead bias |
+| `backtest/buy_point_backtester.py` | `BuyPointBacktester` — A/B/C signal detection + trade sim |
+| `backtest/screener_backtester.py` | `ScreenerBacktester` — wraps ScoreValidator |
+| `reports/score_validation_report.py` | `ScoreValidationReport` — Markdown report builder |
+| `reports/buy_point_validation_report.py` | `BuyPointValidationReport` — Markdown report builder |
+
+### v0.4 (planned)
 - Shioaji real-time quote subscription (read-only)
 - Real 5-level order book display
 - Intraday minute K chart
