@@ -565,6 +565,37 @@ def cmd_stock_report(args: argparse.Namespace) -> None:
         except Exception as exc:
             logger.warning("LongTermAnalyzer failed: %s", exc)
 
+        # Align formal gating with DataQualityChecker rules (real mode only)
+        if mode == 'real':
+            _dk_data = all_data.get('daily_k')
+            _daily_rows = len(_dk_data.get('bars', [])) if _dk_data else 0
+            _inst_rows = len((all_data.get('institutional') or {}).get('rows', []))
+            _margin_rows = len((all_data.get('margin') or {}).get('rows', []))
+            _rev_rows = len((all_data.get('monthly_revenue') or {}).get('rows', []))
+            _holder_rows = len((all_data.get('holder') or {}).get('rows', []))
+            _mid_formal = (
+                _daily_rows >= 60 and _rev_rows >= 6
+                and _inst_rows >= 5 and _margin_rows >= 5 and _holder_rows >= 2
+            )
+            _long_formal = _daily_rows >= 120 and _rev_rows >= 12 and _holder_rows >= 2
+            _no_formal_msg = '資料不足，禁止正式判斷'
+            if mid_result is not None:
+                mid_result['formal_allowed'] = _mid_formal
+                if not _mid_formal:
+                    mid_result['add_position_price'] = None
+                    mid_result['exit_price'] = None
+                    mid_result['stop_loss_price'] = None
+                    if _no_formal_msg not in mid_result.get('no_entry_conditions', []):
+                        mid_result.setdefault('no_entry_conditions', []).append(_no_formal_msg)
+            if long_result is not None:
+                long_result['formal_allowed'] = _long_formal
+                if not _long_formal:
+                    long_result['add_position_price'] = None
+                    long_result['exit_price'] = None
+                    long_result['stop_loss_price'] = None
+                    if _no_formal_msg not in long_result.get('no_entry_conditions', []):
+                        long_result.setdefault('no_entry_conditions', []).append(_no_formal_msg)
+
         builder = StockReportBuilder()
         report = builder.build(
             symbol=sym,

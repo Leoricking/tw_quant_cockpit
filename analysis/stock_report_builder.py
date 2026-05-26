@@ -70,18 +70,18 @@ class StockReportBuilder:
                 )
                 any_real = any(v is not None for v in data_sources.values())
                 if any_real and not any_sample:
-                    overall_mode = '🟢 REAL DATA CSV'
+                    overall_mode = '[OK] REAL DATA'
                 elif any_real:
-                    overall_mode = '🟡 REAL DATA SAMPLE'
+                    overall_mode = '[WARN] REAL DATA SAMPLE'
                 else:
-                    overall_mode = '🔴 REAL MODE — 缺真實資料，價格目標不可信'
+                    overall_mode = '[NO] REAL MODE — 缺真實資料，價格目標不可信'
             else:
                 has_real_prices = any(r.get('data_source') == 'real' for r in all_results)
-                overall_mode = ('🟢 REAL DATA'
+                overall_mode = ('[OK] REAL DATA'
                                 if has_real_prices
-                                else '🔴 REAL MODE — 缺真實資料，價格目標不可信')
+                                else '[NO] REAL MODE — 缺真實資料，價格目標不可信')
         else:
-            overall_mode = '🟡 MOCK DATA — 示範模式，非正式分析'
+            overall_mode = '[MOCK] MOCK DATA — 示範模式，非正式分析'
 
         lines = []
         lines.append(f"# 股票分析報告：{sym} {stock_name}")
@@ -113,16 +113,16 @@ class StockReportBuilder:
             lines.append("")
             if has_any_sample:
                 lines.append(
-                    "> ⚠️ 目前使用 sample CSV，僅供驗證資料流程，不代表真實市場。"
+                    "> [WARN] 目前使用 sample CSV，僅供驗證資料流程，不代表真實市場。"
                 )
             else:
                 lines.append(
-                    "> 🟢 使用者匯入標準 CSV，允許依資料完整度進行正式判斷。"
+                    "> [OK] 使用者匯入標準 CSV，允許依資料完整度進行正式判斷。"
                 )
             lines.append("")
 
         if not has_sufficient_data:
-            lines.append(f"> ⚠️ **{_DATA_INSUFFICIENT_WARNING}**")
+            lines.append(f"> [WARN] **{_DATA_INSUFFICIENT_WARNING}**")
             lines.append("")
 
         # Section 1: Bull Stock Score
@@ -138,9 +138,9 @@ class StockReportBuilder:
             risk = bull_score_data.get('risk_summary', '-')
 
             lines.append(f"- 綜合分數：**{score}/100**")
-            lines.append(f"- 是否飆股候選：{'✅ 是' if is_bull else '❌ 否'}")
-            lines.append(f"- 是否第二波買點：{'✅ 是' if is_second else '❌ 否'}")
-            lines.append(f"- 是否允許正式判斷：{'✅ 是' if formal_allowed else '❌ 否（資料不足）'}")
+            lines.append(f"- 是否飆股候選：{'[YES]' if is_bull else '[NO]'}")
+            lines.append(f"- 是否第二波買點：{'[YES]' if is_second else '[NO]'}")
+            lines.append(f"- 是否允許正式判斷：{'[YES]' if formal_allowed else '[NO] 資料不足'}")
             lines.append(f"- 主流題材：{bull_score_data.get('theme_score', bull_score_data.get('theme_score', 'N/A'))} / 20")
             lines.append(f"- 基本面：{bull_score_data.get('fundamental_score', 'N/A')} / 15")
             # Support both old field names (technical_score) and new (trend_score)
@@ -264,14 +264,14 @@ class StockReportBuilder:
             if result:
                 comp = result.get('data_completeness', 0)
                 w = result.get('warning', '')
-                status = '✅' if comp >= 50 else '⚠️'
+                status = '[OK]' if comp >= 50 else '[WARN]'
                 lines.append(f"- {label}: {status} {comp:.0f}%{' — ' + w if w else ''}")
             else:
-                lines.append(f"- {label}: ❌ 無資料")
+                lines.append(f"- {label}: [NO] 無資料")
 
         if not has_sufficient_data:
             lines.append("")
-            lines.append(f"> **{_DATA_INSUFFICIENT_WARNING}**")
+            lines.append(f"> [WARN] **{_DATA_INSUFFICIENT_WARNING}**")
 
         lines.append("")
         lines.append("---")
@@ -295,7 +295,7 @@ class StockReportBuilder:
         # In real mode but data_source is mock (fallback seed prices), suppress targets
         suppress_prices = (mode == 'real' and data_source == 'mock')
 
-        src_label = '🟡 [MOCK]' if data_source == 'mock' else ('🟢 [REAL]' if data_source == 'real' else '🔶 [PARTIAL]')
+        src_label = '[MOCK]' if data_source == 'mock' else ('[REAL]' if data_source == 'real' else '[PARTIAL]')
         price_note = '（估算值）' if is_estimate and not suppress_prices else ''
 
         lines.append(f"- 操作決策：**{decision}**（信心度 {confidence}%）{src_label}")
@@ -318,10 +318,13 @@ class StockReportBuilder:
         lines.append(f"- 不可進場條件：{' / '.join(no_entry) if no_entry else '無'}")
         lines.append(f"- 判斷依據：{reasoning}")
         _completeness = result.get('data_completeness', 0)
-        _formal = not result.get('prices_are_estimates', True)
-        lines.append(f"- 資料完整度：{_completeness:.0f}%　是否允許正式判斷：{'✅ 是' if _formal else '❌ 否'}")
+        if 'formal_allowed' in result:
+            _formal = result['formal_allowed']
+        else:
+            _formal = not result.get('prices_are_estimates', True)
+        lines.append(f"- 資料完整度：{_completeness:.0f}%　是否允許正式判斷：{'[YES]' if _formal else '[NO]'}")
         if warning:
-            lines.append(f"- ⚠️ 資料警告：{warning}")
+            lines.append(f"- [WARN] 資料警告：{warning}")
 
     def _infer_lifecycle(self, bull_data, daytrade, short, mid):
         """Infer stock lifecycle phase from available data."""

@@ -76,6 +76,7 @@ class MidTermAnalyzer:
                 'data_completeness': completeness,
                 'data_source': 'mock',
                 'prices_are_estimates': True,
+                'formal_allowed': False,
                 'warning': 'REAL MODE 缺真實資料，禁止使用 mock 中線判斷',
             }
 
@@ -169,6 +170,7 @@ class MidTermAnalyzer:
             'data_completeness': completeness,
             'data_source': data_source,
             'prices_are_estimates': prices_are_estimates,
+            'formal_allowed': not prices_are_estimates,
             'warning': warning,
         }
 
