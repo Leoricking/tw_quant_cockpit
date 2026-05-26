@@ -15,7 +15,7 @@ class FundamentalFilter:
     - EPS improving (positive YoY or QoQ)
     """
 
-    def filter(self, symbols, fundamental_data=None):
+    def filter(self, symbols, fundamental_data=None, mode: str = 'mock'):
         """
         Filter symbols by fundamental criteria.
 
@@ -45,12 +45,16 @@ class FundamentalFilter:
             feat = ff.compute_fundamental_features(sym_str, fund_dict)
 
             if feat['data_missing']:
+                # In real mode: missing data = downgrade, do NOT silently pass
+                passes_missing = (mode == 'mock')
                 results.append({
                     'symbol': sym_str,
                     'fundamental_score': feat['fundamental_score'],
-                    'passes': True,  # Pass through when data missing
+                    'passes': passes_missing,
                     'data_missing': True,
-                    'warning': feat.get('warning', ''),
+                    'warning': feat.get('warning', '') or (
+                        '' if mode == 'mock'
+                        else f'[real] 基本面資料缺失，{sym_str} 不列入正式篩選'),
                 })
                 continue
 

@@ -20,7 +20,7 @@ class ChipFilter:
     - Trust selling (-points)
     """
 
-    def filter(self, symbols, chip_data=None):
+    def filter(self, symbols, chip_data=None, mode: str = 'mock'):
         """
         Filter symbols by chip criteria.
 
@@ -47,12 +47,19 @@ class ChipFilter:
 
             feat = cf.compute_chip_features(sym_str, cdata)
 
+            # Real mode: data missing → do not silently pass
+            if feat['data_missing'] and mode == 'real':
+                passes = False
+                warn = f'[real] 籌碼資料缺失，{sym_str} 不列入正式篩選'
+            else:
+                passes = feat['chip_score'] >= 4.0 or (feat['data_missing'] and mode == 'mock')
+                warn = feat.get('warning', '')
             results.append({
                 'symbol': sym_str,
                 'chip_score': feat['chip_score'],
-                'passes': feat['chip_score'] >= 4.0 or feat['data_missing'],
+                'passes': passes,
                 'data_missing': feat['data_missing'],
-                'warning': feat.get('warning', ''),
+                'warning': warn,
             })
 
         return results

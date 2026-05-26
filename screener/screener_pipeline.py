@@ -10,16 +10,12 @@ Layers:
 Computes a 0-100 bull stock score and returns top candidates.
 """
 
-import hashlib
 import os
 import random
 import logging
 from datetime import datetime
 
-
-def _stable_seed(key: str) -> int:
-    """Return a process-stable integer seed derived from a string via MD5."""
-    return int(hashlib.md5(key.encode()).hexdigest()[:8], 16)
+from utils.stable_hash import stable_hash_int as _stable_seed
 
 logger = logging.getLogger(__name__)
 
@@ -74,22 +70,30 @@ class ScreenerPipeline:
         self._top_candidates = None
         self._ran = False
 
-    def run(self, mock_data=None):
+    def run(self, mock_data=None, mode: str = 'mock'):
         """
         Run all 4 layers of the screener pipeline.
 
         Parameters
         ----------
         mock_data : bool or dict, optional
-            If True or dict, uses mock data. If False, attempts real data (falls back to mock).
+            Legacy parameter. If provided, overrides *mode*.
+        mode : str
+            ``'mock'`` — use stable synthetic data (default).
+            ``'real'`` — use DB / FinMind; missing data → passes=False.
 
         Returns
         -------
         list of dicts with scored symbols
         """
-        use_mock = (mock_data is True) or (mock_data is None)
+        # Legacy compatibility: mock_data=True → mode='mock', False → mode='real'
+        if mock_data is True:
+            mode = 'mock'
+        elif mock_data is False:
+            mode = 'real'
+        use_mock = (mode == 'mock')
 
-        logger.info("ScreenerPipeline.run() starting (mock_data=%s).", use_mock)
+        logger.info("ScreenerPipeline.run() starting (mode=%s).", mode)
 
         # Load theme pools
         from screener.theme_pool import ThemePool
@@ -103,31 +107,39 @@ class ScreenerPipeline:
             all_theme_symbols = list(_STOCK_NAMES.keys())
         logger.info("Layer 1 (Theme): %d symbols", len(all_theme_symbols))
 
-        # Generate mock data if needed
-        price_data_mock = None
-        if use_mock:
-            price_data_mock = self._generate_mock_price_data(all_theme_symbols)
+        # Load price data via DataSourceRouter
+        from data.data_source_router import DataSourceRouter
+        router = DataSourceRouter(mode=mode)
+        price_data_mock = {}
+        for sym in all_theme_symbols:
+            pdata = router.get_price_data(sym, n_bars=120)
+            if pdata is not None:
+                price_data_mock[sym] = pdata
+        if not price_data_mock:
+            price_data_mock = None
 
         # Layer 2: Fundamental filter
         from screener.fundamental_filter import FundamentalFilter
-        fund_results = FundamentalFilter().filter(all_theme_symbols, fundamental_data=None)
+        fund_results = FundamentalFilter().filter(
+            all_theme_symbols, fundamental_data=None, mode=mode)
         after_fund = [r['symbol'] for r in fund_results if r['passes']]
         logger.info("Layer 2 (Fundamental): %d symbols pass", len(after_fund))
 
         # Layer 3: Technical filter
         from screener.technical_filter import TechnicalFilter
-        tech_results = TechnicalFilter().filter(after_fund, price_data=price_data_mock)
+        tech_results = TechnicalFilter().filter(
+            after_fund, price_data=price_data_mock, mode=mode)
         after_tech = [r['symbol'] for r in tech_results if r['passes']]
         logger.info("Layer 3 (Technical): %d symbols pass", len(after_tech))
 
-        # If too few pass, loosen the constraint for mock mode
+        # If too few pass in mock mode, loosen the constraint
         if len(after_tech) < 5 and use_mock:
             after_tech = after_fund[:min(15, len(after_fund))]
             logger.info("Layer 3 loosened (mock): using top %d", len(after_tech))
 
         # Layer 4: Chip confirmation
         from screener.chip_filter import ChipFilter
-        chip_results = ChipFilter().filter(after_tech, chip_data=None)
+        chip_results = ChipFilter().filter(after_tech, chip_data=None, mode=mode)
         after_chip = [r['symbol'] for r in chip_results if r['passes']]
         logger.info("Layer 4 (Chip): %d symbols pass", len(after_chip))
 

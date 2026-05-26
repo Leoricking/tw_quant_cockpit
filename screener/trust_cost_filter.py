@@ -15,7 +15,7 @@ class TrustCostFilter:
     provide support. When below cost, trust may sell (risk).
     """
 
-    def filter(self, symbols, trust_cost_data=None, price_data=None):
+    def filter(self, symbols, trust_cost_data=None, price_data=None, mode: str = 'mock'):
         """
         Filter symbols by trust cost support.
 
@@ -69,7 +69,7 @@ class TrustCostFilter:
                 results.append({
                     'symbol': sym_str,
                     'trust_cost_support_score': 5.0,
-                    'passes': True,
+                    'passes': mode == 'mock',  # real mode: missing = do not pass
                     'data_missing': True,
                 })
                 continue
@@ -102,7 +102,7 @@ class TrustCostFilter:
                 results.append({
                     'symbol': sym_str,
                     'trust_cost_support_score': 5.0,
-                    'passes': True,
+                    'passes': mode == 'mock',
                     'data_missing': True,
                 })
 

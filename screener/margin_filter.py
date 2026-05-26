@@ -15,7 +15,7 @@ class MarginFilter:
     Low risk: margin balance declining or stable.
     """
 
-    def filter(self, symbols, margin_data=None):
+    def filter(self, symbols, margin_data=None, mode: str = 'mock'):
         """
         Filter symbols by margin risk.
 
@@ -42,7 +42,7 @@ class MarginFilter:
                 results.append({
                     'symbol': sym_str,
                     'margin_risk_score': 5.0,
-                    'passes': True,
+                    'passes': mode == 'mock',  # real mode: missing = do not pass
                     'data_missing': True,
                 })
                 continue
@@ -76,7 +76,7 @@ class MarginFilter:
                 results.append({
                     'symbol': sym_str,
                     'margin_risk_score': 5.0,
-                    'passes': True,
+                    'passes': mode == 'mock',
                     'data_missing': True,
                 })
 

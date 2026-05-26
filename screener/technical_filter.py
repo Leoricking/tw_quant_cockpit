@@ -17,7 +17,7 @@ class TechnicalFilter:
     - 20/60-day highs
     """
 
-    def filter(self, symbols, price_data=None):
+    def filter(self, symbols, price_data=None, mode: str = 'mock'):
         """
         Filter symbols by technical criteria.
 
@@ -45,11 +45,13 @@ class TechnicalFilter:
                 results.append({
                     'symbol': sym_str,
                     'technical_score': 5.0,
-                    'passes': True,
+                    'passes': mode == 'mock',  # real mode: missing = do not pass
                     'ma_aligned': False,
                     'rsi_ok': False,
                     'data_missing': True,
-                    'warning': f'Insufficient price data for {sym_str}. Using degraded score.',
+                    'warning': (f'Insufficient price data for {sym_str}. Using degraded score.'
+                                if mode == 'mock'
+                                else f'[real] 技術資料缺失，{sym_str} 不列入正式篩選'),
                     'buy_point_grade': None,
                     'buy_point_type': None,
                 })

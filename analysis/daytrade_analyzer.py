@@ -5,14 +5,10 @@ Analyzes 5-level bid/ask, tick momentum, and intraday patterns to
 generate buy/sell/hold decisions with price targets.
 """
 
-import hashlib
 import logging
 import random
 
-
-def _stable_seed(key: str) -> int:
-    """Return a process-stable integer seed derived from a string via MD5."""
-    return int(hashlib.md5(key.encode()).hexdigest()[:8], 16)
+from utils.stable_hash import stable_hash_int as _stable_seed
 
 logger = logging.getLogger(__name__)
 
@@ -33,7 +29,8 @@ class DaytradeAnalyzer:
     Uses order book features for 5-level bid/ask analysis.
     """
 
-    def analyze(self, symbol, price_data=None, bidask_data=None, realtime_data=None):
+    def analyze(self, symbol, price_data=None, bidask_data=None, realtime_data=None,
+                mode: str = 'mock'):
         """
         Analyze intraday trading opportunity for a symbol.
 
@@ -67,9 +64,14 @@ class DaytradeAnalyzer:
         from analysis.timeframe_requirements import check_data_completeness, DATA_INSUFFICIENT_WARNING
         completeness, missing, can_report = check_data_completeness('daytrade', available)
 
-        # Determine data source and apply completeness gate
+        # data_source: 'real' only when actual data was provided in real mode
         has_real_data = bool(price_data or bidask_data or realtime_data)
-        data_source = 'real' if has_real_data else 'mock'
+        if mode == 'mock':
+            data_source = 'mock'
+        elif has_real_data:
+            data_source = 'real'
+        else:
+            data_source = 'mock'  # real mode requested but no data available
         from analysis.data_completeness_gate import DataCompletenessGate
         gate = DataCompletenessGate(sym, data_source=data_source, completeness=completeness)
         warning = gate.get_warning() or (DATA_INSUFFICIENT_WARNING if not can_report else None)

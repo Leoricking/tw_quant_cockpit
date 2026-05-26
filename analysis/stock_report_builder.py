@@ -20,7 +20,7 @@ class StockReportBuilder:
 
     def build(self, symbol, name=None, bull_score_data=None,
               daytrade_result=None, short_result=None,
-              mid_result=None, long_result=None):
+              mid_result=None, long_result=None, mode: str = 'mock'):
         """
         Build a complete Markdown analysis report.
 
@@ -57,15 +57,13 @@ class StockReportBuilder:
             short_result is not None and short_result.get('data_completeness', 0) >= 50,
         ])
 
-        # Overall data mode detection
+        # Overall data mode (prefer explicit mode arg, then infer from results)
         all_results = [r for r in (daytrade_result, short_result, mid_result, long_result) if r]
-        sources = {r.get('data_source', 'mock') for r in all_results}
-        if 'real' in sources and 'mock' not in sources:
-            overall_mode = '🟢 REAL DATA'
-        elif 'mock' in sources and 'real' not in sources:
-            overall_mode = '🟡 MOCK DATA — 示範模式，非正式分析'
-        elif sources:
-            overall_mode = '🔶 PARTIAL DATA — 部分真實資料'
+        if mode == 'real':
+            has_real_prices = any(r.get('data_source') == 'real' for r in all_results)
+            overall_mode = ('🟢 REAL DATA'
+                            if has_real_prices
+                            else '🔴 REAL MODE — 缺真實資料，價格目標不可信')
         else:
             overall_mode = '🟡 MOCK DATA — 示範模式，非正式分析'
 
@@ -111,7 +109,7 @@ class StockReportBuilder:
         # Section 3: Daytrade
         lines.append("## 三、當沖策略")
         if daytrade_result:
-            self._append_strategy_section(lines, daytrade_result)
+            self._append_strategy_section(lines, daytrade_result, mode=mode)
         else:
             lines.append("- 無即時盤口資料，無法生成當沖建議")
         lines.append("")
@@ -119,7 +117,7 @@ class StockReportBuilder:
         # Section 4: Short term
         lines.append("## 四、短線策略（5-20日）")
         if short_result:
-            self._append_strategy_section(lines, short_result)
+            self._append_strategy_section(lines, short_result, mode=mode)
         else:
             lines.append("- 短線資料不足")
         lines.append("")
@@ -127,7 +125,7 @@ class StockReportBuilder:
         # Section 5: Mid term
         lines.append("## 五、中線策略（1-3月）")
         if mid_result:
-            self._append_strategy_section(lines, mid_result)
+            self._append_strategy_section(lines, mid_result, mode=mode)
         else:
             lines.append("- 中線資料不足")
         lines.append("")
@@ -135,7 +133,7 @@ class StockReportBuilder:
         # Section 6: Long term
         lines.append("## 六、長線策略（3-12月）")
         if long_result:
-            self._append_strategy_section(lines, long_result)
+            self._append_strategy_section(lines, long_result, mode=mode)
         else:
             lines.append("- 長線資料不足")
         lines.append("")
@@ -212,7 +210,7 @@ class StockReportBuilder:
 
         return '\n'.join(lines)
 
-    def _append_strategy_section(self, lines, result):
+    def _append_strategy_section(self, lines, result, mode: str = 'mock'):
         """Append strategy section lines from an analyzer result dict."""
         decision = result.get('decision', 'N/A')
         confidence = result.get('confidence', 0)
@@ -225,14 +223,21 @@ class StockReportBuilder:
         data_source = result.get('data_source', 'mock')
         is_estimate = result.get('prices_are_estimates', True)
 
-        # Data source badge
+        # In real mode but data_source is mock (fallback seed prices), suppress targets
+        suppress_prices = (mode == 'real' and data_source == 'mock')
+
         src_label = '🟡 [MOCK]' if data_source == 'mock' else ('🟢 [REAL]' if data_source == 'real' else '🔶 [PARTIAL]')
-        price_note = '（估算值）' if is_estimate else ''
+        price_note = '（估算值）' if is_estimate and not suppress_prices else ''
 
         lines.append(f"- 操作決策：**{decision}**（信心度 {confidence}%）{src_label}")
-        lines.append(f"- 補倉價位：{add_price if add_price else 'N/A'}{price_note}")
-        lines.append(f"- 出倉價位：{exit_price if exit_price else 'N/A'}{price_note}")
-        lines.append(f"- 停損價位：{stop_price if stop_price else 'N/A'}{price_note}")
+        if suppress_prices:
+            lines.append("- 補倉價位：— （real mode 缺真實資料，不給假價格）")
+            lines.append("- 出倉價位：— （real mode 缺真實資料，不給假價格）")
+            lines.append("- 停損價位：— （real mode 缺真實資料，不給假價格）")
+        else:
+            lines.append(f"- 補倉價位：{add_price if add_price else 'N/A'}{price_note}")
+            lines.append(f"- 出倉價位：{exit_price if exit_price else 'N/A'}{price_note}")
+            lines.append(f"- 停損價位：{stop_price if stop_price else 'N/A'}{price_note}")
         lines.append(f"- 不可進場條件：{' / '.join(no_entry) if no_entry else '無'}")
         lines.append(f"- 判斷依據：{reasoning}")
         if warning:

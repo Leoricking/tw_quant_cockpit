@@ -15,14 +15,10 @@ Output fields:
 First version: simulation/mock mode only. Real order execution is NOT implemented.
 """
 
-import hashlib
 import logging
 import random
 
-
-def _stable_seed(key: str) -> int:
-    """Return a process-stable integer seed derived from a string via MD5."""
-    return int(hashlib.md5(key.encode()).hexdigest()[:8], 16)
+from utils.stable_hash import stable_hash_int as _stable_seed
 
 logger = logging.getLogger(__name__)
 

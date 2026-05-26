@@ -335,11 +335,12 @@ def cmd_screener(args: argparse.Namespace) -> None:
     from screener.screener_pipeline import ScreenerPipeline
 
     logger = logging.getLogger("main.screener")
-    logger.info("Running Taiwan stock screener...")
+    mode = getattr(args, 'mode', 'mock')
+    logger.info("Running Taiwan stock screener... [mode=%s]", mode)
 
     top_n = getattr(args, "top", 8)
     pipeline = ScreenerPipeline()
-    pipeline.run(mock_data=True)
+    pipeline.run(mode=mode)
     result = pipeline.get_top_candidates(n=top_n)
 
     # get_top_candidates may return a DataFrame or a list of dicts
@@ -356,8 +357,9 @@ def cmd_screener(args: argparse.Namespace) -> None:
         print("No candidates found. Check theme pool CSV files in config/theme_pools/")
         return
 
+    mode_label = '🟡 MOCK' if mode == 'mock' else '🟢 REAL'
     print("\n" + "=" * 70)
-    print(f"  TW Quant Cockpit v1 — 飆股候選篩選結果 (Top {len(candidates)})")
+    print(f"  TW Quant Cockpit v1 — 飆股候選篩選結果 (Top {len(candidates)}) [{mode_label}]")
     print("=" * 70)
     print(f"  {'代號':>6}  {'名稱':<8}  {'分數':>6}  {'主題':<20}  建議")
     print("-" * 70)
@@ -468,11 +470,17 @@ def cmd_stock_report(args: argparse.Namespace) -> None:
         logger.error("--stock is required. Example: python main.py stock-report --stock 2330")
         sys.exit(1)
 
-    logger.info("Building stock report for: %s", stock)
+    mode = getattr(args, 'mode', 'mock')
+    logger.info("Building stock report for: %s [mode=%s]", stock, mode)
 
     try:
-        # Run analyzers with mock data
         sym = str(stock)
+
+        # Load price data via DataSourceRouter
+        from data.data_source_router import DataSourceRouter
+        router = DataSourceRouter(mode=mode)
+        price_data = router.get_price_data(sym, n_bars=60)
+        chip_data = router.get_chip_data(sym)
 
         from analysis.daytrade_analyzer import DaytradeAnalyzer
         from analysis.short_term_analyzer import ShortTermAnalyzer
@@ -485,12 +493,14 @@ def cmd_stock_report(args: argparse.Namespace) -> None:
         long_result = None
 
         try:
-            daytrade_result = DaytradeAnalyzer().analyze(symbol=sym)
+            daytrade_result = DaytradeAnalyzer().analyze(
+                symbol=sym, price_data=price_data, mode=mode)
         except Exception as exc:
             logger.warning("DaytradeAnalyzer failed: %s", exc)
 
         try:
-            short_result = ShortTermAnalyzer().analyze(symbol=sym)
+            short_result = ShortTermAnalyzer().analyze(
+                symbol=sym, price_data=price_data, chip_data=chip_data, mode=mode)
         except Exception as exc:
             logger.warning("ShortTermAnalyzer failed: %s", exc)
 
@@ -507,6 +517,7 @@ def cmd_stock_report(args: argparse.Namespace) -> None:
         builder = StockReportBuilder()
         report = builder.build(
             symbol=sym,
+            mode=mode,
             daytrade_result=daytrade_result,
             short_result=short_result,
             mid_result=mid_result,
@@ -669,6 +680,8 @@ def _build_parser() -> argparse.ArgumentParser:
     # --- screener ---
     p_scr = subparsers.add_parser("screener", help="Run Taiwan stock screener (4-layer)")
     p_scr.add_argument("--top", type=int, default=8, help="Max candidates to output (default: 8)")
+    p_scr.add_argument("--mode", default="mock", choices=["mock", "real"],
+                       help="Data mode: mock (demo) or real (DB/FinMind). Default: mock")
 
     # --- cockpit ---
     subparsers.add_parser("cockpit", help="Launch TW Quant Cockpit GUI (PySide6)")
@@ -679,6 +692,8 @@ def _build_parser() -> argparse.ArgumentParser:
     # --- stock-report ---
     p_sr = subparsers.add_parser("stock-report", help="Generate multi-timeframe analysis report")
     p_sr.add_argument("--stock", required=True, help="Stock symbol, e.g. 2330")
+    p_sr.add_argument("--mode", default="mock", choices=["mock", "real"],
+                      help="Data mode: mock (demo) or real (DB/FinMind). Default: mock")
 
     # --- mock-realtime ---
     p_mr = subparsers.add_parser("mock-realtime", help="Run mock real-time market data simulation")
