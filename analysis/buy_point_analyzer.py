@@ -15,8 +15,14 @@ Output fields:
 First version: simulation/mock mode only. Real order execution is NOT implemented.
 """
 
+import hashlib
 import logging
 import random
+
+
+def _stable_seed(key: str) -> int:
+    """Return a process-stable integer seed derived from a string via MD5."""
+    return int(hashlib.md5(key.encode()).hexdigest()[:8], 16)
 
 logger = logging.getLogger(__name__)
 
@@ -77,7 +83,7 @@ class BuyPointAnalyzer:
             warning = "資料不足，只能做盤中初估，不能當正式短中長線操作依據"
 
         # Use seed prices for mock mode when data is missing
-        rng = random.Random(hash(sym + 'buypoint') % 99991)
+        rng = random.Random(_stable_seed(sym + 'buypoint') % 99991)
         current_price = feat['current_price'] or _SEED_PRICES.get(sym, 100.0)
         ma10 = feat['ma10'] or current_price * rng.uniform(0.96, 1.01)
         ma5 = feat['ma5'] or current_price * rng.uniform(0.98, 1.02)

@@ -23,3 +23,5 @@ logs/
 *.log
 data/parquet/
 data/reports/
+*.zip
+trading_master.zip

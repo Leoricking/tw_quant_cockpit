@@ -199,3 +199,11 @@ BREAKOUT_LOOKBACK = 20         # 20-day high
 ATR_STOP_MULTIPLIER = 2.0
 ATR_TARGET_MULTIPLIER = 3.0
 REBALANCE_FREQ = 5             # rebalance every N days (weekly ≈ 5)
+
+# ---------------------------------------------------------------------------
+# Platform mode
+# ---------------------------------------------------------------------------
+# Set TWQC_MODE=live in .env when real data feeds are connected.
+# In mock mode all price/chip/fundamental data is simulated.
+TWQC_MODE = os.environ.get("TWQC_MODE", "mock").lower()   # "mock" | "live"
+TWQC_ENABLE_REAL_ORDER = os.environ.get("TWQC_ENABLE_REAL_ORDER", "false").lower() == "true"

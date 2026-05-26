@@ -57,9 +57,21 @@ class StockReportBuilder:
             short_result is not None and short_result.get('data_completeness', 0) >= 50,
         ])
 
+        # Overall data mode detection
+        all_results = [r for r in (daytrade_result, short_result, mid_result, long_result) if r]
+        sources = {r.get('data_source', 'mock') for r in all_results}
+        if 'real' in sources and 'mock' not in sources:
+            overall_mode = '🟢 REAL DATA'
+        elif 'mock' in sources and 'real' not in sources:
+            overall_mode = '🟡 MOCK DATA — 示範模式，非正式分析'
+        elif sources:
+            overall_mode = '🔶 PARTIAL DATA — 部分真實資料'
+        else:
+            overall_mode = '🟡 MOCK DATA — 示範模式，非正式分析'
+
         lines = []
         lines.append(f"# 股票分析報告：{sym} {stock_name}")
-        lines.append(f"報告時間：{ts}")
+        lines.append(f"報告時間：{ts}　　資料模式：**{overall_mode}**")
         lines.append("")
 
         if not has_sufficient_data:
@@ -210,13 +222,18 @@ class StockReportBuilder:
         no_entry = result.get('no_entry_conditions', [])
         reasoning = result.get('reasoning', '-')
         warning = result.get('warning')
+        data_source = result.get('data_source', 'mock')
+        is_estimate = result.get('prices_are_estimates', True)
 
-        lines.append(f"- 操作決策：**{decision}**（信心度 {confidence}%）")
-        lines.append(f"- 補倉價位：{add_price if add_price else 'N/A'}")
-        lines.append(f"- 出倉價位：{exit_price if exit_price else 'N/A'}")
-        lines.append(f"- 停損價位：{stop_price if stop_price else 'N/A'}")
-        if no_entry:
-            lines.append(f"- 不可進場條件：{' / '.join(no_entry)}")
+        # Data source badge
+        src_label = '🟡 [MOCK]' if data_source == 'mock' else ('🟢 [REAL]' if data_source == 'real' else '🔶 [PARTIAL]')
+        price_note = '（估算值）' if is_estimate else ''
+
+        lines.append(f"- 操作決策：**{decision}**（信心度 {confidence}%）{src_label}")
+        lines.append(f"- 補倉價位：{add_price if add_price else 'N/A'}{price_note}")
+        lines.append(f"- 出倉價位：{exit_price if exit_price else 'N/A'}{price_note}")
+        lines.append(f"- 停損價位：{stop_price if stop_price else 'N/A'}{price_note}")
+        lines.append(f"- 不可進場條件：{' / '.join(no_entry) if no_entry else '無'}")
         lines.append(f"- 判斷依據：{reasoning}")
         if warning:
             lines.append(f"- ⚠️ 資料警告：{warning}")

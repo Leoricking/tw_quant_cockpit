@@ -5,8 +5,14 @@ Analyzes 5-level bid/ask, tick momentum, and intraday patterns to
 generate buy/sell/hold decisions with price targets.
 """
 
+import hashlib
 import logging
 import random
+
+
+def _stable_seed(key: str) -> int:
+    """Return a process-stable integer seed derived from a string via MD5."""
+    return int(hashlib.md5(key.encode()).hexdigest()[:8], 16)
 
 logger = logging.getLogger(__name__)
 
@@ -61,9 +67,12 @@ class DaytradeAnalyzer:
         from analysis.timeframe_requirements import check_data_completeness, DATA_INSUFFICIENT_WARNING
         completeness, missing, can_report = check_data_completeness('daytrade', available)
 
-        warning = None
-        if not can_report:
-            warning = DATA_INSUFFICIENT_WARNING
+        # Determine data source and apply completeness gate
+        has_real_data = bool(price_data or bidask_data or realtime_data)
+        data_source = 'real' if has_real_data else 'mock'
+        from analysis.data_completeness_gate import DataCompletenessGate
+        gate = DataCompletenessGate(sym, data_source=data_source, completeness=completeness)
+        warning = gate.get_warning() or (DATA_INSUFFICIENT_WARNING if not can_report else None)
 
         # Get order book features
         ob_state = 'UNKNOWN'
@@ -82,8 +91,8 @@ class DaytradeAnalyzer:
         if current_price <= 0:
             current_price = _SEED_PRICES.get(sym, 100.0)
 
-        # Mock decision logic when data is limited
-        rng = random.Random(hash(sym + str(int(current_price))) % 77777)
+        # Mock decision logic when data is limited (stable seed, process-independent)
+        rng = random.Random(_stable_seed(sym) % 77777)
         change_pct = 0.0
         if realtime_data and isinstance(realtime_data, dict):
             change_pct = float(realtime_data.get('change_pct', 0) or 0)
@@ -175,6 +184,8 @@ class DaytradeAnalyzer:
             'no_entry_conditions': no_entry_conditions,
             'reasoning': reasoning,
             'data_completeness': completeness,
+            'data_source': data_source,
+            'prices_are_estimates': not gate.is_formal_analysis_allowed(),
             'warning': warning,
             'buy_point_grade': bp_grade,
             'buy_point_type': bp_type,

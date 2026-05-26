@@ -4,8 +4,14 @@ analysis/short_term_analyzer.py - Short-term (5-20 day) analysis engine.
 Uses MA, RSI, MACD, KD indicators, chip data, and fundamental context.
 """
 
+import hashlib
 import logging
 import random
+
+
+def _stable_seed(key: str) -> int:
+    """Return a process-stable integer seed derived from a string via MD5."""
+    return int(hashlib.md5(key.encode()).hexdigest()[:8], 16)
 
 logger = logging.getLogger(__name__)
 
@@ -59,12 +65,14 @@ class ShortTermAnalyzer:
         from analysis.timeframe_requirements import check_data_completeness, DATA_INSUFFICIENT_WARNING
         completeness, missing, can_report = check_data_completeness('short_term', available)
 
-        warning = None
-        if not can_report:
-            warning = DATA_INSUFFICIENT_WARNING
+        has_real_data = bool(price_data or chip_data or fundamental_data)
+        data_source = 'real' if has_real_data else 'mock'
+        from analysis.data_completeness_gate import DataCompletenessGate
+        gate = DataCompletenessGate(sym, data_source=data_source, completeness=completeness)
+        warning = gate.get_warning() or (DATA_INSUFFICIENT_WARNING if not can_report else None)
 
         current_price = _SEED_PRICES.get(sym, 100.0)
-        rng = random.Random(hash(sym + 'short') % 55555)
+        rng = random.Random(_stable_seed(sym + 'short') % 55555)
 
         if price_data and len(price_data) >= 20:
             current_price, tech_score, decision_hint = self._analyze_technicals(price_data)
@@ -139,6 +147,8 @@ class ShortTermAnalyzer:
             'no_entry_conditions': no_entry_conditions,
             'reasoning': reasoning,
             'data_completeness': completeness,
+            'data_source': data_source,
+            'prices_are_estimates': not gate.is_formal_analysis_allowed(),
             'warning': warning,
             'buy_point_grade': bp_grade,
             'buy_point_type': bp_type,

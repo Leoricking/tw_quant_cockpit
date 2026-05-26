@@ -10,10 +10,16 @@ Layers:
 Computes a 0-100 bull stock score and returns top candidates.
 """
 
+import hashlib
 import os
 import random
 import logging
 from datetime import datetime
+
+
+def _stable_seed(key: str) -> int:
+    """Return a process-stable integer seed derived from a string via MD5."""
+    return int(hashlib.md5(key.encode()).hexdigest()[:8], 16)
 
 logger = logging.getLogger(__name__)
 
@@ -151,9 +157,9 @@ class ScreenerPipeline:
             chip_r = chip_idx.get(sym, {'chip_score': 5.0, 'data_missing': True})
             bo_r = breakout_idx.get(sym, {'breakout_score': 3.0, 'is_breakout': False})
 
-            # Add mock randomness for demo variety
+            # Add mock boost for demo variety (stable across processes)
             if use_mock:
-                rng = random.Random(hash(sym) % 99999)
+                rng = random.Random(_stable_seed(sym) % 99999)
                 mock_boost = rng.uniform(0, 20)
             else:
                 mock_boost = 0
@@ -202,6 +208,7 @@ class ScreenerPipeline:
                 'symbol': sym,
                 'name': _STOCK_NAMES.get(sym, sym),
                 'theme_tags': themes,
+                'data_source': 'mock' if use_mock else 'real',
                 'bull_stock_score': round(bull_score, 1),
                 'theme_score': round(theme_feat['theme_score'], 2),
                 'fundamental_score': round(fund_r.get('fundamental_score', 5.0), 2),
@@ -312,7 +319,7 @@ class ScreenerPipeline:
         for sym in symbols:
             sym_str = str(sym)
             base = _SEED_PRICES.get(sym_str, 100.0)
-            rng = rand_mod.Random(hash(sym_str) % 88888)
+            rng = rand_mod.Random(_stable_seed(sym_str) % 88888)
             prices = []
             price = base * rng.uniform(0.7, 0.9)  # start below current
 
