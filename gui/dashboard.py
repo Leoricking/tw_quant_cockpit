@@ -204,6 +204,49 @@ class MarketStatusBar(QWidget if _PYSIDE6_AVAILABLE else object):
 
 
 # ---------------------------------------------------------------------------
+# Input normalizer — converts DataFrame / dict / list[str] / None to list[dict]
+# ---------------------------------------------------------------------------
+
+def normalize_records(obj):
+    """Normalize DataFrame / dict / list[dict] / list[str] / None into list[dict]."""
+    if obj is None:
+        return []
+
+    try:
+        import pandas as pd
+        if isinstance(obj, pd.DataFrame):
+            if obj.empty:
+                return []
+            return obj.to_dict(orient="records")
+    except Exception:
+        pass
+
+    if isinstance(obj, dict):
+        if "symbol" in obj:
+            return [obj]
+        rows = []
+        for k, v in obj.items():
+            if isinstance(v, dict):
+                row = dict(v)
+                row.setdefault("symbol", str(k))
+                rows.append(row)
+            else:
+                rows.append({"symbol": str(k), "value": v})
+        return rows
+
+    if isinstance(obj, (list, tuple)):
+        rows = []
+        for item in obj:
+            if isinstance(item, dict):
+                rows.append(item)
+            else:
+                rows.append({"symbol": str(item)})
+        return rows
+
+    return []
+
+
+# ---------------------------------------------------------------------------
 # Stock Monitoring Table
 # ---------------------------------------------------------------------------
 
@@ -255,17 +298,37 @@ class StockTable(QWidget if _PYSIDE6_AVAILABLE else object):
         if not _PYSIDE6_AVAILABLE:
             return
 
-        # Build a lookup for candidate scores
-        cand_map = {str(c.get('symbol', '')): c for c in candidates}
+        # Normalize all inputs; ticks stays a dict for symbol-keyed lookups
+        candidates = normalize_records(candidates)
+        positions = normalize_records(positions)
+        if not isinstance(ticks, dict):
+            ticks = {
+                str(t.get('symbol', '')): t
+                for t in normalize_records(ticks)
+                if isinstance(t, dict) and t.get('symbol')
+            }
+
+        # Build defensive lookups
+        cand_map = {}
+        for c in candidates:
+            if not isinstance(c, dict):
+                continue
+            sym = str(c.get('symbol', '')).strip()
+            if sym:
+                cand_map[sym] = c
+
         pos_map = {}
         for p in positions:
-            sym = str(p.get('symbol', ''))
-            pos_map[sym] = p
+            if not isinstance(p, dict):
+                continue
+            sym = str(p.get('symbol', '')).strip()
+            if sym:
+                pos_map[sym] = p
 
         # Merge symbols from ticks + candidates + positions
         all_syms = list(dict.fromkeys(
             list(ticks.keys()) +
-            [str(c.get('symbol', '')) for c in candidates] +
+            [str(c.get('symbol', '')) for c in candidates if isinstance(c, dict)] +
             list(pos_map.keys())
         ))
 
