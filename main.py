@@ -692,31 +692,40 @@ def cmd_data_check(args: argparse.Namespace) -> None:
             print("No stocks found in profile CSV. Run import-csv --type profile first.")
             return
 
-        print("\n" + "=" * 90)
+        print("\n" + "=" * 95)
         print("  TW Quant Cockpit Data Check — Universe")
-        print("=" * 90)
+        print("=" * 95)
         print(f"  {'代號':>6}  {'名稱':<8}  {'日K':>5}  {'法人':>5}  {'融資':>5}  "
-              f"{'月收':>5}  {'大戶':>5}  {'投信成':>6}  短 中 長")
-        print("  " + "-" * 80)
+              f"{'月收':>5}  {'大戶':>5}  {'投信成':>6}  短 中 長  缺失數")
+        print("  " + "-" * 85)
 
         for _, row in df.iterrows():
-            sym = str(row.get('symbol', ''))
-            name = str(row.get('name', ''))[:8]
-            daily = int(row.get('daily_rows', 0))
-            inst = int(row.get('institutional_rows', 0))
+            sym    = str(row.get('symbol', ''))
+            name   = str(row.get('name', ''))[:8]
+            daily  = int(row.get('daily_rows', 0))
+            inst   = int(row.get('institutional_rows', 0))
             margin = int(row.get('margin_rows', 0))
-            rev = int(row.get('monthly_revenue_rows', 0))
+            rev    = int(row.get('monthly_revenue_rows', 0))
             holder = int(row.get('holder_rows', 0))
-            tc = int(row.get('trust_cost_rows', 0))
-            s = 'Y' if row.get('short_allowed') else 'N'
-            m = 'Y' if row.get('mid_allowed') else 'N'
-            l = 'Y' if row.get('long_allowed') else 'N'
+            tc     = int(row.get('trust_cost_rows', 0))
+            s      = 'Y' if row.get('short_ready', row.get('short_allowed')) else 'N'
+            m      = 'Y' if row.get('mid_ready',   row.get('mid_allowed'))   else 'N'
+            l      = 'Y' if row.get('long_ready',  row.get('long_allowed'))  else 'N'
+            mc     = int(row.get('missing_count', 0))
             print(f"  {sym:>6}  {name:<8}  {daily:>5}  {inst:>5}  {margin:>5}  "
-                  f"{rev:>5}  {holder:>5}  {tc:>6}  {s} {m} {l}")
+                  f"{rev:>5}  {holder:>5}  {tc:>6}  {s} {m} {l}  {mc:>4}")
 
-        print("=" * 90)
-        print(f"  Total {len(df)} symbols | Y=formal analysis allowed  N=data insufficient")
-        print("=" * 90)
+        short_ready = int(df.get('short_ready', df.get('short_allowed', [])).sum()) if len(df) else 0
+        mid_ready   = int(df.get('mid_ready',   df.get('mid_allowed',   [])).sum()) if len(df) else 0
+        long_ready  = int(df.get('long_ready',  df.get('long_allowed',  [])).sum()) if len(df) else 0
+
+        print("=" * 95)
+        print(f"  Total symbols : {len(df)}")
+        print(f"  Short-ready   : {short_ready}")
+        print(f"  Mid-ready     : {mid_ready}")
+        print(f"  Long-ready    : {long_ready}")
+        print(f"  Y=formal analysis allowed  N=data insufficient")
+        print("=" * 95)
 
         # --- Universe Expansion Status ---
         try:
@@ -726,26 +735,42 @@ def cmd_data_check(args: argparse.Namespace) -> None:
             sym    = result['symbol_count']
             stage  = result['confidence_stage']
             ms     = result['missing_summary']
+            dc     = result.get('data_coverage', {})
             print("")
             print("  Universe Expansion Status")
-            print("  " + "-" * 55)
+            print("  " + "-" * 60)
             print(f"  Current symbols      : {sym}")
-            print(f"  Confidence stage     : {stage}")
+            print(f"  Validation stage     : {stage}")
             print(f"  Min validation target: {result['target_min_symbols']}")
             print(f"  Recommended target   : {result['target_recommended_symbols']}-200")
             print(f"  Short-term OK        : {result['complete_short_count']} symbols")
             print(f"  Mid-term OK          : {result['complete_mid_count']} symbols")
             print(f"  Long-term OK         : {result['complete_long_count']} symbols")
             print("")
+            print("  Data coverage (threshold met):")
+            print(f"  daily >= 120         : {dc.get('daily_120', 0)} symbols")
+            print(f"  institutional >= 40  : {dc.get('institutional_40', 0)} symbols")
+            print(f"  margin >= 40         : {dc.get('margin_40', 0)} symbols")
+            print(f"  revenue >= 12        : {dc.get('revenue_12', 0)} symbols")
+            print(f"  holder >= 4          : {dc.get('holder_4', 0)} symbols")
+            print(f"  trust_cost >= 20     : {dc.get('trust_cost_20', 0)} symbols")
+            print("")
             print("  Missing data gaps:")
             for key, count in ms.items():
                 status = f"missing in {count} symbols" if count else "all present"
-                print(f"  {key:<20}: {status}")
+                print(f"  {key:<22}: {status}")
             print("")
-            print("  Import order recommendation:")
-            for rec in result['recommendations']:
-                print(f"  - {rec}")
-            print("=" * 90)
+            if sym < 50:
+                print("  Recommended next import:")
+                print("  - python main.py build-universe --template top50 --replace")
+                print("  - Import daily K (>= 120 days per symbol)")
+            elif sym < 100:
+                print("  Recommended next import:")
+                print("  - python main.py build-universe --template top100")
+                print("  - Supplement holder / trust_cost data")
+            else:
+                print("  Universe adequate for validate-score. Check industry bias.")
+            print("=" * 95)
         except Exception as _ue:
             logger.debug("universe expansion guide error: %s", _ue)
 
@@ -1020,6 +1045,154 @@ def cmd_backtest_screener(args: argparse.Namespace) -> None:
 
 
 # ---------------------------------------------------------------------------
+# v0.3.2 — Build Universe Command
+# ---------------------------------------------------------------------------
+
+def cmd_build_universe(args: argparse.Namespace) -> None:
+    """Build or update the stock universe / profile CSV."""
+    from data.universe_builder import UniverseBuilder
+
+    logger = logging.getLogger("main.build_universe")
+    builder = UniverseBuilder()
+
+    template = getattr(args, 'template', None)
+    file_path = getattr(args, 'file', None)
+    replace   = getattr(args, 'replace', False)
+
+    print('')
+    print('=' * 60)
+    print('  TW Quant Cockpit Build Universe')
+    print('=' * 60)
+
+    try:
+        if template:
+            result = builder.build_from_template(template)
+            source_label = f'template: {template}'
+        elif file_path:
+            df = builder.load_universe_file(file_path)
+            result = builder.merge_universe(df, replace=replace)
+            result['source'] = file_path
+            result['output'] = builder._output
+            source_label = f'file: {file_path}'
+        else:
+            print('  ERROR: specify --template or --file')
+            sys.exit(1)
+
+        if not result.get('success'):
+            print(f"  ERROR: {result.get('error', 'unknown error')}")
+            sys.exit(1)
+
+        # Reload profile to get final count
+        final_df = builder.load_profile()
+        final_count = len(final_df)
+
+        print(f"  來源     : {source_label}")
+        print(f"  輸出     : {result.get('output', builder._output)}")
+        print(f"  匯入筆數 : {result.get('rows_added', 0)}")
+        print(f"  總 universe 筆數 : {final_count}")
+
+        # Validation details
+        if template:
+            from data.universe_builder import UniverseBuilder as _UB
+            val = _UB().validate_universe(final_df)
+        else:
+            val = builder.validate_universe(final_df)
+
+        dupes = val.get('duplicate_symbols', [])
+        missing_names = val.get('missing_names', [])
+        warnings = result.get('warnings', []) + val.get('warnings', [])
+
+        print(f"  重複 symbol  : {dupes if dupes else '無'}")
+        print(f"  缺少名稱     : {len(missing_names)} 檔  {missing_names[:5] if missing_names else ''}")
+        if warnings:
+            print('')
+            print('  警告：')
+            for w in warnings[:10]:
+                print(f'  - {w}')
+
+        print('=' * 60)
+        print('[!] For research and simulation only. Not investment advice.')
+
+    except Exception as exc:
+        logger.error("build-universe failed: %s", exc, exc_info=True)
+        print(f"  ERROR: {exc}")
+        sys.exit(1)
+
+
+# ---------------------------------------------------------------------------
+# v0.3.2 — Batch Import Command
+# ---------------------------------------------------------------------------
+
+def cmd_batch_import(args: argparse.Namespace) -> None:
+    """Batch import CSV files from a folder or bundle directory."""
+    from data.batch_importer import BatchImporter
+
+    logger  = logging.getLogger("main.batch_import")
+    bi      = BatchImporter()
+    replace = getattr(args, 'replace', False)
+
+    data_type  = getattr(args, 'type', None)
+    folder_arg = getattr(args, 'folder', None)
+    bundle_arg = getattr(args, 'bundle', None)
+
+    print('')
+    print('=' * 60)
+    print('  TW Quant Cockpit Batch Import')
+    print('=' * 60)
+
+    try:
+        if bundle_arg:
+            result = bi.import_bundle(bundle_arg, replace=replace)
+            print(f"  Bundle   : {bundle_arg}")
+            print(f"  Success  : {result.get('success')}")
+            print('')
+            for dtype, sub in result.get('results', {}).items():
+                ok    = len(sub.get('success_files', []))
+                fail  = len(sub.get('failed_files', []))
+                rows  = sub.get('total_rows_imported', 0)
+                total = sub.get('total_files', 0)
+                print(f"  [{dtype:<20}] files={total}  ok={ok}  fail={fail}  rows={rows}")
+                for f in sub.get('failed_files', []):
+                    print(f"    FAIL {f['file']}: {f['error']}")
+            warnings = result.get('warnings', [])
+
+        elif data_type and folder_arg:
+            result = bi.import_folder(data_type, folder_arg, replace=replace)
+            ok    = len(result.get('success_files', []))
+            fail  = len(result.get('failed_files', []))
+            rows  = result.get('total_rows_imported', 0)
+            total = result.get('total_files', 0)
+            print(f"  Type     : {data_type}")
+            print(f"  Folder   : {folder_arg}")
+            print(f"  Files    : {total}")
+            print(f"  Success  : {ok}")
+            print(f"  Failed   : {fail}")
+            print(f"  Total rows imported : {rows}")
+            for f in result.get('failed_files', []):
+                print(f"  FAIL {f['file']}: {f['error']}")
+            warnings = result.get('warnings', [])
+
+        else:
+            print('  ERROR: specify --type + --folder or --bundle')
+            sys.exit(1)
+
+        if warnings:
+            unique_warnings = list(dict.fromkeys(warnings))[:10]
+            print('')
+            print('  Warnings:')
+            for w in unique_warnings:
+                print(f'  - {w}')
+
+        print('=' * 60)
+        print('[!] For research and simulation only. Not investment advice.')
+
+    except Exception as exc:
+        logger.error("batch-import failed: %s", exc, exc_info=True)
+        print(f"  ERROR: {exc}")
+        sys.exit(1)
+
+
+# ---------------------------------------------------------------------------
 # v0.3.1 — Universe Check Command
 # ---------------------------------------------------------------------------
 
@@ -1197,6 +1370,58 @@ def _build_parser() -> argparse.ArgumentParser:
         help="Show universe expansion status and import recommendations",
     )
 
+    # --- build-universe ---
+    p_bu = subparsers.add_parser(
+        "build-universe",
+        help="Build or update the stock universe profile CSV",
+    )
+    grp_bu = p_bu.add_mutually_exclusive_group(required=True)
+    grp_bu.add_argument(
+        "--template",
+        choices=["top50", "top100", "top200"],
+        help="Use a built-in sample template (top50 / top100 / top200)",
+    )
+    grp_bu.add_argument(
+        "--file",
+        default=None,
+        help="Path to a user-supplied profile CSV",
+    )
+    p_bu.add_argument(
+        "--replace",
+        action="store_true",
+        help="Replace existing profile CSV (default: append and deduplicate)",
+    )
+
+    # --- batch-import ---
+    p_bi = subparsers.add_parser(
+        "batch-import",
+        help="Batch import CSV files from a folder or bundle directory",
+    )
+    grp_bi = p_bi.add_mutually_exclusive_group(required=True)
+    grp_bi.add_argument(
+        "--bundle",
+        default=None,
+        help="Path to a bundle folder with sub-dirs: profile/daily/institutional/...",
+    )
+    grp_bi.add_argument(
+        "--folder",
+        default=None,
+        help="Path to folder containing CSV files for --type",
+    )
+    p_bi.add_argument(
+        "--type",
+        dest="type",
+        choices=["profile", "daily", "institutional", "margin",
+                 "monthly_revenue", "holder", "trust_cost"],
+        default=None,
+        help="Data type to import (required with --folder)",
+    )
+    p_bi.add_argument(
+        "--replace",
+        action="store_true",
+        help="Replace existing data (default: append and deduplicate)",
+    )
+
     return parser
 
 
@@ -1239,6 +1464,9 @@ def main() -> None:
         "backtest-screener":    cmd_backtest_screener,
         # TW Quant Cockpit v0.3.1
         "universe-check":       cmd_universe_check,
+        # TW Quant Cockpit v0.3.2
+        "build-universe":       cmd_build_universe,
+        "batch-import":         cmd_batch_import,
     }
 
     if args.command is None:

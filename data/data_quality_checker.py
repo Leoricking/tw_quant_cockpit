@@ -212,5 +212,22 @@ class DataQualityChecker:
             return pd.DataFrame()
 
         df = pd.DataFrame(rows)
+
+        # Add convenience columns aligned with spec
+        df['short_ready'] = df['short_allowed']
+        df['mid_ready']   = df['mid_allowed']
+        df['long_ready']  = df['long_allowed']
+
+        # Count of missing data types per row (excluding intraday/bidask)
+        def _missing_count(row):
+            return len([m for m in row.get('missing', []) if m not in ('intraday', 'bidask')])
+
+        def _missing_summary(row):
+            items = [m for m in row.get('missing', []) if m not in ('intraday', 'bidask')]
+            return ', '.join(items) if items else ''
+
+        df['missing_count']   = df.apply(_missing_count,   axis=1)
+        df['missing_summary'] = df.apply(_missing_summary, axis=1)
+
         df.attrs['symbol_count'] = len(df)
         return df

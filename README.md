@@ -817,6 +817,110 @@ python main.py backtest-buy-points --mode real
 | `backtest/stat_confidence.py` | Statistical confidence evaluator (INSUFFICIENT/OBSERVATIONAL/RELIABLE) |
 | `data/universe_expansion_guide.py` | Universe completeness checker and import planner |
 
+### v0.3.2 — Universe Expansion & Batch Import (implemented)
+
+#### 為什麼需要 50～200 檔？
+
+少於 10 檔時，回測只能驗證功能；50 檔以上才具備基本驗證意義；100～200 檔可進行較系統性的策略研究。本版新增工具讓使用者可快速擴充樣本。
+
+#### build-universe
+
+```bash
+# 使用內建 sample template（台積電、聯發科、鴻海等主要台股）
+python main.py build-universe --template top50 --replace
+python main.py build-universe --template top100 --replace
+python main.py build-universe --template top200 --replace
+
+# 使用自備 profile CSV
+python main.py build-universe --file D:\XQ\profile.csv
+python main.py build-universe --file D:\XQ\profile.csv --replace
+```
+
+Sample universe templates are stored in `config/universe/` and include:
+
+- **top50_sample.csv** — 50 stocks: 台積電、聯發科、鴻海、廣達、富邦金 etc.
+- **top100_sample.csv** — 100 stocks: top50 + 半導體、網通、傳產、金融
+- **top200_sample.csv** — 200 stocks: top100 + more sectors as a starting template
+
+#### batch-import
+
+```bash
+# Import all .csv files in a folder for one data type
+python main.py batch-import --type daily --folder D:\XQ\daily
+python main.py batch-import --type institutional --folder D:\XQ\institutional
+python main.py batch-import --type margin --folder D:\XQ\margin
+python main.py batch-import --type monthly_revenue --folder D:\XQ\revenue
+python main.py batch-import --type holder --folder D:\XQ\holder
+python main.py batch-import --type trust_cost --folder D:\XQ\trust_cost
+
+# Import a structured bundle folder in one command
+python main.py batch-import --bundle D:\XQ\twqc_bundle
+```
+
+Bundle folder structure:
+
+```
+D:\XQ\twqc_bundle\
+  profile\
+  daily\
+  institutional\
+  margin\
+  monthly_revenue\
+  holder\
+  trust_cost\
+```
+
+#### Required data length per symbol
+
+| Data type | Minimum | Recommended | Notes |
+|-----------|---------|-------------|-------|
+| daily | 20 rows | ≥ 120 rows | 120 needed for long-term analysis |
+| institutional | 5 rows | ≥ 40 rows | 5 needed for short/mid-term |
+| margin | 5 rows | ≥ 40 rows | 5 needed for short/mid-term |
+| monthly_revenue | 6 months | ≥ 12 months | 12 needed for long-term |
+| holder | 2 periods | ≥ 4 periods | 2 needed for mid/long-term |
+| trust_cost | 3 rows | ≥ 20–40 rows | supplementary |
+
+#### universe-check output
+
+```bash
+python main.py universe-check
+```
+
+Shows: symbol count, validation stage, data coverage per threshold, missing gaps, and next-step recommendations.
+
+Validation stages:
+
+| Stage | Symbol count |
+|-------|-------------|
+| FUNCTIONAL_TEST | < 10 |
+| SMALL_SAMPLE | 10–49 |
+| BASIC_VALIDATION | 50–99 |
+| GOOD_VALIDATION | 100–199 |
+| PRACTICAL_SAMPLE | 200+ |
+
+#### data-check --all output
+
+```bash
+python main.py data-check --all
+```
+
+Shows per-symbol row counts, Short/Mid/Long readiness flags, missing data count. Bottom summary shows Total/Short-ready/Mid-ready/Long-ready counts and current validation stage.
+
+#### New Source Files (v0.3.2)
+
+| File | Description |
+|------|-------------|
+| `data/universe_builder.py` | Build/merge universe from template or custom CSV |
+| `data/batch_importer.py` | Batch import multiple CSV files by type or bundle |
+| `data/sample_universe_generator.py` | Read sample template metadata |
+| `config/universe/top50_sample.csv` | 50-stock sample universe |
+| `config/universe/top100_sample.csv` | 100-stock sample universe |
+| `config/universe/top200_sample.csv` | 200-stock sample universe template |
+| `docs/data_expansion_guide.md` | Data expansion workflow guide |
+
+> **[!] 不構成投資建議。仍禁止實盤自動下單（TWQC_ENABLE_REAL_ORDER=false）。**
+
 ### v0.4 (planned)
 - Shioaji real-time quote subscription (read-only)
 - Real 5-level order book display
