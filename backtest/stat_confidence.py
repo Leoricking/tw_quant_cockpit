@@ -1,0 +1,209 @@
+"""
+backtest/stat_confidence.py - Statistical confidence evaluation for backtests.
+
+Classifies sample adequacy into three tiers:
+  INSUFFICIENT   - too few samples; only confirms the code runs
+  OBSERVATIONAL  - initial patterns visible; needs more data
+  RELIABLE       - sufficient for strategy-adjustment reference (still not
+                   investment advice)
+
+Thresholds
+----------
+Universe:
+  < 10  symbols  -> INSUFFICIENT
+  < 50  symbols  -> OBSERVATIONAL
+  >= 50 symbols  -> RELIABLE
+
+Signal:
+  < 30  signals  -> INSUFFICIENT
+  < 200 signals  -> OBSERVATIONAL
+  >= 200 signals -> RELIABLE
+
+Bucket sample:
+  < 30  rows     -> INSUFFICIENT
+  < 100 rows     -> OBSERVATIONAL
+  >= 100 rows    -> RELIABLE
+
+Trading days:
+  < 60  days     -> INSUFFICIENT
+  < 120 days     -> OBSERVATIONAL
+  >= 120 days    -> RELIABLE
+
+Usage:
+    from backtest.stat_confidence import StatConfidence
+    sc = StatConfidence()
+    r  = sc.evaluate(symbol_count=50, signal_count=300, trading_days=200)
+    print(r['overall'])   # 'RELIABLE'
+    print(r['reasons'])   # []
+
+    b = sc.evaluate_bucket(sample_count=11)
+    print(b['level'])     # 'INSUFFICIENT'
+"""
+
+
+class StatConfidence:
+    """Evaluates statistical confidence of backtest / validation results."""
+
+    # --- thresholds ---
+    _T_SYM_INSUF    = 10
+    _T_SYM_OBS      = 50
+    _T_SIG_INSUF    = 30
+    _T_SIG_OBS      = 200
+    _T_BUCKET_INSUF = 30
+    _T_BUCKET_OBS   = 100
+    _T_DAYS_INSUF   = 60
+    _T_DAYS_OBS     = 120
+
+    # --- internal helpers ---
+
+    def _level(self, value, t_insuf: int, t_obs: int) -> str:
+        if value is None or value < t_insuf:
+            return 'INSUFFICIENT'
+        if value < t_obs:
+            return 'OBSERVATIONAL'
+        return 'RELIABLE'
+
+    @staticmethod
+    def _worst(*levels: str) -> str:
+        order = ['INSUFFICIENT', 'OBSERVATIONAL', 'RELIABLE']
+        for lvl in order:
+            if lvl in levels:
+                return lvl
+        return 'INSUFFICIENT'
+
+    # --- public API ---
+
+    def evaluate(
+        self,
+        symbol_count: int,
+        signal_count: int,
+        trading_days: int = None,
+    ) -> dict:
+        """Evaluate overall confidence from universe + signal counts.
+
+        Parameters
+        ----------
+        symbol_count  : number of distinct symbols in the universe
+        signal_count  : total number of trading signals detected
+        trading_days  : number of trading days covered (optional)
+
+        Returns
+        -------
+        dict with keys:
+          universe, signal, [trading_days], overall, reasons
+        """
+        sym_lvl = self._level(symbol_count, self._T_SYM_INSUF, self._T_SYM_OBS)
+        sig_lvl = self._level(signal_count, self._T_SIG_INSUF, self._T_SIG_OBS)
+        day_lvl = (
+            self._level(trading_days, self._T_DAYS_INSUF, self._T_DAYS_OBS)
+            if trading_days is not None
+            else None
+        )
+
+        levels = [sym_lvl, sig_lvl]
+        if day_lvl:
+            levels.append(day_lvl)
+        overall = self._worst(*levels)
+
+        reasons = []
+        if symbol_count < self._T_SYM_INSUF:
+            reasons.append(
+                f'symbol_count {symbol_count} < {self._T_SYM_INSUF} -> INSUFFICIENT'
+            )
+        elif symbol_count < self._T_SYM_OBS:
+            reasons.append(
+                f'symbol_count {symbol_count} < {self._T_SYM_OBS} -> OBSERVATIONAL'
+            )
+        if signal_count < self._T_SIG_INSUF:
+            reasons.append(
+                f'signal_count {signal_count} < {self._T_SIG_INSUF} -> INSUFFICIENT'
+            )
+        elif signal_count < self._T_SIG_OBS:
+            reasons.append(
+                f'signal_count {signal_count} < {self._T_SIG_OBS} -> OBSERVATIONAL'
+            )
+        if trading_days is not None:
+            if trading_days < self._T_DAYS_INSUF:
+                reasons.append(
+                    f'trading_days {trading_days} < {self._T_DAYS_INSUF} -> INSUFFICIENT'
+                )
+            elif trading_days < self._T_DAYS_OBS:
+                reasons.append(
+                    f'trading_days {trading_days} < {self._T_DAYS_OBS} -> not yet RELIABLE'
+                )
+
+        result = {
+            'universe': sym_lvl,
+            'signal':   sig_lvl,
+            'overall':  overall,
+            'reasons':  reasons,
+        }
+        if day_lvl is not None:
+            result['trading_days_level'] = day_lvl
+        return result
+
+    def evaluate_bucket(self, sample_count: int) -> dict:
+        """Evaluate confidence for a single score-bucket row.
+
+        Returns
+        -------
+        dict with keys: level, note
+        """
+        level = self._level(sample_count, self._T_BUCKET_INSUF, self._T_BUCKET_OBS)
+        notes = {
+            'INSUFFICIENT':  (
+                f'sample {sample_count} < {self._T_BUCKET_INSUF}'
+                ' — do not draw conclusions'
+            ),
+            'OBSERVATIONAL': (
+                f'sample {sample_count} < {self._T_BUCKET_OBS}'
+                ' — observational only'
+            ),
+            'RELIABLE': (
+                f'sample {sample_count} >= {self._T_BUCKET_OBS}'
+                ' — usable as reference'
+            ),
+        }
+        return {'level': level, 'note': notes[level]}
+
+    def evaluate_universe(self, symbol_count: int) -> dict:
+        """Return a stage description for the current universe size.
+
+        Returns
+        -------
+        dict with keys: level, stage, note
+        """
+        if symbol_count < 10:
+            stage = 'FUNCTIONAL_TEST'
+            note  = (
+                f'{symbol_count} symbols — functional test only, '
+                'no strategy conclusions possible'
+            )
+            level = 'INSUFFICIENT'
+        elif symbol_count < 50:
+            stage = 'SMALL_SAMPLE'
+            note  = f'{symbol_count} symbols — small sample, observational only'
+            level = 'INSUFFICIENT'
+        elif symbol_count < 100:
+            stage = 'BASIC_VALIDATION'
+            note  = f'{symbol_count} symbols — basic validation possible'
+            level = 'OBSERVATIONAL'
+        elif symbol_count < 200:
+            stage = 'BETTER_VALIDATION'
+            note  = f'{symbol_count} symbols — better validation quality'
+            level = 'RELIABLE'
+        else:
+            stage = 'PRODUCTION_LEVEL'
+            note  = f'{symbol_count} symbols — production-level sample'
+            level = 'RELIABLE'
+
+        return {'level': level, 'stage': stage, 'note': note}
+
+    def label(self, level: str) -> str:
+        """Return the canonical plain-text label for a confidence level."""
+        lvl = (level or '').strip().upper()
+        if lvl == 'RELIABLE':
+            return 'RELIABLE'
+        if lvl == 'OBSERVATIONAL':
+            return 'OBSERVATIONAL'
+        return 'INSUFFICIENT'

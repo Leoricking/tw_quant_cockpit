@@ -713,6 +713,110 @@ Delegates to `ScreenerBacktester` (wraps `ScoreValidator`) — shows score bucke
 | `reports/score_validation_report.py` | `ScoreValidationReport` — Markdown report builder |
 | `reports/buy_point_validation_report.py` | `BuyPointValidationReport` — Markdown report builder |
 
+### v0.3.1 — Backtest Output Fix + Universe Expansion Preparation (implemented)
+
+#### Why v0.3 results are not formal conclusions
+
+v0.3 was built with only 3 real-data symbols. That sample size is in the **FUNCTIONAL_TEST** stage:
+it confirms the code runs correctly but cannot validate strategy effectiveness.
+
+#### Statistical Confidence Levels
+
+| Level | Condition | Meaning |
+|-------|-----------|---------|
+| `INSUFFICIENT` | symbols < 10, signals < 30, or days < 60 | Confirms code works; no strategy conclusions |
+| `OBSERVATIONAL` | symbols 10-49, signals 30-199 | Initial patterns visible; needs more data |
+| `RELIABLE` | symbols >= 50, signals >= 200, days >= 120 | Usable as strategy-adjustment reference |
+
+> RELIABLE still does not constitute investment advice. Live order execution remains disabled.
+
+#### Universe Size Targets
+
+| Symbol count | Stage | Usability |
+|-------------|-------|-----------|
+| < 10 | FUNCTIONAL_TEST | Code verification only |
+| 10-49 | SMALL_SAMPLE | Observational only |
+| 50-99 | BASIC_VALIDATION | Basic validation possible |
+| 100-199 | BETTER_VALIDATION | Better validation quality |
+| 200+ | PRODUCTION_LEVEL | Production-level sample |
+
+#### New CLI Command: universe-check
+
+```
+python main.py universe-check
+```
+
+Shows current symbol count, confidence stage, missing data gaps, and recommended import order.
+
+#### Updated CLI Output
+
+All CLI output now uses Windows-safe plain-text labels:
+
+```
+DATA SOURCE: REAL CSV          (was: 🟢 REAL CSV)
+DATA SOURCE: REAL CSV SAMPLE   (was: 🟡 SAMPLE CSV)
+DATA SOURCE: MOCK DATA         (was: 🟡 MOCK)
+```
+
+Statistical confidence is shown in every validation output:
+
+```
+Statistical confidence: INSUFFICIENT
+  - symbol_count 3 < 10 -> INSUFFICIENT
+  - signal_count 132 < 200 -> OBSERVATIONAL
+```
+
+#### How to interpret validate-score results
+
+```
+python main.py validate-score --mode real
+```
+
+- Look at **Statistical confidence** first. If `INSUFFICIENT`, only read for curiosity.
+- Score bucket `80-100` showing higher avg return than `<50` is **observed in sample**, not validated.
+- `bucket_confidence` column per row shows per-bucket sample quality.
+- Do not conclude "high score strategy is effective" until confidence reaches `RELIABLE`.
+
+#### How to interpret backtest-buy-points results
+
+```
+python main.py backtest-buy-points --mode real
+```
+
+- Each grade (A/B/C) shows its own `grade_confidence`.
+- `OBSERVATIONAL` (30-199 signals): patterns are emerging; watch with more data.
+- `RELIABLE` (200+ signals): usable as strategy adjustment reference.
+- Grade C with 3 signals: `INSUFFICIENT` — no conclusion.
+
+#### How to scale to 50-200 symbols
+
+1. Prepare a profile CSV with 50-200 symbols (`data/import/profile/stock_profile.csv`)
+2. Run `python main.py import-csv --type profile --file your_profile.csv`
+3. Import daily K (120+ days), institutional (40+ days), margin (40+ days),
+   monthly revenue (12+ months), holder (4+ periods), trust cost (20-40+ days)
+4. Run `python main.py data-check --all` to check completeness
+5. Run `python main.py universe-check` to confirm confidence stage
+6. Re-run validate-score and backtest-buy-points
+
+#### Recommended Import Data Specs
+
+| Data type | Min rows | Ideal |
+|-----------|---------|-------|
+| daily K | 120 days | 250+ |
+| institutional | 40 days | 120+ |
+| margin | 40 days | 120+ |
+| monthly revenue | 12 months | 24+ |
+| holder | 4 periods | 8+ |
+| trust cost | 20 days | 40+ |
+
+#### New Source Files (v0.3.1)
+
+| File | Description |
+|------|-------------|
+| `utils/console_format.py` | Windows-safe plain-text CLI labels and formatters |
+| `backtest/stat_confidence.py` | Statistical confidence evaluator (INSUFFICIENT/OBSERVATIONAL/RELIABLE) |
+| `data/universe_expansion_guide.py` | Universe completeness checker and import planner |
+
 ### v0.4 (planned)
 - Shioaji real-time quote subscription (read-only)
 - Real 5-level order book display

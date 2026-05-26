@@ -18,7 +18,10 @@ import logging
 import numpy as np
 import pandas as pd
 
+from backtest.stat_confidence import StatConfidence
+
 logger = logging.getLogger(__name__)
+_bc = StatConfidence()
 
 _BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 _DEFAULT_OUTPUT_DIR = os.path.join(_BASE_DIR, 'data', 'backtest_results')
@@ -387,10 +390,12 @@ class ScoreValidator:
             else:
                 row['profit_factor_20d'] = None
 
+            bc = _bc.evaluate_bucket(n)
+            row['bucket_confidence'] = bc['level']
             if n < 10:
-                row['sample_note'] = '⚠ 樣本 < 10，不輸出結論'
+                row['sample_note'] = '[WARN] sample < 10, no conclusion'
             elif n < 30:
-                row['sample_note'] = '⚠ 樣本不足 30，僅供觀察'
+                row['sample_note'] = '[WARN] sample < 30, observational only'
             else:
                 row['sample_note'] = ''
             rows.append(row)
@@ -479,18 +484,18 @@ class ScoreValidator:
                 row['avg_drawdown_20d']   = round(sub20['max_drawdown_20d'].mean() * 100, 2) if 'max_drawdown_20d' in sub20.columns else None
                 row['risk_reduction_effect'] = round((baseline - sub20['forward_return_20d'].mean()) * 100, 2)
                 if n < 30:
-                    row['recommendation'] = '⚠ 樣本不足，僅供觀察'
+                    row['recommendation'] = '[WARN] sample insufficient, observational only'
                 elif row['avg_return_20d'] < -1.0:
-                    row['recommendation'] = '建議保留'
+                    row['recommendation'] = 'suggest retain'
                 elif row['avg_return_20d'] > 3.0:
-                    row['recommendation'] = '建議降權重'
+                    row['recommendation'] = 'suggest reduce weight'
                 else:
-                    row['recommendation'] = '建議觀察'
+                    row['recommendation'] = 'suggest observe'
             else:
                 for k in ['avg_return_5d', 'avg_return_10d', 'avg_return_20d',
                           'win_rate_20d', 'avg_drawdown_20d', 'risk_reduction_effect']:
                     row[k] = None
-                row['recommendation'] = '⚠ 樣本不足'
+                row['recommendation'] = '[WARN] sample insufficient'
             rows.append(row)
 
         return pd.DataFrame(rows)
@@ -564,18 +569,31 @@ class ScoreValidator:
         n_records = len(df)
 
         if n_sym < 5:
-            logger.warning("ScoreValidator: only %d symbols — 樣本不足", n_sym)
+            logger.warning("ScoreValidator: only %d symbols — sample insufficient", n_sym)
 
+        # Count buy-point signals for confidence evaluation
+        n_signals = int(df['buy_point_grade'].notna().sum()) if 'buy_point_grade' in df.columns else 0
+        trading_days = df['date'].nunique() if 'date' in df.columns else None
+        confidence = _bc.evaluate(
+            symbol_count=n_sym,
+            signal_count=n_signals,
+            trading_days=trading_days,
+        )
+
+        bucket_df = self.bucket_performance(df)
         return {
             'status': 'ok',
             'start': df['date'].min() if 'date' in df.columns else self.start,
             'end':   df['date'].max() if 'date' in df.columns else self.end,
             'n_symbols':  n_sym,
             'n_records':  n_records,
+            'n_signals':  n_signals,
+            'trading_days': trading_days,
             'is_sample':  self._is_sample,
             'data_source': self._data_source,
+            'confidence': confidence,
             'raw_df':            df,
-            'score_bucket_df':   self.bucket_performance(df),
+            'score_bucket_df':   bucket_df,
             'factor_df':         self.factor_effectiveness(df),
             'no_entry_df':       self.no_entry_effectiveness(df),
             'trust_cost_df':     self.trust_cost_validation(df),

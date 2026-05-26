@@ -211,4 +211,6 @@ class DataQualityChecker:
         if not rows:
             return pd.DataFrame()
 
-        return pd.DataFrame(rows)
+        df = pd.DataFrame(rows)
+        df.attrs['symbol_count'] = len(df)
+        return df

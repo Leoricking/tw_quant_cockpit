@@ -17,6 +17,9 @@ import logging
 import pandas as pd
 
 from backtest.score_validation import ScoreValidator
+from backtest.stat_confidence import StatConfidence
+
+_sc = StatConfidence()
 
 logger = logging.getLogger(__name__)
 
@@ -91,7 +94,16 @@ class ScreenerBacktester:
         factor_df = self._validator.factor_effectiveness(raw_df)
 
         if n_sym < 5:
-            logger.warning("ScreenerBacktester: 樣本不足 5 支股票（%d），統計信心低", n_sym)
+            logger.warning("ScreenerBacktester: only %d symbols, statistical confidence low", n_sym)
+
+        n_signals  = int(raw_df['buy_point_grade'].notna().sum()) if 'buy_point_grade' in raw_df.columns else 0
+        tdays      = raw_df['date'].nunique() if 'date' in raw_df.columns else None
+        confidence = _sc.evaluate(
+            symbol_count=n_sym,
+            signal_count=n_signals,
+            trading_days=tdays,
+        )
+        universe_conf = _sc.evaluate_universe(n_sym)
 
         return {
             'status': 'ok',
@@ -100,10 +112,14 @@ class ScreenerBacktester:
             'factor_df':  factor_df,
             'n_symbols':  n_sym,
             'n_records':  n_rec,
+            'n_signals':  n_signals,
+            'trading_days': tdays,
             'start': raw_df['date'].min() if 'date' in raw_df.columns else self.start,
             'end':   raw_df['date'].max() if 'date' in raw_df.columns else self.end,
-            'is_sample':   self._validator._is_sample,
-            'data_source': self._validator._data_source,
+            'is_sample':    self._validator._is_sample,
+            'data_source':  self._validator._data_source,
+            'confidence':   confidence,
+            'universe_confidence': universe_conf,
         }
 
     def export_results(self, result_df: pd.DataFrame, output_dir: str = None) -> dict:

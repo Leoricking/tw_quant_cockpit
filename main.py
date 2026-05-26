@@ -55,6 +55,7 @@ if sys.platform == "win32":
 
 # ---- Setup path so all sub-packages resolve correctly -------------------
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+_DASH = '\u2014'   # em dash safe outside f-string expressions
 if BASE_DIR not in sys.path:
     sys.path.insert(0, BASE_DIR)
 
@@ -362,9 +363,9 @@ def cmd_screener(args: argparse.Namespace) -> None:
         print("No candidates found. Check theme pool CSV files in config/theme_pools/")
         return
 
-    mode_label = '🟡 MOCK' if mode == 'mock' else '🟢 REAL'
+    _mlabel = 'MOCK DATA' if mode == 'mock' else 'REAL CSV'
     print("\n" + "=" * 70)
-    print(f"  TW Quant Cockpit v1 — 飆股候選篩選結果 (Top {len(candidates)}) [{mode_label}]")
+    print(f"  TW Quant Cockpit v1 — 飆股候選篩選結果 (Top {len(candidates)}) [{_mlabel}]")
     print("=" * 70)
     print(f"  {'代號':>6}  {'名稱':<8}  {'分數':>6}  {'主題':<20}  建議")
     print("-" * 70)
@@ -707,15 +708,46 @@ def cmd_data_check(args: argparse.Namespace) -> None:
             rev = int(row.get('monthly_revenue_rows', 0))
             holder = int(row.get('holder_rows', 0))
             tc = int(row.get('trust_cost_rows', 0))
-            s = '✓' if row.get('short_allowed') else '✗'
-            m = '✓' if row.get('mid_allowed') else '✗'
-            l = '✓' if row.get('long_allowed') else '✗'
+            s = 'Y' if row.get('short_allowed') else 'N'
+            m = 'Y' if row.get('mid_allowed') else 'N'
+            l = 'Y' if row.get('long_allowed') else 'N'
             print(f"  {sym:>6}  {name:<8}  {daily:>5}  {inst:>5}  {margin:>5}  "
                   f"{rev:>5}  {holder:>5}  {tc:>6}  {s} {m} {l}")
 
         print("=" * 90)
-        print(f"  共 {len(df)} 檔 | ✓=正式判斷允許 ✗=資料不足")
+        print(f"  Total {len(df)} symbols | Y=formal analysis allowed  N=data insufficient")
         print("=" * 90)
+
+        # --- Universe Expansion Status ---
+        try:
+            from data.universe_expansion_guide import UniverseExpansionGuide
+            guide  = UniverseExpansionGuide()
+            result = guide.analyze()
+            sym    = result['symbol_count']
+            stage  = result['confidence_stage']
+            ms     = result['missing_summary']
+            print("")
+            print("  Universe Expansion Status")
+            print("  " + "-" * 55)
+            print(f"  Current symbols      : {sym}")
+            print(f"  Confidence stage     : {stage}")
+            print(f"  Min validation target: {result['target_min_symbols']}")
+            print(f"  Recommended target   : {result['target_recommended_symbols']}-200")
+            print(f"  Short-term OK        : {result['complete_short_count']} symbols")
+            print(f"  Mid-term OK          : {result['complete_mid_count']} symbols")
+            print(f"  Long-term OK         : {result['complete_long_count']} symbols")
+            print("")
+            print("  Missing data gaps:")
+            for key, count in ms.items():
+                status = f"missing in {count} symbols" if count else "all present"
+                print(f"  {key:<20}: {status}")
+            print("")
+            print("  Import order recommendation:")
+            for rec in result['recommendations']:
+                print(f"  - {rec}")
+            print("=" * 90)
+        except Exception as _ue:
+            logger.debug("universe expansion guide error: %s", _ue)
 
     else:
         print("請指定 --stock <代號> 或 --all")
@@ -819,28 +851,36 @@ def cmd_validate_score(args: argparse.Namespace) -> None:
         print("\n" + "=" * 60)
         print("  TW Quant Cockpit — Score Validation Results")
         print("=" * 60)
-        print(f"  驗證期間：{results.get('start','—')} ～ {results.get('end','—')}")
-        print(f"  股票數：{results.get('n_symbols', 0)}")
-        print(f"  記錄筆數：{results.get('n_records', 0)}")
-        src_tag = '🟡 SAMPLE' if results.get('is_sample') else '🟢 REAL CSV'
-        print(f"  資料來源：{src_tag}")
+        src_tag = 'REAL CSV SAMPLE' if results.get('is_sample') else 'REAL CSV'
+        conf    = results.get('confidence', {})
+        _s = results.get('start', _DASH)
+        _e = results.get('end',   _DASH)
+        print(f"  Period    : {_s} to {_e}")
+        print(f"  Symbols   : {results.get('n_symbols', 0)}")
+        print(f"  Records   : {results.get('n_records', 0)}")
+        print(f"  Data source         : {src_tag}")
+        print(f"  Statistical confidence: {conf.get('overall', 'INSUFFICIENT')}")
+        for reason in conf.get('reasons', []):
+            print(f"    - {reason}")
 
         bucket_df = results.get('score_bucket_df')
         if bucket_df is not None and not bucket_df.empty:
-            print("\n  Score Bucket Performance (20日報酬%)")
-            print(f"  {'區間':<10} {'樣本':>5} {'平均%':>8} {'勝率%':>8} {'備註'}")
-            print("  " + "-" * 50)
+            print("\n  Score Bucket Performance (20d return%)")
+            print(f"  {'Range':<10} {'N':>5} {'Avg%':>8} {'Win%':>8} {'Confidence':<15} {'Note'}")
+            print("  " + "-" * 65)
             for _, row in bucket_df.iterrows():
-                note = row.get('sample_note', '')
-                avg  = row.get('avg_return_20d')
-                wr   = row.get('win_rate_20d')
-                avg_s = f"{avg:+.2f}%" if avg is not None and not str(avg) == 'nan' else '—'
-                wr_s  = f"{wr:.1f}%"   if wr  is not None and not str(wr)  == 'nan' else '—'
-                print(f"  {str(row.get('score_bucket','')):<10} {row.get('sample_count',0):>5} {avg_s:>8} {wr_s:>8}  {note}")
+                note  = row.get('sample_note', '')
+                bconf = row.get('bucket_confidence', 'INSUFFICIENT')
+                avg   = row.get('avg_return_20d')
+                wr    = row.get('win_rate_20d')
+                avg_s = f"{avg:+.2f}%" if avg is not None and str(avg) != 'nan' else '\u2014'
+                wr_s  = f"{wr:.1f}%"   if wr  is not None and str(wr)  != 'nan' else '\u2014'
+                print(f"  {str(row.get('score_bucket','')):<10} {row.get('sample_count',0):>5} {avg_s:>8} {wr_s:>8}  {bconf:<15} {note}")
 
-        print(f"\n  輸出 CSV：{paths.get('score_bucket_df', paths.get('raw', '—'))}")
-        print(f"  Markdown 報告：{rpt_path}")
-        print("\n[!] 本系統僅供研究與模擬交易，不構成投資建議。")
+        _csv_out = paths.get('score_bucket_df', paths.get('raw', _DASH))
+        print(f"\n  Output CSV : {_csv_out}")
+        print(f"  Report     : {rpt_path}")
+        print("\n[!] For research and simulation only. Not investment advice.")
 
     except Exception as exc:
         logger.error("validate-score failed: %s", exc, exc_info=True)
@@ -876,27 +916,33 @@ def cmd_backtest_buy_points(args: argparse.Namespace) -> None:
         print("\n" + "=" * 60)
         print("  TW Quant Cockpit — Buy Point Validation Results")
         print("=" * 60)
-        print(f"  訊號總數：{results.get('n_signals', 0)}")
-        src_tag = '🟡 SAMPLE' if results.get('is_sample') else '🟢 REAL CSV'
-        print(f"  資料來源：{src_tag}")
+        src_tag = 'REAL CSV SAMPLE' if results.get('is_sample') else 'REAL CSV'
+        conf    = results.get('confidence', {})
+        print(f"  Signals   : {results.get('n_signals', 0)}")
+        print(f"  Data source         : {src_tag}")
+        print(f"  Statistical confidence: {conf.get('overall', 'INSUFFICIENT')}")
+        for reason in conf.get('reasons', []):
+            print(f"    - {reason}")
 
         grade_df = results.get('grade_df')
         if grade_df is not None and not grade_df.empty:
-            print(f"\n  {'等級':<5} {'訊號':>5} {'勝率20日%':>10} {'平均20日%':>10} {'獲利因子':>8} {'備註'}")
-            print("  " + "-" * 55)
+            print(f"\n  {'Grade':<5} {'N':>5} {'Win 20d%':>10} {'Avg 20d%':>10} {'PF':>6} {'Confidence':<15} {'Note'}")
+            print("  " + "-" * 68)
             for _, row in grade_df.iterrows():
-                note = row.get('sample_note', '')
-                wr   = row.get('win_rate_20d')
-                ret  = row.get('avg_return_20d')
-                pf   = row.get('profit_factor')
-                wr_s  = f"{wr:.1f}%"  if wr  is not None and not str(wr) == 'nan' else '—'
-                ret_s = f"{ret:+.2f}%" if ret is not None and not str(ret)== 'nan' else '—'
-                pf_s  = f"{pf:.2f}"   if pf  is not None and not str(pf) == 'nan' else '—'
-                print(f"  {row.get('buy_point_grade',''):<5} {row.get('signal_count',0):>5} {wr_s:>10} {ret_s:>10} {pf_s:>8}  {note}")
+                note  = row.get('sample_note', '')
+                gconf = row.get('grade_confidence', 'INSUFFICIENT')
+                wr    = row.get('win_rate_20d')
+                ret   = row.get('avg_return_20d')
+                pf    = row.get('profit_factor')
+                wr_s  = f"{wr:.1f}%"   if wr  is not None and str(wr)  != 'nan' else '\u2014'
+                ret_s = f"{ret:+.2f}%" if ret is not None and str(ret) != 'nan' else '\u2014'
+                pf_s  = f"{pf:.2f}"    if pf  is not None and str(pf)  != 'nan' else '\u2014'
+                print(f"  {row.get('buy_point_grade',''):<5} {row.get('signal_count',0):>5} {wr_s:>10} {ret_s:>10} {pf_s:>6}  {gconf:<15} {note}")
 
-        print(f"\n  輸出 CSV：{paths.get('grade', '—')}")
-        print(f"  Markdown 報告：{rpt_path}")
-        print("\n[!] 本系統僅供研究與模擬交易，不構成投資建議。")
+        _csv_out = paths.get('grade', _DASH)
+        print(f"\n  Output CSV : {_csv_out}")
+        print(f"  Report     : {rpt_path}")
+        print("\n[!] For research and simulation only. Not investment advice.")
 
     except Exception as exc:
         logger.error("backtest-buy-points failed: %s", exc, exc_info=True)
@@ -932,29 +978,60 @@ def cmd_backtest_screener(args: argparse.Namespace) -> None:
         print("\n" + "=" * 60)
         print("  TW Quant Cockpit — Screener Backtest Results")
         print("=" * 60)
-        print(f"  驗證期間：{results.get('start','—')} ～ {results.get('end','—')}")
-        print(f"  股票數：{results.get('n_symbols', 0)}")
-        print(f"  記錄筆數：{results.get('n_records', 0)}")
-        src_tag = '🟡 SAMPLE' if results.get('is_sample') else '🟢 REAL CSV'
-        print(f"  資料來源：{src_tag}")
+        src_tag   = 'REAL CSV SAMPLE' if results.get('is_sample') else 'REAL CSV'
+        conf      = results.get('confidence', {})
+        uni_conf  = results.get('universe_confidence', {})
+        tdays     = results.get('trading_days')
+        _s2 = results.get('start', _DASH)
+        _e2 = results.get('end',   _DASH)
+        print(f"  Period    : {_s2} to {_e2}")
+        print(f"  Symbols   : {results.get('n_symbols', 0)}")
+        print(f"  Records   : {results.get('n_records', 0)}")
+        if tdays:
+            print(f"  Trade days: {tdays}")
+        print(f"  Data source         : {src_tag}")
+        print(f"  Statistical confidence: {conf.get('overall', 'INSUFFICIENT')}")
+        print(f"  Universe stage      : {uni_conf.get('stage', 'FUNCTIONAL_TEST')}")
+        for reason in conf.get('reasons', []):
+            print(f"    - {reason}")
+        if uni_conf.get('note'):
+            print(f"    - {uni_conf['note']}")
 
         bucket_df = results.get('bucket_df')
         if bucket_df is not None and not bucket_df.empty:
-            print(f"\n  {'區間':<10} {'樣本':>5} {'平均20日%':>10} {'勝率20日%':>10}")
-            print("  " + "-" * 40)
+            print(f"\n  {'Range':<10} {'N':>5} {'Avg 20d%':>10} {'Win 20d%':>10} {'Confidence'}")
+            print("  " + "-" * 50)
             for _, row in bucket_df.iterrows():
-                avg = row.get('avg_return_20d')
-                wr  = row.get('win_rate_20d')
-                avg_s = f"{avg:+.2f}%" if avg is not None and not str(avg) == 'nan' else '—'
-                wr_s  = f"{wr:.1f}%"   if wr  is not None and not str(wr)  == 'nan' else '—'
-                print(f"  {str(row.get('score_bucket','')):<10} {row.get('sample_count',0):>5} {avg_s:>10} {wr_s:>10}")
+                bconf = row.get('bucket_confidence', 'INSUFFICIENT')
+                avg   = row.get('avg_return_20d')
+                wr    = row.get('win_rate_20d')
+                avg_s = f"{avg:+.2f}%" if avg is not None and str(avg) != 'nan' else '\u2014'
+                wr_s  = f"{wr:.1f}%"   if wr  is not None and str(wr)  != 'nan' else '\u2014'
+                print(f"  {str(row.get('score_bucket','')):<10} {row.get('sample_count',0):>5} {avg_s:>10} {wr_s:>10}  {bconf}")
 
-        print(f"\n  輸出 CSV：{paths.get('raw', '—')}")
-        print(f"  Markdown 報告：{rpt_path}")
-        print("\n[!] 本系統僅供研究與模擬交易，不構成投資建議。")
+        _csv_out2 = paths.get('raw', _DASH)
+        print(f"\n  Output CSV : {_csv_out2}")
+        print(f"  Report     : {rpt_path}")
+        print("\n[!] For research and simulation only. Not investment advice.")
 
     except Exception as exc:
         logger.error("backtest-screener failed: %s", exc, exc_info=True)
+        print(f"ERROR: {exc}")
+
+
+# ---------------------------------------------------------------------------
+# v0.3.1 — Universe Check Command
+# ---------------------------------------------------------------------------
+
+def cmd_universe_check(args: argparse.Namespace) -> None:  # noqa: ARG001
+    """Show universe expansion status and import recommendations."""
+    try:
+        from data.universe_expansion_guide import UniverseExpansionGuide
+        guide = UniverseExpansionGuide()
+        guide.print_summary()
+        print("[!] For research and simulation only. Not investment advice.")
+    except Exception as exc:
+        logging.getLogger("main.universe_check").error("universe-check failed: %s", exc, exc_info=True)
         print(f"ERROR: {exc}")
 
 
@@ -1114,6 +1191,12 @@ def _build_parser() -> argparse.ArgumentParser:
     p_bs.add_argument("--top",    type=int, default=8, help="Top-N filter (default: 8)")
     p_bs.add_argument("--output", default=None,   help="Output directory (default: data/backtest_results/)")
 
+    # --- universe-check ---
+    subparsers.add_parser(
+        "universe-check",
+        help="Show universe expansion status and import recommendations",
+    )
+
     return parser
 
 
@@ -1154,6 +1237,8 @@ def main() -> None:
         "validate-score":       cmd_validate_score,
         "backtest-buy-points":  cmd_backtest_buy_points,
         "backtest-screener":    cmd_backtest_screener,
+        # TW Quant Cockpit v0.3.1
+        "universe-check":       cmd_universe_check,
     }
 
     if args.command is None:

@@ -20,6 +20,9 @@ import numpy as np
 import pandas as pd
 
 from backtest.score_validation import ScoreValidator
+from backtest.stat_confidence import StatConfidence
+
+_sc = StatConfidence()
 
 logger = logging.getLogger(__name__)
 
@@ -265,10 +268,12 @@ class BuyPointBacktester:
                 row['best_case']  = None
                 row['worst_case'] = None
 
+            bc = _sc.evaluate_bucket(n_sig)
+            row['grade_confidence'] = bc['level']
             if n_sig < 10:
-                row['sample_note'] = '⚠ 樣本 < 10，不輸出結論'
+                row['sample_note'] = '[WARN] sample < 10, no conclusion'
             elif n_sig < 30:
-                row['sample_note'] = '⚠ 樣本不足 30，僅供觀察'
+                row['sample_note'] = '[WARN] sample < 30, observational only'
             else:
                 row['sample_note'] = ''
 
@@ -294,13 +299,23 @@ class BuyPointBacktester:
         trades_df = self.calculate_trade_outcomes(signals_df)
         grade_df  = self.grade_performance(trades_df)
 
+        n_sig    = len(signals_df)
+        n_sym    = trades_df['symbol'].nunique() if 'symbol' in trades_df.columns else 0
+        tdays    = trades_df['entry_date'].nunique() if 'entry_date' in trades_df.columns else None
+        confidence = _sc.evaluate(
+            symbol_count=n_sym,
+            signal_count=n_sig,
+            trading_days=tdays,
+        )
+
         return {
             'status': 'ok',
             'trades_df': trades_df,
             'grade_df':  grade_df,
-            'n_signals': len(signals_df),
+            'n_signals': n_sig,
             'is_sample': self._validator._is_sample,
             'data_source': self._validator._data_source,
+            'confidence': confidence,
         }
 
     def save_results(self, results: dict, output_dir: str = None) -> dict:
