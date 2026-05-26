@@ -23,5 +23,16 @@ logs/
 *.log
 data/parquet/
 data/reports/
+data/paper_state.json
+dist/
 *.zip
 trading_master.zip
+
+# User-imported real CSV data (not sample files) — keep locally, exclude from repo
+data/import/daily/daily_k.csv
+data/import/institutional/institutional.csv
+data/import/margin/margin.csv
+data/import/monthly_revenue/monthly_revenue.csv
+data/import/holder/holder.csv
+data/import/trust_cost/trust_cost.csv
+data/import/profile/stock_profile.csv

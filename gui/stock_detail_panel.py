@@ -47,10 +47,10 @@ class StockDetailPanel(QWidget if _PYSIDE6_AVAILABLE else object):
     """
 
     def __init__(self):
+        self._labels = {}
         if _PYSIDE6_AVAILABLE:
             super().__init__()
             self._build()
-        self._labels = {}
 
     def _build(self):
         outer = QVBoxLayout(self)

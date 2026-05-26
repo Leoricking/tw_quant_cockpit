@@ -45,10 +45,10 @@ class _SingleStrategyWidget(QWidget if _PYSIDE6_AVAILABLE else object):
     """One tab showing a single timeframe strategy result."""
 
     def __init__(self, timeframe_label: str):
+        self._tf = timeframe_label
+        self._rows = {}
         if _PYSIDE6_AVAILABLE:
             super().__init__()
-        self._tf = timeframe_label
-        if _PYSIDE6_AVAILABLE:
             self._build()
 
     def _build(self):
@@ -66,7 +66,6 @@ class _SingleStrategyWidget(QWidget if _PYSIDE6_AVAILABLE else object):
         outer.setContentsMargins(0, 0, 0, 0)
         outer.addWidget(scroll)
 
-        self._rows = {}
         fields = [
             ('decision',     '操作決策'),
             ('confidence',   '信心度'),

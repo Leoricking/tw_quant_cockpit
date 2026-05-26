@@ -42,6 +42,9 @@ class DataStatusPanel(QWidget if _PYSIDE6_AVAILABLE else object):
     """
 
     def __init__(self):
+        self._rows = {}
+        self._missing_label = None
+        self._rec_label = None
         if _PYSIDE6_AVAILABLE:
             super().__init__()
             self._build()
@@ -163,7 +166,10 @@ class DataStatusPanel(QWidget if _PYSIDE6_AVAILABLE else object):
         if not _PYSIDE6_AVAILABLE:
             return
         for lbl in self._rows.values():
-            lbl.setText("—")
-            lbl.setStyleSheet("color:#888888")
-        self._missing_label.setText("—")
-        self._rec_label.setText("—")
+            if lbl:
+                lbl.setText("—")
+                lbl.setStyleSheet("color:#888888")
+        if self._missing_label:
+            self._missing_label.setText("—")
+        if self._rec_label:
+            self._rec_label.setText("—")
