@@ -423,14 +423,17 @@ class CandidatesPanel(QWidget if _PYSIDE6_AVAILABLE else object):
     def update(self, candidates: list):
         if not _PYSIDE6_AVAILABLE:
             return
+        candidates = normalize_records(candidates)
         top = candidates[:8]
         self._table.setRowCount(len(top))
         for row, c in enumerate(top):
-            sym = str(c.get('symbol', ''))
-            name = str(c.get('name', sym))
-            score = float(c.get('bull_stock_score', 0))
+            if not isinstance(c, dict):
+                continue
+            sym = str(c.get('symbol', '') or '').strip()
+            name = str(c.get('name', sym) or sym)
+            score = float(c.get('bull_stock_score', c.get('score', 0)) or 0)
             themes = ','.join(c.get('theme_tags', [])) if c.get('theme_tags') else '-'
-            decision = str(c.get('decision', '-'))
+            decision = str(c.get('decision', '-') or '-')
 
             def _cell(text, color=None):
                 item = QTableWidgetItem(str(text))
@@ -894,7 +897,7 @@ class CockpitWindow(QMainWindow if _PYSIDE6_AVAILABLE else object):
         try:
             ts = payload.get('timestamp', '')
             market = payload.get('market', {})
-            candidates = payload.get('candidates', [])
+            candidates = normalize_records(payload.get('candidates', []))
             ticks = payload.get('ticks', {})
             positions = payload.get('positions', [])
             pnl_summary = payload.get('pnl_summary', {})
