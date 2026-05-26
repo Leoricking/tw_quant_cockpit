@@ -492,7 +492,8 @@ def cmd_stock_report(args: argparse.Namespace) -> None:
             profile = all_data.get('profile')
             if profile:
                 stock_name = profile.get('name')
-            price_data = all_data.get('daily_k')        # list[dict] or None
+            _dk = all_data.get('daily_k')               # dict with 'bars' key, or None
+            price_data = _dk.get('bars') if _dk else None
             chip_data = all_data.get('institutional')   # dict or None
             fundamental_data = all_data.get('monthly_revenue')  # dict or None
             logger.info("Real data loaded for %s: price=%s bars, chip=%s, fundamental=%s",

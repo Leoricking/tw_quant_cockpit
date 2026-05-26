@@ -133,10 +133,11 @@ class DataSourceRouter:
         # 1. Try CSV import first
         try:
             from data.real_data_loader import RealDataLoader
-            rows = RealDataLoader().load_daily_k(symbol, n_bars=n_bars)
-            if rows:
-                logger.info("DataSourceRouter: loaded %d bars from CSV for %s", len(rows), symbol)
-                return rows
+            dk = RealDataLoader().load_daily_k(symbol, n_bars=n_bars)
+            if dk and dk.get('bars'):
+                bars = dk['bars']
+                logger.info("DataSourceRouter: loaded %d bars from CSV for %s", len(bars), symbol)
+                return bars
         except Exception as exc:
             logger.debug("DataSourceRouter._real_price CSV error for %s: %s", symbol, exc)
 

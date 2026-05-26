@@ -227,6 +227,17 @@ class ScreenerPipeline:
         tf = ThemeFeatures()
         theme_pools_data = tf.load_theme_pools()
 
+        # In real mode: pre-load all CSV data for real score builder
+        real_all_data_map = {}  # sym -> all_data dict
+        if not use_mock:
+            try:
+                from data.real_data_loader import RealDataLoader
+                _rl = RealDataLoader()
+                for sym in (after_chip if after_chip else after_tech[:15]):
+                    real_all_data_map[sym] = _rl.load_all(sym)
+            except Exception as _exc:
+                logger.warning("Failed to preload real data for score builder: %s", _exc)
+
         # Assemble final scored list
         scored = []
         candidate_symbols = after_chip if after_chip else after_tech[:15]
@@ -238,71 +249,113 @@ class ScreenerPipeline:
             chip_r = chip_idx.get(sym, {'chip_score': 5.0, 'data_missing': True})
             bo_r = breakout_idx.get(sym, {'breakout_score': 3.0, 'is_breakout': False})
 
-            # Add mock boost for demo variety (stable across processes)
-            if use_mock:
-                rng = random.Random(_stable_seed(sym) % 99999)
-                mock_boost = rng.uniform(0, 20)
+            if not use_mock and sym in real_all_data_map:
+                # Real mode: use explainable score builder
+                from screener.real_score_builder import build_real_score
+                rs = build_real_score(sym, real_all_data_map[sym])
+                themes = real_all_data_map[sym].get('profile', {}).get('theme_tags', []) \
+                    if real_all_data_map[sym].get('profile') else theme_feat.get('theme_tags', [])
+                reason_summary = '，'.join(rs['deduction_reasons'][:3]) if rs['deduction_reasons'] else \
+                    ('主流題材 + 法人買超' if rs['institution_score'] >= 8 else '技術面轉強')
+                risk_summary = '；'.join(rs['missing_data_reasons'][:3]) if rs['missing_data_reasons'] else '資料完整'
+                scored.append({
+                    'symbol': sym,
+                    'name': profile_universe.get(sym) or _STOCK_NAMES.get(sym, sym),
+                    'theme_tags': themes,
+                    'data_source': 'real',
+                    'bull_stock_score': rs['bull_stock_score'],
+                    'theme_score':            rs['theme_score'],
+                    'fundamental_score':      rs['fundamental_score'],
+                    'technical_score':        rs['trend_score'],         # alias
+                    'trend_score':            rs['trend_score'],
+                    'breakout_volume_score':  rs['breakout_volume_score'],
+                    'chip_score':             rs['institution_score'],   # alias
+                    'institution_score':      rs['institution_score'],
+                    'holder_score':           rs['holder_score'],
+                    'margin_score':           rs['margin_score'],
+                    'overheat_score':         rs['overheat_score'],
+                    'trust_cost_score':       rs['trust_cost_score'],
+                    'breakout_score':         rs['breakout_volume_score'],
+                    'margin_risk_score':      rs['margin_score'],
+                    'overheat_risk_score':    rs['overheat_score'],
+                    'is_bull_candidate':      rs['is_bull_candidate'],
+                    'is_second_wave_buy_point': rs['is_second_wave_buy_point'],
+                    'reason_summary':         reason_summary,
+                    'risk_summary':           risk_summary,
+                    'deduction_reasons':      rs['deduction_reasons'],
+                    'missing_data_reasons':   rs['missing_data_reasons'],
+                    'formal_allowed':         rs['formal_allowed'],
+                })
             else:
-                mock_boost = 0
+                # Mock mode: legacy scoring path
+                rng = random.Random(_stable_seed(sym) % 99999)
+                mock_boost = rng.uniform(0, 20) if use_mock else 0
 
-            score_data = {
-                'theme_score': theme_feat['theme_score'],
-                'fundamental_score': fund_r.get('fundamental_score', 5.0),
-                'ma_score': tech_r.get('technical_score', 5.0),
-                'breakout_score': bo_r.get('breakout_score', 3.0),
-                'chip_score': chip_r.get('chip_score', 5.0),
-                'holder_score': 5.0,
-                'margin_score': 5.0,
-                'overheat_score': 5.0,
-            }
+                score_data = {
+                    'theme_score': theme_feat['theme_score'],
+                    'fundamental_score': fund_r.get('fundamental_score', 5.0),
+                    'ma_score': tech_r.get('technical_score', 5.0),
+                    'breakout_score': bo_r.get('breakout_score', 3.0),
+                    'chip_score': chip_r.get('chip_score', 5.0),
+                    'holder_score': 5.0,
+                    'margin_score': 5.0,
+                    'overheat_score': 5.0,
+                }
+                bull_score = self.compute_bull_stock_score(score_data)
+                if use_mock:
+                    bull_score = min(100.0, bull_score + mock_boost)
 
-            bull_score = self.compute_bull_stock_score(score_data)
-            if use_mock:
-                bull_score = min(100.0, bull_score + mock_boost)
+                themes = theme_feat.get('theme_tags', [])
+                reason_parts = []
+                if theme_feat['is_mainstream_theme']:
+                    theme_str = '/'.join(themes[:3]) if themes else '未分類'
+                    reason_parts.append(f"主流主題({theme_str})")
+                if bo_r.get('is_breakout'):
+                    reason_parts.append("突破型態")
+                if tech_r.get('ma_aligned'):
+                    reason_parts.append("均線多頭排列")
+                if not fund_r.get('data_missing'):
+                    reason_parts.append("基本面佐證")
+                reason_summary = '，'.join(reason_parts) if reason_parts else '待觀察'
 
-            themes = theme_feat.get('theme_tags', [])
-            theme_str = '/'.join(themes[:3]) if themes else '未分類'
+                risk_parts = []
+                if chip_r.get('data_missing'):
+                    risk_parts.append("籌碼資料不足")
+                if fund_r.get('data_missing'):
+                    risk_parts.append("基本面資料不足")
+                risk_summary = '；'.join(risk_parts) if risk_parts else '風險可控'
 
-            # Generate reason/risk summary
-            reason_parts = []
-            if theme_feat['is_mainstream_theme']:
-                reason_parts.append(f"主流主題({theme_str})")
-            if bo_r.get('is_breakout'):
-                reason_parts.append("突破型態")
-            if tech_r.get('ma_aligned'):
-                reason_parts.append("均線多頭排列")
-            if not fund_r.get('data_missing'):
-                reason_parts.append("基本面佐證")
-            reason_summary = '，'.join(reason_parts) if reason_parts else '待觀察'
+                is_bull = bull_score >= 80
+                is_second_wave = 65 <= bull_score < 80
 
-            risk_parts = []
-            if chip_r.get('data_missing'):
-                risk_parts.append("籌碼資料不足")
-            if fund_r.get('data_missing'):
-                risk_parts.append("基本面資料不足")
-            risk_summary = '；'.join(risk_parts) if risk_parts else '風險可控'
-
-            is_bull = bull_score >= 80
-            is_second_wave = 65 <= bull_score < 80
-
-            scored.append({
-                'symbol': sym,
-                'name': profile_universe.get(sym) or _STOCK_NAMES.get(sym, sym),
-                'theme_tags': themes,
-                'data_source': 'mock' if use_mock else 'real',
-                'bull_stock_score': round(bull_score, 1),
-                'theme_score': round(theme_feat['theme_score'], 2),
-                'fundamental_score': round(fund_r.get('fundamental_score', 5.0), 2),
-                'technical_score': round(tech_r.get('technical_score', 5.0), 2),
-                'chip_score': round(chip_r.get('chip_score', 5.0), 2),
-                'breakout_score': round(bo_r.get('breakout_score', 3.0), 2),
-                'margin_risk_score': round(5.0, 2),
-                'overheat_risk_score': round(100 - bull_score, 1),
-                'is_bull_candidate': is_bull,
-                'is_second_wave_buy_point': is_second_wave,
-                'reason_summary': reason_summary,
-                'risk_summary': risk_summary,
-            })
+                scored.append({
+                    'symbol': sym,
+                    'name': profile_universe.get(sym) or _STOCK_NAMES.get(sym, sym),
+                    'theme_tags': themes,
+                    'data_source': 'mock',
+                    'bull_stock_score': round(bull_score, 1),
+                    'theme_score': round(theme_feat['theme_score'], 2),
+                    'fundamental_score': round(fund_r.get('fundamental_score', 5.0), 2),
+                    'technical_score': round(tech_r.get('technical_score', 5.0), 2),
+                    'trend_score': round(tech_r.get('technical_score', 5.0), 2),
+                    'breakout_volume_score': round(bo_r.get('breakout_score', 3.0), 2),
+                    'chip_score': round(chip_r.get('chip_score', 5.0), 2),
+                    'institution_score': round(chip_r.get('chip_score', 5.0), 2),
+                    'holder_score': round(5.0, 2),
+                    'margin_score': round(5.0, 2),
+                    'overheat_score': round(5.0, 2),
+                    'trust_cost_score': 0.0,
+                    'breakout_score': round(bo_r.get('breakout_score', 3.0), 2),
+                    'margin_risk_score': round(5.0, 2),
+                    'overheat_risk_score': round(100 - bull_score, 1),
+                    'is_bull_candidate': is_bull,
+                    'is_second_wave_buy_point': is_second_wave,
+                    'reason_summary': reason_summary,
+                    'risk_summary': risk_summary,
+                    'deduction_reasons': [],
+                    'missing_data_reasons': [],
+                    'formal_allowed': True,
+                })
 
         # Sort by score descending
         scored.sort(key=lambda x: x['bull_stock_score'], reverse=True)
