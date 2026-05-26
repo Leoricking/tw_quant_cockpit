@@ -206,14 +206,42 @@ class CSVCleaner:
         - 20240102
         - 113/01/02  (ROC year)
         - 1130102    (ROC compact 7 digits)
+        - 45798      (Excel serial date, origin 1899-12-30)
         """
         if value is None:
             return ''
-        if isinstance(value, float) and pd.isna(value):
-            return ''
+        if isinstance(value, float):
+            if pd.isna(value):
+                return ''
+            # Excel serial date check: integers in [30000, 70000]
+            int_val = int(value)
+            if value == int_val and 30000 <= int_val <= 70000:
+                try:
+                    dt = pd.Timestamp('1899-12-30') + pd.Timedelta(days=int_val)
+                    return dt.strftime('%Y-%m-%d')
+                except Exception:
+                    pass
+        if isinstance(value, int) and 30000 <= value <= 70000:
+            try:
+                dt = pd.Timestamp('1899-12-30') + pd.Timedelta(days=value)
+                return dt.strftime('%Y-%m-%d')
+            except Exception:
+                pass
+
         s = str(value).strip()
         if not s or s.lower() in ('nan', 'none', 'null'):
             return ''
+
+        # Excel serial date as string, e.g. "45798" or "45798.0"
+        m_serial = re.match(r'^(\d{5})(?:\.0+)?$', s)
+        if m_serial:
+            n = int(m_serial.group(1))
+            if 30000 <= n <= 70000:
+                try:
+                    dt = pd.Timestamp('1899-12-30') + pd.Timedelta(days=n)
+                    return dt.strftime('%Y-%m-%d')
+                except Exception:
+                    pass
 
         # ROC compact 7 digits: 1130102
         m = re.match(r'^(\d{3})(\d{2})(\d{2})$', s)
@@ -234,6 +262,11 @@ class CSVCleaner:
 
         # YYYY-MM-DD or YYYY/MM/DD
         m = re.match(r'^(\d{4})[-/](\d{1,2})[-/](\d{1,2})$', s)
+        if m:
+            return f"{m.group(1)}-{int(m.group(2)):02d}-{int(m.group(3)):02d}"
+
+        # datetime with time component: 2024-01-02 09:00:00 or 2024/01/02 09:00:00
+        m = re.match(r'^(\d{4})[-/](\d{1,2})[-/](\d{1,2})\s+\d', s)
         if m:
             return f"{m.group(1)}-{int(m.group(2)):02d}-{int(m.group(3)):02d}"
 

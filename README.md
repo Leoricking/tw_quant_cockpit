@@ -1123,6 +1123,123 @@ XQ / Excel 欄位對應請見 `docs/xq_csv_mapping_guide.md`。
 > **[!] 不構成投資建議。仍禁止實盤自動下單（TWQC_ENABLE_REAL_ORDER=false）。**
 > 回測結果不得作為正式投資結論。樣本不足時，系統仍會顯示 INSUFFICIENT 警告。
 
+### v0.3.3-hotfix — XQ 技術分析匯出檔一鍵匯入 (implemented)
+
+#### 為什麼不需要手動拆欄？
+
+XQ Global 技術分析圖表匯出的 Excel/CSV 是「寬欄格式」：一個檔案包含所有指標，欄位名稱為中文（時間、開盤價、融資(張)、投信成本線、大戶持股比例 ...）。過去需要手動拆欄、重命名欄位才能匯入 TWQC 標準路徑。
+
+`import-xq-export` 指令自動完成：
+1. 辨識日期欄（時間 / 日期 / date）
+2. 對應中文 XQ 欄位名稱到 TWQC 標準名稱
+3. 拆分成 5 個子集：daily / margin / institutional / trust_cost / holder
+4. 各自寫入標準 `data/import/` 路徑
+5. 自動填寫 stock_profile.csv（不覆蓋既有資料）
+
+#### import-xq-export
+
+```bash
+# Step 1: 預覽（不寫入任何檔案）
+python main.py import-xq-export --file D:\XQ\2454.xlsx --symbol 2454 --name 聯發科 --dry-run
+
+# Step 2: 正式匯入
+python main.py import-xq-export --file D:\XQ\2454.xlsx --symbol 2454 --name 聯發科
+
+# Step 3: 驗證
+python main.py data-check --stock 2454
+python main.py stock-report --stock 2454 --mode real
+```
+
+**參數：**
+- `--file`：必填。XQ 匯出的 .xlsx / .xls / .csv 路徑
+- `--symbol`：必填。台股代號（例：2454）
+- `--name`：選填。股票名稱（例：聯發科）
+- `--dry-run`：選填。預覽偵測欄位與列數，不寫入任何檔案
+- `--replace`：選填。覆蓋已有標準 CSV（預設：append 並去重）
+- `--export-split`：選填。同時輸出各分割 CSV 供人工檢查
+- `--output-dir`：選填（需搭配 --export-split）。分割 CSV 輸出資料夾
+- `--sheet`：選填。Excel 工作表名稱（預設：第一個工作表）
+
+#### 支援輸入格式
+
+| 副檔名 | 支援 |
+|--------|------|
+| .xlsx | 是（需 openpyxl：`pip install openpyxl`） |
+| .xls  | 是 |
+| .csv  | 是 — UTF-8-SIG / UTF-8 / Big5 / CP950 自動偵測 |
+
+#### 自動對應的欄位
+
+| XQ 欄位 | TWQC 標準欄位 | 資料集 |
+|---------|-------------|--------|
+| 時間 | date | 所有 |
+| 開盤價 / 收盤價 / 最高價 / 最低價 | open/close/high/low | daily |
+| 成交量(張) | volume | daily |
+| 融資(張) / 融資餘額 | margin_balance | margin |
+| 差額(張) / 融資增減 | margin_change | margin |
+| 融券(張) / 融券餘額 | short_balance | margin |
+| 投信買賣超(張) | trust_net_buy | institutional |
+| 外資買賣超(張) | foreign_net_buy | institutional |
+| 買賣超(張)（模糊欄） | trust_net_buy 或 foreign_net_buy（依其他欄判斷） | institutional |
+| 投信成本線 / 投信平均成本 | trust_avg_cost | trust_cost |
+| 投信買超張數 | trust_buy_shares | trust_cost |
+| 大戶持股比例 | major_holder_ratio | holder |
+| 大戶買賣力 | major_change | holder |
+| 散戶持股比例 | retail_holder_ratio | holder |
+| 散戶買賣力 | retail_change | holder |
+
+trust_cost 自動計算：`price_vs_trust_cost_pct = (close - trust_avg_cost) / trust_avg_cost * 100`
+
+#### 部分匯入行為
+
+XQ 匯出不一定包含所有欄位。系統不會因為缺少欄位而中止：
+
+- 未偵測到 `short_balance`（融券）→ margin 只匯入融資部分，顯示警告
+- 法人只有一個買賣超欄 → 只匯入偵測到的欄位，顯示警告
+- 大戶比例欄未匯出 → holder 部分匯入，顯示警告
+- 日期欄為 Excel 序號（如 45798）→ 自動轉換為 YYYY-MM-DD
+
+#### 批次匯入多檔
+
+```bash
+python main.py import-xq-export --file D:\XQ\2454.xlsx --symbol 2454 --name 聯發科
+python main.py import-xq-export --file D:\XQ\2330.xlsx --symbol 2330 --name 台積電
+python main.py import-xq-export --file D:\XQ\6669.xlsx --symbol 6669 --name 緯穎
+
+# 全部匯入後稽核
+python main.py data-audit --export
+python main.py import-plan
+```
+
+#### 匯出分割選項
+
+```bash
+python main.py import-xq-export --file D:\XQ\2454.xlsx --symbol 2454 --name 聯發科 \
+  --export-split --output-dir D:\XQ\twqc_bundle
+```
+
+輸出：
+```
+D:\XQ\twqc_bundle\
+  2454_daily.csv
+  2454_margin.csv
+  2454_institutional.csv
+  2454_trust_cost.csv
+  2454_holder.csv
+```
+
+這些分割 CSV 可再用 `batch-import` 匯入。
+
+#### New Source Files (v0.3.3-hotfix)
+
+| 檔案 | 說明 |
+|------|------|
+| `data/xq_export_importer.py` | XQ 寬欄格式自動拆分匯入器 |
+| `docs/xq_export_import_guide.md` | XQ 匯出一鍵匯入完整說明文件 |
+| `data/import/daily/xq_export_sample.csv` | XQ 格式測試用範例 CSV |
+
+> **[!] 不構成投資建議。仍禁止實盤自動下單（TWQC_ENABLE_REAL_ORDER=false）。**
+
 ### v0.4 (planned)
 - Shioaji real-time quote subscription (read-only)
 - Real 5-level order book display

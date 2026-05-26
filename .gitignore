@@ -36,6 +36,13 @@ reports/buy_point_validation_report_*.md
 # Import / audit / plan reports (generated artifacts)
 data/import_reports/
 
+# XQ split export output (generated artifacts)
+data/xq_exports/
+
+# Excel files (user data, not tracked)
+*.xlsx
+*.xls
+
 # User-imported real CSV data (not sample files) — keep locally, exclude from repo
 data/import/daily/daily_k.csv
 data/import/institutional/institutional.csv

@@ -26,9 +26,13 @@ data-check    : Check data completeness for a stock or the full universe
 
 TW Quant Cockpit v0.3.3 commands
 ----------------------------------
-clean-csv     : Clean and normalize a CSV file (XQ/Excel) without importing
-data-audit    : Audit all imported data for quality and coverage
-import-plan   : Show prioritized import plan based on current data gaps
+clean-csv          : Clean and normalize a CSV file (XQ/Excel) without importing
+data-audit         : Audit all imported data for quality and coverage
+import-plan        : Show prioritized import plan based on current data gaps
+
+TW Quant Cockpit v0.3.3-hotfix commands
+-----------------------------------------
+import-xq-export   : One-command import of XQ technical-analysis export files
 
 Usage examples
 --------------
@@ -1239,6 +1243,115 @@ def cmd_universe_check(args: argparse.Namespace) -> None:  # noqa: ARG001
 
 
 # ---------------------------------------------------------------------------
+# v0.3.3-hotfix — Import XQ Export Command
+# ---------------------------------------------------------------------------
+
+def cmd_import_xq_export(args: argparse.Namespace) -> None:
+    """One-command import of XQ technical-analysis export files."""
+    from data.xq_export_importer import XQExportImporter
+
+    logger_cmd  = logging.getLogger("main.import_xq_export")
+    file_path   = getattr(args, 'file', None)
+    symbol      = getattr(args, 'symbol', None)
+    name        = getattr(args, 'name', '') or ''
+    sheet       = getattr(args, 'sheet', 0)
+    dry_run     = getattr(args, 'dry_run', False)
+    replace     = getattr(args, 'replace', False)
+    export_split= getattr(args, 'export_split', False)
+    output_dir  = getattr(args, 'output_dir', 'data/xq_exports') or 'data/xq_exports'
+
+    print('')
+    print('=' * 60)
+    print('  TW Quant Cockpit XQ Export Import')
+    print('=' * 60)
+    print(f'  Input   : {file_path}')
+    print(f'  Symbol  : {symbol}')
+    print(f'  Name    : {name if name else "(not provided)"}')
+    print(f'  Mode    : {"dry-run" if dry_run else "import"}')
+
+    try:
+        importer = XQExportImporter()
+
+        # Split first so we can show detected columns
+        split_result = importer.split(file_path, symbol=symbol, name=name, sheet=sheet)
+
+        if split_result.get('errors'):
+            for e in split_result['errors']:
+                print(f'  ERROR   : {e}')
+            sys.exit(1)
+
+        print('')
+        print(f'  Detected columns ({len(split_result["columns_detected"])}):')
+        for col in split_result['columns_detected']:
+            print(f'    - {col}')
+
+        print('')
+        print('  Split result:')
+        all_warnings = []
+        for dt in ['daily', 'margin', 'institutional', 'trust_cost', 'holder']:
+            df, warnings = split_result.get(dt, (None, []))
+            if df is not None and not df.empty:
+                partial = ' (partial)' if warnings else ''
+                print(f'  {dt:<16}: {len(df)} rows{partial}')
+            else:
+                print(f'  {dt:<16}: no data detected')
+            all_warnings.extend(warnings)
+
+        if all_warnings:
+            print('')
+            print('  Warnings:')
+            for w in all_warnings:
+                print(f'    - {w}')
+
+        if dry_run:
+            print('')
+            print('  No data written.')
+        else:
+            # Perform import
+            outcome = importer.import_file(
+                file_path, symbol=symbol, name=name,
+                replace=replace, dry_run=False, sheet=sheet,
+            )
+
+            print('')
+            print('  Imported:')
+            for dt, res in outcome.get('results', {}).items():
+                if res.get('skipped'):
+                    print(f'  {dt:<16}: skipped (no data)')
+                elif res.get('success'):
+                    out = res.get('output', '')
+                    print(f'  {dt:<16}: {res["rows"]} rows -> {out}')
+                else:
+                    ws = res.get('warnings', [])
+                    print(f'  {dt:<16}: FAILED  {ws[-1] if ws else ""}')
+
+            if export_split:
+                abs_out = os.path.join(
+                    os.path.dirname(os.path.abspath(__file__)),
+                    output_dir.replace('/', os.sep),
+                )
+                exported = importer.export_split_csvs(split_result, abs_out)
+                print('')
+                print(f'  Split CSVs exported to: {abs_out}')
+                for dt, fp in exported.items():
+                    print(f'    {dt}: {fp}')
+
+            print('')
+            print('  Next steps:')
+            print(f'    python main.py data-check --stock {symbol}')
+            print(f'    python main.py stock-report --stock {symbol} --mode real')
+
+        print('')
+        print('=' * 60)
+        print('[!] For research and simulation only. Not investment advice.')
+
+    except Exception as exc:
+        logger_cmd.error("import-xq-export failed: %s", exc, exc_info=True)
+        print(f'  ERROR: {exc}')
+        sys.exit(1)
+
+
+# ---------------------------------------------------------------------------
 # v0.3.3 — Clean CSV Command
 # ---------------------------------------------------------------------------
 
@@ -1662,6 +1775,28 @@ def _build_parser() -> argparse.ArgumentParser:
         help="Write a Markdown batch import report to data/import_reports/",
     )
 
+    # --- import-xq-export ---
+    p_xq = subparsers.add_parser(
+        "import-xq-export",
+        help="One-command import of XQ technical-analysis export (.xlsx/.xls/.csv)",
+    )
+    p_xq.add_argument("--file", required=True,
+                      help="Path to XQ-exported file (.xlsx, .xls, or .csv)")
+    p_xq.add_argument("--symbol", required=True,
+                      help="Stock symbol, e.g. 2454")
+    p_xq.add_argument("--name", default="",
+                      help="Stock name (optional), e.g. 聯發科")
+    p_xq.add_argument("--sheet", default=0,
+                      help="Excel sheet name or index (default: 0 = first sheet)")
+    p_xq.add_argument("--dry-run", action="store_true",
+                      help="Split and check only, do not write to data/import/")
+    p_xq.add_argument("--replace", action="store_true",
+                      help="Replace existing standard CSVs (default: append)")
+    p_xq.add_argument("--export-split", action="store_true",
+                      help="Export each split DataFrame to --output-dir as separate CSVs")
+    p_xq.add_argument("--output-dir", default="data/xq_exports",
+                      help="Output folder for --export-split (default: data/xq_exports/)")
+
     # --- clean-csv ---
     p_cc = subparsers.add_parser(
         "clean-csv",
@@ -1750,6 +1885,8 @@ def main() -> None:
         "clean-csv":            cmd_clean_csv,
         "data-audit":           cmd_data_audit,
         "import-plan":          cmd_import_plan,
+        # TW Quant Cockpit v0.3.3-hotfix
+        "import-xq-export":    cmd_import_xq_export,
     }
 
     if args.command is None:
