@@ -128,8 +128,54 @@ class StockReportBuilder:
             lines.append("- 長線資料不足")
         lines.append("")
 
-        # Section 7: Data completeness
-        lines.append("## 七、資料完整度")
+        # Section 7: Buy Point Grade
+        lines.append("## 七、買點分級判斷")
+        # Extract buy_point fields from daytrade_result first, then short_result
+        bp_source = None
+        for r in (daytrade_result, short_result):
+            if r and r.get('buy_point_grade') is not None:
+                bp_source = r
+                break
+        if bp_source:
+            grade = bp_source.get('buy_point_grade', 'N/A')
+            bp_type = bp_source.get('buy_point_type', 'N/A')
+            support = bp_source.get('support_price', 'N/A')
+            confirm = bp_source.get('confirm_price', 'N/A')
+            invalid = bp_source.get('invalid_price', 'N/A')
+            no_entry = bp_source.get('no_entry_conditions', [])
+            bp_reasoning = bp_source.get('reasoning', '-')
+            lines.append(f"- 買點等級：**{grade}**")
+            lines.append(f"- 買點型態：{bp_type}")
+            lines.append(f"- 支撐價：{support}")
+            lines.append(f"- 確認價：{confirm}")
+            lines.append(f"- 失效價：{invalid}")
+            lines.append(f"- 可買條件：已符合 {grade} 級買點條件")
+            lines.append(f"- 不可買條件：{' / '.join(no_entry) if no_entry else '無'}")
+            lines.append(f"- 判斷依據：{bp_reasoning}")
+        else:
+            lines.append("- 買點等級：尚未觸發任何買點條件")
+            lines.append("- 買點型態：-")
+            lines.append("- 支撐價：-")
+            lines.append("- 確認價：-")
+            lines.append("- 失效價：-")
+            lines.append("- 可買條件：-")
+            no_entry_all = []
+            for r in (daytrade_result, short_result):
+                if r:
+                    for c in r.get('no_entry_conditions', []):
+                        if c not in no_entry_all:
+                            no_entry_all.append(c)
+            lines.append(f"- 不可買條件：{' / '.join(no_entry_all) if no_entry_all else '-'}")
+            fallback_reasoning = (
+                (daytrade_result or {}).get('reasoning')
+                or (short_result or {}).get('reasoning')
+                or '資料不足'
+            )
+            lines.append(f"- 判斷依據：{fallback_reasoning}")
+        lines.append("")
+
+        # Section 8: Data completeness
+        lines.append("## 八、資料完整度")
         for label, result in [
             ('當沖', daytrade_result),
             ('短線', short_result),

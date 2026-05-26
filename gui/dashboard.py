@@ -211,11 +211,13 @@ _TABLE_COLS = [
     'symbol', 'name', 'price', 'change_pct',
     'bull_score', 'daytrade_score', 'swing_score', 'risk_score',
     'orderbook_state', 'decision', 'position', 'pnl',
+    'buy_point_grade', 'buy_point_type', 'support_price', 'confirm_price', 'invalid_price',
 ]
 _TABLE_HEADERS = [
     '代號', '名稱', '價格', '漲跌%',
     '飆股分', '當沖分', '波段分', '風險分',
     '五檔狀態', '建議', '持倉', '損益',
+    '買點等級', '買點型態', '支撐價', '確認價', '失效價',
 ]
 
 
@@ -308,6 +310,19 @@ class StockTable(QWidget if _PYSIDE6_AVAILABLE else object):
             self._table.setItem(row, 10, _cell(str(position) if position else '-'))
             pnl_color = _change_color(pnl)
             self._table.setItem(row, 11, _cell(f"{pnl:+,.0f}" if pnl else '-', color=pnl_color))
+
+            # Buy point columns
+            bp_grade = cand.get('buy_point_grade', '-') or '-'
+            bp_type = cand.get('buy_point_type', '-') or '-'
+            bp_support = cand.get('support_price')
+            bp_confirm = cand.get('confirm_price')
+            bp_invalid = cand.get('invalid_price')
+            grade_color = {'A': '#FF4444', 'B': '#FF8800', 'C': '#CCCC00'}.get(bp_grade)
+            self._table.setItem(row, 12, _cell(bp_grade, color=grade_color))
+            self._table.setItem(row, 13, _cell(bp_type))
+            self._table.setItem(row, 14, _cell(f"{bp_support:.1f}" if bp_support else '-'))
+            self._table.setItem(row, 15, _cell(f"{bp_confirm:.1f}" if bp_confirm else '-'))
+            self._table.setItem(row, 16, _cell(f"{bp_invalid:.1f}" if bp_invalid else '-'))
 
 
 # ---------------------------------------------------------------------------

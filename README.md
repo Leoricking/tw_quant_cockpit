@@ -120,6 +120,10 @@ Outputs a scored table with `bull_stock_score` (0–100):
 | 50–64 | Watch only |
 | < 50 | Avoid |
 
+Technical filter also runs **BuyPointAnalyzer** for each symbol and attaches:
+- `buy_point_grade`: A / B / C / None
+- `buy_point_type`: `A_PULLBACK_MA10` / `B_PULLBACK_MA5` / `C_PLATFORM_BREAKOUT`
+
 ---
 
 ### Cockpit GUI — 控盤介面
@@ -172,12 +176,41 @@ Generates a Markdown report with:
 - Short-term strategy (5–20 days)
 - Mid-term strategy (1–3 months)
 - Long-term strategy (3–12 months)
+- **Buy point grade section** (A/B/C grade, support/confirm/invalidation prices)
 - Data completeness rating
 
 Report saved to `data/reports/report_{symbol}_{date}.md`.
 
 > If data is insufficient, the report explicitly states:
 > **「資料不足，只能做盤中初估，不能當正式短中長線操作依據」**
+
+---
+
+### Buy Point Engine — 強勢股回測買點引擎
+
+The `BuyPointAnalyzer` (`analysis/buy_point_analyzer.py`) classifies buy opportunities into three grades:
+
+| Grade | Type | Condition |
+|-------|------|-----------|
+| **A** | `A_PULLBACK_MA10` | MA5 > MA10 > MA20, low touches MA10, close reclaims MA10, volume shrinks, KD turns up, no heavy institutional selling |
+| **B** | `B_PULLBACK_MA5` | Low touches MA5, price reclaims MA5 and VWAP intraday, orderbook imbalance > 0 |
+| **C** | `C_PLATFORM_BREAKOUT` | 10–20 day consolidation < 8% range, close breaks platform high, volume > 1.5× 20d average, no long upper wick |
+
+Each grade outputs: `support_price`, `confirm_price`, `invalid_price`, `add_position_price`, `exit_price`, `stop_loss_price`.
+
+**No-entry conditions** (auto-detected and blocked):
+- Early surge > 5% — no chasing
+- Limit-up then heavy-volume breakdown
+- Heavy institutional selling (foreign/trust)
+- Price below MA20
+- Long upper wick candle
+- Break MA10 with volume expansion
+
+Buy point fields are surfaced in:
+- Screener output (`screener/technical_filter.py`)
+- `DaytradeAnalyzer` and `ShortTermAnalyzer` result dicts
+- Stock report **七、買點分級判斷** section
+- Cockpit dashboard table columns: 買點等級 / 買點型態 / 支撐價 / 確認價 / 失效價
 
 ---
 
@@ -248,7 +281,8 @@ trading_master/
 │   ├── theme_features.py    # NEW
 │   ├── fundamental_features.py  # NEW
 │   ├── chip_features.py     # NEW
-│   └── orderbook_features.py    # NEW
+│   ├── orderbook_features.py    # NEW
+│   └── pullback_features.py     # NEW — MA/KD/volume/VWAP/box features for buy point engine
 │
 ├── models/                  # ML models (original)
 ├── strategies/              # Trading strategies (original)
@@ -285,7 +319,8 @@ trading_master/
 │   ├── mid_term_analyzer.py
 │   ├── long_term_analyzer.py
 │   ├── stock_report_builder.py
-│   └── timeframe_requirements.py
+│   ├── timeframe_requirements.py
+│   └── buy_point_analyzer.py    # NEW — A/B/C buy point grading engine
 │
 ├── sim/                     # NEW — Paper trading simulator
 │   ├── simulator.py         # PaperTrader interface

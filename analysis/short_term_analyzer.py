@@ -110,6 +110,26 @@ class ShortTermAnalyzer:
             f"綜合信心度: {confidence}%"
         )
 
+        # Merge buy point grade fields from BuyPointAnalyzer
+        bp_grade = None
+        bp_type = None
+        bp_support = None
+        bp_confirm = None
+        bp_invalid = None
+        try:
+            from analysis.buy_point_analyzer import BuyPointAnalyzer
+            bp = BuyPointAnalyzer().analyze(sym, price_data=price_data, chip_data=chip_data)
+            bp_grade = bp.get('buy_point_grade')
+            bp_type = bp.get('buy_point_type')
+            bp_support = bp.get('support_price')
+            bp_confirm = bp.get('confirm_price')
+            bp_invalid = bp.get('invalid_price')
+            for cond in bp.get('no_entry_conditions', []):
+                if cond not in no_entry_conditions:
+                    no_entry_conditions.append(cond)
+        except Exception as exc:
+            logger.debug("BuyPointAnalyzer skipped in ShortTermAnalyzer: %s", exc)
+
         return {
             'decision': decision,
             'confidence': confidence,
@@ -120,6 +140,11 @@ class ShortTermAnalyzer:
             'reasoning': reasoning,
             'data_completeness': completeness,
             'warning': warning,
+            'buy_point_grade': bp_grade,
+            'buy_point_type': bp_type,
+            'support_price': bp_support,
+            'confirm_price': bp_confirm,
+            'invalid_price': bp_invalid,
         }
 
     def _analyze_technicals(self, price_data):

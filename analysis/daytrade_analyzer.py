@@ -143,6 +143,29 @@ class DaytradeAnalyzer:
         reasoning_parts.append(f"決策: {decision} (信心度 {confidence}%)")
         reasoning = '，'.join(reasoning_parts)
 
+        # Merge buy point grade fields from BuyPointAnalyzer
+        bp_grade = None
+        bp_type = None
+        bp_support = None
+        bp_confirm = None
+        bp_invalid = None
+        try:
+            from analysis.buy_point_analyzer import BuyPointAnalyzer
+            bp = BuyPointAnalyzer().analyze(
+                sym, price_data=price_data, realtime_data=realtime_data
+            )
+            bp_grade = bp.get('buy_point_grade')
+            bp_type = bp.get('buy_point_type')
+            bp_support = bp.get('support_price')
+            bp_confirm = bp.get('confirm_price')
+            bp_invalid = bp.get('invalid_price')
+            # Supplement no_entry_conditions from buy point analyzer
+            for cond in bp.get('no_entry_conditions', []):
+                if cond not in no_entry_conditions:
+                    no_entry_conditions.append(cond)
+        except Exception as exc:
+            logger.debug("BuyPointAnalyzer skipped in DaytradeAnalyzer: %s", exc)
+
         return {
             'decision': decision,
             'confidence': confidence,
@@ -153,6 +176,11 @@ class DaytradeAnalyzer:
             'reasoning': reasoning,
             'data_completeness': completeness,
             'warning': warning,
+            'buy_point_grade': bp_grade,
+            'buy_point_type': bp_type,
+            'support_price': bp_support,
+            'confirm_price': bp_confirm,
+            'invalid_price': bp_invalid,
         }
 
     def _get_price(self, symbol, price_data, realtime_data):

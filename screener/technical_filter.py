@@ -50,11 +50,24 @@ class TechnicalFilter:
                     'rsi_ok': False,
                     'data_missing': True,
                     'warning': f'Insufficient price data for {sym_str}. Using degraded score.',
+                    'buy_point_grade': None,
+                    'buy_point_type': None,
                 })
                 continue
 
             score = self._compute_score(pdata)
             passes = score >= 6.0
+
+            # Buy point grade via BuyPointAnalyzer
+            bp_grade = None
+            bp_type = None
+            try:
+                from analysis.buy_point_analyzer import BuyPointAnalyzer
+                bp = BuyPointAnalyzer().analyze(sym_str, price_data=pdata)
+                bp_grade = bp.get('buy_point_grade')
+                bp_type = bp.get('buy_point_type')
+            except Exception as exc:
+                logger.debug("BuyPointAnalyzer skipped for %s: %s", sym_str, exc)
 
             results.append({
                 'symbol': sym_str,
@@ -64,6 +77,8 @@ class TechnicalFilter:
                 'rsi_ok': True,
                 'data_missing': False,
                 'warning': None,
+                'buy_point_grade': bp_grade,
+                'buy_point_type': bp_type,
             })
 
         return results
