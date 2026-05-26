@@ -95,19 +95,49 @@ class ScreenerPipeline:
 
         logger.info("ScreenerPipeline.run() starting (mode=%s).", mode)
 
+        # In real mode, build universe from profile CSV first
+        profile_universe = {}  # sym -> name (from CSV)
+        if not use_mock:
+            try:
+                from data.real_data_loader import RealDataLoader
+                import os as _os
+                _profile_dir = _os.path.join(
+                    _os.path.dirname(_os.path.dirname(_os.path.abspath(__file__))),
+                    "data", "import", "profile"
+                )
+                _loader = RealDataLoader()
+                import csv as _csv
+                for _fname in _os.listdir(_profile_dir) if _os.path.isdir(_profile_dir) else []:
+                    if _fname.endswith(".csv"):
+                        _fpath = _os.path.join(_profile_dir, _fname)
+                        with open(_fpath, "r", encoding="utf-8-sig") as _fh:
+                            for _row in _csv.DictReader(_fh):
+                                _s = _row.get("symbol", "").strip()
+                                _n = _row.get("name", "").strip()
+                                if _s:
+                                    profile_universe[_s] = _n or _s
+                logger.info("Real mode: loaded %d symbols from profile CSV", len(profile_universe))
+            except Exception as _exc:
+                logger.warning("Failed to load profile CSV in real mode: %s", _exc)
+
         # Load theme pools
         from screener.theme_pool import ThemePool
         theme_pool = ThemePool()
         theme_pool.load()
 
         # Layer 1: Theme pool
-        all_theme_symbols = list(theme_pool.get_symbols())
-        if not all_theme_symbols:
-            # Fallback to hardcoded symbol list
-            all_theme_symbols = list(_STOCK_NAMES.keys())
-        logger.info("Layer 1 (Theme): %d symbols", len(all_theme_symbols))
+        if not use_mock and profile_universe:
+            # Real mode: universe = profile CSV symbols only
+            all_theme_symbols = list(profile_universe.keys())
+            logger.info("Layer 1 (Theme, real CSV): %d symbols", len(all_theme_symbols))
+        else:
+            all_theme_symbols = list(theme_pool.get_symbols())
+            if not all_theme_symbols:
+                # Fallback to hardcoded symbol list
+                all_theme_symbols = list(_STOCK_NAMES.keys())
+            logger.info("Layer 1 (Theme): %d symbols", len(all_theme_symbols))
 
-        # Load price data via DataSourceRouter
+        # Load price data and real CSV data
         from data.data_source_router import DataSourceRouter
         router = DataSourceRouter(mode=mode)
         price_data_mock = {}
@@ -118,10 +148,48 @@ class ScreenerPipeline:
         if not price_data_mock:
             price_data_mock = None
 
+        # In real mode, load fundamental and chip data from CSVs
+        real_fundamental_map = {}  # sym -> fundamental dict
+        real_chip_map = {}         # sym -> chip dict
+        if not use_mock:
+            try:
+                from data.real_data_loader import RealDataLoader
+                _loader = RealDataLoader()
+                for sym in all_theme_symbols:
+                    _rev = _loader.load_monthly_revenue(sym)
+                    if _rev:
+                        # Map RealDataLoader keys → FundamentalFeatures keys
+                        real_fundamental_map[sym] = {
+                            'latest_month_revenue_yoy': _rev.get('yoy'),
+                            'accumulated_revenue_yoy': _rev.get('accumulated_yoy'),
+                            'gross_margin': None,
+                            'gross_margin_change': None,
+                            'eps': None,
+                            'eps_yoy': None,
+                            'eps_qoq': None,
+                            'industry_outlook_score': 5.0,
+                        }
+                    _chip = _loader.load_institutional(sym)
+                    if _chip:
+                        # Map RealDataLoader keys → ChipFeatures keys
+                        real_chip_map[sym] = {
+                            'foreign_3d_net_buy': _chip.get('foreign_net_3d', 0),
+                            'foreign_5d_net_buy': _chip.get('foreign_net_3d', 0),
+                            'investment_trust_3d_net_buy': _chip.get('trust_net_3d', 0),
+                            'investment_trust_5d_net_buy': _chip.get('trust_net_3d', 0),
+                            'dealer_3d_net_buy': _chip.get('dealer_net_3d', 0),
+                            'dealer_5d_net_buy': _chip.get('dealer_net_3d', 0),
+                        }
+                logger.info("Real mode: loaded fundamental=%d, chip=%d from CSV",
+                            len(real_fundamental_map), len(real_chip_map))
+            except Exception as _exc:
+                logger.warning("Failed to load real CSV data for screener: %s", _exc)
+
         # Layer 2: Fundamental filter
         from screener.fundamental_filter import FundamentalFilter
+        _fund_data_arg = real_fundamental_map if (not use_mock and real_fundamental_map) else None
         fund_results = FundamentalFilter().filter(
-            all_theme_symbols, fundamental_data=None, mode=mode)
+            all_theme_symbols, fundamental_data=_fund_data_arg, mode=mode)
         after_fund = [r['symbol'] for r in fund_results if r['passes']]
         logger.info("Layer 2 (Fundamental): %d symbols pass", len(after_fund))
 
@@ -139,7 +207,8 @@ class ScreenerPipeline:
 
         # Layer 4: Chip confirmation
         from screener.chip_filter import ChipFilter
-        chip_results = ChipFilter().filter(after_tech, chip_data=None, mode=mode)
+        _chip_data_arg = real_chip_map if (not use_mock and real_chip_map) else None
+        chip_results = ChipFilter().filter(after_tech, chip_data=_chip_data_arg, mode=mode)
         after_chip = [r['symbol'] for r in chip_results if r['passes']]
         logger.info("Layer 4 (Chip): %d symbols pass", len(after_chip))
 
@@ -218,7 +287,7 @@ class ScreenerPipeline:
 
             scored.append({
                 'symbol': sym,
-                'name': _STOCK_NAMES.get(sym, sym),
+                'name': profile_universe.get(sym) or _STOCK_NAMES.get(sym, sym),
                 'theme_tags': themes,
                 'data_source': 'mock' if use_mock else 'real',
                 'bull_stock_score': round(bull_score, 1),

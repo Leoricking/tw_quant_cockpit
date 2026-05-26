@@ -59,7 +59,8 @@ class DataSourceRouter:
         Return a list of OHLCV dicts (newest last), or None if unavailable.
 
         In mock mode always returns synthetic data.
-        In real mode returns DB data, or None when the DB has no rows.
+        In real mode: tries CSV import first, then DB. Returns None if both fail.
+        No mock fallback in real mode.
         """
         if self.mode == 'mock':
             return self._mock_price(symbol, n_bars)
@@ -70,7 +71,7 @@ class DataSourceRouter:
         Return a chip data dict, or None if unavailable.
 
         Mock mode always returns None (chip scoring uses mock fallback).
-        Real mode attempts DB query.
+        Real mode: tries CSV import first, then DB. Returns None if both fail.
         """
         if self.mode == 'mock':
             return None  # screener mock path uses mock scoring
@@ -81,6 +82,21 @@ class DataSourceRouter:
         if self.mode == 'mock':
             return None
         return self._real_fundamental(symbol)
+
+    def get_profile(self, symbol: str):
+        """
+        Return stock profile dict (name, market, industry, theme_tags) or None.
+
+        Real mode: reads CSV import. Mock mode: returns None (caller uses _STOCK_NAMES).
+        """
+        if self.mode == 'mock':
+            return None
+        try:
+            from data.real_data_loader import RealDataLoader
+            return RealDataLoader().load_profile(symbol)
+        except Exception as exc:
+            logger.debug("DataSourceRouter.get_profile error for %s: %s", symbol, exc)
+            return None
 
     # ------------------------------------------------------------------
     # Mock generators
@@ -114,9 +130,19 @@ class DataSourceRouter:
     # ------------------------------------------------------------------
 
     def _real_price(self, symbol: str, n_bars: int):
+        # 1. Try CSV import first
+        try:
+            from data.real_data_loader import RealDataLoader
+            rows = RealDataLoader().load_daily_k(symbol, n_bars=n_bars)
+            if rows:
+                logger.info("DataSourceRouter: loaded %d bars from CSV for %s", len(rows), symbol)
+                return rows
+        except Exception as exc:
+            logger.debug("DataSourceRouter._real_price CSV error for %s: %s", symbol, exc)
+
+        # 2. Fallback to DB
         try:
             from data.database import load_prices
-            import pandas as pd
             df = load_prices(stock_id=symbol)
             if df is None or df.empty:
                 logger.info("DataSourceRouter: no real price data for %s in DB", symbol)
@@ -133,10 +159,21 @@ class DataSourceRouter:
                 })
             return records if records else None
         except Exception as exc:
-            logger.debug("DataSourceRouter._real_price error for %s: %s", symbol, exc)
+            logger.debug("DataSourceRouter._real_price DB error for %s: %s", symbol, exc)
             return None
 
     def _real_chip(self, symbol: str):
+        # 1. Try CSV import first
+        try:
+            from data.real_data_loader import RealDataLoader
+            data = RealDataLoader().load_institutional(symbol)
+            if data:
+                logger.info("DataSourceRouter: loaded institutional data from CSV for %s", symbol)
+                return data
+        except Exception as exc:
+            logger.debug("DataSourceRouter._real_chip CSV error for %s: %s", symbol, exc)
+
+        # 2. Fallback to DB
         try:
             from data.database import load_chip_data
             data = load_chip_data(stock_id=symbol)
@@ -144,10 +181,22 @@ class DataSourceRouter:
                 return None
             return data if isinstance(data, dict) else data.to_dict(orient='records')
         except Exception as exc:
-            logger.debug("DataSourceRouter._real_chip error for %s: %s", symbol, exc)
+            logger.debug("DataSourceRouter._real_chip DB error for %s: %s", symbol, exc)
             return None
 
     def _real_fundamental(self, symbol: str):
+        # 1. Try CSV import first
+        try:
+            from data.real_data_loader import RealDataLoader
+            loader = RealDataLoader()
+            rev = loader.load_monthly_revenue(symbol)
+            if rev:
+                logger.info("DataSourceRouter: loaded revenue data from CSV for %s", symbol)
+                return rev
+        except Exception as exc:
+            logger.debug("DataSourceRouter._real_fundamental CSV error for %s: %s", symbol, exc)
+
+        # 2. Fallback to DB
         try:
             from data.database import load_fundamental_data
             data = load_fundamental_data(stock_id=symbol)
@@ -155,5 +204,5 @@ class DataSourceRouter:
                 return None
             return data if isinstance(data, dict) else data.to_dict(orient='records')
         except Exception as exc:
-            logger.debug("DataSourceRouter._real_fundamental error for %s: %s", symbol, exc)
+            logger.debug("DataSourceRouter._real_fundamental DB error for %s: %s", symbol, exc)
             return None

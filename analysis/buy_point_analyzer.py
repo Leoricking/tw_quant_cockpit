@@ -37,7 +37,8 @@ class BuyPointAnalyzer:
     or C (platform breakout). Returns a structured decision dict.
     """
 
-    def analyze(self, symbol, price_data=None, chip_data=None, realtime_data=None):
+    def analyze(self, symbol, price_data=None, chip_data=None, realtime_data=None,
+                mode: str = 'mock'):
         """
         Analyze and grade the buy point for a symbol.
 
@@ -60,6 +61,26 @@ class BuyPointAnalyzer:
             no_entry_conditions, reasoning, data_completeness, warning
         """
         sym = str(symbol)
+
+        # Real mode firewall: no real price data → block all grades
+        has_real_data = bool(price_data or realtime_data)
+        if mode == 'real' and not has_real_data:
+            return {
+                'symbol': sym,
+                'buy_point_grade': None,
+                'buy_point_type': None,
+                'decision': 'WATCH',
+                'support_price': None,
+                'confirm_price': None,
+                'invalid_price': None,
+                'add_position_price': None,
+                'exit_price': None,
+                'stop_loss_price': None,
+                'no_entry_conditions': ['缺少真實資料，禁止正式進場判斷'],
+                'reasoning': 'REAL MODE 缺真實資料，禁止使用 mock 買點',
+                'data_completeness': 0.0,
+                'warning': 'REAL MODE 缺真實資料，禁止使用 mock 買點',
+            }
 
         from features.pullback_features import compute_pullback_features
         feat = compute_pullback_features(price_data, chip_data, realtime_data)

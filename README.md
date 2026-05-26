@@ -401,11 +401,81 @@ The following are **strictly prohibited** in v1:
 
 ## Roadmap
 
-### v0.2 (planned)
+### v0.2 Phase 2 — Real CSV Import (implemented)
+
+Real data can be imported via CSV files placed in `data/import/` subdirectories.
+
+#### CSV 格式 / Import Format
+
+**Stock universe** — `data/import/profile/*.csv`
+```
+symbol,name,market,industry,theme_tags
+2454,聯發科,TWSE,半導體,AI/手機晶片/車用
+```
+
+**Daily K-line** — `data/import/daily/*.csv`
+```
+date,symbol,open,high,low,close,volume
+2024-01-02,2454,1040.0,1065.0,1035.0,1060.0,15420000
+```
+
+**Institutional flow** — `data/import/institutional/*.csv`
+```
+date,symbol,foreign_net_buy,trust_net_buy,dealer_net_buy
+2024-01-02,2454,2500,800,200
+```
+
+**Margin** — `data/import/margin/*.csv`
+```
+date,symbol,margin_balance,margin_change,short_balance,short_change
+2024-01-02,2454,45000,1200,-500,-50
+```
+
+**Monthly revenue** — `data/import/monthly_revenue/*.csv`
+```
+month,symbol,revenue,mom,yoy,accumulated_yoy
+2023-10,2454,55200000000,3.5,28.4,22.1
+```
+
+**Holder structure** — `data/import/holder/*.csv`
+```
+date,symbol,major_holder_ratio,retail_holder_ratio,major_change,retail_change
+2024-01-31,2454,69.8,30.2,1.3,-1.3
+```
+
+Sample CSVs are included in each directory. To add more stocks, append rows to any CSV or create new CSV files in the same folder.
+
+#### Real Mode 資料防火牆 / Data Firewall Rules
+
+| Condition | Result |
+|-----------|--------|
+| `--mode real` + CSV data present | 🟢 REAL DATA — full analysis |
+| `--mode real` + no CSV/DB data | 🔴 Prices suppressed with `—` |
+| `--mode real` + no daily K | No A/B/C buy point grade |
+| `--mode mock` (any data) | 🟡 MOCK DATA — demo mode |
+
+```bash
+# Real mode with CSV data
+python main.py stock-report --stock 2454 --mode real
+python main.py screener --mode real --top 8
+
+# Mock mode (always works, demo prices)
+python main.py stock-report --stock 2454 --mode mock
+python main.py screener --mode mock --top 8
+```
+
+#### RealDataLoader API
+```python
+from data.real_data_loader import RealDataLoader
+loader = RealDataLoader()
+all_data = loader.load_all('2454')
+# Returns: {profile, daily_k, institutional, margin, monthly_revenue, holder}
+```
+
+### v0.2 (remaining planned)
 - Connect real FinMind data for screener fundamental filter
-- Integrate real chip data (foreign/trust/dealer net buy)
+- Integrate real chip data (foreign/trust/dealer net buy) via API
 - Persist paper trading state across sessions
-- Stock report with real historical K-line data
 - Cockpit GUI stock selection (click to view detail)
 - Alert system for breakout candidates
 

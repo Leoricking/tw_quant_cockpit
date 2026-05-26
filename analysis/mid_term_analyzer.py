@@ -25,7 +25,7 @@ class MidTermAnalyzer:
     """
 
     def analyze(self, symbol, price_data=None, weekly_data=None,
-                chip_data=None, fundamental_data=None):
+                chip_data=None, fundamental_data=None, mode: str = 'mock'):
         """
         Analyze mid-term opportunity for a symbol.
 
@@ -62,9 +62,28 @@ class MidTermAnalyzer:
         if not can_report:
             warning = DATA_INSUFFICIENT_WARNING
 
-        current_price = _SEED_PRICES.get(sym, 100.0)
-        rng = random.Random(hash(sym + 'mid') % 44444)
+        # Real mode firewall: no real data → block mock prices/conclusions
+        has_real_data = bool(price_data or weekly_data or fundamental_data)
+        if mode == 'real' and not has_real_data:
+            return {
+                'decision': 'WATCH',
+                'confidence': 0,
+                'add_position_price': None,
+                'exit_price': None,
+                'stop_loss_price': None,
+                'no_entry_conditions': ['缺少真實資料，禁止正式進場判斷'],
+                'reasoning': 'REAL MODE 缺真實資料，無法給出中線結論',
+                'data_completeness': completeness,
+                'data_source': 'mock',
+                'prices_are_estimates': True,
+                'warning': 'REAL MODE 缺真實資料，禁止使用 mock 中線判斷',
+            }
 
+        current_price = _SEED_PRICES.get(sym, 100.0)
+        from utils.stable_hash import stable_hash_int as _stable_seed
+        rng = random.Random(_stable_seed(sym + 'mid') % 44444)
+
+        data_source = 'real' if (mode == 'real' and has_real_data) else 'mock'
         score = 0.0
         decision_hints = []
 
@@ -96,9 +115,10 @@ class MidTermAnalyzer:
                     score += 3.0
                     decision_hints.append('週K多頭')
 
-        # Mock adjustment
-        mock_adj = rng.uniform(-2, 5)
-        score += mock_adj
+        # Mock adjustment (only in mock mode)
+        if mode == 'mock':
+            mock_adj = rng.uniform(-2, 5)
+            score += mock_adj
 
         # Fundamental bonus
         if fundamental_data:
@@ -135,6 +155,9 @@ class MidTermAnalyzer:
             + f"，信心度: {confidence}%"
         )
 
+        # In real mode with real data, prices are based on actual closes → not estimates
+        prices_are_estimates = not (mode == 'real' and has_real_data and price_data and len(price_data) >= 20)
+
         return {
             'decision': decision,
             'confidence': confidence,
@@ -144,6 +167,8 @@ class MidTermAnalyzer:
             'no_entry_conditions': no_entry,
             'reasoning': reasoning,
             'data_completeness': completeness,
+            'data_source': data_source,
+            'prices_are_estimates': prices_are_estimates,
             'warning': warning,
         }
 

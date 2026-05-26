@@ -25,7 +25,7 @@ class LongTermAnalyzer:
     """
 
     def analyze(self, symbol, price_data=None, weekly_data=None,
-                monthly_data=None, fundamental_data=None):
+                monthly_data=None, fundamental_data=None, mode: str = 'mock'):
         """
         Analyze long-term opportunity for a symbol.
 
@@ -62,9 +62,28 @@ class LongTermAnalyzer:
         if not can_report:
             warning = DATA_INSUFFICIENT_WARNING
 
-        current_price = _SEED_PRICES.get(sym, 100.0)
-        rng = random.Random(hash(sym + 'long') % 33333)
+        # Real mode firewall: no real data → block mock prices/conclusions
+        has_real_data = bool(price_data or monthly_data or fundamental_data)
+        if mode == 'real' and not has_real_data:
+            return {
+                'decision': 'WATCH',
+                'confidence': 0,
+                'add_position_price': None,
+                'exit_price': None,
+                'stop_loss_price': None,
+                'no_entry_conditions': ['缺少真實資料，禁止正式進場判斷'],
+                'reasoning': 'REAL MODE 缺真實資料，無法給出長線結論',
+                'data_completeness': completeness,
+                'data_source': 'mock',
+                'prices_are_estimates': True,
+                'warning': 'REAL MODE 缺真實資料，禁止使用 mock 長線判斷',
+            }
 
+        current_price = _SEED_PRICES.get(sym, 100.0)
+        from utils.stable_hash import stable_hash_int as _stable_seed
+        rng = random.Random(_stable_seed(sym + 'long') % 33333)
+
+        data_source = 'real' if (mode == 'real' and has_real_data) else 'mock'
         score = 0.0
         decision_hints = []
 
@@ -105,9 +124,10 @@ class LongTermAnalyzer:
                 elif m_closes[-1] > m_closes[-3]:
                     score += 1.5
 
-        # Mock adjustment
-        mock_adj = rng.uniform(-1, 4)
-        score += mock_adj
+        # Mock adjustment (only in mock mode)
+        if mode == 'mock':
+            mock_adj = rng.uniform(-1, 4)
+            score += mock_adj
 
         # Fundamental analysis for long term
         if fundamental_data:
@@ -144,6 +164,8 @@ class LongTermAnalyzer:
             + f"，信心度: {confidence}%"
         )
 
+        prices_are_estimates = not (mode == 'real' and has_real_data and price_data and len(price_data) >= 60)
+
         return {
             'decision': decision,
             'confidence': confidence,
@@ -153,6 +175,8 @@ class LongTermAnalyzer:
             'no_entry_conditions': no_entry,
             'reasoning': reasoning,
             'data_completeness': completeness,
+            'data_source': data_source,
+            'prices_are_estimates': prices_are_estimates,
             'warning': warning,
         }
 

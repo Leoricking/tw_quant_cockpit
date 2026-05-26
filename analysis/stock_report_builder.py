@@ -230,16 +230,27 @@ class StockReportBuilder:
         price_note = '（估算值）' if is_estimate and not suppress_prices else ''
 
         lines.append(f"- 操作決策：**{decision}**（信心度 {confidence}%）{src_label}")
-        if suppress_prices:
-            lines.append("- 補倉價位：— （real mode 缺真實資料，不給假價格）")
-            lines.append("- 出倉價位：— （real mode 缺真實資料，不給假價格）")
-            lines.append("- 停損價位：— （real mode 缺真實資料，不給假價格）")
+        _dash = "—"
+        if suppress_prices or add_price is None:
+            _add_str = f"{_dash} （real mode 缺真實資料）" if suppress_prices else _dash
         else:
-            lines.append(f"- 補倉價位：{add_price if add_price else 'N/A'}{price_note}")
-            lines.append(f"- 出倉價位：{exit_price if exit_price else 'N/A'}{price_note}")
-            lines.append(f"- 停損價位：{stop_price if stop_price else 'N/A'}{price_note}")
+            _add_str = f"{add_price}{price_note}"
+        if suppress_prices or exit_price is None:
+            _exit_str = f"{_dash} （real mode 缺真實資料）" if suppress_prices else _dash
+        else:
+            _exit_str = f"{exit_price}{price_note}"
+        if suppress_prices or stop_price is None:
+            _stop_str = f"{_dash} （real mode 缺真實資料）" if suppress_prices else _dash
+        else:
+            _stop_str = f"{stop_price}{price_note}"
+        lines.append(f"- 補倉價位：{_add_str}")
+        lines.append(f"- 出倉價位：{_exit_str}")
+        lines.append(f"- 停損價位：{_stop_str}")
         lines.append(f"- 不可進場條件：{' / '.join(no_entry) if no_entry else '無'}")
         lines.append(f"- 判斷依據：{reasoning}")
+        _completeness = result.get('data_completeness', 0)
+        _formal = not result.get('prices_are_estimates', True)
+        lines.append(f"- 資料完整度：{_completeness:.0f}%　是否允許正式判斷：{'✅ 是' if _formal else '❌ 否'}")
         if warning:
             lines.append(f"- ⚠️ 資料警告：{warning}")
 

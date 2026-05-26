@@ -163,7 +163,7 @@ class DaytradeAnalyzer:
         try:
             from analysis.buy_point_analyzer import BuyPointAnalyzer
             bp = BuyPointAnalyzer().analyze(
-                sym, price_data=price_data, realtime_data=realtime_data
+                sym, price_data=price_data, realtime_data=realtime_data, mode=mode
             )
             bp_grade = bp.get('buy_point_grade')
             bp_type = bp.get('buy_point_type')

@@ -476,11 +476,38 @@ def cmd_stock_report(args: argparse.Namespace) -> None:
     try:
         sym = str(stock)
 
-        # Load price data via DataSourceRouter
+        # Load all real data via RealDataLoader (real mode) or DataSourceRouter (mock mode)
         from data.data_source_router import DataSourceRouter
         router = DataSourceRouter(mode=mode)
-        price_data = router.get_price_data(sym, n_bars=60)
-        chip_data = router.get_chip_data(sym)
+
+        stock_name = None
+        price_data = None
+        chip_data = None
+        fundamental_data = None
+
+        if mode == 'real':
+            from data.real_data_loader import RealDataLoader
+            loader = RealDataLoader()
+            all_data = loader.load_all(sym)
+            profile = all_data.get('profile')
+            if profile:
+                stock_name = profile.get('name')
+            price_data = all_data.get('daily_k')        # list[dict] or None
+            chip_data = all_data.get('institutional')   # dict or None
+            fundamental_data = all_data.get('monthly_revenue')  # dict or None
+            logger.info("Real data loaded for %s: price=%s bars, chip=%s, fundamental=%s",
+                        sym,
+                        len(price_data) if price_data else 0,
+                        'yes' if chip_data else 'no',
+                        'yes' if fundamental_data else 'no')
+        else:
+            price_data = router.get_price_data(sym, n_bars=60)
+            chip_data = router.get_chip_data(sym)
+
+        # Resolve stock name: profile CSV → _STOCK_NAMES fallback
+        if not stock_name:
+            from screener.screener_pipeline import _STOCK_NAMES
+            stock_name = _STOCK_NAMES.get(sym, sym)
 
         from analysis.daytrade_analyzer import DaytradeAnalyzer
         from analysis.short_term_analyzer import ShortTermAnalyzer
@@ -505,18 +532,23 @@ def cmd_stock_report(args: argparse.Namespace) -> None:
             logger.warning("ShortTermAnalyzer failed: %s", exc)
 
         try:
-            mid_result = MidTermAnalyzer().analyze(symbol=sym)
+            mid_result = MidTermAnalyzer().analyze(
+                symbol=sym, price_data=price_data, chip_data=chip_data,
+                fundamental_data=fundamental_data, mode=mode)
         except Exception as exc:
             logger.warning("MidTermAnalyzer failed: %s", exc)
 
         try:
-            long_result = LongTermAnalyzer().analyze(symbol=sym)
+            long_result = LongTermAnalyzer().analyze(
+                symbol=sym, price_data=price_data,
+                fundamental_data=fundamental_data, mode=mode)
         except Exception as exc:
             logger.warning("LongTermAnalyzer failed: %s", exc)
 
         builder = StockReportBuilder()
         report = builder.build(
             symbol=sym,
+            name=stock_name,
             mode=mode,
             daytrade_result=daytrade_result,
             short_result=short_result,

@@ -129,7 +129,7 @@ class ShortTermAnalyzer:
         bp_invalid = None
         try:
             from analysis.buy_point_analyzer import BuyPointAnalyzer
-            bp = BuyPointAnalyzer().analyze(sym, price_data=price_data, chip_data=chip_data)
+            bp = BuyPointAnalyzer().analyze(sym, price_data=price_data, chip_data=chip_data, mode=mode)
             bp_grade = bp.get('buy_point_grade')
             bp_type = bp.get('buy_point_type')
             bp_support = bp.get('support_price')
