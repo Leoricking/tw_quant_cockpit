@@ -34,6 +34,12 @@ TW Quant Cockpit v0.3.3-hotfix commands
 -----------------------------------------
 import-xq-export   : One-command import of XQ technical-analysis export files
 
+TW Quant Cockpit v0.3.4 commands
+----------------------------------
+provider-status      : Show data provider availability (CSV, XQ, TWSE planned, Mega planned)
+time-machine-preview : Volume Profile + Microstructure summary for a stock
+feature-preview      : Display latest computed features (indicators + volume profile + microstructure)
+
 Usage examples
 --------------
     python main.py download
@@ -1583,6 +1589,273 @@ def cmd_import_plan(args: argparse.Namespace) -> None:
 
 
 # ---------------------------------------------------------------------------
+# v0.3.4 — Provider Status Command
+# ---------------------------------------------------------------------------
+
+def cmd_provider_status(args: argparse.Namespace) -> None:
+    """Show the status of all configured data providers."""
+    logger_cmd = logging.getLogger("main.provider_status")
+
+    print()
+    print("=" * 60)
+    print("  TW Quant Cockpit — Data Provider Status")
+    print("=" * 60)
+
+    providers_info = [
+        ("csv",        "CSV provider (data/import/)"),
+        ("xq_export",  "XQ export provider (transition)"),
+        ("twse",       "TWSE OpenAPI provider (planned)"),
+        ("mega",       "Mega (兆豐) provider (planned, disabled)"),
+    ]
+
+    for key, label in providers_info:
+        try:
+            from data.providers import get_provider
+            p = get_provider(key)
+            status = p.health_check()
+            if status.get("available"):
+                marker = "[OK]      "
+            elif status.get("planned"):
+                marker = "[PLANNED] "
+            else:
+                marker = "[OFF]     "
+            note = status.get("note", "")
+            print(f"  {marker} {label}")
+            if note:
+                note_short = note[:70] + "..." if len(note) > 70 else note
+                print(f"           {note_short}")
+        except Exception as exc:
+            logger_cmd.debug("Provider check error for %s: %s", key, exc)
+            print(f"  [ERROR]   {label} — {exc}")
+
+    print()
+    print("  Real order execution : DISABLED (TWQC_ENABLE_REAL_ORDER=False)")
+    print("  Broker API (Mega)    : planned / not configured")
+    print("  Broker API (Shioaji) : not used")
+    print()
+    print("  Run 'python main.py import-xq-export' to import XQ data.")
+    print("  Run 'python main.py data-check' to verify CSV completeness.")
+    print()
+
+
+# ---------------------------------------------------------------------------
+# v0.3.4 — Time Machine Preview Command
+# ---------------------------------------------------------------------------
+
+def cmd_time_machine_preview(args: argparse.Namespace) -> None:
+    """Show Volume Profile and Microstructure summary for a stock."""
+    import pandas as pd
+
+    logger_cmd = logging.getLogger("main.time_machine_preview")
+    symbol = getattr(args, 'stock', None)
+    mode   = getattr(args, 'mode', 'mock')
+
+    if not symbol:
+        print("  ERROR: --stock is required. Example: python main.py time-machine-preview --stock 2454")
+        sys.exit(1)
+
+    print()
+    print("=" * 60)
+    print(f"  Time Machine Preview — {symbol}  (mode={mode})")
+    print("=" * 60)
+
+    # Load daily data via provider
+    try:
+        from data.providers import get_provider
+        provider = get_provider("csv")
+        daily_df = provider.get_daily(symbol)
+    except Exception as exc:
+        logger_cmd.warning("Provider load failed: %s", exc)
+        daily_df = None
+
+    # Fallback: mock minimal data for demo
+    if daily_df is None or (hasattr(daily_df, 'empty') and daily_df.empty):
+        if mode == 'real':
+            print(f"  WARNING: No real data for {symbol}. Import data first.")
+            print(f"  Run: python main.py data-check --stock {symbol}")
+            print()
+            return
+        logger_cmd.info("Using mock data for time-machine-preview (mock mode).")
+        import numpy as np
+        rng = pd.date_range("2024-01-02", periods=120, freq="B")
+        base = 200.0
+        closes = base + np.cumsum(np.random.randn(120) * 2)
+        closes = np.maximum(closes, 10.0)
+        daily_df = pd.DataFrame({
+            "date":   rng,
+            "stock_id": symbol,
+            "open":   closes * 0.99,
+            "high":   closes * 1.01,
+            "low":    closes * 0.98,
+            "close":  closes,
+            "volume": (np.abs(np.random.randn(120)) * 5000 + 10000).astype(int),
+        })
+
+    if "stock_id" not in daily_df.columns:
+        daily_df["stock_id"] = symbol
+
+    # Compute Volume Profile
+    print()
+    print("  [Volume Profile]")
+    try:
+        from features.volume_profile import compute_volume_profile_single
+        vp_df = compute_volume_profile_single(daily_df)
+        last = vp_df.iloc[-1]
+        close_val = last.get("close", float("nan"))
+        poc = last.get("vp_peak_price", float("nan"))
+        dist = last.get("vp_distance_to_peak", float("nan"))
+        strength = last.get("vp_cluster_strength", float("nan"))
+        sps = last.get("support_pressure_score", float("nan"))
+        va_hi = last.get("vp_value_area_high", float("nan"))
+        va_lo = last.get("vp_value_area_low", float("nan"))
+        in_va = last.get("vp_price_in_value_area", float("nan"))
+
+        print(f"    Close              : {close_val:.2f}")
+        print(f"    POC (peak price)   : {poc:.2f}")
+        print(f"    Distance to POC    : {dist:+.2%}")
+        print(f"    Cluster strength   : {strength:.2%}")
+        print(f"    Value Area         : {va_lo:.2f} — {va_hi:.2f}")
+        print(f"    Price in VA        : {'Yes' if in_va == 1 else 'No'}")
+        print(f"    Support/Pressure   : {sps:+.3f}  (+ = support, - = pressure)")
+    except Exception as exc:
+        logger_cmd.warning("Volume profile computation failed: %s", exc)
+        print(f"    WARNING: Volume Profile unavailable — {exc}")
+
+    # Compute Microstructure
+    print()
+    print("  [Opening Microstructure]  (daily proxy — no intraday data)")
+    try:
+        from features.microstructure import compute_microstructure_single
+        ms_df = compute_microstructure_single(daily_df)
+        last = ms_df.iloc[-1]
+        ms_score = last.get("microstructure_score", float("nan"))
+        fake_risk = last.get("ms_fake_breakout_risk", float("nan"))
+        no_chase = last.get("ms_no_chase_flag", float("nan"))
+        bsp = last.get("buy_sell_pressure", float("nan"))
+        ovr = last.get("opening_volume_ratio", float("nan"))
+
+        def _fmt(v):
+            return f"{v:.3f}" if v == v else "NaN"
+
+        print(f"    Microstructure score : {_fmt(ms_score)}")
+        print(f"    Buy/sell pressure    : {_fmt(bsp)}")
+        print(f"    Opening volume ratio : {_fmt(ovr)}")
+        print(f"    Fake breakout risk   : {'YES' if fake_risk == 1 else ('No' if fake_risk == 0 else 'unknown')}")
+        print(f"    No-chase flag        : {'YES' if no_chase == 1 else ('No' if no_chase == 0 else 'unknown')}")
+        print()
+        print("    NOTE: intraday / tick data not available.")
+        print("    Scores are daily OHLCV proxies.  Import intraday data for exact values.")
+    except Exception as exc:
+        logger_cmd.warning("Microstructure computation failed: %s", exc)
+        print(f"    WARNING: Microstructure unavailable — {exc}")
+
+    print()
+
+
+# ---------------------------------------------------------------------------
+# v0.3.4 — Feature Preview Command
+# ---------------------------------------------------------------------------
+
+def cmd_feature_preview(args: argparse.Namespace) -> None:
+    """Display the latest computed features for a stock."""
+    import pandas as pd
+
+    logger_cmd = logging.getLogger("main.feature_preview")
+    symbol = getattr(args, 'stock', None)
+    mode   = getattr(args, 'mode', 'mock')
+
+    if not symbol:
+        print("  ERROR: --stock is required. Example: python main.py feature-preview --stock 2454")
+        sys.exit(1)
+
+    print()
+    print("=" * 60)
+    print(f"  Feature Preview — {symbol}  (mode={mode})")
+    print("=" * 60)
+
+    # Load daily data
+    try:
+        from data.providers import get_provider
+        provider = get_provider("csv")
+        daily_df = provider.get_daily(symbol)
+    except Exception as exc:
+        logger_cmd.warning("Provider load failed: %s", exc)
+        daily_df = None
+
+    if daily_df is None or (hasattr(daily_df, 'empty') and daily_df.empty):
+        if mode == 'real':
+            print(f"  WARNING: No real data for {symbol}. Import data first.")
+            print()
+            return
+        import numpy as np
+        rng = pd.date_range("2024-01-02", periods=120, freq="B")
+        base = 200.0
+        closes = base + np.cumsum(np.random.randn(120) * 2)
+        closes = np.maximum(closes, 10.0)
+        daily_df = pd.DataFrame({
+            "date":   rng,
+            "stock_id": symbol,
+            "open":   closes * 0.99,
+            "high":   closes * 1.01,
+            "low":    closes * 0.98,
+            "close":  closes,
+            "volume": (np.abs(np.random.randn(120)) * 5000 + 10000).astype(int),
+        })
+
+    if "stock_id" not in daily_df.columns:
+        daily_df["stock_id"] = symbol
+
+    # Compute full feature set
+    try:
+        from features.indicators import compute_indicators
+        feat_df = compute_indicators(daily_df, intraday_df=None)
+        last = feat_df.iloc[-1]
+
+        def _show(label: str, cols: list) -> None:
+            print()
+            print(f"  [{label}]")
+            for col in cols:
+                val = last.get(col)
+                if val is None:
+                    print(f"    {col:<35} : n/a")
+                elif isinstance(val, float) and val != val:
+                    print(f"    {col:<35} : NaN")
+                elif isinstance(val, float):
+                    print(f"    {col:<35} : {val:.4f}")
+                else:
+                    print(f"    {col:<35} : {val}")
+
+        _show("Core Indicators", [
+            "rsi_14", "macd", "macd_signal", "macd_hist",
+            "sma_20", "sma_60", "ema_12", "ema_26",
+            "volume_spike", "bb_width", "bb_position",
+            "price_above_sma20", "price_above_sma60",
+        ])
+
+        _show("Volume Profile (分價量)", [
+            "vp_peak_price", "vp_distance_to_peak", "vp_cluster_strength",
+            "vp_support_score", "vp_pressure_score", "support_pressure_score",
+            "vp_value_area_high", "vp_value_area_low", "vp_price_in_value_area",
+        ])
+
+        _show("Opening Microstructure (盤口微觀) — daily proxy", [
+            "opening_return_15m", "opening_volume_ratio",
+            "opening_high_break", "opening_low_break",
+            "large_trade_ratio", "buy_sell_pressure",
+            "microstructure_score", "ms_fake_breakout_risk", "ms_no_chase_flag",
+        ])
+
+        print()
+        print(f"  Total features computed: {len(feat_df.columns)}")
+        print(f"  Date of last row: {last.get('date', 'unknown')}")
+        print()
+    except Exception as exc:
+        logger_cmd.error("Feature computation failed: %s", exc, exc_info=True)
+        print(f"  ERROR: {exc}")
+        sys.exit(1)
+
+
+# ---------------------------------------------------------------------------
 # Argument parser
 # ---------------------------------------------------------------------------
 
@@ -1867,6 +2140,34 @@ def _build_parser() -> argparse.ArgumentParser:
         help="Export import plan to data/import_reports/ (Markdown)",
     )
 
+    # --- provider-status ---
+    subparsers.add_parser(
+        "provider-status",
+        help="Show current data provider availability and configuration",
+    )
+
+    # --- time-machine-preview ---
+    p_tm = subparsers.add_parser(
+        "time-machine-preview",
+        help="Show Volume Profile and Opening Microstructure summary for a stock",
+    )
+    p_tm.add_argument("--stock", required=True, help="Stock symbol, e.g. 2454")
+    p_tm.add_argument(
+        "--mode", choices=["mock", "real"], default="mock",
+        help="Data mode: mock (default) or real (requires imported CSV)",
+    )
+
+    # --- feature-preview ---
+    p_fp = subparsers.add_parser(
+        "feature-preview",
+        help="Display latest computed features for a stock (indicators + volume profile + microstructure)",
+    )
+    p_fp.add_argument("--stock", required=True, help="Stock symbol, e.g. 2454")
+    p_fp.add_argument(
+        "--mode", choices=["mock", "real"], default="mock",
+        help="Data mode: mock (default) or real (requires imported CSV)",
+    )
+
     return parser
 
 
@@ -1918,6 +2219,10 @@ def main() -> None:
         "import-plan":          cmd_import_plan,
         # TW Quant Cockpit v0.3.3-hotfix
         "import-xq-export":    cmd_import_xq_export,
+        # TW Quant Cockpit v0.3.4
+        "provider-status":        cmd_provider_status,
+        "time-machine-preview":   cmd_time_machine_preview,
+        "feature-preview":        cmd_feature_preview,
     }
 
     if args.command is None:

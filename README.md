@@ -1240,13 +1240,81 @@ D:\XQ\twqc_bundle\
 
 > **[!] 不構成投資建議。仍禁止實盤自動下單（TWQC_ENABLE_REAL_ORDER=false）。**
 
+### v0.3.4 — 資料源抽象層 + 台股時光機核心特徵 (implemented)
+
+**目標：** 解除系統對 XQ 的長期依賴，建立可插拔資料源介面，整合 Volume Profile 與 Opening Microstructure 特徵。
+
+#### 資料源不再長期依賴 XQ
+
+- 新增 `data/providers/` 抽象層，所有資料請求透過 `BaseMarketDataProvider` 介面。
+- `CSVProvider`：主要 provider，讀取 `data/import/` 標準 CSV。
+- `XQExportProvider`：過渡 provider，包裝已匯入的 XQ 資料。
+- `TWSEOpenAPIProvider`：預留介面，v0.4 接 TWSE / TPEx / MOPS 公開 API。
+- `MegaProvider`：預留介面，v0.4+ 接兆豐證券只讀行情 API（下單永久禁止）。
+- XQ 僅作為過渡期匯入工具，不再是核心資料源。
+
+#### Volume Profile (分價量)
+
+Volume Profile 以滾動 lookback（預設 60 日）計算分價量分布，找出 POC（最大成交量價位）與 Value Area（70% 成交量區間）。
+
+| Feature | 說明 |
+|---|---|
+| `vp_peak_price` | POC — 最大分價量價位 |
+| `vp_cluster_strength` | POC 量 / 窗口總量（集中度）|
+| `vp_distance_to_peak` | 現價距 POC 百分比 |
+| `support_pressure_score` | 淨分 = 支撐分 − 壓力分 |
+| `vp_value_area_high/low` | Value Area 上下界（70% 成交量） |
+
+嚴格禁止：用全期間資料一次計算 POC 後回填歷史（data leakage）。
+
+#### Opening Microstructure (開盤 15 分鐘微觀特徵)
+
+| Feature | 說明 |
+|---|---|
+| `microstructure_score` | 綜合買方壓力分數 [0,1] |
+| `opening_return_15m` | 開盤 15 分鐘報酬（有 intraday 時精確，否則日線代理） |
+| `buy_sell_pressure` | (收盤 − 最低) / (最高 − 最低) |
+| `ms_fake_breakout_risk` | 跳空開高但收盤近開盤且量不足時標記 |
+| `ms_no_chase_flag` | 漲幅 >2% 但 microstructure_score < 0.4 時標記 |
+
+缺少 intraday / tick / bidask 時，系統使用日線代理值，不 crash。
+
+#### 新增 CLI 指令
+
+```bash
+python main.py provider-status                          # 查看資料源狀態
+python main.py time-machine-preview --stock 2454        # 時光機特徵摘要
+python main.py feature-preview --stock 2454             # 最新全特徵預覽
+```
+
+#### 安全限制（同前）
+
+- `TWQC_ENABLE_REAL_ORDER = False` — 實盤下單永久禁止。
+- 不接 Shioaji，不接兆豐 API 下單，不接任何券商下單介面。
+- Mock mode 仍然可跑。Real mode 只吃真實 CSV / DB，不 fallback 到 mock。
+
+#### New Source Files (v0.3.4)
+
+| 檔案 | 說明 |
+|---|---|
+| `data/providers/base_provider.py` | 所有資料源共同抽象介面 |
+| `data/providers/csv_provider.py` | CSV 標準資料源 provider |
+| `data/providers/xq_export_provider.py` | XQ 匯出過渡 provider |
+| `data/providers/twse_openapi_provider.py` | TWSE / TPEx 公開 API 預留介面 |
+| `data/providers/mega_provider.py` | 兆豐 API 預留介面（下單禁止） |
+| `docs/data_provider_roadmap.md` | 資料源架構藍圖 |
+| `docs/time_machine_features.md` | Volume Profile / Microstructure 說明 |
+
+> **[!] 不構成投資建議。仍禁止實盤自動下單（TWQC_ENABLE_REAL_ORDER=false）。**
+
+### v0.3.5 (planned)
+- GUI 顯示回測驗證報告與 Watchlist 追蹤
+
 ### v0.4 (planned)
-- Shioaji real-time quote subscription (read-only)
-- Real 5-level order book display
-- Intraday minute K chart
-- Paper order execution from GUI
-- AI training dataset export
-- Walk-forward screener validation
+- TWSE / TPEx / MOPS / data.gov.tw 自動補月營收與基本面
+- 兆豐 API 只讀即時行情 / 五檔 / 逐筆
+- 不再依賴 XQ 作為核心資料源
+- 不做實盤自動下單
 
 ---
 

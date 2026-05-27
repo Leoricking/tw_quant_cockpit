@@ -52,6 +52,14 @@ data/import/holder/holder.csv
 data/import/trust_cost/trust_cost.csv
 data/import/profile/stock_profile.csv
 
+# Provider cache / API response cache (generated artifacts)
+data/providers/cache/
+data/providers/.cache/
+data/providers/*.cache
+data/tick_cache/
+data/intraday_cache/
+data/api_cache/
+
 # Sample CSV files are tracked (allow commit)
 !data/import/profile/*_sample.csv
 !data/import/daily/*_sample.csv
