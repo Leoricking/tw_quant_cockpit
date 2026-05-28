@@ -1671,8 +1671,9 @@ def cmd_time_machine_preview(args: argparse.Namespace) -> None:
     # Fallback: mock minimal data for demo
     if daily_df is None or (hasattr(daily_df, 'empty') and daily_df.empty):
         if mode == 'real':
-            print(f"  WARNING: No real data for {symbol}. Import data first.")
+            print(f"  [WARN] real data insufficient for {symbol}. Import data first.")
             print(f"  Run: python main.py data-check --stock {symbol}")
+            print(f"  Or use mock mode: python main.py time-machine-preview --stock {symbol} --mode mock")
             print()
             return
         logger_cmd.info("Using mock data for time-machine-preview (mock mode).")
@@ -1784,7 +1785,9 @@ def cmd_feature_preview(args: argparse.Namespace) -> None:
 
     if daily_df is None or (hasattr(daily_df, 'empty') and daily_df.empty):
         if mode == 'real':
-            print(f"  WARNING: No real data for {symbol}. Import data first.")
+            print(f"  [WARN] real data insufficient for {symbol}. Import data first.")
+            print(f"  Run: python main.py data-check --stock {symbol}")
+            print(f"  Or use mock mode: python main.py feature-preview --stock {symbol} --mode mock")
             print()
             return
         import numpy as np
@@ -2153,8 +2156,8 @@ def _build_parser() -> argparse.ArgumentParser:
     )
     p_tm.add_argument("--stock", required=True, help="Stock symbol, e.g. 2454")
     p_tm.add_argument(
-        "--mode", choices=["mock", "real"], default="mock",
-        help="Data mode: mock (default) or real (requires imported CSV)",
+        "--mode", choices=["mock", "real"], default="real",
+        help="Data mode: real (default) or mock (demo only)",
     )
 
     # --- feature-preview ---
@@ -2164,8 +2167,8 @@ def _build_parser() -> argparse.ArgumentParser:
     )
     p_fp.add_argument("--stock", required=True, help="Stock symbol, e.g. 2454")
     p_fp.add_argument(
-        "--mode", choices=["mock", "real"], default="mock",
-        help="Data mode: mock (default) or real (requires imported CSV)",
+        "--mode", choices=["mock", "real"], default="real",
+        help="Data mode: real (default) or mock (demo only)",
     )
 
     return parser
