@@ -671,7 +671,7 @@ def cmd_import_csv(args: argparse.Namespace) -> None:
             print(f"  警告：{w}")
     else:
         print("  警告：無")
-    status = "✅ 成功" if result['success'] else "❌ 失敗"
+    status = "[OK] 成功" if result['success'] else "[FAIL] 失敗"
     print(f"  狀態：{status}")
     print("=" * 55)
 

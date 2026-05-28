@@ -264,10 +264,24 @@ class StockReportBuilder:
             if result:
                 comp = result.get('data_completeness', 0)
                 w = result.get('warning', '')
-                status = '[OK]' if comp >= 50 else '[WARN]'
+                _fa = result.get('formal_allowed',
+                                 not result.get('prices_are_estimates', True))
+                if comp == 0:
+                    status = '[NO]'
+                elif not _fa:
+                    status = '[PARTIAL]'
+                else:
+                    status = '[OK]'
                 lines.append(f"- {label}: {status} {comp:.0f}%{' — ' + w if w else ''}")
             else:
                 lines.append(f"- {label}: [NO] 無資料")
+        # Monthly revenue sample warning
+        if mode == 'real' and data_sources:
+            _rev = data_sources.get('monthly_revenue')
+            if _rev and _rev.get('is_sample'):
+                lines.append(
+                    "- [WARN] REAL DATA SAMPLE - monthly revenue is sample only"
+                )
 
         if not has_sufficient_data:
             lines.append("")

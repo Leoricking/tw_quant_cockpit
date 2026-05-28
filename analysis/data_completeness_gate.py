@@ -32,8 +32,8 @@ DATA_SOURCE_PARTIAL = "partial"
 
 FORMAL_MIN_PCT = 60  # completeness % threshold to allow formal analysis
 
-_MSG_MOCK = "⚠ [MOCK DATA] 模擬資料示範模式，非正式分析依據，勿作為實盤操作參考"
-_MSG_INSUFFICIENT = "⚠ 資料不足，只能做盤中初估，不能當正式短中長線操作依據"
+_MSG_MOCK = "[MOCK DATA] 模擬資料示範模式，非正式分析依據，勿作為實盤操作參考"
+_MSG_INSUFFICIENT = "資料不足，只能做盤中初估，不能當正式短中長線操作依據"
 
 
 class DataCompletenessGate:
