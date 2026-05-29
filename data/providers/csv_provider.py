@@ -203,6 +203,84 @@ class CSVProvider(BaseMarketDataProvider):
             return None
 
     # ------------------------------------------------------------------
+    # Fundamental (v0.3.9)
+    # ------------------------------------------------------------------
+
+    def get_financial_statement(
+        self, symbol: str, years: int = 5
+    ) -> Optional[pd.DataFrame]:
+        """Read fundamental.csv and return rows for symbol."""
+        path = os.path.join(
+            _BASE_DIR, "data", "import", "fundamental", "fundamental.csv"
+        )
+        if not os.path.isfile(path):
+            return None
+        try:
+            df = pd.read_csv(path, dtype=str)
+            df = df[df["symbol"].astype(str).str.strip() == str(symbol).strip()]
+            if df.empty:
+                return None
+            for col in ["eps", "gross_margin", "operating_margin",
+                        "operating_income", "net_income"]:
+                if col in df.columns:
+                    df[col] = pd.to_numeric(df[col], errors="coerce")
+            return df.reset_index(drop=True)
+        except Exception as exc:
+            logger.warning("CSVProvider.get_financial_statement(%s): %s", symbol, exc)
+            return None
+
+    def get_eps(self, symbol: str, years: int = 5) -> Optional[pd.DataFrame]:
+        """Return EPS rows from fundamental.csv."""
+        df = self.get_financial_statement(symbol, years=years)
+        if df is None or df.empty:
+            return None
+        cols = [c for c in ["year", "quarter", "symbol", "eps",
+                             "announcement_date", "source", "fetched_at"]
+                if c in df.columns]
+        result = df[cols].copy()
+        if "eps" in result.columns:
+            result = result[result["eps"].notna()]
+        return result if not result.empty else None
+
+    def get_profitability(self, symbol: str, years: int = 5) -> Optional[pd.DataFrame]:
+        """Return gross_margin / operating_margin rows from fundamental.csv."""
+        df = self.get_financial_statement(symbol, years=years)
+        if df is None or df.empty:
+            return None
+        cols = [c for c in ["year", "quarter", "symbol", "gross_margin",
+                             "operating_margin", "announcement_date",
+                             "source", "fetched_at"]
+                if c in df.columns]
+        return df[cols].copy() if cols else None
+
+    # ------------------------------------------------------------------
+    # Intraday (v0.3.9)
+    # ------------------------------------------------------------------
+
+    def get_intraday(
+        self,
+        symbol: str,
+        date: Optional[str] = None,
+        freq: str = "1min",
+    ) -> Optional[pd.DataFrame]:
+        """
+        Return intraday bars for a symbol from data/import/intraday/.
+
+        Parameters
+        ----------
+        symbol : str
+        date : optional YYYY-MM-DD string to filter single day
+        freq : '1min' or '5min'
+        """
+        try:
+            from data.intraday_data_importer import IntradayDataImporter
+            importer = IntradayDataImporter()
+            return importer.load_intraday(symbol, freq=freq, date=date)
+        except Exception as exc:
+            logger.warning("CSVProvider.get_intraday(%s): %s", symbol, exc)
+            return None
+
+    # ------------------------------------------------------------------
     # Health check
     # ------------------------------------------------------------------
 

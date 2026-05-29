@@ -64,6 +64,17 @@ data/providers/*.cache
 data/tick_cache/
 data/intraday_cache/
 data/api_cache/
+data_cache/api/
+
+# Intraday data (user imports, not committed — only README is tracked)
+data/import/intraday/
+!data/import/intraday/README.md
+
+# Fundamental CSV (fetched from public APIs, not committed)
+data/import/fundamental/fundamental.csv
+
+# Data fetch reports (generated artifacts)
+reports/data_fetch_report_*.md
 
 # Sample CSV files are tracked (allow commit)
 !data/import/profile/*_sample.csv

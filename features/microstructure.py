@@ -241,6 +241,15 @@ def compute_microstructure_single(
     df["ms_fake_breakout_risk"] = fake_breakout
     df["ms_no_chase_flag"] = no_chase_flag
 
+    # v0.3.9: tag data source for microstructure features
+    has_intraday = bool(intraday_lookup)
+    if has_intraday:
+        df["microstructure_source"] = "INTRADAY_1MIN"
+    elif not df.empty:
+        df["microstructure_source"] = "DAILY_PROXY"
+    else:
+        df["microstructure_source"] = "UNAVAILABLE"
+
     return df
 
 

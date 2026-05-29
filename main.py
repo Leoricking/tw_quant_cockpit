@@ -2458,6 +2458,394 @@ def cmd_strategy_preview(args: argparse.Namespace) -> None:
 
 
 # ---------------------------------------------------------------------------
+# v0.3.9 — Public Data API & Crawler Commands
+# ---------------------------------------------------------------------------
+
+def cmd_fetch_public_data(args: argparse.Namespace) -> None:
+    """Fetch public data (monthly revenue, fundamentals, institutional, margin)."""
+    logger_cmd = logging.getLogger("main.fetch_public_data")
+
+    symbol = getattr(args, "stock", None)
+    universe_size = getattr(args, "universe", None)
+    manifest_path = getattr(args, "manifest", None)
+    months = getattr(args, "months", 24)
+    source = getattr(args, "source", "auto")
+    dry_run = getattr(args, "dry_run", False)
+    replace = getattr(args, "replace", False)
+
+    print()
+    print("=" * 60)
+    print("  TW Quant Cockpit v0.3.9 — Fetch Public Data")
+    print("=" * 60)
+    if dry_run:
+        print("  [DRY-RUN] No files will be written.")
+    print()
+
+    # Resolve symbol list
+    symbols = []
+    if symbol:
+        symbols = [symbol]
+    elif universe_size:
+        try:
+            from data.universe_manifest import UniverseManifest
+            um = UniverseManifest()
+            df_mf = um.load()
+            if df_mf is not None and not df_mf.empty:
+                symbols = df_mf["symbol"].tolist()[:universe_size]
+            else:
+                from data.universe_manifest import _UNIVERSE_10
+                symbols = [s["symbol"] for s in _UNIVERSE_10[:universe_size]]
+        except Exception as exc:
+            logger_cmd.warning("Cannot load universe manifest: %s", exc)
+            symbols = []
+    elif manifest_path:
+        try:
+            import pandas as _pd
+            df_mf = _pd.read_csv(manifest_path)
+            symbols = df_mf["symbol"].tolist() if "symbol" in df_mf.columns else []
+        except Exception as exc:
+            logger_cmd.warning("Cannot read manifest %s: %s", manifest_path, exc)
+
+    if not symbols:
+        print("  ERROR: specify --stock SYMBOL, --universe N, or --manifest PATH")
+        sys.exit(1)
+
+    print(f"  Symbols  : {', '.join(symbols)}")
+    print(f"  Source   : {source}")
+    print(f"  Months   : {months}")
+    print()
+
+    try:
+        from data.fundamental_data_builder import FundamentalDataBuilder
+        builder = FundamentalDataBuilder(replace=replace, dry_run=dry_run)
+    except Exception as exc:
+        print(f"  ERROR: cannot init FundamentalDataBuilder: {exc}")
+        sys.exit(1)
+
+    all_results = []
+    failed_sources = []
+    for sym in symbols:
+        print(f"  [{sym}] Fetching...")
+        try:
+            result = builder.fetch_and_build(sym, months=months, source=source)
+            all_results.append(result)
+            warns = result.get("warnings", [])
+            rev = result.get("monthly_revenue")
+            fin = result.get("fundamental")
+            inst = result.get("institutional")
+            margin = result.get("margin")
+            print(f"         monthly_revenue: {'OK (' + str(rev.get('rows_added', 0)) + ' rows)' if rev else 'unavailable'}")
+            print(f"         fundamental    : {'OK (' + str(fin.get('rows_added', 0)) + ' rows)' if fin else 'unavailable'}")
+            print(f"         institutional  : {'OK (' + str(inst.get('rows_added', 0)) + ' rows)' if inst else 'unavailable'}")
+            print(f"         margin_short   : {'OK (' + str(margin.get('rows_added', 0)) + ' rows)' if margin else 'unavailable'}")
+            for w in warns:
+                print(f"         [WARN] {w}")
+                if "error" in w.lower() or "failed" in w.lower():
+                    failed_sources.append(w)
+        except Exception as exc:
+            logger_cmd.error("fetch_and_build(%s): %s", sym, exc)
+            all_results.append({"symbol": sym, "warnings": [str(exc)]})
+            failed_sources.append(f"{sym}: {exc}")
+
+    # Generate report
+    if not dry_run and all_results:
+        try:
+            from reports.data_fetch_report import DataFetchReport
+            rpt = DataFetchReport()
+            rpt_path = rpt.generate(
+                fetch_results=all_results,
+                failed_sources=failed_sources,
+            )
+            print()
+            print(f"  Report: {rpt_path}")
+        except Exception as exc:
+            logger_cmd.warning("Cannot generate fetch report: %s", exc)
+
+    print()
+    print("  Done. Run 'python main.py data-check --stock SYMBOL' to verify.")
+    print()
+
+
+def cmd_import_intraday(args: argparse.Namespace) -> None:
+    """Import intraday 1min / 5min data from XQ exports."""
+    logger_cmd = logging.getLogger("main.import_intraday")
+
+    folder = getattr(args, "folder", None)
+    file_path = getattr(args, "file", None)
+    symbol = getattr(args, "symbol", None)
+    freq = getattr(args, "freq", "1min")
+    dry_run = getattr(args, "dry_run", False)
+    replace = getattr(args, "replace", False)
+
+    print()
+    print("=" * 60)
+    print("  TW Quant Cockpit v0.3.9 — Import Intraday Data")
+    print("=" * 60)
+    if dry_run:
+        print("  [DRY-RUN] No files will be written.")
+    print()
+
+    try:
+        from data.intraday_data_importer import IntradayDataImporter
+        importer = IntradayDataImporter(dry_run=dry_run, replace=replace)
+    except Exception as exc:
+        print(f"  ERROR: cannot init IntradayDataImporter: {exc}")
+        sys.exit(1)
+
+    if file_path:
+        if not symbol:
+            from data.intraday_data_importer import _infer_symbol_from_path
+            symbol = _infer_symbol_from_path(file_path)
+        print(f"  File : {file_path}")
+        print(f"  Sym  : {symbol}   Freq: {freq}")
+        print()
+        result = importer.import_file(file_path, symbol=symbol, freq=freq)
+        rows = result.get("rows_imported", 0)
+        warns = result.get("warnings", [])
+        print(f"  Rows imported : {rows}")
+        for w in warns:
+            print(f"  [WARN] {w}")
+    elif folder:
+        print(f"  Folder : {folder}   Freq: {freq}")
+        print()
+        results = importer.import_folder(folder, freq=freq)
+        total = 0
+        for r in results:
+            sym = r.get("symbol", "?")
+            rows = r.get("rows_imported", 0)
+            warns = r.get("warnings", [])
+            total += rows
+            status = "OK" if not warns else f"WARN: {warns[0]}"
+            print(f"  {sym}: {rows} bars — {status}")
+        print()
+        print(f"  Total bars imported: {total}")
+    else:
+        print("  ERROR: specify --folder FOLDER or --file FILE")
+        sys.exit(1)
+
+    # Show current status
+    status = importer.status()
+    print()
+    print(f"  Intraday 1min files: {status.get('intraday_1min_files', 0)}")
+    print(f"  Intraday 5min files: {status.get('intraday_5min_files', 0)}")
+    print()
+
+
+def cmd_data_source_status(args: argparse.Namespace) -> None:  # noqa: ARG001
+    """Show comprehensive data source status including public API and intraday."""
+    print()
+    print("=" * 60)
+    print("  TW Quant Cockpit v0.3.9 — Data Source Status")
+    print("=" * 60)
+    print()
+
+    # 1. XQ daily CSV
+    try:
+        from data.providers.csv_provider import CSVProvider
+        csv_p = CSVProvider()
+        csv_ok = csv_p.health_check().get("ok", False)
+        print(f"  XQ daily CSV          : {'[OK]' if csv_ok else '[PARTIAL]'}")
+    except Exception as exc:
+        print(f"  XQ daily CSV          : [ERROR] {exc}")
+
+    # 2. Public monthly revenue
+    try:
+        import os
+        rev_path = os.path.join(os.path.dirname(os.path.abspath(__file__)),
+                                "data", "import", "monthly_revenue", "monthly_revenue.csv")
+        rev_ok = os.path.isfile(rev_path)
+        print(f"  Public monthly revenue: {'[OK]' if rev_ok else '[NOT IMPORTED]'}")
+    except Exception:
+        print("  Public monthly revenue: [UNKNOWN]")
+
+    # 3. Public fundamental
+    try:
+        import os
+        fin_path = os.path.join(os.path.dirname(os.path.abspath(__file__)),
+                                "data", "import", "fundamental", "fundamental.csv")
+        fin_ok = os.path.isfile(fin_path)
+        print(f"  Public fundamental    : {'[OK]' if fin_ok else '[NOT IMPORTED]'}")
+    except Exception:
+        print("  Public fundamental    : [UNKNOWN]")
+
+    # 4. Institutional detail
+    try:
+        import os
+        inst_path = os.path.join(os.path.dirname(os.path.abspath(__file__)),
+                                 "data", "import", "institutional", "institutional.csv")
+        inst_ok = os.path.isfile(inst_path)
+        print(f"  Institutional detail  : {'[OK]' if inst_ok else '[NOT IMPORTED]'}")
+    except Exception:
+        print("  Institutional detail  : [UNKNOWN]")
+
+    # 5. Margin short
+    try:
+        import os
+        margin_path = os.path.join(os.path.dirname(os.path.abspath(__file__)),
+                                   "data", "import", "margin", "margin.csv")
+        margin_ok = os.path.isfile(margin_path)
+        print(f"  Margin short          : {'[OK]' if margin_ok else '[NOT IMPORTED]'}")
+    except Exception:
+        print("  Margin short          : [UNKNOWN]")
+
+    # 6. Intraday 1min
+    try:
+        from data.intraday_data_importer import IntradayDataImporter
+        importer = IntradayDataImporter()
+        status = importer.status()
+        n1 = status.get("intraday_1min_files", 0)
+        print(f"  Intraday 1min         : {'[OK] ' + str(n1) + ' files' if n1 > 0 else '[NOT IMPORTED]'}")
+    except Exception as exc:
+        print(f"  Intraday 1min         : [ERROR] {exc}")
+
+    # 7. Intraday 5min
+    try:
+        n5 = status.get("intraday_5min_files", 0)
+        print(f"  Intraday 5min         : {'[OK] ' + str(n5) + ' files' if n5 > 0 else '[NOT IMPORTED]'}")
+    except Exception:
+        print("  Intraday 5min         : [UNKNOWN]")
+
+    # 8. Tick provider
+    print("  Tick provider         : [PLANNED] NOT CONFIGURED")
+
+    # 9. BidAsk provider
+    print("  BidAsk provider       : [PLANNED] NOT CONFIGURED")
+
+    # 10. Public data provider health
+    print()
+    print("  Public Data API Providers:")
+    try:
+        from data.providers.public_data_provider import PublicDataProvider
+        pdp = PublicDataProvider()
+        health = pdp.health_check()
+        for src_name, src_status in health.get("sources", {}).items():
+            src_ok = src_status.get("ok", False)
+            note = src_status.get("note", "")[:50]
+            marker = "[OK]  " if src_ok else "[WARN]"
+            print(f"    {marker} {src_name:<12} — {note}")
+    except Exception as exc:
+        print(f"    [ERROR] Cannot check public providers: {exc}")
+
+    print()
+    print("  Mega provider         : [PLANNED] not configured")
+    print("  Real order execution  : DISABLED")
+    print()
+    print("  Hints:")
+    print("    python main.py fetch-public-data --stock 2454 --months 24")
+    print("    python main.py import-intraday --folder D:\\XQ\\twqc_bundle\\intraday --freq 1min")
+    print()
+
+
+def cmd_enrich_universe_data(args: argparse.Namespace) -> None:
+    """Batch-fetch public data for all universe symbols and update quality."""
+    logger_cmd = logging.getLogger("main.enrich_universe_data")
+
+    universe_size = getattr(args, "universe", None)
+    manifest_path = getattr(args, "manifest", None)
+    months = getattr(args, "months", 24)
+    dry_run = getattr(args, "dry_run", False)
+
+    print()
+    print("=" * 60)
+    print("  TW Quant Cockpit v0.3.9 — Enrich Universe Data")
+    print("=" * 60)
+    if dry_run:
+        print("  [DRY-RUN] No files will be written.")
+    print()
+
+    # Resolve symbols from universe manifest
+    symbols = []
+    if manifest_path:
+        try:
+            import pandas as _pd
+            df_mf = _pd.read_csv(manifest_path)
+            symbols = df_mf["symbol"].tolist() if "symbol" in df_mf.columns else []
+        except Exception as exc:
+            logger_cmd.warning("Cannot read manifest %s: %s", manifest_path, exc)
+    elif universe_size:
+        try:
+            from data.universe_manifest import UniverseManifest
+            um = UniverseManifest()
+            df_mf = um.load()
+            if df_mf is not None and not df_mf.empty:
+                symbols = df_mf["symbol"].tolist()[:universe_size]
+        except Exception as exc:
+            logger_cmd.warning("Cannot load universe manifest: %s", exc)
+
+    if not symbols:
+        # Fall back to universe_10 default
+        try:
+            from data.universe_manifest import _UNIVERSE_10
+            symbols = [s["symbol"] for s in _UNIVERSE_10]
+            logger_cmd.info("Using default 10-stock universe")
+        except Exception:
+            print("  ERROR: no symbols found — build manifest first:")
+            print("    python main.py build-universe-manifest --size 10")
+            sys.exit(1)
+
+    print(f"  Symbols ({len(symbols)}): {', '.join(symbols[:5])}{'...' if len(symbols) > 5 else ''}")
+    print(f"  Months  : {months}")
+    print()
+
+    try:
+        from data.fundamental_data_builder import FundamentalDataBuilder
+        builder = FundamentalDataBuilder(dry_run=dry_run)
+    except Exception as exc:
+        print(f"  ERROR: {exc}")
+        sys.exit(1)
+
+    all_results = []
+    before_ready = {}
+    after_ready = {}
+
+    for sym in symbols:
+        print(f"  [{sym}] Fetching public data...")
+        try:
+            result = builder.fetch_and_build(sym, months=months)
+            all_results.append(result)
+            warns = result.get("warnings", [])
+            for w in warns:
+                print(f"         [WARN] {w}")
+        except Exception as exc:
+            logger_cmd.error("enrich %s: %s", sym, exc)
+            all_results.append({"symbol": sym, "warnings": [str(exc)]})
+
+    # Re-run universe quality
+    if not dry_run:
+        print()
+        print("  Updating universe quality...")
+        try:
+            from data.universe_quality_checker import UniverseQualityChecker
+            uqc = UniverseQualityChecker()
+            df_q = uqc.check_universe()
+            if df_q is not None and not df_q.empty:
+                summary = uqc.summarize_universe_quality(df_q)
+                conf = summary.get("statistical_confidence", "UNKNOWN")
+                short_ready = summary.get("short_term_ready_count", 0)
+                mid_ready = summary.get("mid_term_ready_count", 0)
+                print(f"  Statistical confidence : {conf}")
+                print(f"  Short-term ready       : {short_ready}/{len(df_q)}")
+                print(f"  Mid-term ready         : {mid_ready}/{len(df_q)}")
+        except Exception as exc:
+            logger_cmd.warning("Universe quality update failed: %s", exc)
+
+    # Generate report
+    if not dry_run and all_results:
+        try:
+            from reports.data_fetch_report import DataFetchReport
+            rpt = DataFetchReport()
+            rpt_path = rpt.generate(fetch_results=all_results)
+            print()
+            print(f"  Report: {rpt_path}")
+        except Exception as exc:
+            logger_cmd.warning("Cannot generate fetch report: %s", exc)
+
+    print()
+    print("  Done. Run 'python main.py universe-quality --report' to see updated quality.")
+    print()
+
+
+# ---------------------------------------------------------------------------
 # Argument parser
 # ---------------------------------------------------------------------------
 
@@ -2850,6 +3238,62 @@ def _build_parser() -> argparse.ArgumentParser:
         help="Data mode: real (default) or mock (demo only)",
     )
 
+    # --- fetch-public-data (v0.3.9) ---
+    p_fpd = subparsers.add_parser(
+        "fetch-public-data",
+        help="Fetch public data (monthly revenue, fundamentals, institutional, margin) via API/crawler",
+    )
+    grp_fpd = p_fpd.add_mutually_exclusive_group(required=True)
+    grp_fpd.add_argument("--stock",    default=None, help="Single stock symbol, e.g. 2454")
+    grp_fpd.add_argument("--universe", type=int, choices=[10, 30, 50], default=None,
+                         help="Fetch for universe of N stocks")
+    grp_fpd.add_argument("--manifest", default=None, help="Path to universe_manifest.csv")
+    p_fpd.add_argument("--months",   type=int, default=24, help="Months of revenue history (default: 24)")
+    p_fpd.add_argument("--source",   default="auto",
+                       choices=["auto", "finmind", "twse", "tpex", "mops"],
+                       help="Data source (default: auto — tries all in fallback order)")
+    p_fpd.add_argument("--all-sources", dest="all_sources", action="store_true",
+                       help="Try all sources (same as --source auto)")
+    p_fpd.add_argument("--dry-run",  action="store_true", dest="dry_run",
+                       help="Fetch only, do not write CSV files")
+    p_fpd.add_argument("--replace",  action="store_true",
+                       help="Replace existing data (default: append and deduplicate)")
+
+    # --- import-intraday (v0.3.9) ---
+    p_ii = subparsers.add_parser(
+        "import-intraday",
+        help="Import XQ 1min / 5min intraday data to data/import/intraday/",
+    )
+    grp_ii = p_ii.add_mutually_exclusive_group(required=True)
+    grp_ii.add_argument("--folder", default=None, help="Folder containing intraday CSV/Excel files")
+    grp_ii.add_argument("--file",   default=None, help="Single intraday CSV/Excel file")
+    p_ii.add_argument("--symbol",  default=None, help="Symbol (required with --file if not in filename)")
+    p_ii.add_argument("--freq",    default="1min", choices=["1min", "5min"],
+                      help="Bar frequency (default: 1min)")
+    p_ii.add_argument("--dry-run", action="store_true", dest="dry_run",
+                      help="Check only, do not write files")
+    p_ii.add_argument("--replace", action="store_true",
+                      help="Replace existing intraday CSV")
+
+    # --- data-source-status (v0.3.9) ---
+    subparsers.add_parser(
+        "data-source-status",
+        help="Show comprehensive data source status including public API, intraday, and tick/bidask",
+    )
+
+    # --- enrich-universe-data (v0.3.9) ---
+    p_eud = subparsers.add_parser(
+        "enrich-universe-data",
+        help="Batch-fetch public data for all universe symbols and update quality (v0.3.9)",
+    )
+    grp_eud = p_eud.add_mutually_exclusive_group(required=False)
+    grp_eud.add_argument("--universe", type=int, choices=[10, 30, 50], default=None,
+                         help="Universe size to enrich")
+    grp_eud.add_argument("--manifest", default=None, help="Path to universe_manifest.csv")
+    p_eud.add_argument("--months",   type=int, default=24, help="Months of revenue history (default: 24)")
+    p_eud.add_argument("--dry-run",  action="store_true", dest="dry_run",
+                       help="Fetch only, do not write CSV files")
+
     return parser
 
 
@@ -2914,6 +3358,11 @@ def main() -> None:
         "batch-import-xq":         cmd_batch_import_xq,
         "universe-quality":        cmd_universe_quality,
         "run-validation-suite":    cmd_run_validation_suite,
+        # TW Quant Cockpit v0.3.9
+        "fetch-public-data":       cmd_fetch_public_data,
+        "import-intraday":         cmd_import_intraday,
+        "data-source-status":      cmd_data_source_status,
+        "enrich-universe-data":    cmd_enrich_universe_data,
     }
 
     if args.command is None:

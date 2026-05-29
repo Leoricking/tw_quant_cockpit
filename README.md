@@ -1498,13 +1498,89 @@ python main.py run-validation-suite --mode real --min-symbols 10
 
 > **[!] 不構成投資建議。仍禁止實盤自動下單（TWQC_ENABLE_REAL_ORDER=false）。**
 
+### v0.3.9 — Public Data API & Crawler Data Layer (implemented)
+
+公開資料 API / 爬蟲資料層：自動補足月營收、EPS、毛利率、法人、融資券與 Intraday 資料。
+
+#### 新增指令
+
+| 指令 | 用途 |
+|------|------|
+| `python main.py fetch-public-data --stock 2454 --months 24` | 抓取月營收 / 基本面 / 法人 / 融資券 |
+| `python main.py fetch-public-data --universe 10` | 批次抓取 universe 公開資料 |
+| `python main.py fetch-public-data --source finmind` | 指定來源 |
+| `python main.py fetch-public-data --dry-run` | 只查詢不寫檔 |
+| `python main.py import-intraday --folder D:\XQ\... --freq 1min` | 匯入 1 分 K |
+| `python main.py import-intraday --file 2454_1min.csv --symbol 2454 --freq 1min` | 單檔匯入 |
+| `python main.py data-source-status` | 顯示所有資料來源狀態 |
+| `python main.py enrich-universe-data --universe 10` | 批次補充 universe 公開資料 |
+
+#### 資料來源優先順序
+
+```
+FinMind → TWSE/TPEx OpenAPI → MOPS crawler → existing CSV
+```
+
+| 來源 | 資料類型 | Token |
+|------|---------|-------|
+| FinMind | 月營收、財報、法人、融資券 | 選填 (FINMIND_TOKEN env var) |
+| TWSE OpenAPI | 上市月營收、法人、融資券 | 不需要 |
+| TPEx OpenAPI | 上櫃月營收、法人、融資券 | 不需要 |
+| MOPS 爬蟲 | 月營收、財報公告日、EPS | 不需要 |
+
+#### 欄位 Schema
+
+```
+monthly_revenue.csv : month,symbol,name,revenue,revenue_mom,revenue_yoy,accumulated_revenue,accumulated_yoy,source,fetched_at
+fundamental.csv     : year,quarter,symbol,eps,gross_margin,operating_margin,operating_income,net_income,announcement_date,source,fetched_at
+institutional.csv   : date,symbol,foreign_net_buy,trust_net_buy,dealer_net_buy,...,source,fetched_at
+margin.csv          : date,symbol,margin_balance,margin_change,short_balance,short_change,sbl_short_balance,source,fetched_at
+intraday (1min/5min): symbol,date,time,datetime,open,high,low,close,volume,source
+```
+
+#### Tick / BidAsk 狀態
+
+目前為 **PLANNED / NOT CONFIGURED**。不假造 tick / 五檔資料。
+
+#### 資料品質規則更新 (v0.3.9)
+
+| 分析類型 | 最低需求 |
+|---------|---------|
+| 短線 | daily ≥ 60, institutional ≥ 5, margin ≥ 5 |
+| 中線 | daily ≥ 120, monthly_revenue ≥ 12, institutional ≥ 20, margin ≥ 20, holder ≥ 2 |
+| 長線 | daily ≥ 240, monthly_revenue ≥ 12, eps ≥ 4 quarters, gross/operating margin available, holder ≥ 2 |
+| Intraday | intraday_1min ≥ 20 trading days |
+
+#### 新增檔案
+
+| 檔案 | 說明 |
+|------|------|
+| `data/api_cache.py` | TTL 快取，避免重複打公開網站 |
+| `data/providers/public_data_provider.py` | 統一公開資料 provider 介面（含 fallback 鏈） |
+| `data/providers/twse_public_provider.py` | TWSE OpenAPI adapter |
+| `data/providers/tpex_public_provider.py` | TPEx OpenAPI adapter |
+| `data/providers/mops_crawler_provider.py` | MOPS 爬蟲 provider（rate-limit + cache） |
+| `data/providers/finmind_provider.py` | FinMind API adapter（FINMIND_TOKEN env var） |
+| `data/fundamental_data_builder.py` | 合併公開資料到標準 CSV |
+| `data/intraday_data_importer.py` | 1 分 K / 5 分 K 匯入與標準化 |
+| `data/tick_bidask_interface.py` | tick / bidask future interface (PLANNED) |
+| `reports/data_fetch_report.py` | 資料抓取 Markdown 報告 |
+| `docs/public_data_layer.md` | 公開資料層完整說明 |
+
+#### 注意事項
+
+- 不接兆豐 API，不接 Shioaji，不自動下單。
+- `announcement_date` 缺失時財報為 PARTIAL，不允許嚴格回測結論。
+- FinMind token 只能透過 `FINMIND_TOKEN` 環境變數設定，不寫入程式。
+- 所有 source 失敗時顯示 warning，不 crash。
+
+> **[!] 不構成投資建議。仍禁止實盤自動下單（TWQC_ENABLE_REAL_ORDER=false）。**
+
 ### v0.3.5 (planned)
 - GUI 顯示回測驗證報告與 Watchlist 追蹤
 
 ### v0.4 (planned)
-- TWSE / TPEx / MOPS / data.gov.tw 自動補月營收與基本面
-- 兆豐 API 只讀即時行情 / 五檔 / 逐筆
-- 不再依賴 XQ 作為核心資料源
+- 兆豐 API 只讀即時行情 / 五檔 / 逐筆（read-only）
 - 不做實盤自動下單
 
 ---

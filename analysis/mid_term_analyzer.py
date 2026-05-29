@@ -27,7 +27,8 @@ class MidTermAnalyzer:
     def analyze(self, symbol, price_data=None, weekly_data=None,
                 chip_data=None, fundamental_data=None, mode: str = 'mock',
                 sector_peers=None, theme_tags=None, leader_df=None,
-                eps_ttm=None, gross_margin=None, operating_margin=None):
+                eps_ttm=None, gross_margin=None, operating_margin=None,
+                monthly_revenue_rows=None, fundamental_ready: bool = False):
         """
         Analyze mid-term opportunity for a symbol.
 
@@ -218,6 +219,12 @@ class MidTermAnalyzer:
                 formal_allowed = False
                 warning = (warning or '') + ' 缺基本面資料，中線不允許正式判斷'
                 warning = warning.strip()
+            # v0.3.9: monthly_revenue >= 12 gate for mid-term formal analysis
+            _rev_rows = len(monthly_revenue_rows) if monthly_revenue_rows else 0
+            if _rev_rows < 12 and has_real_data:
+                if formal_allowed:
+                    warning = (warning or '') + f' 月營收 {_rev_rows} 期 < 12，中線分析降為 PARTIAL'
+                    warning = warning.strip()
         except Exception as _fqe:
             logger.debug("Phase 2 fundamental_quality in MidTermAnalyzer: %s", _fqe)
 

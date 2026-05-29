@@ -105,6 +105,28 @@ class BaseMarketDataProvider:
         """Return monthly revenue DataFrame or None."""
         return None
 
+    def get_financial_statement(self, symbol: str, years: int = 5):
+        """
+        Return financial statement DataFrame (EPS, gross_margin, operating_margin,
+        operating_income, net_income, announcement_date) or None.
+
+        Columns: year, quarter, symbol, eps, gross_margin, operating_margin,
+                 operating_income, net_income, announcement_date, source, fetched_at
+        """
+        return None
+
+    def get_eps(self, symbol: str, years: int = 5):
+        """Return EPS history DataFrame or None. Subset of get_financial_statement."""
+        return None
+
+    def get_profitability(self, symbol: str, years: int = 5):
+        """Return gross_margin / operating_margin DataFrame or None."""
+        return None
+
+    def get_announcement_dates(self, symbol: str):
+        """Return financial announcement dates DataFrame or None."""
+        return None
+
     def get_holder(self, symbol: str):
         """Return holder structure DataFrame or None."""
         return None

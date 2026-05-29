@@ -306,8 +306,27 @@ def compute_indicators(
         if ms_fn is not None:
             has_open = "open" in combined.columns
             if has_open:
+                # v0.3.9: auto-load intraday data when not explicitly provided
+                _intraday = intraday_df
+                if _intraday is None and "stock_id" in combined.columns:
+                    _intraday_parts = []
+                    try:
+                        from data.intraday_data_importer import IntradayDataImporter
+                        _importer = IntradayDataImporter()
+                        for _sid in combined["stock_id"].unique():
+                            _idf = _importer.load_intraday(str(_sid), freq="1min")
+                            if _idf is not None and not _idf.empty:
+                                if "stock_id" not in _idf.columns:
+                                    _idf = _idf.copy()
+                                    _idf["stock_id"] = _sid
+                                _intraday_parts.append(_idf)
+                    except Exception as _exc:
+                        logger.debug("auto intraday load failed: %s", _exc)
+                    if _intraday_parts:
+                        _intraday = pd.concat(_intraday_parts, ignore_index=True)
+                        logger.debug("Microstructure: loaded intraday data for %d stocks", len(_intraday_parts))
                 try:
-                    combined = ms_fn(combined, intraday_df=intraday_df)
+                    combined = ms_fn(combined, intraday_df=_intraday)
                     logger.debug("Microstructure features computed.")
                 except Exception as exc:
                     logger.warning("Microstructure computation failed: %s", exc)

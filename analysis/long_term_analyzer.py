@@ -27,7 +27,9 @@ class LongTermAnalyzer:
     def analyze(self, symbol, price_data=None, weekly_data=None,
                 monthly_data=None, fundamental_data=None, mode: str = 'mock',
                 monthly_revenue_rows=None, eps_ttm=None,
-                gross_margin=None, operating_margin=None):
+                gross_margin=None, operating_margin=None,
+                fundamental_ready: bool = False,
+                announcement_date: str = None):
         """
         Analyze long-term opportunity for a symbol.
 
@@ -205,6 +207,14 @@ class LongTermAnalyzer:
             if _missing_fundamental:
                 formal_allowed = False
                 warning = (warning or '') + ' 缺 EPS / 毛利率 / 月營收，長線不允許正式價位判斷'
+                warning = warning.strip()
+            # v0.3.9: fundamental_ready gate
+            if not fundamental_ready and has_real_data:
+                formal_allowed = False
+                warning = (warning or '') + ' fundamental_ready=False，長線正式判斷降為 PARTIAL'
+                warning = warning.strip()
+            if announcement_date is None and (eps_ttm is not None or gross_margin is not None):
+                warning = (warning or '') + ' [WARN] announcement_date 未知 — fundamental timing may be approximate'
                 warning = warning.strip()
         except Exception as _fqe:
             logger.debug("Phase 2 fundamental_quality in LongTermAnalyzer: %s", _fqe)

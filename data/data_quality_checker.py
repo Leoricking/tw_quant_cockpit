@@ -64,27 +64,80 @@ class DataQualityChecker:
         holder_rows = len(holder.get('rows', [])) if holder else 0
         tc_rows = len(trust_cost.get('rows', [])) if trust_cost else 0
 
-        # Formal analysis rules
+        # v0.3.9: additional checks — fundamental.csv, intraday
+        fundamental_rows = 0
+        eps_rows = 0
+        gross_margin_available = False
+        operating_margin_available = False
+        announcement_date_available = False
+        intraday_1min_rows = 0
+        intraday_5min_rows = 0
+
+        try:
+            import os as _os
+            fin_path = _os.path.join(_BASE_DIR, "data", "import", "fundamental", "fundamental.csv")
+            if _os.path.isfile(fin_path):
+                import csv as _csv2
+                with open(fin_path, 'r', encoding='utf-8-sig') as fh:
+                    reader = _csv2.DictReader(fh)
+                    for row in reader:
+                        if row.get('symbol', '').strip() == sym:
+                            fundamental_rows += 1
+                            if row.get('eps', '').strip() not in ('', 'None', 'nan'):
+                                eps_rows += 1
+                            if row.get('gross_margin', '').strip() not in ('', 'None', 'nan'):
+                                gross_margin_available = True
+                            if row.get('operating_margin', '').strip() not in ('', 'None', 'nan'):
+                                operating_margin_available = True
+                            if row.get('announcement_date', '').strip() not in ('', 'None', 'nan'):
+                                announcement_date_available = True
+        except Exception as _exc:
+            logger.debug("data_quality_checker: fundamental check failed: %s", _exc)
+
+        try:
+            from data.intraday_data_importer import IntradayDataImporter
+            _importer = IntradayDataImporter()
+            _df1 = _importer.load_intraday(sym, freq="1min")
+            if _df1 is not None and not _df1.empty:
+                intraday_1min_rows = len(_df1)
+            _df5 = _importer.load_intraday(sym, freq="5min")
+            if _df5 is not None and not _df5.empty:
+                intraday_5min_rows = len(_df5)
+        except Exception as _exc:
+            logger.debug("data_quality_checker: intraday check failed: %s", _exc)
+
+        # Formal analysis rules (updated v0.3.9)
         daytrade_allowed = False  # Phase 4: intraday/bidask not yet supported
+        intraday_ready = intraday_1min_rows >= (20 * 270)  # 20 trading days * 270 bars/day
 
         short_allowed = (
-            daily_rows >= 20
+            daily_rows >= 60
             and inst_rows >= 5
             and margin_rows >= 5
         )
 
         mid_allowed = (
-            daily_rows >= 60
-            and rev_rows >= 6
-            and inst_rows >= 5
-            and margin_rows >= 5
+            daily_rows >= 120
+            and rev_rows >= 12
+            and inst_rows >= 20
+            and margin_rows >= 20
             and holder_rows >= 2
         )
 
         long_allowed = (
-            daily_rows >= 120
+            daily_rows >= 240
             and rev_rows >= 12
+            and eps_rows >= 4
+            and gross_margin_available
+            and operating_margin_available
             and holder_rows >= 2
+        )
+
+        fundamental_ready = (
+            fundamental_rows >= 4
+            and eps_rows >= 4
+            and gross_margin_available
+            and operating_margin_available
         )
 
         # Missing data list
@@ -103,8 +156,12 @@ class DataQualityChecker:
             missing.append('holder')
         if tc_rows == 0:
             missing.append('trust_cost')
-        # Phase 4 always missing intraday/bidask for daytrade
-        missing.extend(['intraday', 'bidask'])
+        if fundamental_rows == 0:
+            missing.append('fundamental')
+        if intraday_1min_rows == 0:
+            missing.append('intraday_1min')
+        # Phase 4 always missing bidask for daytrade
+        missing.extend(['bidask'])
 
         # Recommendations
         recommendations = []
@@ -152,7 +209,16 @@ class DataQualityChecker:
             'monthly_revenue_rows': rev_rows,
             'holder_rows': holder_rows,
             'trust_cost_rows': tc_rows,
+            'fundamental_rows': fundamental_rows,
+            'eps_rows': eps_rows,
+            'gross_margin_available': gross_margin_available,
+            'operating_margin_available': operating_margin_available,
+            'announcement_date_available': announcement_date_available,
+            'intraday_1min_rows': intraday_1min_rows,
+            'intraday_5min_rows': intraday_5min_rows,
             'daytrade_allowed': daytrade_allowed,
+            'intraday_ready': intraday_ready,
+            'fundamental_ready': fundamental_ready,
             'short_allowed': short_allowed,
             'mid_allowed': mid_allowed,
             'long_allowed': long_allowed,

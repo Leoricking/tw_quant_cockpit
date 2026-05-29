@@ -33,6 +33,8 @@ def analyze_fundamental_quality(
     operating_margin_prev: float = None,
     price_vs_ma20: float = None,
     price_vs_ma60: float = None,
+    announcement_date: str = None,
+    fundamental_ready: bool = False,
 ) -> dict:
     """
     Evaluate fundamental data quality and flag risks.
@@ -185,10 +187,19 @@ def analyze_fundamental_quality(
         score -= 0.05
         warnings.append(result["pre_earnings_price_warning"])
 
-    # ── Data leakage TODO note ────────────────────────────────────────────
-    reasons.append(
-        "TODO: 未來 API 須用 announcement_date 確認財報資料時間，本階段為 PARTIAL 指示性判斷"
-    )
+    # ── announcement_date guard (v0.3.9) ─────────────────────────────────
+    if announcement_date:
+        reasons.append(f"財報公告日已知: {announcement_date}，資料時間可靠")
+    else:
+        warnings.append(
+            "[WARN] announcement_date 未知 — fundamental timing may be approximate"
+        )
+
+    # ── fundamental_ready gate (v0.3.9) ──────────────────────────────────
+    if not fundamental_ready and has_data:
+        warnings.append(
+            "基本面資料不完整 (fundamental_ready=False)，長線正式判斷需更多財報資料"
+        )
 
     # ── Final score clamp ─────────────────────────────────────────────────
     if not has_data:
