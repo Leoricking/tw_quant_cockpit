@@ -2051,17 +2051,22 @@ def cmd_time_machine_preview(args: argparse.Namespace) -> None:
         print(f"    WARNING: Volume Profile unavailable — {exc}")
 
     # Compute Microstructure
-    print()
-    print("  [Opening Microstructure]  (daily proxy — no intraday data)")
     try:
         from features.microstructure import compute_microstructure_single
-        ms_df = compute_microstructure_single(daily_df)
+        from data.intraday_data_importer import IntradayDataImporter
+        _importer = IntradayDataImporter()
+        _idf = _importer.load_intraday(symbol, freq="1min")
+        ms_df = compute_microstructure_single(daily_df, intraday_df=_idf)
         last = ms_df.iloc[-1]
+        _ms_src = last.get("microstructure_source", "UNAVAILABLE")
         ms_score = last.get("microstructure_score", float("nan"))
         fake_risk = last.get("ms_fake_breakout_risk", float("nan"))
         no_chase = last.get("ms_no_chase_flag", float("nan"))
         bsp = last.get("buy_sell_pressure", float("nan"))
         ovr = last.get("opening_volume_ratio", float("nan"))
+
+        print()
+        print(f"  [Opening Microstructure]  ({_ms_src})")
 
         def _fmt(v):
             return f"{v:.3f}" if v == v else "NaN"
@@ -2071,9 +2076,10 @@ def cmd_time_machine_preview(args: argparse.Namespace) -> None:
         print(f"    Opening volume ratio : {_fmt(ovr)}")
         print(f"    Fake breakout risk   : {'YES' if fake_risk == 1 else ('No' if fake_risk == 0 else 'unknown')}")
         print(f"    No-chase flag        : {'YES' if no_chase == 1 else ('No' if no_chase == 0 else 'unknown')}")
-        print()
-        print("    NOTE: intraday / tick data not available.")
-        print("    Scores are daily OHLCV proxies.  Import intraday data for exact values.")
+        if _ms_src == "DAILY_PROXY":
+            print()
+            print("    NOTE: intraday / tick data not available.")
+            print("    Scores are daily OHLCV proxies.  Import intraday data for exact values.")
     except Exception as exc:
         logger_cmd.warning("Microstructure computation failed: %s", exc)
         print(f"    WARNING: Microstructure unavailable — {exc}")
@@ -2169,12 +2175,14 @@ def cmd_feature_preview(args: argparse.Namespace) -> None:
             "vp_value_area_high", "vp_value_area_low", "vp_price_in_value_area",
         ])
 
-        _show("Opening Microstructure (盤口微觀) — daily proxy", [
+        _ms_source = last.get("microstructure_source", "UNAVAILABLE")
+        _show(f"Opening Microstructure (盤口微觀) — {_ms_source}", [
             "opening_return_15m", "opening_volume_ratio",
             "opening_high_break", "opening_low_break",
             "large_trade_ratio", "buy_sell_pressure",
             "microstructure_score", "ms_fake_breakout_risk", "ms_no_chase_flag",
         ])
+        print(f"    {'microstructure_source':<35} : {_ms_source}")
 
         print()
         print(f"  Total features computed: {len(feat_df.columns)}")
