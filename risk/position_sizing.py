@@ -221,6 +221,361 @@ def compute_stop_loss_price(
     return max(0.0, entry_price - atr_multiplier * atr)
 
 
+# ---------------------------------------------------------------------------
+# v0.3.6 – Capital allocation engine (老王教學: 20201112 資金如何分批佈局)
+# ---------------------------------------------------------------------------
+
+def portfolio_capital_allocation(
+    portfolio_value: float,
+    strategy_capital_ratio: float = 0.30,
+    n_positions: int = 4,
+    entry_price: float = 0.0,
+    atr: float = None,
+    open_gap_pct: float = 0.0,
+) -> dict:
+    """
+    Compute the overall capital plan and per-stock batch sizing.
+
+    Rules:
+    - Only ``strategy_capital_ratio`` (default 30%) of total portfolio is
+      deployed into strategy trades.
+    - That capital is split equally across ``n_positions`` (3–5 stocks).
+    - Each stock is entered in two batches (first ~60%, second ~40%).
+    - Opening gap > 3% flags a no-chase condition.
+
+    Parameters
+    ----------
+    portfolio_value : float
+        Total portfolio value (NTD).
+    strategy_capital_ratio : float
+        Fraction of portfolio to deploy in strategy (default 0.30).
+    n_positions : int
+        Number of target positions (3–5).
+    entry_price : float
+        Expected entry price per share (used to convert NTD → shares).
+    atr : float, optional
+        ATR for stop-loss estimation.
+    open_gap_pct : float
+        Today's opening gap percentage (e.g. 0.02 = +2%).
+
+    Returns
+    -------
+    dict
+        position_plan              : str   human-readable plan summary
+        portfolio_weight_warning   : str
+        first_entry_size           : float  NTD for first batch
+        second_entry_size          : float  NTD for second batch
+        max_single_stock_weight    : float  fraction of total portfolio
+        take_profit_half_price     : float | None
+        take_profit_half_reason    : str
+        remaining_trailing_stop    : float | None
+        breakeven_exit_price       : float | None
+        capital_reallocation_suggestion : str
+        no_chase_reason            : str
+    """
+    n_pos = max(3, min(5, n_positions))
+    strat_capital = portfolio_value * strategy_capital_ratio
+    per_stock_capital = strat_capital / n_pos
+
+    # Per-stock batches (first ~60%, second ~40%)
+    first_entry_size  = per_stock_capital * 0.60
+    second_entry_size = per_stock_capital * 0.40
+
+    max_single_stock_weight = per_stock_capital / portfolio_value
+
+    # No-chase check
+    no_chase_reason = ""
+    if open_gap_pct > 0.03:
+        no_chase_reason = (
+            f"開盤跳空 {open_gap_pct*100:.1f}% > 3%，列入不追價清單"
+        )
+
+    # Take-profit half price (ATR-based or fallback +5%)
+    tp_half_price  = None
+    tp_half_reason = ""
+    if entry_price and entry_price > 0:
+        if atr and atr > 0:
+            tp_half_price  = round(entry_price + 2.0 * atr, 2)
+            tp_half_reason = "ATR × 2 目標達停利先賣一半"
+        else:
+            tp_half_price  = round(entry_price * 1.05, 2)
+            tp_half_reason = "開盤小開高 +5% 或單日漲幅 5% 以上，先賣一半（ATR 不可用，使用 5% 估算）"
+
+    # Trailing stop (breakeven if cost not yet pulled away; trail otherwise)
+    breakeven_exit = round(entry_price * 1.001, 2) if entry_price and entry_price > 0 else None
+    remaining_trail = (
+        round(entry_price * 0.97, 2) if entry_price and entry_price > 0 else None
+    )
+
+    # Capital reallocation hint
+    realloc = (
+        "若第一批已停利且股票脫離低風險區，剩餘資金應轉向其他候選股，"
+        "不要硬加碼原股"
+    )
+
+    plan_summary = (
+        f"策略資金 {strategy_capital_ratio*100:.0f}% = "
+        f"NTD {strat_capital:,.0f}，"
+        f"分配 {n_pos} 檔，"
+        f"每檔約 NTD {per_stock_capital:,.0f}"
+        f"（第一批 {first_entry_size:,.0f} / 第二批 {second_entry_size:,.0f}）"
+    )
+
+    weight_warning = (
+        f"單一持股上限 {max_single_stock_weight*100:.1f}%，"
+        "不可因其他股票已噴出而任意加碼到失衡"
+    )
+
+    return {
+        "position_plan":                plan_summary,
+        "portfolio_weight_warning":     weight_warning,
+        "first_entry_size":             round(first_entry_size, 0),
+        "second_entry_size":            round(second_entry_size, 0),
+        "max_single_stock_weight":      round(max_single_stock_weight, 4),
+        "take_profit_half_price":       tp_half_price,
+        "take_profit_half_reason":      tp_half_reason,
+        "remaining_trailing_stop":      remaining_trail,
+        "breakeven_exit_price":         breakeven_exit,
+        "capital_reallocation_suggestion": realloc,
+        "no_chase_reason":              no_chase_reason,
+    }
+
+
+def first_batch_entry(
+    entry_price: float,
+    open_price: float,
+    risk_acceptable: bool = True,
+) -> dict:
+    """
+    Determine whether the first batch entry is valid.
+
+    Rules (老王 20201112):
+    - Small gap-up 0%–1.5% at open: first batch OK if risk is acceptable.
+    - Gap > 3%: no chase, list in no_chase_reason.
+    - No pre-market market-order chasing.
+
+    Parameters
+    ----------
+    entry_price : float   Reference / previous close.
+    open_price  : float   Today's opening price.
+    risk_acceptable : bool  External risk gate (volatility, stop distance, etc.).
+
+    Returns
+    -------
+    dict
+        can_enter_first_batch : bool
+        gap_pct               : float
+        no_chase_reason       : str
+    """
+    gap_pct = (open_price - entry_price) / entry_price if entry_price > 0 else 0.0
+
+    if gap_pct > 0.03:
+        return {
+            "can_enter_first_batch": False,
+            "gap_pct": round(gap_pct, 4),
+            "no_chase_reason": (
+                f"開盤跳空 {gap_pct*100:.1f}% > 3%，禁止追高，列入不追價清單"
+            ),
+        }
+
+    if 0.0 <= gap_pct <= 0.015 and risk_acceptable:
+        return {
+            "can_enter_first_batch": True,
+            "gap_pct": round(gap_pct, 4),
+            "no_chase_reason": "",
+        }
+
+    return {
+        "can_enter_first_batch": False,
+        "gap_pct": round(gap_pct, 4),
+        "no_chase_reason": (
+            "風險不在可接受範圍，或開盤漲幅不符合第一批條件"
+        ),
+    }
+
+
+def second_batch_entry(
+    current_price: float,
+    entry_cost: float,
+    ma5: float = None,
+    ma10: float = None,
+    ma20: float = None,
+    support_price: float = None,
+    first_batch_sold: bool = False,
+    stock_left_low_risk_zone: bool = False,
+) -> dict:
+    """
+    Determine whether adding a second batch is justified.
+
+    Rules (老王 20201112):
+    - Only add when price pulls back to MA5 / MA10 / MA20 or near cost and holds.
+    - Never chase after a breakout spike.
+    - If first batch already sold and stock has left the low-risk zone,
+      redirect capital to other candidates instead.
+
+    Returns
+    -------
+    dict
+        can_add_second_batch     : bool
+        second_batch_reason      : str
+        redirect_capital_reason  : str
+    """
+    redirect_reason = ""
+    if first_batch_sold and stock_left_low_risk_zone:
+        redirect_reason = (
+            "第一批已停利且股票脫離低風險區，剩餘資金應轉向其他候選股，不要硬加原股"
+        )
+        return {
+            "can_add_second_batch": False,
+            "second_batch_reason":  "",
+            "redirect_capital_reason": redirect_reason,
+        }
+
+    tolerance = 0.02  # 2% tolerance for "near" support
+    candidates = []
+
+    for label, level in [
+        ("MA5", ma5), ("MA10", ma10), ("MA20", ma20), ("支撐價", support_price), ("成本", entry_cost)
+    ]:
+        if level and level > 0:
+            if abs(current_price - level) / level <= tolerance and current_price >= level:
+                candidates.append(label)
+
+    if candidates:
+        return {
+            "can_add_second_batch": True,
+            "second_batch_reason": (
+                f"回測 {' / '.join(candidates)} 附近不破，可加第二批"
+            ),
+            "redirect_capital_reason": "",
+        }
+
+    # Check if price already broke far above cost (spike-chasing risk)
+    if entry_cost and entry_cost > 0:
+        gap = (current_price - entry_cost) / entry_cost
+        if gap > 0.05:
+            return {
+                "can_add_second_batch": False,
+                "second_batch_reason":  "",
+                "redirect_capital_reason": (
+                    f"股價已大幅高於成本 {gap*100:.1f}%，不可因股價噴出而追高加碼"
+                ),
+            }
+
+    return {
+        "can_add_second_batch": False,
+        "second_batch_reason":  "尚未回測任何均線或成本支撐，等待更好的加碼點",
+        "redirect_capital_reason": "",
+    }
+
+
+def take_profit_half(
+    current_price: float,
+    entry_price: float,
+    take_profit_target: float = None,
+    previous_high: float = None,
+    daily_gain_pct: float = None,
+) -> dict:
+    """
+    Determine whether to take half profit now.
+
+    Rules (老王 20201112):
+    - Trigger: reached take-profit target, broke previous high resistance,
+      or single-day gain >= 5%.
+    - Action: sell half position.
+
+    Returns
+    -------
+    dict
+        take_profit_half_price  : float | None
+        take_profit_half_reason : str
+        should_take_half        : bool
+    """
+    reasons = []
+
+    at_target = take_profit_target and current_price >= take_profit_target * 0.99
+    at_prev_high = previous_high and current_price >= previous_high * 0.99
+    single_day_surge = daily_gain_pct is not None and daily_gain_pct >= 0.05
+
+    if at_target:
+        reasons.append(f"達停利目標 ({take_profit_target:.2f})")
+    if at_prev_high:
+        reasons.append(f"突破前高壓力 ({previous_high:.2f})")
+    if single_day_surge:
+        reasons.append(f"單日漲幅 {daily_gain_pct*100:.1f}% ≥ 5%")
+
+    should_take = bool(reasons)
+    return {
+        "take_profit_half_price":  round(current_price, 2) if should_take else None,
+        "take_profit_half_reason": "；".join(reasons) if reasons else "",
+        "should_take_half":        should_take,
+    }
+
+
+def remaining_position_management(
+    current_price: float,
+    entry_price: float,
+    holding_mode: str = "SHORT_TERM",
+    ma5: float = None,
+    ma10: float = None,
+    ma20: float = None,
+) -> dict:
+    """
+    Manage the remaining half position after the first half was sold.
+
+    Rules (老王 20201112):
+    - SHORT_TERM   → trail MA5
+    - TRUST_TREND  → trail MA10
+    - SWING        → trail MA20 / monthly MA
+    - If remaining position hasn't pulled away from cost → use breakeven exit.
+    - If remaining position has pulled well above cost → use trailing stop.
+
+    Returns
+    -------
+    dict
+        primary_trailing_ma    : int
+        trailing_stop_price    : float | None
+        breakeven_exit_price   : float | None
+        management_reason      : str
+    """
+    mode_map = {
+        "SHORT_TERM":  (5,  ma5),
+        "TRUST_TREND": (10, ma10),
+        "SWING":       (20, ma20),
+    }
+    ma_period, ma_value = mode_map.get(holding_mode, (20, ma20))
+
+    pulled_away = (
+        entry_price and entry_price > 0
+        and current_price > entry_price * 1.03
+    )
+
+    trailing_stop = round(ma_value, 2) if (ma_value and ma_value > 0) else None
+    breakeven     = round(entry_price * 1.001, 2) if (entry_price and entry_price > 0) else None
+
+    if pulled_away:
+        reason = (
+            f"剩餘持股已拉開成本，使用 MA{ma_period} "
+            f"({ma_value:.2f}) 作移動停利"
+        ) if ma_value else "剩餘持股已拉開成本，使用移動停利"
+        return {
+            "primary_trailing_ma":  ma_period,
+            "trailing_stop_price":  trailing_stop,
+            "breakeven_exit_price": None,
+            "management_reason":    reason,
+        }
+    else:
+        reason = (
+            f"剩餘持股尚未拉開成本，使用損益平衡出場價 ({breakeven})"
+        ) if breakeven else "剩餘持股尚未拉開成本，守損益平衡"
+        return {
+            "primary_trailing_ma":  ma_period,
+            "trailing_stop_price":  None,
+            "breakeven_exit_price": breakeven,
+            "management_reason":    reason,
+        }
+
+
 def compute_take_profit_price(
     entry_price: float,
     atr: float,

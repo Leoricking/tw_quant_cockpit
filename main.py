@@ -40,6 +40,10 @@ provider-status      : Show data provider availability (CSV, XQ, TWSE planned, M
 time-machine-preview : Volume Profile + Microstructure summary for a stock
 feature-preview      : Display latest computed features (indicators + volume profile + microstructure)
 
+TW Quant Cockpit v0.3.6 commands
+----------------------------------
+strategy-preview     : Full Strategy Knowledge Engine (position plan, MACD, volume, valuation, exit)
+
 Usage examples
 --------------
     python main.py download
@@ -1858,6 +1862,201 @@ def cmd_feature_preview(args: argparse.Namespace) -> None:
         sys.exit(1)
 
 
+
+# ---------------------------------------------------------------------------
+# v0.3.6 – strategy-preview command
+# ---------------------------------------------------------------------------
+
+def cmd_strategy_preview(args: argparse.Namespace) -> None:
+    """
+    strategy-preview: Full Strategy Knowledge Engine output for a stock.
+
+    Example
+    -------
+    python main.py strategy-preview --stock 2454 --mode real
+    """
+    logger_cmd = logging.getLogger("cmd.strategy_preview")
+    symbol = args.stock
+    mode   = getattr(args, "mode", "real")
+
+    print()
+    print(f"Strategy Knowledge Preview — {symbol} (mode={mode})")
+    print("=" * 60)
+
+    # ── Load daily data ───────────────────────────────────────────────────
+    import pandas as pd
+    df = None
+    try:
+        if mode == "real":
+            from data.providers.csv_provider import CSVDataProvider
+            prov = CSVDataProvider()
+            raw  = prov.get_daily(symbol)
+            if raw is not None and len(raw) > 0:
+                df = raw.copy()
+                if "date" in df.columns:
+                    df = df.sort_values("date").reset_index(drop=True)
+        else:
+            from data.data_source_router import DataSourceRouter
+            router = DataSourceRouter()
+            raw    = router.get_daily(symbol)
+            if raw is not None and len(raw) > 0:
+                df = raw.copy()
+                if "date" in df.columns:
+                    df = df.sort_values("date").reset_index(drop=True)
+    except Exception as exc:
+        logger_cmd.warning("Data load failed (%s), using mock: %s", symbol, exc)
+
+    # Fallback to mock OHLCV if nothing loaded
+    if df is None or len(df) < 10:
+        import numpy as np
+        rng = np.random.default_rng(int(symbol) if symbol.isdigit() else 42)
+        n   = 80
+        price = 100.0 + rng.normal(0, 2, n).cumsum()
+        price = np.clip(price, 10, None)
+        df = pd.DataFrame({
+            "date":   pd.date_range("2024-01-01", periods=n, freq="B"),
+            "open":   price * (1 + rng.normal(0, 0.005, n)),
+            "high":   price * (1 + np.abs(rng.normal(0, 0.01, n))),
+            "low":    price * (1 - np.abs(rng.normal(0, 0.01, n))),
+            "close":  price,
+            "volume": (rng.integers(5_000, 50_000, n)).astype(float),
+        })
+        print("  [MOCK] 無真實資料，使用隨機模擬價格")
+
+    # ── Run Strategy Knowledge Engine ─────────────────────────────────────
+    try:
+        from analysis.strategy_knowledge_engine import build_strategy_signals
+        signals = build_strategy_signals(
+            df=df,
+            symbol=symbol,
+        )
+    except Exception as exc:
+        logger_cmd.error("StrategyKnowledgeEngine failed: %s", exc, exc_info=True)
+        print(f"  ERROR: {exc}")
+        import sys; sys.exit(1)
+
+    pos_plan  = signals.get("position_plan", {})
+    hold_plan = signals.get("holding_period_plan", {})
+    vol_sigs  = signals.get("volume_signals", {})
+    macd_sigs = signals.get("macd_signals", {})
+    val_sigs  = signals.get("valuation_signals", {})
+    exit_sigs = signals.get("exit_signals", {})
+    final     = signals.get("final_strategy_decision", {})
+    no_chase  = signals.get("no_chase_reasons", [])
+    no_panic  = signals.get("no_sell_low_reasons", [])
+    no_rebuy  = signals.get("do_not_rebuy_yet_reasons", [])
+
+    def _fmt(label: str, value) -> str:
+        if value is None or value == "":
+            return f"  {label}: —"
+        return f"  {label}: {value}"
+
+    def _bool(v) -> str:
+        return "[YES]" if v else "[NO]"
+
+    # ── 1. Position Plan ──────────────────────────────────────────────────
+    print()
+    print("Position Plan:")
+    print(_fmt("first_entry_size",       pos_plan.get("first_entry_size")))
+    print(_fmt("second_entry_size",      pos_plan.get("second_entry_size")))
+    print(_fmt("take_profit_half_price", pos_plan.get("take_profit_half_price")))
+    print(_fmt("remaining_trailing_stop",pos_plan.get("remaining_trailing_stop")))
+    print(_fmt("breakeven_exit_price",   pos_plan.get("breakeven_exit_price")))
+    print(_fmt("portfolio_weight_warning",pos_plan.get("portfolio_weight_warning")))
+
+    # ── 2. Holding Period ─────────────────────────────────────────────────
+    print()
+    print("Holding Period:")
+    print(_fmt("mode",           hold_plan.get("holding_mode")))
+    print(_fmt("trailing_ma_rule", hold_plan.get("trailing_ma_rule")))
+    print(_fmt("trend_stage",    hold_plan.get("trend_stage")))
+    print(_fmt("can_hold_swing", hold_plan.get("can_hold_for_swing")))
+    sw_r = hold_plan.get("swing_risk_reason", "")
+    if sw_r:
+        print(_fmt("swing_risk",   sw_r))
+
+    # ── 3. Volume Behavior ────────────────────────────────────────────────
+    print()
+    print("Volume Behavior:")
+    print(_fmt("breakout_volume_confirmed", _bool(vol_sigs.get("breakout_volume_confirmed"))))
+    print(_fmt("volume_roll_up_score",      vol_sigs.get("volume_roll_up_score")))
+    print(_fmt("one_day_volume_spike_risk", _bool(vol_sigs.get("one_day_volume_spike_risk"))))
+    print(_fmt("volume_shrink_above_ma",    _bool(vol_sigs.get("volume_shrink_above_ma"))))
+    print(_fmt("volume_failure_warning",    _bool(vol_sigs.get("volume_failure_warning"))))
+    print(_fmt("demand_persistence_score",  vol_sigs.get("demand_persistence_score")))
+
+    # ── 4. MACD ───────────────────────────────────────────────────────────
+    print()
+    print("MACD:")
+    print(_fmt("trend_context",        macd_sigs.get("macd_trend_context")))
+    print(_fmt("bull_pullback_buy",    _bool(macd_sigs.get("macd_bull_pullback_buy"))))
+    print(_fmt("wait_confirm",         _bool(macd_sigs.get("macd_wait_confirm"))))
+    print(_fmt("fake_reclaim_warning", _bool(macd_sigs.get("macd_fake_reclaim_warning"))))
+    print(_fmt("buy_reason",           macd_sigs.get("macd_buy_reason")))
+    print(_fmt("rebound_end_warning",  _bool(macd_sigs.get("macd_rebound_end_warning"))))
+    print(_fmt("rebound_status",       macd_sigs.get("macd_rebound_status")))
+    sar = macd_sigs.get("macd_sell_or_avoid_reason", "")
+    if sar:
+        print(_fmt("sell_or_avoid_reason", sar))
+
+    # ── 5. Valuation ──────────────────────────────────────────────────────
+    print()
+    print("Valuation:")
+    print(_fmt("valuation_zone",   val_sigs.get("valuation_zone")))
+    print(_fmt("fair_value_price", val_sigs.get("fair_value_price")))
+    print(_fmt("current_pe",       val_sigs.get("current_pe")))
+    vw = val_sigs.get("valuation_warning", "")
+    if vw:
+        print(_fmt("[WARN]", vw))
+
+    # ── 6. Exit / Re-entry ────────────────────────────────────────────────
+    print()
+    print("Exit / Re-entry:")
+    print(_fmt("relative_high_exit_signal",   _bool(exit_sigs.get("relative_high_exit_signal"))))
+    print(_fmt("failed_breakout_exit_signal", _bool(exit_sigs.get("failed_breakout_exit_signal"))))
+    print(_fmt("chip_linked_exit_reason",     exit_sigs.get("chip_linked_exit_reason")))
+    print(_fmt("pullback_rebuy_condition",    exit_sigs.get("pullback_rebuy_condition")))
+    dnr = exit_sigs.get("do_not_rebuy_yet_reason", "")
+    if dnr:
+        print(_fmt("do_not_rebuy_yet_reason", dnr))
+
+    # ── 7. No Chase Reasons ───────────────────────────────────────────────
+    print()
+    print("No Chase Reasons:")
+    if no_chase:
+        for r in no_chase:
+            print(f"  - {r}")
+    else:
+        print("  (none)")
+
+    # ── 8. No Panic Sell Reasons ──────────────────────────────────────────
+    print()
+    print("No Panic Sell Reasons:")
+    if no_panic:
+        for r in no_panic:
+            print(f"  - {r}")
+    else:
+        print("  (none)")
+
+    # ── 9. Do Not Rebuy Yet Reasons ───────────────────────────────────────
+    print()
+    print("Do Not Rebuy Yet Reasons:")
+    if no_rebuy:
+        for r in no_rebuy:
+            print(f"  - {r}")
+    else:
+        print("  (none)")
+
+    # ── 10. Final Strategy Decision ───────────────────────────────────────
+    print()
+    print("Final:")
+    print(_fmt("decision", final.get("decision")))
+    fw = final.get("warning", "")
+    if fw:
+        print(_fmt("[WARN]", fw))
+    print()
+
+
 # ---------------------------------------------------------------------------
 # Argument parser
 # ---------------------------------------------------------------------------
@@ -2171,6 +2370,17 @@ def _build_parser() -> argparse.ArgumentParser:
         help="Data mode: real (default) or mock (demo only)",
     )
 
+    # --- strategy-preview (v0.3.6) ---
+    p_sp = subparsers.add_parser(
+        "strategy-preview",
+        help="Full Strategy Knowledge Engine preview (position plan, MACD, volume, valuation, exit)",
+    )
+    p_sp.add_argument("--stock", required=True, help="Stock symbol, e.g. 2454")
+    p_sp.add_argument(
+        "--mode", choices=["mock", "real"], default="real",
+        help="Data mode: real (default) or mock (demo only)",
+    )
+
     return parser
 
 
@@ -2226,6 +2436,8 @@ def main() -> None:
         "provider-status":        cmd_provider_status,
         "time-machine-preview":   cmd_time_machine_preview,
         "feature-preview":        cmd_feature_preview,
+        # TW Quant Cockpit v0.3.6
+        "strategy-preview":       cmd_strategy_preview,
     }
 
     if args.command is None:

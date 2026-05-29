@@ -287,6 +287,163 @@ class StockReportBuilder:
             lines.append("")
             lines.append(f"> [WARN] **{_DATA_INSUFFICIENT_WARNING}**")
 
+        # Section 9: Strategy Knowledge Engine (v0.3.6)
+        strategy_signals = None
+        for r in (daytrade_result, short_result, mid_result, long_result):
+            if r and r.get('strategy_signals'):
+                strategy_signals = r['strategy_signals']
+                break
+
+        lines.append("")
+        lines.append("## 九、策略知識引擎判斷（v0.3.6）")
+        if strategy_signals:
+            pos_plan = strategy_signals.get('position_plan', {})
+            hold_plan = strategy_signals.get('holding_period_plan', {})
+            vol_sigs = strategy_signals.get('volume_signals', {})
+            macd_sigs = strategy_signals.get('macd_signals', {})
+            val_sigs = strategy_signals.get('valuation_signals', {})
+            exit_sigs = strategy_signals.get('exit_signals', {})
+            final = strategy_signals.get('final_strategy_decision', {})
+
+            # Position plan
+            lines.append("### 資金分批計畫")
+            lines.append(f"- {pos_plan.get('position_plan', 'unavailable')}")
+            lines.append(f"- {pos_plan.get('portfolio_weight_warning', '')}")
+
+            # Batch entry conditions
+            lines.append("### 第一批 / 第二批買進條件")
+            fe = pos_plan.get('first_entry_size')
+            se = pos_plan.get('second_entry_size')
+            lines.append(f"- 第一批：NTD {fe:,.0f}" if fe else "- 第一批：unavailable")
+            lines.append(f"- 第二批：NTD {se:,.0f}" if se else "- 第二批：unavailable")
+            nc = pos_plan.get('no_chase_reason', '')
+            if nc:
+                lines.append(f"- 不追價原因：{nc}")
+            cr = pos_plan.get('capital_reallocation_suggestion', '')
+            if cr:
+                lines.append(f"- 資金重分配：{cr}")
+
+            # Take profit half
+            lines.append("### 停利先賣一半條件")
+            tp = pos_plan.get('take_profit_half_price')
+            tp_r = pos_plan.get('take_profit_half_reason', '')
+            lines.append(f"- 停利價：{tp if tp else 'unavailable'}")
+            if tp_r:
+                lines.append(f"- 觸發條件：{tp_r}")
+
+            # Remaining position
+            lines.append("### 剩餘持股處理")
+            rt = pos_plan.get('remaining_trailing_stop')
+            be = pos_plan.get('breakeven_exit_price')
+            lines.append(f"- 移動停利：{rt if rt else 'unavailable'}")
+            lines.append(f"- 損益平衡出場：{be if be else 'unavailable'}")
+
+            # Holding mode
+            lines.append("### 短線 / 波段模式")
+            hm = hold_plan.get('holding_mode', 'UNKNOWN')
+            tr = hold_plan.get('trailing_ma_rule', '')
+            ts = hold_plan.get('trend_stage', '')
+            lines.append(f"- 持股模式：{hm}　趨勢階段：{ts}")
+            lines.append(f"- 均線追蹤規則：{tr if tr else 'unavailable'}")
+            sw_r = hold_plan.get('swing_risk_reason', '')
+            if sw_r:
+                lines.append(f"- 波段風險：{sw_r}")
+
+            # Volume behavior
+            lines.append("### 成交量狀態")
+            bvc = vol_sigs.get('breakout_volume_confirmed', False)
+            svb = vol_sigs.get('strong_volume_breakout', False)
+            vru = vol_sigs.get('volume_roll_up_score', 0.0)
+            osr = vol_sigs.get('one_day_volume_spike_risk', False)
+            vf  = vol_sigs.get('volume_failure_warning', False)
+            lines.append(f"- 放量突破確認：{'[YES]' if bvc else '[NO]'}  強放量：{'[YES]' if svb else '[NO]'}")
+            lines.append(f"- 量滾量評分：{vru:.2f}  一日量風險：{'[YES]' if osr else '[NO]'}  失敗突破：{'[YES]' if vf else '[NO]'}")
+
+            # MACD
+            lines.append("### MACD 多頭回檔買點")
+            mt = macd_sigs.get('macd_trend_context', 'NEUTRAL')
+            mbp = macd_sigs.get('macd_bull_pullback_buy', False)
+            mwc = macd_sigs.get('macd_wait_confirm', False)
+            mfr = macd_sigs.get('macd_fake_reclaim_warning', False)
+            mr  = macd_sigs.get('macd_buy_reason', '')
+            lines.append(f"- 趨勢：{mt}  確認買點：{'[YES]' if mbp else '[NO]'}  等待確認：{'[YES]' if mwc else '[NO]'}")
+            if mr:
+                lines.append(f"- 理由：{mr}")
+            if mfr:
+                lines.append("- [WARN] 假站回 / 騙線風險")
+
+            # MACD bear rebound
+            lines.append("### MACD 空頭反彈警示")
+            mbre = macd_sigs.get('macd_rebound_end_warning', False)
+            mrs  = macd_sigs.get('macd_rebound_status', 'NONE')
+            msar = macd_sigs.get('macd_sell_or_avoid_reason', '')
+            lines.append(f"- 反彈狀態：{mrs}  反彈結束警示：{'[YES]' if mbre else '[NO]'}")
+            if msar:
+                lines.append(f"- 理由：{msar}")
+
+            # Valuation river
+            lines.append("### 本益比河流圖估值")
+            vz = val_sigs.get('valuation_zone', 'UNAVAILABLE')
+            cpe = val_sigs.get('current_pe')
+            fvp = val_sigs.get('fair_value_price')
+            vw  = val_sigs.get('valuation_warning', '')
+            lines.append(f"- 估值區間：{vz}  當前 PE：{cpe if cpe else 'N/A'}")
+            lines.append(f"- 合理價：{fvp if fvp else 'N/A'}")
+            if vw:
+                lines.append(f"- [WARN] {vw}")
+
+            # Exit / relative high
+            lines.append("### 前高壓力 / 短線賣高點")
+            rhe = exit_sigs.get('relative_high_exit_signal', False)
+            fbe = exit_sigs.get('failed_breakout_exit_signal', False)
+            cle = exit_sigs.get('chip_linked_exit_reason', '')
+            rc  = exit_sigs.get('pullback_rebuy_condition', '')
+            lines.append(f"- 前高出場訊號：{'[YES]' if rhe else '[NO]'}  突破失敗出場：{'[YES]' if fbe else '[NO]'}")
+            if cle:
+                lines.append(f"- 籌碼出場理由：{cle}")
+
+            # Big swing MA rule
+            lines.append("### 大波段均線依據")
+            itm = hold_plan.get('institution_trailing_reason', '')
+            dss = hold_plan.get('do_not_sell_at_support_reason', '')
+            pma = hold_plan.get('primary_trailing_ma', 'N/A')
+            lines.append(f"- 主要追蹤均線：MA{pma}")
+            if dss:
+                lines.append(f"- 不亂砍理由：{dss}")
+            if itm:
+                lines.append(f"- 法人追蹤理由：{itm}")
+
+            # No-chase / no-panic / no-rebuy
+            no_chase = strategy_signals.get('no_chase_reasons', [])
+            no_panic = strategy_signals.get('no_sell_low_reasons', [])
+            no_rebuy = strategy_signals.get('do_not_rebuy_yet_reasons', [])
+            lines.append("### 不建議追價理由")
+            for r in no_chase:
+                lines.append(f"- {r}")
+            if not no_chase:
+                lines.append("- 無")
+            lines.append("### 不建議亂砍理由")
+            for r in no_panic:
+                lines.append(f"- {r}")
+            if not no_panic:
+                lines.append("- 無")
+            lines.append("### 不建議急著買回理由")
+            if rc:
+                lines.append(f"- 買回條件：{rc}")
+            for r in no_rebuy:
+                lines.append(f"- {r}")
+            if not no_rebuy and not rc:
+                lines.append("- 無")
+
+            # Final decision
+            lines.append("### 最終策略決策")
+            lines.append(f"- 決策：{final.get('decision', 'N/A')}")
+            fw = final.get('warning', '')
+            if fw:
+                lines.append(f"- [WARN] {fw}")
+        else:
+            lines.append("- 策略知識引擎資料 unavailable（請以 strategy-preview 指令單獨執行）")
+
         lines.append("")
         lines.append("---")
         lines.append("*本報告由 TW Quant Cockpit v1 自動生成，僅供研究參考，不構成投資建議。*")
