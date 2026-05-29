@@ -38,7 +38,7 @@ class BuyPointAnalyzer:
     """
 
     def analyze(self, symbol, price_data=None, chip_data=None, realtime_data=None,
-                mode: str = 'mock'):
+                mode: str = 'mock', fundamental_data=None, margin_df=None):
         """
         Analyze and grade the buy point for a symbol.
 
@@ -80,6 +80,9 @@ class BuyPointAnalyzer:
                 'reasoning': 'REAL MODE 缺真實資料，禁止使用 mock 買點',
                 'data_completeness': 0.0,
                 'warning': 'REAL MODE 缺真實資料，禁止使用 mock 買點',
+                'rebound_signal': None,
+                'short_squeeze_fuel_score': 0.0,
+                'phase2_signals': {},
             }
 
         from features.pullback_features import compute_pullback_features
@@ -237,6 +240,64 @@ class BuyPointAnalyzer:
             exit_price = round(current_price * 1.05, 1)
             stop_loss_price = round(current_price * 0.97, 1)
 
+        # ---- Phase 2 signals (KD advanced / bottom reversal / short interest / fundamental) ----
+        _rebound_signal = None
+        _short_squeeze_fuel = 0.0
+        _phase2 = {}
+        if price_data and len(price_data) >= 9:
+            try:
+                import pandas as pd
+                from features.kd_advanced import compute_kd_advanced
+                from analysis.bottom_reversal_analyzer import analyze_bottom_reversal
+                from features.short_interest_features import compute_short_interest
+                _b0 = price_data[0]
+                if isinstance(_b0, dict):
+                    _df2 = pd.DataFrame(price_data)
+                    for _c in list(_df2.columns):
+                        _lc = _c.lower()
+                        if _lc == 'close' and _c != 'close':
+                            _df2.rename(columns={_c: 'close'}, inplace=True)
+                        elif _lc == 'high' and _c != 'high':
+                            _df2.rename(columns={_c: 'high'}, inplace=True)
+                        elif _lc == 'low' and _c != 'low':
+                            _df2.rename(columns={_c: 'low'}, inplace=True)
+                else:
+                    _df2 = pd.DataFrame({'close': [float(b) for b in price_data if b is not None]})
+                # KD advanced
+                _kd2 = compute_kd_advanced(_df2)
+                _phase2['kd_advanced'] = _kd2
+                if _kd2.get('kd_high_death_cross'):
+                    no_entry_conditions.append("KD 高檔死亡交叉，不建議追高")
+                if _kd2.get('kd_low_golden_cross') and buy_point_grade in ('A', 'B'):
+                    reasoning_parts.append(f"KD 低檔黃金交叉（強化 {buy_point_grade} 級買點）")
+                # Bottom reversal — separate REBOUND track, never mixed into A/B/C
+                _br2 = analyze_bottom_reversal(_df2)
+                _phase2['bottom_reversal'] = _br2
+                if _br2.get('bottom_reversal_detected') and buy_point_grade is None:
+                    _rebound_signal = _br2.get('bottom_signal', 'REBOUND')
+                # Short interest (squeeze fuel requires margin_df; fallback gracefully)
+                _si2 = compute_short_interest(_df2, margin_df=margin_df)
+                _phase2['short_interest'] = _si2
+                _short_squeeze_fuel = _si2.get('short_squeeze_fuel_score', 0.0)
+                if _si2.get('weak_stock_short_increase'):
+                    no_entry_conditions.append("弱勢股融券增加，不視為多方訊號")
+            except Exception as _p2e:
+                logger.debug("Phase 2 in BuyPointAnalyzer: %s", _p2e)
+        if fundamental_data:
+            try:
+                from analysis.fundamental_quality_analyzer import analyze_fundamental_quality
+                _fqkw = {k: fundamental_data[k] for k in (
+                    'monthly_revenue_rows', 'eps_ttm', 'eps_qoq_change',
+                    'gross_margin', 'gross_margin_prev', 'operating_margin',
+                    'operating_margin_prev', 'price_vs_ma20', 'price_vs_ma60',
+                ) if k in fundamental_data}
+                _fq2 = analyze_fundamental_quality(symbol=sym, **_fqkw)
+                _phase2['fundamental_quality'] = _fq2
+                if _fq2.get('earnings_risk_warning'):
+                    no_entry_conditions.append(f"財報風險：{_fq2['earnings_risk_warning']}")
+            except Exception as _fqe:
+                logger.debug("Phase 2 fundamental_quality in BuyPointAnalyzer: %s", _fqe)
+
         reasoning = "；".join(reasoning_parts) if reasoning_parts else "觀望"
 
         return {
@@ -254,4 +315,7 @@ class BuyPointAnalyzer:
             'reasoning': reasoning,
             'data_completeness': data_completeness,
             'warning': warning,
+            'rebound_signal': _rebound_signal,
+            'short_squeeze_fuel_score': _short_squeeze_fuel,
+            'phase2_signals': _phase2,
         }

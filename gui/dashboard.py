@@ -558,6 +558,11 @@ class ScorePanel(QWidget if _PYSIDE6_AVAILABLE else object):
             ('波段分', '_lbl_swing'),
             ('風險分', '_lbl_risk'),
             ('建議',   '_lbl_decision'),
+            ('KD訊號',  '_lbl_kd_signal'),
+            ('融券訊號', '_lbl_short_interest'),
+            ('破底翻',  '_lbl_bottom_reversal'),
+            ('族群訊號', '_lbl_sector_signal'),
+            ('基本面品質', '_lbl_fq_score'),
         ]
         for label_text, attr in rows_data:
             row = QHBoxLayout()
@@ -576,6 +581,7 @@ class ScorePanel(QWidget if _PYSIDE6_AVAILABLE else object):
         self._txt_reasoning.setStyleSheet("background:#0E1520; color:#CCCCCC; font-size:11px")
         layout.addWidget(self._txt_reasoning)
 
+        layout.addWidget(_label("── Phase 2 Strategy Signals ──", bold=True, color="#AAAAFF"))
         layout.addStretch()
 
     def update(self, symbol: str, candidate: dict):
@@ -600,6 +606,46 @@ class ScorePanel(QWidget if _PYSIDE6_AVAILABLE else object):
         _set_score(self._lbl_risk, risk)
         self._lbl_decision.setText(str(decision))
         self._txt_reasoning.setPlainText(str(reasoning))
+
+        # Phase 2 signals
+        def _p2_lbl(lbl_attr, val, warn_color='#FF8888', ok_color='#44CC88', neutral_color='#CCCCCC'):
+            lbl = getattr(self, lbl_attr, None)
+            if lbl is None:
+                return
+            if val is None or val == '' or (isinstance(val, float) and val != val):
+                lbl.setText('unavailable')
+                lbl.setStyleSheet(f'color:#888888')
+            else:
+                lbl.setText(str(val))
+                _v = str(val).upper()
+                if any(w in _v for w in ('SELL', 'DEATH', 'WEAK', 'WARNING', 'RISK', 'LOW')):
+                    lbl.setStyleSheet(f'color:{warn_color}')
+                elif any(w in _v for w in ('BUY', 'GOLDEN', 'SQUEEZE', 'LAGGARD', 'STRONG')):
+                    lbl.setStyleSheet(f'color:{ok_color}')
+                else:
+                    lbl.setStyleSheet(f'color:{neutral_color}')
+
+        _p2 = candidate.get('phase2_signals', {})
+        _kd_adv = _p2.get('kd_advanced', {}) if isinstance(_p2, dict) else {}
+        _si_adv = _p2.get('short_interest', {}) if isinstance(_p2, dict) else {}
+        _br_adv = _p2.get('bottom_reversal', {}) if isinstance(_p2, dict) else {}
+        _sr_adv = _p2.get('sector_rotation', {}) if isinstance(_p2, dict) else {}
+        _fq_adv = _p2.get('fundamental_quality', {}) if isinstance(_p2, dict) else {}
+
+        _kd_txt = _kd_adv.get('kd_signal') or candidate.get('kd_signal')
+        _si_txt = _si_adv.get('short_interest_signal') or candidate.get('short_interest_signal')
+        _br_txt = _br_adv.get('bottom_signal') or candidate.get('bottom_signal')
+        _sr_txt = _sr_adv.get('sector_signal') or candidate.get('sector_signal')
+        _fq_txt = _fq_adv.get('fundamental_quality_score')
+        if _fq_txt is None:
+            _fq_txt = candidate.get('fundamental_quality_score')
+
+        _p2_lbl('_lbl_kd_signal', _kd_txt)
+        _p2_lbl('_lbl_short_interest', _si_txt)
+        _p2_lbl('_lbl_bottom_reversal', _br_txt)
+        _p2_lbl('_lbl_sector_signal', _sr_txt)
+        _p2_lbl('_lbl_fq_score',
+                 f"{_fq_txt:.2f}" if isinstance(_fq_txt, float) else _fq_txt)
 
 
 # ---------------------------------------------------------------------------

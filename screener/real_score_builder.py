@@ -344,7 +344,73 @@ def build_real_score(symbol: str, all_data: dict) -> dict:
     trust_cost_score = round(min(trust_cost_score, 5.0), 2)
 
     # ----------------------------------------------------------------
-    # Composite score (0-100 base + bonus up to 5)
+    # Phase 2 adjustments (KD advanced / short interest / fundamental quality)
+    # ----------------------------------------------------------------
+    phase2_adj = 0.0
+    phase2_signals = {}
+    phase2_deductions = []
+    phase2_missing = []
+
+    # Build price DataFrame from bars
+    try:
+        import pandas as pd
+        from features.kd_advanced import compute_kd_advanced
+        from features.short_interest_features import compute_short_interest
+        from analysis.fundamental_quality_analyzer import analyze_fundamental_quality
+
+        _df_p2 = pd.DataFrame(bars)
+        if not _df_p2.empty and 'close' in _df_p2.columns:
+            # KD advanced
+            _kd_p2 = compute_kd_advanced(_df_p2)
+            phase2_signals['kd_advanced'] = _kd_p2
+            if _kd_p2.get('kd_low_golden_cross'):
+                phase2_adj += 2.0
+                deductions.append("KD 低檔黃金交叉 +2 (Phase 2)")
+            if _kd_p2.get('kd_high_death_cross'):
+                phase2_adj -= 2.0
+                phase2_deductions.append("KD 高檔死亡交叉 -2")
+
+            # Short interest (needs margin_df with short_balance; graceful fallback)
+            _si_p2 = compute_short_interest(_df_p2)
+            phase2_signals['short_interest'] = _si_p2
+            _sq_fuel = _si_p2.get('short_squeeze_fuel_score', 0.0)
+            if _sq_fuel >= 0.4:
+                phase2_adj += min(2.0, _sq_fuel * 3.0)
+            if _si_p2.get('weak_stock_short_increase'):
+                phase2_adj -= 2.0
+                phase2_deductions.append("弱勢股融券增加 -2")
+
+        # Fundamental quality
+        _mr_rows = None
+        if revenue:
+            _yr_dec = revenue.get('latest_revenue_yoy', 0) / 100.0
+            _mr_rows = [{'yoy': _yr_dec}, {'yoy': _yr_dec}, {'yoy': _yr_dec}]
+        _fq_p2 = analyze_fundamental_quality(
+            symbol=sym,
+            monthly_revenue_rows=_mr_rows,
+        )
+        phase2_signals['fundamental_quality'] = _fq_p2
+        _fq_score_val = _fq_p2.get('fundamental_quality_score', 0.5)
+        if _fq_score_val >= 0.7:
+            phase2_adj += 2.0
+        elif _fq_score_val < 0.3:
+            phase2_adj -= 2.0
+            phase2_deductions.append(f"基本面品質低 ({_fq_score_val:.2f}) -2")
+        if _fq_p2.get('revenue_quality_warning'):
+            phase2_adj -= 1.0
+            phase2_deductions.append("營收品質警告 -1")
+        if _fq_p2.get('earnings_risk_warning'):
+            phase2_adj -= 2.0
+            phase2_deductions.append(f"財報風險 -2: {_fq_p2['earnings_risk_warning']}")
+
+    except Exception as _p2e:
+        logger.debug("Phase 2 scoring in build_real_score: %s", _p2e)
+        phase2_missing.append(f"Phase 2 signals unavailable: {_p2e}")
+
+    deductions.extend(phase2_deductions)
+
+    # ----------------------------------------------------------------
+    # Composite score (0-100 base + bonus up to 5 + phase2 adj ±5)
     # ----------------------------------------------------------------
     base_score = (
         theme_score           # max 20
@@ -357,7 +423,10 @@ def build_real_score(symbol: str, all_data: dict) -> dict:
         + overheat_score      # max 5
     )  # max 100
 
-    bull_stock_score = round(min(max(base_score + trust_cost_score * 0.5, 0.0), 100.0), 1)
+    # Clamp phase2_adj to ±5 so it doesn't overwhelm existing score
+    phase2_adj = max(-5.0, min(5.0, phase2_adj))
+
+    bull_stock_score = round(min(max(base_score + trust_cost_score * 0.5 + phase2_adj, 0.0), 100.0), 1)
 
     # Formal allowed: must have daily K AND at least one of revenue/chip
     formal_allowed = has_daily_k and (revenue is not None or chip is not None)
@@ -380,9 +449,12 @@ def build_real_score(symbol: str, all_data: dict) -> dict:
         "trust_cost_score":       trust_cost_score,
         "trust_cost_note":        trust_cost_note,
         "deduction_reasons":      deductions,
-        "missing_data_reasons":   missing,
+        "missing_data_reasons":   missing + phase2_missing,
         "formal_allowed":         formal_allowed,
         "is_bull_candidate":      is_bull,
         "is_second_wave_buy_point": is_second_wave,
         "data_source":            "real",
+        "phase2_adj":             phase2_adj,
+        "phase2_signals":         phase2_signals,
+        "phase2_deduction_reasons": phase2_deductions,
     }

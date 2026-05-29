@@ -25,7 +25,9 @@ class LongTermAnalyzer:
     """
 
     def analyze(self, symbol, price_data=None, weekly_data=None,
-                monthly_data=None, fundamental_data=None, mode: str = 'mock'):
+                monthly_data=None, fundamental_data=None, mode: str = 'mock',
+                monthly_revenue_rows=None, eps_ttm=None,
+                gross_margin=None, operating_margin=None):
         """
         Analyze long-term opportunity for a symbol.
 
@@ -166,6 +168,57 @@ class LongTermAnalyzer:
         )
 
         prices_are_estimates = not (mode == 'real' and has_real_data and price_data and len(price_data) >= 60)
+        formal_allowed = not prices_are_estimates
+
+        # ---- Phase 2: fundamental quality + valuation + EPS/margin guards ----
+        _fq_signals = {}
+        _val_signals = {}
+        _p2 = {}
+        try:
+            from analysis.fundamental_quality_analyzer import analyze_fundamental_quality
+            _fq_data = fundamental_data or {}
+            _fqkw = {k: _fq_data[k] for k in (
+                'monthly_revenue_rows', 'eps_ttm', 'eps_qoq_change',
+                'gross_margin', 'gross_margin_prev', 'operating_margin',
+                'operating_margin_prev', 'price_vs_ma20', 'price_vs_ma60',
+            ) if k in _fq_data}
+            if monthly_revenue_rows is not None:
+                _fqkw.setdefault('monthly_revenue_rows', monthly_revenue_rows)
+            if eps_ttm is not None:
+                _fqkw.setdefault('eps_ttm', eps_ttm)
+            if gross_margin is not None:
+                _fqkw.setdefault('gross_margin', gross_margin)
+            if operating_margin is not None:
+                _fqkw.setdefault('operating_margin', operating_margin)
+            _fq_result = analyze_fundamental_quality(symbol=sym, **_fqkw)
+            _fq_signals = _fq_result
+            _p2['fundamental_quality'] = _fq_result
+            if _fq_result.get('earnings_risk_warning'):
+                no_entry.append(f"財報風險：{_fq_result['earnings_risk_warning']}")
+            # EPS / 毛利率 / 月營收 guard: 缺這些不允許正式長線價位
+            _missing_fundamental = (
+                eps_ttm is None
+                and gross_margin is None
+                and monthly_revenue_rows is None
+                and not _fq_data
+            )
+            if _missing_fundamental:
+                formal_allowed = False
+                warning = (warning or '') + ' 缺 EPS / 毛利率 / 月營收，長線不允許正式價位判斷'
+                warning = warning.strip()
+        except Exception as _fqe:
+            logger.debug("Phase 2 fundamental_quality in LongTermAnalyzer: %s", _fqe)
+
+        if eps_ttm is not None:
+            try:
+                from analysis.valuation_river_analyzer import analyze_valuation_river
+                _val_signals = analyze_valuation_river(
+                    current_price=current_price,
+                    estimated_eps=eps_ttm,
+                )
+                _p2['valuation'] = _val_signals
+            except Exception as _ve:
+                logger.debug("Phase 2 valuation_river in LongTermAnalyzer: %s", _ve)
 
         return {
             'decision': decision,
@@ -178,8 +231,11 @@ class LongTermAnalyzer:
             'data_completeness': completeness,
             'data_source': data_source,
             'prices_are_estimates': prices_are_estimates,
-            'formal_allowed': not prices_are_estimates,
+            'formal_allowed': formal_allowed,
             'warning': warning,
+            'fundamental_quality_signals': _fq_signals,
+            'valuation_signals': _val_signals,
+            'phase2_signals': _p2,
         }
 
     def _extract_closes(self, data):

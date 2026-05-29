@@ -287,6 +287,65 @@ def _annotate_signals(
         sig["vp_support_score"] = vp_support
         sig["chase_score_adj"] = chase_adj
 
+        # ---- Phase 2 annotations ----
+        _phase2_reasons = []
+        _rebound_warning: Optional[str] = None
+        _squeeze_signal: Optional[str] = None
+        _sector_linkage_reason: Optional[str] = None
+        _fundamental_warning: Optional[str] = None
+
+        if row is not None:
+            # KD advanced
+            if "kd_signal" in row.index and not pd.isna(row.get("kd_signal", None)):
+                _kd_sig = str(row.get("kd_signal", ""))
+                if _kd_sig == "BUY":
+                    _phase2_reasons.append("KD 低檔黃金交叉")
+                elif _kd_sig == "SELL":
+                    _phase2_reasons.append("KD 高檔死亡交叉（降低追高）")
+
+            # Bottom reversal
+            if "bottom_signal" in row.index:
+                _br = row.get("bottom_signal")
+                if _br not in (None, "NONE", float("nan")) and not (isinstance(_br, float) and pd.isna(_br)):
+                    _rebound_warning = f"破底翻/反彈訊號 [{_br}]，非強勢 A/B/C 買點"
+
+            # Short interest
+            if "short_interest_signal" in row.index:
+                _si = row.get("short_interest_signal")
+                if _si not in (None, float("nan")) and not (isinstance(_si, float) and pd.isna(_si)):
+                    _squeeze_signal = str(_si)
+                    if _si == "SQUEEZE_FUEL":
+                        _phase2_reasons.append("融券軋空燃料充足")
+                    elif _si == "WEAK_SHORT":
+                        _phase2_reasons.append("弱勢股融券增加（非多方訊號）")
+
+            # Sector linkage
+            if "sector_rotation_reason" in row.index:
+                _sr_r = row.get("sector_rotation_reason")
+                if _sr_r and not (isinstance(_sr_r, float) and pd.isna(_sr_r)):
+                    _sector_linkage_reason = str(_sr_r)
+            if "sector_signal" in row.index:
+                _ss = row.get("sector_signal")
+                if _ss == "LEADER_WEAK":
+                    _phase2_reasons.append("族群指標股轉弱")
+
+            # Fundamental quality warning
+            if "earnings_risk_warning" in row.index:
+                _ew = row.get("earnings_risk_warning")
+                if _ew and not (isinstance(_ew, float) and pd.isna(_ew)):
+                    _fundamental_warning = str(_ew)
+                    _phase2_reasons.append(f"財報風險：{_ew}")
+            elif "fundamental_quality_score" in row.index:
+                _fqs = row.get("fundamental_quality_score")
+                if not pd.isna(_fqs) and float(_fqs) < 0.3:
+                    _fundamental_warning = f"基本面品質低 ({_fqs:.2f})"
+
+        sig["phase2_strategy_reason"] = "；".join(_phase2_reasons) if _phase2_reasons else None
+        sig["rebound_warning"] = _rebound_warning
+        sig["squeeze_signal"] = _squeeze_signal
+        sig["sector_linkage_reason"] = _sector_linkage_reason
+        sig["fundamental_warning"] = _fundamental_warning
+
         # Apply chase_adj to composite_score if present
         if "composite_score" in sig and sig["composite_score"] is not None:
             try:

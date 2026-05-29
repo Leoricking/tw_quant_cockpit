@@ -1307,6 +1307,68 @@ python main.py feature-preview --stock 2454             # 最新全特徵預覽
 
 > **[!] 不構成投資建議。仍禁止實盤自動下單（TWQC_ENABLE_REAL_ORDER=false）。**
 
+### v0.3.6 — Strategy Knowledge Engine Phase 2 (implemented)
+
+Extends the v0.3.6 core Strategy Knowledge Engine with five new sub-engines, integrated across the full analysis pipeline.
+
+#### New Phase 2 Sub-Engines
+
+| 模組 | 檔案 | 說明 |
+|------|------|------|
+| KD Advanced | `features/kd_advanced.py` | 低檔黃金交叉 / 高檔死亡交叉 / KD 鈍化 / KD 背離 |
+| Short Interest | `features/short_interest_features.py` | 融券軋空燃料評分 / 弱勢股融券警示 / 融券回補警示 |
+| Bottom Reversal | `analysis/bottom_reversal_analyzer.py` | 破底翻反彈策略（REBOUND / SPECULATIVE_REBOUND，非 A/B/C） |
+| Sector Rotation | `analysis/sector_rotation_analyzer.py` | 族群聯動 / 指標股落後補漲 / 60日滾動相關係數 |
+| Fundamental Quality | `analysis/fundamental_quality_analyzer.py` | 財報品質評分 / EPS 防呆 / 毛利率 / 營益率 / 財報前警示 |
+
+#### Phase 2.1 — Integration Gaps Closed
+
+Phase 2 signals are now integrated into all major pipeline components:
+
+| 整合點 | Phase 2 訊號 |
+|--------|-------------|
+| `analysis/buy_point_analyzer.py` | KD 低/高檔訊號加入 no_entry；底部反轉獨立 REBOUND 輸出（不混入 A/B/C） |
+| `analysis/short_term_analyzer.py` | KD / 融券 / 破底翻 / 族群 / 財報風險 → no_entry + reasoning |
+| `analysis/mid_term_analyzer.py` | 族群輪動 / 基本面品質 / 估值 / formal_allowed 防呆門檻 |
+| `analysis/long_term_analyzer.py` | 基本面品質 / 估值河流 / 缺 EPS / 毛利率時 formal_allowed=False |
+| `screener/real_score_builder.py` | Phase 2 加分：KD 低檔 / 軋空燃料 / 基本面品質；扣分：KD 高檔 / 弱勢融券 / 財報風險 |
+| `strategies/selector.py` | 每個訊號輸出 phase2_strategy_reason / rebound_warning / squeeze_signal / sector_linkage_reason / fundamental_warning |
+| `reports/generator.py` | 日報新增 STRATEGY KNOWLEDGE ENGINE PHASE 2 SIGNALS 區塊 |
+| `gui/dashboard.py` | ScorePanel 新增 KD / 融券 / 破底翻 / 族群 / 基本面品質訊號顯示，缺資料顯示 unavailable |
+
+#### Phase 2 Rules
+
+1. `bottom_reversal_signal` 只輸出 REBOUND / SPECULATIVE_REBOUND，不可輸出 A/B/C 強勢買點，不可輸出正式長線價位
+2. KD 背離為警示訊號，不可單獨作為買進/賣出依據
+3. 族群 correlation 只用 rolling 60d 過去資料，不使用未來資料
+4. 財報資料須用 announcement_date（本階段標 TODO，防止資料穿越）
+5. 缺 EPS / 毛利率 / 月營收時，中長線 `formal_allowed=False`
+6. 規則不可凌駕資料完整度
+
+#### Phase 2 Stock Report Section 9
+
+`stock-report` 的 `## 九、策略知識引擎判斷（v0.3.6）` 現在包含：
+
+- Position Plan / Holding Period / Volume Behavior / MACD Strategy / Valuation River
+- KD Advanced / Short Interest / Bottom Reversal / Sector Rotation / Fundamental Quality
+- No Chase Reasons / No Panic Sell Reasons / Do Not Rebuy Yet Reasons
+- Final Strategy Decision
+
+缺資料時顯示 `partial` / `unavailable`，不整節空白，不 crash。
+
+#### New Source Files (v0.3.6)
+
+| 檔案 | 說明 |
+|------|------|
+| `features/kd_advanced.py` | KD 進階訊號計算 |
+| `features/short_interest_features.py` | 融券軋空特徵 |
+| `analysis/bottom_reversal_analyzer.py` | 破底翻反彈策略分析器 |
+| `analysis/sector_rotation_analyzer.py` | 族群輪動分析器 |
+| `analysis/fundamental_quality_analyzer.py` | 基本面品質分析器 |
+| `docs/strategy_knowledge_engine.md` | 策略知識引擎完整說明 |
+
+> **[!] 不構成投資建議。仍禁止實盤自動下單（TWQC_ENABLE_REAL_ORDER=false）。**
+
 ### v0.3.5 (planned)
 - GUI 顯示回測驗證報告與 Watchlist 追蹤
 

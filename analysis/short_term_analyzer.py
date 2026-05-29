@@ -27,7 +27,8 @@ class ShortTermAnalyzer:
     """
 
     def analyze(self, symbol, price_data=None, chip_data=None, fundamental_data=None,
-                mode: str = 'mock'):
+                mode: str = 'mock', margin_df=None, sector_peers=None,
+                theme_tags=None, leader_df=None):
         """
         Analyze short-term trading opportunity for a symbol.
 
@@ -141,6 +142,66 @@ class ShortTermAnalyzer:
         except Exception as exc:
             logger.debug("BuyPointAnalyzer skipped in ShortTermAnalyzer: %s", exc)
 
+        # ---- Phase 2 signals ----
+        _p2 = {}
+        if price_data and len(price_data) >= 9:
+            try:
+                import pandas as pd
+                from features.kd_advanced import compute_kd_advanced
+                from analysis.bottom_reversal_analyzer import analyze_bottom_reversal
+                from features.short_interest_features import compute_short_interest
+                from analysis.sector_rotation_analyzer import analyze_sector_rotation
+                _bars = price_data
+                if _bars and isinstance(_bars[0], dict):
+                    _df2 = pd.DataFrame(_bars)
+                    for _c in list(_df2.columns):
+                        _lc = _c.lower()
+                        if _lc == 'close' and _c != 'close':
+                            _df2.rename(columns={_c: 'close'}, inplace=True)
+                        elif _lc == 'high' and _c != 'high':
+                            _df2.rename(columns={_c: 'high'}, inplace=True)
+                        elif _lc == 'low' and _c != 'low':
+                            _df2.rename(columns={_c: 'low'}, inplace=True)
+                else:
+                    _df2 = pd.DataFrame({'close': [float(b) for b in _bars if b is not None]})
+                _kd2 = compute_kd_advanced(_df2)
+                _p2['kd_advanced'] = _kd2
+                if _kd2.get('kd_high_death_cross'):
+                    no_entry_conditions.append("KD 高檔死亡交叉，不建議追高")
+                if _kd2.get('kd_low_golden_cross'):
+                    reasoning += "；KD 低檔黃金交叉加分"
+                _br2 = analyze_bottom_reversal(_df2)
+                _p2['bottom_reversal'] = _br2
+                _si2 = compute_short_interest(_df2, margin_df=margin_df)
+                _p2['short_interest'] = _si2
+                if _si2.get('weak_stock_short_increase'):
+                    no_entry_conditions.append("弱勢股融券增加，不視為多方訊號")
+                _sr2 = analyze_sector_rotation(
+                    sym, _df2,
+                    sector_peers=sector_peers,
+                    theme_tags=theme_tags,
+                    leader_df=leader_df,
+                )
+                _p2['sector_rotation'] = _sr2
+                if _sr2.get('sector_signal') == 'LEADER_WEAK':
+                    no_entry_conditions.append("族群指標股轉弱，不追落後股")
+            except Exception as _p2e:
+                logger.debug("Phase 2 in ShortTermAnalyzer: %s", _p2e)
+        if fundamental_data:
+            try:
+                from analysis.fundamental_quality_analyzer import analyze_fundamental_quality
+                _fqkw = {k: fundamental_data[k] for k in (
+                    'monthly_revenue_rows', 'eps_ttm', 'eps_qoq_change',
+                    'gross_margin', 'gross_margin_prev', 'operating_margin',
+                    'operating_margin_prev', 'price_vs_ma20', 'price_vs_ma60',
+                ) if k in fundamental_data}
+                _fq2 = analyze_fundamental_quality(symbol=sym, **_fqkw)
+                _p2['fundamental_quality'] = _fq2
+                if _fq2.get('earnings_risk_warning'):
+                    no_entry_conditions.append(f"財報風險：{_fq2['earnings_risk_warning']}")
+            except Exception as _fqe:
+                logger.debug("Phase 2 fundamental_quality in ShortTermAnalyzer: %s", _fqe)
+
         return {
             'decision': decision,
             'confidence': confidence,
@@ -158,6 +219,12 @@ class ShortTermAnalyzer:
             'support_price': bp_support,
             'confirm_price': bp_confirm,
             'invalid_price': bp_invalid,
+            'kd_advanced_signals': _p2.get('kd_advanced', {}),
+            'short_interest_signals': _p2.get('short_interest', {}),
+            'bottom_reversal_signals': _p2.get('bottom_reversal', {}),
+            'sector_rotation_signals': _p2.get('sector_rotation', {}),
+            'fundamental_quality_signals': _p2.get('fundamental_quality', {}),
+            'phase2_signals': _p2,
         }
 
     def _analyze_technicals(self, price_data):

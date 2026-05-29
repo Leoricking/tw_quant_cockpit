@@ -294,6 +294,43 @@ def generate_daily_report(
 
         lines.append("")
 
+    # ---- Phase 2 Strategy Knowledge Engine summary (if available) --------
+    _has_phase2 = not picks.empty and any(
+        col in picks.columns
+        for col in ("phase2_strategy_reason", "rebound_warning",
+                    "squeeze_signal", "sector_linkage_reason", "fundamental_warning")
+    )
+    if _has_phase2:
+        lines.append("-" * 70)
+        lines.append("  STRATEGY KNOWLEDGE ENGINE — PHASE 2 SIGNALS")
+        lines.append("-" * 70)
+        for _, row in picks.head(10).iterrows():
+            sid = str(row.get("stock_id", "N/A"))
+            p2r  = row.get("phase2_strategy_reason")
+            rbw  = row.get("rebound_warning")
+            sqz  = row.get("squeeze_signal")
+            slr  = row.get("sector_linkage_reason")
+            fuw  = row.get("fundamental_warning")
+
+            def _nv(v):
+                return None if (v is None or (isinstance(v, float) and pd.isna(v)) or v == '') else str(v)
+
+            p2r = _nv(p2r); rbw = _nv(rbw); sqz = _nv(sqz); slr = _nv(slr); fuw = _nv(fuw)
+            if not any([p2r, rbw, sqz, slr, fuw]):
+                continue
+            lines.append(f"  [{sid}]")
+            if p2r:
+                lines.append(f"    KD / Phase2 : {p2r}")
+            if sqz and sqz not in ("WATCH", "UNAVAILABLE"):
+                lines.append(f"    融券訊號    : {sqz}")
+            if rbw:
+                lines.append(f"    破底翻警示  : {rbw}")
+            if slr:
+                lines.append(f"    族群聯動    : {slr}")
+            if fuw:
+                lines.append(f"    財報警示    : {fuw}")
+        lines.append("")
+
     # ---- Model review (看對/看錯復盤) ------------------------------------
     if previous_picks is not None and not previous_picks.empty and not picks.empty:
         lines.append("-" * 70)
