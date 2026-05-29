@@ -209,6 +209,63 @@ class StatConfidence:
         return 'INSUFFICIENT'
 
     @staticmethod
+    def for_universe(
+        symbol_count: int,
+        trading_days: int = None,
+        signal_count: int = None,
+    ) -> dict:
+        """
+        Evaluate confidence for a universe-level backtest.
+
+        Rules (v0.3.8):
+          symbol_count < 10                                  → INSUFFICIENT
+          10 <= symbol_count < 30                            → OBSERVATIONAL
+          symbol_count >= 30 and trading_days >= 120
+            (and signal_count >= 200 if provided)            → RELIABLE
+
+        Parameters
+        ----------
+        symbol_count  : number of symbols with sufficient data
+        trading_days  : trading days covered (optional)
+        signal_count  : total signals detected (optional)
+
+        Returns
+        -------
+        dict with keys: overall, universe, reasons
+        """
+        if symbol_count < 10:
+            uni_lvl = 'INSUFFICIENT'
+        elif symbol_count < 30:
+            uni_lvl = 'OBSERVATIONAL'
+        else:
+            uni_lvl = 'RELIABLE'
+
+        levels = [uni_lvl]
+        if trading_days is not None and trading_days < 120:
+            levels.append('OBSERVATIONAL')
+        if signal_count is not None and signal_count < 200:
+            levels.append('OBSERVATIONAL' if signal_count >= 30 else 'INSUFFICIENT')
+
+        order = ['INSUFFICIENT', 'OBSERVATIONAL', 'RELIABLE']
+        overall = 'RELIABLE'
+        for lvl in order:
+            if lvl in levels:
+                overall = lvl
+                break
+
+        reasons = []
+        if symbol_count < 10:
+            reasons.append(f'symbol_count {symbol_count} < 10 -> INSUFFICIENT')
+        elif symbol_count < 30:
+            reasons.append(f'symbol_count {symbol_count} < 30 -> OBSERVATIONAL')
+        if trading_days is not None and trading_days < 120:
+            reasons.append(f'trading_days {trading_days} < 120 -> not RELIABLE')
+        if signal_count is not None and signal_count < 200:
+            reasons.append(f'signal_count {signal_count} < 200 -> not RELIABLE')
+
+        return {'overall': overall, 'universe': uni_lvl, 'reasons': reasons}
+
+    @staticmethod
     def for_strategy_module(
         symbol_count: int,
         signal_count: int,

@@ -1,0 +1,11 @@
+﻿symbol,name,sector,theme_tags,priority,xq_file,import_status,daily_rows,margin_rows,institutional_rows,holder_rows,trust_cost_rows,monthly_revenue_rows,short_term_ready,mid_term_ready,long_term_ready,last_checked,warning
+2454,聯發科,半導體,"IC設計,AI,5G",1,2454.xlsx,sample,0,0,0,0,0,0,False,False,False,,
+2383,台光電,電子零組件,"PCB,AI伺服器",2,2383.xlsx,sample,0,0,0,0,0,0,False,False,False,,
+6669,緯穎,電腦及周邊,"AI伺服器,雲端",3,6669.xlsx,sample,0,0,0,0,0,0,False,False,False,,
+2345,智邦,網路通訊,"AI交換器,雲端",4,2345.xlsx,sample,0,0,0,0,0,0,False,False,False,,
+2330,台積電,半導體,"晶圓代工,AI,龍頭",5,2330.xlsx,sample,0,0,0,0,0,0,False,False,False,,
+2308,台達電,電子零組件,"電源,散熱,AI伺服器",6,2308.xlsx,sample,0,0,0,0,0,0,False,False,False,,
+2317,鴻海,電子製造服務,"EMS,iPhone,電動車",7,2317.xlsx,sample,0,0,0,0,0,0,False,False,False,,
+2382,廣達,電腦及周邊,"AI伺服器,雲端",8,2382.xlsx,sample,0,0,0,0,0,0,False,False,False,,
+3017,奇鋐,電子零組件,"散熱,AI伺服器",9,3017.xlsx,sample,0,0,0,0,0,0,False,False,False,,
+3661,世芯-KY,半導體,"ASIC,AI加速器",10,3661.xlsx,sample,0,0,0,0,0,0,False,False,False,,

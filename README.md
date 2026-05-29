@@ -1440,6 +1440,64 @@ data/backtest_results/strategy_knowledge_fundamental_guard_validation.csv
 
 > **[!] 不構成投資建議。仍禁止實盤自動下單（TWQC_ENABLE_REAL_ORDER=false）。**
 
+### v0.3.8 — Universe Expansion to 10 / 30 / 50 Stocks (implemented)
+
+建立真實股票樣本擴充 workflow，讓統計信心從 INSUFFICIENT 推進到 OBSERVATIONAL / RELIABLE。
+
+#### 新 CLI
+
+```bash
+# 建立 universe manifest
+python main.py build-universe-manifest --size 10
+python main.py build-universe-manifest --size 30
+python main.py build-universe-manifest --size 50
+
+# 批次匯入 XQ Excel（先 dry-run，再正式）
+python main.py batch-import-xq --folder D:\XQ\twqc_bundle\raw --universe 10 --dry-run
+python main.py batch-import-xq --folder D:\XQ\twqc_bundle\raw --universe 10
+
+# 檢查資料品質
+python main.py universe-quality
+python main.py universe-quality --report
+
+# 一鍵跑四大驗證
+python main.py run-validation-suite --mode real --min-symbols 10
+```
+
+#### 統計信心目標
+
+| 樣本數 | 統計信心 | 含義 |
+|--------|---------|------|
+| < 10   | INSUFFICIENT  | 功能驗證，不可宣稱策略有效 |
+| 10–29  | OBSERVATIONAL | 初步可觀察 |
+| ≥ 30 + ≥120 交易日 | RELIABLE | 可參考（仍非投資建議） |
+
+#### 10 檔主流股（預設 universe）
+
+2454 聯發科、2383 台光電、6669 緯穎、2345 智邦、2330 台積電、
+2308 台達電、2317 鴻海、2382 廣達、3017 奇鋐、3661 世芯-KY
+
+#### 新增檔案 (v0.3.8)
+
+| 檔案 | 說明 |
+|------|------|
+| `data/universe_manifest.py` | Universe manifest builder（10/30/50 stock lists） |
+| `data/universe_quality_checker.py` | 資料完整度檢查（短/中/長線/策略回測門檻） |
+| `data/batch_xq_importer.py` | 批次 XQ 匯入（沿用 import-xq-export 邏輯） |
+| `reports/universe_quality_report.py` | Universe quality Markdown 報告 |
+| `docs/universe_expansion_guide.md` | 擴充說明文件 |
+| `data/universe/universe_manifest_sample.csv` | 範例 manifest（可 commit） |
+
+#### 修改檔案 (v0.3.8)
+
+| 檔案 | 修改內容 |
+|------|---------|
+| `backtest/stat_confidence.py` | 新增 `for_universe()` 靜態方法 |
+| `data/data_quality_checker.py` | 新增 `summarize_universe_quality()`, `get_strategy_backtest_eligible_symbols()` |
+| `main.py` | 新增 `build-universe-manifest`, `batch-import-xq`, `universe-quality`, `run-validation-suite` CLI |
+
+> **[!] 不構成投資建議。仍禁止實盤自動下單（TWQC_ENABLE_REAL_ORDER=false）。**
+
 ### v0.3.5 (planned)
 - GUI 顯示回測驗證報告與 Watchlist 追蹤
 

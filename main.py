@@ -1186,6 +1186,240 @@ def cmd_backtest_strategy_knowledge(args: argparse.Namespace) -> None:
 
 
 # ---------------------------------------------------------------------------
+# v0.3.8 — Universe Expansion Commands
+# ---------------------------------------------------------------------------
+
+def cmd_build_universe_manifest(args: argparse.Namespace) -> None:
+    """Build or extend the universe manifest CSV for 10 / 30 / 50 stocks."""
+    logger = logging.getLogger("main.build_universe_manifest")
+    size       = getattr(args, 'size',    10)
+    output     = getattr(args, 'output',  None)
+    replace    = getattr(args, 'replace', False)
+    try:
+        from data.universe_manifest import UniverseManifest
+        um = UniverseManifest(manifest_path=output) if output else UniverseManifest()
+        df = um.build(size=size, replace=replace)
+        # Also write sample manifest
+        um.build_sample()
+        print(f"\nUniverse manifest built: {um.manifest_path}")
+        print(f"  Symbols : {len(df)}")
+        print(f"  Size    : {size}")
+        for _, row in df.head(5).iterrows():
+            print(f"    {row['symbol']}  {row['name']}")
+        if len(df) > 5:
+            print(f"    ... ({len(df) - 5} more)")
+        print("\n  Next: python main.py batch-import-xq --folder <XQ_folder> "
+              f"--universe {size} --dry-run")
+    except Exception as exc:
+        logger.error("build-universe-manifest failed: %s", exc, exc_info=True)
+        print(f"ERROR: {exc}")
+
+
+def cmd_batch_import_xq(args: argparse.Namespace) -> None:
+    """Batch-import XQ export files for all universe symbols."""
+    logger   = logging.getLogger("main.batch_import_xq")
+    folder   = getattr(args, 'folder',   None)
+    universe = getattr(args, 'universe', 10)
+    manifest = getattr(args, 'manifest', None)
+    dry_run  = getattr(args, 'dry_run',  False)
+    replace  = getattr(args, 'replace',  False)
+
+    if not folder:
+        print("ERROR: --folder is required.")
+        return
+
+    print('\n' + '=' * 60)
+    print('  TW Quant Cockpit \u2014 Batch XQ Import')
+    print('=' * 60)
+    print(f"  Folder   : {folder}")
+    print(f"  Universe : {universe}")
+    print(f"  Mode     : {'dry-run' if dry_run else 'import'}")
+    print()
+
+    try:
+        from data.batch_xq_importer import BatchXQImporter
+        bxi    = BatchXQImporter()
+        result = bxi.import_all(
+            folder=folder, universe=universe,
+            manifest_path=manifest, dry_run=dry_run, replace=replace,
+        )
+
+        found   = result.get('found', [])
+        missing = result.get('missing', [])
+
+        print(f"  Found    : {len(found)} file(s)")
+        for sym, fpath in found:
+            print(f"    {sym}  {os.path.basename(fpath)}")
+
+        if missing:
+            print(f"\n  Missing  : {len(missing)} symbol(s)")
+            for sym in missing:
+                print(f"    {sym}  [no matching file in folder]")
+
+        if not dry_run:
+            results = result.get('results', {})
+            print(f"\n  Import results:")
+            for sym, outcome in results.items():
+                if outcome.get('success'):
+                    print(f"    {sym}  OK")
+                else:
+                    err = outcome.get('error', outcome.get('warnings', ['?'])[-1] if outcome.get('warnings') else '?')
+                    print(f"    {sym}  FAILED: {err}")
+            print("\n  Next: python main.py universe-quality --report")
+        else:
+            print("\n  [dry-run] No data written.")
+
+        print('\n' + '=' * 60)
+        print('[!] For research and simulation only. Not investment advice.')
+
+    except Exception as exc:
+        logger.error("batch-import-xq failed: %s", exc, exc_info=True)
+        print(f"ERROR: {exc}")
+
+
+def cmd_universe_quality(args: argparse.Namespace) -> None:
+    """Check universe data quality and optionally generate a Markdown report."""
+    logger   = logging.getLogger("main.universe_quality")
+    manifest = getattr(args, 'manifest', None)
+    report   = getattr(args, 'report',   False)
+
+    try:
+        from data.universe_quality_checker import UniverseQualityChecker
+        uqc = UniverseQualityChecker()
+        df  = uqc.check_universe(manifest_path=manifest)
+
+        if df.empty:
+            print("[WARN] No symbols found. Run: python main.py build-universe-manifest --size 10")
+            return
+
+        summary = uqc.summarize_universe_quality(df)
+        csv_path = uqc.save_quality_report_csv(df)
+        conf     = summary.get('confidence', {})
+
+        print('\n' + '=' * 60)
+        print('  TW Quant Cockpit \u2014 Universe Quality')
+        print('=' * 60)
+        print(f"  Universe size             : {summary.get('universe_size', 0)}")
+        print(f"  Imported (daily > 0)      : {summary.get('imported_count', 0)}")
+        print(f"  Short-term ready          : {summary.get('short_ready_count', 0)}")
+        print(f"  Mid-term ready            : {summary.get('mid_ready_count', 0)}")
+        print(f"  Long-term ready           : {summary.get('long_ready_count', 0)}")
+        print(f"  Strategy backtest eligible: {summary.get('strategy_bt_ready_count', 0)}")
+        print(f"  Statistical confidence    : {conf.get('overall', 'INSUFFICIENT')}")
+        for reason in conf.get('reasons', []):
+            print(f"    - {reason}")
+        next_steps = summary.get('next_steps', [])
+        if next_steps:
+            print('\n  Next steps:')
+            for step in next_steps:
+                print(f"    - {step}")
+        print(f"\n  Quality CSV : {csv_path}")
+
+        if report:
+            from reports.universe_quality_report import UniverseQualityReport
+            rpt      = UniverseQualityReport(df, summary)
+            rpt_path = rpt.save()
+            print(f"  Report      : {rpt_path}")
+
+        print('\n[!] For research and simulation only. Not investment advice.')
+
+    except Exception as exc:
+        logger.error("universe-quality failed: %s", exc, exc_info=True)
+        print(f"ERROR: {exc}")
+
+
+def cmd_run_validation_suite(args: argparse.Namespace) -> None:
+    """Run all four validation backtests in sequence."""
+    logger      = logging.getLogger("main.run_validation_suite")
+    mode        = getattr(args, 'mode',        'real')
+    min_symbols = getattr(args, 'min_symbols', 10)
+    output      = getattr(args, 'output',      None)
+
+    print('\n' + '=' * 60)
+    print('  TW Quant Cockpit \u2014 Validation Suite')
+    print('=' * 60)
+    print(f"  Mode        : {mode}")
+    print(f"  Min symbols : {min_symbols}")
+
+    suite_results = {}
+
+    # 1. validate-score
+    print('\n--- Step 1/4: validate-score ---')
+    try:
+        from backtest.score_validation import ScoreValidator
+        sv = ScoreValidator(mode=mode)
+        r  = sv.run()
+        conf = r.get('confidence', {})
+        print(f"  Status     : {r.get('status', 'ok')}")
+        print(f"  Confidence : {conf.get('overall', 'INSUFFICIENT')}")
+        suite_results['validate_score'] = {'ok': True, 'confidence': conf.get('overall')}
+    except Exception as exc:
+        logger.warning("validate-score failed: %s", exc)
+        print(f"  FAILED: {exc}")
+        suite_results['validate_score'] = {'ok': False, 'error': str(exc)}
+
+    # 2. backtest-buy-points
+    print('\n--- Step 2/4: backtest-buy-points ---')
+    try:
+        from backtest.buy_point_backtester import BuyPointBacktester
+        bt = BuyPointBacktester(mode=mode)
+        r  = bt.run()
+        conf = r.get('confidence', {})
+        print(f"  Status     : {r.get('status', 'ok')}")
+        print(f"  Signals    : {r.get('n_signals', 0)}")
+        print(f"  Confidence : {conf.get('overall', 'INSUFFICIENT')}")
+        suite_results['buy_points'] = {'ok': True, 'confidence': conf.get('overall')}
+    except Exception as exc:
+        logger.warning("backtest-buy-points failed: %s", exc)
+        print(f"  FAILED: {exc}")
+        suite_results['buy_points'] = {'ok': False, 'error': str(exc)}
+
+    # 3. backtest-screener
+    print('\n--- Step 3/4: backtest-screener ---')
+    try:
+        from backtest.screener_backtester import ScreenerBacktester
+        bt = ScreenerBacktester(mode=mode)
+        r  = bt.run()
+        conf = r.get('confidence', {})
+        print(f"  Status     : {r.get('status', 'ok')}")
+        print(f"  Symbols    : {r.get('n_symbols', 0)}")
+        print(f"  Confidence : {conf.get('overall', 'INSUFFICIENT')}")
+        suite_results['screener'] = {'ok': True, 'confidence': conf.get('overall')}
+    except Exception as exc:
+        logger.warning("backtest-screener failed: %s", exc)
+        print(f"  FAILED: {exc}")
+        suite_results['screener'] = {'ok': False, 'error': str(exc)}
+
+    # 4. backtest-strategy-knowledge
+    print('\n--- Step 4/4: backtest-strategy-knowledge ---')
+    try:
+        from backtest.strategy_knowledge_backtester import StrategyKnowledgeBacktester
+        bt = StrategyKnowledgeBacktester(mode=mode)
+        r  = bt.run()
+        conf = r.get('confidence', {})
+        print(f"  Status     : {r.get('status', 'ok')}")
+        print(f"  Symbols    : {r.get('n_symbols', 0)}")
+        print(f"  Confidence : {conf.get('overall', 'INSUFFICIENT')}")
+        suite_results['strategy_knowledge'] = {'ok': True, 'confidence': conf.get('overall')}
+    except Exception as exc:
+        logger.warning("backtest-strategy-knowledge failed: %s", exc)
+        print(f"  FAILED: {exc}")
+        suite_results['strategy_knowledge'] = {'ok': False, 'error': str(exc)}
+
+    # Summary
+    print('\n' + '=' * 60)
+    print('  Validation Suite Summary')
+    print('=' * 60)
+    all_ok = all(v.get('ok') for v in suite_results.values())
+    for step, res in suite_results.items():
+        status = 'OK' if res.get('ok') else 'FAILED'
+        conf   = res.get('confidence', 'INSUFFICIENT')
+        print(f"  {step:<30} {status}  {conf}")
+    print(f"\n  All steps passed : {'YES' if all_ok else 'NO (see above)'}")
+    print('\n[!] For research and simulation only. Not investment advice.')
+
+
+# ---------------------------------------------------------------------------
 # v0.3.2 — Build Universe Command
 # ---------------------------------------------------------------------------
 
@@ -2398,6 +2632,56 @@ def _build_parser() -> argparse.ArgumentParser:
     p_bsk.add_argument("--report-dir",   dest="report_dir",   default=None,
                        help="Markdown report directory (default: reports/)")
 
+    # --- build-universe-manifest ---
+    p_bum = subparsers.add_parser(
+        "build-universe-manifest",
+        help="Build universe manifest CSV for 10 / 30 / 50 stock expansion (v0.3.8)",
+    )
+    p_bum.add_argument("--size",    type=int, default=10, choices=[10, 30, 50],
+                       help="Universe size (default: 10)")
+    p_bum.add_argument("--output",  default=None,
+                       help="Output path for manifest CSV (default: data/universe/universe_manifest.csv)")
+    p_bum.add_argument("--replace", action="store_true",
+                       help="Replace existing manifest entries (default: preserve existing data)")
+
+    # --- batch-import-xq ---
+    p_bixq = subparsers.add_parser(
+        "batch-import-xq",
+        help="Batch-import XQ export files for all universe symbols (v0.3.8)",
+    )
+    p_bixq.add_argument("--folder",   required=True,
+                        help="Folder containing XQ Excel / CSV files")
+    p_bixq.add_argument("--universe", type=int, default=10, choices=[10, 30, 50],
+                        help="Universe size to import (default: 10)")
+    p_bixq.add_argument("--manifest", default=None,
+                        help="Path to universe_manifest.csv (optional)")
+    p_bixq.add_argument("--dry-run",  action="store_true", dest="dry_run",
+                        help="Scan files only, do not import")
+    p_bixq.add_argument("--replace",  action="store_true",
+                        help="Replace existing imported rows")
+
+    # --- universe-quality ---
+    p_uq = subparsers.add_parser(
+        "universe-quality",
+        help="Check universe data quality and show readiness summary (v0.3.8)",
+    )
+    p_uq.add_argument("--manifest", default=None,
+                      help="Path to universe_manifest.csv (optional)")
+    p_uq.add_argument("--report",   action="store_true",
+                      help="Also generate Markdown report in reports/")
+
+    # --- run-validation-suite ---
+    p_rvs = subparsers.add_parser(
+        "run-validation-suite",
+        help="Run all four validation backtests in sequence (v0.3.8)",
+    )
+    p_rvs.add_argument("--mode",         default="real", choices=["mock", "real"],
+                       help="Data mode (default: real)")
+    p_rvs.add_argument("--min-symbols",  dest="min_symbols", type=int, default=10,
+                       help="Minimum eligible symbols required (default: 10)")
+    p_rvs.add_argument("--output",       default=None,
+                       help="Output directory for CSV results (optional)")
+
     # --- universe-check ---
     subparsers.add_parser(
         "universe-check",
@@ -2625,6 +2909,11 @@ def main() -> None:
         "strategy-preview":       cmd_strategy_preview,
         # TW Quant Cockpit v0.3.7
         "backtest-strategy-knowledge": cmd_backtest_strategy_knowledge,
+        # TW Quant Cockpit v0.3.8
+        "build-universe-manifest": cmd_build_universe_manifest,
+        "batch-import-xq":         cmd_batch_import_xq,
+        "universe-quality":        cmd_universe_quality,
+        "run-validation-suite":    cmd_run_validation_suite,
     }
 
     if args.command is None:

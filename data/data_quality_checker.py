@@ -287,3 +287,32 @@ class DataQualityChecker:
                 'readiness_stage': 'UNKNOWN',
                 'import_recommendation': 'Run: python main.py data-audit',
             }
+
+    def summarize_universe_quality(self, df=None) -> dict:
+        """
+        Produce a summary dict from a universe quality DataFrame.
+
+        Delegates to UniverseQualityChecker for consistent thresholds.
+        If df is None, runs check_universe() first.
+        """
+        try:
+            from data.universe_quality_checker import UniverseQualityChecker
+            uqc = UniverseQualityChecker()
+            return uqc.summarize_universe_quality(df)
+        except Exception as exc:
+            logger.warning("summarize_universe_quality failed: %s", exc)
+            return {}
+
+    def get_strategy_backtest_eligible_symbols(self, df=None) -> list:
+        """
+        Return symbols eligible for strategy knowledge backtest (daily >= 60).
+
+        Delegates to UniverseQualityChecker.
+        """
+        try:
+            from data.universe_quality_checker import UniverseQualityChecker
+            uqc = UniverseQualityChecker()
+            return uqc.get_strategy_backtest_eligible_symbols(df)
+        except Exception as exc:
+            logger.warning("get_strategy_backtest_eligible_symbols failed: %s", exc)
+            return []
