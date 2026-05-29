@@ -1369,6 +1369,77 @@ Phase 2 signals are now integrated into all major pipeline components:
 
 > **[!] 不構成投資建議。仍禁止實盤自動下單（TWQC_ENABLE_REAL_ORDER=false）。**
 
+### v0.3.7 — Strategy Knowledge Backtest (implemented)
+
+建立 Strategy Knowledge Engine 的專用回測驗證框架，驗證 Phase 2 各模組的規則是否有效。
+
+#### 新功能
+
+```bash
+python main.py backtest-strategy-knowledge --mode real
+python main.py backtest-strategy-knowledge --mode real --stock 2454
+python main.py backtest-strategy-knowledge --mode real --start 2023-01-01 --end 2024-12-31
+python main.py backtest-strategy-knowledge --mode real --holding-days 20
+python main.py backtest-strategy-knowledge --mode mock
+```
+
+#### 驗證模組
+
+| 模組 | 訊號 | 資料需求 |
+|------|------|---------|
+| KD Advanced | kd_low_golden_cross, kd_high_death_cross, kd_mid_noise_cross, kd_high_sticky_trend | daily K 線 |
+| Short Interest | squeeze_fuel_score, price_up_short_balance_up, weak_stock_short_increase | daily K 線（proxy），或 margin.csv |
+| Bottom Reversal | bottom_reversal_detected, is_speculative_rebound | daily K 線 |
+| Sector Rotation | linkage_score, laggard_follow_signal | 需要 peer data（v0.3.8+） |
+| Fundamental Quality | fundamental_quality_score, earnings_risk_warning | 需要季度財報時序（匯入後） |
+| No Chase | kd_high_death_cross 代理 | daily K 線 |
+
+#### 輸出 CSV
+
+```
+data/backtest_results/strategy_knowledge_signals.csv
+data/backtest_results/strategy_knowledge_module_performance.csv
+data/backtest_results/strategy_knowledge_factor_performance.csv
+data/backtest_results/strategy_knowledge_no_chase_validation.csv
+data/backtest_results/strategy_knowledge_no_panic_sell_validation.csv
+data/backtest_results/strategy_knowledge_rebound_validation.csv
+data/backtest_results/strategy_knowledge_sector_validation.csv
+data/backtest_results/strategy_knowledge_fundamental_guard_validation.csv
+```
+
+#### 統計信心等級
+
+| 等級 | 條件 | 含義 |
+|------|------|------|
+| `INSUFFICIENT` | 標的 < 10 或訊號 < 30 | 功能驗證，不可宣稱策略有效 |
+| `OBSERVATIONAL` | 訊號 30–199 | 初步規律，需更多資料 |
+| `RELIABLE` | 標的 ≥ 30, 訊號 ≥ 200, 交易日 ≥ 120 | 可作參考（仍非投資建議） |
+
+#### 注意事項
+
+- 目前樣本（3 檔）預期輸出 `INSUFFICIENT`，此為正常行為。
+- mock mode 輸出 `MOCK DEMO ONLY`，不可作策略結論。
+- 不接 API、不自動下單。
+- 詳細說明：[docs/strategy_knowledge_backtest.md](docs/strategy_knowledge_backtest.md)
+
+#### 新增檔案 (v0.3.7)
+
+| 檔案 | 說明 |
+|------|------|
+| `backtest/strategy_knowledge_backtester.py` | 主控回測器 |
+| `backtest/strategy_signal_evaluator.py` | 共用訊號評估工具 |
+| `reports/strategy_knowledge_validation_report.py` | Markdown 報告產生器 |
+| `docs/strategy_knowledge_backtest.md` | 回測說明文件 |
+
+#### 修改檔案 (v0.3.7)
+
+| 檔案 | 修改內容 |
+|------|---------|
+| `backtest/stat_confidence.py` | 新增 `for_strategy_module()` 靜態方法 |
+| `main.py` | 新增 `backtest-strategy-knowledge` CLI |
+
+> **[!] 不構成投資建議。仍禁止實盤自動下單（TWQC_ENABLE_REAL_ORDER=false）。**
+
 ### v0.3.5 (planned)
 - GUI 顯示回測驗證報告與 Watchlist 追蹤
 

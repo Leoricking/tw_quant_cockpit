@@ -1111,6 +1111,80 @@ def cmd_backtest_screener(args: argparse.Namespace) -> None:
         print(f"ERROR: {exc}")
 
 
+def cmd_backtest_strategy_knowledge(args: argparse.Namespace) -> None:
+    """Validate Strategy Knowledge Engine Phase 2 modules against historical forward returns."""
+    logger = logging.getLogger("main.backtest_strategy_knowledge")
+    mode         = getattr(args, 'mode',         'real')
+    start        = getattr(args, 'start',        None)
+    end          = getattr(args, 'end',          None)
+    stock        = getattr(args, 'stock',        None)
+    holding_days = getattr(args, 'holding_days', 20)
+    min_samples  = getattr(args, 'min_samples',  30)
+    output_dir   = getattr(args, 'output_dir',   None)
+    report_dir   = getattr(args, 'report_dir',   None)
+    logger.info(
+        "backtest-strategy-knowledge [mode=%s stock=%s start=%s end=%s hd=%d]",
+        mode, stock, start, end, holding_days,
+    )
+
+    try:
+        from backtest.strategy_knowledge_backtester import StrategyKnowledgeBacktester
+        from reports.strategy_knowledge_validation_report import StrategyKnowledgeValidationReport
+
+        bt      = StrategyKnowledgeBacktester(
+            mode=mode, start=start, end=end, stock=stock,
+            holding_days=holding_days, min_samples=min_samples,
+            output_dir=output_dir,
+        )
+        results = bt.run()
+
+        status = results.get('status')
+        if status == 'insufficient_data':
+            print(results.get('message', '[WARN] 資料不足，無法完成統計。'))
+            return
+
+        paths    = bt.save_results(results, output_dir=output_dir)
+        rpt      = StrategyKnowledgeValidationReport(results)
+        rpt_path = rpt.save(output_dir=report_dir)
+
+        conf     = results.get('confidence', {})
+        uni_conf = results.get('universe_confidence', {})
+        ms       = results.get('module_summary', {})
+
+        print('\n' + '=' * 60)
+        print('  TW Quant Cockpit \u2014 Strategy Knowledge Backtest')
+        print('=' * 60)
+        src_tag = ('MOCK DEMO' if results.get('is_mock_demo')
+                   else 'REAL CSV SAMPLE' if results.get('is_sample')
+                   else 'REAL CSV')
+        print(f"  Data source           : {src_tag}")
+        print(f"  Symbols               : {results.get('n_symbols', 0)}")
+        print(f"  Records               : {results.get('n_records', 0)}")
+        print(f"  Signals               : {results.get('n_signals', 0)}")
+        print(f"  Period                : {results.get('start', _DASH)} \u2192 {results.get('end', _DASH)}")
+        print(f"  Statistical confidence: {conf.get('overall', 'INSUFFICIENT')}")
+        for reason in conf.get('reasons', []):
+            print(f"    - {reason}")
+        if uni_conf.get('note'):
+            print(f"    - {uni_conf['note']}")
+        print('')
+        print('  Module summary:')
+        for mod, summary in ms.items():
+            print(f"    {mod}: {summary}")
+        print('')
+        csv_out = paths.get('signals_df', _DASH)
+        print(f"  Output CSV  : {csv_out}")
+        print(f"  Report      : {rpt_path}")
+        if results.get('is_mock_demo'):
+            print('\n  [!] MOCK DEMO ONLY \u2014 synthetic data, not a strategy conclusion.')
+        else:
+            print('\n  [!] For research and simulation only. Not investment advice.')
+
+    except Exception as exc:
+        logger.error("backtest-strategy-knowledge failed: %s", exc, exc_info=True)
+        print(f"ERROR: {exc}")
+
+
 # ---------------------------------------------------------------------------
 # v0.3.2 — Build Universe Command
 # ---------------------------------------------------------------------------
@@ -2305,6 +2379,25 @@ def _build_parser() -> argparse.ArgumentParser:
     p_bs.add_argument("--top",    type=int, default=8, help="Top-N filter (default: 8)")
     p_bs.add_argument("--output", default=None,   help="Output directory (default: data/backtest_results/)")
 
+    # --- backtest-strategy-knowledge ---
+    p_bsk = subparsers.add_parser(
+        "backtest-strategy-knowledge",
+        help="Validate Strategy Knowledge Engine Phase 2 signals against historical forward returns",
+    )
+    p_bsk.add_argument("--mode",         default="real", choices=["mock", "real"],
+                       help="Data mode (default: real)")
+    p_bsk.add_argument("--stock",        default=None,   help="Single symbol (optional; default: all)")
+    p_bsk.add_argument("--start",        default=None,   help="Start date YYYY-MM-DD (optional)")
+    p_bsk.add_argument("--end",          default=None,   help="End date YYYY-MM-DD (optional)")
+    p_bsk.add_argument("--holding-days", dest="holding_days", type=int, default=20,
+                       help="Forward return holding period in days (default: 20)")
+    p_bsk.add_argument("--min-samples",  dest="min_samples",  type=int, default=30,
+                       help="Minimum signals for OBSERVATIONAL/RELIABLE rating (default: 30)")
+    p_bsk.add_argument("--output-dir",   dest="output_dir",   default=None,
+                       help="CSV output directory (default: data/backtest_results/)")
+    p_bsk.add_argument("--report-dir",   dest="report_dir",   default=None,
+                       help="Markdown report directory (default: reports/)")
+
     # --- universe-check ---
     subparsers.add_parser(
         "universe-check",
@@ -2530,6 +2623,8 @@ def main() -> None:
         "feature-preview":        cmd_feature_preview,
         # TW Quant Cockpit v0.3.6
         "strategy-preview":       cmd_strategy_preview,
+        # TW Quant Cockpit v0.3.7
+        "backtest-strategy-knowledge": cmd_backtest_strategy_knowledge,
     }
 
     if args.command is None:

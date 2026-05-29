@@ -207,3 +207,102 @@ class StatConfidence:
         if lvl == 'OBSERVATIONAL':
             return 'OBSERVATIONAL'
         return 'INSUFFICIENT'
+
+    @staticmethod
+    def for_strategy_module(
+        symbol_count: int,
+        signal_count: int,
+        trading_days: int = None,
+        module_name: str = '',
+    ) -> dict:
+        """
+        Evaluate confidence for a strategy knowledge module backtest.
+
+        Rules (v0.3.7):
+          symbol_count < 10                             → INSUFFICIENT
+          signal_count < 30                             → INSUFFICIENT
+          signal_count 30–199                           → OBSERVATIONAL
+          trading_days < 120                            → not RELIABLE
+          symbol_count >= 30 and signal_count >= 200
+            and trading_days >= 120 (or None)           → RELIABLE
+
+        Parameters
+        ----------
+        symbol_count  : distinct symbols in the backtest universe
+        signal_count  : total signals of the module detected
+        trading_days  : number of trading days covered
+        module_name   : optional label for display
+
+        Returns
+        -------
+        dict with keys: overall, universe, signal, trading_days_level, reasons
+        """
+        # Universe
+        if symbol_count < 10:
+            uni_lvl = 'INSUFFICIENT'
+        elif symbol_count < 30:
+            uni_lvl = 'OBSERVATIONAL'
+        else:
+            uni_lvl = 'RELIABLE'
+
+        # Signal count
+        if signal_count < 30:
+            sig_lvl = 'INSUFFICIENT'
+        elif signal_count < 200:
+            sig_lvl = 'OBSERVATIONAL'
+        else:
+            sig_lvl = 'RELIABLE'
+
+        # Trading days
+        if trading_days is None:
+            day_lvl = None
+        elif trading_days < 120:
+            day_lvl = 'OBSERVATIONAL'
+        else:
+            day_lvl = 'RELIABLE'
+
+        levels = [uni_lvl, sig_lvl]
+        if day_lvl is not None:
+            levels.append(day_lvl)
+
+        # Worst level wins
+        order = ['INSUFFICIENT', 'OBSERVATIONAL', 'RELIABLE']
+        overall = 'RELIABLE'
+        for lvl in order:
+            if lvl in levels:
+                overall = lvl
+                break
+
+        reasons = []
+        if symbol_count < 10:
+            reasons.append(
+                f'symbol_count {symbol_count} < 10 -> INSUFFICIENT'
+            )
+        elif symbol_count < 30:
+            reasons.append(
+                f'symbol_count {symbol_count} < 30 -> OBSERVATIONAL'
+            )
+        if signal_count < 30:
+            reasons.append(
+                f'signal_count {signal_count} < 30 -> INSUFFICIENT'
+            )
+        elif signal_count < 200:
+            reasons.append(
+                f'signal_count {signal_count} < 200 -> OBSERVATIONAL'
+            )
+        if trading_days is not None and trading_days < 120:
+            reasons.append(
+                f'trading_days {trading_days} < 120 -> not RELIABLE'
+            )
+
+        result = {
+            'overall':   overall,
+            'universe':  uni_lvl,
+            'signal':    sig_lvl,
+            'reasons':   reasons,
+        }
+        if module_name:
+            result['module_name'] = module_name
+        if day_lvl is not None:
+            result['trading_days_level'] = day_lvl
+        return result

@@ -32,6 +32,7 @@ trading_master.zip
 # Backtest / validation report outputs (generated artifacts)
 reports/score_validation_report_*.md
 reports/buy_point_validation_report_*.md
+reports/strategy_knowledge_validation_report_*.md
 
 # Import / audit / plan reports (generated artifacts)
 data/import_reports/
