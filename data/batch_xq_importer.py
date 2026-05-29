@@ -60,10 +60,11 @@ class BatchXQImporter:
             for fpath in all_files:
                 fname = os.path.basename(fpath)
                 name_no_ext = os.path.splitext(fname)[0]
-                # Match: exact symbol, symbol prefix, symbol suffix
+                # Match: exact symbol, symbol_prefix, _symbol_suffix, or "symbol name" (space-separated)
                 if (name_no_ext == sym
                         or name_no_ext.startswith(sym + '_')
-                        or name_no_ext.endswith('_' + sym)):
+                        or name_no_ext.endswith('_' + sym)
+                        or name_no_ext.startswith(sym + ' ')):
                     matches.append(fpath)
             result[sym] = sorted(matches)
 

@@ -143,6 +143,8 @@ class FundamentalDataBuilder:
         _ensure_dir(path)
 
         df_new = _standardize(df_new, _MONTHLY_REV_COLS)
+        if "month" in df_new.columns:
+            df_new["month"] = pd.to_datetime(df_new["month"], errors="coerce")
 
         if self.replace:
             merged = df_new
