@@ -21,7 +21,7 @@ class StockReportBuilder:
     def build(self, symbol, name=None, bull_score_data=None,
               daytrade_result=None, short_result=None,
               mid_result=None, long_result=None, mode: str = 'mock',
-              data_sources: dict = None):
+              data_sources: dict = None, strategy_signals: dict = None):
         """
         Build a complete Markdown analysis report.
 
@@ -288,11 +288,12 @@ class StockReportBuilder:
             lines.append(f"> [WARN] **{_DATA_INSUFFICIENT_WARNING}**")
 
         # Section 9: Strategy Knowledge Engine (v0.3.6)
-        strategy_signals = None
-        for r in (daytrade_result, short_result, mid_result, long_result):
-            if r and r.get('strategy_signals'):
-                strategy_signals = r['strategy_signals']
-                break
+        # Use passed-in strategy_signals first; fall back to analyzer results
+        if strategy_signals is None:
+            for r in (daytrade_result, short_result, mid_result, long_result):
+                if r and r.get('strategy_signals'):
+                    strategy_signals = r['strategy_signals']
+                    break
 
         lines.append("")
         lines.append("## 九、策略知識引擎判斷（v0.3.6）")
@@ -434,6 +435,80 @@ class StockReportBuilder:
                 lines.append(f"- {r}")
             if not no_rebuy and not rc:
                 lines.append("- 無")
+
+            # Phase 2: KD Advanced
+            kd_sigs = strategy_signals.get('kd_advanced_signals', {})
+            lines.append("### Phase 2 — KD 進階訊號")
+            lines.append(f"- 訊號：{kd_sigs.get('kd_signal', 'unavailable')}")
+            lines.append(f"- K={kd_sigs.get('kd_k', 'N/A')}  D={kd_sigs.get('kd_d', 'N/A')}")
+            lines.append(
+                f"- 低檔黃金交叉：{'[YES]' if kd_sigs.get('kd_low_golden_cross') else '[NO]'}"
+                f"  高檔死亡交叉：{'[YES]' if kd_sigs.get('kd_high_death_cross') else '[NO]'}"
+                f"  鈍化天數：{kd_sigs.get('kd_high_sticky_days', 0)}"
+            )
+            kd_r = kd_sigs.get('kd_strategy_reason', '')
+            if kd_r:
+                lines.append(f"- 理由：{kd_r}")
+
+            # Phase 2: Short Interest
+            si_sigs = strategy_signals.get('short_interest_signals', {})
+            lines.append("### Phase 2 — 融券空單訊號")
+            lines.append(f"- 訊號：{si_sigs.get('short_interest_signal', 'unavailable')}")
+            sf = si_sigs.get('short_squeeze_fuel_score')
+            lines.append(f"- 軋空燃料評分：{sf if sf is not None else 'N/A'}")
+            if si_sigs.get('short_covering_warning'):
+                lines.append("- [WARN] 融券回補警示")
+            if si_sigs.get('weak_stock_short_increase'):
+                lines.append("- [WARN] 弱勢股融券增加")
+            si_r = si_sigs.get('short_interest_reason', '')
+            if si_r:
+                lines.append(f"- 理由：{si_r}")
+
+            # Phase 2: Bottom Reversal
+            br_sigs = strategy_signals.get('bottom_reversal_signals', {})
+            lines.append("### Phase 2 — 底部反轉訊號")
+            lines.append(f"- 訊號：{br_sigs.get('bottom_signal', 'unavailable')}")
+            if br_sigs.get('bottom_reversal_detected'):
+                lines.append(
+                    f"- 進場：{br_sigs.get('rebound_entry_price', 'N/A')}"
+                    f"  停損：{br_sigs.get('rebound_stop_loss_price', 'N/A')}"
+                    f"  目標：{br_sigs.get('rebound_target_price', 'N/A')}"
+                )
+                lines.append(f"- 風險等級：{br_sigs.get('rebound_risk_level', 'N/A')}")
+            br_r = br_sigs.get('rebound_reason', '')
+            if br_r:
+                lines.append(f"- 理由：{br_r}")
+
+            # Phase 2: Sector Rotation
+            sr_sigs = strategy_signals.get('sector_rotation_signals', {})
+            lines.append("### Phase 2 — 族群輪動訊號")
+            lines.append(f"- 訊號：{sr_sigs.get('sector_signal', 'unavailable')}")
+            lines.append(
+                f"- 指標股：{sr_sigs.get('leader_symbol', 'N/A')}"
+                f"  連動評分：{sr_sigs.get('linkage_score', 'N/A')}"
+            )
+            if sr_sigs.get('laggard_follow_signal'):
+                lines.append("- 落後補漲候選")
+            sr_r = sr_sigs.get('sector_rotation_reason', '')
+            if sr_r:
+                lines.append(f"- 理由：{sr_r}")
+
+            # Phase 2: Fundamental Quality
+            fq_sigs = strategy_signals.get('fundamental_quality_signals', {})
+            lines.append("### Phase 2 — 基本面品質")
+            fq_score = fq_sigs.get('fundamental_quality_score')
+            lines.append(f"- 品質評分：{fq_score if fq_score is not None else 'N/A'}")
+            lines.append(
+                f"- 營收：{fq_sigs.get('revenue_growth_signal', 'N/A')}"
+                f"  毛利：{fq_sigs.get('margin_quality_signal', 'N/A')}"
+                f"  EPS：{fq_sigs.get('eps_quality_signal', 'N/A')}"
+            )
+            fq_w = fq_sigs.get('earnings_risk_warning', '')
+            if fq_w:
+                lines.append(f"- [WARN] {fq_w}")
+            fq_pw = fq_sigs.get('pre_earnings_price_warning', '')
+            if fq_pw:
+                lines.append(f"- [WARN] {fq_pw}")
 
             # Final decision
             lines.append("### 最終策略決策")

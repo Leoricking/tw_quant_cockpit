@@ -220,3 +220,7 @@ class CSVProvider(BaseMarketDataProvider):
             "has_data_files": has_data,
             "note": "CSV files in data/import/ (primary active provider)",
         }
+
+
+# Safe backward-compatibility alias (v0.3.6 Phase 2)
+CSVDataProvider = CSVProvider

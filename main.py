@@ -606,6 +606,21 @@ def cmd_stock_report(args: argparse.Namespace) -> None:
                     if _no_formal_msg not in long_result.get('no_entry_conditions', []):
                         long_result.setdefault('no_entry_conditions', []).append(_no_formal_msg)
 
+        # Build Strategy Knowledge Engine signals for Section 9
+        strategy_signals = None
+        try:
+            import pandas as _pd
+            if price_data:
+                _df = _pd.DataFrame(price_data)
+                if "date" in _df.columns:
+                    _df["date"] = _pd.to_datetime(_df["date"])
+                    _df = _df.sort_values("date").reset_index(drop=True)
+                if len(_df) >= 10:
+                    from analysis.strategy_knowledge_engine import build_strategy_signals
+                    strategy_signals = build_strategy_signals(df=_df, symbol=sym)
+        except Exception as _exc:
+            logger.warning("strategy_knowledge_engine skipped: %s", _exc)
+
         builder = StockReportBuilder()
         report = builder.build(
             symbol=sym,
@@ -616,6 +631,7 @@ def cmd_stock_report(args: argparse.Namespace) -> None:
             mid_result=mid_result,
             long_result=long_result,
             data_sources=data_sources,
+            strategy_signals=strategy_signals,
         )
 
         # Print to console
@@ -1633,7 +1649,7 @@ def cmd_provider_status(args: argparse.Namespace) -> None:
             print(f"  [ERROR]   {label} — {exc}")
 
     print()
-    print("  Real order execution : DISABLED (TWQC_ENABLE_REAL_ORDER=False)")
+    print("  Real order execution : DISABLED")
     print("  Broker API (Mega)    : planned / not configured")
     print("  Broker API (Shioaji) : not used")
     print()
@@ -1888,8 +1904,8 @@ def cmd_strategy_preview(args: argparse.Namespace) -> None:
     df = None
     try:
         if mode == "real":
-            from data.providers.csv_provider import CSVDataProvider
-            prov = CSVDataProvider()
+            from data.providers.csv_provider import CSVProvider
+            prov = CSVProvider()
             raw  = prov.get_daily(symbol)
             if raw is not None and len(raw) > 0:
                 df = raw.copy()
@@ -1904,10 +1920,16 @@ def cmd_strategy_preview(args: argparse.Namespace) -> None:
                 if "date" in df.columns:
                     df = df.sort_values("date").reset_index(drop=True)
     except Exception as exc:
-        logger_cmd.warning("Data load failed (%s), using mock: %s", symbol, exc)
+        logger_cmd.warning("Data load failed (%s): %s", symbol, exc)
 
-    # Fallback to mock OHLCV if nothing loaded
+    # Real mode must NOT fall back to mock
     if df is None or len(df) < 10:
+        if mode == "real":
+            print("  [WARN] real data insufficient for strategy analysis.")
+            print("  Strategy Knowledge unavailable in real mode.")
+            print("  Hint: use --mode mock for demo.")
+            return
+        # Mock mode: generate seeded random OHLCV
         import numpy as np
         rng = np.random.default_rng(int(symbol) if symbol.isdigit() else 42)
         n   = 80
@@ -1945,6 +1967,12 @@ def cmd_strategy_preview(args: argparse.Namespace) -> None:
     no_chase  = signals.get("no_chase_reasons", [])
     no_panic  = signals.get("no_sell_low_reasons", [])
     no_rebuy  = signals.get("do_not_rebuy_yet_reasons", [])
+    # Phase 2 signals
+    kd_sigs   = signals.get("kd_advanced_signals", {})
+    si_sigs   = signals.get("short_interest_signals", {})
+    br_sigs   = signals.get("bottom_reversal_signals", {})
+    sr_sigs   = signals.get("sector_rotation_signals", {})
+    fq_sigs   = signals.get("fundamental_quality_signals", {})
 
     def _fmt(label: str, value) -> str:
         if value is None or value == "":
@@ -2019,6 +2047,70 @@ def cmd_strategy_preview(args: argparse.Namespace) -> None:
     dnr = exit_sigs.get("do_not_rebuy_yet_reason", "")
     if dnr:
         print(_fmt("do_not_rebuy_yet_reason", dnr))
+
+    # ── Phase 2: KD Advanced ─────────────────────────────────────────────
+    print()
+    print("Phase 2 — KD Advanced:")
+    kd_sig_str = kd_sigs.get("kd_signal", "unavailable")
+    print(_fmt("signal",           kd_sig_str))
+    print(_fmt("kd_k",             kd_sigs.get("kd_k")))
+    print(_fmt("kd_d",             kd_sigs.get("kd_d")))
+    print(_fmt("low_golden_cross", _bool(kd_sigs.get("kd_low_golden_cross"))))
+    print(_fmt("high_death_cross", _bool(kd_sigs.get("kd_high_death_cross"))))
+    print(_fmt("sticky_days",      kd_sigs.get("kd_high_sticky_days")))
+    kd_r = kd_sigs.get("kd_strategy_reason", "")
+    if kd_r:
+        print(_fmt("reason", kd_r))
+
+    # ── Phase 2: Short Interest ───────────────────────────────────────────
+    print()
+    print("Phase 2 — Short Interest:")
+    print(_fmt("signal",              si_sigs.get("short_interest_signal", "unavailable")))
+    print(_fmt("squeeze_fuel_score",  si_sigs.get("short_squeeze_fuel_score")))
+    print(_fmt("short_covering_warn", _bool(si_sigs.get("short_covering_warning"))))
+    print(_fmt("weak_short_increase", _bool(si_sigs.get("weak_stock_short_increase"))))
+    si_r = si_sigs.get("short_interest_reason", "")
+    if si_r:
+        print(_fmt("reason", si_r))
+
+    # ── Phase 2: Bottom Reversal ──────────────────────────────────────────
+    print()
+    print("Phase 2 — Bottom Reversal:")
+    print(_fmt("signal",     br_sigs.get("bottom_signal", "unavailable")))
+    print(_fmt("detected",   _bool(br_sigs.get("bottom_reversal_detected"))))
+    if br_sigs.get("bottom_reversal_detected"):
+        print(_fmt("entry_price", br_sigs.get("rebound_entry_price")))
+        print(_fmt("stop_loss",   br_sigs.get("rebound_stop_loss_price")))
+        print(_fmt("target",      br_sigs.get("rebound_target_price")))
+        print(_fmt("risk_level",  br_sigs.get("rebound_risk_level")))
+    br_r = br_sigs.get("rebound_reason", "")
+    if br_r:
+        print(_fmt("reason", br_r))
+
+    # ── Phase 2: Sector Rotation ──────────────────────────────────────────
+    print()
+    print("Phase 2 — Sector Rotation:")
+    print(_fmt("signal",         sr_sigs.get("sector_signal", "unavailable")))
+    print(_fmt("leader",         sr_sigs.get("leader_symbol")))
+    print(_fmt("linkage_score",  sr_sigs.get("linkage_score")))
+    print(_fmt("laggard_follow", _bool(sr_sigs.get("laggard_follow_signal"))))
+    sr_r = sr_sigs.get("sector_rotation_reason", "")
+    if sr_r:
+        print(_fmt("reason", sr_r))
+
+    # ── Phase 2: Fundamental Quality ─────────────────────────────────────
+    print()
+    print("Phase 2 — Fundamental Quality:")
+    print(_fmt("score",             fq_sigs.get("fundamental_quality_score")))
+    print(_fmt("revenue_signal",    fq_sigs.get("revenue_growth_signal", "unavailable")))
+    print(_fmt("margin_signal",     fq_sigs.get("margin_quality_signal", "unavailable")))
+    print(_fmt("eps_signal",        fq_sigs.get("eps_quality_signal", "unavailable")))
+    fq_w = fq_sigs.get("earnings_risk_warning", "")
+    if fq_w:
+        print(_fmt("[WARN]", fq_w))
+    fq_pw = fq_sigs.get("pre_earnings_price_warning", "")
+    if fq_pw:
+        print(_fmt("[WARN]", fq_pw))
 
     # ── 7. No Chase Reasons ───────────────────────────────────────────────
     print()

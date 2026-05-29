@@ -40,6 +40,24 @@ def _import_microstructure():
         return None
 
 
+def _import_kd_advanced():
+    try:
+        from features.kd_advanced import compute_kd_advanced
+        return compute_kd_advanced
+    except Exception as exc:
+        logger.warning("Could not import kd_advanced: %s", exc)
+        return None
+
+
+def _import_short_interest():
+    try:
+        from features.short_interest_features import compute_short_interest
+        return compute_short_interest
+    except Exception as exc:
+        logger.warning("Could not import short_interest_features: %s", exc)
+        return None
+
+
 # ---------------------------------------------------------------------------
 # Single-series helpers
 # ---------------------------------------------------------------------------
@@ -181,6 +199,27 @@ def compute_indicators_single(df: pd.DataFrame) -> pd.DataFrame:
     df["price_above_sma20"] = (close > df["sma_20"]).astype(int)
     df["price_above_sma60"] = (close > df["sma_60"]).astype(int)
     df["sma20_above_sma60"] = (df["sma_20"] > df["sma_60"]).astype(int)
+
+    # ---- KD Advanced (v0.3.6 Phase 2) — append last-row scalar values ----
+    kd_fn = _import_kd_advanced()
+    if kd_fn is not None:
+        try:
+            kd_res = kd_fn(df)
+            # Only store scalar signals on the last row; pad NaN for earlier rows
+            import numpy as _np
+            for col, val in [
+                ("kd_k",                kd_res.get("kd_k")),
+                ("kd_d",                kd_res.get("kd_d")),
+                ("kd_low_golden_cross", int(kd_res.get("kd_low_golden_cross", False))),
+                ("kd_high_death_cross", int(kd_res.get("kd_high_death_cross", False))),
+                ("kd_mid_noise_cross",  int(kd_res.get("kd_mid_noise_cross",  False))),
+                ("kd_high_sticky_days", kd_res.get("kd_high_sticky_days", 0)),
+            ]:
+                if col not in df.columns:
+                    df[col] = _np.nan
+                    df.loc[df.index[-1], col] = val
+        except Exception as exc:
+            logger.debug("kd_advanced single-row annotation skipped: %s", exc)
 
     return df
 
