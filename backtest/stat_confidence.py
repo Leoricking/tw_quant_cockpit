@@ -475,3 +475,90 @@ class StatConfidence:
         if timing_warning:
             result['timing_warning'] = timing_warning
         return result
+
+    @staticmethod
+    def for_portfolio_simulation(
+        symbol_count: int,
+        trade_count: int,
+        trading_days: int,
+        scenario_count: int = 1,
+    ) -> dict:
+        """
+        Evaluate confidence for a portfolio simulation backtest.
+
+        Rules (v0.3.12):
+          symbol_count < 10                               → INSUFFICIENT
+          trade_count < 30                                → INSUFFICIENT
+          trading_days < 120                              → INSUFFICIENT
+          10 <= symbol_count < 30                         → OBSERVATIONAL baseline
+          symbol_count >= 30 and trade_count >= 200
+            and trading_days >= 240                       → RELIABLE
+
+        NOTE: With 14 symbols, result is typically OBSERVATIONAL.
+        Do not upgrade to RELIABLE without sufficient data.
+
+        Parameters
+        ----------
+        symbol_count   : number of distinct symbols in the universe
+        trade_count    : total number of completed trades
+        trading_days   : number of trading days simulated
+        scenario_count : number of scenarios compared (informational only)
+
+        Returns
+        -------
+        dict with keys: overall, universe, trade, trading_days_level, reasons
+        """
+        # Universe level
+        if symbol_count < 10:
+            uni_lvl = 'INSUFFICIENT'
+        elif symbol_count < 30:
+            uni_lvl = 'OBSERVATIONAL'
+        else:
+            uni_lvl = 'RELIABLE'
+
+        # Trade count
+        if trade_count < 30:
+            trd_lvl = 'INSUFFICIENT'
+        elif trade_count < 200:
+            trd_lvl = 'OBSERVATIONAL'
+        else:
+            trd_lvl = 'RELIABLE'
+
+        # Trading days
+        if trading_days < 120:
+            day_lvl = 'INSUFFICIENT'
+        elif trading_days < 240:
+            day_lvl = 'OBSERVATIONAL'
+        else:
+            day_lvl = 'RELIABLE'
+
+        levels = [uni_lvl, trd_lvl, day_lvl]
+        order  = ['INSUFFICIENT', 'OBSERVATIONAL', 'RELIABLE']
+        overall = 'RELIABLE'
+        for lvl in order:
+            if lvl in levels:
+                overall = lvl
+                break
+
+        reasons = []
+        if symbol_count < 10:
+            reasons.append(f'symbol_count {symbol_count} < 10 -> INSUFFICIENT')
+        elif symbol_count < 30:
+            reasons.append(f'symbol_count {symbol_count} < 30 -> OBSERVATIONAL')
+        if trade_count < 30:
+            reasons.append(f'trade_count {trade_count} < 30 -> INSUFFICIENT')
+        elif trade_count < 200:
+            reasons.append(f'trade_count {trade_count} < 200 -> OBSERVATIONAL')
+        if trading_days < 120:
+            reasons.append(f'trading_days {trading_days} < 120 -> INSUFFICIENT')
+        elif trading_days < 240:
+            reasons.append(f'trading_days {trading_days} < 240 -> OBSERVATIONAL')
+
+        return {
+            'overall':            overall,
+            'universe':           uni_lvl,
+            'trade':              trd_lvl,
+            'trading_days_level': day_lvl,
+            'reasons':            reasons,
+            'scenario_count':     scenario_count,
+        }

@@ -1576,6 +1576,44 @@ intraday (1min/5min): symbol,date,time,datetime,open,high,low,close,volume,sourc
 
 > **[!] 不構成投資建議。仍禁止實盤自動下單（TWQC_ENABLE_REAL_ORDER=false）。**
 
+### v0.3.12 — Portfolio & Risk Simulation (implemented)
+
+把「單股訊號」升級成「投資組合風險模擬」，驗證資金配置與風控規則對組合 KPI 的實際效益。
+
+**新增功能：**
+- `simulate-portfolio` CLI：支援 4 個預設 scenario 比較
+- `PortfolioSimulator`：多持倉回測，支援停損/停利一半/移動停損/族群集中度
+- `PortfolioMetrics`：Sharpe, Max Drawdown, Profit Factor, Win Rate, Expectancy 等完整 KPI
+- `PortfolioRules`：位置限制、族群集中度、排名評分、進出場規則
+- `PortfolioScenarios`：conservative / balanced / aggressive / no_risk_control_baseline 比較
+- `PortfolioSimulationReport`：8 節 Markdown 報告
+- `StatConfidence.for_portfolio_simulation()` 統計置信度
+
+**預設 Scenarios：**
+
+| Scenario | max_pos | stop_loss | take_profit | trailing_stop |
+|----------|---------|-----------|-------------|---------------|
+| conservative | 3 | 6% | 15% | 8% |
+| balanced | 5 | 8% | 20% | 10% |
+| aggressive | 8 | 10% | 25% | 12% |
+| no_risk_control_baseline | 10 | 15% | — | — |
+
+**用法：**
+
+```bash
+python main.py simulate-portfolio --mode real
+python main.py simulate-portfolio --mode real --scenario conservative
+python main.py simulate-portfolio --mode real --scenario all
+python main.py simulate-portfolio --mode real --initial-capital 1000000
+```
+
+**限制（OBSERVATIONAL confidence）：**
+- 14 symbols 樣本量不足，結論僅確認框架功能
+- 基本面資料為靜態快照，未按 announcement_date 過濾
+- Entry 使用 signal-date close（非 next-day open）
+
+> **[!] 不構成投資建議。仍禁止實盤自動下單（TWQC_ENABLE_REAL_ORDER=false）。**
+
 ### v0.3.10 — Long-Term Data Readiness (implemented)
 
 修復 `load_all()` 截斷 daily K 至 120 bars 導致 `long_term_ready=0/14` 的 bug；

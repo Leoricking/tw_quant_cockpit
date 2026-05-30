@@ -2652,6 +2652,182 @@ def cmd_backtest_long_term_strategy(args: argparse.Namespace) -> None:
 
 
 # ---------------------------------------------------------------------------
+# v0.3.12 — Portfolio & Risk Simulation
+# ---------------------------------------------------------------------------
+
+def cmd_simulate_portfolio(args: argparse.Namespace) -> None:
+    """Simulate a multi-position portfolio with capital allocation and risk controls (v0.3.12)."""
+    logger_cmd        = logging.getLogger("main.simulate_portfolio")
+    mode              = getattr(args, 'mode',              'real')
+    scenario          = getattr(args, 'scenario',          'balanced')
+    initial_capital   = getattr(args, 'initial_capital',   1_000_000)
+    max_positions     = getattr(args, 'max_positions',     5)
+    position_size_pct = getattr(args, 'position_size_pct', 0.2)
+    max_sector_exp    = getattr(args, 'max_sector_exposure_pct', 0.5)
+    stop_loss_pct     = getattr(args, 'stop_loss_pct',     0.08)
+    take_profit_pct   = getattr(args, 'take_profit_pct',   0.20)
+    trailing_stop_pct = getattr(args, 'trailing_stop_pct', 0.10)
+    start             = getattr(args, 'start',             None)
+    end               = getattr(args, 'end',               None)
+    output_dir        = getattr(args, 'output_dir',        None)
+    report_dir        = getattr(args, 'report_dir',        None)
+    logger_cmd.info(
+        "simulate-portfolio [mode=%s scenario=%s capital=%.0f]",
+        mode, scenario, initial_capital,
+    )
+
+    try:
+        import pandas as pd
+        from backtest.portfolio_simulator import PortfolioSimulator
+        from backtest.portfolio_scenarios import PortfolioScenarios, SCENARIOS
+        from reports.portfolio_simulation_report import PortfolioSimulationReport
+
+        run_all = (scenario == 'all')
+
+        print('\n' + '=' * 60)
+        print('  TW Quant Cockpit \u2014 Portfolio & Risk Simulation (v0.3.12)')
+        print('=' * 60)
+        print(f"  Mode             : {mode}")
+        print(f"  Scenario         : {scenario}")
+        print(f"  Initial capital  : NTD {initial_capital:,.0f}")
+        print()
+
+        if run_all:
+            # Run all 4 scenarios
+            runner = PortfolioScenarios(
+                mode=mode, start=start, end=end, initial_capital=initial_capital,
+            )
+            all_results = runner.run_all()
+            # Use 'balanced' as the primary result for display
+            primary = all_results.get('balanced') or next(
+                (r for r in all_results.values() if r.get('status') == 'ok'), {}
+            )
+            comp_path = runner.save_comparison(all_results, output_dir=output_dir)
+            rpt = PortfolioSimulationReport(primary, all_scenario_results=all_results)
+        else:
+            # Single scenario (use preset or custom params)
+            if scenario in SCENARIOS:
+                runner = PortfolioScenarios(
+                    mode=mode, start=start, end=end, initial_capital=initial_capital,
+                )
+                primary = runner.run_selected(scenario)
+                all_results = {scenario: primary}
+            else:
+                # Custom params from CLI
+                sim = PortfolioSimulator(
+                    mode=mode, start=start, end=end,
+                    initial_capital=initial_capital,
+                    max_positions=max_positions,
+                    position_size_pct=position_size_pct,
+                    max_sector_exposure_pct=max_sector_exp,
+                    stop_loss_pct=stop_loss_pct,
+                    take_profit_pct=take_profit_pct,
+                    trailing_stop_pct=trailing_stop_pct,
+                )
+                primary = sim.run()
+                all_results = {scenario: primary}
+
+            comp_path = None
+            rpt = PortfolioSimulationReport(primary, all_scenario_results=all_results)
+
+        status = primary.get('status')
+        if status == 'insufficient_data':
+            print(primary.get('message', '[WARN] 資料不足，無法完成 portfolio simulation。'))
+            return
+
+        # Save primary results
+        sim_primary = PortfolioSimulator(mode=mode, initial_capital=initial_capital)
+        sim_primary._trades      = primary.get('trades_df', pd.DataFrame()).to_dict('records') \
+            if hasattr(primary.get('trades_df', None), 'to_dict') else []
+        sim_primary._equity_curve = primary.get('equity_df', pd.DataFrame()).to_dict('records') \
+            if hasattr(primary.get('equity_df', None), 'to_dict') else []
+        sim_primary._daily_pos   = []
+        paths    = {}
+        out_dir  = output_dir or os.path.join(BASE_DIR, 'data', 'backtest_results')
+        os.makedirs(out_dir, exist_ok=True)
+        for key, df_key in [('equity_curve', 'equity_df'), ('trades', 'trades_df'),
+                             ('daily_positions', 'daily_positions_df')]:
+            df = primary.get(df_key)
+            if df is not None and not df.empty:
+                p = os.path.join(out_dir, f'portfolio_{key}.csv')
+                df.to_csv(p, index=False, encoding='utf-8-sig')
+                paths[key] = p
+        m_df = pd.DataFrame([primary.get('metrics', {})])
+        if not m_df.empty:
+            p = os.path.join(out_dir, 'portfolio_metrics.csv')
+            m_df.to_csv(p, index=False, encoding='utf-8-sig')
+            paths['metrics'] = p
+        if comp_path:
+            paths['comparison'] = comp_path
+
+        rpt_path = rpt.save(output_dir=report_dir)
+
+        # Console output
+        conf = primary.get('confidence', {})
+        m    = primary.get('metrics', {})
+        cfg  = primary.get('config',  {})
+        src_tag = 'REAL CSV SAMPLE' if primary.get('is_sample') else 'REAL CSV'
+        print(f"  Data source      : {src_tag}")
+        print(f"  Universe         : {primary.get('n_symbols', 0)} symbols")
+        print(f"  Period           : {primary.get('start', _DASH)} \u2192 {primary.get('end', _DASH)}")
+        print(f"  Trading days     : {primary.get('trading_days', _DASH)}")
+        print()
+        print(f"  Final equity     : NTD {m.get('final_equity', 0):,.0f}")
+        print(f"  Total return     : {_fmt_pct(m.get('total_return'))}")
+        print(f"  Sharpe           : {m.get('sharpe', _DASH)}")
+        print(f"  Max drawdown     : {_fmt_pct(m.get('max_drawdown'))}")
+        print(f"  Profit factor    : {m.get('profit_factor', _DASH)}")
+        print(f"  Win rate         : {_fmt_pct(m.get('win_rate'), sign=False)}")
+        print(f"  Trade count      : {m.get('trade_count', 0)}")
+        print(f"  Avg exposure     : {_fmt_pct(m.get('average_exposure'), sign=False)}")
+        print(f"  Statistical conf : {conf.get('overall', 'INSUFFICIENT')}")
+        for reason in conf.get('reasons', []):
+            print(f"    - {reason}")
+
+        # Scenario comparison summary
+        if run_all and len(all_results) > 1:
+            from backtest.portfolio_scenarios import PortfolioScenarios
+            comp_df = PortfolioScenarios.build_comparison_df(all_results)
+            print('\n  Scenario comparison:')
+            print(f"  {'Scenario':<28} {'Return':>8} {'Sharpe':>7} {'MaxDD':>8} {'PF':>6}")
+            print('  ' + '-' * 62)
+            for _, row in comp_df.iterrows():
+                if row.get('status') != 'ok':
+                    print(f"  {row.get('scenario_name',''):<28} ERROR")
+                    continue
+                print(
+                    f"  {row.get('scenario_name',''):<28} "
+                    f"{_fmt_pct(row.get('total_return')):>8} "
+                    f"{str(row.get('sharpe','—')):>7} "
+                    f"{_fmt_pct(row.get('max_drawdown')):>8} "
+                    f"{str(row.get('profit_factor','—')):>6}"
+                )
+
+        print(f"\n  Output CSV   : {paths.get('equity_curve', _DASH)}")
+        if comp_path:
+            print(f"  Comparison   : {comp_path}")
+        print(f"  Report       : {rpt_path}")
+        print('\n  [!] For research and simulation only. Not investment advice.')
+
+    except Exception as exc:
+        logger_cmd.error("simulate-portfolio failed: %s", exc, exc_info=True)
+        print(f"ERROR: {exc}")
+
+
+def _fmt_pct(v, sign=True):
+    """Format a fraction (0.15 → '+15.00%'). Returns '—' if None."""
+    if v is None:
+        return _DASH
+    try:
+        f = float(v)
+        if sign:
+            return f'{f*100:+.2f}%'
+        return f'{f*100:.2f}%'
+    except Exception:
+        return str(v)
+
+
+# ---------------------------------------------------------------------------
 # v0.3.9 — Public Data API & Crawler Commands
 # ---------------------------------------------------------------------------
 
@@ -3432,6 +3608,38 @@ def _build_parser() -> argparse.ArgumentParser:
         help="Data mode: real (default) or mock (demo only)",
     )
 
+    # --- simulate-portfolio (v0.3.12) ---
+    p_sp12 = subparsers.add_parser(
+        "simulate-portfolio",
+        help="Simulate a multi-position portfolio with capital allocation and risk controls (v0.3.12)",
+    )
+    p_sp12.add_argument("--mode",     default="real", choices=["mock", "real"],
+                        help="Data mode (default: real)")
+    p_sp12.add_argument("--scenario", default="balanced",
+                        choices=["conservative", "balanced", "aggressive",
+                                 "no_risk_control_baseline", "all"],
+                        help="Preset scenario or 'all' to compare all 4 (default: balanced)")
+    p_sp12.add_argument("--initial-capital",      dest="initial_capital",      type=float, default=1_000_000,
+                        help="Starting capital in NTD (default: 1000000)")
+    p_sp12.add_argument("--max-positions",        dest="max_positions",        type=int,   default=5,
+                        help="Max simultaneous positions (default: 5)")
+    p_sp12.add_argument("--position-size-pct",    dest="position_size_pct",    type=float, default=0.2,
+                        help="Position size as fraction of equity (default: 0.2)")
+    p_sp12.add_argument("--max-sector-exposure-pct", dest="max_sector_exposure_pct", type=float, default=0.5,
+                        help="Max sector exposure fraction (default: 0.5)")
+    p_sp12.add_argument("--stop-loss-pct",        dest="stop_loss_pct",        type=float, default=0.08,
+                        help="Fixed stop loss fraction (default: 0.08)")
+    p_sp12.add_argument("--take-profit-pct",      dest="take_profit_pct",      type=float, default=0.20,
+                        help="Take-profit trigger for half-exit (default: 0.20)")
+    p_sp12.add_argument("--trailing-stop-pct",    dest="trailing_stop_pct",    type=float, default=0.10,
+                        help="Trailing stop fraction from peak (default: 0.10)")
+    p_sp12.add_argument("--start",      default=None, help="Start date YYYY-MM-DD (optional)")
+    p_sp12.add_argument("--end",        default=None, help="End date YYYY-MM-DD (optional)")
+    p_sp12.add_argument("--output-dir", dest="output_dir",  default=None,
+                        help="Output directory for CSVs (default: data/backtest_results/)")
+    p_sp12.add_argument("--report-dir", dest="report_dir",  default=None,
+                        help="Output directory for report (default: reports/)")
+
     # --- backtest-long-term-strategy (v0.3.11) ---
     p_blts = subparsers.add_parser(
         "backtest-long-term-strategy",
@@ -3592,6 +3800,8 @@ def main() -> None:
         "fetch-daily-history":     cmd_fetch_daily_history,
         # TW Quant Cockpit v0.3.11
         "backtest-long-term-strategy": cmd_backtest_long_term_strategy,
+        # TW Quant Cockpit v0.3.12
+        "simulate-portfolio":          cmd_simulate_portfolio,
     }
 
     if args.command is None:

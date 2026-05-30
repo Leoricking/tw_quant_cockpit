@@ -80,6 +80,10 @@ reports/data_fetch_report_*.md
 reports/long_term_validation_report_*.md
 data/backtest_results/long_term_*.csv
 
+# Portfolio simulation outputs (v0.3.12, generated artifacts)
+reports/portfolio_simulation_report_*.md
+data/backtest_results/portfolio_*.csv
+
 # Sample CSV files are tracked (allow commit)
 !data/import/profile/*_sample.csv
 !data/import/daily/*_sample.csv
