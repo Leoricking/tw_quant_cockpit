@@ -234,6 +234,51 @@ class LongTermAnalyzer:
             except Exception as _ve:
                 logger.debug("Phase 2 valuation_river in LongTermAnalyzer: %s", _ve)
 
+        # ---- Stable backtest output fields (v0.3.11) ----
+        _eps_positive = None
+        if eps_ttm is not None:
+            _eps_positive = eps_ttm > 0
+
+        def _eps_bucket(v):
+            if v is None:
+                return 'EPS_UNKNOWN'
+            if v <= 0:
+                return 'EPS_NEGATIVE'
+            if v <= 3:
+                return 'EPS_LOW'
+            if v <= 10:
+                return 'EPS_MED'
+            return 'EPS_HIGH'
+
+        def _gm_bucket(v):
+            if v is None:
+                return 'GM_UNKNOWN'
+            if v < 0.20:
+                return 'GM_LOW'
+            if v < 0.40:
+                return 'GM_MED'
+            if v < 0.60:
+                return 'GM_HIGH'
+            return 'GM_VERY_HIGH'
+
+        def _om_bucket(v):
+            if v is None:
+                return 'OM_UNKNOWN'
+            if v < 0:
+                return 'OM_NEG'
+            if v < 0.10:
+                return 'OM_LOW'
+            if v < 0.20:
+                return 'OM_MED'
+            return 'OM_HIGH'
+
+        _timing_quality = 'UNKNOWN'
+        if announcement_date is not None:
+            _timing_quality = 'ESTIMATED' if announcement_date_is_estimated else 'MOPS'
+
+        _val_zone = _val_signals.get('valuation_zone', 'UNAVAILABLE')
+        _pe_bucket = _val_signals.get('pe_bucket', 'NO_EPS')
+
         return {
             'decision': decision,
             'confidence': confidence,
@@ -250,6 +295,20 @@ class LongTermAnalyzer:
             'fundamental_quality_signals': _fq_signals,
             'valuation_signals': _val_signals,
             'phase2_signals': _p2,
+            # --- Stable backtest fields (v0.3.11) ---
+            'long_term_score':           round(score, 2),
+            'long_term_signal':          decision,
+            'long_term_buy_allowed':     decision == 'BUY_BREAKOUT' and formal_allowed,
+            'long_term_watch_only':      decision in ('WATCH', 'HOLD'),
+            'long_term_exit_warning':    decision == 'AVOID' or score < 0,
+            'eps_positive':              _eps_positive,
+            'eps_growth_bucket':         _eps_bucket(eps_ttm),
+            'gross_margin_bucket':       _gm_bucket(gross_margin),
+            'operating_margin_bucket':   _om_bucket(operating_margin),
+            'valuation_zone':            _val_zone,
+            'pe_bucket':                 _pe_bucket,
+            'timing_quality':            _timing_quality,
+            'timing_estimated':          announcement_date_is_estimated,
         }
 
     def _extract_closes(self, data):

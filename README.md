@@ -1576,6 +1576,59 @@ intraday (1min/5min): symbol,date,time,datetime,open,high,low,close,volume,sourc
 
 > **[!] 不構成投資建議。仍禁止實盤自動下單（TWQC_ENABLE_REAL_ORDER=false）。**
 
+### v0.3.10 — Long-Term Data Readiness (implemented)
+
+修復 `load_all()` 截斷 daily K 至 120 bars 導致 `long_term_ready=0/14` 的 bug；
+新增 `announcement_date` 法定期限推算 fallback（`ESTIMATED_TW_FINANCIAL_DEADLINE`）；
+新增 `fetch-daily-history` CLI 從 FinMind 抓取歷史日線並合併 daily_k.csv。
+
+**結果**: `long_term_ready` 從 0/14 → 14/14。
+
+```bash
+python main.py fetch-daily-history --stocks 2454 2330 --years 3
+python main.py universe-quality --report
+```
+
+> **[!] 不構成投資建議。仍禁止實盤自動下單（TWQC_ENABLE_REAL_ORDER=false）。**
+
+### v0.3.11 — Long-Term Strategy Validation (implemented)
+
+驗證 v0.3.10 補齊長線資料後，長線策略規則（EPS、毛利率、本益比河流圖、信號篩選）
+是否對 60/120 日前向報酬有正面幫助。
+
+**新增功能**:
+- `backtest-long-term-strategy` CLI：對 universe 所有股票進行長線回測驗證
+- EPS bucket / 毛利率 bucket / 估值區間 / PE bucket 因子分析
+- BUY_BREAKOUT 信號篩選效果比較
+- TIMING_ESTIMATED（估計公告日）vs MOPS（實際公告日）影響分析
+- Markdown 報告輸出（8 sections）
+- `StatConfidence.for_long_term_strategy()` 統計置信度評估
+
+**新增檔案**:
+
+| 檔案 | 說明 |
+|------|------|
+| `backtest/long_term_factor_evaluator.py` | 因子分析共用工具（bucket/boolean/zone/filter） |
+| `backtest/long_term_strategy_backtester.py` | 長線策略回測主引擎 |
+| `reports/long_term_validation_report.py` | Markdown 報告產生器 |
+| `docs/long_term_strategy_validation.md` | 策略驗證說明文件 |
+
+**用法**:
+
+```bash
+python main.py backtest-long-term-strategy --mode real
+python main.py backtest-long-term-strategy --mode real --stock 2454
+python main.py backtest-long-term-strategy --mode real --holding-days 120
+python main.py backtest-long-term-strategy --mode mock
+```
+
+**注意事項**:
+- 14 個股的樣本量為 `INSUFFICIENT` / `OBSERVATIONAL`，結論僅確認框架功能，不可用於策略決策
+- 基本面資料目前為靜態快照（不含 per-date 時間過濾），`timing_estimated` flag 標示估計公告日
+- 擴大 universe 至 ≥30 個股後統計置信度可提升
+
+> **[!] 不構成投資建議。仍禁止實盤自動下單（TWQC_ENABLE_REAL_ORDER=false）。**
+
 ### v0.3.5 (planned)
 - GUI 顯示回測驗證報告與 Watchlist 追蹤
 

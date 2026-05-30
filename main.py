@@ -2562,6 +2562,96 @@ def cmd_fetch_daily_history(args: argparse.Namespace) -> None:
 
 
 # ---------------------------------------------------------------------------
+# v0.3.11 — Long-Term Strategy Validation
+# ---------------------------------------------------------------------------
+
+def cmd_backtest_long_term_strategy(args: argparse.Namespace) -> None:
+    """Validate long-term strategy rules against historical forward returns (v0.3.11)."""
+    logger_cmd   = logging.getLogger("main.backtest_long_term_strategy")
+    mode         = getattr(args, 'mode',         'real')
+    stock        = getattr(args, 'stock',        None)
+    holding_days = getattr(args, 'holding_days', 60)
+    output_dir   = getattr(args, 'output_dir',   None)
+    report_dir   = getattr(args, 'report_dir',   None)
+    logger_cmd.info(
+        "backtest-long-term-strategy [mode=%s stock=%s holding_days=%d]",
+        mode, stock, holding_days,
+    )
+
+    try:
+        from backtest.long_term_strategy_backtester import LongTermStrategyBacktester
+        from reports.long_term_validation_report import LongTermValidationReport
+
+        bt      = LongTermStrategyBacktester(
+            mode=mode, stock=stock, holding_days=holding_days, output_dir=output_dir,
+        )
+        results = bt.run()
+
+        status = results.get('status')
+        if status == 'insufficient_data':
+            print(results.get('message', '[WARN] 資料不足，無法完成長線回測。'))
+            return
+
+        paths    = bt.save_results(results, output_dir=output_dir)
+        rpt      = LongTermValidationReport(results)
+        rpt_path = rpt.save(output_dir=report_dir)
+
+        conf     = results.get('confidence', {})
+        factors  = results.get('factors', {})
+
+        print('\n' + '=' * 60)
+        print('  TW Quant Cockpit \u2014 Long-Term Strategy Backtest (v0.3.11)')
+        print('=' * 60)
+        src_tag = 'REAL CSV SAMPLE' if results.get('is_sample') else 'REAL CSV'
+        print(f"  Data source           : {src_tag}")
+        print(f"  Mode                  : {mode}")
+        print(f"  Holding days          : {holding_days}")
+        print(f"  Symbols               : {results.get('n_symbols', 0)}")
+        print(f"  Signal rows           : {results.get('n_signals', 0)}")
+        print(f"  Valid forward rows    : {results.get('n_valid_fwd', 0)}")
+        print(f"  Period                : {results.get('start', _DASH)} \u2192 {results.get('end', _DASH)}")
+        print(f"  Statistical confidence: {conf.get('overall', 'INSUFFICIENT')}")
+        for reason in conf.get('reasons', []):
+            print(f"    - {reason}")
+        if conf.get('timing_warning'):
+            print(f"    ! {conf['timing_warning']}")
+
+        # EPS factor summary
+        eps_data = factors.get('eps_positive', [])
+        if eps_data:
+            print(f"\n  EPS factor ({holding_days}d forward return):")
+            fwd_col_label = f'fwd_{holding_days}d'
+            for row in eps_data:
+                avg = row.get('avg_return')
+                wr  = row.get('win_rate')
+                avg_s = f"{float(avg)*100:+.2f}%" if avg is not None else _DASH
+                wr_s  = f"{float(wr)*100:.1f}%"   if wr  is not None else _DASH
+                print(f"    eps_positive={row.get('bucket'):<6}  N={row.get('n'):>4}  "
+                      f"Avg={avg_s}  WinRate={wr_s}  [{row.get('confidence')}]")
+
+        # Signal filter summary
+        sf = factors.get('signal_filter', {})
+        if sf:
+            print(f"\n  Signal filter (BUY_BREAKOUT vs others):")
+            for grp in ('filtered', 'excluded'):
+                d    = sf.get(grp, {})
+                avg  = d.get('avg_return')
+                wr   = d.get('win_rate')
+                avg_s = f"{float(avg)*100:+.2f}%" if avg is not None else _DASH
+                wr_s  = f"{float(wr)*100:.1f}%"   if wr  is not None else _DASH
+                print(f"    {grp:<10}  N={d.get('n',0):>4}  Avg={avg_s}  WinRate={wr_s}")
+
+        csv_out = paths.get('signals_df', _DASH)
+        print(f"\n  Output CSV  : {csv_out}")
+        print(f"  Report      : {rpt_path}")
+        print('\n  [!] For research and simulation only. Not investment advice.')
+
+    except Exception as exc:
+        logger_cmd.error("backtest-long-term-strategy failed: %s", exc, exc_info=True)
+        print(f"ERROR: {exc}")
+
+
+# ---------------------------------------------------------------------------
 # v0.3.9 — Public Data API & Crawler Commands
 # ---------------------------------------------------------------------------
 
@@ -3342,6 +3432,22 @@ def _build_parser() -> argparse.ArgumentParser:
         help="Data mode: real (default) or mock (demo only)",
     )
 
+    # --- backtest-long-term-strategy (v0.3.11) ---
+    p_blts = subparsers.add_parser(
+        "backtest-long-term-strategy",
+        help="Validate long-term strategy rules against historical forward returns (v0.3.11)",
+    )
+    p_blts.add_argument("--mode",         default="real", choices=["mock", "real"],
+                        help="Data mode (default: real)")
+    p_blts.add_argument("--stock",        default=None,
+                        help="Single symbol (optional; default: all universe)")
+    p_blts.add_argument("--holding-days", dest="holding_days", type=int, default=60,
+                        help="Forward return window in trading bars (default: 60)")
+    p_blts.add_argument("--output-dir",   dest="output_dir",  default=None,
+                        help="Output directory for CSV results (default: data/backtest_results/)")
+    p_blts.add_argument("--report-dir",   dest="report_dir",  default=None,
+                        help="Output directory for Markdown report (default: reports/)")
+
     # --- fetch-daily-history (v0.3.10) ---
     p_fdh = subparsers.add_parser(
         "fetch-daily-history",
@@ -3484,6 +3590,8 @@ def main() -> None:
         "enrich-universe-data":    cmd_enrich_universe_data,
         # TW Quant Cockpit v0.3.10
         "fetch-daily-history":     cmd_fetch_daily_history,
+        # TW Quant Cockpit v0.3.11
+        "backtest-long-term-strategy": cmd_backtest_long_term_strategy,
     }
 
     if args.command is None:

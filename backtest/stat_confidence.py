@@ -363,3 +363,115 @@ class StatConfidence:
         if day_lvl is not None:
             result['trading_days_level'] = day_lvl
         return result
+
+    @staticmethod
+    def for_long_term_strategy(
+        symbol_count: int,
+        signal_count: int,
+        trading_days: int = None,
+        fundamental_rows: int = None,
+        timing_estimated_ratio: float = None,
+    ) -> dict:
+        """
+        Evaluate confidence for a long-term strategy validation backtest.
+
+        Rules (v0.3.11):
+          symbol_count < 10                             → INSUFFICIENT
+          signal_count < 30                             → INSUFFICIENT
+          signal_count 30–199                           → OBSERVATIONAL
+          trading_days < 120                            → not RELIABLE
+          symbol_count >= 10 and signal_count >= 30     → OBSERVATIONAL baseline
+          fundamental_rows < 4 per symbol               → downgrade to OBSERVATIONAL
+          timing_estimated_ratio > 0.8                  → add timing warning
+
+        Parameters
+        ----------
+        symbol_count            : distinct symbols in the backtest universe
+        signal_count            : total evaluation rows / signals
+        trading_days            : trading days of history covered
+        fundamental_rows        : total fundamental data rows available
+        timing_estimated_ratio  : fraction of signals with estimated (not MOPS) announcement dates
+
+        Returns
+        -------
+        dict with keys: overall, universe, signal, trading_days_level, reasons, timing_warning
+        """
+        # Universe level
+        if symbol_count < 10:
+            uni_lvl = 'INSUFFICIENT'
+        elif symbol_count < 30:
+            uni_lvl = 'OBSERVATIONAL'
+        else:
+            uni_lvl = 'RELIABLE'
+
+        # Signal count
+        if signal_count < 30:
+            sig_lvl = 'INSUFFICIENT'
+        elif signal_count < 200:
+            sig_lvl = 'OBSERVATIONAL'
+        else:
+            sig_lvl = 'RELIABLE'
+
+        # Trading days
+        if trading_days is None:
+            day_lvl = None
+        elif trading_days < 120:
+            day_lvl = 'OBSERVATIONAL'
+        else:
+            day_lvl = 'RELIABLE'
+
+        # Fundamental rows per symbol (long-term requires multi-quarter data)
+        fund_lvl = None
+        if fundamental_rows is not None and symbol_count > 0:
+            rows_per_sym = fundamental_rows / symbol_count
+            if rows_per_sym < 4:
+                fund_lvl = 'OBSERVATIONAL'
+
+        levels = [uni_lvl, sig_lvl]
+        if day_lvl is not None:
+            levels.append(day_lvl)
+        if fund_lvl is not None:
+            levels.append(fund_lvl)
+
+        order = ['INSUFFICIENT', 'OBSERVATIONAL', 'RELIABLE']
+        overall = 'RELIABLE'
+        for lvl in order:
+            if lvl in levels:
+                overall = lvl
+                break
+
+        reasons = []
+        if symbol_count < 10:
+            reasons.append(f'symbol_count {symbol_count} < 10 -> INSUFFICIENT')
+        elif symbol_count < 30:
+            reasons.append(f'symbol_count {symbol_count} < 30 -> OBSERVATIONAL')
+        if signal_count < 30:
+            reasons.append(f'signal_count {signal_count} < 30 -> INSUFFICIENT')
+        elif signal_count < 200:
+            reasons.append(f'signal_count {signal_count} < 200 -> OBSERVATIONAL')
+        if trading_days is not None and trading_days < 120:
+            reasons.append(f'trading_days {trading_days} < 120 -> not RELIABLE')
+        if fund_lvl == 'OBSERVATIONAL':
+            rows_per_sym = fundamental_rows / symbol_count if symbol_count > 0 else 0
+            reasons.append(
+                f'fundamental_rows/symbol {rows_per_sym:.1f} < 4 -> OBSERVATIONAL'
+            )
+
+        timing_warning = None
+        if timing_estimated_ratio is not None and timing_estimated_ratio > 0.8:
+            timing_warning = (
+                f'timing_estimated_ratio={timing_estimated_ratio:.0%} > 80% — '
+                '大多數財報日為估計值，基本面時效性分析需謹慎'
+            )
+
+        result = {
+            'overall':   overall,
+            'universe':  uni_lvl,
+            'signal':    sig_lvl,
+            'reasons':   reasons,
+        }
+        if day_lvl is not None:
+            result['trading_days_level'] = day_lvl
+        if timing_warning:
+            result['timing_warning'] = timing_warning
+        return result

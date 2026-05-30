@@ -83,6 +83,9 @@ def analyze_fundamental_quality(
         "earnings_risk_warning":      "",
         "pre_earnings_price_warning": "",
         "fundamental_quality_reason": "",
+        "gross_margin_trend":         "UNAVAILABLE",
+        "operating_margin_trend":     "UNAVAILABLE",
+        "timing_quality":             "UNKNOWN",
     }
 
     warnings  = []
@@ -158,20 +161,32 @@ def analyze_fundamental_quality(
                 )
                 margin_ok = False
                 result["margin_quality_signal"] = "DECLINING"
+                result["gross_margin_trend"]    = "DECLINING"
             elif gross_margin > gross_margin_prev + 0.02:
                 score += 0.1
                 result["margin_quality_signal"] = "IMPROVING"
+                result["gross_margin_trend"]    = "IMPROVING"
             else:
                 result["margin_quality_signal"] = "STABLE"
+                result["gross_margin_trend"]    = "STABLE"
         else:
             result["margin_quality_signal"] = "PARTIAL"
+            result["gross_margin_trend"]    = "PARTIAL"
     else:
         result["margin_quality_signal"] = "UNAVAILABLE"
+        result["gross_margin_trend"]    = "UNAVAILABLE"
 
     if operating_margin is not None and operating_margin_prev is not None:
         if operating_margin < operating_margin_prev - 0.02:
             score -= 0.05
             warnings.append("營業利益率下滑，獲利品質需留意")
+            result["operating_margin_trend"] = "DECLINING"
+        elif operating_margin > operating_margin_prev + 0.02:
+            result["operating_margin_trend"] = "IMPROVING"
+        else:
+            result["operating_margin_trend"] = "STABLE"
+    elif operating_margin is not None:
+        result["operating_margin_trend"] = "PARTIAL"
 
     # ── Pre-earnings price weakness ───────────────────────────────────────
     pre_warn_parts = []
@@ -190,10 +205,12 @@ def analyze_fundamental_quality(
     # ── announcement_date guard (v0.3.9) ─────────────────────────────────
     if announcement_date:
         reasons.append(f"財報公告日已知: {announcement_date}，資料時間可靠")
+        result["timing_quality"] = "AVAILABLE"
     else:
         warnings.append(
             "[WARN] announcement_date 未知 — fundamental timing may be approximate"
         )
+        result["timing_quality"] = "UNKNOWN"
 
     # ── fundamental_ready gate (v0.3.9) ──────────────────────────────────
     if not fundamental_ready and has_data:

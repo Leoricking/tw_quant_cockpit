@@ -82,6 +82,7 @@ def analyze_valuation_river(
         "valuation_buy_zone":  False,
         "valuation_sell_zone": False,
         "valuation_warning":   "",
+        "pe_bucket":           "NO_EPS",
     }
 
     warnings = []
@@ -152,6 +153,18 @@ def analyze_valuation_river(
         result["valuation_zone"]      = zone
         result["valuation_buy_zone"]  = zone in (BELOW_HISTORICAL_LOW, LOW_VALUE_ZONE)
         result["valuation_sell_zone"] = zone in (HIGH_VALUE_ZONE, OVERVALUED_ZONE)
+
+        # PE bucket for backtesting factor analysis
+        if current_pe < 8:
+            result["pe_bucket"] = "PE<8"
+        elif current_pe < 12:
+            result["pe_bucket"] = "PE_8-12"
+        elif current_pe < 18:
+            result["pe_bucket"] = "PE_12-18"
+        elif current_pe < 25:
+            result["pe_bucket"] = "PE_18-25"
+        else:
+            result["pe_bucket"] = "PE>=25"
 
         if zone in (HIGH_VALUE_ZONE, OVERVALUED_ZONE):
             warnings.append("本益比位於高估區，不建議追高")
