@@ -3658,6 +3658,138 @@ def cmd_data_freshness(args: argparse.Namespace) -> None:
 
 
 # ---------------------------------------------------------------------------
+# v0.3.20 — Data Quality Gate & Production Readiness Score
+# ---------------------------------------------------------------------------
+
+def cmd_data_quality_gate(args: argparse.Namespace) -> None:
+    """Run data quality gate and production readiness score (v0.3.20)."""
+    import os
+    print()
+    print("=" * 64)
+    print("  TW Quant Cockpit — Data Quality Gate  (v0.3.20)")
+    print("=" * 64)
+    print()
+
+    mode        = getattr(args, "mode", "real")
+    report_flag = getattr(args, "report", False)
+    check_mock  = getattr(args, "check_mock", False)
+    import_root = getattr(args, "import_root", None)
+    results_dir = getattr(args, "results_dir", None)
+    report_dir  = getattr(args, "report_dir", None)
+    base_dir    = os.path.dirname(os.path.abspath(__file__))
+
+    print(f"  Mode: {mode}")
+    print()
+
+    try:
+        from quality.data_quality_gate import DataQualityGate
+        kwargs = {"mode": mode}
+        if import_root:
+            kwargs["import_root"] = import_root
+        if results_dir:
+            kwargs["results_dir"] = results_dir
+        gate = DataQualityGate(**kwargs)
+
+        if check_mock:
+            # Only run mock contamination check
+            from quality.mock_contamination_checker import MockContaminationChecker
+            checker = MockContaminationChecker(
+                import_root=import_root or os.path.join(base_dir, "data", "import"),
+                results_dir=results_dir or os.path.join(base_dir, "data", "backtest_results"),
+                mode=mode,
+            )
+            result = checker.run()
+            print(f"  Mock Contamination: {result.status}  Score: {result.score:.1f}")
+            print()
+            if result.details:
+                print("  Issues:")
+                for d in result.details[:10]:
+                    print(f"    {d}")
+                print()
+            if result.recommended_action:
+                print(f"  Action: {result.recommended_action}")
+            print()
+            print("  [!] Read Only. No Real Orders.")
+            return
+
+        gate_result = gate.run()
+
+    except Exception as exc:
+        print(f"  ERROR: {exc}")
+        return
+
+    # Production readiness
+    prod  = gate_result.get("production_readiness_score", 0.0)
+    btest = gate_result.get("backtest_readiness_score", 0.0)
+    p_cls = gate_result.get("production_classification", "")
+    b_cls = gate_result.get("backtest_classification", "")
+
+    print(f"  Production Readiness: {prod:.1f}  ({p_cls})")
+    print(f"  Backtest Readiness:   {btest:.1f}  ({b_cls})")
+    print()
+
+    # Sub-scores
+    print("  Sub-Scores:")
+    scores = gate_result.get("scores", {})
+    _labels = [
+        ("freshness_score",          "Freshness"),
+        ("coverage_score",           "Coverage"),
+        ("source_confidence_score",  "Source Confidence"),
+        ("timing_quality_score",     "Timing Quality"),
+        ("sample_size_score",        "Sample Size"),
+        ("intraday_coverage_score",  "Intraday Coverage"),
+        ("provider_health_score",    "Provider Health"),
+        ("mock_contamination_score", "Mock Contamination"),
+    ]
+    for key, label in _labels:
+        val = scores.get(key, 0.0)
+        print(f"    {label:<25} {val:.1f}")
+    print()
+
+    # Gate decisions
+    print("  Gate Decisions:")
+    gates = gate_result.get("gates", {})
+    _gate_labels = [
+        ("RESEARCH_ONLY",       "Research Only"),
+        ("BACKTEST_READY",      "Backtest Ready"),
+        ("PAPER_TRADING_READY", "Paper Trading Ready"),
+        ("PRODUCTION_BLOCKED",  "Production Blocked"),
+        ("API_READY_READONLY",  "API Ready (Read-Only)"),
+        ("INTRADAY_READY",      "Intraday Ready"),
+        ("LONG_TERM_READY",     "Long-Term Ready"),
+        ("PORTFOLIO_READY",     "Portfolio Ready"),
+        ("REAL_ORDER_READY",    "Real Order Ready"),
+    ]
+    for key, label in _gate_labels:
+        val = gates.get(key)
+        status = "YES" if val is True else "NO" if val is False else str(val)
+        print(f"    {label:<25} {status}")
+    print()
+
+    # Warnings
+    warnings = gate_result.get("warnings", [])
+    if warnings:
+        print("  Warnings:")
+        for w in warnings[:5]:
+            print(f"    {w}")
+        print()
+
+    # Generate report
+    if report_flag:
+        try:
+            from reports.data_quality_gate_report import DataQualityGateReportBuilder
+            rdir = report_dir or os.path.join(base_dir, "reports")
+            builder = DataQualityGateReportBuilder(gate_result)
+            path = builder.build(output_dir=rdir)
+            print(f"  Report: {path}")
+        except Exception as exc:
+            print(f"  Report ERROR: {exc}")
+        print()
+
+    print("  [!] Read Only. No Real Orders. PRODUCTION_BLOCKED=True always.")
+
+
+# ---------------------------------------------------------------------------
 # v0.3.9 — Public Data API & Crawler Commands
 # ---------------------------------------------------------------------------
 
@@ -4551,6 +4683,36 @@ def _build_parser() -> argparse.ArgumentParser:
     p_df.add_argument("--report", action="store_true", default=False,
                       help="Generate freshness report")
 
+    # --- data-quality-gate (v0.3.20) ---
+    p_dqg = subparsers.add_parser(
+        "data-quality-gate",
+        help="Run data quality gate and production readiness score (v0.3.20)",
+    )
+    p_dqg.add_argument(
+        "--mode", choices=["real", "mock"], default="real",
+        help="Data mode (default: real)",
+    )
+    p_dqg.add_argument(
+        "--report", action="store_true", default=False,
+        help="Generate Markdown report",
+    )
+    p_dqg.add_argument(
+        "--check-mock", dest="check_mock", action="store_true", default=False,
+        help="Only run mock contamination scan",
+    )
+    p_dqg.add_argument(
+        "--import-root", dest="import_root", default=None,
+        help="Custom data/import/ root path",
+    )
+    p_dqg.add_argument(
+        "--results-dir", dest="results_dir", default=None,
+        help="Custom data/backtest_results/ path",
+    )
+    p_dqg.add_argument(
+        "--report-dir", dest="report_dir", default=None,
+        help="Custom output folder for reports",
+    )
+
     # --- provider-health (v0.3.18) ---
     p_ph = subparsers.add_parser(
         "provider-health",
@@ -4810,6 +4972,8 @@ def main() -> None:
         # TW Quant Cockpit v0.3.19
         "provider-auto-fetch":         cmd_provider_auto_fetch,
         "data-freshness":              cmd_data_freshness,
+        # TW Quant Cockpit v0.3.20
+        "data-quality-gate":           cmd_data_quality_gate,
     }
 
     if args.command is None:

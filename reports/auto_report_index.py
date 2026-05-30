@@ -386,6 +386,7 @@ class AutoReportIndexBuilder:
                     "rule_weight_best_config":      ctx.get("rule_weight_best_config"),
                     "rule_weight_best_balanced_score": ctx.get("rule_weight_best_balanced_score"),
                 },
+                "data_quality_gate": _extract_quality_gate_fields(ctx),
             }
 
             path = os.path.join(output_dir, "manifest.json")
@@ -409,3 +410,26 @@ class AutoReportIndexBuilder:
             return os.path.relpath(path, _BASE_DIR).replace("\\", "/")
         except ValueError:
             return path
+
+
+# ---------------------------------------------------------------------------
+# Module-level helper
+# ---------------------------------------------------------------------------
+
+def _extract_quality_gate_fields(ctx: dict) -> dict:
+    """Extract data quality gate summary fields for manifest.json."""
+    gate = ctx.get("data_quality_gate_result", {})
+    if not gate:
+        return {}
+    return {
+        "production_readiness_score": gate.get("production_readiness_score"),
+        "backtest_readiness_score":   gate.get("backtest_readiness_score"),
+        "production_classification":  gate.get("production_classification"),
+        "backtest_classification":    gate.get("backtest_classification"),
+        "production_blocked":         gate.get("production_blocked", True),
+        "real_order_ready":           gate.get("real_order_ready", False),
+        "gates": {
+            k: v for k, v in gate.get("gates", {}).items()
+            if not k.startswith("_")
+        },
+    }

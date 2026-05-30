@@ -120,6 +120,11 @@ reports/data_provider_fetch_report_*.md
 data/backtest_results/provider_auto_fetch_*.csv
 data/backtest_results/data_freshness_*.csv
 
+# Data quality gate report outputs (v0.3.20, generated artifacts)
+reports/data_quality_gate_report_*.md
+data/backtest_results/data_quality_gate_*.csv
+data/backtest_results/mock_contamination_*.csv
+
 # Sample CSV files are tracked (allow commit)
 !data/import/profile/*_sample.csv
 !data/import/daily/*_sample.csv

@@ -1800,6 +1800,42 @@ python main.py cockpit --mode real
 
 > **[!] 不構成投資建議。仍禁止實盤自動下單（TWQC_ENABLE_REAL_ORDER=false）。**
 
+### v0.3.20 — Data Quality Gate & Production Readiness Score (implemented)
+
+對現有資料、Provider 健康狀態、Mock 汙染情況進行綜合評分，產出 Production Readiness Score 與 Backtest Readiness Score，並決定 8 個 Gate 開關。
+
+**新增功能**:
+- `DataQualityGate`: 計算 8 個 sub-score + 2 個 composite score + 8 個 gate 決策
+- `ReadinessScoreCalculator`: 加權分數計算工具，BLOCKED / WEAK / PARTIAL / READY_FOR_RESEARCH / STRONG 分級
+- `MockContaminationChecker`: 掃描 CSV / Backtest 結果 / Report 文字，偵測 mock 資料汙染
+- `DataQualityGateReportBuilder`: 9-Section Markdown 報告
+- GUI Data Quality Gate tab：Score cards、Gate table、Mock Contamination panel、Blockers
+- `daily_validation` scheduler task 整合 quality gate summary
+- `data-quality-gate` CLI 指令
+
+**Score 公式**:
+```
+production_readiness_score = 0.20*freshness + 0.20*coverage + 0.15*source_confidence
+  + 0.15*timing_quality + 0.10*sample_size + 0.10*intraday_coverage
+  + 0.05*provider_health + 0.05*mock_contamination
+backtest_readiness_score = 0.25*coverage + 0.20*sample_size + 0.20*mock_contamination
+  + 0.15*freshness + 0.10*timing_quality + 0.10*source_confidence
+  (cap 60 if mock_contamination<90; cap 70 if coverage<70)
+```
+
+**Gate 決策**: RESEARCH_ONLY(always) · BACKTEST_READY · PAPER_TRADING_READY · **PRODUCTION_BLOCKED(always)** · API_READY_READONLY · INTRADAY_READY · LONG_TERM_READY · PORTFOLIO_READY · **REAL_ORDER_READY(never)**
+
+**CLI**:
+```bash
+python main.py data-quality-gate --mode real
+python main.py data-quality-gate --mode real --report
+python main.py data-quality-gate --check-mock
+```
+
+**安全保證**: Read Only · No Real Orders · PRODUCTION_BLOCKED=True · REAL_ORDER_READY=False
+
+---
+
 ### v0.3.19 — Data Provider Auto Fetch Integration (implemented)
 
 讓 Data Provider Layer 真正整合到 `daily_data_update`，自動依 provider 狀態抓取並更新資料。

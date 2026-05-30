@@ -42,6 +42,7 @@ _PROFILE_FLAGS: Dict[str, dict] = {
         include_long_term=True,
         include_strategy_knowledge=True,
         include_daily_summary=True,
+        include_data_quality_gate=True,
     ),
     "daily": dict(
         include_stock_reports=False,
@@ -52,6 +53,7 @@ _PROFILE_FLAGS: Dict[str, dict] = {
         include_long_term=False,
         include_strategy_knowledge=False,
         include_daily_summary=True,
+        include_data_quality_gate=True,
     ),
     "portfolio": dict(
         include_stock_reports=False,
@@ -132,6 +134,7 @@ class AutoReportCenter:
         include_long_term: bool = True,
         include_strategy_knowledge: bool = True,
         include_daily_summary: bool = True,
+        include_data_quality_gate: bool = False,
     ):
         self.mode        = mode
         self.profile     = profile
@@ -152,6 +155,7 @@ class AutoReportCenter:
         self.include_long_term           = flags.get("include_long_term",           include_long_term)
         self.include_strategy_knowledge  = flags.get("include_strategy_knowledge",  include_strategy_knowledge)
         self.include_daily_summary       = flags.get("include_daily_summary",       include_daily_summary)
+        self.include_data_quality_gate   = flags.get("include_data_quality_gate",   include_data_quality_gate)
 
         # Runtime state (populated during run)
         self._out_dir: str = os.path.join(self.output_root, self.report_date)
@@ -200,6 +204,9 @@ class AutoReportCenter:
 
         if self.include_strategy_knowledge:
             self.run_strategy_knowledge_report()
+
+        if self.include_data_quality_gate:
+            self.run_data_quality_gate_report()
 
         # Aggregated outputs
         if self.include_daily_summary:
@@ -438,6 +445,35 @@ class AutoReportCenter:
             self._record_success("strategy_knowledge", path)
         except Exception as exc:
             self._record_fail("strategy_knowledge", str(exc))
+
+    def run_data_quality_gate_report(self):
+        """Run data quality gate and save report (v0.3.20)."""
+        sub_dir = os.path.join(self._out_dir, "data_quality_gate")
+        os.makedirs(sub_dir, exist_ok=True)
+        try:
+            from quality.data_quality_gate import DataQualityGate
+            from reports.data_quality_gate_report import DataQualityGateReportBuilder
+
+            gate = DataQualityGate(mode=self.mode, results_dir=self.results_dir)
+            gate_result = gate.run()
+            self._context["data_quality_gate_result"] = gate_result
+
+            builder = DataQualityGateReportBuilder(
+                gate_result=gate_result,
+                report_date=self.report_date,
+            )
+            path = builder.build(output_dir=sub_dir)
+            self._record_success(
+                "data_quality_gate",
+                path,
+                extra={
+                    "production_readiness_score": gate_result.get("production_readiness_score"),
+                    "backtest_readiness_score":   gate_result.get("backtest_readiness_score"),
+                    "production_classification":  gate_result.get("production_classification"),
+                },
+            )
+        except Exception as exc:
+            self._record_fail("data_quality_gate", str(exc))
 
     def build_daily_market_summary(self):
         """Build daily market summary from all available context."""

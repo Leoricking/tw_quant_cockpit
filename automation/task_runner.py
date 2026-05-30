@@ -302,6 +302,32 @@ class AutomationTaskRunner:
         except Exception as exc:
             warnings.append(f"simulate-portfolio: {exc}")
 
+        # 5. Data quality gate (v0.3.20)
+        quality_gate_summary: dict = {}
+        try:
+            from quality.data_quality_gate import DataQualityGate
+            gate = DataQualityGate(mode=self.mode, results_dir=self.results_dir)
+            gate_result = gate.run()
+            quality_gate_summary = {
+                "production_readiness_score": gate_result.get("production_readiness_score", 0.0),
+                "backtest_readiness_score":   gate_result.get("backtest_readiness_score",   0.0),
+                "production_classification":  gate_result.get("production_classification",  ""),
+                "backtest_classification":    gate_result.get("backtest_classification",    ""),
+                "gates": {
+                    k: v for k, v in gate_result.get("gates", {}).items()
+                    if not k.startswith("_")
+                },
+            }
+            outputs.append(
+                f"quality_gate: production={gate_result.get('production_readiness_score', 0.0):.1f}"
+                f" ({gate_result.get('production_classification', '')})"
+                f" backtest={gate_result.get('backtest_readiness_score', 0.0):.1f}"
+            )
+            for w in gate_result.get("warnings", []):
+                warnings.append(f"quality_gate: {w}")
+        except Exception as exc:
+            warnings.append(f"quality-gate: {exc}")
+
         status_str = "warning" if (warnings and not errors) else ("failed" if errors else "ok")
         result = self._make_result(
             task_name, status_str,
@@ -310,6 +336,8 @@ class AutomationTaskRunner:
             warnings=warnings,
             errors=errors,
         )
+        if quality_gate_summary:
+            result["quality_gate_summary"] = quality_gate_summary
         self._log.append_run(result)
         self._update_latest_status(result)
         return result

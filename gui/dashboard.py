@@ -129,6 +129,16 @@ except Exception as _dpf_exc:
     logger.warning("DataProviderFetchPanel unavailable: %s", _dpf_exc)
     _DATA_PROVIDER_FETCH_AVAILABLE = False
 
+# ---------------------------------------------------------------------------
+# v0.3.20 Data Quality Gate panel import (guarded)
+# ---------------------------------------------------------------------------
+try:
+    from gui.data_quality_gate_panel import DataQualityGatePanel
+    _DATA_QUALITY_GATE_AVAILABLE = True
+except Exception as _dqg_exc:
+    logger.warning("DataQualityGatePanel unavailable: %s", _dqg_exc)
+    _DATA_QUALITY_GATE_AVAILABLE = False
+
 
 # ---------------------------------------------------------------------------
 # Colour helpers (Taiwan convention: red = up, green = down)
@@ -874,6 +884,7 @@ class CockpitWindow(QMainWindow if _PYSIDE6_AVAILABLE else object):
         self._automation_panel = None
         self._provider_health_panel = None
         self._data_provider_fetch_panel = None
+        self._data_quality_gate_panel = None
 
         self._init_backends()
         if _PYSIDE6_AVAILABLE:
@@ -1038,6 +1049,13 @@ class CockpitWindow(QMainWindow if _PYSIDE6_AVAILABLE else object):
             mid_tabs.addTab(self._data_provider_fetch_panel, "Data Provider Fetch")
         else:
             self._data_provider_fetch_panel = None
+
+        # v0.3.20 Data Quality Gate tab
+        if _DATA_QUALITY_GATE_AVAILABLE:
+            self._data_quality_gate_panel = DataQualityGatePanel()
+            mid_tabs.addTab(self._data_quality_gate_panel, "Data Quality Gate")
+        else:
+            self._data_quality_gate_panel = None
 
         h_split.addWidget(mid_tabs)
         h_split.setStretchFactor(0, 3)
