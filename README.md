@@ -20,6 +20,24 @@ Taiwan bull-stock screening + short/mid/long-term analysis + simulated trading l
 
 ---
 
+## Documentation (v0.3.23)
+
+Full documentation is in the [`docs/`](docs/) directory.
+
+| Document | Description |
+|----------|-------------|
+| [User Guide](docs/user_guide.md) | Getting started, daily workflow, GUI usage, score interpretation |
+| [CLI Reference](docs/cli_reference.md) | All CLI commands with usage, examples, and safety notes |
+| [GUI Guide](docs/gui_guide.md) | Cockpit tab descriptions, empty states, and warnings |
+| [Daily Research SOP](docs/daily_research_sop.md) | Step-by-step daily research procedures |
+| [Safety & Limitations](docs/safety_and_limitations.md) | Read-only guarantees, production block, backtest limits |
+| [Developer Guide](docs/developer_guide.md) | Architecture, adding CLI/GUI/reports, git conventions |
+| [Release Notes v0.3](docs/release_notes_v0.3.md) | v0.3.9 through v0.3.23 change log |
+| [Roadmap](docs/roadmap.md) | Completed milestones and planned future versions |
+| [Troubleshooting](docs/troubleshooting.md) | Common problems and solutions |
+
+---
+
 ## KPI Targets (Research Engine)
 
 | KPI | Target |
