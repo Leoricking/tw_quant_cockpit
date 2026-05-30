@@ -1576,6 +1576,43 @@ intraday (1min/5min): symbol,date,time,datetime,open,high,low,close,volume,sourc
 
 > **[!] 不構成投資建議。仍禁止實盤自動下單（TWQC_ENABLE_REAL_ORDER=false）。**
 
+### v0.3.14 — Signal Quality Dashboard (implemented)
+
+整合所有已有回測輸出（買點、評分、Strategy Knowledge、長線因子、Portfolio Scenario、Microstructure），
+產生統一的 Signal Quality Dashboard，顯示 BOOST / KEEP / REDUCE / DISABLE / INSUFFICIENT_SAMPLE 建議。
+
+**CLI 使用方式：**
+
+```bash
+python main.py signal-quality --mode real
+python main.py signal-quality --mode real --report
+python main.py signal-quality --mode mock --report
+```
+
+**GUI 使用方式：**
+
+```bash
+python main.py cockpit --mode real
+# 點選 Signal Quality 標籤頁
+```
+
+**BOOST / KEEP / REDUCE / DISABLE 解讀：**
+
+| 推薦 | 條件 |
+|------|------|
+| BOOST | PF >= 1.5, avg_return > 0 |
+| KEEP | PF >= 1.1, avg_return >= 0 |
+| REDUCE | PF < 1.1 or avg_return < 0 |
+| DISABLE | PF < 1.0 and avg_return < 0 |
+| INSUFFICIENT_SAMPLE | sample < 30 or confidence INSUFFICIENT |
+
+**OBSERVATIONAL 限制：**
+- 14-symbol universe → 全部為 OBSERVATIONAL confidence
+- 建議為方向性參考，不自動調整策略權重
+- 不下單、不接 API
+
+> **[!] 不構成投資建議。仍禁止實盤自動下單（TWQC_ENABLE_REAL_ORDER=false）。**
+
 ### v0.3.13 — GUI Portfolio Cockpit (implemented)
 
 把 v0.3.12 的 Portfolio & Risk Simulation 結果整合進 GUI Cockpit，形成「投資組合控盤視覺化面板」。

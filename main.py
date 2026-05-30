@@ -2814,6 +2814,120 @@ def cmd_simulate_portfolio(args: argparse.Namespace) -> None:
         print(f"ERROR: {exc}")
 
 
+def cmd_signal_quality(args: argparse.Namespace) -> None:
+    """Generate Signal Quality Dashboard — aggregates all backtest results (v0.3.14)."""
+    logger_cmd  = logging.getLogger("main.signal_quality")
+    mode        = getattr(args, "mode",        "real")
+    do_report   = getattr(args, "report",      False)
+    do_refresh  = getattr(args, "refresh",     False)
+    results_dir = getattr(args, "results_dir", None) or os.path.join(BASE_DIR, "data", "backtest_results")
+    report_dir  = getattr(args, "report_dir",  None) or os.path.join(BASE_DIR, "reports")
+    logger_cmd.info("signal-quality [mode=%s report=%s refresh=%s]", mode, do_report, do_refresh)
+
+    print()
+    print("=" * 60)
+    print("  TW Quant Cockpit \u2014 Signal Quality Dashboard (v0.3.14)")
+    print("=" * 60)
+    print(f"  Mode: {mode}")
+    print()
+
+    try:
+        from analysis.signal_quality_engine import SignalQualityEngine
+        from reports.signal_quality_report import SignalQualityReport
+
+        engine  = SignalQualityEngine(results_dir=results_dir, reports_dir=report_dir, mode=mode)
+        results = engine.run()
+
+        if results.get("status") == "no_data":
+            print(f"  [WARN] {results.get('message')}")
+            print("  Run backtests first:")
+            print("    python main.py backtest-buy-points --mode real")
+            print("    python main.py validate-score --mode real")
+            print("    python main.py backtest-strategy-knowledge --mode real")
+            print("    python main.py backtest-long-term-strategy --mode real")
+            print("    python main.py simulate-portfolio --mode real --scenario all")
+            return
+
+        df   = results.get("summary_df")
+        warn = results.get("warnings", [])
+        found   = results.get("sources_found", [])
+        missing = results.get("sources_missing", [])
+
+        import pandas as pd
+        if df is None or (hasattr(df, "empty") and df.empty):
+            print("  No signal quality data generated.")
+            return
+
+        rec_col = "recommendation" if "recommendation" in df.columns else None
+        counts  = df[rec_col].value_counts().to_dict() if rec_col else {}
+
+        overall_conf = "OBSERVATIONAL"
+
+        print(f"  Available backtests  : {', '.join(found) or '—'}")
+        if missing:
+            print(f"  Missing sources      : {', '.join(missing)}")
+        print(f"  Total signals        : {len(df)}")
+        print(f"  Confidence           : {overall_conf}")
+        print()
+        print(f"  BOOST            : {counts.get('BOOST', 0)}")
+        print(f"  KEEP             : {counts.get('KEEP', 0)}")
+        print(f"  REDUCE           : {counts.get('REDUCE', 0)}")
+        print(f"  DISABLE          : {counts.get('DISABLE', 0)}")
+        print(f"  INSUFFICIENT     : {counts.get('INSUFFICIENT_SAMPLE', 0)}")
+
+        # Top BOOST signals
+        if rec_col:
+            boost_df = df[df[rec_col] == "BOOST"]
+            if not boost_df.empty:
+                print()
+                print("  Top BOOST signals:")
+                for _, row in boost_df.head(5).iterrows():
+                    print(f"    [{row.get('source','?')}] {row.get('signal_group','')}/{row.get('signal_name','?')} — {row.get('reason','')}")
+
+            # Top REDUCE signals
+            red_df = df[df[rec_col] == "REDUCE"]
+            if not red_df.empty:
+                print()
+                print("  Top REDUCE signals:")
+                for _, row in red_df.head(5).iterrows():
+                    print(f"    [{row.get('source','?')}] {row.get('signal_group','')}/{row.get('signal_name','?')} — {row.get('reason','')}")
+
+            # DISABLE candidates
+            dis_df = df[df[rec_col] == "DISABLE"]
+            if not dis_df.empty:
+                print()
+                print("  Disable candidates:")
+                for _, row in dis_df.iterrows():
+                    print(f"    [{row.get('source','?')}] {row.get('signal_group','')}/{row.get('signal_name','?')} — {row.get('reason','')}")
+
+        print()
+        print(f"  Output CSV   : {results.get('summary_path', _DASH)}")
+
+        if warn:
+            print()
+            for w in warn:
+                print(f"  [WARN] {w}")
+
+        # Save Markdown report
+        if do_report or do_refresh:
+            rpt      = SignalQualityReport(results)
+            rpt_path = rpt.save(output_dir=report_dir)
+            print(f"  Report       : {rpt_path}")
+        else:
+            rpt_path = None
+
+        if not (do_report or do_refresh):
+            print("  (Use --report to generate Markdown report)")
+
+        print()
+        print("  [!] Simulation only. Recommendations do not automatically change strategy weights.")
+        print("  [!] For research and simulation only. Not investment advice.")
+
+    except Exception as exc:
+        logger_cmd.error("signal-quality failed: %s", exc, exc_info=True)
+        print(f"ERROR: {exc}")
+
+
 def _fmt_pct(v, sign=True):
     """Format a fraction (0.15 → '+15.00%'). Returns '—' if None."""
     if v is None:
@@ -3640,6 +3754,22 @@ def _build_parser() -> argparse.ArgumentParser:
     p_sp12.add_argument("--report-dir", dest="report_dir",  default=None,
                         help="Output directory for report (default: reports/)")
 
+    # --- signal-quality (v0.3.14) ---
+    p_sq14 = subparsers.add_parser(
+        "signal-quality",
+        help="Generate Signal Quality Dashboard from all backtest results (v0.3.14)",
+    )
+    p_sq14.add_argument("--mode",       default="real", choices=["mock", "real"],
+                        help="Data mode (default: real)")
+    p_sq14.add_argument("--report",     action="store_true", default=False,
+                        help="Generate Markdown report")
+    p_sq14.add_argument("--refresh",    action="store_true", default=False,
+                        help="Re-run signal quality engine and generate report")
+    p_sq14.add_argument("--results-dir", dest="results_dir", default=None,
+                        help="Backtest results directory (default: data/backtest_results/)")
+    p_sq14.add_argument("--report-dir", dest="report_dir",  default=None,
+                        help="Report output directory (default: reports/)")
+
     # --- backtest-long-term-strategy (v0.3.11) ---
     p_blts = subparsers.add_parser(
         "backtest-long-term-strategy",
@@ -3802,6 +3932,8 @@ def main() -> None:
         "backtest-long-term-strategy": cmd_backtest_long_term_strategy,
         # TW Quant Cockpit v0.3.12
         "simulate-portfolio":          cmd_simulate_portfolio,
+        # TW Quant Cockpit v0.3.14
+        "signal-quality":              cmd_signal_quality,
     }
 
     if args.command is None:

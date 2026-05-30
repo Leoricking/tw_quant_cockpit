@@ -405,6 +405,46 @@ class PortfolioTableView(QWidget if _PYSIDE6_AVAILABLE else object):
 # EmptyStateWidget
 # ---------------------------------------------------------------------------
 
+# ---------------------------------------------------------------------------
+# RecommendationBadge (v0.3.14)
+# ---------------------------------------------------------------------------
+
+_REC_COLORS = {
+    "BOOST":               "#33CC66",
+    "KEEP":                "#AAAAFF",
+    "REDUCE":              "#FF8800",
+    "DISABLE":             "#FF4444",
+    "INSUFFICIENT_SAMPLE": "#888888",
+}
+
+
+class RecommendationBadge(QLabel if _PYSIDE6_AVAILABLE else object):
+    """
+    Colored badge for BOOST / KEEP / REDUCE / DISABLE / INSUFFICIENT_SAMPLE.
+    """
+
+    def __init__(self, text: str = ""):
+        if not _PYSIDE6_AVAILABLE:
+            return
+        super().__init__(text)
+        self._apply_style(text)
+
+    def _apply_style(self, text: str):
+        upper = text.strip().upper()
+        color = _REC_COLORS.get(upper, "#888888")
+        self.setStyleSheet(
+            f"color:{color}; font-weight:bold; font-size:11px; "
+            f"background:#1A1A2A; border:1px solid {color}; "
+            f"border-radius:3px; padding:1px 5px;"
+        )
+        self.setText(text)
+
+    def set_recommendation(self, text: str):
+        if not _PYSIDE6_AVAILABLE:
+            return
+        self._apply_style(text)
+
+
 class EmptyStateWidget(QWidget if _PYSIDE6_AVAILABLE else object):
     """
     Placeholder widget shown when no portfolio simulation data exists.

@@ -69,6 +69,16 @@ except Exception as _pc_exc:
     logger.warning("PortfolioCockpitPanel unavailable: %s", _pc_exc)
     _PORTFOLIO_COCKPIT_AVAILABLE = False
 
+# ---------------------------------------------------------------------------
+# v0.3.14 Signal Quality panel import (guarded)
+# ---------------------------------------------------------------------------
+try:
+    from gui.signal_quality_panel import SignalQualityPanel
+    _SIGNAL_QUALITY_AVAILABLE = True
+except Exception as _sq_exc:
+    logger.warning("SignalQualityPanel unavailable: %s", _sq_exc)
+    _SIGNAL_QUALITY_AVAILABLE = False
+
 
 # ---------------------------------------------------------------------------
 # Colour helpers (Taiwan convention: red = up, green = down)
@@ -808,6 +818,7 @@ class CockpitWindow(QMainWindow if _PYSIDE6_AVAILABLE else object):
         self._selected_symbol = None
         self._mode = mode
         self._portfolio_panel = None
+        self._signal_quality_panel = None
 
         self._init_backends()
         if _PYSIDE6_AVAILABLE:
@@ -931,6 +942,13 @@ class CockpitWindow(QMainWindow if _PYSIDE6_AVAILABLE else object):
         else:
             self._portfolio_panel = None
 
+        # v0.3.14 Signal Quality tab
+        if _SIGNAL_QUALITY_AVAILABLE:
+            self._signal_quality_panel = SignalQualityPanel(mode=self._mode)
+            mid_tabs.addTab(self._signal_quality_panel, "Signal Quality")
+        else:
+            self._signal_quality_panel = None
+
         h_split.addWidget(mid_tabs)
         h_split.setStretchFactor(0, 3)
         h_split.setStretchFactor(1, 2)
@@ -985,6 +1003,9 @@ class CockpitWindow(QMainWindow if _PYSIDE6_AVAILABLE else object):
         # Sync Portfolio Cockpit panel mode
         if self._portfolio_panel is not None:
             self._portfolio_panel.set_mode(new_mode)
+        # Sync Signal Quality panel mode
+        if self._signal_quality_panel is not None:
+            self._signal_quality_panel.set_mode(new_mode)
 
     def _on_candidate_clicked(self, row: int, col: int):
         """Called when user clicks a row in the candidates table."""
