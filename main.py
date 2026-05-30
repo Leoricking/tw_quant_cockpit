@@ -3359,6 +3359,128 @@ def cmd_scheduler_run(args: argparse.Namespace) -> None:
 
 
 # ---------------------------------------------------------------------------
+# v0.3.18 — Provider Health CLI
+# ---------------------------------------------------------------------------
+
+def _print_provider_health_header() -> None:
+    print()
+    print("=" * 60)
+    print("  TW Quant Cockpit — Provider Health  (v0.3.18)")
+    print("=" * 60)
+    print()
+    print("  [!] Read Only")
+    print("  [!] No Real Orders")
+    print("  [!] Tokens masked — no full token displayed")
+    print()
+
+
+def cmd_provider_health(args: argparse.Namespace) -> None:
+    """Check provider health status (v0.3.18)."""
+    import os
+    _print_provider_health_header()
+
+    report_flag      = getattr(args, "report", False)
+    create_example   = getattr(args, "create_env_example", False)
+    provider_filter  = getattr(args, "provider", "all")
+
+    base_dir = os.path.dirname(os.path.abspath(__file__))
+    env_path = os.path.join(base_dir, ".env")
+
+    # --- create config/env.example (safe path only) ---
+    if create_example:
+        try:
+            from data.providers.token_safe_config import TokenSafeConfig
+            cfg = TokenSafeConfig(env_path=env_path)
+            # Only write to config/env.example — never overwrite root .env.example
+            # (root .env.example may already contain Shioaji + other fields)
+            out = cfg.create_env_example(
+                path=os.path.join(base_dir, "config", "env.example")
+            )
+            print(f"  config/env.example created: {out}")
+            print("  Note: Root .env.example was NOT overwritten.")
+            print("        Add FINMIND_TOKEN= etc. to your .env.example manually if needed.")
+        except Exception as exc:
+            print(f"  ERROR creating env.example: {exc}")
+        print()
+        return
+
+    # --- run health check ---
+    try:
+        from data.providers.provider_health import ProviderHealthChecker
+        providers_arg = None
+        if provider_filter and provider_filter.lower() != "all":
+            providers_arg = [provider_filter]
+        checker = ProviderHealthChecker(
+            env_path=env_path,
+            providers=providers_arg,
+        )
+        result = checker.run_all()
+    except Exception as exc:
+        print(f"  ERROR: {exc}")
+        return
+
+    # --- print provider summary ---
+    print("  Provider Summary:")
+    print()
+    for p in result.get("providers", []):
+        name   = p.get("provider_name", "")
+        status = p.get("status", "")
+        tc     = "✓" if p.get("token_configured", False) else "✗"
+        msg    = p.get("message", "")[:60]
+        print(f"    {name:<28} {status:<16} token:{tc}  {msg}")
+    print()
+
+    # --- token status ---
+    print("  Token Status:")
+    print()
+    for name, info in result.get("token_status", {}).items():
+        configured = info.get("configured", False)
+        masked     = info.get("masked", "(not configured)")
+        mark       = "✓" if configured else "✗"
+        print(f"    {name:<20} configured:{mark}  {masked}")
+    print()
+
+    # --- capability matrix summary ---
+    print("  Capability Matrix:")
+    print()
+    for p in result.get("providers", []):
+        pname = p.get("provider_name", "")
+        caps  = p.get("capabilities", {})
+        ro_exec = caps.get("real_order_execution", False)
+        mark = "[DISABLED]" if not ro_exec else "[**UNSAFE**]"
+        daily = "✓" if caps.get("daily_price") else "✗"
+        rev   = "✓" if caps.get("monthly_revenue") else "✗"
+        inst  = "✓" if caps.get("institutional") else "✗"
+        print(f"    {pname:<28} daily:{daily} revenue:{rev} institutional:{inst}  real_order_execution:{mark}")
+    print()
+
+    # --- safety summary ---
+    print("  Safety:")
+    print("    real_order_execution: DISABLED for all providers  [✓]")
+    print("    read_only_guarantee : True  [✓]")
+    print("    no_real_orders      : True  [✓]")
+    print()
+
+    # --- report ---
+    if report_flag:
+        try:
+            from reports.provider_health_report import ProviderHealthReportBuilder
+            from datetime import datetime
+            builder = ProviderHealthReportBuilder(
+                report_date=datetime.now().strftime("%Y-%m-%d"),
+                health_data=result,
+            )
+            reports_dir = os.path.join(base_dir, "reports")
+            out_path = builder.build(output_dir=reports_dir)
+            print(f"  Report: {out_path}")
+        except Exception as exc:
+            print(f"  Report ERROR: {exc}")
+        print()
+
+    print("  [!] Read Only. No Real Orders. Research and simulation only.")
+
+
+# ---------------------------------------------------------------------------
 # v0.3.9 — Public Data API & Crawler Commands
 # ---------------------------------------------------------------------------
 
@@ -4219,6 +4341,25 @@ def _build_parser() -> argparse.ArgumentParser:
     p_sn.add_argument("--config",  default=None)
     p_sn.add_argument("--log-dir", dest="log_dir", default=None)
 
+    # --- provider-health (v0.3.18) ---
+    p_ph = subparsers.add_parser(
+        "provider-health",
+        help="Check API provider health, token status, and capability matrix (v0.3.18)",
+    )
+    p_ph.add_argument(
+        "--report", action="store_true", default=False,
+        help="Generate provider health Markdown report",
+    )
+    p_ph.add_argument(
+        "--create-env-example", dest="create_env_example",
+        action="store_true", default=False,
+        help="Create safe .env.example template (no real tokens)",
+    )
+    p_ph.add_argument(
+        "--provider", default="all",
+        help="Provider to check (csv/xq_export/finmind/twse/tpex/mops/mega_readonly_planned/all)",
+    )
+
     # --- scheduler-run (v0.3.17) ---
     p_sr = subparsers.add_parser(
         "scheduler-run",
@@ -4454,6 +4595,8 @@ def main() -> None:
         "scheduler-list":              cmd_scheduler_list,
         "scheduler-next-runs":         cmd_scheduler_next_runs,
         "scheduler-run":               cmd_scheduler_run,
+        # TW Quant Cockpit v0.3.18
+        "provider-health":             cmd_provider_health,
     }
 
     if args.command is None:

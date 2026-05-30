@@ -42,6 +42,9 @@ class BaseMarketDataProvider:
     # Whether the provider is scheduled / planned but not yet wired.
     is_planned: bool = False
 
+    # Safety invariant — must remain False for all providers in v1.
+    supports_real_orders: bool = False
+
     # ---------------------------------------------------------------------------
     # Core daily OHLCV
     # ---------------------------------------------------------------------------

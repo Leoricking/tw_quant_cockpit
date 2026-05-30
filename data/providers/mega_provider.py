@@ -65,6 +65,7 @@ class MegaProvider(BaseMarketDataProvider):
     name = "mega"
     is_available = False
     is_planned = True
+    supports_real_orders = False
 
     def get_daily(
         self,

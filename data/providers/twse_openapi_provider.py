@@ -53,6 +53,7 @@ class TWSEOpenAPIProvider(BaseMarketDataProvider):
     name = "twse_openapi"
     is_available = False
     is_planned = True
+    supports_real_orders = False
 
     def get_daily(
         self,
@@ -109,6 +110,8 @@ class TWSEOpenAPIProvider(BaseMarketDataProvider):
             "available": False,
             "planned": True,
             "real_order": False,
+            "supports_real_orders": False,
+            "token_required": False,
             "note": (
                 "PLANNED for v0.4 — TWSE / TPEx / MOPS public API. "
                 "Not yet configured. System operates on CSV data in the meantime."

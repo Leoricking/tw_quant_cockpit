@@ -116,6 +116,38 @@ class AutomationTaskRunner:
         warnings: List[str] = []
         errors:   List[str] = []
 
+        # 0. Provider health check (v0.3.18)
+        provider_health_summary: dict = {}
+        try:
+            from data.providers.provider_health import ProviderHealthChecker
+            checker = ProviderHealthChecker()
+            health  = checker.run_all()
+            summary_counts = health.get("summary", {})
+            provider_health_summary = {
+                "checked_at":    health.get("checked_at", ""),
+                "summary":       summary_counts,
+                "read_only":     health.get("read_only_guarantee", True),
+                "no_real_orders":health.get("no_real_orders", True),
+            }
+            outputs.append(
+                f"provider_health: ok={summary_counts.get('OK', 0)} "
+                f"partial={summary_counts.get('PARTIAL', 0)} "
+                f"not_configured={summary_counts.get('NOT_CONFIGURED', 0)} "
+                f"failed={summary_counts.get('FAILED', 0)} "
+                f"planned={summary_counts.get('PLANNED', 0)}"
+            )
+            # Warn if FinMind token not configured
+            token_status = health.get("token_status", {})
+            fm = token_status.get("FINMIND_TOKEN", {})
+            if not fm.get("configured", False):
+                warnings.append(
+                    "provider_health: FINMIND_TOKEN not configured — "
+                    "FinMind data fetch will be limited. "
+                    "Set FINMIND_TOKEN in .env for full access."
+                )
+        except Exception as exc:
+            warnings.append(f"provider_health: {exc}")
+
         # 1. data-source-status (read-only status check via health_check)
         try:
             from data.providers.public_data_provider import PublicDataProvider
@@ -156,6 +188,9 @@ class AutomationTaskRunner:
             warnings=warnings,
             errors=errors,
         )
+        # Attach provider health summary to result for latest_status.json (v0.3.18)
+        if provider_health_summary:
+            result["provider_health_summary"] = provider_health_summary
         self._log.append_run(result)
         self._update_latest_status(result)
         return result

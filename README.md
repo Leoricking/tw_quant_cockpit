@@ -1800,6 +1800,43 @@ python main.py cockpit --mode real
 
 > **[!] 不構成投資建議。仍禁止實盤自動下單（TWQC_ENABLE_REAL_ORDER=false）。**
 
+### v0.3.18 — API Provider Hardening & Token-Safe Setup (implemented)
+
+強化 API provider 基礎設施與 token-safe 設定，讓所有 provider 可安全被 scheduler 使用。
+
+**新增功能**:
+- `ProviderHealthChecker`: 檢查所有 provider 可用性、token 狀態、網路狀態
+- `TokenSafeConfig`: 從 `.env` 安全讀取 token，masked 顯示，不寫入 log
+- `ProviderRegistry`: 統一 provider 列表，capability matrix（`real_order_execution=False` for all）
+- Provider Health Report：6 章節 Markdown 報告（provider 狀態、token status masked、capability matrix、安全限制、建議）
+- GUI Provider Health tab：summary cards、provider status table、token status table（masked）、capability matrix、safety summary
+- `provider-health` CLI：快速查看 provider 狀態、token 設定、capability matrix
+- `daily_data_update` scheduler task 整合 provider health check（token 未設定時 warning，不 crash）
+- `.env.example` 更新：加入 FinMind / TWSE / MOPS / Mega provider token 欄位
+
+**安全保證**:
+- Token 不寫入程式碼、不 commit、不顯示完整值（僅顯示 `abc****xyz`）
+- `real_order_execution=False` for ALL providers（registry 可驗證）
+- `submit_order()` 永遠 raise RuntimeError
+- `TWQC_ENABLE_REAL_ORDER=False`（永久）
+
+**CLI**:
+```bash
+python main.py provider-health                    # 查看所有 provider 狀態
+python main.py provider-health --report           # 產生 Markdown 報告
+python main.py provider-health --create-env-example  # 建立安全 .env.example
+python main.py provider-health --provider finmind # 查看特定 provider
+```
+
+**Config**:
+- `.env` — 真實 token（不 commit，在 `.gitignore`）
+- `.env.example` — 安全範例（可 commit，不含真實 token）
+- `config/env.example` — 同上
+
+> **[!] 不構成投資建議。不下單。不接實盤。Read Only。No Real Orders。**
+
+---
+
 ### v0.3.17 — API Automation Scheduler (implemented)
 
 Read-only 自動化排程器，用於每日資料更新與研究報告產出。不下單、不改策略。

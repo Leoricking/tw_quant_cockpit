@@ -2,7 +2,15 @@ __pycache__/
 *.pyc
 *.pyo
 *.pyd
+
+# Real .env files (contain tokens — never commit)
 .env
+.env.*
+!.env.example
+config/.env
+config/.env.*
+!config/env.example
+
 .venv/
 venv/
 env/
@@ -103,6 +111,9 @@ config/scheduler_config.yaml
 
 # Allow the example config (tracked)
 !config/scheduler_config.example.yaml
+
+# Provider health report outputs (v0.3.18, generated artifacts)
+reports/provider_health_report_*.md
 
 # Sample CSV files are tracked (allow commit)
 !data/import/profile/*_sample.csv

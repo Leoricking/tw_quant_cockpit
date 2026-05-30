@@ -37,7 +37,21 @@ _REQUEST_DELAY = 1.0
 
 
 def _get_token() -> Optional[str]:
-    """Read FINMIND_TOKEN from environment. Returns None if not set."""
+    """
+    Read FINMIND_TOKEN from environment or .env file.
+    Returns None if not set. Never logs the full token.
+    """
+    # Try TokenSafeConfig first (reads .env without logging full value)
+    try:
+        from data.providers.token_safe_config import TokenSafeConfig
+        cfg = TokenSafeConfig()
+        cfg.load_env()
+        token = cfg.get_token("FINMIND_TOKEN")
+        if token:
+            return token
+    except Exception:
+        pass
+    # Fallback: read from os.environ directly
     token = os.environ.get("FINMIND_TOKEN", "").strip()
     return token if token else None
 
@@ -405,6 +419,14 @@ class FinMindProvider(BaseMarketDataProvider):
 
     def health_check(self) -> dict:
         token = _get_token()
+        # Mask token for safe display — never log the full value
+        try:
+            from data.providers.token_safe_config import TokenSafeConfig
+            _cfg = TokenSafeConfig()
+            token_masked = _cfg.mask_token(token) if token else "(not configured)"
+        except Exception:
+            token_masked = "***" if token else "(not configured)"
+
         try:
             import requests
             resp = requests.head("https://api.finmindtrade.com/", timeout=5)
@@ -417,7 +439,9 @@ class FinMindProvider(BaseMarketDataProvider):
             "available": ok,
             "planned": False,
             "real_order": False,
+            "supports_real_orders": False,
             "token_configured": token is not None,
+            "token_masked": token_masked,
             "note": (
                 "FinMind API provider — token configured" if token
                 else "FinMind API provider — FINMIND_TOKEN not set (limited access)"
