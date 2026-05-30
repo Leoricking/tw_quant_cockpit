@@ -1749,6 +1749,57 @@ python main.py backtest-long-term-strategy --mode mock
 
 > **[!] 不構成投資建議。仍禁止實盤自動下單（TWQC_ENABLE_REAL_ORDER=false）。**
 
+### v0.3.15 — Rule Weight Tuning Lab (implemented)
+
+建立 Rule Weight Tuning Lab，用回測比較 7 種 scoring weight 配置，找出更穩定的權重組合。
+
+**新增功能**:
+- 7 種預設權重配置比較（baseline / technical_heavy / fundamental_heavy / intraday_heavy / risk_control_heavy / signal_quality_boosted / balanced_v2）
+- `signal_quality_boosted` 自動從 `signal_quality_summary.csv` 計算權重調整（BOOST ×1.15 / REDUCE ×0.85 / DISABLE ×0.60）
+- `balanced_score` 排名公式：0.35×norm_sharpe + 0.25×norm_pf + 0.20×norm_return + 0.20×norm_drawdown_score
+- 淘汰條件：MaxDD > 25%、PF < 1.20、trade_count < 30
+- GUI "Rule Weight Tuning" 標籤頁（Comparison / Weights / Best Config / Signal Quality Integration / Action List）
+- `tune-rule-weights` CLI 指令
+
+**新增檔案**:
+
+| 檔案 | 說明 |
+|------|------|
+| `tuning/__init__.py` | tuning 套件初始化 |
+| `tuning/rule_weight_config.py` | `RuleWeightConfig` dataclass（權重欄位 + 懲罰欄位） |
+| `tuning/rule_weight_scenarios.py` | 7 種預設配置；`build_signal_quality_boosted()` |
+| `tuning/rule_weight_tuner.py` | `RuleWeightTuner`：run / evaluate_config / rank_configs / select_best_config |
+| `tuning/rule_weight_report.py` | 8 段 Markdown 報告產生器 |
+| `gui/rule_weight_tuning_panel.py` | PySide6 面板（含背景 QThread worker） |
+| `gui/rule_weight_data_adapter.py` | CSV loader + run_tuning + generate_report |
+| `docs/rule_weight_tuning_lab.md` | 說明文件 |
+
+**用法**:
+
+```bash
+# 比較全部 7 種配置
+python main.py tune-rule-weights --mode real
+
+# 比較全部並輸出 Markdown 報告
+python main.py tune-rule-weights --mode real --report
+
+# 僅評估單一配置
+python main.py tune-rule-weights --mode real --config technical_heavy
+
+# 自訂資本
+python main.py tune-rule-weights --mode real --initial-capital 500000 --report
+
+# GUI（cockpit → Rule Weight Tuning 標籤頁）
+python main.py cockpit --mode real
+```
+
+**注意事項**:
+- `rule_weight_config` 以 optional 參數形式加入 `PortfolioRules` 和 `PortfolioSimulator`，不影響既有行為
+- **不自動修改 production 策略權重** — 建議僅供人工審閱後手動調整
+- `signal_quality_boosted` 若找不到 `signal_quality_summary.csv`，自動退回 `balanced_v2`
+
+> **[!] 不構成投資建議。仍禁止實盤自動下單（TWQC_ENABLE_REAL_ORDER=false）。**
+
 ### v0.3.5 (planned)
 - GUI 顯示回測驗證報告與 Watchlist 追蹤
 

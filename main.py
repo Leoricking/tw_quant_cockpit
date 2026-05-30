@@ -2928,6 +2928,154 @@ def cmd_signal_quality(args: argparse.Namespace) -> None:
         print(f"ERROR: {exc}")
 
 
+def cmd_tune_rule_weights(args: argparse.Namespace) -> None:
+    """Run Rule Weight Tuning Lab — compare 7 scoring weight configurations (v0.3.15)."""
+    logger_cmd  = logging.getLogger("main.tune_rule_weights")
+    mode        = getattr(args, "mode",           "real")
+    config_name = getattr(args, "config",         "all")
+    initial_cap = getattr(args, "initial_capital", 1_000_000)
+    start       = getattr(args, "start",          None)
+    end         = getattr(args, "end",            None)
+    do_report   = getattr(args, "report",         False)
+    results_dir = getattr(args, "results_dir",    None) or os.path.join(BASE_DIR, "data", "backtest_results")
+    report_dir  = getattr(args, "report_dir",     None) or os.path.join(BASE_DIR, "reports")
+
+    logger_cmd.info(
+        "tune-rule-weights [mode=%s config=%s capital=%.0f]",
+        mode, config_name, initial_cap,
+    )
+
+    print()
+    print("=" * 65)
+    print("  TW Quant Cockpit \u2014 Rule Weight Tuning Lab (v0.3.15)")
+    print("=" * 65)
+    print(f"  Mode             : {mode}")
+    print(f"  Config(s)        : {config_name}")
+    print(f"  Initial capital  : NTD {initial_cap:,.0f}")
+    print()
+    print("  [!] Advisory Only. Does NOT auto-apply weights to production strategy.")
+    print("  [!] Simulation Only. No Real Orders.")
+    print()
+
+    try:
+        from tuning.rule_weight_tuner import RuleWeightTuner
+        from tuning.rule_weight_scenarios import get_all_scenarios
+
+        if config_name != "all":
+            # Single config evaluation
+            scenarios = get_all_scenarios(results_dir)
+            if config_name not in scenarios:
+                valid = list(scenarios.keys())
+                print(f"  ERROR: unknown config '{config_name}'. Choose from: {valid}")
+                sys.exit(1)
+
+            tuner = RuleWeightTuner(
+                mode=mode, start=start, end=end,
+                initial_capital=initial_cap,
+                results_dir=results_dir, reports_dir=report_dir,
+            )
+            cfg = scenarios[config_name]
+            result = tuner.evaluate_config(cfg)
+            m = result.get("metrics", {})
+            status = result.get("status", "error")
+
+            print(f"  Config           : {config_name}")
+            print(f"  Status           : {status}")
+            if status == "ok":
+                print(f"  Total return     : {_fmt_pct(m.get('total_return'))}")
+                print(f"  Sharpe           : {m.get('sharpe', _DASH)}")
+                print(f"  Max drawdown     : {_fmt_pct(m.get('max_drawdown'))}")
+                print(f"  Profit factor    : {m.get('profit_factor', _DASH)}")
+                print(f"  Win rate         : {_fmt_pct(m.get('win_rate'), sign=False)}")
+                print(f"  Trade count      : {m.get('trade_count', 0)}")
+            else:
+                print(f"  Message          : {result.get('message', _DASH)}")
+            return
+
+        # Run all 7 configs
+        tuner = RuleWeightTuner(
+            mode=mode, start=start, end=end,
+            initial_capital=initial_cap,
+            results_dir=results_dir, reports_dir=report_dir,
+        )
+        results = tuner.run()
+
+        status = results.get("status")
+        if status == "insufficient_data":
+            print(f"  [WARN] {results.get('message', 'insufficient data')}")
+            print("  Run simulations first to build backtest data:")
+            print("    python main.py simulate-portfolio --mode real --scenario all")
+            return
+        if status != "ok":
+            print(f"  ERROR: {results.get('message', 'unknown error')}")
+            return
+
+        comp_df   = results.get("comparison_df")
+        best      = results.get("best_config")
+        bs_best   = results.get("best_by_sharpe")
+        dd_best   = results.get("best_by_drawdown")
+        pf_best   = results.get("best_by_pf")
+        warnings  = results.get("warnings", [])
+
+        print(f"  Configs evaluated : {results.get('n_configs', 0)}")
+        print()
+
+        if comp_df is not None and not comp_df.empty:
+            print(f"  {'Rank':<5} {'Config':<28} {'Return':>8} {'Sharpe':>7} "
+                  f"{'MaxDD':>8} {'PF':>6} {'B.Score':>8} {'DQ?':>4}")
+            print("  " + "-" * 75)
+            for _, row in comp_df.iterrows():
+                dq_s = "YES" if row.get("disqualified") else "no"
+                bs_s = f"{float(row['balanced_score']):.4f}" \
+                    if row.get("balanced_score") is not None else "—"
+                print(
+                    f"  {str(row.get('rank','')):<5} "
+                    f"{str(row.get('config_name','')):<28} "
+                    f"{_fmt_pct(row.get('total_return')):>8} "
+                    f"{str(row.get('sharpe','—')):>7} "
+                    f"{_fmt_pct(row.get('max_drawdown')):>8} "
+                    f"{str(row.get('profit_factor','—')):>6} "
+                    f"{bs_s:>8} "
+                    f"{dq_s:>4}"
+                )
+
+        print()
+        if best:
+            print(f"  Best config (balanced score) : {best.name}")
+        if bs_best:
+            print(f"  Best by Sharpe               : {bs_best.name}")
+        if dd_best:
+            print(f"  Best by drawdown             : {dd_best.name}")
+        if pf_best:
+            print(f"  Best by PF                   : {pf_best.name}")
+
+        paths = results.get("save_paths", {})
+        if paths.get("comparison"):
+            print(f"\n  Comparison CSV : {paths['comparison']}")
+
+        if warnings:
+            print()
+            for w in warnings:
+                print(f"  [WARN] {w}")
+
+        # Generate report
+        if do_report:
+            from tuning.rule_weight_report import RuleWeightReport
+            rpt = RuleWeightReport(results)
+            rpt_path = rpt.save(output_dir=report_dir)
+            print(f"  Report         : {rpt_path}")
+        else:
+            print("  (Use --report to generate Markdown report)")
+
+        print()
+        print("  [!] Advisory only. Recommendations do NOT auto-apply weights.")
+        print("  [!] For research and simulation only. Not investment advice.")
+
+    except Exception as exc:
+        logger_cmd.error("tune-rule-weights failed: %s", exc, exc_info=True)
+        print(f"ERROR: {exc}")
+
+
 def _fmt_pct(v, sign=True):
     """Format a fraction (0.15 → '+15.00%'). Returns '—' if None."""
     if v is None:
@@ -3770,6 +3918,27 @@ def _build_parser() -> argparse.ArgumentParser:
     p_sq14.add_argument("--report-dir", dest="report_dir",  default=None,
                         help="Report output directory (default: reports/)")
 
+    # --- tune-rule-weights (v0.3.15) ---
+    p_rw15 = subparsers.add_parser(
+        "tune-rule-weights",
+        help="Compare 7 scoring weight configurations via portfolio simulation (v0.3.15)",
+    )
+    p_rw15.add_argument("--mode",     default="real", choices=["mock", "real"],
+                        help="Data mode (default: real)")
+    p_rw15.add_argument("--config",   default="all",
+                        help="Config name to evaluate, or 'all' for all 7 (default: all)")
+    p_rw15.add_argument("--initial-capital", dest="initial_capital", type=float,
+                        default=1_000_000,
+                        help="Starting capital in NTD (default: 1000000)")
+    p_rw15.add_argument("--start",    default=None, help="Start date YYYY-MM-DD (optional)")
+    p_rw15.add_argument("--end",      default=None, help="End date YYYY-MM-DD (optional)")
+    p_rw15.add_argument("--report",   action="store_true", default=False,
+                        help="Generate Markdown report after tuning")
+    p_rw15.add_argument("--results-dir", dest="results_dir", default=None,
+                        help="Output directory for CSVs (default: data/backtest_results/)")
+    p_rw15.add_argument("--report-dir", dest="report_dir", default=None,
+                        help="Output directory for report (default: reports/")
+
     # --- backtest-long-term-strategy (v0.3.11) ---
     p_blts = subparsers.add_parser(
         "backtest-long-term-strategy",
@@ -3934,6 +4103,8 @@ def main() -> None:
         "simulate-portfolio":          cmd_simulate_portfolio,
         # TW Quant Cockpit v0.3.14
         "signal-quality":              cmd_signal_quality,
+        # TW Quant Cockpit v0.3.15
+        "tune-rule-weights":           cmd_tune_rule_weights,
     }
 
     if args.command is None:

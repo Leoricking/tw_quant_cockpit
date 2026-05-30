@@ -77,6 +77,7 @@ class PortfolioSimulator:
         use_fundamental_filter: bool = True,
         use_strategy_knowledge_filter: bool = True,
         strict_real_mode: bool = True,
+        rule_weight_config=None,  # v0.3.15: optional RuleWeightConfig
     ):
         self.mode                       = mode
         self.start                      = start
@@ -94,6 +95,7 @@ class PortfolioSimulator:
         self.use_fundamental_filter     = use_fundamental_filter
         self.use_strategy_knowledge_filter = use_strategy_knowledge_filter
         self.strict_real_mode           = strict_real_mode
+        self.rule_weight_config         = rule_weight_config  # v0.3.15
 
         # Runtime state (reset in run())
         self._cash       = 0.0
@@ -342,6 +344,7 @@ class PortfolioSimulator:
             use_score_ranking=self.use_score_ranking,
             use_fundamental_filter=self.use_fundamental_filter,
             use_strategy_knowledge_filter=self.use_strategy_knowledge_filter,
+            rule_weight_config=self.rule_weight_config,  # v0.3.15
         )
 
         candidates = []
@@ -710,6 +713,8 @@ class PortfolioSimulator:
             'tax_rate_sell':          _TAX_RATE_SELL,
             'slippage_bps':           _SLIPPAGE_BPS,
             'entry_price_note':       'signal-date close (first version; future: next-day open)',
+            # v0.3.15 — rule weight config name (None = production baseline weights)
+            'rule_weight_config':     getattr(self.rule_weight_config, 'name', None),
         }
 
         return {

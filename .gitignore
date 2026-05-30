@@ -88,6 +88,10 @@ data/backtest_results/portfolio_*.csv
 reports/signal_quality_report_*.md
 data/backtest_results/signal_quality_*.csv
 
+# Rule weight tuning outputs (v0.3.15, generated artifacts)
+reports/rule_weight_tuning_report_*.md
+data/backtest_results/rule_weight_*.csv
+
 # Sample CSV files are tracked (allow commit)
 !data/import/profile/*_sample.csv
 !data/import/daily/*_sample.csv

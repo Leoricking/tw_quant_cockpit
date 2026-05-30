@@ -31,7 +31,7 @@ Penalties:
 from __future__ import annotations
 
 import logging
-from typing import Dict, List, Optional
+from typing import Any, Dict, List, Optional
 
 logger = logging.getLogger(__name__)
 
@@ -62,6 +62,7 @@ class PortfolioRules:
         use_score_ranking: bool = True,
         use_fundamental_filter: bool = True,
         use_strategy_knowledge_filter: bool = True,
+        rule_weight_config: Optional[Any] = None,  # v0.3.15: RuleWeightConfig or None
     ):
         self.max_positions            = max_positions
         self.position_size_pct        = position_size_pct
@@ -73,6 +74,7 @@ class PortfolioRules:
         self.use_score_ranking        = use_score_ranking
         self.use_fundamental_filter   = use_fundamental_filter
         self.use_strategy_knowledge_filter = use_strategy_knowledge_filter
+        self.rule_weight_config       = rule_weight_config  # v0.3.15
 
     # ------------------------------------------------------------------
     # Scoring
@@ -95,28 +97,47 @@ class PortfolioRules:
             except (TypeError, ValueError):
                 return default
 
-        score = (
-            0.30 * _g('bull_stock_score')
-            + 0.20 * _g('buy_point_score')
-            + 0.20 * _g('strategy_knowledge_score')
-            + 0.15 * _g('fundamental_quality_score')
-            + 0.10 * _g('microstructure_score')
-            + 0.05 * _g('sector_strength_score')
-        )
+        # v0.3.15: use configurable weights when rule_weight_config is provided
+        cfg = self.rule_weight_config
+        if cfg is not None:
+            score = (
+                cfg.bull_stock_weight          * _g('bull_stock_score')
+                + cfg.buy_point_weight         * _g('buy_point_score')
+                + cfg.strategy_knowledge_weight * _g('strategy_knowledge_score')
+                + cfg.fundamental_weight       * _g('fundamental_quality_score')
+                + cfg.intraday_weight          * _g('microstructure_score')
+                + cfg.sector_strength_weight   * _g('sector_strength_score')
+            )
+        else:
+            score = (
+                0.30 * _g('bull_stock_score')
+                + 0.20 * _g('buy_point_score')
+                + 0.20 * _g('strategy_knowledge_score')
+                + 0.15 * _g('fundamental_quality_score')
+                + 0.10 * _g('microstructure_score')
+                + 0.05 * _g('sector_strength_score')
+            )
 
-        # Penalties
+        # Penalties — use config values if available, else class-level constants
+        p_no_chase    = cfg.penalty_no_chase         if cfg is not None else self.PENALTY_NO_CHASE
+        p_fake        = cfg.penalty_fake_breakout    if cfg is not None else self.PENALTY_FAKE_BREAKOUT
+        p_fund        = cfg.penalty_fundamental_warn if cfg is not None else self.PENALTY_FUNDAMENTAL_WARN
+        p_ov          = cfg.penalty_overvalued       if cfg is not None else self.PENALTY_OVERVALUED
+        p_timing      = cfg.penalty_timing_estimated if cfg is not None else self.PENALTY_TIMING_ESTIMATED
+        p_sector      = cfg.penalty_sector_conc      if cfg is not None else self.PENALTY_SECTOR_CONC
+
         if candidate.get('no_chase_warning'):
-            score -= self.PENALTY_NO_CHASE
+            score -= p_no_chase
         if candidate.get('fake_breakout_risk'):
-            score -= self.PENALTY_FAKE_BREAKOUT
+            score -= p_fake
         if candidate.get('fundamental_warning'):
-            score -= self.PENALTY_FUNDAMENTAL_WARN
+            score -= p_fund
         if candidate.get('overvalued_warning'):
-            score -= self.PENALTY_OVERVALUED
+            score -= p_ov
         if candidate.get('timing_estimated'):
-            score -= self.PENALTY_TIMING_ESTIMATED
+            score -= p_timing
         if candidate.get('sector_concentration_warning'):
-            score -= self.PENALTY_SECTOR_CONC
+            score -= p_sector
 
         return round(score, 2)
 
