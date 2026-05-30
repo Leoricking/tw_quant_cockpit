@@ -59,11 +59,14 @@ _MARGIN_COLS = [
     "short_change", "sbl_short_balance", "source", "fetched_at",
 ]
 
+_DAILY_K_COLS = ["date", "symbol", "open", "high", "low", "close", "volume"]
+
 _OUTPUT_PATHS = {
     "monthly_revenue": os.path.join("data", "import", "monthly_revenue", "monthly_revenue.csv"),
     "fundamental":     os.path.join("data", "import", "fundamental", "fundamental.csv"),
     "institutional":   os.path.join("data", "import", "institutional", "institutional.csv"),
     "margin":          os.path.join("data", "import", "margin", "margin.csv"),
+    "daily_k":         os.path.join("data", "import", "daily", "daily_k.csv"),
 }
 
 
@@ -278,6 +281,47 @@ class FundamentalDataBuilder:
             logger.info("FundamentalDataBuilder: wrote %d rows to %s", total_rows, path)
         else:
             logger.info("FundamentalDataBuilder: DRY-RUN margin — would write %d rows", total_rows)
+
+        return {
+            "path": path,
+            "rows_added": rows_added,
+            "total_rows": total_rows,
+            "dry_run": self.dry_run,
+        }
+
+    # ------------------------------------------------------------------
+    # Daily K (historical daily price)
+    # ------------------------------------------------------------------
+
+    def build_daily_k(
+        self,
+        df_new: pd.DataFrame,
+    ) -> dict:
+        """
+        Merge new daily OHLCV data into daily_k.csv.
+        Deduplicates by [date, symbol]. Does not overwrite unless replace=True.
+        """
+        path = _abs_path(_OUTPUT_PATHS["daily_k"])
+        _ensure_dir(path)
+
+        if "date" in df_new.columns:
+            df_new["date"] = pd.to_datetime(df_new["date"], errors="coerce").dt.strftime("%Y-%m-%d")
+        df_new = _standardize(df_new, _DAILY_K_COLS)
+
+        if self.replace:
+            merged = df_new
+        else:
+            existing = _load_existing(path)  # load as str; date already formatted above
+            merged = _merge_append(existing, df_new, dedup_keys=["date", "symbol"])
+
+        rows_added = len(df_new)
+        total_rows = len(merged)
+
+        if not self.dry_run:
+            merged.to_csv(path, index=False, encoding="utf-8-sig")
+            logger.info("FundamentalDataBuilder: wrote %d rows to %s", total_rows, path)
+        else:
+            logger.info("FundamentalDataBuilder: DRY-RUN daily_k — would write %d rows", total_rows)
 
         return {
             "path": path,

@@ -349,6 +349,22 @@ class RealDataLoader:
     # Fundamental (EPS, gross_margin, operating_margin)
     # ------------------------------------------------------------------
 
+    @staticmethod
+    def _estimate_announcement_date(year: str, quarter: str):
+        """
+        Return conservative estimated announcement_date for a TW-listed company
+        based on statutory deadlines, or None if year/quarter are invalid.
+        Q1 → year-05-15, Q2 → year-08-14, Q3 → year-11-14, Q4 → next_year-03-31
+        """
+        _map = {"Q1": "-05-15", "Q2": "-08-14", "Q3": "-11-14", "Q4": "-03-31"}
+        suffix = _map.get(str(quarter).strip())
+        if not suffix or not str(year).strip().isdigit():
+            return None
+        y = int(str(year).strip())
+        if quarter == "Q4":
+            y += 1
+        return f"{y}{suffix}"
+
     def load_fundamental(self, symbol: str):
         """
         Load quarterly fundamental data (EPS, gross_margin, operating_margin)
@@ -426,19 +442,35 @@ class RealDataLoader:
             if prev_gm is not None:
                 gm_change = latest_gm - prev_gm
 
+        _ann_date = latest.get("announcement_date") or None
+        _ann_is_estimated = False
+        _ann_source = None
+        if _ann_date:
+            _ann_source = "MOPS"
+        else:
+            _est = self._estimate_announcement_date(
+                latest.get("year", ""), latest.get("quarter", "")
+            )
+            if _est:
+                _ann_date = _est
+                _ann_source = "ESTIMATED_TW_FINANCIAL_DEADLINE"
+                _ann_is_estimated = True
+
         return {
-            "eps":                 latest_eps,
-            "eps_ttm":             eps_ttm,
-            "eps_yoy":             eps_yoy,
-            "eps_qoq":             eps_qoq,
-            "gross_margin":        latest_gm,
-            "gross_margin_change": gm_change,
-            "operating_margin":    latest_om,
-            "announcement_date":   latest.get("announcement_date"),
-            "latest_quarter":      f"{latest.get('year', '')} {latest.get('quarter', '')}",
-            "rows":                rows,
-            "source_file":         path,
-            "is_sample":           is_sample,
+            "eps":                          latest_eps,
+            "eps_ttm":                      eps_ttm,
+            "eps_yoy":                      eps_yoy,
+            "eps_qoq":                      eps_qoq,
+            "gross_margin":                 latest_gm,
+            "gross_margin_change":          gm_change,
+            "operating_margin":             latest_om,
+            "announcement_date":            _ann_date,
+            "announcement_date_source":     _ann_source,
+            "announcement_date_is_estimated": _ann_is_estimated,
+            "latest_quarter":               f"{latest.get('year', '')} {latest.get('quarter', '')}",
+            "rows":                         rows,
+            "source_file":                  path,
+            "is_sample":                    is_sample,
         }
 
     # ------------------------------------------------------------------
@@ -595,7 +627,7 @@ class RealDataLoader:
         Also includes '_sources' key with per-type source file paths and is_sample flags.
         """
         profile         = self.load_profile(symbol)
-        daily_k         = self.load_daily_k(symbol)
+        daily_k         = self.load_daily_k(symbol, n_bars=9999)
         institutional   = self.load_institutional(symbol)
         margin          = self.load_margin(symbol)
         monthly_revenue = self.load_monthly_revenue(symbol)

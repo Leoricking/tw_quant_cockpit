@@ -178,6 +178,15 @@ class PublicDataProvider:
                     logger.warning("PublicDataProvider: announcement_dates via mops failed: %s", exc)
         return None
 
+    def get_daily_price(
+        self,
+        symbol: str,
+        start: Optional[str] = None,
+        end: Optional[str] = None,
+    ) -> Optional[pd.DataFrame]:
+        """Fetch historical daily OHLCV. Fallback chain: FinMind → TWSE → TPEx."""
+        return self._try_sources("get_daily_price", symbol, start=start, end=end)
+
     def get_institutional_detail(
         self,
         symbol: str,

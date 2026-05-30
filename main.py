@@ -568,6 +568,8 @@ def cmd_stock_report(args: argparse.Namespace) -> None:
         _gross_margin = _fd.get('gross_margin')
         _operating_margin = _fd.get('operating_margin')
         _fundamental_ready = bool(fundamental_data and (_eps_ttm is not None or _gross_margin is not None))
+        _announcement_date = _fd.get('announcement_date')
+        _ann_is_estimated = bool(_fd.get('announcement_date_is_estimated', False))
 
         try:
             mid_result = MidTermAnalyzer().analyze(
@@ -584,7 +586,10 @@ def cmd_stock_report(args: argparse.Namespace) -> None:
                 fundamental_data=fundamental_data,
                 eps_ttm=_eps_ttm, gross_margin=_gross_margin,
                 operating_margin=_operating_margin,
-                fundamental_ready=_fundamental_ready, mode=mode)
+                fundamental_ready=_fundamental_ready,
+                announcement_date=_announcement_date,
+                announcement_date_is_estimated=_ann_is_estimated,
+                mode=mode)
         except Exception as exc:
             logger.warning("LongTermAnalyzer failed: %s", exc)
 
@@ -2485,6 +2490,78 @@ def cmd_strategy_preview(args: argparse.Namespace) -> None:
 
 
 # ---------------------------------------------------------------------------
+# v0.3.10 — Fetch Historical Daily Price
+# ---------------------------------------------------------------------------
+
+def cmd_fetch_daily_history(args: argparse.Namespace) -> None:
+    """Fetch historical daily OHLCV from FinMind and merge into daily_k.csv."""
+    logger_cmd = logging.getLogger("main.fetch_daily_history")
+
+    symbols_arg = getattr(args, "stocks", None) or []
+    universe_size = getattr(args, "universe", None)
+    years = getattr(args, "years", 3)
+    dry_run = getattr(args, "dry_run", False)
+
+    # Build symbol list
+    symbols = []
+    if symbols_arg:
+        symbols = [s.strip() for s in symbols_arg if s.strip()]
+    elif universe_size:
+        try:
+            from data.universe_manager import UniverseManager
+            symbols = UniverseManager().get_universe(universe_size)
+        except Exception as exc:
+            logger_cmd.warning("Cannot load universe: %s", exc)
+
+    if not symbols:
+        print("[ERROR] No symbols specified. Use --stocks 2454 2330 ... or --universe 30")
+        return
+
+    from datetime import datetime as _dt, timedelta as _td
+    start_date = (_dt.today() - _td(days=int(years * 365))).strftime("%Y-%m-%d")
+
+    from data.providers.public_data_provider import PublicDataProvider
+    from data.fundamental_data_builder import FundamentalDataBuilder
+    provider = PublicDataProvider(source="finmind")
+    builder = FundamentalDataBuilder(dry_run=dry_run)
+
+    print("=" * 60)
+    print("  TW Quant Cockpit v0.3.10 — Fetch Historical Daily Price")
+    print("=" * 60)
+    print(f"  Symbols : {len(symbols)} — {', '.join(symbols[:8])}{'...' if len(symbols) > 8 else ''}")
+    print(f"  Start   : {start_date}  (years={years})")
+    print(f"  Dry-run : {dry_run}")
+    print()
+
+    ok_count = 0
+    fail_list = []
+    for sym in symbols:
+        try:
+            df = provider.get_daily_price(sym, start=start_date)
+            if df is None or df.empty:
+                logger_cmd.warning("[%s] daily price unavailable from FinMind", sym)
+                fail_list.append(sym)
+                continue
+            result = builder.build_daily_k(df)
+            rows = result.get("total_rows", 0)
+            new_rows = result.get("rows_added", 0)
+            print(f"  [{sym}] OK — fetched {new_rows} rows → total {rows} rows in daily_k.csv")
+            ok_count += 1
+        except Exception as exc:
+            logger_cmd.warning("[%s] fetch-daily-history error: %s", sym, exc)
+            fail_list.append(sym)
+
+    print()
+    print(f"  Done. {ok_count}/{len(symbols)} symbols OK.")
+    if fail_list:
+        print(f"  Failed: {', '.join(fail_list)}")
+    if dry_run:
+        print("  [DRY-RUN] No files written.")
+    print()
+    print("[!] For research and simulation only. Not investment advice.")
+
+
+# ---------------------------------------------------------------------------
 # v0.3.9 — Public Data API & Crawler Commands
 # ---------------------------------------------------------------------------
 
@@ -3265,6 +3342,21 @@ def _build_parser() -> argparse.ArgumentParser:
         help="Data mode: real (default) or mock (demo only)",
     )
 
+    # --- fetch-daily-history (v0.3.10) ---
+    p_fdh = subparsers.add_parser(
+        "fetch-daily-history",
+        help="Fetch historical daily OHLCV from FinMind and merge into daily_k.csv (v0.3.10)",
+    )
+    grp_fdh = p_fdh.add_mutually_exclusive_group(required=True)
+    grp_fdh.add_argument("--stocks", nargs="+", default=None,
+                         help="One or more stock symbols, e.g. --stocks 2454 2330 2383")
+    grp_fdh.add_argument("--universe", type=int, choices=[10, 30, 50], default=None,
+                         help="Fetch for universe of N stocks")
+    p_fdh.add_argument("--years",    type=float, default=3.0,
+                       help="Years of history to fetch (default: 3)")
+    p_fdh.add_argument("--dry-run",  action="store_true", dest="dry_run",
+                       help="Fetch only, do not write CSV files")
+
     # --- fetch-public-data (v0.3.9) ---
     p_fpd = subparsers.add_parser(
         "fetch-public-data",
@@ -3390,6 +3482,8 @@ def main() -> None:
         "import-intraday":         cmd_import_intraday,
         "data-source-status":      cmd_data_source_status,
         "enrich-universe-data":    cmd_enrich_universe_data,
+        # TW Quant Cockpit v0.3.10
+        "fetch-daily-history":     cmd_fetch_daily_history,
     }
 
     if args.command is None:

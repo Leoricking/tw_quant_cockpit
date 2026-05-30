@@ -29,7 +29,8 @@ class LongTermAnalyzer:
                 monthly_revenue_rows=None, eps_ttm=None,
                 gross_margin=None, operating_margin=None,
                 fundamental_ready: bool = False,
-                announcement_date: str = None):
+                announcement_date: str = None,
+                announcement_date_is_estimated: bool = False):
         """
         Analyze long-term opportunity for a symbol.
 
@@ -213,7 +214,10 @@ class LongTermAnalyzer:
                 formal_allowed = False
                 warning = (warning or '') + ' fundamental_ready=False，長線正式判斷降為 PARTIAL'
                 warning = warning.strip()
-            if announcement_date is None and (eps_ttm is not None or gross_margin is not None):
+            if announcement_date is not None and announcement_date_is_estimated:
+                warning = (warning or '') + f' [TIMING_ESTIMATED] announcement_date 為估計值 ({announcement_date}) — 使用法定申報期限推算，非 MOPS 實際公告日'
+                warning = warning.strip()
+            elif announcement_date is None and (eps_ttm is not None or gross_margin is not None):
                 warning = (warning or '') + ' [WARN] announcement_date 未知 — fundamental timing may be approximate'
                 warning = warning.strip()
         except Exception as _fqe:

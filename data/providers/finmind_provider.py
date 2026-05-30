@@ -349,6 +349,57 @@ class FinMindProvider(BaseMarketDataProvider):
         return df
 
     # ------------------------------------------------------------------
+    # Historical daily price
+    # ------------------------------------------------------------------
+
+    def get_daily_price(
+        self,
+        symbol: str,
+        start: Optional[str] = None,
+        end: Optional[str] = None,
+    ) -> Optional[pd.DataFrame]:
+        """Fetch historical daily OHLCV using TaiwanStockPrice dataset."""
+        sym = str(symbol).strip()
+        start_date = start or (datetime.today() - timedelta(days=365 * 3)).strftime("%Y-%m-%d")
+        key = self._cache.get_cache_key("fm_daily", sym, str(start_date), str(end))
+        cached = self._cache.read_cache(key)
+        if cached is not None:
+            try:
+                return pd.DataFrame(cached)
+            except Exception:
+                pass
+
+        data = _safe_fetch("TaiwanStockPrice", sym, start_date)
+        if not data:
+            return None
+
+        rows = []
+        for item in data:
+            try:
+                rows.append({
+                    "date":   str(item.get("date", ""))[:10],
+                    "symbol": sym,
+                    "open":   float(item.get("open", 0) or 0),
+                    "high":   float(item.get("max", 0) or 0),
+                    "low":    float(item.get("min", 0) or 0),
+                    "close":  float(item.get("close", 0) or 0),
+                    "volume": float(item.get("Trading_Volume", 0) or 0),
+                })
+            except Exception as row_exc:
+                logger.debug("FinMind daily price row error: %s", row_exc)
+
+        if not rows:
+            return None
+
+        df = pd.DataFrame(rows)
+        df["date"] = pd.to_datetime(df["date"], errors="coerce")
+        if end:
+            df = df[df["date"] <= pd.to_datetime(end)]
+        df = df.sort_values("date").reset_index(drop=True)
+        self._cache.write_cache(key, df.to_dict("records"))
+        return df
+
+    # ------------------------------------------------------------------
     # Health check
     # ------------------------------------------------------------------
 
