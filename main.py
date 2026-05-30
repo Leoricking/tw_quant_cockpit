@@ -524,7 +524,7 @@ def cmd_stock_report(args: argparse.Namespace) -> None:
             _dk = all_data.get('daily_k')               # dict with 'bars' key, or None
             price_data = _dk.get('bars') if _dk else None
             chip_data = all_data.get('institutional')   # dict or None
-            fundamental_data = all_data.get('monthly_revenue')  # dict or None
+            fundamental_data = all_data.get('fundamental')  # dict or None
             logger.info("Real data loaded for %s: price=%s bars, chip=%s, fundamental=%s",
                         sym,
                         len(price_data) if price_data else 0,
@@ -557,21 +557,34 @@ def cmd_stock_report(args: argparse.Namespace) -> None:
 
         try:
             short_result = ShortTermAnalyzer().analyze(
-                symbol=sym, price_data=price_data, chip_data=chip_data, mode=mode)
+                symbol=sym, price_data=price_data, chip_data=chip_data,
+                fundamental_data=fundamental_data, mode=mode)
         except Exception as exc:
             logger.warning("ShortTermAnalyzer failed: %s", exc)
+
+        # Extract fundamental scalar fields for analyzer params
+        _fd = fundamental_data or {}
+        _eps_ttm = _fd.get('eps_ttm')
+        _gross_margin = _fd.get('gross_margin')
+        _operating_margin = _fd.get('operating_margin')
+        _fundamental_ready = bool(fundamental_data and (_eps_ttm is not None or _gross_margin is not None))
 
         try:
             mid_result = MidTermAnalyzer().analyze(
                 symbol=sym, price_data=price_data, chip_data=chip_data,
-                fundamental_data=fundamental_data, mode=mode)
+                fundamental_data=fundamental_data,
+                eps_ttm=_eps_ttm, gross_margin=_gross_margin,
+                operating_margin=_operating_margin, mode=mode)
         except Exception as exc:
             logger.warning("MidTermAnalyzer failed: %s", exc)
 
         try:
             long_result = LongTermAnalyzer().analyze(
                 symbol=sym, price_data=price_data,
-                fundamental_data=fundamental_data, mode=mode)
+                fundamental_data=fundamental_data,
+                eps_ttm=_eps_ttm, gross_margin=_gross_margin,
+                operating_margin=_operating_margin,
+                fundamental_ready=_fundamental_ready, mode=mode)
         except Exception as exc:
             logger.warning("LongTermAnalyzer failed: %s", exc)
 
@@ -617,7 +630,13 @@ def cmd_stock_report(args: argparse.Namespace) -> None:
                     _df = _df.sort_values("date").reset_index(drop=True)
                 if len(_df) >= 10:
                     from analysis.strategy_knowledge_engine import build_strategy_signals
-                    strategy_signals = build_strategy_signals(df=_df, symbol=sym)
+                    strategy_signals = build_strategy_signals(
+                        df=_df, symbol=sym,
+                        eps_ttm=_eps_ttm,
+                        trailing_eps=_eps_ttm,
+                        gross_margin=_gross_margin,
+                        operating_margin=_operating_margin,
+                    )
         except Exception as _exc:
             logger.warning("strategy_knowledge_engine skipped: %s", _exc)
 

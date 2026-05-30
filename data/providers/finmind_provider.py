@@ -3,7 +3,7 @@ data/providers/finmind_provider.py - FinMind API provider.
 
 Supports:
     - TaiwanStockMonthRevenue
-    - FinancialStatements
+    - TaiwanStockFinancialStatements
     - InstitutionalInvestorsBuySell
     - MarginPurchaseShortSaleBalance
     - TaiwanStockPrice
@@ -169,7 +169,7 @@ class FinMindProvider(BaseMarketDataProvider):
             except Exception:
                 pass
 
-        data = _safe_fetch("FinancialStatements", sym, start_date)
+        data = _safe_fetch("TaiwanStockFinancialStatements", sym, start_date)
         if not data:
             return None
 
@@ -188,7 +188,7 @@ class FinMindProvider(BaseMarketDataProvider):
                 gross_inc = fields.get("GrossProfit")
                 revenue = fields.get("Revenue") or fields.get("OperatingRevenue")
                 op_income = fields.get("OperatingIncome")
-                net_income = fields.get("NetIncome") or fields.get("ProfitAttributeToParent")
+                net_income = fields.get("IncomeAfterTaxes") or fields.get("NetIncome") or fields.get("ProfitAttributeToParent")
                 eps = fields.get("EPS")
 
                 gross_margin = None

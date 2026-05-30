@@ -32,6 +32,7 @@ _STANDARD_FILES = {
     'monthly_revenue': 'monthly_revenue.csv',
     'holder':          'holder.csv',
     'trust_cost':      'trust_cost.csv',
+    'fundamental':     'fundamental.csv',
 }
 
 # Sample CSV filenames (bundled demo data)
@@ -345,6 +346,102 @@ class RealDataLoader:
         }
 
     # ------------------------------------------------------------------
+    # Fundamental (EPS, gross_margin, operating_margin)
+    # ------------------------------------------------------------------
+
+    def load_fundamental(self, symbol: str):
+        """
+        Load quarterly fundamental data (EPS, gross_margin, operating_margin)
+        from fundamental.csv. Returns flat dict with computed TTM/latest-quarter
+        metrics suitable for FundamentalFeatures.compute_fundamental_features().
+        Returns None when data is absent.
+        """
+        sym = str(symbol)
+        path, is_sample = _resolve_csv("fundamental")
+        if not path:
+            return None
+
+        def _nullable_float(val):
+            if val is None:
+                return None
+            s = str(val).strip().lower()
+            if s in ('', 'none', 'nan'):
+                return None
+            try:
+                return float(s)
+            except ValueError:
+                return None
+
+        rows = []
+        for row in _read_csv_rows(path):
+            if str(row.get("symbol", "")).strip() == sym:
+                try:
+                    rows.append({
+                        "year":             str(row.get("year", "")).strip(),
+                        "quarter":          str(row.get("quarter", "")).strip(),
+                        "eps":              _nullable_float(row.get("eps")),
+                        "gross_margin":     _nullable_float(row.get("gross_margin")),
+                        "operating_margin": _nullable_float(row.get("operating_margin")),
+                        "net_income":       _nullable_float(row.get("net_income")),
+                        "announcement_date": row.get("announcement_date") or None,
+                    })
+                except Exception:
+                    continue
+
+        if not rows:
+            return None
+
+        _q_order = {"Q1": 1, "Q2": 2, "Q3": 3, "Q4": 4}
+        rows.sort(key=lambda r: (r["year"], _q_order.get(r["quarter"], 0)))
+
+        latest = rows[-1]
+        prev = rows[-2] if len(rows) >= 2 else None
+
+        latest_eps = latest.get("eps")
+        latest_gm = latest.get("gross_margin")
+        latest_om = latest.get("operating_margin")
+
+        # TTM EPS: sum of last 4 quarters
+        eps_vals = [r["eps"] for r in rows[-4:] if r["eps"] is not None]
+        eps_ttm = sum(eps_vals) if eps_vals else None
+
+        # EPS YoY: vs same quarter 4 periods back
+        eps_yoy = None
+        if len(rows) >= 5 and latest_eps is not None:
+            prior = rows[-5].get("eps")
+            if prior and prior != 0:
+                eps_yoy = (latest_eps / prior - 1.0) * 100.0
+
+        # EPS QoQ
+        eps_qoq = None
+        if prev is not None and latest_eps is not None:
+            prev_eps = prev.get("eps")
+            if prev_eps and prev_eps != 0:
+                eps_qoq = (latest_eps / prev_eps - 1.0) * 100.0
+
+        # Gross margin change
+        gm_change = None
+        if prev is not None and latest_gm is not None:
+            prev_gm = prev.get("gross_margin")
+            if prev_gm is not None:
+                gm_change = latest_gm - prev_gm
+
+        return {
+            "eps":                 latest_eps,
+            "eps_ttm":             eps_ttm,
+            "eps_yoy":             eps_yoy,
+            "eps_qoq":             eps_qoq,
+            "gross_margin":        latest_gm,
+            "gross_margin_change": gm_change,
+            "operating_margin":    latest_om,
+            "announcement_date":   latest.get("announcement_date"),
+            "latest_quarter":      f"{latest.get('year', '')} {latest.get('quarter', '')}",
+            "rows":                rows,
+            "source_file":         path,
+            "is_sample":           is_sample,
+        }
+
+    # ------------------------------------------------------------------
     # Holder structure
     # ------------------------------------------------------------------
 
@@ -502,6 +599,7 @@ class RealDataLoader:
         institutional   = self.load_institutional(symbol)
         margin          = self.load_margin(symbol)
         monthly_revenue = self.load_monthly_revenue(symbol)
+        fundamental     = self.load_fundamental(symbol)
         holder          = self.load_holder(symbol)
         trust_cost      = self.load_trust_cost(symbol)
 
@@ -513,6 +611,7 @@ class RealDataLoader:
             ('institutional',   institutional),
             ('margin',          margin),
             ('monthly_revenue', monthly_revenue),
+            ('fundamental',     fundamental),
             ('holder',          holder),
             ('trust_cost',      trust_cost),
         ):
@@ -530,6 +629,7 @@ class RealDataLoader:
             "institutional":   institutional,
             "margin":          margin,
             "monthly_revenue": monthly_revenue,
+            "fundamental":     fundamental,
             "holder":          holder,
             "trust_cost":      trust_cost,
             "_sources":        sources,
