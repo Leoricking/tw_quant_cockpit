@@ -3481,6 +3481,183 @@ def cmd_provider_health(args: argparse.Namespace) -> None:
 
 
 # ---------------------------------------------------------------------------
+# v0.3.19 — Provider Auto Fetch & Data Freshness CLI
+# ---------------------------------------------------------------------------
+
+def _print_auto_fetch_header() -> None:
+    print()
+    print("=" * 60)
+    print("  TW Quant Cockpit — Data Provider Auto Fetch  (v0.3.19)")
+    print("=" * 60)
+    print()
+    print("  [!] Read Only")
+    print("  [!] No Real Orders")
+    print("  [!] Tokens masked — no full token displayed")
+    print()
+
+
+def cmd_provider_auto_fetch(args: argparse.Namespace) -> None:
+    """Run provider auto fetch for one or all datasets (v0.3.19)."""
+    import os
+    _print_auto_fetch_header()
+
+    mode        = getattr(args, "mode", "real")
+    dry_run     = getattr(args, "dry_run", False)
+    dataset     = getattr(args, "dataset", "all")
+    months      = getattr(args, "months", 24)
+    max_sym     = getattr(args, "max_symbols", None)
+    output_root = getattr(args, "output_root", None)
+    report_dir  = getattr(args, "report_dir", None)
+    report_flag = getattr(args, "report", False)
+
+    base_dir = os.path.dirname(os.path.abspath(__file__))
+    datasets = None
+    if dataset and dataset.lower() != "all":
+        datasets = [dataset]
+
+    print(f"  Mode     : {mode.upper()}")
+    print(f"  Dry Run  : {'Yes' if dry_run else 'No'}")
+    print(f"  Dataset  : {dataset}")
+    print(f"  Months   : {months}")
+    print()
+
+    try:
+        from data.providers.auto_fetcher import DataProviderAutoFetcher
+        fetcher = DataProviderAutoFetcher(
+            mode=mode,
+            output_root=output_root or base_dir,
+            report_dir=report_dir or os.path.join(base_dir, "reports"),
+            months=months,
+            max_symbols=max_sym,
+            dry_run=dry_run,
+        )
+        result = fetcher.run(datasets=datasets)
+    except Exception as exc:
+        print(f"  ERROR: {exc}")
+        return
+
+    print("  Dataset Results:")
+    print()
+    for ds, info in result.get("datasets", {}).items():
+        status = info.get("status", "")
+        prov   = info.get("provider_used", "—")
+        rf     = info.get("rows_fetched", 0)
+        rw     = info.get("rows_written", 0)
+        warn   = "; ".join(info.get("warnings", []))[:60]
+        print(f"    {ds:<20} {status:<10} provider:{prov}  fetched:{rf}  written:{rw}")
+        if warn:
+            print(f"               [warn] {warn}")
+    print()
+
+    fs = result.get("freshness_summary", {})
+    if fs:
+        print("  Freshness:")
+        print()
+        for ds, info in fs.items():
+            st = info.get("status", "")
+            ld = info.get("latest_date", "—")
+            print(f"    {ds:<20} {st:<16} latest:{ld}")
+        print()
+
+    for w in result.get("warnings", [])[:10]:
+        print(f"  [WARN] {w}")
+    for e in result.get("errors", [])[:5]:
+        print(f"  [ERR]  {e}")
+
+    print()
+    print(f"  Rows fetched : {result.get('rows_fetched', 0)}")
+    print(f"  Rows written : {result.get('rows_written', 0)}")
+    print(f"  Providers    : {', '.join(result.get('providers_used', [])) or '—'}")
+    print(f"  Status       : {result.get('status', '')}")
+
+    if report_flag:
+        try:
+            from reports.data_provider_fetch_report import DataProviderFetchReportBuilder
+            from data.providers.data_freshness import DataFreshnessChecker
+            from datetime import datetime as _dt
+            fc      = DataFreshnessChecker()
+            fresh   = fc.run_all()
+            builder = DataProviderFetchReportBuilder(
+                report_date=_dt.now().strftime("%Y-%m-%d"),
+                mode=mode,
+                fetch_result=result,
+                freshness=fresh,
+            )
+            rdir = report_dir or os.path.join(base_dir, "reports")
+            path = builder.build(output_dir=rdir)
+            print()
+            print(f"  Report: {path}")
+        except Exception as exc:
+            print(f"  Report ERROR: {exc}")
+
+    print()
+    print("  [!] Read Only. No Real Orders. Research and simulation only.")
+
+
+def cmd_data_freshness(args: argparse.Namespace) -> None:
+    """Check data freshness across standard import datasets (v0.3.19)."""
+    import os
+    print()
+    print("=" * 60)
+    print("  TW Quant Cockpit — Data Freshness Check  (v0.3.19)")
+    print("=" * 60)
+    print()
+
+    dataset     = getattr(args, "dataset", None)
+    report_flag = getattr(args, "report", False)
+    base_dir    = os.path.dirname(os.path.abspath(__file__))
+
+    try:
+        from data.providers.data_freshness import DataFreshnessChecker
+        checker = DataFreshnessChecker()
+        if dataset:
+            result = {"datasets": {dataset: checker.check_dataset(dataset)}, "summary": {}}
+        else:
+            result = checker.run_all()
+    except Exception as exc:
+        print(f"  ERROR: {exc}")
+        return
+
+    print("  Dataset Freshness:")
+    print()
+    for ds, info in result.get("datasets", {}).items():
+        status = info.get("status", "")
+        ld     = info.get("latest_date", "—")
+        rows   = info.get("rows", 0)
+        warn   = info.get("warning", "")[:60]
+        action = info.get("recommended_action", "")
+        print(f"    {ds:<25} {status:<20} latest:{ld}  rows:{rows}")
+        if warn:
+            print(f"               [warn] {warn}")
+        if action:
+            print(f"               [action] {action}")
+    print()
+
+    summary = result.get("summary", {})
+    if summary:
+        print(f"  Summary: fresh={summary.get('fresh',0)}  stale={summary.get('stale',0)}  "
+              f"missing={summary.get('missing',0)}  partial={summary.get('partial',0)}")
+        print()
+
+    if report_flag:
+        try:
+            from reports.data_provider_fetch_report import DataProviderFetchReportBuilder
+            from datetime import datetime as _dt
+            builder = DataProviderFetchReportBuilder(
+                report_date=_dt.now().strftime("%Y-%m-%d"),
+                freshness=result,
+            )
+            rdir = os.path.join(base_dir, "reports")
+            path = builder.build(output_dir=rdir)
+            print(f"  Report: {path}")
+        except Exception as exc:
+            print(f"  Report ERROR: {exc}")
+        print()
+
+    print("  [!] Read Only. No Real Orders. Research and simulation only.")
+
+
+# ---------------------------------------------------------------------------
 # v0.3.9 — Public Data API & Crawler Commands
 # ---------------------------------------------------------------------------
 
@@ -4341,6 +4518,39 @@ def _build_parser() -> argparse.ArgumentParser:
     p_sn.add_argument("--config",  default=None)
     p_sn.add_argument("--log-dir", dest="log_dir", default=None)
 
+    # --- provider-auto-fetch (v0.3.19) ---
+    p_paf = subparsers.add_parser(
+        "provider-auto-fetch",
+        help="Auto-fetch data from best available provider (v0.3.19)",
+    )
+    p_paf.add_argument("--mode", default="real", choices=["mock", "real"])
+    p_paf.add_argument("--dry-run", dest="dry_run", action="store_true", default=False,
+                       help="Preview fetch without writing files")
+    p_paf.add_argument("--dataset", default="all",
+                       choices=["all","daily_price","monthly_revenue","institutional","margin","fundamental"],
+                       help="Dataset to fetch (default: all)")
+    p_paf.add_argument("--months", type=int, default=24,
+                       help="Lookback months (default: 24)")
+    p_paf.add_argument("--max-symbols", dest="max_symbols", type=int, default=None,
+                       help="Limit number of symbols")
+    p_paf.add_argument("--output-root", dest="output_root", default=None,
+                       help="Root for data/import/ (default: project root)")
+    p_paf.add_argument("--report-dir", dest="report_dir", default=None,
+                       help="Report output directory")
+    p_paf.add_argument("--report", action="store_true", default=False,
+                       help="Generate fetch report after run")
+
+    # --- data-freshness (v0.3.19) ---
+    p_df = subparsers.add_parser(
+        "data-freshness",
+        help="Check data freshness of standard import datasets (v0.3.19)",
+    )
+    p_df.add_argument("--dataset", default=None,
+                      choices=["daily_k","monthly_revenue","institutional","margin","fundamental","intraday"],
+                      help="Check a specific dataset (default: all)")
+    p_df.add_argument("--report", action="store_true", default=False,
+                      help="Generate freshness report")
+
     # --- provider-health (v0.3.18) ---
     p_ph = subparsers.add_parser(
         "provider-health",
@@ -4597,6 +4807,9 @@ def main() -> None:
         "scheduler-run":               cmd_scheduler_run,
         # TW Quant Cockpit v0.3.18
         "provider-health":             cmd_provider_health,
+        # TW Quant Cockpit v0.3.19
+        "provider-auto-fetch":         cmd_provider_auto_fetch,
+        "data-freshness":              cmd_data_freshness,
     }
 
     if args.command is None:

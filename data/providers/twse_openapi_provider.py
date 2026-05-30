@@ -103,6 +103,36 @@ class TWSEOpenAPIProvider(BaseMarketDataProvider):
         """
         return None
 
+    def get_margin(
+        self,
+        symbol: str,
+        start: Optional[str] = None,
+        end: Optional[str] = None,
+    ):
+        """
+        TODO (v0.4): Fetch margin/short balance from TWSE open API.
+
+        Returns None until implemented.
+        """
+        return None
+
+    def get_daily_price(
+        self,
+        symbol: str,
+        start: Optional[str] = None,
+        end: Optional[str] = None,
+    ):
+        """
+        TODO (v0.4): Fetch daily price from TWSE open API.
+
+        Returns None until implemented (PARTIAL / NOT_IMPLEMENTED).
+        """
+        logger.debug(
+            "TWSEOpenAPIProvider.get_daily_price: not implemented — returning None. "
+            "(symbol=%s)", symbol,
+        )
+        return None
+
     def health_check(self) -> dict:
         return {
             "ok": False,

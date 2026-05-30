@@ -119,6 +119,16 @@ except Exception as _ph_exc:
     logger.warning("ProviderHealthPanel unavailable: %s", _ph_exc)
     _PROVIDER_HEALTH_AVAILABLE = False
 
+# ---------------------------------------------------------------------------
+# v0.3.19 Data Provider Fetch panel import (guarded)
+# ---------------------------------------------------------------------------
+try:
+    from gui.data_provider_fetch_panel import DataProviderFetchPanel
+    _DATA_PROVIDER_FETCH_AVAILABLE = True
+except Exception as _dpf_exc:
+    logger.warning("DataProviderFetchPanel unavailable: %s", _dpf_exc)
+    _DATA_PROVIDER_FETCH_AVAILABLE = False
+
 
 # ---------------------------------------------------------------------------
 # Colour helpers (Taiwan convention: red = up, green = down)
@@ -863,6 +873,7 @@ class CockpitWindow(QMainWindow if _PYSIDE6_AVAILABLE else object):
         self._auto_report_panel = None
         self._automation_panel = None
         self._provider_health_panel = None
+        self._data_provider_fetch_panel = None
 
         self._init_backends()
         if _PYSIDE6_AVAILABLE:
@@ -1020,6 +1031,13 @@ class CockpitWindow(QMainWindow if _PYSIDE6_AVAILABLE else object):
             mid_tabs.addTab(self._provider_health_panel, "Provider Health")
         else:
             self._provider_health_panel = None
+
+        # v0.3.19 Data Provider Fetch tab
+        if _DATA_PROVIDER_FETCH_AVAILABLE:
+            self._data_provider_fetch_panel = DataProviderFetchPanel()
+            mid_tabs.addTab(self._data_provider_fetch_panel, "Data Provider Fetch")
+        else:
+            self._data_provider_fetch_panel = None
 
         h_split.addWidget(mid_tabs)
         h_split.setStretchFactor(0, 3)

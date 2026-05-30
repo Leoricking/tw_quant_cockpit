@@ -162,23 +162,61 @@ class AutomationTaskRunner:
         except Exception as exc:
             warnings.append(f"data-source-status: {exc}")
 
-        # 2. Attempt fetch-public-data (may require token; gracefully skip if unavailable)
+        # 2. Provider auto fetch (v0.3.19) — replaces legacy fetch-public-data
+        auto_fetch_summary: dict = {}
         try:
-            from data.providers.public_data_provider import PublicDataProvider
-            provider = PublicDataProvider()
-            fetch_fn = getattr(provider, "fetch_all", None)
-            if fetch_fn:
-                result = fetch_fn(dry_run=False)
-                fetched = result.get("fetched", 0) if isinstance(result, dict) else 0
-                outputs.append(f"fetch_public_data: {fetched} items fetched")
-            else:
-                warnings.append("fetch-public-data: no fetch_all method found; skipped")
+            from data.providers.auto_fetcher import DataProviderAutoFetcher
+            fetcher = DataProviderAutoFetcher(mode=self.mode, dry_run=False)
+            fetch_result = fetcher.run()
+            auto_fetch_summary = {
+                "status":        fetch_result.get("status", ""),
+                "rows_fetched":  fetch_result.get("rows_fetched", 0),
+                "rows_written":  fetch_result.get("rows_written", 0),
+                "providers_used":fetch_result.get("providers_used", []),
+                "datasets": {
+                    ds: {"status": info.get("status", ""), "rows_written": info.get("rows_written", 0)}
+                    for ds, info in fetch_result.get("datasets", {}).items()
+                },
+            }
+            ds_status = " ".join(
+                f"{ds}:{info.get('status', '?')}"
+                for ds, info in fetch_result.get("datasets", {}).items()
+            )
+            outputs.append(
+                f"auto_fetch: status={fetch_result.get('status','')} "
+                f"rows_fetched={fetch_result.get('rows_fetched',0)} "
+                f"rows_written={fetch_result.get('rows_written',0)}"
+            )
+            outputs.append(f"auto_fetch_datasets: {ds_status}")
+            for w in fetch_result.get("warnings", []):
+                warnings.append(f"auto_fetch: {w}")
+            for e in fetch_result.get("errors", []):
+                warnings.append(f"auto_fetch_error: {e}")
         except Exception as exc:
             msg = str(exc)
             if "token" in msg.lower() or "api" in msg.lower() or "auth" in msg.lower():
-                warnings.append(f"fetch-public-data skipped (token/API unavailable): {exc}")
+                warnings.append(f"auto_fetch skipped (token/API unavailable): {exc}")
             else:
-                warnings.append(f"fetch-public-data: {exc}")
+                warnings.append(f"auto_fetch: {exc}")
+
+        # 3. Freshness check (v0.3.19)
+        freshness_summary: dict = {}
+        try:
+            from data.providers.data_freshness import DataFreshnessChecker
+            fc = DataFreshnessChecker()
+            fr = fc.run_all()
+            freshness_summary = {
+                ds: {"status": info.get("status", ""), "latest_date": info.get("latest_date", "")}
+                for ds, info in fr.get("datasets", {}).items()
+            }
+            fresh_str = " ".join(
+                f"{ds}:{info.get('status', '?')}"
+                for ds, info in fr.get("datasets", {}).items()
+                if ds != "intraday"
+            )
+            outputs.append(f"freshness: {fresh_str}")
+        except Exception as exc:
+            warnings.append(f"freshness: {exc}")
 
         status_str = "warning" if (warnings and not errors) else ("failed" if errors else "ok")
         result = self._make_result(
@@ -188,9 +226,13 @@ class AutomationTaskRunner:
             warnings=warnings,
             errors=errors,
         )
-        # Attach provider health summary to result for latest_status.json (v0.3.18)
+        # Attach summaries to result for latest_status.json
         if provider_health_summary:
             result["provider_health_summary"] = provider_health_summary
+        if auto_fetch_summary:
+            result["auto_fetch_summary"] = auto_fetch_summary
+        if freshness_summary:
+            result["freshness_summary"] = freshness_summary
         self._log.append_run(result)
         self._update_latest_status(result)
         return result

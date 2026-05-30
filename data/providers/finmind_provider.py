@@ -414,6 +414,53 @@ class FinMindProvider(BaseMarketDataProvider):
         return df
 
     # ------------------------------------------------------------------
+    # Fundamental (EPS / margins) — v0.3.19 alias
+    # ------------------------------------------------------------------
+
+    def get_fundamental(
+        self,
+        symbol: str,
+        months: int = 24,
+    ) -> Optional[pd.DataFrame]:
+        """
+        Alias for get_financial_statement(), with month-based lookback.
+        Returns DataFrame with eps, gross_margin, operating_margin, net_income,
+        announcement_date, announcement_date_source, announcement_date_is_estimated.
+        """
+        years = max(1, months // 12)
+        df = self.get_financial_statement(symbol, years=years)
+        if df is None or df.empty:
+            return None
+        # Add v0.3.19 standard columns if missing
+        if "announcement_date" not in df.columns:
+            df["announcement_date"] = None
+        if "announcement_date_source" not in df.columns:
+            df["announcement_date_source"] = "estimated"
+        if "announcement_date_is_estimated" not in df.columns:
+            df["announcement_date_is_estimated"] = True
+        # Synthesise date from year+quarter if missing
+        if "date" not in df.columns:
+            _qmap = {"Q1": "03", "Q2": "06", "Q3": "09", "Q4": "12"}
+            df["date"] = df.apply(
+                lambda r: f"{r.get('year', '2000')}-{_qmap.get(str(r.get('quarter', '')), '12')}-01",
+                axis=1,
+            )
+        return df
+
+    # ------------------------------------------------------------------
+    # get_margin alias for v0.3.19 auto_fetcher compatibility
+    # ------------------------------------------------------------------
+
+    def get_margin(
+        self,
+        symbol: str,
+        start: Optional[str] = None,
+        end:   Optional[str] = None,
+    ) -> Optional[pd.DataFrame]:
+        """Alias for get_margin_short()."""
+        return self.get_margin_short(symbol, start=start, end=end)
+
+    # ------------------------------------------------------------------
     # Health check
     # ------------------------------------------------------------------
 

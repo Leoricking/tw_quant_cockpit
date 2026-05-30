@@ -1800,6 +1800,41 @@ python main.py cockpit --mode real
 
 > **[!] 不構成投資建議。仍禁止實盤自動下單（TWQC_ENABLE_REAL_ORDER=false）。**
 
+### v0.3.19 — Data Provider Auto Fetch Integration (implemented)
+
+讓 Data Provider Layer 真正整合到 `daily_data_update`，自動依 provider 狀態抓取並更新資料。
+
+**新增功能**:
+- `DataProviderAutoFetcher`: 依 provider 狀態自動抓取 daily price / monthly revenue / institutional / margin / fundamental，寫入標準 CSV 路徑
+- `DataFreshnessChecker`: 檢查各 dataset 新鮮度（FRESH / STALE / OLD / MISSING / PARTIAL）
+- Provider priority: FinMind → TWSE/TPEx/MOPS → CSV existing → XQ existing（不 mock fallback）
+- Data Provider Fetch Report：7 章節 Markdown 報告
+- GUI Data Provider Fetch tab：dataset status、provider fallback、freshness、dry-run 支援
+- `daily_data_update` scheduler task 整合 auto fetch + freshness summary
+- `provider-auto-fetch` / `data-freshness` CLI 指令
+
+**標準 CSV 路徑**:
+- `data/import/daily/daily_k.csv`
+- `data/import/monthly_revenue/monthly_revenue.csv`
+- `data/import/institutional/institutional.csv`
+- `data/import/margin/margin.csv`
+- `data/import/fundamental/fundamental.csv`
+
+**CLI**:
+```bash
+python main.py provider-auto-fetch --mode real --dry-run
+python main.py provider-auto-fetch --mode real --dataset daily_price
+python main.py provider-auto-fetch --mode real --dataset all --report
+python main.py data-freshness
+python main.py data-freshness --report
+```
+
+**安全保證**: Read Only · No Real Orders · No Mock Fallback in Real Mode · No Token Logged
+
+> **[!] Intraday / Tick / BidAsk provider planned for v0.4+. Current source: XQ import / CSV.**
+
+---
+
 ### v0.3.18 — API Provider Hardening & Token-Safe Setup (implemented)
 
 強化 API provider 基礎設施與 token-safe 設定，讓所有 provider 可安全被 scheduler 使用。

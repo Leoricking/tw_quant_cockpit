@@ -259,6 +259,58 @@ class ProviderRegistry:
                 result.append(name)
         return result
 
+    # ------------------------------------------------------------------
+    # Dataset → provider capability map (v0.3.19)
+    # ------------------------------------------------------------------
+
+    # Priority order: first available provider wins
+    _DATASET_PROVIDER_PRIORITY: Dict[str, List[str]] = {
+        "daily_price":     ["finmind", "twse", "csv", "xq_export"],
+        "monthly_revenue": ["finmind", "twse", "csv", "xq_export"],
+        "institutional":   ["finmind", "twse", "csv", "xq_export"],
+        "margin":          ["finmind", "twse", "csv", "xq_export"],
+        "fundamental":     ["finmind", "mops", "csv", "xq_export"],
+        "intraday":        ["xq_export", "csv"],
+        "tick":            ["xq_export"],
+        "bidask":          [],
+    }
+
+    def get_providers_for_dataset(self, dataset_name: str) -> List[str]:
+        """Return ordered list of provider names that support the given dataset."""
+        return list(self._DATASET_PROVIDER_PRIORITY.get(dataset_name, []))
+
+    def get_best_provider_for_dataset(
+        self,
+        dataset_name: str,
+        health_status: Optional[dict] = None,
+    ) -> Optional[str]:
+        """
+        Return the name of the best available provider for the dataset,
+        considering health_status if provided.
+
+        health_status is the dict returned by ProviderHealthChecker.run_all().
+        """
+        order = self.get_providers_for_dataset(dataset_name)
+        if not order:
+            return None
+
+        if not health_status:
+            # No health data — return first known provider
+            return order[0] if order else None
+
+        # Build a set of OK/PARTIAL providers
+        ok_providers = set()
+        for p in health_status.get("providers", []):
+            if p.get("status") in ("OK", "PARTIAL"):
+                ok_providers.add(p.get("provider_name", ""))
+
+        for pname in order:
+            if pname in ok_providers:
+                return pname
+
+        # Fallback: return first in priority order even if not in health
+        return order[0] if order else None
+
     def assert_no_real_orders(self) -> bool:
         """
         Verify that no provider claims real_order_execution=True.
