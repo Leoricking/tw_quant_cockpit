@@ -1576,6 +1576,51 @@ intraday (1min/5min): symbol,date,time,datetime,open,high,low,close,volume,sourc
 
 > **[!] 不構成投資建議。仍禁止實盤自動下單（TWQC_ENABLE_REAL_ORDER=false）。**
 
+### v0.3.13 — GUI Portfolio Cockpit (implemented)
+
+把 v0.3.12 的 Portfolio & Risk Simulation 結果整合進 GUI Cockpit，形成「投資組合控盤視覺化面板」。
+
+**如何啟動：**
+
+```bash
+python main.py cockpit
+python main.py cockpit --mode real
+```
+
+啟動後點選 **Portfolio Cockpit** 標籤頁。若尚未跑過模擬，可先執行：
+
+```bash
+python main.py simulate-portfolio --mode real --scenario balanced
+python main.py simulate-portfolio --mode real --scenario all
+```
+
+或在 GUI 內直接按 **Refresh Portfolio Simulation**。
+
+**GUI 顯示的 KPI：**
+
+| KPI | 目標 |
+|-----|------|
+| Total Return | — |
+| Sharpe Ratio | > 1.5 |
+| Max Drawdown | < -20% |
+| Profit Factor | > 1.5 |
+| Win Rate | — |
+| Avg Exposure | — |
+| Trade Count | — |
+
+**新增功能：**
+- `PortfolioCockpitPanel`：含 Summary Cards、Scenario Comparison、Trades、Positions、Candidates、Sector Exposure、Risk Warnings
+- `PortfolioDataAdapter`：讀取 portfolio_*.csv，支援一鍵呼叫 PortfolioSimulator
+- `portfolio_widgets`：可重用的 MetricCard、StatusBadge、RiskBadge、PortfolioTableView
+
+**Simulation Only：**
+- 不接 Shioaji / 兆豐 API
+- 不自動下單
+- Real Order Execution 固定顯示 DISABLED
+- 14-symbol universe → OBSERVATIONAL confidence
+
+> **[!] 不構成投資建議。仍禁止實盤自動下單（TWQC_ENABLE_REAL_ORDER=false）。**
+
 ### v0.3.12 — Portfolio & Risk Simulation (implemented)
 
 把「單股訊號」升級成「投資組合風險模擬」，驗證資金配置與風控規則對組合 KPI 的實際效益。
