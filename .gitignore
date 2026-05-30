@@ -92,6 +92,9 @@ data/backtest_results/signal_quality_*.csv
 reports/rule_weight_tuning_report_*.md
 data/backtest_results/rule_weight_*.csv
 
+# Auto Report Center outputs (v0.3.16, generated artifacts)
+reports/auto_report_center/
+
 # Sample CSV files are tracked (allow commit)
 !data/import/profile/*_sample.csv
 !data/import/daily/*_sample.csv

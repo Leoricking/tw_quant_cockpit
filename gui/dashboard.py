@@ -89,6 +89,16 @@ except Exception as _rwt_exc:
     logger.warning("RuleWeightTuningPanel unavailable: %s", _rwt_exc)
     _RULE_WEIGHT_TUNING_AVAILABLE = False
 
+# ---------------------------------------------------------------------------
+# v0.3.16 Auto Report Center panel import (guarded)
+# ---------------------------------------------------------------------------
+try:
+    from gui.auto_report_center_panel import AutoReportCenterPanel
+    _AUTO_REPORT_CENTER_AVAILABLE = True
+except Exception as _arc_exc:
+    logger.warning("AutoReportCenterPanel unavailable: %s", _arc_exc)
+    _AUTO_REPORT_CENTER_AVAILABLE = False
+
 
 # ---------------------------------------------------------------------------
 # Colour helpers (Taiwan convention: red = up, green = down)
@@ -830,6 +840,7 @@ class CockpitWindow(QMainWindow if _PYSIDE6_AVAILABLE else object):
         self._portfolio_panel = None
         self._signal_quality_panel = None
         self._rule_weight_panel = None
+        self._auto_report_panel = None
 
         self._init_backends()
         if _PYSIDE6_AVAILABLE:
@@ -967,6 +978,13 @@ class CockpitWindow(QMainWindow if _PYSIDE6_AVAILABLE else object):
         else:
             self._rule_weight_panel = None
 
+        # v0.3.16 Auto Report Center tab
+        if _AUTO_REPORT_CENTER_AVAILABLE:
+            self._auto_report_panel = AutoReportCenterPanel(mode=self._mode)
+            mid_tabs.addTab(self._auto_report_panel, "Auto Report Center")
+        else:
+            self._auto_report_panel = None
+
         h_split.addWidget(mid_tabs)
         h_split.setStretchFactor(0, 3)
         h_split.setStretchFactor(1, 2)
@@ -1027,6 +1045,9 @@ class CockpitWindow(QMainWindow if _PYSIDE6_AVAILABLE else object):
         # Sync Rule Weight Tuning panel mode
         if self._rule_weight_panel is not None:
             self._rule_weight_panel.set_mode(new_mode)
+        # Sync Auto Report Center panel mode
+        if self._auto_report_panel is not None:
+            self._auto_report_panel.set_mode(new_mode)
 
     def _on_candidate_clicked(self, row: int, col: int):
         """Called when user clicks a row in the candidates table."""

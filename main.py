@@ -3090,6 +3090,91 @@ def _fmt_pct(v, sign=True):
 
 
 # ---------------------------------------------------------------------------
+# v0.3.16 — Auto Report Center
+# ---------------------------------------------------------------------------
+
+def cmd_auto_report(args: argparse.Namespace) -> None:
+    """Run Auto Report Center — one-click daily research report pack (v0.3.16)."""
+    logger_cmd  = logging.getLogger("main.auto_report")
+    mode        = getattr(args, "mode",        "real")
+    profile     = getattr(args, "profile",     "full")
+    stocks      = getattr(args, "stocks",      None) or []
+    top_n       = getattr(args, "top",         8)
+    output_dir  = getattr(args, "output_dir",  None)
+    results_dir = getattr(args, "results_dir", None)
+    report_date = getattr(args, "report_date", None)
+
+    logger_cmd.info(
+        "auto-report [mode=%s profile=%s date=%s]",
+        mode, profile, report_date or "today",
+    )
+
+    print()
+    print("=" * 65)
+    print("  TW Quant Cockpit \u2014 Auto Report Center (v0.3.16)")
+    print("=" * 65)
+    print(f"  Mode    : {mode}")
+    print(f"  Profile : {profile}")
+    print(f"  Date    : {report_date or 'today'}")
+    print(f"  Stocks  : {stocks or 'from universe'}")
+    print()
+    print("  [!] Research Only. Simulation Only. No Real Orders.")
+    print()
+
+    try:
+        from reports.auto_report_center import AutoReportCenter
+
+        center = AutoReportCenter(
+            mode=mode,
+            profile=profile,
+            stocks=stocks,
+            top_n=top_n,
+            output_dir=output_dir,
+            results_dir=results_dir,
+            report_date=report_date,
+        )
+        results = center.run()
+
+        status    = results.get("status", "unknown")
+        gen       = results.get("generated", [])
+        failed    = results.get("failed", [])
+        out_dir   = results.get("output_dir", "")
+        index_p   = results.get("index_path")
+        manifest  = results.get("manifest_path")
+
+        print(f"  Status            : {status}")
+        print(f"  Output folder     : {out_dir}")
+        print(f"  Generated reports : {len(gen)}")
+        print(f"  Failed reports    : {len(failed)}")
+        print()
+
+        if gen:
+            print("  Generated:")
+            for g in gen:
+                print(f"    ✓  {g.get('name', '')}")
+
+        if failed:
+            print()
+            print("  Failed:")
+            for f in failed:
+                print(f"    ✗  {f.get('name', '')}  — {f.get('error', '')}")
+
+        print()
+        if index_p:
+            print(f"  Index     : {index_p}")
+        if manifest:
+            print(f"  Manifest  : {manifest}")
+
+        print()
+        print("  [!] All outputs are research-only simulation artifacts.")
+        print("  [!] Does NOT auto-apply weights. Does NOT place real orders.")
+
+    except Exception as exc:
+        logger_cmd.error("auto-report failed: %s", exc, exc_info=True)
+        print(f"ERROR: {exc}")
+
+
+# ---------------------------------------------------------------------------
 # v0.3.9 — Public Data API & Crawler Commands
 # ---------------------------------------------------------------------------
 
@@ -3918,6 +4003,27 @@ def _build_parser() -> argparse.ArgumentParser:
     p_sq14.add_argument("--report-dir", dest="report_dir",  default=None,
                         help="Report output directory (default: reports/)")
 
+    # --- auto-report (v0.3.16) ---
+    p_ar16 = subparsers.add_parser(
+        "auto-report",
+        help="One-click daily research report pack (v0.3.16)",
+    )
+    p_ar16.add_argument("--mode",        default="real", choices=["mock", "real"],
+                        help="Data mode (default: real)")
+    p_ar16.add_argument("--profile",     default="full",
+                        choices=["full", "daily", "portfolio", "signal", "stock", "universe"],
+                        help="Report profile (default: full)")
+    p_ar16.add_argument("--stocks",      nargs="+", default=None,
+                        help="Specific stock symbols for stock reports")
+    p_ar16.add_argument("--top",         dest="top", type=int, default=8,
+                        help="Number of top candidates in summaries (default: 8)")
+    p_ar16.add_argument("--output-dir",  dest="output_dir",  default=None,
+                        help="Output root folder (default: reports/auto_report_center/)")
+    p_ar16.add_argument("--results-dir", dest="results_dir", default=None,
+                        help="Backtest results directory (default: data/backtest_results/)")
+    p_ar16.add_argument("--report-date", dest="report_date", default=None,
+                        help="Report date YYYY-MM-DD (default: today)")
+
     # --- tune-rule-weights (v0.3.15) ---
     p_rw15 = subparsers.add_parser(
         "tune-rule-weights",
@@ -4105,6 +4211,8 @@ def main() -> None:
         "signal-quality":              cmd_signal_quality,
         # TW Quant Cockpit v0.3.15
         "tune-rule-weights":           cmd_tune_rule_weights,
+        # TW Quant Cockpit v0.3.16
+        "auto-report":                 cmd_auto_report,
     }
 
     if args.command is None:

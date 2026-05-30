@@ -1800,6 +1800,58 @@ python main.py cockpit --mode real
 
 > **[!] 不構成投資建議。仍禁止實盤自動下單（TWQC_ENABLE_REAL_ORDER=false）。**
 
+### v0.3.16 — Auto Report Center (implemented)
+
+一鍵產生每日研究報告包，將所有既有回測、驗證、投資組合、訊號品質與規則權重結果整合進單一帶日期的輸出資料夾。
+
+**新增功能**:
+- 6 種報告 Profile（full / daily / portfolio / signal / stock / universe）
+- 整合 8 個子報告：stock_reports / universe_quality / signal_quality / portfolio / rule_weight / long_term / strategy_knowledge / daily_market_summary
+- 每個子報告獨立包裝在 try/except 中，失敗不中止整體執行
+- `executive_summary.md`：跨報告關鍵結論彙整
+- `daily_market_summary.md`：6 段每日市場摘要（資料狀態/候選股/風險警示/投組觀察/訊號品質/結論）
+- `index.md`：4 段報告索引（今日總覽/重點結論/報告連結/限制）
+- `manifest.json`：safety_flags / version_info / data_readiness / confidence / generated & failed 清單
+- GUI "Auto Report Center" 標籤頁（Executive Summary / Daily Summary / Report Links / Failed Reports）
+- `auto-report` CLI 指令
+
+**新增檔案**:
+
+| 檔案 | 說明 |
+|------|------|
+| `reports/auto_report_center.py` | `AutoReportCenter` 主引擎 |
+| `reports/auto_report_index.py` | `AutoReportIndexBuilder`：index.md + manifest.json |
+| `reports/daily_market_summary.py` | `DailyMarketSummaryBuilder`：6 段每日摘要 |
+| `gui/auto_report_center_panel.py` | PySide6 面板（含背景 QThread worker） |
+| `gui/auto_report_data_adapter.py` | manifest/preview loader + run_auto_report_center |
+| `docs/auto_report_center.md` | 說明文件 |
+
+**用法**:
+
+```bash
+# 完整報告包（full profile）
+python main.py auto-report --mode real
+
+# 每日快速報告（daily profile）
+python main.py auto-report --mode real --profile daily
+
+# 投資組合報告
+python main.py auto-report --mode real --profile portfolio
+
+# 指定日期
+python main.py auto-report --mode real --report-date 2026-05-30
+
+# GUI（cockpit → Auto Report Center 標籤頁）
+python main.py cockpit --mode real
+```
+
+**注意事項**:
+- 所有輸出存入 `reports/auto_report_center/YYYY-MM-DD/`
+- 子資料夾：stock_reports/ signal_quality/ portfolio/ rule_weight/ long_term/ strategy_knowledge/
+- 已加入 `.gitignore`（generated artifacts，不納入版控）
+
+> **[!] 不構成投資建議。仍禁止實盤自動下單（TWQC_ENABLE_REAL_ORDER=false）。**
+
 ### v0.3.5 (planned)
 - GUI 顯示回測驗證報告與 Watchlist 追蹤
 

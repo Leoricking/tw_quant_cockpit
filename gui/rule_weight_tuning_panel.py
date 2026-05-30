@@ -241,7 +241,10 @@ class RuleWeightTuningPanel(QWidget if _PYSIDE6_OK else object):
         layout.addWidget(note)
 
         if _WIDGETS_OK:
-            self._empty_state_summary = EmptyStateWidget(parent=inner)
+            self._empty_state_summary = EmptyStateWidget(
+                message="No tuning results loaded.",
+                hint="Press 'Run Tuning' to evaluate all 7 weight configurations.",
+            )
             layout.addWidget(self._empty_state_summary)
         layout.addStretch()
 
@@ -256,7 +259,7 @@ class RuleWeightTuningPanel(QWidget if _PYSIDE6_OK else object):
         layout.setContentsMargins(4, 4, 4, 4)
 
         if _WIDGETS_OK:
-            self._comparison_table = PortfolioTableView(parent=w)
+            self._comparison_table = PortfolioTableView()
             layout.addWidget(self._comparison_table)
         else:
             self._comparison_table = None
@@ -272,7 +275,7 @@ class RuleWeightTuningPanel(QWidget if _PYSIDE6_OK else object):
         layout.setContentsMargins(4, 4, 4, 4)
 
         if _WIDGETS_OK:
-            self._weights_table = PortfolioTableView(parent=w)
+            self._weights_table = PortfolioTableView()
             layout.addWidget(self._weights_table)
         else:
             self._weights_table = None
@@ -309,7 +312,7 @@ class RuleWeightTuningPanel(QWidget if _PYSIDE6_OK else object):
         layout.setContentsMargins(8, 8, 8, 8)
 
         if _WIDGETS_OK:
-            self._sq_effects_table = PortfolioTableView(parent=inner)
+            self._sq_effects_table = PortfolioTableView()
             layout.addWidget(self._sq_effects_table)
 
         self._sq_note = QTextEdit()
