@@ -39,10 +39,12 @@ class DailyMarketSummaryBuilder:
         report_date: str,
         mode: str = "real",
         context: Optional[dict] = None,
+        top_n: int = 8,
     ):
         self.report_date = report_date
         self.mode        = mode
         self.context     = context or {}
+        self.top_n       = top_n
 
     # ------------------------------------------------------------------
     # Public entry point

@@ -320,7 +320,13 @@ class DataFrameTableModel(QAbstractTableModel if _PYSIDE6_AVAILABLE else object)
             return None
         if orientation == Qt.Horizontal:
             col = self._df.columns[section]
-            return self._headers.get(col, col)
+            if isinstance(self._headers, dict):
+                return self._headers.get(col, col)
+            if isinstance(self._headers, (list, tuple)):
+                if 0 <= section < len(self._headers):
+                    return self._headers[section]
+                return col
+            return col
         return str(section + 1)
 
     def set_dataframe(self, df):
