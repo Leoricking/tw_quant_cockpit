@@ -3790,6 +3790,175 @@ def cmd_data_quality_gate(args: argparse.Namespace) -> None:
 
 
 # ---------------------------------------------------------------------------
+# v0.3.21 — Daily Research Workflow Commands
+# ---------------------------------------------------------------------------
+
+def _print_workflow_result(result: dict) -> None:
+    """Print a workflow result dict to console."""
+    mode    = result.get("mode", "").upper()
+    profile = result.get("profile", "")
+    status  = result.get("overall_status", result.get("status", "UNKNOWN"))
+    dur     = result.get("duration_seconds", 0.0)
+    ok_n    = len(result.get("ok_steps", []))
+    fail_n  = len(result.get("failed_steps", []))
+    warn_n  = result.get("warning_count", 0)
+
+    print(f"  Mode:            {mode}")
+    print(f"  Profile:         {profile}")
+    print(f"  Status:          {status}")
+    print(f"  Duration:        {dur:.1f}s")
+    print(f"  OK steps:        {ok_n}")
+    print(f"  Failed steps:    {fail_n}")
+    print(f"  Warnings:        {warn_n}")
+    print(f"  Read Only:       True")
+    print(f"  No Real Orders:  True")
+    print(f"  Production:      BLOCKED")
+    print()
+
+    qg = result.get("quality_gate_summary", {})
+    if qg:
+        prod  = qg.get("production_readiness_score", "N/A")
+        btest = qg.get("backtest_readiness_score", "N/A")
+        p_cls = qg.get("production_classification", "")
+        prod_str  = f"{prod:.1f}"  if isinstance(prod,  float) else str(prod)
+        btest_str = f"{btest:.1f}" if isinstance(btest, float) else str(btest)
+        print(f"  Production Readiness: {prod_str} ({p_cls})")
+        print(f"  Backtest Readiness:   {btest_str}")
+        print()
+
+    steps = result.get("steps", [])
+    if steps:
+        print("  Steps:")
+        for s in steps:
+            name   = s.get("step_name", "")
+            sts    = s.get("status", "")
+            dur_s  = s.get("duration_seconds", 0.0)
+            err_n  = len(s.get("errors", []))
+            warn_s = len(s.get("warnings", []))
+            print(f"    {name:<30} {sts:<8} {dur_s:.1f}s  warn={warn_s}  err={err_n}")
+        print()
+
+    failed = result.get("failed_steps", [])
+    if failed:
+        print(f"  Failed: {', '.join(failed)}")
+        print()
+
+    ar_dir = result.get("auto_report_dir", "")
+    if ar_dir:
+        ar_n = result.get("auto_report_count", 0)
+        print(f"  Auto Report: {ar_n} reports → {ar_dir}")
+        print()
+
+
+def cmd_update_data(args: argparse.Namespace) -> None:
+    """Daily data update workflow (v0.3.21)."""
+    import os
+    print()
+    print("=" * 64)
+    print("  TW Quant Cockpit — Update Data  (v0.3.21)")
+    print("  Research Only | Read Only | No Real Orders")
+    print("  Production Trading: BLOCKED")
+    print("=" * 64)
+    print()
+
+    mode    = getattr(args, "mode", "real")
+    profile = getattr(args, "profile", "standard")
+    dry_run = getattr(args, "dry_run", False)
+    if dry_run:
+        print("  [DRY-RUN] Data fetch steps will not write files.")
+        print()
+
+    try:
+        from workflow.daily_workflow import DailyResearchWorkflow
+        wf = DailyResearchWorkflow(mode=mode, profile=profile, dry_run=dry_run)
+        result = wf.run_update_data()
+    except Exception as exc:
+        print(f"  ERROR: {exc}")
+        return
+
+    _print_workflow_result(result)
+    print("  [!] Read Only. No Real Orders. Production Trading: BLOCKED.")
+
+
+def cmd_run_research(args: argparse.Namespace) -> None:
+    """Daily research workflow (v0.3.21)."""
+    import os
+    print()
+    print("=" * 64)
+    print("  TW Quant Cockpit — Run Research  (v0.3.21)")
+    print("  Research Only | Read Only | No Real Orders")
+    print("  Production Trading: BLOCKED")
+    print("=" * 64)
+    print()
+
+    mode    = getattr(args, "mode", "real")
+    profile = getattr(args, "profile", "standard")
+
+    print(f"  Mode: {mode}  Profile: {profile}")
+    print()
+
+    try:
+        from workflow.daily_workflow import DailyResearchWorkflow
+        wf = DailyResearchWorkflow(mode=mode, profile=profile)
+        result = wf.run_research()
+    except Exception as exc:
+        print(f"  ERROR: {exc}")
+        return
+
+    _print_workflow_result(result)
+    print("  [!] Read Only. No Real Orders. Do NOT auto-apply weights. Production Trading: BLOCKED.")
+
+
+def cmd_daily_workflow(args: argparse.Namespace) -> None:
+    """Full daily research workflow: update-data + run-research (v0.3.21)."""
+    import os
+    print()
+    print("=" * 64)
+    print("  TW Quant Cockpit — Daily Workflow  (v0.3.21)")
+    print("  Research Only | Read Only | No Real Orders")
+    print("  Production Trading: BLOCKED")
+    print("=" * 64)
+    print()
+
+    mode     = getattr(args, "mode", "real")
+    profile  = getattr(args, "profile", "standard")
+    dry_run  = getattr(args, "dry_run", False)
+    open_gui = getattr(args, "open_gui", False)
+
+    print(f"  Mode: {mode}  Profile: {profile}")
+    if dry_run:
+        print("  [DRY-RUN] Fetch steps will not write files.")
+    print()
+
+    try:
+        from workflow.daily_workflow import DailyResearchWorkflow
+        wf = DailyResearchWorkflow(mode=mode, profile=profile, dry_run=dry_run)
+        result = wf.run_full_workflow()
+    except Exception as exc:
+        print(f"  ERROR: {exc}")
+        return
+
+    _print_workflow_result(result)
+
+    if open_gui:
+        print("  Opening cockpit GUI...")
+        print()
+        try:
+            from gui.dashboard import launch
+            launch(mode=mode)
+        except Exception as exc:
+            print(f"  GUI ERROR: {exc}")
+
+    print("  [!] Read Only. No Real Orders. Do NOT auto-apply weights. Production Trading: BLOCKED.")
+
+
+def cmd_open_cockpit(args: argparse.Namespace) -> None:
+    """Open the TW Quant Cockpit GUI (alias for cockpit) (v0.3.21)."""
+    # Delegate to the existing cockpit command handler
+    cmd_cockpit(args)
+
+
+# ---------------------------------------------------------------------------
 # v0.3.9 — Public Data API & Crawler Commands
 # ---------------------------------------------------------------------------
 
@@ -4683,6 +4852,61 @@ def _build_parser() -> argparse.ArgumentParser:
     p_df.add_argument("--report", action="store_true", default=False,
                       help="Generate freshness report")
 
+    # --- update-data (v0.3.21) ---
+    p_ud = subparsers.add_parser(
+        "update-data",
+        help="Daily data update: provider health + auto fetch + freshness + quality gate (v0.3.21)",
+    )
+    p_ud.add_argument("--mode", choices=["real", "mock"], default="real",
+                      help="Data mode (default: real)")
+    p_ud.add_argument("--profile", choices=["quick", "standard", "full", "gui_only"],
+                      default="standard",
+                      help="Workflow profile (default: standard)")
+    p_ud.add_argument("--dry-run", dest="dry_run", action="store_true", default=False,
+                      help="Skip file writes in data fetch step")
+
+    # --- run-research (v0.3.21) ---
+    p_rr = subparsers.add_parser(
+        "run-research",
+        help="Daily research workflow: quality gate + signal quality + portfolio + auto report (v0.3.21)",
+    )
+    p_rr.add_argument("--mode", choices=["real", "mock"], default="real",
+                      help="Data mode (default: real)")
+    p_rr.add_argument("--profile", choices=["quick", "standard", "full", "gui_only"],
+                      default="standard",
+                      help="Workflow profile (default: standard)")
+    p_rr.add_argument("--stocks", default=None,
+                      help="Comma-separated stock symbols for stock reports")
+    p_rr.add_argument("--top", dest="top_n", type=int, default=8,
+                      help="Number of top candidates (default: 8)")
+
+    # --- daily-workflow (v0.3.21) ---
+    p_dw = subparsers.add_parser(
+        "daily-workflow",
+        help="Full daily workflow: update-data + run-research + optional GUI (v0.3.21)",
+    )
+    p_dw.add_argument("--mode", choices=["real", "mock"], default="real",
+                      help="Data mode (default: real)")
+    p_dw.add_argument("--profile", choices=["quick", "standard", "full", "gui_only"],
+                      default="standard",
+                      help="Workflow profile (default: standard)")
+    p_dw.add_argument("--dry-run", dest="dry_run", action="store_true", default=False,
+                      help="Skip file writes in data fetch step")
+    p_dw.add_argument("--open-gui", dest="open_gui", action="store_true", default=False,
+                      help="Open cockpit GUI after workflow completes")
+    p_dw.add_argument("--stocks", default=None,
+                      help="Comma-separated stock symbols for stock reports")
+    p_dw.add_argument("--top", dest="top_n", type=int, default=8,
+                      help="Number of top candidates (default: 8)")
+
+    # --- open-cockpit (v0.3.21) ---
+    p_oc = subparsers.add_parser(
+        "open-cockpit",
+        help="Open TW Quant Cockpit GUI (alias for cockpit) (v0.3.21)",
+    )
+    p_oc.add_argument("--mode", choices=["real", "mock"], default="real",
+                      help="Data mode (default: real)")
+
     # --- data-quality-gate (v0.3.20) ---
     p_dqg = subparsers.add_parser(
         "data-quality-gate",
@@ -4974,6 +5198,11 @@ def main() -> None:
         "data-freshness":              cmd_data_freshness,
         # TW Quant Cockpit v0.3.20
         "data-quality-gate":           cmd_data_quality_gate,
+        # TW Quant Cockpit v0.3.21
+        "update-data":                 cmd_update_data,
+        "run-research":                cmd_run_research,
+        "daily-workflow":              cmd_daily_workflow,
+        "open-cockpit":                cmd_open_cockpit,
     }
 
     if args.command is None:

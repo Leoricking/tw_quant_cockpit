@@ -1800,6 +1800,50 @@ python main.py cockpit --mode real
 
 > **[!] 不構成投資建議。仍禁止實盤自動下單（TWQC_ENABLE_REAL_ORDER=false）。**
 
+### v0.3.21 — Research Daily Workflow Polish (implemented)
+
+把每日研究流程打磨成 3 個高階指令，讓使用者每天只需執行：
+
+```bash
+python main.py update-data --mode real
+python main.py run-research --mode real
+python main.py open-cockpit --mode real
+```
+
+或一鍵：
+```bash
+python main.py daily-workflow --mode real
+```
+
+**新增功能**:
+- `DailyResearchWorkflow`: 每日流程主引擎 (update-data / run-research / full-workflow)
+- `WorkflowProfileRegistry`: quick / standard / full / gui_only profiles
+- `WorkflowStepResult` / `WorkflowStatus`: step 結果與整體狀態追蹤
+- `DailyWorkflowReportBuilder`: 7-section Markdown workflow summary report
+- GUI Daily Workflow tab：Update Data / Run Research / Step status table / Summary cards
+- Windows helper scripts: `scripts/update_data.bat`, `scripts/run_research.bat`, `scripts/open_cockpit.bat`
+- CLI: `update-data`, `run-research`, `daily-workflow`, `open-cockpit`
+
+**Profiles**:
+| Profile | 說明 |
+|---------|------|
+| quick | 盤前快速檢查 |
+| standard | 每日收盤後常規流程 |
+| full | 週末完整研究 |
+| gui_only | 只開 GUI |
+
+**CLI**:
+```bash
+python main.py update-data --mode real
+python main.py run-research --mode real --profile standard
+python main.py daily-workflow --mode real --profile full
+python main.py open-cockpit --mode real
+```
+
+**安全保證**: Research Only · Read Only · No Real Orders · Production BLOCKED · No Auto Weight Application
+
+---
+
 ### v0.3.20 — Data Quality Gate & Production Readiness Score (implemented)
 
 對現有資料、Provider 健康狀態、Mock 汙染情況進行綜合評分，產出 Production Readiness Score 與 Backtest Readiness Score，並決定 8 個 Gate 開關。
