@@ -95,6 +95,15 @@ data/backtest_results/rule_weight_*.csv
 # Auto Report Center outputs (v0.3.16, generated artifacts)
 reports/auto_report_center/
 
+# Automation Scheduler runtime logs and user config (v0.3.17, generated artifacts)
+logs/automation/
+logs/automation/*.json
+logs/automation/*.jsonl
+config/scheduler_config.yaml
+
+# Allow the example config (tracked)
+!config/scheduler_config.example.yaml
+
 # Sample CSV files are tracked (allow commit)
 !data/import/profile/*_sample.csv
 !data/import/daily/*_sample.csv

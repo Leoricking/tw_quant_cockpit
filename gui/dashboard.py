@@ -99,6 +99,16 @@ except Exception as _arc_exc:
     logger.warning("AutoReportCenterPanel unavailable: %s", _arc_exc)
     _AUTO_REPORT_CENTER_AVAILABLE = False
 
+# ---------------------------------------------------------------------------
+# v0.3.17 Automation Scheduler panel import (guarded)
+# ---------------------------------------------------------------------------
+try:
+    from gui.automation_scheduler_panel import AutomationSchedulerPanel
+    _AUTOMATION_SCHEDULER_AVAILABLE = True
+except Exception as _as_exc:
+    logger.warning("AutomationSchedulerPanel unavailable: %s", _as_exc)
+    _AUTOMATION_SCHEDULER_AVAILABLE = False
+
 
 # ---------------------------------------------------------------------------
 # Colour helpers (Taiwan convention: red = up, green = down)
@@ -841,6 +851,7 @@ class CockpitWindow(QMainWindow if _PYSIDE6_AVAILABLE else object):
         self._signal_quality_panel = None
         self._rule_weight_panel = None
         self._auto_report_panel = None
+        self._automation_panel = None
 
         self._init_backends()
         if _PYSIDE6_AVAILABLE:
@@ -985,6 +996,13 @@ class CockpitWindow(QMainWindow if _PYSIDE6_AVAILABLE else object):
         else:
             self._auto_report_panel = None
 
+        # v0.3.17 Automation Scheduler tab
+        if _AUTOMATION_SCHEDULER_AVAILABLE:
+            self._automation_panel = AutomationSchedulerPanel(mode=self._mode)
+            mid_tabs.addTab(self._automation_panel, "Automation Scheduler")
+        else:
+            self._automation_panel = None
+
         h_split.addWidget(mid_tabs)
         h_split.setStretchFactor(0, 3)
         h_split.setStretchFactor(1, 2)
@@ -1048,6 +1066,9 @@ class CockpitWindow(QMainWindow if _PYSIDE6_AVAILABLE else object):
         # Sync Auto Report Center panel mode
         if self._auto_report_panel is not None:
             self._auto_report_panel.set_mode(new_mode)
+        # Sync Automation Scheduler panel mode
+        if self._automation_panel is not None:
+            self._automation_panel.set_mode(new_mode)
 
     def _on_candidate_clicked(self, row: int, col: int):
         """Called when user clicks a row in the candidates table."""

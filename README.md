@@ -1800,6 +1800,58 @@ python main.py cockpit --mode real
 
 > **[!] 不構成投資建議。仍禁止實盤自動下單（TWQC_ENABLE_REAL_ORDER=false）。**
 
+### v0.3.17 — API Automation Scheduler (implemented)
+
+Read-only 自動化排程器，用於每日資料更新與研究報告產出。不下單、不改策略。
+
+**新增功能**:
+- 6 種排程任務（daily_data_update / daily_validation / daily_auto_report / weekly_signal_quality / weekly_rule_weight_tuning / monthly_universe_quality）
+- 所有任務 `read_only=True` + `no_real_orders=True`（hard-coded，無法由 config 覆蓋）
+- Safety Guard：包含 order/trade/submit/buy/sell/broker/live/execute 關鍵字的任務名稱會被攔截
+- `run-once` CLI：手動觸發單一任務
+- `scheduler-init-config`：建立安全、全部 disabled 的預設 config
+- `scheduler-status` / `scheduler-list` / `scheduler-next-runs`：read-only 狀態查詢
+- GUI「Automation Scheduler」標籤頁：Run Once buttons + task table + recent runs + safety panel
+- Task log：`logs/automation/task_runs.jsonl` + `latest_status.json`
+
+**新增檔案**:
+
+| 檔案 | 說明 |
+|------|------|
+| `automation/__init__.py` | automation 套件初始化 |
+| `automation/scheduler_config.py` | `SchedulerConfig` + `TaskConfig` dataclass；6 種預設任務 |
+| `automation/task_runner.py` | `AutomationTaskRunner`：執行 read-only 任務，呼叫既有 Python class |
+| `automation/scheduler.py` | `AutomationScheduler`：run_once / status / list_tasks / next_run_times |
+| `automation/task_log.py` | `AutomationTaskLog`：JSONL + JSON log 讀寫 |
+| `gui/automation_scheduler_panel.py` | PySide6 面板（含背景 QThread worker） |
+| `gui/automation_data_adapter.py` | scheduler status loader + run_task_once |
+| `config/scheduler_config.example.yaml` | 範例 config（不含 token） |
+| `docs/api_automation_scheduler.md` | 說明文件 |
+
+**用法**:
+
+```bash
+# 建立安全預設 config
+python main.py scheduler-init-config
+
+# 查看狀態
+python main.py scheduler-status
+
+# 列出任務
+python main.py scheduler-list
+
+# 手動觸發任務
+python main.py scheduler-run --task daily_auto_report --mode real
+python main.py scheduler-run --task weekly_signal_quality --mode real
+python main.py scheduler-run --task weekly_rule_weight_tuning --mode real
+
+# GUI
+python main.py cockpit --mode real  # → Automation Scheduler 標籤頁
+```
+
+> **[!] Read Only. No Real Orders. Scheduler Does Not Trade.**
+> **[!] 不自動套用權重。不連接券商 API。不自動下單。**
+
 ### v0.3.16 — Auto Report Center (implemented)
 
 一鍵產生每日研究報告包，將所有既有回測、驗證、投資組合、訊號品質與規則權重結果整合進單一帶日期的輸出資料夾。

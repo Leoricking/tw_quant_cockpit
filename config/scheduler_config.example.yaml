@@ -1,0 +1,98 @@
+# TW Quant Cockpit - Automation Scheduler Config (v0.3.17)
+# Example configuration file.
+# Copy to config/scheduler_config.yaml and edit as needed.
+#
+# [!] Read Only. Research Only. No Real Orders.
+# [!] Scheduler does NOT trade. Does NOT modify weights.
+# [!] Does NOT connect to broker API.
+# [!] All tokens/API keys must be set in .env, NEVER in this file.
+
+enabled: false
+mode: real
+timezone: Asia/Taipei
+read_only: true
+no_real_orders: true
+
+tasks:
+  daily_data_update:
+    task_name: daily_data_update
+    enabled: false
+    schedule_type: daily
+    run_time: "18:00"
+    command_name: daily-data-update
+    max_runtime_seconds: 1800
+    retry_count: 0
+    retry_delay_seconds: 60
+    read_only: true
+    no_real_orders: true
+    notes: "Fetch public data and check data sources. Read-only."
+
+  daily_validation:
+    task_name: daily_validation
+    enabled: false
+    schedule_type: daily
+    run_time: "18:20"
+    command_name: daily-validation
+    max_runtime_seconds: 1800
+    retry_count: 0
+    retry_delay_seconds: 60
+    read_only: true
+    no_real_orders: true
+    notes: "Universe quality + validation suite + signal quality + portfolio sim."
+
+  daily_auto_report:
+    task_name: daily_auto_report
+    enabled: false
+    schedule_type: daily
+    run_time: "18:40"
+    command_name: auto-report
+    profile: daily
+    top_n: 8
+    max_runtime_seconds: 1800
+    retry_count: 0
+    retry_delay_seconds: 60
+    read_only: true
+    no_real_orders: true
+    notes: "Auto report center daily profile."
+
+  weekly_signal_quality:
+    task_name: weekly_signal_quality
+    enabled: false
+    schedule_type: weekly
+    weekday: 5
+    run_time: "19:00"
+    command_name: signal-quality
+    max_runtime_seconds: 1800
+    retry_count: 0
+    retry_delay_seconds: 60
+    read_only: true
+    no_real_orders: true
+    notes: "Weekly signal quality report (Friday)."
+
+  weekly_rule_weight_tuning:
+    task_name: weekly_rule_weight_tuning
+    enabled: false
+    schedule_type: weekly
+    weekday: 5
+    run_time: "19:30"
+    command_name: tune-rule-weights
+    max_runtime_seconds: 3600
+    retry_count: 0
+    retry_delay_seconds: 60
+    read_only: true
+    no_real_orders: true
+    notes: "Weekly rule weight tuning (Friday). Does NOT auto-apply weights."
+
+  monthly_universe_quality:
+    task_name: monthly_universe_quality
+    enabled: false
+    schedule_type: monthly
+    month_day: 1
+    run_time: "20:00"
+    command_name: universe-quality
+    max_runtime_seconds: 1800
+    retry_count: 0
+    retry_delay_seconds: 60
+    read_only: true
+    no_real_orders: true
+    notes: "Monthly universe quality check (1st of month)."

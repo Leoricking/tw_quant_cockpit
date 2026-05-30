@@ -3175,6 +3175,190 @@ def cmd_auto_report(args: argparse.Namespace) -> None:
 
 
 # ---------------------------------------------------------------------------
+# v0.3.17 — API Automation Scheduler Commands
+# ---------------------------------------------------------------------------
+
+def _print_scheduler_header() -> None:
+    print()
+    print("=" * 65)
+    print("  TW Quant Cockpit \u2014 API Automation Scheduler (v0.3.17)")
+    print("=" * 65)
+    print("  [!] Read Only Automation")
+    print("  [!] No real orders will be placed")
+    print("  [!] Scheduler does NOT trade. Does NOT modify weights.")
+    print()
+
+
+def cmd_scheduler_init_config(args: argparse.Namespace) -> None:
+    """Create a safe, all-disabled scheduler config file (v0.3.17)."""
+    _print_scheduler_header()
+    config_path = getattr(args, "config", None) or os.path.join(BASE_DIR, "config", "scheduler_config.yaml")
+    try:
+        from automation.scheduler import AutomationScheduler
+        sched = AutomationScheduler(config_path=config_path)
+        path  = sched.save_default_config()
+        print(f"  Config written : {path}")
+        print("  All tasks are disabled by default.")
+        print("  Edit the YAML to enable tasks.")
+    except Exception as exc:
+        print(f"ERROR: {exc}")
+
+
+def cmd_scheduler_status(args: argparse.Namespace) -> None:
+    """Show automation scheduler status (v0.3.17)."""
+    _print_scheduler_header()
+    config_path = getattr(args, "config", None) or os.path.join(BASE_DIR, "config", "scheduler_config.yaml")
+    log_dir     = getattr(args, "log_dir", None) or os.path.join(BASE_DIR, "logs", "automation")
+    try:
+        from automation.scheduler import AutomationScheduler
+        sched  = AutomationScheduler(config_path=config_path, log_dir=log_dir)
+        status = sched.status()
+
+        print(f"  Scheduler Enabled : {status.get('scheduler_enabled', False)}")
+        print(f"  Mode              : {status.get('mode', '—')}")
+        print(f"  Read Only         : {status.get('read_only', True)}")
+        print(f"  No Real Orders    : {status.get('no_real_orders', True)}")
+        print(f"  Total Tasks       : {status.get('total_tasks', 0)}")
+        print(f"  Enabled Tasks     : {len(status.get('enabled_tasks', []))}")
+        print(f"  Next Task         : {status.get('next_task', '—')}")
+        print(f"  Next Run          : {status.get('next_run', '—')}")
+        print()
+        summary = status.get("run_summary", {})
+        print(f"  Recent Runs (last 50):")
+        print(f"    Total   : {summary.get('total', 0)}")
+        print(f"    OK      : {summary.get('ok', 0)}")
+        print(f"    Failed  : {summary.get('failed', 0)}")
+        print(f"    Warning : {summary.get('warning', 0)}")
+        print(f"    Last Run: {summary.get('last_run_at', '—')}")
+        print(f"    Last Status: {summary.get('last_status', '—')}")
+    except Exception as exc:
+        print(f"ERROR: {exc}")
+
+
+def cmd_scheduler_list(args: argparse.Namespace) -> None:
+    """List all automation tasks and their schedule (v0.3.17)."""
+    _print_scheduler_header()
+    config_path = getattr(args, "config", None) or os.path.join(BASE_DIR, "config", "scheduler_config.yaml")
+    log_dir     = getattr(args, "log_dir", None) or os.path.join(BASE_DIR, "logs", "automation")
+    try:
+        from automation.scheduler import AutomationScheduler
+        sched = AutomationScheduler(config_path=config_path, log_dir=log_dir)
+        tasks = sched.list_tasks()
+
+        if not tasks:
+            print("  No tasks configured. Run scheduler-init-config first.")
+            return
+
+        print(f"  {'Task':<32} {'Enabled':<8} {'Schedule':<12} {'Time':<7} {'Last Status':<12} {'Read Only'}")
+        print("  " + "-" * 85)
+        for t in tasks:
+            sched_type = t.get("schedule_type", "—")
+            if sched_type == "weekly":
+                sched_str = f"weekly/wd{t.get('weekday','?')}"
+            elif sched_type == "monthly":
+                sched_str = f"monthly/d{t.get('month_day','?')}"
+            else:
+                sched_str = sched_type
+            print(
+                f"  {t.get('task_name',''):<32} "
+                f"{'YES' if t.get('enabled') else 'no':<8} "
+                f"{sched_str:<12} "
+                f"{t.get('run_time','—'):<7} "
+                f"{str(t.get('last_status','—')):<12} "
+                f"{str(t.get('read_only', True))}"
+            )
+    except Exception as exc:
+        print(f"ERROR: {exc}")
+
+
+def cmd_scheduler_next_runs(args: argparse.Namespace) -> None:
+    """Show next scheduled run times for all tasks (v0.3.17)."""
+    _print_scheduler_header()
+    config_path = getattr(args, "config", None) or os.path.join(BASE_DIR, "config", "scheduler_config.yaml")
+    log_dir     = getattr(args, "log_dir", None) or os.path.join(BASE_DIR, "logs", "automation")
+    try:
+        from automation.scheduler import AutomationScheduler
+        sched = AutomationScheduler(config_path=config_path, log_dir=log_dir)
+        next_runs = sched.next_run_times()
+
+        print(f"  {'Task':<32} {'Next Run (ISO)'}")
+        print("  " + "-" * 60)
+        for name, nrt in next_runs.items():
+            print(f"  {name:<32} {nrt or 'DISABLED'}")
+        print()
+        print("  (Tasks with enabled=false show DISABLED)")
+    except Exception as exc:
+        print(f"ERROR: {exc}")
+
+
+def cmd_scheduler_run(args: argparse.Namespace) -> None:
+    """Run a single automation task once (v0.3.17)."""
+    _print_scheduler_header()
+    task_name   = getattr(args, "task",    None)
+    mode        = getattr(args, "mode",    "real")
+    config_path = getattr(args, "config",  None) or os.path.join(BASE_DIR, "config", "scheduler_config.yaml")
+    log_dir     = getattr(args, "log_dir", None) or os.path.join(BASE_DIR, "logs", "automation")
+
+    if not task_name:
+        print("  ERROR: --task is required. Example: --task daily_auto_report")
+        return
+
+    print(f"  Task   : {task_name}")
+    print(f"  Mode   : {mode}")
+    print()
+
+    try:
+        from automation.scheduler import AutomationScheduler
+        sched  = AutomationScheduler(config_path=config_path, mode=mode, log_dir=log_dir)
+        result = sched.run_once(task_name)
+
+        status   = result.get("status",           "unknown")
+        duration = result.get("duration_seconds", 0)
+        outputs  = result.get("generated_outputs", [])
+        warnings = result.get("warnings",          [])
+        errors   = result.get("errors",            [])
+
+        print(f"  Status    : {status.upper()}")
+        print(f"  Started   : {result.get('started_at', '—')}")
+        print(f"  Finished  : {result.get('finished_at', '—')}")
+        print(f"  Duration  : {duration:.1f}s")
+        print(f"  Read Only : {result.get('read_only', True)}")
+        print(f"  No Orders : {result.get('no_real_orders', True)}")
+
+        if outputs:
+            print()
+            print("  Outputs:")
+            for o in outputs:
+                print(f"    \u2713  {o}")
+
+        if warnings:
+            print()
+            print("  Warnings:")
+            for w in warnings:
+                print(f"    [WARN] {w}")
+
+        if errors:
+            print()
+            print("  Errors:")
+            for e in errors:
+                print(f"    [ERR ] {e}")
+
+        log_path = os.path.join(log_dir, "task_runs.jsonl")
+        status_path = os.path.join(log_dir, "latest_status.json")
+        print()
+        print(f"  Log            : {log_path}")
+        print(f"  Latest status  : {status_path}")
+
+    except Exception as exc:
+        logging.getLogger("main.scheduler_run").error("scheduler-run failed: %s", exc, exc_info=True)
+        print(f"ERROR: {exc}")
+
+    print()
+    print("  [!] Read Only Automation. No real orders placed.")
+    print("  [!] For research and simulation only. Not investment advice.")
+
+
+# ---------------------------------------------------------------------------
 # v0.3.9 — Public Data API & Crawler Commands
 # ---------------------------------------------------------------------------
 
@@ -4003,6 +4187,57 @@ def _build_parser() -> argparse.ArgumentParser:
     p_sq14.add_argument("--report-dir", dest="report_dir",  default=None,
                         help="Report output directory (default: reports/)")
 
+    # --- scheduler-init-config (v0.3.17) ---
+    p_si = subparsers.add_parser(
+        "scheduler-init-config",
+        help="Create safe disabled scheduler config (v0.3.17)",
+    )
+    p_si.add_argument("--config",  default=None,
+                      help="Path to scheduler config YAML (default: config/scheduler_config.yaml)")
+
+    # --- scheduler-status (v0.3.17) ---
+    p_ss = subparsers.add_parser(
+        "scheduler-status",
+        help="Show automation scheduler status and recent run summary (v0.3.17)",
+    )
+    p_ss.add_argument("--config",  default=None)
+    p_ss.add_argument("--log-dir", dest="log_dir", default=None)
+
+    # --- scheduler-list (v0.3.17) ---
+    p_sl = subparsers.add_parser(
+        "scheduler-list",
+        help="List all configured automation tasks (v0.3.17)",
+    )
+    p_sl.add_argument("--config",  default=None)
+    p_sl.add_argument("--log-dir", dest="log_dir", default=None)
+
+    # --- scheduler-next-runs (v0.3.17) ---
+    p_sn = subparsers.add_parser(
+        "scheduler-next-runs",
+        help="Show next scheduled run times for all tasks (v0.3.17)",
+    )
+    p_sn.add_argument("--config",  default=None)
+    p_sn.add_argument("--log-dir", dest="log_dir", default=None)
+
+    # --- scheduler-run (v0.3.17) ---
+    p_sr = subparsers.add_parser(
+        "scheduler-run",
+        help="Run a single automation task once (v0.3.17)",
+    )
+    p_sr.add_argument("--task",    required=True,
+                      choices=[
+                          "daily_data_update", "daily_validation", "daily_auto_report",
+                          "weekly_signal_quality", "weekly_rule_weight_tuning",
+                          "monthly_universe_quality",
+                      ],
+                      help="Task name to run")
+    p_sr.add_argument("--mode",    default="real", choices=["mock", "real"],
+                      help="Data mode (default: real)")
+    p_sr.add_argument("--config",  default=None,
+                      help="Path to scheduler config YAML")
+    p_sr.add_argument("--log-dir", dest="log_dir", default=None,
+                      help="Automation log directory (default: logs/automation/)")
+
     # --- auto-report (v0.3.16) ---
     p_ar16 = subparsers.add_parser(
         "auto-report",
@@ -4213,6 +4448,12 @@ def main() -> None:
         "tune-rule-weights":           cmd_tune_rule_weights,
         # TW Quant Cockpit v0.3.16
         "auto-report":                 cmd_auto_report,
+        # TW Quant Cockpit v0.3.17
+        "scheduler-init-config":       cmd_scheduler_init_config,
+        "scheduler-status":            cmd_scheduler_status,
+        "scheduler-list":              cmd_scheduler_list,
+        "scheduler-next-runs":         cmd_scheduler_next_runs,
+        "scheduler-run":               cmd_scheduler_run,
     }
 
     if args.command is None:
