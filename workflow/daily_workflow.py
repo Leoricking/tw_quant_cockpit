@@ -1,5 +1,5 @@
 """
-workflow/daily_workflow.py - Daily Research Workflow Engine (v0.3.21).
+workflow/daily_workflow.py - Daily Research Workflow Engine (v0.3.22).
 
 Combines update-data, run-research, and daily-workflow flows into
 a single high-level engine.
@@ -214,6 +214,17 @@ class DailyResearchWorkflow:
             except Exception as exc:
                 step.mark_failed(str(exc))
                 logger.warning("[DailyResearchWorkflow] step '%s' failed: %s", step_name, exc)
+                # Attach user-facing error metadata (v0.3.22)
+                try:
+                    from utils.user_facing_errors import UserFacingErrorFormatter
+                    _err = UserFacingErrorFormatter.from_exception(exc, source=step_name)
+                    step.extra.setdefault("user_message",  _err.plain_message)
+                    step.extra.setdefault("likely_cause",  _err.likely_cause)
+                    step.extra.setdefault("can_ignore",    _err.can_ignore)
+                    step.extra.setdefault("next_steps",    _err.next_steps)
+                    step.extra.setdefault("technical_detail", _err.technical_detail)
+                except Exception:
+                    pass
 
         self._status.add_step(step)
 

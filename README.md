@@ -1800,6 +1800,46 @@ python main.py cockpit --mode real
 
 > **[!] 不構成投資建議。仍禁止實盤自動下單（TWQC_ENABLE_REAL_ORDER=false）。**
 
+### v0.3.22 — Usability QA & Error Message Polish (implemented)
+
+新增統一狀態標籤常數、user-facing error 結構化訊息、CLI 輸出格式化工具與 usability smoke test suite。
+
+**新增功能**:
+- `utils/status_labels.py`: 統一狀態常數 + `normalize_status` / `format_status` / `is_success_status` 等輔助函數
+- `utils/user_facing_errors.py`: `UserFacingError` + `UserFacingErrorFormatter` — 將 14 種例外轉換為結構化、可執行的使用者訊息
+- `utils/cli_output.py`: `CLIOutput` — Windows cp950-safe CLI 輸出格式化（header / section / key_value / status_line / safety_banner / table / footer）
+- `qa/usability_smoke_test.py`: `UsabilitySmokeTest` — CLI 與 GUI 面板匯入煙霧測試（8 個 CLI 測試 + 8 個 GUI 測試）
+- `reports/usability_qa_report.py`: 7-Section Markdown QA 報告
+- `gui/usability_qa_panel.py`: GUI Usability QA 面板（測試結果表、Summary cards、Error Message Preview）
+- `gui/usability_qa_adapter.py`: GUI 與測試引擎之間的 adapter
+- `docs/usability_qa_and_error_messages.md`: 完整說明文件
+
+**改善現有模組**:
+- `workflow/daily_workflow.py`: step 失敗時附加 `user_message` / `likely_cause` / `can_ignore` / `next_steps` / `technical_detail`
+- `automation/task_runner.py`: `_make_result()` 新增 `safety_banner_present` / `user_message` / `can_ignore` / `next_steps`
+- `data/providers/auto_fetcher.py`: `_make_summary()` 新增 `warning_details` — 結構化 warning 物件
+- `quality/data_quality_gate.py`: `run()` 新增 `blockers` — 結構化阻礙清單（blocker_name / severity / reason / next_step / can_continue_research）
+- `gui/portfolio_widgets.py`: `StatusBadge` 使用 `normalize_status()`；`DataFrameTableModel` 空 DataFrame 防護；`EmptyStateWidget` 新增 `title` / `next_steps` 參數
+
+**CLI**:
+```bash
+# Run smoke tests
+python main.py usability-smoke-test
+
+# Run smoke tests + generate report
+python main.py usability-smoke-test --report
+
+# Generate QA report from latest CSV
+python main.py usability-qa-report
+
+# GUI: cockpit → Usability QA tab
+python main.py cockpit
+```
+
+**安全保證**: Research Only · Read Only · No Real Orders · Production BLOCKED
+
+---
+
 ### v0.3.21 — Research Daily Workflow Polish (implemented)
 
 把每日研究流程打磨成 3 個高階指令，讓使用者每天只需執行：

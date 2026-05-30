@@ -615,6 +615,32 @@ class DataProviderAutoFetcher:
         status = "OK" if not all_errors and not all_warnings else \
                  ("PARTIAL" if not all_errors else "FAILED")
 
+        # Build structured warning details (v0.3.22)
+        warning_details = []
+        for w in all_warnings:
+            w_str = str(w)
+            if "token" in w_str.lower() or "422" in w_str or "401" in w_str or "403" in w_str:
+                warning_details.append({
+                    "message":    w_str,
+                    "cause":      "API token not configured or request rejected by provider",
+                    "next_step":  "Set FINMIND_TOKEN in .env or run: python main.py provider-health --create-env-example",
+                    "can_ignore": True,
+                })
+            elif "timeout" in w_str.lower() or "connection" in w_str.lower():
+                warning_details.append({
+                    "message":    w_str,
+                    "cause":      "Network timeout or connection failure",
+                    "next_step":  "Check internet connection and retry",
+                    "can_ignore": True,
+                })
+            else:
+                warning_details.append({
+                    "message":    w_str,
+                    "cause":      "Data fetch warning",
+                    "next_step":  "Check logs for details",
+                    "can_ignore": True,
+                })
+
         return {
             "status":            status,
             "mode":              self.mode,
@@ -629,6 +655,7 @@ class DataProviderAutoFetcher:
             "rows_fetched":      fetch_summary.get("rows_fetched", 0),
             "rows_written":      fetch_summary.get("rows_written", 0),
             "warnings":          all_warnings,
+            "warning_details":   warning_details,
             "errors":            all_errors,
             "output_files":      {
                 k: v.get("output_file", "") for k, v in fetch_summary.get("datasets", {}).items()

@@ -161,11 +161,24 @@ _CONFIDENCE_COLORS = {
 }
 
 _STATUS_COLORS = {
-    "OK":       "#33CC66",
-    "WARNING":  "#FF8800",
-    "ERROR":    "#FF4444",
-    "DISABLED": "#888888",
-    "ENABLED":  "#FF4444",   # red = enabled real order (dangerous)
+    "OK":             "#33CC66",
+    "WARNING":        "#FF8800",
+    "WARN":           "#FF8800",
+    "ERROR":          "#FF4444",
+    "FAILED":         "#FF4444",
+    "FAIL":           "#FF4444",
+    "BLOCKED":        "#FF4444",
+    "DISABLED":       "#888888",
+    "ENABLED":        "#FF4444",   # red = enabled real order (dangerous)
+    "PARTIAL":        "#FF8800",
+    "SKIPPED":        "#888888",
+    "MISSING":        "#FF8800",
+    "NOT_CONFIGURED": "#888888",
+    "PLANNED":        "#AAAAAA",
+    "FRESH":          "#33CC66",
+    "STALE":          "#FF8800",
+    "OLD":            "#FF4444",
+    "UNKNOWN":        "#888888",
 }
 
 
@@ -186,11 +199,16 @@ class StatusBadge(QLabel if _PYSIDE6_AVAILABLE else object):
         self._apply_style(text)
 
     def _apply_style(self, text: str):
-        upper = text.upper()
+        # Normalize status for consistent lookup (v0.3.22)
+        try:
+            from utils.status_labels import normalize_status
+            normalized = normalize_status(text)
+        except Exception:
+            normalized = (text or "").strip().upper()
         if self._kind == "confidence":
-            color = _CONFIDENCE_COLORS.get(upper, "#888888")
+            color = _CONFIDENCE_COLORS.get(normalized, "#888888")
         else:
-            color = _STATUS_COLORS.get(upper, "#888888")
+            color = _STATUS_COLORS.get(normalized, "#888888")
         self.setStyleSheet(
             f"color:{color}; font-weight:bold; font-size:12px; "
             f"background:#1E1E30; border:1px solid {color}; "
@@ -263,13 +281,24 @@ class DataFrameTableModel(QAbstractTableModel if _PYSIDE6_AVAILABLE else object)
     def data(self, index, role=Qt.DisplayRole):
         if not _PYSIDE6_AVAILABLE or not index.isValid():
             return None
-        col = self._df.columns[index.column()]
-        val = self._df.iloc[index.row(), index.column()]
+        # Guard: empty DataFrame (v0.3.22)
+        if self._df.empty or index.row() >= len(self._df) or index.column() >= len(self._df.columns):
+            if role == Qt.DisplayRole:
+                return "-"
+            return None
+        try:
+            col = self._df.columns[index.column()]
+            val = self._df.iloc[index.row(), index.column()]
+        except (IndexError, KeyError):
+            return "-" if role == Qt.DisplayRole else None
 
         if role == Qt.DisplayRole:
             fmt = self._formatters.get(col)
             if fmt:
-                return fmt(val)
+                try:
+                    return fmt(val)
+                except Exception:
+                    return _fmt_any(val)
             return _fmt_any(val)
 
         if role == Qt.TextAlignmentRole:
@@ -319,7 +348,13 @@ class DataFrameTableModel(QAbstractTableModel if _PYSIDE6_AVAILABLE else object)
         if role != Qt.DisplayRole:
             return None
         if orientation == Qt.Horizontal:
-            col = self._df.columns[section]
+            # Guard: empty or out-of-bounds (v0.3.22)
+            if self._df.empty or section >= len(self._df.columns):
+                return str(section + 1)
+            try:
+                col = self._df.columns[section]
+            except (IndexError, KeyError):
+                return str(section + 1)
             if isinstance(self._headers, dict):
                 return self._headers.get(col, col)
             if isinstance(self._headers, (list, tuple)):
@@ -453,31 +488,58 @@ class RecommendationBadge(QLabel if _PYSIDE6_AVAILABLE else object):
 
 class EmptyStateWidget(QWidget if _PYSIDE6_AVAILABLE else object):
     """
-    Placeholder widget shown when no portfolio simulation data exists.
-    Displays an informational message and instructions.
+    Placeholder widget shown when no data is available.
+    Displays a title, message, optional next steps, and a safety reminder.
+
+    Parameters
+    ----------
+    title      : Short title displayed prominently
+    message    : Descriptive explanation of why no data is shown
+    next_steps : List of actionable instructions (optional)
+    hint       : Short hint line (optional, shown below message if next_steps not provided)
     """
 
     def __init__(
         self,
-        message: str = "No portfolio simulation results found.",
-        hint: str = "Click Refresh Portfolio Simulation to run balanced scenario.",
+        title:      str = "No Data Available",
+        message:    str = "No portfolio simulation results found.",
+        next_steps: Optional[List[str]] = None,
+        hint:       str = "",
     ):
         if not _PYSIDE6_AVAILABLE:
             return
         super().__init__()
         layout = QVBoxLayout(self)
         layout.setAlignment(Qt.AlignCenter)
+        layout.setSpacing(8)
 
+        # Title
+        lbl_title = QLabel(title)
+        lbl_title.setStyleSheet("color:#AAAAAA; font-size:16px; font-weight:bold;")
+        lbl_title.setAlignment(Qt.AlignCenter)
+        layout.addWidget(lbl_title)
+
+        # Message
         lbl_msg = QLabel(message)
-        lbl_msg.setStyleSheet("color:#888888; font-size:14px; font-weight:bold;")
+        lbl_msg.setStyleSheet("color:#888888; font-size:12px;")
         lbl_msg.setAlignment(Qt.AlignCenter)
+        lbl_msg.setWordWrap(True)
         layout.addWidget(lbl_msg)
 
-        lbl_hint = QLabel(hint)
-        lbl_hint.setStyleSheet("color:#666666; font-size:12px;")
-        lbl_hint.setAlignment(Qt.AlignCenter)
-        layout.addWidget(lbl_hint)
+        # Next steps (v0.3.22)
+        if next_steps:
+            for step in next_steps:
+                lbl_step = QLabel(f"- {step}")
+                lbl_step.setStyleSheet("color:#666688; font-size:11px;")
+                lbl_step.setAlignment(Qt.AlignCenter)
+                layout.addWidget(lbl_step)
+        elif hint:
+            lbl_hint = QLabel(hint)
+            lbl_hint.setStyleSheet("color:#666666; font-size:11px;")
+            lbl_hint.setAlignment(Qt.AlignCenter)
+            layout.addWidget(lbl_hint)
 
+        # Safety reminder
         lbl_safe = QLabel("Simulation Only  |  Real Order Execution: DISABLED  |  No real orders will be sent")
         lbl_safe.setStyleSheet("color:#FF8800; font-size:11px; margin-top:12px;")
         lbl_safe.setAlignment(Qt.AlignCenter)

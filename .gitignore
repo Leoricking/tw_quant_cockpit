@@ -129,6 +129,10 @@ data/backtest_results/mock_contamination_*.csv
 reports/daily_workflow/
 logs/workflow/
 
+# Usability QA report outputs (v0.3.22, generated artifacts)
+reports/usability_smoke_test_report_*.md
+data/backtest_results/usability_smoke_test_summary.csv
+
 # Sample CSV files are tracked (allow commit)
 !data/import/profile/*_sample.csv
 !data/import/daily/*_sample.csv

@@ -122,6 +122,9 @@ class DataQualityGate:
         # --- Gate decisions ---
         gates = self._evaluate_gates(prod_score, btest_score)
 
+        # Build structured blockers list (v0.3.22)
+        blockers = self._build_blockers(prod_score, btest_score, warnings)
+
         result = {
             "checked_at":                   datetime.now().isoformat(),
             "mode":                         self.mode,
@@ -135,8 +138,92 @@ class DataQualityGate:
             "production_blocked":           self.PRODUCTION_BLOCKED,
             "real_order_ready":             self.REAL_ORDER_READY,
             "warnings":                     warnings,
+            "blockers":                     blockers,
         }
         return result
+
+    # ------------------------------------------------------------------
+    # Structured blockers (v0.3.22)
+    # ------------------------------------------------------------------
+
+    def _build_blockers(
+        self,
+        prod_score:  float,
+        btest_score: float,
+        warnings:    list,
+    ) -> list:
+        """
+        Build a list of structured blocker dicts.
+
+        Each blocker has:
+          blocker_name           : short identifier
+          severity               : INFO / WARNING / ERROR / FATAL
+          reason                 : human-readable explanation
+          next_step              : actionable fix
+          can_continue_research  : True if research can proceed despite this blocker
+        """
+        blockers: list = []
+        cov_score  = self._scores.get("coverage_score",          0.0)
+        mock_score = self._scores.get("mock_contamination_score", 0.0)
+        fresh_score = self._scores.get("freshness_score",         0.0)
+        sample_score = self._scores.get("sample_size_score",      0.0)
+
+        # Always-present production blocker
+        blockers.append({
+            "blocker_name":          "PRODUCTION_BLOCKED",
+            "severity":              "FATAL",
+            "reason":                "Production trading is always blocked in this system. "
+                                     "No real orders will ever be placed.",
+            "next_step":             "This is intentional. The system is for research only.",
+            "can_continue_research": True,
+        })
+
+        # Low coverage
+        if cov_score < 70.0:
+            blockers.append({
+                "blocker_name":          "LOW_COVERAGE",
+                "severity":              "ERROR",
+                "reason":                f"Data coverage score is {cov_score:.1f} (threshold: 70). "
+                                         "Insufficient data may produce unreliable backtest results.",
+                "next_step":             "Import more CSV data or run: python main.py provider-auto-fetch",
+                "can_continue_research": cov_score >= 40.0,
+            })
+
+        # Mock contamination
+        if mock_score < 90.0:
+            blockers.append({
+                "blocker_name":          "MOCK_CONTAMINATION",
+                "severity":              "ERROR" if mock_score < 60.0 else "WARNING",
+                "reason":                f"Mock contamination score is {mock_score:.1f} (threshold: 90). "
+                                         "Backtest results may be inflated by mock data.",
+                "next_step":             "Review data/import/ files for mock markers. "
+                                         "Run: python main.py data-quality-gate --check-mock",
+                "can_continue_research": mock_score >= 60.0,
+            })
+
+        # Low freshness
+        if fresh_score < 50.0:
+            blockers.append({
+                "blocker_name":          "STALE_DATA",
+                "severity":              "WARNING",
+                "reason":                f"Data freshness score is {fresh_score:.1f}. "
+                                         "Some datasets may be outdated.",
+                "next_step":             "Run: python main.py update-data to refresh all data sources.",
+                "can_continue_research": True,
+            })
+
+        # Low sample size
+        if sample_score < 40.0:
+            blockers.append({
+                "blocker_name":          "INSUFFICIENT_SAMPLE",
+                "severity":              "WARNING",
+                "reason":                f"Sample size score is {sample_score:.1f}. "
+                                         "Statistical confidence is insufficient for reliable backtesting.",
+                "next_step":             "Import more historical data covering at least 2+ years.",
+                "can_continue_research": True,
+            })
+
+        return blockers
 
     # ------------------------------------------------------------------
     # Gate evaluation

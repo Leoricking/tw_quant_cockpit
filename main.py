@@ -3959,6 +3959,98 @@ def cmd_open_cockpit(args: argparse.Namespace) -> None:
 
 
 # ---------------------------------------------------------------------------
+# v0.3.22 — Usability QA & Error Message Polish
+# ---------------------------------------------------------------------------
+
+def cmd_usability_smoke_test(args: argparse.Namespace) -> None:
+    """Run usability smoke tests (v0.3.22)."""
+    from utils.cli_output import CLIOutput
+    out = CLIOutput()
+    out.header("Usability Smoke Test", version="v0.3.22")
+    out.safety_banner()
+    out.flush()
+
+    try:
+        from qa.usability_smoke_test import UsabilitySmokeTest
+        test = UsabilitySmokeTest()
+        result = test.run()
+    except Exception as exc:
+        from utils.cli_output import CLIOutput as _CO
+        _o = _CO()
+        _o.error(f"Smoke test failed: {exc}")
+        _o.flush()
+        return
+
+    out2 = CLIOutput()
+    out2.section("Summary")
+    out2.key_value("Overall Status",         result.get("overall_status", "UNKNOWN"))
+    out2.key_value("Tests Passed",           result.get("passed",   0))
+    out2.key_value("Tests Failed",           result.get("failed",   0))
+    out2.key_value("Warnings",               result.get("warnings", 0))
+    out2.key_value("Skipped",                result.get("skipped",  0))
+    out2.key_value("Safety Banner Coverage", result.get("safety_banner_coverage", 0))
+    out2.blank()
+
+    cases = result.get("cases", [])
+    if cases:
+        out2.section("Test Results")
+        for c in cases:
+            status = c.get("status", "")
+            dur    = f"{c.get('duration_seconds', 0):.1f}s"
+            note   = c.get("message", "")[:60]
+            out2.status_line(c.get("name", ""), status, detail=f"{dur}  {note}")
+
+    out2.footer()
+    out2.flush()
+
+    # Generate report if requested
+    if getattr(args, "report", False):
+        try:
+            from reports.usability_qa_report import UsabilityQAReportBuilder
+            path = UsabilityQAReportBuilder(smoke_result=result).build()
+            print(f"  Report: {path}")
+        except Exception as exc:
+            print(f"  Report generation failed: {exc}")
+
+
+def cmd_usability_qa_report(args: argparse.Namespace) -> None:
+    """Generate usability QA Markdown report from latest smoke test results (v0.3.22)."""
+    from utils.cli_output import CLIOutput
+    out = CLIOutput()
+    out.header("Usability QA Report", version="v0.3.22")
+    out.flush()
+
+    try:
+        from gui.usability_qa_adapter import UsabilityQAAdapter
+        adapter = UsabilityQAAdapter()
+
+        # Try to load latest summary first
+        summary = adapter.load_latest_summary()
+        if summary:
+            smoke_result = {
+                "cases":    summary.get("rows", []),
+                "passed":   summary.get("passed",   0),
+                "failed":   summary.get("failed",   0),
+                "warnings": summary.get("warnings", 0),
+                "skipped":  0,
+                "overall_status": "PASS" if summary.get("failed", 0) == 0 else "FAIL",
+                "safety_banner_coverage": 0,
+            }
+        else:
+            smoke_result = {}
+
+        path = adapter.generate_report(smoke_result)
+        print(f"  Report: {path}")
+
+    except Exception as exc:
+        print(f"  ERROR: {exc}")
+
+    out2 = CLIOutput()
+    out2.footer()
+    out2.flush()
+
+
+# ---------------------------------------------------------------------------
 # v0.3.9 — Public Data API & Crawler Commands
 # ---------------------------------------------------------------------------
 
@@ -4907,6 +4999,22 @@ def _build_parser() -> argparse.ArgumentParser:
     p_oc.add_argument("--mode", choices=["real", "mock"], default="real",
                       help="Data mode (default: real)")
 
+    # --- usability-smoke-test (v0.3.22) ---
+    p_ust = subparsers.add_parser(
+        "usability-smoke-test",
+        help="Run CLI + GUI panel smoke tests and check usability (v0.3.22)",
+    )
+    p_ust.add_argument(
+        "--report", action="store_true", default=False,
+        help="Also generate a Markdown QA report",
+    )
+
+    # --- usability-qa-report (v0.3.22) ---
+    subparsers.add_parser(
+        "usability-qa-report",
+        help="Generate Markdown usability QA report from latest smoke test results (v0.3.22)",
+    )
+
     # --- data-quality-gate (v0.3.20) ---
     p_dqg = subparsers.add_parser(
         "data-quality-gate",
@@ -5203,6 +5311,9 @@ def main() -> None:
         "run-research":                cmd_run_research,
         "daily-workflow":              cmd_daily_workflow,
         "open-cockpit":                cmd_open_cockpit,
+        # TW Quant Cockpit v0.3.22
+        "usability-smoke-test":        cmd_usability_smoke_test,
+        "usability-qa-report":         cmd_usability_qa_report,
     }
 
     if args.command is None:

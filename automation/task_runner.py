@@ -553,11 +553,16 @@ class AutomationTaskRunner:
             "finished_at":      now.isoformat(),
             "duration_seconds": round(duration, 1),
             "status":           status,
-            "generated_outputs": outputs   or [],
-            "warnings":          warnings  or [],
-            "errors":            errors    or [],
-            "read_only":         True,
-            "no_real_orders":    True,
+            "generated_outputs":  outputs   or [],
+            "warnings":           warnings  or [],
+            "errors":             errors    or [],
+            "read_only":          True,
+            "no_real_orders":     True,
+            # v0.3.22 usability fields
+            "safety_banner_present": True,
+            "user_message":          "",
+            "can_ignore":            False,
+            "next_steps":            [],
         }
         if tb:
             result["traceback"] = tb
