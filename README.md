@@ -20,7 +20,26 @@ Taiwan bull-stock screening + short/mid/long-term analysis + simulated trading l
 
 ---
 
-## Documentation (v0.3.23)
+## v0.3.24 — Data Provider Reliability & Fallback Matrix
+
+**New in v0.3.24:**
+
+- **Provider Reliability Matrix** — scores every provider (FinMind, TWSE, TPEx, MOPS, CSV, XQ) on success rate, latency, row coverage, freshness
+- **Dataset Fallback Chains** — explicit fallback order per dataset (daily_price, monthly_revenue, institutional, margin, fundamental, intraday, tick, bidask); mock fallback DISABLED in real mode
+- **Dataset Confidence Score** — 0–100 score per dataset (HIGH / GOOD / PARTIAL / WEAK / LOW)
+- **CLI**: `python main.py provider-reliability [--report] [--dataset X] [--provider X]`
+- **GUI**: new "Provider Reliability" tab in cockpit
+- **No real orders. No token in code. Production BLOCKED.**
+
+```
+python main.py provider-reliability
+python main.py provider-reliability --report
+python main.py provider-reliability --dataset daily_price
+```
+
+---
+
+## Documentation (v0.3.24)
 
 Full documentation is in the [`docs/`](docs/) directory.
 

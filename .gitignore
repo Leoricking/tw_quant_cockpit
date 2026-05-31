@@ -141,3 +141,8 @@ data/backtest_results/usability_smoke_test_summary.csv
 !data/import/monthly_revenue/*_sample.csv
 !data/import/holder/*_sample.csv
 !data/import/trust_cost/*_sample.csv
+
+# Provider Reliability report outputs (v0.3.24, generated artifacts)
+reports/provider_reliability_report_*.md
+data/backtest_results/provider_reliability_*.csv
+data/backtest_results/dataset_confidence_*.csv

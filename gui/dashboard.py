@@ -159,6 +159,16 @@ except Exception as _uqa_exc:
     logger.warning("UsabilityQAPanel unavailable: %s", _uqa_exc)
     _USABILITY_QA_AVAILABLE = False
 
+# ---------------------------------------------------------------------------
+# v0.3.24 Provider Reliability panel import (guarded)
+# ---------------------------------------------------------------------------
+try:
+    from gui.provider_reliability_panel import ProviderReliabilityPanel
+    _PROVIDER_RELIABILITY_AVAILABLE = True
+except Exception as _prel_exc:
+    logger.warning("ProviderReliabilityPanel unavailable: %s", _prel_exc)
+    _PROVIDER_RELIABILITY_AVAILABLE = False
+
 
 # ---------------------------------------------------------------------------
 # Colour helpers (Taiwan convention: red = up, green = down)
@@ -907,6 +917,7 @@ class CockpitWindow(QMainWindow if _PYSIDE6_AVAILABLE else object):
         self._data_quality_gate_panel = None
         self._daily_workflow_panel = None
         self._usability_qa_panel = None
+        self._provider_reliability_panel = None
 
         self._init_backends()
         if _PYSIDE6_AVAILABLE:
@@ -1092,6 +1103,13 @@ class CockpitWindow(QMainWindow if _PYSIDE6_AVAILABLE else object):
             mid_tabs.addTab(self._usability_qa_panel, "Usability QA")
         else:
             self._usability_qa_panel = None
+
+        # v0.3.24 Provider Reliability tab
+        if _PROVIDER_RELIABILITY_AVAILABLE:
+            self._provider_reliability_panel = ProviderReliabilityPanel(mode=self._mode if hasattr(self, "_mode") else "real")
+            mid_tabs.addTab(self._provider_reliability_panel, "Provider Reliability")
+        else:
+            self._provider_reliability_panel = None
 
         h_split.addWidget(mid_tabs)
         h_split.setStretchFactor(0, 3)

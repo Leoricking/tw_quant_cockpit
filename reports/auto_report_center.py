@@ -43,6 +43,7 @@ _PROFILE_FLAGS: Dict[str, dict] = {
         include_strategy_knowledge=True,
         include_daily_summary=True,
         include_data_quality_gate=True,
+        include_provider_reliability=True,
     ),
     "daily": dict(
         include_stock_reports=False,
@@ -54,6 +55,7 @@ _PROFILE_FLAGS: Dict[str, dict] = {
         include_strategy_knowledge=False,
         include_daily_summary=True,
         include_data_quality_gate=True,
+        include_provider_reliability=True,
     ),
     "portfolio": dict(
         include_stock_reports=False,
@@ -135,6 +137,7 @@ class AutoReportCenter:
         include_strategy_knowledge: bool = True,
         include_daily_summary: bool = True,
         include_data_quality_gate: bool = False,
+        include_provider_reliability: bool = False,
     ):
         self.mode        = mode
         self.profile     = profile
@@ -147,15 +150,16 @@ class AutoReportCenter:
 
         # Apply profile defaults first, then allow explicit overrides
         flags = _PROFILE_FLAGS.get(profile, _PROFILE_FLAGS["full"])
-        self.include_stock_reports       = flags.get("include_stock_reports",       include_stock_reports)
-        self.include_universe_quality    = flags.get("include_universe_quality",    include_universe_quality)
-        self.include_signal_quality      = flags.get("include_signal_quality",      include_signal_quality)
-        self.include_portfolio           = flags.get("include_portfolio",           include_portfolio)
-        self.include_rule_weight         = flags.get("include_rule_weight",         include_rule_weight)
-        self.include_long_term           = flags.get("include_long_term",           include_long_term)
-        self.include_strategy_knowledge  = flags.get("include_strategy_knowledge",  include_strategy_knowledge)
-        self.include_daily_summary       = flags.get("include_daily_summary",       include_daily_summary)
-        self.include_data_quality_gate   = flags.get("include_data_quality_gate",   include_data_quality_gate)
+        self.include_stock_reports        = flags.get("include_stock_reports",        include_stock_reports)
+        self.include_universe_quality     = flags.get("include_universe_quality",     include_universe_quality)
+        self.include_signal_quality       = flags.get("include_signal_quality",       include_signal_quality)
+        self.include_portfolio            = flags.get("include_portfolio",            include_portfolio)
+        self.include_rule_weight          = flags.get("include_rule_weight",          include_rule_weight)
+        self.include_long_term            = flags.get("include_long_term",            include_long_term)
+        self.include_strategy_knowledge   = flags.get("include_strategy_knowledge",   include_strategy_knowledge)
+        self.include_daily_summary        = flags.get("include_daily_summary",        include_daily_summary)
+        self.include_data_quality_gate    = flags.get("include_data_quality_gate",    include_data_quality_gate)
+        self.include_provider_reliability = flags.get("include_provider_reliability", include_provider_reliability)
 
         # Runtime state (populated during run)
         self._out_dir: str = os.path.join(self.output_root, self.report_date)
@@ -207,6 +211,9 @@ class AutoReportCenter:
 
         if self.include_data_quality_gate:
             self.run_data_quality_gate_report()
+
+        if self.include_provider_reliability:
+            self.run_provider_reliability_report()
 
         # Aggregated outputs
         if self.include_daily_summary:
@@ -474,6 +481,39 @@ class AutoReportCenter:
             )
         except Exception as exc:
             self._record_fail("data_quality_gate", str(exc))
+
+    def run_provider_reliability_report(self):
+        """Run provider reliability matrix and save report (v0.3.24)."""
+        try:
+            from data.providers.reliability_matrix import ProviderReliabilityMatrix
+            from reports.provider_reliability_report import ProviderReliabilityReportBuilder
+
+            matrix = ProviderReliabilityMatrix(
+                results_dir=self.results_dir,
+                report_dir=self._out_dir,
+                mode=self.mode,
+            )
+            rel_result = matrix.run()
+            self._context["provider_reliability_result"] = rel_result
+            self._context["provider_reliability_summary"] = rel_result.get("reliability_summary", {})
+
+            builder = ProviderReliabilityReportBuilder(
+                report_date=self.report_date,
+                matrix_data=rel_result,
+            )
+            path = builder.build(output_dir=self._out_dir)
+            self._record_success(
+                "provider_reliability",
+                path,
+                extra={
+                    "overall_reliability":  rel_result.get("reliability_summary", {}).get("overall_reliability_score"),
+                    "overall_confidence":   rel_result.get("reliability_summary", {}).get("overall_dataset_confidence"),
+                    "weak_datasets":        rel_result.get("reliability_summary", {}).get("weak_datasets", []),
+                    "mock_fallback_count":  0,
+                },
+            )
+        except Exception as exc:
+            self._record_fail("provider_reliability", str(exc))
 
     def build_daily_market_summary(self):
         """Build daily market summary from all available context."""

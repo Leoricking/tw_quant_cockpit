@@ -218,6 +218,41 @@ class AutomationTaskRunner:
         except Exception as exc:
             warnings.append(f"freshness: {exc}")
 
+        # 4. Provider reliability summary (v0.3.24)
+        provider_reliability_summary: dict = {}
+        dataset_confidence_summary: dict = {}
+        try:
+            from data.providers.reliability_matrix import ProviderReliabilityMatrix
+            matrix = ProviderReliabilityMatrix(
+                results_dir=self.results_dir,
+                report_dir=self.reports_dir,
+                mode=self.mode,
+            )
+            rel_result = matrix.run()
+            rel_s = rel_result.get("reliability_summary", {})
+            provider_reliability_summary = {
+                "overall_reliability_score":  rel_s.get("overall_reliability_score"),
+                "overall_dataset_confidence": rel_s.get("overall_dataset_confidence"),
+                "weak_datasets":              rel_s.get("weak_datasets", []),
+                "failed_providers":           rel_s.get("failed_providers", []),
+                "local_fallback_count":       rel_s.get("local_fallback_count", 0),
+                "mock_fallback_count":        0,
+                "production_blocked":         True,
+                "read_only":                  True,
+                "no_real_orders":             True,
+            }
+            dataset_confidence_summary = {
+                ds: {"score": v.get("score"), "level": v.get("level")}
+                for ds, v in rel_result.get("dataset_confidence_scores", {}).items()
+            }
+            outputs.append(
+                f"provider_reliability: overall={rel_s.get('overall_reliability_score', 'N/A')} "
+                f"weak={rel_s.get('weak_datasets', [])} "
+                f"mock_fallback=0"
+            )
+        except Exception as exc:
+            warnings.append(f"provider_reliability: {exc}")
+
         status_str = "warning" if (warnings and not errors) else ("failed" if errors else "ok")
         result = self._make_result(
             task_name, status_str,
@@ -233,6 +268,10 @@ class AutomationTaskRunner:
             result["auto_fetch_summary"] = auto_fetch_summary
         if freshness_summary:
             result["freshness_summary"] = freshness_summary
+        if provider_reliability_summary:
+            result["provider_reliability_summary"] = provider_reliability_summary
+        if dataset_confidence_summary:
+            result["dataset_confidence_summary"] = dataset_confidence_summary
         self._log.append_run(result)
         self._update_latest_status(result)
         return result

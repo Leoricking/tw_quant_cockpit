@@ -331,15 +331,40 @@ class DataFreshnessChecker:
     ) -> dict:
         defn = _DATASETS.get(dataset, {})
         syms = symbols or []
+
+        # v0.3.24: compute stale_reason
+        stale_reason = ""
+        if status == "MISSING":
+            stale_reason = "file_not_found"
+        elif status == "OLD":
+            stale_reason = "data_too_old"
+        elif status == "STALE":
+            stale_reason = "data_stale"
+        elif status == TIMING_ESTIMATED:
+            stale_reason = "timing_estimated"
+        elif status == HISTORICAL_INTRADAY:
+            stale_reason = "historical_intraday_only"
+
         return {
-            "dataset":           dataset,
-            "label":             defn.get("label", dataset),
-            "status":            status,
-            "latest_date":       latest_date or "",
-            "rows":              rows,
-            "symbols":           len(syms),
-            "coverage_ratio":    1.0 if syms else 0.0,
-            "missing_symbols":   [],
-            "warning":           warning,
-            "recommended_action": recommended_action,
+            "dataset":              dataset,
+            "label":                defn.get("label", dataset),
+            "status":               status,
+            "latest_date":          latest_date or "",
+            "rows":                 rows,
+            "symbols":              len(syms),
+            "coverage_ratio":       1.0 if syms else 0.0,
+            "missing_symbols":      [],
+            "missing_symbol_count": 0,
+            "warning":              warning,
+            "recommended_action":   recommended_action,
+            # v0.3.24 fields for dataset_confidence_input
+            "stale_reason":         stale_reason,
+            "dataset_confidence_input": {
+                "freshness_status":      status,
+                "latest_date":           latest_date or "",
+                "rows":                  rows,
+                "coverage_ratio":        1.0 if syms else 0.0,
+                "missing_symbol_count":  0,
+                "stale_reason":          stale_reason,
+            },
         }

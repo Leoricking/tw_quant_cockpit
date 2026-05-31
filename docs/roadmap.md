@@ -24,28 +24,31 @@
 | v0.3.21 | Daily Workflow Engine | Done |
 | v0.3.22 | Usability QA & Error Message Polish | Done |
 | v0.3.23 | Documentation & Release Notes Pack | Done |
+| v0.3.24 | Data Provider Reliability & Fallback Matrix | Done |
 
 ---
 
-## Planned: v0.3.24
+## Completed: v0.3.24 — Data Provider Reliability & Fallback Matrix
 
-**Target:** Data coverage expansion
-
-- Additional XQ export column mappings
-- Support for more ticker ranges in universe expansion
-- Data freshness alerting (configurable staleness thresholds)
-- Provider fallback chain (FinMind → TWSE public → cached)
+- `ProviderReliabilityMatrix`: builds dataset fallback chains, provider reliability scores, dataset confidence scores
+- `ProviderMetricsCollector`: reads logs to compute success rates
+- `DatasetConfidenceScorer`: 0–100 confidence per dataset (6-component weighted formula)
+- `ProviderReliabilityReportBuilder`: Markdown report with 8 sections
+- `ProviderReliabilityPanel`: GUI tab (Provider Reliability)
+- CLI: `python main.py provider-reliability [--report] [--dataset X] [--provider X]`
+- No mock fallback in real mode. No real orders. Production BLOCKED.
 
 ---
 
 ## Planned: v0.3.25
 
-**Target:** Report quality improvements
+**Target:** Universe Expansion & Sector Classification
 
-- HTML report option (alongside Markdown)
-- Report diff: highlight changes from previous day
-- Candidate stock detail section in daily summary
-- Email/notification export (local only; no external services)
+- Expand universe from 14/30 stocks to 50/100/200 stocks
+- Build sector / theme taxonomy (AI, semiconductor, high-speed networking, server, power, cooling, finance, ETF components)
+- Support AI mainstream stocks, semiconductor, high-speed transmission, server, power, cooling, finance, ETF
+- GUI Universe Selector panel
+- Still read-only, no real orders
 
 ---
 

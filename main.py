@@ -4051,6 +4051,125 @@ def cmd_usability_qa_report(args: argparse.Namespace) -> None:
 
 
 # ---------------------------------------------------------------------------
+# v0.3.24 — Provider Reliability & Fallback Matrix CLI
+# ---------------------------------------------------------------------------
+
+def _print_provider_reliability_header() -> None:
+    print()
+    print("=" * 62)
+    print("  TW Quant Cockpit — Provider Reliability  (v0.3.24)")
+    print("=" * 62)
+    print()
+    print("  [!] Read Only")
+    print("  [!] No Real Orders")
+    print("  [!] Production Trading: BLOCKED")
+    print("  [!] Mock Fallback: DISABLED")
+    print()
+
+
+def cmd_provider_reliability(args: argparse.Namespace) -> None:
+    """Provider Reliability & Fallback Matrix (v0.3.24)."""
+    import os
+    _print_provider_reliability_header()
+
+    mode        = getattr(args, "mode", "real")
+    report_flag = getattr(args, "report", False)
+    refresh     = getattr(args, "refresh", False)
+    dataset_f   = getattr(args, "dataset", None)
+    provider_f  = getattr(args, "provider", None)
+    results_dir = getattr(args, "results_dir", "data/backtest_results")
+    report_dir  = getattr(args, "report_dir", "reports")
+
+    base_dir = os.path.dirname(os.path.abspath(__file__))
+    abs_results = os.path.join(base_dir, results_dir)
+    abs_reports = os.path.join(base_dir, report_dir)
+
+    print(f"  Mode             : {mode.upper()}")
+    print(f"  Read Only        : Yes")
+    print(f"  No Real Orders   : Yes")
+    print(f"  Production Trading: BLOCKED")
+    print()
+
+    try:
+        from data.providers.reliability_matrix import ProviderReliabilityMatrix
+        matrix = ProviderReliabilityMatrix(
+            results_dir=abs_results,
+            report_dir=abs_reports,
+            mode=mode,
+        )
+        result = matrix.run()
+    except Exception as exc:
+        print(f"  ERROR: {exc}")
+        return
+
+    summary = result.get("reliability_summary", {})
+
+    print(f"  Providers       : {summary.get('providers_checked', '?')}")
+    print(f"  Datasets        : {summary.get('datasets_covered', '?')}")
+    print(f"  Overall reliability: {summary.get('overall_reliability_score', 'N/A')}")
+    print(f"  Weak datasets   : {summary.get('weak_datasets', [])}")
+    print(f"  Fallback used   : {summary.get('local_fallback_count', 0)} local")
+    print(f"  Mock fallback   : {summary.get('mock_fallback_count', 0)}  [DISABLED]")
+    print()
+
+    # Dataset filter
+    if dataset_f:
+        print(f"  Dataset filter: {dataset_f}")
+        rows = [r for r in result.get("dataset_matrix", []) if r["dataset"] == dataset_f]
+        for row in rows:
+            print(f"    primary: {row['primary_provider']}")
+            print(f"    fallback_1: {row['fallback_1']}")
+            print(f"    fallback_2: {row['fallback_2']}")
+            print(f"    local_fallback: {row['local_fallback']}")
+            print(f"    confidence: {row['confidence_score']:.1f} ({row['confidence_level']})")
+            print(f"    mock_fallback: disabled")
+        print()
+
+    # Provider filter
+    if provider_f:
+        print(f"  Provider filter: {provider_f}")
+        providers = [p for p in result.get("provider_summary", []) if p["provider_name"] == provider_f]
+        for p in providers:
+            sr  = f"{p['success_rate']:.0%}" if isinstance(p.get("success_rate"), float) else "N/A"
+            rel = f"{p['reliability_score']:.1f}" if isinstance(p.get("reliability_score"), float) else "N/A"
+            print(f"    status: {p['status']}")
+            print(f"    success_rate: {sr}")
+            print(f"    reliability_score: {rel}")
+            print(f"    recommended_usage: {p.get('recommended_usage', '')}")
+        print()
+
+    # Dataset confidence scores summary
+    print("  Dataset Confidence Scores:")
+    for ds, v in result.get("dataset_confidence_scores", {}).items():
+        print(f"    {ds:<20} {v.get('score', 0):>5.1f}  {v.get('level', 'UNKNOWN')}")
+    print()
+
+    # Report
+    if report_flag:
+        try:
+            from reports.provider_reliability_report import ProviderReliabilityReportBuilder
+            from datetime import datetime as _dt
+            builder = ProviderReliabilityReportBuilder(
+                report_date=_dt.now().strftime("%Y-%m-%d"),
+                matrix_data=result,
+            )
+            rpt_path = builder.build(output_dir=abs_reports)
+            print(f"  Report: {rpt_path}")
+        except Exception as exc:
+            print(f"  Report ERROR: {exc}")
+        print()
+
+    warnings = result.get("warnings", [])
+    if warnings:
+        print("  Warnings:")
+        for w in warnings:
+            print(f"    - {w}")
+        print()
+
+    print("  [!] Read Only. No Real Orders. Production BLOCKED. Mock Fallback: DISABLED.")
+
+
+# ---------------------------------------------------------------------------
 # v0.3.9 — Public Data API & Crawler Commands
 # ---------------------------------------------------------------------------
 
@@ -5045,6 +5164,26 @@ def _build_parser() -> argparse.ArgumentParser:
         help="Custom output folder for reports",
     )
 
+    # --- provider-reliability (v0.3.24) ---
+    p_prel = subparsers.add_parser(
+        "provider-reliability",
+        help="Provider Reliability & Fallback Matrix (v0.3.24)",
+    )
+    p_prel.add_argument("--mode", choices=["real", "mock"], default="real",
+                        help="Data mode (default: real)")
+    p_prel.add_argument("--report", action="store_true", default=False,
+                        help="Generate provider reliability Markdown report")
+    p_prel.add_argument("--refresh", action="store_true", default=False,
+                        help="Force refresh reliability matrix")
+    p_prel.add_argument("--dataset", default=None,
+                        help="Filter output to a specific dataset")
+    p_prel.add_argument("--provider", default=None,
+                        help="Filter output to a specific provider")
+    p_prel.add_argument("--results-dir", dest="results_dir", default="data/backtest_results",
+                        help="Custom data/backtest_results/ path")
+    p_prel.add_argument("--report-dir", dest="report_dir", default="reports",
+                        help="Custom output folder for reports")
+
     # --- provider-health (v0.3.18) ---
     p_ph = subparsers.add_parser(
         "provider-health",
@@ -5314,6 +5453,8 @@ def main() -> None:
         # TW Quant Cockpit v0.3.22
         "usability-smoke-test":        cmd_usability_smoke_test,
         "usability-qa-report":         cmd_usability_qa_report,
+        # TW Quant Cockpit v0.3.24
+        "provider-reliability":        cmd_provider_reliability,
     }
 
     if args.command is None:

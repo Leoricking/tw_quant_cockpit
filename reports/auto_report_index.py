@@ -387,6 +387,7 @@ class AutoReportIndexBuilder:
                     "rule_weight_best_balanced_score": ctx.get("rule_weight_best_balanced_score"),
                 },
                 "data_quality_gate": _extract_quality_gate_fields(ctx),
+                "provider_reliability": _extract_reliability_fields(ctx),
             }
 
             path = os.path.join(output_dir, "manifest.json")
@@ -415,6 +416,25 @@ class AutoReportIndexBuilder:
 # ---------------------------------------------------------------------------
 # Module-level helper
 # ---------------------------------------------------------------------------
+
+def _extract_reliability_fields(ctx: dict) -> dict:
+    """Extract provider reliability summary fields for manifest.json (v0.3.24)."""
+    rel = ctx.get("provider_reliability_summary", {})
+    if not rel:
+        return {}
+    weak = rel.get("weak_datasets", [])
+    fallback_used = rel.get("local_fallback_count", 0) > 0
+    return {
+        "provider_reliability_score":  rel.get("overall_reliability_score"),
+        "dataset_confidence_score":    rel.get("overall_dataset_confidence"),
+        "weak_datasets":               weak,
+        "fallback_used":               fallback_used,
+        "mock_fallback_count":         rel.get("mock_fallback_count", 0),
+        "production_blocked":          True,
+        "read_only":                   True,
+        "no_real_orders":              True,
+    }
+
 
 def _extract_quality_gate_fields(ctx: dict) -> dict:
     """Extract data quality gate summary fields for manifest.json."""

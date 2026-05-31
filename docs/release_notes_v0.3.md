@@ -4,6 +4,76 @@
 
 ---
 
+## v0.3.24 — Data Provider Reliability & Fallback Matrix
+
+**Status:** Current
+
+### New Files
+
+- `data/providers/reliability_matrix.py` — `ProviderReliabilityMatrix` engine: builds provider summary, dataset fallback matrix, and dataset confidence scores
+- `data/providers/provider_metrics.py` — `ProviderMetricsCollector`: reads fetch/health/scheduler logs to compute provider success rates and row coverage
+- `data/providers/dataset_confidence.py` — `DatasetConfidenceScorer`: 0–100 confidence score per dataset using 6-component weighted formula
+- `reports/provider_reliability_report.py` — `ProviderReliabilityReportBuilder`: generates `provider_reliability_report_YYYY-MM-DD.md`
+- `gui/provider_reliability_panel.py` — `ProviderReliabilityPanel`: PySide6 GUI panel with provider table, fallback matrix, confidence table, and action buttons
+- `gui/provider_reliability_adapter.py` — `ProviderReliabilityAdapter`: GUI bridge to `ProviderReliabilityMatrix` (no subprocess)
+- `docs/provider_reliability_matrix.md` — documentation for v0.3.24 system
+
+### Modified Files
+
+- `data/providers/provider_registry.py` — added `get_provider_fallback_chain()`, `get_provider_reliability_metadata()`, `get_dataset_capability_matrix()`; extended `_DATASET_PROVIDER_PRIORITY` with tpex/mops fallbacks; added `_PROVIDER_RELIABILITY_METADATA`
+- `data/providers/auto_fetcher.py` — `select_provider()` now consults registry fallback chain; `_build_result()` records `fallback_reason`, `primary_provider`, `fallback_provider`, `is_local_fallback`
+- `data/providers/data_freshness.py` — `_make_result()` now includes `stale_reason`, `dataset_confidence_input`, `missing_symbol_count`
+- `automation/task_runner.py` — `run_daily_data_update()` now includes `provider_reliability_summary` and `dataset_confidence_summary`
+- `reports/auto_report_center.py` — added `run_provider_reliability_report()` method; `full` and `daily` profiles include `include_provider_reliability=True`
+- `reports/auto_report_index.py` — manifest now includes `provider_reliability` section with `provider_reliability_score`, `weak_datasets`, `fallback_used`
+- `main.py` — new CLI: `python main.py provider-reliability [--report] [--dataset X] [--provider X] [--mode real]`
+- `gui/dashboard.py` — new `Provider Reliability` tab (v0.3.24)
+- `README.md` — added v0.3.24 section
+- `docs/roadmap.md` — v0.3.24 marked Done; v0.3.25 updated
+
+### Dataset Fallback Chains (No Mock Fallback)
+
+| Dataset | Primary | Fallbacks | Mock Fallback |
+|---------|---------|-----------|---------------|
+| daily_price | finmind | twse → tpex → csv → xq_export | disabled |
+| monthly_revenue | finmind | twse → mops → csv → xq_export | disabled |
+| institutional | finmind | twse → tpex → csv → xq_export | disabled |
+| margin | finmind | twse → tpex → csv → xq_export | disabled |
+| fundamental | finmind | mops → csv → xq_export | disabled |
+| intraday | csv | xq_export → planned_tick_provider | disabled |
+| tick | planned_tick_provider | — | disabled |
+| bidask | planned_bidask_provider | — | disabled |
+
+### Dataset Confidence Score Formula
+
+```
+score = 0.30 * provider_reliability
+      + 0.25 * freshness
+      + 0.20 * coverage
+      + 0.10 * schema_completeness
+      + 0.10 * source_priority
+      + 0.05 * mock_clean
+```
+
+Score levels: HIGH (90–100), GOOD (75–89), PARTIAL (60–74), WEAK (40–59), LOW (0–39)
+
+### Safety
+
+- Mock fallback in real mode: always 0 / DISABLED
+- No real orders. No token in code. No weight auto-apply.
+- Production trading remains BLOCKED.
+
+### CLI
+
+```
+python main.py provider-reliability
+python main.py provider-reliability --report
+python main.py provider-reliability --dataset daily_price
+python main.py provider-reliability --provider finmind
+```
+
+---
+
 ## v0.3.23 — Documentation & Release Notes Pack
 
 **Status:** Current

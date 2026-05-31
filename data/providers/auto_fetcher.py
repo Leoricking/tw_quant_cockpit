@@ -421,6 +421,17 @@ class DataProviderAutoFetcher:
 
     def select_provider(self, dataset_name: str) -> Optional[str]:
         """Return the name of the best available provider for the dataset."""
+        # v0.3.24: try to use fallback chain from registry first
+        try:
+            from data.providers.provider_registry import ProviderRegistry
+            reg = ProviderRegistry()
+            chain = reg.get_provider_fallback_chain(dataset_name)
+            if chain:
+                for pname in chain:
+                    if self._provider_ok(pname):
+                        return pname
+        except Exception:
+            pass
         for pname in self._get_provider_order(dataset_name):
             if self._provider_ok(pname):
                 return pname
@@ -573,16 +584,29 @@ class DataProviderAutoFetcher:
 
         status = "OK" if not errors else ("PARTIAL" if rows_written > 0 else "FAILED")
 
+        # v0.3.24: classify local fallback and record fallback_reason
+        _LOCAL_PROVIDERS = {"csv", "xq_export"}
+        is_local_fallback = provider_used in _LOCAL_PROVIDERS
+        fallback_reason = ""
+        if is_local_fallback:
+            fallback_reason = "LOCAL_FALLBACK"
+        elif provider_used and provider_used not in ("finmind",):
+            fallback_reason = "API_FALLBACK"
+
         return {
-            "dataset":       dataset_name,
-            "status":        status,
-            "provider_used": provider_used,
-            "rows_fetched":  rows_fetched,
-            "rows_written":  rows_written,
-            "output_file":   write_result.get("path", ""),
-            "warnings":      warnings,
-            "errors":        errors,
-            "dry_run":       self.dry_run,
+            "dataset":          dataset_name,
+            "status":           status,
+            "provider_used":    provider_used,
+            "primary_provider": self._get_provider_order(dataset_name)[0] if self._get_provider_order(dataset_name) else "",
+            "fallback_provider": provider_used if fallback_reason else "",
+            "fallback_reason":  fallback_reason,
+            "is_local_fallback": is_local_fallback,
+            "rows_fetched":     rows_fetched,
+            "rows_written":     rows_written,
+            "output_file":      write_result.get("path", ""),
+            "warnings":         warnings,
+            "errors":           errors,
+            "dry_run":          self.dry_run,
         }
 
     def build_fetch_summary(self) -> dict:

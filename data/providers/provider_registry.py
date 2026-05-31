@@ -263,16 +263,29 @@ class ProviderRegistry:
     # Dataset → provider capability map (v0.3.19)
     # ------------------------------------------------------------------
 
-    # Priority order: first available provider wins
+    # Priority order: first available provider wins (v0.3.24: extended with tpex fallback)
     _DATASET_PROVIDER_PRIORITY: Dict[str, List[str]] = {
-        "daily_price":     ["finmind", "twse", "csv", "xq_export"],
-        "monthly_revenue": ["finmind", "twse", "csv", "xq_export"],
-        "institutional":   ["finmind", "twse", "csv", "xq_export"],
-        "margin":          ["finmind", "twse", "csv", "xq_export"],
+        "daily_price":     ["finmind", "twse", "tpex", "csv", "xq_export"],
+        "monthly_revenue": ["finmind", "twse", "mops", "csv", "xq_export"],
+        "institutional":   ["finmind", "twse", "tpex", "csv", "xq_export"],
+        "margin":          ["finmind", "twse", "tpex", "csv", "xq_export"],
         "fundamental":     ["finmind", "mops", "csv", "xq_export"],
-        "intraday":        ["xq_export", "csv"],
-        "tick":            ["xq_export"],
-        "bidask":          [],
+        "intraday":        ["csv", "xq_export", "planned_tick_provider"],
+        "tick":            ["planned_tick_provider"],
+        "bidask":          ["planned_bidask_provider"],
+    }
+
+    # Provider reliability metadata (v0.3.24)
+    _PROVIDER_RELIABILITY_METADATA: Dict[str, dict] = {
+        "finmind":                  {"tier": 1, "requires_token": True,  "is_local": False, "is_planned": False, "mock_fallback": False},
+        "twse":                     {"tier": 2, "requires_token": False, "is_local": False, "is_planned": True,  "mock_fallback": False},
+        "tpex":                     {"tier": 2, "requires_token": False, "is_local": False, "is_planned": True,  "mock_fallback": False},
+        "mops":                     {"tier": 2, "requires_token": False, "is_local": False, "is_planned": True,  "mock_fallback": False},
+        "csv":                      {"tier": 3, "requires_token": False, "is_local": True,  "is_planned": False, "mock_fallback": False},
+        "xq_export":                {"tier": 3, "requires_token": False, "is_local": True,  "is_planned": False, "mock_fallback": False},
+        "mega_readonly_planned":    {"tier": 4, "requires_token": True,  "is_local": False, "is_planned": True,  "mock_fallback": False},
+        "planned_tick_provider":    {"tier": 4, "requires_token": False, "is_local": False, "is_planned": True,  "mock_fallback": False},
+        "planned_bidask_provider":  {"tier": 4, "requires_token": False, "is_local": False, "is_planned": True,  "mock_fallback": False},
     }
 
     def get_providers_for_dataset(self, dataset_name: str) -> List[str]:
@@ -324,3 +337,34 @@ class ProviderRegistry:
                     "This is UNSAFE. Immediately set it to False."
                 )
         return True
+
+    # ------------------------------------------------------------------
+    # v0.3.24 Reliability / Fallback matrix helpers
+    # ------------------------------------------------------------------
+
+    def get_provider_fallback_chain(self, dataset: str) -> List[str]:
+        """
+        Return the full fallback chain for a dataset.
+        Mock fallback is NEVER included — real mode only uses real/local providers.
+        """
+        return list(self._DATASET_PROVIDER_PRIORITY.get(dataset, []))
+
+    def get_provider_reliability_metadata(self, provider: str) -> dict:
+        """Return reliability metadata for a provider, or empty dict if unknown."""
+        return dict(self._PROVIDER_RELIABILITY_METADATA.get(provider, {}))
+
+    def get_dataset_capability_matrix(self) -> Dict[str, dict]:
+        """
+        Return a dict of {dataset: {provider: bool}} capability matrix.
+        real_order_execution is always False for all entries.
+        """
+        datasets = list(self._DATASET_PROVIDER_PRIORITY.keys())
+        matrix: Dict[str, dict] = {}
+        for ds in datasets:
+            chain = self._DATASET_PROVIDER_PRIORITY[ds]
+            matrix[ds] = {
+                pname: (pname in chain)
+                for pname in list(self._providers.keys()) + ["planned_tick_provider", "planned_bidask_provider"]
+            }
+            matrix[ds]["real_order_execution"] = False  # always disabled
+        return matrix
