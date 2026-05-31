@@ -138,6 +138,7 @@ class AutoReportCenter:
         include_daily_summary: bool = True,
         include_data_quality_gate: bool = False,
         include_provider_reliability: bool = False,
+        universe_name: Optional[str] = None,
     ):
         self.mode        = mode
         self.profile     = profile
@@ -160,12 +161,13 @@ class AutoReportCenter:
         self.include_daily_summary        = flags.get("include_daily_summary",        include_daily_summary)
         self.include_data_quality_gate    = flags.get("include_data_quality_gate",    include_data_quality_gate)
         self.include_provider_reliability = flags.get("include_provider_reliability", include_provider_reliability)
+        self.universe_name = universe_name
 
         # Runtime state (populated during run)
         self._out_dir: str = os.path.join(self.output_root, self.report_date)
         self._generated: List[dict] = []
         self._failed: List[dict] = []
-        self._context: dict = {}   # cross-report data shared across builders
+        self._context: dict = {"universe_name": universe_name or "default"}   # cross-report data shared across builders
 
     # ------------------------------------------------------------------
     # Public entry point

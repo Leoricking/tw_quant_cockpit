@@ -4170,6 +4170,237 @@ def cmd_provider_reliability(args: argparse.Namespace) -> None:
 
 
 # ---------------------------------------------------------------------------
+# v0.3.25 — Universe Expansion & Sector Classification CLI
+# ---------------------------------------------------------------------------
+
+def _print_universe_header(title: str = "Universe Manager") -> None:
+    print()
+    print("=" * 62)
+    print(f"  TW Quant Cockpit — {title}  (v0.3.25)")
+    print("  [!] Research Only. Read Only. No Real Orders.")
+    print("  [!] Not Investment Advice.")
+    print("=" * 62)
+    print()
+
+
+def cmd_universe_list(args: argparse.Namespace) -> None:
+    """List all available universe groups (v0.3.25)."""
+    _print_universe_header("Universe List")
+    try:
+        from universe.universe_registry import UniverseRegistry
+        reg = UniverseRegistry()
+        universes = reg.list_universes()   # returns list of dicts
+        print(f"  Available universe groups ({len(universes)}):")
+        for u in universes:
+            name   = u.get("name", "?")
+            size   = u.get("symbol_count", 0)
+            exists = "OK" if u.get("exists") else "not built"
+            print(f"    {name:<35} size={size:<5} [{exists}]")
+    except Exception as exc:
+        print(f"  ERROR: {exc}")
+    print()
+    print("  Run 'python main.py universe-build-defaults' to create universe CSV files.")
+    print("  [!] Read Only. Research Universe Only.")
+
+
+def cmd_universe_build_defaults(args: argparse.Namespace) -> None:
+    """Build default universe CSV files from seed data (v0.3.25)."""
+    _print_universe_header("Build Default Universes")
+    force = getattr(args, "force", False)
+    try:
+        from universe.universe_registry import UniverseRegistry
+        reg = UniverseRegistry()
+        # Returns {name: path, ...} for created files, plus "manifest" key
+        result = reg.build_default_universes(force=force)
+        if "error" in result:
+            print(f"  ERROR: {result['error']}")
+        else:
+            manifest_path = result.pop("manifest", "")
+            built = list(result.keys())
+            print(f"  Built   : {len(built)} universe(s)")
+            for name in built:
+                print(f"    + {name}")
+            if not built:
+                print("  All files already exist. Use --force to rebuild.")
+            if manifest_path:
+                print(f"  Manifest: {manifest_path}")
+    except Exception as exc:
+        print(f"  ERROR: {exc}")
+    print()
+    print("  [!] Read Only. Research Universe Only.")
+
+
+def cmd_universe_show(args: argparse.Namespace) -> None:
+    """Show symbols and sector summary for a universe group (v0.3.25)."""
+    universe_name = getattr(args, "universe", "core_30")
+    _print_universe_header(f"Universe Show: {universe_name}")
+    try:
+        from universe.universe_registry import UniverseRegistry
+        from universe.sector_classifier import SectorClassifier
+        reg = UniverseRegistry()
+        rows = reg.load_universe(universe_name)   # list of dicts
+        if not rows:
+            print(f"  Universe '{universe_name}' not found or empty.")
+            print("  Run: python main.py universe-build-defaults")
+            return
+        symbols = [str(r.get("symbol", "")) for r in rows if r.get("symbol")]
+        print(f"  Universe : {universe_name}")
+        print(f"  Symbols  : {len(symbols)}")
+        print()
+        clf = SectorClassifier()
+        enriched = clf.classify_universe(rows)
+        sector_result = clf.get_sector_summary(enriched)
+        by_sector = sector_result.get("by_sector", {})
+        print("  Sector breakdown:")
+        for sector, count in sorted(by_sector.items(), key=lambda x: -x[1]):
+            print(f"    {sector:<35} {count}")
+        print()
+        print(f"  Symbols: {', '.join(symbols[:20])}{'...' if len(symbols) > 20 else ''}")
+    except Exception as exc:
+        print(f"  ERROR: {exc}")
+    print()
+    print("  [!] Read Only. Research Universe Only.")
+
+
+def cmd_universe_quality_score(args: argparse.Namespace) -> None:
+    """Compute Universe Quality Score for a universe group (v0.3.25)."""
+    universe_name = getattr(args, "universe", "core_30")
+    _print_universe_header(f"Universe Quality Score: {universe_name}")
+    try:
+        from universe.universe_registry import UniverseRegistry
+        from universe.universe_quality import UniverseQualityAnalyzer
+        reg = UniverseRegistry()
+        symbols = reg.get_symbols(universe_name)
+        if not symbols:
+            print(f"  Universe '{universe_name}' not found or empty.")
+            print("  Run: python main.py universe-build-defaults")
+            return
+        analyzer = UniverseQualityAnalyzer(universe_name=universe_name)
+        result = analyzer.run()
+        score = result.get("overall_universe_score") or result.get("overall_score") or 0
+        level = result.get("readiness_level", "UNKNOWN")
+        print(f"  Universe       : {universe_name}")
+        print(f"  Symbol count   : {len(symbols)}")
+        try:
+            print(f"  Quality score  : {float(score):.1f} / 100")
+        except (TypeError, ValueError):
+            print(f"  Quality score  : {score} / 100")
+        print(f"  Readiness      : {level}")
+        print()
+        _COMPONENT_KEYS = [
+            "coverage_score", "freshness_score", "provider_reliability_score",
+            "sector_balance_score", "liquidity_readiness_score",
+            "backtest_sample_readiness_score",
+        ]
+        comp_found = False
+        for key in _COMPONENT_KEYS:
+            val = result.get(key)
+            if val is not None:
+                comp_found = True
+                try:
+                    print(f"    {key:<40} {float(val):.1f}")
+                except (TypeError, ValueError):
+                    print(f"    {key:<40} {val}")
+        if comp_found:
+            print()
+        caveats = result.get("caveats", result.get("warnings", []))
+        if caveats:
+            print("  Caveats:")
+            for c in caveats:
+                print(f"    - {c}")
+    except Exception as exc:
+        print(f"  ERROR: {exc}")
+    print()
+    print("  [!] Read Only. Research Universe Only.")
+
+
+def cmd_universe_expand(args: argparse.Namespace) -> None:
+    """Propose expansion candidates (read-only, no auto-write) (v0.3.25)."""
+    from_universe = getattr(args, "from_universe", "core_30")
+    target_size   = getattr(args, "target_size", 50)
+    _print_universe_header(f"Universe Expand: {from_universe} → {target_size}")
+    try:
+        from universe.universe_expander import UniverseExpander
+        expander = UniverseExpander(source_universe=from_universe, target_size=target_size)
+        result = expander.propose_expansion()
+        current = result.get("source_symbols", [])
+        candidates = result.get("candidates", [])
+        print(f"  From universe  : {from_universe} ({len(current)} symbols)")
+        print(f"  Target size    : {target_size}")
+        print(f"  New candidates : {len(candidates)}")
+        print()
+        if candidates:
+            print("  Proposed additions (ranked by score):")
+            for i, c in enumerate(candidates[:20], 1):
+                sym  = c.get("symbol", "?")
+                name = c.get("name", "")
+                score = c.get("expansion_score", 0)
+                sector = c.get("sector", "")
+                print(f"    {i:>2}. {sym:<8} {name:<20} score={score:.2f}  {sector}")
+        warnings = result.get("warnings", [])
+        if warnings:
+            print()
+            print("  Warnings:")
+            for w in warnings:
+                print(f"    - {w}")
+    except Exception as exc:
+        print(f"  ERROR: {exc}")
+    print()
+    print("  [!] Proposals only. No files written. Manual review required.")
+    print("  [!] Read Only. Research Universe Only.")
+
+
+def cmd_universe_report(args: argparse.Namespace) -> None:
+    """Generate Universe Expansion Markdown report (v0.3.25)."""
+    universe_name = getattr(args, "universe", "core_30")
+    mode          = getattr(args, "mode", "real")
+    report_dir    = getattr(args, "report_dir", "reports")
+    _print_universe_header(f"Universe Report: {universe_name}")
+    import os
+    base_dir    = os.path.dirname(os.path.abspath(__file__))
+    abs_reports = os.path.join(base_dir, report_dir)
+    try:
+        from universe.universe_registry import UniverseRegistry
+        from universe.universe_quality import UniverseQualityAnalyzer
+        from universe.sector_classifier import SectorClassifier
+        from universe.universe_expander import UniverseExpander
+        from reports.universe_expansion_report import UniverseExpansionReportBuilder
+        from datetime import datetime as _dt
+        reg = UniverseRegistry()
+        rows = reg.load_universe(universe_name)
+        if not rows:
+            print(f"  Universe '{universe_name}' not found or empty.")
+            print("  Run: python main.py universe-build-defaults")
+            return
+        # Quality analysis
+        analyzer = UniverseQualityAnalyzer(universe_name=universe_name)
+        quality_result = analyzer.run()
+        # Registry listing
+        registry_data = reg.list_universes()
+        # Sector classification
+        clf = SectorClassifier()
+        enriched = clf.classify_universe(rows)
+        classifier_data = clf.get_sector_summary(enriched)
+        # Expansion proposals
+        expander = UniverseExpander(source_universe=universe_name, target_size=len(rows) + 20)
+        expansion_data = expander.propose_expansion()
+        builder = UniverseExpansionReportBuilder(
+            report_date=_dt.now().strftime("%Y-%m-%d"),
+            universe_data=quality_result,
+            registry_data=registry_data,
+            expansion_data=expansion_data,
+            classifier_data=classifier_data,
+            mode=mode,
+        )
+        rpt_path = builder.build(output_dir=abs_reports)
+        print(f"  Report: {rpt_path}")
+    except Exception as exc:
+        print(f"  ERROR: {exc}")
+    print()
+    print("  [!] Read Only. Research Universe Only.")
+
+
+# ---------------------------------------------------------------------------
 # v0.3.9 — Public Data API & Crawler Commands
 # ---------------------------------------------------------------------------
 
@@ -5164,6 +5395,60 @@ def _build_parser() -> argparse.ArgumentParser:
         help="Custom output folder for reports",
     )
 
+    # --- universe-list (v0.3.25) ---
+    subparsers.add_parser(
+        "universe-list",
+        help="List all available universe groups (v0.3.25)",
+    )
+
+    # --- universe-build-defaults (v0.3.25) ---
+    p_ubd = subparsers.add_parser(
+        "universe-build-defaults",
+        help="Build default universe CSV files from seed data (v0.3.25)",
+    )
+    p_ubd.add_argument("--force", action="store_true", default=False,
+                       help="Rebuild universes even if CSV files already exist")
+
+    # --- universe-show (v0.3.25) ---
+    p_us = subparsers.add_parser(
+        "universe-show",
+        help="Show symbols and sector summary for a universe group (v0.3.25)",
+    )
+    p_us.add_argument("--universe", default="core_30",
+                      help="Universe group name (default: core_30)")
+
+    # --- universe-quality-score (v0.3.25) ---
+    p_uqs = subparsers.add_parser(
+        "universe-quality-score",
+        help="Compute Universe Quality Score for a universe group (v0.3.25)",
+    )
+    p_uqs.add_argument("--universe", default="core_30",
+                       help="Universe group name (default: core_30)")
+    p_uqs.add_argument("--mode", choices=["real", "mock"], default="real",
+                       help="Data mode (default: real)")
+
+    # --- universe-expand (v0.3.25) ---
+    p_ue = subparsers.add_parser(
+        "universe-expand",
+        help="Propose expansion candidates for a universe (read-only) (v0.3.25)",
+    )
+    p_ue.add_argument("--from", dest="from_universe", default="core_30",
+                      help="Source universe group (default: core_30)")
+    p_ue.add_argument("--target-size", dest="target_size", type=int, default=50,
+                      help="Target symbol count (default: 50)")
+
+    # --- universe-report (v0.3.25) ---
+    p_ur = subparsers.add_parser(
+        "universe-report",
+        help="Generate Universe Expansion Markdown report (v0.3.25)",
+    )
+    p_ur.add_argument("--universe", default="core_30",
+                      help="Universe group name (default: core_30)")
+    p_ur.add_argument("--mode", choices=["real", "mock"], default="real",
+                      help="Data mode (default: real)")
+    p_ur.add_argument("--report-dir", dest="report_dir", default="reports",
+                      help="Custom output folder for reports")
+
     # --- provider-reliability (v0.3.24) ---
     p_prel = subparsers.add_parser(
         "provider-reliability",
@@ -5455,6 +5740,13 @@ def main() -> None:
         "usability-qa-report":         cmd_usability_qa_report,
         # TW Quant Cockpit v0.3.24
         "provider-reliability":        cmd_provider_reliability,
+        # TW Quant Cockpit v0.3.25
+        "universe-list":               cmd_universe_list,
+        "universe-build-defaults":     cmd_universe_build_defaults,
+        "universe-show":               cmd_universe_show,
+        "universe-quality-score":      cmd_universe_quality_score,
+        "universe-expand":             cmd_universe_expand,
+        "universe-report":             cmd_universe_report,
     }
 
     if args.command is None:

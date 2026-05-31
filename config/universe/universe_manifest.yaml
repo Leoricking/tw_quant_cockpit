@@ -1,0 +1,46 @@
+generated_at: '2026-05-31T20:13:07.938001'
+no_real_orders: true
+not_investment_advice: true
+read_only: true
+research_only: true
+universes:
+  ai_mainstream:
+    path: config/universe/themes/ai_mainstream.csv
+    symbol_count: 20
+  core_100:
+    path: config/universe/core_100.csv
+    symbol_count: 60
+  core_14:
+    path: config/universe/core_14.csv
+    symbol_count: 14
+  core_200:
+    path: config/universe/core_200.csv
+    symbol_count: 60
+  core_30:
+    path: config/universe/core_30.csv
+    symbol_count: 30
+  core_50:
+    path: config/universe/core_50.csv
+    symbol_count: 50
+  etf_candidates:
+    path: config/universe/themes/etf_candidates.csv
+    symbol_count: 32
+  financial:
+    path: config/universe/themes/financial.csv
+    symbol_count: 11
+  high_speed_interconnect:
+    path: config/universe/themes/high_speed_interconnect.csv
+    symbol_count: 0
+  institutional_focus:
+    path: config/universe/themes/institutional_focus.csv
+    symbol_count: 52
+  power_thermal:
+    path: config/universe/themes/power_thermal.csv
+    symbol_count: 0
+  semiconductor:
+    path: config/universe/themes/semiconductor.csv
+    symbol_count: 22
+  server_supply_chain:
+    path: config/universe/themes/server_supply_chain.csv
+    symbol_count: 0
+version: v0.3.25

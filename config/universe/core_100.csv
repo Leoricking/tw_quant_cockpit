@@ -1,0 +1,61 @@
+symbol,name,sector,theme_primary,theme_secondary,supply_chain_role,ai_exposure,etf_relevance,institutional_focus,liquidity_tier,market_cap_tier,notes
+2330,台積電 TSMC,semiconductor,FOUNDRY,AI,foundry,HIGH,1,1,LARGE,LARGE,World's largest foundry; key AI chip partner
+2454,聯發科 MediaTek,semiconductor,IC_DESIGN,AI,ic_design,HIGH,1,1,LARGE,LARGE,Major fabless IC design; AI SoC leader
+2383,台光電 Elite Material,high_speed_interconnect,CCL,AI,ccl,HIGH,1,1,MID,MID,High-speed CCL for AI server PCBs
+6669,緯穎 Wiwynn,server_supply_chain,AI_SERVER,ODM,odm,HIGH,1,1,MID,MID,Hyperscale AI server ODM
+2345,智邦 Accton,network,SWITCH,800G,switch,HIGH,1,1,MID,MID,400G/800G switch solutions
+2308,台達電 Delta Electronics,power_thermal,POWER,COOLING,power_supply,HIGH,1,1,LARGE,LARGE,Power electronics; AI server PSU leader
+2317,鴻海 Hon Hai,server_supply_chain,ODM,AI_SERVER,odm,HIGH,1,1,LARGE,LARGE,Largest EMS/ODM; major AI server assembler
+3017,奇鋐 Auras,power_thermal,COOLING,AI,cooling,HIGH,1,1,MID,MID,Thermal cooling solutions for AI servers
+3037,欣興 Unimicron,high_speed_interconnect,ABF,PCB,pcb,HIGH,1,1,MID,MID,ABF substrate for AI chips
+3081,聯亞 Alliance Semi,semiconductor,IC_DESIGN,AI,ic_design,MEDIUM,1,1,MID,MID,Mixed-signal IC design
+3228,金麗科 Sinorich,semiconductor,IC_DESIGN,AI,ic_design,MEDIUM,0,1,MID,MID,PMIC and analog IC design
+3661,世芯-KY Alchip,semiconductor,IC_DESIGN,AI,asic,HIGH,1,1,MID,MID,Custom ASIC design for AI/HPC
+5274,信驊 ASPEED,semiconductor,IC_DESIGN,AI,bmc_chip,HIGH,1,1,MID,MID,BMC chips for AI servers
+8358,金居 Goldenmax,high_speed_interconnect,CCL,PCB,ccl,MEDIUM,0,1,MID,MID,High-speed copper clad laminate
+2327,國巨 Yageo,high_speed_interconnect,PASSIVE,EV,mlcc,LOW,0,1,LARGE,LARGE,Passive components; MLCC leader
+2376,技嘉 Gigabyte,server_supply_chain,AI_SERVER,ODM,motherboard,HIGH,1,1,MID,MID,AI server motherboard and GPU server
+2357,華碩 ASUS,server_supply_chain,AI_PC,ODM,brand,MEDIUM,1,1,LARGE,LARGE,Branded PC and AI server
+2382,廣達 Quanta,server_supply_chain,AI_SERVER,ODM,odm,HIGH,1,1,LARGE,LARGE,Cloud server ODM; major AI server partner
+3231,緯創 Wistron,server_supply_chain,AI_SERVER,ODM,odm,HIGH,1,1,LARGE,LARGE,Server and AI infrastructure ODM
+2881,富邦金 Fubon Financial,financial,BANK,INSURANCE,financial,LOW,0,1,LARGE,LARGE,Leading financial holding company
+2882,國泰金 Cathay Financial,financial,INSURANCE,BANK,financial,LOW,0,1,LARGE,LARGE,Insurance and banking conglomerate
+2886,兆豐金 Mega Financial,financial,BANK,FOREX,financial,LOW,0,1,LARGE,LARGE,State-owned bank and financial holding
+2891,中信金 CTBC Financial,financial,BANK,SECURITIES,financial,LOW,0,1,LARGE,LARGE,Major private bank; wealth management
+2884,玉山金 E.SUN Financial,financial,BANK,DIGITAL,financial,LOW,0,1,LARGE,LARGE,Digital banking pioneer
+2885,元大金 Yuanta Financial,financial,SECURITIES,BANK,financial,LOW,0,1,LARGE,LARGE,Leading securities and financial group
+2356,英業達 Inventec,server_supply_chain,AI_SERVER,ODM,odm,HIGH,1,1,LARGE,LARGE,AI server and cloud ODM
+4938,和碩 Pegatron,server_supply_chain,ODM,AI_PC,odm,MEDIUM,1,1,LARGE,LARGE,Consumer electronics and server ODM
+2395,研華 Advantech,semiconductor,EMBEDDED,IoT,embedded,MEDIUM,0,1,MID,MID,Industrial IoT and embedded computing
+2301,光寶科 Lite-On,power_thermal,POWER,OPTICAL,power_supply,MEDIUM,1,1,MID,MID,PSU and optical components
+2409,友達 AUO,semiconductor,PANEL,DISPLAY,display,LOW,0,0,LARGE,LARGE,Display panel manufacturer
+3481,群創 Innolux,semiconductor,PANEL,DISPLAY,display,LOW,0,0,LARGE,LARGE,Display panel manufacturer
+3008,大立光 Largan,semiconductor,OPTICAL,LENS,optical_lens,MEDIUM,1,1,MID,LARGE,High-end smartphone lens modules
+3034,聯詠 Novatek,semiconductor,IC_DESIGN,DISPLAY,ic_design,MEDIUM,1,1,MID,MID,Display driver IC design
+3443,創意電子 GUC,semiconductor,IC_DESIGN,AI,asic,HIGH,1,1,MID,MID,ASIC design services; TSMC partner
+4966,譜瑞-KY Parade Tech,semiconductor,IC_DESIGN,HIGH_SPEED,ic_design,HIGH,1,1,MID,MID,High-speed interface IC
+3711,日月光投控 ASE,semiconductor,PACKAGING,AI,packaging,HIGH,1,1,LARGE,LARGE,Semiconductor packaging and testing
+2449,京元電子 KYEC,semiconductor,PACKAGING,IC_TEST,testing,MEDIUM,0,1,MID,MID,IC testing services
+6147,頎邦 Chipbond,semiconductor,PACKAGING,DRIVER_IC,packaging,MEDIUM,0,1,MID,MID,Driver IC packaging
+3533,嘉澤 Lotes,high_speed_interconnect,CONNECTOR,AI_SERVER,connector,HIGH,1,1,MID,MID,High-speed connectors for AI servers
+6213,聯茂 ITEQ,high_speed_interconnect,CCL,PCB,ccl,HIGH,1,1,MID,MID,High-frequency CCL materials
+6274,台燿 Taiwan PCB Techvest,high_speed_interconnect,CCL,PCB,ccl,MEDIUM,1,1,MID,MID,CCL and PCB materials
+8046,南電 Nan Ya PCB,high_speed_interconnect,PCB,ABF,pcb,HIGH,1,1,MID,MID,ABF substrate and high-end PCB
+3189,景碩 APEX,high_speed_interconnect,PCB,ABF,pcb,HIGH,1,1,MID,MID,ABF substrate for HPC/AI chips
+3035,智原 Faraday,semiconductor,IC_DESIGN,IP,ic_design,MEDIUM,0,1,MID,MID,IC design services and IP licensing
+2379,瑞昱 Realtek,semiconductor,IC_DESIGN,NETWORK,ic_design,MEDIUM,1,1,MID,MID,Networking and multimedia IC design
+2408,南亞科 Nanya Tech,semiconductor,MEMORY,DRAM,dram,LOW,0,0,LARGE,LARGE,DRAM memory manufacturer
+2352,佳世達 Qisda,server_supply_chain,ODM,DISPLAY,odm,MEDIUM,0,0,MID,MID,Medical and display ODM
+2353,宏碁 Acer,server_supply_chain,AI_PC,BRAND_PC,brand,MEDIUM,1,1,LARGE,LARGE,Branded PC and AI PC
+6533,譜瑞 GreenPower,power_thermal,POWER,EV,power_module,MEDIUM,0,0,MID,MID,Power modules and EV components
+6239,力成 Powertech,semiconductor,PACKAGING,MEMORY,packaging,MEDIUM,0,1,MID,MID,Memory packaging and testing
+2303,聯電 UMC,semiconductor,FOUNDRY,MATURE_NODE,foundry,MEDIUM,1,1,LARGE,LARGE,Mature node foundry
+5347,世界先進 VIS,semiconductor,FOUNDRY,PMIC,foundry,MEDIUM,0,1,MID,MID,Specialty foundry; PMIC and sensor
+3047,訊舟 ASUS Network,network,ROUTER,WIFI,network_device,LOW,0,0,MID,MID,Home networking equipment
+4904,遠傳電信 FarEasTone,traditional,TELECOM,5G,telecom,LOW,0,0,LARGE,LARGE,Taiwan telecom operator
+2412,中華電信 Chunghwa Telecom,traditional,TELECOM,5G,telecom,LOW,0,1,LARGE,LARGE,Dominant Taiwan telecom operator
+2882,合庫金 Taiwan Cooperative,financial,BANK,GOVERNMENT,financial,LOW,0,1,LARGE,LARGE,Government-linked bank
+2887,台新金 Taishin Financial,financial,BANK,DIGITAL,financial,LOW,0,1,LARGE,LARGE,Private bank; digital banking focus
+2890,永豐金 SinoPac Financial,financial,BANK,SECURITIES,financial,LOW,0,1,LARGE,LARGE,Diversified financial services
+2892,第一金 First Financial,financial,BANK,GOVERNMENT,financial,LOW,0,1,LARGE,LARGE,State-owned first commercial bank
+2888,新光金 Shin Kong Financial,financial,INSURANCE,BANK,financial,LOW,0,0,LARGE,LARGE,Insurance-led financial holding

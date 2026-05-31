@@ -25,6 +25,25 @@
 | v0.3.22 | Usability QA & Error Message Polish | Done |
 | v0.3.23 | Documentation & Release Notes Pack | Done |
 | v0.3.24 | Data Provider Reliability & Fallback Matrix | Done |
+| v0.3.25 | Universe Expansion & Sector Classification | Done |
+
+---
+
+## Completed: v0.3.25 — Universe Expansion & Sector Classification
+
+- `UniverseRegistry`: 13 universe groups (core_14–core_200 + 8 theme groups); build_default_universes(), export_universe_manifest()
+- `SectorClassifier`: 9-sector / 25+ theme taxonomy; classify_symbol(), classify_universe(), get_sector_summary()
+- `UniverseQualityAnalyzer`: 0–100 score (6 components); readiness levels INSUFFICIENT → STRONG_RESEARCH_UNIVERSE
+- `UniverseExpander`: propose_expansion() — proposals only, no auto-write; ranked by AI exposure + data availability
+- `UniverseExpansionReportBuilder`: 8-section Markdown report
+- `UniverseManagerPanel`: GUI tab (Universe Manager) with selector, symbol table, sector summary, quality cards
+- `UniverseManagerAdapter`: GUI bridge (list_universes, load_universe, build_default_universes, analyze_quality, generate_report)
+- CLI: `python main.py universe-list | universe-build-defaults | universe-show | universe-quality-score | universe-expand | universe-report`
+- `DataProviderAutoFetcher` accepts `universe_name` parameter
+- `DailyResearchWorkflow` accepts `universe_name` parameter
+- `DataQualityGate` accepts `universe` parameter for symbol-level coverage scoring
+- `AutoReportCenter` accepts `universe_name` parameter, records in manifest
+- No mock fallback in real mode. No real orders. Production BLOCKED.
 
 ---
 
@@ -37,18 +56,6 @@
 - `ProviderReliabilityPanel`: GUI tab (Provider Reliability)
 - CLI: `python main.py provider-reliability [--report] [--dataset X] [--provider X]`
 - No mock fallback in real mode. No real orders. Production BLOCKED.
-
----
-
-## Planned: v0.3.25
-
-**Target:** Universe Expansion & Sector Classification
-
-- Expand universe from 14/30 stocks to 50/100/200 stocks
-- Build sector / theme taxonomy (AI, semiconductor, high-speed networking, server, power, cooling, finance, ETF components)
-- Support AI mainstream stocks, semiconductor, high-speed transmission, server, power, cooling, finance, ETF
-- GUI Universe Selector panel
-- Still read-only, no real orders
 
 ---
 

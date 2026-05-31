@@ -1,0 +1,118 @@
+# TW Quant Cockpit — Sector Taxonomy v0.3.25
+# Research Only. Not investment advice.
+
+semiconductor:
+  name: 半導體
+  themes:
+    - AI
+    - IC_DESIGN
+    - FOUNDRY
+    - MEMORY
+    - PACKAGING
+  keywords:
+    - 半導體
+    - ic設計
+    - 晶圓
+    - 封測
+
+high_speed_interconnect:
+  name: 高速傳輸
+  themes:
+    - CCL
+    - PCB
+    - ABF
+    - OPTICAL
+  keywords:
+    - ccl
+    - pcb
+    - abf
+    - 電路板
+    - 銅箔基板
+
+server_supply_chain:
+  name: 伺服器供應鏈
+  themes:
+    - ODM
+    - SERVER
+    - RACK
+    - AI_SERVER
+  keywords:
+    - 伺服器
+    - server
+    - odm
+    - ai server
+
+power_thermal:
+  name: 電源散熱
+  themes:
+    - POWER
+    - COOLING
+    - THERMAL
+  keywords:
+    - 電源
+    - 散熱
+    - cooling
+    - thermal
+
+network:
+  name: 網通
+  themes:
+    - SWITCH
+    - ROUTER
+    - BACKBONE
+    - 800G
+  keywords:
+    - 網通
+    - 交換器
+    - switch
+    - router
+
+financial:
+  name: 金融
+  themes:
+    - BANK
+    - INSURANCE
+    - SECURITIES
+  keywords:
+    - 金融
+    - 銀行
+    - 壽險
+    - 金控
+
+odm_brand:
+  name: ODM / 品牌電腦
+  themes:
+    - ODM
+    - BRAND_PC
+    - AI_PC
+  keywords:
+    - odm
+    - 電腦
+    - 品牌
+    - notebook
+
+transport:
+  name: 航運
+  themes:
+    - SHIPPING
+    - AVIATION
+  keywords:
+    - 航運
+    - 貨櫃
+    - 航空
+
+traditional:
+  name: 傳產 / 其他
+  themes:
+    - STEEL
+    - PLASTIC
+    - CEMENT
+    - FOOD
+    - TELECOM
+  keywords:
+    - 傳產
+    - 鋼鐵
+    - 塑膠
+    - 水泥
+    - 食品
+    - 電信

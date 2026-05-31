@@ -388,6 +388,7 @@ class AutoReportIndexBuilder:
                 },
                 "data_quality_gate": _extract_quality_gate_fields(ctx),
                 "provider_reliability": _extract_reliability_fields(ctx),
+                "universe_name": ctx.get("universe_name", "default"),
             }
 
             path = os.path.join(output_dir, "manifest.json")

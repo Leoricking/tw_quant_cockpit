@@ -91,6 +91,7 @@ class DataProviderAutoFetcher:
         self,
         mode:           str = "real",
         universe:       Optional[List[str]] = None,
+        universe_name:  Optional[str] = None,
         provider_order: Optional[Dict[str, List[str]]] = None,
         output_root:    Optional[str] = None,
         results_dir:    Optional[str] = None,
@@ -102,6 +103,7 @@ class DataProviderAutoFetcher:
     ):
         self.mode           = mode
         self._universe      = universe
+        self._universe_name = universe_name
         self._provider_order = provider_order or _PROVIDER_PRIORITY
         self._output_root   = output_root or _BASE_DIR
         self._report_dir    = report_dir or os.path.join(_BASE_DIR, "reports")
@@ -698,6 +700,23 @@ class DataProviderAutoFetcher:
             if self._max_symbols:
                 syms = syms[:self._max_symbols]
             return syms
+        # v0.3.25: load from UniverseRegistry if universe_name is specified
+        if self._universe_name:
+            try:
+                from universe.universe_registry import UniverseRegistry
+                reg = UniverseRegistry()
+                syms = reg.get_symbols(self._universe_name)
+                if syms:
+                    if self._max_symbols:
+                        syms = syms[:self._max_symbols]
+                    logger.info(
+                        "Loaded %d symbols from universe '%s'",
+                        len(syms), self._universe_name,
+                    )
+                    return syms
+                logger.warning("UniverseRegistry returned empty for '%s'", self._universe_name)
+            except Exception as exc:
+                logger.debug("_load_universe from UniverseRegistry: %s", exc)
         # Try universe manifest
         try:
             import pandas as pd

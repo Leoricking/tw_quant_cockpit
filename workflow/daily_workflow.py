@@ -57,20 +57,22 @@ class DailyResearchWorkflow:
 
     def __init__(
         self,
-        mode:        str = "real",
-        profile:     str = "standard",
-        stocks:      Optional[List[str]] = None,
-        top_n:       int = 8,
-        report_dir:  Optional[str] = None,
-        results_dir: Optional[str] = None,
-        import_root: Optional[str] = None,
-        log_dir:     Optional[str] = None,
-        dry_run:     bool = False,
+        mode:          str = "real",
+        profile:       str = "standard",
+        stocks:        Optional[List[str]] = None,
+        top_n:         int = 8,
+        report_dir:    Optional[str] = None,
+        results_dir:   Optional[str] = None,
+        import_root:   Optional[str] = None,
+        log_dir:       Optional[str] = None,
+        dry_run:       bool = False,
+        universe_name: Optional[str] = None,
     ):
-        self.mode        = mode
-        self.profile     = profile
-        self.stocks      = stocks or []
-        self.top_n       = top_n
+        self.mode          = mode
+        self.profile       = profile
+        self.stocks        = stocks or []
+        self.top_n         = top_n
+        self.universe_name = universe_name
         self.report_dir  = report_dir  or _DEFAULT_REPORT_DIR
         self.results_dir = results_dir or _DEFAULT_RESULTS_DIR
         self.import_root = import_root or _DEFAULT_IMPORT_ROOT
@@ -247,7 +249,11 @@ class DailyResearchWorkflow:
 
     def _step_provider_auto_fetch(self, step):
         from data.providers.auto_fetcher import DataProviderAutoFetcher
-        fetcher = DataProviderAutoFetcher(mode=self.mode, dry_run=self.dry_run)
+        fetcher = DataProviderAutoFetcher(
+            mode=self.mode,
+            dry_run=self.dry_run,
+            universe_name=self.universe_name if self.universe_name else None,
+        )
         result  = fetcher.run()
         self._context["auto_fetch"] = result
         step.outputs.append(

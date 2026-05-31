@@ -4,9 +4,89 @@
 
 ---
 
-## v0.3.24 — Data Provider Reliability & Fallback Matrix
+## v0.3.25 — Universe Expansion & Sector Classification
 
 **Status:** Current
+
+### New Files
+
+- `universe/__init__.py` — package init
+- `universe/universe_registry.py` — `UniverseRegistry`: 13 universe groups, build_default_universes(), export_universe_manifest()
+- `universe/sector_classifier.py` — `SectorClassifier`: 9-sector taxonomy, classify_symbol(), classify_universe(), get_sector_summary()
+- `universe/universe_quality.py` — `UniverseQualityAnalyzer`: 0–100 quality score (6 components); readiness levels
+- `universe/universe_expander.py` — `UniverseExpander`: propose_expansion() — proposals only, no auto-write
+- `reports/universe_expansion_report.py` — `UniverseExpansionReportBuilder`: 8-section Markdown report
+- `gui/universe_manager_panel.py` — `UniverseManagerPanel`: PySide6 GUI tab with selector, symbol table, sector summary, quality cards
+- `gui/universe_manager_adapter.py` — `UniverseManagerAdapter`: GUI bridge (no subprocess)
+- `config/universe/sector_taxonomy.yaml` — 9 sectors with themes and keywords
+- `config/universe/default_universe_seed.csv` — 60 Taiwan stocks with sector/theme/ai_exposure
+- `docs/universe_expansion_and_sector_classification.md` — documentation
+
+### Modified Files
+
+- `data/providers/auto_fetcher.py` — `DataProviderAutoFetcher` accepts `universe_name` parameter; `_load_universe()` queries `UniverseRegistry` if specified
+- `workflow/daily_workflow.py` — `DailyResearchWorkflow` accepts `universe_name`; passed to auto_fetcher step
+- `reports/auto_report_center.py` — `AutoReportCenter` accepts `universe_name`; recorded in `_context` and manifest
+- `reports/auto_report_index.py` — manifest includes `universe_name` field
+- `quality/data_quality_gate.py` — `DataQualityGate` accepts `universe` parameter; blends in symbol-level coverage when specified
+- `gui/dashboard.py` — guarded import for `UniverseManagerPanel`; new "Universe Manager" tab
+- `README.md` — added v0.3.25 section
+- `docs/roadmap.md` — v0.3.25 marked Done
+- `docs/release_notes_v0.3.md` — this file
+
+### Universe Groups
+
+| Group | Size | Description |
+|-------|------|-------------|
+| core_14 | 14 | Original core universe |
+| core_30 | 30 | Core 30 |
+| core_50 | 50 | Core 50 |
+| core_100 | 100 | Core 100 |
+| core_200 | 200 | Core 200 |
+| ai_mainstream | var | AI mainstream (TSMC, MediaTek, Delta, Foxconn...) |
+| semiconductor | var | Semiconductor supply chain |
+| high_speed_interconnect | var | High-speed networking / PCIe / CoWoS |
+| server_supply_chain | var | Server and storage supply chain |
+| power_thermal | var | Power supply and thermal management |
+| financial | var | Banking, insurance, securities |
+| etf_candidates | var | ETF component proxies |
+| institutional_focus | var | High institutional net-buy focus |
+
+### Universe Quality Score Formula
+
+```
+score = 0.25 * coverage
+      + 0.20 * freshness
+      + 0.20 * provider_reliability
+      + 0.15 * sector_balance
+      + 0.10 * liquidity
+      + 0.10 * backtest_sample_readiness
+```
+
+Readiness levels: INSUFFICIENT (0–39), OBSERVATIONAL (40–59), RESEARCH_READY (60–74), BACKTEST_READY (75–89), STRONG_RESEARCH_UNIVERSE (90–100)
+
+### CLI
+
+```
+python main.py universe-list
+python main.py universe-build-defaults [--force]
+python main.py universe-show --universe core_50
+python main.py universe-quality-score --universe core_50 [--mode real]
+python main.py universe-expand --from core_30 --target-size 50
+python main.py universe-report --universe core_50 [--mode real] [--report-dir reports]
+```
+
+### Safety
+
+- No real orders. No token in code. No weight auto-apply.
+- Universe expansion proposals only — no files written automatically.
+- Production trading remains BLOCKED.
+
+---
+
+## v0.3.24 — Data Provider Reliability & Fallback Matrix
+
+**Status:** Superseded by v0.3.25
 
 ### New Files
 

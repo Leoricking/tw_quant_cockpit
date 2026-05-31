@@ -59,8 +59,10 @@ class DataQualityGate:
         portfolio_results_dir: Optional[str] = None,
         freshness_result: Optional[dict] = None,
         health_result: Optional[dict] = None,
+        universe: Optional[str] = None,
     ):
         self.mode = mode
+        self.universe = universe
         self.import_root = import_root or os.path.join(_BASE_DIR, "data", "import")
         self.results_dir = results_dir or os.path.join(_BASE_DIR, "data", "backtest_results")
         self.reports_dir = reports_dir or os.path.join(_BASE_DIR, "reports")
@@ -363,8 +365,34 @@ class DataQualityGate:
                 details[ds] = "READ_ERROR"
 
         score = round(100.0 * ok / total, 2) if total else 0.0
+
+        # v0.3.25: if universe_name specified, blend in symbol-level coverage
+        symbol_coverage_pct: Optional[float] = None
+        if self.universe:
+            try:
+                from universe.universe_registry import UniverseRegistry as _UR
+                reg = _UR()
+                uni_symbols = set(reg.get_symbols(self.universe))
+                if uni_symbols:
+                    daily_full = os.path.join(self.import_root, "daily/daily_k.csv")
+                    if os.path.exists(daily_full):
+                        df_syms = _pd.read_csv(
+                            daily_full, usecols=["symbol"], low_memory=False
+                        )
+                        present_syms = set(df_syms["symbol"].dropna().astype(str).unique())
+                        hit = len(uni_symbols & present_syms)
+                        symbol_coverage_pct = round(100.0 * hit / len(uni_symbols), 2)
+                        score = round(0.5 * score + 0.5 * symbol_coverage_pct, 2)
+            except Exception:
+                pass
+
         self._scores["coverage_score"] = score
-        self._score_details["coverage_score"] = {"score": score, "datasets": details}
+        self._score_details["coverage_score"] = {
+            "score":                score,
+            "datasets":             details,
+            "symbol_coverage_pct":  symbol_coverage_pct,
+            "universe_name":        self.universe,
+        }
 
     # ------------------------------------------------------------------
     # Sub-score: source confidence

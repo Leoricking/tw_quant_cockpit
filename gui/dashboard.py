@@ -169,6 +169,16 @@ except Exception as _prel_exc:
     logger.warning("ProviderReliabilityPanel unavailable: %s", _prel_exc)
     _PROVIDER_RELIABILITY_AVAILABLE = False
 
+# ---------------------------------------------------------------------------
+# v0.3.25 Universe Manager panel import (guarded)
+# ---------------------------------------------------------------------------
+try:
+    from gui.universe_manager_panel import UniverseManagerPanel
+    _UNIVERSE_MANAGER_AVAILABLE = True
+except Exception as _umgr_exc:
+    logger.warning("UniverseManagerPanel unavailable: %s", _umgr_exc)
+    _UNIVERSE_MANAGER_AVAILABLE = False
+
 
 # ---------------------------------------------------------------------------
 # Colour helpers (Taiwan convention: red = up, green = down)
@@ -918,6 +928,7 @@ class CockpitWindow(QMainWindow if _PYSIDE6_AVAILABLE else object):
         self._daily_workflow_panel = None
         self._usability_qa_panel = None
         self._provider_reliability_panel = None
+        self._universe_manager_panel = None
 
         self._init_backends()
         if _PYSIDE6_AVAILABLE:
@@ -1110,6 +1121,13 @@ class CockpitWindow(QMainWindow if _PYSIDE6_AVAILABLE else object):
             mid_tabs.addTab(self._provider_reliability_panel, "Provider Reliability")
         else:
             self._provider_reliability_panel = None
+
+        # v0.3.25 Universe Manager tab
+        if _UNIVERSE_MANAGER_AVAILABLE:
+            self._universe_manager_panel = UniverseManagerPanel(mode=self._mode if hasattr(self, "_mode") else "real")
+            mid_tabs.addTab(self._universe_manager_panel, "Universe Manager")
+        else:
+            self._universe_manager_panel = None
 
         h_split.addWidget(mid_tabs)
         h_split.setStretchFactor(0, 3)

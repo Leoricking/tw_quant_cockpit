@@ -1,0 +1,12 @@
+symbol,name,sector,theme_primary,theme_secondary,supply_chain_role,ai_exposure,etf_relevance,institutional_focus,liquidity_tier,market_cap_tier,notes
+2881,富邦金 Fubon Financial,financial,BANK,INSURANCE,financial,LOW,0,1,LARGE,LARGE,Leading financial holding company
+2882,國泰金 Cathay Financial,financial,INSURANCE,BANK,financial,LOW,0,1,LARGE,LARGE,Insurance and banking conglomerate
+2886,兆豐金 Mega Financial,financial,BANK,FOREX,financial,LOW,0,1,LARGE,LARGE,State-owned bank and financial holding
+2891,中信金 CTBC Financial,financial,BANK,SECURITIES,financial,LOW,0,1,LARGE,LARGE,Major private bank; wealth management
+2884,玉山金 E.SUN Financial,financial,BANK,DIGITAL,financial,LOW,0,1,LARGE,LARGE,Digital banking pioneer
+2885,元大金 Yuanta Financial,financial,SECURITIES,BANK,financial,LOW,0,1,LARGE,LARGE,Leading securities and financial group
+2882,合庫金 Taiwan Cooperative,financial,BANK,GOVERNMENT,financial,LOW,0,1,LARGE,LARGE,Government-linked bank
+2887,台新金 Taishin Financial,financial,BANK,DIGITAL,financial,LOW,0,1,LARGE,LARGE,Private bank; digital banking focus
+2890,永豐金 SinoPac Financial,financial,BANK,SECURITIES,financial,LOW,0,1,LARGE,LARGE,Diversified financial services
+2892,第一金 First Financial,financial,BANK,GOVERNMENT,financial,LOW,0,1,LARGE,LARGE,State-owned first commercial bank
+2888,新光金 Shin Kong Financial,financial,INSURANCE,BANK,financial,LOW,0,0,LARGE,LARGE,Insurance-led financial holding

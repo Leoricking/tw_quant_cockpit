@@ -1,0 +1,23 @@
+symbol,name,sector,theme_primary,theme_secondary,supply_chain_role,ai_exposure,etf_relevance,institutional_focus,liquidity_tier,market_cap_tier,notes
+2330,台積電 TSMC,semiconductor,FOUNDRY,AI,foundry,HIGH,1,1,LARGE,LARGE,World's largest foundry; key AI chip partner
+2454,聯發科 MediaTek,semiconductor,IC_DESIGN,AI,ic_design,HIGH,1,1,LARGE,LARGE,Major fabless IC design; AI SoC leader
+3081,聯亞 Alliance Semi,semiconductor,IC_DESIGN,AI,ic_design,MEDIUM,1,1,MID,MID,Mixed-signal IC design
+3228,金麗科 Sinorich,semiconductor,IC_DESIGN,AI,ic_design,MEDIUM,0,1,MID,MID,PMIC and analog IC design
+3661,世芯-KY Alchip,semiconductor,IC_DESIGN,AI,asic,HIGH,1,1,MID,MID,Custom ASIC design for AI/HPC
+5274,信驊 ASPEED,semiconductor,IC_DESIGN,AI,bmc_chip,HIGH,1,1,MID,MID,BMC chips for AI servers
+2395,研華 Advantech,semiconductor,EMBEDDED,IoT,embedded,MEDIUM,0,1,MID,MID,Industrial IoT and embedded computing
+2409,友達 AUO,semiconductor,PANEL,DISPLAY,display,LOW,0,0,LARGE,LARGE,Display panel manufacturer
+3481,群創 Innolux,semiconductor,PANEL,DISPLAY,display,LOW,0,0,LARGE,LARGE,Display panel manufacturer
+3008,大立光 Largan,semiconductor,OPTICAL,LENS,optical_lens,MEDIUM,1,1,MID,LARGE,High-end smartphone lens modules
+3034,聯詠 Novatek,semiconductor,IC_DESIGN,DISPLAY,ic_design,MEDIUM,1,1,MID,MID,Display driver IC design
+3443,創意電子 GUC,semiconductor,IC_DESIGN,AI,asic,HIGH,1,1,MID,MID,ASIC design services; TSMC partner
+4966,譜瑞-KY Parade Tech,semiconductor,IC_DESIGN,HIGH_SPEED,ic_design,HIGH,1,1,MID,MID,High-speed interface IC
+3711,日月光投控 ASE,semiconductor,PACKAGING,AI,packaging,HIGH,1,1,LARGE,LARGE,Semiconductor packaging and testing
+2449,京元電子 KYEC,semiconductor,PACKAGING,IC_TEST,testing,MEDIUM,0,1,MID,MID,IC testing services
+6147,頎邦 Chipbond,semiconductor,PACKAGING,DRIVER_IC,packaging,MEDIUM,0,1,MID,MID,Driver IC packaging
+3035,智原 Faraday,semiconductor,IC_DESIGN,IP,ic_design,MEDIUM,0,1,MID,MID,IC design services and IP licensing
+2379,瑞昱 Realtek,semiconductor,IC_DESIGN,NETWORK,ic_design,MEDIUM,1,1,MID,MID,Networking and multimedia IC design
+2408,南亞科 Nanya Tech,semiconductor,MEMORY,DRAM,dram,LOW,0,0,LARGE,LARGE,DRAM memory manufacturer
+6239,力成 Powertech,semiconductor,PACKAGING,MEMORY,packaging,MEDIUM,0,1,MID,MID,Memory packaging and testing
+2303,聯電 UMC,semiconductor,FOUNDRY,MATURE_NODE,foundry,MEDIUM,1,1,LARGE,LARGE,Mature node foundry
+5347,世界先進 VIS,semiconductor,FOUNDRY,PMIC,foundry,MEDIUM,0,1,MID,MID,Specialty foundry; PMIC and sensor

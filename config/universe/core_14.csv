@@ -1,0 +1,15 @@
+symbol,name,sector,theme_primary,theme_secondary,supply_chain_role,ai_exposure,etf_relevance,institutional_focus,liquidity_tier,market_cap_tier,notes
+2330,台積電 TSMC,semiconductor,FOUNDRY,AI,foundry,HIGH,1,1,LARGE,LARGE,World's largest foundry; key AI chip partner
+2454,聯發科 MediaTek,semiconductor,IC_DESIGN,AI,ic_design,HIGH,1,1,LARGE,LARGE,Major fabless IC design; AI SoC leader
+2383,台光電 Elite Material,high_speed_interconnect,CCL,AI,ccl,HIGH,1,1,MID,MID,High-speed CCL for AI server PCBs
+6669,緯穎 Wiwynn,server_supply_chain,AI_SERVER,ODM,odm,HIGH,1,1,MID,MID,Hyperscale AI server ODM
+2345,智邦 Accton,network,SWITCH,800G,switch,HIGH,1,1,MID,MID,400G/800G switch solutions
+2308,台達電 Delta Electronics,power_thermal,POWER,COOLING,power_supply,HIGH,1,1,LARGE,LARGE,Power electronics; AI server PSU leader
+2317,鴻海 Hon Hai,server_supply_chain,ODM,AI_SERVER,odm,HIGH,1,1,LARGE,LARGE,Largest EMS/ODM; major AI server assembler
+3017,奇鋐 Auras,power_thermal,COOLING,AI,cooling,HIGH,1,1,MID,MID,Thermal cooling solutions for AI servers
+3037,欣興 Unimicron,high_speed_interconnect,ABF,PCB,pcb,HIGH,1,1,MID,MID,ABF substrate for AI chips
+3081,聯亞 Alliance Semi,semiconductor,IC_DESIGN,AI,ic_design,MEDIUM,1,1,MID,MID,Mixed-signal IC design
+3228,金麗科 Sinorich,semiconductor,IC_DESIGN,AI,ic_design,MEDIUM,0,1,MID,MID,PMIC and analog IC design
+3661,世芯-KY Alchip,semiconductor,IC_DESIGN,AI,asic,HIGH,1,1,MID,MID,Custom ASIC design for AI/HPC
+5274,信驊 ASPEED,semiconductor,IC_DESIGN,AI,bmc_chip,HIGH,1,1,MID,MID,BMC chips for AI servers
+8358,金居 Goldenmax,high_speed_interconnect,CCL,PCB,ccl,MEDIUM,0,1,MID,MID,High-speed copper clad laminate

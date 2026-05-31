@@ -20,6 +20,29 @@ Taiwan bull-stock screening + short/mid/long-term analysis + simulated trading l
 
 ---
 
+## v0.3.25 — Universe Expansion & Sector Classification
+
+**New in v0.3.25:**
+
+- **Universe Registry** — 13 universe groups: core_14 / core_30 / core_50 / core_100 / core_200 + 8 theme groups (AI mainstream, semiconductor, high-speed interconnect, server supply chain, power/thermal, financial, ETF candidates, institutional focus)
+- **Sector Classifier** — 9-sector / 25+ theme taxonomy for all universe symbols
+- **Universe Quality Score** — 0–100 composite score (INSUFFICIENT → OBSERVATIONAL → RESEARCH_READY → BACKTEST_READY → STRONG_RESEARCH_UNIVERSE)
+- **Universe Expander** — proposals-only, no auto-write; ranked expansion candidates
+- **GUI**: new "Universe Manager" tab in cockpit
+- **CLI**: 6 new commands (universe-list, universe-build-defaults, universe-show, universe-quality-score, universe-expand, universe-report)
+- **No real orders. Production BLOCKED. Read Only.**
+
+```
+python main.py universe-list
+python main.py universe-build-defaults
+python main.py universe-show --universe core_50
+python main.py universe-quality-score --universe core_50
+python main.py universe-expand --from core_30 --target-size 50
+python main.py universe-report --universe core_50
+```
+
+---
+
 ## v0.3.24 — Data Provider Reliability & Fallback Matrix
 
 **New in v0.3.24:**
