@@ -6,6 +6,33 @@
 
 ---
 
+## v0.3.29 — Research Notebook / Experiment Registry
+
+**New in v0.3.29:**
+
+- **Experiment Registry** — create and track research runs with `experiment_id` (EXP-YYYYMMDD-HHMMSS-shortuuid); stores metadata, snapshots, reports, notebook per experiment
+- **Experiment Snapshots** — 10 snapshot types: config, universe, data_quality, provider_reliability, rule_governance, backtest, signal_quality, portfolio, intraday, reports; summary only — no large data copies
+- **Experiment Comparison** — compare_two() / compare() across experiments; IMPROVED/WORSENED/UNCHANGED/INSUFFICIENT_DATA; note: IMPROVED ≠ ready for real trading
+- **Experiment Notebook** — build_notebook() → `experiments/{id}/notebook.md` with 10 sections
+- **Experiment Registry Report** — 6-section Markdown report → `reports/experiment_registry_report_YYYY-MM-DD.md`
+- **GUI**: new "Experiment Registry" tab in cockpit with experiment table, snapshot table, compare panel, notebook preview
+- **CLI**: 8 new commands
+- **Integrations**: `DailyResearchWorkflow` accepts `register_experiment=False`; `AutoReportCenter` full profile includes experiment_registry
+- **No auto-apply weights. No auto-enable rules. No real orders. Production BLOCKED.**
+
+```
+python main.py experiment-create --name "daily research 2026-06-01" --type daily_research --mode real --profile standard
+python main.py experiment-register-latest --mode real
+python main.py experiment-list
+python main.py experiment-show --id EXP-xxxx
+python main.py experiment-snapshot --id EXP-xxxx
+python main.py experiment-notebook --id EXP-xxxx
+python main.py experiment-compare --ids EXP-aaa,EXP-bbb
+python main.py experiment-report
+```
+
+---
+
 ## Project Overview
 
 This project has two layers:

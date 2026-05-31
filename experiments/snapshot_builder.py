@@ -1,0 +1,476 @@
+"""
+experiments/snapshot_builder.py — ExperimentSnapshotBuilder: build point-in-time snapshots (v0.3.29).
+[!] Research Only. No Real Orders. Production Trading: BLOCKED.
+"""
+
+import datetime
+import glob
+import json
+import logging
+import os
+import sys
+
+logger = logging.getLogger(__name__)
+
+BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+
+_VERSION = "v0.3.29"
+
+
+def _now_iso() -> str:
+    return datetime.datetime.now().isoformat()
+
+
+def _empty_snapshot(snapshot_type: str, source_files: list = None, warnings: list = None) -> dict:
+    return {
+        "snapshot_type": snapshot_type,
+        "generated_at": _now_iso(),
+        "source_files": source_files or [],
+        "summary": {},
+        "warnings": warnings or [],
+        "version_info": {"version": _VERSION},
+    }
+
+
+class ExperimentSnapshotBuilder:
+    """
+    Builds point-in-time JSON snapshots of the research environment.
+    [!] Research Only. No Real Orders. Production Trading: BLOCKED.
+    """
+
+    read_only: bool = True
+    no_real_orders: bool = True
+    production_blocked: bool = True
+
+    def __init__(
+        self,
+        results_dir: str = "data/backtest_results",
+        report_dir: str = "reports",
+        import_root: str = "data/import",
+    ):
+        self._results_dir = os.path.join(BASE_DIR, results_dir)
+        self._report_dir = os.path.join(BASE_DIR, report_dir)
+        self._import_root = os.path.join(BASE_DIR, import_root)
+
+    # ------------------------------------------------------------------
+    # Public builders
+    # ------------------------------------------------------------------
+
+    def build_config_snapshot(self) -> dict:
+        """Snapshot type: config. Records mode, git, python version."""
+        snap = _empty_snapshot("config")
+        try:
+            import subprocess
+
+            # git commit
+            git_commit = ""
+            try:
+                r = subprocess.run(
+                    ["git", "-C", BASE_DIR, "rev-parse", "--short", "HEAD"],
+                    capture_output=True, text=True, timeout=5,
+                )
+                if r.returncode == 0:
+                    git_commit = r.stdout.strip()
+            except Exception:
+                pass
+
+            # git tag
+            git_tag = ""
+            try:
+                r = subprocess.run(
+                    ["git", "-C", BASE_DIR, "describe", "--tags", "--exact-match", "HEAD"],
+                    capture_output=True, text=True, timeout=5,
+                )
+                if r.returncode == 0:
+                    git_tag = r.stdout.strip()
+            except Exception:
+                pass
+
+            mode = os.environ.get("TW_MODE", "real")
+
+            snap["summary"] = {
+                "mode": mode,
+                "git_commit": git_commit,
+                "git_tag": git_tag,
+                "timestamp": _now_iso(),
+                "python_version": sys.version,
+            }
+            snap["source_files"] = [os.path.join(BASE_DIR, "config.py")]
+
+        except Exception:
+            logger.exception("build_config_snapshot failed")
+            snap["warnings"].append("build_config_snapshot raised an exception")
+
+        return snap
+
+    def build_universe_snapshot(self, universe_name: str = None) -> dict:
+        """Snapshot type: universe. Captures universe composition summary."""
+        source_files = []
+        snap = _empty_snapshot("universe", source_files)
+        try:
+            universe_dir = os.path.join(BASE_DIR, "universe")
+            source_files.append(universe_dir)
+
+            from universe.universe_registry import UniverseRegistry
+            reg = UniverseRegistry()
+            universes = reg.list_universes()
+
+            target = None
+            if universe_name:
+                for u in universes:
+                    if u.get("name") == universe_name or u.get("universe_name") == universe_name:
+                        target = u
+                        break
+            if target is None and universes:
+                target = universes[0]
+
+            if target is not None:
+                u_name = target.get("name") or target.get("universe_name") or universe_name or ""
+                symbols = target.get("symbols", [])
+                sectors = target.get("sectors", target.get("sector_map", {}))
+                themes = target.get("themes", target.get("theme_map", {}))
+                snap["summary"] = {
+                    "universe_name": u_name,
+                    "universe_size": len(symbols),
+                    "sector_count": len(sectors),
+                    "theme_count": len(themes),
+                    "symbols_preview": symbols[:10],
+                }
+            else:
+                snap["summary"] = {
+                    "universe_name": universe_name or "",
+                    "universe_size": 0,
+                    "sector_count": 0,
+                    "theme_count": 0,
+                    "symbols_preview": [],
+                }
+                snap["warnings"].append("No universe data found")
+
+        except Exception:
+            logger.exception("build_universe_snapshot failed")
+            snap["warnings"].append("build_universe_snapshot raised an exception")
+
+        snap["source_files"] = source_files
+        return snap
+
+    def build_data_quality_snapshot(self) -> dict:
+        """Snapshot type: data_quality. Runs DataQualityGate and captures score."""
+        snap = _empty_snapshot("data_quality")
+        try:
+            from quality.data_quality_gate import DataQualityGate
+            gate = DataQualityGate()
+            result = gate.run()
+
+            snap["summary"] = {
+                "production_readiness_score": result.get("production_readiness_score",
+                                                          result.get("score", 0)),
+                "backtest_readiness_score": result.get("backtest_readiness_score", 0),
+                "production_blocked": True,
+                "data_freshness_summary": result.get("data_freshness_summary",
+                                                      result.get("freshness_summary", [])),
+                "overall_status": result.get("overall_status", result.get("status", "UNKNOWN")),
+            }
+            snap["source_files"] = [os.path.join(BASE_DIR, "quality")]
+
+        except Exception:
+            logger.exception("build_data_quality_snapshot failed")
+            snap["warnings"].append("build_data_quality_snapshot raised an exception")
+
+        return snap
+
+    def build_provider_reliability_snapshot(self) -> dict:
+        """Snapshot type: provider_reliability. Captures provider score summary."""
+        snap = _empty_snapshot("provider_reliability")
+        try:
+            from data.providers.provider_reliability import ProviderReliabilityMatrix
+            matrix = ProviderReliabilityMatrix()
+            result = matrix.build()
+
+            providers = result.get("providers", result.get("provider_scores", {}))
+            scores = []
+            if isinstance(providers, dict):
+                scores = [v for v in providers.values() if isinstance(v, (int, float))]
+            elif isinstance(providers, list):
+                scores = [p.get("score", 0) for p in providers if isinstance(p, dict)]
+
+            avg_score = sum(scores) / len(scores) if scores else 0.0
+
+            snap["summary"] = {
+                "provider_reliability_score": round(avg_score, 4),
+                "weak_datasets": result.get("weak_datasets", []),
+                "fallback_count": result.get("fallback_count", 0),
+                "provider_count": len(scores),
+            }
+            snap["source_files"] = [os.path.join(BASE_DIR, "data", "providers")]
+
+        except Exception:
+            logger.exception("build_provider_reliability_snapshot failed")
+            snap["warnings"].append("build_provider_reliability_snapshot raised an exception")
+
+        return snap
+
+    def build_rule_governance_snapshot(self) -> dict:
+        """Snapshot type: rule_governance. Captures rule registry summary."""
+        snap = _empty_snapshot("rule_governance")
+        try:
+            from governance.rule_registry import RuleRegistry
+            reg = RuleRegistry()
+            reg.load_builtin_rules()
+            s = reg.build_rule_summary()
+
+            high_confidence = 0
+            unknown_confidence = 0
+            try:
+                from governance.rule_confidence_scorer import RuleConfidenceScorer
+                scorer = RuleConfidenceScorer()
+                confidence_result = scorer.score_all(reg)
+                high_confidence = confidence_result.get("high_confidence", 0)
+                unknown_confidence = confidence_result.get("unknown_confidence", 0)
+            except Exception:
+                logger.warning("RuleConfidenceScorer not available for rule snapshot")
+
+            snap["summary"] = {
+                "total_rules": s.get("total_rules", s.get("total", 0)),
+                "active": s.get("active", 0),
+                "experimental": s.get("experimental", 0),
+                "needs_review": s.get("needs_review", 0),
+                "high_confidence": high_confidence,
+                "unknown_confidence": unknown_confidence,
+            }
+            snap["source_files"] = [os.path.join(BASE_DIR, "governance")]
+
+        except Exception:
+            logger.exception("build_rule_governance_snapshot failed")
+            snap["warnings"].append("build_rule_governance_snapshot raised an exception")
+
+        return snap
+
+    def build_backtest_snapshot(self) -> dict:
+        """Snapshot type: backtest. Loads most recent backtest result JSON."""
+        snap = _empty_snapshot("backtest")
+        found_files = []
+        hardened = None
+        portfolio = None
+        try:
+            if os.path.isdir(self._results_dir):
+                # Hardened backtest
+                patterns = [
+                    os.path.join(self._results_dir, "hardened_backtest_result_*.json"),
+                    os.path.join(self._results_dir, "*_metrics.json"),
+                ]
+                backtest_files = []
+                for pat in patterns:
+                    backtest_files.extend(glob.glob(pat))
+
+                if backtest_files:
+                    latest_bt = max(backtest_files, key=os.path.getmtime)
+                    found_files.append(latest_bt)
+                    with open(latest_bt, "r", encoding="utf-8") as f:
+                        bt_data = json.load(f)
+                    hardened = {
+                        "net_return": bt_data.get("net_return", bt_data.get("total_return", None)),
+                        "sharpe": bt_data.get("sharpe", bt_data.get("sharpe_ratio", None)),
+                        "max_drawdown": bt_data.get("max_drawdown", None),
+                        "validation_score": bt_data.get("validation_score", None),
+                        "confidence_grade": bt_data.get("confidence_grade", None),
+                        "source_file": os.path.basename(latest_bt),
+                    }
+
+                # Portfolio simulation
+                port_patterns = [
+                    os.path.join(self._results_dir, "portfolio_simulation_*.json"),
+                    os.path.join(self._results_dir, "portfolio_*.json"),
+                ]
+                port_files = []
+                for pat in port_patterns:
+                    port_files.extend(glob.glob(pat))
+
+                if port_files:
+                    latest_port = max(port_files, key=os.path.getmtime)
+                    found_files.append(latest_port)
+                    with open(latest_port, "r", encoding="utf-8") as f:
+                        port_data = json.load(f)
+                    portfolio = {
+                        "sharpe": port_data.get("sharpe", port_data.get("sharpe_ratio", None)),
+                        "max_drawdown": port_data.get("max_drawdown", None),
+                        "profit_factor": port_data.get("profit_factor", None),
+                        "trade_count": port_data.get("trade_count", port_data.get("total_trades", None)),
+                        "source_file": os.path.basename(latest_port),
+                    }
+            else:
+                snap["warnings"].append(f"results_dir not found: {self._results_dir}")
+
+            snap["summary"] = {
+                "hardened_backtest": hardened,
+                "portfolio": portfolio,
+                "found_files": [os.path.basename(f) for f in found_files],
+            }
+            snap["source_files"] = found_files
+
+        except Exception:
+            logger.exception("build_backtest_snapshot failed")
+            snap["warnings"].append("build_backtest_snapshot raised an exception")
+
+        return snap
+
+    def build_signal_quality_snapshot(self) -> dict:
+        """Snapshot type: signal_quality. Loads most recent signal quality JSON."""
+        snap = _empty_snapshot("signal_quality")
+        try:
+            if os.path.isdir(self._results_dir):
+                patterns = [
+                    os.path.join(self._results_dir, "signal_quality_result_*.json"),
+                    os.path.join(self._results_dir, "signal_quality_*.json"),
+                ]
+                files = []
+                for pat in patterns:
+                    files.extend(glob.glob(pat))
+
+                if files:
+                    latest = max(files, key=os.path.getmtime)
+                    snap["source_files"] = [latest]
+                    with open(latest, "r", encoding="utf-8") as f:
+                        data = json.load(f)
+                    snap["summary"] = {
+                        "boost_count": data.get("boost_count", 0),
+                        "keep_count": data.get("keep_count", 0),
+                        "reduce_count": data.get("reduce_count", 0),
+                        "disable_count": data.get("disable_count", 0),
+                        "total_signals": data.get("total_signals", 0),
+                        "generated_at": data.get("generated_at", ""),
+                    }
+                else:
+                    snap["warnings"].append("No signal quality result files found")
+                    snap["summary"] = {
+                        "boost_count": 0, "keep_count": 0,
+                        "reduce_count": 0, "disable_count": 0,
+                        "total_signals": 0, "generated_at": "",
+                    }
+            else:
+                snap["warnings"].append(f"results_dir not found: {self._results_dir}")
+
+        except Exception:
+            logger.exception("build_signal_quality_snapshot failed")
+            snap["warnings"].append("build_signal_quality_snapshot raised an exception")
+
+        return snap
+
+    def build_portfolio_snapshot(self) -> dict:
+        """Snapshot type: portfolio. Loads most recent portfolio simulation JSON."""
+        snap = _empty_snapshot("portfolio")
+        try:
+            if os.path.isdir(self._results_dir):
+                patterns = [
+                    os.path.join(self._results_dir, "portfolio_simulation_*.json"),
+                    os.path.join(self._results_dir, "portfolio_*.json"),
+                ]
+                files = []
+                for pat in patterns:
+                    files.extend(glob.glob(pat))
+
+                if files:
+                    latest = max(files, key=os.path.getmtime)
+                    snap["source_files"] = [latest]
+                    with open(latest, "r", encoding="utf-8") as f:
+                        data = json.load(f)
+                    snap["summary"] = {
+                        "scenario": data.get("scenario", data.get("scenario_name", "")),
+                        "sharpe": data.get("sharpe", data.get("sharpe_ratio", None)),
+                        "max_drawdown": data.get("max_drawdown", None),
+                        "profit_factor": data.get("profit_factor", None),
+                        "trade_count": data.get("trade_count", data.get("total_trades", None)),
+                    }
+                else:
+                    snap["warnings"].append("No portfolio simulation files found")
+                    snap["summary"] = {
+                        "scenario": "", "sharpe": None,
+                        "max_drawdown": None, "profit_factor": None, "trade_count": None,
+                    }
+            else:
+                snap["warnings"].append(f"results_dir not found: {self._results_dir}")
+
+        except Exception:
+            logger.exception("build_portfolio_snapshot failed")
+            snap["warnings"].append("build_portfolio_snapshot raised an exception")
+
+        return snap
+
+    def build_intraday_snapshot(self) -> dict:
+        """Snapshot type: intraday. Runs IntradayQualityChecker."""
+        snap = _empty_snapshot("intraday")
+        try:
+            from intraday.intraday_quality import IntradayQualityChecker
+            checker = IntradayQualityChecker()
+            result = checker.run()
+
+            snap["summary"] = {
+                "overall_quality_score": result.get("overall_quality_score",
+                                                     result.get("quality_score", 0)),
+                "symbol_count": result.get("symbol_count", 0),
+                "fake_breakout_warnings": len(result.get("fake_breakout_warnings",
+                                               result.get("fake_breakouts", []))),
+                "tick_bidask_ready": False,
+                "intraday_status": result.get("status", result.get("intraday_status", "UNKNOWN")),
+            }
+            snap["source_files"] = [os.path.join(BASE_DIR, "intraday")]
+
+        except Exception:
+            logger.exception("build_intraday_snapshot failed")
+            snap["warnings"].append("build_intraday_snapshot raised an exception")
+
+        return snap
+
+    def build_generated_reports_snapshot(self) -> dict:
+        """Snapshot type: reports. Scans reports dir for markdown files."""
+        snap = _empty_snapshot("reports")
+        try:
+            report_files = []
+            if os.path.isdir(self._report_dir):
+                report_files = glob.glob(os.path.join(self._report_dir, "*.md"))
+
+            most_recent = ""
+            if report_files:
+                most_recent = os.path.basename(max(report_files, key=os.path.getmtime))
+
+            snap["summary"] = {
+                "report_count": len(report_files),
+                "report_paths": [os.path.basename(p) for p in report_files],
+                "failed_reports": 0,
+                "most_recent": most_recent,
+            }
+            snap["source_files"] = [self._report_dir]
+
+        except Exception:
+            logger.exception("build_generated_reports_snapshot failed")
+            snap["warnings"].append("build_generated_reports_snapshot raised an exception")
+
+        return snap
+
+    def build_all(self, universe_name: str = None) -> dict:
+        """
+        Build all available snapshots. Each builder is called independently;
+        failures in one do not prevent others from running.
+        Returns a dict mapping snapshot_type -> snapshot dict.
+        """
+        result = {}
+        builders = [
+            ("config", lambda: self.build_config_snapshot()),
+            ("universe", lambda: self.build_universe_snapshot(universe_name)),
+            ("data_quality", lambda: self.build_data_quality_snapshot()),
+            ("provider_reliability", lambda: self.build_provider_reliability_snapshot()),
+            ("rule_governance", lambda: self.build_rule_governance_snapshot()),
+            ("backtest", lambda: self.build_backtest_snapshot()),
+            ("signal_quality", lambda: self.build_signal_quality_snapshot()),
+            ("portfolio", lambda: self.build_portfolio_snapshot()),
+            ("intraday", lambda: self.build_intraday_snapshot()),
+            ("reports", lambda: self.build_generated_reports_snapshot()),
+        ]
+        for snap_type, fn in builders:
+            try:
+                snap = fn()
+                result[snap_type] = snap
+            except Exception:
+                logger.exception("build_all: %s snapshot raised uncaught exception", snap_type)
+                result[snap_type] = _empty_snapshot(snap_type, warnings=[f"{snap_type} snapshot failed"])
+
+        return result

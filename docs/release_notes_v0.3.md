@@ -4,9 +4,46 @@
 
 ---
 
-## v0.3.28 — Strategy Rule Governance
+## v0.3.29 — Research Notebook / Experiment Registry
 
 **Status:** Current
+
+### New Files
+
+- `experiments/__init__.py` — package init
+- `experiments/experiment_metadata.py` — `ExperimentMetadata` dataclass; experiment_id (EXP-YYYYMMDD-HHMMSS-shortuuid); 6 status constants (CREATED/RUNNING/COMPLETED/PARTIAL/FAILED/ARCHIVED); 8 type constants; `generate_experiment_id()` helper
+- `experiments/experiment_registry.py` — `ExperimentRegistry`: create_experiment(), register_existing_run(), list_experiments(), get_experiment(), update_status(), add_snapshot(), add_report(), archive_experiment(), build_registry_summary(); stores `experiments/{id}/metadata.json`; registry.json index
+- `experiments/snapshot_builder.py` — `ExperimentSnapshotBuilder`: 10 build_* methods (config, universe, data_quality, provider_reliability, rule_governance, backtest, signal_quality, portfolio, intraday, reports); build_all(); summarizes only — no large data copies; each snapshot has snapshot_type/generated_at/source_files/summary/warnings/version_info
+- `experiments/experiment_comparator.py` — `ExperimentComparator`: compare() / compare_two() / compare_scores() / compare_backtest_metrics() / compare_data_quality() / compare_rule_snapshots() / compare_universe(); directions IMPROVED/WORSENED/UNCHANGED/INSUFFICIENT_DATA; always includes "IMPROVED does not imply readiness for real trading" disclaimer
+- `experiments/experiment_notebook.py` — `ExperimentNotebookBuilder`: build_notebook() → `{id}/notebook.md`; 10 sections (基本資訊/研究目的/Data Quality/Universe/Rule/Backtest/Reports/Observation/Next Action/安全聲明); append_note(); build_summary_markdown()
+- `experiments/README.md` — runtime output directory explanation; experiment_id format; not committed to git
+- `reports/experiment_registry_report.py` — `ExperimentRegistryReportBuilder`: 6-section Markdown report; output: `reports/experiment_registry_report_YYYY-MM-DD.md`
+- `gui/experiment_registry_panel.py` — `ExperimentRegistryPanel`: PySide6 GUI with safety banner, summary cards, experiment table, snapshot table, compare panel, notebook preview, action buttons; QThread workers; closeEvent cleanup
+- `gui/experiment_registry_adapter.py` — `ExperimentRegistryAdapter`: GUI bridge (create_experiment, register_latest_run, list_experiments, get_experiment_detail, build_notebook, generate_report, compare, build_snapshots, load_latest_report_path)
+- `docs/research_notebook_experiment_registry.md` — documentation
+
+### Modified Files
+
+- `main.py` — 8 new CLI commands: `experiment-create`, `experiment-register-latest`, `experiment-list`, `experiment-show`, `experiment-notebook`, `experiment-compare`, `experiment-report`, `experiment-snapshot`
+- `gui/dashboard.py` — guarded import + "Experiment Registry" tab
+- `reports/auto_report_center.py` — `include_experiment_registry` parameter; `run_experiment_registry_report()` method; full profile includes experiment_registry
+- `workflow/daily_workflow.py` — `register_experiment=False` and `experiment_id=None` params; optional experiment registration at end of run_full_workflow() — default off, does not change existing behavior
+- `docs/roadmap.md` — v0.3.29 marked Done; v0.4.0 Research Platform Stable Release planned
+- `docs/release_notes_v0.3.md` — this file
+- `README.md` — v0.3.29 section
+- `.gitignore` — experiments/EXP-*, experiments/registry.json, reports/experiment_registry_report_*.md excluded
+
+### Safety
+
+- No auto-apply weights. No auto-enable rules. No real orders. Production BLOCKED.
+- `experiments/` runtime outputs excluded from git; `experiments/.gitkeep` committed.
+- IMPROVED comparison result does not imply readiness for real trading.
+
+---
+
+## v0.3.28 — Strategy Rule Governance
+
+**Status:** Superseded by v0.3.29
 
 ### New Files
 

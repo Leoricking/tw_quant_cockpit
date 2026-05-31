@@ -171,3 +171,10 @@ data/backtest_results/intraday_quality_*.csv
 data/import/intraday_standard/
 data/import/tick/
 data/import/bidask/
+
+# Research Notebook / Experiment Registry outputs (v0.3.29, runtime artifacts)
+experiments/EXP-*
+experiments/registry.json
+reports/experiment_registry_report_*.md
+data/backtest_results/experiment_*.csv
+data/backtest_results/experiment_*.json

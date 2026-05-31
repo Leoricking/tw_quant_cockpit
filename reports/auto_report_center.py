@@ -47,6 +47,7 @@ _PROFILE_FLAGS: Dict[str, dict] = {
         include_hardened_backtest=True,
         include_intraday_pipeline=True,
         include_rule_governance=True,
+        include_experiment_registry=True,
     ),
     "daily": dict(
         include_stock_reports=False,
@@ -146,6 +147,7 @@ class AutoReportCenter:
         include_hardened_backtest: bool = False,
         include_intraday_pipeline: bool = False,
         include_rule_governance: bool = False,
+        include_experiment_registry: bool = False,
     ):
         self.mode        = mode
         self.profile     = profile
@@ -171,6 +173,7 @@ class AutoReportCenter:
         self.include_hardened_backtest    = flags.get("include_hardened_backtest",    include_hardened_backtest)
         self.include_intraday_pipeline    = flags.get("include_intraday_pipeline",    include_intraday_pipeline)
         self.include_rule_governance      = flags.get("include_rule_governance",      include_rule_governance)
+        self.include_experiment_registry  = flags.get("include_experiment_registry",  include_experiment_registry)
         self.universe_name = universe_name
 
         # Runtime state (populated during run)
@@ -235,6 +238,9 @@ class AutoReportCenter:
 
         if self.include_rule_governance:
             self.run_rule_governance_report()
+
+        if self.include_experiment_registry:
+            self.run_experiment_registry_report()
 
         # Aggregated outputs
         if self.include_daily_summary:
@@ -630,6 +636,17 @@ class AutoReportCenter:
             )
         except Exception as exc:
             self._record_fail("intraday_pipeline", str(exc))
+
+    def run_experiment_registry_report(self):
+        """Generate experiment registry report (v0.3.29). Optional — failure does not abort run."""
+        try:
+            from reports.experiment_registry_report import ExperimentRegistryReportBuilder
+            builder = ExperimentRegistryReportBuilder(report_dir=self._out_dir)
+            path    = builder.build()
+            self._context["experiment_registry_report"] = path
+            self._record_success("experiment_registry", path)
+        except Exception as exc:
+            self._record_fail("experiment_registry", str(exc))
 
     def build_daily_market_summary(self):
         """Build daily market summary from all available context."""

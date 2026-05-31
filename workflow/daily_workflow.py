@@ -65,14 +65,18 @@ class DailyResearchWorkflow:
         results_dir:   Optional[str] = None,
         import_root:   Optional[str] = None,
         log_dir:       Optional[str] = None,
-        dry_run:       bool = False,
-        universe_name: Optional[str] = None,
+        dry_run:             bool = False,
+        universe_name:       Optional[str] = None,
+        register_experiment: bool = False,
+        experiment_id:       Optional[str] = None,
     ):
-        self.mode          = mode
-        self.profile       = profile
-        self.stocks        = stocks or []
-        self.top_n         = top_n
-        self.universe_name = universe_name
+        self.mode               = mode
+        self.profile            = profile
+        self.stocks             = stocks or []
+        self.top_n              = top_n
+        self.universe_name      = universe_name
+        self.register_experiment = register_experiment
+        self.experiment_id      = experiment_id
         self.report_dir  = report_dir  or _DEFAULT_REPORT_DIR
         self.results_dir = results_dir or _DEFAULT_RESULTS_DIR
         self.import_root = import_root or _DEFAULT_IMPORT_ROOT
@@ -152,6 +156,29 @@ class DailyResearchWorkflow:
         result = self._build_result("daily_workflow")
         self._write_workflow_log(result)
         self._write_workflow_summary(result)
+
+        # v0.3.29: optional experiment registration (default off — does not change existing behavior)
+        if self.register_experiment:
+            try:
+                from experiments.experiment_registry import ExperimentRegistry
+                registry = ExperimentRegistry()
+                exp_id = self.experiment_id
+                if exp_id is None:
+                    meta = registry.create_experiment(
+                        name=f"daily_workflow {datetime.now().strftime('%Y-%m-%d')}",
+                        experiment_type="daily_research",
+                        mode=self.mode,
+                        profile=self.profile,
+                        source_command=f"daily-workflow --mode {self.mode} --profile {self.profile}",
+                    )
+                    exp_id = meta.experiment_id
+                status_val = "COMPLETED" if result.get("overall_status") == "ok" else "PARTIAL"
+                registry.update_status(exp_id, status_val)
+                result["experiment_id"] = exp_id
+                logger.info("[DailyResearchWorkflow] experiment registered: %s", exp_id)
+            except Exception as exc:
+                logger.warning("[DailyResearchWorkflow] experiment registration failed: %s", exc)
+
         return result
 
     def open_cockpit(self) -> dict:

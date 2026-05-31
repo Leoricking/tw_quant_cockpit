@@ -4611,6 +4611,268 @@ def cmd_rule_governance(args: argparse.Namespace) -> None:
 
 
 # ---------------------------------------------------------------------------
+# v0.3.29 — Research Notebook / Experiment Registry Commands
+# ---------------------------------------------------------------------------
+
+def _print_experiment_header() -> None:
+    print()
+    print("=" * 60)
+    print("  TW Quant Cockpit v0.3.29 — Experiment Registry")
+    print("=" * 60)
+    print("  [!] Research Only. Backtest Only. No Real Orders.")
+    print()
+
+
+def cmd_experiment_create(args: argparse.Namespace) -> None:
+    """Create a new experiment entry."""
+    _print_experiment_header()
+    name     = getattr(args, "name",    None)
+    exp_type = getattr(args, "type",    "daily_research")
+    mode     = getattr(args, "mode",    "real")
+    profile  = getattr(args, "profile", "standard")
+    tags_str = getattr(args, "tags",    None)
+    notes    = getattr(args, "notes",   None)
+    tags     = [t.strip() for t in tags_str.split(",")] if tags_str else []
+
+    try:
+        from experiments.experiment_registry import ExperimentRegistry
+        registry = ExperimentRegistry()
+        source_cmd = f"experiment-create --name \"{name}\" --type {exp_type} --mode {mode} --profile {profile}"
+        meta = registry.create_experiment(
+            name=name, experiment_type=exp_type, mode=mode,
+            profile=profile, tags=tags, notes=notes,
+            source_command=source_cmd,
+        )
+    except Exception as exc:
+        print(f"  ERROR: {exc}")
+        sys.exit(1)
+
+    print(f"  Experiment ID  : {meta.experiment_id}")
+    print(f"  Name           : {meta.experiment_name}")
+    print(f"  Type           : {meta.experiment_type}")
+    print(f"  Mode           : {meta.mode}")
+    print(f"  Profile        : {meta.profile}")
+    print(f"  Status         : {meta.status}")
+    print(f"  Created At     : {meta.created_at}")
+    print(f"  Git Commit     : {meta.git_commit or '—'}")
+    print()
+    print("  [!] No real orders. Research Only.")
+    print()
+
+
+def cmd_experiment_register_latest(args: argparse.Namespace) -> None:
+    """Register the latest research run as an experiment."""
+    _print_experiment_header()
+    mode = getattr(args, "mode", "real")
+
+    try:
+        from experiments.experiment_registry import ExperimentRegistry
+        registry = ExperimentRegistry()
+        meta = registry.register_existing_run(source_command=f"experiment-register-latest --mode {mode}")
+    except Exception as exc:
+        print(f"  ERROR: {exc}")
+        sys.exit(1)
+
+    if meta is None:
+        print("  No experiments found to register.")
+    else:
+        print(f"  Registered     : {meta.experiment_id}")
+        print(f"  Status         : {meta.status}")
+    print()
+    print("  [!] No real orders. Research Only.")
+    print()
+
+
+def cmd_experiment_list(args: argparse.Namespace) -> None:
+    """List experiments."""
+    _print_experiment_header()
+    status_flt = getattr(args, "status", None)
+    type_flt   = getattr(args, "type",   None)
+    limit      = getattr(args, "limit",  20)
+
+    try:
+        from experiments.experiment_registry import ExperimentRegistry
+        registry = ExperimentRegistry()
+        experiments = registry.list_experiments(limit=limit, status=status_flt, experiment_type=type_flt)
+    except Exception as exc:
+        print(f"  ERROR: {exc}")
+        sys.exit(1)
+
+    if not experiments:
+        print("  No experiments found.")
+    else:
+        print(f"  {'ID':<36}  {'Name':<24}  {'Type':<20}  {'Status':<12}  {'Created At':<20}")
+        print(f"  {'-'*36}  {'-'*24}  {'-'*20}  {'-'*12}  {'-'*20}")
+        for e in experiments:
+            eid   = e.get("experiment_id", "")[:36]
+            ename = e.get("experiment_name", "")[:24]
+            etype = e.get("experiment_type", "")[:20]
+            estat = e.get("status", "")[:12]
+            edate = e.get("created_at", "")[:20]
+            print(f"  {eid:<36}  {ename:<24}  {etype:<20}  {estat:<12}  {edate:<20}")
+    print()
+
+
+def cmd_experiment_show(args: argparse.Namespace) -> None:
+    """Show experiment detail."""
+    _print_experiment_header()
+    exp_id = getattr(args, "id", None)
+
+    if not exp_id:
+        print("  ERROR: --id is required")
+        sys.exit(1)
+
+    try:
+        from experiments.experiment_registry import ExperimentRegistry
+        registry = ExperimentRegistry()
+        meta = registry.get_experiment(registry._resolve_id(exp_id))
+    except Exception as exc:
+        print(f"  ERROR: {exc}")
+        sys.exit(1)
+
+    if meta is None:
+        print(f"  Experiment not found: {exp_id}")
+    else:
+        print(f"  Experiment ID  : {meta.experiment_id}")
+        print(f"  Name           : {meta.experiment_name}")
+        print(f"  Type           : {meta.experiment_type}")
+        print(f"  Mode           : {meta.mode}")
+        print(f"  Profile        : {meta.profile}")
+        print(f"  Status         : {meta.status}")
+        print(f"  Created At     : {meta.created_at}")
+        print(f"  Git Commit     : {meta.git_commit or '—'}")
+        print(f"  Git Tag        : {meta.git_tag or '—'}")
+        print(f"  Universe       : {meta.universe_name or '—'}")
+        print(f"  Notes          : {meta.notes or '—'}")
+        print(f"  Snapshots      : {list(meta.snapshots.keys()) or '(none)'}")
+        print(f"  Reports        : {len(meta.reports)}")
+        print(f"  Source Command : {meta.source_command or '—'}")
+    print()
+
+
+def cmd_experiment_notebook(args: argparse.Namespace) -> None:
+    """Build experiment notebook.md."""
+    _print_experiment_header()
+    exp_id = getattr(args, "id", None)
+
+    if not exp_id:
+        print("  ERROR: --id is required")
+        sys.exit(1)
+
+    try:
+        from experiments.experiment_registry import ExperimentRegistry
+        from experiments.experiment_notebook import ExperimentNotebookBuilder
+        registry = ExperimentRegistry()
+        resolved = registry._resolve_id(exp_id)
+        builder  = ExperimentNotebookBuilder()
+        path     = builder.build_notebook(resolved)
+    except Exception as exc:
+        print(f"  ERROR: {exc}")
+        sys.exit(1)
+
+    print(f"  Notebook: {path}")
+    print()
+    print("  [!] No real orders. Research Only.")
+    print()
+
+
+def cmd_experiment_compare(args: argparse.Namespace) -> None:
+    """Compare two or more experiments."""
+    _print_experiment_header()
+    ids_str = getattr(args, "ids", None)
+
+    if not ids_str:
+        print("  ERROR: --ids is required (comma-separated list, e.g. EXP-aaa,EXP-bbb)")
+        sys.exit(1)
+
+    exp_ids = [i.strip() for i in ids_str.split(",") if i.strip()]
+    if len(exp_ids) < 2:
+        # Allow single id for self-compare (smoke test)
+        if len(exp_ids) == 1:
+            exp_ids = [exp_ids[0], exp_ids[0]]
+        else:
+            print("  ERROR: Need at least 2 experiment IDs")
+            sys.exit(1)
+
+    try:
+        from experiments.experiment_comparator import ExperimentComparator
+        comparator = ExperimentComparator()
+        result = comparator.compare(exp_ids)
+    except Exception as exc:
+        print(f"  ERROR: {exc}")
+        sys.exit(1)
+
+    pairs = result.get("pairs", [])
+    for pair in pairs:
+        print(f"  Left  : {pair.get('left_id', '?')}")
+        print(f"  Right : {pair.get('right_id', '?')}")
+        print(f"  Overall Direction: {pair.get('overall_direction', '?')}")
+        print(f"  Recommendation: {pair.get('recommendation', '?')}")
+        scores = pair.get("scores", {})
+        for metric, info in scores.items():
+            if isinstance(info, dict):
+                direction = info.get("direction", "?")
+                left_v  = info.get("left_value")
+                right_v = info.get("right_value")
+                print(f"    {metric}: {left_v} → {right_v}  [{direction}]")
+        print()
+    print("  [!] IMPROVED does not imply readiness for real trading. No real orders.")
+    print()
+
+
+def cmd_experiment_report(args: argparse.Namespace) -> None:
+    """Generate Experiment Registry report."""
+    _print_experiment_header()
+
+    try:
+        from reports.experiment_registry_report import ExperimentRegistryReportBuilder
+        builder = ExperimentRegistryReportBuilder()
+        path    = builder.build()
+    except Exception as exc:
+        print(f"  ERROR: {exc}")
+        sys.exit(1)
+
+    print(f"  Report: {path}")
+    print()
+    print("  [!] No real orders. Research Only.")
+    print()
+
+
+def cmd_experiment_snapshot(args: argparse.Namespace) -> None:
+    """Build all snapshots for an experiment."""
+    _print_experiment_header()
+    exp_id = getattr(args, "id", None)
+
+    if not exp_id:
+        print("  ERROR: --id is required (use 'latest' for most recent)")
+        sys.exit(1)
+
+    try:
+        from experiments.experiment_registry import ExperimentRegistry
+        from gui.experiment_registry_adapter import ExperimentRegistryAdapter
+        _reg     = ExperimentRegistry()
+        exp_id_r = _reg._resolve_id(exp_id)
+        adapter  = ExperimentRegistryAdapter()
+        result   = adapter.build_snapshots(exp_id_r)
+    except Exception as exc:
+        print(f"  ERROR: {exc}")
+        sys.exit(1)
+
+    print(f"  Experiment ID  : {result.get('experiment_id', exp_id)}")
+    print(f"  Status         : {result.get('status', '?')}")
+    print(f"  Snapshots saved: {result.get('saved_count', 0)}")
+    snaps = result.get("snapshots", {})
+    for stype, snap in snaps.items():
+        gen_at = snap.get("generated_at", "?")[:19] if isinstance(snap, dict) else "?"
+        print(f"    {stype}: {gen_at}")
+    if result.get("error"):
+        print(f"  [WARN] {result['error']}")
+    print()
+    print("  [!] No real orders. Research Only.")
+    print()
+
+
+# ---------------------------------------------------------------------------
 # v0.3.27 — Intraday / Tick Data Pipeline Commands
 # ---------------------------------------------------------------------------
 
@@ -5806,6 +6068,76 @@ def _build_parser() -> argparse.ArgumentParser:
         help="Custom output folder for reports",
     )
 
+    # --- experiment-create (v0.3.29) ---
+    p_ec = subparsers.add_parser(
+        "experiment-create",
+        help="Create a new experiment entry in the Experiment Registry (v0.3.29)",
+    )
+    p_ec.add_argument("--name",    default=None,           help="Experiment name")
+    p_ec.add_argument("--type",    default="daily_research",
+                      choices=["daily_research", "hardened_backtest", "signal_quality",
+                               "rule_weight_tuning", "intraday_research", "universe_research",
+                               "portfolio_simulation", "manual_note"],
+                      help="Experiment type (default: daily_research)")
+    p_ec.add_argument("--mode",    choices=["real", "mock"], default="real",
+                      help="Data mode (default: real)")
+    p_ec.add_argument("--profile", default="standard",     help="Research profile (default: standard)")
+    p_ec.add_argument("--tags",    default=None,           help="Comma-separated tags")
+    p_ec.add_argument("--notes",   default=None,           help="Experiment notes")
+
+    # --- experiment-register-latest (v0.3.29) ---
+    p_erl = subparsers.add_parser(
+        "experiment-register-latest",
+        help="Register the latest research run outputs to the most recent experiment (v0.3.29)",
+    )
+    p_erl.add_argument("--mode", choices=["real", "mock"], default="real",
+                       help="Data mode (default: real)")
+
+    # --- experiment-list (v0.3.29) ---
+    p_el = subparsers.add_parser(
+        "experiment-list",
+        help="List experiments in the Experiment Registry (v0.3.29)",
+    )
+    p_el.add_argument("--status", default=None,
+                      help="Filter by status (CREATED, RUNNING, COMPLETED, PARTIAL, FAILED, ARCHIVED)")
+    p_el.add_argument("--type",   default=None, help="Filter by experiment type")
+    p_el.add_argument("--limit",  type=int, default=20, help="Max experiments to show (default: 20)")
+
+    # --- experiment-show (v0.3.29) ---
+    p_es = subparsers.add_parser(
+        "experiment-show",
+        help="Show experiment detail (v0.3.29)",
+    )
+    p_es.add_argument("--id", default=None, help="Experiment ID (use 'latest' for most recent)")
+
+    # --- experiment-notebook (v0.3.29) ---
+    p_en = subparsers.add_parser(
+        "experiment-notebook",
+        help="Build experiment notebook.md (v0.3.29)",
+    )
+    p_en.add_argument("--id", default=None, help="Experiment ID (use 'latest' for most recent)")
+
+    # --- experiment-compare (v0.3.29) ---
+    p_ecmp = subparsers.add_parser(
+        "experiment-compare",
+        help="Compare two or more experiments (v0.3.29)",
+    )
+    p_ecmp.add_argument("--ids", default=None,
+                        help="Comma-separated experiment IDs, e.g. EXP-aaa,EXP-bbb")
+
+    # --- experiment-report (v0.3.29) ---
+    subparsers.add_parser(
+        "experiment-report",
+        help="Generate Experiment Registry Markdown report (v0.3.29)",
+    )
+
+    # --- experiment-snapshot (v0.3.29) ---
+    p_esnap = subparsers.add_parser(
+        "experiment-snapshot",
+        help="Build all snapshots for an experiment (v0.3.29)",
+    )
+    p_esnap.add_argument("--id", default=None, help="Experiment ID (use 'latest' for most recent)")
+
     # --- rule-governance (v0.3.28) ---
     p_rg = subparsers.add_parser(
         "rule-governance",
@@ -6248,6 +6580,15 @@ def main() -> None:
         "provider-reliability":        cmd_provider_reliability,
         # TW Quant Cockpit v0.3.26
         "hardened-backtest":           cmd_hardened_backtest,
+        # TW Quant Cockpit v0.3.29
+        "experiment-create":           cmd_experiment_create,
+        "experiment-register-latest":  cmd_experiment_register_latest,
+        "experiment-list":             cmd_experiment_list,
+        "experiment-show":             cmd_experiment_show,
+        "experiment-notebook":         cmd_experiment_notebook,
+        "experiment-compare":          cmd_experiment_compare,
+        "experiment-report":           cmd_experiment_report,
+        "experiment-snapshot":         cmd_experiment_snapshot,
         # TW Quant Cockpit v0.3.28
         "rule-governance":             cmd_rule_governance,
         # TW Quant Cockpit v0.3.27

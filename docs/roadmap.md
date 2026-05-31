@@ -29,6 +29,7 @@
 | v0.3.26 | Backtest Engine Hardening | Done |
 | v0.3.27 | Intraday / Tick Data Pipeline | Done |
 | v0.3.28 | Strategy Rule Governance | Done |
+| v0.3.29 | Research Notebook / Experiment Registry | Done |
 
 ---
 
@@ -120,19 +121,39 @@
 
 ---
 
-## Planned: v0.3.29
+## Completed: v0.3.29 — Research Notebook / Experiment Registry
 
-**Target:** Research Notebook / Experiment Registry
+- `ExperimentMetadata`: dataclass with experiment_id (EXP-YYYYMMDD-HHMMSS-shortuuid), name, type, status, mode, profile, git_commit, git_tag, universe, snapshots, reports; 6 status constants; 8 type constants
+- `ExperimentRegistry`: create/register/list/get/update/archive experiments; stores `experiments/{id}/metadata.json`, snapshots/, reports/, notes.md; `registry.json` index; runtime outputs not committed
+- `ExperimentSnapshotBuilder`: 10 snapshot types — config, universe, data_quality, provider_reliability, rule_governance, backtest, signal_quality, portfolio, intraday, reports; build_all(); summarizes only, no large data copies
+- `ExperimentComparator`: compare_two() / compare() — scores/backtest/data_quality/rules/universe; IMPROVED/WORSENED/UNCHANGED/INSUFFICIENT_DATA; IMPROVED ≠ ready for real trading
+- `ExperimentNotebookBuilder`: build_notebook() → `{id}/notebook.md`; 10 sections
+- `ExperimentRegistryReportBuilder`: 6-section Markdown report → `reports/experiment_registry_report_YYYY-MM-DD.md`
+- `ExperimentRegistryPanel`: PySide6 GUI with safety banner, summary cards, experiment table, snapshot table, compare panel, notebook preview, action buttons; QThread workers
+- `ExperimentRegistryAdapter`: GUI bridge
+- CLI: `python main.py experiment-create|register-latest|list|show|notebook|compare|report|snapshot`
+- Integration: `DailyResearchWorkflow` accepts `register_experiment=False`; `AutoReportCenter` full profile includes experiment_registry; "Experiment Registry" tab in cockpit
+- `experiments/` runtime excluded from git; `experiments/.gitkeep` committed
+- No real orders. Production BLOCKED.
 
-- experiment_id
-- config snapshot
-- universe snapshot
-- data quality snapshot
-- rule snapshot
-- backtest result snapshot
-- compare experiments
-- GUI Experiment Registry tab
-- Still read-only, no real orders
+---
+
+## Planned: v0.4.0 — Research Platform Stable Release
+
+**Target:** Architecture consolidation and stable release
+
+- Unified data model (replace ad-hoc dict structures with dataclasses)
+- Plugin architecture for custom rules
+- Config file support (`config.yaml`) for provider tokens and thresholds
+- Full test suite (pytest) with real data fixtures
+- Complete smoke / regression suite across all CLI commands
+- GUI / CLI / reports full acceptance testing
+- Stable release checklist
+
+**Safety constraints remain unchanged in v0.4.x:**
+- PRODUCTION_BLOCKED=True
+- REAL_ORDER_READY=False
+- No broker connections
 
 ---
 
