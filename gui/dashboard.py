@@ -179,6 +179,16 @@ except Exception as _umgr_exc:
     logger.warning("UniverseManagerPanel unavailable: %s", _umgr_exc)
     _UNIVERSE_MANAGER_AVAILABLE = False
 
+# ---------------------------------------------------------------------------
+# v0.3.26 Hardened Backtest panel import (guarded)
+# ---------------------------------------------------------------------------
+try:
+    from gui.hardened_backtest_panel import HardenedBacktestPanel
+    _HARDENED_BACKTEST_AVAILABLE = True
+except Exception as _hb_exc:
+    logger.warning("HardenedBacktestPanel unavailable: %s", _hb_exc)
+    _HARDENED_BACKTEST_AVAILABLE = False
+
 
 # ---------------------------------------------------------------------------
 # Colour helpers (Taiwan convention: red = up, green = down)
@@ -929,6 +939,7 @@ class CockpitWindow(QMainWindow if _PYSIDE6_AVAILABLE else object):
         self._usability_qa_panel = None
         self._provider_reliability_panel = None
         self._universe_manager_panel = None
+        self._hardened_backtest_panel = None
 
         self._init_backends()
         if _PYSIDE6_AVAILABLE:
@@ -1128,6 +1139,13 @@ class CockpitWindow(QMainWindow if _PYSIDE6_AVAILABLE else object):
             mid_tabs.addTab(self._universe_manager_panel, "Universe Manager")
         else:
             self._universe_manager_panel = None
+
+        # v0.3.26 Hardened Backtest tab
+        if _HARDENED_BACKTEST_AVAILABLE:
+            self._hardened_backtest_panel = HardenedBacktestPanel(mode=self._mode if hasattr(self, "_mode") else "real")
+            mid_tabs.addTab(self._hardened_backtest_panel, "Hardened Backtest")
+        else:
+            self._hardened_backtest_panel = None
 
         h_split.addWidget(mid_tabs)
         h_split.setStretchFactor(0, 3)

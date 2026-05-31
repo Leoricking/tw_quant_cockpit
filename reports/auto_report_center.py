@@ -44,6 +44,7 @@ _PROFILE_FLAGS: Dict[str, dict] = {
         include_daily_summary=True,
         include_data_quality_gate=True,
         include_provider_reliability=True,
+        include_hardened_backtest=True,
     ),
     "daily": dict(
         include_stock_reports=False,
@@ -139,6 +140,7 @@ class AutoReportCenter:
         include_data_quality_gate: bool = False,
         include_provider_reliability: bool = False,
         universe_name: Optional[str] = None,
+        include_hardened_backtest: bool = False,
     ):
         self.mode        = mode
         self.profile     = profile
@@ -161,6 +163,7 @@ class AutoReportCenter:
         self.include_daily_summary        = flags.get("include_daily_summary",        include_daily_summary)
         self.include_data_quality_gate    = flags.get("include_data_quality_gate",    include_data_quality_gate)
         self.include_provider_reliability = flags.get("include_provider_reliability", include_provider_reliability)
+        self.include_hardened_backtest    = flags.get("include_hardened_backtest",    include_hardened_backtest)
         self.universe_name = universe_name
 
         # Runtime state (populated during run)
@@ -216,6 +219,9 @@ class AutoReportCenter:
 
         if self.include_provider_reliability:
             self.run_provider_reliability_report()
+
+        if self.include_hardened_backtest:
+            self.run_hardened_backtest_report()
 
         # Aggregated outputs
         if self.include_daily_summary:
@@ -516,6 +522,39 @@ class AutoReportCenter:
             )
         except Exception as exc:
             self._record_fail("provider_reliability", str(exc))
+
+    def run_hardened_backtest_report(self):
+        """Run hardened backtest and save report (v0.3.26)."""
+        try:
+            from backtest.hardened_backtester import HardenedBacktester
+            from reports.hardened_backtest_report import HardenedBacktestReportBuilder
+
+            bt = HardenedBacktester(
+                mode=self.mode,
+                results_dir=self.results_dir,
+                report_dir=self._out_dir,
+            )
+            bt_result = bt.run()
+            self._context["hardened_backtest_result"] = bt_result
+
+            builder = HardenedBacktestReportBuilder(
+                report_date=self.report_date,
+                backtest_result=bt_result,
+                mode=self.mode,
+            )
+            path = builder.build(output_dir=self._out_dir)
+            self._record_success(
+                "hardened_backtest",
+                path,
+                extra={
+                    "confidence_grade": bt_result.get("confidence_grade", "D"),
+                    "trade_count":      bt_result.get("trade_count", 0),
+                    "net_return":       bt_result.get("net_return"),
+                    "sharpe":           bt_result.get("sharpe"),
+                },
+            )
+        except Exception as exc:
+            self._record_fail("hardened_backtest", str(exc))
 
     def build_daily_market_summary(self):
         """Build daily market summary from all available context."""

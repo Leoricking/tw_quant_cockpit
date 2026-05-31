@@ -20,6 +20,29 @@ Taiwan bull-stock screening + short/mid/long-term analysis + simulated trading l
 
 ---
 
+## v0.3.26 — Backtest Engine Hardening
+
+**New in v0.3.26:**
+
+- **ExecutionModel** — realistic entry (signal_close / next_open / next_close / vwap_proxy) and exit (stop_loss, take_profit, trailing_stop, time_stop, combined)
+- **CostModel** — Taiwan stock: 0.1425% commission (6-fold discount), 0.3% sell tax, 5 bps slippage, min 20 NTD; zero-cost mode for comparison
+- **LiquidityFilter** — min volume 500, min turnover 10M NTD, max participation 5%
+- **GapRiskModel** — NO_GAP / GAP_UP_WARNING / GAP_UP_BLOCK / GAP_DOWN_WARNING / GAP_DOWN_STOP
+- **ValidationSplit** — walk_forward / out_of_sample / expanding_window / in_sample_only
+- **MarketRegimeSplitter** — bull / bear / sideways / high_volatility using MA20/MA60 + rolling vol
+- **HardenedBacktester** — integrates all 6 sub-models; A/B/C/D confidence grade
+- **CLI**: `python main.py hardened-backtest [--entry-model] [--cost-model] [--split-method] [--report]`
+- **GUI**: new "Hardened Backtest" tab in cockpit
+- **No real orders. Production BLOCKED. All results research-only.**
+
+```
+python main.py hardened-backtest --mode real --entry-model next_open --report
+python main.py hardened-backtest --mode real --entry-model signal_close --zero-cost
+python main.py hardened-backtest --mode real --split-method out_of_sample
+```
+
+---
+
 ## v0.3.25 — Universe Expansion & Sector Classification
 
 **New in v0.3.25:**

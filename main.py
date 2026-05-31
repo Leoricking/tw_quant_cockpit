@@ -4170,6 +4170,127 @@ def cmd_provider_reliability(args: argparse.Namespace) -> None:
 
 
 # ---------------------------------------------------------------------------
+# v0.3.26 — Hardened Backtest CLI
+# ---------------------------------------------------------------------------
+
+def _print_hardened_backtest_header() -> None:
+    print()
+    print("=" * 62)
+    print("  TW Quant Cockpit — Hardened Backtest  (v0.3.26)")
+    print("  [!] Research / Backtest Only. No Real Orders.")
+    print("  [!] Production Trading: BLOCKED.")
+    print("  [!] Not Investment Advice.")
+    print("=" * 62)
+    print()
+
+
+def cmd_hardened_backtest(args: argparse.Namespace) -> None:
+    """Hardened Backtest Engine (v0.3.26)."""
+    import os
+    _print_hardened_backtest_header()
+
+    mode            = getattr(args, "mode", "real")
+    entry_model     = getattr(args, "entry_model", "next_open")
+    exit_model      = getattr(args, "exit_model", "combined")
+    cost_model_name = getattr(args, "cost_model", "taiwan_realistic")
+    split_method    = getattr(args, "split_method", "walk_forward")
+    max_holding     = getattr(args, "max_holding_days", 20)
+    no_liquidity    = getattr(args, "no_liquidity_filter", False)
+    no_gap          = getattr(args, "no_gap_risk", False)
+    zero_cost       = getattr(args, "zero_cost", False)
+    report_flag     = getattr(args, "report", False)
+    results_dir     = getattr(args, "results_dir", "data/backtest_results")
+    report_dir      = getattr(args, "report_dir", "reports")
+
+    base_dir    = os.path.dirname(os.path.abspath(__file__))
+    abs_results = os.path.join(base_dir, results_dir)
+    abs_reports = os.path.join(base_dir, report_dir)
+
+    if zero_cost:
+        cost_model_name = "zero"
+
+    print(f"  Mode             : {mode.upper()}")
+    print(f"  Entry model      : {entry_model}")
+    print(f"  Exit model       : {exit_model}")
+    print(f"  Cost model       : {'zero' if zero_cost else cost_model_name}")
+    print(f"  Split method     : {split_method}")
+    print(f"  Max holding days : {max_holding}")
+    print(f"  Liquidity filter : {'disabled' if no_liquidity else 'enabled'}")
+    print(f"  Gap risk         : {'disabled' if no_gap else 'enabled'}")
+    print(f"  Read Only        : Yes")
+    print(f"  No Real Orders   : Yes")
+    print(f"  Production       : BLOCKED")
+    print()
+
+    try:
+        from backtest.hardened_backtester import HardenedBacktester
+        bt = HardenedBacktester(
+            mode=mode,
+            entry_model=entry_model,
+            exit_model=exit_model,
+            cost_model=cost_model_name,
+            split_method=split_method,
+            max_holding_days=max_holding,
+            use_liquidity_filter=not no_liquidity,
+            use_gap_risk=not no_gap,
+            results_dir=abs_results,
+            report_dir=abs_reports,
+            zero_cost=zero_cost,
+        )
+        result = bt.run()
+    except Exception as exc:
+        print(f"  ERROR: {exc}")
+        return
+
+    status = result.get("status", "UNKNOWN")
+    print(f"  Status           : {status}")
+    if status == "INSUFFICIENT_DATA":
+        print("  Insufficient data — import CSV data or run: python main.py provider-auto-fetch")
+        print()
+    else:
+        print(f"  Trade count      : {result.get('trade_count', 0)}")
+        print(f"  Net return       : {result.get('net_return', 'N/A')}")
+        print(f"  Sharpe           : {result.get('sharpe', 'N/A')}")
+        print(f"  Max Drawdown     : {result.get('max_drawdown', 'N/A')}")
+        print(f"  Profit Factor    : {result.get('profit_factor', 'N/A')}")
+        print(f"  Win Rate         : {result.get('win_rate', 'N/A')}")
+        print(f"  Confidence Grade : {result.get('confidence_grade', 'D')}")
+        print()
+        trades_path = result.get("trades_path")
+        if trades_path:
+            print(f"  Trades CSV       : {trades_path}")
+        metrics_path = result.get("metrics_path")
+        if metrics_path:
+            print(f"  Metrics CSV      : {metrics_path}")
+        warnings = result.get("warnings", [])
+        if warnings:
+            print()
+            print("  Warnings:")
+            for w in warnings:
+                print(f"    - {w}")
+
+    # Report
+    if report_flag:
+        try:
+            from reports.hardened_backtest_report import HardenedBacktestReportBuilder
+            from datetime import datetime as _dt
+            builder = HardenedBacktestReportBuilder(
+                report_date=_dt.now().strftime("%Y-%m-%d"),
+                backtest_result=result,
+                mode=mode,
+            )
+            rpt_path = builder.build(output_dir=abs_reports)
+            print()
+            print(f"  Report           : {rpt_path}")
+        except Exception as exc:
+            print(f"  Report ERROR     : {exc}")
+
+    print()
+    print("  [!] Research / Backtest Only. No Real Orders. Production BLOCKED.")
+    print("  [!] Confidence grade A does not authorize live trading.")
+
+
+# ---------------------------------------------------------------------------
 # v0.3.25 — Universe Expansion & Sector Classification CLI
 # ---------------------------------------------------------------------------
 
@@ -5549,6 +5670,47 @@ def _build_parser() -> argparse.ArgumentParser:
     p_rw15.add_argument("--report-dir", dest="report_dir", default=None,
                         help="Output directory for report (default: reports/")
 
+    # --- hardened-backtest (v0.3.26) ---
+    p_hb = subparsers.add_parser(
+        "hardened-backtest",
+        help="Hardened backtest with realistic entry, cost, liquidity, gap, split, regime (v0.3.26)",
+    )
+    p_hb.add_argument("--mode", choices=["real", "mock"], default="real",
+                      help="Data mode (default: real)")
+    p_hb.add_argument("--entry-model", dest="entry_model",
+                      choices=["signal_close", "next_open", "next_close", "vwap_proxy"],
+                      default="next_open",
+                      help="Entry price model (default: next_open)")
+    p_hb.add_argument("--exit-model", dest="exit_model",
+                      choices=["fixed_holding_days", "combined", "stop_loss", "take_profit", "trailing_stop", "time_stop"],
+                      default="combined",
+                      help="Exit model (default: combined)")
+    p_hb.add_argument("--cost-model", dest="cost_model",
+                      choices=["taiwan_realistic", "zero"],
+                      default="taiwan_realistic",
+                      help="Cost model (default: taiwan_realistic)")
+    p_hb.add_argument("--split-method", dest="split_method",
+                      choices=["in_sample_only", "out_of_sample", "walk_forward", "expanding_window"],
+                      default="walk_forward",
+                      help="Validation split method (default: walk_forward)")
+    p_hb.add_argument("--max-holding-days", dest="max_holding_days", type=int, default=20,
+                      help="Maximum holding days per trade (default: 20)")
+    p_hb.add_argument("--no-liquidity-filter", dest="no_liquidity_filter",
+                      action="store_true", default=False,
+                      help="Disable liquidity filter")
+    p_hb.add_argument("--no-gap-risk", dest="no_gap_risk",
+                      action="store_true", default=False,
+                      help="Disable gap risk model")
+    p_hb.add_argument("--zero-cost", dest="zero_cost",
+                      action="store_true", default=False,
+                      help="Use zero-cost model (for comparison with old backtests)")
+    p_hb.add_argument("--report", action="store_true", default=False,
+                      help="Generate Markdown report after backtest")
+    p_hb.add_argument("--results-dir", dest="results_dir", default="data/backtest_results",
+                      help="Output directory for result CSVs")
+    p_hb.add_argument("--report-dir", dest="report_dir", default="reports",
+                      help="Output directory for report")
+
     # --- backtest-long-term-strategy (v0.3.11) ---
     p_blts = subparsers.add_parser(
         "backtest-long-term-strategy",
@@ -5740,6 +5902,8 @@ def main() -> None:
         "usability-qa-report":         cmd_usability_qa_report,
         # TW Quant Cockpit v0.3.24
         "provider-reliability":        cmd_provider_reliability,
+        # TW Quant Cockpit v0.3.26
+        "hardened-backtest":           cmd_hardened_backtest,
         # TW Quant Cockpit v0.3.25
         "universe-list":               cmd_universe_list,
         "universe-build-defaults":     cmd_universe_build_defaults,

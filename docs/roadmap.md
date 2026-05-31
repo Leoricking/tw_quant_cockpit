@@ -26,6 +26,25 @@
 | v0.3.23 | Documentation & Release Notes Pack | Done |
 | v0.3.24 | Data Provider Reliability & Fallback Matrix | Done |
 | v0.3.25 | Universe Expansion & Sector Classification | Done |
+| v0.3.26 | Backtest Engine Hardening | Done |
+
+---
+
+## Completed: v0.3.26 — Backtest Engine Hardening
+
+- `ExecutionModel`: signal_close / next_open / next_close / vwap_proxy entry; stop_loss, take_profit, trailing_stop, time_stop, combined exit
+- `CostModel`: Taiwan defaults (0.1425%×0.6 commission, 0.3% tax, 5bps slippage, min 20 NTD); zero-cost preset
+- `LiquidityFilter`: min volume 500, min turnover 10M NTD, max participation 5%; 0–100 liquidity score
+- `GapRiskModel`: 5-category gap classifier; gap stop-loss; no-chase-gap logic
+- `ValidationSplit`: walk_forward / out_of_sample / expanding_window / in_sample_only
+- `MarketRegimeSplitter`: bull/bear/sideways/high_volatility via MA20/MA60 + rolling vol; proxy fallback
+- `HardenedBacktester`: orchestrator; A/B/C/D confidence grade; saves 5 result files
+- `HardenedBacktestReportBuilder`: 10-section Markdown report
+- `HardenedBacktestPanel`: PySide6 GUI tab with controls, summary cards, assumption/metrics/split/regime tables
+- `HardenedBacktestAdapter`: GUI bridge (no subprocess)
+- CLI: `python main.py hardened-backtest [options]`
+- `AutoReportCenter` full profile includes hardened backtest
+- No real orders. Production BLOCKED.
 
 ---
 
@@ -59,7 +78,19 @@
 
 ---
 
-## Planned: v0.3.26
+## Planned: v0.3.27
+
+**Target:** Intraday / Tick Data Pipeline
+
+- Formal intraday 1min / 5min standard pipeline
+- Opening range / VWAP / fake breakout / intraday volume profile
+- Tick / bidask interface placeholder
+- GUI intraday quality panel
+- Still read-only, no real orders
+
+---
+
+## Planned: v0.3.28
 
 **Target:** Signal quality improvements
 

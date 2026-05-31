@@ -4,9 +4,73 @@
 
 ---
 
-## v0.3.25 — Universe Expansion & Sector Classification
+## v0.3.26 — Backtest Engine Hardening
 
 **Status:** Current
+
+### New Files
+
+- `backtest/execution_model.py` — `ExecutionModel`: signal_close/next_open/next_close/vwap_proxy entry; stop_loss/take_profit/trailing_stop/time_stop/combined exit; assumption recording
+- `backtest/cost_model.py` — `CostModel`: Taiwan defaults (0.1425%×0.6 commission, 0.3% sell tax, 5bps slippage, min 20 NTD); PRESET_TAIWAN_REALISTIC and PRESET_ZERO_COST
+- `backtest/liquidity_filter.py` — `LiquidityFilter`: min volume/turnover/participation checks; 0–100 liquidity score
+- `backtest/gap_risk_model.py` — `GapRiskModel`: NO_GAP/GAP_UP_WARNING/GAP_UP_BLOCK/GAP_DOWN_WARNING/GAP_DOWN_STOP; gap stop-loss
+- `backtest/validation_split.py` — `ValidationSplit`: walk_forward/out_of_sample/expanding_window/in_sample_only splits
+- `backtest/regime_split.py` — `MarketRegimeSplitter`: bull/bear/sideways/high_volatility via MA20/MA60+rolling vol; proxy fallback
+- `backtest/hardened_backtester.py` — `HardenedBacktester`: integrates all 6 models; A/B/C/D confidence grade; saves 5 result files
+- `reports/hardened_backtest_report.py` — `HardenedBacktestReportBuilder`: 10-section Markdown report
+- `gui/hardened_backtest_panel.py` — `HardenedBacktestPanel`: PySide6 GUI with 8 sections; QThread workers
+- `gui/hardened_backtest_adapter.py` — `HardenedBacktestAdapter`: GUI bridge (no subprocess)
+- `docs/backtest_engine_hardening.md` — documentation
+
+### Modified Files
+
+- `main.py` — `hardened-backtest` CLI command with 10 arguments
+- `gui/dashboard.py` — guarded import + "Hardened Backtest" tab
+- `reports/auto_report_center.py` — `include_hardened_backtest` parameter; `run_hardened_backtest_report()` method; full profile includes hardened backtest
+- `README.md` — v0.3.26 section
+- `docs/roadmap.md` — v0.3.26 marked Done; v0.3.27 Intraday pipeline planned
+- `docs/release_notes_v0.3.md` — this file
+- `.gitignore` — hardened_backtest_report_*.md and CSV/JSON exclusions
+
+### Confidence Grade
+
+| Grade | Criteria |
+|-------|----------|
+| A | trades≥100, splits≥4, each split count≥10, data quality≥75, max DD not extreme |
+| B | trades≥50, splits≥2, data quality≥60 |
+| C | trades≥20 |
+| D | trades<20, insufficient data, too many missing prices |
+
+> **Note:** Even Grade A does not authorize live trading. Production trading remains BLOCKED.
+
+### Result Files (excluded from git)
+
+- `data/backtest_results/hardened_backtest_trades.csv`
+- `data/backtest_results/hardened_backtest_metrics.csv`
+- `data/backtest_results/hardened_backtest_split_metrics.csv`
+- `data/backtest_results/hardened_backtest_regime_metrics.csv`
+- `data/backtest_results/hardened_backtest_assumptions.json`
+
+### CLI
+
+```
+python main.py hardened-backtest --mode real --entry-model next_open --report
+python main.py hardened-backtest --mode real --entry-model signal_close --zero-cost
+python main.py hardened-backtest --mode real --split-method out_of_sample
+python main.py hardened-backtest --mode mock --entry-model next_open
+```
+
+### Safety
+
+- No real orders. No token in code. No weight auto-apply.
+- Real mode never falls back to mock.
+- Production trading remains BLOCKED.
+
+---
+
+## v0.3.25 — Universe Expansion & Sector Classification
+
+**Status:** Superseded by v0.3.26
 
 ### New Files
 

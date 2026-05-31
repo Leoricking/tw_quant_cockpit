@@ -152,3 +152,8 @@ reports/universe_expansion_report_*.md
 data/backtest_results/universe_quality_*.csv
 data/backtest_results/universe_expansion_*.csv
 # Note: config/universe/*.csv (seed files) ARE committed — they are source data
+
+# Hardened Backtest report and result outputs (v0.3.26, generated artifacts)
+reports/hardened_backtest_report_*.md
+data/backtest_results/hardened_backtest_*.csv
+data/backtest_results/hardened_backtest_*.json
