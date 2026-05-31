@@ -45,6 +45,7 @@ _PROFILE_FLAGS: Dict[str, dict] = {
         include_data_quality_gate=True,
         include_provider_reliability=True,
         include_hardened_backtest=True,
+        include_intraday_pipeline=True,
     ),
     "daily": dict(
         include_stock_reports=False,
@@ -57,6 +58,7 @@ _PROFILE_FLAGS: Dict[str, dict] = {
         include_daily_summary=True,
         include_data_quality_gate=True,
         include_provider_reliability=True,
+        include_intraday_pipeline=True,
     ),
     "portfolio": dict(
         include_stock_reports=False,
@@ -141,6 +143,7 @@ class AutoReportCenter:
         include_provider_reliability: bool = False,
         universe_name: Optional[str] = None,
         include_hardened_backtest: bool = False,
+        include_intraday_pipeline: bool = False,
     ):
         self.mode        = mode
         self.profile     = profile
@@ -164,6 +167,7 @@ class AutoReportCenter:
         self.include_data_quality_gate    = flags.get("include_data_quality_gate",    include_data_quality_gate)
         self.include_provider_reliability = flags.get("include_provider_reliability", include_provider_reliability)
         self.include_hardened_backtest    = flags.get("include_hardened_backtest",    include_hardened_backtest)
+        self.include_intraday_pipeline    = flags.get("include_intraday_pipeline",    include_intraday_pipeline)
         self.universe_name = universe_name
 
         # Runtime state (populated during run)
@@ -222,6 +226,9 @@ class AutoReportCenter:
 
         if self.include_hardened_backtest:
             self.run_hardened_backtest_report()
+
+        if self.include_intraday_pipeline:
+            self.run_intraday_pipeline_report()
 
         # Aggregated outputs
         if self.include_daily_summary:
@@ -555,6 +562,38 @@ class AutoReportCenter:
             )
         except Exception as exc:
             self._record_fail("hardened_backtest", str(exc))
+
+    def run_intraday_pipeline_report(self):
+        """Run intraday pipeline quality check and save report (v0.3.27)."""
+        try:
+            from intraday.intraday_quality import IntradayQualityChecker
+            from reports.intraday_pipeline_report import IntradayPipelineReportBuilder
+
+            checker = IntradayQualityChecker()
+            quality_result = checker.run()
+            self._context["intraday_quality_result"] = quality_result
+            self._context["intraday_quality_score"] = quality_result.get("overall_quality_score", 0.0)
+            self._context["intraday_status"] = quality_result.get("status", "NO_DATA")
+            self._context["tick_bidask_readiness"] = False   # planned v0.4+
+
+            builder = IntradayPipelineReportBuilder(
+                report_date=self.report_date,
+                quality_result=quality_result,
+                mode=self.mode,
+            )
+            path = builder.build(output_dir=self._out_dir)
+            self._record_success(
+                "intraday_pipeline",
+                path,
+                extra={
+                    "intraday_quality_score": quality_result.get("overall_quality_score", 0.0),
+                    "intraday_status":        quality_result.get("status", "NO_DATA"),
+                    "symbols_found":          len(quality_result.get("symbols", [])),
+                    "tick_bidask_ready":      False,
+                },
+            )
+        except Exception as exc:
+            self._record_fail("intraday_pipeline", str(exc))
 
     def build_daily_market_summary(self):
         """Build daily market summary from all available context."""

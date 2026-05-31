@@ -4522,6 +4522,207 @@ def cmd_universe_report(args: argparse.Namespace) -> None:
 
 
 # ---------------------------------------------------------------------------
+# v0.3.27 — Intraday / Tick Data Pipeline Commands
+# ---------------------------------------------------------------------------
+
+def _print_intraday_header() -> None:
+    print()
+    print("=" * 60)
+    print("  TW Quant Cockpit v0.3.27 — Intraday / Tick Pipeline")
+    print("=" * 60)
+    print("  [!] Read Only. Intraday Research Only. No Real Orders.")
+    print()
+
+
+def cmd_intraday_pipeline(args: argparse.Namespace) -> None:
+    """Run intraday data standardization pipeline."""
+    _print_intraday_header()
+
+    mode     = getattr(args, "mode",    "real")
+    freq     = getattr(args, "freq",    "1min")
+    dry_run  = getattr(args, "dry_run", False)
+    report   = getattr(args, "report",  False)
+    rep_dir  = getattr(args, "report_dir", "reports")
+
+    if dry_run:
+        print("  [DRY-RUN] No files will be written.")
+
+    try:
+        from intraday.intraday_pipeline import IntradayDataPipeline
+        pipeline = IntradayDataPipeline(mode=mode, freq=freq, dry_run=dry_run)
+        result = pipeline.run()
+    except Exception as exc:
+        print(f"  ERROR: cannot run IntradayDataPipeline: {exc}")
+        sys.exit(1)
+
+    n_ok   = result.get("files_ok",     0)
+    n_skip = result.get("files_skipped", 0)
+    n_err  = result.get("files_error",  0)
+    symbols = result.get("symbols", [])
+    warns  = result.get("warnings", [])
+
+    print(f"  Freq        : {freq}")
+    print(f"  Files OK    : {n_ok}")
+    print(f"  Skipped     : {n_skip}")
+    print(f"  Errors      : {n_err}")
+    print(f"  Symbols     : {', '.join(symbols[:10])}{'...' if len(symbols) > 10 else ''}")
+    for w in warns[:5]:
+        print(f"  [WARN] {w}")
+    print()
+
+    if report and not dry_run:
+        try:
+            from intraday.intraday_quality import IntradayQualityChecker
+            from reports.intraday_pipeline_report import IntradayPipelineReportBuilder
+            import datetime as _dt
+            quality_result = IntradayQualityChecker().run()
+            builder = IntradayPipelineReportBuilder(
+                report_date=_dt.datetime.now().strftime("%Y-%m-%d"),
+                quality_result=quality_result,
+                mode=mode,
+            )
+            rpt_path = builder.build(output_dir=rep_dir)
+            print(f"  Report: {rpt_path}")
+        except Exception as exc:
+            print(f"  [WARN] Could not generate report: {exc}")
+
+    print("  Done. Run 'python main.py intraday-quality' to check quality.")
+    print()
+
+
+def cmd_intraday_quality(args: argparse.Namespace) -> None:
+    """Check intraday data quality for standardized files."""
+    _print_intraday_header()
+
+    freq    = getattr(args, "freq", None)  # None = all freqs
+
+    try:
+        from intraday.intraday_quality import IntradayQualityChecker
+        checker = IntradayQualityChecker()
+        result  = checker.run()
+    except Exception as exc:
+        print(f"  ERROR: cannot run IntradayQualityChecker: {exc}")
+        sys.exit(1)
+
+    status  = result.get("status", "NO_DATA")
+    symbols = result.get("symbols", [])
+    overall = result.get("overall_quality_score", 0.0)
+    warns   = result.get("warnings", [])
+    results_list = result.get("results", [])
+
+    print(f"  Status              : {status}")
+    print(f"  Symbols found       : {len(symbols)}")
+    print(f"  Overall quality     : {overall:.1f}/100")
+    print()
+
+    # Filter by freq if specified
+    if freq:
+        results_list = [r for r in results_list if r.get("freq") == freq]
+
+    for r in results_list[:15]:
+        sym    = r.get("symbol", "?")
+        f      = r.get("freq",   "?")
+        q      = r.get("quality_score", 0.0)
+        st     = r.get("status", "?")
+        n_rows = r.get("rows", 0)
+        print(f"  {sym} [{f}]: score={q:.0f}  status={st}  rows={n_rows}")
+
+    if len(results_list) > 15:
+        print(f"  ... and {len(results_list) - 15} more")
+
+    for w in warns[:5]:
+        print(f"  [WARN] {w}")
+
+    print()
+    print("  Tick/bidask API: planned for v0.4+ — not a failure.")
+    print()
+
+
+def cmd_intraday_features(args: argparse.Namespace) -> None:
+    """Preview intraday features (opening range, VWAP, fake breakout) for a stock."""
+    _print_intraday_header()
+
+    symbol = getattr(args, "stock", None)
+    freq   = getattr(args, "freq", "1min")
+
+    if not symbol:
+        print("  ERROR: --stock SYMBOL required")
+        sys.exit(1)
+
+    print(f"  Symbol : {symbol}   Freq: {freq}")
+    print()
+
+    try:
+        from data.intraday_data_importer import IntradayDataImporter
+        importer = IntradayDataImporter()
+        df = importer.load_intraday_standard(symbol, freq=freq)
+        if df is None or df.empty:
+            df = importer.load_intraday(symbol, freq=freq)
+    except Exception as exc:
+        print(f"  ERROR: cannot load intraday data: {exc}")
+        sys.exit(1)
+
+    if df is None or df.empty:
+        print(f"  No intraday data found for {symbol} at freq={freq}.")
+        print("  Run: python main.py intraday-pipeline  (or import-intraday)")
+        print()
+        return
+
+    last_date = df["date"].max() if "date" in df.columns else "?"
+    print(f"  Last date    : {last_date}")
+    print(f"  Total bars   : {len(df)}")
+    print()
+
+    # Get most recent day
+    if "date" in df.columns:
+        last_df = df[df["date"] == last_date]
+    else:
+        last_df = df.tail(270)  # ~1 trading session of 1min bars
+
+    # Opening Range
+    try:
+        from intraday.opening_range_features import OpeningRangeFeatureBuilder
+        or_res = OpeningRangeFeatureBuilder().build(last_df)
+        print("  Opening Range Features:")
+        print(f"    return_5m   : {or_res.get('opening_return_5m')}")
+        print(f"    return_15m  : {or_res.get('opening_return_15m')}")
+        print(f"    high_break  : {or_res.get('opening_high_break')}")
+        print(f"    low_break   : {or_res.get('opening_low_break')}")
+        print(f"    strength    : {or_res.get('opening_strength_score')}")
+        print()
+    except Exception as exc:
+        print(f"  Opening range: unavailable ({exc})")
+
+    # VWAP
+    try:
+        from intraday.vwap_features import VWAPFeatureBuilder
+        vwap_res = VWAPFeatureBuilder().build(last_df)
+        print("  VWAP Features:")
+        print(f"    intraday_vwap    : {vwap_res.get('intraday_vwap')}")
+        print(f"    price_vs_vwap_%  : {vwap_res.get('price_vs_vwap_pct')}")
+        print(f"    vwap_support_score: {vwap_res.get('vwap_support_score')}")
+        print()
+    except Exception as exc:
+        print(f"  VWAP: unavailable ({exc})")
+
+    # Fake Breakout
+    try:
+        from intraday.fake_breakout_detector import FakeBreakoutDetector
+        fb_res = FakeBreakoutDetector().detect(last_df)
+        print("  Fake Breakout Detection:")
+        print(f"    fake_breakout_risk   : {fb_res.get('fake_breakout_risk')}")
+        print(f"    fake_breakout_score  : {fb_res.get('fake_breakout_score')}")
+        print(f"    chase_risk_score     : {fb_res.get('chase_risk_score')}")
+        print(f"    breakout_quality     : {fb_res.get('breakout_quality')}")
+        print()
+    except Exception as exc:
+        print(f"  Fake breakout: unavailable ({exc})")
+
+    print("  Tick/bidask: planned for v0.4+")
+    print()
+
+
+# ---------------------------------------------------------------------------
 # v0.3.9 — Public Data API & Crawler Commands
 # ---------------------------------------------------------------------------
 
@@ -5516,6 +5717,40 @@ def _build_parser() -> argparse.ArgumentParser:
         help="Custom output folder for reports",
     )
 
+    # --- intraday-pipeline (v0.3.27) ---
+    p_ip = subparsers.add_parser(
+        "intraday-pipeline",
+        help="Run intraday data standardization pipeline (v0.3.27)",
+    )
+    p_ip.add_argument("--mode", choices=["real", "mock"], default="real",
+                      help="Data mode (default: real)")
+    p_ip.add_argument("--freq", choices=["1min", "5min"], default="1min",
+                      help="Bar frequency to process (default: 1min)")
+    p_ip.add_argument("--dry-run", dest="dry_run", action="store_true", default=False,
+                      help="Check only, do not write standardized files")
+    p_ip.add_argument("--report", action="store_true", default=False,
+                      help="Generate intraday pipeline Markdown report after run")
+    p_ip.add_argument("--report-dir", dest="report_dir", default="reports",
+                      help="Output directory for report (default: reports/)")
+
+    # --- intraday-quality (v0.3.27) ---
+    p_iq = subparsers.add_parser(
+        "intraday-quality",
+        help="Check intraday data quality for standardized files (v0.3.27)",
+    )
+    p_iq.add_argument("--freq", choices=["1min", "5min"], default=None,
+                      help="Filter by frequency (default: all)")
+
+    # --- intraday-features (v0.3.27) ---
+    p_if = subparsers.add_parser(
+        "intraday-features",
+        help="Preview intraday features (opening range, VWAP, fake breakout) for a stock (v0.3.27)",
+    )
+    p_if.add_argument("--stock", required=True,
+                      help="Stock symbol, e.g. 2454")
+    p_if.add_argument("--freq", choices=["1min", "5min"], default="1min",
+                      help="Bar frequency (default: 1min)")
+
     # --- universe-list (v0.3.25) ---
     subparsers.add_parser(
         "universe-list",
@@ -5904,6 +6139,10 @@ def main() -> None:
         "provider-reliability":        cmd_provider_reliability,
         # TW Quant Cockpit v0.3.26
         "hardened-backtest":           cmd_hardened_backtest,
+        # TW Quant Cockpit v0.3.27
+        "intraday-pipeline":           cmd_intraday_pipeline,
+        "intraday-quality":            cmd_intraday_quality,
+        "intraday-features":           cmd_intraday_features,
         # TW Quant Cockpit v0.3.25
         "universe-list":               cmd_universe_list,
         "universe-build-defaults":     cmd_universe_build_defaults,

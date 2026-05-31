@@ -242,13 +242,21 @@ def compute_microstructure_single(
     df["ms_no_chase_flag"] = no_chase_flag
 
     # v0.3.9: tag data source for microstructure features
+    # v0.3.27: use INTRADAY_BAR_ONLY when intraday bars present (tick/bidask planned for v0.4+)
     has_intraday = bool(intraday_lookup)
     if has_intraday:
-        df["microstructure_source"] = "INTRADAY_1MIN"
+        df["microstructure_source"] = "INTRADAY_BAR_ONLY"   # tick/bidask planned v0.4+
     elif not df.empty:
         df["microstructure_source"] = "DAILY_PROXY"
     else:
         df["microstructure_source"] = "UNAVAILABLE"
+
+    # v0.3.27: enrich last bar with extended intraday features (opening range, VWAP, fake breakout)
+    if has_intraday and not df.empty:
+        last_date_str = str(df["date"].iloc[-1])[:10]
+        last_iday = intraday_lookup.get(last_date_str)
+        if last_iday is not None and not last_iday.empty:
+            _enrich_last_bar_intraday(df, last_iday)
 
     return df
 
@@ -313,6 +321,51 @@ def compute_microstructure(
 # ---------------------------------------------------------------------------
 # Helpers
 # ---------------------------------------------------------------------------
+
+def _enrich_last_bar_intraday(df: pd.DataFrame, last_iday: pd.DataFrame) -> None:
+    """
+    Enrich the last row of df with extended intraday features (v0.3.27).
+
+    Uses OpeningRangeFeatureBuilder, VWAPFeatureBuilder, FakeBreakoutDetector
+    when available.  Falls back silently to INTRADAY_BAR_ONLY if any import fails.
+    Tick/bidask interface is planned for v0.4+.
+    """
+    try:
+        from intraday.opening_range_features import OpeningRangeFeatureBuilder
+        or_result = OpeningRangeFeatureBuilder().build(last_iday)
+        for k, v in or_result.items():
+            if k != "status" and v is not None:
+                col = f"intraday_{k}" if not k.startswith("intraday_") else k
+                if col not in df.columns:
+                    df[col] = np.nan
+                df.loc[df.index[-1], col] = v
+    except Exception as exc:
+        logger.debug("opening_range_features enrich skipped: %s", exc)
+
+    try:
+        from intraday.vwap_features import VWAPFeatureBuilder
+        vwap_result = VWAPFeatureBuilder().build(last_iday)
+        for k, v in vwap_result.items():
+            if k != "status" and v is not None:
+                col = k if k.startswith("intraday_") or k.startswith("vwap") else f"vwap_{k}"
+                if col not in df.columns:
+                    df[col] = np.nan
+                df.loc[df.index[-1], col] = v
+    except Exception as exc:
+        logger.debug("vwap_features enrich skipped: %s", exc)
+
+    try:
+        from intraday.fake_breakout_detector import FakeBreakoutDetector
+        fb_result = FakeBreakoutDetector().detect(last_iday)
+        for k, v in fb_result.items():
+            if k != "status" and v is not None:
+                col = k if k.startswith("intraday_") or k.startswith("fake_") or k.startswith("breakout_") or k.startswith("chase_") else f"fb_{k}"
+                if col not in df.columns:
+                    df[col] = np.nan
+                df.loc[df.index[-1], col] = v
+    except Exception as exc:
+        logger.debug("fake_breakout_detector enrich skipped: %s", exc)
+
 
 def _check_intraday_cols(iday: pd.DataFrame) -> None:
     """Log a warning if expected intraday columns are missing."""

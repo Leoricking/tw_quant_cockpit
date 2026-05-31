@@ -368,3 +368,31 @@ class IntradayDataImporter:
         except Exception as exc:
             logger.warning("IntradayDataImporter.load_intraday(%s, %s): %s", symbol, freq, exc)
             return None
+
+    def load_intraday_standard(
+        self,
+        symbol: str,
+        freq: str = "1min",
+        date: Optional[str] = None,
+    ) -> Optional[pd.DataFrame]:
+        """
+        Load standardized intraday data for a symbol from intraday_standard/.
+
+        The standardized path is data/import/intraday_standard/{freq}/{symbol}_{freq}.csv,
+        written by IntradayDataPipeline (v0.3.27).
+
+        Returns pd.DataFrame or None if not available.
+        """
+        std_dir = os.path.join(_BASE_DIR, "data", "import", "intraday_standard", freq)
+        path = os.path.join(std_dir, f"{symbol}_{freq}.csv")
+        if not os.path.isfile(path):
+            # Fall back to legacy path
+            return self.load_intraday(symbol, freq=freq, date=date)
+        try:
+            df = pd.read_csv(path, parse_dates=["datetime"])
+            if date:
+                df = df[df["date"] == date]
+            return df if not df.empty else None
+        except Exception as exc:
+            logger.warning("load_intraday_standard(%s, %s): %s", symbol, freq, exc)
+            return self.load_intraday(symbol, freq=freq, date=date)

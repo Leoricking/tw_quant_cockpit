@@ -27,6 +27,7 @@
 | v0.3.24 | Data Provider Reliability & Fallback Matrix | Done |
 | v0.3.25 | Universe Expansion & Sector Classification | Done |
 | v0.3.26 | Backtest Engine Hardening | Done |
+| v0.3.27 | Intraday / Tick Data Pipeline | Done |
 
 ---
 
@@ -78,15 +79,24 @@
 
 ---
 
-## Planned: v0.3.27
+## Completed: v0.3.27 — Intraday / Tick Data Pipeline
 
-**Target:** Intraday / Tick Data Pipeline
-
-- Formal intraday 1min / 5min standard pipeline
-- Opening range / VWAP / fake breakout / intraday volume profile
-- Tick / bidask interface placeholder
-- GUI intraday quality panel
-- Still read-only, no real orders
+- `IntradaySchema`: standard column spec, XQ column map, validation, Taiwan session filter
+- `IntradayDataPipeline`: discovers raw intraday CSV/XLSX, normalizes to standard schema, writes `intraday_standard/{freq}/`
+- `IntradayQualityChecker`: scans standardized files; quality statuses OK/PARTIAL/MISSING/STALE/DUPLICATED/PRICE_ANOMALY/VOLUME_ANOMALY/INSUFFICIENT; 0–100 quality score
+- `OpeningRangeFeatureBuilder`: opening 5/15/30-min return, volume ratio, range %, high/low break, strength score
+- `VWAPFeatureBuilder`: intraday VWAP, price-vs-VWAP%, slope, above-VWAP ratio, reclaim/lost, support score
+- `FakeBreakoutDetector`: high/low break confirmation, volume confirmation, fake breakout risk/score, chase risk score
+- `IntradayVolumeProfileBuilder`: volume by bar, cumulative VWAP, high-volume price zones, session volume distribution
+- `MicrostructureQualityChecker`: tick_api_ready=False, bidask_api_ready=False; status INTRADAY_BAR_ONLY/TICK_PLANNED
+- `TickBidaskSchema`: placeholder schema for future tick/bidask API (v0.4+)
+- `IntradayPipelineReportBuilder`: Markdown report with quality, features, fake breakout, volume profile, tick readiness
+- `IntradayPipelinePanel`: PySide6 GUI tab with quality table, feature preview, fake breakout, volume profile, tick status
+- `IntradayPipelineAdapter`: GUI bridge (run_pipeline, check_quality, preview_features)
+- CLI: `python main.py intraday-pipeline [--mode] [--freq] [--dry-run] [--report]`; `intraday-quality [--freq]`; `intraday-features --stock [--freq]`
+- Integration: `DataFreshnessChecker` adds `intraday_1min`/`intraday_5min`; `DataQualityGate` uses `IntradayQualityChecker`; `AutoReportCenter` full/daily profiles include intraday pipeline; manifest records `intraday_quality_score`/`intraday_status`/`tick_bidask_readiness`; `features/microstructure.py` enriches last bar with opening range/VWAP/fake breakout; `features/indicators.py` prefers standardized path
+- `IntradayDataImporter` adds `load_intraday_standard()` method
+- No real orders. Production BLOCKED.
 
 ---
 

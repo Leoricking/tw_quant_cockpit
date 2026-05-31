@@ -4,9 +4,53 @@
 
 ---
 
-## v0.3.26 — Backtest Engine Hardening
+## v0.3.27 — Intraday / Tick Data Pipeline
 
 **Status:** Current
+
+### New Files
+
+- `intraday/__init__.py` — package init
+- `intraday/intraday_schema.py` — `IntradaySchema`: standard column spec (symbol/date/time/datetime/open/high/low/close/volume/source), XQ column map, validation, Taiwan session filter
+- `intraday/intraday_pipeline.py` — `IntradayDataPipeline`: discovers raw CSV/XLSX from `data/import/intraday/`, normalizes to standard schema, writes to `data/import/intraday_standard/{freq}/`
+- `intraday/intraday_quality.py` — `IntradayQualityChecker`: 0–100 quality score per symbol/freq; statuses OK/PARTIAL/MISSING/STALE/DUPLICATED/PRICE_ANOMALY/VOLUME_ANOMALY/INSUFFICIENT
+- `intraday/opening_range_features.py` — `OpeningRangeFeatureBuilder`: 5/15/30-min return, volume ratio, range %, high/low break, strength score
+- `intraday/vwap_features.py` — `VWAPFeatureBuilder`: intraday VWAP, price-vs-VWAP%, slope, above-VWAP ratio, reclaim/lost, support score
+- `intraday/fake_breakout_detector.py` — `FakeBreakoutDetector`: volume-confirmed breakout, fake breakout risk/score, chase risk score, breakout quality
+- `intraday/intraday_volume_profile.py` — `IntradayVolumeProfileBuilder`: cumulative VWAP, high-volume price zones, session distribution
+- `intraday/microstructure_quality.py` — `MicrostructureQualityChecker`: INTRADAY_BAR_ONLY/TICK_PLANNED statuses; tick_api_ready=False, bidask_api_ready=False
+- `intraday/tick_bidask_schema.py` — `TickBidaskSchema`: placeholder for future tick/bidask API (v0.4+)
+- `reports/intraday_pipeline_report.py` — `IntradayPipelineReportBuilder`: Markdown report with quality, features, fake breakout, volume profile, tick readiness sections
+- `gui/intraday_pipeline_panel.py` — `IntradayPipelinePanel`: PySide6 GUI with quality table, feature preview, fake breakout, volume profile, tick status; QThread workers
+- `gui/intraday_pipeline_adapter.py` — `IntradayPipelineAdapter`: GUI bridge (run_pipeline, check_quality, preview_features)
+- `docs/intraday_tick_pipeline.md` — documentation
+
+### Modified Files
+
+- `main.py` — 3 CLI commands: `intraday-pipeline` (--mode/--freq/--dry-run/--report), `intraday-quality` (--freq), `intraday-features` (--stock/--freq)
+- `gui/dashboard.py` — guarded import + "Intraday Pipeline" tab
+- `data/providers/data_freshness.py` — `intraday_1min` and `intraday_5min` freshness checks; `_check_intraday` handles standard pipeline datasets
+- `quality/data_quality_gate.py` — `_compute_intraday_coverage_score` uses `IntradayQualityChecker`; tick/bidask planned = not a failure
+- `reports/auto_report_center.py` — `include_intraday_pipeline` parameter; `run_intraday_pipeline_report()` method; full/daily profiles include intraday pipeline
+- `reports/auto_report_index.py` — manifest records `intraday_quality_score`, `intraday_status`, `tick_bidask_readiness`
+- `data/intraday_data_importer.py` — `load_intraday_standard()` method (prefers standardized path, falls back to legacy)
+- `features/microstructure.py` — `microstructure_source` updated to `INTRADAY_BAR_ONLY`; `_enrich_last_bar_intraday()` helper adds opening range/VWAP/fake breakout features to last bar
+- `features/indicators.py` — auto-load prefers `load_intraday_standard()` before legacy path
+- `README.md` — v0.3.27 section
+- `docs/roadmap.md` — v0.3.27 marked Done; v0.3.27 completed section added
+- `docs/release_notes_v0.3.md` — this file
+- `.gitignore` — intraday_pipeline_report_*.md, intraday standard directories excluded
+
+### Safety
+
+- Tick/bidask API: planned for v0.4+ — `tick_api_ready=False`, `bidask_api_ready=False` hardcoded
+- No real orders. Production BLOCKED.
+
+---
+
+## v0.3.26 — Backtest Engine Hardening
+
+**Status:** Superseded by v0.3.27
 
 ### New Files
 

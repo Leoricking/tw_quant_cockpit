@@ -157,3 +157,11 @@ data/backtest_results/universe_expansion_*.csv
 reports/hardened_backtest_report_*.md
 data/backtest_results/hardened_backtest_*.csv
 data/backtest_results/hardened_backtest_*.json
+
+# Intraday pipeline report and result outputs (v0.3.27, generated artifacts)
+reports/intraday_pipeline_report_*.md
+data/backtest_results/intraday_pipeline_*.csv
+data/backtest_results/intraday_quality_*.csv
+data/import/intraday_standard/
+data/import/tick/
+data/import/bidask/

@@ -307,6 +307,7 @@ def compute_indicators(
             has_open = "open" in combined.columns
             if has_open:
                 # v0.3.9: auto-load intraday data when not explicitly provided
+                # v0.3.27: prefer standardized path (intraday_standard), fall back to legacy
                 _intraday = intraday_df
                 if _intraday is None and "stock_id" in combined.columns:
                     _intraday_parts = []
@@ -314,7 +315,10 @@ def compute_indicators(
                         from data.intraday_data_importer import IntradayDataImporter
                         _importer = IntradayDataImporter()
                         for _sid in combined["stock_id"].unique():
-                            _idf = _importer.load_intraday(str(_sid), freq="1min")
+                            # Try standardized path first (v0.3.27), then legacy
+                            _idf = _importer.load_intraday_standard(str(_sid), freq="1min")
+                            if _idf is None or _idf.empty:
+                                _idf = _importer.load_intraday(str(_sid), freq="1min")
                             if _idf is not None and not _idf.empty:
                                 if "stock_id" not in _idf.columns:
                                     _idf = _idf.copy()

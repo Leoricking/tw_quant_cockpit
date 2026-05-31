@@ -556,20 +556,58 @@ class DataQualityGate:
 
     def _compute_intraday_coverage_score(self, warnings: List[str]) -> None:
         """
-        Score based on whether intraday data files exist.
+        Score based on intraday data availability.
 
-        Has any .csv in data/import/intraday/ → 100; MISSING → 0
+        Tries IntradayQualityChecker (v0.3.27) on standardized path first;
+        falls back to checking raw intraday CSV files.
+        Tick/bidask planned but not yet available = not a failure.
         """
         try:
-            import glob as _glob
-            intraday_dir = os.path.join(self.import_root, "intraday")
-            csv_files = _glob.glob(os.path.join(intraday_dir, "*.csv"))
-            if csv_files:
-                score = 100.0
-                details = {"files_found": len(csv_files), "status": "PRESENT"}
+            standard_root = os.path.join(_BASE_DIR, "data", "import", "intraday_standard")
+            quality_result = None
+            try:
+                from intraday.intraday_quality import IntradayQualityChecker
+                checker = IntradayQualityChecker(standard_root=standard_root)
+                quality_result = checker.run()
+            except Exception as _iqc_exc:
+                logger.debug("IntradayQualityChecker unavailable: %s", _iqc_exc)
+
+            if quality_result is not None and quality_result.get("status") == "OK":
+                overall = quality_result.get("overall_quality_score", 0.0)
+                score = float(overall)
+                n_sym = len(quality_result.get("symbols", []))
+                details = {
+                    "status": "STANDARDIZED_PIPELINE",
+                    "symbols_found": n_sym,
+                    "overall_quality_score": overall,
+                    "tick_bidask_ready": False,   # planned v0.4+
+                    "note": "Tick/bidask API planned for v0.4+ — not a failure",
+                }
             else:
-                score = 0.0
-                details = {"files_found": 0, "status": "MISSING"}
+                # Fallback: check raw intraday directory
+                import glob as _glob
+                intraday_dir = os.path.join(self.import_root, "intraday")
+                csv_files = (
+                    _glob.glob(os.path.join(intraday_dir, "*.csv"))
+                    + _glob.glob(os.path.join(intraday_dir, "1min", "*.csv"))
+                    + _glob.glob(os.path.join(intraday_dir, "5min", "*.csv"))
+                )
+                if csv_files:
+                    score = 50.0   # raw files exist but not standardized
+                    details = {
+                        "status": "RAW_ONLY",
+                        "files_found": len(csv_files),
+                        "note": "Run intraday-pipeline to standardize",
+                        "tick_bidask_ready": False,
+                    }
+                else:
+                    score = 0.0
+                    details = {
+                        "status": "MISSING",
+                        "files_found": 0,
+                        "tick_bidask_ready": False,
+                        "note": "Tick/bidask API planned for v0.4+ — not a failure",
+                    }
 
             self._scores["intraday_coverage_score"] = score
             self._score_details["intraday_coverage_score"] = {"score": score, **details}

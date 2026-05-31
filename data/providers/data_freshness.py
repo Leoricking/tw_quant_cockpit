@@ -79,6 +79,26 @@ _DATASETS: Dict[str, dict] = {
         "label":       "Intraday (per-minute)",
         "is_dir":      True,
     },
+    "intraday_1min": {
+        "path":        "data/import/intraday_standard/1min",   # standardized 1min directory (v0.3.27)
+        "date_col":    "date",
+        "symbol_col":  "symbol",
+        "fresh_days":  1,
+        "stale_days":  3,
+        "label":       "Intraday 1min Standardized",
+        "is_dir":      True,
+        "standard_pipeline": True,
+    },
+    "intraday_5min": {
+        "path":        "data/import/intraday_standard/5min",   # standardized 5min directory (v0.3.27)
+        "date_col":    "date",
+        "symbol_col":  "symbol",
+        "fresh_days":  1,
+        "stale_days":  3,
+        "label":       "Intraday 5min Standardized",
+        "is_dir":      True,
+        "standard_pipeline": True,
+    },
 }
 
 
@@ -196,11 +216,24 @@ class DataFreshnessChecker:
     def _check_intraday(self, dataset_name: str, defn: dict) -> dict:
         """Intraday is directory-based; report HISTORICAL if files exist."""
         abs_dir = os.path.join(self._import_root, defn["path"])
+        is_standard = defn.get("standard_pipeline", False)
+        import_cmd = "python main.py intraday-pipeline" if is_standard else "python main.py import-intraday"
+        missing_msg = (
+            "Standardized intraday directory not found. Run intraday-pipeline first."
+            if is_standard
+            else "Intraday directory not found. Use import-intraday to import."
+        )
+        no_files_msg = (
+            "No standardized intraday CSV files found. Run intraday-pipeline first."
+            if is_standard
+            else "No intraday CSV files found."
+        )
+
         if not os.path.isdir(abs_dir):
             return self._make_result(
                 dataset_name, MISSING,
-                warning="Intraday directory not found. Use import-intraday to import.",
-                recommended_action="python main.py import-intraday",
+                warning=missing_msg,
+                recommended_action=import_cmd,
             )
         try:
             files = [f for f in os.listdir(abs_dir) if f.endswith(".csv")]
@@ -210,14 +243,14 @@ class DataFreshnessChecker:
         if not files:
             return self._make_result(
                 dataset_name, MISSING,
-                warning="No intraday CSV files found.",
-                recommended_action="python main.py import-intraday",
+                warning=no_files_msg,
+                recommended_action=import_cmd,
             )
 
         return self._make_result(
             dataset_name, HISTORICAL_INTRADAY,
             rows=len(files),
-            warning=f"Intraday source: XQ import / CSV ({len(files)} files). API provider planned for v0.4+.",
+            warning=f"Intraday source: {'standardized pipeline' if is_standard else 'XQ import / CSV'} ({len(files)} files). API provider planned for v0.4+.",
         )
 
     # ------------------------------------------------------------------

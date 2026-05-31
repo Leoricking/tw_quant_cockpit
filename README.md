@@ -20,6 +20,31 @@ Taiwan bull-stock screening + short/mid/long-term analysis + simulated trading l
 
 ---
 
+## v0.3.27 — Intraday / Tick Data Pipeline
+
+**New in v0.3.27:**
+
+- **IntradayDataPipeline** — standardizes raw 1min/5min XQ exports to `data/import/intraday_standard/{freq}/`
+- **IntradayQualityChecker** — 0–100 quality score per symbol/freq; statuses: OK/PARTIAL/MISSING/STALE/DUPLICATED/PRICE_ANOMALY/VOLUME_ANOMALY/INSUFFICIENT
+- **OpeningRangeFeatureBuilder** — opening 5/15/30-min return, volume ratio, range %, high/low break, strength score
+- **VWAPFeatureBuilder** — intraday VWAP, price-vs-VWAP%, slope, above-VWAP ratio, reclaim/lost, support score
+- **FakeBreakoutDetector** — volume-confirmed breakout, fake breakout risk/score, chase risk, breakout quality
+- **IntradayVolumeProfileBuilder** — cumulative VWAP, high-volume price zones, session volume distribution
+- **MicrostructureQualityChecker** — INTRADAY_BAR_ONLY status; tick/bidask API planned for v0.4+
+- **Integrations**: DataFreshnessChecker (intraday_1min/5min), DataQualityGate (IntradayQualityChecker), AutoReportCenter (intraday pipeline), features/microstructure (last-bar enrichment), features/indicators (prefers standardized path)
+- **CLI**: 3 new commands
+- **GUI**: new "Intraday Pipeline" tab in cockpit
+- **Tick/bidask API: planned for v0.4+ — not a failure. No real orders. Production BLOCKED.**
+
+```
+python main.py intraday-pipeline --mode real --freq 1min
+python main.py intraday-quality
+python main.py intraday-features --stock 2454
+python main.py intraday-pipeline --report
+```
+
+---
+
 ## v0.3.26 — Backtest Engine Hardening
 
 **New in v0.3.26:**
