@@ -178,3 +178,9 @@ experiments/registry.json
 reports/experiment_registry_report_*.md
 data/backtest_results/experiment_*.csv
 data/backtest_results/experiment_*.json
+
+# Stable Release / Regression Suite outputs (v0.4.0, runtime artifacts)
+reports/stable_release_report_*.md
+reports/stable_release_checklist_report_*.md
+data/backtest_results/stable_release_*.csv
+data/backtest_results/regression_suite_*.csv

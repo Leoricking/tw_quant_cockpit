@@ -4611,6 +4611,150 @@ def cmd_rule_governance(args: argparse.Namespace) -> None:
 
 
 # ---------------------------------------------------------------------------
+# v0.4.0 — Release Stabilization Commands
+# ---------------------------------------------------------------------------
+
+def _print_release_header() -> None:
+    print()
+    print("=" * 60)
+    print("  TW Quant Cockpit — v0.4.0 Research Platform Stable Release")
+    print("=" * 60)
+    print("  [!] Research Only. No Real Orders. Production BLOCKED.")
+    print()
+
+
+def cmd_version_info(args: argparse.Namespace) -> None:
+    """Print version info."""
+    _print_release_header()
+    try:
+        from release.version_info import get_version_info, get_safety_banner
+        info = get_version_info()
+    except Exception as exc:
+        print(f"  ERROR: {exc}")
+        sys.exit(1)
+
+    print(f"  Version      : {info.get('version', '?')}")
+    print(f"  Release      : {info.get('release_name', '?')}")
+    print(f"  Stage        : {info.get('release_stage', '?')}")
+    print(f"  Read Only    : {info.get('read_only', '?')}")
+    print(f"  No Real Orders: {info.get('no_real_orders', '?')}")
+    print(f"  Prod BLOCKED : {info.get('production_blocked', '?')}")
+    print(f"  Real Order Ready: {info.get('real_order_ready', '?')}")
+    print(f"  Modes        : {info.get('supported_modes', [])}")
+    print()
+    print(f"  Safety Banner: {get_safety_banner()}")
+    print()
+    features = info.get("major_features", [])
+    print(f"  Features ({len(features)}):")
+    for f in features:
+        print(f"    • {f}")
+    print()
+
+
+def cmd_stable_release_check(args: argparse.Namespace) -> None:
+    """Run stable release checklist."""
+    _print_release_header()
+    mode = getattr(args, "mode", "real")
+
+    try:
+        from release.stable_release_checklist import StableReleaseChecklist
+        checker = StableReleaseChecklist(mode=mode)
+        result  = checker.run()
+    except Exception as exc:
+        print(f"  ERROR: {exc}")
+        sys.exit(1)
+
+    status = result.get("status", "?")
+    passed = result.get("passed", 0)
+    failed = result.get("failed", 0)
+    warned = result.get("warnings", 0)
+
+    print(f"  Overall Status : {status}")
+    print(f"  Passed         : {passed}")
+    print(f"  Failed         : {failed}")
+    print(f"  Warnings       : {warned}")
+    print()
+
+    items = result.get("items", [])
+    for item in items:
+        st  = item.get("status", "?")
+        nm  = item.get("name", "?")
+        det = item.get("detail", "")[:60]
+        marker = "✓" if st == "PASS" else ("⚠" if st == "WARN" else ("✗" if st == "FAIL" else "—"))
+        print(f"  [{marker}] {nm:<35}  {st:<6}  {det}")
+
+    print()
+    if result.get("report_path"):
+        print(f"  Report   : {result['report_path']}")
+    if result.get("summary_csv_path"):
+        print(f"  CSV      : {result['summary_csv_path']}")
+    print()
+    print("  [!] No real orders. Research Only.")
+    print()
+
+
+def cmd_regression_suite(args: argparse.Namespace) -> None:
+    """Run regression suite."""
+    _print_release_header()
+    mode  = getattr(args, "mode",  "real")
+    quick = not getattr(args, "full", False)
+
+    suite_name = "quick" if quick else "full"
+    print(f"  Suite: {suite_name}")
+    print()
+
+    try:
+        from release.regression_suite import RegressionSuite
+        suite  = RegressionSuite(mode=mode, quick=quick)
+        result = suite.run_quick() if quick else suite.run_full()
+    except Exception as exc:
+        print(f"  ERROR: {exc}")
+        sys.exit(1)
+
+    status = result.get("status", "?")
+    passed = result.get("passed", 0)
+    failed = result.get("failed", 0)
+    warned = result.get("warned", 0)
+
+    print(f"  Overall Status : {status}")
+    print(f"  Passed         : {passed}")
+    print(f"  Failed         : {failed}")
+    print(f"  Warnings       : {warned}")
+    print()
+
+    tests = result.get("tests", [])
+    for t in tests:
+        st  = t.get("status", "?")
+        nm  = t.get("name", "?")
+        ms  = t.get("duration_ms", 0)
+        marker = "✓" if st == "PASS" else ("⚠" if st == "WARN" else ("✗" if st == "FAIL" else "—"))
+        print(f"  [{marker}] {nm:<38}  {st:<6}  {ms:.0f}ms")
+
+    print()
+    print("  [!] No real orders. Research Only.")
+    print()
+
+
+def cmd_stable_release_report(args: argparse.Namespace) -> None:
+    """Generate stable release report."""
+    _print_release_header()
+    mode = getattr(args, "mode", "real")
+
+    try:
+        from reports.stable_release_report import StableReleaseReportBuilder
+        builder = StableReleaseReportBuilder(mode=mode)
+        path    = builder.build()
+    except Exception as exc:
+        print(f"  ERROR: {exc}")
+        sys.exit(1)
+
+    print(f"  Report: {path}")
+    print()
+    print("  [!] No real orders. Research Only.")
+    print()
+
+
+# ---------------------------------------------------------------------------
 # v0.3.29 — Research Notebook / Experiment Registry Commands
 # ---------------------------------------------------------------------------
 
@@ -5462,6 +5606,149 @@ def cmd_enrich_universe_data(args: argparse.Namespace) -> None:
 
 
 # ---------------------------------------------------------------------------
+# TW Quant Cockpit v0.4.0 command handlers
+# ---------------------------------------------------------------------------
+
+def cmd_version_info(args: argparse.Namespace) -> None:
+    """Print version info for TW Quant Cockpit v0.4.0."""
+    try:
+        from release.version_info import print_version_info, get_safety_banner
+        print_version_info()
+        print()
+        print(get_safety_banner())
+    except Exception as exc:
+        print(f"  TW Quant Cockpit v0.4.0 — Research Only | No Real Orders | Production BLOCKED")
+        print(f"  (version_info import error: {exc})")
+
+
+def cmd_stable_release_check(args: argparse.Namespace) -> None:
+    """Run stable release checklist (v0.4.0)."""
+    import os
+    mode        = getattr(args, "mode", "real")
+    results_dir = getattr(args, "results_dir", "data/backtest_results")
+    report_dir  = getattr(args, "report_dir",  "reports")
+
+    _base = os.path.dirname(os.path.abspath(__file__))
+    abs_results = os.path.join(_base, results_dir)
+    abs_reports = os.path.join(_base, report_dir)
+
+    print("=" * 60)
+    print("  TW Quant Cockpit v0.4.0 — Stable Release Checklist")
+    print("  [!] Research Only | No Real Orders | Production BLOCKED")
+    print("=" * 60)
+
+    try:
+        from release.stable_release_checklist import StableReleaseChecklist
+        checklist = StableReleaseChecklist(
+            mode=mode,
+            results_dir=os.path.relpath(abs_results, _base),
+            report_dir=os.path.relpath(abs_reports, _base),
+        )
+        result = checklist.run()
+    except Exception as exc:
+        print(f"  ERROR running checklist: {exc}")
+        return
+
+    print(f"\n  Status  : {result['status']}")
+    print(f"  Version : {result['version']}")
+    print(f"  Mode    : {result['mode']}")
+    print(f"  Passed  : {result['passed']}")
+    print(f"  Failed  : {result['failed']}")
+    print(f"  Warnings: {result['warnings']}")
+    print()
+    print(f"  {'#':<3} {'Name':<35} {'Status':<8} {'ms':>7}  Detail")
+    print(f"  {'-'*3} {'-'*35} {'-'*8} {'-'*7}  {'-'*40}")
+    for i, item in enumerate(result.get("items", []), 1):
+        detail = str(item.get("detail", ""))[:60]
+        print(
+            f"  {i:<3} {item['name']:<35} {item['status']:<8} "
+            f"{item['duration_ms']:>7.1f}  {detail}"
+        )
+    print()
+    if result.get("summary_csv_path"):
+        print(f"  CSV  : {result['summary_csv_path']}")
+    if result.get("report_path"):
+        print(f"  Report: {result['report_path']}")
+    print(f"\n  Overall: {result['status']}")
+
+
+def cmd_regression_suite(args: argparse.Namespace) -> None:
+    """Run regression suite for v0.4.0."""
+    import os
+    mode        = getattr(args, "mode", "real")
+    quick       = not getattr(args, "full", False)
+    results_dir = getattr(args, "results_dir", "data/backtest_results")
+
+    _base = os.path.dirname(os.path.abspath(__file__))
+    abs_results = os.path.join(_base, results_dir)
+
+    suite_label = "Quick" if quick else "Full"
+    print("=" * 60)
+    print(f"  TW Quant Cockpit v0.4.0 — Regression Suite ({suite_label})")
+    print("  [!] Research Only | No Real Orders | Production BLOCKED")
+    print("=" * 60)
+
+    try:
+        from release.regression_suite import RegressionSuite
+        suite = RegressionSuite(
+            mode=mode,
+            quick=quick,
+            results_dir=os.path.relpath(abs_results, _base),
+        )
+        result = suite.run()
+    except Exception as exc:
+        print(f"  ERROR running regression suite: {exc}")
+        return
+
+    print(f"\n  Status  : {result['status']}")
+    print(f"  Suite   : {result['suite']}")
+    print(f"  Mode    : {result['mode']}")
+    print(f"  Passed  : {result['passed']}")
+    print(f"  Failed  : {result['failed']}")
+    print(f"  Warned  : {result['warned']}")
+    print()
+    print(f"  {'#':<3} {'Name':<40} {'Status':<8} {'ms':>7}  Detail")
+    print(f"  {'-'*3} {'-'*40} {'-'*8} {'-'*7}  {'-'*40}")
+    for i, test in enumerate(result.get("tests", []), 1):
+        detail = str(test.get("detail", ""))[:60]
+        print(
+            f"  {i:<3} {test['name']:<40} {test['status']:<8} "
+            f"{test['duration_ms']:>7.1f}  {detail}"
+        )
+    print(f"\n  Overall: {result['status']}")
+
+
+def cmd_stable_release_report(args: argparse.Namespace) -> None:
+    """Generate stable release report for v0.4.0."""
+    import os
+    mode        = getattr(args, "mode", "real")
+    report_dir  = getattr(args, "report_dir",  "reports")
+    results_dir = getattr(args, "results_dir", "data/backtest_results")
+
+    _base = os.path.dirname(os.path.abspath(__file__))
+    abs_reports = os.path.join(_base, report_dir)
+    abs_results = os.path.join(_base, results_dir)
+
+    print("=" * 60)
+    print("  TW Quant Cockpit v0.4.0 — Stable Release Report")
+    print("  [!] Research Only | No Real Orders | Production BLOCKED")
+    print("=" * 60)
+
+    try:
+        from reports.stable_release_report import StableReleaseReportBuilder
+        builder = StableReleaseReportBuilder(
+            report_dir=os.path.relpath(abs_reports, _base),
+            results_dir=os.path.relpath(abs_results, _base),
+            mode=mode,
+        )
+        path = builder.build()
+        print(f"\n  Report saved: {path}")
+        print(f"  Status: OK")
+    except Exception as exc:
+        print(f"  ERROR generating report: {exc}")
+
+
+# ---------------------------------------------------------------------------
 # Argument parser
 # ---------------------------------------------------------------------------
 
@@ -6068,6 +6355,41 @@ def _build_parser() -> argparse.ArgumentParser:
         help="Custom output folder for reports",
     )
 
+    # --- version-info (v0.4.0) ---
+    subparsers.add_parser(
+        "version-info",
+        help="Show TW Quant Cockpit version info and safety flags (v0.4.0)",
+    )
+
+    # --- stable-release-check (v0.4.0) ---
+    p_src = subparsers.add_parser(
+        "stable-release-check",
+        help="Run v0.4.0 stable release checklist (v0.4.0)",
+    )
+    p_src.add_argument("--mode", choices=["real", "mock"], default="real",
+                       help="Data mode (default: real)")
+
+    # --- regression-suite (v0.4.0) ---
+    p_rs = subparsers.add_parser(
+        "regression-suite",
+        help="Run regression suite — quick or full (v0.4.0)",
+    )
+    p_rs.add_argument("--mode", choices=["real", "mock"], default="real",
+                      help="Data mode (default: real)")
+    p_rs_grp = p_rs.add_mutually_exclusive_group()
+    p_rs_grp.add_argument("--quick", action="store_true", default=False,
+                           help="Run quick regression suite (default)")
+    p_rs_grp.add_argument("--full",  action="store_true", default=False,
+                           help="Run full regression suite")
+
+    # --- stable-release-report (v0.4.0) ---
+    p_srr = subparsers.add_parser(
+        "stable-release-report",
+        help="Generate v0.4.0 stable release Markdown report (v0.4.0)",
+    )
+    p_srr.add_argument("--mode", choices=["real", "mock"], default="real",
+                       help="Data mode (default: real)")
+
     # --- experiment-create (v0.3.29) ---
     p_ec = subparsers.add_parser(
         "experiment-create",
@@ -6602,6 +6924,11 @@ def main() -> None:
         "universe-quality-score":      cmd_universe_quality_score,
         "universe-expand":             cmd_universe_expand,
         "universe-report":             cmd_universe_report,
+        # TW Quant Cockpit v0.4.0
+        "version-info":                cmd_version_info,
+        "stable-release-check":        cmd_stable_release_check,
+        "regression-suite":            cmd_regression_suite,
+        "stable-release-report":       cmd_stable_release_report,
     }
 
     if args.command is None:

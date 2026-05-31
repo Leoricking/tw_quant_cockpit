@@ -3,7 +3,7 @@
 > **[!] Research Only. Read Only. No Real Orders. Production Trading: BLOCKED.**
 > **[!] Not investment advice. REAL_ORDER_READY=False.**
 
-Current version: **v0.3.23**
+Current version: **v0.4.0**
 
 ---
 
@@ -17,7 +17,10 @@ Current version: **v0.3.23**
 | [Daily Research SOP](daily_research_sop.md) | Step-by-step daily research procedures |
 | [Safety & Limitations](safety_and_limitations.md) | Read-only guarantees, production block, backtest limitations |
 | [Developer Guide](developer_guide.md) | Architecture, adding CLI/GUI/reports, git conventions |
-| [Release Notes v0.3](release_notes_v0.3.md) | v0.3.9 through v0.3.23 change log |
+| [Release Notes v0.3](release_notes_v0.3.md) | v0.3.9 through v0.3.29 change log |
+| [Release Notes v0.4](release_notes_v0.4.md) | v0.4.0 stable release change log |
+| [Release v0.4.0](release_v0.4.0.md) | v0.4.0 stable release overview and upgrade notes |
+| [Release Checklist](release_checklist.md) | Manual release verification checklist |
 | [Roadmap](roadmap.md) | Completed milestones and planned future versions |
 | [Troubleshooting](troubleshooting.md) | Common problems and solutions |
 
@@ -49,6 +52,13 @@ Current version: **v0.3.23**
 | [data_quality_gate.md](data_quality_gate.md) | v0.3.20 | Data Quality Gate |
 | [research_daily_workflow.md](research_daily_workflow.md) | v0.3.21 | Daily Workflow Engine |
 | [usability_qa_and_error_messages.md](usability_qa_and_error_messages.md) | v0.3.22 | Usability QA & Error Messages |
+| [provider_reliability_matrix.md](provider_reliability_matrix.md) | v0.3.24 | Provider Reliability & Fallback Matrix |
+| [universe_expansion_and_sector_classification.md](universe_expansion_and_sector_classification.md) | v0.3.25 | Universe Expansion & Sector Classification |
+| [backtest_engine_hardening.md](backtest_engine_hardening.md) | v0.3.26 | Hardened Backtest Engine |
+| [intraday_tick_pipeline.md](intraday_tick_pipeline.md) | v0.3.27 | Intraday / Tick Data Pipeline |
+| [strategy_rule_governance.md](strategy_rule_governance.md) | v0.3.28 | Strategy Rule Governance |
+| [research_notebook_experiment_registry.md](research_notebook_experiment_registry.md) | v0.3.29 | Research Notebook / Experiment Registry |
+| [release_v0.4.0.md](release_v0.4.0.md) | v0.4.0 | Release Status & Regression Suite |
 
 ---
 
@@ -65,4 +75,4 @@ Current version: **v0.3.23**
 
 ---
 
-*Generated for v0.3.23 Documentation & Release Notes Pack.*
+*Generated for v0.4.0 Research Platform Stable Release.*

@@ -30,6 +30,7 @@
 | v0.3.27 | Intraday / Tick Data Pipeline | Done |
 | v0.3.28 | Strategy Rule Governance | Done |
 | v0.3.29 | Research Notebook / Experiment Registry | Done |
+| v0.4.0 | Research Platform Stable Release | Done |
 
 ---
 
@@ -138,22 +139,32 @@
 
 ---
 
-## Planned: v0.4.0 — Research Platform Stable Release
+## Completed: v0.4.0 — Research Platform Stable Release
 
-**Target:** Architecture consolidation and stable release
+- `VersionInfo`: centralized version class; version=v0.4.0; get_version_info(), print_version_info(), get_safety_banner(), get_feature_summary()
+- `StableReleaseChecklist`: 18-item checklist (compileall, import health, GUI, workflow, quality gate, provider reliability, intraday, backtest, rule governance, experiment registry, auto report, usability, paper, mock realtime, git safety, artifact ignore, token leak, real order check); PASS/PARTIAL/BLOCKED
+- `RegressionSuite`: quick (7 tests) + full (14 tests) suites; CSV output; PASS/PARTIAL/FAIL
+- `StableReleaseReportBuilder`: 7-section Markdown stable release report
+- `ReleaseStatusPanel`: PySide6 GUI with version cards, feature coverage table, regression table, actions; QThread workers
+- `ReleaseStatusAdapter`: GUI bridge
+- CLI: `python main.py version-info | stable-release-check | regression-suite | stable-release-report`
+- `gui/dashboard.py` adds "Release Status" tab
+- v0.3.x features verified and regression-tested; no new strategies; no production trading
+- No real orders. Production BLOCKED.
 
-- Unified data model (replace ad-hoc dict structures with dataclasses)
-- Plugin architecture for custom rules
-- Config file support (`config.yaml`) for provider tokens and thresholds
-- Full test suite (pytest) with real data fixtures
-- Complete smoke / regression suite across all CLI commands
-- GUI / CLI / reports full acceptance testing
-- Stable release checklist
+---
 
-**Safety constraints remain unchanged in v0.4.x:**
-- PRODUCTION_BLOCKED=True
-- REAL_ORDER_READY=False
-- No broker connections
+## Planned: v0.4.1 — API Fetch Productionization
+
+**Target:** Provider reliability and data quality improvements
+
+- FinMind token setup assistant
+- TWSE / TPEx parser hardening
+- MOPS 財報公告日強化
+- Provider retry / timeout hardening
+- Provider response cache
+- Data lineage tracking
+- Still not production trading; no real orders
 
 ---
 

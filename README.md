@@ -4,6 +4,37 @@
 >
 > **[!] v1: Real order execution is strictly prohibited. For research, simulation, and decision support only. Not investment advice.**
 
+**Current version: v0.4.0 — Research Platform Stable Release**
+
+---
+
+## v0.4.0 — Research Platform Stable Release
+
+**New in v0.4.0:**
+
+- **Version Info** — `VersionInfo` class with centralized version, safety flags, feature list; `get_safety_banner()`, `get_feature_summary()`
+- **Stable Release Checklist** — 18-item checklist: compileall, import health, GUI, workflow, quality gate, provider reliability, intraday, backtest, rule governance, experiment registry, auto report, git safety, artifact ignore, token leak, real order check; PASS/PARTIAL/BLOCKED
+- **Regression Suite** — quick (7 tests) + full (14 tests) suites; CSV output
+- **Stable Release Report** — 7-section Markdown report
+- **Release Status GUI** — new "Release Status" tab with version cards, feature coverage table, regression table, action buttons
+- **No new strategies. No production trading. Research only.**
+
+```
+python main.py version-info
+python main.py stable-release-check --mode real
+python main.py regression-suite --mode real --quick
+python main.py regression-suite --mode real --full
+python main.py stable-release-report --mode real
+```
+
+### Known Limitations
+
+- Research Only — not for production trading
+- `production_blocked = True`, `real_order_ready = False`
+- Intraday tick/bidask planned for v0.4+ (currently INTRADAY_BAR_ONLY)
+- Universe sample size affects signal quality (expand for better results)
+- Provider reliability depends on FinMind/TWSE API availability
+
 ---
 
 ## v0.3.29 — Research Notebook / Experiment Registry

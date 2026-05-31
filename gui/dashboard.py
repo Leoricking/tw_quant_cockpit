@@ -219,6 +219,16 @@ except Exception as _er_exc:
     logger.warning("ExperimentRegistryPanel unavailable: %s", _er_exc)
     _EXPERIMENT_REGISTRY_AVAILABLE = False
 
+# ---------------------------------------------------------------------------
+# v0.4.0 Release Status panel import (guarded)
+# ---------------------------------------------------------------------------
+try:
+    from gui.release_status_panel import ReleaseStatusPanel
+    _RELEASE_STATUS_AVAILABLE = True
+except Exception as _rs_exc:
+    logger.warning("ReleaseStatusPanel unavailable: %s", _rs_exc)
+    _RELEASE_STATUS_AVAILABLE = False
+
 
 # ---------------------------------------------------------------------------
 # Colour helpers (Taiwan convention: red = up, green = down)
@@ -1197,6 +1207,13 @@ class CockpitWindow(QMainWindow if _PYSIDE6_AVAILABLE else object):
             mid_tabs.addTab(self._experiment_registry_panel, "Experiment Registry")
         else:
             self._experiment_registry_panel = None
+
+        # v0.4.0 Release Status tab
+        if _RELEASE_STATUS_AVAILABLE:
+            self._release_status_panel = ReleaseStatusPanel(mode=self._mode if hasattr(self, "_mode") else "real")
+            mid_tabs.addTab(self._release_status_panel, "Release Status")
+        else:
+            self._release_status_panel = None
 
         h_split.addWidget(mid_tabs)
         h_split.setStretchFactor(0, 3)
