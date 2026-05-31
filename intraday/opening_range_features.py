@@ -230,6 +230,8 @@ class OpeningRangeFeatureBuilder:
                 "opening_low_break": opening_low_break,
                 "opening_range_position": opening_range_position,
                 "opening_strength_score": opening_strength_score,
+                # v0.3.28: governance rule_id reference (metadata only)
+                "feature_rule_id": "INTRADAY.OPENING.RANGE_STRENGTH.V1",
             }
 
         except Exception as exc:

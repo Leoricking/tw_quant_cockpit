@@ -255,6 +255,8 @@ class FakeBreakoutDetector:
                 "fake_breakout_score": round(fake_breakout_score, 2),
                 "chase_risk_score": round(chase_risk_score, 2),
                 "breakout_quality": breakout_quality,
+                # v0.3.28: governance rule_id reference (metadata only)
+                "feature_rule_id": "INTRADAY.BREAKOUT.FAKE_BREAKOUT_RISK.V1",
             }
 
         except Exception as exc:

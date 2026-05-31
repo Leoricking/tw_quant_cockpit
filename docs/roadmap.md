@@ -28,6 +28,7 @@
 | v0.3.25 | Universe Expansion & Sector Classification | Done |
 | v0.3.26 | Backtest Engine Hardening | Done |
 | v0.3.27 | Intraday / Tick Data Pipeline | Done |
+| v0.3.28 | Strategy Rule Governance | Done |
 
 ---
 
@@ -100,7 +101,42 @@
 
 ---
 
-## Planned: v0.3.28
+## Completed: v0.3.28 — Strategy Rule Governance
+
+- `RuleMetadata`: dataclass with rule_id, category, version, status, confidence, sample_count, dependencies, safety_flags
+- `RuleRegistry`: 53 built-in rules across 8 categories (buy_point, screener, strategy_knowledge, long_term, portfolio, signal_quality, intraday, governance/backtest assumption)
+- `RuleDependencyGraph`: adjacency-list dependency graph; cycle detection; topological ordering; high-impact rule identification
+- `RuleConfidenceScorer`: 0–100 scoring with degradation for experimental, low sample count, mock-only results; confidence levels HIGH/GOOD/PARTIAL/WEAK/LOW/UNKNOWN/PLANNED
+- `RuleChangeLog`: append-only JSONL change log (runtime output → `logs/governance/`, not committed)
+- `RuleSnapshotBuilder`: exports snapshot JSON + CSV to `data/backtest_results/` (not committed)
+- `RuleGovernanceReportBuilder`: 8-section Markdown governance report
+- `RuleGovernancePanel`: PySide6 GUI with safety banner, summary cards, rule table, dependency table, review queue, action buttons; QThread workers
+- `RuleGovernanceAdapter`: GUI bridge (run_governance, generate_report, export_snapshot)
+- CLI: `python main.py rule-governance [--mode] [--category] [--status] [--report] [--snapshot]`
+- Integration: `AutoReportCenter` full profile includes rule governance; manifest records governance fields; `SignalQualityEngine` maps recommendations to rule_ids; `RuleWeightConfig` adds `rule_governance_refs`; `HardenedBacktester` outputs `assumption_rule_ids`; intraday feature builders output `feature_rule_id`
+- Rule IDs follow format: CATEGORY.TIMEFRAME.NAME.VERSION (e.g. BUY.SHORT.PULLBACK_10MA.V1)
+- Tick/bidask rules: status EXPERIMENTAL, confidence PLANNED — not pretending ready
+- No auto-apply weights. No auto-enable rules. No real orders. Production BLOCKED.
+
+---
+
+## Planned: v0.3.29
+
+**Target:** Research Notebook / Experiment Registry
+
+- experiment_id
+- config snapshot
+- universe snapshot
+- data quality snapshot
+- rule snapshot
+- backtest result snapshot
+- compare experiments
+- GUI Experiment Registry tab
+- Still read-only, no real orders
+
+---
+
+## Planned: v0.3.28 (old roadmap — superseded)
 
 **Target:** Signal quality improvements
 

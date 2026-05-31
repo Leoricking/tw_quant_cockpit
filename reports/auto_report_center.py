@@ -46,6 +46,7 @@ _PROFILE_FLAGS: Dict[str, dict] = {
         include_provider_reliability=True,
         include_hardened_backtest=True,
         include_intraday_pipeline=True,
+        include_rule_governance=True,
     ),
     "daily": dict(
         include_stock_reports=False,
@@ -144,6 +145,7 @@ class AutoReportCenter:
         universe_name: Optional[str] = None,
         include_hardened_backtest: bool = False,
         include_intraday_pipeline: bool = False,
+        include_rule_governance: bool = False,
     ):
         self.mode        = mode
         self.profile     = profile
@@ -168,6 +170,7 @@ class AutoReportCenter:
         self.include_provider_reliability = flags.get("include_provider_reliability", include_provider_reliability)
         self.include_hardened_backtest    = flags.get("include_hardened_backtest",    include_hardened_backtest)
         self.include_intraday_pipeline    = flags.get("include_intraday_pipeline",    include_intraday_pipeline)
+        self.include_rule_governance      = flags.get("include_rule_governance",      include_rule_governance)
         self.universe_name = universe_name
 
         # Runtime state (populated during run)
@@ -229,6 +232,9 @@ class AutoReportCenter:
 
         if self.include_intraday_pipeline:
             self.run_intraday_pipeline_report()
+
+        if self.include_rule_governance:
+            self.run_rule_governance_report()
 
         # Aggregated outputs
         if self.include_daily_summary:
@@ -562,6 +568,36 @@ class AutoReportCenter:
             )
         except Exception as exc:
             self._record_fail("hardened_backtest", str(exc))
+
+    def run_rule_governance_report(self):
+        """Run rule governance analysis and save report (v0.3.28)."""
+        try:
+            from gui.rule_governance_adapter import RuleGovernanceAdapter
+            adapter = RuleGovernanceAdapter(
+                results_dir=self.results_dir,
+                report_dir=self._out_dir,
+            )
+            gov_result = adapter.run_governance(mode=self.mode)
+            reg_summary = gov_result.get("registry_summary", {})
+            conf_result = gov_result.get("confidence_result", {})
+            self._context["rule_governance_summary"] = reg_summary
+            self._context["rules_needing_review"] = gov_result.get("review_queue", [])
+            self._context["experimental_rule_count"] = reg_summary.get("experimental_count", 0)
+            self._context["high_confidence_rule_count"] = len(conf_result.get("high_confidence", []))
+
+            path = adapter.generate_report(mode=self.mode)
+            self._record_success(
+                "rule_governance",
+                path,
+                extra={
+                    "total_rules":          reg_summary.get("total_rules", 0),
+                    "experimental_count":   reg_summary.get("experimental_count", 0),
+                    "needs_review_count":   reg_summary.get("needs_review_count", 0),
+                    "high_confidence":      len(conf_result.get("high_confidence", [])),
+                },
+            )
+        except Exception as exc:
+            self._record_fail("rule_governance", str(exc))
 
     def run_intraday_pipeline_report(self):
         """Run intraday pipeline quality check and save report (v0.3.27)."""

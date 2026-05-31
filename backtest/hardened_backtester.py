@@ -206,6 +206,14 @@ class HardenedBacktester:
                 "win_rate": metrics.get("win_rate"),
                 "confidence_grade": confidence_grade,
                 "assumptions": assumptions,
+                # v0.3.28: governance rule_id references for active assumptions (metadata only)
+                "assumption_rule_ids": {
+                    "entry_model":       "BACKTEST.EXECUTION.NEXT_OPEN.V1" if self.entry_model == "next_open" else "BACKTEST.EXECUTION.SIGNAL_CLOSE.V1",
+                    "cost_model":        "BACKTEST.COST.TAIWAN_REALISTIC.V1",
+                    "liquidity_filter":  "BACKTEST.LIQUIDITY.REQUIRED.V1",
+                    "gap_risk":          "BACKTEST.RISK.GAP_BLOCK.V1",
+                    "split_method":      "BACKTEST.VALIDATION.WALK_FORWARD.V1",
+                },
                 "trades_path": paths.get("trades"),
                 "metrics_path": paths.get("metrics"),
                 "split_metrics": split_metrics,

@@ -4522,6 +4522,95 @@ def cmd_universe_report(args: argparse.Namespace) -> None:
 
 
 # ---------------------------------------------------------------------------
+# v0.3.28 — Strategy Rule Governance Command
+# ---------------------------------------------------------------------------
+
+def cmd_rule_governance(args: argparse.Namespace) -> None:
+    """Run strategy rule governance analysis."""
+    mode       = getattr(args, "mode",        "real")
+    category   = getattr(args, "category",    None)
+    status_flt = getattr(args, "status",      None)
+    report     = getattr(args, "report",      False)
+    snapshot   = getattr(args, "snapshot",    False)
+    results_dir = getattr(args, "results_dir", "data/backtest_results")
+    report_dir  = getattr(args, "report_dir",  "reports")
+
+    print()
+    print("=" * 60)
+    print("  TW Quant Cockpit v0.3.28 — Strategy Rule Governance")
+    print("=" * 60)
+    print(f"  Mode         : {mode}")
+    print("  Research Only: True")
+    print("  No Real Orders: True")
+    print()
+
+    try:
+        from gui.rule_governance_adapter import RuleGovernanceAdapter
+        adapter = RuleGovernanceAdapter(results_dir=results_dir, report_dir=report_dir)
+        result  = adapter.run_governance(mode=mode)
+    except Exception as exc:
+        print(f"  ERROR: {exc}")
+        sys.exit(1)
+
+    reg_summary = result.get("registry_summary", {})
+    conf_result = result.get("confidence_result", {})
+    cycles      = result.get("dependency_cycles", [])
+
+    print(f"  Total rules  : {reg_summary.get('total_rules', 0)}")
+    print(f"  Active       : {reg_summary.get('active_count', 0)}")
+    print(f"  Experimental : {reg_summary.get('experimental_count', 0)}")
+    print(f"  Needs review : {reg_summary.get('needs_review_count', 0)}")
+    print(f"  High conf.   : {len(conf_result.get('high_confidence', []))}")
+    print(f"  Unknown conf.: {len(conf_result.get('unknown_confidence', []))}")
+    print(f"  Dep. warnings: {len(cycles)}")
+
+    if category or status_flt:
+        # Load registry for filtered rule listing (status filter is case-insensitive)
+        try:
+            from governance.rule_registry import RuleRegistry
+            _reg = RuleRegistry()
+            _reg.load_builtin_rules()
+            rules = _reg.list_rules(
+                category=category,
+                status=status_flt.upper() if status_flt else None,
+            )
+        except Exception:
+            rules = []
+        print()
+        lbl = f"category={category}" if category else f"status={status_flt}"
+        print(f"  Filtered ({lbl}): {len(rules)} rules")
+        for r in rules[:20]:
+            rid  = r.rule_id  if hasattr(r, "rule_id")  else r.get("rule_id", "?")
+            st   = r.status   if hasattr(r, "status")   else r.get("status", "?")
+            conf = r.confidence_level if hasattr(r, "confidence_level") else r.get("confidence_level", "?")
+            exp  = " [EXPERIMENTAL]" if (r.experimental if hasattr(r, "experimental") else r.get("experimental")) else ""
+            print(f"    {rid}  status={st}  conf={conf}{exp}")
+        if len(rules) > 20:
+            print(f"    ... and {len(rules) - 20} more")
+
+    print()
+
+    if report:
+        try:
+            path = adapter.generate_report(mode=mode)
+            print(f"  Report: {path}")
+        except Exception as exc:
+            print(f"  [WARN] Report failed: {exc}")
+
+    if snapshot:
+        try:
+            snap = adapter.export_snapshot()
+            snap_path = snap.get("snapshot_path") or snap.get("error", "unknown")
+            print(f"  Snapshot: {snap_path}")
+        except Exception as exc:
+            print(f"  [WARN] Snapshot failed: {exc}")
+
+    print()
+    print("  [!] No auto weight apply. No real orders. Research Only.")
+    print()
+
+
+# ---------------------------------------------------------------------------
 # v0.3.27 — Intraday / Tick Data Pipeline Commands
 # ---------------------------------------------------------------------------
 
@@ -5717,6 +5806,26 @@ def _build_parser() -> argparse.ArgumentParser:
         help="Custom output folder for reports",
     )
 
+    # --- rule-governance (v0.3.28) ---
+    p_rg = subparsers.add_parser(
+        "rule-governance",
+        help="Strategy Rule Governance — registry, confidence, dependency, report, snapshot (v0.3.28)",
+    )
+    p_rg.add_argument("--mode", choices=["real", "mock"], default="real",
+                      help="Data mode (default: real)")
+    p_rg.add_argument("--category", default=None,
+                      help="Filter by category (buy_point, screener, intraday, portfolio, ...)")
+    p_rg.add_argument("--status", default=None,
+                      help="Filter by status (ACTIVE, EXPERIMENTAL, NEEDS_REVIEW, ...)")
+    p_rg.add_argument("--report", action="store_true", default=False,
+                      help="Generate Markdown governance report")
+    p_rg.add_argument("--snapshot", action="store_true", default=False,
+                      help="Export rule snapshot JSON + CSV")
+    p_rg.add_argument("--results-dir", dest="results_dir", default="data/backtest_results",
+                      help="Backtest results directory (default: data/backtest_results/)")
+    p_rg.add_argument("--report-dir", dest="report_dir", default="reports",
+                      help="Output directory for report (default: reports/)")
+
     # --- intraday-pipeline (v0.3.27) ---
     p_ip = subparsers.add_parser(
         "intraday-pipeline",
@@ -6139,6 +6248,8 @@ def main() -> None:
         "provider-reliability":        cmd_provider_reliability,
         # TW Quant Cockpit v0.3.26
         "hardened-backtest":           cmd_hardened_backtest,
+        # TW Quant Cockpit v0.3.28
+        "rule-governance":             cmd_rule_governance,
         # TW Quant Cockpit v0.3.27
         "intraday-pipeline":           cmd_intraday_pipeline,
         "intraday-quality":            cmd_intraday_quality,

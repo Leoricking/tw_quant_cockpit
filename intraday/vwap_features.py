@@ -223,6 +223,8 @@ class VWAPFeatureBuilder:
                 "vwap_reclaim": vwap_reclaim,
                 "vwap_lost": vwap_lost,
                 "vwap_support_score": vwap_support_score,
+                # v0.3.28: governance rule_id references (metadata only)
+                "feature_rule_id": "INTRADAY.VWAP.RECLAIM.V1",
             }
 
         except Exception as exc:

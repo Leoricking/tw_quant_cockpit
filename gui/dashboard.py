@@ -199,6 +199,16 @@ except Exception as _ip_exc:
     logger.warning("IntradayPipelinePanel unavailable: %s", _ip_exc)
     _INTRADAY_PIPELINE_AVAILABLE = False
 
+# ---------------------------------------------------------------------------
+# v0.3.28 Rule Governance panel import (guarded)
+# ---------------------------------------------------------------------------
+try:
+    from gui.rule_governance_panel import RuleGovernancePanel
+    _RULE_GOVERNANCE_AVAILABLE = True
+except Exception as _rg_exc:
+    logger.warning("RuleGovernancePanel unavailable: %s", _rg_exc)
+    _RULE_GOVERNANCE_AVAILABLE = False
+
 
 # ---------------------------------------------------------------------------
 # Colour helpers (Taiwan convention: red = up, green = down)
@@ -1163,6 +1173,13 @@ class CockpitWindow(QMainWindow if _PYSIDE6_AVAILABLE else object):
             mid_tabs.addTab(self._intraday_pipeline_panel, "Intraday Pipeline")
         else:
             self._intraday_pipeline_panel = None
+
+        # v0.3.28 Rule Governance tab
+        if _RULE_GOVERNANCE_AVAILABLE:
+            self._rule_governance_panel = RuleGovernancePanel(mode=self._mode if hasattr(self, "_mode") else "real")
+            mid_tabs.addTab(self._rule_governance_panel, "Rule Governance")
+        else:
+            self._rule_governance_panel = None
 
         h_split.addWidget(mid_tabs)
         h_split.setStretchFactor(0, 3)

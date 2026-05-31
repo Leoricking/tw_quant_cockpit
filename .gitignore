@@ -158,6 +158,12 @@ reports/hardened_backtest_report_*.md
 data/backtest_results/hardened_backtest_*.csv
 data/backtest_results/hardened_backtest_*.json
 
+# Rule Governance report and result outputs (v0.3.28, generated artifacts)
+reports/rule_governance_report_*.md
+data/backtest_results/rule_governance_*.csv
+data/backtest_results/rule_governance_*.json
+logs/governance/
+
 # Intraday pipeline report and result outputs (v0.3.27, generated artifacts)
 reports/intraday_pipeline_report_*.md
 data/backtest_results/intraday_pipeline_*.csv

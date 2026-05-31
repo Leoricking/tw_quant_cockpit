@@ -392,6 +392,10 @@ class AutoReportIndexBuilder:
                 "intraday_quality_score": ctx.get("intraday_quality_score"),
                 "intraday_status":        ctx.get("intraday_status"),
                 "tick_bidask_readiness":  ctx.get("tick_bidask_readiness", False),
+                "rule_governance_summary":    ctx.get("rule_governance_summary"),
+                "rules_needing_review":       ctx.get("rules_needing_review"),
+                "experimental_rule_count":    ctx.get("experimental_rule_count"),
+                "high_confidence_rule_count": ctx.get("high_confidence_rule_count"),
             }
 
             path = os.path.join(output_dir, "manifest.json")

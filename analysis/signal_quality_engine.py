@@ -49,6 +49,16 @@ REDUCE             = "REDUCE"
 DISABLE            = "DISABLE"
 INSUFFICIENT_SAMPLE = "INSUFFICIENT_SAMPLE"
 
+# v0.3.28: governance rule_id references for each recommendation type
+# These are metadata links only — they do not change recommendation logic.
+RECOMMENDATION_RULE_IDS = {
+    BOOST:               "SIGNAL.QUALITY.BOOST.V1",
+    KEEP:                "SIGNAL.QUALITY.KEEP.V1",
+    REDUCE:              "SIGNAL.QUALITY.REDUCE.V1",
+    DISABLE:             "SIGNAL.QUALITY.DISABLE.V1",
+    INSUFFICIENT_SAMPLE: "SIGNAL.QUALITY.INSUFFICIENT_SAMPLE.V1",
+}
+
 # Unified output columns
 _UNIFIED_COLS = [
     "source", "signal_name", "signal_group",

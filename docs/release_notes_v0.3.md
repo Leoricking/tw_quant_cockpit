@@ -4,9 +4,69 @@
 
 ---
 
-## v0.3.27 — Intraday / Tick Data Pipeline
+## v0.3.28 — Strategy Rule Governance
 
 **Status:** Current
+
+### New Files
+
+- `governance/__init__.py` — package init
+- `governance/rule_metadata.py` — `RuleMetadata` class with 20+ fields; rule_id/category/version/status/confidence/dependencies/safety_flags; serializable to dict/JSON
+- `governance/rule_registry.py` — `RuleRegistry`: 53 built-in rules across 8 categories; `load_builtin_rules()`, `list_rules()`, `get_rule()`, `update_rule_status()`, `build_rule_summary()`
+- `governance/rule_dependency_graph.py` — `RuleDependencyGraph`: builds adjacency graph from rule dependencies; cycle detection (no crash on cycle); topological ordering; high-impact rule identification
+- `governance/rule_confidence.py` — `RuleConfidenceScorer`: scores each rule; degradation logic (experimental/low sample/mock-only); confidence levels HIGH/GOOD/PARTIAL/WEAK/LOW/UNKNOWN/PLANNED
+- `governance/rule_change_log.py` — `RuleChangeLog`: append-only JSONL log at `logs/governance/` (runtime, not committed)
+- `governance/rule_snapshot.py` — `RuleSnapshotBuilder`: exports snapshot JSON + summary CSV to `data/backtest_results/` (not committed)
+- `reports/rule_governance_report.py` — `RuleGovernanceReportBuilder`: 8-section Markdown report (overview, categories, confidence, dependencies, review queue, weight linkage, safety, recommendations)
+- `gui/rule_governance_panel.py` — `RuleGovernancePanel`: PySide6 GUI with safety banner, summary cards, rule table (10 columns), dependency table, review queue, action buttons; QThread workers
+- `gui/rule_governance_adapter.py` — `RuleGovernanceAdapter`: GUI bridge (run_governance, generate_report, export_snapshot, load_latest_summary)
+- `docs/strategy_rule_governance.md` — documentation
+
+### Modified Files
+
+- `main.py` — `rule-governance` CLI command with --mode/--category/--status/--report/--snapshot/--results-dir/--report-dir
+- `gui/dashboard.py` — guarded import + "Rule Governance" tab
+- `reports/auto_report_center.py` — `include_rule_governance` parameter; `run_rule_governance_report()` method; full profile includes rule governance
+- `reports/auto_report_index.py` — manifest records `rule_governance_summary`, `rules_needing_review`, `experimental_rule_count`, `high_confidence_rule_count`
+- `analysis/signal_quality_engine.py` — `RECOMMENDATION_RULE_IDS` dict maps BOOST/KEEP/REDUCE/DISABLE/INSUFFICIENT_SAMPLE to governance rule_ids (metadata only, no logic change)
+- `tuning/rule_weight_config.py` — `rule_governance_refs` field in `RuleWeightConfig` (optional, not auto-applied)
+- `backtest/hardened_backtester.py` — `assumption_rule_ids` in result dict (metadata only, no logic change)
+- `intraday/fake_breakout_detector.py` — `feature_rule_id` in detect() output (metadata only)
+- `intraday/vwap_features.py` — `feature_rule_id` in build() output (metadata only)
+- `intraday/opening_range_features.py` — `feature_rule_id` in build() output (metadata only)
+- `README.md` — v0.3.28 section
+- `docs/roadmap.md` — v0.3.28 marked Done; v0.3.29 Research Notebook planned
+- `docs/release_notes_v0.3.md` — this file
+- `.gitignore` — rule_governance_report_*.md, rule_governance_*.json, logs/governance/ excluded
+
+### Rule ID Format
+
+`CATEGORY.TIMEFRAME.NAME.VERSION` — e.g. `BUY.SHORT.PULLBACK_10MA.V1`, `INTRADAY.VWAP.RECLAIM.V1`
+
+### Rule Categories (53 built-in rules)
+
+| Category | Count |
+|----------|-------|
+| buy_point | 5 |
+| screener | 8 |
+| strategy_knowledge | 10 |
+| long_term | 6 |
+| portfolio | 6 |
+| signal_quality | 5 |
+| intraday | 7 |
+| governance (backtest assumptions) | 6 |
+
+### Safety
+
+- No auto-apply weights. No auto-enable/disable rules. No real orders. Production BLOCKED.
+- Tick/bidask rules: status EXPERIMENTAL, confidence PLANNED — not pretending ready.
+- Rule change log goes to `logs/governance/` (runtime, not committed).
+
+---
+
+## v0.3.27 — Intraday / Tick Data Pipeline
+
+**Status:** Superseded by v0.3.28
 
 ### New Files
 

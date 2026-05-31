@@ -20,6 +20,31 @@ Taiwan bull-stock screening + short/mid/long-term analysis + simulated trading l
 
 ---
 
+## v0.3.28 — Strategy Rule Governance
+
+**New in v0.3.28:**
+
+- **Rule Registry** — 53 built-in rules across 8 categories; every rule has rule_id, version, status, confidence, sample_count, dependencies
+- **Rule Confidence** — HIGH/GOOD/PARTIAL/WEAK/LOW/UNKNOWN/PLANNED; degraded for experimental/low-sample/mock-only rules
+- **Rule Dependency Graph** — adjacency-list graph; cycle detection; topological ordering; high-impact rules
+- **Rule Snapshot** — exports JSON + CSV to `data/backtest_results/` (not committed)
+- **Rule Change Log** — append-only JSONL at `logs/governance/` (not committed)
+- **Rule Governance Report** — 8-section Markdown report
+- **Integrations** — rule_ids linked to SignalQualityEngine, RuleWeightConfig, HardenedBacktester, intraday feature builders (metadata only, no logic change)
+- **CLI**: `python main.py rule-governance [--mode] [--category] [--status] [--report] [--snapshot]`
+- **GUI**: new "Rule Governance" tab in cockpit
+- **No auto-apply weights. No auto-enable rules. No real orders. Production BLOCKED.**
+
+```
+python main.py rule-governance --mode real
+python main.py rule-governance --mode real --report
+python main.py rule-governance --mode real --category intraday
+python main.py rule-governance --mode real --status experimental
+python main.py rule-governance --mode real --snapshot
+```
+
+---
+
 ## v0.3.27 — Intraday / Tick Data Pipeline
 
 **New in v0.3.27:**

@@ -55,6 +55,8 @@ class RuleWeightConfig:
     # ── Metadata ─────────────────────────────────────────────────────────
     source: str = "manual"           # 'manual' | 'signal_quality_csv' | 'preset'
     version: str = "v0.3.15"
+    # v0.3.28: optional governance rule_id references (metadata only — never auto-applied)
+    rule_governance_refs: Optional[Dict[str, str]] = field(default_factory=dict)
 
     def weight_sum(self) -> float:
         """Sum of all signal weights (baseline = 1.0)."""
