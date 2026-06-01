@@ -415,6 +415,12 @@ class AutoReportIndexBuilder:
                 "strategy_rule_candidates_count":   ctx.get("strategy_rule_candidates_count"),
                 "strategy_avoid_conditions_count":  ctx.get("strategy_avoid_conditions_count"),
                 "strategy_risk_conditions_count":   ctx.get("strategy_risk_conditions_count"),
+                # v0.4.2.1 ML Knowledge Integration
+                "ml_knowledge_features_count":   ctx.get("ml_knowledge_features_count"),
+                "ml_knowledge_model_ready":      ctx.get("ml_knowledge_model_ready"),
+                "ml_knowledge_auto_enabled":     ctx.get("ml_knowledge_auto_enabled", 0),
+                "ml_knowledge_leakage_findings": ctx.get("ml_knowledge_leakage_findings"),
+                "ml_knowledge_critical_leakage": ctx.get("ml_knowledge_critical_leakage"),
             }
 
             path = os.path.join(output_dir, "manifest.json")

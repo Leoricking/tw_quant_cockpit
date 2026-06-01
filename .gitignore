@@ -221,3 +221,7 @@ knowledge/transcripts/
 data/import/transcripts/
 data/import/knowledge/
 data/strategy_knowledge/transcripts/
+
+# ML Knowledge Integration outputs (v0.4.2.1, runtime artifacts — NEVER commit)
+data/backtest_results/ml_feature_store/
+reports/ml_knowledge_integration_report_*.md

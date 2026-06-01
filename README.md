@@ -4,7 +4,50 @@
 >
 > **[!] v1: Real order execution is strictly prohibited. For research, simulation, and decision support only. Not investment advice.**
 
-**Current version: v0.4.1.1 — Strategy Knowledge Ingestion (inserted between v0.4.1 and v0.4.2)**
+**Current version: v0.4.2.1 — ML Feature Store Knowledge Integration (inserted between v0.4.2 and v0.4.3)**
+
+---
+
+## v0.4.2.1 — ML Feature Store Knowledge Integration
+
+**New in v0.4.2.1:**
+
+- **Knowledge Feature Bridge** — `KnowledgeFeatureBridge`: converts v0.4.1.1 transcript CSVs (factor/rule/avoid/risk candidates) to ML feature metadata; auto_enabled=False; confidence capped at PARTIAL
+- **Knowledge Feature Catalog** — `KnowledgeFeatureCatalog`: register/list/get/export transcript-derived features; enforces auto_enabled=False at register, export, and load
+- **Knowledge Feature Readiness** — `KnowledgeFeatureReadinessChecker`: READY/PARTIAL/METADATA_ONLY/NEEDS_MAPPING/NEEDS_BACKTEST/BLOCKED/LEAKAGE_RISK/INSUFFICIENT_DATA per feature
+- **Knowledge Leakage Checker** — `KnowledgeLeakageChecker`: 5 leakage types (POST_EVENT_KNOWLEDGE, TIMING_ESTIMATED, LONG_CYCLE_RISK, PATTERN_INCOMPLETE, UNVALIDATED_CANDIDATE)
+- **Knowledge Dataset Exporter** — `KnowledgeDatasetExporter`: exports catalog.csv, readiness.csv, leakage.csv, model_ready_knowledge_schema.json
+- **ML Knowledge Integration Report** — 7-section Markdown report (gitignored)
+- **GUI tab** — "ML Knowledge Integration" tab: safety banner, 6 summary cards (auto_enabled always 0), feature catalog/readiness/leakage tables; QThread workers
+- **long_cycle_risk** → METADATA_ONLY, not_for_short_term_label=True — never used as short-term return label
+- **model_ready_schema** — only READY/PARTIAL features with no critical leakage; excluded from training by default
+- **ML Research Only. No Real Orders. auto_enabled=0. Production BLOCKED.**
+
+```bash
+# Integration dry run (no files written)
+python main.py ml-knowledge-integrate --mode real --dry-run
+
+# Full integration (writes 4 output files)
+python main.py ml-knowledge-integrate --mode real
+
+# With report generation
+python main.py ml-knowledge-integrate --mode real --report
+
+# Leakage check
+python main.py ml-knowledge-leakage-check --mode real
+
+# Show summary of latest integration
+python main.py ml-knowledge-feature-summary
+```
+
+**Safety:**
+- `data/backtest_results/ml_feature_store/` — gitignored, never committed
+- `reports/ml_knowledge_integration_report_*.md` — gitignored, never committed
+- `auto_enabled=False` for ALL transcript-derived features — no exceptions
+- Transcript-only confidence ≤ PARTIAL always
+- long_cycle_risk = METADATA_ONLY — not_for_short_term_label=True
+- model_ready_schema excludes long-cycle features entirely
+- NOT investment advice. NOT for production trading.
 
 ---
 

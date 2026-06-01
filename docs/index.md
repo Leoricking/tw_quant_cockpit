@@ -3,7 +3,7 @@
 > **[!] Research Only. Read Only. No Real Orders. Production Trading: BLOCKED.**
 > **[!] Not investment advice. REAL_ORDER_READY=False.**
 
-Current version: **v0.4.1.1** (inserted between v0.4.1 and v0.4.2)
+Current version: **v0.4.2.1** (inserted between v0.4.2 and v0.4.3)
 
 ---
 
@@ -62,6 +62,7 @@ Current version: **v0.4.1.1** (inserted between v0.4.1 and v0.4.2)
 | [api_fetch_productionization.md](api_fetch_productionization.md) | v0.4.1 | API Fetch Productionization (token, retry, cache, lineage, parsers) |
 | [strategy_knowledge_ingestion.md](strategy_knowledge_ingestion.md) | v0.4.1.1 | Strategy Knowledge Ingestion (transcript loader, extractor, rule candidates, factor candidates, avoid/risk conditions) |
 | [ml_feature_store_v1.md](ml_feature_store_v1.md) | v0.4.2 | ML Feature Store v1 (feature catalog, snapshot, labels, split, leakage check, quality, importance) |
+| [ml_feature_store_knowledge_integration.md](ml_feature_store_knowledge_integration.md) | v0.4.2.1 | ML Feature Store Knowledge Integration (bridge, catalog, readiness, leakage check, dataset exporter) |
 | [model_monitoring.md](model_monitoring.md) | v0.4.3 | Model Monitoring (prediction tracking, hit/miss review, drift detection, signal degradation, rule vs ML) |
 | [intraday_replay_cockpit.md](intraday_replay_cockpit.md) | v0.4.4 | Intraday Replay Cockpit (replay engine, opening range, VWAP, fake breakout, volume profile, training mode) |
 

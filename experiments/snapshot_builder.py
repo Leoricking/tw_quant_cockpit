@@ -546,6 +546,44 @@ class ExperimentSnapshotBuilder:
             snap["warnings"].append("build_strategy_knowledge_snapshot raised an exception")
         return snap
 
+    def build_ml_knowledge_integration_snapshot(self) -> dict:
+        """
+        Snapshot type: ml_knowledge_integration. Loads ML knowledge integration summary (v0.4.2.1).
+        [!] ML Research Only. No Real Orders. auto_enabled=False.
+        """
+        snap = _empty_snapshot("ml_knowledge_integration")
+        try:
+            from ml.knowledge_dataset_exporter import KnowledgeDatasetExporter
+            exporter = KnowledgeDatasetExporter()
+            summary = exporter.load_latest_summary()
+            if not summary:
+                snap["warnings"].append(
+                    "No ml_knowledge_integration_summary.json found — run ml-knowledge-integrate first"
+                )
+                snap["summary"] = {
+                    "total_features":    0,
+                    "model_ready":       0,
+                    "auto_enabled":      0,
+                    "leakage_findings":  0,
+                    "status":            "NO_DATA",
+                }
+                return snap
+            snap["summary"] = {
+                "total_features":    summary.get("total_features", 0),
+                "model_ready":       summary.get("model_ready_features", 0),
+                "auto_enabled":      0,
+                "leakage_findings":  summary.get("leakage_findings", 0),
+                "critical_leakage":  summary.get("critical_leakage", 0),
+                "ml_research_only":  True,
+                "no_real_orders":    True,
+                "generated_at":      summary.get("generated_at", ""),
+            }
+            snap["status"] = "OK"
+        except Exception:
+            logger.exception("build_ml_knowledge_integration_snapshot failed")
+            snap["warnings"].append("build_ml_knowledge_integration_snapshot raised an exception")
+        return snap
+
     def build_all(self, universe_name: str = None) -> dict:
         """
         Build all available snapshots. Each builder is called independently;
@@ -567,7 +605,8 @@ class ExperimentSnapshotBuilder:
             ("ml_feature_store",       lambda: self.build_ml_feature_snapshot()),
             ("model_monitoring",       lambda: self.build_model_monitoring_snapshot()),
             ("intraday_replay",        lambda: self.build_intraday_replay_snapshot()),
-            ("strategy_knowledge",     lambda: self.build_strategy_knowledge_snapshot()),
+            ("strategy_knowledge",          lambda: self.build_strategy_knowledge_snapshot()),
+            ("ml_knowledge_integration",    lambda: self.build_ml_knowledge_integration_snapshot()),
         ]
         for snap_type, fn in builders:
             try:

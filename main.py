@@ -6561,6 +6561,225 @@ def cmd_replay_training_summary(args: argparse.Namespace) -> None:
 
 
 # ---------------------------------------------------------------------------
+# v0.4.2.1 ML Knowledge Integration command handlers
+# ---------------------------------------------------------------------------
+
+def cmd_ml_knowledge_integrate(args: argparse.Namespace) -> None:
+    """Integrate transcript-derived knowledge into ML Feature Store."""
+    mode         = getattr(args, "mode", "real")
+    dry_run      = getattr(args, "dry_run", False)
+    do_report    = getattr(args, "report", False)
+    knowledge_dir = getattr(args, "knowledge_dir", "data/backtest_results/strategy_knowledge")
+    output_dir   = getattr(args, "output_dir", "data/backtest_results/ml_feature_store")
+
+    print("=" * 60)
+    print("  TW Quant Cockpit — ML Knowledge Integration v0.4.2.1")
+    print("=" * 60)
+    print(f"  Mode     : {mode}")
+    print(f"  Dry Run  : {dry_run}")
+    print(f"  Knowledge: {knowledge_dir}")
+    print(f"  Output   : {output_dir}")
+    print()
+    print("  [!] ML Research Only. No Real Orders. Production Trading: BLOCKED.")
+    print("  [!] auto_enabled = False. Confidence capped at PARTIAL.")
+    print()
+
+    try:
+        from ml.knowledge_feature_bridge import KnowledgeFeatureBridge
+        from ml.knowledge_feature_catalog import KnowledgeFeatureCatalog
+        from ml.knowledge_feature_readiness import KnowledgeFeatureReadinessChecker
+        from ml.knowledge_leakage_checker import KnowledgeLeakageChecker
+        from ml.knowledge_dataset_exporter import KnowledgeDatasetExporter
+
+        # 1. Bridge
+        bridge = KnowledgeFeatureBridge(knowledge_dir=knowledge_dir)
+        files_present = bridge.knowledge_files_present()
+        print("  Knowledge files:")
+        for fname, present in files_present.items():
+            status = "OK" if present else "NOT FOUND"
+            print(f"    {fname}: {status}")
+        print()
+
+        if not bridge.knowledge_dir_exists():
+            print(f"  [WARN] Knowledge directory not found: {knowledge_dir}")
+            print("  Run 'strategy-knowledge-ingest' first to populate knowledge CSVs.")
+            print()
+            return
+
+        result = bridge.convert_all()
+        all_features  = result.get("all_features", [])
+        bridge_summary = result.get("summary", {})
+
+        src = bridge_summary.get("source_rows", {})
+        print(f"  Source rows loaded:")
+        print(f"    factor_candidates : {src.get('factor_candidates', 0)}")
+        print(f"    rule_candidates   : {src.get('rule_candidates', 0)}")
+        print(f"    avoid_conditions  : {src.get('avoid_conditions', 0)}")
+        print(f"    risk_conditions   : {src.get('risk_conditions', 0)}")
+        print(f"  Feature candidates : {len(all_features)}")
+        print(f"  Auto Enabled       : 0")
+        print()
+
+        if not all_features:
+            print("  [WARN] No knowledge features found.")
+            print("  Strategy knowledge CSVs are empty or not present.")
+            print()
+            return
+
+        # 2. Readiness
+        readiness_checker = KnowledgeFeatureReadinessChecker()
+        readiness_results = readiness_checker.check_features(all_features)
+        readiness_summary = readiness_checker.build_summary(readiness_results)
+        print("  Readiness estimate:")
+        for rd, cnt in sorted(readiness_summary.get("by_readiness", {}).items(),
+                              key=lambda x: -x[1]):
+            print(f"    {rd:25s}: {cnt}")
+        print()
+
+        # 3. Leakage
+        leakage_checker = KnowledgeLeakageChecker()
+        leakage_result  = leakage_checker.check_features(all_features)
+        print(f"  Leakage status     : {leakage_result.get('status', 'UNKNOWN')}")
+        print(f"  Leakage findings   : {leakage_result.get('total_findings', 0)}")
+        print(f"  Critical leakage   : {leakage_result.get('critical_count', 0)}")
+        print()
+
+        if dry_run:
+            print("  [DRY RUN] No files written.")
+            print()
+        else:
+            # 4. Export
+            exporter = KnowledgeDatasetExporter(output_dir=output_dir)
+            export_summary = exporter.export_all(
+                catalog_features=all_features,
+                readiness_results=readiness_results,
+                leakage_result=leakage_result,
+                dry_run=False,
+            )
+            print("  Output files:")
+            for key, path in export_summary.get("output_files", {}).items():
+                print(f"    {key:12s}: {path}")
+            print(f"  Model-ready (optional): {export_summary.get('model_ready_features', 0)}")
+            print()
+
+        if do_report:
+            try:
+                from gui.ml_knowledge_integration_adapter import MLKnowledgeIntegrationAdapter
+                adapter = MLKnowledgeIntegrationAdapter(
+                    mode=mode, knowledge_dir=knowledge_dir, output_dir=output_dir
+                )
+                report_result = adapter.generate_report(dry_run=False)
+                if report_result.get("status") == "OK":
+                    print(f"  Report: {report_result.get('report_path', '')}")
+                else:
+                    print(f"  [WARN] Report: {report_result.get('error', '')}")
+            except Exception as rexc:
+                print(f"  [WARN] Report generation failed: {rexc}")
+            print()
+
+        print("  ML Knowledge Integration complete.")
+        print("  Knowledge Only. Research Only. No Real Orders. Production Trading BLOCKED.")
+
+    except Exception as exc:
+        logger.error("ml-knowledge-integrate failed: %s", exc, exc_info=True)
+        print(f"  ERROR: {exc}")
+    print()
+
+
+def cmd_ml_knowledge_leakage_check(args: argparse.Namespace) -> None:
+    """Check transcript-derived knowledge features for data leakage."""
+    output_dir = getattr(args, "output_dir", "data/backtest_results/ml_feature_store")
+
+    print("=" * 60)
+    print("  TW Quant Cockpit — ML Knowledge Leakage Check v0.4.2.1")
+    print("=" * 60)
+    print(f"  Output dir: {output_dir}")
+    print()
+    print("  [!] ML Research Only. No Real Orders.")
+    print()
+
+    try:
+        from gui.ml_knowledge_integration_adapter import MLKnowledgeIntegrationAdapter
+        adapter = MLKnowledgeIntegrationAdapter(output_dir=output_dir)
+        result  = adapter.check_leakage()
+
+        status = result.get("status", "UNKNOWN")
+        print(f"  Leakage status   : {status}")
+        print(f"  Total findings   : {result.get('total_findings', 0)}")
+        print(f"  Critical         : {result.get('critical_count', 0)}")
+        print(f"  Warning          : {result.get('warning_count', 0)}")
+        print(f"  Auto Enabled     : 0")
+        print()
+
+        summary = result.get("summary", {})
+        by_type = summary.get("by_leakage_type", {})
+        if by_type:
+            print("  By leakage type:")
+            for lt, cnt in sorted(by_type.items(), key=lambda x: -x[1]):
+                print(f"    {lt:35s}: {cnt}")
+            print()
+
+        recs = summary.get("recommendations", [])
+        if recs:
+            print("  Recommendations:")
+            for rec in recs:
+                print(f"    - {rec}")
+            print()
+
+        if result.get("warning"):
+            print(f"  [WARN] {result['warning']}")
+            print()
+
+    except Exception as exc:
+        logger.error("ml-knowledge-leakage-check failed: %s", exc, exc_info=True)
+        print(f"  ERROR: {exc}")
+    print()
+
+
+def cmd_ml_knowledge_feature_summary(args: argparse.Namespace) -> None:
+    """Show latest ML Knowledge Integration summary."""
+    output_dir = getattr(args, "output_dir", "data/backtest_results/ml_feature_store")
+
+    print("=" * 60)
+    print("  TW Quant Cockpit — ML Knowledge Feature Summary v0.4.2.1")
+    print("=" * 60)
+    print()
+
+    try:
+        from ml.knowledge_dataset_exporter import KnowledgeDatasetExporter
+        exporter = KnowledgeDatasetExporter(output_dir=output_dir)
+        summary  = exporter.load_latest_summary()
+
+        if not summary:
+            print(f"  [WARN] No ML knowledge integration summary found in: {output_dir}")
+            print("  Run 'ml-knowledge-integrate' first.")
+            print()
+            return
+
+        print(f"  Generated at     : {summary.get('generated_at', 'N/A')}")
+        print(f"  Total features   : {summary.get('total_features', 0)}")
+        print(f"  Model-ready      : {summary.get('model_ready_features', 0)}")
+        print(f"  Auto Enabled     : 0")
+        print(f"  Leakage findings : {summary.get('leakage_findings', 0)}")
+        print(f"  Critical leakage : {summary.get('critical_leakage', 0)}")
+        print(f"  ML Research Only : True")
+        print(f"  No Real Orders   : True")
+        print()
+
+        out_files = summary.get("output_files", {})
+        if out_files:
+            print("  Output files:")
+            for key, path in out_files.items():
+                print(f"    {key:12s}: {path}")
+            print()
+
+    except Exception as exc:
+        logger.error("ml-knowledge-feature-summary failed: %s", exc, exc_info=True)
+        print(f"  ERROR: {exc}")
+    print()
+
+
+# ---------------------------------------------------------------------------
 # v0.4.1.1 Strategy Knowledge Ingestion command handlers
 # ---------------------------------------------------------------------------
 
@@ -7607,6 +7826,44 @@ def _build_parser() -> argparse.ArgumentParser:
                        default="data/backtest_results/strategy_knowledge",
                        help="Knowledge store output directory (default: data/backtest_results/strategy_knowledge)")
 
+    # --- ml-knowledge-integrate (v0.4.2.1) ---
+    p_mki = subparsers.add_parser(
+        "ml-knowledge-integrate",
+        help="Integrate transcript-derived knowledge into ML Feature Store (v0.4.2.1)",
+    )
+    p_mki.add_argument("--mode", choices=["real", "mock"], default="real",
+                       help="Data mode (default: real)")
+    p_mki.add_argument("--dry-run", dest="dry_run", action="store_true", default=False,
+                       help="Show candidates without writing output files")
+    p_mki.add_argument("--report", action="store_true", default=False,
+                       help="Generate Markdown report after integration")
+    p_mki.add_argument("--knowledge-dir", dest="knowledge_dir",
+                       default="data/backtest_results/strategy_knowledge",
+                       help="Strategy knowledge output directory (v0.4.1.1 CSVs)")
+    p_mki.add_argument("--output-dir", dest="output_dir",
+                       default="data/backtest_results/ml_feature_store",
+                       help="ML feature store output directory")
+
+    # --- ml-knowledge-leakage-check (v0.4.2.1) ---
+    p_mkl = subparsers.add_parser(
+        "ml-knowledge-leakage-check",
+        help="Check transcript-derived knowledge features for data leakage (v0.4.2.1)",
+    )
+    p_mkl.add_argument("--mode", choices=["real", "mock"], default="real",
+                       help="Data mode (default: real)")
+    p_mkl.add_argument("--output-dir", dest="output_dir",
+                       default="data/backtest_results/ml_feature_store",
+                       help="ML feature store output directory")
+
+    # --- ml-knowledge-feature-summary (v0.4.2.1) ---
+    p_mkfs = subparsers.add_parser(
+        "ml-knowledge-feature-summary",
+        help="Show latest ML knowledge integration summary (v0.4.2.1)",
+    )
+    p_mkfs.add_argument("--output-dir", dest="output_dir",
+                        default="data/backtest_results/ml_feature_store",
+                        help="ML feature store output directory")
+
     # --- experiment-create (v0.3.29) ---
     p_ec = subparsers.add_parser(
         "experiment-create",
@@ -8180,6 +8437,10 @@ def main() -> None:
         # v0.4.1.1 Strategy Knowledge Ingestion
         "strategy-knowledge-ingest":   cmd_strategy_knowledge_ingest,
         "strategy-knowledge-summary":  cmd_strategy_knowledge_summary,
+        # v0.4.2.1 ML Knowledge Integration
+        "ml-knowledge-integrate":      cmd_ml_knowledge_integrate,
+        "ml-knowledge-leakage-check":  cmd_ml_knowledge_leakage_check,
+        "ml-knowledge-feature-summary": cmd_ml_knowledge_feature_summary,
     }
 
     if args.command is None:

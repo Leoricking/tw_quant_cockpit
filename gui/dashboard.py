@@ -283,6 +283,17 @@ except Exception as _ski_exc:
 
 
 # ---------------------------------------------------------------------------
+# v0.4.2.1 ML Knowledge Integration panel import (guarded)
+# ---------------------------------------------------------------------------
+try:
+    from gui.ml_knowledge_integration_panel import MLKnowledgeIntegrationPanel
+    _ML_KNOWLEDGE_INTEGRATION_AVAILABLE = True
+except Exception as _mki_exc:
+    logger.warning("MLKnowledgeIntegrationPanel unavailable: %s", _mki_exc)
+    _ML_KNOWLEDGE_INTEGRATION_AVAILABLE = False
+
+
+# ---------------------------------------------------------------------------
 # Colour helpers (Taiwan convention: red = up, green = down)
 # ---------------------------------------------------------------------------
 
@@ -1303,6 +1314,15 @@ class CockpitWindow(QMainWindow if _PYSIDE6_AVAILABLE else object):
             mid_tabs.addTab(self._strategy_knowledge_panel, "Strategy Knowledge")
         else:
             self._strategy_knowledge_panel = None
+
+        # v0.4.2.1 ML Knowledge Integration tab
+        if _ML_KNOWLEDGE_INTEGRATION_AVAILABLE:
+            self._ml_knowledge_panel = MLKnowledgeIntegrationPanel(
+                mode=self._mode if hasattr(self, "_mode") else "real"
+            )
+            mid_tabs.addTab(self._ml_knowledge_panel, "ML Knowledge Integration")
+        else:
+            self._ml_knowledge_panel = None
 
         h_split.addWidget(mid_tabs)
         h_split.setStretchFactor(0, 3)

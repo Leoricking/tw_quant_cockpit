@@ -670,6 +670,76 @@ class StableReleaseChecklist:
             elapsed = (time.monotonic() - t0) * 1000
             return self._item("strategy_knowledge_artifacts_ignored", "WARN", str(exc), elapsed)
 
+    def _check_ml_knowledge_integration_import(self) -> dict:
+        """v0.4.2.1: All ML Knowledge Integration modules import cleanly."""
+        t0 = time.monotonic()
+        modules = [
+            ("ml.knowledge_feature_bridge",   "KnowledgeFeatureBridge"),
+            ("ml.knowledge_feature_catalog",  "KnowledgeFeatureCatalog"),
+            ("ml.knowledge_feature_readiness","KnowledgeFeatureReadinessChecker"),
+            ("ml.knowledge_leakage_checker",  "KnowledgeLeakageChecker"),
+            ("ml.knowledge_dataset_exporter", "KnowledgeDatasetExporter"),
+        ]
+        failed = []
+        for mod, cls in modules:
+            try:
+                m = __import__(mod, fromlist=[cls])
+                getattr(m, cls)
+            except Exception as exc:
+                failed.append(f"{mod}.{cls}: {exc}")
+        elapsed = (time.monotonic() - t0) * 1000
+        if not failed:
+            return self._item("ml_knowledge_integration_import", "PASS",
+                               f"All {len(modules)} ML Knowledge Integration modules imported.", elapsed)
+        return self._item("ml_knowledge_integration_import", "WARN",
+                           f"{len(failed)} module(s) failed: {failed[:2]}", elapsed)
+
+    def _check_ml_knowledge_auto_enabled_false(self) -> dict:
+        """v0.4.2.1: KnowledgeFeatureBridge and KnowledgeFeatureCatalog enforce auto_enabled=False."""
+        t0 = time.monotonic()
+        try:
+            from ml.knowledge_feature_bridge import KnowledgeFeatureBridge
+            from ml.knowledge_feature_catalog import KnowledgeFeatureCatalog
+            bridge  = KnowledgeFeatureBridge()
+            catalog = KnowledgeFeatureCatalog()
+            elapsed = (time.monotonic() - t0) * 1000
+            if getattr(bridge, "auto_enabled", True):
+                return self._item("ml_knowledge_auto_enabled_false", "FAIL",
+                                   "KnowledgeFeatureBridge.auto_enabled is not False", elapsed)
+            if getattr(catalog, "auto_enabled", True):
+                return self._item("ml_knowledge_auto_enabled_false", "FAIL",
+                                   "KnowledgeFeatureCatalog.auto_enabled is not False", elapsed)
+            return self._item("ml_knowledge_auto_enabled_false", "PASS",
+                               "auto_enabled=False confirmed on Bridge and Catalog.", elapsed)
+        except Exception as exc:
+            elapsed = (time.monotonic() - t0) * 1000
+            return self._item("ml_knowledge_auto_enabled_false", "WARN", f"Module not available: {exc}", elapsed)
+
+    def _check_ml_knowledge_artifacts_ignored(self) -> dict:
+        """v0.4.2.1: Verify ML knowledge output patterns are in .gitignore."""
+        t0 = time.monotonic()
+        required = [
+            "data/backtest_results/ml_feature_store/",
+            "reports/ml_knowledge_integration_report_",
+        ]
+        try:
+            import os
+            gitignore = os.path.join(BASE_DIR, ".gitignore")
+            content = ""
+            if os.path.isfile(gitignore):
+                with open(gitignore, "r", encoding="utf-8") as f:
+                    content = f.read()
+            missing = [r for r in required if r not in content]
+            elapsed = (time.monotonic() - t0) * 1000
+            if not missing:
+                return self._item("ml_knowledge_artifacts_ignored", "PASS",
+                                   "All ML knowledge output patterns present in .gitignore.", elapsed)
+            return self._item("ml_knowledge_artifacts_ignored", "WARN",
+                               f"Missing .gitignore patterns: {missing}", elapsed)
+        except Exception as exc:
+            elapsed = (time.monotonic() - t0) * 1000
+            return self._item("ml_knowledge_artifacts_ignored", "WARN", str(exc), elapsed)
+
     # ------------------------------------------------------------------
     # Write outputs
     # ------------------------------------------------------------------
@@ -787,6 +857,10 @@ class StableReleaseChecklist:
             self._check_strategy_knowledge_ingestion_import,
             self._check_no_auto_activate_candidate_rules,
             self._check_strategy_knowledge_artifacts_ignored,
+            # v0.4.2.1
+            self._check_ml_knowledge_integration_import,
+            self._check_ml_knowledge_auto_enabled_false,
+            self._check_ml_knowledge_artifacts_ignored,
         ]
 
         items: list[dict] = []

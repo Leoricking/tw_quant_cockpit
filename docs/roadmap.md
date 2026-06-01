@@ -34,6 +34,7 @@
 | v0.4.1 | API Fetch Productionization | Done |
 | v0.4.1.1 | Strategy Knowledge Ingestion from Transcripts | Done |
 | v0.4.2 | ML Feature Store v1 | Done |
+| v0.4.2.1 | ML Feature Store Knowledge Integration | Done |
 | v0.4.3 | Model Monitoring Framework | Done |
 | v0.4.4 | Intraday Replay Cockpit | Done |
 
@@ -222,6 +223,29 @@
 - 8 new CLI commands: `ml-feature-catalog`, `ml-feature-snapshot`, `ml-labels`, `ml-build-dataset`, `ml-leakage-check`, `ml-feature-quality`, `ml-feature-importance`, `ml-feature-store-report`
 - Label columns always prefix `label_` or `fwd_` — never mixed with features
 - No live prediction. No auto-trading. No real orders. Production BLOCKED.
+
+---
+
+## Completed: v0.4.2.1 — ML Feature Store Knowledge Integration
+
+**Status:** Done
+
+- `KnowledgeFeatureBridge` — converts v0.4.1.1 transcript CSVs (factor/rule/avoid/risk candidates) to ML feature metadata; auto_enabled=False; confidence capped at PARTIAL
+- `KnowledgeFeatureCatalog` — manages transcript-derived feature catalog; register/list/get/export; enforces auto_enabled=False
+- `KnowledgeFeatureReadinessChecker` — READY/PARTIAL/METADATA_ONLY/NEEDS_MAPPING/NEEDS_BACKTEST/BLOCKED/LEAKAGE_RISK/INSUFFICIENT_DATA assessment
+- `KnowledgeLeakageChecker` — POST_EVENT_KNOWLEDGE, TIMING_ESTIMATED, LONG_CYCLE_RISK, PATTERN_INCOMPLETE, UNVALIDATED_CANDIDATE detection
+- `KnowledgeDatasetExporter` — exports 4 output files: catalog.csv, readiness.csv, leakage.csv, model_ready_schema.json
+- `MLKnowledgeIntegrationReport` — 7-section Markdown report
+- `MLKnowledgeIntegrationPanel` / `MLKnowledgeIntegrationAdapter` — GUI tab with QThread workers, 6 summary cards, safety banner
+- long_cycle_risk → METADATA_ONLY, not_for_short_term_label=True always
+- model_ready_schema includes only READY/PARTIAL features with no critical leakage, excluded from training by default
+- 3 new CLI commands: `ml-knowledge-integrate`, `ml-knowledge-leakage-check`, `ml-knowledge-feature-summary`
+- `AutoReportCenter` — `run_ml_knowledge_integration_summary()` added; full + daily profiles include `include_ml_knowledge_integration`
+- `AutoReportIndexBuilder` — manifest includes 5 new ML knowledge fields
+- `RegressionSuite` — 2 new v0.4.2.1 tests (imports, bridge_empty)
+- `StableReleaseChecklist` — 3 new v0.4.2.1 checks (import, auto_enabled_false, artifacts_ignored)
+- GUI: ML Knowledge Integration tab added to cockpit dashboard
+- No model training. No real orders. Production BLOCKED.
 
 ---
 

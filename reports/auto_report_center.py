@@ -42,6 +42,7 @@ _PROFILE_FLAGS: Dict[str, dict] = {
         include_long_term=True,
         include_strategy_knowledge=True,
         include_strategy_knowledge_ingestion=True,
+        include_ml_knowledge_integration=True,
         include_daily_summary=True,
         include_data_quality_gate=True,
         include_provider_reliability=True,
@@ -63,6 +64,7 @@ _PROFILE_FLAGS: Dict[str, dict] = {
         include_long_term=False,
         include_strategy_knowledge=False,
         include_strategy_knowledge_ingestion=True,
+        include_ml_knowledge_integration=True,
         include_daily_summary=True,
         include_data_quality_gate=True,
         include_provider_reliability=True,
@@ -163,6 +165,7 @@ class AutoReportCenter:
         include_model_monitoring: bool = False,
         include_intraday_replay: bool = False,
         include_strategy_knowledge_ingestion: bool = False,
+        include_ml_knowledge_integration: bool = False,
     ):
         self.mode        = mode
         self.profile     = profile
@@ -195,6 +198,9 @@ class AutoReportCenter:
         self.include_intraday_replay       = flags.get("include_intraday_replay",       include_intraday_replay)
         self.include_strategy_knowledge_ingestion = flags.get(
             "include_strategy_knowledge_ingestion", include_strategy_knowledge_ingestion
+        )
+        self.include_ml_knowledge_integration = flags.get(
+            "include_ml_knowledge_integration", include_ml_knowledge_integration
         )
         self.universe_name = universe_name
 
@@ -278,6 +284,9 @@ class AutoReportCenter:
 
         if self.include_strategy_knowledge_ingestion:
             self.run_strategy_knowledge_ingestion_summary()
+
+        if self.include_ml_knowledge_integration:
+            self.run_ml_knowledge_integration_summary()
 
         # Aggregated outputs
         if self.include_daily_summary:
@@ -741,6 +750,38 @@ class AutoReportCenter:
         except Exception as exc:
             logger.warning("run_strategy_knowledge_ingestion_summary failed: %s", exc)
             self._record_fail("strategy_knowledge_ingestion", str(exc))
+
+    def run_ml_knowledge_integration_summary(self):
+        """
+        Include ML Knowledge Integration summary in context (v0.4.2.1).
+        Reads existing output — does NOT force a new integration run.
+        Optional — failure does not abort overall run.
+        """
+        try:
+            from ml.knowledge_dataset_exporter import KnowledgeDatasetExporter
+            exporter = KnowledgeDatasetExporter()
+            summary  = exporter.load_latest_summary()
+            if not summary:
+                self._record_fail(
+                    "ml_knowledge_integration",
+                    "No ml_knowledge_integration_summary.json found — run ml-knowledge-integrate first",
+                )
+                return
+            self._context["ml_knowledge_features_count"]  = summary.get("total_features", 0)
+            self._context["ml_knowledge_model_ready"]      = summary.get("model_ready_features", 0)
+            self._context["ml_knowledge_auto_enabled"]     = 0
+            self._context["ml_knowledge_leakage_findings"] = summary.get("leakage_findings", 0)
+            self._context["ml_knowledge_critical_leakage"] = summary.get("critical_leakage", 0)
+            self._record_success(
+                "ml_knowledge_integration",
+                f"features={summary.get('total_features', 0)} "
+                f"model_ready={summary.get('model_ready_features', 0)} "
+                f"leakage={summary.get('leakage_findings', 0)} "
+                f"auto_enabled=0",
+            )
+        except Exception as exc:
+            logger.warning("run_ml_knowledge_integration_summary failed: %s", exc)
+            self._record_fail("ml_knowledge_integration", str(exc))
 
     def run_model_monitoring_report(self):
         """Generate Model Monitoring report (v0.4.3). Optional — failure does not abort run."""

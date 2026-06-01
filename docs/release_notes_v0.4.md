@@ -189,6 +189,53 @@ v0.4.2 adds an ML data preparation layer on top of the stable v0.4.1 platform. F
 
 ---
 
+## v0.4.2.1 — ML Feature Store Knowledge Integration
+
+**Status:** Current
+
+### Summary
+
+v0.4.2.1 connects transcript-derived strategy knowledge (from v0.4.1.1 StrategyKnowledgeStore CSVs) into the v0.4.2 ML Feature Store. Converts factor_candidates, rule_candidates, avoid_conditions, and risk_conditions into ML feature metadata with readiness assessment and leakage checking. No model training. No auto-enabling. No real orders.
+
+### New Files
+
+- `ml/knowledge_feature_bridge.py` — `KnowledgeFeatureBridge`: loads v0.4.1.1 CSVs, converts 4 knowledge categories to ML feature metadata dicts; auto_enabled=False; confidence capped at PARTIAL; long_cycle → METADATA_ONLY
+- `ml/knowledge_feature_catalog.py` — `KnowledgeFeatureCatalog`: register/list/get/export transcript-derived features; enforces auto_enabled=False on all entries
+- `ml/knowledge_feature_readiness.py` — `KnowledgeFeatureReadinessChecker`: assigns READY/PARTIAL/METADATA_ONLY/NEEDS_MAPPING/NEEDS_BACKTEST/BLOCKED/LEAKAGE_RISK/INSUFFICIENT_DATA per feature
+- `ml/knowledge_leakage_checker.py` — `KnowledgeLeakageChecker`: POST_EVENT_KNOWLEDGE, TIMING_ESTIMATED, LONG_CYCLE_RISK, PATTERN_INCOMPLETE, UNVALIDATED_CANDIDATE detection
+- `ml/knowledge_dataset_exporter.py` — `KnowledgeDatasetExporter`: writes 4 output files; model_ready schema excludes long-cycle and auto_enabled=False always
+- `reports/ml_knowledge_integration_report.py` — `MLKnowledgeIntegrationReport`: 7-section Markdown report
+- `gui/ml_knowledge_integration_panel.py` — `MLKnowledgeIntegrationPanel`: PySide6 GUI with QThread workers, 6 summary cards (auto_enabled always 0), safety banner
+- `gui/ml_knowledge_integration_adapter.py` — `MLKnowledgeIntegrationAdapter`: GUI bridge; run_integration, check_leakage, generate_report, load_latest_summary
+- `docs/ml_feature_store_knowledge_integration.md` — full documentation
+
+### Modified Files
+
+- `main.py` — 3 new CLI commands: `ml-knowledge-integrate`, `ml-knowledge-leakage-check`, `ml-knowledge-feature-summary`
+- `gui/dashboard.py` — guarded import + "ML Knowledge Integration" tab
+- `reports/auto_report_center.py` — `include_ml_knowledge_integration` flag; `run_ml_knowledge_integration_summary()` method
+- `reports/auto_report_index.py` — manifest adds 5 new ML knowledge fields
+- `release/regression_suite.py` — 2 new v0.4.2.1 tests (ml_knowledge_imports, ml_knowledge_bridge_empty)
+- `release/stable_release_checklist.py` — 3 new v0.4.2.1 checks (import, auto_enabled_false, artifacts_ignored)
+- `experiments/snapshot_builder.py` — `build_ml_knowledge_integration_snapshot()` added to `build_all()`
+- `docs/roadmap.md` — v0.4.2.1 marked Done
+- `docs/index.md` — added ml_feature_store_knowledge_integration.md
+- `.gitignore` — `data/backtest_results/ml_feature_store/`, `reports/ml_knowledge_integration_report_*.md` excluded
+
+### Safety
+
+- `auto_enabled=False` on all transcript-derived features — always, no exceptions
+- Confidence capped at PARTIAL for all transcript-only sources
+- `long_cycle_risk` → `METADATA_ONLY`, `not_for_short_term_label=True` — never used as short-term return label
+- model_ready_knowledge_schema.json excludes long-cycle features and critical leakage features
+- ML output files never committed (gitignored)
+- No model training. No live prediction. No auto weight apply.
+- Production Trading: BLOCKED
+- REAL_ORDER_READY: False
+- ML Research Only
+
+---
+
 ## v0.4.3 — Model Monitoring Framework
 
 **Status:** Current

@@ -594,6 +594,51 @@ class RegressionSuite:
             elapsed = (time.monotonic() - t0) * 1000
             return self._item("strategy_knowledge_dry_run", "FAIL", str(exc), elapsed)
 
+    def _test_ml_knowledge_imports(self) -> dict:
+        """v0.4.2.1: All ML Knowledge Integration modules import cleanly."""
+        t0 = time.monotonic()
+        modules = [
+            ("ml.knowledge_feature_bridge",   "KnowledgeFeatureBridge"),
+            ("ml.knowledge_feature_catalog",  "KnowledgeFeatureCatalog"),
+            ("ml.knowledge_feature_readiness","KnowledgeFeatureReadinessChecker"),
+            ("ml.knowledge_leakage_checker",  "KnowledgeLeakageChecker"),
+            ("ml.knowledge_dataset_exporter", "KnowledgeDatasetExporter"),
+        ]
+        failed = []
+        for mod, cls in modules:
+            try:
+                m = __import__(mod, fromlist=[cls])
+                getattr(m, cls)
+            except Exception as exc:
+                failed.append(f"{mod}.{cls}: {exc}")
+        elapsed = (time.monotonic() - t0) * 1000
+        if not failed:
+            return self._item("ml_knowledge_imports", "PASS",
+                               f"All {len(modules)} v0.4.2.1 ML Knowledge modules imported.", elapsed)
+        return self._item("ml_knowledge_imports", "FAIL",
+                           f"{len(failed)} module(s) failed: {failed[:3]}", elapsed)
+
+    def _test_ml_knowledge_bridge_empty(self) -> dict:
+        """v0.4.2.1: KnowledgeFeatureBridge.convert_all() with empty store returns valid result (no crash)."""
+        t0 = time.monotonic()
+        try:
+            import tempfile
+            from ml.knowledge_feature_bridge import KnowledgeFeatureBridge
+            with tempfile.TemporaryDirectory() as tmpdir:
+                bridge = KnowledgeFeatureBridge(knowledge_dir=tmpdir)
+                result = bridge.convert_all()
+            elapsed = (time.monotonic() - t0) * 1000
+            total = result.get("summary", {}).get("total_features_count", 0)
+            auto  = result.get("summary", {}).get("auto_enabled_count", None)
+            if auto != 0:
+                return self._item("ml_knowledge_bridge_empty", "FAIL",
+                                   f"auto_enabled_count expected 0, got {auto}", elapsed)
+            return self._item("ml_knowledge_bridge_empty", "PASS",
+                               f"KnowledgeFeatureBridge empty-store OK: features={total} auto_enabled=0", elapsed)
+        except Exception as exc:
+            elapsed = (time.monotonic() - t0) * 1000
+            return self._item("ml_knowledge_bridge_empty", "FAIL", str(exc), elapsed)
+
     # ------------------------------------------------------------------
     # Suite runners
     # ------------------------------------------------------------------
@@ -613,7 +658,7 @@ class RegressionSuite:
         return self._execute("quick", tests_fns)
 
     def run_full(self) -> dict:
-        """Run the full 29-test suite (quick + extended + v0.4.1 + v0.4.1.1 + v0.4.2 + v0.4.3 + v0.4.4)."""
+        """Run the full 31-test suite (quick + extended + v0.4.1 + v0.4.1.1 + v0.4.2 + v0.4.2.1 + v0.4.3 + v0.4.4)."""
         logger.info("RegressionSuite.run_full() — mode=%s", self.mode)
         tests_fns = [
             self._test_compileall,
@@ -638,6 +683,9 @@ class RegressionSuite:
             self._test_strategy_knowledge_imports,
             self._test_strategy_knowledge_summary,
             self._test_strategy_knowledge_dry_run,
+            # v0.4.2.1
+            self._test_ml_knowledge_imports,
+            self._test_ml_knowledge_bridge_empty,
             # v0.4.2
             self._test_ml_feature_catalog,
             self._test_ml_feature_snapshot_import,
