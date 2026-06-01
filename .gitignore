@@ -190,6 +190,16 @@ reports/api_fetch_production_report_*.md
 data/backtest_results/api_fetch_*.csv
 data/backtest_results/api_lineage_*.csv
 
+# Model Monitoring outputs (v0.4.3, runtime artifacts — NEVER commit)
+model_monitoring/
+reports/model_monitoring_report_*.md
+data/backtest_results/model_monitoring_*.csv
+data/backtest_results/model_monitoring_*.json
+data/backtest_results/drift_*.csv
+data/backtest_results/drift_*.json
+data/backtest_results/prediction_review_*.csv
+data/backtest_results/prediction_review_*.json
+
 # ML Feature Store outputs (v0.4.2, runtime artifacts — NEVER commit)
 data/ml_features/
 reports/ml_feature_store_report_*.md

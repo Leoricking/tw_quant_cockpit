@@ -4,7 +4,64 @@
 >
 > **[!] v1: Real order execution is strictly prohibited. For research, simulation, and decision support only. Not investment advice.**
 
-**Current version: v0.4.2 — ML Feature Store v1**
+**Current version: v0.4.3 — Model Monitoring Framework**
+
+---
+
+## v0.4.3 — Model Monitoring Framework
+
+**New in v0.4.3:**
+
+- **Model Registry** — `ModelRegistry`: metadata-only model registry; register/list/update; stored in `model_monitoring/` (gitignored)
+- **Prediction Tracking** — `PredictionLog`: append-only JSONL records; supports ML prediction, rule signal, signal quality, portfolio candidate, backtest signal sources
+- **Hit / Miss Review** — `HitMissReviewer`: hit rate, precision, recall, grouping by symbol/rule/model/source; INSUFFICIENT_DATA when no actuals
+- **Drift Detection** — `DriftDetector`: feature distribution, missing ratio, label, prediction score drift; STABLE/WATCH/DRIFT_WARNING/DRIFT_CRITICAL/INSUFFICIENT_DATA
+- **Signal Degradation** — `SignalDegradationMonitor`: rule/signal quality/portfolio degradation checks; no crash on missing files
+- **Rule vs ML Comparison** — `RuleVsMLComparator`: agreement rate, hit rate comparison; ML_NOT_AVAILABLE when no ML predictions
+- **Monitoring Summary** — orchestrates all 6 monitors; next_actions list
+- **Monitoring Report** — 8-section Markdown report; never committed
+- **GUI tab** — "Model Monitoring" tab with QThread workers; safety banner; model registry, prediction log, drift, degradation, rule-vs-ML tables
+- **No live prediction. No auto-trading. No real orders.**
+
+```
+# Run monitoring summary
+python main.py model-monitoring --mode real
+
+# Generate report
+python main.py model-monitoring-report --mode real
+
+# List registered models
+python main.py model-registry-list
+
+# Register a model metadata entry
+python main.py model-register --name "baseline research model" --type baseline --target label_direction_5d
+
+# Show prediction log
+python main.py prediction-log --mode real
+
+# Review hit / miss
+python main.py prediction-review --mode real --horizon 5
+
+# Run drift check
+python main.py drift-check --mode real
+
+# Signal degradation check
+python main.py signal-degradation --mode real
+
+# Rule vs ML comparison
+python main.py rule-vs-ml --mode real
+```
+
+**Safety:**
+- `model_monitoring/` — gitignored, never committed
+- `reports/model_monitoring_report_*.md` — gitignored, never committed
+- Prediction logs are research records only — not investment advice
+- Drift warning is not a trading signal
+- Hit rate is not guaranteed win rate
+- Disagreement does not auto-change strategy
+- Production Trading: BLOCKED
+- REAL_ORDER_READY: False
+- Monitoring Only
 
 ---
 

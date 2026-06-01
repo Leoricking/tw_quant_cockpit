@@ -331,6 +331,69 @@ class RegressionSuite:
             elapsed = (time.monotonic() - t0) * 1000
             return self._item("api_cache_stats", "FAIL", str(exc), elapsed)
 
+    def _test_model_monitoring_imports(self) -> dict:
+        """v0.4.3: All Model Monitoring modules import cleanly."""
+        t0 = time.monotonic()
+        modules = [
+            ("monitoring.model_registry",        "ModelRegistry"),
+            ("monitoring.prediction_log",         "PredictionLog"),
+            ("monitoring.hit_miss_review",        "HitMissReviewer"),
+            ("monitoring.drift_detector",         "DriftDetector"),
+            ("monitoring.signal_degradation",     "SignalDegradationMonitor"),
+            ("monitoring.rule_vs_ml_comparator",  "RuleVsMLComparator"),
+            ("monitoring.monitoring_summary",     "ModelMonitoringSummary"),
+            ("reports.model_monitoring_report",   "ModelMonitoringReportBuilder"),
+            ("gui.model_monitoring_adapter",      "ModelMonitoringAdapter"),
+        ]
+        failed = []
+        for mod_path, cls_name in modules:
+            try:
+                mod = __import__(mod_path, fromlist=[cls_name])
+                getattr(mod, cls_name)
+            except Exception as exc:
+                failed.append(f"{mod_path}.{cls_name}: {exc}")
+        elapsed = (time.monotonic() - t0) * 1000
+        if not failed:
+            return self._item("model_monitoring_imports", "PASS",
+                               f"All {len(modules)} v0.4.3 Model Monitoring modules imported.", elapsed)
+        return self._item("model_monitoring_imports", "FAIL",
+                           f"{len(failed)} module(s) failed: {failed[:3]}", elapsed)
+
+    def _test_model_monitoring_summary(self) -> dict:
+        """v0.4.3: ModelMonitoringSummary.run() works (may return INSUFFICIENT_DATA)."""
+        t0 = time.monotonic()
+        try:
+            from monitoring.monitoring_summary import ModelMonitoringSummary
+            result = ModelMonitoringSummary().run()
+            elapsed = (time.monotonic() - t0) * 1000
+            if not isinstance(result, dict):
+                return self._item("model_monitoring_summary", "FAIL", "run() did not return dict.", elapsed)
+            return self._item("model_monitoring_summary", "PASS",
+                               f"ModelMonitoringSummary OK: models={result.get('model_count', 0)}, "
+                               f"drift={result.get('drift_status','—')}", elapsed)
+        except Exception as exc:
+            elapsed = (time.monotonic() - t0) * 1000
+            return self._item("model_monitoring_summary", "FAIL", str(exc), elapsed)
+
+    def _test_drift_detector(self) -> dict:
+        """v0.4.3: DriftDetector.run() works with empty data (returns INSUFFICIENT_DATA)."""
+        t0 = time.monotonic()
+        try:
+            from monitoring.drift_detector import DriftDetector
+            result = DriftDetector().run()
+            elapsed = (time.monotonic() - t0) * 1000
+            if not isinstance(result, dict):
+                return self._item("drift_detector", "FAIL", "run() did not return dict.", elapsed)
+            status = result.get("status", "—")
+            # INSUFFICIENT_DATA is acceptable when no data available
+            if status in ("STABLE", "WATCH", "DRIFT_WARNING", "DRIFT_CRITICAL", "INSUFFICIENT_DATA"):
+                return self._item("drift_detector", "PASS",
+                                   f"DriftDetector OK: status={status}", elapsed)
+            return self._item("drift_detector", "PARTIAL", f"Unexpected status: {status}", elapsed)
+        except Exception as exc:
+            elapsed = (time.monotonic() - t0) * 1000
+            return self._item("drift_detector", "FAIL", str(exc), elapsed)
+
     def _test_ml_feature_catalog(self) -> dict:
         """v0.4.2: FeatureCatalog loads and returns non-empty feature list."""
         t0 = time.monotonic()
@@ -430,7 +493,7 @@ class RegressionSuite:
         return self._execute("quick", tests_fns)
 
     def run_full(self) -> dict:
-        """Run the full 21-test suite (quick + extended + v0.4.1 + v0.4.2)."""
+        """Run the full 24-test suite (quick + extended + v0.4.1 + v0.4.2 + v0.4.3)."""
         logger.info("RegressionSuite.run_full() — mode=%s", self.mode)
         tests_fns = [
             self._test_compileall,
@@ -456,6 +519,10 @@ class RegressionSuite:
             self._test_ml_feature_snapshot_import,
             self._test_ml_leakage_checker,
             self._test_ml_feature_store_report,
+            # v0.4.3
+            self._test_model_monitoring_imports,
+            self._test_model_monitoring_summary,
+            self._test_drift_detector,
         ]
         return self._execute("full", tests_fns)
 

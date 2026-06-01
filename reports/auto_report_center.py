@@ -50,6 +50,7 @@ _PROFILE_FLAGS: Dict[str, dict] = {
         include_experiment_registry=True,
         include_api_fetch_production=True,
         include_ml_feature_store=True,
+        include_model_monitoring=True,
     ),
     "daily": dict(
         include_stock_reports=False,
@@ -65,6 +66,7 @@ _PROFILE_FLAGS: Dict[str, dict] = {
         include_intraday_pipeline=True,
         include_api_fetch_production=True,
         include_ml_feature_store=True,
+        include_model_monitoring=True,
     ),
     "portfolio": dict(
         include_stock_reports=False,
@@ -154,6 +156,7 @@ class AutoReportCenter:
         include_experiment_registry: bool = False,
         include_api_fetch_production: bool = False,
         include_ml_feature_store: bool = False,
+        include_model_monitoring: bool = False,
     ):
         self.mode        = mode
         self.profile     = profile
@@ -182,6 +185,7 @@ class AutoReportCenter:
         self.include_experiment_registry   = flags.get("include_experiment_registry",   include_experiment_registry)
         self.include_api_fetch_production  = flags.get("include_api_fetch_production",  include_api_fetch_production)
         self.include_ml_feature_store      = flags.get("include_ml_feature_store",      include_ml_feature_store)
+        self.include_model_monitoring      = flags.get("include_model_monitoring",      include_model_monitoring)
         self.universe_name = universe_name
 
         # Runtime state (populated during run)
@@ -255,6 +259,9 @@ class AutoReportCenter:
 
         if self.include_ml_feature_store:
             self.run_ml_feature_store_report()
+
+        if self.include_model_monitoring:
+            self.run_model_monitoring_report()
 
         # Aggregated outputs
         if self.include_daily_summary:
@@ -675,6 +682,20 @@ class AutoReportCenter:
                 self._record_fail("api_fetch_production", result.get("error", "unknown"))
         except Exception as exc:
             self._record_fail("api_fetch_production", str(exc))
+
+    def run_model_monitoring_report(self):
+        """Generate Model Monitoring report (v0.4.3). Optional — failure does not abort run."""
+        try:
+            from gui.model_monitoring_adapter import ModelMonitoringAdapter
+            result = ModelMonitoringAdapter(report_dir=self._out_dir).generate_report(mode=self.mode)
+            if result.get("ok"):
+                path = result.get("report_path", "")
+                self._context["model_monitoring_report"] = path
+                self._record_success("model_monitoring", path)
+            else:
+                self._record_fail("model_monitoring", result.get("error", "unknown"))
+        except Exception as exc:
+            self._record_fail("model_monitoring", str(exc))
 
     def run_ml_feature_store_report(self):
         """Generate ML Feature Store report (v0.4.2). Optional — failure does not abort run."""

@@ -5880,6 +5880,286 @@ def cmd_api_fetch_production_report(args: argparse.Namespace) -> None:
 
 
 # ---------------------------------------------------------------------------
+# v0.4.3 Model Monitoring command handlers
+# ---------------------------------------------------------------------------
+
+def cmd_model_monitoring(args: argparse.Namespace) -> None:
+    """Run Model Monitoring summary."""
+    mode = getattr(args, "mode", "real")
+    print("=" * 60)
+    print(f"  TW Quant Cockpit v0.4.3 — Model Monitoring (mode={mode})")
+    print("  [!] Monitoring Only | Read Only | No Real Orders | Production BLOCKED")
+    print("  [!] No Live Prediction.")
+    print("=" * 60)
+    try:
+        from monitoring.monitoring_summary import ModelMonitoringSummary
+        result = ModelMonitoringSummary().run()
+        print(f"  Mode:              {mode}")
+        print(f"  Research Only:     {result.get('research_only', True)}")
+        print(f"  Monitoring Only:   {result.get('monitoring_only', True)}")
+        print(f"  No Live Predict:   True")
+        print(f"  No Real Orders:    {result.get('no_real_orders', True)}")
+        print(f"  Model count:       {result.get('model_count', 0)}")
+        print(f"  Prediction count:  {result.get('prediction_count', 0)}")
+        print(f"  Reviewed:          {result.get('reviewed_count', 0)}")
+        hr = result.get('hit_rate')
+        print(f"  Hit rate:          {f'{hr:.2%}' if isinstance(hr, float) else '—'}")
+        print(f"  Drift:             {result.get('drift_status', '—')}")
+        print(f"  Degradation:       {result.get('degradation_status', '—')}")
+        print(f"  Rule vs ML:        {result.get('rule_vs_ml_status', '—')}")
+        for w in result.get("warnings", [])[:5]:
+            print(f"  [!] {w}")
+        actions = result.get("next_actions", [])
+        if actions:
+            print()
+            print("  Next actions:")
+            for a in actions[:5]:
+                print(f"    - {a}")
+    except Exception as exc:
+        print(f"  ERROR: {exc}")
+    print()
+    print("  [!] Monitoring Only. No real orders. Not investment advice.")
+
+
+def cmd_model_monitoring_report(args: argparse.Namespace) -> None:
+    """Generate Model Monitoring report."""
+    mode       = getattr(args, "mode", "real")
+    report_dir = getattr(args, "report_dir", None)
+    print("=" * 60)
+    print(f"  TW Quant Cockpit v0.4.3 — Model Monitoring Report (mode={mode})")
+    print("  [!] Monitoring Only | Read Only | No Real Orders | Production BLOCKED")
+    print("=" * 60)
+    try:
+        kwargs = {}
+        if report_dir:
+            kwargs["report_dir"] = report_dir
+        from gui.model_monitoring_adapter import ModelMonitoringAdapter
+        result = ModelMonitoringAdapter(**kwargs).generate_report(mode=mode)
+        if result.get("ok"):
+            print(f"  Report saved: {result.get('report_path')}")
+        else:
+            print(f"  ERROR: {result.get('error')}")
+    except Exception as exc:
+        print(f"  ERROR: {exc}")
+    print()
+    print("  [!] Report NOT committed. Monitoring Only. No real orders.")
+
+
+def cmd_model_registry_list(args: argparse.Namespace) -> None:
+    """List registered ML model metadata."""
+    print("=" * 60)
+    print("  TW Quant Cockpit v0.4.3 — Model Registry")
+    print("  [!] Monitoring Only | Read Only | No Real Orders | Production BLOCKED")
+    print("=" * 60)
+    try:
+        from monitoring.model_registry import ModelRegistry
+        registry = ModelRegistry()
+        models = registry.list_models()
+        summary = registry.summary()
+        print(f"  Total models:  {summary.get('total', 0)}")
+        if models:
+            print()
+            print(f"  {'Model ID':<30} {'Name':<25} {'Type':<12} {'Status'}")
+            print(f"  {'-'*80}")
+            for m in models[:20]:
+                print(f"  {m.get('model_id','')[:29]:<30} {m.get('model_name','')[:24]:<25} "
+                      f"{m.get('model_type',''):<12} {m.get('monitoring_status','')}")
+        else:
+            print("  No models registered. Use: python main.py model-register --name ... --type ...")
+    except Exception as exc:
+        print(f"  ERROR: {exc}")
+    print()
+    print("  [!] Monitoring Only. No real orders.")
+
+
+def cmd_model_register(args: argparse.Namespace) -> None:
+    """Register a new ML model metadata entry."""
+    name   = getattr(args, "name", "unnamed_model")
+    mtype  = getattr(args, "type", "baseline")
+    target = getattr(args, "target", "label_direction_5d")
+    print("=" * 60)
+    print(f"  TW Quant Cockpit v0.4.3 — Register Model Metadata")
+    print("  [!] Monitoring Only | Read Only | No Real Orders | Production BLOCKED")
+    print("=" * 60)
+    try:
+        from monitoring.model_registry import ModelRegistry, ModelMetadata
+        from datetime import datetime
+        import uuid
+        model_id = f"MDL-{datetime.now().strftime('%Y%m%d-%H%M%S')}-{str(uuid.uuid4())[:6].upper()}"
+        metadata = ModelMetadata(
+            model_id=model_id,
+            model_name=name,
+            model_type=mtype,
+            version="v1",
+            created_at=datetime.now().isoformat(),
+            target_label=target,
+            training_status="RESEARCH_ONLY",
+            monitoring_status="ACTIVE",
+        )
+        registry = ModelRegistry()
+        result = registry.register_model(metadata)
+        if result.get("ok"):
+            print(f"  Registered: {model_id}")
+            print(f"  Name:       {name}")
+            print(f"  Type:       {mtype}")
+            print(f"  Target:     {target}")
+        else:
+            print(f"  ERROR: {result.get('error')}")
+    except Exception as exc:
+        print(f"  ERROR: {exc}")
+    print()
+    print("  [!] Metadata only. No model trained. No real orders.")
+
+
+def cmd_prediction_log(args: argparse.Namespace) -> None:
+    """Show prediction log summary."""
+    mode = getattr(args, "mode", "real")
+    print("=" * 60)
+    print(f"  TW Quant Cockpit v0.4.3 — Prediction Log (mode={mode})")
+    print("  [!] Monitoring Only | Read Only | No Real Orders | Production BLOCKED")
+    print("=" * 60)
+    try:
+        from monitoring.prediction_log import PredictionLog
+        log = PredictionLog()
+        summary = log.summarize()
+        total = summary.get("total_predictions", 0)
+        print(f"  Total predictions: {total}")
+        if total == 0:
+            print("  No prediction logs found.")
+            print("  Prediction logs are appended by research workflows.")
+        else:
+            print(f"  Reviewed:          {summary.get('reviewed_count', 0)}")
+            print(f"  Date range:        {summary.get('date_range', ('—', '—'))}")
+            sources = summary.get("sources", {})
+            if sources:
+                print()
+                print("  By source:")
+                for src, cnt in sources.items():
+                    print(f"    {src:<30} {cnt}")
+    except Exception as exc:
+        print(f"  ERROR: {exc}")
+    print()
+    print("  [!] Prediction logs are research records only. Not investment advice.")
+
+
+def cmd_prediction_review(args: argparse.Namespace) -> None:
+    """Review prediction hit / miss results."""
+    mode    = getattr(args, "mode", "real")
+    horizon = getattr(args, "horizon", 5)
+    print("=" * 60)
+    print(f"  TW Quant Cockpit v0.4.3 — Prediction Review (horizon={horizon}d, mode={mode})")
+    print("  [!] Monitoring Only | Read Only | No Real Orders | Production BLOCKED")
+    print("=" * 60)
+    try:
+        from monitoring.hit_miss_review import HitMissReviewer
+        result = HitMissReviewer().run(horizon=horizon)
+        status = result.get("status", "—")
+        print(f"  Status:            {status}")
+        print(f"  Total predictions: {result.get('total_predictions', 0)}")
+        print(f"  Reviewed:          {result.get('reviewed_predictions', 0)}")
+        hr = result.get("hit_rate")
+        print(f"  Hit rate:          {f'{hr:.2%}' if isinstance(hr, float) else '—'}")
+        avg_ret = result.get("avg_actual_return")
+        print(f"  Avg actual return: {f'{avg_ret:.4f}' if isinstance(avg_ret, float) else '—'}")
+        print(f"  Precision:         {result.get('precision', '—')}")
+        print(f"  Recall:            {result.get('recall', '—')}")
+        for w in result.get("warnings", [])[:5]:
+            print(f"  [!] {w}")
+    except Exception as exc:
+        print(f"  ERROR: {exc}")
+    print()
+    print("  [!] Hit rate is not guaranteed win rate. Monitoring Only. No real orders.")
+
+
+def cmd_drift_check(args: argparse.Namespace) -> None:
+    """Run feature / prediction drift check."""
+    mode = getattr(args, "mode", "real")
+    print("=" * 60)
+    print(f"  TW Quant Cockpit v0.4.3 — Drift Check (mode={mode})")
+    print("  [!] Monitoring Only | Read Only | No Real Orders | Production BLOCKED")
+    print("=" * 60)
+    try:
+        from gui.model_monitoring_adapter import ModelMonitoringAdapter
+        result = ModelMonitoringAdapter().run_drift_check()
+        if not result.get("ok"):
+            print(f"  ERROR: {result.get('error')}")
+        else:
+            r = result.get("drift_result", {})
+            print(f"  Drift status:   {r.get('status', '—')}")
+            feat = r.get("feature_drift", {})
+            if feat:
+                print(f"  Feature drift findings: {len(feat)}")
+            miss = r.get("missing_drift", {})
+            if miss:
+                drifted = [k for k, v in miss.items() if isinstance(v, dict) and v.get("change", 0) > 0.05]
+                if drifted:
+                    print(f"  Missing ratio drifted:  {', '.join(drifted[:5])}")
+            for w in r.get("warnings", [])[:5]:
+                print(f"  [!] {w}")
+    except Exception as exc:
+        print(f"  ERROR: {exc}")
+    print()
+    print("  [!] Drift warning is not a trading signal. Monitoring Only. No real orders.")
+
+
+def cmd_signal_degradation(args: argparse.Namespace) -> None:
+    """Run signal degradation check."""
+    mode = getattr(args, "mode", "real")
+    print("=" * 60)
+    print(f"  TW Quant Cockpit v0.4.3 — Signal Degradation (mode={mode})")
+    print("  [!] Monitoring Only | Read Only | No Real Orders | Production BLOCKED")
+    print("=" * 60)
+    try:
+        from monitoring.signal_degradation import SignalDegradationMonitor
+        result = SignalDegradationMonitor().run()
+        print(f"  Status:           {result.get('status', '—')}")
+        rule = result.get("rule_degradation", {})
+        if rule:
+            print(f"  Rule degradation: {rule.get('status', '—')}")
+        sq = result.get("signal_quality_degradation", {})
+        if sq:
+            print(f"  Signal quality:   {sq.get('status', '—')}")
+        port = result.get("portfolio_degradation", {})
+        if port:
+            print(f"  Portfolio:        {port.get('status', '—')}")
+        for w in result.get("warnings", [])[:5]:
+            print(f"  [!] {w}")
+    except Exception as exc:
+        print(f"  ERROR: {exc}")
+    print()
+    print("  [!] Degradation warning is not a trading signal. Monitoring Only. No real orders.")
+
+
+def cmd_rule_vs_ml(args: argparse.Namespace) -> None:
+    """Run rule vs ML comparison."""
+    mode = getattr(args, "mode", "real")
+    print("=" * 60)
+    print(f"  TW Quant Cockpit v0.4.3 — Rule vs ML Comparison (mode={mode})")
+    print("  [!] Monitoring Only | Read Only | No Real Orders | Production BLOCKED")
+    print("=" * 60)
+    try:
+        from monitoring.rule_vs_ml_comparator import RuleVsMLComparator
+        result = RuleVsMLComparator().compare()
+        print(f"  ML available:      {result.get('ml_available', False)}")
+        if not result.get("ml_available", False):
+            print("  ML predictions: ML_NOT_AVAILABLE (no predictions logged yet)")
+        else:
+            ar = result.get("agreement_rate")
+            print(f"  Agreement rate:    {f'{ar:.2%}' if isinstance(ar, float) else '—'}")
+            print(f"  Rule-only hits:    {result.get('rule_only_hits', 0)}")
+            print(f"  ML-only hits:      {result.get('ml_only_hits', 0)}")
+            print(f"  Both hits:         {result.get('both_hits', 0)}")
+            print(f"  Both misses:       {result.get('both_misses', 0)}")
+            print(f"  Recommendation:    {result.get('recommendation', '—')}")
+        for w in result.get("warnings", [])[:3]:
+            print(f"  [!] {w}")
+    except Exception as exc:
+        print(f"  ERROR: {exc}")
+    print()
+    print("  [!] Disagreement does not auto-change strategy. Monitoring Only. No real orders.")
+
+
+# ---------------------------------------------------------------------------
 # v0.4.2 ML Feature Store command handlers
 # ---------------------------------------------------------------------------
 
@@ -6798,6 +7078,84 @@ def _build_parser() -> argparse.ArgumentParser:
     p_afpr.add_argument("--mode", choices=["real", "mock"], default="real",
                         help="Data mode (default: real)")
 
+    # --- model-monitoring (v0.4.3) ---
+    p_mm = subparsers.add_parser(
+        "model-monitoring",
+        help="Run Model Monitoring summary (v0.4.3)",
+    )
+    p_mm.add_argument("--mode", choices=["real", "mock"], default="real",
+                      help="Data mode (default: real)")
+
+    # --- model-monitoring-report (v0.4.3) ---
+    p_mmr = subparsers.add_parser(
+        "model-monitoring-report",
+        help="Generate Model Monitoring Markdown report (v0.4.3)",
+    )
+    p_mmr.add_argument("--mode", choices=["real", "mock"], default="real",
+                       help="Data mode (default: real)")
+    p_mmr.add_argument("--report-dir", dest="report_dir", default=None,
+                       help="Custom output directory for reports")
+
+    # --- model-registry-list (v0.4.3) ---
+    subparsers.add_parser(
+        "model-registry-list",
+        help="List registered ML model metadata (v0.4.3)",
+    )
+
+    # --- model-register (v0.4.3) ---
+    p_mreg = subparsers.add_parser(
+        "model-register",
+        help="Register a new ML model metadata entry (v0.4.3)",
+    )
+    p_mreg.add_argument("--name", default="unnamed_model",
+                        help="Model name")
+    p_mreg.add_argument("--type", dest="type", default="baseline",
+                        help="Model type (e.g. baseline, experimental, rule_based)")
+    p_mreg.add_argument("--target", default="label_direction_5d",
+                        help="Target label (default: label_direction_5d)")
+
+    # --- prediction-log (v0.4.3) ---
+    p_pl = subparsers.add_parser(
+        "prediction-log",
+        help="Show prediction log summary (v0.4.3)",
+    )
+    p_pl.add_argument("--mode", choices=["real", "mock"], default="real",
+                      help="Data mode (default: real)")
+
+    # --- prediction-review (v0.4.3) ---
+    p_pr = subparsers.add_parser(
+        "prediction-review",
+        help="Review prediction hit / miss results (v0.4.3)",
+    )
+    p_pr.add_argument("--mode", choices=["real", "mock"], default="real",
+                      help="Data mode (default: real)")
+    p_pr.add_argument("--horizon", type=int, default=5,
+                      help="Label horizon in days (default: 5)")
+
+    # --- drift-check (v0.4.3) ---
+    p_dc = subparsers.add_parser(
+        "drift-check",
+        help="Run feature / prediction drift check (v0.4.3)",
+    )
+    p_dc.add_argument("--mode", choices=["real", "mock"], default="real",
+                      help="Data mode (default: real)")
+
+    # --- signal-degradation (v0.4.3) ---
+    p_sd = subparsers.add_parser(
+        "signal-degradation",
+        help="Run signal degradation check (v0.4.3)",
+    )
+    p_sd.add_argument("--mode", choices=["real", "mock"], default="real",
+                      help="Data mode (default: real)")
+
+    # --- rule-vs-ml (v0.4.3) ---
+    p_rvm = subparsers.add_parser(
+        "rule-vs-ml",
+        help="Run rule vs ML signal comparison (v0.4.3)",
+    )
+    p_rvm.add_argument("--mode", choices=["real", "mock"], default="real",
+                       help="Data mode (default: real)")
+
     # --- ml-feature-catalog (v0.4.2) ---
     subparsers.add_parser(
         "ml-feature-catalog",
@@ -7427,6 +7785,16 @@ def main() -> None:
         "api-fetch-diagnostics":       cmd_api_fetch_diagnostics,
         "api-cache-cleanup":           cmd_api_cache_cleanup,
         "api-fetch-production-report": cmd_api_fetch_production_report,
+        # v0.4.3 Model Monitoring
+        "model-monitoring":            cmd_model_monitoring,
+        "model-monitoring-report":     cmd_model_monitoring_report,
+        "model-registry-list":         cmd_model_registry_list,
+        "model-register":              cmd_model_register,
+        "prediction-log":              cmd_prediction_log,
+        "prediction-review":           cmd_prediction_review,
+        "drift-check":                 cmd_drift_check,
+        "signal-degradation":          cmd_signal_degradation,
+        "rule-vs-ml":                  cmd_rule_vs_ml,
         # v0.4.2 ML Feature Store
         "ml-feature-catalog":          cmd_ml_feature_catalog,
         "ml-feature-snapshot":         cmd_ml_feature_snapshot,

@@ -249,6 +249,16 @@ except Exception as _mfs_exc:
     logger.warning("MLFeatureStorePanel unavailable: %s", _mfs_exc)
     _ML_FEATURE_STORE_AVAILABLE = False
 
+# ---------------------------------------------------------------------------
+# v0.4.3 Model Monitoring panel import (guarded)
+# ---------------------------------------------------------------------------
+try:
+    from gui.model_monitoring_panel import ModelMonitoringPanel
+    _MODEL_MONITORING_AVAILABLE = True
+except Exception as _mm_exc:
+    logger.warning("ModelMonitoringPanel unavailable: %s", _mm_exc)
+    _MODEL_MONITORING_AVAILABLE = False
+
 
 # ---------------------------------------------------------------------------
 # Colour helpers (Taiwan convention: red = up, green = down)
@@ -1248,6 +1258,13 @@ class CockpitWindow(QMainWindow if _PYSIDE6_AVAILABLE else object):
             mid_tabs.addTab(self._ml_feature_store_panel, "ML Feature Store")
         else:
             self._ml_feature_store_panel = None
+
+        # v0.4.3 Model Monitoring tab
+        if _MODEL_MONITORING_AVAILABLE:
+            self._model_monitoring_panel = ModelMonitoringPanel(mode=self._mode if hasattr(self, "_mode") else "real")
+            mid_tabs.addTab(self._model_monitoring_panel, "Model Monitoring")
+        else:
+            self._model_monitoring_panel = None
 
         h_split.addWidget(mid_tabs)
         h_split.setStretchFactor(0, 3)

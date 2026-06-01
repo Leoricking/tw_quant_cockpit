@@ -401,6 +401,11 @@ class AutoReportIndexBuilder:
                 "ml_dataset_status":          ctx.get("ml_dataset_status"),
                 "ml_leakage_status":          ctx.get("ml_leakage_status"),
                 "ml_feature_quality_score":   ctx.get("ml_feature_quality_score"),
+                # v0.4.3 Model Monitoring
+                "model_monitoring_status":    ctx.get("model_monitoring_status"),
+                "prediction_count":           ctx.get("prediction_count"),
+                "drift_status":               ctx.get("drift_status"),
+                "degradation_status":         ctx.get("degradation_status"),
             }
 
             path = os.path.join(output_dir, "manifest.json")

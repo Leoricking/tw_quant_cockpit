@@ -141,4 +141,53 @@ v0.4.2 adds an ML data preparation layer on top of the stable v0.4.1 platform. F
 
 ---
 
+## v0.4.3 — Model Monitoring Framework
+
+**Status:** Current
+
+### Summary
+
+v0.4.3 adds a model and signal monitoring layer on top of the stable v0.4.2 platform. Prediction tracking, hit/miss review, drift detection, signal degradation warnings, and rule-vs-ML comparison — all research-only, no live prediction, no real orders.
+
+### New Files
+
+- `monitoring/__init__.py` — Monitoring package init
+- `monitoring/model_registry.py` — `ModelMetadata`, `ModelRegistry`: metadata-only model registry; JSON files in `model_monitoring/`
+- `monitoring/prediction_log.py` — `PredictionRecord`, `PredictionLog`: append-only JSONL prediction records; load/filter/summarize/update_actuals
+- `monitoring/hit_miss_review.py` — `HitMissReviewer`: hit rate, precision, recall, grouping by symbol/rule/model/source
+- `monitoring/drift_detector.py` — `DriftDetector`: feature distribution drift, missing ratio drift, label drift, prediction score drift; 5-level status
+- `monitoring/signal_degradation.py` — `SignalDegradationMonitor`: rule/signal quality/portfolio degradation; no crash on missing files
+- `monitoring/rule_vs_ml_comparator.py` — `RuleVsMLComparator`: agreement rate, disagreement; ML_NOT_AVAILABLE when no ML predictions
+- `monitoring/monitoring_summary.py` — `ModelMonitoringSummary`: orchestrates all monitors; next_actions
+- `reports/model_monitoring_report.py` — `ModelMonitoringReportBuilder`: 8-section Markdown report
+- `gui/model_monitoring_adapter.py` — `ModelMonitoringAdapter`: GUI bridge with lazy imports
+- `gui/model_monitoring_panel.py` — `ModelMonitoringPanel`: PySide6 GUI with QThread workers; safety banner; 5 tables; register model dialog
+- `docs/model_monitoring.md` — full documentation
+
+### Modified Files
+
+- `main.py` — 9 new CLI commands: `model-monitoring`, `model-monitoring-report`, `model-registry-list`, `model-register`, `prediction-log`, `prediction-review`, `drift-check`, `signal-degradation`, `rule-vs-ml`
+- `gui/dashboard.py` — guarded import + "Model Monitoring" tab
+- `reports/auto_report_center.py` — `include_model_monitoring` flag; `run_model_monitoring_report()` method
+- `reports/auto_report_index.py` — manifest adds `model_monitoring_status`, `prediction_count`, `drift_status`, `degradation_status`
+- `release/regression_suite.py` — 3 new v0.4.3 tests added to full suite (24 total)
+- `release/stable_release_checklist.py` — 3 new v0.4.3 checks (26 total)
+- `experiments/snapshot_builder.py` — `build_model_monitoring_snapshot()` added to `build_all()`
+- `docs/roadmap.md` — v0.4.3 marked Done; v0.4.4 Intraday Replay Cockpit planned
+- `docs/index.md` — added model_monitoring.md
+- `.gitignore` — `model_monitoring/` and all monitoring artifacts excluded
+
+### Safety
+
+- `read_only=True`, `no_real_orders=True`, `production_blocked=True` in all new classes
+- No live prediction. Prediction logs are research records only.
+- Drift warning is not a trading signal. Hit rate is not guaranteed win rate.
+- Disagreement does not auto-change strategy. No auto weight apply.
+- model_monitoring/ and model_monitoring_report_*.md never committed (gitignored)
+- Production Trading: BLOCKED
+- REAL_ORDER_READY: False
+- Monitoring Only
+
+---
+
 *Previous release notes: see `docs/release_notes_v0.3.md`*

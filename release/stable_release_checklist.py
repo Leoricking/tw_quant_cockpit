@@ -395,6 +395,75 @@ class StableReleaseChecklist:
             elapsed = (time.monotonic() - t0) * 1000
             return self._item("api_cache_ignored", "WARN", str(exc), elapsed)
 
+    def _check_model_monitoring_import(self) -> dict:
+        """v0.4.3: All Model Monitoring core modules import cleanly."""
+        t0 = time.monotonic()
+        modules = [
+            ("monitoring.model_registry",       "ModelRegistry"),
+            ("monitoring.prediction_log",        "PredictionLog"),
+            ("monitoring.hit_miss_review",       "HitMissReviewer"),
+            ("monitoring.drift_detector",        "DriftDetector"),
+            ("monitoring.signal_degradation",    "SignalDegradationMonitor"),
+            ("monitoring.rule_vs_ml_comparator", "RuleVsMLComparator"),
+            ("monitoring.monitoring_summary",    "ModelMonitoringSummary"),
+            ("reports.model_monitoring_report",  "ModelMonitoringReportBuilder"),
+            ("gui.model_monitoring_adapter",     "ModelMonitoringAdapter"),
+        ]
+        failed = []
+        for mod_path, cls_name in modules:
+            try:
+                mod = __import__(mod_path, fromlist=[cls_name])
+                getattr(mod, cls_name)
+            except Exception as exc:
+                failed.append(f"{mod_path}: {exc}")
+        elapsed = (time.monotonic() - t0) * 1000
+        if not failed:
+            return self._item("model_monitoring_import", "PASS",
+                               f"All {len(modules)} Model Monitoring modules imported.", elapsed)
+        return self._item("model_monitoring_import", "WARN",
+                           f"{len(failed)} module(s) failed: {failed[:2]}", elapsed)
+
+    def _check_no_live_prediction(self) -> dict:
+        """v0.4.3: ModelMonitoringSummary has no_live_prediction flag and read_only=True."""
+        t0 = time.monotonic()
+        try:
+            from monitoring.monitoring_summary import ModelMonitoringSummary
+            obj = ModelMonitoringSummary()
+            elapsed = (time.monotonic() - t0) * 1000
+            if not getattr(obj, "read_only", False):
+                return self._item("no_live_prediction", "FAIL",
+                                   "ModelMonitoringSummary.read_only is not True", elapsed)
+            if not getattr(obj, "no_real_orders", False):
+                return self._item("no_live_prediction", "FAIL",
+                                   "ModelMonitoringSummary.no_real_orders is not True", elapsed)
+            return self._item("no_live_prediction", "PASS",
+                               "ModelMonitoringSummary: read_only=True, no_real_orders=True.", elapsed)
+        except Exception as exc:
+            elapsed = (time.monotonic() - t0) * 1000
+            return self._item("no_live_prediction", "WARN", f"Module not available: {exc}", elapsed)
+
+    def _check_prediction_logs_ignored(self) -> dict:
+        """v0.4.3: Verify model_monitoring/ and model_monitoring_report_*.md are in .gitignore."""
+        t0 = time.monotonic()
+        required = [
+            "model_monitoring/",
+            "reports/model_monitoring_report_",
+        ]
+        gitignore_path = os.path.join(BASE_DIR, ".gitignore")
+        try:
+            with open(gitignore_path, "r", encoding="utf-8", errors="replace") as f:
+                content = f.read()
+            missing = [pat for pat in required if pat not in content]
+            elapsed = (time.monotonic() - t0) * 1000
+            if not missing:
+                return self._item("prediction_logs_ignored", "PASS",
+                                   "model_monitoring/ and report patterns in .gitignore.", elapsed)
+            return self._item("prediction_logs_ignored", "WARN",
+                               f"Missing .gitignore patterns: {missing}", elapsed)
+        except Exception as exc:
+            elapsed = (time.monotonic() - t0) * 1000
+            return self._item("prediction_logs_ignored", "WARN", str(exc), elapsed)
+
     def _check_ml_feature_store_import(self) -> dict:
         """v0.4.2: All ML Feature Store core modules import cleanly."""
         t0 = time.monotonic()
@@ -541,7 +610,7 @@ class StableReleaseChecklist:
     # ------------------------------------------------------------------
 
     def run(self) -> dict:
-        """Run all 23 checklist items and return summary dict."""
+        """Run all 26 checklist items and return summary dict."""
         logger.info("StableReleaseChecklist.run() — mode=%s", self.mode)
 
         checks = [
@@ -570,6 +639,10 @@ class StableReleaseChecklist:
             self._check_ml_feature_store_import,
             self._check_ml_leakage_checker,
             self._check_ml_dataset_artifact_ignored,
+            # v0.4.3
+            self._check_model_monitoring_import,
+            self._check_no_live_prediction,
+            self._check_prediction_logs_ignored,
         ]
 
         items: list[dict] = []

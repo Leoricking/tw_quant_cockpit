@@ -33,6 +33,7 @@
 | v0.4.0 | Research Platform Stable Release | Done |
 | v0.4.1 | API Fetch Productionization | Done |
 | v0.4.2 | ML Feature Store v1 | Done |
+| v0.4.3 | Model Monitoring Framework | Done |
 
 ---
 
@@ -194,9 +195,27 @@
 
 ---
 
-## Planned: v0.4.3 — Model Monitoring Shell
+## Completed: v0.4.3 — Model Monitoring Framework
 
-**Target:** Lightweight model performance monitoring for research use only
+**Status:** Done
+
+- `ModelRegistry` — model metadata storage; register/list/get/update; JSON files in `model_monitoring/`; not committed
+- `PredictionLog` — append-only JSONL prediction records; load/filter/summarize; update_actuals from price data
+- `HitMissReviewer` — hit rate, precision, recall, grouping by symbol/rule/model/source; INSUFFICIENT_DATA when no actuals
+- `DriftDetector` — feature distribution drift, missing ratio drift, label drift, prediction score drift; STABLE/WATCH/DRIFT_WARNING/DRIFT_CRITICAL/INSUFFICIENT_DATA
+- `SignalDegradationMonitor` — rule/signal quality/portfolio degradation checks; STABLE/WATCH/DEGRADED/SEVERE
+- `RuleVsMLComparator` — agreement rate, disagreement cases, hit rate comparison; ML_NOT_AVAILABLE when no ML predictions
+- `ModelMonitoringSummary` — orchestrates all monitors; next_actions list
+- `ModelMonitoringReportBuilder` — 8-section Markdown report (not committed)
+- `ModelMonitoringAdapter` / `ModelMonitoringPanel` — GUI tab with QThread workers; safety banner
+- 9 new CLI commands: `model-monitoring`, `model-monitoring-report`, `model-registry-list`, `model-register`, `prediction-log`, `prediction-review`, `drift-check`, `signal-degradation`, `rule-vs-ml`
+- No live prediction. No auto-trading. No real orders. Production BLOCKED.
+
+---
+
+## Planned: v0.4.4 — Intraday Replay Cockpit
+
+**Target:** Replay 1min bars with opening range, VWAP, fake breakout, volume profile, strategy overlays
 
 ---
 

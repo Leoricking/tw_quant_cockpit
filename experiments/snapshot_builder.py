@@ -469,6 +469,30 @@ class ExperimentSnapshotBuilder:
             snap["warnings"].append("build_ml_feature_snapshot raised an exception")
         return snap
 
+    def build_model_monitoring_snapshot(self) -> dict:
+        """Snapshot type: model_monitoring. Loads Model Monitoring summary (v0.4.3)."""
+        snap = _empty_snapshot("model_monitoring")
+        try:
+            from monitoring.monitoring_summary import ModelMonitoringSummary
+            summary = ModelMonitoringSummary().run()
+            snap["summary"] = {
+                "model_count":       summary.get("model_count", 0),
+                "prediction_count":  summary.get("prediction_count", 0),
+                "reviewed_count":    summary.get("reviewed_count", 0),
+                "hit_rate":          summary.get("hit_rate"),
+                "drift_status":      summary.get("drift_status", "—"),
+                "degradation_status": summary.get("degradation_status", "—"),
+                "rule_vs_ml_status": summary.get("rule_vs_ml_status", "—"),
+                "research_only":     True,
+                "no_real_orders":    True,
+                "monitoring_only":   True,
+            }
+            snap["status"] = "OK"
+        except Exception:
+            logger.exception("build_model_monitoring_snapshot failed")
+            snap["warnings"].append("build_model_monitoring_snapshot raised an exception")
+        return snap
+
     def build_all(self, universe_name: str = None) -> dict:
         """
         Build all available snapshots. Each builder is called independently;
@@ -488,6 +512,7 @@ class ExperimentSnapshotBuilder:
             ("intraday", lambda: self.build_intraday_snapshot()),
             ("reports", lambda: self.build_generated_reports_snapshot()),
             ("ml_feature_store", lambda: self.build_ml_feature_snapshot()),
+            ("model_monitoring", lambda: self.build_model_monitoring_snapshot()),
         ]
         for snap_type, fn in builders:
             try:
