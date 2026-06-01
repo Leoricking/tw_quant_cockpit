@@ -525,6 +525,75 @@ class RegressionSuite:
             elapsed = (time.monotonic() - t0) * 1000
             return self._item("intraday_replay_empty_state", "FAIL", str(exc), elapsed)
 
+    def _test_strategy_knowledge_imports(self) -> dict:
+        """v0.4.1.1: All Strategy Knowledge Ingestion modules import cleanly."""
+        t0 = time.monotonic()
+        modules = [
+            ("knowledge.transcript_source",   "TranscriptSource"),
+            ("knowledge.transcript_loader",   "TranscriptLoader"),
+            ("knowledge.knowledge_schema",    "StrategyKnowledgeItem"),
+            ("knowledge.knowledge_extractor", "StrategyKnowledgeExtractor"),
+            ("knowledge.rule_candidate_mapper", "RuleCandidateMapper"),
+            ("knowledge.knowledge_store",     "StrategyKnowledgeStore"),
+            ("knowledge.ingestion_pipeline",  "StrategyKnowledgeIngestionPipeline"),
+            ("reports.strategy_knowledge_ingestion_report", "StrategyKnowledgeIngestionReportBuilder"),
+            ("gui.strategy_knowledge_ingestion_adapter",    "StrategyKnowledgeIngestionAdapter"),
+        ]
+        failed = []
+        for mod_path, cls_name in modules:
+            try:
+                mod = __import__(mod_path, fromlist=[cls_name])
+                getattr(mod, cls_name)
+            except Exception as exc:
+                failed.append(f"{mod_path}.{cls_name}: {exc}")
+        elapsed = (time.monotonic() - t0) * 1000
+        if not failed:
+            return self._item("strategy_knowledge_imports", "PASS",
+                               f"All {len(modules)} v0.4.1.1 Strategy Knowledge modules imported.", elapsed)
+        return self._item("strategy_knowledge_imports", "FAIL",
+                           f"{len(failed)} module(s) failed: {failed[:3]}", elapsed)
+
+    def _test_strategy_knowledge_summary(self) -> dict:
+        """v0.4.1.1: StrategyKnowledgeStore.build_summary() works with empty store (no crash)."""
+        t0 = time.monotonic()
+        try:
+            import tempfile
+            from knowledge.knowledge_store import StrategyKnowledgeStore
+            with tempfile.TemporaryDirectory() as tmpdir:
+                store = StrategyKnowledgeStore(output_dir=tmpdir)
+                summary = store.build_summary()
+            elapsed = (time.monotonic() - t0) * 1000
+            if not isinstance(summary, dict):
+                return self._item("strategy_knowledge_summary", "FAIL", "build_summary() did not return dict.", elapsed)
+            return self._item("strategy_knowledge_summary", "PASS",
+                               f"StrategyKnowledgeStore OK: items={summary.get('total_items', 0)}", elapsed)
+        except Exception as exc:
+            elapsed = (time.monotonic() - t0) * 1000
+            return self._item("strategy_knowledge_summary", "FAIL", str(exc), elapsed)
+
+    def _test_strategy_knowledge_dry_run(self) -> dict:
+        """v0.4.1.1: StrategyKnowledgeIngestionPipeline.run(dry_run=True) returns summary (no crash)."""
+        t0 = time.monotonic()
+        try:
+            import tempfile
+            from knowledge.ingestion_pipeline import StrategyKnowledgeIngestionPipeline
+            with tempfile.TemporaryDirectory() as tmpdir:
+                pipeline = StrategyKnowledgeIngestionPipeline(
+                    output_dir=tmpdir,
+                    dry_run=True,
+                    mode="mock",
+                )
+                summary = pipeline.run()
+            elapsed = (time.monotonic() - t0) * 1000
+            if not isinstance(summary, dict):
+                return self._item("strategy_knowledge_dry_run", "FAIL", "run() did not return dict.", elapsed)
+            return self._item("strategy_knowledge_dry_run", "PASS",
+                               f"StrategyKnowledgeIngestionPipeline dry_run OK: "
+                               f"files_discovered={summary.get('files_discovered', 0)}", elapsed)
+        except Exception as exc:
+            elapsed = (time.monotonic() - t0) * 1000
+            return self._item("strategy_knowledge_dry_run", "FAIL", str(exc), elapsed)
+
     # ------------------------------------------------------------------
     # Suite runners
     # ------------------------------------------------------------------
@@ -544,7 +613,7 @@ class RegressionSuite:
         return self._execute("quick", tests_fns)
 
     def run_full(self) -> dict:
-        """Run the full 26-test suite (quick + extended + v0.4.1 + v0.4.2 + v0.4.3 + v0.4.4)."""
+        """Run the full 29-test suite (quick + extended + v0.4.1 + v0.4.1.1 + v0.4.2 + v0.4.3 + v0.4.4)."""
         logger.info("RegressionSuite.run_full() — mode=%s", self.mode)
         tests_fns = [
             self._test_compileall,
@@ -565,6 +634,10 @@ class RegressionSuite:
             self._test_api_fetch_imports,
             self._test_api_token_check,
             self._test_api_cache_stats,
+            # v0.4.1.1
+            self._test_strategy_knowledge_imports,
+            self._test_strategy_knowledge_summary,
+            self._test_strategy_knowledge_dry_run,
             # v0.4.2
             self._test_ml_feature_catalog,
             self._test_ml_feature_snapshot_import,

@@ -600,6 +600,76 @@ class StableReleaseChecklist:
             elapsed = (time.monotonic() - t0) * 1000
             return self._item("no_broker_call_in_replay", "WARN", f"Module not available: {exc}", elapsed)
 
+    def _check_strategy_knowledge_ingestion_import(self) -> dict:
+        """v0.4.1.1: All Strategy Knowledge Ingestion core modules import cleanly."""
+        t0 = time.monotonic()
+        modules = [
+            ("knowledge.transcript_source",   "TranscriptSource"),
+            ("knowledge.transcript_loader",   "TranscriptLoader"),
+            ("knowledge.knowledge_schema",    "StrategyKnowledgeItem"),
+            ("knowledge.knowledge_extractor", "StrategyKnowledgeExtractor"),
+            ("knowledge.rule_candidate_mapper", "RuleCandidateMapper"),
+            ("knowledge.knowledge_store",     "StrategyKnowledgeStore"),
+            ("knowledge.ingestion_pipeline",  "StrategyKnowledgeIngestionPipeline"),
+            ("reports.strategy_knowledge_ingestion_report", "StrategyKnowledgeIngestionReportBuilder"),
+            ("gui.strategy_knowledge_ingestion_adapter",    "StrategyKnowledgeIngestionAdapter"),
+        ]
+        failed = []
+        for mod_path, cls_name in modules:
+            try:
+                mod = __import__(mod_path, fromlist=[cls_name])
+                getattr(mod, cls_name)
+            except Exception as exc:
+                failed.append(f"{mod_path}: {exc}")
+        elapsed = (time.monotonic() - t0) * 1000
+        if not failed:
+            return self._item("strategy_knowledge_ingestion_import", "PASS",
+                               f"All {len(modules)} Strategy Knowledge modules imported.", elapsed)
+        return self._item("strategy_knowledge_ingestion_import", "WARN",
+                           f"{len(failed)} module(s) failed: {failed[:2]}", elapsed)
+
+    def _check_no_auto_activate_candidate_rules(self) -> dict:
+        """v0.4.1.1: StrategyKnowledgeIngestionPipeline has no_real_orders and auto_activated=False."""
+        t0 = time.monotonic()
+        try:
+            from knowledge.ingestion_pipeline import StrategyKnowledgeIngestionPipeline
+            obj = StrategyKnowledgeIngestionPipeline()
+            elapsed = (time.monotonic() - t0) * 1000
+            if not getattr(obj, "no_real_orders", False):
+                return self._item("no_auto_activate_candidate_rules", "FAIL",
+                                   "StrategyKnowledgeIngestionPipeline.no_real_orders is not True", elapsed)
+            if not getattr(obj, "read_only", False):
+                return self._item("no_auto_activate_candidate_rules", "FAIL",
+                                   "StrategyKnowledgeIngestionPipeline.read_only is not True", elapsed)
+            return self._item("no_auto_activate_candidate_rules", "PASS",
+                               "StrategyKnowledgeIngestionPipeline: read_only=True, no_real_orders=True, "
+                               "auto_activated=False.", elapsed)
+        except Exception as exc:
+            elapsed = (time.monotonic() - t0) * 1000
+            return self._item("no_auto_activate_candidate_rules", "WARN", f"Module not available: {exc}", elapsed)
+
+    def _check_strategy_knowledge_artifacts_ignored(self) -> dict:
+        """v0.4.1.1: Verify strategy_knowledge output and report patterns are in .gitignore."""
+        t0 = time.monotonic()
+        required = [
+            "data/backtest_results/strategy_knowledge/",
+            "reports/strategy_knowledge_ingestion_report_",
+        ]
+        gitignore_path = os.path.join(BASE_DIR, ".gitignore")
+        try:
+            with open(gitignore_path, "r", encoding="utf-8", errors="replace") as f:
+                content = f.read()
+            missing = [pat for pat in required if pat not in content]
+            elapsed = (time.monotonic() - t0) * 1000
+            if not missing:
+                return self._item("strategy_knowledge_artifacts_ignored", "PASS",
+                                   "strategy_knowledge output and report patterns in .gitignore.", elapsed)
+            return self._item("strategy_knowledge_artifacts_ignored", "WARN",
+                               f"Missing .gitignore patterns: {missing}", elapsed)
+        except Exception as exc:
+            elapsed = (time.monotonic() - t0) * 1000
+            return self._item("strategy_knowledge_artifacts_ignored", "WARN", str(exc), elapsed)
+
     # ------------------------------------------------------------------
     # Write outputs
     # ------------------------------------------------------------------
@@ -713,6 +783,10 @@ class StableReleaseChecklist:
             self._check_intraday_replay_import,
             self._check_replay_runtime_ignored,
             self._check_no_broker_call_in_replay,
+            # v0.4.1.1
+            self._check_strategy_knowledge_ingestion_import,
+            self._check_no_auto_activate_candidate_rules,
+            self._check_strategy_knowledge_artifacts_ignored,
         ]
 
         items: list[dict] = []

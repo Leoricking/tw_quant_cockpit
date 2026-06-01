@@ -139,6 +139,36 @@ class RuleConfidenceScorer:
                 "factors": ["PLANNED — no real data yet"],
             }
 
+        # v0.4.1.1 transcript-only candidate rules: confidence capped at PARTIAL.
+        # Rules sourced exclusively from transcript ingestion must not reach HIGH
+        # before backtest validation. Long-cycle crash watch rules stay at PLANNED.
+        _transcript_only_prefixes = ("RISK.TECHNICAL.TOP_PATTERN", "RISK.RELATIVE_WEAKNESS.",
+                                     "RISK.CYCLE.CRASH_WATCH", "RISK.FUNDAMENTAL.",
+                                     "RISK.PORTFOLIO.")
+        if rid.startswith(_transcript_only_prefixes):
+            if rid.startswith("RISK.CYCLE.CRASH_WATCH"):
+                return {
+                    "rule_id": rid,
+                    "score": 0.0,
+                    "confidence_level": CONFIDENCE_PLANNED,
+                    "factors": [
+                        "Long-cycle crash watch: qualitative risk only.",
+                        "NOT a short-term validated signal.",
+                        "Transcript-only source — confidence capped at PLANNED.",
+                    ],
+                }
+            # Other transcript-candidate risk rules: cap at PARTIAL
+            return {
+                "rule_id": rid,
+                "score": 30.0,
+                "confidence_level": CONFIDENCE_PARTIAL,
+                "factors": [
+                    "Transcript-only source: confidence capped at PARTIAL.",
+                    "No backtest validation yet — cannot reach HIGH.",
+                    "auto_activated=False.",
+                ],
+            }
+
         if status == RULE_STATUS_BLOCKED:
             return {
                 "rule_id": rid,

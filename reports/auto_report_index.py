@@ -410,6 +410,11 @@ class AutoReportIndexBuilder:
                 "intraday_replay_session_count":  ctx.get("intraday_replay_session_count"),
                 "intraday_replay_training_score": ctx.get("intraday_replay_training_score"),
                 "intraday_replay_event_count":    ctx.get("intraday_replay_event_count"),
+                # v0.4.1.1 Strategy Knowledge Ingestion
+                "strategy_knowledge_items_count":   ctx.get("strategy_knowledge_items_count"),
+                "strategy_rule_candidates_count":   ctx.get("strategy_rule_candidates_count"),
+                "strategy_avoid_conditions_count":  ctx.get("strategy_avoid_conditions_count"),
+                "strategy_risk_conditions_count":   ctx.get("strategy_risk_conditions_count"),
             }
 
             path = os.path.join(output_dir, "manifest.json")

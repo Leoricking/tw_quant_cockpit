@@ -516,6 +516,36 @@ class ExperimentSnapshotBuilder:
             snap["warnings"].append("build_intraday_replay_snapshot raised an exception")
         return snap
 
+    def build_strategy_knowledge_snapshot(self) -> dict:
+        """
+        Snapshot type: strategy_knowledge. Loads knowledge store summary (v0.4.1.1).
+        [!] Knowledge Only. Research Only. No Real Orders. Production Trading: BLOCKED.
+        [!] auto_activated=False. Transcript-only confidence <= PARTIAL.
+        """
+        snap = _empty_snapshot("strategy_knowledge")
+        try:
+            from knowledge.knowledge_store import StrategyKnowledgeStore
+            store = StrategyKnowledgeStore()
+            summary = store.build_summary()
+            snap["summary"] = {
+                "sources_count":           summary.get("sources_count", 0),
+                "knowledge_items_count":   summary.get("total_items", 0),
+                "rule_candidates_count":   summary.get("rule_candidates_count", 0),
+                "avoid_conditions_count":  summary.get("avoid_conditions_count", 0),
+                "risk_conditions_count":   summary.get("risk_conditions_count", 0),
+                "factor_candidates_count": summary.get("factor_candidates_count", 0),
+                "latest_ingestion_at":     summary.get("latest_ingestion_at", ""),
+                "knowledge_only":          True,
+                "research_only":           True,
+                "no_real_orders":          True,
+                "auto_activated":          False,
+            }
+            snap["status"] = "OK"
+        except Exception:
+            logger.exception("build_strategy_knowledge_snapshot failed")
+            snap["warnings"].append("build_strategy_knowledge_snapshot raised an exception")
+        return snap
+
     def build_all(self, universe_name: str = None) -> dict:
         """
         Build all available snapshots. Each builder is called independently;
@@ -534,9 +564,10 @@ class ExperimentSnapshotBuilder:
             ("portfolio", lambda: self.build_portfolio_snapshot()),
             ("intraday", lambda: self.build_intraday_snapshot()),
             ("reports", lambda: self.build_generated_reports_snapshot()),
-            ("ml_feature_store", lambda: self.build_ml_feature_snapshot()),
-            ("model_monitoring", lambda: self.build_model_monitoring_snapshot()),
-            ("intraday_replay",  lambda: self.build_intraday_replay_snapshot()),
+            ("ml_feature_store",       lambda: self.build_ml_feature_snapshot()),
+            ("model_monitoring",       lambda: self.build_model_monitoring_snapshot()),
+            ("intraday_replay",        lambda: self.build_intraday_replay_snapshot()),
+            ("strategy_knowledge",     lambda: self.build_strategy_knowledge_snapshot()),
         ]
         for snap_type, fn in builders:
             try:

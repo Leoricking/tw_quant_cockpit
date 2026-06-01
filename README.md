@@ -4,7 +4,45 @@
 >
 > **[!] v1: Real order execution is strictly prohibited. For research, simulation, and decision support only. Not investment advice.**
 
-**Current version: v0.4.4 — Intraday Replay Cockpit**
+**Current version: v0.4.1.1 — Strategy Knowledge Ingestion (inserted between v0.4.1 and v0.4.2)**
+
+---
+
+## v0.4.1.1 — Strategy Knowledge Ingestion from Transcripts
+
+**New in v0.4.1.1:**
+
+- **Transcript Loader** — `TranscriptLoader`: discovers `.txt`/`.md` transcripts in 4 default dirs; parse YouTube transcript format, manual notes, media2txt output; no crash on missing dirs
+- **Knowledge Extractor** — `StrategyKnowledgeExtractor`: rule-based keyword extraction (no external LLM API); 8 extraction methods; handles 阪田戰法 entry/avoid patterns + 獅公 long-cycle risk
+- **Rule Candidate Mapper** — `RuleCandidateMapper`: maps knowledge items to Rule Governance rule_ids; `auto_activated=False` always; unmapped rules get `governance_status=CANDIDATE`
+- **Knowledge Store** — `StrategyKnowledgeStore`: 6 CSV outputs (sources, knowledge_items, rule_candidates, avoid_conditions, risk_conditions, factor_candidates); never writes tokens
+- **Ingestion Pipeline** — `StrategyKnowledgeIngestionPipeline`: 7-step orchestrator; dry_run support
+- **Strategy Knowledge Report** — 9-section Markdown report; gitignored
+- **GUI tab** — "Strategy Knowledge" tab with safety banner, 6 summary cards, source/items/rule tables; QThread workers
+- **Rule Governance** — 6 new NEEDS_REVIEW transcript-candidate risk rules (TOP_PATTERN, MARKET_NEW_HIGH_STOCK_LAG, CRASH_WATCH, REVENUE_NOT_SUPPORTING_THEME, OVER_CONCENTRATION, MARGIN_USAGE); confidence capped at PARTIAL or PLANNED
+- **Knowledge Only. Research Only. No Real Orders. auto_activated=False. Production BLOCKED.**
+
+```bash
+# Test run (no output files written)
+python main.py strategy-knowledge-ingest --mode real --dry-run
+
+# Full ingestion
+python main.py strategy-knowledge-ingest --mode real
+
+# With report generation
+python main.py strategy-knowledge-ingest --mode real --report
+
+# Show summary of latest ingestion
+python main.py strategy-knowledge-summary
+```
+
+**Safety:**
+- `data/backtest_results/strategy_knowledge/` — gitignored, never committed
+- `reports/strategy_knowledge_ingestion_report_*.md` — gitignored, never committed
+- `knowledge/transcripts/` — gitignored, never committed
+- Transcript-only confidence ≤ PARTIAL; long-cycle crash watch = PLANNED
+- `auto_activated=False` — candidate rules require manual review before ACTIVE
+- NOT investment advice. Long-cycle crash risk is NOT a short-term sell signal.
 
 ---
 

@@ -213,3 +213,11 @@ replay_sessions/
 reports/intraday_replay_report_*.md
 data/backtest_results/intraday_replay_*.csv
 data/backtest_results/intraday_replay_*.json
+
+# Strategy Knowledge Ingestion outputs (v0.4.1.1, runtime artifacts — NEVER commit)
+data/backtest_results/strategy_knowledge/
+reports/strategy_knowledge_ingestion_report_*.md
+knowledge/transcripts/
+data/import/transcripts/
+data/import/knowledge/
+data/strategy_knowledge/transcripts/

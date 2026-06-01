@@ -6561,6 +6561,140 @@ def cmd_replay_training_summary(args: argparse.Namespace) -> None:
 
 
 # ---------------------------------------------------------------------------
+# v0.4.1.1 Strategy Knowledge Ingestion command handlers
+# ---------------------------------------------------------------------------
+
+def cmd_strategy_knowledge_ingest(args: argparse.Namespace) -> None:
+    """Run Strategy Knowledge Ingestion from transcripts."""
+    mode       = getattr(args, "mode", "real")
+    dry_run    = getattr(args, "dry_run", False)
+    input_dirs = getattr(args, "input_dir", None)
+    output_dir = getattr(args, "output_dir", "data/backtest_results/strategy_knowledge")
+    report_dir = getattr(args, "report_dir", "reports")
+    do_report  = getattr(args, "report", False)
+
+    # Parse comma-separated or repeated --input-dir values
+    parsed_input_dirs = None
+    if input_dirs:
+        if isinstance(input_dirs, list):
+            parsed_input_dirs = input_dirs
+        else:
+            parsed_input_dirs = [d.strip() for d in input_dirs.split(",") if d.strip()]
+
+    print("=" * 60)
+    print("  TW Quant Cockpit — Strategy Knowledge Ingestion v0.4.1.1")
+    print("  [!] Knowledge Only. Research Only. No Real Orders.")
+    print("  [!] auto_activated=False. Confidence capped at PARTIAL.")
+    print("  [!] Not investment advice.")
+    print("=" * 60)
+    print(f"  Mode         : {mode}")
+    print(f"  Dry Run      : {dry_run}")
+    if parsed_input_dirs:
+        for d in parsed_input_dirs:
+            print(f"  Input Dir    : {d}")
+    print(f"  Output Dir   : {output_dir}")
+    print(f"  Report Dir   : {report_dir}")
+    print()
+
+    try:
+        from knowledge.ingestion_pipeline import StrategyKnowledgeIngestionPipeline
+        pipeline = StrategyKnowledgeIngestionPipeline(
+            input_dirs=parsed_input_dirs,
+            output_dir=output_dir,
+            report_dir=report_dir,
+            mode=mode,
+            dry_run=dry_run,
+        )
+        summary = pipeline.run()
+
+        print(f"  Files discovered     : {summary.get('files_discovered', 0)}")
+        print(f"  Files loaded         : {summary.get('files_loaded', 0)}")
+        print(f"  Sources              : {summary.get('sources_count', 0)}")
+        print(f"  Knowledge items      : {summary.get('knowledge_items_count', 0)}")
+        print(f"  Rule candidates      : {summary.get('rule_candidates_count', 0)}")
+        print(f"  Factor candidates    : {summary.get('factor_candidates_count', 0)}")
+        print(f"  Entry conditions     : {summary.get('entry_conditions_count', 0)}")
+        print(f"  Exit conditions      : {summary.get('exit_conditions_count', 0)}")
+        print(f"  Avoid conditions     : {summary.get('avoid_conditions_count', 0)}")
+        print(f"  Risk conditions      : {summary.get('risk_conditions_count', 0)}")
+        print(f"  Long-cycle risk      : {summary.get('long_cycle_risk_count', 0)}")
+
+        warnings = summary.get("warnings", [])
+        if warnings:
+            print()
+            for w in warnings:
+                print(f"  [WARN] {w}")
+
+        if not dry_run:
+            out_paths = summary.get("output_paths", {})
+            if out_paths:
+                print()
+                print("  Outputs:")
+                for k, v in out_paths.items():
+                    print(f"    {k}: {v}")
+
+        if do_report and not dry_run:
+            print()
+            print("  Generating report…")
+            try:
+                from reports.strategy_knowledge_ingestion_report import (
+                    StrategyKnowledgeIngestionReportBuilder,
+                )
+                report_path = StrategyKnowledgeIngestionReportBuilder(
+                    report_dir=report_dir, mode=mode
+                ).build()
+                print(f"  Report: {report_path}")
+            except Exception as rexc:
+                print(f"  [WARN] Report generation failed: {rexc}")
+
+        print()
+        print("  Knowledge Only. Research Only. No Real Orders. Production Trading BLOCKED.")
+
+    except Exception as exc:
+        logger.error("strategy-knowledge-ingest failed: %s", exc, exc_info=True)
+        print(f"  ERROR: {exc}")
+    print()
+
+
+def cmd_strategy_knowledge_summary(args: argparse.Namespace) -> None:
+    """Show latest Strategy Knowledge Ingestion summary."""
+    output_dir = getattr(args, "output_dir", "data/backtest_results/strategy_knowledge")
+
+    print("=" * 60)
+    print("  TW Quant Cockpit — Strategy Knowledge Summary v0.4.1.1")
+    print("  [!] Knowledge Only. Research Only. No Real Orders.")
+    print("=" * 60)
+
+    try:
+        from knowledge.knowledge_store import StrategyKnowledgeStore
+        store = StrategyKnowledgeStore(output_dir=output_dir)
+        summary = store.build_summary()
+
+        print(f"  Sources              : {summary.get('sources_count', 0)}")
+        print(f"  Total knowledge items: {summary.get('total_items', 0)}")
+        print(f"  Rule candidates      : {summary.get('rule_candidates_count', 0)}")
+        print(f"  Avoid conditions     : {summary.get('avoid_conditions_count', 0)}")
+        print(f"  Risk conditions      : {summary.get('risk_conditions_count', 0)}")
+        print(f"  Factor candidates    : {summary.get('factor_candidates_count', 0)}")
+        print(f"  Latest ingestion at  : {summary.get('latest_ingestion_at') or '—'}")
+        print()
+
+        by_cat = summary.get("by_category", {})
+        if by_cat:
+            print("  Items by category:")
+            for cat, cnt in sorted(by_cat.items()):
+                print(f"    {cat:<30}: {cnt}")
+            print()
+
+        print("  Knowledge Only. Research Only. No Real Orders.")
+
+    except Exception as exc:
+        logger.error("strategy-knowledge-summary failed: %s", exc, exc_info=True)
+        print(f"  ERROR: {exc}")
+    print()
+
+
+# ---------------------------------------------------------------------------
 # Argument parser
 # ---------------------------------------------------------------------------
 
@@ -7445,6 +7579,34 @@ def _build_parser() -> argparse.ArgumentParser:
     p_rts.add_argument("--mode", choices=["real", "mock"], default="real",
                        help="Data mode (default: real)")
 
+    # --- strategy-knowledge-ingest (v0.4.1.1) ---
+    p_ski = subparsers.add_parser(
+        "strategy-knowledge-ingest",
+        help="Ingest transcripts and extract strategy knowledge items (v0.4.1.1)",
+    )
+    p_ski.add_argument("--mode", choices=["real", "mock"], default="real",
+                       help="Data mode (default: real)")
+    p_ski.add_argument("--input-dir", dest="input_dir", default=None,
+                       help="Input directory for transcripts (comma-separated or repeated; default: knowledge/transcripts)")
+    p_ski.add_argument("--dry-run", dest="dry_run", action="store_true", default=False,
+                       help="Discover and extract but do not write output files")
+    p_ski.add_argument("--report", action="store_true", default=False,
+                       help="Generate Markdown report after ingestion")
+    p_ski.add_argument("--output-dir", dest="output_dir",
+                       default="data/backtest_results/strategy_knowledge",
+                       help="Output directory for CSVs (default: data/backtest_results/strategy_knowledge)")
+    p_ski.add_argument("--report-dir", dest="report_dir", default="reports",
+                       help="Output directory for report (default: reports)")
+
+    # --- strategy-knowledge-summary (v0.4.1.1) ---
+    p_sks = subparsers.add_parser(
+        "strategy-knowledge-summary",
+        help="Show latest Strategy Knowledge Ingestion summary (v0.4.1.1)",
+    )
+    p_sks.add_argument("--output-dir", dest="output_dir",
+                       default="data/backtest_results/strategy_knowledge",
+                       help="Knowledge store output directory (default: data/backtest_results/strategy_knowledge)")
+
     # --- experiment-create (v0.3.29) ---
     p_ec = subparsers.add_parser(
         "experiment-create",
@@ -8015,6 +8177,9 @@ def main() -> None:
         "replay-session-list":         cmd_replay_session_list,
         "replay-session-show":         cmd_replay_session_show,
         "replay-training-summary":     cmd_replay_training_summary,
+        # v0.4.1.1 Strategy Knowledge Ingestion
+        "strategy-knowledge-ingest":   cmd_strategy_knowledge_ingest,
+        "strategy-knowledge-summary":  cmd_strategy_knowledge_summary,
     }
 
     if args.command is None:

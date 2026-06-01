@@ -24,6 +24,9 @@ from governance.rule_metadata import (
     CONFIDENCE_PLANNED,
 )
 
+# Candidate status: ingested from transcript, NOT yet validated or auto-activated.
+RULE_STATUS_CANDIDATE = "CANDIDATE"
+
 
 class RuleRegistry:
     """
@@ -580,6 +583,96 @@ class RuleRegistry:
                 description="Walk-forward validation required for grade A/B",
                 signal_type="governance",
                 source_module="backtest.validation_split",
+            ),
+            # ----------------------------------------------------------------
+            # H. Transcript Candidate Rules (v0.4.1.1)
+            #    Status: CANDIDATE — ingested from transcripts only.
+            #    NOT auto-activated. NOT validated by backtest.
+            #    Confidence capped at PARTIAL per transcript source policy.
+            # ----------------------------------------------------------------
+            dict(
+                rule_id="RISK.TECHNICAL.TOP_PATTERN.V1",
+                rule_name="Top Pattern Risk",
+                category="risk",
+                timeframe="short",
+                status=RULE_STATUS_NEEDS_REVIEW,
+                description=(
+                    "Avoid stocks showing M-top, triple-top, head-and-shoulders, "
+                    "arc-top, or single-day reversal patterns. "
+                    "Candidate from transcript ingestion — not backtest validated."
+                ),
+                signal_type="risk",
+                confidence=CONFIDENCE_PLANNED,
+            ),
+            dict(
+                rule_id="RISK.RELATIVE_WEAKNESS.MARKET_NEW_HIGH_STOCK_LAG.V1",
+                rule_name="Market New High But Stock Lags",
+                category="risk",
+                timeframe="short",
+                status=RULE_STATUS_NEEDS_REVIEW,
+                description=(
+                    "Index makes new high but individual stock fails to make new high. "
+                    "Relative weakness signal — avoid or reduce. "
+                    "Candidate from transcript ingestion — not backtest validated."
+                ),
+                signal_type="risk",
+                confidence=CONFIDENCE_PLANNED,
+            ),
+            dict(
+                rule_id="RISK.CYCLE.CRASH_WATCH.V1",
+                rule_name="Long-Cycle Crash Watch",
+                category="risk",
+                timeframe="cycle",
+                status=RULE_STATUS_NEEDS_REVIEW,
+                description=(
+                    "Long-cycle crash watch: potential 50% drawdown risk in 2028-2031 window. "
+                    "Qualitative / cycle risk only. "
+                    "NOT a short-term sell signal. NOT investment advice. "
+                    "Candidate from transcript ingestion — not backtest validated."
+                ),
+                signal_type="risk",
+                confidence=CONFIDENCE_PLANNED,
+            ),
+            dict(
+                rule_id="RISK.FUNDAMENTAL.REVENUE_NOT_SUPPORTING_THEME.V1",
+                rule_name="Revenue Not Supporting Theme",
+                category="risk",
+                timeframe="medium",
+                status=RULE_STATUS_NEEDS_REVIEW,
+                description=(
+                    "Pure theme play without revenue/EPS backing. "
+                    "Revenue stagnant or declining while narrative continues. "
+                    "Candidate from transcript ingestion — not backtest validated."
+                ),
+                signal_type="risk",
+                confidence=CONFIDENCE_PLANNED,
+            ),
+            dict(
+                rule_id="RISK.PORTFOLIO.OVER_CONCENTRATION.V1",
+                rule_name="Portfolio Over-Concentration",
+                category="risk",
+                timeframe="universal",
+                status=RULE_STATUS_NEEDS_REVIEW,
+                description=(
+                    "Portfolio discipline: max 4 positions for small capital, "
+                    "6-8 for larger capital. No single-stock concentration. "
+                    "Candidate from transcript ingestion — not backtest validated."
+                ),
+                signal_type="risk",
+                confidence=CONFIDENCE_PLANNED,
+            ),
+            dict(
+                rule_id="RISK.PORTFOLIO.MARGIN_USAGE.V1",
+                rule_name="Margin Usage Risk",
+                category="risk",
+                timeframe="universal",
+                status=RULE_STATUS_NEEDS_REVIEW,
+                description=(
+                    "No margin (融資) usage. Risk discipline from knowledge source. "
+                    "Candidate from transcript ingestion — not backtest validated."
+                ),
+                signal_type="risk",
+                confidence=CONFIDENCE_PLANNED,
             ),
         ]
 

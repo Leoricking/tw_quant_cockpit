@@ -41,6 +41,7 @@ _PROFILE_FLAGS: Dict[str, dict] = {
         include_rule_weight=True,
         include_long_term=True,
         include_strategy_knowledge=True,
+        include_strategy_knowledge_ingestion=True,
         include_daily_summary=True,
         include_data_quality_gate=True,
         include_provider_reliability=True,
@@ -61,6 +62,7 @@ _PROFILE_FLAGS: Dict[str, dict] = {
         include_rule_weight=False,
         include_long_term=False,
         include_strategy_knowledge=False,
+        include_strategy_knowledge_ingestion=True,
         include_daily_summary=True,
         include_data_quality_gate=True,
         include_provider_reliability=True,
@@ -160,6 +162,7 @@ class AutoReportCenter:
         include_ml_feature_store: bool = False,
         include_model_monitoring: bool = False,
         include_intraday_replay: bool = False,
+        include_strategy_knowledge_ingestion: bool = False,
     ):
         self.mode        = mode
         self.profile     = profile
@@ -190,6 +193,9 @@ class AutoReportCenter:
         self.include_ml_feature_store      = flags.get("include_ml_feature_store",      include_ml_feature_store)
         self.include_model_monitoring      = flags.get("include_model_monitoring",      include_model_monitoring)
         self.include_intraday_replay       = flags.get("include_intraday_replay",       include_intraday_replay)
+        self.include_strategy_knowledge_ingestion = flags.get(
+            "include_strategy_knowledge_ingestion", include_strategy_knowledge_ingestion
+        )
         self.universe_name = universe_name
 
         # Runtime state (populated during run)
@@ -269,6 +275,9 @@ class AutoReportCenter:
 
         if self.include_intraday_replay:
             self.run_intraday_replay_report()
+
+        if self.include_strategy_knowledge_ingestion:
+            self.run_strategy_knowledge_ingestion_summary()
 
         # Aggregated outputs
         if self.include_daily_summary:
@@ -703,6 +712,35 @@ class AutoReportCenter:
                 self._record_fail("intraday_replay", result.get("error", "unknown"))
         except Exception as exc:
             self._record_fail("intraday_replay", str(exc))
+
+    def run_strategy_knowledge_ingestion_summary(self):
+        """
+        Include Strategy Knowledge Ingestion summary in context (v0.4.1.1).
+        Does NOT force a new ingestion run — reads existing store output.
+        Optional — failure does not abort overall run.
+        """
+        try:
+            from gui.strategy_knowledge_ingestion_adapter import (
+                StrategyKnowledgeIngestionAdapter,
+            )
+            adapter = StrategyKnowledgeIngestionAdapter(report_dir=self._out_dir)
+            result = adapter.load_latest_summary()
+            summary = result.get("summary", {})
+            self._context["strategy_knowledge_items_count"] = summary.get("total_items", 0)
+            self._context["strategy_rule_candidates_count"] = summary.get("rule_candidates_count", 0)
+            self._context["strategy_avoid_conditions_count"] = summary.get("avoid_conditions_count", 0)
+            self._context["strategy_risk_conditions_count"] = summary.get("risk_conditions_count", 0)
+            self._context["strategy_knowledge_latest_at"] = summary.get("latest_ingestion_at", "")
+            self._record_success(
+                "strategy_knowledge_ingestion",
+                f"items={summary.get('total_items', 0)} "
+                f"rules={summary.get('rule_candidates_count', 0)} "
+                f"avoid={summary.get('avoid_conditions_count', 0)} "
+                f"risk={summary.get('risk_conditions_count', 0)}",
+            )
+        except Exception as exc:
+            logger.warning("run_strategy_knowledge_ingestion_summary failed: %s", exc)
+            self._record_fail("strategy_knowledge_ingestion", str(exc))
 
     def run_model_monitoring_report(self):
         """Generate Model Monitoring report (v0.4.3). Optional — failure does not abort run."""

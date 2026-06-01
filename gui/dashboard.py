@@ -272,6 +272,17 @@ except Exception as _irrp_exc:
 
 
 # ---------------------------------------------------------------------------
+# v0.4.1.1 Strategy Knowledge Ingestion panel import (guarded)
+# ---------------------------------------------------------------------------
+try:
+    from gui.strategy_knowledge_ingestion_panel import StrategyKnowledgeIngestionPanel
+    _STRATEGY_KNOWLEDGE_INGESTION_AVAILABLE = True
+except Exception as _ski_exc:
+    logger.warning("StrategyKnowledgeIngestionPanel unavailable: %s", _ski_exc)
+    _STRATEGY_KNOWLEDGE_INGESTION_AVAILABLE = False
+
+
+# ---------------------------------------------------------------------------
 # Colour helpers (Taiwan convention: red = up, green = down)
 # ---------------------------------------------------------------------------
 
@@ -1283,6 +1294,15 @@ class CockpitWindow(QMainWindow if _PYSIDE6_AVAILABLE else object):
             mid_tabs.addTab(self._intraday_replay_panel, "Intraday Replay")
         else:
             self._intraday_replay_panel = None
+
+        # v0.4.1.1 Strategy Knowledge tab
+        if _STRATEGY_KNOWLEDGE_INGESTION_AVAILABLE:
+            self._strategy_knowledge_panel = StrategyKnowledgeIngestionPanel(
+                mode=self._mode if hasattr(self, "_mode") else "real"
+            )
+            mid_tabs.addTab(self._strategy_knowledge_panel, "Strategy Knowledge")
+        else:
+            self._strategy_knowledge_panel = None
 
         h_split.addWidget(mid_tabs)
         h_split.setStretchFactor(0, 3)

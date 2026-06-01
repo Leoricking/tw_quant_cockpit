@@ -91,6 +91,54 @@ v0.4.1 adds a production-grade, read-only API data fetch layer on top of the sta
 
 ---
 
+## v0.4.1.1 — Strategy Knowledge Ingestion from Transcripts
+
+**Status:** Done
+
+### Summary
+
+v0.4.1.1 inserts a Knowledge Ingestion layer between v0.4.1 (API Fetch Productionization) and v0.4.2 (ML Feature Store). It converts user-imported transcripts (YouTube transcripts, manual notes, 阪田戰法 videos, 獅公 market commentary) into structured strategy knowledge. No real orders. No auto-apply. Confidence capped at PARTIAL. Long-cycle crash watch capped at PLANNED.
+
+### New Files
+
+- `knowledge/__init__.py` — package init
+- `knowledge/transcript_source.py` — `TranscriptSource`: metadata (source_id, title, author, source_type, hash); from_file(), to_dict()
+- `knowledge/transcript_loader.py` — `TranscriptLoader`: discovers `.txt`/`.md` in 4 dirs; parse_sections(), extract_metadata(), normalize_text(); no crash on missing dirs; no OCR; no network
+- `knowledge/knowledge_schema.py` — `StrategyKnowledgeItem`: 17 fields; 11 categories; 5 polarities; 6 timeframes; to_dict()
+- `knowledge/knowledge_extractor.py` — `StrategyKnowledgeExtractor`: rule-based keyword extractor; 8 methods; handles 阪田戰法 + 獅公 patterns; confidence ≤ PARTIAL
+- `knowledge/rule_candidate_mapper.py` — `RuleCandidateMapper`: maps items to Rule Governance rule_ids; auto_activated=False always; CANDIDATE status for unmapped rules
+- `knowledge/knowledge_store.py` — `StrategyKnowledgeStore`: 6 CSV outputs; never writes tokens; build_summary()
+- `knowledge/ingestion_pipeline.py` — `StrategyKnowledgeIngestionPipeline`: 7-step orchestrator; dry_run support; production_blocked=True
+- `reports/strategy_knowledge_ingestion_report.py` — `StrategyKnowledgeIngestionReportBuilder`: 9-section Markdown report
+- `gui/strategy_knowledge_ingestion_panel.py` — PySide6 panel; safety banner; 6 summary cards; source/items/rule-candidate tables; QThread workers
+- `gui/strategy_knowledge_ingestion_adapter.py` — `StrategyKnowledgeIngestionAdapter`: GUI bridge (run_ingestion, generate_report, load_latest_summary, load_sources, load_items, load_rule_candidates)
+- `docs/strategy_knowledge_ingestion.md` — full documentation
+
+### Modified Files
+
+- `main.py` — 2 new CLI commands: `strategy-knowledge-ingest`, `strategy-knowledge-summary`
+- `governance/rule_registry.py` — 6 new NEEDS_REVIEW transcript-candidate risk rules (RISK.TECHNICAL.TOP_PATTERN.V1, RISK.RELATIVE_WEAKNESS.MARKET_NEW_HIGH_STOCK_LAG.V1, RISK.CYCLE.CRASH_WATCH.V1, RISK.FUNDAMENTAL.REVENUE_NOT_SUPPORTING_THEME.V1, RISK.PORTFOLIO.OVER_CONCENTRATION.V1, RISK.PORTFOLIO.MARGIN_USAGE.V1); `RULE_STATUS_CANDIDATE` constant added
+- `governance/rule_confidence.py` — transcript-only rule confidence capped at PARTIAL; CRASH_WATCH capped at PLANNED
+- `reports/auto_report_center.py` — `include_strategy_knowledge_ingestion` flag; `run_strategy_knowledge_ingestion_summary()` method; full + daily profiles updated
+- `reports/auto_report_index.py` — manifest includes 4 new strategy_knowledge fields
+- `experiments/snapshot_builder.py` — `build_strategy_knowledge_snapshot()` added; included in `build_all()`
+- `release/regression_suite.py` — 3 new v0.4.1.1 tests (strategy_knowledge_imports, strategy_knowledge_summary, strategy_knowledge_dry_run); full suite count: 29
+- `release/stable_release_checklist.py` — 3 new v0.4.1.1 checks (strategy_knowledge_ingestion_import, no_auto_activate_candidate_rules, strategy_knowledge_artifacts_ignored)
+- `gui/dashboard.py` — guarded import + "Strategy Knowledge" tab
+- `docs/roadmap.md` — v0.4.1.1 marked Done
+- `docs/index.md` — strategy_knowledge_ingestion.md added
+- `.gitignore` — transcript and knowledge output dirs excluded
+
+### Safety
+
+- Knowledge Only, Research Only, No Real Orders, Production Trading BLOCKED
+- `auto_activated=False` always — candidate rules require manual review before ACTIVE status
+- Transcript-only confidence ≤ PARTIAL
+- Long-cycle crash watch confidence = PLANNED — NOT a short-term sell signal
+- No investment advice generated
+
+---
+
 ## v0.4.2 — ML Feature Store v1
 
 **Status:** Current

@@ -32,6 +32,7 @@
 | v0.3.29 | Research Notebook / Experiment Registry | Done |
 | v0.4.0 | Research Platform Stable Release | Done |
 | v0.4.1 | API Fetch Productionization | Done |
+| v0.4.1.1 | Strategy Knowledge Ingestion from Transcripts | Done |
 | v0.4.2 | ML Feature Store v1 | Done |
 | v0.4.3 | Model Monitoring Framework | Done |
 | v0.4.4 | Intraday Replay Cockpit | Done |
@@ -140,6 +141,34 @@
 - Integration: `DailyResearchWorkflow` accepts `register_experiment=False`; `AutoReportCenter` full profile includes experiment_registry; "Experiment Registry" tab in cockpit
 - `experiments/` runtime excluded from git; `experiments/.gitkeep` committed
 - No real orders. Production BLOCKED.
+
+---
+
+## Completed: v0.4.1.1 — Strategy Knowledge Ingestion from Transcripts
+
+**Status:** Done
+
+- `TranscriptSource` — source metadata (source_id, title, author, source_type, media_source, video_id, transcript_hash, source_confidence); from_file(), to_dict(), hash_text()
+- `TranscriptLoader` — discovers `.txt`/`.md` files in 4 default dirs; parse_sections(), extract_metadata(), normalize_text(); no crash on missing dirs; no OCR; no network fetch
+- `StrategyKnowledgeItem` — knowledge item dataclass with 17 fields; 11 category types; 5 polarity types; 6 timeframe types; to_dict()
+- `StrategyKnowledgeExtractor` — rule-based keyword extraction (no external LLM API); 8 extraction methods covering entry/exit/avoid/risk/market_regime/position_sizing; handles 阪田戰法 + 獅公 long-cycle risk patterns; confidence capped at PARTIAL for transcript sources
+- `RuleCandidateMapper` — maps knowledge items to Rule Governance rule_ids; generates `suggested_rule_id` for unknown rules; `auto_activated=False` always; `governance_status=CANDIDATE` for new rules
+- `StrategyKnowledgeStore` — CSV persistence; 6 output files (sources, knowledge_items, rule_candidates, avoid_conditions, risk_conditions, factor_candidates); never writes tokens; build_summary()
+- `StrategyKnowledgeIngestionPipeline` — 7-step orchestrator; supports dry_run; reports files_discovered/loaded/items_count/rule_candidates/etc.; `production_blocked=True`
+- `StrategyKnowledgeIngestionReportBuilder` — 9-section Markdown report; not committed
+- `StrategyKnowledgeIngestionPanel` — PySide6 GUI with safety banner, 6 summary cards, source table, knowledge items table, rule candidate table, risk/avoid notice; QThread workers
+- `StrategyKnowledgeIngestionAdapter` — GUI bridge (run_ingestion, generate_report, load_latest_summary, load_latest_report_path, load_sources, load_items, load_rule_candidates)
+- `RuleRegistry` — 6 new transcript-candidate risk rules (NEEDS_REVIEW, confidence=PLANNED): TOP_PATTERN, MARKET_NEW_HIGH_STOCK_LAG, CRASH_WATCH, REVENUE_NOT_SUPPORTING_THEME, OVER_CONCENTRATION, MARGIN_USAGE
+- `RuleConfidenceScorer` — transcript-only rule confidence capped at PARTIAL; CRASH_WATCH capped at PLANNED
+- `ExperimentSnapshotBuilder` — `build_strategy_knowledge_snapshot()` added
+- `AutoReportCenter` — `run_strategy_knowledge_ingestion_summary()` added; full + daily profiles include `include_strategy_knowledge_ingestion`
+- `AutoReportIndexBuilder` — manifest includes 4 new strategy knowledge fields
+- `RegressionSuite` — 3 new v0.4.1.1 tests (imports, summary, dry_run)
+- `StableReleaseChecklist` — 3 new v0.4.1.1 checks (import, no_auto_activate, artifacts_ignored)
+- GUI: Strategy Knowledge tab added to cockpit dashboard
+- CLI: `strategy-knowledge-ingest`, `strategy-knowledge-summary`
+- Docs: `docs/strategy_knowledge_ingestion.md`
+- Knowledge Only. Research Only. No Real Orders. auto_activated=False. Production BLOCKED.
 
 ---
 
