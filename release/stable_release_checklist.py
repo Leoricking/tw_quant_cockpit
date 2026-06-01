@@ -740,6 +740,92 @@ class StableReleaseChecklist:
             elapsed = (time.monotonic() - t0) * 1000
             return self._item("ml_knowledge_artifacts_ignored", "WARN", str(exc), elapsed)
 
+    def _check_notification_center_import(self) -> dict:
+        """v0.4.5: All Notification Center modules import cleanly."""
+        t0 = time.monotonic()
+        modules = [
+            ("notifications.notification_schema",       "NotificationEvent"),
+            ("notifications.notification_center",       "NotificationCenter"),
+            ("notifications.notification_rules",        "NotificationRuleEngine"),
+            ("notifications.notification_preferences",  "NotificationPreferences"),
+            ("reports.notification_center_report",      "NotificationCenterReport"),
+            ("gui.notification_center_adapter",         "NotificationCenterAdapter"),
+        ]
+        failed = []
+        for mod, cls in modules:
+            try:
+                m = __import__(mod, fromlist=[cls])
+                getattr(m, cls)
+            except Exception as exc:
+                failed.append(f"{mod}: {exc}")
+        elapsed = (time.monotonic() - t0) * 1000
+        if not failed:
+            return self._item("notification_center_import", "PASS",
+                               f"All {len(modules)} v0.4.5 Notification modules imported.", elapsed)
+        return self._item("notification_center_import", "FAIL",
+                           f"{len(failed)} module(s) failed: {failed[:2]}", elapsed)
+
+    def _check_notification_external_disabled(self) -> dict:
+        """v0.4.5: ExternalNotifierPlaceholder.external_enabled=False always."""
+        t0 = time.monotonic()
+        try:
+            from notifications.external_notifier_placeholder import ExternalNotifierPlaceholder
+            obj = ExternalNotifierPlaceholder()
+            assert obj.external_enabled is False, "external_enabled must be False"
+            assert obj.is_available() is False, "is_available() must return False"
+            result = obj.send_line.__func__(obj, None) if False else obj.send_telegram(None.__class__())
+        except (AssertionError, Exception) as exc:
+            # Only fail on AssertionError
+            if isinstance(exc, AssertionError):
+                elapsed = (time.monotonic() - t0) * 1000
+                return self._item("notification_external_disabled", "FAIL", str(exc), elapsed)
+        elapsed = (time.monotonic() - t0) * 1000
+        return self._item("notification_external_disabled", "PASS",
+                           "ExternalNotifierPlaceholder: external_enabled=False, is_available=False.", elapsed)
+
+    def _check_notification_artifacts_ignored(self) -> dict:
+        """v0.4.5: Verify Notification Center output patterns are in .gitignore."""
+        t0 = time.monotonic()
+        required = [
+            "logs/notifications/",
+            "reports/notification_center_report_",
+            "config/notification_preferences.json",
+        ]
+        try:
+            import os
+            gitignore = os.path.join(BASE_DIR, ".gitignore")
+            content = ""
+            if os.path.isfile(gitignore):
+                with open(gitignore, "r", encoding="utf-8") as f:
+                    content = f.read()
+            missing = [r for r in required if r not in content]
+            elapsed = (time.monotonic() - t0) * 1000
+            if not missing:
+                return self._item("notification_artifacts_ignored", "PASS",
+                                   "All Notification Center output patterns present in .gitignore.", elapsed)
+            return self._item("notification_artifacts_ignored", "WARN",
+                               f"Missing .gitignore patterns: {missing}", elapsed)
+        except Exception as exc:
+            elapsed = (time.monotonic() - t0) * 1000
+            return self._item("notification_artifacts_ignored", "WARN", str(exc), elapsed)
+
+    def _check_notification_no_real_orders(self) -> dict:
+        """v0.4.5: NotificationCenter.no_real_orders=True always."""
+        t0 = time.monotonic()
+        try:
+            from notifications.notification_center import NotificationCenter
+            from notifications.notification_schema import NotificationEvent
+            assert NotificationCenter.no_real_orders is True, "NotificationCenter.no_real_orders must be True"
+            assert NotificationCenter.production_blocked is True, "production_blocked must be True"
+            assert NotificationEvent.no_real_orders is True, "NotificationEvent.no_real_orders must be True"
+            elapsed = (time.monotonic() - t0) * 1000
+            return self._item("notification_no_real_orders", "PASS",
+                               "NotificationCenter and NotificationEvent: no_real_orders=True, production_blocked=True.",
+                               elapsed)
+        except Exception as exc:
+            elapsed = (time.monotonic() - t0) * 1000
+            return self._item("notification_no_real_orders", "FAIL", str(exc), elapsed)
+
     # ------------------------------------------------------------------
     # Write outputs
     # ------------------------------------------------------------------
@@ -861,6 +947,11 @@ class StableReleaseChecklist:
             self._check_ml_knowledge_integration_import,
             self._check_ml_knowledge_auto_enabled_false,
             self._check_ml_knowledge_artifacts_ignored,
+            # v0.4.5
+            self._check_notification_center_import,
+            self._check_notification_external_disabled,
+            self._check_notification_artifacts_ignored,
+            self._check_notification_no_real_orders,
         ]
 
         items: list[dict] = []

@@ -584,6 +584,32 @@ class ExperimentSnapshotBuilder:
             snap["warnings"].append("build_ml_knowledge_integration_snapshot raised an exception")
         return snap
 
+    def build_notification_snapshot(self) -> dict:
+        """
+        Snapshot type: notification_center. Loads notification summary (v0.4.5).
+        [!] Notification Only. Research Only. No Real Orders.
+        """
+        snap = _empty_snapshot("notification_center")
+        try:
+            from gui.notification_center_adapter import NotificationCenterAdapter
+            adapter = NotificationCenterAdapter()
+            summary = adapter.get_summary()
+            snap["summary"] = {
+                "total_events":      summary.get("total_events", 0),
+                "unread_count":      summary.get("unread_count", 0),
+                "critical_count":    summary.get("critical_count", 0),
+                "error_count":       summary.get("error_count", 0),
+                "warning_count":     summary.get("warning_count", 0),
+                "external_enabled":  False,
+                "notification_only": True,
+                "no_real_orders":    True,
+            }
+            snap["status"] = "OK"
+        except Exception:
+            logger.exception("build_notification_snapshot failed")
+            snap["warnings"].append("build_notification_snapshot raised an exception")
+        return snap
+
     def build_all(self, universe_name: str = None) -> dict:
         """
         Build all available snapshots. Each builder is called independently;
@@ -607,6 +633,7 @@ class ExperimentSnapshotBuilder:
             ("intraday_replay",        lambda: self.build_intraday_replay_snapshot()),
             ("strategy_knowledge",          lambda: self.build_strategy_knowledge_snapshot()),
             ("ml_knowledge_integration",    lambda: self.build_ml_knowledge_integration_snapshot()),
+            ("notification_center",         lambda: self.build_notification_snapshot()),
         ]
         for snap_type, fn in builders:
             try:

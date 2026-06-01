@@ -37,6 +37,33 @@
 | v0.4.2.1 | ML Feature Store Knowledge Integration | Done |
 | v0.4.3 | Model Monitoring Framework | Done |
 | v0.4.4 | Intraday Replay Cockpit | Done |
+| v0.4.5 | Notification Center | Done |
+
+---
+
+## Completed: v0.4.5 — Notification Center
+
+**Status:** Done
+
+**New files:**
+- `notifications/__init__.py`, `notification_schema.py`, `notification_center.py`, `notification_rules.py`, `local_notifier.py`, `external_notifier_placeholder.py`, `notification_preferences.py`
+- `reports/notification_center_report.py`
+- `gui/notification_center_adapter.py`, `gui/notification_center_panel.py`
+- `docs/notification_center.md`
+- `config/notification_preferences.example.json`
+
+**Modified files:**
+- `main.py` — 5 new CLI commands (notification-scan/list/report/clear-read/test)
+- `gui/dashboard.py` — "Notification Center" tab
+- `reports/auto_report_center.py` — `run_notification_center_report()`, `include_notification_center` flag
+- `reports/auto_report_index.py` — 4 new manifest fields
+- `experiments/snapshot_builder.py` — `build_notification_snapshot()`
+- `release/regression_suite.py` — 2 new v0.4.5 tests
+- `release/stable_release_checklist.py` — 4 new v0.4.5 checks
+- `.gitignore` — notification output patterns
+- `README.md`, `docs/roadmap.md`, `docs/release_notes_v0.4.md`, `docs/index.md`
+
+**Safety:** No real orders. external_enabled=False always. production_blocked=True is safe state.
 
 ---
 

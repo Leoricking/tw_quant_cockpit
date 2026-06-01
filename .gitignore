@@ -225,3 +225,9 @@ data/strategy_knowledge/transcripts/
 # ML Knowledge Integration outputs (v0.4.2.1, runtime artifacts — NEVER commit)
 data/backtest_results/ml_feature_store/
 reports/ml_knowledge_integration_report_*.md
+
+# Notification Center outputs (v0.4.5, runtime artifacts — NEVER commit)
+logs/notifications/
+reports/notification_center_report_*.md
+data/backtest_results/notification_summary.csv
+config/notification_preferences.json

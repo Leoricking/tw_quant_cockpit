@@ -1,0 +1,24 @@
+{
+  "_note": "Copy to config/notification_preferences.json to customize. Do NOT commit notification_preferences.json (gitignored). external_enabled is always False in v0.4.5.",
+  "local_enabled": true,
+  "external_enabled": false,
+  "min_severity": "INFO",
+  "categories_enabled": [
+    "report",
+    "data",
+    "provider",
+    "signal",
+    "ml",
+    "replay",
+    "experiment",
+    "governance",
+    "scheduler",
+    "safety",
+    "system"
+  ],
+  "quiet_hours_enabled": false,
+  "quiet_hours_start": "22:00",
+  "quiet_hours_end": "08:00",
+  "daily_summary_enabled": true,
+  "replay_reminder_enabled": true
+}

@@ -294,6 +294,17 @@ except Exception as _mki_exc:
 
 
 # ---------------------------------------------------------------------------
+# v0.4.5 Notification Center panel import (guarded)
+# ---------------------------------------------------------------------------
+try:
+    from gui.notification_center_panel import NotificationCenterPanel
+    _NOTIFICATION_CENTER_AVAILABLE = True
+except Exception as _nc_exc:
+    logger.warning("NotificationCenterPanel unavailable: %s", _nc_exc)
+    _NOTIFICATION_CENTER_AVAILABLE = False
+
+
+# ---------------------------------------------------------------------------
 # Colour helpers (Taiwan convention: red = up, green = down)
 # ---------------------------------------------------------------------------
 
@@ -1323,6 +1334,15 @@ class CockpitWindow(QMainWindow if _PYSIDE6_AVAILABLE else object):
             mid_tabs.addTab(self._ml_knowledge_panel, "ML Knowledge Integration")
         else:
             self._ml_knowledge_panel = None
+
+        # v0.4.5 Notification Center tab
+        if _NOTIFICATION_CENTER_AVAILABLE:
+            self._notification_center_panel = NotificationCenterPanel(
+                mode=self._mode if hasattr(self, "_mode") else "real"
+            )
+            mid_tabs.addTab(self._notification_center_panel, "Notification Center")
+        else:
+            self._notification_center_panel = None
 
         h_split.addWidget(mid_tabs)
         h_split.setStretchFactor(0, 3)

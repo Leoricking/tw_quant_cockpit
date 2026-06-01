@@ -54,6 +54,7 @@ _PROFILE_FLAGS: Dict[str, dict] = {
         include_ml_feature_store=True,
         include_model_monitoring=True,
         include_intraday_replay=True,
+        include_notification_center=True,
     ),
     "daily": dict(
         include_stock_reports=False,
@@ -73,6 +74,7 @@ _PROFILE_FLAGS: Dict[str, dict] = {
         include_ml_feature_store=True,
         include_model_monitoring=True,
         include_intraday_replay=False,
+        include_notification_center=True,
     ),
     "portfolio": dict(
         include_stock_reports=False,
@@ -166,6 +168,7 @@ class AutoReportCenter:
         include_intraday_replay: bool = False,
         include_strategy_knowledge_ingestion: bool = False,
         include_ml_knowledge_integration: bool = False,
+        include_notification_center: bool = False,
     ):
         self.mode        = mode
         self.profile     = profile
@@ -201,6 +204,9 @@ class AutoReportCenter:
         )
         self.include_ml_knowledge_integration = flags.get(
             "include_ml_knowledge_integration", include_ml_knowledge_integration
+        )
+        self.include_notification_center = flags.get(
+            "include_notification_center", include_notification_center
         )
         self.universe_name = universe_name
 
@@ -287,6 +293,9 @@ class AutoReportCenter:
 
         if self.include_ml_knowledge_integration:
             self.run_ml_knowledge_integration_summary()
+
+        if self.include_notification_center:
+            self.run_notification_center_report()
 
         # Aggregated outputs
         if self.include_daily_summary:
@@ -782,6 +791,35 @@ class AutoReportCenter:
         except Exception as exc:
             logger.warning("run_ml_knowledge_integration_summary failed: %s", exc)
             self._record_fail("ml_knowledge_integration", str(exc))
+
+    def run_notification_center_report(self):
+        """
+        Generate Notification Center report (v0.4.5).
+        Reads existing notification log — does NOT force a new scan.
+        Optional — failure does not abort overall run.
+        """
+        try:
+            from gui.notification_center_adapter import NotificationCenterAdapter
+            adapter = NotificationCenterAdapter(mode=self.mode, report_dir=self._out_dir)
+            result  = adapter.generate_report(dry_run=False)
+            path    = result.get("report_path", "")
+            if result.get("status") == "OK" and path:
+                self._context["notification_center_report"] = path
+                self._generated.append({"type": "notification_center", "path": path})
+            summary = adapter.get_summary()
+            self._context["notification_total"]   = summary.get("total_events", 0)
+            self._context["notification_unread"]  = summary.get("unread_count", 0)
+            self._context["notification_critical"] = summary.get("critical_count", 0)
+            self._record_success(
+                "notification_center",
+                f"total={summary.get('total_events', 0)} "
+                f"unread={summary.get('unread_count', 0)} "
+                f"critical={summary.get('critical_count', 0)} "
+                f"external_enabled=False",
+            )
+        except Exception as exc:
+            logger.warning("run_notification_center_report failed: %s", exc)
+            self._record_fail("notification_center", str(exc))
 
     def run_model_monitoring_report(self):
         """Generate Model Monitoring report (v0.4.3). Optional — failure does not abort run."""

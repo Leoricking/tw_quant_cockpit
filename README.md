@@ -4,7 +4,39 @@
 >
 > **[!] v1: Real order execution is strictly prohibited. For research, simulation, and decision support only. Not investment advice.**
 
-**Current version: v0.4.2.1 — ML Feature Store Knowledge Integration (inserted between v0.4.2 and v0.4.3)**
+**Current version: v0.4.5 — Notification Center**
+
+---
+
+## v0.4.5 — Notification Center
+
+**New in v0.4.5:**
+
+- **Notification Center** — `NotificationCenter`: records research platform events as read-only local notifications; JSONL persistence; lazy-load; never raises
+- **NotificationEvent** — `NotificationEvent` dataclass: UUID ID, 6 severity levels, 11 categories, 13 event types; metadata sanitised (no tokens)
+- **NotificationRuleEngine** — 9 `evaluate_*` methods: safety, data quality, provider health, signal quality, ML knowledge, model monitoring, intraday replay, experiments, scheduler
+- **LocalNotifier** — console output always available; optional Windows toast (win10toast, graceful fallback)
+- **ExternalNotifierPlaceholder** — LINE/Telegram permanently disabled in v0.4.5; `external_enabled=False` always
+- **NotificationPreferences** — user preferences with load/save; `config/notification_preferences.json` (gitignored)
+- **NotificationCenterReport** — 8-section Markdown report; `notification_center_report_YYYYMMDD_HHMMSS.md`
+- **NotificationCenterAdapter** — GUI bridge; all methods return dicts; never raise
+- **NotificationCenterPanel** — PySide6 panel with summary cards, filtered table, detail panel, preferences panel
+- **Dashboard** — "Notification Center" tab added to cockpit
+
+**Safety:**
+- `no_real_orders = True` enforced at every layer
+- `external_enabled = False` always (LINE/Telegram placeholder only)
+- `production_blocked = True` is the EXPECTED safe state — triggers INFO, not ERROR
+- Notification creation never crashes callers
+
+**CLI:**
+```bash
+python main.py notification-scan --mode real
+python main.py notification-list --severity WARNING
+python main.py notification-test --severity INFO
+python main.py notification-report --mode real
+python main.py notification-clear-read
+```
 
 ---
 

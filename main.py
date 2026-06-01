@@ -6780,6 +6780,163 @@ def cmd_ml_knowledge_feature_summary(args: argparse.Namespace) -> None:
 
 
 # ---------------------------------------------------------------------------
+# v0.4.5 Notification Center command handlers
+# ---------------------------------------------------------------------------
+
+def cmd_notification_scan(args: argparse.Namespace) -> None:
+    """Evaluate notification rules and persist generated events."""
+    mode = getattr(args, "mode", "real")
+    print("=" * 60)
+    print("  TW Quant Cockpit — Notification Scan v0.4.5")
+    print("=" * 60)
+    print(f"  Mode: {mode}")
+    print(f"  [!] Notification Only. Research Only. No Real Orders.")
+    print()
+    try:
+        from gui.notification_center_adapter import NotificationCenterAdapter
+        adapter = NotificationCenterAdapter(mode=mode)
+        result = adapter.run_scan()
+        status    = result.get("status", "ERROR")
+        new_events = result.get("new_events", 0)
+        print(f"  Status     : {status}")
+        print(f"  New Events : {new_events}")
+        for evt in result.get("events", []):
+            sev  = evt.get("severity", "INFO")
+            cat  = evt.get("category", "")
+            title = evt.get("title", "")
+            print(f"    [{sev}] [{cat}] {title}")
+        if status == "ERROR":
+            print(f"  ERROR: {result.get('error', '')}")
+        print()
+        print("  [!] Notification Only. No Real Orders.")
+    except Exception as exc:
+        logger.error("notification-scan failed: %s", exc, exc_info=True)
+        print(f"  ERROR: {exc}")
+    print()
+
+
+def cmd_notification_list(args: argparse.Namespace) -> None:
+    """List recent notification events."""
+    limit      = getattr(args, "limit", 50)
+    severity   = getattr(args, "severity", None)
+    category   = getattr(args, "category", None)
+    unread_only = getattr(args, "unread_only", False)
+    print("=" * 60)
+    print("  TW Quant Cockpit — Notification List v0.4.5")
+    print("=" * 60)
+    try:
+        from gui.notification_center_adapter import NotificationCenterAdapter
+        adapter = NotificationCenterAdapter()
+        events  = adapter.list_notifications(
+            limit=limit,
+            severity=severity,
+            category=category,
+            unread_only=unread_only,
+        )
+        summary = adapter.get_summary()
+        print(f"  Total: {summary.get('total_events', 0)}  "
+              f"Unread: {summary.get('unread_count', 0)}  "
+              f"Critical: {summary.get('critical_count', 0)}")
+        print()
+        if not events:
+            print("  No notifications recorded.")
+        else:
+            for evt in events:
+                created = evt.get("created_at", "")[:19]
+                sev     = evt.get("severity", "INFO")
+                cat     = evt.get("category", "")
+                title   = evt.get("title", "")
+                status  = evt.get("status", "")
+                print(f"  {created}  [{sev:8s}] [{cat:10s}] {title}  ({status})")
+        print()
+        print(f"  [!] Notification Only. No Real Orders. external_enabled=False.")
+    except Exception as exc:
+        logger.error("notification-list failed: %s", exc, exc_info=True)
+        print(f"  ERROR: {exc}")
+    print()
+
+
+def cmd_notification_report(args: argparse.Namespace) -> None:
+    """Generate Notification Center Markdown report."""
+    mode    = getattr(args, "mode", "real")
+    dry_run = getattr(args, "dry_run", False)
+    print("=" * 60)
+    print("  TW Quant Cockpit — Notification Report v0.4.5")
+    print("=" * 60)
+    print(f"  Mode   : {mode}")
+    print(f"  Dry Run: {dry_run}")
+    print()
+    try:
+        from gui.notification_center_adapter import NotificationCenterAdapter
+        adapter = NotificationCenterAdapter(mode=mode)
+        result  = adapter.generate_report(dry_run=dry_run)
+        status  = result.get("status", "ERROR")
+        path    = result.get("report_path", "")
+        print(f"  Status: {status}")
+        if status == "OK":
+            if dry_run:
+                print(f"  [dry-run] Report would be written to: {path}")
+            else:
+                print(f"  Report written → {path}")
+        else:
+            print(f"  ERROR: {result.get('error', '')}")
+        print()
+        print("  [!] Notification Only. Research Only. No Real Orders.")
+    except Exception as exc:
+        logger.error("notification-report failed: %s", exc, exc_info=True)
+        print(f"  ERROR: {exc}")
+    print()
+
+
+def cmd_notification_clear_read(args: argparse.Namespace) -> None:
+    """Clear all read notifications from the log."""
+    print("=" * 60)
+    print("  TW Quant Cockpit — Notification Clear Read v0.4.5")
+    print("=" * 60)
+    try:
+        from gui.notification_center_adapter import NotificationCenterAdapter
+        adapter = NotificationCenterAdapter()
+        result  = adapter.clear_read()
+        removed = result.get("removed", 0)
+        print(f"  Removed {removed} read notification(s).")
+        print()
+        print("  [!] Notification Only. No Real Orders.")
+    except Exception as exc:
+        logger.error("notification-clear-read failed: %s", exc, exc_info=True)
+        print(f"  ERROR: {exc}")
+    print()
+
+
+def cmd_notification_test(args: argparse.Namespace) -> None:
+    """Add a test notification event."""
+    severity = getattr(args, "severity", "INFO")
+    print("=" * 60)
+    print("  TW Quant Cockpit — Notification Test v0.4.5")
+    print("=" * 60)
+    print(f"  Severity: {severity}")
+    print()
+    try:
+        from gui.notification_center_adapter import NotificationCenterAdapter
+        adapter = NotificationCenterAdapter()
+        result  = adapter.send_test_notification(severity=severity)
+        status  = result.get("status", "ERROR")
+        print(f"  Status: {status}")
+        if status == "OK":
+            evt = result.get("event", {})
+            print(f"  ID     : {evt.get('notification_id', '')}")
+            print(f"  Title  : {evt.get('title', '')}")
+            print(f"  Message: {evt.get('message', '')}")
+        else:
+            print(f"  ERROR: {result.get('error', '')}")
+        print()
+        print("  [!] Notification Only. No Real Orders. external_enabled=False.")
+    except Exception as exc:
+        logger.error("notification-test failed: %s", exc, exc_info=True)
+        print(f"  ERROR: {exc}")
+    print()
+
+
+# ---------------------------------------------------------------------------
 # v0.4.1.1 Strategy Knowledge Ingestion command handlers
 # ---------------------------------------------------------------------------
 
@@ -7864,6 +8021,52 @@ def _build_parser() -> argparse.ArgumentParser:
                         default="data/backtest_results/ml_feature_store",
                         help="ML feature store output directory")
 
+    # --- notification-scan (v0.4.5) ---
+    p_ns = subparsers.add_parser(
+        "notification-scan",
+        help="Evaluate notification rules and persist generated events (v0.4.5)",
+    )
+    p_ns.add_argument("--mode", choices=["real", "mock"], default="real",
+                      help="Data mode (default: real)")
+
+    # --- notification-list (v0.4.5) ---
+    p_nl = subparsers.add_parser(
+        "notification-list",
+        help="List recent notification events (v0.4.5)",
+    )
+    p_nl.add_argument("--limit", type=int, default=50,
+                      help="Maximum events to show (default: 50)")
+    p_nl.add_argument("--severity", default=None,
+                      help="Filter by minimum severity (INFO/NOTICE/WARNING/ERROR/CRITICAL)")
+    p_nl.add_argument("--category", default=None,
+                      help="Filter by category (report/data/provider/signal/ml/…)")
+    p_nl.add_argument("--unread-only", dest="unread_only", action="store_true", default=False,
+                      help="Show unread notifications only")
+
+    # --- notification-report (v0.4.5) ---
+    p_nr = subparsers.add_parser(
+        "notification-report",
+        help="Generate Notification Center Markdown report (v0.4.5)",
+    )
+    p_nr.add_argument("--mode", choices=["real", "mock"], default="real",
+                      help="Data mode (default: real)")
+    p_nr.add_argument("--dry-run", dest="dry_run", action="store_true", default=False,
+                      help="Show report path without writing file")
+
+    # --- notification-clear-read (v0.4.5) ---
+    subparsers.add_parser(
+        "notification-clear-read",
+        help="Clear all read notifications from the log (v0.4.5)",
+    )
+
+    # --- notification-test (v0.4.5) ---
+    p_nt = subparsers.add_parser(
+        "notification-test",
+        help="Add a test notification event (v0.4.5)",
+    )
+    p_nt.add_argument("--severity", default="INFO",
+                      help="Severity level for test notification (default: INFO)")
+
     # --- experiment-create (v0.3.29) ---
     p_ec = subparsers.add_parser(
         "experiment-create",
@@ -8441,6 +8644,12 @@ def main() -> None:
         "ml-knowledge-integrate":      cmd_ml_knowledge_integrate,
         "ml-knowledge-leakage-check":  cmd_ml_knowledge_leakage_check,
         "ml-knowledge-feature-summary": cmd_ml_knowledge_feature_summary,
+        # v0.4.5 Notification Center
+        "notification-scan":           cmd_notification_scan,
+        "notification-list":           cmd_notification_list,
+        "notification-report":         cmd_notification_report,
+        "notification-clear-read":     cmd_notification_clear_read,
+        "notification-test":           cmd_notification_test,
     }
 
     if args.command is None:

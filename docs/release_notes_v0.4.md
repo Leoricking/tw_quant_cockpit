@@ -339,4 +339,53 @@ v0.4.4 adds an intraday bar replay layer on top of the stable v0.4.3 platform. S
 
 ---
 
+## v0.4.5 — Notification Center
+
+**Status:** Current
+
+### Summary
+
+Research-only local notification system that records important platform events
+(data quality alerts, provider failures, signal changes, ML leakage warnings,
+intraday replay reminders) as read-only notifications in a local JSONL log.
+No external messages (LINE/Telegram disabled). No real orders.
+
+### New Files
+
+| File | Description |
+|------|-------------|
+| `notifications/__init__.py` | Package init |
+| `notifications/notification_schema.py` | NotificationEvent dataclass; 13 event types; 6 severities; 11 categories |
+| `notifications/notification_center.py` | Main engine: JSONL persistence, lazy-load, add_event/notify/list/mark_read/clear_read |
+| `notifications/notification_rules.py` | NotificationRuleEngine: 9 evaluate_* methods |
+| `notifications/local_notifier.py` | Console + optional win10toast |
+| `notifications/external_notifier_placeholder.py` | LINE/Telegram placeholder — always disabled |
+| `notifications/notification_preferences.py` | User preferences with load/save |
+| `reports/notification_center_report.py` | 8-section Markdown report |
+| `gui/notification_center_adapter.py` | GUI bridge — all methods return dicts; never raise |
+| `gui/notification_center_panel.py` | PySide6 panel with summary cards, table, detail, preferences |
+| `docs/notification_center.md` | Documentation |
+| `config/notification_preferences.example.json` | Safe example config (committable) |
+
+### Modified Files
+
+- `main.py` — 5 CLI commands: `notification-scan/list/report/clear-read/test`
+- `gui/dashboard.py` — "Notification Center" tab added
+- `reports/auto_report_center.py` — `run_notification_center_report()`; `include_notification_center` flag; full + daily profiles
+- `reports/auto_report_index.py` — 4 new manifest fields: `notification_total`, `notification_unread`, `notification_critical`, `notification_external_enabled`
+- `experiments/snapshot_builder.py` — `build_notification_snapshot()`
+- `release/regression_suite.py` — 2 new v0.4.5 tests (imports, empty_state)
+- `release/stable_release_checklist.py` — 4 new v0.4.5 checks
+- `.gitignore` — `logs/notifications/`, `reports/notification_center_report_*.md`, `data/backtest_results/notification_summary.csv`, `config/notification_preferences.json`
+
+### Safety
+
+- `no_real_orders = True` enforced at every layer
+- `external_enabled = False` always (LINE/Telegram placeholder; never sends messages)
+- `production_blocked = True` is the EXPECTED safe state (triggers INFO, not ERROR)
+- Notification creation never raises (failures logged as warnings)
+- Notification metadata never contains tokens, passwords, or API keys
+
+---
+
 *Previous release notes: see `docs/release_notes_v0.3.md`*

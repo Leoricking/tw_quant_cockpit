@@ -421,6 +421,11 @@ class AutoReportIndexBuilder:
                 "ml_knowledge_auto_enabled":     ctx.get("ml_knowledge_auto_enabled", 0),
                 "ml_knowledge_leakage_findings": ctx.get("ml_knowledge_leakage_findings"),
                 "ml_knowledge_critical_leakage": ctx.get("ml_knowledge_critical_leakage"),
+                # v0.4.5 Notification Center
+                "notification_total":    ctx.get("notification_total"),
+                "notification_unread":   ctx.get("notification_unread"),
+                "notification_critical": ctx.get("notification_critical"),
+                "notification_external_enabled": False,
             }
 
             path = os.path.join(output_dir, "manifest.json")

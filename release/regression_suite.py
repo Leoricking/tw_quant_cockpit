@@ -639,6 +639,55 @@ class RegressionSuite:
             elapsed = (time.monotonic() - t0) * 1000
             return self._item("ml_knowledge_bridge_empty", "FAIL", str(exc), elapsed)
 
+    def _test_notification_imports(self) -> dict:
+        """v0.4.5: All Notification Center modules import cleanly."""
+        t0 = time.monotonic()
+        modules = [
+            ("notifications.notification_schema",       "NotificationEvent"),
+            ("notifications.notification_center",       "NotificationCenter"),
+            ("notifications.notification_rules",        "NotificationRuleEngine"),
+            ("notifications.local_notifier",            "LocalNotifier"),
+            ("notifications.external_notifier_placeholder", "ExternalNotifierPlaceholder"),
+            ("notifications.notification_preferences",  "NotificationPreferences"),
+            ("reports.notification_center_report",      "NotificationCenterReport"),
+            ("gui.notification_center_adapter",         "NotificationCenterAdapter"),
+        ]
+        failed = []
+        for mod, cls in modules:
+            try:
+                m = __import__(mod, fromlist=[cls])
+                getattr(m, cls)
+            except Exception as exc:
+                failed.append(f"{mod}: {exc}")
+        elapsed = (time.monotonic() - t0) * 1000
+        if not failed:
+            return self._item("notification_imports", "PASS",
+                               f"All {len(modules)} v0.4.5 Notification modules imported.", elapsed)
+        return self._item("notification_imports", "FAIL",
+                           f"{len(failed)} module(s) failed: {failed[:3]}", elapsed)
+
+    def _test_notification_center_empty_state(self) -> dict:
+        """v0.4.5: NotificationCenter.build_summary() with empty log returns valid result (no crash)."""
+        t0 = time.monotonic()
+        try:
+            import tempfile
+            from notifications.notification_center import NotificationCenter
+            with tempfile.TemporaryDirectory() as tmp:
+                center = NotificationCenter(log_dir=tmp, max_history=10)
+                summary = center.build_summary()
+                assert summary.get("total_events", -1) == 0, "Expected 0 events on empty center"
+                assert summary.get("no_real_orders") is True, "no_real_orders must be True"
+                assert summary.get("external_enabled") is False, "external_enabled must be False"
+            elapsed = (time.monotonic() - t0) * 1000
+            return self._item(
+                "notification_center_empty_state", "PASS",
+                "NotificationCenter empty state: summary OK, no_real_orders=True, external_enabled=False.",
+                elapsed,
+            )
+        except Exception as exc:
+            elapsed = (time.monotonic() - t0) * 1000
+            return self._item("notification_center_empty_state", "FAIL", str(exc), elapsed)
+
     # ------------------------------------------------------------------
     # Suite runners
     # ------------------------------------------------------------------
@@ -658,7 +707,7 @@ class RegressionSuite:
         return self._execute("quick", tests_fns)
 
     def run_full(self) -> dict:
-        """Run the full 31-test suite (quick + extended + v0.4.1 + v0.4.1.1 + v0.4.2 + v0.4.2.1 + v0.4.3 + v0.4.4)."""
+        """Run the full 33-test suite (quick + extended + v0.4.1 + v0.4.1.1 + v0.4.2 + v0.4.2.1 + v0.4.3 + v0.4.4 + v0.4.5)."""
         logger.info("RegressionSuite.run_full() — mode=%s", self.mode)
         tests_fns = [
             self._test_compileall,
@@ -698,6 +747,9 @@ class RegressionSuite:
             # v0.4.4
             self._test_intraday_replay_imports,
             self._test_intraday_replay_empty_state,
+            # v0.4.5
+            self._test_notification_imports,
+            self._test_notification_center_empty_state,
         ]
         return self._execute("full", tests_fns)
 
