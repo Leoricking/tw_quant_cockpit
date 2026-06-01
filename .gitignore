@@ -231,3 +231,9 @@ logs/notifications/
 reports/notification_center_report_*.md
 data/backtest_results/notification_summary.csv
 config/notification_preferences.json
+
+# Portfolio Journal outputs (v0.4.6, runtime artifacts — NEVER commit)
+journal_data/
+reports/portfolio_journal_report_*.md
+data/backtest_results/portfolio_journal_summary.csv
+data/backtest_results/signal_outcome_summary.csv

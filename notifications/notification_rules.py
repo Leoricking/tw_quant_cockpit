@@ -435,3 +435,57 @@ class NotificationRuleEngine:
         except Exception as exc:
             logger.warning("NotificationRuleEngine.evaluate_scheduler_result: %s", exc)
         return events
+
+    # ------------------------------------------------------------------
+    # Portfolio Journal (v0.4.6)
+    # ------------------------------------------------------------------
+
+    def evaluate_portfolio_journal(self, journal_summary: dict) -> List[NotificationEvent]:
+        """
+        Evaluate portfolio journal summary and produce notification events.
+
+        Rules:
+          review_required_count > 0  → NOTICE
+          repeated mistake tag >= 3  → WARNING
+        """
+        events = []
+        try:
+            from notifications.notification_schema import CAT_REPORT
+            review_req    = journal_summary.get("review_required_count", 0)
+            mistake_counts = journal_summary.get("mistake_counts", {})
+            most_common   = journal_summary.get("most_common_mistake", "")
+
+            if review_req > 0:
+                events.append(NotificationEvent(
+                    event_type=EVENT_SYSTEM_HEALTH, severity=SEV_NOTICE,
+                    title=f"Portfolio Journal: {review_req} Entries Require Review",
+                    message=(
+                        f"{review_req} closed simulated entries are awaiting outcome review. "
+                        "Run 'journal-list' to see them."
+                    ),
+                    category=CAT_REPORT, action_required=False, can_ignore=True,
+                    source="portfolio_journal",
+                    next_steps=["Run: python main.py journal-list",
+                                "Use: python main.py journal-review --id JOURNAL-xxxx --outcome WIN"],
+                ))
+
+            # Repeated mistake tag >= 3
+            for tag, count in mistake_counts.items():
+                if count >= 3:
+                    events.append(NotificationEvent(
+                        event_type=EVENT_SYSTEM_HEALTH, severity=SEV_WARNING,
+                        title=f"Repeated Mistake: '{tag}' ({count}×)",
+                        message=(
+                            f"Mistake tag '{tag}' appears in {count} journal entries. "
+                            "Review MistakeTaxonomy for suggested fixes."
+                        ),
+                        category=CAT_REPORT, action_required=False, can_ignore=True,
+                        source="portfolio_journal",
+                        next_steps=[f"Study mistake: {tag}",
+                                    "Review journal entries with this tag"],
+                    ))
+                    break  # only one warning per scan for top repeated mistake
+
+        except Exception as exc:
+            logger.warning("NotificationRuleEngine.evaluate_portfolio_journal: %s", exc)
+        return events

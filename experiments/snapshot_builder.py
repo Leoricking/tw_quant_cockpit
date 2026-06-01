@@ -610,6 +610,31 @@ class ExperimentSnapshotBuilder:
             snap["warnings"].append("build_notification_snapshot raised an exception")
         return snap
 
+    def build_portfolio_journal_snapshot(self) -> dict:
+        """
+        Snapshot type: portfolio_journal. Loads journal summary (v0.4.6).
+        [!] Journal Only. Research Only. No Real Orders.
+        """
+        snap = _empty_snapshot("portfolio_journal")
+        try:
+            from gui.portfolio_journal_adapter import PortfolioJournalAdapter
+            adapter = PortfolioJournalAdapter()
+            summary = adapter.build_summary()
+            snap["summary"] = {
+                "entries_count":        summary.get("entries_count", 0),
+                "reviewed_count":       summary.get("reviewed_count", 0),
+                "review_required_count": summary.get("review_required_count", 0),
+                "most_common_mistake":  summary.get("most_common_mistake", ""),
+                "latest_entry_at":      summary.get("latest_entry_at", ""),
+                "journal_only":         True,
+                "no_real_orders":       True,
+            }
+            snap["status"] = "OK"
+        except Exception:
+            logger.exception("build_portfolio_journal_snapshot failed")
+            snap["warnings"].append("build_portfolio_journal_snapshot raised an exception")
+        return snap
+
     def build_all(self, universe_name: str = None) -> dict:
         """
         Build all available snapshots. Each builder is called independently;
@@ -634,6 +659,7 @@ class ExperimentSnapshotBuilder:
             ("strategy_knowledge",          lambda: self.build_strategy_knowledge_snapshot()),
             ("ml_knowledge_integration",    lambda: self.build_ml_knowledge_integration_snapshot()),
             ("notification_center",         lambda: self.build_notification_snapshot()),
+            ("portfolio_journal",           lambda: self.build_portfolio_journal_snapshot()),
         ]
         for snap_type, fn in builders:
             try:

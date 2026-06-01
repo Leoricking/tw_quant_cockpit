@@ -55,6 +55,7 @@ _PROFILE_FLAGS: Dict[str, dict] = {
         include_model_monitoring=True,
         include_intraday_replay=True,
         include_notification_center=True,
+        include_portfolio_journal=True,
     ),
     "daily": dict(
         include_stock_reports=False,
@@ -75,6 +76,7 @@ _PROFILE_FLAGS: Dict[str, dict] = {
         include_model_monitoring=True,
         include_intraday_replay=False,
         include_notification_center=True,
+        include_portfolio_journal=True,
     ),
     "portfolio": dict(
         include_stock_reports=False,
@@ -169,6 +171,7 @@ class AutoReportCenter:
         include_strategy_knowledge_ingestion: bool = False,
         include_ml_knowledge_integration: bool = False,
         include_notification_center: bool = False,
+        include_portfolio_journal: bool = False,
     ):
         self.mode        = mode
         self.profile     = profile
@@ -207,6 +210,9 @@ class AutoReportCenter:
         )
         self.include_notification_center = flags.get(
             "include_notification_center", include_notification_center
+        )
+        self.include_portfolio_journal = flags.get(
+            "include_portfolio_journal", include_portfolio_journal
         )
         self.universe_name = universe_name
 
@@ -296,6 +302,9 @@ class AutoReportCenter:
 
         if self.include_notification_center:
             self.run_notification_center_report()
+
+        if self.include_portfolio_journal:
+            self.run_portfolio_journal_summary()
 
         # Aggregated outputs
         if self.include_daily_summary:
@@ -820,6 +829,30 @@ class AutoReportCenter:
         except Exception as exc:
             logger.warning("run_notification_center_report failed: %s", exc)
             self._record_fail("notification_center", str(exc))
+
+    def run_portfolio_journal_summary(self):
+        """
+        Include Portfolio Journal summary in context (v0.4.6).
+        Reads existing journal log — does NOT force a new report.
+        Optional — failure does not abort overall run.
+        """
+        try:
+            from gui.portfolio_journal_adapter import PortfolioJournalAdapter
+            adapter = PortfolioJournalAdapter(mode=self.mode)
+            summary = adapter.build_summary()
+            self._context["journal_entries_count"]       = summary.get("entries_count", 0)
+            self._context["journal_review_required_count"] = summary.get("review_required_count", 0)
+            self._context["journal_latest_entry"]        = summary.get("latest_entry_at", "")
+            self._context["journal_most_common_mistake"] = summary.get("most_common_mistake", "")
+            self._record_success(
+                "portfolio_journal",
+                f"entries={summary.get('entries_count', 0)} "
+                f"review_required={summary.get('review_required_count', 0)} "
+                f"most_common_mistake={summary.get('most_common_mistake', '')}",
+            )
+        except Exception as exc:
+            logger.warning("run_portfolio_journal_summary failed: %s", exc)
+            self._record_fail("portfolio_journal", str(exc))
 
     def run_model_monitoring_report(self):
         """Generate Model Monitoring report (v0.4.3). Optional — failure does not abort run."""

@@ -4,6 +4,51 @@
 
 ---
 
+## v0.4.6 — Portfolio Journal & Trade Review
+
+**Status:** Current
+
+### Summary
+
+v0.4.6 adds a research-only trade journal system for recording simulated trades, paper trades, intraday replay training notes, signal reviews, and portfolio reviews. Journal Only. No real orders. No broker connection. Not investment advice.
+
+### New Files
+
+- `journal/__init__.py` — package init
+- `journal/journal_schema.py` — `JournalEntry` dataclass: UUID journal_id, 6 entry types, 7 statuses, 10 outcome labels, 13 mistake tags; `_sanitize()` blocks sensitive field names; `no_real_orders=True` enforced in `__post_init__`
+- `journal/journal_store.py` — `PortfolioJournalStore`: JSONL persistence at `journal_data/journal_entries.jsonl`; CSV export; lazy-load; never raises
+- `journal/signal_outcome_tracker.py` — `SignalOutcomeTracker`: links signal_id → journal entries; WIN/LOSS/FALSE_SIGNAL evaluation; MFE/MAE/process_quality; CSV export
+- `journal/replay_training_notes.py` — `ReplayTrainingNotes`: creates ENTRY_REPLAY_NOTE entries from Intraday Replay session IDs
+- `journal/mistake_taxonomy.py` — `MistakeTaxonomy`: 13 tags, 8 categories, severity (CRITICAL/HIGH/MEDIUM), suggested_fix
+- `journal/journal_analytics.py` — `JournalAnalytics`: win rate, avg return/MFE/MAE; summarize by symbol/strategy/mistake/outcome/process_quality
+- `reports/portfolio_journal_report.py` — `PortfolioJournalReport`: 8-section Markdown report (gitignored)
+- `gui/portfolio_journal_adapter.py` — `PortfolioJournalAdapter`: GUI bridge; all methods return dicts; never raise
+- `gui/portfolio_journal_panel.py` — `PortfolioJournalPanel`: PySide6 panel with safety banner, 6 summary cards, entry table, detail panel, new entry form, review panel; QThread for report generation
+- `docs/portfolio_journal_trade_review.md` — full documentation
+
+### Modified Files
+
+- `main.py` — 7 new CLI commands: `journal-add`, `journal-list`, `journal-show`, `journal-review`, `journal-summary`, `journal-report`, `journal-link-replay`
+- `gui/dashboard.py` — guarded import + "Portfolio Journal" tab
+- `notifications/notification_rules.py` — `evaluate_portfolio_journal()`: review_required_count > 0 → NOTICE; repeated mistake tag ≥ 3 → WARNING
+- `reports/auto_report_center.py` — `run_portfolio_journal_summary()`, `include_portfolio_journal` flag; full + daily profiles include portfolio journal
+- `reports/auto_report_index.py` — 4 new manifest fields: `journal_entries_count`, `journal_review_required_count`, `journal_latest_entry`, `journal_most_common_mistake`
+- `experiments/snapshot_builder.py` — `build_portfolio_journal_snapshot()`
+- `release/regression_suite.py` — 2 new v0.4.6 tests (`_test_journal_imports`, `_test_journal_store_empty_state`)
+- `release/stable_release_checklist.py` — 3 new v0.4.6 checks (`_check_journal_import_health`, `_check_journal_no_real_orders`, `_check_journal_data_ignored`)
+- `.gitignore` — `journal_data/`, `portfolio_journal_report_*.md`, `portfolio_journal_summary.csv`, `signal_outcome_summary.csv`
+- `README.md`, `docs/roadmap.md`, `docs/release_notes_v0.4.md`, `docs/index.md`
+
+### Safety
+
+- `no_real_orders = True`, `production_blocked = True`, `journal_only = True` enforced at every layer
+- `__post_init__` reasserts all invariants — cannot be overridden by caller
+- No broker connection. No submit_order. No real fills. No real account reads.
+- `journal_data/` and all generated outputs are gitignored — never committed
+- Not investment advice
+
+---
+
 ## v0.4.0 — Research Platform Stable Release
 
 **Status:** Current

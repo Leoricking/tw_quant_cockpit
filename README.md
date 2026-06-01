@@ -4,7 +4,41 @@
 >
 > **[!] v1: Real order execution is strictly prohibited. For research, simulation, and decision support only. Not investment advice.**
 
-**Current version: v0.4.5 — Notification Center**
+**Current version: v0.4.6 — Portfolio Journal & Trade Review**
+
+---
+
+## v0.4.6 — Portfolio Journal & Trade Review
+
+**New in v0.4.6:**
+
+- **Portfolio Journal** — `PortfolioJournalStore`: research-only trade journal; JSONL persistence; lazy-load; never raises; `journal_data/` gitignored
+- **JournalEntry** — dataclass: UUID journal_id (JOURNAL-{12hex}), 6 entry types, 7 statuses, 10 outcome labels, 13 mistake tags; `no_real_orders=True` enforced in `__post_init__`
+- **MistakeTaxonomy** — 13 mistake tags across 8 categories (entry/exit/sizing/risk/data/process/emotional/system); severity + suggested_fix
+- **SignalOutcomeTracker** — links signal_id → journal entries; evaluates WIN/LOSS/FALSE_SIGNAL; computes return/MFE/MAE/process_quality
+- **ReplayTrainingNotes** — creates ENTRY_REPLAY_NOTE entries from Intraday Replay session IDs; opening range, VWAP reclaim, fake breakout, volume profile, training score
+- **JournalAnalytics** — win rate, avg return/MFE/MAE; summarize by symbol/strategy/mistake/outcome/process_quality
+- **PortfolioJournalReport** — 8-section Markdown report; `portfolio_journal_report_YYYYMMDD_HHMMSS.md` (gitignored)
+- **PortfolioJournalAdapter** — GUI bridge; all methods return dicts; never raise
+- **PortfolioJournalPanel** — PySide6 panel with safety banner, summary cards, entry table, detail panel, new entry form, review panel; QThread for report generation
+- **Dashboard** — "Portfolio Journal" tab added to cockpit
+
+**Safety:**
+- `no_real_orders = True` enforced at every layer and in every `__post_init__`
+- `production_blocked = True` enforced; `journal_only = True` on all summaries
+- No broker connection, no submit_order, no real fills, not investment advice
+- `journal_data/` and all report/CSV outputs are gitignored — never committed
+
+**CLI:**
+```bash
+python main.py journal-add --symbol 2454 --entry-type simulated_trade --reason "MACD golden cross"
+python main.py journal-list --limit 10 --symbol 2330
+python main.py journal-show --id JOURNAL-xxxxxxxxxxxx
+python main.py journal-review --id JOURNAL-xxxx --outcome WIN --notes "Good process"
+python main.py journal-summary
+python main.py journal-report --mode real
+python main.py journal-link-replay --id JOURNAL-xxxx --replay-session REPLAY-xxxx
+```
 
 ---
 

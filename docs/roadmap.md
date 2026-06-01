@@ -38,6 +38,33 @@
 | v0.4.3 | Model Monitoring Framework | Done |
 | v0.4.4 | Intraday Replay Cockpit | Done |
 | v0.4.5 | Notification Center | Done |
+| v0.4.6 | Portfolio Journal & Trade Review | Done |
+
+---
+
+## Completed: v0.4.6 — Portfolio Journal & Trade Review
+
+**Status:** Done
+
+**New files:**
+- `journal/__init__.py`, `journal/journal_schema.py`, `journal/journal_store.py`, `journal/signal_outcome_tracker.py`, `journal/replay_training_notes.py`, `journal/mistake_taxonomy.py`, `journal/journal_analytics.py`
+- `reports/portfolio_journal_report.py`
+- `gui/portfolio_journal_adapter.py`, `gui/portfolio_journal_panel.py`
+- `docs/portfolio_journal_trade_review.md`
+
+**Modified files:**
+- `main.py` — 7 new CLI commands (journal-add/list/show/review/summary/report/link-replay)
+- `gui/dashboard.py` — "Portfolio Journal" tab
+- `notifications/notification_rules.py` — `evaluate_portfolio_journal()` (review_required + repeated mistake tag alerts)
+- `reports/auto_report_center.py` — `run_portfolio_journal_summary()`, `include_portfolio_journal` flag
+- `reports/auto_report_index.py` — 4 new manifest fields
+- `experiments/snapshot_builder.py` — `build_portfolio_journal_snapshot()`
+- `release/regression_suite.py` — 2 new v0.4.6 tests
+- `release/stable_release_checklist.py` — 3 new v0.4.6 checks
+- `.gitignore` — journal output patterns
+- `README.md`, `docs/roadmap.md`, `docs/release_notes_v0.4.md`, `docs/index.md`
+
+**Safety:** Journal Only. No real orders. No broker connection. production_blocked=True. journal_data/ gitignored.
 
 ---
 

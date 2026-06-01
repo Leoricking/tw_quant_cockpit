@@ -305,6 +305,17 @@ except Exception as _nc_exc:
 
 
 # ---------------------------------------------------------------------------
+# v0.4.6 Portfolio Journal panel import (guarded)
+# ---------------------------------------------------------------------------
+try:
+    from gui.portfolio_journal_panel import PortfolioJournalPanel
+    _PORTFOLIO_JOURNAL_AVAILABLE = True
+except Exception as _pj_exc:
+    logger.warning("PortfolioJournalPanel unavailable: %s", _pj_exc)
+    _PORTFOLIO_JOURNAL_AVAILABLE = False
+
+
+# ---------------------------------------------------------------------------
 # Colour helpers (Taiwan convention: red = up, green = down)
 # ---------------------------------------------------------------------------
 
@@ -1343,6 +1354,15 @@ class CockpitWindow(QMainWindow if _PYSIDE6_AVAILABLE else object):
             mid_tabs.addTab(self._notification_center_panel, "Notification Center")
         else:
             self._notification_center_panel = None
+
+        # v0.4.6 Portfolio Journal tab
+        if _PORTFOLIO_JOURNAL_AVAILABLE:
+            self._portfolio_journal_panel = PortfolioJournalPanel(
+                mode=self._mode if hasattr(self, "_mode") else "real"
+            )
+            mid_tabs.addTab(self._portfolio_journal_panel, "Portfolio Journal")
+        else:
+            self._portfolio_journal_panel = None
 
         h_split.addWidget(mid_tabs)
         h_split.setStretchFactor(0, 3)

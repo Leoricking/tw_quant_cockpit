@@ -6780,6 +6780,239 @@ def cmd_ml_knowledge_feature_summary(args: argparse.Namespace) -> None:
 
 
 # ---------------------------------------------------------------------------
+# v0.4.6 Portfolio Journal command handlers
+# ---------------------------------------------------------------------------
+
+def _journal_header(mode: str) -> None:
+    print("=" * 60)
+    print("  TW Quant Cockpit — Portfolio Journal v0.4.6")
+    print("=" * 60)
+    print(f"  Mode          : {mode}")
+    print(f"  Journal Only  : True")
+    print(f"  Research Only : True")
+    print(f"  No Real Orders: True")
+    print()
+
+
+def cmd_journal_add(args: argparse.Namespace) -> None:
+    """Add a research-only journal entry."""
+    mode = getattr(args, "mode", "real")
+    _journal_header(mode)
+    try:
+        from gui.portfolio_journal_adapter import PortfolioJournalAdapter
+        adapter = PortfolioJournalAdapter(mode=mode)
+
+        payload = {
+            "symbol":               getattr(args, "symbol", ""),
+            "entry_type":           getattr(args, "entry_type", "simulated_trade"),
+            "timeframe":            getattr(args, "timeframe", ""),
+            "signal_source":        getattr(args, "signal_source", ""),
+            "planned_entry_price":  getattr(args, "planned_entry", None),
+            "planned_stop_loss":    getattr(args, "planned_stop", None),
+            "planned_take_profit":  getattr(args, "planned_target", None),
+            "reason":               getattr(args, "reason", ""),
+            "thesis":               getattr(args, "thesis", ""),
+            "invalidation_condition": getattr(args, "invalidation", ""),
+        }
+        result = adapter.add_entry(payload)
+        print(f"  Status     : {result.get('status', 'ERROR')}")
+        if result.get("status") == "OK":
+            print(f"  Journal ID : {result.get('journal_id', '')}")
+        else:
+            print(f"  ERROR: {result.get('error', '')}")
+        print()
+        print("  [!] Journal Only. Research Only. No Real Orders.")
+    except Exception as exc:
+        logger.error("journal-add failed: %s", exc, exc_info=True)
+        print(f"  ERROR: {exc}")
+    print()
+
+
+def cmd_journal_list(args: argparse.Namespace) -> None:
+    """List recent journal entries."""
+    mode   = getattr(args, "mode", "real")
+    limit  = getattr(args, "limit", 20)
+    symbol = getattr(args, "symbol", None)
+    status = getattr(args, "status", None)
+    _journal_header(mode)
+    try:
+        from gui.portfolio_journal_adapter import PortfolioJournalAdapter
+        adapter = PortfolioJournalAdapter(mode=mode)
+        entries = adapter.list_entries(limit=limit, symbol=symbol, status=status)
+        summary = adapter.build_summary()
+        print(f"  Total: {summary.get('entries_count', 0)}  "
+              f"Review Required: {summary.get('review_required_count', 0)}")
+        print()
+        if not entries:
+            print("  No journal entries recorded.")
+        else:
+            for e in entries:
+                created = str(e.get("created_at", ""))[:10]
+                sym     = e.get("symbol", "—")
+                etype   = e.get("entry_type", "")
+                st      = e.get("status", "")
+                outcome = e.get("outcome_label", "")
+                jid     = e.get("journal_id", "")
+                print(f"  {created}  {jid}  [{sym:6s}] [{etype:20s}] {st:20s}  {outcome}")
+        print()
+        print("  [!] Journal Only. Research Only. No Real Orders.")
+    except Exception as exc:
+        logger.error("journal-list failed: %s", exc, exc_info=True)
+        print(f"  ERROR: {exc}")
+    print()
+
+
+def cmd_journal_show(args: argparse.Namespace) -> None:
+    """Show detail for a single journal entry."""
+    mode = getattr(args, "mode", "real")
+    jid  = getattr(args, "id", "")
+    _journal_header(mode)
+    if not jid:
+        print("  ERROR: --id is required.")
+        print()
+        return
+    try:
+        from gui.portfolio_journal_adapter import PortfolioJournalAdapter
+        adapter = PortfolioJournalAdapter(mode=mode)
+        entry = adapter.get_entry(jid)
+        if not entry:
+            print(f"  Not found: {jid}")
+        else:
+            for k, v in entry.items():
+                if v not in (None, "", [], {}):
+                    print(f"  {k:30s}: {v}")
+        print()
+        print("  [!] Journal Only. Research Only. No Real Orders.")
+    except Exception as exc:
+        logger.error("journal-show failed: %s", exc, exc_info=True)
+        print(f"  ERROR: {exc}")
+    print()
+
+
+def cmd_journal_review(args: argparse.Namespace) -> None:
+    """Update outcome / notes / mistake tags for a journal entry."""
+    mode    = getattr(args, "mode", "real")
+    jid     = getattr(args, "id", "")
+    outcome = getattr(args, "outcome", "")
+    notes   = getattr(args, "notes", "")
+    tags    = getattr(args, "mistake_tags", "")
+    _journal_header(mode)
+    if not jid:
+        print("  ERROR: --id is required.")
+        print()
+        return
+    try:
+        from gui.portfolio_journal_adapter import PortfolioJournalAdapter
+        adapter = PortfolioJournalAdapter(mode=mode)
+        payload = {}
+        if outcome:
+            payload["outcome_label"] = outcome
+        if notes:
+            payload["review_notes"] = notes
+        if tags:
+            payload["mistake_tags"] = tags
+        result = adapter.update_review(jid, payload)
+        print(f"  Status     : {result.get('status', 'ERROR')}")
+        if result.get("status") == "OK":
+            updated = result.get("entry", {})
+            print(f"  Outcome    : {updated.get('outcome_label', '')}")
+            print(f"  Status     : {updated.get('status', '')}")
+        else:
+            print(f"  ERROR: {result.get('error', '')}")
+        print()
+        print("  [!] Journal Only. Research Only. No Real Orders.")
+    except Exception as exc:
+        logger.error("journal-review failed: %s", exc, exc_info=True)
+        print(f"  ERROR: {exc}")
+    print()
+
+
+def cmd_journal_report(args: argparse.Namespace) -> None:
+    """Generate Portfolio Journal Markdown report."""
+    mode    = getattr(args, "mode", "real")
+    dry_run = getattr(args, "dry_run", False)
+    _journal_header(mode)
+    try:
+        from gui.portfolio_journal_adapter import PortfolioJournalAdapter
+        adapter = PortfolioJournalAdapter(mode=mode)
+        result  = adapter.generate_report(mode=mode, dry_run=dry_run)
+        print(f"  Status  : {result.get('status', 'ERROR')}")
+        path = result.get("report_path", "")
+        if result.get("status") == "OK":
+            if dry_run:
+                print(f"  [dry-run] Would write: {path}")
+            else:
+                print(f"  Report  → {path}")
+        else:
+            print(f"  ERROR: {result.get('error', '')}")
+        print()
+        print("  [!] Journal Only. Research Only. No Real Orders.")
+    except Exception as exc:
+        logger.error("journal-report failed: %s", exc, exc_info=True)
+        print(f"  ERROR: {exc}")
+    print()
+
+
+def cmd_journal_summary(args: argparse.Namespace) -> None:
+    """Show journal statistics summary."""
+    mode = getattr(args, "mode", "real")
+    _journal_header(mode)
+    try:
+        from gui.portfolio_journal_adapter import PortfolioJournalAdapter
+        adapter  = PortfolioJournalAdapter(mode=mode)
+        summary  = adapter.build_summary()
+        analytics = adapter.run_analytics()
+        print(f"  Total Entries    : {summary.get('entries_count', 0)}")
+        print(f"  Reviewed         : {summary.get('reviewed_count', 0)}")
+        print(f"  Review Required  : {summary.get('review_required_count', 0)}")
+        print(f"  Open Simulated   : {summary.get('open_simulated_count', 0)}")
+        print(f"  Closed Simulated : {summary.get('closed_simulated_count', 0)}")
+        print(f"  Most Common Mistake: {summary.get('most_common_mistake', '—')}")
+        print(f"  Latest Entry     : {summary.get('latest_entry_at', '—')}")
+        if analytics.get("win_rate") is not None:
+            print(f"  Win Rate         : {analytics['win_rate']:.1%}")
+        if analytics.get("avg_return") is not None:
+            print(f"  Avg Return %     : {analytics['avg_return']:.2f}%")
+        mistakes = analytics.get("most_common_mistakes", [])
+        if mistakes:
+            print(f"  Top Mistakes     : {', '.join(mistakes[:3])}")
+        print()
+        print("  [!] Journal Only. Research Only. No Real Orders.")
+    except Exception as exc:
+        logger.error("journal-summary failed: %s", exc, exc_info=True)
+        print(f"  ERROR: {exc}")
+    print()
+
+
+def cmd_journal_link_replay(args: argparse.Namespace) -> None:
+    """Link a journal entry to a replay session."""
+    mode       = getattr(args, "mode", "real")
+    jid        = getattr(args, "id", "")
+    session_id = getattr(args, "replay_session", "")
+    _journal_header(mode)
+    if not jid or not session_id:
+        print("  ERROR: --id and --replay-session are required.")
+        print()
+        return
+    try:
+        from gui.portfolio_journal_adapter import PortfolioJournalAdapter
+        adapter = PortfolioJournalAdapter(mode=mode)
+        result  = adapter.link_replay_session(jid, session_id)
+        print(f"  Status         : {result.get('status', 'ERROR')}")
+        if result.get("status") == "OK":
+            print(f"  Journal ID     : {jid}")
+            print(f"  Replay Session : {session_id}")
+        else:
+            print(f"  ERROR: {result.get('error', '')}")
+        print()
+        print("  [!] Journal Only. Research Only. No Real Orders.")
+    except Exception as exc:
+        logger.error("journal-link-replay failed: %s", exc, exc_info=True)
+        print(f"  ERROR: {exc}")
+    print()
+
+
+# ---------------------------------------------------------------------------
 # v0.4.5 Notification Center command handlers
 # ---------------------------------------------------------------------------
 
@@ -8021,6 +8254,65 @@ def _build_parser() -> argparse.ArgumentParser:
                         default="data/backtest_results/ml_feature_store",
                         help="ML feature store output directory")
 
+    # --- journal-add (v0.4.6) ---
+    p_ja = subparsers.add_parser("journal-add",
+        help="Add a research-only portfolio journal entry (v0.4.6)")
+    p_ja.add_argument("--symbol", default="", help="Stock symbol (e.g. 2330)")
+    p_ja.add_argument("--entry-type", dest="entry_type", default="simulated_trade",
+                      choices=["simulated_trade","paper_trade","replay_note",
+                               "signal_review","portfolio_review","manual_note"])
+    p_ja.add_argument("--timeframe", default="", help="Timeframe (e.g. daily, 60min)")
+    p_ja.add_argument("--signal-source", dest="signal_source", default="")
+    p_ja.add_argument("--planned-entry", dest="planned_entry", type=float, default=None)
+    p_ja.add_argument("--planned-stop",  dest="planned_stop",  type=float, default=None)
+    p_ja.add_argument("--planned-target",dest="planned_target",type=float, default=None)
+    p_ja.add_argument("--reason", default="", help="Short reason for entry")
+    p_ja.add_argument("--thesis", default="", help="Research thesis / hypothesis")
+    p_ja.add_argument("--invalidation", default="", help="Invalidation condition")
+    p_ja.add_argument("--mode", choices=["real","mock"], default="real")
+
+    # --- journal-list (v0.4.6) ---
+    p_jl = subparsers.add_parser("journal-list",
+        help="List recent portfolio journal entries (v0.4.6)")
+    p_jl.add_argument("--limit",  type=int, default=20)
+    p_jl.add_argument("--symbol", default=None)
+    p_jl.add_argument("--status", default=None)
+    p_jl.add_argument("--mode",   choices=["real","mock"], default="real")
+
+    # --- journal-show (v0.4.6) ---
+    p_js = subparsers.add_parser("journal-show",
+        help="Show detail for a single journal entry (v0.4.6)")
+    p_js.add_argument("--id",   required=False, default="", help="Journal ID (JOURNAL-xxxx)")
+    p_js.add_argument("--mode", choices=["real","mock"], default="real")
+
+    # --- journal-review (v0.4.6) ---
+    p_jr = subparsers.add_parser("journal-review",
+        help="Update outcome / notes / mistake tags for a journal entry (v0.4.6)")
+    p_jr.add_argument("--id",      required=False, default="", help="Journal ID")
+    p_jr.add_argument("--outcome", default="", help="Outcome label (WIN/LOSS/…)")
+    p_jr.add_argument("--notes",   default="", help="Review notes")
+    p_jr.add_argument("--mistake-tags", dest="mistake_tags", default="",
+                      help="Comma-separated mistake tags")
+    p_jr.add_argument("--mode", choices=["real","mock"], default="real")
+
+    # --- journal-report (v0.4.6) ---
+    p_jrp = subparsers.add_parser("journal-report",
+        help="Generate Portfolio Journal Markdown report (v0.4.6)")
+    p_jrp.add_argument("--mode",    choices=["real","mock"], default="real")
+    p_jrp.add_argument("--dry-run", dest="dry_run", action="store_true", default=False)
+
+    # --- journal-summary (v0.4.6) ---
+    p_jsum = subparsers.add_parser("journal-summary",
+        help="Show portfolio journal statistics summary (v0.4.6)")
+    p_jsum.add_argument("--mode", choices=["real","mock"], default="real")
+
+    # --- journal-link-replay (v0.4.6) ---
+    p_jlr = subparsers.add_parser("journal-link-replay",
+        help="Link a journal entry to a replay session (v0.4.6)")
+    p_jlr.add_argument("--id",             required=False, default="", help="Journal ID")
+    p_jlr.add_argument("--replay-session", dest="replay_session", default="")
+    p_jlr.add_argument("--mode", choices=["real","mock"], default="real")
+
     # --- notification-scan (v0.4.5) ---
     p_ns = subparsers.add_parser(
         "notification-scan",
@@ -8650,6 +8942,14 @@ def main() -> None:
         "notification-report":         cmd_notification_report,
         "notification-clear-read":     cmd_notification_clear_read,
         "notification-test":           cmd_notification_test,
+        # v0.4.6 Portfolio Journal
+        "journal-add":                 cmd_journal_add,
+        "journal-list":                cmd_journal_list,
+        "journal-show":                cmd_journal_show,
+        "journal-review":              cmd_journal_review,
+        "journal-report":              cmd_journal_report,
+        "journal-summary":             cmd_journal_summary,
+        "journal-link-replay":         cmd_journal_link_replay,
     }
 
     if args.command is None:

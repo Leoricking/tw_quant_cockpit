@@ -426,6 +426,11 @@ class AutoReportIndexBuilder:
                 "notification_unread":   ctx.get("notification_unread"),
                 "notification_critical": ctx.get("notification_critical"),
                 "notification_external_enabled": False,
+                # v0.4.6 Portfolio Journal
+                "journal_entries_count":        ctx.get("journal_entries_count"),
+                "journal_review_required_count": ctx.get("journal_review_required_count"),
+                "journal_latest_entry":         ctx.get("journal_latest_entry"),
+                "journal_most_common_mistake":  ctx.get("journal_most_common_mistake"),
             }
 
             path = os.path.join(output_dir, "manifest.json")

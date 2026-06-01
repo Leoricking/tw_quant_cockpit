@@ -826,6 +826,79 @@ class StableReleaseChecklist:
             elapsed = (time.monotonic() - t0) * 1000
             return self._item("notification_no_real_orders", "FAIL", str(exc), elapsed)
 
+    def _check_journal_import_health(self) -> dict:
+        """v0.4.6: All Portfolio Journal modules import cleanly."""
+        t0 = time.monotonic()
+        modules = [
+            ("journal.journal_schema",        "JournalEntry"),
+            ("journal.journal_store",         "PortfolioJournalStore"),
+            ("journal.mistake_taxonomy",      "MistakeTaxonomy"),
+            ("journal.journal_analytics",     "JournalAnalytics"),
+            ("reports.portfolio_journal_report", "PortfolioJournalReport"),
+            ("gui.portfolio_journal_adapter", "PortfolioJournalAdapter"),
+        ]
+        failed = []
+        for mod, cls in modules:
+            try:
+                m = __import__(mod, fromlist=[cls])
+                getattr(m, cls)
+            except Exception as exc:
+                failed.append(f"{mod}: {exc}")
+        elapsed = (time.monotonic() - t0) * 1000
+        if not failed:
+            return self._item("journal_import_health", "PASS",
+                               f"All {len(modules)} v0.4.6 Journal modules imported.", elapsed)
+        return self._item("journal_import_health", "FAIL",
+                           f"{len(failed)} module(s) failed: {failed[:2]}", elapsed)
+
+    def _check_journal_no_real_orders(self) -> dict:
+        """v0.4.6: JournalEntry and PortfolioJournalStore enforce no_real_orders=True always."""
+        t0 = time.monotonic()
+        try:
+            from journal.journal_schema import JournalEntry
+            from journal.journal_store import PortfolioJournalStore
+            assert JournalEntry.no_real_orders is True, "JournalEntry.no_real_orders must be True"
+            assert JournalEntry.production_blocked is True, "production_blocked must be True"
+            assert PortfolioJournalStore.no_real_orders is True, "PortfolioJournalStore.no_real_orders must be True"
+            # Verify instance-level enforcement
+            entry2 = JournalEntry()
+            assert entry2.no_real_orders is True
+            assert entry2.production_blocked is True
+            elapsed = (time.monotonic() - t0) * 1000
+            return self._item("journal_no_real_orders", "PASS",
+                               "JournalEntry and PortfolioJournalStore: no_real_orders=True, production_blocked=True.",
+                               elapsed)
+        except Exception as exc:
+            elapsed = (time.monotonic() - t0) * 1000
+            return self._item("journal_no_real_orders", "FAIL", str(exc), elapsed)
+
+    def _check_journal_data_ignored(self) -> dict:
+        """v0.4.6: Verify journal_data/ and output patterns are in .gitignore."""
+        t0 = time.monotonic()
+        required = [
+            "journal_data/",
+            "reports/portfolio_journal_report_",
+            "data/backtest_results/portfolio_journal_summary.csv",
+            "data/backtest_results/signal_outcome_summary.csv",
+        ]
+        try:
+            import os
+            gitignore = os.path.join(BASE_DIR, ".gitignore")
+            content = ""
+            if os.path.isfile(gitignore):
+                with open(gitignore, "r", encoding="utf-8") as f:
+                    content = f.read()
+            missing = [r for r in required if r not in content]
+            elapsed = (time.monotonic() - t0) * 1000
+            if not missing:
+                return self._item("journal_data_ignored", "PASS",
+                                   "All journal output patterns present in .gitignore.", elapsed)
+            return self._item("journal_data_ignored", "WARN",
+                               f"Missing .gitignore patterns: {missing}", elapsed)
+        except Exception as exc:
+            elapsed = (time.monotonic() - t0) * 1000
+            return self._item("journal_data_ignored", "WARN", str(exc), elapsed)
+
     # ------------------------------------------------------------------
     # Write outputs
     # ------------------------------------------------------------------
@@ -952,6 +1025,10 @@ class StableReleaseChecklist:
             self._check_notification_external_disabled,
             self._check_notification_artifacts_ignored,
             self._check_notification_no_real_orders,
+            # v0.4.6
+            self._check_journal_import_health,
+            self._check_journal_no_real_orders,
+            self._check_journal_data_ignored,
         ]
 
         items: list[dict] = []
