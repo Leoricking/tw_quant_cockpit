@@ -347,6 +347,54 @@ class StableReleaseChecklist:
             elapsed = (time.monotonic() - t0) * 1000
             return self._item("no_real_order_check", "FAIL", str(exc), elapsed)
 
+    def _check_api_token_safety(self) -> dict:
+        """v0.4.1: TokenSetupAssistant never exposes full token; .env not modified."""
+        t0 = time.monotonic()
+        try:
+            from data.providers.token_setup_assistant import TokenSetupAssistant
+            assistant = TokenSetupAssistant()
+            result = assistant.inspect()
+            # Check tokens are masked
+            for name, info in result.get("required_tokens", {}).items():
+                masked = info.get("masked_value", "")
+                if masked and len(masked) > 12 and "****" not in masked:
+                    elapsed = (time.monotonic() - t0) * 1000
+                    return self._item("api_token_safety", "FAIL",
+                                       f"Token '{name}' not masked: {masked[:8]}...", elapsed)
+            # Check read_only flag
+            if not getattr(assistant, "read_only", True):
+                elapsed = (time.monotonic() - t0) * 1000
+                return self._item("api_token_safety", "FAIL",
+                                   "TokenSetupAssistant.read_only is not True", elapsed)
+            elapsed = (time.monotonic() - t0) * 1000
+            return self._item("api_token_safety", "PASS",
+                               "TokenSetupAssistant: tokens masked, read_only=True.", elapsed)
+        except Exception as exc:
+            elapsed = (time.monotonic() - t0) * 1000
+            return self._item("api_token_safety", "WARN", f"Module not available: {exc}", elapsed)
+
+    def _check_api_cache_ignored(self) -> dict:
+        """v0.4.1: Verify data_cache/api/ and api_fetch reports are in .gitignore."""
+        t0 = time.monotonic()
+        required = [
+            "data_cache/api/",
+            "reports/api_fetch_production_report_",
+        ]
+        gitignore_path = os.path.join(BASE_DIR, ".gitignore")
+        try:
+            with open(gitignore_path, "r", encoding="utf-8", errors="replace") as f:
+                content = f.read()
+            missing = [pat for pat in required if pat not in content]
+            elapsed = (time.monotonic() - t0) * 1000
+            if not missing:
+                return self._item("api_cache_ignored", "PASS",
+                                   "API cache and report patterns in .gitignore.", elapsed)
+            return self._item("api_cache_ignored", "WARN",
+                               f"Missing .gitignore patterns: {missing}", elapsed)
+        except Exception as exc:
+            elapsed = (time.monotonic() - t0) * 1000
+            return self._item("api_cache_ignored", "WARN", str(exc), elapsed)
+
     # ------------------------------------------------------------------
     # Write outputs
     # ------------------------------------------------------------------
@@ -445,6 +493,9 @@ class StableReleaseChecklist:
             self._check_artifact_ignore,
             self._check_no_token_leak,
             self._check_no_real_order,
+            # v0.4.1
+            self._check_api_token_safety,
+            self._check_api_cache_ignored,
         ]
 
         items: list[dict] = []

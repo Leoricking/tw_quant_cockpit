@@ -161,6 +161,9 @@ class ProviderHealthChecker:
 
         token_status = self._token_cfg.get_all_token_status()
 
+        # v0.4.1 component availability checks
+        v041_status = self._check_v041_components()
+
         return {
             "checked_at":         checked_at,
             "providers":          results,
@@ -168,7 +171,29 @@ class ProviderHealthChecker:
             "token_status":       token_status,
             "read_only_guarantee": True,
             "no_real_orders":     True,
+            "v041_components":    v041_status,
         }
+
+    def _check_v041_components(self) -> dict:
+        """Check availability of v0.4.1 API Fetch Productionization components."""
+        status = {}
+        checks = [
+            ("token_setup_assistant",  "data.providers.token_setup_assistant", "TokenSetupAssistant"),
+            ("retry_policy",           "data.providers.retry_policy",           "RetryPolicy"),
+            ("api_cache",              "data.providers.api_cache",              "APICache"),
+            ("data_lineage",           "data.providers.data_lineage",           "DataLineageTracker"),
+            ("api_diagnostics",        "data.providers.api_diagnostics",        "APIFetchDiagnostics"),
+            ("twse_tpex_parser",       "data.providers.twse_tpex_parser",       "TWSETPEXParser"),
+            ("mops_financial_parser",  "data.providers.mops_financial_parser",  "MOPSFinancialParser"),
+        ]
+        for key, module, cls in checks:
+            try:
+                mod = __import__(module, fromlist=[cls])
+                getattr(mod, cls)
+                status[key] = "OK"
+            except Exception as exc:
+                status[key] = f"UNAVAILABLE: {exc}"
+        return status
 
     # ------------------------------------------------------------------
     # Individual checks

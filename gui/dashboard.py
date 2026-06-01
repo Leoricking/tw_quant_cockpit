@@ -229,6 +229,16 @@ except Exception as _rs_exc:
     logger.warning("ReleaseStatusPanel unavailable: %s", _rs_exc)
     _RELEASE_STATUS_AVAILABLE = False
 
+# ---------------------------------------------------------------------------
+# v0.4.1 API Fetch Status panel import (guarded)
+# ---------------------------------------------------------------------------
+try:
+    from gui.api_fetch_status_panel import APIFetchStatusPanel
+    _API_FETCH_STATUS_AVAILABLE = True
+except Exception as _afs_exc:
+    logger.warning("APIFetchStatusPanel unavailable: %s", _afs_exc)
+    _API_FETCH_STATUS_AVAILABLE = False
+
 
 # ---------------------------------------------------------------------------
 # Colour helpers (Taiwan convention: red = up, green = down)
@@ -1214,6 +1224,13 @@ class CockpitWindow(QMainWindow if _PYSIDE6_AVAILABLE else object):
             mid_tabs.addTab(self._release_status_panel, "Release Status")
         else:
             self._release_status_panel = None
+
+        # v0.4.1 API Fetch Status tab
+        if _API_FETCH_STATUS_AVAILABLE:
+            self._api_fetch_status_panel = APIFetchStatusPanel(mode=self._mode if hasattr(self, "_mode") else "real")
+            mid_tabs.addTab(self._api_fetch_status_panel, "API Fetch Status")
+        else:
+            self._api_fetch_status_panel = None
 
         h_split.addWidget(mid_tabs)
         h_split.setStretchFactor(0, 3)

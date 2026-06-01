@@ -48,6 +48,7 @@ _PROFILE_FLAGS: Dict[str, dict] = {
         include_intraday_pipeline=True,
         include_rule_governance=True,
         include_experiment_registry=True,
+        include_api_fetch_production=True,
     ),
     "daily": dict(
         include_stock_reports=False,
@@ -61,6 +62,7 @@ _PROFILE_FLAGS: Dict[str, dict] = {
         include_data_quality_gate=True,
         include_provider_reliability=True,
         include_intraday_pipeline=True,
+        include_api_fetch_production=True,
     ),
     "portfolio": dict(
         include_stock_reports=False,
@@ -148,6 +150,7 @@ class AutoReportCenter:
         include_intraday_pipeline: bool = False,
         include_rule_governance: bool = False,
         include_experiment_registry: bool = False,
+        include_api_fetch_production: bool = False,
     ):
         self.mode        = mode
         self.profile     = profile
@@ -172,8 +175,9 @@ class AutoReportCenter:
         self.include_provider_reliability = flags.get("include_provider_reliability", include_provider_reliability)
         self.include_hardened_backtest    = flags.get("include_hardened_backtest",    include_hardened_backtest)
         self.include_intraday_pipeline    = flags.get("include_intraday_pipeline",    include_intraday_pipeline)
-        self.include_rule_governance      = flags.get("include_rule_governance",      include_rule_governance)
-        self.include_experiment_registry  = flags.get("include_experiment_registry",  include_experiment_registry)
+        self.include_rule_governance       = flags.get("include_rule_governance",       include_rule_governance)
+        self.include_experiment_registry   = flags.get("include_experiment_registry",   include_experiment_registry)
+        self.include_api_fetch_production  = flags.get("include_api_fetch_production",  include_api_fetch_production)
         self.universe_name = universe_name
 
         # Runtime state (populated during run)
@@ -241,6 +245,9 @@ class AutoReportCenter:
 
         if self.include_experiment_registry:
             self.run_experiment_registry_report()
+
+        if self.include_api_fetch_production:
+            self.run_api_fetch_production_report()
 
         # Aggregated outputs
         if self.include_daily_summary:
@@ -647,6 +654,20 @@ class AutoReportCenter:
             self._record_success("experiment_registry", path)
         except Exception as exc:
             self._record_fail("experiment_registry", str(exc))
+
+    def run_api_fetch_production_report(self):
+        """Generate API Fetch Productionization report (v0.4.1). Optional — failure does not abort run."""
+        try:
+            from gui.api_fetch_status_adapter import APIFetchStatusAdapter
+            result = APIFetchStatusAdapter(report_dir=self._out_dir).generate_report(mode=self.mode)
+            if result.get("ok"):
+                path = result.get("report_path", "")
+                self._context["api_fetch_production_report"] = path
+                self._record_success("api_fetch_production", path)
+            else:
+                self._record_fail("api_fetch_production", result.get("error", "unknown"))
+        except Exception as exc:
+            self._record_fail("api_fetch_production", str(exc))
 
     def build_daily_market_summary(self):
         """Build daily market summary from all available context."""

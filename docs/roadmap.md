@@ -154,17 +154,27 @@
 
 ---
 
-## Planned: v0.4.1 — API Fetch Productionization
+## Completed: v0.4.1 — API Fetch Productionization
 
-**Target:** Provider reliability and data quality improvements
+**Status:** Done
 
-- FinMind token setup assistant
-- TWSE / TPEx parser hardening
-- MOPS 財報公告日強化
-- Provider retry / timeout hardening
-- Provider response cache
-- Data lineage tracking
+- `TokenSetupAssistant` — reads .env without modifying; masks tokens; validates safety; generates setup instructions
+- `RetryPolicy` — exponential backoff for TIMEOUT/NETWORK/RATE_LIMIT/SERVER_ERROR; never used for orders
+- `APICache` (providers) — SHA-256 keyed, token-sanitized, TTL=24h; stats/cleanup; stored in `data_cache/api/`
+- `DataLineageTracker` — LIN-XXXXXXXXXX IDs; per-fetch/write records; URL masking; CSV export
+- `APIFetchDiagnostics` — aggregates provider/dataset results; sanitized messages; recommended_action
+- `TWSETPEXParser` — alias mapping, comma numerics, ROC year conversion, SCHEMA_CHANGED/PARTIAL
+- `MOPSFinancialParser` — estimated announcement dates (Q1/Q2/Q3=45d, Q4=90d), timing_quality, announcement_date_is_estimated
+- `APIFetchProductionReportBuilder` — 8-section Markdown report
+- `APIFetchStatusPanel` / `APIFetchStatusAdapter` — GUI tab with QThread workers; never shows full token
+- 5 new CLI commands: `api-token-check`, `api-cache-status`, `api-fetch-diagnostics`, `api-cache-cleanup`, `api-fetch-production-report`
 - Still not production trading; no real orders
+
+---
+
+## Planned: v0.4.2 — ML Feature Store v1
+
+**Target:** Centralized, versioned feature store for ML model inputs
 
 ---
 

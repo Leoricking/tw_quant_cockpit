@@ -4,7 +4,47 @@
 >
 > **[!] v1: Real order execution is strictly prohibited. For research, simulation, and decision support only. Not investment advice.**
 
-**Current version: v0.4.0 — Research Platform Stable Release**
+**Current version: v0.4.1 — API Fetch Productionization**
+
+---
+
+## v0.4.1 — API Fetch Productionization
+
+**New in v0.4.1:**
+
+- **Token Setup Assistant** — `TokenSetupAssistant`: reads `.env` without modifying; masks tokens; validates safety; generates setup instructions
+- **Retry / Timeout / Backoff** — `RetryPolicy`: exponential backoff (max 3 retries, 15s timeout) for TIMEOUT/NETWORK/RATE_LIMIT/SERVER_ERROR only; never used for orders
+- **API Cache** — `APICache`: SHA-256 keyed, token-sanitized, TTL=24h; stored in `data_cache/api/` (gitignored)
+- **Data Lineage Tracking** — `DataLineageTracker`: LIN-XXXXXXXXXX IDs; masked URLs; CSV export to `data/backtest_results/`
+- **API Fetch Diagnostics** — `APIFetchDiagnostics`: per-provider/dataset aggregation; sanitized messages; recommended_action
+- **TWSE/TPEx Parser Hardening** — `TWSETPEXParser`: alias mapping, ROC year conversion, comma numerics, SCHEMA_CHANGED/PARTIAL status
+- **MOPS Financial Parser** — `MOPSFinancialParser`: estimated announcement dates (Q1/Q2/Q3=45d, Q4=90d), timing_quality classification, announcement_date_is_estimated
+- **API Fetch Report** — `APIFetchProductionReportBuilder`: 8-section Markdown report
+- **API Fetch Status GUI** — new "API Fetch Status" tab; QThread workers; never shows full token
+- **No new strategies. No production trading. Research only.**
+
+```
+# FinMind token check
+python main.py api-token-check
+
+# Cache status
+python main.py api-cache-status
+
+# Provider diagnostics
+python main.py api-fetch-diagnostics --mode real
+
+# Clear expired cache
+python main.py api-cache-cleanup
+
+# Generate report
+python main.py api-fetch-production-report --mode real
+```
+
+Set up token (read-only, never committed):
+```
+# .env (gitignored)
+FINMIND_TOKEN=your_token_here
+```
 
 ---
 

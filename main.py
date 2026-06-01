@@ -5749,6 +5749,137 @@ def cmd_stable_release_report(args: argparse.Namespace) -> None:
 
 
 # ---------------------------------------------------------------------------
+# v0.4.1 API Fetch Productionization CLI
+# ---------------------------------------------------------------------------
+
+def cmd_api_token_check(args: argparse.Namespace) -> None:
+    """Check FinMind / API token configuration (read-only, never modifies .env)."""
+    print("=" * 60)
+    print("  TW Quant Cockpit v0.4.1 — API Token Check")
+    print("  [!] Research Only | Read Only | No Real Orders | Production BLOCKED")
+    print("=" * 60)
+    try:
+        from data.providers.token_setup_assistant import TokenSetupAssistant
+        assistant = TokenSetupAssistant()
+        result = assistant.inspect()
+        req = result.get("required_tokens", {})
+        for name, info in req.items():
+            configured = info.get("configured", False)
+            masked = info.get("masked_value", "(not set)")
+            status = "OK" if configured else "MISSING"
+            print(f"  {name}: {status}  {masked}")
+        safety = result.get("env_safety", {})
+        print(f"  .env safe: {safety.get('safe', '—')}")
+        issues = safety.get("issues", [])
+        for issue in issues:
+            print(f"  [!] {issue}")
+        if result.get("all_required_configured"):
+            print("\n  All required tokens configured.")
+        else:
+            print("\n  [!] Some required tokens are missing. See docs/api_fetch_productionization.md")
+    except Exception as exc:
+        print(f"  ERROR: {exc}")
+    print()
+    print("  [!] No real orders. Read Only.")
+
+
+def cmd_api_cache_status(args: argparse.Namespace) -> None:
+    """Show API cache statistics."""
+    print("=" * 60)
+    print("  TW Quant Cockpit v0.4.1 — API Cache Status")
+    print("  [!] Research Only | Read Only | No Real Orders | Production BLOCKED")
+    print("=" * 60)
+    try:
+        from data.providers.api_cache import APICache
+        stats = APICache().stats()
+        print(f"  Enabled:        {stats.get('enabled', '—')}")
+        print(f"  Cache root:     {stats.get('cache_root', '—')}")
+        print(f"  Total entries:  {stats.get('total_entries', 0)}")
+        print(f"  Active:         {stats.get('active', 0)}")
+        print(f"  Expired:        {stats.get('expired', 0)}")
+        print(f"  Hits / Misses:  {stats.get('hits', 0)} / {stats.get('misses', 0)}")
+        print(f"  Hit rate:       {stats.get('hit_rate', 0):.1%}")
+        print(f"  Size:           {stats.get('size_bytes', 0):,} bytes")
+        print(f"  No token in keys: True")
+    except Exception as exc:
+        print(f"  ERROR: {exc}")
+    print()
+    print("  [!] No real orders. Read Only.")
+
+
+def cmd_api_fetch_diagnostics(args: argparse.Namespace) -> None:
+    """Run API fetch diagnostics — provider health and cache status."""
+    mode = getattr(args, "mode", "real")
+    print("=" * 60)
+    print("  TW Quant Cockpit v0.4.1 — API Fetch Diagnostics")
+    print(f"  Mode: {mode}")
+    print("  [!] Research Only | Read Only | No Real Orders | Production BLOCKED")
+    print("=" * 60)
+    try:
+        from gui.api_fetch_status_adapter import APIFetchStatusAdapter
+        result = APIFetchStatusAdapter().run_diagnostics(mode=mode)
+        health = result.get("provider_health", {})
+        providers = health.get("providers", [])
+        if providers:
+            print(f"\n  Providers ({len(providers)}):")
+            for p in providers:
+                status = p.get("status", "?")
+                name = p.get("provider_name", "?")
+                msg = p.get("message", "")[:60]
+                print(f"    [{status:8s}] {name}  {msg}")
+        cache_stats = result.get("cache_stats", {})
+        if cache_stats:
+            print(f"\n  Cache: enabled={cache_stats.get('enabled','—')} "
+                  f"hits={cache_stats.get('hits',0)} misses={cache_stats.get('misses',0)} "
+                  f"entries={cache_stats.get('total_entries',0)}")
+        warnings = result.get("warnings", [])
+        for w in warnings:
+            print(f"  [!] {w}")
+    except Exception as exc:
+        print(f"  ERROR: {exc}")
+    print()
+    print("  [!] No real orders. Read Only.")
+
+
+def cmd_api_cache_cleanup(args: argparse.Namespace) -> None:
+    """Remove expired API cache entries."""
+    print("=" * 60)
+    print("  TW Quant Cockpit v0.4.1 — API Cache Cleanup")
+    print("  [!] Research Only | Read Only | No Real Orders | Production BLOCKED")
+    print("=" * 60)
+    try:
+        from data.providers.api_cache import APICache
+        cache = APICache()
+        removed = cache.cleanup_expired()
+        print(f"  Removed {removed} expired cache entries.")
+    except Exception as exc:
+        print(f"  ERROR: {exc}")
+    print()
+    print("  [!] No real orders. Read Only.")
+
+
+def cmd_api_fetch_production_report(args: argparse.Namespace) -> None:
+    """Generate API fetch production report."""
+    mode = getattr(args, "mode", "real")
+    print("=" * 60)
+    print("  TW Quant Cockpit v0.4.1 — API Fetch Production Report")
+    print(f"  Mode: {mode}")
+    print("  [!] Research Only | Read Only | No Real Orders | Production BLOCKED")
+    print("=" * 60)
+    try:
+        from gui.api_fetch_status_adapter import APIFetchStatusAdapter
+        result = APIFetchStatusAdapter().generate_report(mode=mode)
+        if result.get("ok"):
+            print(f"  Report saved: {result.get('report_path')}")
+        else:
+            print(f"  ERROR: {result.get('error')}")
+    except Exception as exc:
+        print(f"  ERROR: {exc}")
+    print()
+    print("  [!] No real orders. Read Only.")
+
+
+# ---------------------------------------------------------------------------
 # Argument parser
 # ---------------------------------------------------------------------------
 
@@ -6390,6 +6521,40 @@ def _build_parser() -> argparse.ArgumentParser:
     p_srr.add_argument("--mode", choices=["real", "mock"], default="real",
                        help="Data mode (default: real)")
 
+    # --- api-token-check (v0.4.1) ---
+    subparsers.add_parser(
+        "api-token-check",
+        help="Check FinMind/API token configuration — read-only (v0.4.1)",
+    )
+
+    # --- api-cache-status (v0.4.1) ---
+    subparsers.add_parser(
+        "api-cache-status",
+        help="Show API cache statistics (v0.4.1)",
+    )
+
+    # --- api-fetch-diagnostics (v0.4.1) ---
+    p_afd = subparsers.add_parser(
+        "api-fetch-diagnostics",
+        help="Run API fetch diagnostics — provider health and cache status (v0.4.1)",
+    )
+    p_afd.add_argument("--mode", choices=["real", "mock"], default="real",
+                       help="Data mode (default: real)")
+
+    # --- api-cache-cleanup (v0.4.1) ---
+    subparsers.add_parser(
+        "api-cache-cleanup",
+        help="Remove expired API cache entries (v0.4.1)",
+    )
+
+    # --- api-fetch-production-report (v0.4.1) ---
+    p_afpr = subparsers.add_parser(
+        "api-fetch-production-report",
+        help="Generate API fetch production report (v0.4.1)",
+    )
+    p_afpr.add_argument("--mode", choices=["real", "mock"], default="real",
+                        help="Data mode (default: real)")
+
     # --- experiment-create (v0.3.29) ---
     p_ec = subparsers.add_parser(
         "experiment-create",
@@ -6929,6 +7094,12 @@ def main() -> None:
         "stable-release-check":        cmd_stable_release_check,
         "regression-suite":            cmd_regression_suite,
         "stable-release-report":       cmd_stable_release_report,
+        # TW Quant Cockpit v0.4.1
+        "api-token-check":             cmd_api_token_check,
+        "api-cache-status":            cmd_api_cache_status,
+        "api-fetch-diagnostics":       cmd_api_fetch_diagnostics,
+        "api-cache-cleanup":           cmd_api_cache_cleanup,
+        "api-fetch-production-report": cmd_api_fetch_production_report,
     }
 
     if args.command is None:

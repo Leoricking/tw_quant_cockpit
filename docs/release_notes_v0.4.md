@@ -46,4 +46,49 @@ All 15 major features verified and regression-tested. See `docs/release_v0.4.0.m
 
 ---
 
+## v0.4.1 — API Fetch Productionization
+
+**Status:** Current
+
+### Summary
+
+v0.4.1 adds a production-grade, read-only API data fetch layer on top of the stable v0.4.0 platform. Retry, cache, lineage, parser hardening, token safety — all read-only. No new strategies. No real orders.
+
+### New Files
+
+- `data/providers/token_setup_assistant.py` — `TokenSetupAssistant`: reads .env; masks tokens; never modifies .env
+- `data/providers/retry_policy.py` — `RetryPolicy`: exponential backoff for safe fetches only; never used for orders
+- `data/providers/api_cache.py` — `APICache`: SHA-256 keyed provider cache in `data_cache/api/`; TTL=24h
+- `data/providers/data_lineage.py` — `DataLineageTracker`: LIN-XXXX IDs; masked URLs; CSV export
+- `data/providers/api_diagnostics.py` — `APIFetchDiagnostics`: per-provider/dataset result aggregation; sanitized output
+- `data/providers/twse_tpex_parser.py` — `TWSETPEXParser`: alias mapping, ROC year, comma numerics, schema status
+- `data/providers/mops_financial_parser.py` — `MOPSFinancialParser`: estimated announcement dates, timing_quality
+- `reports/api_fetch_production_report.py` — `APIFetchProductionReportBuilder`: 8-section Markdown report
+- `gui/api_fetch_status_adapter.py` — `APIFetchStatusAdapter`: GUI bridge; lazy imports; no full token
+- `gui/api_fetch_status_panel.py` — `APIFetchStatusPanel`: PySide6 GUI with QThread workers; safety banner
+- `docs/api_fetch_productionization.md` — full documentation
+
+### Modified Files
+
+- `main.py` — 5 new CLI commands: `api-token-check`, `api-cache-status`, `api-fetch-diagnostics`, `api-cache-cleanup`, `api-fetch-production-report`
+- `gui/dashboard.py` — guarded import + "API Fetch Status" tab
+- `data/providers/provider_health.py` — `run_all()` adds `v041_components` availability dict
+- `reports/auto_report_center.py` — `include_api_fetch_production` flag; `run_api_fetch_production_report()` method
+- `release/regression_suite.py` — 3 new v0.4.1 tests added to full suite (api_fetch_imports, api_token_check, api_cache_stats)
+- `release/stable_release_checklist.py` — 2 new v0.4.1 checks (api_token_safety, api_cache_ignored)
+- `docs/roadmap.md` — v0.4.1 marked Done; v0.4.2 ML Feature Store planned
+- `docs/index.md` — added api_fetch_productionization.md
+- `.gitignore` — API fetch report and lineage artifacts excluded
+
+### Safety
+
+- `read_only=True`, `no_real_orders=True` in all new classes
+- Tokens always masked; never committed; never displayed in full
+- Cache keys never contain full token (SHA-256 of sanitized params)
+- Lineage URLs masked (token query params replaced with ****)
+- Production Trading: BLOCKED
+- REAL_ORDER_READY: False
+
+---
+
 *Previous release notes: see `docs/release_notes_v0.3.md`*

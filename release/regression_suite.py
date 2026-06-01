@@ -269,6 +269,68 @@ class RegressionSuite:
             elapsed = (time.monotonic() - t0) * 1000
             return self._item("rule_weight_import", "FAIL", str(exc), elapsed)
 
+    def _test_api_fetch_imports(self) -> dict:
+        """v0.4.1: Check that all API Fetch Productionization modules import cleanly."""
+        t0 = time.monotonic()
+        modules = [
+            ("data.providers.token_setup_assistant", "TokenSetupAssistant"),
+            ("data.providers.retry_policy",          "RetryPolicy"),
+            ("data.providers.api_cache",             "APICache"),
+            ("data.providers.data_lineage",          "DataLineageTracker"),
+            ("data.providers.api_diagnostics",       "APIFetchDiagnostics"),
+            ("data.providers.twse_tpex_parser",      "TWSETPEXParser"),
+            ("data.providers.mops_financial_parser", "MOPSFinancialParser"),
+            ("reports.api_fetch_production_report",  "APIFetchProductionReportBuilder"),
+            ("gui.api_fetch_status_adapter",         "APIFetchStatusAdapter"),
+        ]
+        failed = []
+        for mod_path, cls_name in modules:
+            try:
+                mod = __import__(mod_path, fromlist=[cls_name])
+                getattr(mod, cls_name)
+            except Exception as exc:
+                failed.append(f"{mod_path}.{cls_name}: {exc}")
+        elapsed = (time.monotonic() - t0) * 1000
+        if not failed:
+            return self._item("api_fetch_imports", "PASS",
+                               f"All {len(modules)} v0.4.1 API Fetch modules imported.", elapsed)
+        return self._item("api_fetch_imports", "FAIL",
+                           f"{len(failed)} module(s) failed: {failed[:3]}", elapsed)
+
+    def _test_api_token_check(self) -> dict:
+        """v0.4.1: TokenSetupAssistant.inspect() runs without crashing."""
+        t0 = time.monotonic()
+        try:
+            from data.providers.token_setup_assistant import TokenSetupAssistant
+            result = TokenSetupAssistant().inspect()
+            elapsed = (time.monotonic() - t0) * 1000
+            # Must never show full token
+            for v in result.get("required_tokens", {}).values():
+                masked = v.get("masked_value", "")
+                if masked and len(masked) > 12 and "****" not in masked:
+                    return self._item("api_token_check", "FAIL",
+                                       "Token not masked in output!", elapsed)
+            return self._item("api_token_check", "PASS",
+                               "TokenSetupAssistant.inspect() ran; tokens masked.", elapsed)
+        except Exception as exc:
+            elapsed = (time.monotonic() - t0) * 1000
+            return self._item("api_token_check", "FAIL", str(exc), elapsed)
+
+    def _test_api_cache_stats(self) -> dict:
+        """v0.4.1: APICache.stats() runs without crashing."""
+        t0 = time.monotonic()
+        try:
+            from data.providers.api_cache import APICache
+            stats = APICache().stats()
+            elapsed = (time.monotonic() - t0) * 1000
+            if not isinstance(stats, dict):
+                return self._item("api_cache_stats", "FAIL", "stats() did not return dict", elapsed)
+            return self._item("api_cache_stats", "PASS",
+                               f"APICache.stats() OK  entries={stats.get('total_entries',0)}", elapsed)
+        except Exception as exc:
+            elapsed = (time.monotonic() - t0) * 1000
+            return self._item("api_cache_stats", "FAIL", str(exc), elapsed)
+
     # ------------------------------------------------------------------
     # Suite runners
     # ------------------------------------------------------------------
@@ -288,7 +350,7 @@ class RegressionSuite:
         return self._execute("quick", tests_fns)
 
     def run_full(self) -> dict:
-        """Run the full 14-test suite (quick + extended)."""
+        """Run the full 17-test suite (quick + extended + v0.4.1)."""
         logger.info("RegressionSuite.run_full() — mode=%s", self.mode)
         tests_fns = [
             self._test_compileall,
@@ -305,6 +367,10 @@ class RegressionSuite:
             self._test_gui_imports,
             self._test_signal_quality_import,
             self._test_rule_weight_import,
+            # v0.4.1
+            self._test_api_fetch_imports,
+            self._test_api_token_check,
+            self._test_api_cache_stats,
         ]
         return self._execute("full", tests_fns)
 

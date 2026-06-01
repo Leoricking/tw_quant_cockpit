@@ -184,3 +184,8 @@ reports/stable_release_report_*.md
 reports/stable_release_checklist_report_*.md
 data/backtest_results/stable_release_*.csv
 data/backtest_results/regression_suite_*.csv
+
+# API Fetch Productionization outputs (v0.4.1, runtime artifacts)
+reports/api_fetch_production_report_*.md
+data/backtest_results/api_fetch_*.csv
+data/backtest_results/api_lineage_*.csv
