@@ -4,7 +4,58 @@
 >
 > **[!] v1: Real order execution is strictly prohibited. For research, simulation, and decision support only. Not investment advice.**
 
-**Current version: v0.4.1 — API Fetch Productionization**
+**Current version: v0.4.2 — ML Feature Store v1**
+
+---
+
+## v0.4.2 — ML Feature Store v1
+
+**New in v0.4.2:**
+
+- **Feature Catalog** — `FeatureCatalog`: 50+ built-in features (price, technical, volume, chip, margin, revenue, fundamental, intraday); leakage_risk / experimental / lookback metadata per feature
+- **Feature Snapshot** — `FeatureSnapshotBuilder`: builds feature matrix from existing research CSV files
+- **Label Generation** — `LabelGenerator`: fwd_return_Nd, classification (label_direction_Nd, label_up/down_3pct), triple barrier (+5%/-3%, 10d); labels always prefix `label_` or `fwd_`
+- **Train/Val/Test Split** — `MLSplitManager`: default time_series (60/20/20 chronological); random split emits DATA LEAKAGE RISK warning
+- **No Leakage Check** — `DataLeakageChecker`: 7 finding types; status CLEAN/WARNING/LEAKAGE_RISK/BLOCKED_FOR_TRAINING
+- **Feature Quality** — `FeatureQualityChecker`: missing_ratio, constant features, label balance, quality score (0–100)
+- **Feature Importance Shell** — Pearson correlation; sklearn mutual info (optional, graceful fallback)
+- **Model-Ready Dataset Export** — features + labels + split + metadata CSV; never committed
+- **ML Feature Store Report** — 9-section Markdown report; never committed
+- **GUI tab** — "ML Feature Store" tab with QThread workers; safety banner; build/check/report actions
+- **No model training. No live prediction. No auto-trading. No real orders.**
+
+```
+# List all features
+python main.py ml-feature-catalog
+
+# Build feature snapshot
+python main.py ml-feature-snapshot --mode real
+
+# Generate labels
+python main.py ml-labels --mode real
+
+# Build model-ready dataset
+python main.py ml-build-dataset --mode real
+
+# Run leakage check
+python main.py ml-leakage-check --mode real
+
+# Feature quality check
+python main.py ml-feature-quality --mode real
+
+# Feature importance
+python main.py ml-feature-importance --mode real --target label_direction_5d
+
+# Generate report
+python main.py ml-feature-store-report --mode real
+```
+
+**Safety:**
+- `data/ml_features/` — gitignored, never committed
+- `reports/ml_feature_store_report_*.md` — gitignored, never committed
+- Production Trading: BLOCKED
+- REAL_ORDER_READY: False
+- ML Research Only
 
 ---
 

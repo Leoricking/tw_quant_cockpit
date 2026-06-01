@@ -3,7 +3,7 @@
 > **[!] Research Only. Read Only. No Real Orders. Production Trading: BLOCKED.**
 > **[!] Not investment advice. REAL_ORDER_READY=False.**
 
-Current version: **v0.4.1**
+Current version: **v0.4.2**
 
 ---
 
@@ -60,6 +60,7 @@ Current version: **v0.4.1**
 | [research_notebook_experiment_registry.md](research_notebook_experiment_registry.md) | v0.3.29 | Research Notebook / Experiment Registry |
 | [release_v0.4.0.md](release_v0.4.0.md) | v0.4.0 | Release Status & Regression Suite |
 | [api_fetch_productionization.md](api_fetch_productionization.md) | v0.4.1 | API Fetch Productionization (token, retry, cache, lineage, parsers) |
+| [ml_feature_store_v1.md](ml_feature_store_v1.md) | v0.4.2 | ML Feature Store v1 (feature catalog, snapshot, labels, split, leakage check, quality, importance) |
 
 ---
 

@@ -49,6 +49,7 @@ _PROFILE_FLAGS: Dict[str, dict] = {
         include_rule_governance=True,
         include_experiment_registry=True,
         include_api_fetch_production=True,
+        include_ml_feature_store=True,
     ),
     "daily": dict(
         include_stock_reports=False,
@@ -63,6 +64,7 @@ _PROFILE_FLAGS: Dict[str, dict] = {
         include_provider_reliability=True,
         include_intraday_pipeline=True,
         include_api_fetch_production=True,
+        include_ml_feature_store=True,
     ),
     "portfolio": dict(
         include_stock_reports=False,
@@ -151,6 +153,7 @@ class AutoReportCenter:
         include_rule_governance: bool = False,
         include_experiment_registry: bool = False,
         include_api_fetch_production: bool = False,
+        include_ml_feature_store: bool = False,
     ):
         self.mode        = mode
         self.profile     = profile
@@ -178,6 +181,7 @@ class AutoReportCenter:
         self.include_rule_governance       = flags.get("include_rule_governance",       include_rule_governance)
         self.include_experiment_registry   = flags.get("include_experiment_registry",   include_experiment_registry)
         self.include_api_fetch_production  = flags.get("include_api_fetch_production",  include_api_fetch_production)
+        self.include_ml_feature_store      = flags.get("include_ml_feature_store",      include_ml_feature_store)
         self.universe_name = universe_name
 
         # Runtime state (populated during run)
@@ -248,6 +252,9 @@ class AutoReportCenter:
 
         if self.include_api_fetch_production:
             self.run_api_fetch_production_report()
+
+        if self.include_ml_feature_store:
+            self.run_ml_feature_store_report()
 
         # Aggregated outputs
         if self.include_daily_summary:
@@ -668,6 +675,20 @@ class AutoReportCenter:
                 self._record_fail("api_fetch_production", result.get("error", "unknown"))
         except Exception as exc:
             self._record_fail("api_fetch_production", str(exc))
+
+    def run_ml_feature_store_report(self):
+        """Generate ML Feature Store report (v0.4.2). Optional — failure does not abort run."""
+        try:
+            from gui.ml_feature_store_adapter import MLFeatureStoreAdapter
+            result = MLFeatureStoreAdapter(report_dir=self._out_dir).generate_report(mode=self.mode)
+            if result.get("ok"):
+                path = result.get("report_path", "")
+                self._context["ml_feature_store_report"] = path
+                self._record_success("ml_feature_store", path)
+            else:
+                self._record_fail("ml_feature_store", result.get("error", "unknown"))
+        except Exception as exc:
+            self._record_fail("ml_feature_store", str(exc))
 
     def build_daily_market_summary(self):
         """Build daily market summary from all available context."""

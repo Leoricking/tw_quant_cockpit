@@ -5880,6 +5880,249 @@ def cmd_api_fetch_production_report(args: argparse.Namespace) -> None:
 
 
 # ---------------------------------------------------------------------------
+# v0.4.2 ML Feature Store command handlers
+# ---------------------------------------------------------------------------
+
+def cmd_ml_feature_catalog(args: argparse.Namespace) -> None:
+    """List all ML feature definitions from the feature catalog."""
+    print("=" * 60)
+    print("  TW Quant Cockpit v0.4.2 — ML Feature Catalog")
+    print("  [!] ML Research Only | Read Only | No Real Orders | Production BLOCKED")
+    print("=" * 60)
+    try:
+        from ml.feature_catalog import FeatureCatalog
+        catalog = FeatureCatalog()
+        features = catalog.list_features()
+        summary  = catalog.summary()
+        print(f"  Total features: {summary.get('total_features', 0)}")
+        print(f"  Enabled:        {summary.get('enabled_features', 0)}")
+        print(f"  Experimental:   {summary.get('experimental_features', 0)}")
+        print(f"  High leakage:   {summary.get('high_leakage_risk', 0)}")
+        print()
+        cats = summary.get("categories", {})
+        if cats:
+            print("  Categories:")
+            for cat, count in sorted(cats.items()):
+                print(f"    {cat:<20} {count}")
+    except Exception as exc:
+        print(f"  ERROR: {exc}")
+    print()
+    print("  [!] No real orders. ML Research Only.")
+
+
+def cmd_ml_feature_snapshot(args: argparse.Namespace) -> None:
+    """Build ML feature snapshot from research data."""
+    mode       = getattr(args, "mode", "real")
+    symbols    = getattr(args, "symbols", None)
+    start_date = getattr(args, "start_date", None)
+    end_date   = getattr(args, "end_date", None)
+    print("=" * 60)
+    print(f"  TW Quant Cockpit v0.4.2 — ML Feature Snapshot (mode={mode})")
+    print("  [!] ML Research Only | Read Only | No Real Orders | Production BLOCKED")
+    print("=" * 60)
+    try:
+        from ml.feature_snapshot import FeatureSnapshotBuilder
+        builder = FeatureSnapshotBuilder(mode=mode)
+        df, summary = builder.build(symbols=symbols, start_date=start_date, end_date=end_date)
+        print(f"  Status:        {summary.get('status', '—')}")
+        print(f"  Features:      {summary.get('feature_count', 0)}")
+        print(f"  Rows:          {summary.get('row_count', 0)}")
+        print(f"  Symbols:       {summary.get('symbol_count', 0)}")
+        print(f"  Date range:    {summary.get('date_range', ('—', '—'))}")
+        if summary.get("output_path"):
+            print(f"  Output:        {summary['output_path']}")
+        for w in summary.get("warnings", []):
+            print(f"  [!] {w}")
+    except Exception as exc:
+        print(f"  ERROR: {exc}")
+    print()
+    print("  [!] No real orders. ML Research Only.")
+
+
+def cmd_ml_labels(args: argparse.Namespace) -> None:
+    """Generate ML labels from feature snapshot data."""
+    mode     = getattr(args, "mode", "real")
+    horizons = getattr(args, "horizons", None)
+    print("=" * 60)
+    print(f"  TW Quant Cockpit v0.4.2 — ML Label Generation (mode={mode})")
+    print("  [!] ML Research Only | Read Only | No Real Orders | Production BLOCKED")
+    print("=" * 60)
+    try:
+        from ml.feature_snapshot import FeatureSnapshotBuilder
+        from ml.label_generator import LabelGenerator
+        snap_builder = FeatureSnapshotBuilder(mode=mode)
+        df, snap_summary = snap_builder.build()
+        if df is None or (hasattr(df, "empty") and df.empty):
+            print("  No feature snapshot data found. Run ml-feature-snapshot first.")
+        else:
+            h = list(map(int, horizons.split(","))) if horizons else [1, 5, 10, 20]
+            gen = LabelGenerator(horizons=h)
+            labeled_df, label_summary = gen.generate(df)
+            print(f"  Horizons:      {label_summary.get('horizons', h)}")
+            print(f"  Label columns: {label_summary.get('label_count', 0)}")
+            print(f"  Rows:          {label_summary.get('row_count', 0)}")
+    except Exception as exc:
+        print(f"  ERROR: {exc}")
+    print()
+    print("  [!] Label columns prefix: label_ or fwd_. No real orders. ML Research Only.")
+
+
+def cmd_ml_build_dataset(args: argparse.Namespace) -> None:
+    """Build model-ready ML dataset (features + labels + split)."""
+    mode        = getattr(args, "mode", "real")
+    symbols     = getattr(args, "symbols", None)
+    start_date  = getattr(args, "start_date", None)
+    end_date    = getattr(args, "end_date", None)
+    horizons    = getattr(args, "horizons", None)
+    output_root = getattr(args, "output_root", None)
+    print("=" * 60)
+    print(f"  TW Quant Cockpit v0.4.2 — ML Build Dataset (mode={mode})")
+    print("  [!] ML Research Only | Read Only | No Real Orders | Production BLOCKED")
+    print("=" * 60)
+    try:
+        from ml.dataset_builder import MLFeatureDatasetBuilder
+        kwargs = {}
+        if output_root:
+            kwargs["output_root"] = output_root
+        builder = MLFeatureDatasetBuilder(mode=mode, **kwargs)
+        h = list(map(int, horizons.split(","))) if horizons else (5, 10, 20)
+        df, summary = builder.build_dataset(symbols=symbols, start_date=start_date, end_date=end_date, label_horizons=h)
+        print(f"  Status:        {summary.get('status', '—')}")
+        print(f"  Features:      {summary.get('feature_count', 0)}")
+        print(f"  Rows:          {summary.get('row_count', 0)}")
+        print(f"  Symbols:       {summary.get('symbol_count', 0)}")
+        if summary.get("output_path"):
+            print(f"  Output:        {summary['output_path']}")
+        val = summary.get("validation", {})
+        for w in val.get("warnings", []):
+            print(f"  [!] {w}")
+    except Exception as exc:
+        print(f"  ERROR: {exc}")
+    print()
+    print("  [!] Dataset NOT committed. No real orders. ML Research Only.")
+
+
+def cmd_ml_leakage_check(args: argparse.Namespace) -> None:
+    """Run data leakage check on the latest ML dataset."""
+    mode = getattr(args, "mode", "real")
+    print("=" * 60)
+    print(f"  TW Quant Cockpit v0.4.2 — ML Leakage Check (mode={mode})")
+    print("  [!] ML Research Only | Read Only | No Real Orders | Production BLOCKED")
+    print("=" * 60)
+    try:
+        from gui.ml_feature_store_adapter import MLFeatureStoreAdapter
+        result = MLFeatureStoreAdapter().run_leakage_check()
+        if not result.get("ok"):
+            print(f"  ERROR: {result.get('error')}")
+        else:
+            r = result.get("result", {})
+            print(f"  Status:  {r.get('status', '—')}")
+            print(f"  Score:   {r.get('score', '—')}")
+            findings = r.get("findings", [])
+            if findings:
+                print(f"  Findings ({len(findings)}):")
+                for f in findings[:10]:
+                    print(f"    [{f.get('severity','')}] {f.get('finding','')} — {f.get('column','')} — {f.get('reason','')[:60]}")
+            else:
+                print("  No leakage findings.")
+            if r.get("status") == "BLOCKED_FOR_TRAINING":
+                print()
+                print("  [!] DATASET BLOCKED FOR TRAINING — Leakage detected.")
+    except Exception as exc:
+        print(f"  ERROR: {exc}")
+    print()
+    print("  [!] No real orders. ML Research Only.")
+
+
+def cmd_ml_feature_quality(args: argparse.Namespace) -> None:
+    """Run feature quality check on the latest ML dataset."""
+    mode = getattr(args, "mode", "real")
+    print("=" * 60)
+    print(f"  TW Quant Cockpit v0.4.2 — ML Feature Quality (mode={mode})")
+    print("  [!] ML Research Only | Read Only | No Real Orders | Production BLOCKED")
+    print("=" * 60)
+    try:
+        from gui.ml_feature_store_adapter import MLFeatureStoreAdapter
+        result = MLFeatureStoreAdapter().run_feature_quality()
+        if not result.get("ok"):
+            print(f"  ERROR: {result.get('error')}")
+        else:
+            r = result.get("result", {})
+            print(f"  Quality score:     {r.get('feature_quality_score', '—')}")
+            print(f"  Feature count:     {r.get('feature_count', '—')}")
+            print(f"  Constant features: {r.get('constant_feature_count', 0)}")
+            hm = r.get("high_missing_features", [])
+            print(f"  High missing (>50%): {len(hm)}")
+            if hm:
+                print(f"    {', '.join(hm[:8])}")
+            for w in r.get("warnings", []):
+                print(f"  [!] {w}")
+    except Exception as exc:
+        print(f"  ERROR: {exc}")
+    print()
+    print("  [!] No real orders. ML Research Only.")
+
+
+def cmd_ml_feature_importance(args: argparse.Namespace) -> None:
+    """Run feature importance shell on the latest ML dataset."""
+    mode   = getattr(args, "mode", "real")
+    target = getattr(args, "target", "label_direction_5d")
+    print("=" * 60)
+    print(f"  TW Quant Cockpit v0.4.2 — ML Feature Importance (mode={mode})")
+    print(f"  Target: {target}")
+    print("  [!] ML Research Only | Read Only | No Real Orders | Production BLOCKED")
+    print("=" * 60)
+    try:
+        from gui.ml_feature_store_adapter import MLFeatureStoreAdapter
+        result = MLFeatureStoreAdapter().run_feature_importance(target_label=target)
+        if not result.get("ok"):
+            print(f"  ERROR: {result.get('error')}")
+        else:
+            r = result.get("result", {})
+            print(f"  Method:          {r.get('method', '—')}")
+            print(f"  Target label:    {r.get('target_label', '—')}")
+            print(f"  sklearn:         {r.get('sklearn_available', '—')}")
+            top = r.get("top_features", [])
+            if top:
+                print()
+                print(f"  {'#':<4} {'Feature':<35} {'Score':>8} {'Direction'}")
+                print(f"  {'-'*60}")
+                for i, f in enumerate(top[:15], 1):
+                    print(f"  {i:<4} {f.get('feature',''):<35} {f.get('score',0):>8.4f} {f.get('direction','')}")
+            else:
+                print("  No importance data available.")
+    except Exception as exc:
+        print(f"  ERROR: {exc}")
+    print()
+    print("  [!] Importance scores are exploratory only — not investment advice.")
+    print("  [!] No real orders. ML Research Only.")
+
+
+def cmd_ml_feature_store_report(args: argparse.Namespace) -> None:
+    """Generate ML Feature Store report."""
+    mode       = getattr(args, "mode", "real")
+    report_dir = getattr(args, "report_dir", None)
+    print("=" * 60)
+    print(f"  TW Quant Cockpit v0.4.2 — ML Feature Store Report (mode={mode})")
+    print("  [!] ML Research Only | Read Only | No Real Orders | Production BLOCKED")
+    print("=" * 60)
+    try:
+        kwargs = {}
+        if report_dir:
+            kwargs["report_dir"] = report_dir
+        from gui.ml_feature_store_adapter import MLFeatureStoreAdapter
+        result = MLFeatureStoreAdapter(**kwargs).generate_report(mode=mode)
+        if result.get("ok"):
+            print(f"  Report saved: {result.get('report_path')}")
+        else:
+            print(f"  ERROR: {result.get('error')}")
+    except Exception as exc:
+        print(f"  ERROR: {exc}")
+    print()
+    print("  [!] Report NOT committed. No real orders. ML Research Only.")
+
+
+# ---------------------------------------------------------------------------
 # Argument parser
 # ---------------------------------------------------------------------------
 
@@ -6555,6 +6798,90 @@ def _build_parser() -> argparse.ArgumentParser:
     p_afpr.add_argument("--mode", choices=["real", "mock"], default="real",
                         help="Data mode (default: real)")
 
+    # --- ml-feature-catalog (v0.4.2) ---
+    subparsers.add_parser(
+        "ml-feature-catalog",
+        help="List all ML feature definitions from the feature catalog (v0.4.2)",
+    )
+
+    # --- ml-feature-snapshot (v0.4.2) ---
+    p_mfs = subparsers.add_parser(
+        "ml-feature-snapshot",
+        help="Build ML feature snapshot from research data (v0.4.2)",
+    )
+    p_mfs.add_argument("--mode", choices=["real", "mock"], default="real",
+                       help="Data mode (default: real)")
+    p_mfs.add_argument("--symbols", nargs="*", default=None,
+                       help="Stock symbols (default: full universe)")
+    p_mfs.add_argument("--start-date", dest="start_date", default=None,
+                       help="Start date YYYY-MM-DD")
+    p_mfs.add_argument("--end-date", dest="end_date", default=None,
+                       help="End date YYYY-MM-DD")
+
+    # --- ml-labels (v0.4.2) ---
+    p_mll = subparsers.add_parser(
+        "ml-labels",
+        help="Generate ML forward return and classification labels (v0.4.2)",
+    )
+    p_mll.add_argument("--mode", choices=["real", "mock"], default="real",
+                       help="Data mode (default: real)")
+    p_mll.add_argument("--horizons", default=None,
+                       help="Comma-separated label horizons in days, e.g. 1,5,10,20")
+
+    # --- ml-build-dataset (v0.4.2) ---
+    p_mbd = subparsers.add_parser(
+        "ml-build-dataset",
+        help="Build model-ready ML dataset: features + labels + split (v0.4.2)",
+    )
+    p_mbd.add_argument("--mode", choices=["real", "mock"], default="real",
+                       help="Data mode (default: real)")
+    p_mbd.add_argument("--symbols", nargs="*", default=None,
+                       help="Stock symbols (default: full universe)")
+    p_mbd.add_argument("--start-date", dest="start_date", default=None,
+                       help="Start date YYYY-MM-DD")
+    p_mbd.add_argument("--end-date", dest="end_date", default=None,
+                       help="End date YYYY-MM-DD")
+    p_mbd.add_argument("--horizons", default=None,
+                       help="Comma-separated label horizons in days, e.g. 5,10,20")
+    p_mbd.add_argument("--output-root", dest="output_root", default=None,
+                       help="Custom output directory for ML datasets")
+
+    # --- ml-leakage-check (v0.4.2) ---
+    p_mlc = subparsers.add_parser(
+        "ml-leakage-check",
+        help="Run data leakage check on the latest ML dataset (v0.4.2)",
+    )
+    p_mlc.add_argument("--mode", choices=["real", "mock"], default="real",
+                       help="Data mode (default: real)")
+
+    # --- ml-feature-quality (v0.4.2) ---
+    p_mfq = subparsers.add_parser(
+        "ml-feature-quality",
+        help="Run feature quality check on the latest ML dataset (v0.4.2)",
+    )
+    p_mfq.add_argument("--mode", choices=["real", "mock"], default="real",
+                       help="Data mode (default: real)")
+
+    # --- ml-feature-importance (v0.4.2) ---
+    p_mfi = subparsers.add_parser(
+        "ml-feature-importance",
+        help="Run feature importance shell on the latest ML dataset (v0.4.2)",
+    )
+    p_mfi.add_argument("--mode", choices=["real", "mock"], default="real",
+                       help="Data mode (default: real)")
+    p_mfi.add_argument("--target", default="label_direction_5d",
+                       help="Target label column (default: label_direction_5d)")
+
+    # --- ml-feature-store-report (v0.4.2) ---
+    p_mfsr = subparsers.add_parser(
+        "ml-feature-store-report",
+        help="Generate ML Feature Store Markdown report (v0.4.2)",
+    )
+    p_mfsr.add_argument("--mode", choices=["real", "mock"], default="real",
+                        help="Data mode (default: real)")
+    p_mfsr.add_argument("--report-dir", dest="report_dir", default=None,
+                        help="Custom output directory for reports")
+
     # --- experiment-create (v0.3.29) ---
     p_ec = subparsers.add_parser(
         "experiment-create",
@@ -7100,6 +7427,15 @@ def main() -> None:
         "api-fetch-diagnostics":       cmd_api_fetch_diagnostics,
         "api-cache-cleanup":           cmd_api_cache_cleanup,
         "api-fetch-production-report": cmd_api_fetch_production_report,
+        # v0.4.2 ML Feature Store
+        "ml-feature-catalog":          cmd_ml_feature_catalog,
+        "ml-feature-snapshot":         cmd_ml_feature_snapshot,
+        "ml-labels":                   cmd_ml_labels,
+        "ml-build-dataset":            cmd_ml_build_dataset,
+        "ml-leakage-check":            cmd_ml_leakage_check,
+        "ml-feature-quality":          cmd_ml_feature_quality,
+        "ml-feature-importance":       cmd_ml_feature_importance,
+        "ml-feature-store-report":     cmd_ml_feature_store_report,
     }
 
     if args.command is None:

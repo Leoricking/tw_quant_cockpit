@@ -395,6 +395,76 @@ class StableReleaseChecklist:
             elapsed = (time.monotonic() - t0) * 1000
             return self._item("api_cache_ignored", "WARN", str(exc), elapsed)
 
+    def _check_ml_feature_store_import(self) -> dict:
+        """v0.4.2: All ML Feature Store core modules import cleanly."""
+        t0 = time.monotonic()
+        modules = [
+            ("ml.feature_catalog",              "FeatureCatalog"),
+            ("ml.feature_snapshot",             "FeatureSnapshotBuilder"),
+            ("ml.label_generator",              "LabelGenerator"),
+            ("ml.split_manager",                "MLSplitManager"),
+            ("ml.leakage_checker",              "DataLeakageChecker"),
+            ("ml.feature_quality",              "FeatureQualityChecker"),
+            ("ml.feature_importance_shell",     "FeatureImportanceShell"),
+            ("ml.dataset_builder",              "MLFeatureDatasetBuilder"),
+            ("reports.ml_feature_store_report", "MLFeatureStoreReportBuilder"),
+            ("gui.ml_feature_store_adapter",    "MLFeatureStoreAdapter"),
+        ]
+        failed = []
+        for mod_path, cls_name in modules:
+            try:
+                mod = __import__(mod_path, fromlist=[cls_name])
+                getattr(mod, cls_name)
+            except Exception as exc:
+                failed.append(f"{mod_path}: {exc}")
+        elapsed = (time.monotonic() - t0) * 1000
+        if not failed:
+            return self._item("ml_feature_store_import", "PASS",
+                               f"All {len(modules)} ML Feature Store modules imported.", elapsed)
+        return self._item("ml_feature_store_import", "WARN",
+                           f"{len(failed)} module(s) failed: {failed[:2]}", elapsed)
+
+    def _check_ml_leakage_checker(self) -> dict:
+        """v0.4.2: DataLeakageChecker has read_only + no_real_orders flags."""
+        t0 = time.monotonic()
+        try:
+            from ml.leakage_checker import DataLeakageChecker
+            checker = DataLeakageChecker()
+            elapsed = (time.monotonic() - t0) * 1000
+            if not getattr(checker, "read_only", False):
+                return self._item("ml_leakage_checker", "FAIL",
+                                   "DataLeakageChecker.read_only is not True", elapsed)
+            if not getattr(checker, "no_real_orders", False):
+                return self._item("ml_leakage_checker", "FAIL",
+                                   "DataLeakageChecker.no_real_orders is not True", elapsed)
+            return self._item("ml_leakage_checker", "PASS",
+                               "DataLeakageChecker: read_only=True, no_real_orders=True.", elapsed)
+        except Exception as exc:
+            elapsed = (time.monotonic() - t0) * 1000
+            return self._item("ml_leakage_checker", "WARN", f"Module not available: {exc}", elapsed)
+
+    def _check_ml_dataset_artifact_ignored(self) -> dict:
+        """v0.4.2: Verify data/ml_features/ and ml_feature_store_report_*.md are in .gitignore."""
+        t0 = time.monotonic()
+        required = [
+            "data/ml_features/",
+            "reports/ml_feature_store_report_",
+        ]
+        gitignore_path = os.path.join(BASE_DIR, ".gitignore")
+        try:
+            with open(gitignore_path, "r", encoding="utf-8", errors="replace") as f:
+                content = f.read()
+            missing = [pat for pat in required if pat not in content]
+            elapsed = (time.monotonic() - t0) * 1000
+            if not missing:
+                return self._item("ml_dataset_artifact_ignored", "PASS",
+                                   "ML dataset and report patterns in .gitignore.", elapsed)
+            return self._item("ml_dataset_artifact_ignored", "WARN",
+                               f"Missing .gitignore patterns: {missing}", elapsed)
+        except Exception as exc:
+            elapsed = (time.monotonic() - t0) * 1000
+            return self._item("ml_dataset_artifact_ignored", "WARN", str(exc), elapsed)
+
     # ------------------------------------------------------------------
     # Write outputs
     # ------------------------------------------------------------------
@@ -471,7 +541,7 @@ class StableReleaseChecklist:
     # ------------------------------------------------------------------
 
     def run(self) -> dict:
-        """Run all 18 checklist items and return summary dict."""
+        """Run all 23 checklist items and return summary dict."""
         logger.info("StableReleaseChecklist.run() — mode=%s", self.mode)
 
         checks = [
@@ -496,6 +566,10 @@ class StableReleaseChecklist:
             # v0.4.1
             self._check_api_token_safety,
             self._check_api_cache_ignored,
+            # v0.4.2
+            self._check_ml_feature_store_import,
+            self._check_ml_leakage_checker,
+            self._check_ml_dataset_artifact_ignored,
         ]
 
         items: list[dict] = []

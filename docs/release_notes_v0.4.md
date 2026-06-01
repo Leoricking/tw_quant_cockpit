@@ -91,4 +91,54 @@ v0.4.1 adds a production-grade, read-only API data fetch layer on top of the sta
 
 ---
 
+## v0.4.2 — ML Feature Store v1
+
+**Status:** Current
+
+### Summary
+
+v0.4.2 adds an ML data preparation layer on top of the stable v0.4.1 platform. Feature catalog, feature snapshot builder, label generation, time-series train/val/test split, data leakage check, feature quality check, and feature importance shell. No model training. No live prediction. No real orders.
+
+### New Files
+
+- `ml/__init__.py` — ML package init
+- `ml/feature_catalog.py` — `FeatureDefinition`, `FeatureCatalog`: 50+ built-in features across 16 categories with leakage_risk/experimental/lookback metadata
+- `ml/feature_snapshot.py` — `FeatureSnapshotBuilder`: extracts feature matrix from daily_k, institutional, fundamental, intraday CSV sources
+- `ml/label_generator.py` — `LabelGenerator`: fwd_return_Nd, classification (label_direction_Nd, label_up/down_3pct), triple barrier; labels always prefix `label_` or `fwd_`
+- `ml/split_manager.py` — `MLSplitManager`: time_series split (default, 60/20/20), symbol_grouped, walk_forward, random (with leakage warning)
+- `ml/leakage_checker.py` — `DataLeakageChecker`: 7 finding types; CLEAN/WARNING/LEAKAGE_RISK/BLOCKED_FOR_TRAINING status
+- `ml/feature_quality.py` — `FeatureQualityChecker`: missing_ratio, constant_features, label_balance, feature_quality_score (0–100)
+- `ml/feature_importance_shell.py` — `FeatureImportanceShell`: Pearson correlation; sklearn mutual info (optional fallback)
+- `ml/dataset_builder.py` — `MLFeatureDatasetBuilder`: features + labels + split + metadata; writes model_ready_dataset_*.csv (not committed)
+- `reports/ml_feature_store_report.py` — `MLFeatureStoreReportBuilder`: 9-section Markdown report (not committed)
+- `gui/ml_feature_store_adapter.py` — `MLFeatureStoreAdapter`: GUI bridge; lazy imports
+- `gui/ml_feature_store_panel.py` — `MLFeatureStorePanel`: PySide6 GUI with QThread workers; safety banner; 8 sections
+- `docs/ml_feature_store_v1.md` — full documentation
+
+### Modified Files
+
+- `main.py` — 8 new CLI commands: `ml-feature-catalog`, `ml-feature-snapshot`, `ml-labels`, `ml-build-dataset`, `ml-leakage-check`, `ml-feature-quality`, `ml-feature-importance`, `ml-feature-store-report`
+- `gui/dashboard.py` — guarded import + "ML Feature Store" tab
+- `reports/auto_report_center.py` — `include_ml_feature_store` flag; `run_ml_feature_store_report()` method
+- `reports/auto_report_index.py` — manifest adds `ml_feature_count`, `ml_dataset_status`, `ml_leakage_status`, `ml_feature_quality_score`
+- `release/regression_suite.py` — 4 new v0.4.2 tests added to full suite (ml_feature_catalog, ml_feature_snapshot_import, ml_leakage_checker, ml_feature_store_report)
+- `release/stable_release_checklist.py` — 3 new v0.4.2 checks (ml_feature_store_import, ml_leakage_checker, ml_dataset_artifact_ignored)
+- `experiments/snapshot_builder.py` — `build_ml_feature_snapshot()` added to `build_all()`
+- `docs/roadmap.md` — v0.4.2 marked Done; v0.4.3 Model Monitoring Shell planned
+- `docs/index.md` — added ml_feature_store_v1.md
+- `.gitignore` — `data/ml_features/`, `reports/ml_feature_store_report_*.md`, and related artifacts excluded
+
+### Safety
+
+- `read_only=True`, `no_real_orders=True`, `production_blocked=True`, `real_order_ready=False` in all new classes
+- Label columns always prefix `label_` or `fwd_` — never mixed with feature columns
+- Default split: time_series (chronological) — random split emits DATA LEAKAGE RISK warning
+- model_ready_dataset_*.csv and ml_feature_store_report_*.md never committed (gitignored)
+- No live prediction. No auto-trading. No auto weight apply.
+- Production Trading: BLOCKED
+- REAL_ORDER_READY: False
+- ML Research Only
+
+---
+
 *Previous release notes: see `docs/release_notes_v0.3.md`*

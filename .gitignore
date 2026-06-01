@@ -189,3 +189,11 @@ data/backtest_results/regression_suite_*.csv
 reports/api_fetch_production_report_*.md
 data/backtest_results/api_fetch_*.csv
 data/backtest_results/api_lineage_*.csv
+
+# ML Feature Store outputs (v0.4.2, runtime artifacts — NEVER commit)
+data/ml_features/
+reports/ml_feature_store_report_*.md
+data/backtest_results/ml_feature_*.csv
+data/backtest_results/ml_feature_*.json
+data/backtest_results/ml_leakage_*.csv
+data/backtest_results/ml_leakage_*.json

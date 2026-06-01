@@ -331,6 +331,86 @@ class RegressionSuite:
             elapsed = (time.monotonic() - t0) * 1000
             return self._item("api_cache_stats", "FAIL", str(exc), elapsed)
 
+    def _test_ml_feature_catalog(self) -> dict:
+        """v0.4.2: FeatureCatalog loads and returns non-empty feature list."""
+        t0 = time.monotonic()
+        try:
+            from ml.feature_catalog import FeatureCatalog
+            catalog = FeatureCatalog()
+            features = catalog.list_features()
+            summary = catalog.summary()
+            elapsed = (time.monotonic() - t0) * 1000
+            if not features:
+                return self._item("ml_feature_catalog", "FAIL", "FeatureCatalog returned empty list.", elapsed)
+            return self._item("ml_feature_catalog", "PASS",
+                               f"FeatureCatalog OK: {summary.get('total_features', 0)} features.", elapsed)
+        except Exception as exc:
+            elapsed = (time.monotonic() - t0) * 1000
+            return self._item("ml_feature_catalog", "FAIL", str(exc), elapsed)
+
+    def _test_ml_feature_snapshot_import(self) -> dict:
+        """v0.4.2: FeatureSnapshotBuilder imports without error."""
+        t0 = time.monotonic()
+        modules = [
+            ("ml.feature_catalog",         "FeatureCatalog"),
+            ("ml.feature_snapshot",        "FeatureSnapshotBuilder"),
+            ("ml.label_generator",         "LabelGenerator"),
+            ("ml.split_manager",           "MLSplitManager"),
+            ("ml.leakage_checker",         "DataLeakageChecker"),
+            ("ml.feature_quality",         "FeatureQualityChecker"),
+            ("ml.feature_importance_shell","FeatureImportanceShell"),
+            ("ml.dataset_builder",         "MLFeatureDatasetBuilder"),
+            ("reports.ml_feature_store_report", "MLFeatureStoreReportBuilder"),
+            ("gui.ml_feature_store_adapter",    "MLFeatureStoreAdapter"),
+        ]
+        failed = []
+        for mod_path, cls_name in modules:
+            try:
+                mod = __import__(mod_path, fromlist=[cls_name])
+                getattr(mod, cls_name)
+            except Exception as exc:
+                failed.append(f"{mod_path}.{cls_name}: {exc}")
+        elapsed = (time.monotonic() - t0) * 1000
+        if not failed:
+            return self._item("ml_feature_snapshot_import", "PASS",
+                               f"All {len(modules)} v0.4.2 ML Feature Store modules imported.", elapsed)
+        return self._item("ml_feature_snapshot_import", "FAIL",
+                           f"{len(failed)} module(s) failed: {failed[:3]}", elapsed)
+
+    def _test_ml_leakage_checker(self) -> dict:
+        """v0.4.2: DataLeakageChecker.run() works on an empty DataFrame."""
+        t0 = time.monotonic()
+        try:
+            import pandas as pd
+            from ml.leakage_checker import DataLeakageChecker
+            result = DataLeakageChecker().run(pd.DataFrame())
+            elapsed = (time.monotonic() - t0) * 1000
+            if not isinstance(result, dict):
+                return self._item("ml_leakage_checker", "FAIL", "run() did not return dict.", elapsed)
+            return self._item("ml_leakage_checker", "PASS",
+                               f"DataLeakageChecker OK: status={result.get('status', '—')}", elapsed)
+        except Exception as exc:
+            elapsed = (time.monotonic() - t0) * 1000
+            return self._item("ml_leakage_checker", "FAIL", str(exc), elapsed)
+
+    def _test_ml_feature_store_report(self) -> dict:
+        """v0.4.2: MLFeatureStoreReportBuilder.build() generates a report file."""
+        t0 = time.monotonic()
+        try:
+            import tempfile, os
+            from reports.ml_feature_store_report import MLFeatureStoreReportBuilder
+            with tempfile.TemporaryDirectory() as tmpdir:
+                builder = MLFeatureStoreReportBuilder(report_dir=tmpdir, mode="mock")
+                path = builder.build()
+                elapsed = (time.monotonic() - t0) * 1000
+                if not os.path.isfile(path):
+                    return self._item("ml_feature_store_report", "FAIL", f"Report file not found: {path}", elapsed)
+                return self._item("ml_feature_store_report", "PASS",
+                                   f"MLFeatureStoreReportBuilder OK: {os.path.basename(path)}", elapsed)
+        except Exception as exc:
+            elapsed = (time.monotonic() - t0) * 1000
+            return self._item("ml_feature_store_report", "FAIL", str(exc), elapsed)
+
     # ------------------------------------------------------------------
     # Suite runners
     # ------------------------------------------------------------------
@@ -350,7 +430,7 @@ class RegressionSuite:
         return self._execute("quick", tests_fns)
 
     def run_full(self) -> dict:
-        """Run the full 17-test suite (quick + extended + v0.4.1)."""
+        """Run the full 21-test suite (quick + extended + v0.4.1 + v0.4.2)."""
         logger.info("RegressionSuite.run_full() — mode=%s", self.mode)
         tests_fns = [
             self._test_compileall,
@@ -371,6 +451,11 @@ class RegressionSuite:
             self._test_api_fetch_imports,
             self._test_api_token_check,
             self._test_api_cache_stats,
+            # v0.4.2
+            self._test_ml_feature_catalog,
+            self._test_ml_feature_snapshot_import,
+            self._test_ml_leakage_checker,
+            self._test_ml_feature_store_report,
         ]
         return self._execute("full", tests_fns)
 

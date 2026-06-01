@@ -396,6 +396,11 @@ class AutoReportIndexBuilder:
                 "rules_needing_review":       ctx.get("rules_needing_review"),
                 "experimental_rule_count":    ctx.get("experimental_rule_count"),
                 "high_confidence_rule_count": ctx.get("high_confidence_rule_count"),
+                # v0.4.2 ML Feature Store
+                "ml_feature_count":           ctx.get("ml_feature_count"),
+                "ml_dataset_status":          ctx.get("ml_dataset_status"),
+                "ml_leakage_status":          ctx.get("ml_leakage_status"),
+                "ml_feature_quality_score":   ctx.get("ml_feature_quality_score"),
             }
 
             path = os.path.join(output_dir, "manifest.json")

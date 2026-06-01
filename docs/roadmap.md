@@ -31,6 +31,8 @@
 | v0.3.28 | Strategy Rule Governance | Done |
 | v0.3.29 | Research Notebook / Experiment Registry | Done |
 | v0.4.0 | Research Platform Stable Release | Done |
+| v0.4.1 | API Fetch Productionization | Done |
+| v0.4.2 | ML Feature Store v1 | Done |
 
 ---
 
@@ -172,9 +174,29 @@
 
 ---
 
-## Planned: v0.4.2 — ML Feature Store v1
+## Completed: v0.4.2 — ML Feature Store v1
 
-**Target:** Centralized, versioned feature store for ML model inputs
+**Status:** Done
+
+- `FeatureCatalog` — 50+ built-in features across 16 categories; leakage_risk LOW/MEDIUM/HIGH; experimental flag
+- `FeatureSnapshotBuilder` — extracts feature matrix from daily_k, institutional, fundamental, intraday sources
+- `LabelGenerator` — fwd_return_Nd, classification (label_direction_Nd, label_up/down_3pct), triple barrier labels
+- `MLSplitManager` — default time_series split (60/20/20 by date); symbol_grouped; walk_forward; random with leakage warning
+- `DataLeakageChecker` — 7 finding types; status CLEAN/WARNING/LEAKAGE_RISK/BLOCKED_FOR_TRAINING
+- `FeatureQualityChecker` — missing_ratio, constant_features, label_balance, feature_quality_score (0-100)
+- `FeatureImportanceShell` — Pearson correlation; sklearn mutual info (optional, graceful fallback)
+- `MLFeatureDatasetBuilder` — features + labels + split + metadata; writes model_ready_dataset_*.csv (not committed)
+- `MLFeatureStoreReportBuilder` — 9-section Markdown report (not committed)
+- `MLFeatureStoreAdapter` / `MLFeatureStorePanel` — GUI tab with QThread workers; safety banner
+- 8 new CLI commands: `ml-feature-catalog`, `ml-feature-snapshot`, `ml-labels`, `ml-build-dataset`, `ml-leakage-check`, `ml-feature-quality`, `ml-feature-importance`, `ml-feature-store-report`
+- Label columns always prefix `label_` or `fwd_` — never mixed with features
+- No live prediction. No auto-trading. No real orders. Production BLOCKED.
+
+---
+
+## Planned: v0.4.3 — Model Monitoring Shell
+
+**Target:** Lightweight model performance monitoring for research use only
 
 ---
 

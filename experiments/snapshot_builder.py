@@ -446,6 +446,29 @@ class ExperimentSnapshotBuilder:
 
         return snap
 
+    def build_ml_feature_snapshot(self) -> dict:
+        """Snapshot type: ml_feature_store. Loads ML Feature Store catalog summary (v0.4.2)."""
+        snap = _empty_snapshot("ml_feature_store")
+        try:
+            from ml.feature_catalog import FeatureCatalog
+            catalog = FeatureCatalog()
+            summary = catalog.summary()
+            snap["summary"] = {
+                "total_features":       summary.get("total_features", 0),
+                "enabled_features":     summary.get("enabled_features", 0),
+                "experimental_features": summary.get("experimental_features", 0),
+                "high_leakage_risk":    summary.get("high_leakage_risk", 0),
+                "categories":           summary.get("categories", {}),
+                "research_only":        True,
+                "no_real_orders":       True,
+                "production_blocked":   True,
+            }
+            snap["status"] = "OK"
+        except Exception:
+            logger.exception("build_ml_feature_snapshot failed")
+            snap["warnings"].append("build_ml_feature_snapshot raised an exception")
+        return snap
+
     def build_all(self, universe_name: str = None) -> dict:
         """
         Build all available snapshots. Each builder is called independently;
@@ -464,6 +487,7 @@ class ExperimentSnapshotBuilder:
             ("portfolio", lambda: self.build_portfolio_snapshot()),
             ("intraday", lambda: self.build_intraday_snapshot()),
             ("reports", lambda: self.build_generated_reports_snapshot()),
+            ("ml_feature_store", lambda: self.build_ml_feature_snapshot()),
         ]
         for snap_type, fn in builders:
             try:
