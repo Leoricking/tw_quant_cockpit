@@ -190,4 +190,58 @@ v0.4.3 adds a model and signal monitoring layer on top of the stable v0.4.2 plat
 
 ---
 
+---
+
+## v0.4.4 — Intraday Replay Cockpit
+
+**Status:** Current
+
+### Summary
+
+v0.4.4 adds an intraday bar replay layer on top of the stable v0.4.3 platform. Session manager, replay engine, event timeline, opening range, VWAP, fake breakout, volume profile, strategy overlay, training mode, replay metrics, report, and GUI Intraday Replay Cockpit tab — all replay training only, no live prediction, no real orders, no broker.
+
+### New Files
+
+- `replay/__init__.py` — Replay package init; `__version__ = "v0.4.4"`
+- `replay/replay_session.py` — `ReplaySession` dataclass + `ReplaySessionManager`; session lifecycle CREATED/RUNNING/PAUSED/COMPLETED/FAILED/ARCHIVED; stores at `replay_sessions/sessions/{id}.json`
+- `replay/replay_engine.py` — `IntradayReplayEngine`; discovers CSV at `data/import/intraday_standard/{freq}/`; returns `INSUFFICIENT_INTRADAY_DATA` on missing file; `reveal_future=False` default
+- `replay/replay_events.py` — `ReplayEvent` dataclass + `ReplayEventBuilder`; 12 event type constants; `visible_at_index = bar_index` (no future leakage)
+- `replay/opening_range_replay.py` — `OpeningRangeReplay(opening_minutes=15)`; 6 states: BUILDING_RANGE/INSIDE_RANGE/BREAK_HIGH/BREAK_LOW/FAILED_BREAK_HIGH/FAILED_BREAK_LOW
+- `replay/vwap_replay.py` — `VWAPReplay`; cumulative VWAP; fallback to close mean if no volume
+- `replay/fake_breakout_replay.py` — `FakeBreakoutReplay`; 10-bar high breakout; 5-level risk
+- `replay/volume_profile_replay.py` — `VolumeProfileReplay(price_bins=20)`; POC; value area (70%); support pressure state
+- `replay/strategy_replay.py` — `StrategyReplayOverlay`; reads existing research data read-only; NEVER calls submit_order; all signals labeled as training annotations
+- `replay/training_mode.py` — `ReplayTrainingQuestion` dataclass + `ReplayTrainingMode`; 6 question types; A/B/C/D/F grading; answers NOT trading instructions
+- `replay/replay_metrics.py` — `ReplayMetrics`; bars_replayed, quiz_accuracy, training_score, grade; summarize_sessions()
+- `reports/intraday_replay_report.py` — `IntradayReplayReportBuilder`; 8-section Markdown to `reports/intraday_replay_report_YYYY-MM-DD.md`
+- `gui/intraday_replay_adapter.py` — `IntradayReplayAdapter`; lazy engine instance; `build_current_state()` combines all overlays
+- `gui/intraday_replay_panel.py` — `IntradayReplayPanel(QWidget)`; 4 QThread workers; stub if PySide6 unavailable; closeEvent cleanup
+- `docs/intraday_replay_cockpit.md` — full documentation
+
+### Modified Files
+
+- `main.py` — 5 new CLI commands: `intraday-replay`, `intraday-replay-report`, `replay-session-list`, `replay-session-show`, `replay-training-summary`
+- `gui/dashboard.py` — guarded import + "Intraday Replay" tab
+- `reports/auto_report_center.py` — `include_intraday_replay` flag (full profile True, daily profile False); `run_intraday_replay_report()` method
+- `reports/auto_report_index.py` — manifest adds `intraday_replay_session_count`, `intraday_replay_training_score`, `intraday_replay_event_count`
+- `release/regression_suite.py` — 2 new v0.4.4 tests (intraday_replay_imports, intraday_replay_empty_state); 26 total
+- `release/stable_release_checklist.py` — 3 new v0.4.4 checks (intraday_replay_import, replay_runtime_ignored, no_broker_call_in_replay); 29 total
+- `experiments/snapshot_builder.py` — `build_intraday_replay_snapshot()` added to `build_all()`
+- `docs/roadmap.md` — v0.4.4 marked Done; v0.4.5 Notification Center planned
+- `docs/index.md` — updated version, added intraday_replay_cockpit.md
+- `.gitignore` — `replay_sessions/`, `reports/intraday_replay_report_*.md`, and related artifacts excluded
+
+### Safety
+
+- `read_only=True`, `no_real_orders=True`, `production_blocked=True`, `real_order_ready=False` in all new classes
+- `StrategyReplayOverlay` NEVER calls submit_order; all strategy signals labeled as training annotations
+- Training mode answers are NOT trading instructions
+- `reveal_future=False` default in replay engine; event `visible_at_index = bar_index` (no lookahead)
+- `replay_sessions/` and `reports/intraday_replay_report_*.md` never committed (gitignored)
+- No live prediction. No broker connection. No auto-trading. Replay Training Only.
+- Production Trading: BLOCKED
+- REAL_ORDER_READY: False
+
+---
+
 *Previous release notes: see `docs/release_notes_v0.3.md`*

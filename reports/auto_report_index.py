@@ -406,6 +406,10 @@ class AutoReportIndexBuilder:
                 "prediction_count":           ctx.get("prediction_count"),
                 "drift_status":               ctx.get("drift_status"),
                 "degradation_status":         ctx.get("degradation_status"),
+                # v0.4.4 Intraday Replay Cockpit
+                "intraday_replay_session_count":  ctx.get("intraday_replay_session_count"),
+                "intraday_replay_training_score": ctx.get("intraday_replay_training_score"),
+                "intraday_replay_event_count":    ctx.get("intraday_replay_event_count"),
             }
 
             path = os.path.join(output_dir, "manifest.json")

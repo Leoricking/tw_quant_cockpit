@@ -4,7 +4,54 @@
 >
 > **[!] v1: Real order execution is strictly prohibited. For research, simulation, and decision support only. Not investment advice.**
 
-**Current version: v0.4.3 — Model Monitoring Framework**
+**Current version: v0.4.4 — Intraday Replay Cockpit**
+
+---
+
+## v0.4.4 — Intraday Replay Cockpit
+
+**New in v0.4.4:**
+
+- **Replay Session Manager** — `ReplaySessionManager`: session lifecycle CREATED/RUNNING/PAUSED/COMPLETED; stored in `replay_sessions/` (gitignored)
+- **Intraday Replay Engine** — `IntradayReplayEngine`: step through 1min/5min historical bars; INSUFFICIENT_INTRADAY_DATA on missing data; no future data leakage
+- **Event Timeline** — `ReplayEventBuilder`: 12 event types (opening range, VWAP cross, fake breakout, volume spike, session boundary); visible_at_index = bar_index (no lookahead)
+- **Opening Range Replay** — `OpeningRangeReplay(15min)`: BUILDING_RANGE/BREAK_HIGH/BREAK_LOW/FAILED_BREAK_HIGH/FAILED_BREAK_LOW states
+- **VWAP Replay** — `VWAPReplay`: cumulative VWAP overlay; price vs VWAP classification per bar
+- **Fake Breakout Replay** — `FakeBreakoutReplay`: 10-bar high breakout + failed confirmation; 5-level risk
+- **Volume Profile Replay** — `VolumeProfileReplay`: 20-bin profile; POC; 70% value area; support pressure state
+- **Strategy Overlay** — `StrategyReplayOverlay`: reads existing research data read-only; NEVER calls broker/submit_order; all signals are training annotations
+- **Training Mode** — `ReplayTrainingMode`: 6 question types (entry/exit/breakout/fake/vwap/volume); A–F grading; answers NOT trading instructions
+- **Replay Metrics** — `ReplayMetrics`: bars_replayed, quiz_accuracy, training_score, grade
+- **Replay Report** — 8-section Markdown report; never committed
+- **GUI tab** — "Intraday Replay" tab with QThread workers; safety banner
+- **No live prediction. No broker connection. No real orders. Replay Training Only.**
+
+```
+# Step through 30 bars for stock 2454 at 1min frequency
+python main.py intraday-replay --mode real --stock 2454 --freq 1min --steps 30
+
+# Generate replay report
+python main.py intraday-replay-report --mode real
+
+# List replay sessions
+python main.py replay-session-list
+
+# Show session detail
+python main.py replay-session-show --id REPLAY-20260601-120000-abc123
+
+# Show training summary
+python main.py replay-training-summary --mode real
+```
+
+**Safety:**
+- `replay_sessions/` — gitignored, never committed
+- `reports/intraday_replay_report_*.md` — gitignored, never committed
+- Strategy overlay signals are training annotations, NOT investment advice
+- Training mode answers are NOT trading instructions
+- `reveal_future=False` — no future bar data leakage
+- Production Trading: BLOCKED
+- REAL_ORDER_READY: False
+- Replay Training Only
 
 ---
 

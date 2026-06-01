@@ -474,6 +474,57 @@ class RegressionSuite:
             elapsed = (time.monotonic() - t0) * 1000
             return self._item("ml_feature_store_report", "FAIL", str(exc), elapsed)
 
+    def _test_intraday_replay_imports(self) -> dict:
+        """v0.4.4: All Intraday Replay modules import cleanly."""
+        t0 = time.monotonic()
+        modules = [
+            ("replay.replay_session",       "ReplaySessionManager"),
+            ("replay.replay_engine",         "IntradayReplayEngine"),
+            ("replay.replay_events",         "ReplayEventBuilder"),
+            ("replay.opening_range_replay",  "OpeningRangeReplay"),
+            ("replay.vwap_replay",           "VWAPReplay"),
+            ("replay.fake_breakout_replay",  "FakeBreakoutReplay"),
+            ("replay.volume_profile_replay", "VolumeProfileReplay"),
+            ("replay.strategy_replay",       "StrategyReplayOverlay"),
+            ("replay.training_mode",         "ReplayTrainingMode"),
+            ("replay.replay_metrics",        "ReplayMetrics"),
+            ("reports.intraday_replay_report", "IntradayReplayReportBuilder"),
+            ("gui.intraday_replay_adapter",  "IntradayReplayAdapter"),
+        ]
+        failed = []
+        for mod_path, cls_name in modules:
+            try:
+                mod = __import__(mod_path, fromlist=[cls_name])
+                getattr(mod, cls_name)
+            except Exception as exc:
+                failed.append(f"{mod_path}.{cls_name}: {exc}")
+        elapsed = (time.monotonic() - t0) * 1000
+        if not failed:
+            return self._item("intraday_replay_imports", "PASS",
+                               f"All {len(modules)} v0.4.4 Intraday Replay modules imported.", elapsed)
+        return self._item("intraday_replay_imports", "FAIL",
+                           f"{len(failed)} module(s) failed: {failed[:3]}", elapsed)
+
+    def _test_intraday_replay_empty_state(self) -> dict:
+        """v0.4.4: IntradayReplayEngine.load() returns INSUFFICIENT_INTRADAY_DATA (no crash) with missing data."""
+        t0 = time.monotonic()
+        try:
+            from replay.replay_engine import IntradayReplayEngine
+            engine = IntradayReplayEngine()
+            result = engine.load(symbol="9999", date=None)
+            elapsed = (time.monotonic() - t0) * 1000
+            if not isinstance(result, dict):
+                return self._item("intraday_replay_empty_state", "FAIL", "load() did not return dict.", elapsed)
+            status = result.get("status", "—")
+            if status in ("INSUFFICIENT_INTRADAY_DATA", "READY"):
+                return self._item("intraday_replay_empty_state", "PASS",
+                                   f"IntradayReplayEngine.load() OK: status={status}", elapsed)
+            return self._item("intraday_replay_empty_state", "PARTIAL",
+                               f"Unexpected status: {status}", elapsed)
+        except Exception as exc:
+            elapsed = (time.monotonic() - t0) * 1000
+            return self._item("intraday_replay_empty_state", "FAIL", str(exc), elapsed)
+
     # ------------------------------------------------------------------
     # Suite runners
     # ------------------------------------------------------------------
@@ -493,7 +544,7 @@ class RegressionSuite:
         return self._execute("quick", tests_fns)
 
     def run_full(self) -> dict:
-        """Run the full 24-test suite (quick + extended + v0.4.1 + v0.4.2 + v0.4.3)."""
+        """Run the full 26-test suite (quick + extended + v0.4.1 + v0.4.2 + v0.4.3 + v0.4.4)."""
         logger.info("RegressionSuite.run_full() — mode=%s", self.mode)
         tests_fns = [
             self._test_compileall,
@@ -523,6 +574,9 @@ class RegressionSuite:
             self._test_model_monitoring_imports,
             self._test_model_monitoring_summary,
             self._test_drift_detector,
+            # v0.4.4
+            self._test_intraday_replay_imports,
+            self._test_intraday_replay_empty_state,
         ]
         return self._execute("full", tests_fns)
 

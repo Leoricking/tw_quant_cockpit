@@ -493,6 +493,29 @@ class ExperimentSnapshotBuilder:
             snap["warnings"].append("build_model_monitoring_snapshot raised an exception")
         return snap
 
+    def build_intraday_replay_snapshot(self) -> dict:
+        """Snapshot type: intraday_replay. Loads Intraday Replay session summary (v0.4.4)."""
+        snap = _empty_snapshot("intraday_replay")
+        try:
+            from replay.replay_session import ReplaySessionManager
+            mgr = ReplaySessionManager()
+            summary = mgr.summary()
+            sessions = mgr.list_sessions(limit=1000)
+            completed_count = sum(1 for s in sessions if s.get("status") == "COMPLETED")
+            snap["summary"] = {
+                "total_sessions":           summary.get("total", 0),
+                "sessions_completed":       completed_count,
+                "by_status":                summary.get("by_status", {}),
+                "research_only":            True,
+                "no_real_orders":           True,
+                "replay_training_only":     True,
+            }
+            snap["status"] = "OK"
+        except Exception:
+            logger.exception("build_intraday_replay_snapshot failed")
+            snap["warnings"].append("build_intraday_replay_snapshot raised an exception")
+        return snap
+
     def build_all(self, universe_name: str = None) -> dict:
         """
         Build all available snapshots. Each builder is called independently;
@@ -513,6 +536,7 @@ class ExperimentSnapshotBuilder:
             ("reports", lambda: self.build_generated_reports_snapshot()),
             ("ml_feature_store", lambda: self.build_ml_feature_snapshot()),
             ("model_monitoring", lambda: self.build_model_monitoring_snapshot()),
+            ("intraday_replay",  lambda: self.build_intraday_replay_snapshot()),
         ]
         for snap_type, fn in builders:
             try:

@@ -3,7 +3,7 @@
 > **[!] Research Only. Read Only. No Real Orders. Production Trading: BLOCKED.**
 > **[!] Not investment advice. REAL_ORDER_READY=False.**
 
-Current version: **v0.4.3**
+Current version: **v0.4.4**
 
 ---
 
@@ -62,6 +62,7 @@ Current version: **v0.4.3**
 | [api_fetch_productionization.md](api_fetch_productionization.md) | v0.4.1 | API Fetch Productionization (token, retry, cache, lineage, parsers) |
 | [ml_feature_store_v1.md](ml_feature_store_v1.md) | v0.4.2 | ML Feature Store v1 (feature catalog, snapshot, labels, split, leakage check, quality, importance) |
 | [model_monitoring.md](model_monitoring.md) | v0.4.3 | Model Monitoring (prediction tracking, hit/miss review, drift detection, signal degradation, rule vs ML) |
+| [intraday_replay_cockpit.md](intraday_replay_cockpit.md) | v0.4.4 | Intraday Replay Cockpit (replay engine, opening range, VWAP, fake breakout, volume profile, training mode) |
 
 ---
 

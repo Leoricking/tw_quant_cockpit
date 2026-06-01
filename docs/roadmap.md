@@ -34,6 +34,7 @@
 | v0.4.1 | API Fetch Productionization | Done |
 | v0.4.2 | ML Feature Store v1 | Done |
 | v0.4.3 | Model Monitoring Framework | Done |
+| v0.4.4 | Intraday Replay Cockpit | Done |
 
 ---
 
@@ -213,9 +214,30 @@
 
 ---
 
-## Planned: v0.4.4 — Intraday Replay Cockpit
+## Completed: v0.4.4 — Intraday Replay Cockpit
 
-**Target:** Replay 1min bars with opening range, VWAP, fake breakout, volume profile, strategy overlays
+**Status:** Done
+
+- `ReplaySession` / `ReplaySessionManager` — session lifecycle (CREATED/RUNNING/PAUSED/COMPLETED/FAILED/ARCHIVED); stored in `replay_sessions/` (not committed)
+- `IntradayReplayEngine` — discovers 1min/5min CSV at `data/import/intraday_standard/{freq}/`; INSUFFICIENT_INTRADAY_DATA on missing data; no future leakage
+- `ReplayEventBuilder` — 12 event types; visible_at_index = bar_index (no lookahead)
+- `OpeningRangeReplay` — 15-min opening range; 6 breakout/failed states
+- `VWAPReplay` — cumulative VWAP = (close×vol).cumsum() / vol.cumsum(); price vs VWAP overlay
+- `FakeBreakoutReplay` — 10-bar high breakout detection; failed breakout warning; 5-level risk
+- `VolumeProfileReplay` — 20-bin volume profile; POC; value area (70%); support pressure state
+- `StrategyReplayOverlay` — reads existing research data; NEVER calls broker/submit_order; signals labeled as training annotations
+- `ReplayTrainingMode` — 6 question types (entry/exit/breakout/fake/vwap/volume); A–F grading; answers NOT trading instructions
+- `ReplayMetrics` — bars_replayed, quiz_accuracy, training_score, grade; summarize_sessions()
+- `IntradayReplayReportBuilder` — 8-section Markdown report (not committed)
+- `IntradayReplayAdapter` / `IntradayReplayPanel` — GUI tab with QThread workers; safety banner
+- 5 new CLI commands: `intraday-replay`, `intraday-replay-report`, `replay-session-list`, `replay-session-show`, `replay-training-summary`
+- No live prediction. No broker connection. No real orders. Replay Training Only.
+
+---
+
+## Planned: v0.4.5 — Notification Center
+
+**Target:** Research alerts, scheduled summary notifications, email/webhook (read-only)
 
 ---
 

@@ -261,6 +261,17 @@ except Exception as _mm_exc:
 
 
 # ---------------------------------------------------------------------------
+# v0.4.4 Intraday Replay panel import (guarded)
+# ---------------------------------------------------------------------------
+try:
+    from gui.intraday_replay_panel import IntradayReplayPanel
+    _INTRADAY_REPLAY_AVAILABLE = True
+except Exception as _irrp_exc:
+    logger.warning("IntradayReplayPanel unavailable: %s", _irrp_exc)
+    _INTRADAY_REPLAY_AVAILABLE = False
+
+
+# ---------------------------------------------------------------------------
 # Colour helpers (Taiwan convention: red = up, green = down)
 # ---------------------------------------------------------------------------
 
@@ -1265,6 +1276,13 @@ class CockpitWindow(QMainWindow if _PYSIDE6_AVAILABLE else object):
             mid_tabs.addTab(self._model_monitoring_panel, "Model Monitoring")
         else:
             self._model_monitoring_panel = None
+
+        # v0.4.4 Intraday Replay tab
+        if _INTRADAY_REPLAY_AVAILABLE:
+            self._intraday_replay_panel = IntradayReplayPanel(mode=self._mode if hasattr(self, "_mode") else "real")
+            mid_tabs.addTab(self._intraday_replay_panel, "Intraday Replay")
+        else:
+            self._intraday_replay_panel = None
 
         h_split.addWidget(mid_tabs)
         h_split.setStretchFactor(0, 3)

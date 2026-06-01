@@ -51,6 +51,7 @@ _PROFILE_FLAGS: Dict[str, dict] = {
         include_api_fetch_production=True,
         include_ml_feature_store=True,
         include_model_monitoring=True,
+        include_intraday_replay=True,
     ),
     "daily": dict(
         include_stock_reports=False,
@@ -67,6 +68,7 @@ _PROFILE_FLAGS: Dict[str, dict] = {
         include_api_fetch_production=True,
         include_ml_feature_store=True,
         include_model_monitoring=True,
+        include_intraday_replay=False,
     ),
     "portfolio": dict(
         include_stock_reports=False,
@@ -157,6 +159,7 @@ class AutoReportCenter:
         include_api_fetch_production: bool = False,
         include_ml_feature_store: bool = False,
         include_model_monitoring: bool = False,
+        include_intraday_replay: bool = False,
     ):
         self.mode        = mode
         self.profile     = profile
@@ -186,6 +189,7 @@ class AutoReportCenter:
         self.include_api_fetch_production  = flags.get("include_api_fetch_production",  include_api_fetch_production)
         self.include_ml_feature_store      = flags.get("include_ml_feature_store",      include_ml_feature_store)
         self.include_model_monitoring      = flags.get("include_model_monitoring",      include_model_monitoring)
+        self.include_intraday_replay       = flags.get("include_intraday_replay",       include_intraday_replay)
         self.universe_name = universe_name
 
         # Runtime state (populated during run)
@@ -262,6 +266,9 @@ class AutoReportCenter:
 
         if self.include_model_monitoring:
             self.run_model_monitoring_report()
+
+        if self.include_intraday_replay:
+            self.run_intraday_replay_report()
 
         # Aggregated outputs
         if self.include_daily_summary:
@@ -682,6 +689,20 @@ class AutoReportCenter:
                 self._record_fail("api_fetch_production", result.get("error", "unknown"))
         except Exception as exc:
             self._record_fail("api_fetch_production", str(exc))
+
+    def run_intraday_replay_report(self):
+        """Generate Intraday Replay Cockpit report (v0.4.4). Optional — failure does not abort run."""
+        try:
+            from gui.intraday_replay_adapter import IntradayReplayAdapter
+            result = IntradayReplayAdapter(report_dir=self._out_dir).generate_report(mode=self.mode)
+            if result.get("ok"):
+                path = result.get("report_path", "")
+                self._context["intraday_replay_report"] = path
+                self._record_success("intraday_replay", path)
+            else:
+                self._record_fail("intraday_replay", result.get("error", "unknown"))
+        except Exception as exc:
+            self._record_fail("intraday_replay", str(exc))
 
     def run_model_monitoring_report(self):
         """Generate Model Monitoring report (v0.4.3). Optional — failure does not abort run."""

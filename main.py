@@ -6403,6 +6403,164 @@ def cmd_ml_feature_store_report(args: argparse.Namespace) -> None:
 
 
 # ---------------------------------------------------------------------------
+# v0.4.4 Intraday Replay Cockpit command handlers
+# ---------------------------------------------------------------------------
+
+def cmd_intraday_replay(args: argparse.Namespace) -> None:
+    """Step through intraday replay session."""
+    mode  = getattr(args, "mode", "real")
+    stock = getattr(args, "stock", None)
+    freq  = getattr(args, "freq", "1min")
+    steps = getattr(args, "steps", 30)
+    date_ = getattr(args, "date", None)
+    print("=" * 60)
+    print(f"  TW Quant Cockpit v0.4.4 — Intraday Replay (mode={mode})")
+    print(f"  [!] Replay Training Only | Read Only | No Real Orders | Production BLOCKED")
+    print("=" * 60)
+    try:
+        from replay.replay_session import ReplaySessionManager
+        from replay.replay_engine import IntradayReplayEngine
+        if not stock:
+            print("  No --stock specified. Use --stock <symbol> to replay a symbol.")
+            return
+        mgr    = ReplaySessionManager()
+        sess   = mgr.create_session(symbol=stock, freq=freq, date=date_)
+        engine = IntradayReplayEngine(freq=freq)
+        result = engine.load_intraday_data(symbol=stock, date=date_)
+        if result.get("status") == "INSUFFICIENT_INTRADAY_DATA":
+            print(f"  Status: INSUFFICIENT_INTRADAY_DATA")
+            print(f"  No intraday CSV found for {stock} ({freq}).")
+            print(f"  Import data to data/import/intraday_standard/{freq}/ first.")
+            return
+        total_bars = result.get("total_bars", 0)
+        print(f"  Symbol:     {stock}")
+        print(f"  Frequency:  {freq}")
+        print(f"  Total bars: {total_bars}")
+        print(f"  Replaying {min(steps, total_bars)} bars...")
+        print()
+        for i in range(min(steps, total_bars)):
+            bar = engine.step_forward()
+            if bar is None or bar.get("status") in ("NOT_LOADED", "INSUFFICIENT_INTRADAY_DATA"):
+                break
+            t = bar.get("datetime", bar.get("time", "—"))
+            o = bar.get("open", 0) or 0
+            h = bar.get("high", 0) or 0
+            lo = bar.get("low", 0) or 0
+            c = bar.get("close", 0) or 0
+            v = bar.get("volume", 0) or 0
+            try:
+                print(f"  [{i+1:>3}] {str(t)[:19]}  O={float(o):.2f}  H={float(h):.2f}  L={float(lo):.2f}  C={float(c):.2f}  V={int(v)}")
+            except Exception:
+                print(f"  [{i+1:>3}] {t}")
+        mgr.complete_session(sess.session_id)
+        print()
+        print(f"  Session ID: {sess.session_id}")
+    except Exception as exc:
+        print(f"  ERROR: {exc}")
+    print()
+    print("  [!] Replay bars are historical read-only data. Not investment advice.")
+    print("  [!] No real orders. Replay Training Only.")
+
+
+def cmd_intraday_replay_report(args: argparse.Namespace) -> None:
+    """Generate Intraday Replay Cockpit report."""
+    mode       = getattr(args, "mode", "real")
+    report_dir = getattr(args, "report_dir", None)
+    print("=" * 60)
+    print(f"  TW Quant Cockpit v0.4.4 — Intraday Replay Report (mode={mode})")
+    print("  [!] Replay Training Only | Read Only | No Real Orders | Production BLOCKED")
+    print("=" * 60)
+    try:
+        from gui.intraday_replay_adapter import IntradayReplayAdapter
+        kwargs = {}
+        if report_dir:
+            kwargs["report_dir"] = report_dir
+        result = IntradayReplayAdapter(**kwargs).generate_report(mode=mode)
+        if result.get("ok"):
+            print(f"  Report saved: {result.get('report_path')}")
+        else:
+            print(f"  ERROR: {result.get('error')}")
+    except Exception as exc:
+        print(f"  ERROR: {exc}")
+    print()
+    print("  [!] Report NOT committed. No real orders. Replay Training Only.")
+
+
+def cmd_replay_session_list(args: argparse.Namespace) -> None:
+    """List all replay sessions."""
+    limit = getattr(args, "limit", 20)
+    print("=" * 60)
+    print("  TW Quant Cockpit v0.4.4 — Replay Session List")
+    print("  [!] Replay Training Only | Read Only | No Real Orders | Production BLOCKED")
+    print("=" * 60)
+    try:
+        from replay.replay_session import ReplaySessionManager
+        sessions = ReplaySessionManager().list_sessions(limit=limit)
+        if not sessions:
+            print("  No sessions found.")
+        else:
+            print(f"  {'ID':<30} {'Symbol':<8} {'Freq':<6} {'Status':<12} {'Created'}")
+            print(f"  {'-'*80}")
+            for s in sessions[:limit]:
+                print(f"  {s.get('session_id',''):<30} {s.get('symbol',''):<8} "
+                      f"{s.get('freq',''):<6} {s.get('status',''):<12} {s.get('created_at','')[:19]}")
+    except Exception as exc:
+        print(f"  ERROR: {exc}")
+    print()
+    print("  [!] Sessions are training records only. No real orders.")
+
+
+def cmd_replay_session_show(args: argparse.Namespace) -> None:
+    """Show detail for a single replay session."""
+    session_id = getattr(args, "id", None)
+    print("=" * 60)
+    print("  TW Quant Cockpit v0.4.4 — Replay Session Detail")
+    print("  [!] Replay Training Only | Read Only | No Real Orders | Production BLOCKED")
+    print("=" * 60)
+    if not session_id:
+        print("  ERROR: --id is required. Use 'python main.py replay-session-list' to find IDs.")
+        return
+    try:
+        from replay.replay_session import ReplaySessionManager
+        sess = ReplaySessionManager().load_session(session_id)
+        if sess is None:
+            print(f"  Session not found: {session_id}")
+        else:
+            for k, v in sess.to_dict().items():
+                print(f"  {k:<25} {v}")
+    except Exception as exc:
+        print(f"  ERROR: {exc}")
+    print()
+    print("  [!] Session data is training record only. Not investment advice.")
+
+
+def cmd_replay_training_summary(args: argparse.Namespace) -> None:
+    """Show replay training mode summary (quiz accuracy, grade)."""
+    mode = getattr(args, "mode", "real")
+    print("=" * 60)
+    print(f"  TW Quant Cockpit v0.4.4 — Replay Training Summary (mode={mode})")
+    print("  [!] Replay Training Only | Read Only | No Real Orders | Production BLOCKED")
+    print("=" * 60)
+    try:
+        from replay.replay_session import ReplaySessionManager
+        mgr     = ReplaySessionManager()
+        summary = mgr.summary()
+        sessions_all = mgr.list_sessions(limit=1000)
+        completed = [s for s in sessions_all if s.get("status") == "COMPLETED"]
+        print(f"  Total sessions:      {summary.get('total', 0)}")
+        print(f"  Completed sessions:  {len(completed)}")
+        by_status = summary.get("by_status", {})
+        for status, count in sorted(by_status.items()):
+            print(f"    {status:<12} {count}")
+        print()
+        print(f"  (Run with --mode real to see per-session metrics after completing sessions)")
+    except Exception as exc:
+        print(f"  ERROR: {exc}")
+    print()
+    print("  [!] Training answers are NOT trading instructions. No real orders.")
+
+
+# ---------------------------------------------------------------------------
 # Argument parser
 # ---------------------------------------------------------------------------
 
@@ -7240,6 +7398,53 @@ def _build_parser() -> argparse.ArgumentParser:
     p_mfsr.add_argument("--report-dir", dest="report_dir", default=None,
                         help="Custom output directory for reports")
 
+    # --- intraday-replay (v0.4.4) ---
+    p_ir = subparsers.add_parser(
+        "intraday-replay",
+        help="Step through intraday 1min/5min bars in replay mode (v0.4.4)",
+    )
+    p_ir.add_argument("--mode",  choices=["real", "mock"], default="real",
+                      help="Data mode (default: real)")
+    p_ir.add_argument("--stock", default=None, help="Stock symbol to replay")
+    p_ir.add_argument("--freq",  choices=["1min", "5min"], default="1min",
+                      help="Bar frequency (default: 1min)")
+    p_ir.add_argument("--steps", type=int, default=30,
+                      help="Number of bars to replay (default: 30)")
+    p_ir.add_argument("--date",  default=None, help="Replay date YYYY-MM-DD (default: latest)")
+
+    # --- intraday-replay-report (v0.4.4) ---
+    p_irr = subparsers.add_parser(
+        "intraday-replay-report",
+        help="Generate Intraday Replay Cockpit Markdown report (v0.4.4)",
+    )
+    p_irr.add_argument("--mode",       choices=["real", "mock"], default="real",
+                       help="Data mode (default: real)")
+    p_irr.add_argument("--report-dir", dest="report_dir", default=None,
+                       help="Custom output directory for reports")
+
+    # --- replay-session-list (v0.4.4) ---
+    p_rsl = subparsers.add_parser(
+        "replay-session-list",
+        help="List replay training sessions (v0.4.4)",
+    )
+    p_rsl.add_argument("--limit", type=int, default=20,
+                       help="Max sessions to show (default: 20)")
+
+    # --- replay-session-show (v0.4.4) ---
+    p_rss = subparsers.add_parser(
+        "replay-session-show",
+        help="Show detail for a single replay session (v0.4.4)",
+    )
+    p_rss.add_argument("--id", default=None, help="Session ID (REPLAY-YYYYMMDD-HHMMSS-XXXXXX)")
+
+    # --- replay-training-summary (v0.4.4) ---
+    p_rts = subparsers.add_parser(
+        "replay-training-summary",
+        help="Show replay training summary: quiz accuracy, grade (v0.4.4)",
+    )
+    p_rts.add_argument("--mode", choices=["real", "mock"], default="real",
+                       help="Data mode (default: real)")
+
     # --- experiment-create (v0.3.29) ---
     p_ec = subparsers.add_parser(
         "experiment-create",
@@ -7804,6 +8009,12 @@ def main() -> None:
         "ml-feature-quality":          cmd_ml_feature_quality,
         "ml-feature-importance":       cmd_ml_feature_importance,
         "ml-feature-store-report":     cmd_ml_feature_store_report,
+        # v0.4.4 Intraday Replay Cockpit
+        "intraday-replay":             cmd_intraday_replay,
+        "intraday-replay-report":      cmd_intraday_replay_report,
+        "replay-session-list":         cmd_replay_session_list,
+        "replay-session-show":         cmd_replay_session_show,
+        "replay-training-summary":     cmd_replay_training_summary,
     }
 
     if args.command is None:

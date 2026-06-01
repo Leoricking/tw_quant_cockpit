@@ -207,3 +207,9 @@ data/backtest_results/ml_feature_*.csv
 data/backtest_results/ml_feature_*.json
 data/backtest_results/ml_leakage_*.csv
 data/backtest_results/ml_leakage_*.json
+
+# Intraday Replay Cockpit outputs (v0.4.4, runtime artifacts — NEVER commit)
+replay_sessions/
+reports/intraday_replay_report_*.md
+data/backtest_results/intraday_replay_*.csv
+data/backtest_results/intraday_replay_*.json

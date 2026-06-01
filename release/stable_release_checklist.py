@@ -534,6 +534,72 @@ class StableReleaseChecklist:
             elapsed = (time.monotonic() - t0) * 1000
             return self._item("ml_dataset_artifact_ignored", "WARN", str(exc), elapsed)
 
+    def _check_intraday_replay_import(self) -> dict:
+        """v0.4.4: All Intraday Replay core modules import cleanly."""
+        t0 = time.monotonic()
+        modules = [
+            ("replay.replay_session",         "ReplaySessionManager"),
+            ("replay.replay_engine",           "IntradayReplayEngine"),
+            ("replay.training_mode",           "ReplayTrainingMode"),
+            ("replay.replay_metrics",          "ReplayMetrics"),
+            ("reports.intraday_replay_report", "IntradayReplayReportBuilder"),
+            ("gui.intraday_replay_adapter",    "IntradayReplayAdapter"),
+        ]
+        failed = []
+        for mod_path, cls_name in modules:
+            try:
+                mod = __import__(mod_path, fromlist=[cls_name])
+                getattr(mod, cls_name)
+            except Exception as exc:
+                failed.append(f"{mod_path}: {exc}")
+        elapsed = (time.monotonic() - t0) * 1000
+        if not failed:
+            return self._item("intraday_replay_import", "PASS",
+                               f"All {len(modules)} Intraday Replay modules imported.", elapsed)
+        return self._item("intraday_replay_import", "WARN",
+                           f"{len(failed)} module(s) failed: {failed[:2]}", elapsed)
+
+    def _check_replay_runtime_ignored(self) -> dict:
+        """v0.4.4: Verify replay_sessions/ and intraday_replay_report_*.md are in .gitignore."""
+        t0 = time.monotonic()
+        required = [
+            "replay_sessions/",
+            "reports/intraday_replay_report_",
+        ]
+        gitignore_path = os.path.join(BASE_DIR, ".gitignore")
+        try:
+            with open(gitignore_path, "r", encoding="utf-8", errors="replace") as f:
+                content = f.read()
+            missing = [pat for pat in required if pat not in content]
+            elapsed = (time.monotonic() - t0) * 1000
+            if not missing:
+                return self._item("replay_runtime_ignored", "PASS",
+                                   "replay_sessions/ and report patterns in .gitignore.", elapsed)
+            return self._item("replay_runtime_ignored", "WARN",
+                               f"Missing .gitignore patterns: {missing}", elapsed)
+        except Exception as exc:
+            elapsed = (time.monotonic() - t0) * 1000
+            return self._item("replay_runtime_ignored", "WARN", str(exc), elapsed)
+
+    def _check_no_broker_call_in_replay(self) -> dict:
+        """v0.4.4: StrategyReplayOverlay has no_real_orders=True and read_only=True."""
+        t0 = time.monotonic()
+        try:
+            from replay.strategy_replay import StrategyReplayOverlay
+            obj = StrategyReplayOverlay()
+            elapsed = (time.monotonic() - t0) * 1000
+            if not getattr(obj, "read_only", False):
+                return self._item("no_broker_call_in_replay", "FAIL",
+                                   "StrategyReplayOverlay.read_only is not True", elapsed)
+            if not getattr(obj, "no_real_orders", False):
+                return self._item("no_broker_call_in_replay", "FAIL",
+                                   "StrategyReplayOverlay.no_real_orders is not True", elapsed)
+            return self._item("no_broker_call_in_replay", "PASS",
+                               "StrategyReplayOverlay: read_only=True, no_real_orders=True.", elapsed)
+        except Exception as exc:
+            elapsed = (time.monotonic() - t0) * 1000
+            return self._item("no_broker_call_in_replay", "WARN", f"Module not available: {exc}", elapsed)
+
     # ------------------------------------------------------------------
     # Write outputs
     # ------------------------------------------------------------------
@@ -610,7 +676,7 @@ class StableReleaseChecklist:
     # ------------------------------------------------------------------
 
     def run(self) -> dict:
-        """Run all 26 checklist items and return summary dict."""
+        """Run all 29 checklist items and return summary dict."""
         logger.info("StableReleaseChecklist.run() — mode=%s", self.mode)
 
         checks = [
@@ -643,6 +709,10 @@ class StableReleaseChecklist:
             self._check_model_monitoring_import,
             self._check_no_live_prediction,
             self._check_prediction_logs_ignored,
+            # v0.4.4
+            self._check_intraday_replay_import,
+            self._check_replay_runtime_ignored,
+            self._check_no_broker_call_in_replay,
         ]
 
         items: list[dict] = []
