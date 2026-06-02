@@ -4,7 +4,44 @@
 >
 > **[!] v1: Real order execution is strictly prohibited. For research, simulation, and decision support only. Not investment advice.**
 
-**Current version: v0.4.6 — Portfolio Journal & Trade Review**
+**Current version: v0.4.7 — Research Review Dashboard**
+
+---
+
+## v0.4.7 — Research Review Dashboard
+
+**New in v0.4.7:**
+
+- **Research Review Dashboard** — Unified daily/weekly research review aggregator. Aggregates 9 subsystems into ReviewItems, Scorecard, and Action Plan.
+- **ResearchReviewAggregator** — Collects summaries from Notification Center, Portfolio Journal, Rule Governance, Model Monitoring, Intraday Replay, Data Quality Gate, Provider Reliability, Signal Quality, Experiments.
+- **ResearchReviewScorecard** — Calculates 9 dimension scores: Process Quality, Data Health, Signal Health, Rule Health, Model Health, Replay Training, Journal Completion, Safety, Overall. Grades: STRONG/GOOD/PARTIAL/WEAK/BLOCKED/UNKNOWN.
+- **ReviewActionPlanner** — Converts ReviewItems to prioritized P0-P3 Action Plan. All suggested commands are research-only. No buy/sell/order suggestions.
+- **ResearchReviewStore** — Saves/loads 4 CSV files to `data/backtest_results/research_review/` (gitignored).
+- **ResearchReviewDashboardReport** — 10-section Markdown report.
+- **ResearchReviewDashboardPanel** — PySide6 panel: safety banner, summary cards, 6 inner tabs (Scorecard, Review Items, Top Mistakes, Weak Rules, Data Blockers, Action Plan), QThread workers.
+- **Dashboard** — "Research Review" tab added to cockpit.
+
+**Safety:**
+- Review Only. Research Only. No Real Orders. Production Trading: BLOCKED.
+- No broker connection, no submit_order, no real fills, not investment advice.
+- No auto-weight changes, no auto rule status changes, no auto ML feature enable.
+- `data/backtest_results/research_review/` and all report outputs are gitignored — never committed.
+
+**CLI:**
+```bash
+python main.py research-review --mode real --period daily
+python main.py research-review --mode real --period weekly
+python main.py research-review-report --mode real --period daily
+python main.py research-review-summary
+python main.py research-review-actions
+```
+
+**GUI:**
+1. `python main.py cockpit --mode real`
+2. Select **Research Review** tab
+3. Click **Run Daily Review** or **Run Weekly Review**
+4. Review Scorecard, Review Items, Top Mistakes, Weak Rules, Data Blockers, Action Plan
+5. Click **Generate Report** to produce Markdown report
 
 ---
 

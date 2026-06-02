@@ -802,6 +802,9 @@ class RegressionSuite:
             # v0.4.6
             self._test_journal_imports,
             self._test_journal_store_empty_state,
+            # v0.4.7
+            self._test_research_review_imports,
+            self._test_research_review_summary,
         ]
         return self._execute("full", tests_fns)
 
@@ -861,6 +864,50 @@ class RegressionSuite:
             suite_name, overall, passed, failed, warned,
         )
         return result
+
+    # ------------------------------------------------------------------
+    # v0.4.7 Research Review Dashboard tests
+    # ------------------------------------------------------------------
+
+    def _test_research_review_imports(self) -> dict:
+        t0 = time.monotonic()
+        try:
+            from review.review_schema import ReviewItem
+            from review.review_aggregator import ResearchReviewAggregator
+            from review.review_scorecard import ResearchReviewScorecard
+            from review.review_action_planner import ReviewActionPlanner
+            from review.review_store import ResearchReviewStore
+            from gui.research_review_dashboard_adapter import ResearchReviewDashboardAdapter
+            return self._item(
+                "research_review_imports", "PASS",
+                "All review package imports OK",
+                (time.monotonic() - t0) * 1000,
+            )
+        except Exception as exc:
+            return self._item(
+                "research_review_imports", "FAIL", str(exc),
+                (time.monotonic() - t0) * 1000,
+            )
+
+    def _test_research_review_summary(self) -> dict:
+        t0 = time.monotonic()
+        try:
+            cmd = [sys.executable, "main.py", "research-review-summary"]
+            proc = subprocess.run(
+                cmd, capture_output=True, text=True, timeout=30,
+                cwd=BASE_DIR,
+            )
+            detail = (proc.stdout or proc.stderr or "")[:200]
+            status = "PASS" if proc.returncode == 0 else "PARTIAL"
+            return self._item(
+                "research_review_summary", status, detail,
+                (time.monotonic() - t0) * 1000,
+            )
+        except Exception as exc:
+            return self._item(
+                "research_review_summary", "FAIL", str(exc),
+                (time.monotonic() - t0) * 1000,
+            )
 
     def _write_csv(self, tests: list[dict], suite_name: str) -> str | None:
         try:

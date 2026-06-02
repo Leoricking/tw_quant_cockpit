@@ -1029,6 +1029,10 @@ class StableReleaseChecklist:
             self._check_journal_import_health,
             self._check_journal_no_real_orders,
             self._check_journal_data_ignored,
+            # v0.4.7
+            self._check_research_review_import_health,
+            self._check_research_review_no_real_orders,
+            self._check_research_review_output_ignored,
         ]
 
         items: list[dict] = []
@@ -1078,6 +1082,83 @@ class StableReleaseChecklist:
 
         summary["summary_csv_path"] = self._write_csv(items)
         summary["report_path"] = self._write_report(summary)
+
+        logger.info(
+            "StableReleaseChecklist complete — status=%s passed=%d failed=%d warnings=%d",
+            overall, passed, failed, warnings,
+        )
+        return summary
+
+    # ------------------------------------------------------------------
+    # v0.4.7 Research Review Dashboard checks
+    # ------------------------------------------------------------------
+
+    def _check_research_review_import_health(self) -> dict:
+        """v0.4.7: Verify research review package imports are healthy."""
+        t0 = time.monotonic()
+        try:
+            from review.review_schema import ReviewItem
+            from review.review_aggregator import ResearchReviewAggregator
+            from review.review_scorecard import ResearchReviewScorecard
+            from review.review_action_planner import ReviewActionPlanner
+            from review.review_store import ResearchReviewStore
+            elapsed = (time.monotonic() - t0) * 1000
+            return self._item(
+                "research_review_import_health", "PASS",
+                "review package imports OK", elapsed,
+            )
+        except Exception as exc:
+            elapsed = (time.monotonic() - t0) * 1000
+            return self._item("research_review_import_health", "FAIL", str(exc), elapsed)
+
+    def _check_research_review_no_real_orders(self) -> dict:
+        """v0.4.7: Verify research review safety flags are set."""
+        t0 = time.monotonic()
+        try:
+            from review.review_aggregator import ResearchReviewAggregator
+            from review.review_scorecard import ResearchReviewScorecard
+            from review.review_action_planner import ReviewActionPlanner
+            elapsed = (time.monotonic() - t0) * 1000
+            agg_ok = ResearchReviewAggregator.no_real_orders and ResearchReviewAggregator.production_blocked
+            sc_ok  = ResearchReviewScorecard.no_real_orders  and ResearchReviewScorecard.production_blocked
+            ap_ok  = ReviewActionPlanner.no_real_orders      and ReviewActionPlanner.production_blocked
+            if agg_ok and sc_ok and ap_ok:
+                return self._item(
+                    "research_review_no_real_orders", "PASS",
+                    "no_real_orders=True, production_blocked=True on all review classes", elapsed,
+                )
+            return self._item(
+                "research_review_no_real_orders", "FAIL",
+                "Safety flags not set correctly on review classes", elapsed,
+            )
+        except Exception as exc:
+            elapsed = (time.monotonic() - t0) * 1000
+            return self._item("research_review_no_real_orders", "FAIL", str(exc), elapsed)
+
+    def _check_research_review_output_ignored(self) -> dict:
+        """v0.4.7: Verify research_review output paths are in .gitignore."""
+        t0 = time.monotonic()
+        patterns = [
+            "data/backtest_results/research_review/",
+            "research_review_dashboard_report_",
+        ]
+        try:
+            gi_path = os.path.join(BASE_DIR, ".gitignore")
+            content = open(gi_path, encoding="utf-8").read()
+            missing = [p for p in patterns if p not in content]
+            elapsed = (time.monotonic() - t0) * 1000
+            if not missing:
+                return self._item(
+                    "research_review_output_ignored", "PASS",
+                    "All research_review output patterns present in .gitignore", elapsed,
+                )
+            return self._item(
+                "research_review_output_ignored", "WARN",
+                f"Missing from .gitignore: {missing}", elapsed,
+            )
+        except Exception as exc:
+            elapsed = (time.monotonic() - t0) * 1000
+            return self._item("research_review_output_ignored", "WARN", str(exc), elapsed)
 
         logger.info(
             "StableReleaseChecklist complete — status=%s passed=%d failed=%d warnings=%d",

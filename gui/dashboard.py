@@ -316,6 +316,17 @@ except Exception as _pj_exc:
 
 
 # ---------------------------------------------------------------------------
+# v0.4.7 Research Review Dashboard panel import (guarded)
+# ---------------------------------------------------------------------------
+try:
+    from gui.research_review_dashboard_panel import ResearchReviewDashboardPanel
+    _RESEARCH_REVIEW_AVAILABLE = True
+except Exception as _rr_exc:
+    logger.warning("ResearchReviewDashboardPanel unavailable: %s", _rr_exc)
+    _RESEARCH_REVIEW_AVAILABLE = False
+
+
+# ---------------------------------------------------------------------------
 # Colour helpers (Taiwan convention: red = up, green = down)
 # ---------------------------------------------------------------------------
 
@@ -1363,6 +1374,15 @@ class CockpitWindow(QMainWindow if _PYSIDE6_AVAILABLE else object):
             mid_tabs.addTab(self._portfolio_journal_panel, "Portfolio Journal")
         else:
             self._portfolio_journal_panel = None
+
+        # v0.4.7 Research Review Dashboard tab
+        if _RESEARCH_REVIEW_AVAILABLE:
+            self._research_review_panel = ResearchReviewDashboardPanel(
+                mode=self._mode if hasattr(self, "_mode") else "real"
+            )
+            mid_tabs.addTab(self._research_review_panel, "Research Review")
+        else:
+            self._research_review_panel = None
 
         h_split.addWidget(mid_tabs)
         h_split.setStretchFactor(0, 3)

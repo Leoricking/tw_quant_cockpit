@@ -3,7 +3,7 @@
 > **[!] Research Only. Read Only. No Real Orders. Production Trading: BLOCKED.**
 > **[!] Not investment advice. REAL_ORDER_READY=False.**
 
-Current version: **v0.4.6** — Portfolio Journal & Trade Review
+Current version: **v0.4.7** — Research Review Dashboard
 
 ---
 
@@ -67,6 +67,7 @@ Current version: **v0.4.6** — Portfolio Journal & Trade Review
 | [intraday_replay_cockpit.md](intraday_replay_cockpit.md) | v0.4.4 | Intraday Replay Cockpit (replay engine, opening range, VWAP, fake breakout, volume profile, training mode) |
 | [notification_center.md](notification_center.md) | v0.4.5 | Notification Center (event schema, rule engine, local notifier, preferences, CLI commands, safety notes) |
 | [portfolio_journal_trade_review.md](portfolio_journal_trade_review.md) | v0.4.6 | Portfolio Journal & Trade Review (journal schema, store, signal outcome, replay notes, mistake taxonomy, analytics, CLI, GUI) |
+| [research_review_dashboard.md](research_review_dashboard.md) | v0.4.7 | Research Review Dashboard (aggregator, scorecard, action planner, store, report, GUI panel, CLI commands) |
 
 ---
 

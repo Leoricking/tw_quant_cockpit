@@ -7304,6 +7304,153 @@ def cmd_strategy_knowledge_summary(args: argparse.Namespace) -> None:
 
 
 # ---------------------------------------------------------------------------
+# v0.4.7 Research Review Dashboard commands
+# ---------------------------------------------------------------------------
+
+def cmd_research_review(args: argparse.Namespace) -> None:
+    """Run Research Review Dashboard aggregation (v0.4.7)."""
+    logger = logging.getLogger("main.research_review")
+    mode   = getattr(args, "mode",   "real")
+    period = getattr(args, "period", "daily")
+    logger.info("research-review mode=%s period=%s", mode, period)
+
+    print()
+    print("TW Quant Cockpit — Research Review Dashboard")
+    print("=" * 60)
+    print(f"  Mode:         {mode}")
+    print(f"  Period:       {period}")
+    print(f"  Review Only:  Yes")
+    print(f"  Research Only: Yes")
+    print(f"  No Real Orders: Yes")
+    print(f"  Production Trading: BLOCKED")
+    print()
+
+    try:
+        from review.review_aggregator import ResearchReviewAggregator
+        from review.review_scorecard import ResearchReviewScorecard
+        from review.review_action_planner import ReviewActionPlanner
+        from review.review_store import ResearchReviewStore
+
+        agg     = ResearchReviewAggregator()
+        summary = agg.run(mode=mode, period=period)
+        items   = agg.get_review_items()
+
+        scorecard   = ResearchReviewScorecard().calculate(summary)
+        action_plan = ReviewActionPlanner().build_action_plan(items, scorecard)
+
+        store = ResearchReviewStore(
+            output_dir=getattr(args, "output_dir", "data/backtest_results/research_review")
+        )
+        store.save_summary(summary)
+        store.save_review_items(items)
+        store.save_scorecard(scorecard)
+        store.save_action_plan(action_plan)
+
+        print(f"  Overall Score:    {scorecard.get('overall_review_score', '-')} ({scorecard.get('overall_grade', '-')})")
+        print(f"  Open Items:       {summary.get('open_items', 0)}")
+        print(f"  Critical:         {summary.get('critical_items', 0)}")
+        print(f"  Warnings:         {summary.get('warning_items', 0)}")
+        print(f"  Top Mistake:      {summary.get('most_common_mistake', '-') or '-'}")
+        print(f"  Action Items:     {summary.get('action_items_count', 0)}")
+        print()
+        print(f"  [!] Review Only | No Real Orders | Production Trading BLOCKED")
+        print()
+
+    except Exception as exc:
+        logger.error("research-review failed: %s", exc, exc_info=True)
+        print(f"  ERROR: {exc}")
+    print()
+
+
+def cmd_research_review_report(args: argparse.Namespace) -> None:
+    """Generate Research Review Dashboard Markdown report (v0.4.7)."""
+    logger = logging.getLogger("main.research_review_report")
+    mode   = getattr(args, "mode",   "real")
+    period = getattr(args, "period", "daily")
+    logger.info("research-review-report mode=%s period=%s", mode, period)
+
+    print()
+    print("TW Quant Cockpit — Research Review Dashboard Report")
+    print("=" * 60)
+    print(f"  Mode:   {mode}")
+    print(f"  Period: {period}")
+    print(f"  [!] Review Only | No Real Orders | Production Trading BLOCKED")
+    print()
+
+    try:
+        from gui.research_review_dashboard_adapter import ResearchReviewDashboardAdapter
+        adapter = ResearchReviewDashboardAdapter(
+            report_dir=getattr(args, "report_dir", "reports")
+        )
+        path = adapter.generate_report(mode=mode, period=period)
+        print(f"  Report: {path}")
+    except Exception as exc:
+        logger.error("research-review-report failed: %s", exc, exc_info=True)
+        print(f"  ERROR: {exc}")
+    print()
+
+
+def cmd_research_review_summary(args: argparse.Namespace) -> None:
+    """Show latest Research Review Dashboard summary (v0.4.7)."""
+    logger = logging.getLogger("main.research_review_summary")
+
+    print()
+    print("TW Quant Cockpit — Research Review Summary")
+    print("=" * 60)
+    print(f"  [!] Review Only | No Real Orders | Production Trading BLOCKED")
+    print()
+
+    try:
+        from review.review_store import ResearchReviewStore
+        store   = ResearchReviewStore(
+            output_dir=getattr(args, "output_dir", "data/backtest_results/research_review")
+        )
+        summary = store.load_latest_summary()
+        if not summary:
+            print("  No summary found. Run: python main.py research-review --mode real --period daily")
+        else:
+            for k, v in summary.items():
+                print(f"  {k}: {v}")
+    except Exception as exc:
+        logger.error("research-review-summary failed: %s", exc, exc_info=True)
+        print(f"  ERROR: {exc}")
+    print()
+
+
+def cmd_research_review_actions(args: argparse.Namespace) -> None:
+    """Show latest Research Review action plan (v0.4.7)."""
+    logger = logging.getLogger("main.research_review_actions")
+
+    print()
+    print("TW Quant Cockpit — Research Review Action Plan")
+    print("=" * 60)
+    print(f"  [!] Review Only | No Real Orders | No Trading Actions")
+    print()
+
+    try:
+        from review.review_store import ResearchReviewStore
+        store   = ResearchReviewStore(
+            output_dir=getattr(args, "output_dir", "data/backtest_results/research_review")
+        )
+        actions = store.load_latest_action_plan()
+        if not actions:
+            print("  No action plan found. Run: python main.py research-review --mode real --period daily")
+        else:
+            for a in actions:
+                p    = a.get("priority", "-")
+                atype = a.get("action_type", "-")
+                title = a.get("title", "-")
+                cmd  = a.get("suggested_command", "")
+                print(f"  [P{p}] {atype} | {title}")
+                if cmd:
+                    print(f"       → {cmd}")
+    except Exception as exc:
+        logger.error("research-review-actions failed: %s", exc, exc_info=True)
+        print(f"  ERROR: {exc}")
+    print()
+
+
+# ---------------------------------------------------------------------------
 # Argument parser
 # ---------------------------------------------------------------------------
 
@@ -8765,6 +8912,43 @@ def _build_parser() -> argparse.ArgumentParser:
     p_eud.add_argument("--dry-run",  action="store_true", dest="dry_run",
                        help="Fetch only, do not write CSV files")
 
+    # ---- v0.4.7 Research Review Dashboard ----
+
+    p_rr = subparsers.add_parser(
+        "research-review",
+        help="Run Research Review Dashboard (daily/weekly aggregation) (v0.4.7)",
+    )
+    p_rr.add_argument("--mode",   default="real", choices=["real", "mock"],
+                      help="Data mode: real or mock (default: real)")
+    p_rr.add_argument("--period", default="daily", choices=["daily", "weekly"],
+                      help="Review period: daily or weekly (default: daily)")
+    p_rr.add_argument("--output-dir", default="data/backtest_results/research_review",
+                      dest="output_dir", help="Output directory for review data")
+    p_rr.add_argument("--report-dir", default="reports",
+                      dest="report_dir", help="Report directory")
+
+    p_rrr = subparsers.add_parser(
+        "research-review-report",
+        help="Generate Research Review Dashboard Markdown report (v0.4.7)",
+    )
+    p_rrr.add_argument("--mode",   default="real", choices=["real", "mock"])
+    p_rrr.add_argument("--period", default="daily", choices=["daily", "weekly"])
+    p_rrr.add_argument("--report-dir", default="reports", dest="report_dir")
+
+    p_rrs = subparsers.add_parser(
+        "research-review-summary",
+        help="Show latest Research Review Dashboard summary (v0.4.7)",
+    )
+    p_rrs.add_argument("--output-dir", default="data/backtest_results/research_review",
+                       dest="output_dir")
+
+    p_rra = subparsers.add_parser(
+        "research-review-actions",
+        help="Show latest Research Review action plan (v0.4.7)",
+    )
+    p_rra.add_argument("--output-dir", default="data/backtest_results/research_review",
+                       dest="output_dir")
+
     return parser
 
 
@@ -8950,6 +9134,11 @@ def main() -> None:
         "journal-report":              cmd_journal_report,
         "journal-summary":             cmd_journal_summary,
         "journal-link-replay":         cmd_journal_link_replay,
+        # v0.4.7 Research Review Dashboard
+        "research-review":             cmd_research_review,
+        "research-review-report":      cmd_research_review_report,
+        "research-review-summary":     cmd_research_review_summary,
+        "research-review-actions":     cmd_research_review_actions,
     }
 
     if args.command is None:

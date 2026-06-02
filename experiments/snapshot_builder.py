@@ -660,6 +660,7 @@ class ExperimentSnapshotBuilder:
             ("ml_knowledge_integration",    lambda: self.build_ml_knowledge_integration_snapshot()),
             ("notification_center",         lambda: self.build_notification_snapshot()),
             ("portfolio_journal",           lambda: self.build_portfolio_journal_snapshot()),
+            ("research_review",             lambda: self.build_research_review_snapshot()),
         ]
         for snap_type, fn in builders:
             try:
@@ -670,3 +671,65 @@ class ExperimentSnapshotBuilder:
                 result[snap_type] = _empty_snapshot(snap_type, warnings=[f"{snap_type} snapshot failed"])
 
         return result
+
+    # ------------------------------------------------------------------
+    # v0.4.7 Research Review Dashboard snapshot
+    # ------------------------------------------------------------------
+
+    def build_research_review_snapshot(self) -> dict:
+        """
+        Build a point-in-time snapshot of the Research Review Dashboard state.
+
+        [!] Research Only. No Real Orders. Production Trading: BLOCKED.
+        """
+        snap: dict = {
+            "snapshot_type":    "research_review",
+            "generated_at":     _now_iso(),
+            "source_files":     [],
+            "summary":          {},
+            "warnings":         [],
+            "version_info":     {"version": _VERSION},
+        }
+        try:
+            store_dir = os.path.join(self.results_dir, "research_review")
+            summary_csv = os.path.join(store_dir, "review_summary.csv")
+            scorecard_csv = os.path.join(store_dir, "review_scorecard.csv")
+
+            summary_data: dict = {}
+            scorecard_data: dict = {}
+
+            if os.path.exists(summary_csv):
+                snap["source_files"].append(summary_csv)
+                import csv as _csv
+                with open(summary_csv, newline="", encoding="utf-8") as f:
+                    rows = list(_csv.DictReader(f))
+                    if rows:
+                        summary_data = rows[0]
+            else:
+                snap["warnings"].append("review_summary.csv not found — run research-review first")
+
+            if os.path.exists(scorecard_csv):
+                snap["source_files"].append(scorecard_csv)
+                import csv as _csv
+                with open(scorecard_csv, newline="", encoding="utf-8") as f:
+                    rows = list(_csv.DictReader(f))
+                    if rows:
+                        scorecard_data = rows[0]
+
+            snap["summary"] = {
+                "overall_score":      scorecard_data.get("overall_review_score", "UNKNOWN"),
+                "overall_grade":      scorecard_data.get("overall_grade", "UNKNOWN"),
+                "open_items":         summary_data.get("open_items", 0),
+                "critical_count":     summary_data.get("critical_items", 0),
+                "warnings_count":     summary_data.get("warning_items", 0),
+                "top_mistake":        summary_data.get("most_common_mistake", ""),
+                "action_items_count": summary_data.get("action_items_count", 0),
+                "latest_review_at":   summary_data.get("generated_at", ""),
+                "read_only":          True,
+                "no_real_orders":     True,
+                "production_blocked": True,
+            }
+        except Exception as exc:
+            logger.warning("build_research_review_snapshot: %s", exc)
+            snap["warnings"].append(f"snapshot error: {exc}")
+        return snap

@@ -704,3 +704,37 @@ class DataQualityGate:
         import glob as _glob
         pattern = os.path.join(self.portfolio_results_dir, "portfolio_*.csv")
         return bool(_glob.glob(pattern))
+
+    # ------------------------------------------------------------------
+    # v0.4.7 Research Review Dashboard integration
+    # ------------------------------------------------------------------
+
+    def get_blockers_summary(self) -> dict:
+        """
+        Return a compact blockers summary for the Research Review Dashboard.
+
+        Does NOT modify any quality scores or gates.
+
+        [!] Research Only. No Real Orders. Production Trading: BLOCKED.
+        """
+        try:
+            result = self.run()
+            gates  = result.get("gates", {})
+            blockers = [k for k, v in gates.items() if v is False]
+            return {
+                "production_blocked":  result.get("production_blocked", True),
+                "real_order_ready":    result.get("real_order_ready", False),
+                "blockers":            blockers,
+                "blocker_count":       len(blockers),
+                "backtest_score":      result.get("backtest_readiness_score", 0),
+                "production_score":    result.get("production_readiness_score", 0),
+                "read_only":           True,
+                "no_real_orders":      True,
+            }
+        except Exception as exc:
+            logger.warning("DataQualityGate.get_blockers_summary: %s", exc)
+            return {
+                "production_blocked": True, "real_order_ready": False,
+                "blockers": [], "blocker_count": 0,
+                "backtest_score": 0, "production_score": 0, "no_real_orders": True,
+            }

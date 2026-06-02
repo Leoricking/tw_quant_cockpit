@@ -4,6 +4,42 @@
 
 ---
 
+## v0.4.7 — Research Review Dashboard
+
+**Status:** Current
+
+### Summary
+
+v0.4.7 adds the Research Review Dashboard — a unified daily/weekly research review aggregator (Review Only, Research Only, No Real Orders).
+
+### New Files
+
+- `review/` — review package: schema, aggregator, scorecard, action_planner, store
+- `reports/research_review_dashboard_report.py` — Markdown report generator
+- `gui/research_review_dashboard_panel.py` — PySide6 GUI panel
+- `gui/research_review_dashboard_adapter.py` — GUI bridge
+- `docs/research_review_dashboard.md` — documentation
+
+### Modified Files
+
+- `main.py` — 4 new CLI commands
+- `journal/journal_analytics.py`, `notifications/notification_center.py`, `governance/rule_confidence.py`, `quality/data_quality_gate.py`, `data/providers/reliability_matrix.py`, `analysis/signal_quality_engine.py` — review summary integration
+- `notifications/notification_rules.py` — review notification rules
+- `experiments/snapshot_builder.py` — research review snapshot
+- `reports/auto_report_center.py`, `reports/auto_report_index.py` — review manifest fields
+- `release/regression_suite.py`, `release/stable_release_checklist.py` — v0.4.7 tests/checks
+- `gui/dashboard.py` — Research Review tab
+
+### Safety
+
+- Review Only — no real orders, no broker connection
+- No auto-weight changes, no auto rule status changes
+- No auto ML feature enable
+- Production Trading: BLOCKED
+- REAL_ORDER_READY: False (permanent)
+
+---
+
 ## v0.4.6 — Portfolio Journal & Trade Review
 
 **Status:** Current

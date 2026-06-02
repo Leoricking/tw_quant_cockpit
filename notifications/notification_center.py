@@ -300,3 +300,40 @@ class NotificationCenter:
             logger.info("NotificationCenter: loaded %d events from %s", len(self._events), path)
         except Exception as exc:
             logger.warning("NotificationCenter._ensure_loaded: %s", exc)
+
+    # ------------------------------------------------------------------
+    # v0.4.7 Research Review Dashboard integration
+    # ------------------------------------------------------------------
+
+    def get_review_summary(self) -> dict:
+        """
+        Return a compact review summary for the Research Review Dashboard.
+
+        [!] Notification Only. Research Only. No Real Orders.
+        """
+        try:
+            self._ensure_loaded()
+            events = self._events
+            warnings  = [e for e in events if severity_gte(e.severity, SEV_WARNING)]
+            critical  = [e for e in events if severity_gte(e.severity, SEV_CRITICAL) or e.severity == SEV_BLOCKED]
+            unread    = [e for e in events if e.status == STATUS_UNREAD]
+            from collections import Counter
+            cat_counts: dict = {}
+            for e in events:
+                cat_counts[e.category] = cat_counts.get(e.category, 0) + 1
+            return {
+                "total":      len(events),
+                "warnings":   len(warnings),
+                "critical":   len(critical),
+                "unread":     len(unread),
+                "categories": cat_counts,
+                "read_only":          True,
+                "no_real_orders":     True,
+                "production_blocked": True,
+            }
+        except Exception as exc:
+            logger.warning("NotificationCenter.get_review_summary: %s", exc)
+            return {
+                "total": 0, "warnings": 0, "critical": 0, "unread": 0,
+                "categories": {}, "no_real_orders": True,
+            }

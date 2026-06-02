@@ -306,6 +306,9 @@ class AutoReportCenter:
         if self.include_portfolio_journal:
             self.run_portfolio_journal_summary()
 
+        # v0.4.7 Research Review Dashboard summary (always optional, never crashes)
+        self.run_research_review_summary()
+
         # Aggregated outputs
         if self.include_daily_summary:
             self.build_daily_market_summary()
@@ -853,6 +856,33 @@ class AutoReportCenter:
         except Exception as exc:
             logger.warning("run_portfolio_journal_summary failed: %s", exc)
             self._record_fail("portfolio_journal", str(exc))
+
+    def run_research_review_summary(self):
+        """
+        Include Research Review Dashboard summary in context (v0.4.7).
+        Reads persisted review_summary.csv — does NOT run a full review.
+        Optional — failure does not abort overall run.
+        """
+        try:
+            from review.review_store import ResearchReviewStore
+            store   = ResearchReviewStore()
+            summary = store.load_latest_summary()
+            if summary:
+                self._context["research_review_score"]        = summary.get("overall_review_score", "")
+                self._context["research_review_open_items"]   = summary.get("open_items", 0)
+                self._context["research_review_critical_count"] = summary.get("critical_items", 0)
+                self._context["research_review_action_items"] = summary.get("action_items_count", 0)
+                self._context["research_review_top_mistake"]  = summary.get("most_common_mistake", "")
+                self._record_success(
+                    "research_review",
+                    f"open={summary.get('open_items', 0)} "
+                    f"critical={summary.get('critical_items', 0)}",
+                )
+            else:
+                self._context["research_review_score"] = "UNKNOWN"
+                self._record_success("research_review", "no persisted summary found")
+        except Exception as exc:
+            logger.warning("run_research_review_summary failed: %s", exc)
 
     def run_model_monitoring_report(self):
         """Generate Model Monitoring report (v0.4.3). Optional — failure does not abort run."""

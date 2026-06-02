@@ -489,3 +489,68 @@ class NotificationRuleEngine:
         except Exception as exc:
             logger.warning("NotificationRuleEngine.evaluate_portfolio_journal: %s", exc)
         return events
+
+    # ------------------------------------------------------------------
+    # v0.4.7 Research Review Dashboard notification rules
+    # ------------------------------------------------------------------
+
+    def evaluate_research_review(self, review_summary: dict) -> list:
+        """
+        Evaluate research review summary and produce notification events.
+
+        Triggers:
+          - critical_items > 0  => WARNING or CRITICAL notification
+          - action_items_count > 0  => NOTICE notification
+          - repeated top_mistake present => WARNING notification
+
+        [!] Review Only. Research Only. No Real Orders.
+        """
+        events = []
+        try:
+            critical_items  = int(review_summary.get("critical_items", 0))
+            action_items    = int(review_summary.get("action_items_count", 0))
+            top_mistake     = review_summary.get("most_common_mistake", "")
+
+            if critical_items > 0:
+                sev = SEV_CRITICAL if critical_items >= 3 else SEV_WARNING
+                events.append(NotificationEvent(
+                    event_type=EVENT_SYSTEM_HEALTH, severity=sev,
+                    title=f"Research Review: {critical_items} critical item(s)",
+                    message=(
+                        f"Research Review Dashboard detected {critical_items} critical review item(s). "
+                        "Immediate review recommended."
+                    ),
+                    category=CAT_REPORT, action_required=True, can_ignore=False,
+                    source="research_review",
+                    next_steps=["python main.py research-review --mode real --period daily"],
+                ))
+
+            if action_items > 0:
+                events.append(NotificationEvent(
+                    event_type=EVENT_SYSTEM_HEALTH, severity=SEV_NOTICE,
+                    title=f"Research Review: {action_items} action item(s)",
+                    message=(
+                        f"Research Review Dashboard has {action_items} pending action item(s). "
+                        "Review action plan."
+                    ),
+                    category=CAT_REPORT, action_required=False, can_ignore=True,
+                    source="research_review",
+                    next_steps=["python main.py research-review-actions"],
+                ))
+
+            if top_mistake:
+                events.append(NotificationEvent(
+                    event_type=EVENT_SYSTEM_HEALTH, severity=SEV_WARNING,
+                    title=f"Repeated Mistake in Review: '{top_mistake}'",
+                    message=(
+                        f"Research Review Dashboard flagged '{top_mistake}' as the most repeated mistake. "
+                        "Practice replay recommended."
+                    ),
+                    category=CAT_REPORT, action_required=False, can_ignore=True,
+                    source="research_review",
+                    next_steps=["python main.py intraday-replay --mode real"],
+                ))
+
+        except Exception as exc:
+            logger.warning("NotificationRuleEngine.evaluate_research_review: %s", exc)
+        return events

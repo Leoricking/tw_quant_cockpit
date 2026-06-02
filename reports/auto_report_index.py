@@ -431,6 +431,8 @@ class AutoReportIndexBuilder:
                 "journal_review_required_count": ctx.get("journal_review_required_count"),
                 "journal_latest_entry":         ctx.get("journal_latest_entry"),
                 "journal_most_common_mistake":  ctx.get("journal_most_common_mistake"),
+                # v0.4.7 Research Review Dashboard
+                **_extract_research_review_fields(ctx),
             }
 
             path = os.path.join(output_dir, "manifest.json")
@@ -495,4 +497,15 @@ def _extract_quality_gate_fields(ctx: dict) -> dict:
             k: v for k, v in gate.get("gates", {}).items()
             if not k.startswith("_")
         },
+    }
+
+
+def _extract_research_review_fields(ctx: dict) -> dict:
+    """Extract Research Review Dashboard summary fields for manifest.json (v0.4.7)."""
+    return {
+        "research_review_score":        ctx.get("research_review_score", "UNKNOWN"),
+        "research_review_open_items":   ctx.get("research_review_open_items", 0),
+        "research_review_critical_count": ctx.get("research_review_critical_count", 0),
+        "research_review_action_items": ctx.get("research_review_action_items", 0),
+        "research_review_top_mistake":  ctx.get("research_review_top_mistake", ""),
     }

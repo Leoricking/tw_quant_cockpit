@@ -528,6 +528,52 @@ def _norm_confidence(v) -> str:
     return "INSUFFICIENT"
 
 
+    # ------------------------------------------------------------------
+    # v0.4.7 Research Review Dashboard integration
+    # ------------------------------------------------------------------
+
+    def get_weak_signal_summary(self) -> dict:
+        """
+        Return a compact weak signal summary for the Research Review Dashboard.
+
+        Does NOT auto-enable or auto-disable any signal.
+
+        [!] Research Only. No Real Orders. Production Trading: BLOCKED.
+        """
+        try:
+            result  = self.run()
+            recs_df = result.get("recommendations_df")
+            disable = []
+            reduce  = []
+            insuff  = []
+            if recs_df is not None and hasattr(recs_df, "iterrows"):
+                for _, row in recs_df.iterrows():
+                    rec = str(row.get("recommendation", ""))
+                    name = str(row.get("signal_name", ""))
+                    if rec == "DISABLE":
+                        disable.append(name)
+                    elif rec == "REDUCE":
+                        reduce.append(name)
+                    elif rec == "INSUFFICIENT_SAMPLE":
+                        insuff.append(name)
+            return {
+                "disable_signals":      disable,
+                "reduce_signals":       reduce,
+                "insufficient_signals": insuff,
+                "total_weak":           len(disable) + len(reduce) + len(insuff),
+                "read_only":            True,
+                "no_real_orders":       True,
+                "production_blocked":   True,
+            }
+        except Exception as exc:
+            import logging
+            logging.getLogger(__name__).warning("SignalQualityEngine.get_weak_signal_summary: %s", exc)
+            return {
+                "disable_signals": [], "reduce_signals": [],
+                "insufficient_signals": [], "total_weak": 0, "no_real_orders": True,
+            }
+
+
 def _build_reason(sc, confidence, pf, avg_ret, source="") -> str:
     parts = []
     if sc < 30:

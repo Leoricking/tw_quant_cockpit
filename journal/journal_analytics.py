@@ -204,3 +204,45 @@ class JournalAnalytics:
         ]
         all_tags = [t for e in bad for t in e.strategy_tags]
         return [t for t, _ in Counter(all_tags).most_common(5)]
+
+    # ------------------------------------------------------------------
+    # v0.4.7 Research Review Dashboard integration
+    # ------------------------------------------------------------------
+
+    def build_review_summary(self) -> dict:
+        """
+        Build a compact review summary for the Research Review Dashboard.
+
+        Returns dict with top_mistakes, review_required, process_quality.
+        Does NOT modify any entries, strategies, or weights.
+
+        [!] Review Only. Research Only. No Real Orders.
+        """
+        try:
+            entries = self._all_entries()
+            by_mistake = self.summarize_by_mistake_tag(entries)
+            top_mistake = by_mistake[0]["mistake_tag"] if by_mistake else ""
+            review_req = sum(1 for e in entries if e.needs_review())
+            open_sim = sum(
+                1 for e in entries
+                if getattr(e, "status", "") not in (STATUS_REVIEWED, STATUS_CLOSED_SIMULATED)
+            )
+            return {
+                "total_entries":       len(entries),
+                "review_required":     review_req,
+                "top_mistakes":        by_mistake[:5],
+                "most_common_mistake": top_mistake,
+                "process_quality":     self.summarize_process_quality(entries),
+                "open_simulated":      open_sim,
+                "read_only":           True,
+                "no_real_orders":      True,
+                "production_blocked":  True,
+            }
+        except Exception as exc:
+            logger.warning("JournalAnalytics.build_review_summary: %s", exc)
+            return {
+                "total_entries": 0, "review_required": 0,
+                "top_mistakes": [], "most_common_mistake": "",
+                "process_quality": [], "open_simulated": 0,
+                "no_real_orders": True,
+            }

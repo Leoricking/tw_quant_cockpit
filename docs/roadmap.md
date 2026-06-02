@@ -39,6 +39,57 @@
 | v0.4.4 | Intraday Replay Cockpit | Done |
 | v0.4.5 | Notification Center | Done |
 | v0.4.6 | Portfolio Journal & Trade Review | Done |
+| v0.4.7 | Research Review Dashboard | Done |
+
+---
+
+## Completed: v0.4.7 — Research Review Dashboard
+
+**Status:** Done
+
+### Summary
+
+v0.4.7 adds the Research Review Dashboard — a unified daily/weekly research review aggregator. Aggregates Notification Center, Portfolio Journal, Experiment Registry, Rule Governance, Model Monitoring, Intraday Replay, Data Quality Gate, Provider Reliability, Signal Quality, and ML Knowledge Integration into a single dashboard with Scorecard, Review Items, Top Mistakes, Weak Rules, Data Blockers, and Action Plan.
+
+Review Only. Research Only. No Real Orders. Production Trading: BLOCKED.
+
+### New Files
+
+- `review/__init__.py` — package init
+- `review/review_schema.py` — `ReviewItem` dataclass; 12 review_type / 6 severity / 12 category / 5 status constants
+- `review/review_aggregator.py` — `ResearchReviewAggregator`: collects from 9 subsystems, builds ReviewItems and dashboard summary
+- `review/review_scorecard.py` — `ResearchReviewScorecard`: calculates 9 dimension scores (STRONG/GOOD/PARTIAL/WEAK/BLOCKED/UNKNOWN)
+- `review/review_action_planner.py` — `ReviewActionPlanner`: converts ReviewItems to prioritized Action Plan (P0-P3); research-only commands
+- `review/review_store.py` — `ResearchReviewStore`: saves/loads 4 CSV files to `data/backtest_results/research_review/` (gitignored)
+- `reports/research_review_dashboard_report.py` — `ResearchReviewDashboardReport`: 10-section Markdown report
+- `gui/research_review_dashboard_panel.py` — `ResearchReviewDashboardPanel`: PySide6 panel with 6 inner tabs, QThread workers
+- `gui/research_review_dashboard_adapter.py` — `ResearchReviewDashboardAdapter`: GUI bridge
+
+### Modified Files
+
+- `main.py` — 4 new CLI commands: research-review, research-review-report, research-review-summary, research-review-actions
+- `journal/journal_analytics.py` — added `build_review_summary()`
+- `notifications/notification_center.py` — added `get_review_summary()`
+- `governance/rule_confidence.py` — added `rules_needing_review()`
+- `quality/data_quality_gate.py` — added `get_blockers_summary()`
+- `data/providers/reliability_matrix.py` — added `get_warning_summary()`
+- `analysis/signal_quality_engine.py` — added `get_weak_signal_summary()`
+- `notifications/notification_rules.py` — added `evaluate_research_review()`
+- `experiments/snapshot_builder.py` — added `build_research_review_snapshot()`
+- `reports/auto_report_center.py` — integrated research review summary
+- `reports/auto_report_index.py` — added research review manifest fields
+- `release/regression_suite.py` — 2 new v0.4.7 tests
+- `release/stable_release_checklist.py` — 3 new v0.4.7 checks
+- `gui/dashboard.py` — added Research Review tab
+- `README.md`, `docs/roadmap.md`, `docs/release_notes_v0.4.md`, `docs/index.md`
+
+### Next Suggested
+
+v0.4.8: Research Assistant / Coach
+- Daily research checklist based on Review Dashboard results
+- Replay training menu
+- Rule review queue
+- No buy/sell instructions, no real orders
 
 ---
 

@@ -442,3 +442,44 @@ class ProviderReliabilityMatrix:
         recs.append("XQ export / CSV local fallback is available for intraday and daily_price")
         recs.append("Production trading remains BLOCKED until REAL_ORDER_READY=True is set")
         return recs
+
+    # ------------------------------------------------------------------
+    # v0.4.7 Research Review Dashboard integration
+    # ------------------------------------------------------------------
+
+    def get_warning_summary(self) -> dict:
+        """
+        Return a compact warning summary for the Research Review Dashboard.
+
+        Does NOT change provider scoring.
+
+        [!] Research Only. No Real Orders. Production Trading: BLOCKED.
+        """
+        try:
+            result = self.run()
+            recs   = result.get("recommendations", [])
+            matrix = result.get("reliability_matrix", {})
+            failed = [
+                p for p, v in matrix.items()
+                if isinstance(v, dict) and v.get("status", "") in ("FAILED", "MISSING", "ERROR")
+            ]
+            fallback_used = any(
+                isinstance(v, dict) and v.get("fallback_used", False)
+                for v in matrix.values()
+            )
+            return {
+                "provider_warnings": len(recs),
+                "failed_providers":  len(failed),
+                "fallback_used":     fallback_used,
+                "recommendations":   recs[:5],
+                "read_only":         True,
+                "no_real_orders":    True,
+                "production_blocked": True,
+            }
+        except Exception as exc:
+            import logging
+            logging.getLogger(__name__).warning("ProviderReliabilityMatrix.get_warning_summary: %s", exc)
+            return {
+                "provider_warnings": 0, "failed_providers": 0,
+                "fallback_used": False, "recommendations": [], "no_real_orders": True,
+            }

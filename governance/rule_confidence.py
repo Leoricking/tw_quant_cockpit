@@ -336,3 +336,41 @@ class RuleConfidenceScorer:
         if score >= 0.30:
             return CONFIDENCE_WEAK
         return CONFIDENCE_LOW
+
+    # ------------------------------------------------------------------
+    # v0.4.7 Research Review Dashboard integration
+    # ------------------------------------------------------------------
+
+    def rules_needing_review(self) -> dict:
+        """
+        Return a summary of rules needing manual review for the Research Review Dashboard.
+
+        Does NOT auto-change rule status or weights.
+
+        [!] Research Only. No Real Orders. No Auto Weight Apply.
+        """
+        try:
+            result = self.run()
+            weak     = result.get("weak_confidence", [])
+            low      = result.get("low_confidence",  [])
+            unknown  = result.get("unknown_confidence", [])
+            exp      = result.get("experimental", result.get("planned_confidence", []))
+            needing  = weak + low + unknown
+            return {
+                "total_rules":          result.get("rules_scored", 0),
+                "rules_needing_review": needing,
+                "experimental_rules":   exp,
+                "weak_count":           len(weak),
+                "low_count":            len(low),
+                "unknown_count":        len(unknown),
+                "read_only":            True,
+                "no_real_orders":       True,
+                "production_blocked":   True,
+            }
+        except Exception as exc:
+            _LOG.warning("RuleConfidenceScorer.rules_needing_review: %s", exc)
+            return {
+                "total_rules": 0, "rules_needing_review": [],
+                "experimental_rules": [], "weak_count": 0,
+                "low_count": 0, "unknown_count": 0, "no_real_orders": True,
+            }
