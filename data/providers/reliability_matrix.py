@@ -483,3 +483,44 @@ class ProviderReliabilityMatrix:
                 "provider_warnings": 0, "failed_providers": 0,
                 "fallback_used": False, "recommendations": [], "no_real_orders": True,
             }
+
+    # ------------------------------------------------------------------
+    # v0.4.8 Research Assistant / Coach integration
+    # ------------------------------------------------------------------
+
+    def coach_provider_repair_candidates(self) -> dict:
+        """
+        Return provider repair candidates for the Research Assistant / Coach.
+
+        Does NOT change provider scoring.
+
+        [!] Coaching Only. Research Only. No Real Orders. Production Trading: BLOCKED.
+        """
+        try:
+            result = self.run()
+            matrix = result.get("reliability_matrix", {})
+            failed_providers = [
+                {"name": p}
+                for p, v in matrix.items()
+                if isinstance(v, dict) and v.get("status", "") in ("FAILED", "MISSING", "ERROR")
+            ]
+            # Token missing heuristic: providers with MISSING status
+            token_missing = [
+                p["name"] for p in failed_providers
+                if "token" in p["name"].lower() or "api" in p["name"].lower()
+            ]
+            return {
+                "failed_providers": failed_providers,
+                "token_missing":    token_missing,
+                "provider_count":   len(matrix),
+                "read_only":        True,
+                "no_real_orders":   True,
+                "coaching_only":    True,
+            }
+        except Exception as exc:
+            import logging
+            logging.getLogger(__name__).warning("ProviderReliabilityMatrix.coach_provider_repair_candidates: %s", exc)
+            return {
+                "failed_providers": [], "token_missing": [],
+                "provider_count": 0, "no_real_orders": True,
+            }

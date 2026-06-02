@@ -40,6 +40,55 @@
 | v0.4.5 | Notification Center | Done |
 | v0.4.6 | Portfolio Journal & Trade Review | Done |
 | v0.4.7 | Research Review Dashboard | Done |
+| v0.4.8 | Research Assistant / Coach | Done |
+
+---
+
+## Completed: v0.4.8 — Research Assistant / Coach
+
+**Status:** Done
+
+### Summary
+
+v0.4.8 adds the Research Assistant / Coach — reads Research Review Dashboard output and all subsystems to generate daily/weekly coaching recommendations. Includes daily checklist, weekly checklist, replay training plan, rule review queue, data repair priorities, journal/process coaching, and model/ML coaching.
+
+Coaching Only. Research Only. No Real Orders. Production Trading: BLOCKED.
+
+### New Files
+
+- `coach/__init__.py`
+- `coach/coach_schema.py`
+- `coach/checklist_builder.py`
+- `coach/research_assistant_engine.py`
+- `coach/replay_training_planner.py`
+- `coach/rule_review_queue.py`
+- `coach/data_repair_planner.py`
+- `coach/coach_store.py`
+- `reports/research_assistant_report.py`
+- `gui/research_assistant_panel.py`
+- `gui/research_assistant_adapter.py`
+- `docs/research_assistant_coach.md`
+
+### Modified Files
+
+- `main.py` — 7 new CLI commands
+- `journal/journal_analytics.py` — `coach_summary()`
+- `notifications/notification_center.py` — `coach_summary()`
+- `governance/rule_confidence.py` — `coach_rule_review_candidates()`
+- `quality/data_quality_gate.py` — `coach_data_repair_candidates()`
+- `data/providers/reliability_matrix.py` — `coach_provider_repair_candidates()`
+- `notifications/notification_rules.py` — `evaluate_research_coach()`
+- `experiments/snapshot_builder.py` — `build_research_coach_snapshot()`
+- `reports/auto_report_center.py` — integrated coach summary
+- `reports/auto_report_index.py` — 6 coach manifest fields
+- `release/regression_suite.py` — 2 new v0.4.8 tests
+- `release/stable_release_checklist.py` — 4 new v0.4.8 checks
+- `gui/dashboard.py` — added Research Coach tab
+- `.gitignore` — research_coach outputs
+
+### Next Steps
+
+v0.4.9 — Research Workflow Automation or v0.5.0 planning
 
 ---
 

@@ -241,3 +241,7 @@ data/backtest_results/signal_outcome_summary.csv
 # Research Review Dashboard outputs (v0.4.7, runtime artifacts — NEVER commit)
 data/backtest_results/research_review/
 reports/research_review_dashboard_report_*.md
+
+# Research Assistant / Coach outputs (v0.4.8, runtime artifacts — NEVER commit)
+data/backtest_results/research_coach/
+reports/research_assistant_report_*.md

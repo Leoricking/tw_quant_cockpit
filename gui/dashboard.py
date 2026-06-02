@@ -325,6 +325,16 @@ except Exception as _rr_exc:
     logger.warning("ResearchReviewDashboardPanel unavailable: %s", _rr_exc)
     _RESEARCH_REVIEW_AVAILABLE = False
 
+# ---------------------------------------------------------------------------
+# v0.4.8 Research Assistant / Coach panel import (guarded)
+# ---------------------------------------------------------------------------
+try:
+    from gui.research_assistant_panel import ResearchAssistantPanel
+    _RESEARCH_COACH_AVAILABLE = True
+except Exception as _rc_exc:
+    logger.warning("ResearchAssistantPanel unavailable: %s", _rc_exc)
+    _RESEARCH_COACH_AVAILABLE = False
+
 
 # ---------------------------------------------------------------------------
 # Colour helpers (Taiwan convention: red = up, green = down)
@@ -1383,6 +1393,13 @@ class CockpitWindow(QMainWindow if _PYSIDE6_AVAILABLE else object):
             mid_tabs.addTab(self._research_review_panel, "Research Review")
         else:
             self._research_review_panel = None
+
+        # v0.4.8 Research Assistant / Coach tab
+        if _RESEARCH_COACH_AVAILABLE:
+            self._research_assistant_panel = ResearchAssistantPanel()
+            mid_tabs.addTab(self._research_assistant_panel, "Research Coach")
+        else:
+            self._research_assistant_panel = None
 
         h_split.addWidget(mid_tabs)
         h_split.setStretchFactor(0, 3)

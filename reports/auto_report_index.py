@@ -433,6 +433,8 @@ class AutoReportIndexBuilder:
                 "journal_most_common_mistake":  ctx.get("journal_most_common_mistake"),
                 # v0.4.7 Research Review Dashboard
                 **_extract_research_review_fields(ctx),
+                # v0.4.8 Research Assistant / Coach
+                **_extract_research_coach_fields(ctx),
             }
 
             path = os.path.join(output_dir, "manifest.json")
@@ -508,4 +510,16 @@ def _extract_research_review_fields(ctx: dict) -> dict:
         "research_review_critical_count": ctx.get("research_review_critical_count", 0),
         "research_review_action_items": ctx.get("research_review_action_items", 0),
         "research_review_top_mistake":  ctx.get("research_review_top_mistake", ""),
+    }
+
+
+def _extract_research_coach_fields(ctx: dict) -> dict:
+    """Extract Research Assistant / Coach summary fields for manifest.json (v0.4.8)."""
+    return {
+        "research_coach_recommendations": ctx.get("research_coach_recommendations", 0),
+        "research_coach_p0":              ctx.get("research_coach_p0", 0),
+        "research_coach_p1":              ctx.get("research_coach_p1", 0),
+        "research_coach_replay_tasks":    ctx.get("research_coach_replay_tasks", 0),
+        "research_coach_rule_reviews":    ctx.get("research_coach_rule_reviews", 0),
+        "research_coach_data_repairs":    ctx.get("research_coach_data_repairs", 0),
     }

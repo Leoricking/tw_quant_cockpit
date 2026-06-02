@@ -554,3 +554,62 @@ class NotificationRuleEngine:
         except Exception as exc:
             logger.warning("NotificationRuleEngine.evaluate_research_review: %s", exc)
         return events
+
+    # ------------------------------------------------------------------
+    # v0.4.8 Research Assistant / Coach notification rules
+    # ------------------------------------------------------------------
+
+    def evaluate_research_coach(self, coach_summary: dict) -> list:
+        """
+        Evaluate research coach summary and produce notification events.
+
+        Triggers:
+          - p0_count > 0        => WARNING/CRITICAL notification
+          - replay_tasks > 0    => NOTICE notification
+          - data_repair > 0     => NOTICE notification
+
+        [!] Coaching Only. Research Only. No Real Orders.
+        """
+        events = []
+        try:
+            p0_count     = int(coach_summary.get("p0_count", 0))
+            replay_tasks = int(coach_summary.get("replay_tasks_count", 0))
+            data_repair  = int(coach_summary.get("data_repair_count", 0))
+
+            if p0_count > 0:
+                sev = SEV_CRITICAL if p0_count >= 3 else SEV_WARNING
+                events.append(NotificationEvent(
+                    event_type=EVENT_SYSTEM_HEALTH, severity=sev,
+                    title=f"Research Coach: {p0_count} P0 task(s) require attention",
+                    message=(
+                        f"Research Coach found {p0_count} P0-priority task(s). "
+                        "Resolve before any research session."
+                    ),
+                    category=CAT_REPORT, action_required=True, can_ignore=False,
+                    source="research_coach",
+                    next_steps=["python main.py research-coach --mode real --period daily"],
+                ))
+
+            if replay_tasks > 0:
+                events.append(NotificationEvent(
+                    event_type=EVENT_SYSTEM_HEALTH, severity=SEV_NOTICE,
+                    title=f"Research Coach: {replay_tasks} replay training task(s)",
+                    message=f"Research Coach has {replay_tasks} replay training task(s) pending.",
+                    category=CAT_REPORT, action_required=False, can_ignore=True,
+                    source="research_coach",
+                    next_steps=["python main.py research-coach-replay-plan"],
+                ))
+
+            if data_repair > 0:
+                events.append(NotificationEvent(
+                    event_type=EVENT_SYSTEM_HEALTH, severity=SEV_NOTICE,
+                    title=f"Research Coach: {data_repair} data repair task(s)",
+                    message=f"Research Coach has {data_repair} data repair task(s) pending.",
+                    category=CAT_REPORT, action_required=False, can_ignore=True,
+                    source="research_coach",
+                    next_steps=["python main.py research-coach-data-repair"],
+                ))
+
+        except Exception as exc:
+            logger.warning("NotificationRuleEngine.evaluate_research_coach: %s", exc)
+        return events

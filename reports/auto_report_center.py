@@ -309,6 +309,9 @@ class AutoReportCenter:
         # v0.4.7 Research Review Dashboard summary (always optional, never crashes)
         self.run_research_review_summary()
 
+        # v0.4.8 Research Assistant / Coach summary (always optional, never crashes)
+        self.run_research_coach_summary()
+
         # Aggregated outputs
         if self.include_daily_summary:
             self.build_daily_market_summary()
@@ -883,6 +886,34 @@ class AutoReportCenter:
                 self._record_success("research_review", "no persisted summary found")
         except Exception as exc:
             logger.warning("run_research_review_summary failed: %s", exc)
+
+    def run_research_coach_summary(self):
+        """
+        Include Research Assistant / Coach summary in context (v0.4.8).
+        Reads persisted coach_summary.csv — does NOT run a full coach session.
+        Optional — failure does not abort overall run.
+        """
+        try:
+            from coach.coach_store import ResearchCoachStore
+            store   = ResearchCoachStore()
+            summary = store.load_latest_summary()
+            if summary:
+                self._context["research_coach_recommendations"] = summary.get("total_recommendations", 0)
+                self._context["research_coach_p0"]              = summary.get("p0_count", 0)
+                self._context["research_coach_p1"]              = summary.get("p1_count", 0)
+                self._context["research_coach_replay_tasks"]    = summary.get("replay_tasks_count", 0)
+                self._context["research_coach_rule_reviews"]    = summary.get("rule_review_count", 0)
+                self._context["research_coach_data_repairs"]    = summary.get("data_repair_count", 0)
+                self._record_success(
+                    "research_coach",
+                    f"total={summary.get('total_recommendations', 0)} "
+                    f"p0={summary.get('p0_count', 0)}",
+                )
+            else:
+                self._context["research_coach_recommendations"] = 0
+                self._record_success("research_coach", "no persisted coach summary found")
+        except Exception as exc:
+            logger.warning("run_research_coach_summary failed: %s", exc)
 
     def run_model_monitoring_report(self):
         """Generate Model Monitoring report (v0.4.3). Optional — failure does not abort run."""

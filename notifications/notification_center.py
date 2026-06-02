@@ -337,3 +337,41 @@ class NotificationCenter:
                 "total": 0, "warnings": 0, "critical": 0, "unread": 0,
                 "categories": {}, "no_real_orders": True,
             }
+
+    # ------------------------------------------------------------------
+    # v0.4.8 Research Assistant / Coach integration
+    # ------------------------------------------------------------------
+
+    def coach_summary(self) -> dict:
+        """
+        Return a compact summary for the Research Assistant / Coach.
+
+        Returns critical, warning, unread, categories.
+
+        [!] Coaching Only. Research Only. No Real Orders.
+        """
+        try:
+            self._ensure_loaded()
+            events = self._events
+            critical = sum(1 for e in events if severity_gte(e.severity, SEV_CRITICAL) or e.severity == SEV_BLOCKED)
+            warning  = sum(1 for e in events if severity_gte(e.severity, SEV_WARNING))
+            unread   = sum(1 for e in events if e.status == STATUS_UNREAD)
+            cat_counts: dict = {}
+            for e in events:
+                cat_counts[e.category] = cat_counts.get(e.category, 0) + 1
+            return {
+                "critical":    critical,
+                "warning":     warning,
+                "unread":      unread,
+                "categories":  cat_counts,
+                "total":       len(events),
+                "read_only":       True,
+                "no_real_orders":  True,
+                "coaching_only":   True,
+            }
+        except Exception as exc:
+            logger.warning("NotificationCenter.coach_summary: %s", exc)
+            return {
+                "critical": 0, "warning": 0, "unread": 0,
+                "categories": {}, "total": 0, "no_real_orders": True,
+            }

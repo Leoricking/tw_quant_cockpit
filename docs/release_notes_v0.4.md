@@ -4,9 +4,39 @@
 
 ---
 
-## v0.4.7 — Research Review Dashboard
+## v0.4.8 — Research Assistant / Coach
 
 **Status:** Current
+
+### Summary
+
+v0.4.8 adds the Research Assistant / Coach — reads Research Review Dashboard output and all subsystems to generate daily/weekly coaching recommendations. Coaching Only. Research Only. No Real Orders.
+
+### New Files
+
+- `coach/__init__.py`, `coach/coach_schema.py`, `coach/checklist_builder.py`
+- `coach/research_assistant_engine.py`, `coach/replay_training_planner.py`
+- `coach/rule_review_queue.py`, `coach/data_repair_planner.py`, `coach/coach_store.py`
+- `reports/research_assistant_report.py`
+- `gui/research_assistant_panel.py`, `gui/research_assistant_adapter.py`
+- `docs/research_assistant_coach.md`
+
+### Modified Files
+
+- `main.py` — 7 new CLI commands (research-coach, research-coach-report, research-coach-summary, research-coach-checklist, research-coach-replay-plan, research-coach-rule-queue, research-coach-data-repair)
+- `journal/journal_analytics.py`, `notifications/notification_center.py`, `governance/rule_confidence.py` — coach integration methods
+- `quality/data_quality_gate.py`, `data/providers/reliability_matrix.py` — coach repair candidates
+- `notifications/notification_rules.py`, `experiments/snapshot_builder.py` — coach integration
+- `reports/auto_report_center.py`, `reports/auto_report_index.py` — coach summary/manifest
+- `release/regression_suite.py`, `release/stable_release_checklist.py` — v0.4.8 tests/checks
+- `gui/dashboard.py` — Research Coach tab
+- `.gitignore` — research_coach outputs gitignored
+
+---
+
+## v0.4.7 — Research Review Dashboard
+
+**Status:** Released
 
 ### Summary
 

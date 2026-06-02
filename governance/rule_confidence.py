@@ -374,3 +374,58 @@ class RuleConfidenceScorer:
                 "experimental_rules": [], "weak_count": 0,
                 "low_count": 0, "unknown_count": 0, "no_real_orders": True,
             }
+
+    # ------------------------------------------------------------------
+    # v0.4.8 Research Assistant / Coach integration
+    # ------------------------------------------------------------------
+
+    def coach_rule_review_candidates(self) -> dict:
+        """
+        Return rule review candidates for the Research Assistant / Coach.
+
+        Does NOT auto-change rule status or weights.
+
+        [!] Coaching Only. Research Only. No Real Orders. No Auto Weight Apply.
+        """
+        try:
+            result = self.run()
+            weak    = result.get("weak_confidence", [])
+            low     = result.get("low_confidence", [])
+            unknown = result.get("unknown_confidence", [])
+            planned = result.get("planned", [])
+            details = result.get("details", {})
+
+            def _to_dict(rule_ids, conf_label):
+                items = []
+                for rid in rule_ids:
+                    d = details.get(rid, {})
+                    items.append({
+                        "rule_id":      rid,
+                        "confidence":   d.get("confidence_level", conf_label),
+                        "sample_count": 0,
+                    })
+                return items
+
+            low_confidence_rules     = _to_dict(low,     "low")
+            weak_rules               = _to_dict(weak,    "weak")
+            insufficient_sample_rules = _to_dict(unknown, "unknown")
+            transcript_candidates    = _to_dict(planned,  "planned")
+
+            return {
+                "low_confidence_rules":      low_confidence_rules,
+                "weak_rules":                weak_rules,
+                "insufficient_sample_rules": insufficient_sample_rules,
+                "transcript_candidates":     transcript_candidates,
+                "ml_needs_backtest":         [],
+                "total_rules":               result.get("rules_scored", 0),
+                "read_only":                 True,
+                "no_real_orders":            True,
+                "coaching_only":             True,
+            }
+        except Exception as exc:
+            _LOG.warning("RuleConfidenceScorer.coach_rule_review_candidates: %s", exc)
+            return {
+                "low_confidence_rules": [], "weak_rules": [],
+                "insufficient_sample_rules": [], "transcript_candidates": [],
+                "ml_needs_backtest": [], "total_rules": 0, "no_real_orders": True,
+            }

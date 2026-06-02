@@ -4,7 +4,25 @@
 >
 > **[!] v1: Real order execution is strictly prohibited. For research, simulation, and decision support only. Not investment advice.**
 
-**Current version: v0.4.7 — Research Review Dashboard**
+**Current version: v0.4.8 — Research Assistant / Coach**
+
+---
+
+## v0.4.8 — Research Assistant / Coach
+
+**New in v0.4.8:**
+
+- **Research Assistant / Coach** — Reads Research Review Dashboard output and all subsystems to generate daily/weekly coaching recommendations.
+- **Daily Checklist** — Auto-generates 9-item daily research checklist covering data quality, provider reliability, notifications, review dashboard, journal, rules, replay, ML, and auto-report.
+- **Weekly Checklist** — Auto-generates 7-item weekly review checklist covering mistakes, rules, replay progress, model monitoring, journal outcomes, data blockers, and research notes.
+- **Replay Training Plan** — Matches journal mistake patterns to replay scenarios (fake_breakout, vwap_loss, stop_loss_discipline, etc.).
+- **Rule Review Queue** — Identifies low confidence, insufficient sample, transcript-derived, and ML-candidate rules needing backtest.
+- **Data Repair Priority** — Prioritizes stale data, missing datasets, provider failures, and token setup issues.
+- **Journal / Process Coaching** — Flags review backlog, repeated mistakes, and process focus.
+- **Model / ML Coaching** — Flags drift warnings, leakage risk, and needs-mapping features.
+- **CLI**: `research-coach`, `research-coach-report`, `research-coach-summary`, `research-coach-checklist`, `research-coach-replay-plan`, `research-coach-rule-queue`, `research-coach-data-repair`
+- **GUI**: Research Coach tab in main dashboard
+- **[!] Coaching Only. Research Only. No Real Orders. Production Trading BLOCKED.**
 
 ---
 

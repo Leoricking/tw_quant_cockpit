@@ -7451,6 +7451,228 @@ def cmd_research_review_actions(args: argparse.Namespace) -> None:
 
 
 # ---------------------------------------------------------------------------
+# v0.4.8 Research Assistant / Coach CLI handlers
+# ---------------------------------------------------------------------------
+
+def cmd_research_coach(args: argparse.Namespace) -> None:
+    """Run Research Assistant / Coach (v0.4.8)."""
+    logger = logging.getLogger("main.research_coach")
+    mode   = getattr(args, "mode", "real")
+    period = getattr(args, "period", "daily")
+    output_dir = getattr(args, "output_dir", "data/backtest_results/research_coach")
+
+    print()
+    print("TW Quant Cockpit — Research Assistant / Coach")
+    print("=" * 60)
+    print(f"  [!] Coaching Only | Research Only | No Real Orders | Production Trading BLOCKED")
+    print()
+
+    try:
+        from coach.research_assistant_engine import ResearchAssistantEngine
+        from coach.coach_store import ResearchCoachStore
+        engine  = ResearchAssistantEngine()
+        summary = engine.run(mode=mode, period=period)
+        store   = ResearchCoachStore(output_dir=output_dir)
+        paths   = store.save_all(summary)
+
+        print(f"  Mode:                {mode}")
+        print(f"  Period:              {period}")
+        print(f"  Coaching Only:       True")
+        print(f"  Research Only:       True")
+        print(f"  No Real Orders:      True")
+        print(f"  Total Recommendations: {summary.get('total_recommendations', 0)}")
+        print(f"  P0:                  {summary.get('p0_count', 0)}")
+        print(f"  P1:                  {summary.get('p1_count', 0)}")
+        print(f"  Daily Checklist:     {summary.get('daily_checklist_count', 0)}")
+        print(f"  Replay Tasks:        {summary.get('replay_tasks_count', 0)}")
+        print(f"  Rule Review:         {summary.get('rule_review_count', 0)}")
+        print(f"  Data Repair:         {summary.get('data_repair_count', 0)}")
+        if paths:
+            print(f"  Saved to:            {output_dir}")
+    except Exception as exc:
+        logger.error("research-coach failed: %s", exc, exc_info=True)
+        print(f"  ERROR: {exc}")
+    print()
+
+
+def cmd_research_coach_report(args: argparse.Namespace) -> None:
+    """Generate Research Assistant / Coach Report (v0.4.8)."""
+    logger = logging.getLogger("main.research_coach_report")
+    mode   = getattr(args, "mode", "real")
+    period = getattr(args, "period", "daily")
+    report_dir = getattr(args, "report_dir", "reports")
+
+    print()
+    print("TW Quant Cockpit — Research Coach Report")
+    print("=" * 60)
+    print(f"  [!] Coaching Only | Research Only | No Real Orders")
+    print()
+
+    try:
+        from coach.research_assistant_engine import ResearchAssistantEngine
+        from reports.research_assistant_report import ResearchAssistantReport
+        engine   = ResearchAssistantEngine()
+        summary  = engine.run(mode=mode, period=period)
+        reporter = ResearchAssistantReport(report_dir=report_dir)
+        path     = reporter.generate(session_summary=summary, mode=mode, period=period)
+        print(f"  Report saved: {path}")
+    except Exception as exc:
+        logger.error("research-coach-report failed: %s", exc, exc_info=True)
+        print(f"  ERROR: {exc}")
+    print()
+
+
+def cmd_research_coach_summary(args: argparse.Namespace) -> None:
+    """Show latest Research Coach summary (v0.4.8)."""
+    logger = logging.getLogger("main.research_coach_summary")
+
+    print()
+    print("TW Quant Cockpit — Research Coach Summary")
+    print("=" * 60)
+    print(f"  [!] Coaching Only | Research Only | No Real Orders")
+    print()
+
+    try:
+        from coach.coach_store import ResearchCoachStore
+        store   = ResearchCoachStore()
+        summary = store.load_latest_summary()
+        if not summary:
+            print("  No summary found. Run: python main.py research-coach --mode real --period daily")
+        else:
+            for k, v in summary.items():
+                print(f"  {k}: {v}")
+    except Exception as exc:
+        logger.error("research-coach-summary failed: %s", exc, exc_info=True)
+        print(f"  ERROR: {exc}")
+    print()
+
+
+def cmd_research_coach_checklist(args: argparse.Namespace) -> None:
+    """Show latest Research Coach daily checklist (v0.4.8)."""
+    logger = logging.getLogger("main.research_coach_checklist")
+
+    print()
+    print("TW Quant Cockpit — Research Coach Checklist")
+    print("=" * 60)
+    print(f"  [!] Coaching Only | Research Only | No Real Orders")
+    print()
+
+    try:
+        from coach.coach_store import ResearchCoachStore
+        store     = ResearchCoachStore()
+        checklist = store.load_daily_checklist()
+        if not checklist:
+            print("  No checklist found. Run: python main.py research-coach --mode real --period daily")
+        else:
+            for item in checklist:
+                p   = item.get("priority", "-")
+                t   = item.get("title", "")
+                cmd = item.get("suggested_command", "")
+                print(f"  [{p}] {t}")
+                if cmd:
+                    print(f"       → {cmd}")
+    except Exception as exc:
+        logger.error("research-coach-checklist failed: %s", exc, exc_info=True)
+        print(f"  ERROR: {exc}")
+    print()
+
+
+def cmd_research_coach_replay_plan(args: argparse.Namespace) -> None:
+    """Show latest Replay Training Plan (v0.4.8)."""
+    logger = logging.getLogger("main.research_coach_replay_plan")
+
+    print()
+    print("TW Quant Cockpit — Research Coach Replay Training Plan")
+    print("=" * 60)
+    print(f"  [!] Coaching Only | Research Only | No Real Orders")
+    print()
+
+    try:
+        from coach.coach_store import ResearchCoachStore
+        store = ResearchCoachStore()
+        plan  = store.load_replay_training_plan()
+        if not plan:
+            print("  No replay plan found. Run: python main.py research-coach --mode real --period daily")
+        else:
+            for item in plan:
+                p      = item.get("priority", "-")
+                t      = item.get("title", "")
+                reason = item.get("rationale", item.get("summary", ""))
+                cmd    = item.get("suggested_command", "")
+                print(f"  [{p}] {t} — {reason}")
+                if cmd:
+                    print(f"       → {cmd}")
+    except Exception as exc:
+        logger.error("research-coach-replay-plan failed: %s", exc, exc_info=True)
+        print(f"  ERROR: {exc}")
+    print()
+
+
+def cmd_research_coach_rule_queue(args: argparse.Namespace) -> None:
+    """Show latest Rule Review Queue (v0.4.8)."""
+    logger = logging.getLogger("main.research_coach_rule_queue")
+
+    print()
+    print("TW Quant Cockpit — Research Coach Rule Review Queue")
+    print("=" * 60)
+    print(f"  [!] Coaching Only | Research Only | No Real Orders | No Auto Weight Changes")
+    print()
+
+    try:
+        from coach.coach_store import ResearchCoachStore
+        store = ResearchCoachStore()
+        queue = store.load_rule_review_queue()
+        if not queue:
+            print("  No rule queue found. Run: python main.py research-coach --mode real --period daily")
+        else:
+            for item in queue:
+                p      = item.get("priority", "-")
+                t      = item.get("title", "")
+                reason = item.get("summary", "")
+                cmd    = item.get("suggested_command", "")
+                print(f"  [{p}] {t}")
+                print(f"       {reason}")
+                if cmd:
+                    print(f"       → {cmd}")
+    except Exception as exc:
+        logger.error("research-coach-rule-queue failed: %s", exc, exc_info=True)
+        print(f"  ERROR: {exc}")
+    print()
+
+
+def cmd_research_coach_data_repair(args: argparse.Namespace) -> None:
+    """Show latest Data Repair Plan (v0.4.8)."""
+    logger = logging.getLogger("main.research_coach_data_repair")
+
+    print()
+    print("TW Quant Cockpit — Research Coach Data Repair Plan")
+    print("=" * 60)
+    print(f"  [!] Coaching Only | Research Only | No Real Orders | No Token Display")
+    print()
+
+    try:
+        from coach.coach_store import ResearchCoachStore
+        store  = ResearchCoachStore()
+        repair = store.load_data_repair_plan()
+        if not repair:
+            print("  No data repair plan found. Run: python main.py research-coach --mode real --period daily")
+        else:
+            for item in repair:
+                p   = item.get("priority", "-")
+                t   = item.get("title", "")
+                s   = item.get("summary", "")
+                cmd = item.get("suggested_command", "")
+                print(f"  [{p}] {t}")
+                print(f"       {s}")
+                if cmd:
+                    print(f"       → {cmd}")
+    except Exception as exc:
+        logger.error("research-coach-data-repair failed: %s", exc, exc_info=True)
+        print(f"  ERROR: {exc}")
+    print()
+
+
+# ---------------------------------------------------------------------------
 # Argument parser
 # ---------------------------------------------------------------------------
 
@@ -8949,6 +9171,60 @@ def _build_parser() -> argparse.ArgumentParser:
     p_rra.add_argument("--output-dir", default="data/backtest_results/research_review",
                        dest="output_dir")
 
+    # --- v0.4.8 Research Assistant / Coach ---
+    p_rc = subparsers.add_parser(
+        "research-coach",
+        help="Run Research Assistant / Coach (v0.4.8)",
+    )
+    p_rc.add_argument("--mode",   default="real",  choices=["real", "mock"])
+    p_rc.add_argument("--period", default="daily", choices=["daily", "weekly"])
+    p_rc.add_argument("--output-dir", default="data/backtest_results/research_coach",
+                      dest="output_dir")
+    p_rc.add_argument("--report-dir", default="reports", dest="report_dir")
+
+    p_rcr = subparsers.add_parser(
+        "research-coach-report",
+        help="Generate Research Coach Markdown report (v0.4.8)",
+    )
+    p_rcr.add_argument("--mode",   default="real",  choices=["real", "mock"])
+    p_rcr.add_argument("--period", default="daily", choices=["daily", "weekly"])
+    p_rcr.add_argument("--report-dir", default="reports", dest="report_dir")
+
+    p_rcs = subparsers.add_parser(
+        "research-coach-summary",
+        help="Show latest Research Coach summary (v0.4.8)",
+    )
+    p_rcs.add_argument("--output-dir", default="data/backtest_results/research_coach",
+                       dest="output_dir")
+
+    p_rcc = subparsers.add_parser(
+        "research-coach-checklist",
+        help="Show latest Research Coach daily checklist (v0.4.8)",
+    )
+    p_rcc.add_argument("--output-dir", default="data/backtest_results/research_coach",
+                       dest="output_dir")
+
+    p_rcrp = subparsers.add_parser(
+        "research-coach-replay-plan",
+        help="Show latest Replay Training Plan (v0.4.8)",
+    )
+    p_rcrp.add_argument("--output-dir", default="data/backtest_results/research_coach",
+                        dest="output_dir")
+
+    p_rcrq = subparsers.add_parser(
+        "research-coach-rule-queue",
+        help="Show latest Rule Review Queue (v0.4.8)",
+    )
+    p_rcrq.add_argument("--output-dir", default="data/backtest_results/research_coach",
+                        dest="output_dir")
+
+    p_rcdr = subparsers.add_parser(
+        "research-coach-data-repair",
+        help="Show latest Data Repair Plan (v0.4.8)",
+    )
+    p_rcdr.add_argument("--output-dir", default="data/backtest_results/research_coach",
+                        dest="output_dir")
+
     return parser
 
 
@@ -9139,6 +9415,14 @@ def main() -> None:
         "research-review-report":      cmd_research_review_report,
         "research-review-summary":     cmd_research_review_summary,
         "research-review-actions":     cmd_research_review_actions,
+        # v0.4.8 Research Assistant / Coach
+        "research-coach":              cmd_research_coach,
+        "research-coach-report":       cmd_research_coach_report,
+        "research-coach-summary":      cmd_research_coach_summary,
+        "research-coach-checklist":    cmd_research_coach_checklist,
+        "research-coach-replay-plan":  cmd_research_coach_replay_plan,
+        "research-coach-rule-queue":   cmd_research_coach_rule_queue,
+        "research-coach-data-repair":  cmd_research_coach_data_repair,
     }
 
     if args.command is None:

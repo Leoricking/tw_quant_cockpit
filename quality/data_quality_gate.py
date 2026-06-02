@@ -738,3 +738,40 @@ class DataQualityGate:
                 "blockers": [], "blocker_count": 0,
                 "backtest_score": 0, "production_score": 0, "no_real_orders": True,
             }
+
+    # ------------------------------------------------------------------
+    # v0.4.8 Research Assistant / Coach integration
+    # ------------------------------------------------------------------
+
+    def coach_data_repair_candidates(self) -> dict:
+        """
+        Return data repair candidates for the Research Assistant / Coach.
+
+        Does NOT modify quality scores or gates.
+
+        [!] Coaching Only. Research Only. No Real Orders. Production Trading: BLOCKED.
+        """
+        try:
+            result = self.run()
+            gates  = result.get("gates", {})
+            blockers = [k for k, v in gates.items() if v is False]
+            stale_datasets   = [{"dataset": b} for b in blockers if "stale" in b.lower()]
+            missing_datasets = [{"dataset": b} for b in blockers if "missing" in b.lower()]
+            intraday_missing = [{"dataset": b} for b in blockers if "intraday" in b.lower()]
+            return {
+                "stale_datasets":    stale_datasets,
+                "missing_datasets":  missing_datasets,
+                "intraday_missing":  intraday_missing,
+                "blocker_count":     len(blockers),
+                "backtest_score":    result.get("backtest_readiness_score", 0),
+                "read_only":         True,
+                "no_real_orders":    True,
+                "coaching_only":     True,
+            }
+        except Exception as exc:
+            logger.warning("DataQualityGate.coach_data_repair_candidates: %s", exc)
+            return {
+                "stale_datasets": [], "missing_datasets": [],
+                "intraday_missing": [], "blocker_count": 0,
+                "backtest_score": 0, "no_real_orders": True,
+            }

@@ -805,6 +805,9 @@ class RegressionSuite:
             # v0.4.7
             self._test_research_review_imports,
             self._test_research_review_summary,
+            # v0.4.8
+            self._test_research_coach_imports,
+            self._test_research_coach_summary,
         ]
         return self._execute("full", tests_fns)
 
@@ -906,6 +909,47 @@ class RegressionSuite:
         except Exception as exc:
             return self._item(
                 "research_review_summary", "FAIL", str(exc),
+                (time.monotonic() - t0) * 1000,
+            )
+
+    def _test_research_coach_imports(self) -> dict:
+        t0 = time.monotonic()
+        try:
+            import importlib
+            importlib.import_module("coach.coach_schema")
+            importlib.import_module("coach.checklist_builder")
+            importlib.import_module("coach.research_assistant_engine")
+            importlib.import_module("coach.replay_training_planner")
+            importlib.import_module("coach.rule_review_queue")
+            importlib.import_module("coach.data_repair_planner")
+            importlib.import_module("coach.coach_store")
+            return self._item(
+                "research_coach_imports", "PASS", "all coach modules imported",
+                (time.monotonic() - t0) * 1000,
+            )
+        except Exception as exc:
+            return self._item(
+                "research_coach_imports", "FAIL", str(exc),
+                (time.monotonic() - t0) * 1000,
+            )
+
+    def _test_research_coach_summary(self) -> dict:
+        t0 = time.monotonic()
+        try:
+            cmd = [sys.executable, "main.py", "research-coach-summary"]
+            proc = subprocess.run(
+                cmd, capture_output=True, text=True, timeout=30,
+                cwd=BASE_DIR,
+            )
+            detail = (proc.stdout or proc.stderr or "")[:200]
+            status = "PASS" if proc.returncode == 0 else "PARTIAL"
+            return self._item(
+                "research_coach_summary", status, detail,
+                (time.monotonic() - t0) * 1000,
+            )
+        except Exception as exc:
+            return self._item(
+                "research_coach_summary", "FAIL", str(exc),
                 (time.monotonic() - t0) * 1000,
             )
 

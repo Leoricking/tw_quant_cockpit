@@ -661,6 +661,7 @@ class ExperimentSnapshotBuilder:
             ("notification_center",         lambda: self.build_notification_snapshot()),
             ("portfolio_journal",           lambda: self.build_portfolio_journal_snapshot()),
             ("research_review",             lambda: self.build_research_review_snapshot()),
+            ("research_coach",              lambda: self.build_research_coach_snapshot()),
         ]
         for snap_type, fn in builders:
             try:
@@ -731,5 +732,65 @@ class ExperimentSnapshotBuilder:
             }
         except Exception as exc:
             logger.warning("build_research_review_snapshot: %s", exc)
+            snap["warnings"].append(f"snapshot error: {exc}")
+        return snap
+
+    # ------------------------------------------------------------------
+    # v0.4.8 Research Assistant / Coach snapshot
+    # ------------------------------------------------------------------
+
+    def build_research_coach_snapshot(self) -> dict:
+        """
+        Build a point-in-time snapshot of the Research Assistant / Coach state.
+
+        [!] Coaching Only. Research Only. No Real Orders. Production Trading: BLOCKED.
+        """
+        snap: dict = {
+            "snapshot_type": "research_coach",
+            "generated_at":  _now_iso(),
+            "source_files":  [],
+            "summary":       {},
+            "warnings":      [],
+            "version_info":  {"version": _VERSION},
+        }
+        try:
+            store_dir  = os.path.join(self.results_dir, "research_coach")
+            summary_csv = os.path.join(store_dir, "coach_summary.csv")
+            recs_csv    = os.path.join(store_dir, "coach_recommendations.csv")
+
+            summary_data: dict = {}
+
+            if os.path.exists(summary_csv):
+                snap["source_files"].append(summary_csv)
+                import csv as _csv
+                with open(summary_csv, newline="", encoding="utf-8") as f:
+                    rows = list(_csv.DictReader(f))
+                    if rows:
+                        summary_data = rows[-1]
+            else:
+                snap["warnings"].append("coach_summary.csv not found — run research-coach first")
+
+            recommendations_count = 0
+            if os.path.exists(recs_csv):
+                snap["source_files"].append(recs_csv)
+                import csv as _csv
+                with open(recs_csv, newline="", encoding="utf-8") as f:
+                    recommendations_count = sum(1 for _ in _csv.DictReader(f))
+
+            latest_at = summary_data.get("generated_at", "")
+            snap["summary"] = {
+                "recommendations_count": recommendations_count,
+                "p0_count":              summary_data.get("p0_count", 0),
+                "p1_count":              summary_data.get("p1_count", 0),
+                "replay_tasks_count":    summary_data.get("replay_tasks_count", 0),
+                "rule_reviews_count":    summary_data.get("rule_review_count", 0),
+                "data_repair_count":     summary_data.get("data_repair_count", 0),
+                "latest_coach_at":       latest_at,
+                "coaching_only":         True,
+                "no_real_orders":        True,
+                "production_blocked":    True,
+            }
+        except Exception as exc:
+            logger.warning("build_research_coach_snapshot: %s", exc)
             snap["warnings"].append(f"snapshot error: {exc}")
         return snap

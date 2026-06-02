@@ -1033,6 +1033,11 @@ class StableReleaseChecklist:
             self._check_research_review_import_health,
             self._check_research_review_no_real_orders,
             self._check_research_review_output_ignored,
+            # v0.4.8
+            self._check_research_coach_import_health,
+            self._check_research_coach_no_real_orders,
+            self._check_research_coach_output_ignored,
+            self._check_research_coach_no_forbidden_commands,
         ]
 
         items: list[dict] = []
@@ -1160,8 +1165,90 @@ class StableReleaseChecklist:
             elapsed = (time.monotonic() - t0) * 1000
             return self._item("research_review_output_ignored", "WARN", str(exc), elapsed)
 
-        logger.info(
-            "StableReleaseChecklist complete — status=%s passed=%d failed=%d warnings=%d",
-            overall, passed, failed, warnings,
-        )
-        return summary
+    # ------------------------------------------------------------------
+    # v0.4.8 Research Assistant / Coach checks
+    # ------------------------------------------------------------------
+
+    def _check_research_coach_import_health(self) -> dict:
+        """v0.4.8: Verify research coach modules import cleanly."""
+        t0 = time.monotonic()
+        try:
+            import importlib
+            importlib.import_module("coach.coach_schema")
+            importlib.import_module("coach.checklist_builder")
+            importlib.import_module("coach.research_assistant_engine")
+            importlib.import_module("coach.replay_training_planner")
+            importlib.import_module("coach.rule_review_queue")
+            importlib.import_module("coach.data_repair_planner")
+            importlib.import_module("coach.coach_store")
+            elapsed = (time.monotonic() - t0) * 1000
+            return self._item(
+                "research_coach_import_health", "PASS",
+                "All research coach modules import cleanly", elapsed,
+            )
+        except Exception as exc:
+            elapsed = (time.monotonic() - t0) * 1000
+            return self._item("research_coach_import_health", "FAIL", str(exc), elapsed)
+
+    def _check_research_coach_no_real_orders(self) -> dict:
+        """v0.4.8: Verify research coach schema enforces coaching_only / no_real_orders."""
+        t0 = time.monotonic()
+        try:
+            from coach.coach_schema import CoachRecommendation
+            rec = CoachRecommendation()
+            assert rec.read_only is True
+            assert rec.no_real_orders is True
+            assert rec.production_blocked is True
+            elapsed = (time.monotonic() - t0) * 1000
+            return self._item(
+                "research_coach_no_real_orders", "PASS",
+                "CoachRecommendation enforces read_only/no_real_orders/production_blocked", elapsed,
+            )
+        except Exception as exc:
+            elapsed = (time.monotonic() - t0) * 1000
+            return self._item("research_coach_no_real_orders", "FAIL", str(exc), elapsed)
+
+    def _check_research_coach_output_ignored(self) -> dict:
+        """v0.4.8: Verify research coach output paths are in .gitignore."""
+        t0 = time.monotonic()
+        patterns = [
+            "data/backtest_results/research_coach/",
+            "research_assistant_report_",
+        ]
+        try:
+            gi_path = os.path.join(BASE_DIR, ".gitignore")
+            content = open(gi_path, encoding="utf-8").read()
+            missing = [p for p in patterns if p not in content]
+            elapsed = (time.monotonic() - t0) * 1000
+            if not missing:
+                return self._item(
+                    "research_coach_output_ignored", "PASS",
+                    "All research_coach output patterns present in .gitignore", elapsed,
+                )
+            return self._item(
+                "research_coach_output_ignored", "WARN",
+                f"Missing from .gitignore: {missing}", elapsed,
+            )
+        except Exception as exc:
+            elapsed = (time.monotonic() - t0) * 1000
+            return self._item("research_coach_output_ignored", "WARN", str(exc), elapsed)
+
+    def _check_research_coach_no_forbidden_commands(self) -> dict:
+        """v0.4.8: Verify _safe_command blocks forbidden keywords in suggested_command."""
+        t0 = time.monotonic()
+        try:
+            from coach.coach_schema import CoachRecommendation, _FORBIDDEN_KEYWORDS
+            blocked_count = 0
+            for kw in _FORBIDDEN_KEYWORDS[:3]:
+                rec = CoachRecommendation(suggested_command=f"python main.py {kw} --symbol 2330")
+                assert rec.suggested_command == "# BLOCKED: no trading commands allowed", \
+                    f"keyword '{kw}' was not blocked"
+                blocked_count += 1
+            elapsed = (time.monotonic() - t0) * 1000
+            return self._item(
+                "research_coach_no_forbidden_commands", "PASS",
+                f"_safe_command blocked {blocked_count} forbidden keyword(s)", elapsed,
+            )
+        except Exception as exc:
+            elapsed = (time.monotonic() - t0) * 1000
+            return self._item("research_coach_no_forbidden_commands", "FAIL", str(exc), elapsed)

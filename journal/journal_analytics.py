@@ -246,3 +246,49 @@ class JournalAnalytics:
                 "process_quality": [], "open_simulated": 0,
                 "no_real_orders": True,
             }
+
+    # ------------------------------------------------------------------
+    # v0.4.8 Research Assistant / Coach integration
+    # ------------------------------------------------------------------
+
+    def coach_summary(self) -> dict:
+        """
+        Return a summary for the Research Assistant / Coach.
+
+        Returns top_mistakes, process_focus, review_backlog.
+        Does NOT modify entries, strategies, or weights.
+
+        [!] Coaching Only. Research Only. No Real Orders.
+        """
+        try:
+            entries = self._all_entries()
+            by_mistake = self.summarize_by_mistake_tag(entries)
+            top_mistakes = [m["mistake_tag"] for m in by_mistake[:5]]
+            most_common  = top_mistakes[0] if top_mistakes else ""
+            review_backlog = sum(1 for e in entries if e.needs_review())
+            process = self.summarize_process_quality(entries)
+            process_focus = ""
+            if isinstance(process, dict):
+                with_stop = process.get("with_stop_loss_pct", 0.0)
+                with_thesis = process.get("with_thesis_pct", 0.0)
+                if with_stop < 0.5:
+                    process_focus = "Improve stop-loss discipline"
+                elif with_thesis < 0.5:
+                    process_focus = "Document thesis before entry"
+            return {
+                "top_mistakes":    top_mistakes,
+                "most_common_mistake": most_common,
+                "review_backlog":  review_backlog,
+                "process_focus":   process_focus,
+                "total_entries":   len(entries),
+                "read_only":       True,
+                "no_real_orders":  True,
+                "coaching_only":   True,
+            }
+        except Exception as exc:
+            logger.warning("JournalAnalytics.coach_summary: %s", exc)
+            return {
+                "top_mistakes": [], "most_common_mistake": "",
+                "review_backlog": 0, "process_focus": "",
+                "total_entries": 0, "no_real_orders": True,
+            }
