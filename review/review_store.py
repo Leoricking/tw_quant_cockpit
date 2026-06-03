@@ -158,6 +158,29 @@ class ResearchReviewStore:
         """Load latest action plan from CSV."""
         return self._load_rows(os.path.join(self._output_dir, _ACTIONPLAN_FILENAME))
 
+    def get_workflow_summary(self) -> dict:
+        """
+        Return a compact summary dict for workflow_builder integration (v0.4.9).
+        Never raises — returns empty dict on failure.
+        """
+        try:
+            summary = self.load_latest_summary()
+            if not summary:
+                return {}
+            return {
+                "most_common_mistake": summary.get("most_common_mistake", ""),
+                "weak_rules":          summary.get("weak_rules", 0),
+                "data_blockers":       summary.get("data_blockers", 0),
+                "open_items":          summary.get("open_items", 0),
+                "critical_items":      summary.get("critical_items", 0),
+                "action_items_count":  summary.get("action_items_count", 0),
+                "safety_status":       summary.get("safety_status", "UNKNOWN"),
+                "generated_at":        summary.get("generated_at", ""),
+            }
+        except Exception as exc:
+            logger.warning("[ReviewStore] get_workflow_summary error: %s", exc)
+            return {}
+
     # ------------------------------------------------------------------
     # Internal helpers
     # ------------------------------------------------------------------

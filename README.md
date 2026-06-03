@@ -4,7 +4,57 @@
 >
 > **[!] v1: Real order execution is strictly prohibited. For research, simulation, and decision support only. Not investment advice.**
 
-**Current version: v0.4.8 — Research Assistant / Coach**
+**Current version: v0.4.9 — Research Workflow Automation**
+
+---
+
+## v0.4.9 — Research Workflow Automation
+
+**New in v0.4.9:**
+
+- **Research Workflow Automation** — Converts Research Coach / Research Review outputs into executable read-only research workflows. Workflow Only. Research Only. No Real Orders.
+- **Safe Command Registry** — Whitelist of allowed research-only commands. Blocks all buy/sell/order/git/cd/compound shell commands. All forbidden commands are BLOCKED and logged, never executed.
+- **Daily Research Workflow** — Builds and runs a daily workflow from coach checklist, review dashboard, and subsystem status. Produces daily research package with index.md.
+- **Weekly Review Workflow** — Builds and runs weekly review workflow. Produces weekly package with scorecard, top mistakes, weak rules, replay focus, and next-week action plan.
+- **ResearchWorkflowRunner** — Executes safe tasks via subprocess (no shell=True). Blocked tasks are marked BLOCKED and skipped. Dry-run mode lists tasks without executing.
+- **ResearchPackageBuilder** — Generates dated `daily_package_YYYY-MM-DD/index.md` and `weekly_package_YYYY-MM-DD/index.md` with workflow summary, coach checklist, review summary, notifications, journal, data quality, rule governance, and action plan.
+- **ResearchWorkflowStore** — Persists workflow runs, tasks, and summaries to CSV (`data/backtest_results/research_workflow/`, gitignored).
+- **ResearchWorkflowReport** — Markdown report with 6 sections: overview, task table, blocked commands, daily package, weekly package, safety statement.
+- **CLI**: `research-workflow`, `research-workflow-report`, `research-workflow-summary`, `research-workflow-tasks`, `research-workflow-package`
+- **GUI**: Research Workflow tab in main dashboard with safety banner, summary cards, task table, blocked command table, package panel.
+- **[!] Workflow Only. Research Only. No Real Orders. Production Trading BLOCKED.**
+
+**CLI usage:**
+```bash
+# Dry run (list tasks, do not execute)
+python main.py research-workflow --mode real --type daily_research --dry-run
+
+# Run daily research workflow
+python main.py research-workflow --mode real --type daily_research
+
+# Run weekly review workflow (dry run)
+python main.py research-workflow --mode real --type weekly_review --dry-run
+
+# Generate Markdown report
+python main.py research-workflow-report --mode real
+
+# Show latest summary
+python main.py research-workflow-summary
+
+# List latest tasks
+python main.py research-workflow-tasks
+
+# Generate / show package
+python main.py research-workflow-package --type daily_research
+```
+
+**GUI:**
+1. `python main.py cockpit --mode real`
+2. Select **Research Workflow** tab
+3. Click **Run Daily Workflow Dry Run** to preview tasks
+4. Click **Run Daily Workflow** to execute
+5. Task Table shows priority, status, duration, and warnings
+6. Blocked Command Table shows all blocked commands and reasons
 
 ---
 

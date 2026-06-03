@@ -613,3 +613,58 @@ class NotificationRuleEngine:
         except Exception as exc:
             logger.warning("NotificationRuleEngine.evaluate_research_coach: %s", exc)
         return events
+
+    # ------------------------------------------------------------------
+    # v0.4.9 Research Workflow Automation notification rules
+    # ------------------------------------------------------------------
+
+    def evaluate_research_workflow(self, workflow_summary: dict) -> list:
+        """
+        Evaluate research workflow summary and produce notification events.
+
+        Triggers:
+          - tasks_failed > 0    => WARNING notification
+          - blocked_count > 0   => NOTICE notification
+          - package ready        => INFO notification
+
+        [!] Workflow Only. Research Only. No Real Orders.
+        """
+        events = []
+        try:
+            failed_count  = int(workflow_summary.get("tasks_failed", 0) or 0)
+            blocked_count = int(workflow_summary.get("tasks_skipped", 0) or 0)
+            pkg_path      = workflow_summary.get("output_package_path", "")
+
+            if failed_count > 0:
+                events.append(NotificationEvent(
+                    event_type=EVENT_SYSTEM_HEALTH, severity=SEV_WARNING,
+                    title=f"Research Workflow: {failed_count} task(s) failed",
+                    message=f"Research workflow has {failed_count} failed task(s). Review workflow output.",
+                    category=CAT_REPORT, action_required=True, can_ignore=False,
+                    source="research_workflow",
+                    next_steps=["python main.py research-workflow-tasks"],
+                ))
+
+            if blocked_count > 0:
+                events.append(NotificationEvent(
+                    event_type=EVENT_SYSTEM_HEALTH, severity=SEV_NOTICE,
+                    title=f"Research Workflow: {blocked_count} command(s) BLOCKED",
+                    message=f"{blocked_count} workflow command(s) were blocked by SafeCommandRegistry.",
+                    category=CAT_SAFETY, action_required=False, can_ignore=True,
+                    source="research_workflow",
+                    next_steps=["python main.py research-workflow-summary"],
+                ))
+
+            if pkg_path:
+                events.append(NotificationEvent(
+                    event_type=EVENT_DAILY_REPORT_READY, severity=SEV_INFO,
+                    title="Research Workflow: Daily package ready",
+                    message=f"Daily research package generated: {pkg_path}",
+                    category=CAT_REPORT, action_required=False, can_ignore=True,
+                    source="research_workflow",
+                    next_steps=["python main.py research-workflow-package --type daily_research"],
+                ))
+
+        except Exception as exc:
+            logger.warning("NotificationRuleEngine.evaluate_research_workflow: %s", exc)
+        return events

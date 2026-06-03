@@ -808,6 +808,9 @@ class RegressionSuite:
             # v0.4.8
             self._test_research_coach_imports,
             self._test_research_coach_summary,
+            # v0.4.9
+            self._test_research_workflow_imports,
+            self._test_research_workflow_summary,
         ]
         return self._execute("full", tests_fns)
 
@@ -950,6 +953,51 @@ class RegressionSuite:
         except Exception as exc:
             return self._item(
                 "research_coach_summary", "FAIL", str(exc),
+                (time.monotonic() - t0) * 1000,
+            )
+
+    # ------------------------------------------------------------------
+    # v0.4.9 Research Workflow Automation tests
+    # ------------------------------------------------------------------
+
+    def _test_research_workflow_imports(self) -> dict:
+        t0 = time.monotonic()
+        try:
+            import importlib
+            importlib.import_module("workflow_automation.workflow_schema")
+            importlib.import_module("workflow_automation.safe_command_registry")
+            importlib.import_module("workflow_automation.workflow_builder")
+            importlib.import_module("workflow_automation.workflow_runner")
+            importlib.import_module("workflow_automation.package_builder")
+            importlib.import_module("workflow_automation.workflow_store")
+            return self._item(
+                "research_workflow_imports", "PASS",
+                "all workflow_automation modules imported",
+                (time.monotonic() - t0) * 1000,
+            )
+        except Exception as exc:
+            return self._item(
+                "research_workflow_imports", "FAIL", str(exc),
+                (time.monotonic() - t0) * 1000,
+            )
+
+    def _test_research_workflow_summary(self) -> dict:
+        t0 = time.monotonic()
+        try:
+            cmd = [sys.executable, "main.py", "research-workflow-summary"]
+            proc = subprocess.run(
+                cmd, capture_output=True, text=True, timeout=30,
+                cwd=BASE_DIR,
+            )
+            detail = (proc.stdout or proc.stderr or "")[:200]
+            status = "PASS" if proc.returncode == 0 else "PARTIAL"
+            return self._item(
+                "research_workflow_summary", status, detail,
+                (time.monotonic() - t0) * 1000,
+            )
+        except Exception as exc:
+            return self._item(
+                "research_workflow_summary", "FAIL", str(exc),
                 (time.monotonic() - t0) * 1000,
             )
 

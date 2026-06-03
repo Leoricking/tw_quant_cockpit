@@ -312,6 +312,9 @@ class AutoReportCenter:
         # v0.4.8 Research Assistant / Coach summary (always optional, never crashes)
         self.run_research_coach_summary()
 
+        # v0.4.9 Research Workflow Automation summary (always optional, never crashes)
+        self.run_research_workflow_summary()
+
         # Aggregated outputs
         if self.include_daily_summary:
             self.build_daily_market_summary()
@@ -914,6 +917,33 @@ class AutoReportCenter:
                 self._record_success("research_coach", "no persisted coach summary found")
         except Exception as exc:
             logger.warning("run_research_coach_summary failed: %s", exc)
+
+    def run_research_workflow_summary(self):
+        """
+        Include Research Workflow Automation summary in context (v0.4.9).
+        Reads persisted workflow_summary.csv — does NOT run a full workflow.
+        Optional — failure does not abort overall run.
+        """
+        try:
+            from workflow_automation.workflow_store import ResearchWorkflowStore
+            store   = ResearchWorkflowStore()
+            summary = store.load_latest_summary()
+            if summary:
+                self._context["research_workflow_tasks_total"]   = summary.get("tasks_total", 0)
+                self._context["research_workflow_failed_count"]  = summary.get("tasks_failed", 0)
+                self._context["research_workflow_blocked_count"] = summary.get("tasks_skipped", 0)
+                self._context["research_workflow_latest_id"]     = summary.get("workflow_id", "")
+                self._context["research_workflow_package_path"]  = summary.get("output_package_path", "")
+                self._record_success(
+                    "research_workflow",
+                    f"tasks={summary.get('tasks_total', 0)} "
+                    f"failed={summary.get('tasks_failed', 0)}",
+                )
+            else:
+                self._context["research_workflow_tasks_total"] = 0
+                self._record_success("research_workflow", "no persisted workflow summary found")
+        except Exception as exc:
+            logger.warning("run_research_workflow_summary failed: %s", exc)
 
     def run_model_monitoring_report(self):
         """Generate Model Monitoring report (v0.4.3). Optional — failure does not abort run."""

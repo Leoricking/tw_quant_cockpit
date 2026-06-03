@@ -335,6 +335,16 @@ except Exception as _rc_exc:
     logger.warning("ResearchAssistantPanel unavailable: %s", _rc_exc)
     _RESEARCH_COACH_AVAILABLE = False
 
+# ---------------------------------------------------------------------------
+# v0.4.9 Research Workflow Automation panel import (guarded)
+# ---------------------------------------------------------------------------
+try:
+    from gui.research_workflow_panel import ResearchWorkflowPanel
+    _RESEARCH_WORKFLOW_AVAILABLE = True
+except Exception as _rw_exc:
+    logger.warning("ResearchWorkflowPanel unavailable: %s", _rw_exc)
+    _RESEARCH_WORKFLOW_AVAILABLE = False
+
 
 # ---------------------------------------------------------------------------
 # Colour helpers (Taiwan convention: red = up, green = down)
@@ -1400,6 +1410,13 @@ class CockpitWindow(QMainWindow if _PYSIDE6_AVAILABLE else object):
             mid_tabs.addTab(self._research_assistant_panel, "Research Coach")
         else:
             self._research_assistant_panel = None
+
+        # v0.4.9 Research Workflow Automation tab
+        if _RESEARCH_WORKFLOW_AVAILABLE:
+            self._research_workflow_panel = ResearchWorkflowPanel()
+            mid_tabs.addTab(self._research_workflow_panel, "Research Workflow")
+        else:
+            self._research_workflow_panel = None
 
         h_split.addWidget(mid_tabs)
         h_split.setStretchFactor(0, 3)

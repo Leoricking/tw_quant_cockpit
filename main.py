@@ -7451,6 +7451,196 @@ def cmd_research_review_actions(args: argparse.Namespace) -> None:
 
 
 # ---------------------------------------------------------------------------
+# v0.4.9 Research Workflow Automation CLI handlers
+# ---------------------------------------------------------------------------
+
+def cmd_research_workflow(args: argparse.Namespace) -> None:
+    """Run Research Workflow Automation (v0.4.9)."""
+    logger = logging.getLogger("main.research_workflow")
+    mode       = getattr(args, "mode", "real")
+    wf_type    = getattr(args, "type", "daily_research")
+    dry_run    = getattr(args, "dry_run", False)
+    output_dir = getattr(args, "output_dir", "data/backtest_results/research_workflow")
+    report_dir = getattr(args, "report_dir", "reports")
+
+    print()
+    print("TW Quant Cockpit — Research Workflow Automation")
+    print("=" * 60)
+    print("  [!] Workflow Only | Research Only | No Real Orders | Production Trading BLOCKED")
+    print()
+
+    try:
+        from workflow_automation.workflow_builder import ResearchWorkflowBuilder
+        from workflow_automation.workflow_runner import ResearchWorkflowRunner
+        from workflow_automation.workflow_store import ResearchWorkflowStore
+
+        builder = ResearchWorkflowBuilder()
+        build_fn = {
+            "daily_research":  builder.build_daily_research_workflow,
+            "weekly_review":   builder.build_weekly_review_workflow,
+            "data_repair":     builder.build_data_repair_workflow,
+            "rule_review":     builder.build_rule_review_workflow,
+            "replay_training": builder.build_replay_training_workflow,
+            "safety_check":    builder.build_safety_check_workflow,
+        }.get(wf_type, builder.build_daily_research_workflow)
+        tasks = build_fn()
+
+        runner = ResearchWorkflowRunner(output_dir=output_dir, dry_run=dry_run)
+        result = runner.run_workflow(tasks, mode=mode, workflow_type=wf_type)
+        summary = runner.build_run_summary()
+
+        store = ResearchWorkflowStore(output_dir=output_dir)
+        store.save_run(result)
+        store.save_tasks(result.workflow_id, tasks)
+        store.save_summary(summary)
+
+        print(f"  Mode:              {mode}")
+        print(f"  Workflow Type:     {wf_type}")
+        print(f"  Workflow Only:     True")
+        print(f"  Research Only:     True")
+        print(f"  No Real Orders:    True")
+        print(f"  Dry Run:           {dry_run}")
+        print(f"  Tasks:             {result.tasks_total}")
+        print(f"  Passed:            {result.tasks_passed}")
+        print(f"  Failed:            {result.tasks_failed}")
+        print(f"  Blocked:           {result.tasks_skipped}")
+        if result.output_package_path:
+            print(f"  Package:           {result.output_package_path}")
+    except Exception as exc:
+        logger.error("research-workflow failed: %s", exc, exc_info=True)
+        print(f"  ERROR: {exc}")
+    print()
+
+
+def cmd_research_workflow_report(args: argparse.Namespace) -> None:
+    """Generate Research Workflow Automation Report (v0.4.9)."""
+    logger = logging.getLogger("main.research_workflow_report")
+    mode       = getattr(args, "mode", "real")
+    report_dir = getattr(args, "report_dir", "reports")
+    output_dir = getattr(args, "output_dir", "data/backtest_results/research_workflow")
+
+    print()
+    print("TW Quant Cockpit — Research Workflow Report")
+    print("=" * 60)
+    print("  [!] Workflow Only | Research Only | No Real Orders")
+    print()
+
+    try:
+        from workflow_automation.workflow_store import ResearchWorkflowStore
+        from reports.research_workflow_report import ResearchWorkflowReport
+        store    = ResearchWorkflowStore(output_dir=output_dir)
+        tasks    = store.load_latest_tasks()
+        pkg_path = store.load_latest_summary().get("output_package_path", "") if store.load_latest_summary() else ""
+        reporter = ResearchWorkflowReport(report_dir=report_dir)
+        path = reporter.generate(workflow_run=None, tasks=tasks, package_path=pkg_path, mode=mode)
+        print(f"  Report saved: {path}")
+    except Exception as exc:
+        logger.error("research-workflow-report failed: %s", exc, exc_info=True)
+        print(f"  ERROR: {exc}")
+    print()
+
+
+def cmd_research_workflow_summary(args: argparse.Namespace) -> None:
+    """Show latest Research Workflow Automation summary (v0.4.9)."""
+    logger = logging.getLogger("main.research_workflow_summary")
+    output_dir = getattr(args, "output_dir", "data/backtest_results/research_workflow")
+
+    print()
+    print("TW Quant Cockpit — Research Workflow Summary")
+    print("=" * 60)
+    print("  [!] Workflow Only | Research Only | No Real Orders")
+    print()
+
+    try:
+        from workflow_automation.workflow_store import ResearchWorkflowStore
+        store   = ResearchWorkflowStore(output_dir=output_dir)
+        summary = store.load_latest_summary()
+        if not summary:
+            print("  No summary found. Run: python main.py research-workflow --mode real --type daily_research")
+        else:
+            for k, v in summary.items():
+                print(f"  {k}: {v}")
+    except Exception as exc:
+        logger.error("research-workflow-summary failed: %s", exc, exc_info=True)
+        print(f"  ERROR: {exc}")
+    print()
+
+
+def cmd_research_workflow_tasks(args: argparse.Namespace) -> None:
+    """List latest Research Workflow tasks (v0.4.9)."""
+    logger = logging.getLogger("main.research_workflow_tasks")
+    output_dir = getattr(args, "output_dir", "data/backtest_results/research_workflow")
+
+    print()
+    print("TW Quant Cockpit — Research Workflow Tasks")
+    print("=" * 60)
+    print("  [!] Workflow Only | Research Only | No Real Orders")
+    print()
+
+    try:
+        from workflow_automation.workflow_store import ResearchWorkflowStore
+        store = ResearchWorkflowStore(output_dir=output_dir)
+        tasks = store.load_latest_tasks()
+        if not tasks:
+            print("  No tasks found. Run: python main.py research-workflow --mode real --type daily_research")
+        else:
+            for t in tasks:
+                p   = t.get("priority", "-")
+                nm  = t.get("task_name", "")
+                st  = t.get("status", "-")
+                cmd = t.get("suggested_command", "")
+                print(f"  [{p}] {nm} — {st}")
+                if cmd:
+                    print(f"       → {cmd}")
+    except Exception as exc:
+        logger.error("research-workflow-tasks failed: %s", exc, exc_info=True)
+        print(f"  ERROR: {exc}")
+    print()
+
+
+def cmd_research_workflow_package(args: argparse.Namespace) -> None:
+    """Generate / show Research Workflow package (v0.4.9)."""
+    logger = logging.getLogger("main.research_workflow_package")
+    wf_type    = getattr(args, "type", "daily_research")
+    output_dir = getattr(args, "output_dir", "data/backtest_results/research_workflow")
+    report_dir = getattr(args, "report_dir", "reports")
+
+    print()
+    print("TW Quant Cockpit — Research Workflow Package")
+    print("=" * 60)
+    print("  [!] Workflow Only | Research Only | No Real Orders")
+    print()
+
+    try:
+        from workflow_automation.workflow_store import ResearchWorkflowStore
+        from workflow_automation.package_builder import ResearchPackageBuilder
+        store   = ResearchWorkflowStore(output_dir=output_dir)
+        summary = store.load_latest_summary()
+        run_obj = None
+        try:
+            from workflow_automation.workflow_schema import ResearchWorkflowRun
+            if summary:
+                run_obj = ResearchWorkflowRun(**{k: summary.get(k, "") for k in ResearchWorkflowRun.__dataclass_fields__})
+        except Exception:
+            pass
+
+        builder = ResearchPackageBuilder(output_dir=output_dir, report_dir=report_dir)
+        if wf_type == "weekly_review":
+            pkg_path = builder.build_weekly_package(run_obj)
+        else:
+            pkg_path = builder.build_daily_package(run_obj)
+
+        if pkg_path:
+            print(f"  Package: {pkg_path}")
+        else:
+            print("  No package generated (no workflow data found)")
+    except Exception as exc:
+        logger.error("research-workflow-package failed: %s", exc, exc_info=True)
+        print(f"  ERROR: {exc}")
+    print()
+
+
+# ---------------------------------------------------------------------------
 # v0.4.8 Research Assistant / Coach CLI handlers
 # ---------------------------------------------------------------------------
 
@@ -9225,6 +9415,57 @@ def _build_parser() -> argparse.ArgumentParser:
     p_rcdr.add_argument("--output-dir", default="data/backtest_results/research_coach",
                         dest="output_dir")
 
+    # ---- v0.4.9 Research Workflow Automation ----
+
+    p_rw = subparsers.add_parser(
+        "research-workflow",
+        help="Run Research Workflow Automation (v0.4.9)",
+    )
+    p_rw.add_argument("--mode",   default="real", choices=["real", "mock"])
+    p_rw.add_argument("--type",   default="daily_research",
+                      choices=["daily_research", "weekly_review", "data_repair",
+                               "rule_review", "replay_training", "safety_check"],
+                      dest="type", help="Workflow type (default: daily_research)")
+    p_rw.add_argument("--dry-run", action="store_true", default=False,
+                      dest="dry_run", help="List tasks only, do not execute")
+    p_rw.add_argument("--output-dir", default="data/backtest_results/research_workflow",
+                      dest="output_dir")
+    p_rw.add_argument("--report-dir", default="reports", dest="report_dir")
+
+    p_rwrpt = subparsers.add_parser(
+        "research-workflow-report",
+        help="Generate Research Workflow Automation Markdown report (v0.4.9)",
+    )
+    p_rwrpt.add_argument("--mode",       default="real", choices=["real", "mock"])
+    p_rwrpt.add_argument("--report-dir", default="reports", dest="report_dir")
+    p_rwrpt.add_argument("--output-dir", default="data/backtest_results/research_workflow",
+                         dest="output_dir")
+
+    p_rwsum = subparsers.add_parser(
+        "research-workflow-summary",
+        help="Show latest Research Workflow Automation summary (v0.4.9)",
+    )
+    p_rwsum.add_argument("--output-dir", default="data/backtest_results/research_workflow",
+                         dest="output_dir")
+
+    p_rwtasks = subparsers.add_parser(
+        "research-workflow-tasks",
+        help="List latest Research Workflow tasks (v0.4.9)",
+    )
+    p_rwtasks.add_argument("--output-dir", default="data/backtest_results/research_workflow",
+                           dest="output_dir")
+
+    p_rwpkg = subparsers.add_parser(
+        "research-workflow-package",
+        help="Generate / show Research Workflow package (v0.4.9)",
+    )
+    p_rwpkg.add_argument("--type",       default="daily_research",
+                         choices=["daily_research", "weekly_review"],
+                         dest="type", help="Package type (default: daily_research)")
+    p_rwpkg.add_argument("--output-dir", default="data/backtest_results/research_workflow",
+                         dest="output_dir")
+    p_rwpkg.add_argument("--report-dir", default="reports", dest="report_dir")
+
     return parser
 
 
@@ -9423,6 +9664,12 @@ def main() -> None:
         "research-coach-replay-plan":  cmd_research_coach_replay_plan,
         "research-coach-rule-queue":   cmd_research_coach_rule_queue,
         "research-coach-data-repair":  cmd_research_coach_data_repair,
+        # v0.4.9 Research Workflow Automation
+        "research-workflow":           cmd_research_workflow,
+        "research-workflow-report":    cmd_research_workflow_report,
+        "research-workflow-summary":   cmd_research_workflow_summary,
+        "research-workflow-tasks":     cmd_research_workflow_tasks,
+        "research-workflow-package":   cmd_research_workflow_package,
     }
 
     if args.command is None:

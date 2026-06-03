@@ -41,6 +41,7 @@
 | v0.4.6 | Portfolio Journal & Trade Review | Done |
 | v0.4.7 | Research Review Dashboard | Done |
 | v0.4.8 | Research Assistant / Coach | Done |
+| v0.4.9 | Research Workflow Automation | Done |
 
 ---
 
@@ -88,7 +89,49 @@ Coaching Only. Research Only. No Real Orders. Production Trading: BLOCKED.
 
 ### Next Steps
 
-v0.4.9 — Research Workflow Automation or v0.5.0 planning
+v0.5.0 — Research OS Planning / Stabilization
+
+---
+
+## Completed: v0.4.9 — Research Workflow Automation
+
+**Status:** Done
+
+### Summary
+
+v0.4.9 adds Research Workflow Automation — converts Research Coach / Research Review outputs into executable read-only research workflows. Produces daily/weekly research packages with workflow summaries, checklist summaries, report links, and action plans. Safe command registry blocks all forbidden commands (buy/sell/order/git/cd/compound). Workflow Only. Research Only. No Real Orders. Production Trading: BLOCKED.
+
+### New Files
+
+- `workflow_automation/__init__.py`
+- `workflow_automation/workflow_schema.py` — ResearchWorkflowTask / ResearchWorkflowRun schema
+- `workflow_automation/safe_command_registry.py` — Allowed command whitelist + forbidden keyword blocking
+- `workflow_automation/workflow_builder.py` — Builds workflows from coach/review outputs
+- `workflow_automation/workflow_runner.py` — Executes research-only workflow tasks
+- `workflow_automation/package_builder.py` — Generates daily/weekly research packages
+- `workflow_automation/workflow_store.py` — Persists workflow runs/tasks/summaries to CSV
+- `reports/research_workflow_report.py` — Markdown report generator
+- `gui/research_workflow_panel.py` — PySide6 GUI panel
+- `gui/research_workflow_adapter.py` — GUI bridge
+- `docs/research_workflow_automation.md`
+
+### Modified Files
+
+- `main.py` — 5 new CLI commands (research-workflow, research-workflow-report, research-workflow-summary, research-workflow-tasks, research-workflow-package)
+- `coach/coach_store.py` — `load_latest_recommendations()`, `load_latest_daily_checklist()`, `load_latest_weekly_checklist()`
+- `review/review_store.py` — `get_workflow_summary()`
+- `notifications/notification_rules.py` — `evaluate_research_workflow()`
+- `experiments/snapshot_builder.py` — `build_research_workflow_snapshot()`
+- `reports/auto_report_center.py` — `run_research_workflow_summary()`
+- `reports/auto_report_index.py` — 5 workflow manifest fields
+- `release/regression_suite.py` — 2 new v0.4.9 tests
+- `release/stable_release_checklist.py` — 5 new v0.4.9 checks
+- `gui/dashboard.py` — Research Workflow tab
+- `.gitignore` — research_workflow outputs gitignored
+
+### Next Steps
+
+v0.5.0 — Research OS Planning / Stabilization
 
 ---
 

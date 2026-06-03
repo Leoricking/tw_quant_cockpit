@@ -1038,6 +1038,12 @@ class StableReleaseChecklist:
             self._check_research_coach_no_real_orders,
             self._check_research_coach_output_ignored,
             self._check_research_coach_no_forbidden_commands,
+            # v0.4.9
+            self._check_research_workflow_import_health,
+            self._check_research_workflow_no_real_orders,
+            self._check_research_workflow_output_ignored,
+            self._check_research_workflow_safe_command_registry,
+            self._check_research_workflow_no_compound_commands,
         ]
 
         items: list[dict] = []
@@ -1252,3 +1258,113 @@ class StableReleaseChecklist:
         except Exception as exc:
             elapsed = (time.monotonic() - t0) * 1000
             return self._item("research_coach_no_forbidden_commands", "FAIL", str(exc), elapsed)
+
+    # ------------------------------------------------------------------
+    # v0.4.9 Research Workflow Automation checks
+    # ------------------------------------------------------------------
+
+    def _check_research_workflow_import_health(self) -> dict:
+        """v0.4.9: Verify research workflow modules import cleanly."""
+        t0 = time.monotonic()
+        try:
+            import importlib
+            importlib.import_module("workflow_automation.workflow_schema")
+            importlib.import_module("workflow_automation.safe_command_registry")
+            importlib.import_module("workflow_automation.workflow_builder")
+            importlib.import_module("workflow_automation.workflow_runner")
+            importlib.import_module("workflow_automation.package_builder")
+            importlib.import_module("workflow_automation.workflow_store")
+            elapsed = (time.monotonic() - t0) * 1000
+            return self._item(
+                "research_workflow_import_health", "PASS",
+                "All research workflow modules import cleanly", elapsed,
+            )
+        except Exception as exc:
+            elapsed = (time.monotonic() - t0) * 1000
+            return self._item("research_workflow_import_health", "FAIL", str(exc), elapsed)
+
+    def _check_research_workflow_no_real_orders(self) -> dict:
+        """v0.4.9: Verify workflow schema enforces workflow_only / no_real_orders."""
+        t0 = time.monotonic()
+        try:
+            from workflow_automation.workflow_schema import ResearchWorkflowTask
+            task = ResearchWorkflowTask()
+            assert task.read_only is True, "read_only must be True"
+            assert task.no_real_orders is True, "no_real_orders must be True"
+            assert task.production_blocked is True, "production_blocked must be True"
+            elapsed = (time.monotonic() - t0) * 1000
+            return self._item(
+                "research_workflow_no_real_orders", "PASS",
+                "ResearchWorkflowTask enforces read_only/no_real_orders/production_blocked", elapsed,
+            )
+        except Exception as exc:
+            elapsed = (time.monotonic() - t0) * 1000
+            return self._item("research_workflow_no_real_orders", "FAIL", str(exc), elapsed)
+
+    def _check_research_workflow_output_ignored(self) -> dict:
+        """v0.4.9: Verify research workflow output paths are in .gitignore."""
+        t0 = time.monotonic()
+        patterns = [
+            "data/backtest_results/research_workflow/",
+            "research_workflow_report_",
+        ]
+        try:
+            gi_path = os.path.join(BASE_DIR, ".gitignore")
+            content = open(gi_path, encoding="utf-8").read()
+            missing = [p for p in patterns if p not in content]
+            elapsed = (time.monotonic() - t0) * 1000
+            if not missing:
+                return self._item(
+                    "research_workflow_output_ignored", "PASS",
+                    "All research_workflow output patterns present in .gitignore", elapsed,
+                )
+            return self._item(
+                "research_workflow_output_ignored", "WARN",
+                f"Missing from .gitignore: {missing}", elapsed,
+            )
+        except Exception as exc:
+            elapsed = (time.monotonic() - t0) * 1000
+            return self._item("research_workflow_output_ignored", "WARN", str(exc), elapsed)
+
+    def _check_research_workflow_safe_command_registry(self) -> dict:
+        """v0.4.9: Verify SafeCommandRegistry blocks forbidden keywords."""
+        t0 = time.monotonic()
+        try:
+            from workflow_automation.safe_command_registry import SafeCommandRegistry
+            registry = SafeCommandRegistry()
+            forbidden_tests = ["python main.py buy --symbol 2330", "sell order", "submit_order"]
+            blocked = 0
+            for cmd in forbidden_tests:
+                if not registry.is_allowed(cmd):
+                    blocked += 1
+            assert blocked == len(forbidden_tests), f"Expected {len(forbidden_tests)} blocks, got {blocked}"
+            elapsed = (time.monotonic() - t0) * 1000
+            return self._item(
+                "research_workflow_safe_command_registry", "PASS",
+                f"SafeCommandRegistry blocked {blocked} forbidden keyword(s)", elapsed,
+            )
+        except Exception as exc:
+            elapsed = (time.monotonic() - t0) * 1000
+            return self._item("research_workflow_safe_command_registry", "FAIL", str(exc), elapsed)
+
+    def _check_research_workflow_no_compound_commands(self) -> dict:
+        """v0.4.9: Verify SafeCommandRegistry blocks compound shell commands."""
+        t0 = time.monotonic()
+        try:
+            from workflow_automation.safe_command_registry import SafeCommandRegistry
+            registry = SafeCommandRegistry()
+            compound_tests = [
+                "python main.py data-quality-gate && python main.py provider-health",
+                "cd trading_master; python main.py data-quality-gate",
+                "python main.py data-quality-gate | grep PASS",
+            ]
+            blocked = sum(1 for cmd in compound_tests if not registry.is_allowed(cmd))
+            assert blocked == len(compound_tests), f"Expected {len(compound_tests)} blocks, got {blocked}"
+            elapsed = (time.monotonic() - t0) * 1000
+            return self._item(
+                "research_workflow_no_compound_commands", "PASS",
+                f"SafeCommandRegistry blocked {blocked} compound command(s)", elapsed,
+            )
+        except Exception as exc:
+            elapsed = (time.monotonic() - t0) * 1000
+            return self._item("research_workflow_no_compound_commands", "FAIL", str(exc), elapsed)

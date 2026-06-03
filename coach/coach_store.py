@@ -266,6 +266,26 @@ class ResearchCoachStore:
             logger.warning("[CoachStore] load_data_repair_plan error: %s", exc)
             return []
 
+    def load_latest_recommendations(self) -> List[dict]:
+        """Load all coach recommendations from CSV (v0.4.9 workflow integration)."""
+        path = self._path(_RECOMMENDATIONS_FILENAME)
+        if not os.path.exists(path):
+            return []
+        try:
+            return self._read_csv(path)
+        except Exception as exc:
+            logger.warning("[CoachStore] load_latest_recommendations error: %s", exc)
+            return []
+
+    def load_latest_daily_checklist(self) -> List[dict]:
+        """Load daily checklist items (v0.4.9 workflow integration). Alias for load_daily_checklist."""
+        return self.load_daily_checklist()
+
+    def load_latest_weekly_checklist(self) -> List[dict]:
+        """Load weekly checklist items from checklist CSV (v0.4.9 workflow integration)."""
+        rows = self.load_daily_checklist()
+        return [r for r in rows if r.get("recommendation_type", "") == "weekly_checklist"]
+
     # ------------------------------------------------------------------
     # CSV helpers
     # ------------------------------------------------------------------

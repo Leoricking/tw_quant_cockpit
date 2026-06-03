@@ -4,6 +4,38 @@
 
 ---
 
+## v0.4.9 — Research Workflow Automation
+
+**Status:** Current
+
+### Summary
+
+v0.4.9 adds Research Workflow Automation — converts Research Coach / Research Review outputs into executable read-only research workflows. Includes safe command registry, daily/weekly research packages, workflow runner, and GUI panel. Workflow Only. Research Only. No Real Orders.
+
+### New Files
+
+- `workflow_automation/__init__.py`, `workflow_automation/workflow_schema.py`
+- `workflow_automation/safe_command_registry.py`, `workflow_automation/workflow_builder.py`
+- `workflow_automation/workflow_runner.py`, `workflow_automation/package_builder.py`
+- `workflow_automation/workflow_store.py`
+- `reports/research_workflow_report.py`
+- `gui/research_workflow_panel.py`, `gui/research_workflow_adapter.py`
+- `docs/research_workflow_automation.md`
+
+### Modified Files
+
+- `main.py` — 5 new CLI commands (research-workflow, research-workflow-report, research-workflow-summary, research-workflow-tasks, research-workflow-package)
+- `coach/coach_store.py` — 3 new load methods for workflow integration
+- `review/review_store.py` — `get_workflow_summary()`
+- `notifications/notification_rules.py` — `evaluate_research_workflow()`
+- `experiments/snapshot_builder.py` — `build_research_workflow_snapshot()`
+- `reports/auto_report_center.py`, `reports/auto_report_index.py` — workflow summary/manifest
+- `release/regression_suite.py`, `release/stable_release_checklist.py` — v0.4.9 tests/checks
+- `gui/dashboard.py` — Research Workflow tab
+- `.gitignore` — research_workflow outputs gitignored
+
+---
+
 ## v0.4.8 — Research Assistant / Coach
 
 **Status:** Current

@@ -662,6 +662,7 @@ class ExperimentSnapshotBuilder:
             ("portfolio_journal",           lambda: self.build_portfolio_journal_snapshot()),
             ("research_review",             lambda: self.build_research_review_snapshot()),
             ("research_coach",              lambda: self.build_research_coach_snapshot()),
+            ("research_workflow",           lambda: self.build_research_workflow_snapshot()),
         ]
         for snap_type, fn in builders:
             try:
@@ -792,5 +793,49 @@ class ExperimentSnapshotBuilder:
             }
         except Exception as exc:
             logger.warning("build_research_coach_snapshot: %s", exc)
+            snap["warnings"].append(f"snapshot error: {exc}")
+        return snap
+
+    # ------------------------------------------------------------------
+    # v0.4.9 Research Workflow Automation snapshot
+    # ------------------------------------------------------------------
+
+    def build_research_workflow_snapshot(self) -> dict:
+        """
+        Build a point-in-time snapshot of the Research Workflow Automation state.
+
+        [!] Workflow Only. Research Only. No Real Orders. Production Trading: BLOCKED.
+        """
+        snap: dict = {
+            "snapshot_type": "research_workflow",
+            "generated_at":  _now_iso(),
+            "source_files":  [],
+            "summary":       {},
+            "warnings":      [],
+            "version_info":  {"version": "v0.4.9"},
+        }
+        try:
+            from workflow_automation.workflow_store import ResearchWorkflowStore
+            store = ResearchWorkflowStore()
+            summary = store.load_latest_summary()
+            if not summary:
+                snap["warnings"].append("No workflow summary found")
+                return snap
+            latest_at = summary.get("created_at", "")
+            snap["source_files"] = ["data/backtest_results/research_workflow/workflow_summary.csv"]
+            snap["summary"] = {
+                "latest_workflow_id":   summary.get("workflow_id", ""),
+                "tasks_total":          summary.get("tasks_total", 0),
+                "passed_count":         summary.get("tasks_passed", 0),
+                "failed_count":         summary.get("tasks_failed", 0),
+                "blocked_count":        summary.get("tasks_skipped", 0),
+                "package_path":         summary.get("output_package_path", ""),
+                "latest_workflow_at":   latest_at,
+                "workflow_only":        True,
+                "no_real_orders":       True,
+                "production_blocked":   True,
+            }
+        except Exception as exc:
+            logger.warning("build_research_workflow_snapshot: %s", exc)
             snap["warnings"].append(f"snapshot error: {exc}")
         return snap

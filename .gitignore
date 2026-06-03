@@ -245,3 +245,7 @@ reports/research_review_dashboard_report_*.md
 # Research Assistant / Coach outputs (v0.4.8, runtime artifacts — NEVER commit)
 data/backtest_results/research_coach/
 reports/research_assistant_report_*.md
+
+# Research Workflow Automation outputs (v0.4.9, runtime artifacts — NEVER commit)
+data/backtest_results/research_workflow/
+reports/research_workflow_report_*.md

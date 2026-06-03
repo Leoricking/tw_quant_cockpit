@@ -435,6 +435,8 @@ class AutoReportIndexBuilder:
                 **_extract_research_review_fields(ctx),
                 # v0.4.8 Research Assistant / Coach
                 **_extract_research_coach_fields(ctx),
+                # v0.4.9 Research Workflow Automation
+                **_extract_research_workflow_fields(ctx),
             }
 
             path = os.path.join(output_dir, "manifest.json")
@@ -522,4 +524,15 @@ def _extract_research_coach_fields(ctx: dict) -> dict:
         "research_coach_replay_tasks":    ctx.get("research_coach_replay_tasks", 0),
         "research_coach_rule_reviews":    ctx.get("research_coach_rule_reviews", 0),
         "research_coach_data_repairs":    ctx.get("research_coach_data_repairs", 0),
+    }
+
+
+def _extract_research_workflow_fields(ctx: dict) -> dict:
+    """Extract Research Workflow Automation summary fields for manifest.json (v0.4.9)."""
+    return {
+        "research_workflow_latest_id":      ctx.get("research_workflow_latest_id", ""),
+        "research_workflow_tasks_total":    ctx.get("research_workflow_tasks_total", 0),
+        "research_workflow_failed_count":   ctx.get("research_workflow_failed_count", 0),
+        "research_workflow_blocked_count":  ctx.get("research_workflow_blocked_count", 0),
+        "research_workflow_package_path":   ctx.get("research_workflow_package_path", ""),
     }
