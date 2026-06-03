@@ -365,6 +365,16 @@ except Exception as _cux_exc:
     logger.warning("CLIUXPanel unavailable: %s", _cux_exc)
     _CLI_UX_AVAILABLE = False
 
+# ---------------------------------------------------------------------------
+# v0.5.2 GUI Navigation panel import (guarded)
+# ---------------------------------------------------------------------------
+try:
+    from gui.gui_navigation_panel import GUINavigationPanel
+    _GUI_NAVIGATION_AVAILABLE = True
+except Exception as _gn_exc:
+    logger.warning("GUINavigationPanel unavailable: %s", _gn_exc)
+    _GUI_NAVIGATION_AVAILABLE = False
+
 
 # ---------------------------------------------------------------------------
 # Colour helpers (Taiwan convention: red = up, green = down)
@@ -1451,6 +1461,13 @@ class CockpitWindow(QMainWindow if _PYSIDE6_AVAILABLE else object):
             mid_tabs.addTab(self._cli_ux_panel, "CLI UX")
         else:
             self._cli_ux_panel = None
+
+        # v0.5.2 GUI Navigation tab
+        if _GUI_NAVIGATION_AVAILABLE:
+            self._gui_navigation_panel = GUINavigationPanel()
+            mid_tabs.addTab(self._gui_navigation_panel, "GUI Navigation")
+        else:
+            self._gui_navigation_panel = None
 
         h_split.addWidget(mid_tabs)
         h_split.setStretchFactor(0, 3)

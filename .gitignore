@@ -257,3 +257,8 @@ reports/research_os_stabilization_report_*.md
 # CLI UX outputs (v0.5.1, runtime artifacts — NEVER commit)
 data/backtest_results/cli_ux/
 reports/cli_ux_report_*.md
+
+# GUI Navigation outputs (v0.5.2, runtime artifacts — NEVER commit)
+data/backtest_results/gui_navigation/
+reports/gui_navigation_report_*.md
+config/gui_navigation_state.json

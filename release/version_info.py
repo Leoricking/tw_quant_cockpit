@@ -11,11 +11,11 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 
 class VersionInfo:
-    """Centralized version and safety metadata for v0.5.1."""
+    """Centralized version and safety metadata for v0.5.2."""
 
-    version            = "v0.5.1"
-    release_name       = "CLI Alias / Command UX Polish"
-    release_stage      = "cli_ux_polish"
+    version            = "v0.5.2"
+    release_name       = "GUI Tab Grouping / Navigation Polish"
+    release_stage      = "gui_navigation_polish"
     read_only          = True
     no_real_orders     = True
     production_blocked = True
@@ -50,6 +50,9 @@ class VersionInfo:
         "CLI Help Examples",
         "CLI UX Report",
         "CLI UX GUI Panel",
+        "GUI Tab Registry",
+        "GUI Navigation Panel",
+        "GUI Navigation Report",
     ]
     safety_flags = [
         "read_only=True",
@@ -106,7 +109,7 @@ def print_version_info() -> None:
 def get_safety_banner() -> str:
     """Return one-line safety banner string."""
     return (
-        "[!] v0.5.1 Research Only | No Real Orders | "
+        "[!] v0.5.2 Research Only | No Real Orders | "
         "Production BLOCKED | real_order_ready=False"
     )
 

@@ -8317,6 +8317,158 @@ def cmd_alias_dashboard(args: argparse.Namespace) -> None:
 
 
 # ---------------------------------------------------------------------------
+# v0.5.2 GUI Navigation handlers
+# ---------------------------------------------------------------------------
+
+def cmd_gui_nav_summary(args: argparse.Namespace) -> None:
+    """Print GUI navigation summary — tab registry overview (v0.5.2)."""
+    print()
+    print("TW Quant Cockpit — GUI Navigation Summary")
+    print("=" * 60)
+    print("  [!] GUI UX Only | Research Only | No Real Orders")
+    print()
+    try:
+        from gui.navigation.tab_registry import GUITabRegistry
+        from gui.navigation.navigation_report_data import GUINavigationReportData
+        reg     = GUITabRegistry()
+        data    = GUINavigationReportData(registry=reg)
+        summary = data.build_summary()
+        print(f"  GUI Navigation Summary — v0.5.2")
+        print(f"  Total Tabs    : {summary['total_tabs']}")
+        print(f"  Groups        : {summary['groups_count']}")
+        print(f"  Safety Status : {summary['safety_status']}")
+        hp = summary.get("high_priority_tabs", [])
+        print(f"  P0/P1 Tabs    : {len(hp)}")
+        print()
+        print(f"  P0/P1 Tab IDs : {', '.join(hp[:10])}")
+        if len(hp) > 10:
+            print(f"                  ... and {len(hp) - 10} more")
+    except Exception as exc:
+        logging.getLogger("main.gui_nav_summary").error("gui-nav-summary failed: %s", exc)
+        print(f"  ERROR: {exc}")
+    print()
+
+
+def cmd_gui_nav_tabs(args: argparse.Namespace) -> None:
+    """List all registered GUI tabs with group and priority (v0.5.2)."""
+    print()
+    print("TW Quant Cockpit — GUI Tab Registry")
+    print("=" * 60)
+    print("  [!] GUI UX Only | Research Only | No Real Orders")
+    print()
+    try:
+        from gui.navigation.tab_registry import GUITabRegistry
+        from gui.navigation.navigation_report_data import GUINavigationReportData
+        reg  = GUITabRegistry()
+        data = GUINavigationReportData(registry=reg)
+        rows = data.build_tab_table()
+        group_filter = getattr(args, "group", None)
+        if group_filter:
+            rows = [r for r in rows if r.get("group") == group_filter]
+        print(f"  {'Tab':<30} {'Group':<22} {'Priority':<10} {'Maturity'}")
+        print(f"  {'-'*30} {'-'*22} {'-'*8} {'-'*12}")
+        for r in rows:
+            print(
+                f"  {r.get('tab', ''):<30} "
+                f"{r.get('group', ''):<22} "
+                f"{r.get('priority', ''):<10} "
+                f"{r.get('maturity', '')}"
+            )
+        print(f"\n  Total: {len(rows)} tabs")
+    except Exception as exc:
+        logging.getLogger("main.gui_nav_tabs").error("gui-nav-tabs failed: %s", exc)
+        print(f"  ERROR: {exc}")
+    print()
+
+
+def cmd_gui_nav_groups(args: argparse.Namespace) -> None:
+    """List all GUI tab groups with tab counts (v0.5.2)."""
+    print()
+    print("TW Quant Cockpit — GUI Tab Groups")
+    print("=" * 60)
+    print("  [!] GUI UX Only | Research Only | No Real Orders")
+    print()
+    try:
+        from gui.navigation.tab_registry import GUITabRegistry
+        from gui.navigation.navigation_report_data import GUINavigationReportData
+        reg  = GUITabRegistry()
+        data = GUINavigationReportData(registry=reg)
+        rows = data.build_group_table()
+        print(f"  {'Group':<25} {'Tabs':<6} {'P0':<5} {'P1':<5} Description")
+        print(f"  {'-'*25} {'-'*5} {'-'*4} {'-'*4} {'-'*30}")
+        for g in rows:
+            print(
+                f"  {g.get('group', ''):<25} "
+                f"{g.get('tab_count', 0):<6} "
+                f"{g.get('p0_count', 0):<5} "
+                f"{g.get('p1_count', 0):<5} "
+                f"{g.get('description', '')}"
+            )
+        print(f"\n  Total: {len(rows)} groups")
+    except Exception as exc:
+        logging.getLogger("main.gui_nav_groups").error("gui-nav-groups failed: %s", exc)
+        print(f"  ERROR: {exc}")
+    print()
+
+
+def cmd_gui_nav_search(args: argparse.Namespace) -> None:
+    """Search GUI tabs by keyword (v0.5.2)."""
+    keyword = getattr(args, "keyword", "")
+    print()
+    print("TW Quant Cockpit — GUI Tab Search")
+    print("=" * 60)
+    print("  [!] GUI UX Only | Research Only | No Real Orders")
+    print()
+    if not keyword:
+        print("  Usage: python main.py gui-nav-search --keyword <keyword>")
+        print()
+        return
+    try:
+        from gui.navigation.tab_search import GUITabSearch
+        searcher = GUITabSearch()
+        results  = searcher.search(keyword)
+        print(f"  Keyword: '{keyword}'  →  {len(results)} match(es)")
+        print()
+        if results:
+            print(f"  {'Tab':<30} {'Group':<22} {'Priority':<10} {'Keywords'}")
+            print(f"  {'-'*30} {'-'*22} {'-'*8} {'-'*20}")
+            for t in results:
+                kw_str = ", ".join(t.get("keywords", [])[:4])
+                print(
+                    f"  {t.get('display_name', t.get('tab_id', '')):<30} "
+                    f"{t.get('group', ''):<22} "
+                    f"{t.get('priority', ''):<10} "
+                    f"{kw_str}"
+                )
+        else:
+            print("  No matching tabs found.")
+    except Exception as exc:
+        logging.getLogger("main.gui_nav_search").error("gui-nav-search failed: %s", exc)
+        print(f"  ERROR: {exc}")
+    print()
+
+
+def cmd_gui_nav_report(args: argparse.Namespace) -> None:
+    """Generate GUI navigation report (v0.5.2)."""
+    mode       = getattr(args, "mode", "real")
+    output_dir = getattr(args, "output_dir", "reports")
+    print()
+    print("TW Quant Cockpit — GUI Navigation Report")
+    print("=" * 60)
+    print("  [!] GUI UX Only | Research Only | No Real Orders")
+    print()
+    try:
+        from reports.gui_navigation_report import GUINavigationReport
+        rpt  = GUINavigationReport(report_dir=output_dir, mode=mode)
+        path = rpt.generate(mode=mode)
+        print(f"  Report generated: {path}")
+    except Exception as exc:
+        logging.getLogger("main.gui_nav_report").error("gui-nav-report failed: %s", exc)
+        print(f"  ERROR: {exc}")
+    print()
+
+
+# ---------------------------------------------------------------------------
 # v0.4.8 Research Assistant / Coach CLI handlers
 # ---------------------------------------------------------------------------
 
@@ -10274,6 +10426,40 @@ def _build_parser() -> argparse.ArgumentParser:
         help="Show Research OS safety matrix for all modules (v0.5.0)",
     )
 
+    # v0.5.2 GUI Navigation
+    p_gns = subparsers.add_parser(
+        "gui-nav-summary",
+        help="Print GUI navigation summary: total tabs, groups, safety status (v0.5.2)",
+    )
+
+    p_gnt = subparsers.add_parser(
+        "gui-nav-tabs",
+        help="List all registered GUI tabs with group and priority (v0.5.2)",
+    )
+    p_gnt.add_argument("--group", default=None,
+                       help="Filter by group_id (optional)")
+
+    subparsers.add_parser(
+        "gui-nav-groups",
+        help="List all GUI tab groups with tab counts (v0.5.2)",
+    )
+
+    p_gnsr = subparsers.add_parser(
+        "gui-nav-search",
+        help="Search GUI tabs by keyword (v0.5.2)",
+    )
+    p_gnsr.add_argument("--keyword", default="",
+                        help="Keyword to search tabs by")
+
+    p_gnrpt = subparsers.add_parser(
+        "gui-nav-report",
+        help="Generate GUI navigation report (v0.5.2)",
+    )
+    p_gnrpt.add_argument("--mode", default="real", choices=["real", "mock"],
+                         help="Data mode (default: real)")
+    p_gnrpt.add_argument("--output-dir", default="reports", dest="output_dir",
+                         help="Report output directory")
+
     return parser
 
 
@@ -10493,6 +10679,12 @@ def main() -> None:
         "cli-examples":                cmd_cli_examples,
         "cli-ux-report":               cmd_cli_ux_report,
         "cli-resolve":                 cmd_cli_resolve,
+        # v0.5.2 GUI Navigation
+        "gui-nav-summary":             cmd_gui_nav_summary,
+        "gui-nav-tabs":                cmd_gui_nav_tabs,
+        "gui-nav-groups":              cmd_gui_nav_groups,
+        "gui-nav-search":              cmd_gui_nav_search,
+        "gui-nav-report":              cmd_gui_nav_report,
         # v0.5.1 Alias shortcut commands
         "daily":                       cmd_alias_daily,
         "quick":                       cmd_alias_quick,

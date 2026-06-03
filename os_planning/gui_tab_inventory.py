@@ -16,6 +16,15 @@ from datetime import datetime
 logger = logging.getLogger(__name__)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
+# ---------------------------------------------------------------------------
+# v0.5.2 GUI Navigation registry integration (optional)
+# ---------------------------------------------------------------------------
+try:
+    from gui.navigation.tab_registry import GUITabRegistry
+    _GUI_NAV_REGISTRY_AVAILABLE = True
+except Exception:
+    _GUI_NAV_REGISTRY_AVAILABLE = False
+
 
 # ---------------------------------------------------------------------------
 # Hardcoded GUI tab inventory — all ~32 current tabs
@@ -298,6 +307,36 @@ class GUITabInventoryBuilder:
         except Exception as exc:
             logger.warning("suggest_tab_groups error: %s", exc)
         return groups
+
+    def build_inventory_with_navigation(self) -> list[dict]:
+        """Merge hardcoded inventory with GUITabRegistry (v0.5.2) for richer metadata.
+
+        Does NOT break build_inventory() — that method remains unchanged.
+        """
+        base = {t["tab_name"]: dict(t) for t in self.build_inventory()}
+        if not _GUI_NAV_REGISTRY_AVAILABLE:
+            return list(base.values())
+        try:
+            reg = GUITabRegistry()
+            for tab in reg.list_tabs():
+                name = tab.tab_name
+                if name not in base:
+                    base[name] = {
+                        "tab_name":        name,
+                        "suggested_group": tab.group,
+                        "purpose":         tab.description,
+                        "priority":        tab.priority,
+                        "risk_if_hidden":  "",
+                    }
+                else:
+                    # Enrich existing entry
+                    base[name].setdefault("group",       tab.group)
+                    base[name].setdefault("priority",    tab.priority)
+                    base[name].setdefault("related_cli", tab.related_cli_commands)
+            return list(base.values())
+        except Exception as exc:
+            logging.getLogger(__name__).warning("build_inventory_with_navigation: %s", exc)
+            return list(base.values())
 
     def export_inventory(self, output_dir: str) -> str:
         """Write gui_tab_inventory.csv to output_dir. Returns path."""

@@ -321,6 +321,9 @@ class AutoReportCenter:
         # v0.5.1 CLI UX summary (always optional, never crashes)
         self.run_cli_ux_summary()
 
+        # v0.5.2 GUI Navigation summary (always optional, never crashes)
+        self.run_gui_navigation_summary()
+
         # Aggregated outputs
         if self.include_daily_summary:
             self.build_daily_market_summary()
@@ -990,6 +993,26 @@ class AutoReportCenter:
             )
         except Exception as exc:
             logger.warning("run_cli_ux_summary failed: %s", exc)
+
+    def run_gui_navigation_summary(self):
+        """Collect GUI Navigation summary context (v0.5.2). Optional — failure does not abort run."""
+        try:
+            from gui.navigation.tab_registry import GUITabRegistry
+            from gui.navigation.navigation_report_data import GUINavigationReportData
+            reg     = GUITabRegistry()
+            data    = GUINavigationReportData(registry=reg)
+            summary = data.build_summary()
+            self._context["gui_tabs_count"]            = summary.get("total_tabs",    0)
+            self._context["gui_groups_count"]          = summary.get("groups_count",  0)
+            self._context["gui_navigation_safety_status"] = summary.get("safety_status", "PASS")
+            self._record_success(
+                "gui_navigation",
+                f"tabs={summary.get('total_tabs', 0)} "
+                f"groups={summary.get('groups_count', 0)} "
+                f"safety={summary.get('safety_status', 'PASS')}",
+            )
+        except Exception as exc:
+            logger.warning("run_gui_navigation_summary failed: %s", exc)
 
     def run_model_monitoring_report(self):
         """Generate Model Monitoring report (v0.4.3). Optional — failure does not abort run."""

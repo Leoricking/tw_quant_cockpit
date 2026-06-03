@@ -665,6 +665,7 @@ class ExperimentSnapshotBuilder:
             ("research_workflow",           lambda: self.build_research_workflow_snapshot()),
             ("research_os_planning",        lambda: self.build_research_os_planning_snapshot()),
             ("cli_ux",                      lambda: self.build_cli_ux_snapshot()),
+            ("gui_navigation",              lambda: self.build_gui_navigation_snapshot()),
         ]
         for snap_type, fn in builders:
             try:
@@ -908,5 +909,46 @@ class ExperimentSnapshotBuilder:
             snap["latest_cli_ux_at"]  = datetime.now().strftime("%Y-%m-%d")
         except Exception as exc:
             logger.warning("build_cli_ux_snapshot: %s", exc)
+            snap["warnings"].append(f"snapshot error: {exc}")
+        return snap
+
+    def build_gui_navigation_snapshot(self) -> dict:
+        """
+        Build a point-in-time snapshot of the GUI Navigation state (v0.5.2).
+
+        [!] GUI UX Only. Research Only. No Real Orders. Production Trading: BLOCKED.
+        """
+        snap = {
+            "snapshot_type":       "gui_navigation",
+            "read_only":           True,
+            "no_real_orders":      True,
+            "production_blocked":  True,
+            "real_order_ready":    False,
+            "tabs_count":          0,
+            "groups_count":        0,
+            "favorite_count":      0,
+            "recent_count":        0,
+            "safety_status":       "PASS",
+            "latest_gui_nav_at":   "",
+            "warnings":            [],
+        }
+        try:
+            from gui.navigation.tab_registry import GUITabRegistry
+            from gui.navigation.navigation_report_data import GUINavigationReportData
+            from gui.navigation.navigation_state import NavigationState
+            from datetime import datetime
+            reg     = GUITabRegistry()
+            data    = GUINavigationReportData(registry=reg)
+            summary = data.build_summary()
+            state   = NavigationState()
+            state.load()
+            snap["tabs_count"]       = summary.get("total_tabs",   0)
+            snap["groups_count"]     = summary.get("groups_count", 0)
+            snap["favorite_count"]   = len(state.get_favorites())
+            snap["recent_count"]     = len(state.get_recent_tabs())
+            snap["safety_status"]    = summary.get("safety_status", "PASS")
+            snap["latest_gui_nav_at"] = datetime.now().strftime("%Y-%m-%d")
+        except Exception as exc:
+            logger.warning("build_gui_navigation_snapshot: %s", exc)
             snap["warnings"].append(f"snapshot error: {exc}")
         return snap

@@ -1054,6 +1054,11 @@ class StableReleaseChecklist:
             self._check_cli_no_trading_aliases,
             self._check_cli_alias_backward_compat,
             self._check_cli_alias_safe_command_guard,
+            # v0.5.2
+            self._check_gui_navigation_import_health,
+            self._check_gui_all_existing_tabs_preserved,
+            self._check_gui_navigation_no_real_orders,
+            self._check_gui_navigation_state_ignored,
         ]
 
         items: list[dict] = []
@@ -1579,3 +1584,96 @@ class StableReleaseChecklist:
         except Exception as exc:
             elapsed = (time.monotonic() - t0) * 1000
             return self._item("cli_alias_safe_command_guard", "FAIL", str(exc), elapsed)
+
+    # -----------------------------------------------------------------------
+    # v0.5.2 GUI Navigation checks
+    # -----------------------------------------------------------------------
+
+    def _check_gui_navigation_import_health(self) -> dict:
+        """v0.5.2: All GUI navigation modules import cleanly."""
+        t0 = time.monotonic()
+        modules = [
+            ("gui.navigation.tab_registry",           "GUITabRegistry"),
+            ("gui.navigation.tab_groups",             "GUITabGroupConfig"),
+            ("gui.navigation.navigation_state",       "NavigationState"),
+            ("gui.navigation.tab_search",             "GUITabSearch"),
+            ("gui.navigation.navigation_report_data", "GUINavigationReportData"),
+            ("reports.gui_navigation_report",         "GUINavigationReport"),
+            ("gui.gui_navigation_adapter",            "GUINavigationAdapter"),
+        ]
+        failed = []
+        for mod, cls in modules:
+            try:
+                m = __import__(mod, fromlist=[cls])
+                getattr(m, cls)
+            except Exception as exc:
+                failed.append(f"{mod}: {exc}")
+        elapsed = (time.monotonic() - t0) * 1000
+        if not failed:
+            return self._item("gui_navigation_import_health", "PASS",
+                               f"All {len(modules)} GUI navigation modules imported.", elapsed)
+        return self._item("gui_navigation_import_health", "FAIL",
+                           f"{len(failed)} module(s) failed: {failed[:2]}", elapsed)
+
+    def _check_gui_all_existing_tabs_preserved(self) -> dict:
+        """v0.5.2: GUITabRegistry has >20 tabs and key tabs are present."""
+        t0 = time.monotonic()
+        try:
+            from gui.navigation.tab_registry import GUITabRegistry
+            reg  = GUITabRegistry()
+            tabs = reg.list_tabs()
+            assert len(tabs) > 20, f"Expected >20 tabs, got {len(tabs)}"
+            key_tabs = ["daily_workflow", "data_quality_gate", "intraday_replay"]
+            for tid in key_tabs:
+                tab = reg.get_tab(tid)
+                assert tab is not None, f"Key tab '{tid}' missing from registry"
+            elapsed = (time.monotonic() - t0) * 1000
+            return self._item("gui_all_existing_tabs_preserved", "PASS",
+                               f"Registry has {len(tabs)} tabs; key tabs present.", elapsed)
+        except Exception as exc:
+            elapsed = (time.monotonic() - t0) * 1000
+            return self._item("gui_all_existing_tabs_preserved", "FAIL", str(exc), elapsed)
+
+    def _check_gui_navigation_no_real_orders(self) -> dict:
+        """v0.5.2: GUI navigation classes enforce no_real_orders=True and production_blocked=True."""
+        t0 = time.monotonic()
+        try:
+            from gui.navigation.tab_registry import GUITabRegistry
+            from gui.navigation.tab_groups import GUITabGroupConfig
+            from gui.navigation.navigation_report_data import GUINavigationReportData
+            reg  = GUITabRegistry()
+            cfg  = GUITabGroupConfig()
+            data = GUINavigationReportData(registry=reg)
+            for obj, name in [(reg, "GUITabRegistry"), (cfg, "GUITabGroupConfig"), (data, "GUINavigationReportData")]:
+                assert getattr(obj, "no_real_orders", False) is True, f"{name}.no_real_orders is not True"
+                assert getattr(obj, "production_blocked", False) is True, f"{name}.production_blocked is not True"
+            elapsed = (time.monotonic() - t0) * 1000
+            return self._item("gui_navigation_no_real_orders", "PASS",
+                               "All GUI navigation classes: no_real_orders=True, production_blocked=True.",
+                               elapsed)
+        except Exception as exc:
+            elapsed = (time.monotonic() - t0) * 1000
+            return self._item("gui_navigation_no_real_orders", "FAIL", str(exc), elapsed)
+
+    def _check_gui_navigation_state_ignored(self) -> dict:
+        """v0.5.2: Verify GUI navigation output paths are in .gitignore."""
+        t0 = time.monotonic()
+        required = [
+            "data/backtest_results/gui_navigation/",
+            "reports/gui_navigation_report_",
+            "config/gui_navigation_state.json",
+        ]
+        gitignore_path = os.path.join(BASE_DIR, ".gitignore")
+        try:
+            with open(gitignore_path, "r", encoding="utf-8", errors="replace") as f:
+                content = f.read()
+            missing = [pat for pat in required if pat not in content]
+            elapsed = (time.monotonic() - t0) * 1000
+            if not missing:
+                return self._item("gui_navigation_state_ignored", "PASS",
+                                   "All GUI navigation output patterns in .gitignore.", elapsed)
+            return self._item("gui_navigation_state_ignored", "WARN",
+                               f"Missing .gitignore patterns: {missing}", elapsed)
+        except Exception as exc:
+            elapsed = (time.monotonic() - t0) * 1000
+            return self._item("gui_navigation_state_ignored", "WARN", str(exc), elapsed)

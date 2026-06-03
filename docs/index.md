@@ -3,7 +3,7 @@
 > **[!] Research Only. Read Only. No Real Orders. Production Trading: BLOCKED.**
 > **[!] Not investment advice. REAL_ORDER_READY=False.**
 
-Current version: **v0.5.1** — CLI Alias / Command UX Polish
+Current version: **v0.5.2** — GUI Tab Grouping / Navigation Polish
 
 ---
 
@@ -73,6 +73,7 @@ Current version: **v0.5.1** — CLI Alias / Command UX Polish
 | [research_workflow_automation.md](research_workflow_automation.md) | v0.4.9 | Research Workflow Automation (workflow schema, safe command registry, workflow builder/runner, daily/weekly packages, CLI, GUI) |
 | [research_os_planning.md](research_os_planning.md) | v0.5.0 | Research OS Planning (module inventory, CLI inventory, GUI tab inventory, regression audit, artifact hygiene, safety matrix, CLI, GUI) |
 | [cli_alias_command_ux.md](cli_alias_command_ux.md) | v0.5.1 | CLI Alias / Command UX Polish (command registry, alias map, discovery, help examples, CLI UX report, GUI panel) |
+| [gui_tab_grouping_navigation.md](gui_tab_grouping_navigation.md) | v0.5.2 | GUI Tab Grouping / Navigation Polish (tab registry, 8 groups, search, favorites/recent, navigation panel, 5 CLI commands) |
 
 ---
 

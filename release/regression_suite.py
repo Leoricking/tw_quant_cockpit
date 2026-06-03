@@ -820,6 +820,10 @@ class RegressionSuite:
             self._test_cli_examples,
             self._test_cli_resolve_daily,
             self._test_cli_alias_dq,
+            # v0.5.2
+            self._test_gui_navigation_imports,
+            self._test_gui_navigation_report,
+            self._test_dashboard_import_ok,
         ]
         return self._execute("full", tests_fns)
 
@@ -1124,6 +1128,61 @@ class RegressionSuite:
             )
         except Exception as exc:
             return self._item("cli_alias_dq", "FAIL", str(exc), (time.monotonic() - t0) * 1000)
+
+    # -----------------------------------------------------------------------
+    # v0.5.2 GUI Navigation tests
+    # -----------------------------------------------------------------------
+
+    def _test_gui_navigation_imports(self) -> dict:
+        """v0.5.2: All GUI navigation modules import cleanly."""
+        t0 = time.monotonic()
+        try:
+            from gui.navigation.tab_registry import GUITabRegistry, GUITabMetadata
+            from gui.navigation.tab_groups import GUITabGroupConfig
+            from gui.navigation.navigation_state import NavigationState
+            from gui.navigation.tab_search import GUITabSearch
+            from gui.navigation.navigation_report_data import GUINavigationReportData
+            from reports.gui_navigation_report import GUINavigationReport
+            from gui.gui_navigation_adapter import GUINavigationAdapter
+            return self._item("gui_navigation_imports", "PASS",
+                              "All GUI navigation modules imported",
+                              (time.monotonic() - t0) * 1000)
+        except Exception as exc:
+            return self._item("gui_navigation_imports", "FAIL", str(exc),
+                              (time.monotonic() - t0) * 1000)
+
+    def _test_gui_navigation_report(self) -> dict:
+        """v0.5.2: GUINavigationReport.generate() produces a file."""
+        t0 = time.monotonic()
+        try:
+            import tempfile
+            from reports.gui_navigation_report import GUINavigationReport
+            with tempfile.TemporaryDirectory() as tmpdir:
+                rpt  = GUINavigationReport(report_dir=tmpdir, mode="mock")
+                path = rpt.generate(mode="mock")
+                if not os.path.isfile(path):
+                    return self._item("gui_navigation_report", "FAIL",
+                                      f"Report file not found: {path}",
+                                      (time.monotonic() - t0) * 1000)
+            return self._item("gui_navigation_report", "PASS",
+                              "GUINavigationReport generated OK",
+                              (time.monotonic() - t0) * 1000)
+        except Exception as exc:
+            return self._item("gui_navigation_report", "FAIL", str(exc),
+                              (time.monotonic() - t0) * 1000)
+
+    def _test_dashboard_import_ok(self) -> dict:
+        """v0.5.2: gui.dashboard still imports without error after GUI navigation addition."""
+        t0 = time.monotonic()
+        try:
+            import importlib
+            importlib.import_module("gui.dashboard")
+            return self._item("dashboard_import_ok", "PASS",
+                              "gui.dashboard imports cleanly",
+                              (time.monotonic() - t0) * 1000)
+        except Exception as exc:
+            return self._item("dashboard_import_ok", "FAIL", str(exc),
+                              (time.monotonic() - t0) * 1000)
 
     def _write_csv(self, tests: list[dict], suite_name: str) -> str | None:
         try:

@@ -44,8 +44,8 @@
 | v0.4.9 | Research Workflow Automation | Done |
 | v0.5.0 | Research OS Planning / Stabilization | Done |
 | v0.5.1 | CLI Alias / Command UX Polish | Done |
-| v0.5.2 | GUI Tab Grouping | Planned |
-| v0.5.3 | Regression Consolidation | Planned |
+| v0.5.2 | GUI Tab Grouping / Navigation Polish | Done |
+| v0.5.3 | Regression Suite Consolidation | Planned |
 | v0.5.4 | Report Pack | Planned |
 | v0.5.5 | Data / Feature Pipeline Hardening | Planned |
 | v0.5.6 | Replay / Journal / Coach Integration | Planned |
@@ -175,7 +175,41 @@ v0.5.1 adds CLI command registry (126 commands), alias map (35 aliases), command
 
 ### Next Steps
 
-v0.5.2 — GUI Tab Grouping / Navigation Polish
+v0.5.2 — GUI Tab Grouping / Navigation Polish — Done
+
+---
+
+## Completed: v0.5.2 — GUI Tab Grouping / Navigation Polish
+
+**Status:** Done
+
+### Summary
+
+GUI tab registry, 8 groups, search, favorites/recent, GUI Navigation tab, 5 CLI commands. No tab deletion — all 24+ existing tabs preserved. No real orders. GUI UX Only.
+
+### New Package: `gui/navigation/`
+
+- `__init__.py`
+- `tab_registry.py` — GUITabMetadata + GUITabRegistry (24 tabs registered)
+- `tab_groups.py` — GUITabGroupConfig (8 groups)
+- `navigation_state.py` — favorites + recent, persisted to config/
+- `tab_search.py` — full-text search across all tab metadata
+- `navigation_widgets.py` — PySide6 sidebar/search/fav/recent/breadcrumb widgets
+- `navigation_report_data.py` — report data builder
+
+### New Files
+- `gui/gui_navigation_panel.py` — GUI Navigation panel (5 sub-tabs)
+- `gui/gui_navigation_adapter.py` — CLI/panel bridge
+- `reports/gui_navigation_report.py` — 7-section Markdown report
+- `docs/gui_tab_grouping_navigation.md`
+- `config/gui_navigation_state.example.json`
+
+### New CLI Commands (5)
+- `gui-nav-summary`, `gui-nav-tabs`, `gui-nav-groups`, `gui-nav-search`, `gui-nav-report`
+
+### Next Steps
+
+v0.5.3 — Regression Suite Consolidation
 
 ---
 

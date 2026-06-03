@@ -1,0 +1,6 @@
+{
+  "_comment": "Example only. Copy to gui_navigation_state.json for runtime use. Do not commit the real file.",
+  "favorites": ["daily_workflow", "data_quality_gate", "intraday_replay"],
+  "recent": ["daily_workflow", "research_coach", "data_quality_gate"],
+  "saved_at": "2026-06-04T00:00:00"
+}

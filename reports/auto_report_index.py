@@ -441,6 +441,8 @@ class AutoReportIndexBuilder:
                 **_extract_research_os_fields(ctx),
                 # v0.5.1 CLI UX
                 **_extract_cli_ux_fields(ctx),
+                # v0.5.2 GUI Navigation
+                **_extract_gui_navigation_fields(ctx),
             }
 
             path = os.path.join(output_dir, "manifest.json")
@@ -560,4 +562,14 @@ def _extract_cli_ux_fields(ctx: dict) -> dict:
         "cli_aliases_count":   ctx.get("cli_aliases_count",   0),
         "cli_alias_conflicts": ctx.get("cli_alias_conflicts", 0),
         "cli_safety_status":   ctx.get("cli_safety_status",   "N/A"),
+    }
+
+
+def _extract_gui_navigation_fields(ctx: dict) -> dict:
+    """Extract GUI Navigation summary fields for manifest.json (v0.5.2)."""
+    return {
+        "gui_tabs_count":               ctx.get("gui_tabs_count",              0),
+        "gui_groups_count":             ctx.get("gui_groups_count",            0),
+        "gui_navigation_safety_status": ctx.get("gui_navigation_safety_status", "N/A"),
+        "gui_navigation_report":        ctx.get("gui_navigation_report",        ""),
     }

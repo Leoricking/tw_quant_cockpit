@@ -4,6 +4,45 @@
 
 ---
 
+## v0.5.2 — GUI Tab Grouping / Navigation Polish (2026-06-04)
+
+### Summary
+GUI UX polish release. Adds tab registry (24 tabs), 8 tab groups, tab search, favorites/recent navigation state, GUI Navigation panel, and 5 CLI commands. No tab deletion. All existing tabs preserved. No real-order functionality.
+
+### New Package: `gui/navigation/`
+
+| Module | Purpose |
+|--------|---------|
+| `tab_registry.py` | GUITabMetadata + GUITabRegistry (24 tabs, 8 groups) |
+| `tab_groups.py` | GUITabGroupConfig (8 ordered groups) |
+| `navigation_state.py` | Favorites + recently used tabs, persisted to config/ |
+| `tab_search.py` | Full-text search across name, description, keywords, CLI |
+| `navigation_widgets.py` | PySide6 sidebar, search box, fav/recent, breadcrumb |
+| `navigation_report_data.py` | Summary, group table, tab table, keyword data |
+
+### New Files
+- `gui/gui_navigation_panel.py` — GUI Navigation panel (Group Table, Tab Registry, Search, Fav & Recent, Audit Log)
+- `gui/gui_navigation_adapter.py` — bridge for CLI and GUI
+- `reports/gui_navigation_report.py` — 7-section Markdown report
+- `docs/gui_tab_grouping_navigation.md`
+- `config/gui_navigation_state.example.json`
+
+### New CLI Commands
+```bash
+python main.py gui-nav-summary
+python main.py gui-nav-tabs
+python main.py gui-nav-groups
+python main.py gui-nav-search --keyword <kw>
+python main.py gui-nav-report
+```
+
+### Safety
+- [!] GUI UX Only. Research Only. No Real Orders. Production Trading: BLOCKED.
+- `read_only=True, no_real_orders=True, production_blocked=True, real_order_ready=False` on all new classes.
+- `config/gui_navigation_state.json` is gitignored.
+
+---
+
 ## v0.5.1 — CLI Alias / Command UX Polish (2026-06-03)
 
 ### Summary

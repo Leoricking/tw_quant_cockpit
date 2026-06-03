@@ -4,7 +4,20 @@
 >
 > **[!] v1: Real order execution is strictly prohibited. For research, simulation, and decision support only. Not investment advice.**
 
-**Current version: v0.5.1 — CLI Alias / Command UX Polish**
+**Current version: v0.5.2 — GUI Tab Grouping / Navigation Polish**
+
+---
+
+## v0.5.2 — GUI Tab Grouping / Navigation Polish
+
+- GUI tab registry with group, priority, keywords, CLI mapping
+- 8 tab groups: Daily Research, Data & Providers, Strategy & Rules, Backtest & Simulation, ML & Monitoring, Journal & Review, Research OS, Release & QA
+- Tab search / filter by keyword, group, intent
+- Favorites and recently used tabs (runtime state, not committed)
+- GUI Navigation panel tab
+- `gui-nav-summary`, `gui-nav-tabs`, `gui-nav-groups`, `gui-nav-search`, `gui-nav-report` CLI commands
+- No tab deletion — all 24+ existing tabs preserved
+- No real orders. No broker connection. GUI UX Only.
 
 ---
 
