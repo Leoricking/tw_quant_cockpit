@@ -42,6 +42,14 @@
 | v0.4.7 | Research Review Dashboard | Done |
 | v0.4.8 | Research Assistant / Coach | Done |
 | v0.4.9 | Research Workflow Automation | Done |
+| v0.5.0 | Research OS Planning / Stabilization | Done |
+| v0.5.1 | CLI Alias Polish | Planned |
+| v0.5.2 | GUI Tab Grouping | Planned |
+| v0.5.3 | Regression Consolidation | Planned |
+| v0.5.4 | Report Pack | Planned |
+| v0.5.5 | Data / Feature Pipeline Hardening | Planned |
+| v0.5.6 | Replay / Journal / Coach Integration | Planned |
+| v0.6.0 | Stable Release | Planned |
 
 ---
 
@@ -131,7 +139,55 @@ v0.4.9 adds Research Workflow Automation — converts Research Coach / Research 
 
 ### Next Steps
 
-v0.5.0 — Research OS Planning / Stabilization
+v0.5.1 — CLI Alias Polish
+
+---
+
+## Completed: v0.5.0 — Research OS Planning / Stabilization
+
+**Status:** Done
+
+### Summary
+
+v0.5.0 is a stabilization release. It inventories and audits the entire Research OS: 27 modules, 106 CLI commands, 31 GUI tabs, regression coverage, artifact hygiene, and safety matrix. No new trading strategies. No real-order functionality.
+
+### New Package: `os_planning/`
+
+- `module_inventory.py` — 27 modules, 6 layers, maturity tagging
+- `cli_inventory.py` — 106 commands, 13 categories, naming checker
+- `gui_tab_inventory.py` — 31 tabs, 7 groups, grouping suggestions
+- `regression_audit.py` — 5-dimension coverage audit
+- `artifact_hygiene_audit.py` — .gitignore hygiene
+- `safety_matrix.py` — safety invariant verification
+
+### New Files
+
+- `reports/research_os_stabilization_report.py` — 7-section report
+- `gui/research_os_planning_panel.py` — 6-sub-tab GUI panel
+- `gui/research_os_planning_adapter.py` — bridge
+- `docs/research_os_planning.md`
+- `docs/release_notes_v0.5.md`
+
+### Integrations
+
+- `reports/auto_report_center.py` — `run_research_os_summary()`
+- `reports/auto_report_index.py` — 5 OS manifest fields
+- `release/regression_suite.py` — 2 new v0.5.0 tests
+- `release/stable_release_checklist.py` — 4 new v0.5.0 checks
+- `gui/dashboard.py` — Research OS Planning tab
+- `.gitignore` — research_os_planning outputs gitignored
+
+### v0.5.x Roadmap
+
+| Version | Focus |
+|---------|-------|
+| v0.5.1 | CLI Alias Polish |
+| v0.5.2 | GUI Tab Grouping |
+| v0.5.3 | Regression Consolidation |
+| v0.5.4 | Report Pack |
+| v0.5.5 | Data / Feature Pipeline Hardening |
+| v0.5.6 | Replay / Journal / Coach Integration |
+| v0.6.0 | Stable Release |
 
 ---
 

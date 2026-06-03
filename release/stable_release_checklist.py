@@ -1044,6 +1044,11 @@ class StableReleaseChecklist:
             self._check_research_workflow_output_ignored,
             self._check_research_workflow_safe_command_registry,
             self._check_research_workflow_no_compound_commands,
+            # v0.5.0
+            self._check_research_os_import_health,
+            self._check_research_os_no_real_orders,
+            self._check_research_os_output_ignored,
+            self._check_research_os_safety_matrix,
         ]
 
         items: list[dict] = []
@@ -1368,3 +1373,98 @@ class StableReleaseChecklist:
         except Exception as exc:
             elapsed = (time.monotonic() - t0) * 1000
             return self._item("research_workflow_no_compound_commands", "FAIL", str(exc), elapsed)
+
+    # -----------------------------------------------------------------------
+    # v0.5.0 Research OS Planning checks
+    # -----------------------------------------------------------------------
+
+    def _check_research_os_import_health(self) -> dict:
+        """v0.5.0: Verify all os_planning modules import cleanly."""
+        t0 = time.monotonic()
+        try:
+            from os_planning.module_inventory import ResearchOSModuleInventory
+            from os_planning.cli_inventory import CLIInventoryBuilder
+            from os_planning.gui_tab_inventory import GUITabInventoryBuilder
+            from os_planning.regression_audit import RegressionAudit
+            from os_planning.artifact_hygiene_audit import ArtifactHygieneAudit
+            from os_planning.safety_matrix import ResearchOSSafetyMatrix
+            from reports.research_os_stabilization_report import ResearchOSStabilizationReport
+            elapsed = (time.monotonic() - t0) * 1000
+            return self._item(
+                "research_os_import_health", "PASS",
+                "All os_planning modules and report import cleanly", elapsed,
+            )
+        except Exception as exc:
+            elapsed = (time.monotonic() - t0) * 1000
+            return self._item("research_os_import_health", "FAIL", str(exc), elapsed)
+
+    def _check_research_os_no_real_orders(self) -> dict:
+        """v0.5.0: Verify os_planning classes carry safety invariants."""
+        t0 = time.monotonic()
+        try:
+            from os_planning.module_inventory import ResearchOSModuleInventory
+            from os_planning.safety_matrix import ResearchOSSafetyMatrix
+            from reports.research_os_stabilization_report import ResearchOSStabilizationReport
+            for cls in (ResearchOSModuleInventory, ResearchOSSafetyMatrix, ResearchOSStabilizationReport):
+                assert getattr(cls, "read_only",          False), f"{cls.__name__} missing read_only"
+                assert getattr(cls, "no_real_orders",     False), f"{cls.__name__} missing no_real_orders"
+                assert getattr(cls, "production_blocked", False), f"{cls.__name__} missing production_blocked"
+                assert getattr(cls, "real_order_ready",   True)  is False, f"{cls.__name__} real_order_ready must be False"
+            elapsed = (time.monotonic() - t0) * 1000
+            return self._item(
+                "research_os_no_real_orders", "PASS",
+                "All os_planning classes carry correct safety invariants", elapsed,
+            )
+        except Exception as exc:
+            elapsed = (time.monotonic() - t0) * 1000
+            return self._item("research_os_no_real_orders", "FAIL", str(exc), elapsed)
+
+    def _check_research_os_output_ignored(self) -> dict:
+        """v0.5.0: Verify OS planning output paths are in .gitignore."""
+        t0 = time.monotonic()
+        try:
+            gitignore_path = os.path.join(BASE_DIR, ".gitignore")
+            with open(gitignore_path, encoding="utf-8") as fh:
+                content = fh.read()
+            required = [
+                "data/backtest_results/research_os_planning/",
+                "reports/research_os_stabilization_report_",
+            ]
+            missing = [p for p in required if p not in content]
+            elapsed = (time.monotonic() - t0) * 1000
+            if missing:
+                return self._item(
+                    "research_os_output_ignored", "FAIL",
+                    f"Missing .gitignore patterns: {missing}", elapsed,
+                )
+            return self._item(
+                "research_os_output_ignored", "PASS",
+                "OS planning output paths are in .gitignore", elapsed,
+            )
+        except Exception as exc:
+            elapsed = (time.monotonic() - t0) * 1000
+            return self._item("research_os_output_ignored", "FAIL", str(exc), elapsed)
+
+    def _check_research_os_safety_matrix(self) -> dict:
+        """v0.5.0: Verify safety matrix reports zero violations."""
+        t0 = time.monotonic()
+        try:
+            from os_planning.safety_matrix import ResearchOSSafetyMatrix
+            sm_obj    = ResearchOSSafetyMatrix()
+            sm_sum    = sm_obj.summary()
+            violations = sm_sum.get("blocked_violations", 0)
+            safe_c     = sm_sum.get("safe", 0)
+            total_s    = sm_sum.get("total_modules", 0)
+            elapsed    = (time.monotonic() - t0) * 1000
+            if violations:
+                return self._item(
+                    "research_os_safety_matrix", "FAIL",
+                    f"{violations} safety violation(s) detected", elapsed,
+                )
+            return self._item(
+                "research_os_safety_matrix", "PASS",
+                f"Safety matrix: 0 violations, safe={safe_c}/{total_s}", elapsed,
+            )
+        except Exception as exc:
+            elapsed = (time.monotonic() - t0) * 1000
+            return self._item("research_os_safety_matrix", "FAIL", str(exc), elapsed)

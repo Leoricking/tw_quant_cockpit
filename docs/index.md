@@ -3,7 +3,7 @@
 > **[!] Research Only. Read Only. No Real Orders. Production Trading: BLOCKED.**
 > **[!] Not investment advice. REAL_ORDER_READY=False.**
 
-Current version: **v0.4.9** — Research Workflow Automation
+Current version: **v0.5.0** — Research OS Planning / Stabilization
 
 ---
 
@@ -19,6 +19,7 @@ Current version: **v0.4.9** — Research Workflow Automation
 | [Developer Guide](developer_guide.md) | Architecture, adding CLI/GUI/reports, git conventions |
 | [Release Notes v0.3](release_notes_v0.3.md) | v0.3.9 through v0.3.29 change log |
 | [Release Notes v0.4](release_notes_v0.4.md) | v0.4.0 stable release change log |
+| [Release Notes v0.5](release_notes_v0.5.md) | v0.5.0 Research OS Planning change log |
 | [Release v0.4.0](release_v0.4.0.md) | v0.4.0 stable release overview and upgrade notes |
 | [Release Checklist](release_checklist.md) | Manual release verification checklist |
 | [Roadmap](roadmap.md) | Completed milestones and planned future versions |
@@ -70,6 +71,7 @@ Current version: **v0.4.9** — Research Workflow Automation
 | [research_review_dashboard.md](research_review_dashboard.md) | v0.4.7 | Research Review Dashboard (aggregator, scorecard, action planner, store, report, GUI panel, CLI commands) |
 | [research_assistant_coach.md](research_assistant_coach.md) | v0.4.8 | Research Assistant / Coach (daily/weekly checklist, replay training plan, rule review queue, data repair priority, journal/ML coaching, CLI, GUI) |
 | [research_workflow_automation.md](research_workflow_automation.md) | v0.4.9 | Research Workflow Automation (workflow schema, safe command registry, workflow builder/runner, daily/weekly packages, CLI, GUI) |
+| [research_os_planning.md](research_os_planning.md) | v0.5.0 | Research OS Planning (module inventory, CLI inventory, GUI tab inventory, regression audit, artifact hygiene, safety matrix, CLI, GUI) |
 
 ---
 
@@ -86,4 +88,4 @@ Current version: **v0.4.9** — Research Workflow Automation
 
 ---
 
-*Generated for v0.4.0 Research Platform Stable Release.*
+*Generated for v0.5.0 Research OS Planning / Stabilization.*

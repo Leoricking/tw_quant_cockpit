@@ -315,6 +315,9 @@ class AutoReportCenter:
         # v0.4.9 Research Workflow Automation summary (always optional, never crashes)
         self.run_research_workflow_summary()
 
+        # v0.5.0 Research OS Planning summary (always optional, never crashes)
+        self.run_research_os_summary()
+
         # Aggregated outputs
         if self.include_daily_summary:
             self.build_daily_market_summary()
@@ -944,6 +947,28 @@ class AutoReportCenter:
                 self._record_success("research_workflow", "no persisted workflow summary found")
         except Exception as exc:
             logger.warning("run_research_workflow_summary failed: %s", exc)
+
+    def run_research_os_summary(self):
+        """Collect Research OS Planning summary context (v0.5.0). Optional — failure does not abort run."""
+        try:
+            from os_planning.module_inventory import ResearchOSModuleInventory
+            from os_planning.cli_inventory import CLIInventoryBuilder
+            from os_planning.gui_tab_inventory import GUITabInventoryBuilder
+            modules  = ResearchOSModuleInventory().build_inventory()
+            commands = CLIInventoryBuilder().build_inventory()
+            tabs     = GUITabInventoryBuilder().build_inventory()
+            mature   = sum(1 for m in modules if m.get("maturity") == "STABLE")
+            self._context["research_os_total_modules"]  = len(modules)
+            self._context["research_os_total_commands"] = len(commands)
+            self._context["research_os_total_tabs"]     = len(tabs)
+            self._context["research_os_mature_count"]   = mature
+            self._context["research_os_safety_score"]   = "N/A"
+            self._record_success(
+                "research_os",
+                f"modules={len(modules)} cli={len(commands)} tabs={len(tabs)}",
+            )
+        except Exception as exc:
+            logger.warning("run_research_os_summary failed: %s", exc)
 
     def run_model_monitoring_report(self):
         """Generate Model Monitoring report (v0.4.3). Optional — failure does not abort run."""

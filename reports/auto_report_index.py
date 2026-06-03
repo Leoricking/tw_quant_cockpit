@@ -437,6 +437,8 @@ class AutoReportIndexBuilder:
                 **_extract_research_coach_fields(ctx),
                 # v0.4.9 Research Workflow Automation
                 **_extract_research_workflow_fields(ctx),
+                # v0.5.0 Research OS Planning
+                **_extract_research_os_fields(ctx),
             }
 
             path = os.path.join(output_dir, "manifest.json")
@@ -535,4 +537,15 @@ def _extract_research_workflow_fields(ctx: dict) -> dict:
         "research_workflow_failed_count":   ctx.get("research_workflow_failed_count", 0),
         "research_workflow_blocked_count":  ctx.get("research_workflow_blocked_count", 0),
         "research_workflow_package_path":   ctx.get("research_workflow_package_path", ""),
+    }
+
+
+def _extract_research_os_fields(ctx: dict) -> dict:
+    """Extract Research OS Planning summary fields for manifest.json (v0.5.0)."""
+    return {
+        "research_os_total_modules":  ctx.get("research_os_total_modules",  0),
+        "research_os_total_commands": ctx.get("research_os_total_commands", 0),
+        "research_os_total_tabs":     ctx.get("research_os_total_tabs",     0),
+        "research_os_mature_count":   ctx.get("research_os_mature_count",   0),
+        "research_os_safety_score":   ctx.get("research_os_safety_score",   "N/A"),
     }

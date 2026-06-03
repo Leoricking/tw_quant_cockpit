@@ -249,3 +249,7 @@ reports/research_assistant_report_*.md
 # Research Workflow Automation outputs (v0.4.9, runtime artifacts — NEVER commit)
 data/backtest_results/research_workflow/
 reports/research_workflow_report_*.md
+
+# Research OS Planning outputs (v0.5.0, runtime artifacts — NEVER commit)
+data/backtest_results/research_os_planning/
+reports/research_os_stabilization_report_*.md

@@ -811,6 +811,9 @@ class RegressionSuite:
             # v0.4.9
             self._test_research_workflow_imports,
             self._test_research_workflow_summary,
+            # v0.5.0
+            self._test_research_os_imports,
+            self._test_research_os_summary,
         ]
         return self._execute("full", tests_fns)
 
@@ -998,6 +1001,51 @@ class RegressionSuite:
         except Exception as exc:
             return self._item(
                 "research_workflow_summary", "FAIL", str(exc),
+                (time.monotonic() - t0) * 1000,
+            )
+
+    # -----------------------------------------------------------------------
+    # v0.5.0 Research OS Planning tests
+    # -----------------------------------------------------------------------
+
+    def _test_research_os_imports(self) -> dict:
+        t0 = time.monotonic()
+        try:
+            from os_planning.module_inventory import ResearchOSModuleInventory
+            from os_planning.cli_inventory import CLIInventoryBuilder
+            from os_planning.gui_tab_inventory import GUITabInventoryBuilder
+            from os_planning.regression_audit import RegressionAudit
+            from os_planning.artifact_hygiene_audit import ArtifactHygieneAudit
+            from os_planning.safety_matrix import ResearchOSSafetyMatrix
+            from reports.research_os_stabilization_report import ResearchOSStabilizationReport
+            detail = "os_planning + report imports OK"
+            return self._item(
+                "research_os_imports", "PASS", detail,
+                (time.monotonic() - t0) * 1000,
+            )
+        except Exception as exc:
+            return self._item(
+                "research_os_imports", "FAIL", str(exc),
+                (time.monotonic() - t0) * 1000,
+            )
+
+    def _test_research_os_summary(self) -> dict:
+        t0 = time.monotonic()
+        try:
+            cmd  = [sys.executable, "main.py", "research-os-summary"]
+            proc = subprocess.run(
+                cmd, capture_output=True, text=True, timeout=30,
+                cwd=BASE_DIR,
+            )
+            detail = (proc.stdout or proc.stderr or "")[:200]
+            status = "PASS" if proc.returncode == 0 else "PARTIAL"
+            return self._item(
+                "research_os_summary", status, detail,
+                (time.monotonic() - t0) * 1000,
+            )
+        except Exception as exc:
+            return self._item(
+                "research_os_summary", "FAIL", str(exc),
                 (time.monotonic() - t0) * 1000,
             )
 

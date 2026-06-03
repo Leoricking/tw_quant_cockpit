@@ -7641,6 +7641,272 @@ def cmd_research_workflow_package(args: argparse.Namespace) -> None:
 
 
 # ---------------------------------------------------------------------------
+# v0.5.0 Research OS Planning CLI handlers
+# ---------------------------------------------------------------------------
+
+def cmd_research_os_audit(args: argparse.Namespace) -> None:
+    """Run full Research OS audit (v0.5.0)."""
+    logger = logging.getLogger("main.research_os_audit")
+    mode   = getattr(args, "mode", "real")
+
+    print()
+    print("TW Quant Cockpit — Research OS Audit")
+    print("=" * 60)
+    print("  [!] Research Only | No Real Orders | Production BLOCKED")
+    print()
+
+    try:
+        from os_planning.module_inventory import ResearchOSModuleInventory
+        from os_planning.cli_inventory import CLIInventoryBuilder
+        from os_planning.gui_tab_inventory import GUITabInventoryBuilder
+        from os_planning.regression_audit import RegressionAudit
+        from os_planning.artifact_hygiene_audit import ArtifactHygieneAudit
+        from os_planning.safety_matrix import ResearchOSSafetyMatrix
+
+        modules  = ResearchOSModuleInventory().build_inventory()
+        commands = CLIInventoryBuilder().build_inventory()
+        tabs     = GUITabInventoryBuilder().build_inventory()
+        ra       = RegressionAudit().run()
+        aa       = ArtifactHygieneAudit().run()
+        sm_rows  = ResearchOSSafetyMatrix().build()
+        sm_sum   = ResearchOSSafetyMatrix().summary()
+
+        covered_m = ra.get("fully_covered", 0)
+        total_m   = ra.get("total_modules", 1)
+        cov_pct   = f"{round(covered_m/total_m*100)}% ({covered_m}/{total_m})" if total_m else "N/A"
+
+        cov_p  = aa.get("covered", 0)
+        tot_p  = aa.get("total_patterns", 1)
+        hyg    = f"{round(cov_p/tot_p*100)}% ({cov_p}/{tot_p})" if tot_p else "N/A"
+
+        safe_c = sm_sum.get("safe", 0)
+        total_s = sm_sum.get("total_modules", 1)
+        saf    = f"{round(safe_c/total_s*100)}% ({safe_c}/{total_s})" if total_s else "N/A"
+
+        print(f"  Mode:              {mode}")
+        print(f"  Total Modules:     {len(modules)}")
+        print(f"  Total CLI Cmds:    {len(commands)}")
+        print(f"  Total GUI Tabs:    {len(tabs)}")
+        print(f"  Reg. Coverage:     {cov_pct}")
+        print(f"  Hygiene Score:     {hyg}")
+        print(f"  Safety Score:      {saf}")
+        print(f"  Reg. Gaps:         {ra.get('missing_any', 'N/A')}")
+        print(f"  Violations:        {sm_sum.get('blocked_violations', 0)}")
+    except Exception as exc:
+        logger.error("research-os-audit failed: %s", exc, exc_info=True)
+        print(f"  ERROR: {exc}")
+    print()
+
+
+def cmd_research_os_report(args: argparse.Namespace) -> None:
+    """Generate Research OS Stabilization Report (v0.5.0)."""
+    logger = logging.getLogger("main.research_os_report")
+    mode   = getattr(args, "mode", "real")
+
+    print()
+    print("TW Quant Cockpit — Research OS Stabilization Report")
+    print("=" * 60)
+    print("  [!] Research Only | No Real Orders | Production BLOCKED")
+    print()
+
+    try:
+        from gui.research_os_planning_adapter import ResearchOSPlanningAdapter
+        adapter = ResearchOSPlanningAdapter()
+        path    = adapter.generate_report(mode=mode)
+        if path:
+            print(f"  Report: {path}")
+        else:
+            print("  Report generation failed.")
+    except Exception as exc:
+        logger.error("research-os-report failed: %s", exc, exc_info=True)
+        print(f"  ERROR: {exc}")
+    print()
+
+
+def cmd_research_os_summary(args: argparse.Namespace) -> None:
+    """Print Research OS inventory summary (v0.5.0)."""
+    logger = logging.getLogger("main.research_os_summary")
+
+    print()
+    print("TW Quant Cockpit — Research OS Summary")
+    print("=" * 60)
+    print("  [!] Research Only | No Real Orders | Production BLOCKED")
+    print()
+
+    try:
+        from os_planning.module_inventory import ResearchOSModuleInventory
+        from os_planning.cli_inventory import CLIInventoryBuilder
+        from os_planning.gui_tab_inventory import GUITabInventoryBuilder
+
+        modules  = ResearchOSModuleInventory().build_inventory()
+        commands = CLIInventoryBuilder().build_inventory()
+        tabs     = GUITabInventoryBuilder().build_inventory()
+
+        mature = sum(1 for m in modules if m.get("maturity") == "STABLE")
+        usable = sum(1 for m in modules if m.get("maturity") == "USABLE")
+        alpha  = len(modules) - mature - usable
+        cats   = len({c.get("category", "") for c in commands})
+        groups = len({t.get("suggested_group", t.get("group", "")) for t in tabs})
+
+        print(f"  Modules:           {len(modules)}")
+        print(f"  CLI Commands:      {len(commands)}")
+        print(f"  GUI Tabs:          {len(tabs)}")
+        print(f"  Mature (STABLE):   {mature}")
+        print(f"  Beta (USABLE):     {usable}")
+        print(f"  Alpha:             {alpha}")
+        print(f"  CLI Categories:    {cats}")
+        print(f"  GUI Groups:        {groups}")
+    except Exception as exc:
+        logger.error("research-os-summary failed: %s", exc, exc_info=True)
+        print(f"  ERROR: {exc}")
+    print()
+
+
+def cmd_research_os_modules(args: argparse.Namespace) -> None:
+    """List all Research OS modules with maturity status (v0.5.0)."""
+    logger = logging.getLogger("main.research_os_modules")
+
+    print()
+    print("TW Quant Cockpit — Research OS Modules")
+    print("=" * 60)
+    print("  [!] Research Only | No Real Orders | Production BLOCKED")
+    print()
+
+    try:
+        from os_planning.module_inventory import ResearchOSModuleInventory
+        modules = ResearchOSModuleInventory().build_inventory()
+        print(f"  {'Module':<30} {'Package':<20} {'Maturity':<10} CLI  GUI  Rpt")
+        print(f"  {'-'*30} {'-'*20} {'-'*10} ---  ---  ---")
+        for m in modules:
+            cli_f = "Y" if m.get("cli_commands") else "—"
+            gui_f = "Y" if m.get("gui_tab")      else "—"
+            rpt_f = "Y" if m.get("report") and m.get("report") != "no" else "—"
+            print(
+                f"  {m.get('module_name',''):<30} "
+                f"{m.get('package',''):<20} "
+                f"{m.get('maturity',''):<10} "
+                f"{cli_f:<4} {gui_f:<4} {rpt_f}"
+            )
+        print(f"\n  Total: {len(modules)} modules")
+    except Exception as exc:
+        logger.error("research-os-modules failed: %s", exc, exc_info=True)
+        print(f"  ERROR: {exc}")
+    print()
+
+
+def cmd_research_os_cli(args: argparse.Namespace) -> None:
+    """List all Research OS CLI commands with categories (v0.5.0)."""
+    logger = logging.getLogger("main.research_os_cli")
+    category = getattr(args, "category", None)
+
+    print()
+    print("TW Quant Cockpit — Research OS CLI Inventory")
+    print("=" * 60)
+    print("  [!] Research Only | No Real Orders | Production BLOCKED")
+    print()
+
+    try:
+        from os_planning.cli_inventory import CLIInventoryBuilder
+        bld      = CLIInventoryBuilder()
+        commands = bld.build_inventory()
+        if category:
+            commands = [c for c in commands if c.get("category", "").lower() == category.lower()]
+
+        current_cat = ""
+        for cmd in commands:
+            cat = cmd.get("category", "")
+            if cat != current_cat:
+                print(f"\n  [{cat}]")
+                current_cat = cat
+            print(f"    python main.py {cmd.get('command','')} — {cmd.get('help','')}")
+
+        print(f"\n  Total: {len(commands)} commands")
+        try:
+            issues = bld.detect_naming_inconsistency()
+            if issues:
+                print(f"  Naming issues: {len(issues)}")
+        except Exception:
+            pass
+    except Exception as exc:
+        logger.error("research-os-cli failed: %s", exc, exc_info=True)
+        print(f"  ERROR: {exc}")
+    print()
+
+
+def cmd_research_os_gui(args: argparse.Namespace) -> None:
+    """List all Research OS GUI tabs with groups (v0.5.0)."""
+    logger = logging.getLogger("main.research_os_gui")
+
+    print()
+    print("TW Quant Cockpit — Research OS GUI Tab Inventory")
+    print("=" * 60)
+    print("  [!] Research Only | No Real Orders | Production BLOCKED")
+    print()
+
+    try:
+        from os_planning.gui_tab_inventory import GUITabInventoryBuilder
+        tabs   = GUITabInventoryBuilder().build_inventory()
+        groups = len({t.get("suggested_group", t.get("group", "")) for t in tabs})
+
+        current_group = ""
+        for tab in tabs:
+            grp = tab.get("suggested_group", tab.get("group", ""))
+            if grp != current_group:
+                print(f"\n  [{grp}]")
+                current_group = grp
+            print(f"    {tab.get('tab_name',''):<35} {tab.get('priority','')}")
+
+        print(f"\n  Total: {len(tabs)} tabs across {groups} groups")
+    except Exception as exc:
+        logger.error("research-os-gui failed: %s", exc, exc_info=True)
+        print(f"  ERROR: {exc}")
+    print()
+
+
+def cmd_research_os_safety(args: argparse.Namespace) -> None:
+    """Show Research OS safety matrix for all modules (v0.5.0)."""
+    logger = logging.getLogger("main.research_os_safety")
+
+    print()
+    print("TW Quant Cockpit — Research OS Safety Matrix")
+    print("=" * 60)
+    print("  [!] Research Only | No Real Orders | Production BLOCKED")
+    print()
+
+    try:
+        from os_planning.safety_matrix import ResearchOSSafetyMatrix
+        sm_obj  = ResearchOSSafetyMatrix()
+        rows    = sm_obj.build()
+        sm_sum  = sm_obj.summary()
+
+        print(f"  {'Module':<30} {'RO':<6} {'NRO':<6} {'PB':<6} {'ROR':<6} {'Status'}")
+        print(f"  {'-'*30} {'-'*5} {'-'*5} {'-'*5} {'-'*5} {'-'*10}")
+        for row in rows:
+            print(
+                f"  {row.get('module',''):<30} "
+                f"{str(row.get('read_only','')):<6} "
+                f"{str(row.get('no_real_orders','')):<6} "
+                f"{str(row.get('production_blocked','')):<6} "
+                f"{str(row.get('real_order_ready','')):<6} "
+                f"{row.get('safety_status','')}"
+            )
+
+        safe_c  = sm_sum.get("safe", 0)
+        total_s = sm_sum.get("total_modules", 1)
+        pct_s   = round(safe_c / total_s * 100) if total_s else 0
+        viol    = sm_sum.get("blocked_violations", 0)
+        print(f"\n  Safety Score: {pct_s}% ({safe_c}/{total_s})")
+        if viol:
+            print(f"  [!] {viol} violation(s) detected")
+        else:
+            print("  All modules pass safety invariants.")
+    except Exception as exc:
+        logger.error("research-os-safety failed: %s", exc, exc_info=True)
+        print(f"  ERROR: {exc}")
+    print()
+
+
+# ---------------------------------------------------------------------------
 # v0.4.8 Research Assistant / Coach CLI handlers
 # ---------------------------------------------------------------------------
 
@@ -9466,6 +9732,50 @@ def _build_parser() -> argparse.ArgumentParser:
                          dest="output_dir")
     p_rwpkg.add_argument("--report-dir", default="reports", dest="report_dir")
 
+    # ---- v0.5.0 Research OS Planning ----
+
+    p_rosaudit = subparsers.add_parser(
+        "research-os-audit",
+        help="Run full Research OS audit: modules, CLI, GUI, regression, artifacts, safety (v0.5.0)",
+    )
+    p_rosaudit.add_argument("--mode", default="real", choices=["real", "mock"],
+                            help="Data mode (default: real)")
+
+    p_rosrpt = subparsers.add_parser(
+        "research-os-report",
+        help="Generate Research OS Stabilization Report (v0.5.0)",
+    )
+    p_rosrpt.add_argument("--mode", default="real", choices=["real", "mock"],
+                          help="Data mode (default: real)")
+    p_rosrpt.add_argument("--output-dir", default="reports", dest="output_dir")
+
+    subparsers.add_parser(
+        "research-os-summary",
+        help="Print Research OS inventory summary: modules, CLI, GUI counts (v0.5.0)",
+    )
+
+    subparsers.add_parser(
+        "research-os-modules",
+        help="List all Research OS modules with maturity status (v0.5.0)",
+    )
+
+    p_roscli = subparsers.add_parser(
+        "research-os-cli",
+        help="List all Research OS CLI commands grouped by category (v0.5.0)",
+    )
+    p_roscli.add_argument("--category", default=None,
+                          help="Filter by category name (optional)")
+
+    subparsers.add_parser(
+        "research-os-gui",
+        help="List all Research OS GUI tabs grouped by tab group (v0.5.0)",
+    )
+
+    subparsers.add_parser(
+        "research-os-safety",
+        help="Show Research OS safety matrix for all modules (v0.5.0)",
+    )
+
     return parser
 
 
@@ -9670,6 +9980,14 @@ def main() -> None:
         "research-workflow-summary":   cmd_research_workflow_summary,
         "research-workflow-tasks":     cmd_research_workflow_tasks,
         "research-workflow-package":   cmd_research_workflow_package,
+        # v0.5.0 Research OS Planning
+        "research-os-audit":           cmd_research_os_audit,
+        "research-os-report":          cmd_research_os_report,
+        "research-os-summary":         cmd_research_os_summary,
+        "research-os-modules":         cmd_research_os_modules,
+        "research-os-cli":             cmd_research_os_cli,
+        "research-os-gui":             cmd_research_os_gui,
+        "research-os-safety":          cmd_research_os_safety,
     }
 
     if args.command is None:

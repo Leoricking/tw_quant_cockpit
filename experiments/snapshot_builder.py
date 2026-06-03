@@ -663,6 +663,7 @@ class ExperimentSnapshotBuilder:
             ("research_review",             lambda: self.build_research_review_snapshot()),
             ("research_coach",              lambda: self.build_research_coach_snapshot()),
             ("research_workflow",           lambda: self.build_research_workflow_snapshot()),
+            ("research_os_planning",        lambda: self.build_research_os_planning_snapshot()),
         ]
         for snap_type, fn in builders:
             try:
@@ -837,5 +838,40 @@ class ExperimentSnapshotBuilder:
             }
         except Exception as exc:
             logger.warning("build_research_workflow_snapshot: %s", exc)
+            snap["warnings"].append(f"snapshot error: {exc}")
+        return snap
+
+    # ------------------------------------------------------------------
+    # v0.5.0 Research OS Planning snapshot
+    # ------------------------------------------------------------------
+
+    def build_research_os_planning_snapshot(self) -> dict:
+        snap = {
+            "snapshot_type":          "research_os_planning",
+            "read_only":              True,
+            "no_real_orders":         True,
+            "production_blocked":     True,
+            "real_order_ready":       False,
+            "total_modules":          0,
+            "total_commands":         0,
+            "total_tabs":             0,
+            "mature_count":           0,
+            "safety_score":           "N/A",
+            "coverage_score":         "N/A",
+            "warnings":               [],
+        }
+        try:
+            from os_planning.module_inventory import ResearchOSModuleInventory
+            from os_planning.cli_inventory import CLIInventoryBuilder
+            from os_planning.gui_tab_inventory import GUITabInventoryBuilder
+            modules  = ResearchOSModuleInventory().build_inventory()
+            commands = CLIInventoryBuilder().build_inventory()
+            tabs     = GUITabInventoryBuilder().build_inventory()
+            snap["total_modules"]  = len(modules)
+            snap["mature_count"]   = sum(1 for m in modules if m.get("maturity") == "STABLE")
+            snap["total_commands"] = len(commands)
+            snap["total_tabs"]     = len(tabs)
+        except Exception as exc:
+            logger.warning("build_research_os_planning_snapshot: %s", exc)
             snap["warnings"].append(f"snapshot error: {exc}")
         return snap

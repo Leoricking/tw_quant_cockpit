@@ -345,6 +345,16 @@ except Exception as _rw_exc:
     logger.warning("ResearchWorkflowPanel unavailable: %s", _rw_exc)
     _RESEARCH_WORKFLOW_AVAILABLE = False
 
+# ---------------------------------------------------------------------------
+# v0.5.0 Research OS Planning panel import (guarded)
+# ---------------------------------------------------------------------------
+try:
+    from gui.research_os_planning_panel import ResearchOSPlanningPanel
+    _RESEARCH_OS_PLANNING_AVAILABLE = True
+except Exception as _ros_exc:
+    logger.warning("ResearchOSPlanningPanel unavailable: %s", _ros_exc)
+    _RESEARCH_OS_PLANNING_AVAILABLE = False
+
 
 # ---------------------------------------------------------------------------
 # Colour helpers (Taiwan convention: red = up, green = down)
@@ -1417,6 +1427,13 @@ class CockpitWindow(QMainWindow if _PYSIDE6_AVAILABLE else object):
             mid_tabs.addTab(self._research_workflow_panel, "Research Workflow")
         else:
             self._research_workflow_panel = None
+
+        # v0.5.0 Research OS Planning tab
+        if _RESEARCH_OS_PLANNING_AVAILABLE:
+            self._research_os_planning_panel = ResearchOSPlanningPanel()
+            mid_tabs.addTab(self._research_os_planning_panel, "Research OS Planning")
+        else:
+            self._research_os_planning_panel = None
 
         h_split.addWidget(mid_tabs)
         h_split.setStretchFactor(0, 3)

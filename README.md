@@ -4,7 +4,55 @@
 >
 > **[!] v1: Real order execution is strictly prohibited. For research, simulation, and decision support only. Not investment advice.**
 
-**Current version: v0.4.9 — Research Workflow Automation**
+**Current version: v0.5.0 — Research OS Planning / Stabilization**
+
+---
+
+## v0.5.0 — Research OS Planning / Stabilization
+
+**New in v0.5.0:**
+
+- **Research OS Module Inventory** — Inventories all 27 modules across 6 layers with maturity tagging (mature/beta/alpha), feature matrix (CLI, GUI, report), and known limitations.
+- **CLI Inventory** — Catalogs all 106 CLI commands across 13 categories with naming-inconsistency detector.
+- **GUI Tab Inventory** — Catalogs all 31 GUI tabs across 7 groups with grouping suggestions for v0.5.2.
+- **Regression Audit** — 5-dimension coverage audit per module: command test, import test, GUI import test, report generation test, safety test.
+- **Artifact Hygiene Audit** — Checks 15+ .gitignore patterns for all runtime output paths.
+- **Safety Matrix** — Verifies `read_only`, `no_real_orders`, `production_blocked`, `real_order_ready=False` for all 16 audited modules.
+- **ResearchOSStabilizationReport** — 7-section Markdown report covering all audits and recommendations.
+- **CLI**: `research-os-audit`, `research-os-report`, `research-os-summary`, `research-os-modules`, `research-os-cli`, `research-os-gui`, `research-os-safety`
+- **GUI**: Research OS Planning tab in dashboard with 6 sub-tabs (Modules, CLI Commands, GUI Tabs, Regression Audit, Safety Matrix, Audit Log).
+- **[!] Stabilization Only. Research Only. No Real Orders. Production Trading BLOCKED.**
+
+**CLI usage:**
+```bash
+# Run full OS audit
+python main.py research-os-audit --mode real
+
+# Generate stabilization report
+python main.py research-os-report --mode real
+
+# Print inventory summary
+python main.py research-os-summary
+
+# List all modules
+python main.py research-os-modules
+
+# List all CLI commands
+python main.py research-os-cli
+
+# List all GUI tabs
+python main.py research-os-gui
+
+# Show safety matrix
+python main.py research-os-safety
+```
+
+**GUI:**
+1. `python main.py cockpit --mode real`
+2. Select **Research OS Planning** tab
+3. Click **Run OS Audit** to populate all sub-tabs
+4. Review Modules, CLI Commands, GUI Tabs, Regression Audit, Safety Matrix panels
+5. Click **Generate Report** to produce `reports/research_os_stabilization_report_YYYY-MM-DD.md`
 
 ---
 
