@@ -4,6 +4,73 @@
 
 ---
 
+## v0.5.1 — CLI Alias / Command UX Polish (2026-06-03)
+
+### Summary
+CLI UX polish release. Adds command registry, 35 safe aliases, command discovery, help examples, CLI UX report and GUI panel. No new strategies. All existing commands preserved. No real-order functionality.
+
+### New Package: `cli/`
+
+| Module | Purpose |
+|--------|---------|
+| `command_registry.py` | 126 commands across 17 categories |
+| `alias_map.py` | 35 safe aliases, 0 conflicts, blocked-keyword guard |
+| `command_discovery.py` | Keyword search and intent suggestion |
+| `help_examples.py` | Quick start, daily, weekly, safety example groups |
+| `cli_ux_report.py` | CLI UX audit data builder |
+
+### New Report
+- `reports/cli_ux_report.py` — 8-section Markdown report
+
+### New GUI
+- `gui/cli_ux_panel.py` — CLI UX panel (5 sub-tabs)
+- `gui/cli_ux_adapter.py` — bridge
+
+### New Docs
+- `docs/cli_alias_command_ux.md`
+
+### New CLI (6 commands + 17 aliases)
+
+**Commands:**
+
+| Command | Description |
+|---------|-------------|
+| `cli-list` | List all commands in registry |
+| `cli-search --keyword X` | Search commands by keyword |
+| `cli-aliases` | Show all aliases |
+| `cli-examples` | Show help examples |
+| `cli-ux-report` | Generate CLI UX report |
+| `cli-resolve --alias X` | Resolve alias (display only) |
+
+**Aliases:**
+
+| Alias | Target |
+|-------|--------|
+| `daily` | `run-research --profile daily` |
+| `quick` | `run-research --profile quick` |
+| `dq` | `data-quality-gate` |
+| `quality` | `data-quality-gate` |
+| `providers` | `provider-reliability` |
+| `rules` | `rule-governance` |
+| `signals` | `signal-quality` |
+| `journal` | `journal-summary` |
+| `notify` | `notification-list` |
+| `coach-daily` | `research-coach --period daily` |
+| `review-daily` | `research-review --period daily` |
+| `workflow-daily` | `research-workflow --type daily_research` |
+| `workflow-weekly` | `research-workflow --type weekly_review` |
+| `os` | `research-os-summary` |
+| `version` | `version-info` |
+| `gui` | `cockpit` |
+| `dashboard` | `cockpit` |
+
+### Safety
+- 0 trading aliases (buy/sell/order/broker/shioaji all blocked)
+- All existing commands preserved, none removed or renamed
+- All safety invariants maintained
+
+---
+
 ## v0.5.0 — Research OS Planning / Stabilization (2026-06-03)
 
 ### Summary

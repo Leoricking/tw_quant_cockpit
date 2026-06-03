@@ -1,0 +1,1232 @@
+"""
+cli/command_registry.py — CLICommand dataclass and CLICommandRegistry (v0.5.1).
+
+[!] Research Only. No Real Orders. Production Trading: BLOCKED.
+"""
+from __future__ import annotations
+
+import logging
+from dataclasses import dataclass, field
+from typing import List, Optional
+
+logger = logging.getLogger(__name__)
+
+# ---------------------------------------------------------------------------
+# Valid category and safety-level literals
+# ---------------------------------------------------------------------------
+
+VALID_CATEGORIES = {
+    "data", "provider", "quality", "strategy", "backtest", "portfolio",
+    "ml", "replay", "journal", "notification", "review", "coach",
+    "workflow", "os_planning", "release", "gui", "utility",
+}
+
+VALID_SAFETY_LEVELS = {
+    "SAFE_READ_ONLY",
+    "RESEARCH_ONLY",
+    "REPORT_ONLY",
+    "SIMULATION_ONLY",
+    "GUI_ONLY",
+    "BLOCKED_TRADING",
+}
+
+
+# ---------------------------------------------------------------------------
+# CLICommand dataclass
+# ---------------------------------------------------------------------------
+
+@dataclass
+class CLICommand:
+    """
+    Represents a single CLI command entry in the TW Quant Cockpit.
+
+    Safety invariants
+    -----------------
+    read_only          = True
+    no_real_orders     = True
+    production_blocked = True
+    real_order_ready   = False
+    """
+
+    name:              str
+    category:          str
+    purpose:           str
+    description:       str
+    aliases:           List[str] = field(default_factory=list)
+    canonical_command: str       = ""
+    example_commands:  List[str] = field(default_factory=list)
+    mode_support:      List[str] = field(default_factory=lambda: ["real", "mock"])
+    report_support:    bool      = False
+    output_paths:      List[str] = field(default_factory=list)
+    safety_level:      str       = "SAFE_READ_ONLY"
+    read_only:         bool      = True
+    no_real_orders:    bool      = True
+    production_blocked: bool     = True
+    legacy:            bool      = False
+    deprecation_candidate: bool  = False
+    hidden:            bool      = False
+    notes:             str       = ""
+
+    def __post_init__(self) -> None:
+        if not self.canonical_command:
+            self.canonical_command = self.name
+        if self.category not in VALID_CATEGORIES:
+            logger.warning("CLICommand '%s' has unknown category '%s'", self.name, self.category)
+        if self.safety_level not in VALID_SAFETY_LEVELS:
+            logger.warning("CLICommand '%s' has unknown safety_level '%s'", self.name, self.safety_level)
+
+    def to_dict(self) -> dict:
+        return {
+            "name":               self.name,
+            "category":           self.category,
+            "purpose":            self.purpose,
+            "description":        self.description,
+            "aliases":            ", ".join(self.aliases),
+            "canonical_command":  self.canonical_command,
+            "example_commands":   "; ".join(self.example_commands),
+            "mode_support":       ", ".join(self.mode_support),
+            "report_support":     self.report_support,
+            "safety_level":       self.safety_level,
+            "read_only":          self.read_only,
+            "no_real_orders":     self.no_real_orders,
+            "production_blocked": self.production_blocked,
+            "legacy":             self.legacy,
+            "deprecation_candidate": self.deprecation_candidate,
+            "hidden":             self.hidden,
+            "notes":              self.notes,
+        }
+
+
+# ---------------------------------------------------------------------------
+# CLICommandRegistry
+# ---------------------------------------------------------------------------
+
+class CLICommandRegistry:
+    """
+    Registry of all CLI commands for TW Quant Cockpit v0.5.1.
+
+    Safety invariants
+    -----------------
+    read_only          = True
+    no_real_orders     = True
+    production_blocked = True
+    real_order_ready   = False
+    """
+
+    read_only:          bool = True
+    no_real_orders:     bool = True
+    production_blocked: bool = True
+    real_order_ready:   bool = False
+
+    def __init__(self) -> None:
+        self._commands: dict[str, CLICommand] = {}
+        self._build_registry()
+
+    # ------------------------------------------------------------------
+    # Public API
+    # ------------------------------------------------------------------
+
+    def register(self, cmd: CLICommand) -> None:
+        """Register a CLICommand. Skips silently if name already registered."""
+        if cmd.name in self._commands:
+            logger.debug("CLICommandRegistry: skipping duplicate '%s'", cmd.name)
+            return
+        self._commands[cmd.name] = cmd
+
+    def list_commands(self, category: Optional[str] = None) -> List[CLICommand]:
+        """Return all commands, optionally filtered by category."""
+        cmds = list(self._commands.values())
+        if category:
+            cmds = [c for c in cmds if c.category == category]
+        return sorted(cmds, key=lambda c: (c.category, c.name))
+
+    def get_command(self, name: str) -> Optional[CLICommand]:
+        """Return command by exact name, or None."""
+        return self._commands.get(name)
+
+    def get_alias_target(self, alias: str) -> Optional[str]:
+        """Search aliases fields; return canonical command name or None."""
+        for cmd in self._commands.values():
+            if alias in cmd.aliases:
+                return cmd.name
+        return None
+
+    def resolve_command(self, name: str) -> Optional[CLICommand]:
+        """Check direct name first, then aliases."""
+        if name in self._commands:
+            return self._commands[name]
+        target = self.get_alias_target(name)
+        if target:
+            return self._commands.get(target)
+        return None
+
+    def export_registry(self) -> List[dict]:
+        """Return list of dicts suitable for CSV export or GUI tables."""
+        return [cmd.to_dict() for cmd in self.list_commands()]
+
+    # ------------------------------------------------------------------
+    # Internal build
+    # ------------------------------------------------------------------
+
+    def _build_registry(self) -> None:  # noqa: C901
+        """Populate the command registry with the full command set."""
+
+        # ----------------------------------------------------------------
+        # utility
+        # ----------------------------------------------------------------
+        for entry in [
+            CLICommand(
+                name="version-info", category="utility", aliases=["version"],
+                purpose="Show application version",
+                description="Print TW Quant Cockpit version string and build metadata.",
+                example_commands=["python main.py version-info"],
+                safety_level="SAFE_READ_ONLY",
+            ),
+            CLICommand(
+                name="research-os-summary", category="utility", aliases=["os"],
+                purpose="Print research OS module summary",
+                description="High-level summary of all research OS modules, status, and coverage.",
+                example_commands=["python main.py research-os-summary"],
+                safety_level="SAFE_READ_ONLY",
+            ),
+            CLICommand(
+                name="research-os-audit", category="utility", aliases=["os-audit"],
+                purpose="Audit research OS modules",
+                description="Deep audit of all research OS modules for gaps and inconsistencies.",
+                example_commands=["python main.py research-os-audit"],
+                safety_level="SAFE_READ_ONLY",
+            ),
+            CLICommand(
+                name="cli-list", category="utility",
+                purpose="List all CLI commands",
+                description="Print all registered CLI commands grouped by category.",
+                example_commands=["python main.py cli-list"],
+                safety_level="SAFE_READ_ONLY",
+            ),
+            CLICommand(
+                name="cli-search", category="utility",
+                purpose="Search CLI commands by keyword",
+                description="Search commands by keyword in name, purpose, description, or category.",
+                example_commands=["python main.py cli-search replay"],
+                safety_level="SAFE_READ_ONLY",
+            ),
+            CLICommand(
+                name="cli-aliases", category="utility",
+                purpose="List all CLI aliases",
+                description="Print all registered short aliases and their target commands.",
+                example_commands=["python main.py cli-aliases"],
+                safety_level="SAFE_READ_ONLY",
+            ),
+            CLICommand(
+                name="cli-examples", category="utility",
+                purpose="Show CLI usage examples",
+                description="Print grouped usage examples: quick start, daily, weekly, safety.",
+                example_commands=["python main.py cli-examples"],
+                safety_level="SAFE_READ_ONLY",
+            ),
+            CLICommand(
+                name="cli-ux-report", category="utility",
+                purpose="Generate CLI UX audit report",
+                description="Build a CLI UX audit report covering aliases, coverage, and safety.",
+                example_commands=["python main.py cli-ux-report --mode real"],
+                report_support=True,
+                safety_level="REPORT_ONLY",
+            ),
+            CLICommand(
+                name="cli-resolve", category="utility",
+                purpose="Resolve a command or alias",
+                description="Given a name or alias, resolve to canonical command and show details.",
+                example_commands=["python main.py cli-resolve daily"],
+                safety_level="SAFE_READ_ONLY",
+            ),
+        ]:
+            self.register(entry)
+
+        # ----------------------------------------------------------------
+        # data
+        # ----------------------------------------------------------------
+        for entry in [
+            CLICommand(
+                name="download", category="data",
+                purpose="Download market data",
+                description="Download daily OHLCV data for all universe tickers.",
+                example_commands=["python main.py download --mode real"],
+                safety_level="RESEARCH_ONLY",
+            ),
+            CLICommand(
+                name="import-csv", category="data",
+                purpose="Import CSV data files",
+                description="Import one or more CSV files into the local data store.",
+                example_commands=["python main.py import-csv --path data/raw/"],
+                safety_level="RESEARCH_ONLY",
+            ),
+            CLICommand(
+                name="data-check", category="data",
+                purpose="Check data integrity",
+                description="Validate data files for gaps, duplicates, and format issues.",
+                example_commands=["python main.py data-check --mode real"],
+                safety_level="SAFE_READ_ONLY",
+            ),
+            CLICommand(
+                name="batch-import", category="data",
+                purpose="Batch import market data",
+                description="Import multiple tickers from a manifest or directory.",
+                example_commands=["python main.py batch-import --mode real"],
+                safety_level="RESEARCH_ONLY",
+            ),
+            CLICommand(
+                name="data-audit", category="data",
+                purpose="Full data audit",
+                description="Comprehensive data audit across all tickers and timeframes.",
+                example_commands=["python main.py data-audit --mode real"],
+                report_support=True,
+                safety_level="SAFE_READ_ONLY",
+            ),
+            CLICommand(
+                name="import-plan", category="data",
+                purpose="Generate import plan",
+                description="Identify missing data and build an import plan.",
+                example_commands=["python main.py import-plan --mode real"],
+                safety_level="SAFE_READ_ONLY",
+            ),
+            CLICommand(
+                name="import-xq-export", category="data",
+                purpose="Import XQ exported data",
+                description="Import data exported from XQ (XueQiu) format.",
+                example_commands=["python main.py import-xq-export --path data/xq/"],
+                safety_level="RESEARCH_ONLY",
+            ),
+            CLICommand(
+                name="batch-import-xq", category="data",
+                purpose="Batch import XQ data",
+                description="Batch import multiple XQ export files.",
+                example_commands=["python main.py batch-import-xq --mode real"],
+                safety_level="RESEARCH_ONLY",
+            ),
+            CLICommand(
+                name="data-freshness", category="data", aliases=["freshness"],
+                purpose="Check data freshness",
+                description="Report how recently each ticker's data was updated.",
+                example_commands=["python main.py data-freshness --mode real"],
+                safety_level="SAFE_READ_ONLY",
+            ),
+            CLICommand(
+                name="data-source-status", category="data",
+                purpose="Show data source status",
+                description="Summary of each data source: last update, row count, coverage.",
+                example_commands=["python main.py data-source-status --mode real"],
+                safety_level="SAFE_READ_ONLY",
+            ),
+        ]:
+            self.register(entry)
+
+        # ----------------------------------------------------------------
+        # provider
+        # ----------------------------------------------------------------
+        for entry in [
+            CLICommand(
+                name="provider-status", category="provider", aliases=["provider"],
+                purpose="Show provider status",
+                description="Quick status summary for all configured data providers.",
+                example_commands=["python main.py provider-status --mode real"],
+                safety_level="SAFE_READ_ONLY",
+            ),
+            CLICommand(
+                name="provider-health", category="provider",
+                purpose="Run provider health check",
+                description="Deep health check including connectivity and rate-limit status.",
+                example_commands=["python main.py provider-health --mode real"],
+                safety_level="SAFE_READ_ONLY",
+            ),
+            CLICommand(
+                name="provider-reliability", category="provider", aliases=["providers"],
+                purpose="Provider reliability report",
+                description="Compute and report reliability scores for each provider.",
+                example_commands=["python main.py provider-reliability --mode real"],
+                report_support=True,
+                safety_level="REPORT_ONLY",
+            ),
+            CLICommand(
+                name="provider-auto-fetch", category="provider",
+                purpose="Auto-fetch from provider",
+                description="Automatically fetch missing data from available providers.",
+                example_commands=["python main.py provider-auto-fetch --mode real"],
+                safety_level="RESEARCH_ONLY",
+            ),
+            CLICommand(
+                name="provider-reliability-report", category="provider",
+                purpose="Generate provider reliability report",
+                description="Generate a Markdown report of provider reliability metrics.",
+                example_commands=["python main.py provider-reliability-report --mode real"],
+                report_support=True,
+                safety_level="REPORT_ONLY",
+                notes="report subcommand",
+            ),
+            CLICommand(
+                name="api-token-check", category="provider", aliases=["api-check"],
+                purpose="Check API token validity",
+                description="Validate configured API tokens (no display of full token).",
+                example_commands=["python main.py api-token-check --mode real"],
+                safety_level="SAFE_READ_ONLY",
+            ),
+            CLICommand(
+                name="api-cache-status", category="provider",
+                purpose="Show API cache status",
+                description="Report cache hit rates and sizes for each provider.",
+                example_commands=["python main.py api-cache-status --mode real"],
+                safety_level="SAFE_READ_ONLY",
+            ),
+            CLICommand(
+                name="api-fetch-diagnostics", category="provider", aliases=["api-diag"],
+                purpose="API fetch diagnostics",
+                description="Detailed fetch diagnostics: latency, errors, retry counts.",
+                example_commands=["python main.py api-fetch-diagnostics --mode real"],
+                safety_level="SAFE_READ_ONLY",
+            ),
+            CLICommand(
+                name="api-cache-cleanup", category="provider",
+                purpose="Clean up API cache",
+                description="Remove stale or expired API cache entries.",
+                example_commands=["python main.py api-cache-cleanup --mode real"],
+                safety_level="RESEARCH_ONLY",
+            ),
+            CLICommand(
+                name="api-fetch-production-report", category="provider",
+                purpose="Generate API fetch production report",
+                description="Build a full API fetch productionization report.",
+                example_commands=["python main.py api-fetch-production-report --mode real"],
+                report_support=True,
+                safety_level="REPORT_ONLY",
+            ),
+        ]:
+            self.register(entry)
+
+        # ----------------------------------------------------------------
+        # quality
+        # ----------------------------------------------------------------
+        for entry in [
+            CLICommand(
+                name="data-quality-gate", category="quality", aliases=["dq", "quality"],
+                purpose="Run data quality gate",
+                description="Run all data quality checks and return a pass/fail gate result.",
+                example_commands=["python main.py data-quality-gate --mode real"],
+                report_support=True,
+                safety_level="SAFE_READ_ONLY",
+            ),
+            CLICommand(
+                name="clean-csv", category="quality",
+                purpose="Clean CSV data files",
+                description="Normalize and clean raw CSV files in-place.",
+                example_commands=["python main.py clean-csv --path data/raw/"],
+                safety_level="RESEARCH_ONLY",
+            ),
+        ]:
+            self.register(entry)
+
+        # ----------------------------------------------------------------
+        # strategy
+        # ----------------------------------------------------------------
+        for entry in [
+            CLICommand(
+                name="strategy-preview", category="strategy",
+                purpose="Preview strategy signals",
+                description="Preview the latest strategy signals without running a backtest.",
+                example_commands=["python main.py strategy-preview --mode real"],
+                safety_level="SAFE_READ_ONLY",
+            ),
+            CLICommand(
+                name="strategy-knowledge-ingest", category="strategy",
+                purpose="Ingest strategy knowledge",
+                description="Ingest strategy knowledge documents into the knowledge base.",
+                example_commands=["python main.py strategy-knowledge-ingest --mode real"],
+                safety_level="RESEARCH_ONLY",
+            ),
+            CLICommand(
+                name="strategy-knowledge-summary", category="strategy",
+                aliases=["strategy-knowledge"],
+                purpose="Summarize strategy knowledge base",
+                description="Print a summary of the current strategy knowledge base.",
+                example_commands=["python main.py strategy-knowledge-summary --mode real"],
+                safety_level="SAFE_READ_ONLY",
+            ),
+            CLICommand(
+                name="rule-governance", category="strategy", aliases=["rules"],
+                purpose="Run rule governance check",
+                description="Audit trading rules for conflicts, redundancy, and coverage.",
+                example_commands=["python main.py rule-governance --mode real"],
+                report_support=True,
+                safety_level="SAFE_READ_ONLY",
+            ),
+            CLICommand(
+                name="tune-rule-weights", category="strategy", aliases=["weights"],
+                purpose="Tune rule weights",
+                description="Optimize rule weights using recent backtest performance.",
+                example_commands=["python main.py tune-rule-weights --mode real"],
+                safety_level="SIMULATION_ONLY",
+            ),
+            CLICommand(
+                name="signal-quality", category="strategy", aliases=["signals"],
+                purpose="Assess signal quality",
+                description="Evaluate signal quality: hit rate, precision, recall.",
+                example_commands=["python main.py signal-quality --mode real"],
+                report_support=True,
+                safety_level="SAFE_READ_ONLY",
+            ),
+            CLICommand(
+                name="backtest-strategy-knowledge", category="strategy",
+                purpose="Backtest with strategy knowledge",
+                description="Run a knowledge-guided backtest using strategy knowledge base.",
+                example_commands=["python main.py backtest-strategy-knowledge --mode real"],
+                safety_level="SIMULATION_ONLY",
+            ),
+        ]:
+            self.register(entry)
+
+        # ----------------------------------------------------------------
+        # backtest
+        # ----------------------------------------------------------------
+        for entry in [
+            CLICommand(
+                name="backtest", category="backtest",
+                purpose="Run backtest",
+                description="Run a standard backtest simulation. No real orders.",
+                example_commands=["python main.py backtest --mode real"],
+                mode_support=["real", "mock"],
+                safety_level="SIMULATION_ONLY",
+            ),
+            CLICommand(
+                name="backtest-screener", category="backtest",
+                purpose="Run screener backtest",
+                description="Backtest the stock screener selection criteria.",
+                example_commands=["python main.py backtest-screener --mode real"],
+                safety_level="SIMULATION_ONLY",
+            ),
+            CLICommand(
+                name="backtest-buy-points", category="backtest",
+                purpose="Backtest entry buy points",
+                description="Validate entry point detection against historical data.",
+                example_commands=["python main.py backtest-buy-points --mode real"],
+                safety_level="SIMULATION_ONLY",
+            ),
+            CLICommand(
+                name="backtest-long-term-strategy", category="backtest",
+                purpose="Long-term strategy backtest",
+                description="Run a long-term multi-year strategy backtest.",
+                example_commands=["python main.py backtest-long-term-strategy --mode real"],
+                safety_level="SIMULATION_ONLY",
+            ),
+            CLICommand(
+                name="hardened-backtest", category="backtest",
+                purpose="Run hardened backtest",
+                description="Run backtest with additional robustness checks and slippage models.",
+                example_commands=["python main.py hardened-backtest --mode real"],
+                safety_level="SIMULATION_ONLY",
+            ),
+            CLICommand(
+                name="validate-score", category="backtest",
+                purpose="Validate scoring model",
+                description="Validate the composite scoring model against test data.",
+                example_commands=["python main.py validate-score --mode real"],
+                safety_level="SAFE_READ_ONLY",
+            ),
+            CLICommand(
+                name="run-validation-suite", category="backtest",
+                purpose="Run full validation suite",
+                description="Execute the full regression and validation test suite.",
+                example_commands=["python main.py run-validation-suite --mode real"],
+                report_support=True,
+                safety_level="SIMULATION_ONLY",
+            ),
+        ]:
+            self.register(entry)
+
+        # ----------------------------------------------------------------
+        # portfolio
+        # ----------------------------------------------------------------
+        for entry in [
+            CLICommand(
+                name="paper", category="portfolio",
+                purpose="Run paper trading simulation",
+                description="Simulate paper trading using latest signals. No real orders.",
+                example_commands=["python main.py paper --mode real"],
+                safety_level="SIMULATION_ONLY",
+            ),
+            CLICommand(
+                name="simulate-portfolio", category="portfolio",
+                purpose="Simulate portfolio",
+                description="Run full portfolio simulation with position sizing and risk control.",
+                example_commands=["python main.py simulate-portfolio --mode real"],
+                safety_level="SIMULATION_ONLY",
+            ),
+            CLICommand(
+                name="stock-report", category="portfolio",
+                purpose="Generate stock report",
+                description="Generate a detailed stock analysis report for a given ticker.",
+                example_commands=["python main.py stock-report --ticker 2330 --mode real"],
+                report_support=True,
+                safety_level="REPORT_ONLY",
+            ),
+        ]:
+            self.register(entry)
+
+        # ----------------------------------------------------------------
+        # ml
+        # ----------------------------------------------------------------
+        for entry in [
+            CLICommand(
+                name="ml-feature-catalog", category="ml",
+                purpose="Show ML feature catalog",
+                description="Print the full catalog of ML features with metadata.",
+                example_commands=["python main.py ml-feature-catalog --mode real"],
+                safety_level="SAFE_READ_ONLY",
+            ),
+            CLICommand(
+                name="ml-feature-snapshot", category="ml",
+                purpose="Snapshot ML features",
+                description="Take a point-in-time snapshot of feature values for all tickers.",
+                example_commands=["python main.py ml-feature-snapshot --mode real"],
+                safety_level="RESEARCH_ONLY",
+            ),
+            CLICommand(
+                name="ml-labels", category="ml",
+                purpose="Generate ML labels",
+                description="Generate forward-return labels for supervised learning.",
+                example_commands=["python main.py ml-labels --mode real"],
+                safety_level="RESEARCH_ONLY",
+            ),
+            CLICommand(
+                name="ml-build-dataset", category="ml",
+                purpose="Build ML training dataset",
+                description="Assemble features and labels into a training dataset.",
+                example_commands=["python main.py ml-build-dataset --mode real"],
+                safety_level="RESEARCH_ONLY",
+            ),
+            CLICommand(
+                name="ml-leakage-check", category="ml",
+                purpose="Check for data leakage",
+                description="Scan ML pipeline for temporal data leakage.",
+                example_commands=["python main.py ml-leakage-check --mode real"],
+                safety_level="SAFE_READ_ONLY",
+            ),
+            CLICommand(
+                name="ml-feature-quality", category="ml",
+                purpose="Assess feature quality",
+                description="Evaluate feature quality: missing rate, variance, correlation.",
+                example_commands=["python main.py ml-feature-quality --mode real"],
+                safety_level="SAFE_READ_ONLY",
+            ),
+            CLICommand(
+                name="ml-feature-importance", category="ml",
+                purpose="Compute feature importance",
+                description="Compute feature importance scores from trained models.",
+                example_commands=["python main.py ml-feature-importance --mode real"],
+                safety_level="SAFE_READ_ONLY",
+            ),
+            CLICommand(
+                name="ml-feature-store-report", category="ml",
+                purpose="Generate feature store report",
+                description="Generate a comprehensive ML feature store audit report.",
+                example_commands=["python main.py ml-feature-store-report --mode real"],
+                report_support=True,
+                safety_level="REPORT_ONLY",
+            ),
+            CLICommand(
+                name="ml-knowledge-integrate", category="ml",
+                purpose="Integrate ML knowledge",
+                description="Integrate new knowledge documents into the ML knowledge base.",
+                example_commands=["python main.py ml-knowledge-integrate --mode real"],
+                safety_level="RESEARCH_ONLY",
+            ),
+            CLICommand(
+                name="ml-knowledge-leakage-check", category="ml", aliases=["ml-leakage"],
+                purpose="Check ML knowledge leakage",
+                description="Audit ML knowledge base for temporal leakage or look-ahead bias.",
+                example_commands=["python main.py ml-knowledge-leakage-check --mode real"],
+                safety_level="SAFE_READ_ONLY",
+            ),
+            CLICommand(
+                name="ml-knowledge-feature-summary", category="ml", aliases=["ml-summary"],
+                purpose="Summarize ML knowledge features",
+                description="Print a feature-level summary of the ML knowledge base.",
+                example_commands=["python main.py ml-knowledge-feature-summary --mode real"],
+                safety_level="SAFE_READ_ONLY",
+            ),
+            CLICommand(
+                name="model-monitoring", category="ml",
+                purpose="Run model monitoring",
+                description="Monitor deployed model performance and drift.",
+                example_commands=["python main.py model-monitoring --mode real"],
+                safety_level="SAFE_READ_ONLY",
+            ),
+            CLICommand(
+                name="model-monitoring-report", category="ml",
+                purpose="Generate model monitoring report",
+                description="Generate a Markdown report of model monitoring metrics.",
+                example_commands=["python main.py model-monitoring-report --mode real"],
+                report_support=True,
+                safety_level="REPORT_ONLY",
+            ),
+            CLICommand(
+                name="prediction-log", category="ml",
+                purpose="View prediction log",
+                description="Display recent model prediction logs.",
+                example_commands=["python main.py prediction-log --mode real"],
+                safety_level="SAFE_READ_ONLY",
+            ),
+            CLICommand(
+                name="prediction-review", category="ml",
+                purpose="Review model predictions",
+                description="Compare model predictions against actual outcomes.",
+                example_commands=["python main.py prediction-review --mode real"],
+                safety_level="SAFE_READ_ONLY",
+            ),
+            CLICommand(
+                name="drift-check", category="ml",
+                purpose="Check for model/feature drift",
+                description="Detect statistical drift in feature distributions.",
+                example_commands=["python main.py drift-check --mode real"],
+                safety_level="SAFE_READ_ONLY",
+            ),
+            CLICommand(
+                name="signal-degradation", category="ml",
+                purpose="Detect signal degradation",
+                description="Detect degradation in signal quality over time.",
+                example_commands=["python main.py signal-degradation --mode real"],
+                safety_level="SAFE_READ_ONLY",
+            ),
+            CLICommand(
+                name="rule-vs-ml", category="ml",
+                purpose="Compare rule vs ML signals",
+                description="Head-to-head comparison of rule-based vs ML signal performance.",
+                example_commands=["python main.py rule-vs-ml --mode real"],
+                safety_level="SAFE_READ_ONLY",
+            ),
+            CLICommand(
+                name="model-registry-list", category="ml",
+                purpose="List model registry",
+                description="List all registered models with metadata.",
+                example_commands=["python main.py model-registry-list"],
+                safety_level="SAFE_READ_ONLY",
+            ),
+            CLICommand(
+                name="model-register", category="ml",
+                purpose="Register a model",
+                description="Register a trained model artifact in the model registry.",
+                example_commands=["python main.py model-register --model-id model_001"],
+                safety_level="RESEARCH_ONLY",
+            ),
+        ]:
+            self.register(entry)
+
+        # ----------------------------------------------------------------
+        # replay
+        # ----------------------------------------------------------------
+        for entry in [
+            CLICommand(
+                name="intraday-replay", category="replay", aliases=["replay"],
+                purpose="Run intraday replay session",
+                description="Replay historical intraday data for analysis and training.",
+                example_commands=["python main.py intraday-replay --mode real"],
+                safety_level="SIMULATION_ONLY",
+            ),
+            CLICommand(
+                name="intraday-replay-report", category="replay", aliases=["replay-report"],
+                purpose="Generate intraday replay report",
+                description="Generate a Markdown report for the latest replay session.",
+                example_commands=["python main.py intraday-replay-report --mode real"],
+                report_support=True,
+                safety_level="REPORT_ONLY",
+            ),
+            CLICommand(
+                name="replay-session-list", category="replay", aliases=["replay-sessions"],
+                purpose="List replay sessions",
+                description="List all saved intraday replay sessions.",
+                example_commands=["python main.py replay-session-list"],
+                safety_level="SAFE_READ_ONLY",
+            ),
+            CLICommand(
+                name="replay-session-show", category="replay",
+                purpose="Show replay session details",
+                description="Show details of a specific replay session by ID.",
+                example_commands=["python main.py replay-session-show --session-id 001"],
+                safety_level="SAFE_READ_ONLY",
+            ),
+            CLICommand(
+                name="replay-training-summary", category="replay",
+                purpose="Summarize replay training",
+                description="Aggregate summary of replay training outcomes.",
+                example_commands=["python main.py replay-training-summary"],
+                safety_level="SAFE_READ_ONLY",
+            ),
+            CLICommand(
+                name="intraday-pipeline", category="replay",
+                purpose="Run intraday pipeline",
+                description="Execute the full intraday data processing pipeline.",
+                example_commands=["python main.py intraday-pipeline --mode real"],
+                safety_level="RESEARCH_ONLY",
+            ),
+            CLICommand(
+                name="intraday-quality", category="replay",
+                purpose="Check intraday data quality",
+                description="Quality check for intraday OHLCV data.",
+                example_commands=["python main.py intraday-quality --mode real"],
+                safety_level="SAFE_READ_ONLY",
+            ),
+            CLICommand(
+                name="intraday-features", category="replay",
+                purpose="Compute intraday features",
+                description="Compute feature set from intraday OHLCV data.",
+                example_commands=["python main.py intraday-features --mode real"],
+                safety_level="RESEARCH_ONLY",
+            ),
+            CLICommand(
+                name="import-intraday", category="replay",
+                purpose="Import intraday data",
+                description="Import intraday tick or minute-bar data files.",
+                example_commands=["python main.py import-intraday --path data/intraday/"],
+                safety_level="RESEARCH_ONLY",
+            ),
+            CLICommand(
+                name="mock-realtime", category="replay",
+                purpose="Mock real-time feed",
+                description="Simulate a real-time data feed from historical intraday data.",
+                example_commands=["python main.py mock-realtime --mode mock"],
+                mode_support=["mock"],
+                safety_level="SIMULATION_ONLY",
+            ),
+        ]:
+            self.register(entry)
+
+        # ----------------------------------------------------------------
+        # journal
+        # ----------------------------------------------------------------
+        for entry in [
+            CLICommand(
+                name="journal-add", category="journal",
+                purpose="Add journal entry",
+                description="Add a research journal entry with notes and tags.",
+                example_commands=["python main.py journal-add --text 'Today reviewed MACD signals'"],
+                safety_level="RESEARCH_ONLY",
+            ),
+            CLICommand(
+                name="journal-list", category="journal", aliases=["notes"],
+                purpose="List journal entries",
+                description="List recent research journal entries.",
+                example_commands=["python main.py journal-list"],
+                safety_level="SAFE_READ_ONLY",
+            ),
+            CLICommand(
+                name="journal-show", category="journal",
+                purpose="Show journal entry",
+                description="Show full detail of a specific journal entry.",
+                example_commands=["python main.py journal-show --id 42"],
+                safety_level="SAFE_READ_ONLY",
+            ),
+            CLICommand(
+                name="journal-review", category="journal",
+                purpose="Review journal entries",
+                description="Review journal entries by date range or tag.",
+                example_commands=["python main.py journal-review --period weekly"],
+                safety_level="SAFE_READ_ONLY",
+            ),
+            CLICommand(
+                name="journal-report", category="journal",
+                purpose="Generate journal report",
+                description="Generate a Markdown report of journal activity.",
+                example_commands=["python main.py journal-report --mode real"],
+                report_support=True,
+                safety_level="REPORT_ONLY",
+            ),
+            CLICommand(
+                name="journal-summary", category="journal", aliases=["journal"],
+                purpose="Summarize journal",
+                description="Print a concise summary of recent journal entries.",
+                example_commands=["python main.py journal-summary"],
+                safety_level="SAFE_READ_ONLY",
+            ),
+            CLICommand(
+                name="journal-link-replay", category="journal",
+                purpose="Link journal to replay session",
+                description="Associate a journal entry with an intraday replay session.",
+                example_commands=["python main.py journal-link-replay --journal-id 42 --session-id 001"],
+                safety_level="RESEARCH_ONLY",
+            ),
+        ]:
+            self.register(entry)
+
+        # ----------------------------------------------------------------
+        # notification
+        # ----------------------------------------------------------------
+        for entry in [
+            CLICommand(
+                name="notification-scan", category="notification",
+                purpose="Scan for new notifications",
+                description="Scan all data and research sources for new alerts.",
+                example_commands=["python main.py notification-scan --mode real"],
+                safety_level="SAFE_READ_ONLY",
+            ),
+            CLICommand(
+                name="notification-list", category="notification",
+                aliases=["notify", "alerts"],
+                purpose="List notifications",
+                description="List unread and recent notifications.",
+                example_commands=["python main.py notification-list"],
+                safety_level="SAFE_READ_ONLY",
+            ),
+            CLICommand(
+                name="notification-report", category="notification",
+                purpose="Generate notification report",
+                description="Generate a Markdown report of recent notifications.",
+                example_commands=["python main.py notification-report --mode real"],
+                report_support=True,
+                safety_level="REPORT_ONLY",
+            ),
+            CLICommand(
+                name="notification-clear-read", category="notification",
+                purpose="Mark notifications as read",
+                description="Mark all current notifications as read.",
+                example_commands=["python main.py notification-clear-read"],
+                safety_level="RESEARCH_ONLY",
+            ),
+            CLICommand(
+                name="notification-test", category="notification",
+                purpose="Test notification system",
+                description="Send a test notification to verify the notification pipeline.",
+                example_commands=["python main.py notification-test --mode mock"],
+                safety_level="SIMULATION_ONLY",
+            ),
+        ]:
+            self.register(entry)
+
+        # ----------------------------------------------------------------
+        # review
+        # ----------------------------------------------------------------
+        for entry in [
+            CLICommand(
+                name="research-review", category="review", aliases=["review-daily"],
+                purpose="Run research review",
+                description="Run a structured research review. --period daily adds --period daily.",
+                example_commands=[
+                    "python main.py research-review --mode real --period daily",
+                    "python main.py research-review --mode real --period weekly",
+                ],
+                report_support=True,
+                safety_level="SAFE_READ_ONLY",
+            ),
+            CLICommand(
+                name="research-review-report", category="review",
+                purpose="Generate research review report",
+                description="Generate a Markdown report for the latest review session.",
+                example_commands=["python main.py research-review-report --mode real"],
+                report_support=True,
+                safety_level="REPORT_ONLY",
+            ),
+            CLICommand(
+                name="research-review-summary", category="review",
+                purpose="Summarize research review",
+                description="Print a concise summary of the latest review session.",
+                example_commands=["python main.py research-review-summary"],
+                safety_level="SAFE_READ_ONLY",
+            ),
+            CLICommand(
+                name="research-review-actions", category="review",
+                purpose="List review action items",
+                description="List outstanding action items from recent research reviews.",
+                example_commands=["python main.py research-review-actions"],
+                safety_level="SAFE_READ_ONLY",
+            ),
+        ]:
+            self.register(entry)
+
+        # ----------------------------------------------------------------
+        # coach
+        # ----------------------------------------------------------------
+        for entry in [
+            CLICommand(
+                name="research-coach", category="coach", aliases=["coach-daily"],
+                purpose="Run research coach",
+                description="Run the AI research coach. --period daily adds daily suggestions.",
+                example_commands=["python main.py research-coach --mode real --period daily"],
+                report_support=True,
+                safety_level="SAFE_READ_ONLY",
+            ),
+            CLICommand(
+                name="research-coach-report", category="coach",
+                purpose="Generate coach report",
+                description="Generate a Markdown coach report.",
+                example_commands=["python main.py research-coach-report --mode real"],
+                report_support=True,
+                safety_level="REPORT_ONLY",
+            ),
+            CLICommand(
+                name="research-coach-summary", category="coach",
+                purpose="Summarize coach session",
+                description="Print a concise summary of the latest coach session.",
+                example_commands=["python main.py research-coach-summary"],
+                safety_level="SAFE_READ_ONLY",
+            ),
+            CLICommand(
+                name="research-coach-checklist", category="coach",
+                purpose="Show coach checklist",
+                description="Display today's research coach checklist.",
+                example_commands=["python main.py research-coach-checklist"],
+                safety_level="SAFE_READ_ONLY",
+            ),
+            CLICommand(
+                name="research-coach-replay-plan", category="coach",
+                purpose="Generate replay training plan",
+                description="Generate a coach-guided intraday replay training plan.",
+                example_commands=["python main.py research-coach-replay-plan"],
+                safety_level="SAFE_READ_ONLY",
+            ),
+            CLICommand(
+                name="research-coach-rule-queue", category="coach",
+                purpose="Show coach rule queue",
+                description="List rules queued for review by the research coach.",
+                example_commands=["python main.py research-coach-rule-queue"],
+                safety_level="SAFE_READ_ONLY",
+            ),
+            CLICommand(
+                name="research-coach-data-repair", category="coach",
+                purpose="Data repair suggestions",
+                description="Coach-generated suggestions for data repair and gap-filling.",
+                example_commands=["python main.py research-coach-data-repair --mode real"],
+                safety_level="SAFE_READ_ONLY",
+            ),
+        ]:
+            self.register(entry)
+
+        # ----------------------------------------------------------------
+        # workflow
+        # ----------------------------------------------------------------
+        for entry in [
+            CLICommand(
+                name="research-workflow", category="workflow",
+                aliases=["workflow-daily", "workflow-weekly"],
+                purpose="Run research workflow",
+                description=(
+                    "Run the full research workflow. "
+                    "workflow-daily → --type daily_research; workflow-weekly → --type weekly_review."
+                ),
+                example_commands=[
+                    "python main.py research-workflow --mode real --type daily_research --dry-run",
+                    "python main.py research-workflow --mode real --type daily_research",
+                    "python main.py research-workflow --mode real --type weekly_review",
+                ],
+                report_support=True,
+                safety_level="RESEARCH_ONLY",
+            ),
+            CLICommand(
+                name="research-workflow-report", category="workflow",
+                purpose="Generate workflow report",
+                description="Generate a Markdown report of the latest workflow run.",
+                example_commands=["python main.py research-workflow-report --mode real"],
+                report_support=True,
+                safety_level="REPORT_ONLY",
+            ),
+            CLICommand(
+                name="research-workflow-summary", category="workflow",
+                purpose="Summarize workflow run",
+                description="Print a concise summary of the latest workflow run.",
+                example_commands=["python main.py research-workflow-summary"],
+                safety_level="SAFE_READ_ONLY",
+            ),
+            CLICommand(
+                name="research-workflow-tasks", category="workflow",
+                purpose="List workflow tasks",
+                description="List all tasks in the current workflow with status.",
+                example_commands=["python main.py research-workflow-tasks"],
+                safety_level="SAFE_READ_ONLY",
+            ),
+            CLICommand(
+                name="research-workflow-package", category="workflow",
+                purpose="Package workflow outputs",
+                description="Bundle workflow outputs into a versioned package.",
+                example_commands=["python main.py research-workflow-package --mode real"],
+                safety_level="RESEARCH_ONLY",
+            ),
+            CLICommand(
+                name="run-research", category="workflow", aliases=["daily", "quick"],
+                purpose="Run research pipeline",
+                description=(
+                    "Run the full research pipeline. "
+                    "daily → --profile daily --mode real; quick → --profile quick --mode real."
+                ),
+                example_commands=[
+                    "python main.py run-research --profile daily --mode real",
+                    "python main.py run-research --profile quick --mode real",
+                ],
+                report_support=True,
+                safety_level="RESEARCH_ONLY",
+            ),
+            CLICommand(
+                name="daily-workflow", category="workflow",
+                purpose="Run daily workflow",
+                description="Run the standard daily research workflow shortcut.",
+                example_commands=["python main.py daily-workflow --mode real"],
+                safety_level="RESEARCH_ONLY",
+            ),
+            CLICommand(
+                name="update-data", category="workflow",
+                purpose="Update all data sources",
+                description="Trigger a full data update across all configured sources.",
+                example_commands=["python main.py update-data --mode real"],
+                safety_level="RESEARCH_ONLY",
+            ),
+        ]:
+            self.register(entry)
+
+        # ----------------------------------------------------------------
+        # os_planning
+        # ----------------------------------------------------------------
+        for entry in [
+            CLICommand(
+                name="research-os-report", category="os_planning",
+                purpose="Generate research OS report",
+                description="Generate a comprehensive research OS planning report.",
+                example_commands=["python main.py research-os-report --mode real"],
+                report_support=True,
+                safety_level="REPORT_ONLY",
+            ),
+            CLICommand(
+                name="research-os-modules", category="os_planning",
+                purpose="List research OS modules",
+                description="List all registered research OS modules and their status.",
+                example_commands=["python main.py research-os-modules"],
+                safety_level="SAFE_READ_ONLY",
+            ),
+            CLICommand(
+                name="research-os-cli", category="os_planning",
+                purpose="Show research OS CLI coverage",
+                description="Audit CLI coverage for each research OS module.",
+                example_commands=["python main.py research-os-cli"],
+                safety_level="SAFE_READ_ONLY",
+            ),
+            CLICommand(
+                name="research-os-gui", category="os_planning",
+                purpose="Show research OS GUI coverage",
+                description="Audit GUI panel coverage for each research OS module.",
+                example_commands=["python main.py research-os-gui"],
+                safety_level="SAFE_READ_ONLY",
+            ),
+            CLICommand(
+                name="research-os-safety", category="os_planning",
+                purpose="Run research OS safety audit",
+                description="Verify safety invariants across all research OS modules.",
+                example_commands=["python main.py research-os-safety"],
+                safety_level="SAFE_READ_ONLY",
+            ),
+        ]:
+            self.register(entry)
+
+        # ----------------------------------------------------------------
+        # release
+        # ----------------------------------------------------------------
+        for entry in [
+            CLICommand(
+                name="stable-release-check", category="release", aliases=["release-check"],
+                purpose="Run stable release check",
+                description="Verify all stability gates before a release.",
+                example_commands=["python main.py stable-release-check --mode real"],
+                report_support=True,
+                safety_level="SAFE_READ_ONLY",
+            ),
+            CLICommand(
+                name="regression-suite", category="release", aliases=["regress"],
+                purpose="Run regression test suite",
+                description="Run full regression test suite; --quick for fast subset.",
+                example_commands=[
+                    "python main.py regression-suite --mode real",
+                    "python main.py regression-suite --mode real --quick",
+                ],
+                report_support=True,
+                safety_level="SIMULATION_ONLY",
+            ),
+            CLICommand(
+                name="stable-release-report", category="release",
+                purpose="Generate stable release report",
+                description="Generate a Markdown stable release readiness report.",
+                example_commands=["python main.py stable-release-report --mode real"],
+                report_support=True,
+                safety_level="REPORT_ONLY",
+            ),
+            CLICommand(
+                name="auto-report", category="release",
+                purpose="Auto-generate all reports",
+                description="Automatically generate all scheduled reports.",
+                example_commands=["python main.py auto-report --mode real --profile daily"],
+                report_support=True,
+                safety_level="REPORT_ONLY",
+            ),
+            CLICommand(
+                name="scheduler-run", category="release",
+                purpose="Run scheduler manually",
+                description="Trigger a manual scheduler run for all pending tasks.",
+                example_commands=["python main.py scheduler-run --mode real"],
+                safety_level="RESEARCH_ONLY",
+            ),
+            CLICommand(
+                name="scheduler-status", category="release",
+                purpose="Show scheduler status",
+                description="Display current scheduler status and next run times.",
+                example_commands=["python main.py scheduler-status"],
+                safety_level="SAFE_READ_ONLY",
+            ),
+            CLICommand(
+                name="scheduler-list", category="release",
+                purpose="List scheduled tasks",
+                description="List all scheduled tasks with cron expressions.",
+                example_commands=["python main.py scheduler-list"],
+                safety_level="SAFE_READ_ONLY",
+            ),
+            CLICommand(
+                name="scheduler-next-runs", category="release",
+                purpose="Show next scheduled runs",
+                description="Show next N scheduled run times for each task.",
+                example_commands=["python main.py scheduler-next-runs --n 5"],
+                safety_level="SAFE_READ_ONLY",
+            ),
+            CLICommand(
+                name="scheduler-init-config", category="release",
+                purpose="Initialize scheduler config",
+                description="Initialize or reset the scheduler configuration file.",
+                example_commands=["python main.py scheduler-init-config"],
+                safety_level="RESEARCH_ONLY",
+            ),
+        ]:
+            self.register(entry)
+
+        # ----------------------------------------------------------------
+        # gui
+        # ----------------------------------------------------------------
+        for entry in [
+            CLICommand(
+                name="cockpit", category="gui", aliases=["gui", "dashboard", "open"],
+                purpose="Launch the Cockpit GUI",
+                description="Open the TW Quant Cockpit PySide6 GUI dashboard.",
+                example_commands=["python main.py cockpit --mode real"],
+                mode_support=["real", "mock"],
+                safety_level="GUI_ONLY",
+            ),
+            CLICommand(
+                name="open-cockpit", category="gui",
+                purpose="Open cockpit (alias entry)",
+                description="Alternative command to open the Cockpit GUI.",
+                example_commands=["python main.py open-cockpit --mode real"],
+                safety_level="GUI_ONLY",
+            ),
+            CLICommand(
+                name="ui", category="gui",
+                purpose="Launch UI",
+                description="Launch the TW Quant Cockpit UI (same as cockpit).",
+                example_commands=["python main.py ui --mode real"],
+                safety_level="GUI_ONLY",
+            ),
+        ]:
+            self.register(entry)
+
+        logger.debug(
+            "CLICommandRegistry built: %d commands across %d categories.",
+            len(self._commands),
+            len({c.category for c in self._commands.values()}),
+        )

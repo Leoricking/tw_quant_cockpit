@@ -1,8 +1,11 @@
 """
-os_planning/cli_inventory.py — CLIInventoryBuilder (v0.5.0).
+os_planning/cli_inventory.py — CLIInventoryBuilder (v0.5.1).
 
-Inventories all main.py CLI commands for TW Quant Cockpit v0.4.x,
+Inventories all main.py CLI commands for TW Quant Cockpit v0.5.x,
 detects naming inconsistencies, and exports a CLI reference CSV.
+
+Integrates with CLICommandRegistry and CLIAliasMap (v0.5.1) when available
+to enrich inventory rows with live alias data. Falls back to hardcoded list.
 
 [!] OS Planning Only. Research Only. No Real Orders. Production Trading: BLOCKED.
 """
@@ -12,6 +15,14 @@ import csv
 import logging
 import os
 from datetime import datetime
+
+# v0.5.1 — optional integration with CLICommandRegistry / CLIAliasMap
+try:
+    from cli.command_registry import CLICommandRegistry
+    from cli.alias_map import CLIAliasMap
+    _CLI_REGISTRY_AVAILABLE = True
+except Exception:  # pragma: no cover
+    _CLI_REGISTRY_AVAILABLE = False
 
 logger = logging.getLogger(__name__)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -149,6 +160,8 @@ _CATEGORIES = [
     "data", "provider", "quality", "strategy", "backtest",
     "portfolio", "ml", "replay", "journal", "notification",
     "review_coach_workflow", "release", "gui",
+    # v0.5.1
+    "utility", "os_planning", "review", "coach", "workflow",
 ]
 
 # Known naming inconsistencies to flag
@@ -160,7 +173,10 @@ _INCONSISTENCY_RULES = [
 
 
 class CLIInventoryBuilder:
-    """Inventories all main.py CLI commands for TW Quant Cockpit v0.4.x.
+    """Inventories all main.py CLI commands for TW Quant Cockpit v0.5.x.
+
+    v0.5.1: integrates with CLICommandRegistry / CLIAliasMap when available.
+    Exposes list_aliases() and count_aliases() for alias display in research-os-cli.
 
     [!] OS Planning Only. Research Only. No Real Orders. Production Trading: BLOCKED.
     """
@@ -177,13 +193,85 @@ class CLIInventoryBuilder:
     # Public API
     # ------------------------------------------------------------------
 
-    def build_inventory(self) -> list[dict]:
-        """Return the full hardcoded command inventory list."""
+    # ------------------------------------------------------------------
+    # v0.5.1 — alias helpers
+    # ------------------------------------------------------------------
+
+    def _load_live_registry(self) -> tuple[list[dict], list[dict]]:
+        """Load live commands and aliases from CLICommandRegistry/CLIAliasMap.
+
+        Returns (commands_list, aliases_list). Both empty on unavailability.
+        """
+        if not _CLI_REGISTRY_AVAILABLE:
+            return [], []
         try:
-            return list(_COMMANDS)
+            reg = CLICommandRegistry()
+            alias_map = CLIAliasMap()
+            cmds = [
+                {
+                    "command":              c.name,
+                    "category":             c.category,
+                    "purpose":              c.description,
+                    "mode_support":         ",".join(c.mode_support) if c.mode_support else "real,mock",
+                    "report_support":       "yes" if c.report_support else "no",
+                    "suggested_alias":      c.aliases[0] if c.aliases else "",
+                    "deprecation_candidate": "yes" if c.deprecation_candidate else "no",
+                    "safety":               c.safety_level,
+                    "read_only":            c.read_only,
+                    "no_real_orders":       c.no_real_orders,
+                    "production_blocked":   c.production_blocked,
+                    "is_registry_entry":    True,
+                }
+                for c in reg.list_commands()
+            ]
+            aliases = [
+                {
+                    "alias":         a.get("alias", ""),
+                    "target":        a.get("target_command", ""),
+                    "default_args":  str(a.get("default_args", {})),
+                    "enabled":       a.get("enabled", True),
+                    "safety_blocked": a.get("safety_blocked", False),
+                }
+                for a in alias_map.list_aliases()
+            ]
+            return cmds, aliases
+        except Exception as exc:
+            logger.warning("_load_live_registry error: %s", exc)
+            return [], []
+
+    def list_aliases(self) -> list[dict]:
+        """Return all registered aliases from CLIAliasMap (v0.5.1).
+
+        Falls back to empty list if cli package unavailable.
+        Each dict: alias, target, default_args, enabled, safety_blocked.
+        """
+        _, aliases = self._load_live_registry()
+        return aliases
+
+    def count_aliases(self) -> int:
+        """Return total alias count from CLIAliasMap (v0.5.1)."""
+        return len(self.list_aliases())
+
+    def build_inventory(self) -> list[dict]:
+        """Return the full command inventory list.
+
+        v0.5.1: if CLICommandRegistry is available, merge live registry
+        entries (by command name) into the hardcoded list so aliases and
+        v0.5.1 commands are reflected. Hardcoded entries win on conflict to
+        preserve backward compatibility for research-os-cli.
+        """
+        try:
+            base = {cmd["command"]: dict(cmd) for cmd in _COMMANDS}
+            live_cmds, _ = self._load_live_registry()
+            for live in live_cmds:
+                name = live.get("command", "")
+                if name and name not in base:
+                    # New command from registry not in hardcoded list
+                    base[name] = live
+            return list(base.values())
         except Exception as exc:
             logger.warning("build_inventory error: %s", exc)
-            return []
+            return list(_COMMANDS)
 
     def group_commands(self) -> dict:
         """Group commands by category. Returns {category: [cmd_dicts]}."""

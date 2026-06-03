@@ -1,4 +1,4 @@
-# TW Quant Cockpit — CLI Reference (v0.3.23)
+# TW Quant Cockpit — CLI Reference (v0.5.1)
 
 > **[!] Research Only. Read Only. No Real Orders. Production Trading: BLOCKED.**
 
@@ -403,4 +403,117 @@ This banner confirms the system's read-only, no-order guarantee.
 
 ---
 
-*TW Quant Cockpit v0.3.23 — Research Only — Not Investment Advice*
+---
+
+## Aliases (v0.5.1)
+
+Short aliases for common workflows. Each alias maps to an existing command.
+
+| Alias | Equivalent To | Notes |
+|-------|--------------|-------|
+| `daily` | `run-research --profile daily` | Daily research workflow |
+| `quick` | `run-research --profile quick` | Quick research run |
+| `dq` | `data-quality-gate` | Data quality check |
+| `quality` | `data-quality-gate` | Data quality check |
+| `providers` | `provider-reliability` | Provider status |
+| `rules` | `rule-governance` | Rule governance |
+| `signals` | `signal-quality` | Signal quality |
+| `journal` | `journal-summary` | Journal summary |
+| `notify` | `notification-list` | Notifications |
+| `coach-daily` | `research-coach --period daily` | Daily coaching |
+| `review-daily` | `research-review --period daily` | Daily review |
+| `workflow-daily` | `research-workflow --type daily_research` | Daily workflow |
+| `workflow-weekly` | `research-workflow --type weekly_review` | Weekly workflow |
+| `os` | `research-os-summary` | OS summary |
+| `version` | `version-info` | Version info |
+| `gui` | `cockpit` | Launch GUI |
+| `dashboard` | `cockpit` | Launch GUI |
+
+---
+
+## Quick Start
+
+```bash
+python main.py version-info
+python main.py research-os-summary
+python main.py run-research --profile quick --mode real
+python main.py auto-report --mode real --profile daily
+python main.py cockpit --mode real
+```
+
+---
+
+## Daily Research Workflow
+
+```bash
+python main.py data-quality-gate --mode real
+python main.py provider-reliability --mode real
+python main.py research-coach --mode real --period daily
+python main.py research-workflow --mode real --type daily_research --dry-run
+python main.py research-workflow --mode real --type daily_research
+```
+
+Or using aliases:
+```bash
+python main.py dq --mode real
+python main.py providers --mode real
+python main.py coach-daily --mode real
+python main.py workflow-daily --mode real --dry-run
+python main.py workflow-daily --mode real
+```
+
+---
+
+## Weekly Review
+
+```bash
+python main.py research-review --mode real --period weekly
+python main.py journal-summary
+python main.py rule-governance --mode real
+python main.py experiment-list
+python main.py research-workflow --mode real --type weekly_review
+```
+
+---
+
+## Research OS Commands (v0.5.0–v0.5.1)
+
+```bash
+python main.py research-os-summary          # OS inventory summary
+python main.py research-os-audit            # Full OS audit
+python main.py research-os-modules          # List all modules
+python main.py research-os-cli              # List all CLI commands
+python main.py research-os-gui              # List all GUI tabs
+python main.py research-os-safety           # Safety matrix
+python main.py research-os-report           # Generate stabilization report
+```
+
+---
+
+## CLI UX Commands (v0.5.1)
+
+```bash
+python main.py cli-list                     # List all commands
+python main.py cli-list --category data     # Filter by category
+python main.py cli-search --keyword replay  # Search by keyword
+python main.py cli-aliases                  # Show alias map
+python main.py cli-examples                 # Show help examples
+python main.py cli-examples --category daily
+python main.py cli-resolve --alias dq       # Resolve alias (display only)
+python main.py cli-ux-report --mode real    # Generate UX report
+```
+
+---
+
+## Safety Commands
+
+```bash
+python main.py stable-release-check --mode real
+python main.py regression-suite --mode real --quick
+python main.py research-os-safety
+python main.py version-info
+```
+
+---
+
+*TW Quant Cockpit v0.5.1 — Research Only — Not Investment Advice*

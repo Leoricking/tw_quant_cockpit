@@ -43,7 +43,7 @@
 | v0.4.8 | Research Assistant / Coach | Done |
 | v0.4.9 | Research Workflow Automation | Done |
 | v0.5.0 | Research OS Planning / Stabilization | Done |
-| v0.5.1 | CLI Alias Polish | Planned |
+| v0.5.1 | CLI Alias / Command UX Polish | Done |
 | v0.5.2 | GUI Tab Grouping | Planned |
 | v0.5.3 | Regression Consolidation | Planned |
 | v0.5.4 | Report Pack | Planned |
@@ -139,7 +139,43 @@ v0.4.9 adds Research Workflow Automation — converts Research Coach / Research 
 
 ### Next Steps
 
-v0.5.1 — CLI Alias Polish
+v0.5.2 — GUI Tab Grouping / Navigation Polish
+
+---
+
+## Completed: v0.5.1 — CLI Alias / Command UX Polish
+
+**Status:** Done
+
+### Summary
+
+v0.5.1 adds CLI command registry (126 commands), alias map (35 aliases), command discovery, help examples, CLI UX report, and CLI UX GUI panel. No new strategies. No real-order functionality. All existing commands preserved.
+
+### New Package: `cli/`
+
+- `command_registry.py` — 126 commands across 17 categories
+- `alias_map.py` — 35 safe aliases, 0 conflicts
+- `command_discovery.py` — keyword search and suggest
+- `help_examples.py` — quick start, daily, weekly, safety examples
+- `cli_ux_report.py` — CLI UX audit builder
+
+### New Report
+- `reports/cli_ux_report.py` — 8-section Markdown report
+
+### New GUI
+- `gui/cli_ux_panel.py` — CLI UX panel (5 sub-tabs)
+- `gui/cli_ux_adapter.py` — bridge
+
+### New Docs
+- `docs/cli_alias_command_ux.md`
+
+### New CLI Commands (6 + 17 aliases = 23 total)
+- `cli-list`, `cli-search`, `cli-aliases`, `cli-examples`, `cli-ux-report`, `cli-resolve`
+- Aliases: `daily`, `quick`, `dq`, `quality`, `providers`, `rules`, `signals`, `journal`, `notify`, `coach-daily`, `review-daily`, `workflow-daily`, `workflow-weekly`, `os`, `version`, `gui`, `dashboard`
+
+### Next Steps
+
+v0.5.2 — GUI Tab Grouping / Navigation Polish
 
 ---
 

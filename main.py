@@ -7907,6 +7907,416 @@ def cmd_research_os_safety(args: argparse.Namespace) -> None:
 
 
 # ---------------------------------------------------------------------------
+# v0.5.1 CLI Alias / Command UX handlers
+# ---------------------------------------------------------------------------
+
+def cmd_cli_list(args: argparse.Namespace) -> None:
+    """List all CLI commands in the registry (v0.5.1)."""
+    logger   = logging.getLogger("main.cli_list")
+    category = getattr(args, "category", None)
+
+    print()
+    print("TW Quant Cockpit — CLI Command Registry")
+    print("=" * 60)
+    print("  [!] CLI UX Only | Research Only | No Real Orders")
+    print()
+
+    try:
+        from cli.command_discovery import CLICommandDiscovery
+        disc = CLICommandDiscovery()
+        if category:
+            by_cat = disc.list_by_category()
+            cmds   = by_cat.get(category, [])
+            print(f"  Category: {category}  ({len(cmds)} commands)")
+            for c in cmds:
+                print(f"    python main.py {c}")
+        else:
+            by_cat = disc.list_by_category()
+            total  = sum(len(v) for v in by_cat.values())
+            for cat, cmds in sorted(by_cat.items()):
+                print(f"\n  [{cat}]  ({len(cmds)})")
+                for c in cmds:
+                    print(f"    python main.py {c}")
+            print(f"\n  Total: {total} commands across {len(by_cat)} categories")
+    except Exception as exc:
+        logger.error("cli-list failed: %s", exc, exc_info=True)
+        print(f"  ERROR: {exc}")
+    print()
+
+
+def cmd_cli_search(args: argparse.Namespace) -> None:
+    """Search CLI commands by keyword (v0.5.1)."""
+    logger  = logging.getLogger("main.cli_search")
+    keyword = getattr(args, "keyword", "")
+
+    print()
+    print("TW Quant Cockpit — CLI Command Search")
+    print("=" * 60)
+    print("  [!] CLI UX Only | Research Only | No Real Orders")
+    print()
+
+    if not keyword:
+        print("  Usage: python main.py cli-search --keyword <keyword>")
+        print()
+        return
+
+    try:
+        from cli.command_discovery import CLICommandDiscovery
+        results = CLICommandDiscovery().search(keyword)
+        print(f"  Keyword: '{keyword}'  →  {len(results)} match(es)")
+        print()
+        if results:
+            print(f"  {'Command':<35} {'Category':<15} {'Aliases':<20} {'Safety'}")
+            print(f"  {'-'*35} {'-'*15} {'-'*20} {'-'*15}")
+            for r in results:
+                print(
+                    f"  {r.get('command',''):<35} "
+                    f"{r.get('category',''):<15} "
+                    f"{r.get('aliases','—'):<20} "
+                    f"{r.get('safety_level','')}"
+                )
+        else:
+            print("  No matching commands found.")
+    except Exception as exc:
+        logger.error("cli-search failed: %s", exc, exc_info=True)
+        print(f"  ERROR: {exc}")
+    print()
+
+
+def cmd_cli_aliases(args: argparse.Namespace) -> None:
+    """List all CLI aliases (v0.5.1)."""
+    logger = logging.getLogger("main.cli_aliases")
+
+    print()
+    print("TW Quant Cockpit — CLI Alias Map")
+    print("=" * 60)
+    print("  [!] CLI UX Only | Research Only | No Real Orders")
+    print()
+
+    try:
+        from cli.alias_map import CLIAliasMap
+        am      = CLIAliasMap()
+        aliases = am.list_aliases()
+        print(f"  {'Alias':<20} {'Target Command':<35} {'Cat':<12} {'OK':<5} {'Conflict'}")
+        print(f"  {'-'*20} {'-'*35} {'-'*12} {'-'*4} {'-'*10}")
+        for a in aliases:
+            ok  = "Y" if a.get("enabled") else "N"
+            con = "YES" if a.get("conflict") else ("BLOCKED" if a.get("safety_blocked") else "—")
+            print(
+                f"  {a.get('alias',''):<20} "
+                f"{a.get('target_command',''):<35} "
+                f"{a.get('category',''):<12} "
+                f"{ok:<5} "
+                f"{con}"
+            )
+        print(f"\n  Total: {am.count_aliases()} aliases  |  Conflicts: {am.count_conflicts()}")
+    except Exception as exc:
+        logger.error("cli-aliases failed: %s", exc, exc_info=True)
+        print(f"  ERROR: {exc}")
+    print()
+
+
+def cmd_cli_examples(args: argparse.Namespace) -> None:
+    """List CLI help examples (v0.5.1)."""
+    logger   = logging.getLogger("main.cli_examples")
+    category = getattr(args, "category", None)
+
+    print()
+    print("TW Quant Cockpit — CLI Help Examples")
+    print("=" * 60)
+    print("  [!] CLI UX Only | Research Only | No Real Orders")
+    print()
+
+    try:
+        from cli.help_examples import CLIHelpExamples
+        ex = CLIHelpExamples()
+        if category:
+            examples = ex.get_category_examples(category)
+            print(f"  Category: {category}")
+            for e in examples:
+                print(f"    {e.get('example','')}")
+                if e.get("notes"):
+                    print(f"      # {e.get('notes')}")
+        else:
+            all_ex = ex.get_all_examples()
+            for cat, items in all_ex.items():
+                print(f"\n  [{cat}]")
+                for e in items:
+                    print(f"    {e.get('example','')}")
+                    if e.get("notes"):
+                        print(f"      # {e.get('notes')}")
+    except Exception as exc:
+        logger.error("cli-examples failed: %s", exc, exc_info=True)
+        print(f"  ERROR: {exc}")
+    print()
+
+
+def cmd_cli_ux_report(args: argparse.Namespace) -> None:
+    """Generate CLI UX report (v0.5.1)."""
+    logger = logging.getLogger("main.cli_ux_report")
+    mode   = getattr(args, "mode", "real")
+
+    print()
+    print("TW Quant Cockpit — CLI UX Report")
+    print("=" * 60)
+    print("  [!] CLI UX Only | Research Only | No Real Orders")
+    print()
+
+    try:
+        from reports.cli_ux_report import CLIUXReport
+        reporter = CLIUXReport()
+        path     = reporter.generate(mode=mode)
+        if path:
+            print(f"  Report: {path}")
+        else:
+            print("  Report generation failed.")
+    except Exception as exc:
+        logger.error("cli-ux-report failed: %s", exc, exc_info=True)
+        print(f"  ERROR: {exc}")
+    print()
+
+
+def cmd_cli_resolve(args: argparse.Namespace) -> None:
+    """Resolve an alias to its target command — display only, do not execute (v0.5.1)."""
+    logger = logging.getLogger("main.cli_resolve")
+    alias  = getattr(args, "alias", "")
+
+    print()
+    print("TW Quant Cockpit — CLI Alias Resolver")
+    print("=" * 60)
+    print("  [!] CLI UX Only | Research Only | No Real Orders | Resolve Only — Not Executed")
+    print()
+
+    if not alias:
+        print("  Usage: python main.py cli-resolve --alias <alias>")
+        print()
+        return
+
+    try:
+        from cli.alias_map import CLIAliasMap
+        am     = CLIAliasMap()
+        result = am.get_alias(alias)
+        if result:
+            enabled = result.get("enabled", False)
+            target  = result.get("target_command", "")
+            dargs   = result.get("default_args", {})
+            blocked = result.get("safety_blocked", False)
+            print(f"  Alias:          {alias}")
+            print(f"  Target Command: {target}")
+            print(f"  Default Args:   {dargs if dargs else '(none)'}")
+            print(f"  Enabled:        {enabled}")
+            print(f"  Safety Blocked: {blocked}")
+            print(f"  Category:       {result.get('category','')}")
+            print()
+            if enabled:
+                args_str = " ".join(f"--{k} {v}" for k, v in dargs.items() if v is not True)
+                extra    = " ".join(f"--{k}" for k, v in dargs.items() if v is True)
+                full_cmd = f"python main.py {target}"
+                if args_str:
+                    full_cmd += f" {args_str}"
+                if extra:
+                    full_cmd += f" {extra}"
+                print(f"  Equivalent to:  {full_cmd}")
+                print(f"  [Display Only — alias executed immediately when you type: python main.py {alias}]")
+            elif blocked:
+                print(f"  [BLOCKED — safety_reason: {result.get('safety_reason','')}]")
+            else:
+                print(f"  [DISABLED — conflict or not enabled]")
+        else:
+            print(f"  Alias '{alias}' not found.")
+            print()
+            print("  Available aliases:")
+            from cli.alias_map import CLIAliasMap
+            for a in CLIAliasMap().list_aliases():
+                if a.get("enabled"):
+                    print(f"    {a['alias']:<20} → {a['target_command']}")
+    except Exception as exc:
+        logger.error("cli-resolve failed: %s", exc, exc_info=True)
+        print(f"  ERROR: {exc}")
+    print()
+
+
+# ---------------------------------------------------------------------------
+# v0.5.1 Alias command handlers (each calls the target handler with default args)
+# ---------------------------------------------------------------------------
+
+def _alias_print(alias: str, target: str, extra: str = "") -> None:
+    """Print alias execution banner."""
+    print(f"  [Alias: {alias} → {target}{' ' + extra if extra else ''}]")
+    print()
+
+
+def cmd_alias_daily(args: argparse.Namespace) -> None:
+    """Alias: daily → run-research --profile daily (v0.5.1)."""
+    _alias_print("daily", "run-research", "--profile daily")
+    ns = argparse.Namespace(
+        mode    = getattr(args, "mode", "real"),
+        profile = "daily",
+    )
+    cmd_run_research(ns)
+
+
+def cmd_alias_quick(args: argparse.Namespace) -> None:
+    """Alias: quick → run-research --profile quick (v0.5.1)."""
+    _alias_print("quick", "run-research", "--profile quick")
+    ns = argparse.Namespace(
+        mode    = getattr(args, "mode", "real"),
+        profile = "quick",
+    )
+    cmd_run_research(ns)
+
+
+def cmd_alias_dq(args: argparse.Namespace) -> None:
+    """Alias: dq → data-quality-gate (v0.5.1)."""
+    _alias_print("dq", "data-quality-gate")
+    ns = argparse.Namespace(
+        mode       = getattr(args, "mode", "real"),
+        report     = False,
+        check_mock = False,
+    )
+    cmd_data_quality_gate(ns)
+
+
+def cmd_alias_quality(args: argparse.Namespace) -> None:
+    """Alias: quality → data-quality-gate (v0.5.1)."""
+    _alias_print("quality", "data-quality-gate")
+    ns = argparse.Namespace(
+        mode       = getattr(args, "mode", "real"),
+        report     = False,
+        check_mock = False,
+    )
+    cmd_data_quality_gate(ns)
+
+
+def cmd_alias_providers(args: argparse.Namespace) -> None:
+    """Alias: providers → provider-reliability (v0.5.1)."""
+    _alias_print("providers", "provider-reliability")
+    ns = argparse.Namespace(
+        mode       = getattr(args, "mode", "real"),
+        output_dir = "data/backtest_results/provider_reliability",
+        report_dir = "reports",
+    )
+    cmd_provider_reliability(ns)
+
+
+def cmd_alias_rules(args: argparse.Namespace) -> None:
+    """Alias: rules → rule-governance (v0.5.1)."""
+    _alias_print("rules", "rule-governance")
+    ns = argparse.Namespace(
+        mode      = getattr(args, "mode", "real"),
+        output    = None,
+        stock     = None,
+        rule_type = None,
+    )
+    cmd_rule_governance(ns)
+
+
+def cmd_alias_signals(args: argparse.Namespace) -> None:
+    """Alias: signals → signal-quality (v0.5.1)."""
+    _alias_print("signals", "signal-quality")
+    ns = argparse.Namespace(
+        mode   = getattr(args, "mode", "real"),
+        output = None,
+        stock  = None,
+    )
+    cmd_signal_quality(ns)
+
+
+def cmd_alias_journal(args: argparse.Namespace) -> None:
+    """Alias: journal → journal-summary (v0.5.1)."""
+    _alias_print("journal", "journal-summary")
+    ns = argparse.Namespace(
+        output_dir = "data/backtest_results/journal",
+    )
+    cmd_journal_summary(ns)
+
+
+def cmd_alias_notify(args: argparse.Namespace) -> None:
+    """Alias: notify → notification-list (v0.5.1)."""
+    _alias_print("notify", "notification-list")
+    ns = argparse.Namespace(
+        output_dir = "data/backtest_results/notifications",
+        unread     = False,
+        level      = None,
+    )
+    cmd_notification_list(ns)
+
+
+def cmd_alias_coach_daily(args: argparse.Namespace) -> None:
+    """Alias: coach-daily → research-coach --period daily (v0.5.1)."""
+    _alias_print("coach-daily", "research-coach", "--period daily")
+    ns = argparse.Namespace(
+        mode       = getattr(args, "mode", "real"),
+        period     = "daily",
+        output_dir = "data/backtest_results/research_coach",
+        report_dir = "reports",
+    )
+    cmd_research_coach(ns)
+
+
+def cmd_alias_review_daily(args: argparse.Namespace) -> None:
+    """Alias: review-daily → research-review --period daily (v0.5.1)."""
+    _alias_print("review-daily", "research-review", "--period daily")
+    ns = argparse.Namespace(
+        mode       = getattr(args, "mode", "real"),
+        period     = "daily",
+        output_dir = "data/backtest_results/research_review",
+        report_dir = "reports",
+    )
+    cmd_research_review(ns)
+
+
+def cmd_alias_workflow_daily(args: argparse.Namespace) -> None:
+    """Alias: workflow-daily → research-workflow --type daily_research (v0.5.1)."""
+    _alias_print("workflow-daily", "research-workflow", "--type daily_research")
+    ns = argparse.Namespace(
+        mode        = getattr(args, "mode", "real"),
+        type        = "daily_research",
+        dry_run     = getattr(args, "dry_run", False),
+        output_dir  = "data/backtest_results/research_workflow",
+        report_dir  = "reports",
+    )
+    cmd_research_workflow(ns)
+
+
+def cmd_alias_workflow_weekly(args: argparse.Namespace) -> None:
+    """Alias: workflow-weekly → research-workflow --type weekly_review (v0.5.1)."""
+    _alias_print("workflow-weekly", "research-workflow", "--type weekly_review")
+    ns = argparse.Namespace(
+        mode        = getattr(args, "mode", "real"),
+        type        = "weekly_review",
+        dry_run     = getattr(args, "dry_run", False),
+        output_dir  = "data/backtest_results/research_workflow",
+        report_dir  = "reports",
+    )
+    cmd_research_workflow(ns)
+
+
+def cmd_alias_os(args: argparse.Namespace) -> None:
+    """Alias: os → research-os-summary (v0.5.1)."""
+    _alias_print("os", "research-os-summary")
+    cmd_research_os_summary(args)
+
+
+def cmd_alias_version(args: argparse.Namespace) -> None:
+    """Alias: version → version-info (v0.5.1)."""
+    _alias_print("version", "version-info")
+    cmd_version_info(args)
+
+
+def cmd_alias_gui(args: argparse.Namespace) -> None:
+    """Alias: gui → cockpit (v0.5.1)."""
+    _alias_print("gui", "cockpit")
+    cmd_cockpit(args)
+
+
+def cmd_alias_dashboard(args: argparse.Namespace) -> None:
+    """Alias: dashboard → cockpit (v0.5.1)."""
+    _alias_print("dashboard", "cockpit")
+    cmd_cockpit(args)
+
+
+# ---------------------------------------------------------------------------
 # v0.4.8 Research Assistant / Coach CLI handlers
 # ---------------------------------------------------------------------------
 
@@ -9732,6 +10142,94 @@ def _build_parser() -> argparse.ArgumentParser:
                          dest="output_dir")
     p_rwpkg.add_argument("--report-dir", default="reports", dest="report_dir")
 
+    # ---- v0.5.1 CLI Alias / Command UX ----
+
+    p_cli_list = subparsers.add_parser(
+        "cli-list",
+        help="List all CLI commands in the registry (v0.5.1)",
+    )
+    p_cli_list.add_argument("--category", default=None,
+                            help="Filter by category (optional)")
+
+    p_cli_search = subparsers.add_parser(
+        "cli-search",
+        help="Search CLI commands by keyword (v0.5.1)",
+    )
+    p_cli_search.add_argument("--keyword", required=True,
+                              help="Search keyword (e.g. data, replay, journal)")
+
+    subparsers.add_parser(
+        "cli-aliases",
+        help="List all CLI alias mappings (v0.5.1)",
+    )
+
+    p_cli_ex = subparsers.add_parser(
+        "cli-examples",
+        help="List CLI help examples (v0.5.1)",
+    )
+    p_cli_ex.add_argument("--category", default=None,
+                          help="Filter by category: quick, daily, weekly, safety, aliases")
+
+    p_cli_ux = subparsers.add_parser(
+        "cli-ux-report",
+        help="Generate CLI UX Alias / Command Polish report (v0.5.1)",
+    )
+    p_cli_ux.add_argument("--mode", default="real", choices=["real", "mock"])
+
+    p_cli_res = subparsers.add_parser(
+        "cli-resolve",
+        help="Resolve alias to target command — display only, not executed (v0.5.1)",
+    )
+    p_cli_res.add_argument("--alias", required=True,
+                           help="Alias name to resolve (e.g. daily, dq, os)")
+
+    # ---- v0.5.1 Alias commands (shortcut commands) ----
+
+    p_daily = subparsers.add_parser("daily", help="Alias: run-research --profile daily (v0.5.1)")
+    p_daily.add_argument("--mode", default="real", choices=["real", "mock"])
+
+    p_quick = subparsers.add_parser("quick", help="Alias: run-research --profile quick (v0.5.1)")
+    p_quick.add_argument("--mode", default="real", choices=["real", "mock"])
+
+    p_dq = subparsers.add_parser("dq", help="Alias: data-quality-gate (v0.5.1)")
+    p_dq.add_argument("--mode", default="real", choices=["real", "mock"])
+
+    p_quality = subparsers.add_parser("quality", help="Alias: data-quality-gate (v0.5.1)")
+    p_quality.add_argument("--mode", default="real", choices=["real", "mock"])
+
+    p_providers = subparsers.add_parser("providers", help="Alias: provider-reliability (v0.5.1)")
+    p_providers.add_argument("--mode", default="real", choices=["real", "mock"])
+
+    p_rules = subparsers.add_parser("rules", help="Alias: rule-governance (v0.5.1)")
+    p_rules.add_argument("--mode", default="real", choices=["real", "mock"])
+
+    p_signals = subparsers.add_parser("signals", help="Alias: signal-quality (v0.5.1)")
+    p_signals.add_argument("--mode", default="real", choices=["real", "mock"])
+
+    subparsers.add_parser("journal", help="Alias: journal-summary (v0.5.1)")
+    subparsers.add_parser("notify",  help="Alias: notification-list (v0.5.1)")
+
+    p_cd = subparsers.add_parser("coach-daily", help="Alias: research-coach --period daily (v0.5.1)")
+    p_cd.add_argument("--mode", default="real", choices=["real", "mock"])
+
+    p_rd = subparsers.add_parser("review-daily", help="Alias: research-review --period daily (v0.5.1)")
+    p_rd.add_argument("--mode", default="real", choices=["real", "mock"])
+
+    p_wfd = subparsers.add_parser("workflow-daily",
+                                  help="Alias: research-workflow --type daily_research (v0.5.1)")
+    p_wfd.add_argument("--mode",    default="real",  choices=["real", "mock"])
+    p_wfd.add_argument("--dry-run", action="store_true", dest="dry_run")
+
+    p_wfw = subparsers.add_parser("workflow-weekly",
+                                  help="Alias: research-workflow --type weekly_review (v0.5.1)")
+    p_wfw.add_argument("--mode",    default="real",  choices=["real", "mock"])
+    p_wfw.add_argument("--dry-run", action="store_true", dest="dry_run")
+
+    subparsers.add_parser("os",        help="Alias: research-os-summary (v0.5.1)")
+    subparsers.add_parser("version",   help="Alias: version-info (v0.5.1)")
+    subparsers.add_parser("gui",       help="Alias: cockpit (v0.5.1)")
+    subparsers.add_parser("dashboard", help="Alias: cockpit (v0.5.1)")
+
     # ---- v0.5.0 Research OS Planning ----
 
     p_rosaudit = subparsers.add_parser(
@@ -9988,6 +10486,31 @@ def main() -> None:
         "research-os-cli":             cmd_research_os_cli,
         "research-os-gui":             cmd_research_os_gui,
         "research-os-safety":          cmd_research_os_safety,
+        # v0.5.1 CLI Alias / Command UX — new commands
+        "cli-list":                    cmd_cli_list,
+        "cli-search":                  cmd_cli_search,
+        "cli-aliases":                 cmd_cli_aliases,
+        "cli-examples":                cmd_cli_examples,
+        "cli-ux-report":               cmd_cli_ux_report,
+        "cli-resolve":                 cmd_cli_resolve,
+        # v0.5.1 Alias shortcut commands
+        "daily":                       cmd_alias_daily,
+        "quick":                       cmd_alias_quick,
+        "dq":                          cmd_alias_dq,
+        "quality":                     cmd_alias_quality,
+        "providers":                   cmd_alias_providers,
+        "rules":                       cmd_alias_rules,
+        "signals":                     cmd_alias_signals,
+        "journal":                     cmd_alias_journal,
+        "notify":                      cmd_alias_notify,
+        "coach-daily":                 cmd_alias_coach_daily,
+        "review-daily":                cmd_alias_review_daily,
+        "workflow-daily":              cmd_alias_workflow_daily,
+        "workflow-weekly":             cmd_alias_workflow_weekly,
+        "os":                          cmd_alias_os,
+        "version":                     cmd_alias_version,
+        "gui":                         cmd_alias_gui,
+        "dashboard":                   cmd_alias_dashboard,
     }
 
     if args.command is None:

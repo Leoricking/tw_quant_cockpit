@@ -814,6 +814,12 @@ class RegressionSuite:
             # v0.5.0
             self._test_research_os_imports,
             self._test_research_os_summary,
+            # v0.5.1
+            self._test_cli_list,
+            self._test_cli_aliases,
+            self._test_cli_examples,
+            self._test_cli_resolve_daily,
+            self._test_cli_alias_dq,
         ]
         return self._execute("full", tests_fns)
 
@@ -1048,6 +1054,76 @@ class RegressionSuite:
                 "research_os_summary", "FAIL", str(exc),
                 (time.monotonic() - t0) * 1000,
             )
+
+    # -----------------------------------------------------------------------
+    # v0.5.1 CLI Alias / Command UX tests
+    # -----------------------------------------------------------------------
+
+    def _test_cli_list(self) -> dict:
+        t0 = time.monotonic()
+        try:
+            cmd  = [sys.executable, "main.py", "cli-list"]
+            proc = subprocess.run(cmd, capture_output=True, text=True, timeout=30, cwd=BASE_DIR)
+            detail = (proc.stdout or proc.stderr or "")[:200]
+            status = "PASS" if proc.returncode == 0 else "PARTIAL"
+            return self._item("cli_list", status, detail, (time.monotonic() - t0) * 1000)
+        except Exception as exc:
+            return self._item("cli_list", "FAIL", str(exc), (time.monotonic() - t0) * 1000)
+
+    def _test_cli_aliases(self) -> dict:
+        t0 = time.monotonic()
+        try:
+            cmd  = [sys.executable, "main.py", "cli-aliases"]
+            proc = subprocess.run(cmd, capture_output=True, text=True, timeout=30, cwd=BASE_DIR)
+            detail = (proc.stdout or proc.stderr or "")[:200]
+            status = "PASS" if proc.returncode == 0 else "PARTIAL"
+            return self._item("cli_aliases", status, detail, (time.monotonic() - t0) * 1000)
+        except Exception as exc:
+            return self._item("cli_aliases", "FAIL", str(exc), (time.monotonic() - t0) * 1000)
+
+    def _test_cli_examples(self) -> dict:
+        t0 = time.monotonic()
+        try:
+            cmd  = [sys.executable, "main.py", "cli-examples"]
+            proc = subprocess.run(cmd, capture_output=True, text=True, timeout=30, cwd=BASE_DIR)
+            detail = (proc.stdout or proc.stderr or "")[:200]
+            status = "PASS" if proc.returncode == 0 else "PARTIAL"
+            return self._item("cli_examples", status, detail, (time.monotonic() - t0) * 1000)
+        except Exception as exc:
+            return self._item("cli_examples", "FAIL", str(exc), (time.monotonic() - t0) * 1000)
+
+    def _test_cli_resolve_daily(self) -> dict:
+        t0 = time.monotonic()
+        try:
+            cmd  = [sys.executable, "main.py", "cli-resolve", "--alias", "daily"]
+            proc = subprocess.run(cmd, capture_output=True, text=True, timeout=30, cwd=BASE_DIR)
+            detail = (proc.stdout or proc.stderr or "")[:200]
+            status = "PASS" if proc.returncode == 0 else "PARTIAL"
+            return self._item("cli_resolve_daily", status, detail, (time.monotonic() - t0) * 1000)
+        except Exception as exc:
+            return self._item("cli_resolve_daily", "FAIL", str(exc), (time.monotonic() - t0) * 1000)
+
+    def _test_cli_alias_dq(self) -> dict:
+        """Smoke test: dq alias dispatches to data-quality-gate."""
+        t0 = time.monotonic()
+        try:
+            from cli.alias_map import CLIAliasMap
+            am     = CLIAliasMap()
+            target = am.get_target("dq")
+            assert target is not None, "dq alias not found"
+            assert target[0] == "data-quality-gate", f"dq target wrong: {target[0]}"
+            # Also verify import chain
+            from cli.command_registry import CLICommandRegistry
+            from cli.command_discovery import CLICommandDiscovery
+            reg = CLICommandRegistry()
+            assert len(reg.list_commands()) > 100, "registry too small"
+            return self._item(
+                "cli_alias_dq", "PASS",
+                f"dq → {target[0]} | registry={len(reg.list_commands())} cmds",
+                (time.monotonic() - t0) * 1000,
+            )
+        except Exception as exc:
+            return self._item("cli_alias_dq", "FAIL", str(exc), (time.monotonic() - t0) * 1000)
 
     def _write_csv(self, tests: list[dict], suite_name: str) -> str | None:
         try:

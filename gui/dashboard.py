@@ -355,6 +355,16 @@ except Exception as _ros_exc:
     logger.warning("ResearchOSPlanningPanel unavailable: %s", _ros_exc)
     _RESEARCH_OS_PLANNING_AVAILABLE = False
 
+# ---------------------------------------------------------------------------
+# v0.5.1 CLI UX panel import (guarded)
+# ---------------------------------------------------------------------------
+try:
+    from gui.cli_ux_panel import CLIUXPanel
+    _CLI_UX_AVAILABLE = True
+except Exception as _cux_exc:
+    logger.warning("CLIUXPanel unavailable: %s", _cux_exc)
+    _CLI_UX_AVAILABLE = False
+
 
 # ---------------------------------------------------------------------------
 # Colour helpers (Taiwan convention: red = up, green = down)
@@ -1434,6 +1444,13 @@ class CockpitWindow(QMainWindow if _PYSIDE6_AVAILABLE else object):
             mid_tabs.addTab(self._research_os_planning_panel, "Research OS Planning")
         else:
             self._research_os_planning_panel = None
+
+        # v0.5.1 CLI UX tab
+        if _CLI_UX_AVAILABLE:
+            self._cli_ux_panel = CLIUXPanel()
+            mid_tabs.addTab(self._cli_ux_panel, "CLI UX")
+        else:
+            self._cli_ux_panel = None
 
         h_split.addWidget(mid_tabs)
         h_split.setStretchFactor(0, 3)

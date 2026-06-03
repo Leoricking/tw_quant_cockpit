@@ -439,6 +439,8 @@ class AutoReportIndexBuilder:
                 **_extract_research_workflow_fields(ctx),
                 # v0.5.0 Research OS Planning
                 **_extract_research_os_fields(ctx),
+                # v0.5.1 CLI UX
+                **_extract_cli_ux_fields(ctx),
             }
 
             path = os.path.join(output_dir, "manifest.json")
@@ -548,4 +550,14 @@ def _extract_research_os_fields(ctx: dict) -> dict:
         "research_os_total_tabs":     ctx.get("research_os_total_tabs",     0),
         "research_os_mature_count":   ctx.get("research_os_mature_count",   0),
         "research_os_safety_score":   ctx.get("research_os_safety_score",   "N/A"),
+    }
+
+
+def _extract_cli_ux_fields(ctx: dict) -> dict:
+    """Extract CLI UX summary fields for manifest.json (v0.5.1)."""
+    return {
+        "cli_commands_count":  ctx.get("cli_commands_count",  0),
+        "cli_aliases_count":   ctx.get("cli_aliases_count",   0),
+        "cli_alias_conflicts": ctx.get("cli_alias_conflicts", 0),
+        "cli_safety_status":   ctx.get("cli_safety_status",   "N/A"),
     }

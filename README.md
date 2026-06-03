@@ -4,7 +4,54 @@
 >
 > **[!] v1: Real order execution is strictly prohibited. For research, simulation, and decision support only. Not investment advice.**
 
-**Current version: v0.5.0 — Research OS Planning / Stabilization**
+**Current version: v0.5.1 — CLI Alias / Command UX Polish**
+
+---
+
+## v0.5.1 — CLI Alias / Command UX Polish
+
+**New in v0.5.1:**
+
+- **CLI Command Registry** — 126 commands cataloged across 17 categories with purpose, aliases, safety level, and example commands.
+- **CLI Alias Map** — 35 safe research-only aliases. All aliases pass blocked-keyword guard (no buy/sell/order/broker/shioaji). All existing commands preserved.
+- **CLI Command Discovery** — Keyword search and intent-based suggestion across the full command registry.
+- **CLI Help Examples** — Curated examples for quick start, daily research, weekly review, safety checks, and alias reference.
+- **CLI UX Report** — 8-section Markdown report: overview, categories, alias map, quick start, naming issues, legacy compatibility, safety, next roadmap.
+- **CLI UX GUI Panel** — New "CLI UX" tab in the cockpit dashboard with command registry table, alias table, help examples, and search.
+- **Alias Commands** — Type `python main.py daily`, `python main.py dq`, `python main.py os`, etc. as shortcuts.
+- **[!] CLI UX Only. No Breaking Changes. All Existing Commands Preserved. No Real Orders.**
+
+**CLI usage:**
+```bash
+# List all commands
+python main.py cli-list
+python main.py cli-list --category data
+
+# Search commands
+python main.py cli-search --keyword replay
+
+# Show aliases
+python main.py cli-aliases
+
+# Show examples
+python main.py cli-examples
+python main.py cli-examples --category daily
+
+# Resolve alias (display only)
+python main.py cli-resolve --alias dq
+
+# Generate CLI UX report
+python main.py cli-ux-report --mode real
+
+# Use aliases
+python main.py daily               # → run-research --profile daily
+python main.py dq --mode real      # → data-quality-gate --mode real
+python main.py providers --mode real
+python main.py rules --mode real
+python main.py os                  # → research-os-summary
+python main.py version             # → version-info
+python main.py gui                 # → cockpit
+```
 
 ---
 

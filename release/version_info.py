@@ -11,11 +11,11 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 
 class VersionInfo:
-    """Centralized version and safety metadata for v0.5.0."""
+    """Centralized version and safety metadata for v0.5.1."""
 
-    version            = "v0.5.0"
-    release_name       = "Research OS Planning / Stabilization"
-    release_stage      = "research_os_planning"
+    version            = "v0.5.1"
+    release_name       = "CLI Alias / Command UX Polish"
+    release_stage      = "cli_ux_polish"
     read_only          = True
     no_real_orders     = True
     production_blocked = True
@@ -44,6 +44,12 @@ class VersionInfo:
         "Research OS Artifact Hygiene",
         "Research OS Safety Matrix",
         "Research OS Stabilization Report",
+        "CLI Command Registry",
+        "CLI Alias Map (35 aliases)",
+        "CLI Command Discovery",
+        "CLI Help Examples",
+        "CLI UX Report",
+        "CLI UX GUI Panel",
     ]
     safety_flags = [
         "read_only=True",
@@ -100,7 +106,7 @@ def print_version_info() -> None:
 def get_safety_banner() -> str:
     """Return one-line safety banner string."""
     return (
-        "[!] v0.5.0 Research Only | No Real Orders | "
+        "[!] v0.5.1 Research Only | No Real Orders | "
         "Production BLOCKED | real_order_ready=False"
     )
 

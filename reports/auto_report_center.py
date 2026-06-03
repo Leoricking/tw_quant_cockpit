@@ -318,6 +318,9 @@ class AutoReportCenter:
         # v0.5.0 Research OS Planning summary (always optional, never crashes)
         self.run_research_os_summary()
 
+        # v0.5.1 CLI UX summary (always optional, never crashes)
+        self.run_cli_ux_summary()
+
         # Aggregated outputs
         if self.include_daily_summary:
             self.build_daily_market_summary()
@@ -969,6 +972,24 @@ class AutoReportCenter:
             )
         except Exception as exc:
             logger.warning("run_research_os_summary failed: %s", exc)
+
+    def run_cli_ux_summary(self):
+        """Collect CLI UX summary context (v0.5.1). Optional — failure does not abort run."""
+        try:
+            from cli.cli_ux_report import CLIUXReportBuilder
+            data = CLIUXReportBuilder().build()
+            self._context["cli_commands_count"]  = data.get("commands_count",  0)
+            self._context["cli_aliases_count"]   = data.get("alias_count",     0)
+            self._context["cli_alias_conflicts"] = data.get("conflict_count",  0)
+            self._context["cli_safety_status"]   = data.get("safety_status",   "N/A")
+            self._record_success(
+                "cli_ux",
+                f"cmds={data.get('commands_count',0)} "
+                f"aliases={data.get('alias_count',0)} "
+                f"safety={data.get('safety_status','N/A')}",
+            )
+        except Exception as exc:
+            logger.warning("run_cli_ux_summary failed: %s", exc)
 
     def run_model_monitoring_report(self):
         """Generate Model Monitoring report (v0.4.3). Optional — failure does not abort run."""

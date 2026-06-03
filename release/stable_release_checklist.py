@@ -1049,6 +1049,11 @@ class StableReleaseChecklist:
             self._check_research_os_no_real_orders,
             self._check_research_os_output_ignored,
             self._check_research_os_safety_matrix,
+            # v0.5.1
+            self._check_cli_ux_import_health,
+            self._check_cli_no_trading_aliases,
+            self._check_cli_alias_backward_compat,
+            self._check_cli_alias_safe_command_guard,
         ]
 
         items: list[dict] = []
@@ -1468,3 +1473,109 @@ class StableReleaseChecklist:
         except Exception as exc:
             elapsed = (time.monotonic() - t0) * 1000
             return self._item("research_os_safety_matrix", "FAIL", str(exc), elapsed)
+
+    # -----------------------------------------------------------------------
+    # v0.5.1 CLI Alias / Command UX checks
+    # -----------------------------------------------------------------------
+
+    def _check_cli_ux_import_health(self) -> dict:
+        """v0.5.1: Verify all CLI UX modules import cleanly."""
+        t0 = time.monotonic()
+        try:
+            from cli.command_registry import CLICommandRegistry
+            from cli.alias_map import CLIAliasMap
+            from cli.command_discovery import CLICommandDiscovery
+            from cli.help_examples import CLIHelpExamples
+            from cli.cli_ux_report import CLIUXReportBuilder
+            from reports.cli_ux_report import CLIUXReport
+            from gui.cli_ux_adapter import CLIUXAdapter
+            reg = CLICommandRegistry()
+            elapsed = (time.monotonic() - t0) * 1000
+            return self._item(
+                "cli_ux_import_health", "PASS",
+                f"All CLI UX modules import cleanly; registry={len(reg.list_commands())} cmds",
+                elapsed,
+            )
+        except Exception as exc:
+            elapsed = (time.monotonic() - t0) * 1000
+            return self._item("cli_ux_import_health", "FAIL", str(exc), elapsed)
+
+    def _check_cli_no_trading_aliases(self) -> dict:
+        """v0.5.1: Verify no trading-related aliases exist."""
+        t0 = time.monotonic()
+        try:
+            from cli.alias_map import CLIAliasMap
+            am      = CLIAliasMap()
+            aliases = am.list_aliases()
+            trading_kws = ["buy", "sell", "order", "broker", "shioaji", "margin", "short_sell"]
+            bad = [
+                a["alias"] for a in aliases
+                if any(kw in a.get("alias","") or kw in a.get("target_command","")
+                       for kw in trading_kws)
+                and a.get("enabled", False)
+            ]
+            elapsed = (time.monotonic() - t0) * 1000
+            if bad:
+                return self._item("cli_no_trading_aliases", "FAIL",
+                                  f"Trading aliases found: {bad}", elapsed)
+            return self._item(
+                "cli_no_trading_aliases", "PASS",
+                f"No trading aliases in {len(aliases)} aliases", elapsed,
+            )
+        except Exception as exc:
+            elapsed = (time.monotonic() - t0) * 1000
+            return self._item("cli_no_trading_aliases", "FAIL", str(exc), elapsed)
+
+    def _check_cli_alias_backward_compat(self) -> dict:
+        """v0.5.1: Verify key aliases resolve to correct target commands."""
+        t0 = time.monotonic()
+        try:
+            from cli.alias_map import CLIAliasMap
+            am      = CLIAliasMap()
+            expected = {
+                "dq":       "data-quality-gate",
+                "providers":"provider-reliability",
+                "rules":    "rule-governance",
+                "signals":  "signal-quality",
+                "journal":  "journal-summary",
+                "notify":   "notification-list",
+                "os":       "research-os-summary",
+                "version":  "version-info",
+                "gui":      "cockpit",
+            }
+            failures = []
+            for alias, target in expected.items():
+                result = am.get_target(alias)
+                if result is None or result[0] != target:
+                    got = result[0] if result else "NOT FOUND"
+                    failures.append(f"{alias}→{got} (expected {target})")
+            elapsed = (time.monotonic() - t0) * 1000
+            if failures:
+                return self._item("cli_alias_backward_compat", "FAIL",
+                                  f"Wrong targets: {failures}", elapsed)
+            return self._item(
+                "cli_alias_backward_compat", "PASS",
+                f"All {len(expected)} key aliases resolve correctly", elapsed,
+            )
+        except Exception as exc:
+            elapsed = (time.monotonic() - t0) * 1000
+            return self._item("cli_alias_backward_compat", "FAIL", str(exc), elapsed)
+
+    def _check_cli_alias_safe_command_guard(self) -> dict:
+        """v0.5.1: Verify alias safety guard blocks forbidden patterns."""
+        t0 = time.monotonic()
+        try:
+            from cli.alias_map import CLIAliasMap
+            am = CLIAliasMap()
+            safe, reason = am._is_safe("buy-stock", "broker-submit-order")
+            assert not safe, "safety guard should block trading alias"
+            safe2, _ = am._is_safe("dq", "data-quality-gate")
+            assert safe2, "safety guard should allow research alias"
+            elapsed = (time.monotonic() - t0) * 1000
+            return self._item(
+                "cli_alias_safe_command_guard", "PASS",
+                "Safety guard blocks trading; allows research aliases", elapsed,
+            )
+        except Exception as exc:
+            elapsed = (time.monotonic() - t0) * 1000
+            return self._item("cli_alias_safe_command_guard", "FAIL", str(exc), elapsed)

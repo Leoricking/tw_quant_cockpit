@@ -664,6 +664,7 @@ class ExperimentSnapshotBuilder:
             ("research_coach",              lambda: self.build_research_coach_snapshot()),
             ("research_workflow",           lambda: self.build_research_workflow_snapshot()),
             ("research_os_planning",        lambda: self.build_research_os_planning_snapshot()),
+            ("cli_ux",                      lambda: self.build_cli_ux_snapshot()),
         ]
         for snap_type, fn in builders:
             try:
@@ -873,5 +874,39 @@ class ExperimentSnapshotBuilder:
             snap["total_tabs"]     = len(tabs)
         except Exception as exc:
             logger.warning("build_research_os_planning_snapshot: %s", exc)
+            snap["warnings"].append(f"snapshot error: {exc}")
+        return snap
+
+    # ------------------------------------------------------------------
+    # v0.5.1 CLI UX snapshot
+    # ------------------------------------------------------------------
+
+    def build_cli_ux_snapshot(self) -> dict:
+        snap = {
+            "snapshot_type":       "cli_ux",
+            "read_only":           True,
+            "no_real_orders":      True,
+            "production_blocked":  True,
+            "real_order_ready":    False,
+            "commands_count":      0,
+            "alias_count":         0,
+            "categories_count":    0,
+            "conflict_count":      0,
+            "missing_examples":    0,
+            "latest_cli_ux_at":    "",
+            "warnings":            [],
+        }
+        try:
+            from cli.cli_ux_report import CLIUXReportBuilder
+            from datetime import datetime
+            data = CLIUXReportBuilder().build()
+            snap["commands_count"]    = data.get("commands_count",  0)
+            snap["alias_count"]       = data.get("alias_count",     0)
+            snap["categories_count"]  = data.get("categories_count", 0)
+            snap["conflict_count"]    = data.get("conflict_count",  0)
+            snap["missing_examples"]  = len(data.get("missing_examples", []))
+            snap["latest_cli_ux_at"]  = datetime.now().strftime("%Y-%m-%d")
+        except Exception as exc:
+            logger.warning("build_cli_ux_snapshot: %s", exc)
             snap["warnings"].append(f"snapshot error: {exc}")
         return snap
