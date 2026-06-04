@@ -375,6 +375,16 @@ except Exception as _gn_exc:
     logger.warning("GUINavigationPanel unavailable: %s", _gn_exc)
     _GUI_NAVIGATION_AVAILABLE = False
 
+# ---------------------------------------------------------------------------
+# v0.5.1.1 Strategy Filter panel — inline (no separate panel file required)
+# ---------------------------------------------------------------------------
+_STRATEGY_FILTER_AVAILABLE = False
+try:
+    from strategy_filters.strategy_filter_pack import StrategyFilterPack as _SFPack
+    _STRATEGY_FILTER_AVAILABLE = True
+except Exception as _sf_exc:
+    logger.warning("StrategyFilterPack unavailable: %s", _sf_exc)
+
 
 # ---------------------------------------------------------------------------
 # Colour helpers (Taiwan convention: red = up, green = down)
@@ -1468,6 +1478,21 @@ class CockpitWindow(QMainWindow if _PYSIDE6_AVAILABLE else object):
             mid_tabs.addTab(self._gui_navigation_panel, "GUI Navigation")
         else:
             self._gui_navigation_panel = None
+
+        # v0.5.1.1 Strategy Filter tab (inline — no separate panel file)
+        if _STRATEGY_FILTER_AVAILABLE and _PYSIDE6_AVAILABLE:
+            _sf_widget = QWidget()
+            _sf_layout = QVBoxLayout(_sf_widget)
+            _sf_label = QLabel(
+                "<b>Strategy Filter Pack — Financial Turnaround &amp; Trend Discipline</b><br>"
+                "[!] Research Only. Strategy Filter Only. No Real Orders. "
+                "Production Trading: BLOCKED.<br>"
+                "Use CLI: <code>python main.py strategy-filter --stock 2454 --mode real</code>"
+            )
+            _sf_label.setWordWrap(True)
+            _sf_layout.addWidget(_sf_label)
+            _sf_layout.addStretch()
+            mid_tabs.addTab(_sf_widget, "Strategy Filter")
 
         h_split.addWidget(mid_tabs)
         h_split.setStretchFactor(0, 3)

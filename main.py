@@ -8691,6 +8691,234 @@ def cmd_research_coach_data_repair(args: argparse.Namespace) -> None:
 
 
 # ---------------------------------------------------------------------------
+# v0.5.1.1 Strategy Filter Pack handlers
+# ---------------------------------------------------------------------------
+
+def cmd_strategy_filter(args: argparse.Namespace) -> None:
+    """Run Financial Turnaround & Trend Discipline filter for a single stock (v0.5.1.1)."""
+    logger = logging.getLogger("main.strategy_filter")
+    stock  = getattr(args, 'stock', None)
+    mode   = getattr(args, 'mode', 'real')
+    report = getattr(args, 'report', False)
+
+    if not stock:
+        print("ERROR: --stock is required. Example: python main.py strategy-filter --stock 2454 --mode real")
+        sys.exit(1)
+
+    logger.info("strategy-filter [stock=%s mode=%s report=%s]", stock, mode, report)
+
+    print()
+    print("=" * 70)
+    print("  TW Quant Cockpit \u2014 Strategy Filter")
+    print("=" * 70)
+    print(f"  Mode            : {mode}")
+    print(f"  Research Only   : YES")
+    print(f"  No Real Orders  : YES")
+    print(f"  Stock           : {stock}")
+    print()
+
+    try:
+        from strategy_filters.financial_turnaround_filter import FinancialTurnaroundFilter
+        ft = FinancialTurnaroundFilter(mode=mode)
+
+        # Build stock_data from real loader or mock
+        stock_data: dict = {"symbol": str(stock)}
+
+        if mode == 'real':
+            try:
+                from data.real_data_loader import RealDataLoader
+                loader = RealDataLoader()
+                all_data = loader.load_all(str(stock))
+                fd = all_data.get('fundamental') or {}
+                dk = all_data.get('daily_k') or {}
+                bars = dk.get('bars') or []
+                chip = all_data.get('institutional') or {}
+
+                # Map real data to filter fields
+                stock_data['eps_yoy_growth']     = fd.get('eps_yoy_growth')
+                stock_data['q1_eps']             = fd.get('q1_eps')
+                stock_data['estimated_annual_eps'] = fd.get('estimated_annual_eps')
+                stock_data['gross_margin_ok']    = fd.get('gross_margin') is not None
+                stock_data['operating_margin_ok']= fd.get('operating_margin') is not None
+                stock_data['revenue_growth']     = fd.get('revenue_mom_growth') is not None
+                stock_data['eps_declining']      = bool(
+                    fd.get('eps_yoy_growth') is not None and fd.get('eps_yoy_growth', 0) < 0
+                )
+
+                if bars:
+                    latest = bars[-1] if bars else {}
+                    stock_data['current_price'] = latest.get('close')
+                    # Moving-average approximation (simple)
+                    closes = [b.get('close', 0) for b in bars if b.get('close')]
+                    if len(closes) >= 20:
+                        ma5  = sum(closes[-5:])  / 5  if len(closes) >= 5  else None
+                        ma10 = sum(closes[-10:]) / 10 if len(closes) >= 10 else None
+                        ma20 = sum(closes[-20:]) / 20 if len(closes) >= 20 else None
+                        ma60 = sum(closes[-60:]) / 60 if len(closes) >= 60 else None
+                        cp   = closes[-1]
+                        stock_data['above_ma5']  = (ma5  is not None and cp > ma5)
+                        stock_data['above_ma10'] = (ma10 is not None and cp > ma10)
+                        stock_data['above_ma20'] = (ma20 is not None and cp > ma20)
+                        stock_data['above_ma60'] = (ma60 is not None and cp > ma60)
+
+                # Chip data
+                inst_net = chip.get('inst_net_3d')
+                if inst_net is not None:
+                    stock_data['institutional_selling'] = inst_net < 0
+                    stock_data['institutional_buying']  = inst_net > 0
+
+            except Exception as load_exc:
+                logger.warning("Real data load failed for %s, using empty stock_data: %s", stock, load_exc)
+
+        result = ft.evaluate(stock_data)
+
+        score    = result.get('score', 0)
+        scenario = result.get('scenario', 'UNKNOWN')
+        labels   = result.get('labels', [])
+        action   = result.get('suggested_action', 'WATCH')
+        bullish  = result.get('bullish_reasons', [])
+        risk_r   = result.get('risk_reasons', [])
+        entry    = result.get('entry_conditions', [])
+        exit_c   = result.get('exit_conditions', [])
+        avoid    = result.get('avoid_conditions', [])
+
+        print(f"  Score           : {score} / 100")
+        print(f"  Scenario        : {scenario}")
+        _labels_str = ', '.join(labels) if labels else _DASH
+        print(f"  Labels          : {_labels_str}")
+        print(f"  Suggested Action: {action}")
+        print()
+
+        if bullish:
+            print("  Entry Conditions (Bullish):")
+            for b in bullish:
+                print(f"    + {b}")
+            print()
+
+        if risk_r:
+            print("  Risk Conditions:")
+            for r in risk_r:
+                print(f"    - {r}")
+            print()
+
+        if avoid:
+            print("  Avoid Conditions:")
+            for a in avoid:
+                print(f"    ! {a}")
+            print()
+
+        bd = result.get('score_breakdown', {})
+        if bd:
+            print("  Score Breakdown:")
+            dims = [
+                ("fundamental", "財報/EPS成長 (max 25)"),
+                ("revenue",     "月營收/毛利率 (max 15)"),
+                ("base",        "低位階/底部翻多 (max 15)"),
+                ("technical",   "技術轉強/均線 (max 15)"),
+                ("chip",        "法人/籌碼 (max 15)"),
+                ("risk",        "風控健康度 (max 10)"),
+                ("deduction",   "避雷扣分"),
+            ]
+            for k, label in dims:
+                v = bd.get(k)
+                if v is not None:
+                    print(f"    {label:<30}: {v:+.0f}")
+            print()
+
+        print("=" * 70)
+        print("  [!] Research Only. Strategy Filter Only. No Real Orders.")
+        print("  [!] Production Trading: BLOCKED")
+        print("=" * 70)
+
+        if report:
+            from reports.strategy_filter_report import StrategyFilterReport
+            rpt      = StrategyFilterReport(mode=mode)
+            rpt_path = rpt.save(str(stock), result)
+            print(f"\n  Report: {rpt_path}")
+
+    except Exception as exc:
+        logger.error("strategy-filter failed: %s", exc, exc_info=True)
+        print(f"ERROR: {exc}")
+        sys.exit(1)
+
+
+def cmd_strategy_filter_pack(args: argparse.Namespace) -> None:
+    """Run the full Strategy Filter Pack for mock universe stocks (v0.5.1.1)."""
+    logger = logging.getLogger("main.strategy_filter_pack")
+    mode   = getattr(args, 'mode', 'real')
+
+    logger.info("strategy-filter-pack [mode=%s]", mode)
+
+    print()
+    print("=" * 70)
+    print("  TW Quant Cockpit \u2014 Strategy Filter Pack")
+    print("=" * 70)
+    print(f"  Mode            : {mode}")
+    print(f"  Research Only   : YES")
+    print(f"  No Real Orders  : YES")
+    print()
+
+    try:
+        from strategy_filters.strategy_filter_pack import StrategyFilterPack
+        pack = StrategyFilterPack(mode=mode)
+
+        # Demo stocks (mock data if real data unavailable)
+        demo_stocks = [
+            {"symbol": "2454", "low_base": True, "bottom_reversal": True,
+             "above_ma5": True, "above_ma10": True, "above_ma20": True,
+             "eps_yoy_growth": 25.0, "revenue_growth": True,
+             "institutional_selling": False, "margin_surge": False},
+            {"symbol": "2383", "low_base": False, "price_extended": True,
+             "eps_yoy_growth": 15.0, "revenue_growth": True,
+             "high_volume_upper_shadow": True, "kd_rsi_overbought_with_reversal": True,
+             "retail_chasing_high": True, "institutional_unloading": True},
+            {"symbol": "2330", "low_base": True, "above_ma20": True,
+             "eps_yoy_growth": 10.0, "revenue_growth": True,
+             "institutional_selling": False, "margin_surge": False},
+        ]
+
+        if mode == 'real':
+            try:
+                from data.universe_manifest import UniverseManifest
+                um = UniverseManifest()
+                manifest_df = um.load()
+                if manifest_df is not None and not manifest_df.empty:
+                    syms = manifest_df['symbol'].astype(str).tolist()[:10]
+                    demo_stocks = [{"symbol": s} for s in syms]
+                    logger.info("Loaded %d symbols from universe manifest", len(demo_stocks))
+            except Exception as ue:
+                logger.warning("Could not load universe manifest, using demo stocks: %s", ue)
+
+        results = pack.run_all_batch(demo_stocks)
+        summary = pack.build_summary(results)
+
+        print(f"  {'Symbol':<8}  {'Score':>6}  {'Scenario':<40}  {'Action'}")
+        print("  " + "-" * 68)
+        for r in results:
+            sym    = str(r.get('symbol', '?'))
+            score  = r.get('aggregate_score', 0)
+            ft     = r.get('filters', {}).get('financial_turnaround', {})
+            scen   = ft.get('scenario', '\u2014')[:38]
+            action = r.get('suggested_action', 'WATCH')
+            print(f"  {sym:<8}  {score:>6.0f}  {scen:<40}  {action}")
+
+        print()
+        print(f"  Total stocks    : {summary['total_stocks']}")
+        print(f"  Strong (>=80)   : {len(summary['strong_candidates'])}")
+        print(f"  Watch (>=65)    : {len(summary['watch_candidates'])}")
+        print()
+        print("=" * 70)
+        print("  [!] Research Only. Strategy Filter Only. No Real Orders.")
+        print("  [!] Production Trading: BLOCKED")
+        print("=" * 70)
+
+    except Exception as exc:
+        logger.error("strategy-filter-pack failed: %s", exc, exc_info=True)
+        print(f"ERROR: {exc}")
+        sys.exit(1)
+
+
+# ---------------------------------------------------------------------------
 # Argument parser
 # ---------------------------------------------------------------------------
 
@@ -10460,6 +10688,30 @@ def _build_parser() -> argparse.ArgumentParser:
     p_gnrpt.add_argument("--output-dir", default="reports", dest="output_dir",
                          help="Report output directory")
 
+    # ---- v0.5.1.1 Strategy Filter Pack ----
+    p_sf = subparsers.add_parser(
+        "strategy-filter",
+        help=(
+            "Run Financial Turnaround & Trend Discipline filter for a stock (v0.5.1.1). "
+            "[!] Research Only. No Real Orders."
+        ),
+    )
+    p_sf.add_argument("--stock", required=True, help="Stock symbol, e.g. 2454")
+    p_sf.add_argument("--mode", default="real", choices=["real", "mock"],
+                      help="Data mode (default: real)")
+    p_sf.add_argument("--report", action="store_true",
+                      help="Also save a Markdown strategy filter report")
+
+    p_sfp = subparsers.add_parser(
+        "strategy-filter-pack",
+        help=(
+            "Run the full Strategy Filter Pack across universe stocks (v0.5.1.1). "
+            "[!] Research Only. No Real Orders."
+        ),
+    )
+    p_sfp.add_argument("--mode", default="real", choices=["real", "mock"],
+                       help="Data mode (default: real)")
+
     return parser
 
 
@@ -10685,6 +10937,9 @@ def main() -> None:
         "gui-nav-groups":              cmd_gui_nav_groups,
         "gui-nav-search":              cmd_gui_nav_search,
         "gui-nav-report":              cmd_gui_nav_report,
+        # v0.5.1.1 Strategy Filter Pack
+        "strategy-filter":             cmd_strategy_filter,
+        "strategy-filter-pack":        cmd_strategy_filter_pack,
         # v0.5.1 Alias shortcut commands
         "daily":                       cmd_alias_daily,
         "quick":                       cmd_alias_quick,

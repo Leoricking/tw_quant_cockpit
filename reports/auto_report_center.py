@@ -324,6 +324,9 @@ class AutoReportCenter:
         # v0.5.2 GUI Navigation summary (always optional, never crashes)
         self.run_gui_navigation_summary()
 
+        # v0.5.1.1 Strategy Filter summary (always optional, never crashes)
+        self.run_strategy_filter_summary()
+
         # Aggregated outputs
         if self.include_daily_summary:
             self.build_daily_market_summary()
@@ -1013,6 +1016,23 @@ class AutoReportCenter:
             )
         except Exception as exc:
             logger.warning("run_gui_navigation_summary failed: %s", exc)
+
+    def run_strategy_filter_summary(self):
+        """Collect Strategy Filter Pack summary context (v0.5.1.1). Optional — failure does not abort run."""
+        try:
+            from strategy_filters.strategy_filter_pack import StrategyFilterPack
+            pack = StrategyFilterPack(mode=self.mode)
+            # Run on a minimal mock stock to confirm import and instantiation
+            _demo = pack.run_financial_turnaround({"symbol": "DEMO"})
+            self._context["strategy_filter_pack_version"] = pack.VERSION
+            self._context["strategy_filter_research_only"] = True
+            self._context["strategy_filter_no_real_orders"] = True
+            self._record_success(
+                "strategy_filter_pack",
+                f"version={pack.VERSION} research_only=True no_real_orders=True",
+            )
+        except Exception as exc:
+            logger.warning("run_strategy_filter_summary failed: %s", exc)
 
     def run_model_monitoring_report(self):
         """Generate Model Monitoring report (v0.4.3). Optional — failure does not abort run."""

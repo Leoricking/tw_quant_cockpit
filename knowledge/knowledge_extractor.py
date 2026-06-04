@@ -41,11 +41,16 @@ _ENTRY_KEYWORDS = [
     "財報", "EPS", "第一季", "去年同期", "全年", "乘以4",
     "底部翻多", "提前佈局", "提前卡位", "業績翻多", "績優翻多",
     "低位階", "基本面翻多",
+    # v0.5.1.1 Financial Turnaround keywords
+    "Q1 EPS", "Q1EPS", "財報翻多", "財報好", "財報佳",
+    "不追高", "提前卡位", "賣飛",
 ]
 
 _AVOID_TOP_PATTERN_KEYWORDS = [
     "M頭", "多重頂", "三重頂", "頭肩頂", "弧形頂",
     "單日反轉", "兩個高點沒過", "大盤創高但個股", "做頭", "頭部型態",
+    # v0.5.1.1 Financial Turnaround avoid keywords
+    "大盤創高個股不過高", "個股不創高", "個股不過前高",
 ]
 
 _AVOID_FUNDAMENTAL_KEYWORDS = [
@@ -65,6 +70,9 @@ _LONG_CYCLE_RISK_KEYWORDS = [
 
 _RISK_CONDITION_KEYWORDS = [
     "外資期貨空單", "權值股壓回", "指數修正", "主力出貨", "止損", "停損",
+    # v0.5.1.1 Financial Turnaround risk keywords
+    "主力洗盤", "法人出貨", "散戶追高", "風控",
+    "月線", "季線", "不猜頂底",
 ]
 
 _POSITION_SIZING_KEYWORDS = [
@@ -74,6 +82,8 @@ _POSITION_SIZING_KEYWORDS = [
 _FACTOR_CANDIDATE_KEYWORDS = [
     "EPS成長", "毛利率", "營收成長", "本益比", "殖利率",
     "股東權益報酬率", "ROE", "三率三升",
+    # v0.5.1.1 Financial Turnaround factor keywords
+    "營益率", "毛利率未惡化", "EPS年增",
 ]
 
 _LONG_CYCLE_CAVEAT = (

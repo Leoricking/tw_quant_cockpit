@@ -111,6 +111,8 @@ class SignalQualityEngine:
             ("long_term",           self.load_long_term_quality),
             ("portfolio",           self.load_portfolio_quality),
             ("microstructure",      self.load_microstructure_quality),
+            # v0.5.1.1: Financial Turnaround filter metadata (read-only, no weight change)
+            ("strategy_filter",     self.load_strategy_filter_quality),
         ]
 
         for source_name, loader in loaders:
@@ -319,6 +321,47 @@ class SignalQualityEngine:
                 ),
             })
         return self.normalize_quality_table(pd.DataFrame(rows), "portfolio")
+
+    def load_strategy_filter_quality(self) -> pd.DataFrame:
+        """
+        Load strategy filter metadata as signal quality context rows.
+
+        [!] Read-only signal metadata only. Does NOT auto-change weights.
+        Does NOT auto-activate strategies.
+
+        Tries to import FinancialTurnaroundFilter and check its registration
+        status. No real evaluation is performed here — this is metadata only.
+        """
+        rows = []
+        try:
+            from strategy_filters.financial_turnaround_filter import FinancialTurnaroundFilter
+            _ft = FinancialTurnaroundFilter()
+            rows.append({
+                "source":       "strategy_filter",
+                "signal_name":  "financial_turnaround_filter",
+                "signal_group": "strategy_filter_pack",
+                "sample_count": 0,
+                "win_rate":     None,
+                "avg_return":   None,
+                "median_return":None,
+                "profit_factor":None,
+                "max_drawdown": None,
+                "max_runup":    None,
+                "sharpe":       None,
+                "confidence":   "INSUFFICIENT",
+                "data_quality": (
+                    "v0.5.1.1 strategy filter — research framework only. "
+                    "No backtest validation yet. No weight change. "
+                    "Research Only. No Real Orders."
+                ),
+            })
+        except Exception as exc:
+            logger.warning("load_strategy_filter_quality: %s", exc)
+            return pd.DataFrame()
+
+        if not rows:
+            return pd.DataFrame()
+        return self.normalize_quality_table(pd.DataFrame(rows), "strategy_filter")
 
     def load_microstructure_quality(self) -> pd.DataFrame:
         """

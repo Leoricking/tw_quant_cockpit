@@ -674,6 +674,116 @@ class RuleRegistry:
                 signal_type="risk",
                 confidence=CONFIDENCE_PLANNED,
             ),
+            # ----------------------------------------------------------------
+            # I. Strategy Filter Pack v0.5.1.1 Candidate Rules
+            #    Status: NEEDS_REVIEW or EXPERIMENTAL
+            #    NOT auto-activated. NOT validated by backtest.
+            #    Derived from Financial Turnaround & Trend Discipline framework.
+            # ----------------------------------------------------------------
+            dict(
+                rule_id="STRATEGY.FINANCIAL_TURNAROUND.V1",
+                rule_name="Financial Turnaround Strategy",
+                category="strategy_filter",
+                timeframe="short",
+                status=RULE_STATUS_NEEDS_REVIEW,
+                description=(
+                    "Financial turnaround + technical trend discipline: "
+                    "EPS growth + revenue strength + low-base breakout. "
+                    "Scenario A: low-base financial turnaround candidate. "
+                    "v0.5.1.1 candidate — not backtest validated."
+                ),
+                signal_type="filter",
+                confidence=CONFIDENCE_PLANNED,
+            ),
+            dict(
+                rule_id="STRATEGY.LOW_BASE_BREAKOUT.V1",
+                rule_name="Low Base Breakout",
+                category="strategy_filter",
+                timeframe="short",
+                status=RULE_STATUS_NEEDS_REVIEW,
+                description=(
+                    "Price in low position/base, breaking out from downtrend resistance. "
+                    "Pullback entry only: wait for pullback to 5/10MA or neckline hold. "
+                    "v0.5.1.1 candidate — not backtest validated."
+                ),
+                signal_type="filter",
+                confidence=CONFIDENCE_PLANNED,
+            ),
+            dict(
+                rule_id="RISK.GOOD_FUNDAMENTAL_BUT_EXTENDED.V1",
+                rule_name="Good Fundamental But Price Extended",
+                category="risk",
+                timeframe="short",
+                status=RULE_STATUS_NEEDS_REVIEW,
+                description=(
+                    "Scenario B: fundamentals are good but stock has already surged. "
+                    "Warning signs: large volume with upper shadow, KD/RSI overbought, "
+                    "retail chasing, institutional unloading, 5MA broken on volume. "
+                    "Do not chase. Wait for pullback. "
+                    "v0.5.1.1 candidate — not backtest validated."
+                ),
+                signal_type="risk",
+                confidence=CONFIDENCE_PLANNED,
+            ),
+            dict(
+                rule_id="RISK.RELATIVE_WEAKNESS_MARKET_HIGH.V1",
+                rule_name="Relative Weakness During Market High",
+                category="risk",
+                timeframe="short",
+                status=RULE_STATUS_NEEDS_REVIEW,
+                description=(
+                    "Scenario C: market index makes new high but stock fails to exceed "
+                    "prior highs. Two consecutive highs not exceeded. "
+                    "Rotate to stronger stocks. "
+                    "v0.5.1.1 candidate — not backtest validated."
+                ),
+                signal_type="risk",
+                confidence=CONFIDENCE_PLANNED,
+            ),
+            dict(
+                rule_id="RISK.TOP_PATTERN_WITH_WEAK_FUNDAMENTAL.V1",
+                rule_name="Top Pattern With Weak Fundamental",
+                category="risk",
+                timeframe="short",
+                status=RULE_STATUS_NEEDS_REVIEW,
+                description=(
+                    "Technical top pattern (M-top, triple-top, H&S, arc-top) combined "
+                    "with EPS decline or revenue decline. High risk of sustained downtrend. "
+                    "Avoid or rotate to stronger fundamentals. "
+                    "v0.5.1.1 candidate — not backtest validated."
+                ),
+                signal_type="risk",
+                confidence=CONFIDENCE_PLANNED,
+            ),
+            dict(
+                rule_id="RISK.MA20_BREAK_THREE_DAYS.V1",
+                rule_name="20MA Break Three Days",
+                category="risk",
+                timeframe="short",
+                status=RULE_STATUS_NEEDS_REVIEW,
+                description=(
+                    "Price breaks 20-day MA and fails to reclaim within 3 trading days. "
+                    "First line of defense breached. Reduce position 1/3 to 1/2. "
+                    "v0.5.1.1 candidate — not backtest validated."
+                ),
+                signal_type="risk",
+                confidence=CONFIDENCE_PLANNED,
+            ),
+            dict(
+                rule_id="RISK.MA60_BREAK_TREND_WEAK.V1",
+                rule_name="60MA Break Trend Weak",
+                category="risk",
+                timeframe="short",
+                status=RULE_STATUS_NEEDS_REVIEW,
+                description=(
+                    "Price breaks 60-day (quarterly) MA and cannot quickly reclaim. "
+                    "Trend turns weak. Second line of defense breached. "
+                    "Reassess when price reclaims monthly/quarterly MA. "
+                    "v0.5.1.1 candidate — not backtest validated."
+                ),
+                signal_type="risk",
+                confidence=CONFIDENCE_PLANNED,
+            ),
         ]
 
         count = 0

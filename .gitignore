@@ -43,6 +43,10 @@ reports/buy_point_validation_report_*.md
 reports/strategy_knowledge_validation_report_*.md
 reports/universe_quality_report_*.md
 
+# v0.5.1.1 Strategy Filter Pack generated outputs (not committed)
+reports/strategy_filter_report_*.md
+data/backtest_results/strategy_filter/
+
 # Universe manifest (user data — not committed; sample is committed)
 data/universe/universe_manifest.csv
 

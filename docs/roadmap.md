@@ -44,6 +44,7 @@
 | v0.4.9 | Research Workflow Automation | Done |
 | v0.5.0 | Research OS Planning / Stabilization | Done |
 | v0.5.1 | CLI Alias / Command UX Polish | Done |
+| v0.5.1.1 | Strategy Filter Pack — Financial Turnaround & Trend Discipline | Done |
 | v0.5.2 | GUI Tab Grouping / Navigation Polish | Done |
 | v0.5.3 | Regression Suite Consolidation | Planned |
 | v0.5.4 | Report Pack | Planned |

@@ -4,7 +4,34 @@
 >
 > **[!] v1: Real order execution is strictly prohibited. For research, simulation, and decision support only. Not investment advice.**
 
-**Current version: v0.5.2 — GUI Tab Grouping / Navigation Polish**
+**Current version: v0.5.1.1 — Strategy Filter Pack (Financial Turnaround & Trend Discipline)**
+
+---
+
+## v0.5.1.1 — Strategy Filter Pack: Financial Turnaround & Trend Discipline
+
+**New in v0.5.1.1:**
+
+- **Financial Turnaround & Trend Discipline Filter** — 0–100 scoring framework: EPS/財報 (25), 月營收/毛利率 (15), 低位階/底部翻多 (15), 技術轉強/站回均線 (15), 法人/籌碼支持 (15), 風控健康度 (10). Avoid deductions up to -30.
+- **Three Scenario Archetypes** — A (財報好+低位階+技術翻多 → SECOND_WAVE_CANDIDATE), B (財報好但已大漲 → DO_NOT_CHASE), C (財報差+大盤創高個股不過高 → AVOID_OR_ROTATE).
+- **Strategy Filter Pack** — `StrategyFilterPack.run_all()` and `run_all_batch()` for multi-stock screening.
+- **Strategy Filter Report** — Markdown report with 6 sections: 總覽, Financial Turnaround score, Entry Conditions, Exit/Reduce Conditions, Avoid Conditions, 安全聲明.
+- **Knowledge Extractor** — Added Financial Turnaround keywords: 財報翻多, Q1 EPS, 不追高, 月線, 季線, 不猜頂底, 法人出貨, 散戶追高, 風控, etc.
+- **Rule Registry** — Added 7 new NEEDS_REVIEW candidate rules: STRATEGY.FINANCIAL_TURNAROUND.V1, STRATEGY.LOW_BASE_BREAKOUT.V1, RISK.GOOD_FUNDAMENTAL_BUT_EXTENDED.V1, RISK.RELATIVE_WEAKNESS_MARKET_HIGH.V1, RISK.TOP_PATTERN_WITH_WEAK_FUNDAMENTAL.V1, RISK.MA20_BREAK_THREE_DAYS.V1, RISK.MA60_BREAK_TREND_WEAK.V1.
+- **Signal Quality Engine** — Strategy filter integrated as read-only signal metadata (no weight change).
+- **Auto Report Center** — Strategy filter summary added to full and daily profiles.
+- **GUI** — Strategy Filter tab added to main dashboard.
+- **[!] Research Only. Strategy Filter Only. No Real Orders. Production Trading: BLOCKED.**
+
+**CLI usage:**
+```bash
+# Single stock filter
+python main.py strategy-filter --stock 2454 --mode real
+python main.py strategy-filter --stock 2383 --mode real --report
+
+# Full pack (all universe stocks)
+python main.py strategy-filter-pack --mode real
+```
 
 ---
 

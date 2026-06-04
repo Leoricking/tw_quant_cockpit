@@ -4,6 +4,75 @@
 
 ---
 
+## v0.5.1.1 — Strategy Filter Pack: Financial Turnaround & Trend Discipline (2026-06-04)
+
+### Summary
+Small-version insert between v0.5.1 and v0.5.2. Adds a strategy filter framework derived from 6 investment transcript knowledge sources. No v0.5.1 tag overwritten. No v0.5.2 roadmap changes. Research only — no real orders, no automatic weight changes, no ML activation.
+
+### New Package: `strategy_filters/`
+
+| Module | Purpose |
+|--------|---------|
+| `__init__.py` | Package init, exports FinancialTurnaroundFilter, StrategyFilterPack |
+| `financial_turnaround_filter.py` | Main filter: 6-dimension scoring, 3 scenario archetypes, deduction logic |
+| `strategy_filter_pack.py` | Unified manager: run_all(), run_financial_turnaround(), batch run, summary |
+
+### New Report
+- `reports/strategy_filter_report.py` — 6-section Markdown report (single-stock and pack)
+
+### New Docs
+- `docs/strategy_filter_pack.md`
+
+### Updated Files
+
+| File | Change |
+|------|--------|
+| `main.py` | Added `strategy-filter` and `strategy-filter-pack` CLI commands |
+| `analysis/signal_quality_engine.py` | Added `load_strategy_filter_quality()` as read-only signal metadata |
+| `governance/rule_registry.py` | Added 7 NEEDS_REVIEW candidate rules |
+| `knowledge/knowledge_extractor.py` | Added Financial Turnaround keywords to 4 keyword lists |
+| `reports/auto_report_center.py` | Added `run_strategy_filter_summary()` to full and daily profiles |
+| `gui/dashboard.py` | Added Strategy Filter tab (inline) |
+| `README.md` | Added v0.5.1.1 section |
+| `.gitignore` | Added `reports/strategy_filter_report_*.md` and `data/backtest_results/strategy_filter/` |
+
+### New CLI Commands
+
+| Command | Description |
+|---------|-------------|
+| `strategy-filter --stock 2454 --mode real` | Single-stock filter with score + scenario |
+| `strategy-filter --stock 2454 --mode real --report` | Same + save Markdown report |
+| `strategy-filter-pack --mode real` | Full pack across universe stocks |
+
+### Scoring (Financial Turnaround Trend Score, 0–100)
+
+| Dimension | Max |
+|-----------|-----|
+| 財報 / EPS 成長 | 25 |
+| 月營收 / 毛利率 / 營益率 | 15 |
+| 低位階 / 底部翻多 | 15 |
+| 技術轉強 / 站回均線 | 15 |
+| 法人 / 籌碼支持 | 15 |
+| 風控健康度 / 融資未失控 | 10 |
+| 避雷扣分 (max -30) | -30 |
+
+### New Rule Candidates (NEEDS_REVIEW)
+- `STRATEGY.FINANCIAL_TURNAROUND.V1`
+- `STRATEGY.LOW_BASE_BREAKOUT.V1`
+- `RISK.GOOD_FUNDAMENTAL_BUT_EXTENDED.V1`
+- `RISK.RELATIVE_WEAKNESS_MARKET_HIGH.V1`
+- `RISK.TOP_PATTERN_WITH_WEAK_FUNDAMENTAL.V1`
+- `RISK.MA20_BREAK_THREE_DAYS.V1`
+- `RISK.MA60_BREAK_TREND_WEAK.V1`
+
+### Safety
+- [!] Research Only. Strategy Filter Only. No Real Orders. Production Trading: BLOCKED.
+- `suggested_action` restricted to: WATCH, WAIT_PULLBACK, SECOND_WAVE_CANDIDATE, REDUCE_RISK, AVOID, ROTATE_TO_STRONGER. No BUY / SELL / ORDER.
+- `read_only=True, no_real_orders=True, production_blocked=True` on all new classes.
+- `reports/strategy_filter_report_*.md` and `data/backtest_results/strategy_filter/` are gitignored.
+
+---
+
 ## v0.5.2 — GUI Tab Grouping / Navigation Polish (2026-06-04)
 
 ### Summary
