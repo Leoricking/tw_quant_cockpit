@@ -1210,6 +1210,23 @@ class RegressionSuite:
             elapsed = (time.monotonic() - t0) * 1000
             return self._item("strategy_filter_gui_nav_searchable", "FAIL", str(exc), elapsed)
 
+    def run_named_suite(self, suite_name: str, mode: str = "real") -> dict:
+        """Bridge to new regression.suite_registry / regression.runner (v0.5.3)."""
+        try:
+            from regression.suite_registry import RegressionSuiteRegistry
+            from regression.regression_runner import RegressionRunner
+            registry = RegressionSuiteRegistry()
+            runner   = RegressionRunner(registry=registry)
+            return runner.run_suite(suite_name=suite_name, mode=mode)
+        except Exception as exc:
+            logger.warning("run_named_suite fallback: %s", exc)
+            return {
+                "suite":          suite_name,
+                "status":         "FAIL",
+                "error":          str(exc),
+                "no_real_orders": True,
+            }
+
     def _write_csv(self, tests: list[dict], suite_name: str) -> str | None:
         try:
             today = datetime.now().strftime("%Y-%m-%d")

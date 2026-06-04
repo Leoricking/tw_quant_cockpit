@@ -443,6 +443,12 @@ class AutoReportIndexBuilder:
                 **_extract_cli_ux_fields(ctx),
                 # v0.5.2 GUI Navigation
                 **_extract_gui_navigation_fields(ctx),
+                # v0.5.3 Regression Suite Consolidation
+                "regression_latest_suite":     ctx.get("regression_consolidation", {}).get("suite", ""),
+                "regression_total_tests":      ctx.get("regression_consolidation", {}).get("total", 0),
+                "regression_failed_count":     ctx.get("regression_consolidation", {}).get("failed", 0),
+                "regression_warning_count":    ctx.get("regression_consolidation", {}).get("warnings", 0),
+                "regression_coverage_score":   ctx.get("regression_consolidation", {}).get("coverage_score", 0),
             }
 
             path = os.path.join(output_dir, "manifest.json")

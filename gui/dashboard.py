@@ -376,6 +376,15 @@ except Exception as _gn_exc:
     _GUI_NAVIGATION_AVAILABLE = False
 
 # ---------------------------------------------------------------------------
+# v0.5.3 Regression Suite panel import (guarded)
+# ---------------------------------------------------------------------------
+try:
+    from gui.regression_suite_panel import RegressionSuitePanel
+    _REGRESSION_SUITE_AVAILABLE = True
+except Exception as _rs_exc:
+    logger.warning("RegressionSuitePanel unavailable: %s", _rs_exc)
+    _REGRESSION_SUITE_AVAILABLE = False
+
 # v0.5.1.1 Strategy Filter panel — inline (no separate panel file required)
 # ---------------------------------------------------------------------------
 _STRATEGY_FILTER_AVAILABLE = False
@@ -1478,6 +1487,13 @@ class CockpitWindow(QMainWindow if _PYSIDE6_AVAILABLE else object):
             mid_tabs.addTab(self._gui_navigation_panel, "GUI Navigation")
         else:
             self._gui_navigation_panel = None
+
+        # v0.5.3 Regression Suite tab
+        if _REGRESSION_SUITE_AVAILABLE:
+            self._regression_suite_panel = RegressionSuitePanel()
+            mid_tabs.addTab(self._regression_suite_panel, "Regression Suite")
+        else:
+            self._regression_suite_panel = None
 
         # v0.5.1.1 Strategy Filter tab (inline — no separate panel file)
         if _STRATEGY_FILTER_AVAILABLE and _PYSIDE6_AVAILABLE:

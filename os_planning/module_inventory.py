@@ -337,6 +337,18 @@ _MODULES: list[dict] = [
         "known_limitations":  "Partially auto-generated; needs manual curation",
         "next_action":        "Generate from docstrings in v0.5.x",
     },
+    # v0.5.3
+    {
+        "module_name":        "regression_suite_consolidation",
+        "package":            "regression",
+        "category":           "F. QA/Release Layer",
+        "cli_commands":       "regression-list-suites,regression-run,regression-coverage,regression-report",
+        "gui_tab":            "Regression Suite",
+        "report":             "yes",
+        "maturity":           "USABLE",
+        "known_limitations":  "Coverage matrix based on static analysis; runtime coverage requires prior test run",
+        "next_action":        "Add CI integration hook for automatic regression on commit",
+    },
 ]
 
 

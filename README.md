@@ -4,7 +4,30 @@
 >
 > **[!] v1: Real order execution is strictly prohibited. For research, simulation, and decision support only. Not investment advice.**
 
-**Current version: v0.5.2.1 — Strategy Filter GUI Navigation Integration**
+**Current version: v0.5.3 — Regression Suite Consolidation**
+
+---
+
+## v0.5.3 — Regression Suite Consolidation
+
+**New in v0.5.3:**
+
+- **Named regression suites** — 10 suites: quick (11), full (~40), gui (10), report (10), safety (6), data (6), strategy (7), replay (6), research_os (9), release_gate (~28).
+- **Coverage matrix** — 23 modules × 7 dimensions (CLI/GUI/Report/Safety/Data/Strategy/Replay). Average coverage score shown.
+- **RegressionRunner** — Safe subprocess runner (no shell=True, forbidden keyword guard: buy/sell/order/submit_order/broker/shioaji blocked).
+- **RegressionStore** — CSV persistence for results, summaries, and coverage matrices.
+- **RegressionConsolidationReport** — 7-section Markdown report.
+- **GUI panel** — `RegressionSuitePanel` with QThread workers, results table, coverage matrix table.
+- **4 new CLI commands**: `regression-list-suites`, `regression-run`, `regression-coverage`, `regression-report`.
+- **[!] Regression Only. Research Only. No Real Orders. Production Trading: BLOCKED.**
+
+**CLI usage:**
+```bash
+python main.py regression-list-suites
+python main.py regression-run --suite quick
+python main.py regression-coverage
+python main.py regression-report --mode real
+```
 
 ---
 

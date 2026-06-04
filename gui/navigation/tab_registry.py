@@ -555,6 +555,41 @@ class GUITabRegistry:
                 related_cli_commands=["usability-qa"],
                 maturity="STABLE",
             ),
+            # v0.5.3 Regression Suite Consolidation
+            GUITabMetadata(
+                tab_id="regression_suite",
+                tab_name="regression_suite",
+                display_name="Regression Suite",
+                group="release_qa",
+                priority="P1",
+                description=(
+                    "Regression Suite Consolidation \u2014 unified test suites "
+                    "(quick/full/gui/report/safety/data/strategy/replay/research_os/release_gate), "
+                    "coverage matrix, and markdown report. Regression Only. No Real Orders."
+                ),
+                module_path="gui.regression_suite_panel",
+                class_name="RegressionSuitePanel",
+                available_flag="_REGRESSION_SUITE_AVAILABLE",
+                safety_level="RESEARCH_ONLY",
+                read_only=True,
+                no_real_orders=True,
+                production_blocked=True,
+                keywords=[
+                    "regression", "test", "suite", "quick", "full", "safety", "gui",
+                    "report", "coverage", "\u6e2c\u8a66", "\u56de\u6b78\u6e2c\u8a66",
+                    "coverage matrix",
+                ],
+                aliases=["regression-suite", "regression-run", "coverage"],
+                related_cli_commands=[
+                    "regression-list-suites", "regression-run",
+                    "regression-coverage", "regression-report", "regression-suite",
+                ],
+                report_types=["regression_consolidation_report"],
+                maturity="USABLE",
+                default_visible=True,
+                favorite_default=False,
+                notes="Added in v0.5.3 \u2014 Regression Suite Consolidation.",
+            ),
         ]
         for tab in tabs:
             self._tabs[tab.tab_id] = tab

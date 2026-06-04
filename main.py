@@ -8919,6 +8919,136 @@ def cmd_strategy_filter_pack(args: argparse.Namespace) -> None:
 
 
 # ---------------------------------------------------------------------------
+# v0.5.3 Regression Suite Consolidation commands
+# ---------------------------------------------------------------------------
+
+def _print_regression_header() -> None:
+    print()
+    print("=" * 70)
+    print("  TW Quant Cockpit \u2014 Regression Suite Consolidation v0.5.3")
+    print("=" * 70)
+    print("  [!] Regression Only. Research Only. No Real Orders.")
+    print("  [!] Production Trading: BLOCKED")
+    print()
+
+
+def cmd_regression_list_suites(args: argparse.Namespace) -> None:
+    """List all available regression suites (v0.5.3)."""
+    _print_regression_header()
+    try:
+        from regression.suite_registry import RegressionSuiteRegistry
+        registry = RegressionSuiteRegistry()
+        suites = registry.list_suites()
+        print(f"  Available Suites ({len(suites)}):")
+        print()
+        for suite_name in suites:
+            tests = registry.get_suite(suite_name)
+            required = sum(1 for t in tests if t.required)
+            print(f"    {suite_name:<20}  {len(tests):>3} tests  ({required} required)")
+        print()
+        print("  Usage: python main.py regression-run --suite quick")
+        print()
+    except Exception as exc:
+        print(f"  ERROR: {exc}")
+        sys.exit(1)
+
+
+def cmd_regression_run(args: argparse.Namespace) -> None:
+    """Run a named regression suite (v0.5.3)."""
+    _print_regression_header()
+    suite_name = getattr(args, "suite", "quick")
+    mode       = getattr(args, "mode", "real")
+    print(f"  Suite: {suite_name}  Mode: {mode}")
+    print()
+    try:
+        from regression.suite_registry import RegressionSuiteRegistry
+        from regression.regression_runner import RegressionRunner
+        registry = RegressionSuiteRegistry()
+        runner   = RegressionRunner(registry=registry)
+        result   = runner.run_suite(suite_name=suite_name, mode=mode)
+    except Exception as exc:
+        print(f"  ERROR: {exc}")
+        sys.exit(1)
+
+    status   = result.get("status", "UNKNOWN")
+    total    = result.get("total", 0)
+    passed   = result.get("passed", 0)
+    warnings = result.get("warnings", 0)
+    failed   = result.get("failed", 0)
+    timeouts = result.get("timeouts", 0)
+
+    print(f"  Status   : {status}")
+    print(f"  Total    : {total}")
+    print(f"  Passed   : {passed}")
+    print(f"  Warnings : {warnings}")
+    print(f"  Failed   : {failed}")
+    print(f"  Timeouts : {timeouts}")
+    print()
+
+    for t in result.get("tests", []):
+        st  = t.get("status", "?")
+        nm  = t.get("name", "?")[:45]
+        dur = t.get("duration_seconds", 0)
+        marker = "\u2713" if st == "PASS" else ("\u26a0" if st == "WARNING" else ("\u2717" if st == "FAIL" else "\u23f1"))
+        print(f"  [{marker}] {nm:<46}  {st:<10}  {dur:.1f}s")
+    print()
+    print("  [!] No real orders. Research Only.")
+    print()
+
+
+def cmd_regression_coverage(args: argparse.Namespace) -> None:
+    """Show regression suite coverage matrix (v0.5.3)."""
+    _print_regression_header()
+    print("  Coverage Matrix:")
+    print()
+    try:
+        from regression.coverage_matrix import RegressionCoverageMatrix
+        matrix = RegressionCoverageMatrix()
+        rows   = matrix.build()
+        score  = matrix.summary_score()
+
+        header = f"  {'Module':<30}  {'CLI':>4}  {'GUI':>4}  {'Rpt':>4}  {'Safe':>5}  {'Score':>6}"
+        print(header)
+        print("  " + "-" * 62)
+        for row in rows:
+            cli_c = "Yes" if row.get("cli_covered")    else "No "
+            gui_c = "Yes" if row.get("gui_covered")    else "No "
+            rpt_c = "Yes" if row.get("report_covered") else "No "
+            saf_c = "Yes" if row.get("safety_covered") else "No "
+            sc    = row.get("coverage_score", 0)
+            mod   = str(row.get("module", ""))[:28]
+            print(f"  {mod:<30}  {cli_c:>4}  {gui_c:>4}  {rpt_c:>4}  {saf_c:>5}  {sc:>5}%")
+        print()
+        print(f"  Average Coverage Score: {score:.1f}%")
+        print()
+        print("  [!] No real orders. Research Only.")
+        print()
+    except Exception as exc:
+        print(f"  ERROR: {exc}")
+        sys.exit(1)
+
+
+def cmd_regression_report(args: argparse.Namespace) -> None:
+    """Generate regression consolidation report (v0.5.3)."""
+    _print_regression_header()
+    mode = getattr(args, "mode", "real")
+    print(f"  Mode: {mode}")
+    print("  Generating regression consolidation report ...")
+    print()
+    try:
+        from reports.regression_consolidation_report import RegressionConsolidationReport
+        rpt  = RegressionConsolidationReport(mode=mode)
+        path = rpt.generate(suite_name="quick", mode=mode)
+        print(f"  Report saved: {path}")
+        print()
+        print("  [!] No real orders. Research Only.")
+        print()
+    except Exception as exc:
+        print(f"  ERROR: {exc}")
+        sys.exit(1)
+
+
+# ---------------------------------------------------------------------------
 # Argument parser
 # ---------------------------------------------------------------------------
 
@@ -10712,6 +10842,33 @@ def _build_parser() -> argparse.ArgumentParser:
     p_sfp.add_argument("--mode", default="real", choices=["real", "mock"],
                        help="Data mode (default: real)")
 
+    # ---- v0.5.3 Regression Suite Consolidation ----
+    subparsers.add_parser(
+        "regression-list-suites",
+        help="List all available regression suites (v0.5.3). [!] Regression Only. No Real Orders.",
+    )
+
+    p_rrun = subparsers.add_parser(
+        "regression-run",
+        help="Run a named regression suite (v0.5.3). [!] Regression Only. No Real Orders.",
+    )
+    p_rrun.add_argument("--suite", default="quick",
+                        help="Suite name: quick/full/gui/report/safety/data/strategy/replay/research_os/release_gate")
+    p_rrun.add_argument("--mode", default="real", choices=["real", "mock"],
+                        help="Data mode (default: real)")
+
+    subparsers.add_parser(
+        "regression-coverage",
+        help="Show regression suite coverage matrix (v0.5.3). [!] Regression Only. No Real Orders.",
+    )
+
+    p_rrpt = subparsers.add_parser(
+        "regression-report",
+        help="Generate regression consolidation report (v0.5.3). [!] Regression Only. No Real Orders.",
+    )
+    p_rrpt.add_argument("--mode", default="real", choices=["real", "mock"],
+                        help="Data mode (default: real)")
+
     return parser
 
 
@@ -10937,6 +11094,11 @@ def main() -> None:
         "gui-nav-groups":              cmd_gui_nav_groups,
         "gui-nav-search":              cmd_gui_nav_search,
         "gui-nav-report":              cmd_gui_nav_report,
+        # v0.5.3 Regression Suite Consolidation
+        "regression-list-suites":      cmd_regression_list_suites,
+        "regression-run":              cmd_regression_run,
+        "regression-coverage":         cmd_regression_coverage,
+        "regression-report":           cmd_regression_report,
         # v0.5.1.1 Strategy Filter Pack
         "strategy-filter":             cmd_strategy_filter,
         "strategy-filter-pack":        cmd_strategy_filter_pack,

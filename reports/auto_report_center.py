@@ -56,6 +56,7 @@ _PROFILE_FLAGS: Dict[str, dict] = {
         include_intraday_replay=True,
         include_notification_center=True,
         include_portfolio_journal=True,
+        include_regression_consolidation=True,
     ),
     "daily": dict(
         include_stock_reports=False,
@@ -77,6 +78,7 @@ _PROFILE_FLAGS: Dict[str, dict] = {
         include_intraday_replay=False,
         include_notification_center=True,
         include_portfolio_journal=True,
+        include_regression_consolidation=False,
     ),
     "portfolio": dict(
         include_stock_reports=False,
@@ -172,6 +174,7 @@ class AutoReportCenter:
         include_ml_knowledge_integration: bool = False,
         include_notification_center: bool = False,
         include_portfolio_journal: bool = False,
+        include_regression_consolidation: bool = False,
     ):
         self.mode        = mode
         self.profile     = profile
@@ -213,6 +216,9 @@ class AutoReportCenter:
         )
         self.include_portfolio_journal = flags.get(
             "include_portfolio_journal", include_portfolio_journal
+        )
+        self.include_regression_consolidation = flags.get(
+            "include_regression_consolidation", include_regression_consolidation
         )
         self.universe_name = universe_name
 
@@ -326,6 +332,10 @@ class AutoReportCenter:
 
         # v0.5.1.1 Strategy Filter summary (always optional, never crashes)
         self.run_strategy_filter_summary()
+
+        # v0.5.3 Regression Suite Consolidation summary (always optional, never crashes)
+        if self.include_regression_consolidation:
+            self.run_regression_consolidation_summary()
 
         # Aggregated outputs
         if self.include_daily_summary:
@@ -1303,6 +1313,26 @@ class AutoReportCenter:
         except Exception:
             pass
         return []
+
+    def run_regression_consolidation_summary(self) -> None:
+        """v0.5.3: Run quick regression suite and record summary (never crashes)."""
+        try:
+            from gui.regression_suite_adapter import RegressionSuiteAdapter
+            adapter = RegressionSuiteAdapter()
+            result  = adapter.run_suite("quick", mode=self.mode)
+            self._context["regression_consolidation"] = {
+                "suite":          result.get("suite", "quick"),
+                "status":         result.get("status", "UNKNOWN"),
+                "total":          result.get("total", 0),
+                "passed":         result.get("passed", 0),
+                "failed":         result.get("failed", 0),
+                "warnings":       result.get("warnings", 0),
+                "coverage_score": adapter.get_coverage_score(),
+            }
+            self._record_success("regression_consolidation_summary", None)
+        except Exception as exc:
+            logger.warning("AutoReportCenter.run_regression_consolidation_summary: %s", exc)
+            self._context["regression_consolidation"] = {}
 
     def _record_success(self, name: str, path: Optional[str], extra: dict = None):
         entry = {

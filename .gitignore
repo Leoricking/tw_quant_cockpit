@@ -266,3 +266,7 @@ reports/cli_ux_report_*.md
 data/backtest_results/gui_navigation/
 reports/gui_navigation_report_*.md
 config/gui_navigation_state.json
+
+# v0.5.3 Regression Suite Consolidation — runtime outputs
+data/backtest_results/regression/
+reports/regression_consolidation_report_*.md

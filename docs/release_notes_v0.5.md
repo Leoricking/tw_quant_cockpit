@@ -4,6 +4,59 @@
 
 ---
 
+## v0.5.3 — Regression Suite Consolidation (2026-06-04)
+
+### Summary
+Consolidated all regression tests into a unified named-suite system with coverage matrix, regression runner (subprocess, no shell=True), regression store (CSV), consolidation Markdown report, GUI panel, and 4 new CLI commands. 10 named suites: quick/full/gui/report/safety/data/strategy/replay/research_os/release_gate.
+
+### New Files
+
+| File | Description |
+|------|-------------|
+| `regression/__init__.py` | Package exports |
+| `regression/regression_schema.py` | RegressionTestCase / RegressionTestResult dataclasses |
+| `regression/suite_registry.py` | RegressionSuiteRegistry with all suite builders |
+| `regression/regression_runner.py` | RegressionRunner (subprocess, no shell=True, forbidden keyword guard) |
+| `regression/coverage_matrix.py` | RegressionCoverageMatrix (23 modules × 7 dimensions) |
+| `regression/regression_store.py` | CSV persistence for results/summary/coverage |
+| `reports/regression_consolidation_report.py` | 7-section Markdown report generator |
+| `gui/regression_suite_panel.py` | QWidget GUI panel with QThread workers |
+| `gui/regression_suite_adapter.py` | Non-GUI adapter (no PySide6 dependency) |
+| `docs/regression_suite_consolidation.md` | This documentation |
+
+### Modified Files
+
+| File | Change |
+|------|--------|
+| `main.py` | 4 new CLI commands: regression-list-suites, regression-run, regression-coverage, regression-report |
+| `release/regression_suite.py` | Added `run_named_suite()` bridge to v0.5.3 registry |
+| `release/stable_release_checklist.py` | 7 new v0.5.3 checks |
+| `reports/auto_report_center.py` | Added `include_regression_consolidation` flag + method |
+| `reports/auto_report_index.py` | Added 5 regression manifest fields |
+| `experiments/snapshot_builder.py` | Added `build_regression_snapshot()` |
+| `gui/dashboard.py` | Added Regression Suite tab |
+| `gui/navigation/tab_registry.py` | Added regression_suite GUITabMetadata |
+| `os_planning/module_inventory.py` | Added regression_suite_consolidation module |
+| `os_planning/regression_audit.py` | Added regression_suite_consolidation coverage entry |
+| `.gitignore` | Added regression output paths |
+
+### New CLI Commands
+
+```bash
+python main.py regression-list-suites          # List all suites
+python main.py regression-run --suite quick    # Run named suite
+python main.py regression-coverage             # Show coverage matrix
+python main.py regression-report --mode real   # Generate report
+```
+
+### Safety
+- [!] Regression Only. Research Only. No Real Orders. No broker API. Production Trading: BLOCKED.
+- `no_real_orders=True`, `production_blocked=True`, `read_only=True` on all classes
+- Forbidden keyword guard: buy/sell/order/submit_order/broker/shioaji blocked in all test commands
+- `shell=False` on all `subprocess.run` calls
+
+---
+
 ## v0.5.2.1 — Strategy Filter GUI Navigation Integration (2026-06-04)
 
 ### Summary

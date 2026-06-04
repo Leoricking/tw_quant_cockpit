@@ -296,6 +296,17 @@ _COVERAGE: list[dict] = [
         "missing_checks":    "NEW in v0.5.0 — all tests pending",
         "recommended_test":  "_test_os_planning_module_inventory; _test_os_planning_cli_inventory; _test_os_planning_safety_matrix",
     },
+    # v0.5.3
+    {
+        "module":            "regression_suite_consolidation",
+        "command_covered":   "yes",
+        "import_covered":    "yes",
+        "gui_covered":       "yes",
+        "report_covered":    "yes",
+        "safety_covered":    "yes",
+        "missing_checks":    "Runtime coverage requires prior test run; CI hook not yet implemented",
+        "recommended_test":  "_check_regression_consolidation_import; _check_quick_suite_exists; _check_regression_safe_command_enforcement",
+    },
 ]
 
 

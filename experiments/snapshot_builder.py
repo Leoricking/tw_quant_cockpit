@@ -666,6 +666,7 @@ class ExperimentSnapshotBuilder:
             ("research_os_planning",        lambda: self.build_research_os_planning_snapshot()),
             ("cli_ux",                      lambda: self.build_cli_ux_snapshot()),
             ("gui_navigation",              lambda: self.build_gui_navigation_snapshot()),
+            ("regression_suite",            lambda: self.build_regression_snapshot()),
         ]
         for snap_type, fn in builders:
             try:
@@ -950,5 +951,42 @@ class ExperimentSnapshotBuilder:
             snap["latest_gui_nav_at"] = datetime.now().strftime("%Y-%m-%d")
         except Exception as exc:
             logger.warning("build_gui_navigation_snapshot: %s", exc)
+            snap["warnings"].append(f"snapshot error: {exc}")
+        return snap
+
+    # ------------------------------------------------------------------
+    # v0.5.3 Regression Suite Consolidation snapshot
+    # ------------------------------------------------------------------
+
+    def build_regression_snapshot(self) -> dict:
+        """Build a point-in-time snapshot of the Regression Suite Consolidation state.
+
+        [!] Regression Only. Research Only. No Real Orders. Production Trading: BLOCKED.
+        """
+        snap: dict = {
+            "snapshot_type": "regression_suite",
+            "generated_at":  _now_iso(),
+            "source_files":  [],
+            "summary":       {},
+            "warnings":      [],
+            "version_info":  {"version": _VERSION},
+        }
+        try:
+            from regression.regression_store import RegressionStore
+            store = RegressionStore()
+            summary = store.load_latest_summary()
+            coverage = store.load_latest_coverage_matrix()
+            snap["summary"]         = summary
+            snap["coverage_count"]  = len(coverage)
+            snap["suite"]           = summary.get("suite", "")
+            snap["status"]          = summary.get("status", "UNKNOWN")
+            snap["total_tests"]     = summary.get("total", 0)
+            snap["passed"]          = summary.get("passed", 0)
+            snap["failed"]          = summary.get("failed", 0)
+            snap["warnings_count"]  = summary.get("warnings", 0)
+            if not summary:
+                snap["warnings"].append("No regression summary found — run regression-run first")
+        except Exception as exc:
+            logger.warning("build_regression_snapshot: %s", exc)
             snap["warnings"].append(f"snapshot error: {exc}")
         return snap

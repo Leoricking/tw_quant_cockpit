@@ -1062,6 +1062,14 @@ class StableReleaseChecklist:
             # v0.5.2.1
             self._check_strategy_filter_in_gui_navigation,
             self._check_strategy_filter_searchable,
+            # v0.5.3 Regression Suite Consolidation
+            self._check_regression_consolidation_import,
+            self._check_quick_suite_exists,
+            self._check_safety_suite_exists,
+            self._check_gui_suite_exists,
+            self._check_report_suite_exists,
+            self._check_regression_safe_command_enforcement,
+            self._check_regression_no_real_orders,
         ]
 
         items: list[dict] = []
@@ -1732,3 +1740,147 @@ class StableReleaseChecklist:
         except Exception as exc:
             elapsed = (time.monotonic() - t0) * 1000
             return self._item("strategy_filter_searchable", "FAIL", str(exc), elapsed)
+
+    # -----------------------------------------------------------------------
+    # v0.5.3 Regression Suite Consolidation checks
+    # -----------------------------------------------------------------------
+
+    def _check_regression_consolidation_import(self) -> dict:
+        """v0.5.3: All regression package modules import cleanly."""
+        t0 = time.monotonic()
+        try:
+            from regression.suite_registry import RegressionSuiteRegistry
+            from regression.regression_runner import RegressionRunner
+            from regression.coverage_matrix import RegressionCoverageMatrix
+            from regression.regression_store import RegressionStore
+            from regression.regression_schema import RegressionTestCase, RegressionTestResult
+            elapsed = (time.monotonic() - t0) * 1000
+            return self._item(
+                "regression_consolidation_import", "PASS",
+                "All regression package modules imported cleanly", elapsed,
+            )
+        except Exception as exc:
+            elapsed = (time.monotonic() - t0) * 1000
+            return self._item("regression_consolidation_import", "FAIL", str(exc), elapsed)
+
+    def _check_quick_suite_exists(self) -> dict:
+        """v0.5.3: quick suite is non-empty."""
+        t0 = time.monotonic()
+        try:
+            from regression.suite_registry import RegressionSuiteRegistry
+            registry = RegressionSuiteRegistry()
+            tests = registry.get_suite("quick")
+            assert len(tests) > 0, "quick suite is empty"
+            elapsed = (time.monotonic() - t0) * 1000
+            return self._item(
+                "quick_suite_exists", "PASS",
+                f"quick suite has {len(tests)} tests", elapsed,
+            )
+        except Exception as exc:
+            elapsed = (time.monotonic() - t0) * 1000
+            return self._item("quick_suite_exists", "FAIL", str(exc), elapsed)
+
+    def _check_safety_suite_exists(self) -> dict:
+        """v0.5.3: safety suite is non-empty."""
+        t0 = time.monotonic()
+        try:
+            from regression.suite_registry import RegressionSuiteRegistry
+            registry = RegressionSuiteRegistry()
+            tests = registry.get_suite("safety")
+            assert len(tests) > 0, "safety suite is empty"
+            elapsed = (time.monotonic() - t0) * 1000
+            return self._item(
+                "safety_suite_exists", "PASS",
+                f"safety suite has {len(tests)} tests", elapsed,
+            )
+        except Exception as exc:
+            elapsed = (time.monotonic() - t0) * 1000
+            return self._item("safety_suite_exists", "FAIL", str(exc), elapsed)
+
+    def _check_gui_suite_exists(self) -> dict:
+        """v0.5.3: gui suite is non-empty."""
+        t0 = time.monotonic()
+        try:
+            from regression.suite_registry import RegressionSuiteRegistry
+            registry = RegressionSuiteRegistry()
+            tests = registry.get_suite("gui")
+            assert len(tests) > 0, "gui suite is empty"
+            elapsed = (time.monotonic() - t0) * 1000
+            return self._item(
+                "gui_suite_exists", "PASS",
+                f"gui suite has {len(tests)} tests", elapsed,
+            )
+        except Exception as exc:
+            elapsed = (time.monotonic() - t0) * 1000
+            return self._item("gui_suite_exists", "FAIL", str(exc), elapsed)
+
+    def _check_report_suite_exists(self) -> dict:
+        """v0.5.3: report suite is non-empty."""
+        t0 = time.monotonic()
+        try:
+            from regression.suite_registry import RegressionSuiteRegistry
+            registry = RegressionSuiteRegistry()
+            tests = registry.get_suite("report")
+            assert len(tests) > 0, "report suite is empty"
+            elapsed = (time.monotonic() - t0) * 1000
+            return self._item(
+                "report_suite_exists", "PASS",
+                f"report suite has {len(tests)} tests", elapsed,
+            )
+        except Exception as exc:
+            elapsed = (time.monotonic() - t0) * 1000
+            return self._item("report_suite_exists", "FAIL", str(exc), elapsed)
+
+    def _check_regression_safe_command_enforcement(self) -> dict:
+        """v0.5.3: No forbidden commands appear in any regression test suite."""
+        t0 = time.monotonic()
+        try:
+            from regression.suite_registry import RegressionSuiteRegistry, _is_forbidden
+            registry = RegressionSuiteRegistry()
+            violations = []
+            seen: set = set()
+            for suite_name in registry.list_suites():
+                for tc in registry.list_tests(suite_name):
+                    if tc.test_id in seen:
+                        continue
+                    seen.add(tc.test_id)
+                    if _is_forbidden(tc.command):
+                        violations.append(f"{suite_name}/{tc.test_id}")
+            elapsed = (time.monotonic() - t0) * 1000
+            if violations:
+                return self._item(
+                    "regression_safe_command_enforcement", "FAIL",
+                    f"Forbidden keywords in {len(violations)} test(s): {violations[:3]}", elapsed,
+                )
+            return self._item(
+                "regression_safe_command_enforcement", "PASS",
+                "No forbidden commands in any regression test suite", elapsed,
+            )
+        except Exception as exc:
+            elapsed = (time.monotonic() - t0) * 1000
+            return self._item("regression_safe_command_enforcement", "FAIL", str(exc), elapsed)
+
+    def _check_regression_no_real_orders(self) -> dict:
+        """v0.5.3: All RegressionTestCase instances have no_real_orders=True."""
+        t0 = time.monotonic()
+        try:
+            from regression.regression_schema import RegressionTestCase
+            tc = RegressionTestCase(
+                test_id="_check",
+                name="_check",
+                suite="safety",
+                category="safety",
+                command=["main.py", "version-info"],
+            )
+            assert tc.no_real_orders is True, "no_real_orders must be True"
+            assert tc.production_blocked is True, "production_blocked must be True"
+            assert tc.read_only is True, "read_only must be True"
+            elapsed = (time.monotonic() - t0) * 1000
+            return self._item(
+                "regression_no_real_orders", "PASS",
+                "RegressionTestCase: no_real_orders=True, production_blocked=True, read_only=True",
+                elapsed,
+            )
+        except Exception as exc:
+            elapsed = (time.monotonic() - t0) * 1000
+            return self._item("regression_no_real_orders", "FAIL", str(exc), elapsed)

@@ -47,7 +47,7 @@
 | v0.5.1.1 | Strategy Filter Pack — Financial Turnaround & Trend Discipline | Done |
 | v0.5.2 | GUI Tab Grouping / Navigation Polish | Done |
 | v0.5.2.1 | Strategy Filter GUI Navigation Integration | Done |
-| v0.5.3 | Regression Suite Consolidation | Planned |
+| v0.5.3 | Regression Suite Consolidation | Done |
 | v0.5.4 | Report Pack | Planned |
 | v0.5.5 | Data / Feature Pipeline Hardening | Planned |
 | v0.5.6 | Replay / Journal / Coach Integration | Planned |
