@@ -50,10 +50,11 @@ API fetch, provider health, data quality, universe.
 | Universe Manager | P2 |
 
 ### C. Strategy & Rules (`strategy_rules`)
-Rule governance, signal quality, strategy knowledge, ML knowledge integration.
+Strategy filter, rule governance, signal quality, strategy knowledge, ML knowledge integration.
 
 | Tab | Priority |
 |-----|----------|
+| Strategy Filter | P1 |
 | Rule Governance | P0 |
 | Signal Quality | P0 |
 | Rule Weight Tuning | P1 |
@@ -173,4 +174,35 @@ python main.py gui-nav-report       # Generate GUI navigation report
 
 ---
 
-*TW Quant Cockpit v0.5.2 — GUI Tab Grouping / Navigation Polish — Research Only — Not Investment Advice*
+---
+
+## v0.5.2.1 — Strategy Filter GUI Navigation Integration
+
+Added in v0.5.2.1 to integrate the v0.5.1.1 Strategy Filter Pack into GUI Navigation.
+
+### Changes
+- **Strategy Filter** tab registered in GUI Navigation registry under `strategy_rules` group (priority P1)
+- **Search keywords** added: `strategy`, `filter`, `financial`, `turnaround`, `EPS`, `Q1 EPS`, `revenue`,
+  `財報`, `財報翻多`, `EPS 成長`, `月營收`, `毛利率`, `營益率`, `低位階`, `底部翻多`, `趨勢紀律`,
+  `第二波買點`, `回測不破`, `不追高`, `汰弱換強`, `月線`, `季線`
+- **Aliases**: `financial-turnaround`, `trend-discipline`, `strategy-filter`, `財報翻多`, `第二波買點`
+- **CLI commands** linked: `strategy-filter`, `strategy-filter-pack`, `rule-governance`, `signal-quality`,
+  `strategy-knowledge-summary`
+- **Safety**: `RESEARCH_ONLY`, `no_real_orders=True`, `production_blocked=True`
+
+### Search Examples (v0.5.2.1+)
+```bash
+python main.py gui-nav-search --keyword strategy     # finds Strategy Filter
+python main.py gui-nav-search --keyword EPS          # finds Strategy Filter
+python main.py gui-nav-search --keyword 財報         # finds Strategy Filter
+python main.py gui-nav-search --keyword 底部翻多      # finds Strategy Filter
+python main.py gui-nav-search --keyword 第二波買點    # finds Strategy Filter
+```
+
+### No Real Orders
+- Strategy Filter is research-only. No BUY/SELL orders. No broker connection. No auto trading.
+- All GUI Navigation metadata is read-only. No real orders. Production trading: BLOCKED.
+
+---
+
+*TW Quant Cockpit v0.5.2.1 — Strategy Filter GUI Navigation Integration — Research Only — Not Investment Advice*

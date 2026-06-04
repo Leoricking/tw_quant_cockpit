@@ -312,6 +312,53 @@ class GUITabRegistry:
                 related_cli_commands=["ml-knowledge-catalog"],
                 maturity="STABLE",
             ),
+            # v0.5.2.1 — Strategy Filter integrated into Strategy & Rules group
+            GUITabMetadata(
+                tab_id="strategy_filter",
+                tab_name="Strategy Filter",
+                display_name="Strategy Filter / 財報翻多策略篩選",
+                group="strategy_rules",
+                priority="P1",
+                description=(
+                    "Financial Turnaround & Trend Discipline strategy filter. "
+                    "Scores stocks using fundamentals (EPS, Q1 EPS×4, 月營收, 毛利率, 營益率), "
+                    "technical trend (低位階, 底部翻多, 站回均線), chip support (法人, 籌碼), "
+                    "moving-average discipline (月線, 季線), and risk conditions. "
+                    "Three scenario archetypes: 財報好+低位階+技術翻多, 財報好但已大漲, 財報差+大盤創高個股不過高. "
+                    "Research-only filter; no real orders."
+                ),
+                module_path="gui.dashboard",
+                class_name="InlineDashboardTab",
+                available_flag="_STRATEGY_FILTER_AVAILABLE",
+                safety_level="RESEARCH_ONLY",
+                read_only=True,
+                no_real_orders=True,
+                production_blocked=True,
+                keywords=[
+                    "strategy", "filter", "strategy filter",
+                    "financial", "turnaround", "trend discipline",
+                    "EPS", "Q1 EPS", "revenue",
+                    "財報", "財報翻多", "EPS成長", "Q1 EPS × 4",
+                    "月營收", "毛利率", "營益率",
+                    "低位階", "底部翻多", "趨勢紀律",
+                    "第二波買點", "回測不破", "不追高",
+                    "汰弱換強", "月線", "季線",
+                ],
+                aliases=[
+                    "financial-turnaround", "trend-discipline",
+                    "strategy-filter", "財報翻多", "第二波買點",
+                ],
+                related_cli_commands=[
+                    "strategy-filter", "strategy-filter-pack",
+                    "rule-governance", "signal-quality",
+                    "strategy-knowledge-summary",
+                ],
+                report_types=["strategy_filter_report"],
+                maturity="EXPERIMENTAL",
+                default_visible=True,
+                favorite_default=False,
+                notes="Added in v0.5.2.1 to integrate v0.5.1.1 Strategy Filter Pack into GUI Navigation.",
+            ),
             # ----------------------------------------------------------------
             # Group: backtest_simulation
             # ----------------------------------------------------------------

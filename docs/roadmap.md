@@ -46,6 +46,7 @@
 | v0.5.1 | CLI Alias / Command UX Polish | Done |
 | v0.5.1.1 | Strategy Filter Pack — Financial Turnaround & Trend Discipline | Done |
 | v0.5.2 | GUI Tab Grouping / Navigation Polish | Done |
+| v0.5.2.1 | Strategy Filter GUI Navigation Integration | Done |
 | v0.5.3 | Regression Suite Consolidation | Planned |
 | v0.5.4 | Report Pack | Planned |
 | v0.5.5 | Data / Feature Pipeline Hardening | Planned |
@@ -180,6 +181,27 @@ v0.5.2 — GUI Tab Grouping / Navigation Polish — Done
 
 ---
 
+## Completed: v0.5.2.1 — Strategy Filter GUI Navigation Integration
+
+**Status:** Done
+
+### Summary
+
+Small integration patch. Strategy Filter tab registered in GUI Navigation registry under `strategy_rules` group with 20+ keywords and aliases. GUI nav search now finds Strategy Filter via strategy, EPS, 財報, 底部翻多, 趨勢紀律, 第二波買點. Stable release checklist and regression suite updated. No v0.5.2 redo. No tab deletion. No real orders.
+
+### Changes
+- `gui/navigation/tab_registry.py` — Added `strategy_filter` GUITabMetadata
+- `gui/navigation/tab_groups.py` — Updated `strategy_rules` description
+- `release/stable_release_checklist.py` — 2 new checks: `strategy_filter_in_gui_navigation`, `strategy_filter_searchable`
+- `release/regression_suite.py` — 1 new test: `strategy_filter_gui_nav_searchable`
+- `docs/gui_tab_grouping_navigation.md`, `docs/release_notes_v0.5.md`, `docs/roadmap.md`, `README.md` updated
+
+### Next Steps
+
+v0.5.3 — Regression Suite Consolidation
+
+---
+
 ## Completed: v0.5.2 — GUI Tab Grouping / Navigation Polish
 
 **Status:** Done
@@ -210,6 +232,7 @@ GUI tab registry, 8 groups, search, favorites/recent, GUI Navigation tab, 5 CLI 
 
 ### Next Steps
 
+v0.5.2.1 — Strategy Filter GUI Navigation Integration (Done)
 v0.5.3 — Regression Suite Consolidation
 
 ---

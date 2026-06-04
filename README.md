@@ -4,7 +4,30 @@
 >
 > **[!] v1: Real order execution is strictly prohibited. For research, simulation, and decision support only. Not investment advice.**
 
-**Current version: v0.5.1.1 — Strategy Filter Pack (Financial Turnaround & Trend Discipline)**
+**Current version: v0.5.2.1 — Strategy Filter GUI Navigation Integration**
+
+---
+
+## v0.5.2.1 — Strategy Filter GUI Navigation Integration
+
+**New in v0.5.2.1:**
+
+- **Strategy Filter in GUI Navigation** — `strategy_filter` tab registered in GUI Navigation registry under `strategy_rules` group (priority P1, maturity EXPERIMENTAL).
+- **Search keywords** — `strategy`, `filter`, `financial`, `EPS`, `財報`, `財報翻多`, `底部翻多`, `趨勢紀律`, `第二波買點`, `不追高`, `月線`, `季線` and 10+ more.
+- **Aliases** — `financial-turnaround`, `trend-discipline`, `strategy-filter`, `財報翻多`, `第二波買點`.
+- **Stable release checklist** — 2 new checks: `strategy_filter_in_gui_navigation`, `strategy_filter_searchable`.
+- **Regression suite** — 1 new test: `strategy_filter_gui_nav_searchable` (verifies search for strategy/EPS/財報/底部翻多/第二波買點).
+- **Docs** — `gui_tab_grouping_navigation.md`, `release_notes_v0.5.md`, `roadmap.md` updated.
+- **[!] Research Only. No Real Orders. No broker connection. Production Trading: BLOCKED.**
+
+**CLI search usage:**
+```bash
+python main.py gui-nav-search --keyword strategy      # finds Strategy Filter
+python main.py gui-nav-search --keyword EPS           # finds Strategy Filter
+python main.py gui-nav-search --keyword 財報          # finds Strategy Filter
+python main.py gui-nav-search --keyword 底部翻多       # finds Strategy Filter
+python main.py gui-nav-search --keyword 第二波買點     # finds Strategy Filter
+```
 
 ---
 

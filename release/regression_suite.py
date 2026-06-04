@@ -756,7 +756,7 @@ class RegressionSuite:
         return self._execute("quick", tests_fns)
 
     def run_full(self) -> dict:
-        """Run the full 35-test suite (quick + extended + v0.4.1 + v0.4.1.1 + v0.4.2 + v0.4.2.1 + v0.4.3 + v0.4.4 + v0.4.5 + v0.4.6)."""
+        """Run the full suite (quick + extended + v0.4.1–v0.5.2.1 tests)."""
         logger.info("RegressionSuite.run_full() — mode=%s", self.mode)
         tests_fns = [
             self._test_compileall,
@@ -824,6 +824,8 @@ class RegressionSuite:
             self._test_gui_navigation_imports,
             self._test_gui_navigation_report,
             self._test_dashboard_import_ok,
+            # v0.5.2.1
+            self._test_strategy_filter_gui_nav_searchable,
         ]
         return self._execute("full", tests_fns)
 
@@ -1183,6 +1185,30 @@ class RegressionSuite:
         except Exception as exc:
             return self._item("dashboard_import_ok", "FAIL", str(exc),
                               (time.monotonic() - t0) * 1000)
+
+    def _test_strategy_filter_gui_nav_searchable(self) -> dict:
+        """v0.5.2.1: GUI nav search finds strategy_filter for keywords: strategy, EPS, 財報, 底部翻多, 第二波買點."""
+        t0 = time.monotonic()
+        try:
+            from gui.navigation.tab_registry import GUITabRegistry
+            registry = GUITabRegistry()
+            keywords_to_test = ["strategy", "EPS", "財報", "底部翻多", "第二波買點"]
+            missing = []
+            for kw in keywords_to_test:
+                results = registry.search_tabs(kw)
+                tab_ids = [r.tab_id for r in results]
+                if "strategy_filter" not in tab_ids:
+                    missing.append(kw)
+            elapsed = (time.monotonic() - t0) * 1000
+            if missing:
+                return self._item("strategy_filter_gui_nav_searchable", "FAIL",
+                                  f"strategy_filter not found for keywords: {missing}", elapsed)
+            return self._item("strategy_filter_gui_nav_searchable", "PASS",
+                              f"strategy_filter found for all {len(keywords_to_test)} keywords. "
+                              "No real orders.", elapsed)
+        except Exception as exc:
+            elapsed = (time.monotonic() - t0) * 1000
+            return self._item("strategy_filter_gui_nav_searchable", "FAIL", str(exc), elapsed)
 
     def _write_csv(self, tests: list[dict], suite_name: str) -> str | None:
         try:

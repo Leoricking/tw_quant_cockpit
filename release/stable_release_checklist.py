@@ -1059,6 +1059,9 @@ class StableReleaseChecklist:
             self._check_gui_all_existing_tabs_preserved,
             self._check_gui_navigation_no_real_orders,
             self._check_gui_navigation_state_ignored,
+            # v0.5.2.1
+            self._check_strategy_filter_in_gui_navigation,
+            self._check_strategy_filter_searchable,
         ]
 
         items: list[dict] = []
@@ -1677,3 +1680,55 @@ class StableReleaseChecklist:
         except Exception as exc:
             elapsed = (time.monotonic() - t0) * 1000
             return self._item("gui_navigation_state_ignored", "WARN", str(exc), elapsed)
+
+    def _check_strategy_filter_in_gui_navigation(self) -> dict:
+        """v0.5.2.1: strategy_filter tab registered in GUI Navigation registry under strategy_rules group."""
+        t0 = time.monotonic()
+        try:
+            from gui.navigation.tab_registry import GUITabRegistry
+            reg = GUITabRegistry()
+            tab = reg.get_tab("strategy_filter")
+            assert tab is not None, "strategy_filter tab not found in GUITabRegistry"
+            assert tab.group == "strategy_rules", (
+                f"strategy_filter group is '{tab.group}', expected 'strategy_rules'"
+            )
+            assert tab.no_real_orders is True, "strategy_filter.no_real_orders is not True"
+            assert tab.production_blocked is True, "strategy_filter.production_blocked is not True"
+            elapsed = (time.monotonic() - t0) * 1000
+            return self._item(
+                "strategy_filter_in_gui_navigation", "PASS",
+                f"strategy_filter tab in registry; group={tab.group}; no_real_orders=True; production_blocked=True.",
+                elapsed,
+            )
+        except Exception as exc:
+            elapsed = (time.monotonic() - t0) * 1000
+            return self._item("strategy_filter_in_gui_navigation", "FAIL", str(exc), elapsed)
+
+    def _check_strategy_filter_searchable(self) -> dict:
+        """v0.5.2.1: GUI nav search finds strategy_filter for keywords: strategy, EPS, 財報, 底部翻多, 第二波買點."""
+        t0 = time.monotonic()
+        try:
+            from gui.navigation.tab_registry import GUITabRegistry
+            reg = GUITabRegistry()
+            keywords_to_test = ["strategy", "EPS", "財報", "底部翻多", "第二波買點"]
+            failed = []
+            for kw in keywords_to_test:
+                results = reg.search_tabs(kw)
+                tab_ids = [t.tab_id for t in results]
+                if "strategy_filter" not in tab_ids:
+                    failed.append(kw)
+            elapsed = (time.monotonic() - t0) * 1000
+            if not failed:
+                return self._item(
+                    "strategy_filter_searchable", "PASS",
+                    f"strategy_filter found for all {len(keywords_to_test)} test keywords.",
+                    elapsed,
+                )
+            return self._item(
+                "strategy_filter_searchable", "FAIL",
+                f"strategy_filter NOT found for keywords: {failed}",
+                elapsed,
+            )
+        except Exception as exc:
+            elapsed = (time.monotonic() - t0) * 1000
+            return self._item("strategy_filter_searchable", "FAIL", str(exc), elapsed)

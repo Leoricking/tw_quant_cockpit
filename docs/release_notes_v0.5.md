@@ -4,6 +4,39 @@
 
 ---
 
+## v0.5.2.1 — Strategy Filter GUI Navigation Integration (2026-06-04)
+
+### Summary
+Small integration patch. Adds Strategy Filter tab to GUI Navigation registry under `strategy_rules` group with full keyword/alias metadata. GUI nav search now finds Strategy Filter via strategy, EPS, 財報, 底部翻多, 趨勢紀律, 第二波買點 etc. No v0.5.2 redo. No tab deletion. No real orders.
+
+### Changes
+
+| File | Change |
+|------|--------|
+| `gui/navigation/tab_registry.py` | Added `strategy_filter` GUITabMetadata with 20+ keywords and aliases |
+| `gui/navigation/tab_groups.py` | Updated `strategy_rules` description to include Strategy Filter |
+| `release/stable_release_checklist.py` | Added `_check_strategy_filter_in_gui_navigation` and `_check_strategy_filter_searchable` checks |
+| `release/regression_suite.py` | Added `_test_strategy_filter_gui_nav_searchable` to full suite |
+| `docs/gui_tab_grouping_navigation.md` | Added v0.5.2.1 section: Strategy Filter in Strategy & Rules group |
+| `docs/release_notes_v0.5.md` | This entry |
+| `docs/roadmap.md` | Marked v0.5.2.1 as Done |
+| `README.md` | Added v0.5.2.1 section |
+
+### Search Keywords Added
+`strategy`, `filter`, `financial`, `turnaround`, `EPS`, `Q1 EPS`, `revenue`,
+`財報`, `財報翻多`, `EPS 成長`, `Q1 EPS × 4`, `月營收`, `毛利率`, `營益率`,
+`低位階`, `底部翻多`, `趨勢紀律`, `第二波買點`, `回測不破`, `不追高`, `汰弱換強`, `月線`, `季線`
+
+### Aliases Added
+`financial-turnaround`, `trend-discipline`, `strategy-filter`, `財報翻多`, `第二波買點`
+
+### Safety
+- [!] Research Only. No Real Orders. No broker connection. Production Trading: BLOCKED.
+- `no_real_orders=True`, `production_blocked=True`, `safety_level=RESEARCH_ONLY`
+- Strategy Filter tab `maturity=EXPERIMENTAL` — no BUY/SELL/ORDER output.
+
+---
+
 ## v0.5.1.1 — Strategy Filter Pack: Financial Turnaround & Trend Discipline (2026-06-04)
 
 ### Summary

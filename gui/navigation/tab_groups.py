@@ -30,7 +30,7 @@ _GROUPS = [
         "group_id":    "strategy_rules",
         "display_name": "Strategy & Rules",
         "order":       3,
-        "description": "Rule governance, signal quality, strategy knowledge, ML",
+        "description": "Strategy filter, rule governance, signal quality, strategy knowledge, ML",
     },
     {
         "group_id":    "backtest_simulation",
