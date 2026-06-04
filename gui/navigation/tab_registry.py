@@ -594,6 +594,42 @@ class GUITabRegistry:
                 related_cli_commands=["stable-release-check", "regression-suite"],
                 maturity="STABLE",
             ),
+            # v0.6.0 Stable Release
+            GUITabMetadata(
+                tab_id="stable_release",
+                tab_name="Stable Release",
+                display_name="Research OS Stable Release",
+                group="release_qa",
+                priority="P0",
+                description=(
+                    "Research OS Stable Release v0.6.0 — stable capability matrix, "
+                    "release checklist, known limitations, manifest builder. "
+                    "Research Only. No Real Orders. Production Trading BLOCKED."
+                ),
+                module_path="gui.stable_release_panel",
+                class_name="StableReleasePanel",
+                available_flag="_STABLE_RELEASE_AVAILABLE",
+                safety_level="RESEARCH_ONLY",
+                read_only=True,
+                no_real_orders=True,
+                production_blocked=True,
+                keywords=[
+                    "stable", "release", "v0.6.0", "checklist", "manifest",
+                    "capability", "stable release", "limitations",
+                    "穩定版", "發版", "封版",
+                ],
+                aliases=["stable-release", "v0.6.0", "release-v060"],
+                related_cli_commands=[
+                    "stable-v060-check", "stable-v060-report",
+                    "stable-v060-manifest", "stable-v060-capabilities",
+                    "stable-v060-limitations", "stable-v060-summary",
+                ],
+                report_types=["stable_release_v060_report", "release_manifest"],
+                maturity="STABLE",
+                default_visible=True,
+                favorite_default=False,
+                notes="Added in v0.6.0 — Research OS Stable Release consolidation.",
+            ),
             GUITabMetadata(
                 tab_id="usability_qa",
                 tab_name="usability_qa",

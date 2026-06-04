@@ -51,7 +51,45 @@
 | v0.5.4 | Report Pack Consolidation | Done |
 | v0.5.5 | Data / Feature Store Stabilization | Done |
 | v0.5.6 | TW Replay Training Cockpit — AI Review & Tape Reading Practice | Done |
-| v0.6.0 | Research OS Stable Release | Planned |
+| v0.5.6.2 | Stabilize Data and Feature Store Health | Done |
+| v0.6.0 | Research OS Stable Release | Done |
+
+---
+
+## Completed: v0.6.0 — Research OS Stable Release
+
+**Status:** Done
+
+### Summary
+
+v0.6.0 consolidates all v0.5.x modules into a stable Research OS. This is NOT a new trading feature release.
+Key deliverables: StableCapabilityMatrix (30+ capabilities), StableReleaseChecklistV060 (16 checks, 7 categories),
+ReleaseManifestBuilder, KnownLimitationsRegistry (11 limitations), StableReleaseV060Report, GUI panel, 6 CLI commands.
+
+Research Only. No Real Orders. Production Trading: BLOCKED.
+
+### New Files
+
+- `stable_release/__init__.py`
+- `stable_release/stable_release_schema.py`
+- `stable_release/capability_matrix.py`
+- `stable_release/stable_release_checklist_v060.py`
+- `stable_release/release_manifest_builder.py`
+- `stable_release/known_limitations.py`
+- `reports/stable_release_v060_report.py`
+- `gui/stable_release_panel.py`
+- `gui/stable_release_adapter.py`
+- `docs/research_os_stable_release_v0.6.0.md`
+- `docs/release_notes_v0.6.md`
+
+### Next Steps (Planned)
+
+| Version | Feature | Priority |
+|---------|---------|---------|
+| v0.6.1 | Stable UX Polish — empty states, error messages, tab icons | P1 |
+| v0.6.2 | Data Coverage Expansion — more symbols, sectors, timeframes | P1 |
+| v0.6.3 | Replay Training UI Enhancement — chart rendering, drill UI | P1 |
+| v0.7.0 | Research Intelligence Upgrade — smarter AI review, pattern library | P2 |
 
 ---
 

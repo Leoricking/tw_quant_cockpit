@@ -282,3 +282,7 @@ reports/data_stabilization_report_*.md
 # v0.5.6 TW Replay Training Cockpit — runtime outputs
 data/backtest_results/replay_training/
 reports/replay_training_report_*.md
+
+# v0.6.0 Research OS Stable Release — runtime outputs
+data/backtest_results/stable_release/
+reports/stable_release_v0.6.0_report_*.md

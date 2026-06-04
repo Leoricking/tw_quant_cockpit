@@ -466,6 +466,12 @@ class AutoReportIndexBuilder:
                 "replay_training_mistakes":    ctx.get("replay_training", {}).get("mistakes_count", 0),
                 "replay_training_drills":      ctx.get("replay_training", {}).get("drills_count", 0),
                 "replay_training_report_path": ctx.get("replay_training_report_path", ""),
+                # v0.6.0 Research OS Stable Release
+                "stable_release_version":          ctx.get("stable_release_v060", {}).get("version", ""),
+                "stable_release_status":           ctx.get("stable_release_v060", {}).get("status", ""),
+                "stable_release_capabilities":     ctx.get("stable_release_v060", {}).get("capability_count", 0),
+                "stable_release_report_path":      ctx.get("stable_release_report_path", ""),
+                "stable_release_manifest_path":    ctx.get("stable_release_manifest_path", ""),
             }
 
             path = os.path.join(output_dir, "manifest.json")

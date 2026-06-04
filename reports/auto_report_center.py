@@ -60,6 +60,7 @@ _PROFILE_FLAGS: Dict[str, dict] = {
         include_report_pack=True,
         include_data_stabilization=True,
         include_replay_training=True,
+        include_stable_release_v060=True,
     ),
     "daily": dict(
         include_stock_reports=False,
@@ -184,6 +185,7 @@ class AutoReportCenter:
         include_report_pack: bool = False,
         include_data_stabilization: bool = False,
         include_replay_training: bool = False,
+        include_stable_release_v060: bool = False,
     ):
         self.mode        = mode
         self.profile     = profile
@@ -237,6 +239,9 @@ class AutoReportCenter:
         )
         self.include_replay_training = flags.get(
             "include_replay_training", include_replay_training
+        )
+        self.include_stable_release_v060 = flags.get(
+            "include_stable_release_v060", include_stable_release_v060
         )
         self.universe_name = universe_name
 
@@ -368,6 +373,10 @@ class AutoReportCenter:
         # v0.5.6 Replay Training Cockpit summary (always optional, never crashes)
         if self.include_replay_training:
             self.run_replay_training_summary()
+
+        # v0.6.0 Stable Release summary (always optional, never crashes, avoids recursive loop)
+        if getattr(self, "include_stable_release_v060", False):
+            self.run_stable_release_v060_summary()
 
         # Aggregated outputs
         if self.include_daily_summary:
@@ -1412,6 +1421,38 @@ class AutoReportCenter:
         except Exception as exc:
             logger.warning("AutoReportCenter.run_replay_training_summary: %s", exc)
             self._context["replay_training"] = {}
+
+    def run_stable_release_v060_summary(self) -> None:
+        """v0.6.0: Load stable release summary (never crashes, no recursive loop).
+
+        IMPORTANT: Does NOT call auto_report_center full — avoids recursive loop.
+        Reads capability matrix summary only.
+
+        [!] Research Only. No Real Orders. Production Trading: BLOCKED.
+        """
+        try:
+            from stable_release.capability_matrix import StableCapabilityMatrix
+            matrix = StableCapabilityMatrix()
+            matrix.build()
+            caps = matrix.list_capabilities()
+            by_status: dict = {}
+            for c in caps:
+                by_status[c.status] = by_status.get(c.status, 0) + 1
+            self._context["stable_release_v060"] = {
+                "version":            "v0.6.0",
+                "capability_count":   len(caps),
+                "stable_count":       by_status.get("STABLE", 0),
+                "usable_count":       by_status.get("USABLE", 0),
+                "no_real_orders":     True,
+                "production_blocked": True,
+            }
+            self._record_success(
+                "stable_release_v060_summary",
+                "",  # no file path — summary only
+            )
+        except Exception as exc:
+            logger.warning("AutoReportCenter.run_stable_release_v060_summary: %s", exc)
+            self._context["stable_release_v060"] = {}
 
     def run_report_pack_summary(self) -> None:
         """v0.5.4: Build daily report pack summary (never crashes, no recursive loop)."""

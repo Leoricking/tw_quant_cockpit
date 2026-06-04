@@ -18,7 +18,7 @@ from report_pack.report_pack_schema import (
     REPORT_REGRESSION, REPORT_CLI_UX, REPORT_GUI_NAVIGATION,
     REPORT_NOTIFICATION, REPORT_INTRADAY_REPLAY, REPORT_EXPERIMENT,
     REPORT_RELEASE, REPORT_SAFETY, REPORT_DATA_STABILIZATION,
-    REPORT_REPLAY_TRAINING,
+    REPORT_REPLAY_TRAINING, REPORT_STABLE_RELEASE_V060, REPORT_RELEASE_MANIFEST,
 )
 
 logger = logging.getLogger(__name__)
@@ -83,6 +83,9 @@ _PACK_DEFINITIONS: Dict[str, List[str]] = {
         REPORT_SAFETY,
         REPORT_DATA_STABILIZATION,
         REPORT_REPLAY_TRAINING,
+        # v0.6.0 Stable Release
+        REPORT_STABLE_RELEASE_V060,
+        REPORT_RELEASE_MANIFEST,
     ],
 }
 
@@ -100,7 +103,7 @@ _PACK_META: Dict[str, dict] = {
     },
     PACK_FULL: {
         "display_name": "Full Research Pack",
-        "description":  "All 20 report types: weekly + regression, replay, release, safety",
+        "description":  "All 22 report types: weekly + regression, replay, release, safety, stable_release v0.6.0",
         "report_count": len(_PACK_DEFINITIONS[PACK_FULL]),
     },
 }

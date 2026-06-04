@@ -3,7 +3,7 @@
 > **[!] Research Only. Read Only. No Real Orders. Production Trading: BLOCKED.**
 > **[!] Not investment advice. REAL_ORDER_READY=False.**
 
-Current version: **v0.5.6** — TW Replay Training Cockpit
+Current version: **v0.6.0** — Research OS Stable Release
 
 ---
 
@@ -20,6 +20,8 @@ Current version: **v0.5.6** — TW Replay Training Cockpit
 | [Release Notes v0.3](release_notes_v0.3.md) | v0.3.9 through v0.3.29 change log |
 | [Release Notes v0.4](release_notes_v0.4.md) | v0.4.0 stable release change log |
 | [Release Notes v0.5](release_notes_v0.5.md) | v0.5.0 Research OS Planning change log |
+| [Release Notes v0.6](release_notes_v0.6.md) | v0.6.0 Research OS Stable Release change log |
+| [Research OS Stable Release v0.6.0](research_os_stable_release_v0.6.0.md) | v0.6.0 stable capability matrix, checklist, CLI/GUI usage |
 | [Release v0.4.0](release_v0.4.0.md) | v0.4.0 stable release overview and upgrade notes |
 | [Release Checklist](release_checklist.md) | Manual release verification checklist |
 | [Roadmap](roadmap.md) | Completed milestones and planned future versions |

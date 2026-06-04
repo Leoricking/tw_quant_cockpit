@@ -243,6 +243,20 @@ _MODULES: list[dict] = [
     # E. Research OS Layer
     # ------------------------------------------------------------------
     {
+        "module_name":        "stable_release_v060",
+        "package":            "stable_release",
+        "category":           "E. Research OS Layer",
+        "cli_commands":       (
+            "stable-v060-check,stable-v060-report,stable-v060-manifest,"
+            "stable-v060-capabilities,stable-v060-limitations,stable-v060-summary"
+        ),
+        "gui_tab":            "Stable Release",
+        "report":             "yes",
+        "maturity":           "STABLE",
+        "known_limitations":  "Checklist is point-in-time; must re-run after changes",
+        "next_action":        "v0.6.1 UX polish — add chart icons, improve empty states",
+    },
+    {
         "module_name":        "experiment_registry",
         "package":            "experiments",
         "category":           "E. Research OS Layer",

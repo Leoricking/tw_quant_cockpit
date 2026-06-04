@@ -6845,6 +6845,128 @@ def cmd_replay_training_report(args: argparse.Namespace) -> None:
 
 
 # ---------------------------------------------------------------------------
+# v0.6.0 Research OS Stable Release command handlers
+# ---------------------------------------------------------------------------
+
+_STABLE_V060_BANNER = (
+    "  TW Quant Cockpit \u2014 Research OS Stable Release v0.6.0\n"
+    "  [!] Research Only | No Real Orders | Production BLOCKED"
+)
+
+
+def cmd_stable_v060_check(args: argparse.Namespace) -> None:
+    """Run v0.6.0 stable release checklist."""
+    mode = getattr(args, "mode", "real")
+    print("=" * 60)
+    print(_STABLE_V060_BANNER)
+    print("=" * 60)
+    try:
+        from stable_release.stable_release_checklist_v060 import StableReleaseChecklistV060
+        result = StableReleaseChecklistV060().run(mode=mode)
+        print(f"  Overall Status : {result.get('overall_status', 'UNKNOWN')}")
+        print(f"  Pass           : {result.get('pass_count', 0)}")
+        print(f"  Warnings       : {result.get('warning_count', 0)}")
+        print(f"  Failed         : {result.get('fail_count', 0)}")
+    except Exception as exc:
+        print(f"  ERROR: {exc}")
+    print()
+    print("  [!] Research Only. No Real Orders. Production Trading: BLOCKED.")
+
+
+def cmd_stable_v060_report(args: argparse.Namespace) -> None:
+    """Generate v0.6.0 stable release Markdown report."""
+    mode = getattr(args, "mode", "real")
+    print("=" * 60)
+    print(_STABLE_V060_BANNER)
+    print("=" * 60)
+    try:
+        from reports.stable_release_v060_report import StableReleaseV060Report
+        result = StableReleaseV060Report().run(mode=mode)
+        print(f"  Status      : {result.get('status', 'UNKNOWN')}")
+        print(f"  Report path : {result.get('report_path', '')}")
+    except Exception as exc:
+        print(f"  ERROR: {exc}")
+    print()
+    print("  [!] Research Only. No Real Orders. Production Trading: BLOCKED.")
+
+
+def cmd_stable_v060_manifest(args: argparse.Namespace) -> None:
+    """Build v0.6.0 release manifest (JSON + Markdown)."""
+    print("=" * 60)
+    print(_STABLE_V060_BANNER)
+    print("=" * 60)
+    try:
+        from stable_release.release_manifest_builder import ReleaseManifestBuilder
+        result = ReleaseManifestBuilder().build_manifest()
+        print(f"  JSON path     : {result.get('json_path', '')}")
+        print(f"  Markdown path : {result.get('markdown_path', '')}")
+        print(f"  Capabilities  : {result.get('capability_count', 0)}")
+        print(f"  STABLE        : {result.get('stable_count', 0)}")
+    except Exception as exc:
+        print(f"  ERROR: {exc}")
+    print()
+    print("  [!] Research Only. No Real Orders. Production Trading: BLOCKED.")
+
+
+def cmd_stable_v060_capabilities(args: argparse.Namespace) -> None:
+    """Show v0.6.0 stable capability matrix summary."""
+    print("=" * 60)
+    print(_STABLE_V060_BANNER)
+    print("=" * 60)
+    try:
+        from stable_release.capability_matrix import StableCapabilityMatrix
+        matrix = StableCapabilityMatrix()
+        matrix.build()
+        matrix.summarize()
+    except Exception as exc:
+        print(f"  ERROR: {exc}")
+    print()
+    print("  [!] Research Only. No Real Orders. Production Trading: BLOCKED.")
+
+
+def cmd_stable_v060_limitations(args: argparse.Namespace) -> None:
+    """List all v0.6.0 known limitations."""
+    print("=" * 60)
+    print(_STABLE_V060_BANNER)
+    print("=" * 60)
+    try:
+        from stable_release.known_limitations import KnownLimitationsRegistry
+        KnownLimitationsRegistry().list_limitations()
+    except Exception as exc:
+        print(f"  ERROR: {exc}")
+    print()
+    print("  [!] Research Only. No Real Orders. Production Trading: BLOCKED.")
+
+
+def cmd_stable_v060_summary(args: argparse.Namespace) -> None:
+    """Show v0.6.0 stable release summary (capabilities + checklist overview)."""
+    print("=" * 60)
+    print(_STABLE_V060_BANNER)
+    print("=" * 60)
+    try:
+        from stable_release.capability_matrix import StableCapabilityMatrix
+        matrix = StableCapabilityMatrix()
+        matrix.build()
+        summary = matrix.summarize()
+        print()
+        print("  Checklist Overview:")
+        try:
+            from stable_release.stable_release_checklist_v060 import StableReleaseChecklistV060
+            result = StableReleaseChecklistV060().run(mode="real")
+            print(f"    Overall Status : {result.get('overall_status', 'UNKNOWN')}")
+            print(f"    Total Checks   : {result.get('total_checks', 0)}")
+            print(f"    Passed         : {result.get('pass_count', 0)}")
+            print(f"    Warnings       : {result.get('warning_count', 0)}")
+            print(f"    Failed         : {result.get('fail_count', 0)}")
+        except Exception as exc2:
+            print(f"    Checklist error: {exc2}")
+    except Exception as exc:
+        print(f"  ERROR: {exc}")
+    print()
+    print("  [!] Research Only. No Real Orders. Production Trading: BLOCKED.")
+
+
+# ---------------------------------------------------------------------------
 # v0.4.2.1 ML Knowledge Integration command handlers
 # ---------------------------------------------------------------------------
 
@@ -10679,6 +10801,46 @@ def _build_parser() -> argparse.ArgumentParser:
     p_rtrpt.add_argument("--output-dir", dest="output_dir",
                          default="data/backtest_results/replay_training")
 
+    # --- stable-v060-check (v0.6.0) ---
+    p_s060c = subparsers.add_parser(
+        "stable-v060-check",
+        help="Run v0.6.0 stable release checklist (v0.6.0)",
+    )
+    p_s060c.add_argument("--mode", choices=["real", "mock"], default="real",
+                         help="Data mode (default: real)")
+
+    # --- stable-v060-report (v0.6.0) ---
+    p_s060r = subparsers.add_parser(
+        "stable-v060-report",
+        help="Generate v0.6.0 stable release Markdown report (v0.6.0)",
+    )
+    p_s060r.add_argument("--mode", choices=["real", "mock"], default="real",
+                         help="Data mode (default: real)")
+
+    # --- stable-v060-manifest (v0.6.0) ---
+    subparsers.add_parser(
+        "stable-v060-manifest",
+        help="Build v0.6.0 release manifest JSON and Markdown (v0.6.0)",
+    )
+
+    # --- stable-v060-capabilities (v0.6.0) ---
+    subparsers.add_parser(
+        "stable-v060-capabilities",
+        help="Show v0.6.0 stable capability matrix summary (v0.6.0)",
+    )
+
+    # --- stable-v060-limitations (v0.6.0) ---
+    subparsers.add_parser(
+        "stable-v060-limitations",
+        help="List all v0.6.0 known limitations (v0.6.0)",
+    )
+
+    # --- stable-v060-summary (v0.6.0) ---
+    subparsers.add_parser(
+        "stable-v060-summary",
+        help="Show v0.6.0 stable release summary: capabilities + checklist (v0.6.0)",
+    )
+
     # --- strategy-knowledge-ingest (v0.4.1.1) ---
     p_ski = subparsers.add_parser(
         "strategy-knowledge-ingest",
@@ -11873,6 +12035,13 @@ def main() -> None:
         "replay-training-score":       cmd_replay_training_score,
         "replay-training-drills":      cmd_replay_training_drills,
         "replay-training-report":      cmd_replay_training_report,
+        # v0.6.0 Research OS Stable Release
+        "stable-v060-check":           cmd_stable_v060_check,
+        "stable-v060-report":          cmd_stable_v060_report,
+        "stable-v060-manifest":        cmd_stable_v060_manifest,
+        "stable-v060-capabilities":    cmd_stable_v060_capabilities,
+        "stable-v060-limitations":     cmd_stable_v060_limitations,
+        "stable-v060-summary":         cmd_stable_v060_summary,
         # v0.4.1.1 Strategy Knowledge Ingestion
         "strategy-knowledge-ingest":   cmd_strategy_knowledge_ingest,
         "strategy-knowledge-summary":  cmd_strategy_knowledge_summary,

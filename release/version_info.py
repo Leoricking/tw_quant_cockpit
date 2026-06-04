@@ -1,5 +1,5 @@
 """
-release/version_info.py — Centralized version info for TW Quant Cockpit (v0.5.0).
+release/version_info.py — Centralized version info for TW Quant Cockpit (v0.6.0).
 [!] Research Only. No Real Orders. Production Trading: BLOCKED.
 """
 from __future__ import annotations
@@ -11,17 +11,24 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 
 class VersionInfo:
-    """Centralized version and safety metadata for v0.5.2."""
+    """Centralized version and safety metadata for v0.6.0."""
 
-    version            = "v0.5.2"
-    release_name       = "GUI Tab Grouping / Navigation Polish"
-    release_stage      = "gui_navigation_polish"
+    version            = "v0.6.0"
+    release_name       = "Research OS Stable Release"
+    release_stage      = "STABLE"
     read_only          = True
     no_real_orders     = True
     production_blocked = True
     real_order_ready   = False
     supported_modes    = ["real", "mock"]
     major_features     = [
+        "Research OS Stable Release v0.6.0",
+        "Stable Capability Matrix (30+ capabilities)",
+        "v0.6.0 Stable Release Checklist",
+        "Release Manifest Builder",
+        "Known Limitations Registry",
+        "Stable Release Report",
+        "Stable Release GUI Panel",
         "Daily Workflow Engine",
         "Data Quality Gate",
         "Provider Reliability & Fallback Matrix",
@@ -109,7 +116,7 @@ def print_version_info() -> None:
 def get_safety_banner() -> str:
     """Return one-line safety banner string."""
     return (
-        "[!] v0.5.2 Research Only | No Real Orders | "
+        "[!] v0.6.0 Research Only | No Real Orders | "
         "Production BLOCKED | real_order_ready=False"
     )
 

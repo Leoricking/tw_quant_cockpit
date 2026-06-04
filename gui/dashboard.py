@@ -280,6 +280,16 @@ except Exception as _rtp_exc:
     logger.warning("ReplayTrainingPanel unavailable: %s", _rtp_exc)
     _REPLAY_TRAINING_AVAILABLE = False
 
+# ---------------------------------------------------------------------------
+# v0.6.0 Stable Release panel import (guarded)
+# ---------------------------------------------------------------------------
+try:
+    from gui.stable_release_panel import StableReleasePanel
+    _STABLE_RELEASE_AVAILABLE = True
+except Exception as _srp_exc:
+    logger.warning("StableReleasePanel unavailable: %s", _srp_exc)
+    _STABLE_RELEASE_AVAILABLE = False
+
 
 # ---------------------------------------------------------------------------
 # v0.4.1.1 Strategy Knowledge Ingestion panel import (guarded)
@@ -1444,6 +1454,13 @@ class CockpitWindow(QMainWindow if _PYSIDE6_AVAILABLE else object):
             mid_tabs.addTab(self._replay_training_panel, "Replay Training")
         else:
             self._replay_training_panel = None
+
+        # v0.6.0 Stable Release tab
+        if _STABLE_RELEASE_AVAILABLE:
+            self._stable_release_panel = StableReleasePanel(mode=self._mode if hasattr(self, "_mode") else "real")
+            mid_tabs.addTab(self._stable_release_panel, "Stable Release")
+        else:
+            self._stable_release_panel = None
 
         # v0.4.1.1 Strategy Knowledge tab
         if _STRATEGY_KNOWLEDGE_INGESTION_AVAILABLE:

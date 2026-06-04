@@ -327,6 +327,17 @@ _COVERAGE: list[dict] = [
         "missing_checks":    "Full engine run requires real data; leakage guard tested only on static columns",
         "recommended_test":  "_check_data_stabilization_import_health; _check_data_stabilization_leakage_guard_blocks_forbidden; data_stabilization_import in SUITE_DATA",
     },
+    # v0.6.0 Stable Release
+    {
+        "module":            "stable_release_v060",
+        "command_covered":   "yes",
+        "import_covered":    "yes",
+        "gui_covered":       "yes",
+        "report_covered":    "yes",
+        "safety_covered":    "yes",
+        "missing_checks":    "Checklist covers 16 points; no automated end-to-end smoke test yet",
+        "recommended_test":  "stable_v060_check, stable_v060_summary, stable_v060_capabilities in SUITE_RELEASE_GATE",
+    },
 ]
 
 

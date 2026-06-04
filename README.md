@@ -4,7 +4,34 @@
 >
 > **[!] v1: Real order execution is strictly prohibited. For research, simulation, and decision support only. Not investment advice.**
 
-**Current version: v0.5.6 — TW Replay Training Cockpit**
+**Current version: v0.6.0 — Research OS Stable Release**
+
+---
+
+## v0.6.0 — Research OS Stable Release
+
+**New in v0.6.0:**
+
+This is a **stable release consolidation** — not new trading features. All v0.5.x modules are stabilized and documented.
+
+- **StableCapabilityMatrix** — 30+ capabilities catalogued with status (STABLE/USABLE/EXPERIMENTAL/BLOCKED), CLI/GUI/report/regression coverage.
+- **StableReleaseChecklistV060** — 16-point checklist across 7 categories: version_git, safety, cli, gui, reports, regression, runtime_safety.
+- **ReleaseManifestBuilder** — generates `release_manifest_v0.6.0.json` + `.md` in `data/backtest_results/stable_release/`.
+- **KnownLimitationsRegistry** — 11 known limitations with impact/workaround.
+- **StableReleaseV060Report** — 9-section Markdown report with capability matrix, checklist, safety matrix, known limitations.
+- **GUI Panel** — `StableReleasePanel` (PySide6) with capability matrix table, checklist table, limitations table, manifest panel, QThread workers.
+- **6 new CLI commands**: `stable-v060-check`, `stable-v060-report`, `stable-v060-manifest`, `stable-v060-capabilities`, `stable-v060-limitations`, `stable-v060-summary`.
+- **[!] Research Only. No Real Orders. Production Trading: BLOCKED.**
+
+**CLI usage:**
+```bash
+python main.py stable-v060-check --mode real
+python main.py stable-v060-report --mode real
+python main.py stable-v060-manifest
+python main.py stable-v060-capabilities
+python main.py stable-v060-limitations
+python main.py stable-v060-summary
+```
 
 ---
 

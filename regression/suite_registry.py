@@ -981,6 +981,39 @@ class RegressionSuiteRegistry:
                     description="Auto report daily profile smoke test for release gate",
                 ),
             ],
+            # v0.6.0 Stable Release tests
+            [
+                RegressionTestCase(
+                    test_id="stable_v060_check",
+                    name="stable-v060-check --mode real",
+                    suite=SUITE_RELEASE_GATE,
+                    category="stable_release",
+                    command=["main.py", "stable-v060-check", "--mode", "real"],
+                    timeout_seconds=60,
+                    required=False,
+                    description="v0.6.0 stable release checklist",
+                ),
+                RegressionTestCase(
+                    test_id="stable_v060_summary",
+                    name="stable-v060-summary",
+                    suite=SUITE_RELEASE_GATE,
+                    category="stable_release",
+                    command=["main.py", "stable-v060-summary"],
+                    timeout_seconds=30,
+                    required=True,
+                    description="v0.6.0 stable release summary",
+                ),
+                RegressionTestCase(
+                    test_id="stable_v060_capabilities",
+                    name="stable-v060-capabilities",
+                    suite=SUITE_RELEASE_GATE,
+                    category="stable_release",
+                    command=["main.py", "stable-v060-capabilities"],
+                    timeout_seconds=30,
+                    required=True,
+                    description="v0.6.0 stable capability matrix",
+                ),
+            ],
         ]:
             for tc in suite_tests:
                 if tc.test_id not in seen:

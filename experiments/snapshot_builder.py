@@ -1080,3 +1080,65 @@ class ExperimentSnapshotBuilder:
             logger.warning("build_replay_training_snapshot: %s", exc)
             snap["warnings"].append(f"snapshot error: {exc}")
         return snap
+
+    def build_stable_release_snapshot(self) -> dict:
+        """Snapshot type: stable_release. Captures v0.6.0 capability and checklist summary.
+
+        [!] Research Only. No Real Orders. Production Trading: BLOCKED.
+        """
+        snap = _empty_snapshot("stable_release")
+        snap.update({
+            "version":             "v0.6.0",
+            "capabilities":        0,
+            "checklist_status":    "UNKNOWN",
+            "safety_status":       "BLOCKED — Research Only",
+            "report_path":         "",
+            "manifest_path":       "",
+            "latest_stable_release_at": "",
+            "no_real_orders":      True,
+            "production_blocked":  True,
+        })
+        try:
+            from stable_release.capability_matrix import StableCapabilityMatrix
+            matrix = StableCapabilityMatrix()
+            matrix.build()
+            caps = matrix.list_capabilities()
+            by_status: dict = {}
+            for c in caps:
+                by_status[c.status] = by_status.get(c.status, 0) + 1
+            snap["capabilities"] = len(caps)
+            snap["by_status"]    = by_status
+            snap["stable_count"] = by_status.get("STABLE", 0)
+            snap["summary"]      = {
+                "total":             len(caps),
+                "stable_count":      by_status.get("STABLE", 0),
+                "usable_count":      by_status.get("USABLE", 0),
+                "no_real_orders":    True,
+                "production_blocked": True,
+            }
+        except Exception as exc:
+            logger.warning("build_stable_release_snapshot (capability): %s", exc)
+            snap["warnings"].append(f"capability load error: {exc}")
+        try:
+            import glob
+            import os
+            report_dir = os.path.join(BASE_DIR, "reports")
+            pattern = os.path.join(report_dir, "stable_release_v0.6.0_report_*.md")
+            files = glob.glob(pattern)
+            if files:
+                snap["report_path"] = max(files, key=os.path.getmtime)
+        except Exception as exc:
+            logger.warning("build_stable_release_snapshot (report path): %s", exc)
+        try:
+            import glob
+            import os
+            manifest_dir = os.path.join(BASE_DIR, "data", "backtest_results", "stable_release")
+            pattern = os.path.join(manifest_dir, "release_manifest_*.json")
+            files = glob.glob(pattern)
+            if files:
+                snap["manifest_path"] = max(files, key=os.path.getmtime)
+        except Exception as exc:
+            logger.warning("build_stable_release_snapshot (manifest path): %s", exc)
+        snap["latest_stable_release_at"] = _now_iso()
+        snap["checklist_status"] = "See stable-v060-check CLI command"
+        return snap
