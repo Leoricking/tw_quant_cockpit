@@ -854,13 +854,13 @@ class RegressionSuiteRegistry:
             ),
             RegressionTestCase(
                 test_id="replay_intraday_quality",
-                name="intraday-quality --mode real",
+                name="intraday-quality",
                 suite=SUITE_REPLAY,
                 category="replay",
-                command=["main.py", "intraday-quality", "--mode", "real"],
+                command=["main.py", "intraday-quality"],
                 timeout_seconds=60,
                 required=True,
-                description="Intraday quality check",
+                description="Run intraday quality check without unsupported mode argument",
             ),
         ]
 
