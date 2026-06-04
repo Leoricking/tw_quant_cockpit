@@ -187,6 +187,16 @@ _COVERAGE: list[dict] = [
         "recommended_test":  "_test_intraday_replay_malformed_ticks",
     },
     {
+        "module":            "replay_training_cockpit",
+        "command_covered":   "yes",
+        "import_covered":    "yes",
+        "gui_covered":       "yes",
+        "report_covered":    "yes",
+        "safety_covered":    "yes",
+        "missing_checks":    "No test for hidden_future_data edge case at bar 0",
+        "recommended_test":  "_test_replay_training_hidden_future_data_bar0",
+    },
+    {
         "module":            "paper_mock_realtime",
         "command_covered":   "yes",
         "import_covered":    "yes",

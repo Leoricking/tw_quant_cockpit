@@ -278,3 +278,7 @@ reports/report_pack_consolidation_report_*.md
 # v0.5.5 Data / Feature Store Stabilization — runtime outputs
 data/backtest_results/data_stabilization/
 reports/data_stabilization_report_*.md
+
+# v0.5.6 TW Replay Training Cockpit — runtime outputs
+data/backtest_results/replay_training/
+reports/replay_training_report_*.md

@@ -461,6 +461,11 @@ class AutoReportIndexBuilder:
                 "feature_store_health_score":  ctx.get("data_stabilization", {}).get("health_score", 0.0),
                 "leakage_warning_count":       ctx.get("data_stabilization", {}).get("leakage_warnings", 0),
                 "data_lineage_records":        ctx.get("data_stabilization", {}).get("datasets_checked", 0),
+                # v0.5.6 TW Replay Training Cockpit
+                "replay_training_score":       ctx.get("replay_training", {}).get("latest_score", 0.0),
+                "replay_training_mistakes":    ctx.get("replay_training", {}).get("mistakes_count", 0),
+                "replay_training_drills":      ctx.get("replay_training", {}).get("drills_count", 0),
+                "replay_training_report_path": ctx.get("replay_training_report_path", ""),
             }
 
             path = os.path.join(output_dir, "manifest.json")

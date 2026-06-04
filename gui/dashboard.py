@@ -270,6 +270,16 @@ except Exception as _irrp_exc:
     logger.warning("IntradayReplayPanel unavailable: %s", _irrp_exc)
     _INTRADAY_REPLAY_AVAILABLE = False
 
+# ---------------------------------------------------------------------------
+# v0.5.6 Replay Training panel import (guarded)
+# ---------------------------------------------------------------------------
+try:
+    from gui.replay_training_panel import ReplayTrainingPanel
+    _REPLAY_TRAINING_AVAILABLE = True
+except Exception as _rtp_exc:
+    logger.warning("ReplayTrainingPanel unavailable: %s", _rtp_exc)
+    _REPLAY_TRAINING_AVAILABLE = False
+
 
 # ---------------------------------------------------------------------------
 # v0.4.1.1 Strategy Knowledge Ingestion panel import (guarded)
@@ -1427,6 +1437,13 @@ class CockpitWindow(QMainWindow if _PYSIDE6_AVAILABLE else object):
             mid_tabs.addTab(self._intraday_replay_panel, "Intraday Replay")
         else:
             self._intraday_replay_panel = None
+
+        # v0.5.6 Replay Training tab
+        if _REPLAY_TRAINING_AVAILABLE:
+            self._replay_training_panel = ReplayTrainingPanel(mode=self._mode if hasattr(self, "_mode") else "real")
+            mid_tabs.addTab(self._replay_training_panel, "Replay Training")
+        else:
+            self._replay_training_panel = None
 
         # v0.4.1.1 Strategy Knowledge tab
         if _STRATEGY_KNOWLEDGE_INGESTION_AVAILABLE:

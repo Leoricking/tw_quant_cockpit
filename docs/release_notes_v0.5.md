@@ -4,6 +4,76 @@
 
 ---
 
+## v0.5.6 — TW Replay Training Cockpit — AI Review & Tape Reading Practice (2026-06-04)
+
+### Summary
+Taiwan Time-Machine style replay practice system. Step through historical 1min/5min intraday bars bar-by-bar,
+place training markers (ENTRY/EXIT/STOP_LOSS/etc.), receive rule-based AI review (7 mistake rules, no external LLM),
+get 0-100 session scoring with 6-component breakdown, and drill suggestions.
+Hidden future data enforced by default. No real orders. No broker connection.
+
+### New Files
+
+| File | Description |
+|------|-------------|
+| `replay_training/__init__.py` | Package init |
+| `replay_training/replay_training_schema.py` | ReplayTrainingSession, ReplayMarker, ReplayMistake, ReplayAIReview dataclasses |
+| `replay_training/replay_bar_engine.py` | Bar-by-bar engine; get_visible_bars() NEVER returns future bars |
+| `replay_training/replay_marker_store.py` | CSV-backed marker and note store |
+| `replay_training/tape_reading_detector.py` | 7 tape reading pattern detectors (rule-based) |
+| `replay_training/ai_replay_reviewer.py` | 7 rule-based mistake detectors; no external API |
+| `replay_training/replay_score_engine.py` | 0-100 scoring with 6-component breakdown |
+| `replay_training/replay_drill_builder.py` | 8 drill types from detected mistakes |
+| `replay_training/replay_journal_bridge.py` | Research/training journal export (graceful fallback) |
+| `replay_training/replay_training_store.py` | 7 CSV output files |
+| `reports/replay_training_report.py` | 9-section Markdown report |
+| `gui/replay_training_adapter.py` | GUI adapter; returns dicts; no real orders |
+| `gui/replay_training_panel.py` | PySide6 GUI panel with QThread workers |
+| `docs/tw_replay_training_cockpit.md` | Full documentation |
+
+### Modified Files
+
+| File | Change |
+|------|--------|
+| `main.py` | 9 new CLI commands + argparse subparsers |
+| `gui/dashboard.py` | Replay Training tab |
+| `gui/navigation/tab_registry.py` | `replay_training` tab entry |
+| `report_pack/report_pack_schema.py` | `REPORT_REPLAY_TRAINING` constant |
+| `report_pack/report_registry.py` | Added to daily and full packs |
+| `regression/suite_registry.py` | 3 new tests in SUITE_REPLAY |
+| `release/stable_release_checklist.py` | 4 new checks (v0.5.6) |
+| `experiments/snapshot_builder.py` | `build_replay_training_snapshot()` |
+| `reports/auto_report_center.py` | `include_replay_training` flag; `run_replay_training_summary()` |
+| `reports/auto_report_index.py` | 4 new manifest fields |
+| `os_planning/module_inventory.py` | `replay_training_cockpit` module entry |
+| `os_planning/regression_audit.py` | `replay_training_cockpit` coverage entry |
+| `README.md` | v0.5.6 section |
+| `docs/roadmap.md` | v0.5.6 marked Done; v0.6.0 updated |
+| `.gitignore` | replay_training output paths |
+
+### CLI Commands
+
+```bash
+python main.py replay-training --symbol 2454 --date 2026-06-03 --timeframe 1min --mode real
+python main.py replay-training-summary
+python main.py replay-training-next --session-id RTRAIN-...
+python main.py replay-training-prev --session-id RTRAIN-...
+python main.py replay-training-marker --session-id RTRAIN-... --type ENTRY --price 123.5
+python main.py replay-ai-review --session-id RTRAIN-...
+python main.py replay-training-score --session-id RTRAIN-...
+python main.py replay-training-drills --session-id RTRAIN-...
+python main.py replay-training-report --mode real
+```
+
+### Safety
+
+- `hidden_future_data=True` by default — `get_visible_bars()` NEVER returns future bars
+- AI reviewer: rule-based only, no external LLM API, no network calls
+- No BUY/SELL/ORDER outputs
+- All schemas: `no_real_orders=True`, `production_blocked=True`
+
+---
+
 ## v0.5.5 — Data / Feature Store Stabilization (2026-06-04)
 
 ### Summary

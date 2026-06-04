@@ -3,7 +3,7 @@
 > **[!] Research Only. Read Only. No Real Orders. Production Trading: BLOCKED.**
 > **[!] Not investment advice. REAL_ORDER_READY=False.**
 
-Current version: **v0.5.3** — Regression Suite Consolidation
+Current version: **v0.5.6** — TW Replay Training Cockpit
 
 ---
 
@@ -77,6 +77,7 @@ Current version: **v0.5.3** — Regression Suite Consolidation
 | [regression_suite_consolidation.md](regression_suite_consolidation.md) | v0.5.3 | Regression Suite Consolidation (named suites, coverage matrix, regression runner, store, report, GUI panel, 4 CLI commands) |
 | [report_pack_consolidation.md](report_pack_consolidation.md) | v0.5.4 | Report Pack Consolidation (daily/weekly/full packs, 20 report types, health checker, link registry, store, consolidation report, GUI panel, 6 CLI commands) |
 | [data_feature_store_stabilization.md](data_feature_store_stabilization.md) | v0.5.5 | Data / Feature Store Stabilization (22 schemas, lineage, readiness, health, leakage guard, store, 9-section report, GUI panel, 7 CLI commands) |
+| [tw_replay_training_cockpit.md](tw_replay_training_cockpit.md) | v0.5.6 | TW Replay Training Cockpit (bar engine, markers, tape reading detector, AI rule-based review, scoring, drills, journal bridge, 9 CLI commands, GUI panel) |
 
 ---
 

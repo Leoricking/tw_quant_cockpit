@@ -440,6 +440,37 @@ class GUITabRegistry:
                 maturity="STABLE",
                 favorite_default=True,
             ),
+            GUITabMetadata(
+                tab_id="replay_training",
+                tab_name="replay_training",
+                display_name="TW Replay Training Cockpit / 台股時光機復盤練習",
+                group="backtest_simulation",
+                priority="P0",
+                description=(
+                    "TW Replay Training Cockpit v0.5.6 — "
+                    "bar-by-bar tape reading practice, AI rule-based review, scoring, drills"
+                ),
+                module_path="gui.replay_training_panel",
+                class_name="ReplayTrainingPanel",
+                available_flag="_REPLAY_TRAINING_AVAILABLE",
+                safety_level="RESEARCH_ONLY",
+                read_only=True,
+                no_real_orders=True,
+                production_blocked=True,
+                keywords=[
+                    "replay", "training", "tape reading", "台股時光機", "復盤",
+                    "盤感", "逐根K", "AI復盤", "VWAP", "假突破",
+                    "開盤區間", "停損", "停利",
+                ],
+                related_cli_commands=[
+                    "replay-training", "replay-training-summary", "replay-training-next",
+                    "replay-training-prev", "replay-training-marker", "replay-ai-review",
+                    "replay-training-score", "replay-training-drills", "replay-training-report",
+                ],
+                maturity="STABLE",
+                favorite_default=False,
+                notes="v0.5.6 — Replay Training Only / Research Only / No Real Orders",
+            ),
             # ----------------------------------------------------------------
             # Group: ml_monitoring
             # ----------------------------------------------------------------

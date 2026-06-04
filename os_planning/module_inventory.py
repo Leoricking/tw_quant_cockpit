@@ -211,6 +211,24 @@ _MODULES: list[dict] = [
         "next_action":        "Add replay speed controls to GUI",
     },
     {
+        "module_name":        "replay_training_cockpit",
+        "package":            "replay_training",
+        "category":           "D. Backtest/Simulation Layer",
+        "cli_commands":       (
+            "replay-training,replay-training-summary,replay-training-next,"
+            "replay-training-prev,replay-training-marker,replay-ai-review,"
+            "replay-training-score,replay-training-drills,replay-training-report"
+        ),
+        "gui_tab":            "Replay Training",
+        "report":             "yes",
+        "maturity":           "STABLE",
+        "known_limitations":  (
+            "AI review is rule-based only (no external LLM). "
+            "Hidden future data enforced by default."
+        ),
+        "next_action":        "Add multi-symbol drill scheduling in v0.6.x",
+    },
+    {
         "module_name":        "paper_mock_realtime",
         "package":            "sim",
         "category":           "D. Backtest/Simulation Layer",

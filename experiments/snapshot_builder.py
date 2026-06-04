@@ -1031,3 +1031,52 @@ class ExperimentSnapshotBuilder:
             logger.warning("build_data_stabilization_snapshot: %s", exc)
             snap["warnings"].append(f"snapshot error: {exc}")
         return snap
+
+    def build_replay_training_snapshot(self) -> dict:
+        """Build a point-in-time snapshot of the TW Replay Training Cockpit state.
+
+        Returns dict with: latest_session_id, latest_symbol, latest_score,
+        mistakes_count, drills_count, hidden_future_data, latest_replay_training_at.
+
+        [!] Replay Training Only. Research Only. No Real Orders. Production Trading: BLOCKED.
+        """
+        snap: dict = {
+            "snapshot_type":              "replay_training",
+            "generated_at":               _now_iso(),
+            "source_files":               [],
+            "summary":                    {},
+            "warnings":                   [],
+            "version_info":               {"version": _VERSION},
+            "latest_session_id":          "",
+            "latest_symbol":              "",
+            "latest_score":               0.0,
+            "mistakes_count":             0,
+            "drills_count":               0,
+            "hidden_future_data":         True,
+            "latest_replay_training_at":  "",
+            "read_only":                  True,
+            "no_real_orders":             True,
+            "production_blocked":         True,
+        }
+        try:
+            from replay_training.replay_training_store import ReplayTrainingStore
+            store  = ReplayTrainingStore()
+            result = store.load_latest_summary()
+            if result.get("ok"):
+                s = result.get("summary", {})
+                snap["latest_session_id"]         = s.get("latest_session_id", "")
+                snap["latest_symbol"]             = s.get("latest_symbol", "")
+                snap["latest_score"]              = float(s.get("latest_score", 0.0) or 0.0)
+                snap["mistakes_count"]            = int(s.get("mistakes_count", 0) or 0)
+                snap["drills_count"]              = int(s.get("drills_count", 0) or 0)
+                snap["hidden_future_data"]        = True
+                snap["latest_replay_training_at"] = s.get("latest_replay_training_at", "")
+                snap["summary"]                   = s
+            else:
+                snap["warnings"].append(
+                    "No replay training summary found — run: python main.py replay-training --symbol 2454"
+                )
+        except Exception as exc:
+            logger.warning("build_replay_training_snapshot: %s", exc)
+            snap["warnings"].append(f"snapshot error: {exc}")
+        return snap

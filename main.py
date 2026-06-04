@@ -6561,6 +6561,290 @@ def cmd_replay_training_summary(args: argparse.Namespace) -> None:
 
 
 # ---------------------------------------------------------------------------
+# v0.5.6 TW Replay Training Cockpit command handlers
+# ---------------------------------------------------------------------------
+
+def cmd_replay_training(args: argparse.Namespace) -> None:
+    """Create a new replay training session."""
+    symbol     = getattr(args, "symbol", None) or "2454"
+    date_      = getattr(args, "date",   None) or ""
+    timeframe  = getattr(args, "timeframe", "1min")
+    mode       = getattr(args, "mode",   "real")
+    output_dir = getattr(args, "output_dir", "data/backtest_results/replay_training")
+    print("=" * 60)
+    print("  TW Quant Cockpit — TW Replay Training Cockpit v0.5.6")
+    print("=" * 60)
+    print(f"  Mode                : {mode}")
+    print(f"  Replay Training Only: True")
+    print(f"  Research Only       : True")
+    print(f"  No Real Orders      : True")
+    print(f"  Symbol              : {symbol}")
+    print(f"  Date                : {date_}")
+    print(f"  Timeframe           : {timeframe}")
+    print()
+    try:
+        from replay_training.replay_bar_engine import ReplayBarEngine
+        engine  = ReplayBarEngine(output_dir=output_dir)
+        session = engine.create_session(symbol, date_, timeframe, mode)
+        print(f"  Session ID          : {session.session_id}")
+        print(f"  Total Bars          : {session.total_bars}")
+        print(f"  Status              : {session.status}")
+        print(f"  Hidden Future Data  : {session.hidden_future_data}")
+        print(f"  Replay Speed        : {session.replay_speed}x")
+    except Exception as exc:
+        print(f"  ERROR: {exc}")
+    print()
+    print("  [!] Replay Training Only. No Real Orders. Production Trading: BLOCKED.")
+
+
+def cmd_replay_training_summary(args: argparse.Namespace) -> None:
+    """Show replay training summary."""
+    output_dir = getattr(args, "output_dir", "data/backtest_results/replay_training")
+    print("=" * 60)
+    print("  TW Quant Cockpit — Replay Training Summary v0.5.6")
+    print("  [!] Replay Training Only | Research Only | No Real Orders")
+    print("=" * 60)
+    try:
+        from replay_training.replay_training_store import ReplayTrainingStore
+        store  = ReplayTrainingStore(output_dir=output_dir)
+        result = store.load_latest_summary()
+        if result.get("ok"):
+            s = result.get("summary", {})
+            print(f"  Latest Session ID     : {s.get('latest_session_id', 'N/A')}")
+            print(f"  Latest Symbol         : {s.get('latest_symbol', 'N/A')}")
+            print(f"  Latest Score          : {s.get('latest_score', 'N/A')}")
+            print(f"  Mistakes Count        : {s.get('mistakes_count', 'N/A')}")
+            print(f"  Drills Count          : {s.get('drills_count', 'N/A')}")
+            print(f"  Hidden Future Data    : {s.get('hidden_future_data', True)}")
+            print(f"  Latest Training At    : {s.get('latest_replay_training_at', 'N/A')}")
+        else:
+            print(f"  No summary found: {result.get('error', 'N/A')}")
+    except Exception as exc:
+        print(f"  ERROR: {exc}")
+    print()
+    print("  [!] Replay Training Only. No Real Orders.")
+
+
+def cmd_replay_training_next(args: argparse.Namespace) -> None:
+    """Advance one bar in a replay training session."""
+    session_id = getattr(args, "session_id", None)
+    output_dir = getattr(args, "output_dir", "data/backtest_results/replay_training")
+    print("=" * 60)
+    print("  TW Quant Cockpit — Replay Training: Next Bar v0.5.6")
+    print("  [!] Replay Training Only | No Real Orders")
+    print("=" * 60)
+    if not session_id:
+        print("  ERROR: --session-id required.")
+        return
+    try:
+        from replay_training.replay_bar_engine import ReplayBarEngine
+        engine  = ReplayBarEngine(output_dir=output_dir)
+        result  = engine.next_bar(session_id)
+        snap    = result.get("snapshot", {})
+        print(f"  Bar Index  : {snap.get('current_bar_index', 'N/A')}")
+        print(f"  Total Bars : {snap.get('total_bars', 'N/A')}")
+        bar = snap.get("current_bar", {})
+        print(f"  Current Bar: {bar}")
+    except Exception as exc:
+        print(f"  ERROR: {exc}")
+    print()
+    print("  [!] Replay Training Only. No Real Orders.")
+
+
+def cmd_replay_training_prev(args: argparse.Namespace) -> None:
+    """Go back one bar in a replay training session."""
+    session_id = getattr(args, "session_id", None)
+    output_dir = getattr(args, "output_dir", "data/backtest_results/replay_training")
+    print("=" * 60)
+    print("  TW Quant Cockpit — Replay Training: Prev Bar v0.5.6")
+    print("  [!] Replay Training Only | No Real Orders")
+    print("=" * 60)
+    if not session_id:
+        print("  ERROR: --session-id required.")
+        return
+    try:
+        from replay_training.replay_bar_engine import ReplayBarEngine
+        engine  = ReplayBarEngine(output_dir=output_dir)
+        result  = engine.prev_bar(session_id)
+        snap    = result.get("snapshot", {})
+        print(f"  Bar Index  : {snap.get('current_bar_index', 'N/A')}")
+        print(f"  Total Bars : {snap.get('total_bars', 'N/A')}")
+        bar = snap.get("current_bar", {})
+        print(f"  Current Bar: {bar}")
+    except Exception as exc:
+        print(f"  ERROR: {exc}")
+    print()
+    print("  [!] Replay Training Only. No Real Orders.")
+
+
+def cmd_replay_training_marker(args: argparse.Namespace) -> None:
+    """Add a marker to a replay training session."""
+    session_id  = getattr(args, "session_id", None)
+    marker_type = getattr(args, "type",       "NOTE")
+    price       = getattr(args, "price",      None)
+    note        = getattr(args, "note",       "")
+    output_dir  = getattr(args, "output_dir", "data/backtest_results/replay_training")
+    print("=" * 60)
+    print("  TW Quant Cockpit — Replay Training: Add Marker v0.5.6")
+    print("  [!] Replay Training Only | No Real Orders")
+    print("=" * 60)
+    if not session_id:
+        print("  ERROR: --session-id required.")
+        return
+    try:
+        import uuid
+        from datetime import datetime
+        from replay_training.replay_training_schema import ReplayMarker
+        from replay_training.replay_marker_store import ReplayMarkerStore
+        store  = ReplayMarkerStore(output_dir=output_dir)
+        marker = ReplayMarker(
+            marker_id=f"MK-{uuid.uuid4().hex[:8].upper()}",
+            session_id=session_id,
+            symbol="",
+            trade_date="",
+            bar_time=datetime.now().isoformat(),
+            bar_index=0,
+            marker_type=marker_type,
+            price=float(price) if price else 0.0,
+            note=note,
+            created_at=datetime.now().isoformat(),
+            no_real_orders=True,
+        )
+        store.add_marker(marker)
+        print(f"  Marker ID  : {marker.marker_id}")
+        print(f"  Type       : {marker_type}")
+        print(f"  Price      : {marker.price}")
+        print(f"  Note       : {note}")
+    except Exception as exc:
+        print(f"  ERROR: {exc}")
+    print()
+    print("  [!] Replay Training Only. No Real Orders.")
+
+
+def cmd_replay_ai_review(args: argparse.Namespace) -> None:
+    """Run AI rule-based review on a replay training session."""
+    session_id = getattr(args, "session_id", None)
+    output_dir = getattr(args, "output_dir", "data/backtest_results/replay_training")
+    print("=" * 60)
+    print("  TW Quant Cockpit — Replay AI Review v0.5.6")
+    print("  [!] Replay Training Only | Rule-Based Only | No External API | No Real Orders")
+    print("=" * 60)
+    if not session_id:
+        print("  ERROR: --session-id required.")
+        return
+    try:
+        from replay_training.ai_replay_reviewer import AIReplayReviewer
+        from replay_training.replay_marker_store import ReplayMarkerStore
+        store   = ReplayMarkerStore(output_dir=output_dir)
+        markers = store.list_markers(session_id=session_id)
+        reviewer = AIReplayReviewer()
+        review   = reviewer.review_session(session_id, [], markers)
+        mistakes = reviewer.detect_mistakes([], markers)
+        print(f"  Review ID  : {review.review_id}")
+        print(f"  Summary    : {review.summary}")
+        print(f"  Score      : {review.score:.1f}/100")
+        print(f"  Mistakes   : {len(mistakes)}")
+        print(f"  Drills     : {review.suggested_drills}")
+    except Exception as exc:
+        print(f"  ERROR: {exc}")
+    print()
+    print("  [!] Replay Training Only. No Real Orders.")
+
+
+def cmd_replay_training_score(args: argparse.Namespace) -> None:
+    """Get replay training score for a session."""
+    session_id = getattr(args, "session_id", None)
+    output_dir = getattr(args, "output_dir", "data/backtest_results/replay_training")
+    print("=" * 60)
+    print("  TW Quant Cockpit — Replay Training Score v0.5.6")
+    print("  [!] Replay Training Only | No Real Orders")
+    print("=" * 60)
+    if not session_id:
+        print("  ERROR: --session-id required.")
+        return
+    try:
+        from replay_training.replay_score_engine import ReplayScoreEngine
+        from replay_training.replay_marker_store import ReplayMarkerStore
+        from replay_training.ai_replay_reviewer import AIReplayReviewer
+        store    = ReplayMarkerStore(output_dir=output_dir)
+        markers  = store.list_markers(session_id=session_id)
+        reviewer = AIReplayReviewer()
+        mistakes = reviewer.detect_mistakes([], markers)
+        se       = ReplayScoreEngine()
+        # Minimal session stub
+        class _S:
+            notes_count   = 0
+            markers_count = len(markers)
+        score = se.score_session(_S(), [], markers, mistakes)
+        print(f"  Total Score  : {score.get('total_score', 0):.1f}/100")
+        print(f"  Grade        : {score.get('grade', 'N/A')}")
+        print(f"  Interpretation: {score.get('interpretation', 'N/A')}")
+        breakdown = score.get("breakdown", {})
+        for k, v in breakdown.items():
+            print(f"    {k:<30}: {v:.1f}")
+    except Exception as exc:
+        print(f"  ERROR: {exc}")
+    print()
+    print("  [!] Replay Training Only. No Real Orders.")
+
+
+def cmd_replay_training_drills(args: argparse.Namespace) -> None:
+    """Get drill suggestions for a replay training session."""
+    session_id = getattr(args, "session_id", None)
+    output_dir = getattr(args, "output_dir", "data/backtest_results/replay_training")
+    print("=" * 60)
+    print("  TW Quant Cockpit — Replay Training Drills v0.5.6")
+    print("  [!] Replay Training Only | No Real Orders")
+    print("=" * 60)
+    if not session_id:
+        print("  ERROR: --session-id required.")
+        return
+    try:
+        from replay_training.replay_drill_builder import ReplayDrillBuilder
+        from replay_training.ai_replay_reviewer import AIReplayReviewer
+        from replay_training.replay_marker_store import ReplayMarkerStore
+        store    = ReplayMarkerStore(output_dir=output_dir)
+        markers  = store.list_markers(session_id=session_id)
+        reviewer = AIReplayReviewer()
+        mistakes = reviewer.detect_mistakes([], markers)
+        review   = reviewer.review_session(session_id, [], markers)
+        builder  = ReplayDrillBuilder()
+        drills   = builder.build_drills(mistakes, review)
+        print(f"  Drills Suggested: {len(drills)}")
+        for i, d in enumerate(drills, 1):
+            print(f"  [{i}] {d.get('drill_name', '')} (priority={d.get('priority', '')})")
+            print(f"      Reason      : {d.get('reason', '')}")
+            print(f"      Focus Points: {d.get('focus_points', '')}")
+    except Exception as exc:
+        print(f"  ERROR: {exc}")
+    print()
+    print("  [!] Replay Training Only. No Real Orders.")
+
+
+def cmd_replay_training_report(args: argparse.Namespace) -> None:
+    """Generate a replay training report."""
+    mode       = getattr(args, "mode",       "real")
+    report_dir = getattr(args, "report_dir", "reports")
+    output_dir = getattr(args, "output_dir", "data/backtest_results/replay_training")
+    print("=" * 60)
+    print(f"  TW Quant Cockpit — Replay Training Report v0.5.6 (mode={mode})")
+    print("  [!] Replay Training Only | Research Only | No Real Orders | Production BLOCKED")
+    print("=" * 60)
+    try:
+        from gui.replay_training_adapter import ReplayTrainingAdapter
+        adapter = ReplayTrainingAdapter(output_dir=output_dir, report_dir=report_dir)
+        result  = adapter.generate_report(mode=mode)
+        if result.get("ok"):
+            print(f"  Report saved: {result.get('report_path')}")
+        else:
+            print(f"  ERROR: {result.get('error')}")
+    except Exception as exc:
+        print(f"  ERROR: {exc}")
+    print()
+    print("  [!] Replay Training Only. No Real Orders.")
+
+
+# ---------------------------------------------------------------------------
 # v0.4.2.1 ML Knowledge Integration command handlers
 # ---------------------------------------------------------------------------
 
@@ -10305,6 +10589,96 @@ def _build_parser() -> argparse.ArgumentParser:
     p_rts.add_argument("--mode", choices=["real", "mock"], default="real",
                        help="Data mode (default: real)")
 
+    # --- replay-training (v0.5.6) ---
+    p_rt = subparsers.add_parser(
+        "replay-training",
+        help="Create a new TW Replay Training session (v0.5.6)",
+    )
+    p_rt.add_argument("--symbol",    default=None,    help="Stock symbol (e.g. 2454)")
+    p_rt.add_argument("--date",      default=None,    help="Trade date YYYY-MM-DD")
+    p_rt.add_argument("--timeframe", choices=["1min", "5min"], default="1min",
+                      help="Bar frequency (default: 1min)")
+    p_rt.add_argument("--mode",      choices=["real", "mock"], default="real",
+                      help="Data mode (default: real)")
+    p_rt.add_argument("--output-dir", dest="output_dir",
+                      default="data/backtest_results/replay_training",
+                      help="Output directory for CSVs")
+
+    # --- replay-training-next (v0.5.6) ---
+    p_rtn = subparsers.add_parser(
+        "replay-training-next",
+        help="Advance one bar in a replay training session (v0.5.6)",
+    )
+    p_rtn.add_argument("--session-id", dest="session_id", required=False, default=None,
+                       help="Replay training session ID")
+    p_rtn.add_argument("--output-dir", dest="output_dir",
+                       default="data/backtest_results/replay_training")
+
+    # --- replay-training-prev (v0.5.6) ---
+    p_rtp = subparsers.add_parser(
+        "replay-training-prev",
+        help="Go back one bar in a replay training session (v0.5.6)",
+    )
+    p_rtp.add_argument("--session-id", dest="session_id", required=False, default=None,
+                       help="Replay training session ID")
+    p_rtp.add_argument("--output-dir", dest="output_dir",
+                       default="data/backtest_results/replay_training")
+
+    # --- replay-training-marker (v0.5.6) ---
+    p_rtm = subparsers.add_parser(
+        "replay-training-marker",
+        help="Add a training marker to a session (v0.5.6)",
+    )
+    p_rtm.add_argument("--session-id", dest="session_id", required=False, default=None,
+                       help="Replay training session ID")
+    p_rtm.add_argument("--type",   default="NOTE",  help="Marker type (ENTRY, EXIT, STOP_LOSS, etc.)")
+    p_rtm.add_argument("--price",  type=float, default=None, help="Price at marker")
+    p_rtm.add_argument("--note",   default="",      help="Note text")
+    p_rtm.add_argument("--output-dir", dest="output_dir",
+                       default="data/backtest_results/replay_training")
+
+    # --- replay-ai-review (v0.5.6) ---
+    p_rar = subparsers.add_parser(
+        "replay-ai-review",
+        help="Run rule-based AI review on a replay training session (v0.5.6)",
+    )
+    p_rar.add_argument("--session-id", dest="session_id", required=False, default=None,
+                       help="Replay training session ID")
+    p_rar.add_argument("--output-dir", dest="output_dir",
+                       default="data/backtest_results/replay_training")
+
+    # --- replay-training-score (v0.5.6) ---
+    p_rsc = subparsers.add_parser(
+        "replay-training-score",
+        help="Get training score for a replay session (v0.5.6)",
+    )
+    p_rsc.add_argument("--session-id", dest="session_id", required=False, default=None,
+                       help="Replay training session ID")
+    p_rsc.add_argument("--output-dir", dest="output_dir",
+                       default="data/backtest_results/replay_training")
+
+    # --- replay-training-drills (v0.5.6) ---
+    p_rdr = subparsers.add_parser(
+        "replay-training-drills",
+        help="Get drill suggestions for a replay training session (v0.5.6)",
+    )
+    p_rdr.add_argument("--session-id", dest="session_id", required=False, default=None,
+                       help="Replay training session ID")
+    p_rdr.add_argument("--output-dir", dest="output_dir",
+                       default="data/backtest_results/replay_training")
+
+    # --- replay-training-report (v0.5.6) ---
+    p_rtrpt = subparsers.add_parser(
+        "replay-training-report",
+        help="Generate TW Replay Training Cockpit Markdown report (v0.5.6)",
+    )
+    p_rtrpt.add_argument("--mode",       choices=["real", "mock"], default="real",
+                         help="Data mode (default: real)")
+    p_rtrpt.add_argument("--report-dir", dest="report_dir", default="reports",
+                         help="Custom output directory for reports")
+    p_rtrpt.add_argument("--output-dir", dest="output_dir",
+                         default="data/backtest_results/replay_training")
+
     # --- strategy-knowledge-ingest (v0.4.1.1) ---
     p_ski = subparsers.add_parser(
         "strategy-knowledge-ingest",
@@ -11490,6 +11864,15 @@ def main() -> None:
         "replay-session-list":         cmd_replay_session_list,
         "replay-session-show":         cmd_replay_session_show,
         "replay-training-summary":     cmd_replay_training_summary,
+        # v0.5.6 TW Replay Training Cockpit
+        "replay-training":             cmd_replay_training,
+        "replay-training-next":        cmd_replay_training_next,
+        "replay-training-prev":        cmd_replay_training_prev,
+        "replay-training-marker":      cmd_replay_training_marker,
+        "replay-ai-review":            cmd_replay_ai_review,
+        "replay-training-score":       cmd_replay_training_score,
+        "replay-training-drills":      cmd_replay_training_drills,
+        "replay-training-report":      cmd_replay_training_report,
         # v0.4.1.1 Strategy Knowledge Ingestion
         "strategy-knowledge-ingest":   cmd_strategy_knowledge_ingest,
         "strategy-knowledge-summary":  cmd_strategy_knowledge_summary,

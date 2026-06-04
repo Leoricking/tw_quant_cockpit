@@ -1125,6 +1125,98 @@ class StableReleaseChecklist:
             elapsed = (time.monotonic() - t0) * 1000
             return self._item("data_stabilization_output_ignored", "FAIL", str(exc), elapsed)
 
+    def _check_replay_training_import_health(self) -> dict:
+        """v0.5.6: replay_training package imports cleanly."""
+        t0 = time.monotonic()
+        try:
+            import importlib.util
+            for mod in [
+                "replay_training.replay_training_schema",
+                "replay_training.replay_bar_engine",
+                "replay_training.tape_reading_detector",
+                "replay_training.ai_replay_reviewer",
+                "replay_training.replay_score_engine",
+            ]:
+                spec = importlib.util.find_spec(mod)
+                if spec is None:
+                    elapsed = (time.monotonic() - t0) * 1000
+                    return self._item("replay_training_import_health", "FAIL",
+                                       f"Module not found: {mod}", elapsed)
+            elapsed = (time.monotonic() - t0) * 1000
+            return self._item("replay_training_import_health", "PASS",
+                               "replay_training core modules importable.", elapsed)
+        except Exception as exc:
+            elapsed = (time.monotonic() - t0) * 1000
+            return self._item("replay_training_import_health", "FAIL", str(exc), elapsed)
+
+    def _check_hidden_future_data_default_true(self) -> dict:
+        """v0.5.6: ReplayBarEngine.get_visible_bars() respects hidden_future_data."""
+        t0 = time.monotonic()
+        try:
+            from replay_training.replay_bar_engine import ReplayBarEngine
+            engine  = ReplayBarEngine()
+            session = engine.create_session("2454", "2026-06-03", "1min", "real")
+            visible = engine.get_visible_bars(session.session_id)
+            elapsed = (time.monotonic() - t0) * 1000
+            # hidden_future_data must be True
+            if not session.hidden_future_data:
+                return self._item("hidden_future_data_default_true", "FAIL",
+                                   "hidden_future_data is not True by default.", elapsed)
+            # visible_bars must not exceed current_bar_index + 1
+            if len(visible) > session.current_bar_index + 1:
+                return self._item("hidden_future_data_default_true", "FAIL",
+                                   "get_visible_bars() returned future bars.", elapsed)
+            return self._item("hidden_future_data_default_true", "PASS",
+                               "hidden_future_data=True, no future bars leaked.", elapsed)
+        except Exception as exc:
+            elapsed = (time.monotonic() - t0) * 1000
+            return self._item("hidden_future_data_default_true", "FAIL", str(exc), elapsed)
+
+    def _check_ai_review_no_external_api(self) -> dict:
+        """v0.5.6: AIReplayReviewer has no external API calls."""
+        t0 = time.monotonic()
+        try:
+            ai_path = os.path.join(BASE_DIR, "replay_training", "ai_replay_reviewer.py")
+            if not os.path.isfile(ai_path):
+                elapsed = (time.monotonic() - t0) * 1000
+                return self._item("ai_review_no_external_api", "FAIL",
+                                   "ai_replay_reviewer.py not found.", elapsed)
+            with open(ai_path, "r", encoding="utf-8") as f:
+                content = f.read()
+            forbidden = ["requests.get", "requests.post", "openai", "anthropic", "urllib.request"]
+            for kw in forbidden:
+                if kw in content:
+                    elapsed = (time.monotonic() - t0) * 1000
+                    return self._item("ai_review_no_external_api", "FAIL",
+                                       f"External API call found: {kw}", elapsed)
+            elapsed = (time.monotonic() - t0) * 1000
+            return self._item("ai_review_no_external_api", "PASS",
+                               "No external API calls in AIReplayReviewer.", elapsed)
+        except Exception as exc:
+            elapsed = (time.monotonic() - t0) * 1000
+            return self._item("ai_review_no_external_api", "FAIL", str(exc), elapsed)
+
+    def _check_replay_training_no_real_orders(self) -> dict:
+        """v0.5.6: replay_training schema has no_real_orders=True."""
+        t0 = time.monotonic()
+        try:
+            from replay_training.replay_training_schema import ReplayTrainingSession
+            session = ReplayTrainingSession(
+                session_id="TEST", symbol="TEST", trade_date="2026-06-03"
+            )
+            elapsed = (time.monotonic() - t0) * 1000
+            if not session.no_real_orders:
+                return self._item("no_real_orders_replay_training", "FAIL",
+                                   "ReplayTrainingSession.no_real_orders is not True.", elapsed)
+            if not session.production_blocked:
+                return self._item("no_real_orders_replay_training", "FAIL",
+                                   "ReplayTrainingSession.production_blocked is not True.", elapsed)
+            return self._item("no_real_orders_replay_training", "PASS",
+                               "no_real_orders=True and production_blocked=True confirmed.", elapsed)
+        except Exception as exc:
+            elapsed = (time.monotonic() - t0) * 1000
+            return self._item("no_real_orders_replay_training", "FAIL", str(exc), elapsed)
+
     # ------------------------------------------------------------------
     # Write outputs
     # ------------------------------------------------------------------
@@ -1309,6 +1401,11 @@ class StableReleaseChecklist:
             self._check_data_stabilization_feature_readiness_exists,
             self._check_data_stabilization_leakage_guard_blocks_forbidden,
             self._check_data_stabilization_output_ignored,
+            # v0.5.6 Replay Training Cockpit
+            self._check_replay_training_import_health,
+            self._check_hidden_future_data_default_true,
+            self._check_ai_review_no_external_api,
+            self._check_replay_training_no_real_orders,
         ]
 
         items: list[dict] = []

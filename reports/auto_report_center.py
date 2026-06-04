@@ -59,6 +59,7 @@ _PROFILE_FLAGS: Dict[str, dict] = {
         include_regression_consolidation=True,
         include_report_pack=True,
         include_data_stabilization=True,
+        include_replay_training=True,
     ),
     "daily": dict(
         include_stock_reports=False,
@@ -83,6 +84,7 @@ _PROFILE_FLAGS: Dict[str, dict] = {
         include_regression_consolidation=False,
         include_report_pack=False,
         include_data_stabilization=True,
+        include_replay_training=False,
     ),
     "portfolio": dict(
         include_stock_reports=False,
@@ -181,6 +183,7 @@ class AutoReportCenter:
         include_regression_consolidation: bool = False,
         include_report_pack: bool = False,
         include_data_stabilization: bool = False,
+        include_replay_training: bool = False,
     ):
         self.mode        = mode
         self.profile     = profile
@@ -231,6 +234,9 @@ class AutoReportCenter:
         )
         self.include_data_stabilization = flags.get(
             "include_data_stabilization", include_data_stabilization
+        )
+        self.include_replay_training = flags.get(
+            "include_replay_training", include_replay_training
         )
         self.universe_name = universe_name
 
@@ -358,6 +364,10 @@ class AutoReportCenter:
         # IMPORTANT: summary only — does NOT call auto_report_center full — avoids recursive loop
         if self.include_data_stabilization:
             self.run_data_stabilization_summary()
+
+        # v0.5.6 Replay Training Cockpit summary (always optional, never crashes)
+        if self.include_replay_training:
+            self.run_replay_training_summary()
 
         # Aggregated outputs
         if self.include_daily_summary:
@@ -1376,6 +1386,32 @@ class AutoReportCenter:
         except Exception as exc:
             logger.warning("AutoReportCenter.run_data_stabilization_summary: %s", exc)
             self._context["data_stabilization"] = {}
+
+    def run_replay_training_summary(self) -> None:
+        """v0.5.6: Load replay training summary (never crashes, no recursive loop).
+
+        [!] Replay Training Only. Research Only. No Real Orders.
+        """
+        try:
+            from gui.replay_training_adapter import ReplayTrainingAdapter
+            adapter = ReplayTrainingAdapter()
+            result  = adapter.load_latest_summary()
+            summary = result.get("summary", {}) if result.get("ok") else {}
+            self._context["replay_training"] = {
+                "latest_session_id":        summary.get("latest_session_id", ""),
+                "latest_symbol":            summary.get("latest_symbol", ""),
+                "latest_score":             summary.get("latest_score", 0.0),
+                "mistakes_count":           summary.get("mistakes_count", 0),
+                "drills_count":             summary.get("drills_count", 0),
+                "hidden_future_data":       True,
+                "latest_replay_training_at": summary.get("latest_replay_training_at", ""),
+                "no_real_orders":           True,
+            }
+            report_path = adapter.load_latest_report_path()
+            self._record_success("replay_training_summary", report_path)
+        except Exception as exc:
+            logger.warning("AutoReportCenter.run_replay_training_summary: %s", exc)
+            self._context["replay_training"] = {}
 
     def run_report_pack_summary(self) -> None:
         """v0.5.4: Build daily report pack summary (never crashes, no recursive loop)."""

@@ -50,8 +50,8 @@
 | v0.5.3 | Regression Suite Consolidation | Done |
 | v0.5.4 | Report Pack Consolidation | Done |
 | v0.5.5 | Data / Feature Store Stabilization | Done |
-| v0.5.6 | TW Replay Training Cockpit | Planned |
-| v0.6.0 | Stable Release | Planned |
+| v0.5.6 | TW Replay Training Cockpit — AI Review & Tape Reading Practice | Done |
+| v0.6.0 | Research OS Stable Release | Planned |
 
 ---
 

@@ -4,7 +4,39 @@
 >
 > **[!] v1: Real order execution is strictly prohibited. For research, simulation, and decision support only. Not investment advice.**
 
-**Current version: v0.5.5 — Data / Feature Store Stabilization**
+**Current version: v0.5.6 — TW Replay Training Cockpit**
+
+---
+
+## v0.5.6 — TW Replay Training Cockpit (AI Review & Tape Reading Practice)
+
+**New in v0.5.6:**
+
+- **ReplayBarEngine** — bar-by-bar replay engine; `get_visible_bars()` NEVER returns future bars; `hidden_future_data=True` by default.
+- **ReplayMarkerStore** — user-placed ENTRY/EXIT/STOP_LOSS/TAKE_PROFIT/FAKE_BREAKOUT/VWAP_LOSS/OPENING_RANGE_FAIL markers; CSV persistence.
+- **TapeReadingDetector** — rule-based detection: fake breakout, VWAP loss/reclaim, opening range break/fail, long upper shadow, volume no follow-through.
+- **AIReplayReviewer** — 7 rule-based mistake checks (no external LLM API, no network calls): chase_high, ignored_vwap_loss, ignored_fake_breakout, ignored_opening_range_fail, early_take_profit, late_stop_loss, violated_strategy.
+- **ReplayScoreEngine** — 0-100 score with 6-component breakdown: entry quality (25), exit/stop discipline (20), fake breakout avoidance (15), VWAP/OR compliance (15), strategy adherence (15), notes completeness (10).
+- **ReplayDrillBuilder** — 8 drill types tailored to detected mistakes.
+- **ReplayJournalBridge** — research/training journal entries only; graceful fallback if journal module unavailable.
+- **ReplayTrainingStore** — 7 CSV files: sessions, markers, mistakes, AI reviews, scores, drills, summary.
+- **9-section Markdown report** — header, overview, session, markers, AI review, tape reading, score, drills, journal, safety declaration.
+- **GUI panel** — `ReplayTrainingPanel` (PySide6) with bar table, marker buttons, AI review, score breakdown, mistake table, journal export.
+- **9 new CLI commands**: `replay-training`, `replay-training-summary`, `replay-training-next`, `replay-training-prev`, `replay-training-marker`, `replay-ai-review`, `replay-training-score`, `replay-training-drills`, `replay-training-report`.
+- **[!] Replay Training Only. Research Only. No Real Orders. Production Trading: BLOCKED.**
+
+**CLI usage:**
+```bash
+python main.py replay-training --symbol 2454 --date 2026-06-03 --timeframe 1min --mode real
+python main.py replay-training-summary
+python main.py replay-training-next --session-id RTRAIN-...
+python main.py replay-training-prev --session-id RTRAIN-...
+python main.py replay-training-marker --session-id RTRAIN-... --type ENTRY --price 123.5
+python main.py replay-ai-review --session-id RTRAIN-...
+python main.py replay-training-score --session-id RTRAIN-...
+python main.py replay-training-drills --session-id RTRAIN-...
+python main.py replay-training-report --mode real
+```
 
 ---
 
