@@ -395,6 +395,16 @@ except Exception as _rp_exc:
     logger.warning("ReportPackPanel unavailable: %s", _rp_exc)
     _REPORT_PACK_AVAILABLE = False
 
+# ---------------------------------------------------------------------------
+# v0.5.5 Data Stabilization panel import (guarded)
+# ---------------------------------------------------------------------------
+try:
+    from gui.data_stabilization_panel import DataStabilizationPanel, _DATA_STAB_PANEL_AVAILABLE
+except Exception as _ds_exc:
+    logger.warning("DataStabilizationPanel unavailable: %s", _ds_exc)
+    _DATA_STAB_PANEL_AVAILABLE = False
+    DataStabilizationPanel = None
+
 # v0.5.1.1 Strategy Filter panel — inline (no separate panel file required)
 # ---------------------------------------------------------------------------
 _STRATEGY_FILTER_AVAILABLE = False
@@ -1511,6 +1521,13 @@ class CockpitWindow(QMainWindow if _PYSIDE6_AVAILABLE else object):
             mid_tabs.addTab(self._report_pack_panel, "Report Pack")
         else:
             self._report_pack_panel = None
+
+        # v0.5.5 Data Stabilization tab
+        if _DATA_STAB_PANEL_AVAILABLE and DataStabilizationPanel is not None:
+            self._data_stabilization_panel = DataStabilizationPanel()
+            mid_tabs.addTab(self._data_stabilization_panel, "Data Stabilization")
+        else:
+            self._data_stabilization_panel = None
 
         # v0.5.1.1 Strategy Filter tab (inline — no separate panel file)
         if _STRATEGY_FILTER_AVAILABLE and _PYSIDE6_AVAILABLE:

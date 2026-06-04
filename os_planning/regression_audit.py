@@ -307,6 +307,16 @@ _COVERAGE: list[dict] = [
         "missing_checks":    "Runtime coverage requires prior test run; CI hook not yet implemented",
         "recommended_test":  "_check_regression_consolidation_import; _check_quick_suite_exists; _check_regression_safe_command_enforcement",
     },
+    {
+        "module":            "data_stabilization",
+        "command_covered":   "yes",
+        "import_covered":    "yes",
+        "gui_covered":       "yes",
+        "report_covered":    "yes",
+        "safety_covered":    "yes",
+        "missing_checks":    "Full engine run requires real data; leakage guard tested only on static columns",
+        "recommended_test":  "_check_data_stabilization_import_health; _check_data_stabilization_leakage_guard_blocks_forbidden; data_stabilization_import in SUITE_DATA",
+    },
 ]
 
 

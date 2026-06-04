@@ -58,6 +58,7 @@ _PROFILE_FLAGS: Dict[str, dict] = {
         include_portfolio_journal=True,
         include_regression_consolidation=True,
         include_report_pack=True,
+        include_data_stabilization=True,
     ),
     "daily": dict(
         include_stock_reports=False,
@@ -81,6 +82,7 @@ _PROFILE_FLAGS: Dict[str, dict] = {
         include_portfolio_journal=True,
         include_regression_consolidation=False,
         include_report_pack=False,
+        include_data_stabilization=True,
     ),
     "portfolio": dict(
         include_stock_reports=False,
@@ -178,6 +180,7 @@ class AutoReportCenter:
         include_portfolio_journal: bool = False,
         include_regression_consolidation: bool = False,
         include_report_pack: bool = False,
+        include_data_stabilization: bool = False,
     ):
         self.mode        = mode
         self.profile     = profile
@@ -225,6 +228,9 @@ class AutoReportCenter:
         )
         self.include_report_pack = flags.get(
             "include_report_pack", include_report_pack
+        )
+        self.include_data_stabilization = flags.get(
+            "include_data_stabilization", include_data_stabilization
         )
         self.universe_name = universe_name
 
@@ -347,6 +353,11 @@ class AutoReportCenter:
         # IMPORTANT: does NOT call auto_report_center full — avoids recursive loop
         if self.include_report_pack:
             self.run_report_pack_summary()
+
+        # v0.5.5 Data / Feature Store Stabilization summary (always optional, never crashes)
+        # IMPORTANT: summary only — does NOT call auto_report_center full — avoids recursive loop
+        if self.include_data_stabilization:
+            self.run_data_stabilization_summary()
 
         # Aggregated outputs
         if self.include_daily_summary:
@@ -1344,6 +1355,27 @@ class AutoReportCenter:
         except Exception as exc:
             logger.warning("AutoReportCenter.run_regression_consolidation_summary: %s", exc)
             self._context["regression_consolidation"] = {}
+
+    def run_data_stabilization_summary(self) -> None:
+        """v0.5.5: Load data stabilization summary (never crashes, no recursive loop)."""
+        try:
+            from gui.data_stabilization_adapter import DataStabilizationAdapter
+            adapter = DataStabilizationAdapter()
+            # Load latest saved summary only — does NOT run full stabilization engine
+            summary = adapter.load_latest_summary()
+            self._context["data_stabilization"] = {
+                "overall_status":   summary.get("overall_status", "UNKNOWN"),
+                "health_score":     summary.get("health_score", 0.0),
+                "readiness_score":  summary.get("readiness_score", 0.0),
+                "leakage_warnings": summary.get("leakage_warnings", 0),
+                "datasets_checked": summary.get("datasets_checked", 0),
+                "feature_groups":   summary.get("feature_groups_checked", 0),
+            }
+            report_path = adapter.load_latest_report_path()
+            self._record_success("data_stabilization_summary", report_path)
+        except Exception as exc:
+            logger.warning("AutoReportCenter.run_data_stabilization_summary: %s", exc)
+            self._context["data_stabilization"] = {}
 
     def run_report_pack_summary(self) -> None:
         """v0.5.4: Build daily report pack summary (never crashes, no recursive loop)."""

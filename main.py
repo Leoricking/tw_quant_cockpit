@@ -9217,6 +9217,210 @@ def cmd_report_pack_report(args: argparse.Namespace) -> None:
 
 
 # ---------------------------------------------------------------------------
+# v0.5.5 Data / Feature Store Stabilization commands
+# ---------------------------------------------------------------------------
+
+def _print_data_stab_header() -> None:
+    print()
+    print("  ╔══════════════════════════════════════════════════════════════╗")
+    print("  ║  TW Quant Cockpit — Data / Feature Store Stabilization      ║")
+    print("  ║  [!] Data Stabilization Only | Research Only | No Real Orders ║")
+    print("  ╚══════════════════════════════════════════════════════════════╝")
+    print()
+
+
+def cmd_data_stabilization(args: argparse.Namespace) -> None:
+    """Run all data stabilization checks (v0.5.5)."""
+    _print_data_stab_header()
+    mode = getattr(args, "mode", "real")
+    print(f"  Mode: {mode}")
+    print("  Running data stabilization checks ...")
+    print()
+    try:
+        from gui.data_stabilization_adapter import DataStabilizationAdapter
+        adapter = DataStabilizationAdapter()
+        result  = adapter.run_stabilization(mode=mode)
+        print(f"  Overall Status   : {result.get('overall_status', 'UNKNOWN')}")
+        print(f"  Health Score     : {result.get('health_score', 0.0)}%")
+        print(f"  Readiness Score  : {result.get('readiness_score', 0.0)}%")
+        print(f"  Datasets Checked : {result.get('datasets_checked', 0)}")
+        print(f"  Feature Groups   : {result.get('feature_groups_checked', 0)}")
+        print(f"  Leakage Warnings : {result.get('leakage_warnings', 0)}")
+        errors = result.get("errors", [])
+        if errors:
+            print()
+            print("  Errors:")
+            for e in errors:
+                print(f"    - {e}")
+        print()
+        print("  [!] Data Stabilization Only. No Real Orders.")
+        print()
+    except Exception as exc:
+        print(f"  ERROR: {exc}")
+        sys.exit(1)
+
+
+def cmd_data_stabilization_report(args: argparse.Namespace) -> None:
+    """Generate data stabilization Markdown report (v0.5.5)."""
+    _print_data_stab_header()
+    mode = getattr(args, "mode", "real")
+    print(f"  Mode: {mode}")
+    print("  Generating data stabilization report ...")
+    print()
+    try:
+        from gui.data_stabilization_adapter import DataStabilizationAdapter
+        adapter = DataStabilizationAdapter()
+        path    = adapter.generate_report(mode=mode)
+        print(f"  Report saved: {path}")
+        print()
+        print("  [!] Data Stabilization Only. No Real Orders.")
+        print()
+    except Exception as exc:
+        print(f"  ERROR: {exc}")
+        sys.exit(1)
+
+
+def cmd_data_stabilization_summary(args: argparse.Namespace) -> None:
+    """Show latest data stabilization summary from store (v0.5.5)."""
+    _print_data_stab_header()
+    try:
+        from gui.data_stabilization_adapter import DataStabilizationAdapter
+        adapter = DataStabilizationAdapter()
+        summary = adapter.load_latest_summary()
+        if not summary:
+            print("  No summary found. Run: python main.py data-stabilization --mode real")
+            print()
+            return
+        print(f"  Generated At     : {summary.get('generated_at', 'N/A')}")
+        print(f"  Mode             : {summary.get('mode', 'N/A')}")
+        print(f"  Overall Status   : {summary.get('overall_status', 'UNKNOWN')}")
+        print(f"  Health Score     : {summary.get('health_score', '0.0')}%")
+        print(f"  Readiness Score  : {summary.get('readiness_score', '0.0')}%")
+        print(f"  Datasets Checked : {summary.get('datasets_checked', 0)}")
+        print(f"  Feature Groups   : {summary.get('feature_groups_checked', 0)}")
+        print(f"  Leakage Warnings : {summary.get('leakage_warnings', 0)}")
+        print()
+        print("  [!] Data Stabilization Only. No Real Orders.")
+        print()
+    except Exception as exc:
+        print(f"  ERROR: {exc}")
+        sys.exit(1)
+
+
+def cmd_data_lineage(args: argparse.Namespace) -> None:
+    """Show data lineage records from store (v0.5.5)."""
+    _print_data_stab_header()
+    try:
+        from gui.data_stabilization_adapter import DataStabilizationAdapter
+        adapter = DataStabilizationAdapter()
+        rows    = adapter.load_lineage()
+        if not rows:
+            print("  No lineage data. Run: python main.py data-stabilization --mode real")
+            print()
+            return
+        print(f"  {'Dataset':<30} {'Provider':<20} {'Modified':<12} {'Rows':>6} {'Freshness':<12} Warning")
+        print(f"  {'-'*30} {'-'*20} {'-'*12} {'-'*6} {'-'*12} {'-'*30}")
+        for row in rows[:30]:
+            print(
+                f"  {row.get('dataset_name',''):<30} "
+                f"{(row.get('source_provider','') or '')[:20]:<20} "
+                f"{(row.get('modified_at','') or '')[:10]:<12} "
+                f"{str(row.get('rows',0)):>6} "
+                f"{row.get('freshness_status',''):<12} "
+                f"{(row.get('warning','') or '')[:40]}"
+            )
+        print()
+        print(f"  Total: {len(rows)} lineage records")
+        print()
+    except Exception as exc:
+        print(f"  ERROR: {exc}")
+        sys.exit(1)
+
+
+def cmd_feature_readiness(args: argparse.Namespace) -> None:
+    """Show feature readiness check results from store (v0.5.5)."""
+    _print_data_stab_header()
+    try:
+        from gui.data_stabilization_adapter import DataStabilizationAdapter
+        adapter  = DataStabilizationAdapter()
+        rows     = adapter.load_feature_readiness()
+        if not rows:
+            print("  No readiness data. Run: python main.py data-stabilization --mode real")
+            print()
+            return
+        print(f"  {'Feature Group':<35} {'Status':<14} {'Score':>6} {'Stale':<6} {'Leakage':<8} Notes")
+        print(f"  {'-'*35} {'-'*14} {'-'*6} {'-'*6} {'-'*8} {'-'*30}")
+        for row in rows:
+            print(
+                f"  {row.get('feature_group', row.get('dataset_name','')):<35} "
+                f"{row.get('status',''):<14} "
+                f"{str(row.get('readiness_score',0.0)):>6} "
+                f"{str(row.get('stale', False)):<6} "
+                f"{str(row.get('leakage_risk', False)):<8} "
+                f"{(str(row.get('notes','')) or '')[:40]}"
+            )
+        print()
+        print(f"  Total: {len(rows)} feature groups")
+        print()
+    except Exception as exc:
+        print(f"  ERROR: {exc}")
+        sys.exit(1)
+
+
+def cmd_feature_store_health(args: argparse.Namespace) -> None:
+    """Show feature store health from store (v0.5.5)."""
+    _print_data_stab_header()
+    try:
+        from gui.data_stabilization_adapter import DataStabilizationAdapter
+        adapter = DataStabilizationAdapter()
+        health  = adapter.load_health()
+        if not health:
+            print("  No health data. Run: python main.py data-stabilization --mode real")
+            print()
+            return
+        print(f"  Overall Status   : {health.get('overall_status', 'UNKNOWN')}")
+        print(f"  Health Score     : {health.get('health_score', '0.0')}%")
+        print(f"  Ready            : {health.get('ready_count', 0)}")
+        print(f"  Partial          : {health.get('partial_count', 0)}")
+        print(f"  Missing          : {health.get('missing_count', 0)}")
+        print(f"  Stale            : {health.get('stale_count', 0)}")
+        print(f"  Leakage Risk     : {health.get('leakage_risk_count', 0)}")
+        print()
+        print("  [!] Data Stabilization Only. No Real Orders.")
+        print()
+    except Exception as exc:
+        print(f"  ERROR: {exc}")
+        sys.exit(1)
+
+
+def cmd_leakage_guard(args: argparse.Namespace) -> None:
+    """Show leakage guard findings from store (v0.5.5)."""
+    _print_data_stab_header()
+    try:
+        from gui.data_stabilization_adapter import DataStabilizationAdapter
+        adapter = DataStabilizationAdapter()
+        rows    = adapter.load_leakage_summary()
+        if not rows:
+            print("  No leakage warnings. Run: python main.py data-stabilization --mode real")
+            print()
+            return
+        print(f"  {'Dataset / Feature':<35} {'Severity':<10} Warning")
+        print(f"  {'-'*35} {'-'*10} {'-'*50}")
+        for row in rows[:25]:
+            print(
+                f"  {row.get('dataset_name',''):<35} "
+                f"{row.get('severity',''):<10} "
+                f"{(row.get('warning','') or '')[:60]}"
+            )
+        print()
+        print(f"  Total: {len(rows)} leakage findings")
+        print()
+    except Exception as exc:
+        print(f"  ERROR: {exc}")
+        sys.exit(1)
+
+
+# ---------------------------------------------------------------------------
 # Argument parser
 # ---------------------------------------------------------------------------
 
@@ -11082,6 +11286,46 @@ def _build_parser() -> argparse.ArgumentParser:
     p_rprt.add_argument("--mode", default="real", choices=["real", "mock"],
                         help="Data mode (default: real)")
 
+    # v0.5.5 Data / Feature Store Stabilization
+    p_ds = subparsers.add_parser(
+        "data-stabilization",
+        help="Run all data stabilization checks (v0.5.5). [!] Data Stabilization Only. No Real Orders.",
+    )
+    p_ds.add_argument("--mode", default="real", choices=["real", "mock"],
+                      help="Data mode (default: real)")
+
+    p_dsr = subparsers.add_parser(
+        "data-stabilization-report",
+        help="Generate data stabilization Markdown report (v0.5.5). [!] Data Stabilization Only. No Real Orders.",
+    )
+    p_dsr.add_argument("--mode", default="real", choices=["real", "mock"],
+                       help="Data mode (default: real)")
+
+    subparsers.add_parser(
+        "data-stabilization-summary",
+        help="Show latest data stabilization summary (v0.5.5). [!] Data Stabilization Only. No Real Orders.",
+    )
+
+    subparsers.add_parser(
+        "data-lineage",
+        help="Show data lineage records (v0.5.5). [!] Data Stabilization Only. No Real Orders.",
+    )
+
+    subparsers.add_parser(
+        "feature-readiness",
+        help="Show feature readiness check results (v0.5.5). [!] Data Stabilization Only. No Real Orders.",
+    )
+
+    subparsers.add_parser(
+        "feature-store-health",
+        help="Show feature store health score (v0.5.5). [!] Data Stabilization Only. No Real Orders.",
+    )
+
+    subparsers.add_parser(
+        "leakage-guard",
+        help="Show leakage guard findings (v0.5.5). [!] Data Stabilization Only. No Real Orders.",
+    )
+
     return parser
 
 
@@ -11319,6 +11563,14 @@ def main() -> None:
         "report-pack-health":          cmd_report_pack_health,
         "report-pack-links":           cmd_report_pack_links,
         "report-pack-report":          cmd_report_pack_report,
+        # v0.5.5 Data / Feature Store Stabilization
+        "data-stabilization":          cmd_data_stabilization,
+        "data-stabilization-report":   cmd_data_stabilization_report,
+        "data-stabilization-summary":  cmd_data_stabilization_summary,
+        "data-lineage":                cmd_data_lineage,
+        "feature-readiness":           cmd_feature_readiness,
+        "feature-store-health":        cmd_feature_store_health,
+        "leakage-guard":               cmd_leakage_guard,
         # v0.5.1.1 Strategy Filter Pack
         "strategy-filter":             cmd_strategy_filter,
         "strategy-filter-pack":        cmd_strategy_filter_pack,

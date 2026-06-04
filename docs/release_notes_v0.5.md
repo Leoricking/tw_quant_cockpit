@@ -4,6 +4,68 @@
 
 ---
 
+## v0.5.5 — Data / Feature Store Stabilization (2026-06-04)
+
+### Summary
+Strengthens the data layer with end-to-end traceability, schema governance, feature readiness gating,
+and data leakage prevention. Metadata-only scan — never loads full dataset content.
+22 dataset schemas, 6 feature groups, 7 CLI commands, GUI panel, 9-section Markdown report.
+
+### New Files
+
+| File | Description |
+|------|-------------|
+| `data_stabilization/__init__.py` | Package exports |
+| `data_stabilization/data_schema_registry.py` | 22 schemas, 5 categories |
+| `data_stabilization/data_lineage_tracker.py` | Metadata scan, MD5 first 64KB, freshness |
+| `data_stabilization/feature_readiness_checker.py` | READY/PARTIAL/MISSING/STALE/LEAKAGE_RISK/FAILED |
+| `data_stabilization/feature_store_health.py` | HEALTHY/DEGRADED/PARTIAL/BLOCKED/UNKNOWN |
+| `data_stabilization/leakage_guard.py` | 11 forbidden keywords; label/feature distinction |
+| `data_stabilization/data_stabilization_store.py` | CSV persistence (6 save + 6 load) |
+| `data_stabilization/data_stabilization_engine.py` | Orchestrator; 6 CSV outputs |
+| `reports/data_stabilization_report.py` | 9-section Markdown report |
+| `gui/data_stabilization_adapter.py` | Non-GUI bridge |
+| `gui/data_stabilization_panel.py` | PySide6 GUI panel |
+| `docs/data_feature_store_stabilization.md` | Full documentation |
+
+### Modified Files
+
+| File | Change |
+|------|--------|
+| `main.py` | 7 new CLI commands |
+| `reports/auto_report_center.py` | `include_data_stabilization` flag; `run_data_stabilization_summary()` |
+| `reports/auto_report_index.py` | 5 new manifest fields |
+| `report_pack/report_pack_schema.py` | `REPORT_DATA_STABILIZATION` constant |
+| `report_pack/report_registry.py` | Added to daily/weekly/full packs |
+| `report_pack/report_link_registry.py` | 7 CLI commands + doc path |
+| `report_pack/report_collector.py` | Glob patterns for data_stabilization |
+| `gui/navigation/tab_registry.py` | `data_stabilization` tab in `data_providers` group |
+| `gui/dashboard.py` | Data Stabilization tab |
+| `regression/suite_registry.py` | 5 new tests in SUITE_DATA |
+| `release/stable_release_checklist.py` | 6 new checks |
+| `experiments/snapshot_builder.py` | `build_data_stabilization_snapshot()` |
+| `os_planning/module_inventory.py` | `data_stabilization` module entry |
+| `os_planning/regression_audit.py` | `data_stabilization` coverage entry |
+| `.gitignore` | data_stabilization output paths |
+
+### CLI Commands
+
+```bash
+python main.py data-stabilization --mode real
+python main.py data-stabilization-report --mode real
+python main.py data-stabilization-summary
+python main.py data-lineage
+python main.py feature-readiness
+python main.py feature-store-health
+python main.py leakage-guard
+```
+
+### Safety Invariants
+All classes: `read_only=True`, `no_real_orders=True`, `production_blocked=True`, `real_order_ready=False`.
+Metadata-only scan. No broker connection. No real orders.
+
+---
+
 ## v0.5.4 — Report Pack Consolidation (2026-06-04)
 
 ### Summary
@@ -364,7 +426,7 @@ Stabilization release. Full inventory and audit of the Research OS — no new st
 | v0.5.2 | GUI Tab Grouping |
 | v0.5.3 | Regression Consolidation |
 | v0.5.4 | Report Pack |
-| v0.5.5 | Data / Feature Pipeline Hardening |
+| v0.5.5 | Data / Feature Store Stabilization |
 | v0.5.6 | Replay / Journal / Coach Integration |
 | v0.6.0 | Stable Release |
 

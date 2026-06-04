@@ -349,6 +349,17 @@ _MODULES: list[dict] = [
         "known_limitations":  "Coverage matrix based on static analysis; runtime coverage requires prior test run",
         "next_action":        "Add CI integration hook for automatic regression on commit",
     },
+    {
+        "module_name":        "data_stabilization",
+        "package":            "data_stabilization",
+        "category":           "A. Data Layer",
+        "cli_commands":       "data-stabilization,data-stabilization-report,data-stabilization-summary,data-lineage,feature-readiness,feature-store-health,leakage-guard",
+        "gui_tab":            "Data Stabilization",
+        "report":             "yes",
+        "maturity":           "USABLE",
+        "known_limitations":  "Schema validation is static; actual data not loaded — metadata only",
+        "next_action":        "Integrate with provider fetch pipeline for auto-refresh on data update",
+    },
 ]
 
 

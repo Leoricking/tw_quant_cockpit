@@ -1013,6 +1013,119 @@ class StableReleaseChecklist:
             return self._item("report_pack_registry_completeness", "FAIL", str(exc), elapsed)
 
     # ------------------------------------------------------------------
+    # v0.5.5 Data / Feature Store Stabilization checks
+    # ------------------------------------------------------------------
+
+    def _check_data_stabilization_import_health(self) -> dict:
+        """v0.5.5: data_stabilization package imports cleanly."""
+        t0 = time.monotonic()
+        try:
+            import data_stabilization
+            from data_stabilization.data_stabilization_engine import DataStabilizationEngine
+            from data_stabilization.leakage_guard import DataLeakageGuard
+            from data_stabilization.feature_store_health import FeatureStoreHealthChecker
+            elapsed = (time.monotonic() - t0) * 1000
+            return self._item("data_stabilization_import_health", "PASS",
+                               "data_stabilization package imports OK.", elapsed)
+        except Exception as exc:
+            elapsed = (time.monotonic() - t0) * 1000
+            return self._item("data_stabilization_import_health", "FAIL", str(exc), elapsed)
+
+    def _check_data_stabilization_no_real_orders(self) -> dict:
+        """v0.5.5: DataStabilizationEngine has no_real_orders=True."""
+        t0 = time.monotonic()
+        try:
+            from data_stabilization.data_stabilization_engine import DataStabilizationEngine
+            engine = DataStabilizationEngine()
+            elapsed = (time.monotonic() - t0) * 1000
+            if not getattr(engine, "no_real_orders", False):
+                return self._item("data_stabilization_no_real_orders", "FAIL",
+                                   "DataStabilizationEngine.no_real_orders is not True.", elapsed)
+            if not getattr(engine, "production_blocked", False):
+                return self._item("data_stabilization_no_real_orders", "FAIL",
+                                   "DataStabilizationEngine.production_blocked is not True.", elapsed)
+            return self._item("data_stabilization_no_real_orders", "PASS",
+                               "no_real_orders=True, production_blocked=True.", elapsed)
+        except Exception as exc:
+            elapsed = (time.monotonic() - t0) * 1000
+            return self._item("data_stabilization_no_real_orders", "FAIL", str(exc), elapsed)
+
+    def _check_data_stabilization_schema_registry_exists(self) -> dict:
+        """v0.5.5: DatasetSchemaRegistry has at least 15 schemas."""
+        t0 = time.monotonic()
+        try:
+            from data_stabilization.data_schema_registry import DatasetSchemaRegistry
+            reg     = DatasetSchemaRegistry()
+            schemas = reg.list_schemas()
+            elapsed = (time.monotonic() - t0) * 1000
+            if len(schemas) < 15:
+                return self._item("data_stabilization_schema_registry_exists", "FAIL",
+                                   f"Only {len(schemas)} schemas defined (expected >=15).", elapsed)
+            return self._item("data_stabilization_schema_registry_exists", "PASS",
+                               f"{len(schemas)} dataset schemas defined.", elapsed)
+        except Exception as exc:
+            elapsed = (time.monotonic() - t0) * 1000
+            return self._item("data_stabilization_schema_registry_exists", "FAIL", str(exc), elapsed)
+
+    def _check_data_stabilization_feature_readiness_exists(self) -> dict:
+        """v0.5.5: FeatureReadinessChecker has at least 3 feature groups."""
+        t0 = time.monotonic()
+        try:
+            from data_stabilization.feature_readiness_checker import FeatureReadinessChecker
+            checker = FeatureReadinessChecker()
+            groups  = checker.get_feature_groups()
+            elapsed = (time.monotonic() - t0) * 1000
+            if len(groups) < 3:
+                return self._item("data_stabilization_feature_readiness_exists", "FAIL",
+                                   f"Only {len(groups)} feature groups (expected >=3).", elapsed)
+            return self._item("data_stabilization_feature_readiness_exists", "PASS",
+                               f"{len(groups)} feature groups defined.", elapsed)
+        except Exception as exc:
+            elapsed = (time.monotonic() - t0) * 1000
+            return self._item("data_stabilization_feature_readiness_exists", "FAIL", str(exc), elapsed)
+
+    def _check_data_stabilization_leakage_guard_blocks_forbidden(self) -> dict:
+        """v0.5.5: DataLeakageGuard flags 'future_return' as forbidden in feature datasets."""
+        t0 = time.monotonic()
+        try:
+            from data_stabilization.leakage_guard import DataLeakageGuard
+            guard   = DataLeakageGuard()
+            blocked = DataLeakageGuard.is_forbidden_feature_column("future_return", "technical_features")
+            elapsed = (time.monotonic() - t0) * 1000
+            if not blocked:
+                return self._item("data_stabilization_leakage_guard_blocks_forbidden", "FAIL",
+                                   "'future_return' not flagged as forbidden in feature dataset.", elapsed)
+            # Ensure label datasets are exempt
+            ok_label = not DataLeakageGuard.is_forbidden_feature_column("future_return", "signal_outcome_labels")
+            if not ok_label:
+                return self._item("data_stabilization_leakage_guard_blocks_forbidden", "WARN",
+                                   "'future_return' incorrectly flagged in label dataset.", elapsed)
+            return self._item("data_stabilization_leakage_guard_blocks_forbidden", "PASS",
+                               "Leakage guard correctly blocks forbidden columns.", elapsed)
+        except Exception as exc:
+            elapsed = (time.monotonic() - t0) * 1000
+            return self._item("data_stabilization_leakage_guard_blocks_forbidden", "FAIL", str(exc), elapsed)
+
+    def _check_data_stabilization_output_ignored(self) -> dict:
+        """v0.5.5: data/backtest_results/data_stabilization/ is in .gitignore."""
+        t0 = time.monotonic()
+        try:
+            gitignore_path = os.path.join(BASE_DIR, ".gitignore")
+            content = ""
+            if os.path.exists(gitignore_path):
+                with open(gitignore_path, "r", encoding="utf-8") as f:
+                    content = f.read()
+            elapsed = (time.monotonic() - t0) * 1000
+            if "data_stabilization" not in content:
+                return self._item("data_stabilization_output_ignored", "WARN",
+                                   "data_stabilization outputs may not be in .gitignore.", elapsed)
+            return self._item("data_stabilization_output_ignored", "PASS",
+                               "data_stabilization output paths in .gitignore.", elapsed)
+        except Exception as exc:
+            elapsed = (time.monotonic() - t0) * 1000
+            return self._item("data_stabilization_output_ignored", "FAIL", str(exc), elapsed)
+
+    # ------------------------------------------------------------------
     # Write outputs
     # ------------------------------------------------------------------
 
@@ -1189,6 +1302,13 @@ class StableReleaseChecklist:
             self._check_report_pack_output_ignored,
             self._check_report_pack_in_gui_navigation,
             self._check_report_pack_registry_completeness,
+            # v0.5.5 Data / Feature Store Stabilization
+            self._check_data_stabilization_import_health,
+            self._check_data_stabilization_no_real_orders,
+            self._check_data_stabilization_schema_registry_exists,
+            self._check_data_stabilization_feature_readiness_exists,
+            self._check_data_stabilization_leakage_guard_blocks_forbidden,
+            self._check_data_stabilization_output_ignored,
         ]
 
         items: list[dict] = []

@@ -21,7 +21,7 @@ from report_pack.report_pack_schema import (
     REPORT_RESEARCH_COACH, REPORT_RESEARCH_WORKFLOW, REPORT_RESEARCH_OS,
     REPORT_REGRESSION, REPORT_CLI_UX, REPORT_GUI_NAVIGATION,
     REPORT_NOTIFICATION, REPORT_INTRADAY_REPLAY, REPORT_EXPERIMENT,
-    REPORT_RELEASE, REPORT_SAFETY,
+    REPORT_RELEASE, REPORT_SAFETY, REPORT_DATA_STABILIZATION,
 )
 
 logger = logging.getLogger(__name__)
@@ -70,6 +70,10 @@ _REPORT_PATTERNS = {
     REPORT_RELEASE:           ["reports/stable_release_checklist_report*.md",
                                 "data/backtest_results/stable_release_checklist*.csv"],
     REPORT_SAFETY:            ["reports/stable_release_checklist_report*.md"],
+    REPORT_DATA_STABILIZATION: [
+        "reports/data_stabilization_report_*.md",
+        "data/backtest_results/data_stabilization/data_stabilization_summary_*.csv",
+    ],
 }
 
 

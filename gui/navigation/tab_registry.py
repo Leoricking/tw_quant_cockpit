@@ -242,6 +242,28 @@ class GUITabRegistry:
                 related_cli_commands=["universe-manage"],
                 maturity="STABLE",
             ),
+            GUITabMetadata(
+                tab_id="data_stabilization",
+                tab_name="data_stabilization",
+                display_name="Data Stabilization",
+                group="data_providers",
+                priority="P1",
+                description="Data / Feature Store Stabilization — schema, lineage, readiness, health, leakage guard",
+                module_path="gui.data_stabilization_panel",
+                class_name="DataStabilizationPanel",
+                available_flag="_DATA_STAB_PANEL_AVAILABLE",
+                keywords=[
+                    "data", "feature store", "lineage", "schema", "readiness",
+                    "leakage", "freshness", "provider", "stabilization",
+                    "資料", "特徵", "洩漏", "新鮮度", "schema",
+                ],
+                related_cli_commands=[
+                    "data-stabilization", "data-stabilization-report",
+                    "data-stabilization-summary", "data-lineage",
+                    "feature-readiness", "feature-store-health", "leakage-guard",
+                ],
+                maturity="STABLE",
+            ),
             # ----------------------------------------------------------------
             # Group: strategy_rules
             # ----------------------------------------------------------------

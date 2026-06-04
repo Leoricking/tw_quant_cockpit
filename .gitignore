@@ -274,3 +274,7 @@ reports/regression_consolidation_report_*.md
 # v0.5.4 Report Pack Consolidation — runtime outputs
 data/backtest_results/report_pack/
 reports/report_pack_consolidation_report_*.md
+
+# v0.5.5 Data / Feature Store Stabilization — runtime outputs
+data/backtest_results/data_stabilization/
+reports/data_stabilization_report_*.md

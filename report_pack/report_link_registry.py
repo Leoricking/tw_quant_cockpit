@@ -16,7 +16,7 @@ from report_pack.report_pack_schema import (
     REPORT_RESEARCH_COACH, REPORT_RESEARCH_WORKFLOW, REPORT_RESEARCH_OS,
     REPORT_REGRESSION, REPORT_CLI_UX, REPORT_GUI_NAVIGATION,
     REPORT_NOTIFICATION, REPORT_INTRADAY_REPLAY, REPORT_EXPERIMENT,
-    REPORT_RELEASE, REPORT_SAFETY,
+    REPORT_RELEASE, REPORT_SAFETY, REPORT_DATA_STABILIZATION,
 )
 
 logger = logging.getLogger(__name__)
@@ -144,6 +144,20 @@ _LINK_MAP: Dict[str, dict] = {
         "gui_tab":       "release_status",
         "doc_path":      "docs/release_notes_v0.5.md",
         "description":   "Safety checks and no-real-orders verification",
+    },
+    REPORT_DATA_STABILIZATION: {
+        "cli_commands":  [
+            "data-stabilization --mode real",
+            "data-stabilization-report --mode real",
+            "data-stabilization-summary",
+            "data-lineage",
+            "feature-readiness",
+            "feature-store-health",
+            "leakage-guard",
+        ],
+        "gui_tab":       "data_stabilization",
+        "doc_path":      "docs/data_feature_store_stabilization.md",
+        "description":   "Data / Feature Store Stabilization — schema, lineage, readiness, health, leakage",
     },
 }
 

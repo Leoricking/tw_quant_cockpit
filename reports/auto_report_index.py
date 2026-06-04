@@ -455,6 +455,12 @@ class AutoReportIndexBuilder:
                 "report_pack_missing_count":   ctx.get("report_pack", {}).get("missing_count", 0),
                 "report_pack_health_score":    ctx.get("report_pack", {}).get("health_score", 0.0),
                 "report_pack_index_path":      ctx.get("report_pack", {}).get("index_path", ""),
+                # v0.5.5 Data / Feature Store Stabilization
+                "data_stabilization_status":   ctx.get("data_stabilization", {}).get("overall_status", ""),
+                "feature_readiness_score":     ctx.get("data_stabilization", {}).get("readiness_score", 0.0),
+                "feature_store_health_score":  ctx.get("data_stabilization", {}).get("health_score", 0.0),
+                "leakage_warning_count":       ctx.get("data_stabilization", {}).get("leakage_warnings", 0),
+                "data_lineage_records":        ctx.get("data_stabilization", {}).get("datasets_checked", 0),
             }
 
             path = os.path.join(output_dir, "manifest.json")

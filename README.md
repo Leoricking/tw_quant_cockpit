@@ -4,7 +4,36 @@
 >
 > **[!] v1: Real order execution is strictly prohibited. For research, simulation, and decision support only. Not investment advice.**
 
-**Current version: v0.5.4 — Report Pack Consolidation**
+**Current version: v0.5.5 — Data / Feature Store Stabilization**
+
+---
+
+## v0.5.5 — Data / Feature Store Stabilization
+
+**New in v0.5.5:**
+
+- **DatasetSchemaRegistry** — 22 dataset schemas across 5 categories (Market, Financial, Chip, Feature Store, Runtime).
+- **DataLineageTracker** — file-system metadata scan; MD5 hash of first 64KB only; freshness detection (FRESH/STALE/VERY_STALE/MISSING).
+- **FeatureReadinessChecker** — per-group readiness: READY/PARTIAL/MISSING/STALE/LEAKAGE_RISK/FAILED; reads only CSV header + 5 rows.
+- **FeatureStoreHealthChecker** — aggregates readiness into HEALTHY/DEGRADED/PARTIAL/BLOCKED/UNKNOWN with health_score 0–100.
+- **DataLeakageGuard** — 11 forbidden feature input keywords; distinguishes feature input from label output; conservative (unknown→WARNING).
+- **DataStabilizationEngine** — orchestrates all 5 checks; outputs 6 CSV files.
+- **DataStabilizationStore** — CSV persistence with `load_latest_*` pattern.
+- **9-section Markdown report** — header, overview, schema registry, lineage, readiness, health, leakage, provider integration, safety.
+- **GUI panel** — `DataStabilizationPanel` with 7 sections and QThread workers.
+- **7 new CLI commands**: `data-stabilization`, `data-stabilization-report`, `data-stabilization-summary`, `data-lineage`, `feature-readiness`, `feature-store-health`, `leakage-guard`.
+- **[!] Data Stabilization Only. Research Only. No Real Orders. Production Trading: BLOCKED.**
+
+**CLI usage:**
+```bash
+python main.py data-stabilization --mode real
+python main.py data-stabilization-report --mode real
+python main.py data-stabilization-summary
+python main.py data-lineage
+python main.py feature-readiness
+python main.py feature-store-health
+python main.py leakage-guard
+```
 
 ---
 

@@ -49,8 +49,8 @@
 | v0.5.2.1 | Strategy Filter GUI Navigation Integration | Done |
 | v0.5.3 | Regression Suite Consolidation | Done |
 | v0.5.4 | Report Pack Consolidation | Done |
-| v0.5.5 | Data / Feature Pipeline Hardening | Planned |
-| v0.5.6 | Replay / Journal / Coach Integration | Planned |
+| v0.5.5 | Data / Feature Store Stabilization | Done |
+| v0.5.6 | TW Replay Training Cockpit | Planned |
 | v0.6.0 | Stable Release | Planned |
 
 ---
@@ -279,8 +279,8 @@ v0.5.0 is a stabilization release. It inventories and audits the entire Research
 | v0.5.2 | GUI Tab Grouping |
 | v0.5.3 | Regression Consolidation |
 | v0.5.4 | Report Pack |
-| v0.5.5 | Data / Feature Pipeline Hardening |
-| v0.5.6 | Replay / Journal / Coach Integration |
+| v0.5.5 | Data / Feature Store Stabilization |
+| v0.5.6 | TW Replay Training Cockpit |
 | v0.6.0 | Stable Release |
 
 ---

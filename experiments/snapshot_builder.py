@@ -667,6 +667,7 @@ class ExperimentSnapshotBuilder:
             ("cli_ux",                      lambda: self.build_cli_ux_snapshot()),
             ("gui_navigation",              lambda: self.build_gui_navigation_snapshot()),
             ("regression_suite",            lambda: self.build_regression_snapshot()),
+            ("data_stabilization",          lambda: self.build_data_stabilization_snapshot()),
         ]
         for snap_type, fn in builders:
             try:
@@ -988,5 +989,45 @@ class ExperimentSnapshotBuilder:
                 snap["warnings"].append("No regression summary found — run regression-run first")
         except Exception as exc:
             logger.warning("build_regression_snapshot: %s", exc)
+            snap["warnings"].append(f"snapshot error: {exc}")
+        return snap
+
+    def build_data_stabilization_snapshot(self) -> dict:
+        """Build a point-in-time snapshot of Data / Feature Store Stabilization state.
+
+        [!] Data Stabilization Only. Research Only. No Real Orders. Production Trading: BLOCKED.
+        """
+        snap: dict = {
+            "snapshot_type":             "data_stabilization",
+            "generated_at":              _now_iso(),
+            "source_files":              [],
+            "summary":                   {},
+            "warnings":                  [],
+            "version_info":              {"version": _VERSION},
+            "datasets_checked":          0,
+            "readiness_score":           0.0,
+            "health_score":              0.0,
+            "leakage_warnings":          0,
+            "overall_status":            "UNKNOWN",
+            "latest_data_stabilization_at": "",
+        }
+        try:
+            from gui.data_stabilization_adapter import DataStabilizationAdapter
+            adapter = DataStabilizationAdapter()
+            summary = adapter.load_latest_summary()
+            if summary:
+                snap["datasets_checked"]          = int(summary.get("datasets_checked", 0) or 0)
+                snap["readiness_score"]           = float(summary.get("readiness_score", 0.0) or 0.0)
+                snap["health_score"]              = float(summary.get("health_score", 0.0) or 0.0)
+                snap["leakage_warnings"]          = int(summary.get("leakage_warnings", 0) or 0)
+                snap["overall_status"]            = summary.get("overall_status", "UNKNOWN")
+                snap["latest_data_stabilization_at"] = summary.get("generated_at", "")
+                snap["summary"]                   = summary
+            else:
+                snap["warnings"].append(
+                    "No data stabilization summary found — run: python main.py data-stabilization --mode real"
+                )
+        except Exception as exc:
+            logger.warning("build_data_stabilization_snapshot: %s", exc)
             snap["warnings"].append(f"snapshot error: {exc}")
         return snap

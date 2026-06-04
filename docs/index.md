@@ -75,6 +75,8 @@ Current version: **v0.5.3** — Regression Suite Consolidation
 | [cli_alias_command_ux.md](cli_alias_command_ux.md) | v0.5.1 | CLI Alias / Command UX Polish (command registry, alias map, discovery, help examples, CLI UX report, GUI panel) |
 | [gui_tab_grouping_navigation.md](gui_tab_grouping_navigation.md) | v0.5.2 | GUI Tab Grouping / Navigation Polish (tab registry, 8 groups, search, favorites/recent, navigation panel, 5 CLI commands) |
 | [regression_suite_consolidation.md](regression_suite_consolidation.md) | v0.5.3 | Regression Suite Consolidation (named suites, coverage matrix, regression runner, store, report, GUI panel, 4 CLI commands) |
+| [report_pack_consolidation.md](report_pack_consolidation.md) | v0.5.4 | Report Pack Consolidation (daily/weekly/full packs, 20 report types, health checker, link registry, store, consolidation report, GUI panel, 6 CLI commands) |
+| [data_feature_store_stabilization.md](data_feature_store_stabilization.md) | v0.5.5 | Data / Feature Store Stabilization (22 schemas, lineage, readiness, health, leakage guard, store, 9-section report, GUI panel, 7 CLI commands) |
 
 ---
 
