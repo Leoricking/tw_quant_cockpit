@@ -385,6 +385,16 @@ except Exception as _rs_exc:
     logger.warning("RegressionSuitePanel unavailable: %s", _rs_exc)
     _REGRESSION_SUITE_AVAILABLE = False
 
+# ---------------------------------------------------------------------------
+# v0.5.4 Report Pack panel import (guarded)
+# ---------------------------------------------------------------------------
+try:
+    from gui.report_pack_panel import ReportPackPanel
+    _REPORT_PACK_AVAILABLE = True
+except Exception as _rp_exc:
+    logger.warning("ReportPackPanel unavailable: %s", _rp_exc)
+    _REPORT_PACK_AVAILABLE = False
+
 # v0.5.1.1 Strategy Filter panel — inline (no separate panel file required)
 # ---------------------------------------------------------------------------
 _STRATEGY_FILTER_AVAILABLE = False
@@ -1494,6 +1504,13 @@ class CockpitWindow(QMainWindow if _PYSIDE6_AVAILABLE else object):
             mid_tabs.addTab(self._regression_suite_panel, "Regression Suite")
         else:
             self._regression_suite_panel = None
+
+        # v0.5.4 Report Pack tab
+        if _REPORT_PACK_AVAILABLE:
+            self._report_pack_panel = ReportPackPanel()
+            mid_tabs.addTab(self._report_pack_panel, "Report Pack")
+        else:
+            self._report_pack_panel = None
 
         # v0.5.1.1 Strategy Filter tab (inline — no separate panel file)
         if _STRATEGY_FILTER_AVAILABLE and _PYSIDE6_AVAILABLE:

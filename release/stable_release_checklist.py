@@ -899,6 +899,119 @@ class StableReleaseChecklist:
             elapsed = (time.monotonic() - t0) * 1000
             return self._item("journal_data_ignored", "WARN", str(exc), elapsed)
 
+    def _check_report_pack_import_health(self) -> dict:
+        """v0.5.4: All Report Pack modules import cleanly."""
+        t0 = time.monotonic()
+        modules = [
+            ("report_pack.report_pack_schema",   "ReportPackItem"),
+            ("report_pack.report_registry",      "ReportRegistry"),
+            ("report_pack.report_collector",     "ReportCollector"),
+            ("report_pack.report_pack_builder",  "ReportPackBuilder"),
+            ("report_pack.report_health_checker","ReportHealthChecker"),
+            ("report_pack.report_link_registry", "ReportLinkRegistry"),
+            ("report_pack.report_pack_store",    "ReportPackStore"),
+            ("reports.report_pack_consolidation_report", "ReportPackConsolidationReport"),
+            ("gui.report_pack_adapter",          "ReportPackAdapter"),
+        ]
+        failed = []
+        for mod, cls in modules:
+            try:
+                m = __import__(mod, fromlist=[cls])
+                getattr(m, cls)
+            except Exception as exc:
+                failed.append(f"{mod}: {exc}")
+        elapsed = (time.monotonic() - t0) * 1000
+        if not failed:
+            return self._item("report_pack_import_health", "PASS",
+                               f"All {len(modules)} v0.5.4 Report Pack modules imported.", elapsed)
+        return self._item("report_pack_import_health", "FAIL",
+                           f"{len(failed)} module(s) failed: {failed[:2]}", elapsed)
+
+    def _check_report_pack_no_real_orders(self) -> dict:
+        """v0.5.4: ReportPackItem and ReportPackBuilder carry no_real_orders=True."""
+        t0 = time.monotonic()
+        try:
+            from report_pack.report_pack_schema import ReportPackItem, ReportPack
+            from report_pack.report_pack_builder import ReportPackBuilder
+            from report_pack.report_health_checker import ReportHealthChecker
+            assert ReportPackItem.no_real_orders is True, "ReportPackItem.no_real_orders must be True"
+            assert ReportPackItem.production_blocked is True
+            assert ReportPack.no_real_orders is True
+            assert ReportPackBuilder.no_real_orders is True
+            assert ReportPackBuilder.production_blocked is True
+            assert ReportHealthChecker.no_real_orders is True
+            elapsed = (time.monotonic() - t0) * 1000
+            return self._item("report_pack_no_real_orders", "PASS",
+                               "All report_pack classes carry correct safety invariants.", elapsed)
+        except Exception as exc:
+            elapsed = (time.monotonic() - t0) * 1000
+            return self._item("report_pack_no_real_orders", "FAIL", str(exc), elapsed)
+
+    def _check_report_pack_output_ignored(self) -> dict:
+        """v0.5.4: Verify report_pack output patterns are in .gitignore."""
+        t0 = time.monotonic()
+        required = [
+            "data/backtest_results/report_pack/",
+            "reports/report_pack_consolidation_report_",
+        ]
+        try:
+            gitignore = os.path.join(BASE_DIR, ".gitignore")
+            content = ""
+            if os.path.isfile(gitignore):
+                with open(gitignore, "r", encoding="utf-8") as f:
+                    content = f.read()
+            missing = [r for r in required if r not in content]
+            elapsed = (time.monotonic() - t0) * 1000
+            if not missing:
+                return self._item("report_pack_output_ignored", "PASS",
+                                   "All report_pack output patterns in .gitignore.", elapsed)
+            return self._item("report_pack_output_ignored", "WARN",
+                               f"Missing .gitignore patterns: {missing}", elapsed)
+        except Exception as exc:
+            elapsed = (time.monotonic() - t0) * 1000
+            return self._item("report_pack_output_ignored", "WARN", str(exc), elapsed)
+
+    def _check_report_pack_in_gui_navigation(self) -> dict:
+        """v0.5.4: report_pack tab is registered in GUITabRegistry."""
+        t0 = time.monotonic()
+        try:
+            from gui.navigation.tab_registry import GUITabRegistry
+            registry = GUITabRegistry()
+            tab = registry.get_tab("report_pack")
+            elapsed = (time.monotonic() - t0) * 1000
+            if tab is None:
+                return self._item("report_pack_in_gui_navigation", "FAIL",
+                                   "report_pack tab not found in GUITabRegistry.", elapsed)
+            assert tab.group == "daily_research", f"Expected group=daily_research, got {tab.group}"
+            assert tab.no_real_orders is True
+            return self._item("report_pack_in_gui_navigation", "PASS",
+                               f"report_pack tab in registry; group={tab.group}; no_real_orders={tab.no_real_orders}.",
+                               elapsed)
+        except Exception as exc:
+            elapsed = (time.monotonic() - t0) * 1000
+            return self._item("report_pack_in_gui_navigation", "FAIL", str(exc), elapsed)
+
+    def _check_report_pack_registry_completeness(self) -> dict:
+        """v0.5.4: ReportRegistry defines daily/weekly/full packs with correct counts."""
+        t0 = time.monotonic()
+        try:
+            from report_pack.report_registry import ReportRegistry
+            reg = ReportRegistry()
+            daily  = reg.get_report_types("daily")
+            weekly = reg.get_report_types("weekly")
+            full   = reg.get_report_types("full")
+            elapsed = (time.monotonic() - t0) * 1000
+            if len(daily) < 5 or len(weekly) < 10 or len(full) < 15:
+                return self._item("report_pack_registry_completeness", "FAIL",
+                                   f"Registry too small: daily={len(daily)} weekly={len(weekly)} full={len(full)}",
+                                   elapsed)
+            return self._item("report_pack_registry_completeness", "PASS",
+                               f"Registry: daily={len(daily)} weekly={len(weekly)} full={len(full)} report types.",
+                               elapsed)
+        except Exception as exc:
+            elapsed = (time.monotonic() - t0) * 1000
+            return self._item("report_pack_registry_completeness", "FAIL", str(exc), elapsed)
+
     # ------------------------------------------------------------------
     # Write outputs
     # ------------------------------------------------------------------
@@ -1070,6 +1183,12 @@ class StableReleaseChecklist:
             self._check_report_suite_exists,
             self._check_regression_safe_command_enforcement,
             self._check_regression_no_real_orders,
+            # v0.5.4 Report Pack Consolidation
+            self._check_report_pack_import_health,
+            self._check_report_pack_no_real_orders,
+            self._check_report_pack_output_ignored,
+            self._check_report_pack_in_gui_navigation,
+            self._check_report_pack_registry_completeness,
         ]
 
         items: list[dict] = []

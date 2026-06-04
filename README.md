@@ -4,7 +4,36 @@
 >
 > **[!] v1: Real order execution is strictly prohibited. For research, simulation, and decision support only. Not investment advice.**
 
-**Current version: v0.5.3 — Regression Suite Consolidation**
+**Current version: v0.5.4 — Report Pack Consolidation**
+
+---
+
+## v0.5.4 — Report Pack Consolidation
+
+**New in v0.5.4:**
+
+- **Report Pack** — unified daily/weekly/full report bundles covering 20 report types.
+- **ReportRegistry** — defines which report types are included per pack type (daily: 9, weekly: 16, full: 20).
+- **ReportCollector** — scans file system for existing report outputs; returns READY/MISSING/FAILED status.
+- **ReportHealthChecker** — evaluates pack health: HEALTHY (≥80%), DEGRADED (50–79%), CRITICAL (<50%).
+- **ReportLinkRegistry** — maps each report type to CLI commands, GUI tab, and documentation.
+- **ReportPackStore** — CSV persistence for pack summaries, items, and health reports.
+- **ReportPackConsolidationReport** — 8-section Markdown report.
+- **GUI panel** — `ReportPackPanel` with QThread workers, items table, health display.
+- **6 new CLI commands**: `report-pack`, `report-pack-summary`, `report-pack-items`, `report-pack-health`, `report-pack-links`, `report-pack-report`.
+- **`generate_missing=False` by default** — never auto-generates missing reports.
+- **No recursive loop** — `auto_report_center` integration does NOT call full auto-report from inside report_pack.
+- **[!] Research Only. No Real Orders. Production Trading: BLOCKED.**
+
+**CLI usage:**
+```bash
+python main.py report-pack --pack-type daily
+python main.py report-pack-summary --pack-type daily
+python main.py report-pack-items --pack-type daily
+python main.py report-pack-health --pack-type daily
+python main.py report-pack-links
+python main.py report-pack-report --pack-type daily --mode real
+```
 
 ---
 

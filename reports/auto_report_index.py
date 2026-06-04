@@ -449,6 +449,12 @@ class AutoReportIndexBuilder:
                 "regression_failed_count":     ctx.get("regression_consolidation", {}).get("failed", 0),
                 "regression_warning_count":    ctx.get("regression_consolidation", {}).get("warnings", 0),
                 "regression_coverage_score":   ctx.get("regression_consolidation", {}).get("coverage_score", 0),
+                # v0.5.4 Report Pack Consolidation
+                "report_pack_latest_type":     ctx.get("report_pack", {}).get("pack_type", ""),
+                "report_pack_items_total":     ctx.get("report_pack", {}).get("ready_count", 0),
+                "report_pack_missing_count":   ctx.get("report_pack", {}).get("missing_count", 0),
+                "report_pack_health_score":    ctx.get("report_pack", {}).get("health_score", 0.0),
+                "report_pack_index_path":      ctx.get("report_pack", {}).get("index_path", ""),
             }
 
             path = os.path.join(output_dir, "manifest.json")

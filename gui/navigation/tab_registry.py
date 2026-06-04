@@ -590,6 +590,40 @@ class GUITabRegistry:
                 favorite_default=False,
                 notes="Added in v0.5.3 \u2014 Regression Suite Consolidation.",
             ),
+            # v0.5.4 Report Pack Consolidation
+            GUITabMetadata(
+                tab_id="report_pack",
+                tab_name="report_pack",
+                display_name="Report Pack",
+                group="daily_research",
+                priority="P1",
+                description=(
+                    "Report Pack Consolidation \u2014 daily/weekly/full report bundles, "
+                    "health check, link index, and manifest. Research Only. No Real Orders."
+                ),
+                module_path="gui.report_pack_panel",
+                class_name="ReportPackPanel",
+                available_flag="_REPORT_PACK_AVAILABLE",
+                safety_level="RESEARCH_ONLY",
+                read_only=True,
+                no_real_orders=True,
+                production_blocked=True,
+                keywords=[
+                    "report", "pack", "daily", "weekly", "full", "manifest",
+                    "index", "report health", "\u5831\u544a", "\u6bcf\u65e5\u5831\u544a",
+                    "\u9031\u5831", "\u5b8c\u6574\u5831\u544a",
+                ],
+                aliases=["report-pack", "report-pack-summary", "report-health"],
+                related_cli_commands=[
+                    "report-pack", "report-pack-summary", "report-pack-items",
+                    "report-pack-health", "report-pack-links", "report-pack-report",
+                ],
+                report_types=["report_pack_consolidation_report"],
+                maturity="USABLE",
+                default_visible=True,
+                favorite_default=False,
+                notes="Added in v0.5.4 \u2014 Report Pack Consolidation.",
+            ),
         ]
         for tab in tabs:
             self._tabs[tab.tab_id] = tab

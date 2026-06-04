@@ -270,3 +270,7 @@ config/gui_navigation_state.json
 # v0.5.3 Regression Suite Consolidation — runtime outputs
 data/backtest_results/regression/
 reports/regression_consolidation_report_*.md
+
+# v0.5.4 Report Pack Consolidation — runtime outputs
+data/backtest_results/report_pack/
+reports/report_pack_consolidation_report_*.md

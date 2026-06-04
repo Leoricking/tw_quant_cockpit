@@ -467,6 +467,37 @@ class RegressionSuiteRegistry:
                 required=True,
                 description="Notification center report",
             ),
+            # v0.5.4 Report Pack Consolidation tests
+            RegressionTestCase(
+                test_id="report_pack_import",
+                name="report_pack package import",
+                suite=SUITE_REPORT,
+                category="import",
+                command=["-c", "import report_pack; print('OK')"],
+                timeout_seconds=30,
+                required=True,
+                description="report_pack package import check (v0.5.4)",
+            ),
+            RegressionTestCase(
+                test_id="report_pack_summary",
+                name="report-pack-summary --pack-type daily",
+                suite=SUITE_REPORT,
+                category="report",
+                command=["main.py", "report-pack-summary", "--pack-type", "daily"],
+                timeout_seconds=60,
+                required=True,
+                description="Report pack summary for daily pack",
+            ),
+            RegressionTestCase(
+                test_id="report_pack_health",
+                name="report-pack-health --pack-type daily",
+                suite=SUITE_REPORT,
+                category="report",
+                command=["main.py", "report-pack-health", "--pack-type", "daily"],
+                timeout_seconds=60,
+                required=True,
+                description="Report pack health check for daily pack",
+            ),
         ]
 
     def build_safety_suite(self) -> List[RegressionTestCase]:

@@ -57,6 +57,7 @@ _PROFILE_FLAGS: Dict[str, dict] = {
         include_notification_center=True,
         include_portfolio_journal=True,
         include_regression_consolidation=True,
+        include_report_pack=True,
     ),
     "daily": dict(
         include_stock_reports=False,
@@ -79,6 +80,7 @@ _PROFILE_FLAGS: Dict[str, dict] = {
         include_notification_center=True,
         include_portfolio_journal=True,
         include_regression_consolidation=False,
+        include_report_pack=False,
     ),
     "portfolio": dict(
         include_stock_reports=False,
@@ -175,6 +177,7 @@ class AutoReportCenter:
         include_notification_center: bool = False,
         include_portfolio_journal: bool = False,
         include_regression_consolidation: bool = False,
+        include_report_pack: bool = False,
     ):
         self.mode        = mode
         self.profile     = profile
@@ -219,6 +222,9 @@ class AutoReportCenter:
         )
         self.include_regression_consolidation = flags.get(
             "include_regression_consolidation", include_regression_consolidation
+        )
+        self.include_report_pack = flags.get(
+            "include_report_pack", include_report_pack
         )
         self.universe_name = universe_name
 
@@ -336,6 +342,11 @@ class AutoReportCenter:
         # v0.5.3 Regression Suite Consolidation summary (always optional, never crashes)
         if self.include_regression_consolidation:
             self.run_regression_consolidation_summary()
+
+        # v0.5.4 Report Pack Consolidation summary (always optional, never crashes)
+        # IMPORTANT: does NOT call auto_report_center full — avoids recursive loop
+        if self.include_report_pack:
+            self.run_report_pack_summary()
 
         # Aggregated outputs
         if self.include_daily_summary:
@@ -1333,6 +1344,25 @@ class AutoReportCenter:
         except Exception as exc:
             logger.warning("AutoReportCenter.run_regression_consolidation_summary: %s", exc)
             self._context["regression_consolidation"] = {}
+
+    def run_report_pack_summary(self) -> None:
+        """v0.5.4: Build daily report pack summary (never crashes, no recursive loop)."""
+        try:
+            from gui.report_pack_adapter import ReportPackAdapter
+            adapter = ReportPackAdapter()
+            # Build daily pack only — does NOT call auto_report_center full (avoids recursive loop)
+            result = adapter.build_pack(pack_type="daily", generate_missing=False)
+            self._context["report_pack"] = {
+                "pack_type":    result.get("pack_type", "daily"),
+                "status":       result.get("status", "UNKNOWN"),
+                "health_score": result.get("health_score", 0.0),
+                "ready_count":  result.get("ready_count", 0),
+                "missing_count": result.get("missing_count", 0),
+            }
+            self._record_success("report_pack_summary", result.get("index_path"))
+        except Exception as exc:
+            logger.warning("AutoReportCenter.run_report_pack_summary: %s", exc)
+            self._context["report_pack"] = {}
 
     def _record_success(self, name: str, path: Optional[str], extra: dict = None):
         entry = {

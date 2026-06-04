@@ -9049,6 +9049,174 @@ def cmd_regression_report(args: argparse.Namespace) -> None:
 
 
 # ---------------------------------------------------------------------------
+# v0.5.4 Report Pack Consolidation CLI commands
+# ---------------------------------------------------------------------------
+
+def _print_report_pack_header() -> None:
+    print()
+    print("  TW Quant Cockpit — Report Pack Consolidation")
+    print("  ============================================================")
+    print("  [!] GUI UX Only | Research Only | No Real Orders")
+    print()
+
+
+def cmd_report_pack(args: argparse.Namespace) -> None:
+    """Build a report pack (daily/weekly/full) and print summary (v0.5.4)."""
+    _print_report_pack_header()
+    pack_type        = getattr(args, "pack_type", "daily")
+    generate_missing = getattr(args, "generate_missing", False)
+    print(f"  Pack Type: {pack_type}")
+    print(f"  Generate Missing: {generate_missing}")
+    print()
+    try:
+        from gui.report_pack_adapter import ReportPackAdapter
+        adapter = ReportPackAdapter()
+        result = adapter.build_pack(pack_type=pack_type, generate_missing=generate_missing)
+        status = result.get("status", "UNKNOWN")
+        health = result.get("health_score", 0.0)
+        ready  = result.get("ready_count", 0)
+        total  = len(result.get("items", []))
+        missing = result.get("missing_count", 0)
+        print(f"  Status:       {status}")
+        print(f"  Health Score: {health:.1f}%")
+        print(f"  Ready:        {ready} / {total}")
+        print(f"  Missing:      {missing}")
+        index_path = result.get("index_path", "")
+        if index_path:
+            print(f"  Index:        {index_path}")
+        print()
+        print("  [!] No real orders. Research Only.")
+        print()
+    except Exception as exc:
+        print(f"  ERROR: {exc}")
+        sys.exit(1)
+
+
+def cmd_report_pack_summary(args: argparse.Namespace) -> None:
+    """Show latest report pack summary from store (v0.5.4)."""
+    _print_report_pack_header()
+    pack_type = getattr(args, "pack_type", "daily")
+    print(f"  Pack Type: {pack_type}")
+    print()
+    try:
+        from gui.report_pack_adapter import ReportPackAdapter
+        adapter  = ReportPackAdapter()
+        summary  = adapter.load_latest_summary()
+        if not summary:
+            print("  No summary found. Run: report-pack --pack-type daily")
+        else:
+            for k, v in summary.items():
+                print(f"  {k:30s}: {v}")
+        print()
+        print("  [!] No real orders. Research Only.")
+        print()
+    except Exception as exc:
+        print(f"  ERROR: {exc}")
+        sys.exit(1)
+
+
+def cmd_report_pack_items(args: argparse.Namespace) -> None:
+    """Show report items for a pack type (v0.5.4)."""
+    _print_report_pack_header()
+    pack_type = getattr(args, "pack_type", "daily")
+    print(f"  Pack Type: {pack_type}")
+    print()
+    try:
+        from gui.report_pack_adapter import ReportPackAdapter
+        adapter = ReportPackAdapter()
+        items   = adapter.load_latest_items(pack_type)
+        if not items:
+            # Fall back to building fresh
+            result = adapter.build_pack(pack_type=pack_type, generate_missing=False)
+            items  = result.get("items", [])
+        print(f"  {'Report Type':<30} {'Status':<10} {'Size':>8}")
+        print(f"  {'-'*30} {'-'*10} {'-'*8}")
+        for item in items:
+            rt     = item.get("report_type", "")
+            status = item.get("status", "")
+            size   = item.get("size_bytes", 0)
+            print(f"  {rt:<30} {status:<10} {size:>8}")
+        print()
+        print("  [!] No real orders. Research Only.")
+        print()
+    except Exception as exc:
+        print(f"  ERROR: {exc}")
+        sys.exit(1)
+
+
+def cmd_report_pack_health(args: argparse.Namespace) -> None:
+    """Check health of a report pack (v0.5.4)."""
+    _print_report_pack_header()
+    pack_type = getattr(args, "pack_type", "daily")
+    print(f"  Pack Type: {pack_type}")
+    print()
+    try:
+        from gui.report_pack_adapter import ReportPackAdapter
+        adapter = ReportPackAdapter()
+        health  = adapter.get_health(pack_type)
+        print(f"  Health Label:    {health.get('health_label', 'UNKNOWN')}")
+        print(f"  Health Score:    {health.get('health_score', 0.0):.1f}%")
+        print(f"  Total Reports:   {health.get('total_reports', 0)}")
+        print(f"  Ready:           {health.get('ready_count', 0)}")
+        print(f"  Missing:         {health.get('missing_count', 0)}")
+        print(f"  Failed:          {health.get('failed_count', 0)}")
+        critical = health.get("critical_missing", [])
+        print(f"  Critical Missing: {', '.join(critical) or 'None'}")
+        print(f"  Recommendation:  {health.get('recommendation', '')}")
+        print()
+        print("  [!] No real orders. Research Only.")
+        print()
+    except Exception as exc:
+        print(f"  ERROR: {exc}")
+        sys.exit(1)
+
+
+def cmd_report_pack_links(args: argparse.Namespace) -> None:
+    """Show CLI/GUI link index for all report types (v0.5.4)."""
+    _print_report_pack_header()
+    print("  Report Type → CLI Commands → GUI Tab")
+    print()
+    try:
+        from report_pack.report_link_registry import ReportLinkRegistry
+        reg   = ReportLinkRegistry()
+        index = reg.build_link_index()
+        print(f"  {'Report Type':<25} {'CLI Commands':<45} {'GUI Tab'}")
+        print(f"  {'-'*25} {'-'*45} {'-'*20}")
+        for entry in index:
+            rt   = entry["report_type"]
+            cmds = ", ".join(entry["cli_commands"][:2])
+            tab  = entry["gui_tab"]
+            print(f"  {rt:<25} {cmds:<45} {tab}")
+        print()
+        print("  [!] No real orders. Research Only.")
+        print()
+    except Exception as exc:
+        print(f"  ERROR: {exc}")
+        sys.exit(1)
+
+
+def cmd_report_pack_report(args: argparse.Namespace) -> None:
+    """Generate report pack consolidation report (v0.5.4)."""
+    _print_report_pack_header()
+    pack_type = getattr(args, "pack_type", "daily")
+    mode      = getattr(args, "mode", "real")
+    print(f"  Pack Type: {pack_type} | Mode: {mode}")
+    print("  Generating report pack consolidation report ...")
+    print()
+    try:
+        from gui.report_pack_adapter import ReportPackAdapter
+        adapter = ReportPackAdapter()
+        path    = adapter.generate_report(pack_type=pack_type, mode=mode)
+        print(f"  Report saved: {path}")
+        print()
+        print("  [!] No real orders. Research Only.")
+        print()
+    except Exception as exc:
+        print(f"  ERROR: {exc}")
+        sys.exit(1)
+
+
+# ---------------------------------------------------------------------------
 # Argument parser
 # ---------------------------------------------------------------------------
 
@@ -10869,6 +11037,51 @@ def _build_parser() -> argparse.ArgumentParser:
     p_rrpt.add_argument("--mode", default="real", choices=["real", "mock"],
                         help="Data mode (default: real)")
 
+    # v0.5.4 Report Pack Consolidation
+    p_rp = subparsers.add_parser(
+        "report-pack",
+        help="Build report pack (daily/weekly/full) (v0.5.4). [!] Research Only. No Real Orders.",
+    )
+    p_rp.add_argument("--pack-type", default="daily", choices=["daily", "weekly", "full", "custom"],
+                      dest="pack_type", help="Pack type (default: daily)")
+    p_rp.add_argument("--generate-missing", action="store_true", dest="generate_missing",
+                      help="Attempt to generate missing reports (default: False)")
+
+    p_rps = subparsers.add_parser(
+        "report-pack-summary",
+        help="Show latest report pack summary (v0.5.4). [!] Research Only. No Real Orders.",
+    )
+    p_rps.add_argument("--pack-type", default="daily", choices=["daily", "weekly", "full"],
+                       dest="pack_type", help="Pack type (default: daily)")
+
+    p_rpi = subparsers.add_parser(
+        "report-pack-items",
+        help="Show report items for a pack type (v0.5.4). [!] Research Only. No Real Orders.",
+    )
+    p_rpi.add_argument("--pack-type", default="daily", choices=["daily", "weekly", "full"],
+                       dest="pack_type", help="Pack type (default: daily)")
+
+    p_rph = subparsers.add_parser(
+        "report-pack-health",
+        help="Check health of report pack (v0.5.4). [!] Research Only. No Real Orders.",
+    )
+    p_rph.add_argument("--pack-type", default="daily", choices=["daily", "weekly", "full"],
+                       dest="pack_type", help="Pack type (default: daily)")
+
+    subparsers.add_parser(
+        "report-pack-links",
+        help="Show CLI/GUI link index for all report types (v0.5.4). [!] Research Only. No Real Orders.",
+    )
+
+    p_rprt = subparsers.add_parser(
+        "report-pack-report",
+        help="Generate report pack consolidation report (v0.5.4). [!] Research Only. No Real Orders.",
+    )
+    p_rprt.add_argument("--pack-type", default="daily", choices=["daily", "weekly", "full"],
+                        dest="pack_type", help="Pack type (default: daily)")
+    p_rprt.add_argument("--mode", default="real", choices=["real", "mock"],
+                        help="Data mode (default: real)")
+
     return parser
 
 
@@ -11099,6 +11312,13 @@ def main() -> None:
         "regression-run":              cmd_regression_run,
         "regression-coverage":         cmd_regression_coverage,
         "regression-report":           cmd_regression_report,
+        # v0.5.4 Report Pack Consolidation
+        "report-pack":                 cmd_report_pack,
+        "report-pack-summary":         cmd_report_pack_summary,
+        "report-pack-items":           cmd_report_pack_items,
+        "report-pack-health":          cmd_report_pack_health,
+        "report-pack-links":           cmd_report_pack_links,
+        "report-pack-report":          cmd_report_pack_report,
         # v0.5.1.1 Strategy Filter Pack
         "strategy-filter":             cmd_strategy_filter,
         "strategy-filter-pack":        cmd_strategy_filter_pack,

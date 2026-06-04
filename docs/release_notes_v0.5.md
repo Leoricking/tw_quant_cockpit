@@ -4,6 +4,49 @@
 
 ---
 
+## v0.5.4 — Report Pack Consolidation (2026-06-04)
+
+### Summary
+Consolidated all research report outputs into a unified Report Pack system with pack type definitions (daily/weekly/full), report collector, health checker, link registry, store (CSV), consolidation Markdown report, GUI panel, and 6 new CLI commands. 20 report types tracked.
+
+### New Files
+
+| File | Description |
+|------|-------------|
+| `report_pack/__init__.py` | Package exports |
+| `report_pack/report_pack_schema.py` | ReportPackItem / ReportPack dataclasses |
+| `report_pack/report_registry.py` | ReportRegistry (daily/weekly/full definitions) |
+| `report_pack/report_collector.py` | ReportCollector (file-system scanner) |
+| `report_pack/report_pack_builder.py` | ReportPackBuilder (assembles pack, writes index.md + manifest.json) |
+| `report_pack/report_health_checker.py` | ReportHealthChecker (HEALTHY/DEGRADED/CRITICAL) |
+| `report_pack/report_link_registry.py` | ReportLinkRegistry (CLI→GUI→doc mapping) |
+| `report_pack/report_pack_store.py` | CSV persistence for summary/items/health |
+| `reports/report_pack_consolidation_report.py` | 8-section Markdown report generator |
+| `gui/report_pack_panel.py` | QWidget GUI panel with QThread workers |
+| `gui/report_pack_adapter.py` | Non-GUI adapter (no PySide6 dependency) |
+| `docs/report_pack_consolidation.md` | Documentation |
+
+### Modified Files
+
+| File | Change |
+|------|--------|
+| `main.py` | 6 new CLI commands: report-pack, report-pack-summary, report-pack-items, report-pack-health, report-pack-links, report-pack-report |
+| `reports/auto_report_center.py` | Added `include_report_pack` flag + `run_report_pack_summary()` (no recursive loop) |
+| `reports/auto_report_index.py` | Added 5 report_pack manifest fields |
+| `regression/suite_registry.py` | Added 3 report_pack tests to build_report_suite() |
+| `release/stable_release_checklist.py` | 5 new v0.5.4 checks |
+| `gui/dashboard.py` | Added Report Pack tab |
+| `gui/navigation/tab_registry.py` | Added report_pack GUITabMetadata in daily_research group |
+| `.gitignore` | Added data/backtest_results/report_pack/ and reports/report_pack_consolidation_report_* |
+
+### Safety
+
+- `generate_missing=False` by default — does NOT auto-generate reports
+- No recursive loop — `run_report_pack_summary()` does NOT call full auto-report
+- All classes carry `no_real_orders=True`, `production_blocked=True`
+
+---
+
 ## v0.5.3 — Regression Suite Consolidation (2026-06-04)
 
 ### Summary
