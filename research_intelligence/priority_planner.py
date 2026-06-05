@@ -1,4 +1,4 @@
-"""research_intelligence/priority_planner.py — ResearchPriorityPlanner v0.7.0.
+"""research_intelligence/priority_planner.py — ResearchPriorityPlanner v0.7.1.
 
 Builds P0/P1/P2/P3 priority board from signals and recommendations.
 
@@ -16,6 +16,7 @@ from research_intelligence.research_intelligence_schema import (
     ACT_RUN_REGRESSION, ACT_FIX_DATA, ACT_GENERATE_REPORT,
     ACT_PRACTICE_REPLAY, ACT_REVIEW_JOURNAL, ACT_REVIEW_RULE,
     ACT_RUN_BACKTEST, ACT_READ_REPORT,
+    classify_command_safety,
 )
 
 logger = logging.getLogger(__name__)
@@ -66,15 +67,23 @@ class ResearchPriorityPlanner:
                     for item in board[PRI_P0]
                 )
                 if not covered:
+                    cmd = sig.suggested_command or ""
                     board[PRI_P0].append({
-                        "title":    sig.title,
-                        "why":      sig.description or sig.evidence,
-                        "evidence": sig.evidence,
-                        "action":   sig.suggested_action,
-                        "command":  sig.suggested_command,
-                        "module":   sig.source_module,
-                        "due_hint": "Immediately",
-                        "priority": PRI_P0,
+                        "title":             sig.title,
+                        "why":               sig.description or sig.evidence,
+                        "why_now":           sig.evidence or sig.description,
+                        "risk_if_ignored":   "System risk not addressed; research reliability at stake",
+                        "evidence":          sig.evidence,
+                        "action":            sig.suggested_action,
+                        "command":           cmd,
+                        "safe_command":      cmd,
+                        "safe_command_label": classify_command_safety(cmd),
+                        "module":            sig.source_module,
+                        "due_hint":          "Immediately",
+                        "priority":          PRI_P0,
+                        "optional":          False,
+                        "dismissible":       False,
+                        "status":            sig.status,
                     })
 
         return board
@@ -131,12 +140,19 @@ class ResearchPriorityPlanner:
                 evidence = sig.evidence
                 break
         return {
-            "title":    rec.title,
-            "why":      rec.rationale,
-            "evidence": evidence,
-            "action":   rec.action_type,
-            "command":  cmd,
-            "module":   rec.related_modules[0] if rec.related_modules else "",
-            "due_hint": rec.due_hint,
-            "priority": rec.priority,
+            "title":             rec.title,
+            "why":               rec.rationale,
+            "why_now":           rec.why_now,
+            "risk_if_ignored":   rec.risk_if_ignored,
+            "evidence":          evidence,
+            "action":            rec.action_type,
+            "command":           cmd,
+            "safe_command":      cmd,
+            "safe_command_label": classify_command_safety(cmd),
+            "module":            rec.related_modules[0] if rec.related_modules else "",
+            "due_hint":          rec.due_hint,
+            "priority":          rec.priority,
+            "optional":          rec.optional,
+            "dismissible":       rec.dismissible,
+            "status":            rec.status,
         }

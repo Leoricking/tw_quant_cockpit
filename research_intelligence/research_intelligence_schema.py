@@ -1,4 +1,4 @@
-"""research_intelligence/research_intelligence_schema.py — Schema for Research Intelligence Upgrade v0.7.0.
+"""research_intelligence/research_intelligence_schema.py — Schema for Research Intelligence v0.7.1.
 
 [!] Research Intelligence Only. Research Only. No Real Orders.
 [!] Production Trading: BLOCKED. Not investment advice.
@@ -100,7 +100,44 @@ SAFE_ACTION_TYPES = {
 }
 
 # Forbidden action types — must never appear in output
-FORBIDDEN_ACTION_TYPES = {"BUY", "SELL", "ORDER", "EXECUTE", "SUBMIT_ORDER", "AUTO_TRADE"}
+FORBIDDEN_ACTION_TYPES = {
+    "BUY", "SELL", "ORDER", "EXECUTE", "SUBMIT_ORDER", "AUTO_TRADE",
+    "PLACE_ORDER", "BROKER_ORDER", "REAL_TRADE",
+}
+
+# ---------------------------------------------------------------------------
+# Command safety classification constants
+# ---------------------------------------------------------------------------
+CMD_SAFE_READ_ONLY    = "SAFE_READ_ONLY"
+CMD_SAFE_REPORT       = "SAFE_REPORT"
+CMD_SAFE_REGRESSION   = "SAFE_REGRESSION"
+CMD_SAFE_REPLAY       = "SAFE_REPLAY"
+CMD_SAFE_DATA_CHECK   = "SAFE_DATA_CHECK"
+CMD_BLOCKED_TRADING   = "BLOCKED_FOR_TRADING"
+
+_FORBIDDEN_CMD_KEYWORDS = {
+    "buy", "sell", "order", "execute", "submit_order", "auto_trade",
+    "place_order", "broker_order", "real_trade",
+}
+
+
+def classify_command_safety(command: str) -> str:
+    """Return command safety classification. Returns BLOCKED_FOR_TRADING if any forbidden keyword found."""
+    if not command:
+        return CMD_SAFE_READ_ONLY
+    cmd_lower = command.lower()
+    for kw in _FORBIDDEN_CMD_KEYWORDS:
+        if kw in cmd_lower:
+            return CMD_BLOCKED_TRADING
+    if any(x in cmd_lower for x in ["report", "generate-report", "auto-report"]):
+        return CMD_SAFE_REPORT
+    if any(x in cmd_lower for x in ["regression", "stable-v060", "compileall"]):
+        return CMD_SAFE_REGRESSION
+    if any(x in cmd_lower for x in ["replay", "replay-training"]):
+        return CMD_SAFE_REPLAY
+    if any(x in cmd_lower for x in ["coverage", "data-quality", "data-freshness", "feature"]):
+        return CMD_SAFE_DATA_CHECK
+    return CMD_SAFE_READ_ONLY
 
 # ---------------------------------------------------------------------------
 # Status constants
@@ -153,6 +190,9 @@ class ResearchSignal:
     evidence:                  str = ""
     warning:                   str = ""
     created_at:                str = ""
+    display_label:             str = ""
+    user_friendly_reason:      str = ""
+    safe_action_hint:          str = ""
     read_only:                 bool = True
     no_real_orders:            bool = True
     production_blocked:        bool = True
@@ -184,6 +224,9 @@ class ResearchSignal:
             "evidence":               self.evidence,
             "warning":                self.warning,
             "created_at":             self.created_at,
+            "display_label":          self.display_label,
+            "user_friendly_reason":   self.user_friendly_reason,
+            "safe_action_hint":       self.safe_action_hint,
             "read_only":              self.read_only,
             "no_real_orders":         self.no_real_orders,
             "production_blocked":     self.production_blocked,
@@ -211,6 +254,13 @@ class ResearchRecommendation:
     related_modules:    List[str] = field(default_factory=list)
     due_hint:           str = ""
     status:             str = STATUS_NEW
+    why_now:            str = ""
+    risk_if_ignored:    str = ""
+    command_safety:     str = CMD_SAFE_READ_ONLY
+    safe_command_label: str = ""
+    display_order:      int = 0
+    optional:           bool = False
+    dismissible:        bool = False
     no_real_orders:     bool = True
     production_blocked: bool = True
 
@@ -233,6 +283,13 @@ class ResearchRecommendation:
             "related_modules":    "|".join(self.related_modules),
             "due_hint":           self.due_hint,
             "status":             self.status,
+            "why_now":            self.why_now,
+            "risk_if_ignored":    self.risk_if_ignored,
+            "command_safety":     self.command_safety,
+            "safe_command_label": self.safe_command_label,
+            "display_order":      self.display_order,
+            "optional":           self.optional,
+            "dismissible":        self.dismissible,
             "no_real_orders":     self.no_real_orders,
             "production_blocked": self.production_blocked,
         }
@@ -256,11 +313,17 @@ class ResearchIntelligenceSummary:
     rule_review_count:      int = 0
     report_gap_count:       int = 0
     system_risk_count:      int = 0
-    recommendations_count:  int = 0
-    top_priority:           str = ""
-    overall_status:         str = "OK"
-    no_real_orders:         bool = True
-    production_blocked:     bool = True
+    recommendations_count:          int = 0
+    top_priority:                   str = ""
+    overall_status:                 str = "OK"
+    today_focus:                    str = ""
+    top_p0_title:                   str = ""
+    top_p1_title:                   str = ""
+    safe_command_count:             int = 0
+    blocked_trading_action_count:   int = 0
+    optional_recommendation_count:  int = 0
+    no_real_orders:                 bool = True
+    production_blocked:             bool = True
 
     def to_dict(self) -> dict:
         return {
@@ -276,8 +339,14 @@ class ResearchIntelligenceSummary:
             "report_gap_count":      self.report_gap_count,
             "system_risk_count":     self.system_risk_count,
             "recommendations_count": self.recommendations_count,
-            "top_priority":          self.top_priority,
-            "overall_status":        self.overall_status,
-            "no_real_orders":        self.no_real_orders,
-            "production_blocked":    self.production_blocked,
+            "top_priority":                  self.top_priority,
+            "overall_status":                self.overall_status,
+            "today_focus":                   self.today_focus,
+            "top_p0_title":                  self.top_p0_title,
+            "top_p1_title":                  self.top_p1_title,
+            "safe_command_count":            self.safe_command_count,
+            "blocked_trading_action_count":  self.blocked_trading_action_count,
+            "optional_recommendation_count": self.optional_recommendation_count,
+            "no_real_orders":                self.no_real_orders,
+            "production_blocked":            self.production_blocked,
         }

@@ -4,7 +4,30 @@
 >
 > **[!] v1: Real order execution is strictly prohibited. For research, simulation, and decision support only. Not investment advice.**
 
-**Current version: v0.7.0 — Research Intelligence Upgrade**
+**Current version: v0.7.1 — Intelligence UX Polish**
+
+---
+
+## v0.7.1 — Intelligence UX Polish
+
+**New in v0.7.1:**
+
+- **Today Focus card**: Shows the single most important item to address today (P0 → P1 → first recommendation)
+- **Why Now / Risk If Ignored**: Priority board and plan tables now show why each item matters and what happens if skipped
+- **`classify_command_safety()`**: Six labels — `SAFE_READ_ONLY`, `SAFE_REPORT`, `SAFE_REGRESSION`, `SAFE_REPLAY`, `SAFE_DATA_CHECK`, `BLOCKED_FOR_TRADING`
+- **Copy Command button**: Select any row in Priority Board or Plans to copy its command to clipboard
+- **Filters**: Filter signals by Priority, Category, Source Module in GUI
+- **Improved CLI output**: All 8 research-intelligence commands show Today Focus, Why Now, Safety labels
+- **2 new safety checks**: `research_intelligence_ux_safety`, `recommendations_no_forbidden_actions`
+- **[!] Research Intelligence Only. Research Only. No Real Orders. Production Trading: BLOCKED.**
+
+```bash
+python main.py research-intelligence-summary
+python main.py research-intelligence-recommendations
+python main.py research-intelligence-priority
+python main.py research-intelligence-daily-plan
+python main.py research-intelligence-report --mode real
+```
 
 ---
 

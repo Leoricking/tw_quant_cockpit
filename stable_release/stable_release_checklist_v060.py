@@ -290,6 +290,9 @@ class StableReleaseChecklistV060:
             # v0.7.0 Research Intelligence
             "research_intelligence.research_intelligence_schema",
             "research_intelligence.research_intelligence_engine",
+            # v0.7.1 Intelligence UX Polish
+            "research_intelligence.recommendation_engine",
+            "research_intelligence.priority_planner",
         ]
         failed = []
         for mod in modules:
@@ -531,6 +534,51 @@ class StableReleaseChecklistV060:
                 "release_schema_builds", "runtime_safety", "FAIL", str(exc),
             )
 
+    def _check_research_intelligence_ux_safety(self) -> dict:
+        """v0.7.1 — classify_command_safety exists and BLOCKED_FOR_TRADING works."""
+        try:
+            from research_intelligence.research_intelligence_schema import (
+                classify_command_safety, CMD_BLOCKED_TRADING,
+            )
+            result = classify_command_safety("python main.py BUY 100 TSMC")
+            assert result == CMD_BLOCKED_TRADING, f"Expected BLOCKED_FOR_TRADING, got {result}"
+            safe = classify_command_safety("python main.py regression-run")
+            assert safe != CMD_BLOCKED_TRADING
+            return _check_item(
+                "research_intelligence_ux_safety", "runtime_safety", "PASS",
+                "classify_command_safety correctly identifies BLOCKED_FOR_TRADING.",
+            )
+        except Exception as exc:
+            return _check_item(
+                "research_intelligence_ux_safety", "runtime_safety", "FAIL", str(exc),
+            )
+
+    def _check_recommendations_no_forbidden_actions(self) -> dict:
+        """v0.7.1 — RecommendationEngine must never emit BUY/SELL/ORDER."""
+        try:
+            from research_intelligence.recommendation_engine import ResearchRecommendationEngine
+            from research_intelligence.research_intelligence_schema import (
+                FORBIDDEN_ACTION_TYPES as _FORBIDDEN_ACTION_TYPES,
+            )
+            eng = ResearchRecommendationEngine()
+            recs = eng.build_recommendations([], mode="real")
+            forbidden_found = [
+                r.action_type for r in recs if r.action_type in _FORBIDDEN_ACTION_TYPES
+            ]
+            if forbidden_found:
+                return _check_item(
+                    "recommendations_no_forbidden_actions", "runtime_safety", "FAIL",
+                    f"Forbidden action types found: {forbidden_found}",
+                )
+            return _check_item(
+                "recommendations_no_forbidden_actions", "runtime_safety", "PASS",
+                "No forbidden action types in recommendations.",
+            )
+        except Exception as exc:
+            return _check_item(
+                "recommendations_no_forbidden_actions", "runtime_safety", "FAIL", str(exc),
+            )
+
     # ----------------------------------------------------------------
     # Run
     # ----------------------------------------------------------------
@@ -564,6 +612,9 @@ class StableReleaseChecklistV060:
             self._check_capability_matrix_builds,
             self._check_known_limitations_builds,
             self._check_release_schema_builds,
+            # H — v0.7.1 Intelligence UX safety
+            self._check_research_intelligence_ux_safety,
+            self._check_recommendations_no_forbidden_actions,
         ]
 
         for fn in checklist_groups:

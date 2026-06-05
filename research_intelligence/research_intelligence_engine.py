@@ -133,13 +133,34 @@ class ResearchIntelligenceEngine:
         sys_risk     = sum(1 for s in signals if s.category == CAT_SYSTEM_RISK)
 
         p0_items = priority_board.get(PRI_P0, [])
+        p1_items = priority_board.get(PRI_P1, [])
         top = p0_items[0].get("title", "") if p0_items else (
-            priority_board.get(PRI_P1, [{}])[0].get("title", "") if priority_board.get(PRI_P1) else ""
+            p1_items[0].get("title", "") if p1_items else ""
         )
+        top_p0 = p0_items[0].get("title", "") if p0_items else ""
+        top_p1 = p1_items[0].get("title", "") if p1_items else ""
 
         overall = "ATTENTION_NEEDED" if p0_items or sys_risk > 0 else (
             "REVIEW" if high > 0 else "OK"
         )
+
+        # today_focus: P0/P1 most important item, or fallback message
+        if top_p0:
+            today_focus = f"P0: {top_p0[:100]}"
+        elif top_p1:
+            today_focus = f"P1: {top_p1[:100]}"
+        elif recommendations:
+            today_focus = f"Review: {recommendations[0].title[:100]}"
+        else:
+            today_focus = "No critical issues — continue optional reports and replay practice"
+
+        # Safe commands = recommendations with non-BLOCKED_FOR_TRADING command_safety
+        safe_cmds = sum(
+            1 for r in recommendations
+            if getattr(r, "command_safety", "") != "BLOCKED_FOR_TRADING"
+        )
+        blocked_trading = 0  # by design — forbidden action guard ensures this
+        optional_count  = sum(1 for r in recommendations if getattr(r, "optional", False))
 
         return ResearchIntelligenceSummary(
             generated_at=datetime.now().isoformat(),
@@ -156,4 +177,10 @@ class ResearchIntelligenceEngine:
             recommendations_count=len(recommendations),
             top_priority=top[:200] if top else "",
             overall_status=overall,
+            today_focus=today_focus,
+            top_p0_title=top_p0[:200] if top_p0 else "",
+            top_p1_title=top_p1[:200] if top_p1 else "",
+            safe_command_count=safe_cmds,
+            blocked_trading_action_count=blocked_trading,
+            optional_recommendation_count=optional_count,
         )

@@ -617,6 +617,28 @@ class StableCapabilityMatrix:
                     "No BUY/SELL/ORDER — research actions only",
                 ],
             ),
+            StableCapability(
+                capability_id="intelligence_ux_polish",
+                name="Intelligence UX Polish",
+                category="research_os",
+                version_added="v0.7.1",
+                status="STABLE",
+                maturity="STABLE",
+                cli_commands=[
+                    "research-intelligence-summary", "research-intelligence-recommendations",
+                    "research-intelligence-priority", "research-intelligence-daily-plan",
+                    "research-intelligence-weekly-plan", "research-intelligence-report",
+                ],
+                gui_tabs=["Research Intelligence"],
+                reports=["research_intelligence"],
+                regression_coverage=True,
+                safety_status="OK",
+                known_limitations=[
+                    "Copy Command button requires PySide6 clipboard support",
+                    "Filter dropdowns populate only after Run Intelligence is executed",
+                    "No BUY/SELL/ORDER — research actions only",
+                ],
+            ),
         ]
         return self
 

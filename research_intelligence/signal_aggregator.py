@@ -111,6 +111,27 @@ class ResearchSignalAggregator:
                     suggested_action=ACT_READ_REPORT,
                     warning="Collector raised exception; check logs",
                 ))
+        # v0.7.1: enrich signals with UX fields
+        _SAFE_HINT = {
+            CAT_DATA_GAP:        "Run data-coverage to scan and fix gaps",
+            CAT_REPORT_GAP:      "Run the report generator CLI command",
+            CAT_REPLAY_MISTAKE:  "Open replay training and practice identified scenarios",
+            CAT_JOURNAL_PATTERN: "Review journal entries for the pattern",
+            CAT_RULE_REVIEW:     "Run rule-governance snapshot and review",
+            CAT_STRATEGY_RESEARCH: "Run strategy-knowledge-ingest to update knowledge",
+            CAT_SYSTEM_RISK:     "Run stable-v060-check to verify system health",
+            CAT_TRAINING_TASK:   "Open replay training and complete the drill",
+            CAT_PROVIDER_LIMIT:  "Configure provider token in .env (no code change needed)",
+            CAT_REGRESSION_WARN: "Run regression-run suite to confirm status",
+            CAT_STABLE_NOTE:     "Run stable-v060-check to confirm release health",
+        }
+        for sig in signals:
+            if not sig.display_label:
+                sig.display_label = sig.title[:60] if sig.title else ""
+            if not sig.user_friendly_reason:
+                sig.user_friendly_reason = sig.description[:120] if sig.description else sig.evidence[:120]
+            if not sig.safe_action_hint:
+                sig.safe_action_hint = _SAFE_HINT.get(sig.category, "Review and take appropriate research action")
         return signals
 
     # ------------------------------------------------------------------

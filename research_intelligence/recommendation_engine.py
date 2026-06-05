@@ -1,4 +1,4 @@
-"""research_intelligence/recommendation_engine.py — ResearchRecommendationEngine v0.7.0.
+"""research_intelligence/recommendation_engine.py — ResearchRecommendationEngine v0.7.1.
 
 Converts ResearchSignals into ranked ResearchRecommendations.
 
@@ -23,6 +23,8 @@ from research_intelligence.research_intelligence_schema import (
     ACT_REVIEW_JOURNAL, ACT_RUN_BACKTEST, ACT_RUN_REGRESSION, ACT_READ_REPORT,
     ACT_WAIT,
     _validate_action,
+    classify_command_safety,
+    CMD_SAFE_READ_ONLY,
 )
 
 logger = logging.getLogger(__name__)
@@ -33,6 +35,67 @@ _SEVERITY_ORDER = {SEV_CRITICAL: 0, SEV_HIGH: 1, SEV_MEDIUM: 2, "LOW": 3, "INFO"
 
 def _rec_id() -> str:
     return f"REC-{uuid.uuid4().hex[:8].upper()}"
+
+
+# ---------------------------------------------------------------------------
+# UX helper functions (v0.7.1)
+# ---------------------------------------------------------------------------
+
+def build_why_now(sig: "ResearchSignal") -> str:
+    """Return a concise why-now rationale for the signal."""
+    _why = {
+        CAT_DATA_GAP:         "Data gap blocks downstream analysis",
+        CAT_REPORT_GAP:       "Missing report leaves research blind spot",
+        CAT_REPLAY_MISTAKE:   "Replay score indicates skill gap",
+        CAT_JOURNAL_PATTERN:  "Recurring journal pattern needs attention",
+        CAT_RULE_REVIEW:      "Rule governance needs verification",
+        CAT_STRATEGY_RESEARCH:"Strategy knowledge has gaps",
+        CAT_SYSTEM_RISK:      "System risk may invalidate research results",
+        CAT_TRAINING_TASK:    "Training task pending",
+        CAT_PROVIDER_LIMIT:   "Provider limitation restricts available data",
+        CAT_REGRESSION_WARN:  "Regression failure blocks reliable research",
+        CAT_STABLE_NOTE:      "Stable release check required",
+    }
+    base = _why.get(sig.category, "Research quality at risk")
+    if sig.evidence:
+        return f"{base}. Evidence: {sig.evidence[:80]}"
+    return base
+
+
+def build_risk_if_ignored(sig: "ResearchSignal") -> str:
+    """Return risk-if-ignored text for the signal."""
+    _risk = {
+        CAT_DATA_GAP:         "Analysis based on incomplete data; conclusions may be wrong",
+        CAT_REPORT_GAP:       "Review cycle will miss this module's status",
+        CAT_REPLAY_MISTAKE:   "Tape reading errors will compound without correction",
+        CAT_JOURNAL_PATTERN:  "Process errors repeat; decision quality degrades",
+        CAT_RULE_REVIEW:      "Rule drift goes undetected; strategy integrity at risk",
+        CAT_STRATEGY_RESEARCH:"Strategy candidates remain unvalidated",
+        CAT_SYSTEM_RISK:      "Unstable system produces untrustworthy research outputs",
+        CAT_TRAINING_TASK:    "Skill development stalls",
+        CAT_PROVIDER_LIMIT:   "Data availability remains restricted until resolved",
+        CAT_REGRESSION_WARN:  "Breaking changes may silently corrupt results",
+        CAT_STABLE_NOTE:      "Release health unknown; deployment risk elevated",
+    }
+    return _risk.get(sig.category, "Research quality may degrade over time")
+
+
+def make_user_friendly_title(sig: "ResearchSignal") -> str:
+    """Return a shorter, user-friendly title for a signal."""
+    title = sig.title or ""
+    # Trim module prefix patterns like "data_coverage: ..."
+    for prefix in (
+        "data_coverage:", "report_pack:", "replay_training:", "journal:",
+        "rule_governance:", "strategy_knowledge:", "regression:", "stable_release:",
+    ):
+        if title.lower().startswith(prefix):
+            title = title[len(prefix):].strip()
+            break
+    # Capitalise and truncate
+    title = title.strip().capitalize()
+    if len(title) > 80:
+        title = title[:77] + "..."
+    return title or sig.title
 
 
 class ResearchRecommendationEngine:
@@ -70,6 +133,9 @@ class ResearchRecommendationEngine:
                 logger.warning("[RecommendationEngine] signal→rec error: %s", exc)
         recs = self.deduplicate(recs)
         recs = self.rank_recommendations(recs)
+        # Assign display_order after final ranking
+        for i, rec in enumerate(recs):
+            rec.display_order = i + 1
         return recs
 
     def rank_recommendations(
@@ -183,19 +249,29 @@ class ResearchRecommendationEngine:
     def _signal_to_recommendation(self, sig: ResearchSignal) -> ResearchRecommendation:
         action = sig.suggested_action or ACT_READ_REPORT
         _validate_action(action)
+        cmd = sig.suggested_command or ""
+        cmd_safety = classify_command_safety(cmd)
+        friendly_title = make_user_friendly_title(sig)
+        is_optional = sig.priority in (PRI_P2, PRI_P3)
         return ResearchRecommendation(
             recommendation_id=_rec_id(),
-            title=sig.title,
+            title=friendly_title,
             category=sig.category,
             priority=sig.priority,
             action_type=action,
             rationale=sig.description or sig.evidence,
             expected_benefit=self._expected_benefit(sig),
             required_inputs=[],
-            suggested_commands=[sig.suggested_command] if sig.suggested_command else [],
+            suggested_commands=[cmd] if cmd else [],
             related_signals=[sig.signal_id],
             related_modules=[sig.source_module],
             due_hint="Today" if sig.priority in (PRI_P0, PRI_P1) else "This week",
+            why_now=build_why_now(sig),
+            risk_if_ignored=build_risk_if_ignored(sig),
+            command_safety=cmd_safety,
+            safe_command_label=cmd_safety,
+            optional=is_optional,
+            dismissible=is_optional,
         )
 
     def _expected_benefit(self, sig: ResearchSignal) -> str:

@@ -7210,8 +7210,23 @@ def cmd_research_intelligence_summary(args: argparse.Namespace) -> None:
         if not result.get("ok"):
             print("  No summary found. Run: python main.py research-intelligence")
         else:
-            for k, v in result.get("summary", {}).items():
-                print(f"  {k}: {v}")
+            s = result.get("summary", {})
+            focus   = s.get("today_focus", "—") or "—"
+            status  = s.get("overall_status", "—")
+            total   = s.get("total_signals", 0)
+            recs    = s.get("recommendations_count", 0)
+            safe    = s.get("safe_command_count", 0)
+            blocked = s.get("blocked_trading_action_count", 0)
+            p0_t    = s.get("top_p0_title", "") or "—"
+            p1_t    = s.get("top_p1_title", "") or "—"
+            print(f"  Overall Status  : {status}")
+            print(f"  Today Focus     : {focus}")
+            print(f"  Top P0          : {p0_t}")
+            print(f"  Top P1          : {p1_t}")
+            print(f"  Total Signals   : {total}")
+            print(f"  Recommendations : {recs}")
+            print(f"  Safe Commands   : {safe}")
+            print(f"  Blocked Trading : {blocked}  (by design — no real orders)")
     except Exception as exc:
         print(f"  ERROR: {exc}")
     print()
@@ -7252,11 +7267,23 @@ def cmd_research_intelligence_recommendations(args: argparse.Namespace) -> None:
             print("  No recommendations found. Run: python main.py research-intelligence")
         else:
             print(f"  Total recommendations: {len(recs)}")
+            print()
+            print(f"  {'Pri':3s}  {'Action':22s}  {'Safety':20s}  Title")
+            print(f"  {'-'*3}  {'-'*22}  {'-'*20}  {'-'*40}")
             for r in recs:
-                cmd = r.get("suggested_commands", "—")
-                print(f"  [{r.get('priority','?'):2s}] {r.get('action_type','?'):20s} {r.get('title','?')}")
-                if cmd and cmd != "—":
-                    print(f"       Command: {cmd}")
+                pri    = r.get("priority", "?")
+                act    = r.get("action_type", "?")[:22]
+                safety = r.get("command_safety", "") or r.get("safe_command_label", "")
+                title  = r.get("title", "?")
+                cmd    = (r.get("suggested_commands", "") or "").split("|")[0]
+                optional = r.get("optional", "")
+                opt_tag  = " [optional]" if str(optional).lower() == "true" else ""
+                print(f"  {pri:3s}  {act:22s}  {safety:20s}  {title}{opt_tag}")
+                if cmd:
+                    why = r.get("why_now", "")
+                    print(f"       Command : {cmd}")
+                    if why:
+                        print(f"       Why Now : {why[:80]}")
     except Exception as exc:
         print(f"  ERROR: {exc}")
     print()
@@ -7267,6 +7294,7 @@ def cmd_research_intelligence_priority(args: argparse.Namespace) -> None:
     """Show latest research intelligence priority board."""
     print(_RESEARCH_INTELLIGENCE_BANNER)
     print()
+    _PRI_DESC = {"P0": "必修", "P1": "高優先", "P2": "中優先", "P3": "低優先"}
     try:
         from research_intelligence.research_intelligence_store import ResearchIntelligenceStore
         store  = ResearchIntelligenceStore()
@@ -7274,13 +7302,23 @@ def cmd_research_intelligence_priority(args: argparse.Namespace) -> None:
         board  = result.get("board", {})
         for pri in ("P0", "P1", "P2", "P3"):
             items = board.get(pri, [])
-            if items:
-                print(f"  {pri} ({len(items)} items):")
-                for item in items:
-                    print(f"    - {item.get('title','?')}")
+            if not items:
+                continue
+            desc = _PRI_DESC.get(pri, "")
+            print(f"  {pri} — {desc} ({len(items)} items):")
+            for item in items:
+                title   = item.get("title", "?")
+                why_now = item.get("why_now", "") or item.get("why", "")
+                cmd     = item.get("command", "") or item.get("safe_command", "")
+                safety  = item.get("safe_command_label", "")
+                print(f"    • {title}")
+                if why_now:
+                    print(f"      Why Now : {why_now[:80]}")
+                if cmd:
+                    print(f"      Command : {cmd}  [{safety}]")
+            print()
     except Exception as exc:
         print(f"  ERROR: {exc}")
-    print()
     print("  [!] No real orders. Research Only.")
 
 
@@ -7296,12 +7334,20 @@ def cmd_research_intelligence_daily_plan(args: argparse.Namespace) -> None:
         if not plan:
             print("  No daily plan found. Run: python main.py research-intelligence")
         else:
-            print(f"  Daily Research Plan ({len(plan)} items):")
-            for i, item in enumerate(plan, 1):
-                cmd = item.get("command", "—") or "—"
-                print(f"  {i:2d}. [{item.get('priority','?'):2s}] {item.get('title','?')}")
+            shown = plan[:7]
+            print(f"  Daily Research Plan ({len(shown)}/{len(plan)} items shown):")
+            print()
+            for i, item in enumerate(shown, 1):
+                pri    = item.get("priority", "?")
+                title  = item.get("title", "?")
+                cmd    = item.get("command", "") or "—"
+                safety = item.get("command_safety", "")
+                why    = item.get("why_now", "")
+                print(f"  {i:2d}. [{pri}] {title}")
                 if cmd and cmd != "—":
-                    print(f"       Command: {cmd}")
+                    print(f"       Command : {cmd}  [{safety}]")
+                if why:
+                    print(f"       Why Now : {why[:80]}")
     except Exception as exc:
         print(f"  ERROR: {exc}")
     print()
@@ -7320,12 +7366,20 @@ def cmd_research_intelligence_weekly_plan(args: argparse.Namespace) -> None:
         if not plan:
             print("  No weekly plan found. Run: python main.py research-intelligence")
         else:
-            print(f"  Weekly Research Plan ({len(plan)} items):")
-            for i, item in enumerate(plan, 1):
-                cmd = item.get("command", "—") or "—"
-                print(f"  {i:2d}. [{item.get('priority','?'):2s}] {item.get('title','?')}")
+            shown = plan[:12]
+            print(f"  Weekly Research Plan ({len(shown)}/{len(plan)} items shown):")
+            print()
+            for i, item in enumerate(shown, 1):
+                pri    = item.get("priority", "?")
+                title  = item.get("title", "?")
+                cmd    = item.get("command", "") or "—"
+                safety = item.get("command_safety", "")
+                why    = item.get("why_now", "")
+                print(f"  {i:2d}. [{pri}] {title}")
                 if cmd and cmd != "—":
-                    print(f"       Command: {cmd}")
+                    print(f"       Command : {cmd}  [{safety}]")
+                if why:
+                    print(f"       Why Now : {why[:80]}")
     except Exception as exc:
         print(f"  ERROR: {exc}")
     print()
@@ -7357,7 +7411,12 @@ def cmd_research_intelligence_report(args: argparse.Namespace) -> None:
             mode=mode,
         )
         path = reporter.save(content, report_dir=report_dir)
-        print(f"  Report saved: {path}")
+        print(f"  Report saved : {path}")
+        summary = result.get("summary", {})
+        print(f"  Status       : {summary.get('overall_status', '—')}")
+        print(f"  Today Focus  : {summary.get('today_focus', '—')}")
+        print(f"  Signals      : {summary.get('total_signals', 0)}")
+        print(f"  Safe Commands: {summary.get('safe_command_count', 0)}")
     except Exception as exc:
         print(f"  ERROR: {exc}")
     print()

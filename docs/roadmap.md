@@ -57,6 +57,7 @@
 | v0.6.2 | Data Coverage Expansion | Done |
 | v0.6.3 | Replay Training UI Enhancement | Done |
 | v0.7.0 | Research Intelligence Upgrade | Done |
+| v0.7.1 | Intelligence UX Polish | Done |
 
 ---
 
@@ -138,11 +139,17 @@ GUI tab with priority board, daily/weekly plan, all signals table. 9 new CLI com
 Forbidden action guard (`_validate_action()`) blocks BUY/SELL/ORDER.
 Research Only. No Real Orders. Production Trading: BLOCKED.
 
+### Completed: v0.7.1 — Intelligence UX Polish
+
+**Status:** Done
+
+Today Focus card, Why Now / Risk If Ignored columns, `classify_command_safety()` with six labels, Copy Command button, priority/category/source filters, improved CLI output.
+Research Only. No Real Orders. Production Trading: BLOCKED.
+
 ### Next Steps (Planned)
 
 | Version | Feature | Priority |
 |---------|---------|---------|
-| v0.7.1 | Research Intelligence Feedback Loop — mark recommendations done, track completion | P1 |
 | v0.7.2 | Research Intelligence History — trend signals over time, progress charts | P2 |
 | v0.7.3 | Research Intelligence Export — export priority board to Markdown/PDF | P2 |
 | v0.8.0 | Advanced Replay Analysis — pattern detection, multi-session comparison | P2 |

@@ -1,5 +1,5 @@
 """
-gui/research_intelligence_panel.py — ResearchIntelligencePanel v0.7.0.
+gui/research_intelligence_panel.py — ResearchIntelligencePanel v0.7.1.
 
 PySide6 GUI tab for Research Intelligence: signals, priority board,
 daily/weekly plans, and report generation.
@@ -22,6 +22,7 @@ try:
         QWidget, QVBoxLayout, QHBoxLayout, QLabel,
         QPushButton, QTableWidget, QTableWidgetItem, QComboBox, QGroupBox,
         QTextEdit, QHeaderView, QSplitter, QTabWidget, QSizePolicy,
+        QLineEdit, QApplication,
     )
     from PySide6.QtCore import Qt, QThread, Signal
     from PySide6.QtGui import QColor, QFont
@@ -117,7 +118,7 @@ if _PYSIDE6_OK:
             root.addWidget(banner)
 
             # Title
-            title = QLabel("Research Intelligence — v0.7.0")
+            title = QLabel("Research Intelligence — v0.7.1")
             title.setStyleSheet("font-size:14px; font-weight:bold; color:#AAAAFF;")
             root.addWidget(title)
 
@@ -125,15 +126,17 @@ if _PYSIDE6_OK:
             summary_box = QGroupBox("Intelligence Summary")
             summary_box.setStyleSheet("QGroupBox { color:#AAAAFF; font-weight:bold; }")
             summary_layout = QHBoxLayout(summary_box)
+            self._card_focus   = self._make_card("Today Focus", "—", "#FFDD88")
             self._card_total   = self._make_card("Total Signals", "—")
             self._card_p0      = self._make_card("P0 Critical", "—", "#FF4444")
-            self._card_high    = self._make_card("High Priority", "—", "#FFAA00")
-            self._card_gaps    = self._make_card("Data Gaps", "—", "#FFCC44")
+            self._card_p1      = self._make_card("P1 High", "—", "#FFAA00")
+            self._card_safe    = self._make_card("Safe Commands", "—", "#88CC88")
+            self._card_blocked = self._make_card("Blocked Trading", "0", "#FF8888")
             self._card_recs    = self._make_card("Recommendations", "—", "#88CCFF")
             self._card_status  = self._make_card("Overall Status", "—", "#AAAAFF")
             for card in [
-                self._card_total, self._card_p0, self._card_high,
-                self._card_gaps, self._card_recs, self._card_status,
+                self._card_focus, self._card_total, self._card_p0, self._card_p1,
+                self._card_safe, self._card_blocked, self._card_recs, self._card_status,
             ]:
                 summary_layout.addWidget(card)
             root.addWidget(summary_box)
@@ -150,6 +153,25 @@ if _PYSIDE6_OK:
             ctrl.addWidget(QLabel("Period:"))
             ctrl.addWidget(self._period_combo)
 
+            # Filter controls
+            ctrl.addWidget(QLabel("  Priority:"))
+            self._filter_pri = QComboBox()
+            self._filter_pri.addItems(["All", "P0", "P1", "P2", "P3"])
+            self._filter_pri.currentTextChanged.connect(self._apply_filters)
+            ctrl.addWidget(self._filter_pri)
+
+            ctrl.addWidget(QLabel("Category:"))
+            self._filter_cat = QComboBox()
+            self._filter_cat.addItems(["All"])
+            self._filter_cat.currentTextChanged.connect(self._apply_filters)
+            ctrl.addWidget(self._filter_cat)
+
+            ctrl.addWidget(QLabel("Source:"))
+            self._filter_src = QComboBox()
+            self._filter_src.addItems(["All"])
+            self._filter_src.currentTextChanged.connect(self._apply_filters)
+            ctrl.addWidget(self._filter_src)
+
             ctrl.addStretch()
 
             btn_run = QPushButton("Run Intelligence")
@@ -163,6 +185,22 @@ if _PYSIDE6_OK:
             ctrl.addWidget(btn_report)
 
             root.addLayout(ctrl)
+
+            # Copy command bar
+            cmd_bar = QHBoxLayout()
+            cmd_bar.addWidget(QLabel("Selected Command:"))
+            self._cmd_display = QLineEdit()
+            self._cmd_display.setReadOnly(True)
+            self._cmd_display.setStyleSheet(
+                "background:#0E1020; color:#88CCFF; font-family:Consolas; padding:2px 6px;"
+            )
+            self._cmd_display.setPlaceholderText("Select a row to see the command here")
+            cmd_bar.addWidget(self._cmd_display, stretch=1)
+            btn_copy = QPushButton("Copy Command")
+            btn_copy.setStyleSheet("background:#334455; color:#FFFFFF; padding:4px 10px;")
+            btn_copy.clicked.connect(self._copy_command)
+            cmd_bar.addWidget(btn_copy)
+            root.addLayout(cmd_bar)
 
             # Tabbed content
             self._tabs = QTabWidget()
@@ -230,26 +268,32 @@ if _PYSIDE6_OK:
 
         def _make_board_table(self) -> QTableWidget:
             tbl = QTableWidget()
-            tbl.setColumnCount(5)
-            tbl.setHorizontalHeaderLabels(["Priority", "Title", "Module", "Command", "Due"])
+            tbl.setColumnCount(7)
+            tbl.setHorizontalHeaderLabels(
+                ["Priority", "Title", "Why Now", "Risk If Ignored", "Safe Command", "Safety", "Due"]
+            )
             tbl.horizontalHeader().setSectionResizeMode(QHeaderView.ResizeToContents)
             tbl.horizontalHeader().setStretchLastSection(True)
             tbl.setEditTriggers(QTableWidget.NoEditTriggers)
             tbl.setAlternatingRowColors(True)
             tbl.setSelectionBehavior(QTableWidget.SelectRows)
             tbl.setStyleSheet(_TABLE_STYLE)
+            tbl.itemSelectionChanged.connect(lambda: self._on_board_selection(tbl))
             return tbl
 
         def _build_plan_table(self) -> QTableWidget:
             tbl = QTableWidget()
-            tbl.setColumnCount(5)
-            tbl.setHorizontalHeaderLabels(["#", "Title", "Category", "Command", "Benefit"])
+            tbl.setColumnCount(7)
+            tbl.setHorizontalHeaderLabels(
+                ["#", "Title", "Category", "Command", "Safety", "Why Now", "Risk If Ignored"]
+            )
             tbl.horizontalHeader().setSectionResizeMode(QHeaderView.ResizeToContents)
             tbl.horizontalHeader().setStretchLastSection(True)
             tbl.setEditTriggers(QTableWidget.NoEditTriggers)
             tbl.setAlternatingRowColors(True)
             tbl.setSelectionBehavior(QTableWidget.SelectRows)
             tbl.setStyleSheet(_TABLE_STYLE)
+            tbl.itemSelectionChanged.connect(lambda: self._on_plan_selection(tbl))
             return tbl
 
         def _build_daily_tab(self) -> QWidget:
@@ -308,16 +352,19 @@ if _PYSIDE6_OK:
         def _on_run_done(self, result: dict) -> None:
             self._last_result = result
             summary = result.get("summary", {})
+            signals = result.get("signals", [])
             self._update_cards(summary)
             self._update_priority_board(result.get("priority_board", []))
             self._update_plan_table(self._daily_table, result.get("daily_plan", []))
             self._update_plan_table(self._weekly_table, result.get("weekly_plan", []))
-            self._update_signals_table(result.get("signals", []))
+            self._update_signals_table(signals)
+            self._populate_filter_options(signals)
             status = summary.get("overall_status", "—")
             total  = summary.get("total_signals", 0)
             recs   = summary.get("recommendations_count", 0)
+            safe   = summary.get("safe_command_count", 0)
             self._status_lbl.setText(
-                f"完成: {total} signals, {recs} recommendations, status={status}"
+                f"完成: {total} signals, {recs} recommendations, {safe} safe commands, status={status}"
             )
 
         def _on_run_error(self, msg: str) -> None:
@@ -342,12 +389,20 @@ if _PYSIDE6_OK:
         # ------------------------------------------------------------------
 
         def _update_cards(self, summary: dict) -> None:
-            self._set_card(self._card_total,  str(summary.get("total_signals", 0)))
-            self._set_card(self._card_p0,     str(summary.get("system_risk_count", 0)))
-            self._set_card(self._card_high,   str(summary.get("high_priority_count", 0)))
-            self._set_card(self._card_gaps,   str(summary.get("data_gap_count", 0)))
-            self._set_card(self._card_recs,   str(summary.get("recommendations_count", 0)))
-            self._set_card(self._card_status, summary.get("overall_status", "—"))
+            focus   = summary.get("today_focus", "—") or "—"
+            self._set_card(self._card_focus,   focus[:60] + ("…" if len(focus) > 60 else ""))
+            self._set_card(self._card_total,   str(summary.get("total_signals", 0)))
+            p0_cnt = summary.get("system_risk_count", 0) or len(self._last_result.get("priority_board", []))
+            # Count P0 items from board
+            board_rows = self._last_result.get("priority_board", [])
+            p0_count = sum(1 for r in board_rows if isinstance(r, dict) and r.get("priority") == "P0")
+            p1_count = sum(1 for r in board_rows if isinstance(r, dict) and r.get("priority") == "P1")
+            self._set_card(self._card_p0,      str(p0_count))
+            self._set_card(self._card_p1,      str(p1_count))
+            self._set_card(self._card_safe,    str(summary.get("safe_command_count", 0)))
+            self._set_card(self._card_blocked, str(summary.get("blocked_trading_action_count", 0)))
+            self._set_card(self._card_recs,    str(summary.get("recommendations_count", 0)))
+            self._set_card(self._card_status,  summary.get("overall_status", "—"))
 
         def _update_priority_board(self, rows: list) -> None:
             # rows is a flat list with "priority" key per item
@@ -366,10 +421,12 @@ if _PYSIDE6_OK:
                 for r, item in enumerate(items):
                     if not isinstance(item, dict):
                         continue
-                    title = item.get("title", "")
-                    module = item.get("module", "")
-                    cmd   = item.get("command", "") or "—"
-                    due   = item.get("due_hint", "")
+                    title    = item.get("title", "")
+                    why_now  = item.get("why_now", "") or item.get("why", "")
+                    risk     = item.get("risk_if_ignored", "")
+                    cmd      = item.get("command", "") or item.get("safe_command", "") or "—"
+                    safety   = item.get("safe_command_label", "")
+                    due      = item.get("due_hint", "")
 
                     def _cell(text: str, fg: str = "#EEEEEE") -> QTableWidgetItem:
                         c = QTableWidgetItem(str(text))
@@ -383,27 +440,31 @@ if _PYSIDE6_OK:
                     pri_cell.setTextAlignment(Qt.AlignCenter)
                     tbl.setItem(r, 0, pri_cell)
                     tbl.setItem(r, 1, _cell(title))
-                    tbl.setItem(r, 2, _cell(module, "#88AAFF"))
+                    tbl.setItem(r, 2, _cell(why_now, "#DDCC88"))
+                    tbl.setItem(r, 3, _cell(risk, "#FF9988"))
                     cmd_cell = QTableWidgetItem(cmd)
                     cmd_cell.setForeground(QColor("#88CCFF"))
-                    tbl.setItem(r, 3, cmd_cell)
-                    tbl.setItem(r, 4, _cell(due, "#AAAAAA"))
+                    tbl.setItem(r, 4, cmd_cell)
+                    tbl.setItem(r, 5, _cell(safety, "#88CC88"))
+                    tbl.setItem(r, 6, _cell(due, "#AAAAAA"))
 
         def _update_plan_table(self, tbl: QTableWidget, items: list) -> None:
             tbl.setRowCount(len(items))
             for i, item in enumerate(items):
                 if not isinstance(item, dict):
                     continue
-                title   = item.get("title", "")
-                cat     = item.get("category", "")
-                cmds    = item.get("suggested_commands", "") or item.get("command", "")
+                title    = item.get("title", "")
+                cat      = item.get("category", "")
+                cmds     = item.get("suggested_commands", "") or item.get("command", "")
                 if isinstance(cmds, list):
                     cmd = cmds[0] if cmds else ""
                 else:
                     cmd = str(cmds).split("|")[0] if cmds else ""
-                benefit = item.get("expected_benefit", "") or item.get("benefit", "")
-                pri     = item.get("priority", "P3")
-                color   = _PRI_COLORS.get(pri, "#DDDDDD")
+                safety   = item.get("command_safety", "") or item.get("safe_command_label", "")
+                why_now  = item.get("why_now", "")
+                risk     = item.get("risk_if_ignored", "")
+                pri      = item.get("priority", "P3")
+                color    = _PRI_COLORS.get(pri, "#DDDDDD")
 
                 def _cell(text: str, fg: str = "#EEEEEE") -> QTableWidgetItem:
                     c = QTableWidgetItem(str(text))
@@ -417,7 +478,9 @@ if _PYSIDE6_OK:
                 cmd_cell = QTableWidgetItem(cmd if cmd else "—")
                 cmd_cell.setForeground(QColor("#88CCFF"))
                 tbl.setItem(i, 3, cmd_cell)
-                tbl.setItem(i, 4, _cell(benefit, "#AACCAA"))
+                tbl.setItem(i, 4, _cell(safety, "#88CC88"))
+                tbl.setItem(i, 5, _cell(why_now, "#DDCC88"))
+                tbl.setItem(i, 6, _cell(risk, "#FF9988"))
 
         def _update_signals_table(self, signals: list) -> None:
             self._signals_table.setRowCount(len(signals))
@@ -462,6 +525,62 @@ if _PYSIDE6_OK:
                 cmd_cell.setForeground(QColor("#88CCFF"))
                 self._signals_table.setItem(r, 5, cmd_cell)
                 self._signals_table.setItem(r, 6, _cell(ev, "#AAAAAA"))
+
+        def _on_board_selection(self, tbl: QTableWidget) -> None:
+            rows = tbl.selectedItems()
+            if not rows:
+                return
+            row_idx = tbl.currentRow()
+            cmd_item = tbl.item(row_idx, 4)  # Safe Command column
+            if cmd_item:
+                self._cmd_display.setText(cmd_item.text())
+
+        def _on_plan_selection(self, tbl: QTableWidget) -> None:
+            rows = tbl.selectedItems()
+            if not rows:
+                return
+            row_idx = tbl.currentRow()
+            cmd_item = tbl.item(row_idx, 3)  # Command column
+            if cmd_item:
+                self._cmd_display.setText(cmd_item.text())
+
+        def _copy_command(self) -> None:
+            text = self._cmd_display.text()
+            if text and text != "—":
+                QApplication.clipboard().setText(text)
+                self._status_lbl.setText(f"Copied: {text}")
+
+        def _apply_filters(self) -> None:
+            """Filter signals table by priority/category/source."""
+            pri_filter = self._filter_pri.currentText()
+            cat_filter = self._filter_cat.currentText()
+            src_filter = self._filter_src.currentText()
+            for row in range(self._signals_table.rowCount()):
+                src_item = self._signals_table.item(row, 0)
+                cat_item = self._signals_table.item(row, 1)
+                pri_item = self._signals_table.item(row, 3)
+                src_val = src_item.text() if src_item else ""
+                cat_val = cat_item.text() if cat_item else ""
+                pri_val = pri_item.text() if pri_item else ""
+                visible = (
+                    (pri_filter == "All" or pri_val == pri_filter)
+                    and (cat_filter == "All" or cat_val == cat_filter)
+                    and (src_filter == "All" or src_val == src_filter)
+                )
+                self._signals_table.setRowHidden(row, not visible)
+
+        def _populate_filter_options(self, signals: list) -> None:
+            cats = sorted({s.get("category", "") for s in signals if isinstance(s, dict) and s.get("category")})
+            srcs = sorted({s.get("source_module", "") for s in signals if isinstance(s, dict) and s.get("source_module")})
+            for combo, values in [(self._filter_cat, cats), (self._filter_src, srcs)]:
+                combo.blockSignals(True)
+                current = combo.currentText()
+                combo.clear()
+                combo.addItem("All")
+                combo.addItems(values)
+                idx = combo.findText(current)
+                combo.setCurrentIndex(max(0, idx))
+                combo.blockSignals(False)
 
         def closeEvent(self, event) -> None:
             if self._worker and self._worker.isRunning():

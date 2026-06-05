@@ -1,4 +1,4 @@
-"""research_intelligence/research_intelligence_store.py — ResearchIntelligenceStore v0.7.0.
+"""research_intelligence/research_intelligence_store.py — ResearchIntelligenceStore v0.7.1.
 
 Persists research intelligence outputs to CSV files.
 
@@ -30,6 +30,7 @@ _SIGNAL_FIELDS = [
     "suggested_action", "suggested_command", "related_symbols",
     "related_strategies", "related_reports", "related_rules",
     "related_replay_sessions", "evidence", "warning", "created_at",
+    "display_label", "user_friendly_reason", "safe_action_hint",
     "read_only", "no_real_orders", "production_blocked",
 ]
 
@@ -37,16 +38,21 @@ _REC_FIELDS = [
     "recommendation_id", "title", "category", "priority", "action_type",
     "rationale", "expected_benefit", "required_inputs", "suggested_commands",
     "blockers", "related_signals", "related_modules", "due_hint", "status",
+    "why_now", "risk_if_ignored", "command_safety", "safe_command_label",
+    "display_order", "optional", "dismissible",
     "no_real_orders", "production_blocked",
 ]
 
 _BOARD_FIELDS = [
-    "priority", "title", "why", "evidence", "action", "command", "module", "due_hint",
+    "priority", "title", "why", "why_now", "risk_if_ignored",
+    "evidence", "action", "command", "safe_command_label",
+    "module", "due_hint", "optional", "dismissible", "status",
 ]
 
 _PLAN_FIELDS = [
     "rank", "priority", "action_type", "title", "rationale", "command",
-    "expected_benefit", "category", "module",
+    "expected_benefit", "category", "module", "why_now", "risk_if_ignored",
+    "command_safety",
 ]
 
 _SUMMARY_FIELDS = [
@@ -54,7 +60,10 @@ _SUMMARY_FIELDS = [
     "medium_priority_count", "low_priority_count", "data_gap_count",
     "replay_issue_count", "rule_review_count", "report_gap_count",
     "system_risk_count", "recommendations_count", "top_priority",
-    "overall_status", "no_real_orders", "production_blocked",
+    "overall_status", "today_focus", "top_p0_title", "top_p1_title",
+    "safe_command_count", "blocked_trading_action_count",
+    "optional_recommendation_count",
+    "no_real_orders", "production_blocked",
 ]
 
 
@@ -138,6 +147,9 @@ class ResearchIntelligenceStore:
                 "expected_benefit": d.get("expected_benefit", ""),
                 "category":        d.get("category", ""),
                 "module":          (d.get("related_modules") or "").split("|")[0],
+                "why_now":         d.get("why_now", ""),
+                "risk_if_ignored": d.get("risk_if_ignored", ""),
+                "command_safety":  d.get("command_safety", ""),
             })
         return self._write_csv(_DAILY_PLAN_CSV, _PLAN_FIELDS, rows)
 
@@ -155,6 +167,9 @@ class ResearchIntelligenceStore:
                 "expected_benefit": d.get("expected_benefit", ""),
                 "category":        d.get("category", ""),
                 "module":          (d.get("related_modules") or "").split("|")[0],
+                "why_now":         d.get("why_now", ""),
+                "risk_if_ignored": d.get("risk_if_ignored", ""),
+                "command_safety":  d.get("command_safety", ""),
             })
         return self._write_csv(_WEEKLY_PLAN_CSV, _PLAN_FIELDS, rows)
 

@@ -716,7 +716,7 @@ class GUITabRegistry:
                 favorite_default=False,
                 notes="Added in v0.6.2 \u2014 Data Coverage Expansion.",
             ),
-            # v0.7.0 Research Intelligence
+            # v0.7.0 Research Intelligence (updated v0.7.1)
             GUITabMetadata(
                 tab_id="research_intelligence",
                 tab_name="research_intelligence",
@@ -724,9 +724,11 @@ class GUITabRegistry:
                 group="daily_research",
                 priority="P0",
                 description=(
-                    "Research Intelligence v0.7.0 — aggregate signals from all Research OS modules, "
+                    "Research Intelligence v0.7.1 — aggregate signals from all Research OS modules, "
                     "build P0/P1/P2/P3 priority boards, generate daily (7 items) and weekly (12 items) "
-                    "research plans. Research Only. No Real Orders. No BUY/SELL/ORDER."
+                    "research plans. Today Focus, Why Now, Risk If Ignored, Safe Command labels, "
+                    "Copy Command button, filter by priority/category/source. "
+                    "Research Only. No Real Orders. No BUY/SELL/ORDER."
                 ),
                 module_path="gui.research_intelligence_panel",
                 class_name="ResearchIntelligencePanel",
@@ -738,7 +740,11 @@ class GUITabRegistry:
                 keywords=[
                     "research intelligence", "priority board", "daily plan", "weekly plan",
                     "signals", "recommendations", "p0", "p1", "gaps",
+                    "intelligence ux", "today focus", "safe command", "copy command",
+                    "why now", "risk if ignored", "priority filter",
                     "\u7814\u7a76\u667a\u80fd", "\u512a\u5148\u7d1a", "\u8a08\u756b",
+                    "\u4eca\u65e5\u91cd\u9ede", "\u5f85\u8655\u7406\u4e8b\u9805",
+                    "\u5b89\u5168\u6307\u4ee4", "\u5de5\u4f5c\u6e05\u55ae",
                 ],
                 aliases=["research-intelligence", "ri", "intelligence"],
                 related_cli_commands=[
@@ -751,7 +757,7 @@ class GUITabRegistry:
                 maturity="STABLE",
                 default_visible=True,
                 favorite_default=True,
-                notes="Added in v0.7.0 — Research Intelligence Upgrade.",
+                notes="Added in v0.7.0; UX polish in v0.7.1 — Today Focus, Why Now, Safe Command labels, Copy Command.",
             ),
             # v0.5.4 Report Pack Consolidation
             GUITabMetadata(
