@@ -74,6 +74,7 @@ class StrategyMemoryExtractor:
             self.extract_from_portfolio_journal,
             self.extract_from_data_coverage,
             self.extract_from_report_pack,
+            self.extract_from_backtest_coach,
         ]:
             try:
                 items.extend(extractor())
@@ -396,6 +397,47 @@ class StrategyMemoryExtractor:
             except Exception as exc:
                 logger.debug("DC file error %s: %s", path, exc)
 
+        return items
+
+    def extract_from_backtest_coach(self) -> List[StrategyMemoryItem]:
+        """Extract FOLLOW_UP_TASK memories from backtest_coach outputs (v0.7.3)."""
+        items: List[StrategyMemoryItem] = []
+        coach_dir = os.path.join(self._root, "data", "backtest_results", "backtest_coach")
+        tasks_csv = os.path.join(coach_dir, "coach_training_tasks.csv")
+        if not os.path.exists(tasks_csv):
+            return items
+        try:
+            with open(tasks_csv, newline="", encoding="utf-8") as f:
+                reader = csv.DictReader(f)
+                for row in reader:
+                    try:
+                        task_type = row.get("task_type", "")
+                        title     = row.get("title", "")
+                        goal      = row.get("training_goal", "")
+                        pri       = row.get("priority", "P2")
+                        cmds_raw  = row.get("suggested_commands", "")
+                        if not title:
+                            continue
+                        if task_type not in ("BACKTEST_MORE", "REVIEW_RULE"):
+                            continue
+
+                        priority = (PRIORITY_P0 if pri == "P0" else
+                                    PRIORITY_P1 if pri == "P1" else
+                                    PRIORITY_P2 if pri == "P2" else PRIORITY_P3)
+                        cmds = [c for c in (cmds_raw or "").split("|") if c.strip()]
+
+                        items.append(self._make_item(
+                            memory_type=MEMORY_TYPE_FOLLOW_UP_TASK,
+                            title=f"[CoachTask] {title}"[:200],
+                            summary=goal[:300] if goal else "",
+                            priority=priority,
+                            source_module="backtest_coach",
+                            suggested_commands=cmds[:3],
+                        ))
+                    except Exception:
+                        pass
+        except Exception as exc:
+            logger.debug("StrategyMemoryExtractor.extract_from_backtest_coach: %s", exc)
         return items
 
     def extract_from_report_pack(self) -> List[StrategyMemoryItem]:

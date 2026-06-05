@@ -802,6 +802,46 @@ class GUITabRegistry:
                 favorite_default=False,
                 notes="Added in v0.7.2 — Strategy Research Memory.",
             ),
+            # v0.7.3 Backtest-to-Coach Loop
+            GUITabMetadata(
+                tab_id="backtest_coach",
+                tab_name="backtest_coach",
+                display_name="Backtest Coach",
+                group="daily_research",
+                priority="P1",
+                description=(
+                    "Backtest-to-Coach Loop v0.7.3 — converts backtest weaknesses, replay mistakes, "
+                    "journal patterns, rule issues, strategy memories, and data gaps into safe coach "
+                    "training tasks (PRACTICE_REPLAY, REVIEW_RULE, REVIEW_JOURNAL, FIX_DATA, "
+                    "BACKTEST_MORE, READ_REPORT, UPDATE_MEMORY, WAIT). "
+                    "No BUY/SELL/ORDER. Research Only. No Real Orders."
+                ),
+                module_path="gui.backtest_coach_panel",
+                class_name="BacktestCoachPanel",
+                available_flag="_BACKTEST_COACH_AVAILABLE",
+                safety_level="RESEARCH_ONLY",
+                read_only=True,
+                no_real_orders=True,
+                production_blocked=True,
+                keywords=[
+                    "backtest coach", "coach loop", "training tasks", "practice replay",
+                    "review rule", "review journal", "fix data", "backtest more",
+                    "coach signal", "coach task", "daily plan", "weekly plan",
+                    "複盤教練", "回測教練", "訓練任務", "練習計畫",
+                ],
+                aliases=["backtest-coach", "coach", "training-loop"],
+                related_cli_commands=[
+                    "backtest-coach", "backtest-coach-summary",
+                    "backtest-coach-signals", "backtest-coach-tasks",
+                    "backtest-coach-daily-plan", "backtest-coach-weekly-plan",
+                    "backtest-coach-report",
+                ],
+                report_types=["backtest_coach"],
+                maturity="STABLE",
+                default_visible=True,
+                favorite_default=False,
+                notes="Added in v0.7.3 — Backtest-to-Coach Loop.",
+            ),
             # v0.5.4 Report Pack Consolidation
             GUITabMetadata(
                 tab_id="report_pack",

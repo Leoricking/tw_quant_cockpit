@@ -628,6 +628,54 @@ class StableReleaseChecklistV060:
                 "recommendations_no_forbidden_actions", "runtime_safety", "FAIL", str(exc),
             )
 
+    def _check_backtest_coach_summary_can_run(self) -> dict:
+        """v0.7.3 — backtest-coach-summary CLI must run without crash."""
+        import subprocess
+        import sys
+        try:
+            result = subprocess.run(
+                [sys.executable, os.path.join(BASE_DIR, "main.py"), "backtest-coach-summary"],
+                capture_output=True, text=True, timeout=30, cwd=BASE_DIR,
+            )
+            if result.returncode != 0 and "ERROR" in (result.stdout or "") and "import" in (result.stdout or "").lower():
+                return _check_item(
+                    "backtest_coach_summary_can_run", "runtime_safety", "FAIL",
+                    f"backtest-coach-summary returned error: {(result.stdout or '')[:200]}",
+                )
+            return _check_item(
+                "backtest_coach_summary_can_run", "runtime_safety", "PASS",
+                "backtest-coach-summary runs without crash.",
+            )
+        except Exception as exc:
+            return _check_item(
+                "backtest_coach_summary_can_run", "runtime_safety", "WARN", str(exc),
+            )
+
+    def _check_coach_tasks_no_forbidden_actions(self) -> dict:
+        """v0.7.3 — CoachTrainingTask must reject forbidden trading keywords."""
+        try:
+            from backtest_coach.backtest_coach_schema import _guard
+            raised = False
+            for kw in ["BUY signal", "SELL now", "SUBMIT_ORDER auto"]:
+                try:
+                    _guard(kw)
+                except ValueError:
+                    raised = True
+                    break
+            if not raised:
+                return _check_item(
+                    "coach_tasks_no_forbidden_actions", "runtime_safety", "FAIL",
+                    "BacktestCoach._guard did not raise on forbidden keywords",
+                )
+            return _check_item(
+                "coach_tasks_no_forbidden_actions", "runtime_safety", "PASS",
+                "BacktestCoach._guard correctly blocks forbidden trading keywords.",
+            )
+        except Exception as exc:
+            return _check_item(
+                "coach_tasks_no_forbidden_actions", "runtime_safety", "FAIL", str(exc),
+            )
+
     # ----------------------------------------------------------------
     # Run
     # ----------------------------------------------------------------
@@ -667,6 +715,9 @@ class StableReleaseChecklistV060:
             # v0.7.2 Strategy Research Memory
             self._check_strategy_memory_summary_can_run,
             self._check_memory_store_no_forbidden_actions,
+            # v0.7.3 Backtest-to-Coach Loop
+            self._check_backtest_coach_summary_can_run,
+            self._check_coach_tasks_no_forbidden_actions,
         ]
 
         for fn in checklist_groups:

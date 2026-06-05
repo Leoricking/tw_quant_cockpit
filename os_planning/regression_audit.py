@@ -356,6 +356,23 @@ _COVERAGE: list[dict] = [
             "strategy_memory_list, strategy_memory_report in SUITE_RESEARCH_OS"
         ),
     },
+    # v0.7.3 Backtest-to-Coach Loop
+    {
+        "module":            "backtest_to_coach_loop",
+        "command_covered":   "yes",
+        "import_covered":    "yes",
+        "gui_covered":       "yes",
+        "report_covered":    "yes",
+        "safety_covered":    "yes",
+        "missing_checks":    (
+            "No test for signal extraction when all upstream CSVs are absent; "
+            "no test for deduplication with large task store"
+        ),
+        "recommended_test":  (
+            "backtest_coach_schema_import, backtest_coach_cli, "
+            "backtest_coach_summary, backtest_coach_report in SUITE_RESEARCH_OS"
+        ),
+    },
 ]
 
 

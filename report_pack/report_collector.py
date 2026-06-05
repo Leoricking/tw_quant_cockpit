@@ -26,6 +26,7 @@ from report_pack.report_pack_schema import (
     REPORT_REPLAY_TRAINING, REPORT_STABLE_RELEASE_V060, REPORT_RELEASE_MANIFEST,
     REPORT_DATA_COVERAGE, REPORT_RESEARCH_INTELLIGENCE,
     REPORT_STRATEGY_MEMORY,
+    REPORT_BACKTEST_COACH,
     OPTIONAL_REPORT_TYPES, ENV_LIMITED_REPORT_TYPES,
 )
 
@@ -159,6 +160,11 @@ _REPORT_PATTERNS = {
     REPORT_STRATEGY_MEMORY: [
         "reports/strategy_memory_report_*.md",
         "data/backtest_results/strategy_memory/strategy_memory_summary*.csv",
+    ],
+    # v0.7.3 Backtest-to-Coach Loop
+    REPORT_BACKTEST_COACH: [
+        "reports/backtest_coach_report_*.md",
+        "data/backtest_results/backtest_coach/backtest_coach_summary*.csv",
     ],
 }
 

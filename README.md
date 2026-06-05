@@ -4,7 +4,33 @@
 >
 > **[!] v1: Real order execution is strictly prohibited. For research, simulation, and decision support only. Not investment advice.**
 
-**Current version: v0.7.2 — Strategy Research Memory**
+**Current version: v0.7.3 — Backtest-to-Coach Loop**
+
+---
+
+## v0.7.3 — Backtest-to-Coach Loop
+
+**New in v0.7.3:**
+
+- **Backtest-to-Coach Loop Engine**: Converts backtest weaknesses, replay mistakes, journal patterns, rule issues, strategy memories, and data gaps into safe coach training tasks
+- **8 Coach Task Types**: PRACTICE_REPLAY, REVIEW_RULE, REVIEW_JOURNAL, FIX_DATA, BACKTEST_MORE, READ_REPORT, UPDATE_MEMORY, WAIT — no trading actions
+- **Signal Extraction**: Pulls from 7 Research OS modules (backtest results, replay training, portfolio journal, research intelligence, rule governance, data coverage, strategy memory)
+- **Priority Ranking**: P0 > P1 > P2 > P3 with deduplication by `task_type|strategy_name|issue_type`
+- **Daily Plan**: Max 7 items balanced across task types (1 system, 2 replay, 1 journal, 1 rule, 1 backtest, 1 optional)
+- **Weekly Plan**: Max 12 items ranked by priority
+- **7 CLI Commands**: `backtest-coach` through `backtest-coach-report`
+- **GUI Panel**: Backtest Coach tab with summary cards, 4 tabs (Tasks, Signals, Daily Plan, Weekly Plan), Copy Command button
+- **9-Section Markdown Report**: Header, Overview, Top Tasks, Daily Plan, Weekly Plan, Signals, Replay/Journal Loop, Strategy Memory, Safety
+- **Safety Guard**: `_guard()` raises ValueError on BUY/SELL/ORDER/EXECUTE/SUBMIT_ORDER/AUTO_TRADE/REAL_TRADE
+- **[!] Research Only. No Real Orders. Production Trading: BLOCKED.**
+
+```bash
+python main.py backtest-coach --mode real --period daily
+python main.py backtest-coach-summary
+python main.py backtest-coach-tasks
+python main.py backtest-coach-daily-plan
+python main.py backtest-coach-report --mode real
+```
 
 ---
 

@@ -412,6 +412,26 @@ _MODULES: list[dict] = [
         ),
         "next_action":        "Add LLM-assisted extraction scaffold in v0.8.x",
     },
+    # v0.7.3 Backtest-to-Coach Loop
+    {
+        "module_name":        "backtest_to_coach_loop",
+        "package":            "backtest_coach",
+        "category":           "E. Research OS Layer",
+        "cli_commands":       (
+            "backtest-coach,backtest-coach-summary,backtest-coach-signals,"
+            "backtest-coach-tasks,backtest-coach-daily-plan,"
+            "backtest-coach-weekly-plan,backtest-coach-report"
+        ),
+        "gui_tab":            "Backtest Coach",
+        "report":             "yes",
+        "maturity":           "STABLE",
+        "known_limitations":  (
+            "Coach task extraction depends on CSV outputs from other modules. "
+            "No BUY/SELL/ORDER — research coach actions only. "
+            "Daily plan capped at 7 items; weekly plan capped at 12 items."
+        ),
+        "next_action":        "Add LLM-assisted task description enrichment in v0.8.x",
+    },
 ]
 
 

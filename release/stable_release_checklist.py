@@ -1260,6 +1260,49 @@ class StableReleaseChecklist:
             elapsed = (time.monotonic() - t0) * 1000
             return self._item("strategy_memory_no_forbidden_actions", "FAIL", str(exc), elapsed)
 
+    def _check_backtest_coach_import_health(self) -> dict:
+        """v0.7.3: backtest_coach package imports cleanly."""
+        t0 = time.monotonic()
+        try:
+            import importlib.util
+            for mod in [
+                "backtest_coach.backtest_coach_schema",
+                "backtest_coach.backtest_signal_extractor",
+                "backtest_coach.coach_task_builder",
+                "backtest_coach.backtest_coach_engine",
+            ]:
+                spec = importlib.util.find_spec(mod)
+                if spec is None:
+                    raise ImportError(f"Module {mod} not found")
+            elapsed = (time.monotonic() - t0) * 1000
+            return self._item("backtest_coach_import_health", "PASS",
+                               "backtest_coach package imports cleanly.", elapsed)
+        except Exception as exc:
+            elapsed = (time.monotonic() - t0) * 1000
+            return self._item("backtest_coach_import_health", "FAIL", str(exc), elapsed)
+
+    def _check_backtest_coach_no_forbidden_actions(self) -> dict:
+        """v0.7.3: BacktestCoach._guard blocks forbidden keywords."""
+        t0 = time.monotonic()
+        try:
+            from backtest_coach.backtest_coach_schema import _guard
+            raised = False
+            for kw in ["BUY this stock", "SUBMIT_ORDER now"]:
+                try:
+                    _guard(kw)
+                except ValueError:
+                    raised = True
+                    break
+            elapsed = (time.monotonic() - t0) * 1000
+            if not raised:
+                return self._item("backtest_coach_no_forbidden_actions", "FAIL",
+                                   "_guard did not block forbidden keywords.", elapsed)
+            return self._item("backtest_coach_no_forbidden_actions", "PASS",
+                               "_guard correctly blocks forbidden trading keywords.", elapsed)
+        except Exception as exc:
+            elapsed = (time.monotonic() - t0) * 1000
+            return self._item("backtest_coach_no_forbidden_actions", "FAIL", str(exc), elapsed)
+
     # ------------------------------------------------------------------
     # Write outputs
     # ------------------------------------------------------------------
@@ -1452,6 +1495,9 @@ class StableReleaseChecklist:
             # v0.7.2 Strategy Research Memory
             self._check_strategy_memory_import_health,
             self._check_strategy_memory_no_forbidden_actions,
+            # v0.7.3 Backtest-to-Coach Loop
+            self._check_backtest_coach_import_health,
+            self._check_backtest_coach_no_forbidden_actions,
         ]
 
         items: list[dict] = []

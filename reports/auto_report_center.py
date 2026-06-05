@@ -67,6 +67,8 @@ _PROFILE_FLAGS: Dict[str, dict] = {
         include_research_intelligence=True,
         # v0.7.2 Strategy Research Memory (optional in full profile)
         include_strategy_memory=True,
+        # v0.7.3 Backtest-to-Coach Loop (optional in full profile)
+        include_backtest_coach=True,
     ),
     "daily": dict(
         include_stock_reports=False,
@@ -96,6 +98,8 @@ _PROFILE_FLAGS: Dict[str, dict] = {
         include_research_intelligence=True,
         # v0.7.2 Strategy Research Memory in daily profile
         include_strategy_memory=True,
+        # v0.7.3 Backtest-to-Coach Loop in daily profile
+        include_backtest_coach=True,
     ),
     "portfolio": dict(
         include_stock_reports=False,
@@ -199,6 +203,7 @@ class AutoReportCenter:
         include_data_coverage: bool = False,
         include_research_intelligence: bool = False,
         include_strategy_memory: bool = False,
+        include_backtest_coach: bool = False,
     ):
         self.mode        = mode
         self.profile     = profile
@@ -264,6 +269,9 @@ class AutoReportCenter:
         )
         self.include_strategy_memory = flags.get(
             "include_strategy_memory", include_strategy_memory
+        )
+        self.include_backtest_coach = flags.get(
+            "include_backtest_coach", include_backtest_coach
         )
         self.universe_name = universe_name
 
@@ -478,6 +486,33 @@ class AutoReportCenter:
                 self._failed.append({
                     "name": "strategy_memory_report",
                     "error": str(_sm_exc),
+                })
+
+        # v0.7.3 Backtest-to-Coach Loop (optional, failure should not crash)
+        if getattr(self, "include_backtest_coach", False):
+            try:
+                from backtest_coach.backtest_coach_engine import BacktestCoachEngine
+                from reports.backtest_coach_report import BacktestCoachReportBuilder
+                bc_dir = os.path.join(_BASE_DIR, "data", "backtest_results", "backtest_coach")
+                bc_engine = BacktestCoachEngine(project_root=_BASE_DIR, output_dir=bc_dir)
+                bc_engine.run(mode=self.mode, period="daily")
+                bc_reporter = BacktestCoachReportBuilder()
+                bc_path = bc_reporter.build(
+                    mode=self.mode,
+                    output_dir=os.path.join(self._out_dir, "backtest_coach"),
+                    coach_output_dir=bc_dir,
+                )
+                self._generated.append({
+                    "name": "backtest_coach_report",
+                    "path": bc_path,
+                    "section": "backtest_coach",
+                })
+                logger.info("BacktestCoachReport generated: %s", bc_path)
+            except Exception as _bc_exc:
+                logger.warning("BacktestCoachReport failed (non-blocking): %s", _bc_exc)
+                self._failed.append({
+                    "name": "backtest_coach_report",
+                    "error": str(_bc_exc),
                 })
 
         # Aggregated outputs

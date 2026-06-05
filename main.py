@@ -7693,6 +7693,209 @@ def cmd_strategy_memory_report(args: argparse.Namespace) -> None:
 
 
 # ---------------------------------------------------------------------------
+# v0.7.3 Backtest-to-Coach Loop command handlers
+# ---------------------------------------------------------------------------
+
+_BACKTEST_COACH_BANNER = """
+╔══════════════════════════════════════════════════════════════╗
+║     TW Quant Cockpit — Backtest-to-Coach Loop v0.7.3         ║
+║  Research Only  |  No Real Orders  |  Production BLOCKED     ║
+╚══════════════════════════════════════════════════════════════╝
+"""
+
+
+def cmd_backtest_coach(args: argparse.Namespace) -> None:
+    """Run full Backtest-to-Coach Loop pipeline."""
+    mode       = getattr(args, "mode", "real")
+    period     = getattr(args, "period", "daily")
+    output_dir = getattr(args, "output_dir", "data/backtest_results/backtest_coach")
+    report_dir = getattr(args, "report_dir", "reports")
+    output_dir_abs = output_dir if os.path.isabs(output_dir) else os.path.join(BASE_DIR, output_dir)
+    report_dir_abs = report_dir if os.path.isabs(report_dir) else os.path.join(BASE_DIR, report_dir)
+    print(_BACKTEST_COACH_BANNER)
+    print(f"  TW Quant Cockpit — Backtest-to-Coach Loop")
+    print(f"  Mode:                       {mode}")
+    print(f"  Period:                     {period}")
+    print(f"  Research Only:              YES")
+    print(f"  No Real Orders:             YES")
+    print(f"  Production Trading BLOCKED: YES")
+    print()
+    try:
+        from backtest_coach.backtest_coach_engine import BacktestCoachEngine
+        engine = BacktestCoachEngine(project_root=BASE_DIR, output_dir=output_dir_abs)
+        result = engine.run(mode=mode, period=period)
+        summary = result.get("summary")
+        if summary:
+            s = summary
+            print(f"  Signals:                    {s.total_signals}")
+            print(f"  Tasks:                      {s.total_tasks}")
+            print(f"  P0:                         {s.p0_count}")
+            print(f"  P1:                         {s.p1_count}")
+            print(f"  Replay Tasks:               {s.replay_tasks}")
+            print(f"  Backtest Tasks:             {s.backtest_tasks}")
+            top = s.top_task or "—"
+            print(f"  Top Task:                   {top}")
+        try:
+            from reports.backtest_coach_report import BacktestCoachReportBuilder
+            builder = BacktestCoachReportBuilder()
+            rpath = builder.build(mode=mode, output_dir=report_dir_abs, coach_output_dir=output_dir_abs)
+            print(f"  Report:                     {rpath}")
+        except Exception as _rpt_exc:
+            print(f"  Report:                     (error: {_rpt_exc})")
+    except Exception as exc:
+        print(f"  ERROR: {exc}")
+    print()
+    print("  [!] No real orders. Research Only. Production Trading BLOCKED.")
+
+
+def cmd_backtest_coach_summary(args: argparse.Namespace) -> None:
+    """Show latest backtest coach summary."""
+    output_dir = getattr(args, "output_dir", "data/backtest_results/backtest_coach")
+    output_dir_abs = output_dir if os.path.isabs(output_dir) else os.path.join(BASE_DIR, output_dir)
+    print(_BACKTEST_COACH_BANNER)
+    try:
+        from backtest_coach.backtest_coach_store import BacktestCoachStore
+        store   = BacktestCoachStore(output_dir=output_dir_abs)
+        summary = store.load_latest_summary()
+        if summary is None:
+            print("  No summary found. Run: python main.py backtest-coach --mode real")
+        else:
+            s = summary
+            print(f"  Total Signals:              {s.total_signals}")
+            print(f"  Total Tasks:                {s.total_tasks}")
+            print(f"  P0:                         {s.p0_count}")
+            print(f"  P1:                         {s.p1_count}")
+            print(f"  P2:                         {s.p2_count}")
+            print(f"  P3:                         {s.p3_count}")
+            print(f"  Replay Tasks:               {s.replay_tasks}")
+            print(f"  Rule Review Tasks:          {s.rule_review_tasks}")
+            print(f"  Journal Tasks:              {s.journal_tasks}")
+            print(f"  Backtest Tasks:             {s.backtest_tasks}")
+            print(f"  Fix Data Tasks:             {s.fix_data_tasks}")
+            print(f"  Daily Plan Count:           {s.daily_tasks_count}")
+            print(f"  Weekly Plan Count:          {s.weekly_tasks_count}")
+            print(f"  Top Task:                   {s.top_task or '—'}")
+            print(f"  Overall Status:             {s.overall_status}")
+    except Exception as exc:
+        print(f"  ERROR: {exc}")
+    print()
+    print("  [!] No real orders. Research Only.")
+
+
+def cmd_backtest_coach_signals(args: argparse.Namespace) -> None:
+    """Show latest backtest coach signals."""
+    output_dir = getattr(args, "output_dir", "data/backtest_results/backtest_coach")
+    output_dir_abs = output_dir if os.path.isabs(output_dir) else os.path.join(BASE_DIR, output_dir)
+    print(_BACKTEST_COACH_BANNER)
+    try:
+        from backtest_coach.backtest_coach_store import BacktestCoachStore
+        store   = BacktestCoachStore(output_dir=output_dir_abs)
+        signals = store.load_signals()
+        print(f"  Total Signals: {len(signals)}")
+        print()
+        print(f"  {'Source':22s}  {'Issue':26s}  {'Sev':8s}  {'Pri':3s}  Description")
+        print(f"  {'-'*22}  {'-'*26}  {'-'*8}  {'-'*3}  {'-'*50}")
+        for s in signals[:20]:
+            print(f"  {s.source_module:22s}  {s.issue_type:26s}  {s.severity:8s}  {s.priority:3s}  {s.description[:60]}")
+        if len(signals) > 20:
+            print(f"  ... ({len(signals) - 20} more)")
+    except Exception as exc:
+        print(f"  ERROR: {exc}")
+    print()
+    print("  [!] No real orders. Research Only.")
+
+
+def cmd_backtest_coach_tasks(args: argparse.Namespace) -> None:
+    """Show latest backtest coach tasks."""
+    output_dir = getattr(args, "output_dir", "data/backtest_results/backtest_coach")
+    output_dir_abs = output_dir if os.path.isabs(output_dir) else os.path.join(BASE_DIR, output_dir)
+    print(_BACKTEST_COACH_BANNER)
+    try:
+        from backtest_coach.backtest_coach_store import BacktestCoachStore
+        store = BacktestCoachStore(output_dir=output_dir_abs)
+        tasks = store.load_tasks()
+        print(f"  Total Tasks: {len(tasks)}")
+        print()
+        print(f"  {'Pri':3s}  {'Type':16s}  {'Status':12s}  Title")
+        print(f"  {'-'*3}  {'-'*16}  {'-'*12}  {'-'*60}")
+        for t in tasks[:20]:
+            print(f"  {t.priority:3s}  {t.task_type:16s}  {t.status:12s}  {t.title[:60]}")
+        if len(tasks) > 20:
+            print(f"  ... ({len(tasks) - 20} more)")
+    except Exception as exc:
+        print(f"  ERROR: {exc}")
+    print()
+    print("  [!] No real orders. Research Only.")
+
+
+def cmd_backtest_coach_daily_plan(args: argparse.Namespace) -> None:
+    """Show daily training plan."""
+    output_dir = getattr(args, "output_dir", "data/backtest_results/backtest_coach")
+    output_dir_abs = output_dir if os.path.isabs(output_dir) else os.path.join(BASE_DIR, output_dir)
+    print(_BACKTEST_COACH_BANNER)
+    try:
+        from backtest_coach.backtest_coach_store import BacktestCoachStore
+        store = BacktestCoachStore(output_dir=output_dir_abs)
+        tasks = store.load_daily_tasks()
+        print(f"  Daily Training Plan: {len(tasks)} tasks")
+        print()
+        for i, t in enumerate(tasks, 1):
+            cmd = t.suggested_commands[0] if t.suggested_commands else "—"
+            print(f"  {i}. [{t.priority}] {t.task_type}: {t.title[:60]}")
+            print(f"     Goal: {t.training_goal[:80]}")
+            print(f"     Cmd : {cmd}")
+            print()
+    except Exception as exc:
+        print(f"  ERROR: {exc}")
+    print("  [!] No real orders. Research Only.")
+
+
+def cmd_backtest_coach_weekly_plan(args: argparse.Namespace) -> None:
+    """Show weekly training plan."""
+    output_dir = getattr(args, "output_dir", "data/backtest_results/backtest_coach")
+    output_dir_abs = output_dir if os.path.isabs(output_dir) else os.path.join(BASE_DIR, output_dir)
+    print(_BACKTEST_COACH_BANNER)
+    try:
+        from backtest_coach.backtest_coach_store import BacktestCoachStore
+        store = BacktestCoachStore(output_dir=output_dir_abs)
+        tasks = store.load_weekly_tasks()
+        print(f"  Weekly Training Plan: {len(tasks)} tasks")
+        print()
+        for i, t in enumerate(tasks, 1):
+            print(f"  {i:2d}. [{t.priority}] {t.task_type}: {t.title[:60]}")
+    except Exception as exc:
+        print(f"  ERROR: {exc}")
+    print()
+    print("  [!] No real orders. Research Only.")
+
+
+def cmd_backtest_coach_report(args: argparse.Namespace) -> None:
+    """Generate Backtest-to-Coach Loop Markdown report."""
+    mode       = getattr(args, "mode", "real")
+    report_dir = getattr(args, "report_dir", "reports")
+    output_dir = getattr(args, "output_dir", "data/backtest_results/backtest_coach")
+    output_dir_abs = output_dir if os.path.isabs(output_dir) else os.path.join(BASE_DIR, output_dir)
+    report_dir_abs = report_dir if os.path.isabs(report_dir) else os.path.join(BASE_DIR, report_dir)
+    print(_BACKTEST_COACH_BANNER)
+    print(f"  Mode:       {mode}")
+    print(f"  Report Dir: {report_dir}")
+    print()
+    try:
+        from reports.backtest_coach_report import BacktestCoachReportBuilder
+        builder = BacktestCoachReportBuilder()
+        path = builder.build(
+            mode=mode,
+            output_dir=report_dir_abs,
+            coach_output_dir=output_dir_abs,
+        )
+        print(f"  Report saved: {path}")
+    except Exception as exc:
+        print(f"  ERROR: {exc}")
+    print()
+    print("  [!] No real orders. Research Only.")
+
+
+# ---------------------------------------------------------------------------
 # v0.4.2.1 ML Knowledge Integration command handlers
 # ---------------------------------------------------------------------------
 
@@ -11762,6 +11965,71 @@ def _build_parser() -> argparse.ArgumentParser:
     p_smr.add_argument("--output-dir", dest="output_dir",
                        default="data/backtest_results/strategy_memory")
 
+    # --- backtest-coach (v0.7.3) ---
+    p_bc = subparsers.add_parser(
+        "backtest-coach",
+        help="Run full Backtest-to-Coach Loop: extract signals → build tasks → save → report (v0.7.3)",
+    )
+    p_bc.add_argument("--mode", choices=["real", "mock"], default="real",
+                      help="Data mode (default: real)")
+    p_bc.add_argument("--period", choices=["daily", "weekly"], default="daily",
+                      help="Training period (default: daily)")
+    p_bc.add_argument("--output-dir", dest="output_dir",
+                      default="data/backtest_results/backtest_coach",
+                      help="Output directory for coach CSVs")
+    p_bc.add_argument("--report-dir", dest="report_dir", default="reports",
+                      help="Output directory for report")
+
+    # --- backtest-coach-summary (v0.7.3) ---
+    p_bcs = subparsers.add_parser(
+        "backtest-coach-summary",
+        help="Show latest backtest coach summary (v0.7.3)",
+    )
+    p_bcs.add_argument("--output-dir", dest="output_dir",
+                       default="data/backtest_results/backtest_coach")
+
+    # --- backtest-coach-signals (v0.7.3) ---
+    p_bcsg = subparsers.add_parser(
+        "backtest-coach-signals",
+        help="Show latest backtest coach signals (v0.7.3)",
+    )
+    p_bcsg.add_argument("--output-dir", dest="output_dir",
+                        default="data/backtest_results/backtest_coach")
+
+    # --- backtest-coach-tasks (v0.7.3) ---
+    p_bct = subparsers.add_parser(
+        "backtest-coach-tasks",
+        help="Show latest backtest coach tasks (v0.7.3)",
+    )
+    p_bct.add_argument("--output-dir", dest="output_dir",
+                       default="data/backtest_results/backtest_coach")
+
+    # --- backtest-coach-daily-plan (v0.7.3) ---
+    p_bcd = subparsers.add_parser(
+        "backtest-coach-daily-plan",
+        help="Show daily training plan (v0.7.3)",
+    )
+    p_bcd.add_argument("--output-dir", dest="output_dir",
+                       default="data/backtest_results/backtest_coach")
+
+    # --- backtest-coach-weekly-plan (v0.7.3) ---
+    p_bcw = subparsers.add_parser(
+        "backtest-coach-weekly-plan",
+        help="Show weekly training plan (v0.7.3)",
+    )
+    p_bcw.add_argument("--output-dir", dest="output_dir",
+                       default="data/backtest_results/backtest_coach")
+
+    # --- backtest-coach-report (v0.7.3) ---
+    p_bcr = subparsers.add_parser(
+        "backtest-coach-report",
+        help="Generate Backtest-to-Coach Loop Markdown report (v0.7.3)",
+    )
+    p_bcr.add_argument("--mode", choices=["real", "mock"], default="real")
+    p_bcr.add_argument("--report-dir", dest="report_dir", default="reports")
+    p_bcr.add_argument("--output-dir", dest="output_dir",
+                       default="data/backtest_results/backtest_coach")
+
     # --- strategy-knowledge-ingest (v0.4.1.1) ---
     p_ski = subparsers.add_parser(
         "strategy-knowledge-ingest",
@@ -12980,6 +13248,14 @@ def main() -> None:
         "research-intelligence-daily-plan":     cmd_research_intelligence_daily_plan,
         "research-intelligence-weekly-plan":    cmd_research_intelligence_weekly_plan,
         "research-intelligence-report":         cmd_research_intelligence_report,
+        # v0.7.3 Backtest-to-Coach Loop
+        "backtest-coach":            cmd_backtest_coach,
+        "backtest-coach-summary":    cmd_backtest_coach_summary,
+        "backtest-coach-signals":    cmd_backtest_coach_signals,
+        "backtest-coach-tasks":      cmd_backtest_coach_tasks,
+        "backtest-coach-daily-plan": cmd_backtest_coach_daily_plan,
+        "backtest-coach-weekly-plan":cmd_backtest_coach_weekly_plan,
+        "backtest-coach-report":     cmd_backtest_coach_report,
         # v0.7.2 Strategy Research Memory
         "strategy-memory":               cmd_strategy_memory,
         "strategy-memory-summary":       cmd_strategy_memory_summary,

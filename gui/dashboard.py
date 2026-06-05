@@ -455,6 +455,15 @@ except Exception as _sm_exc:
     logger.warning("StrategyMemoryPanel unavailable: %s", _sm_exc)
     _STRATEGY_MEMORY_AVAILABLE = False
 
+# v0.7.3 Backtest-to-Coach Loop panel import (guarded)
+# ---------------------------------------------------------------------------
+try:
+    from gui.backtest_coach_panel import BacktestCoachPanel
+    _BACKTEST_COACH_AVAILABLE = True
+except Exception as _bc_exc:
+    logger.warning("BacktestCoachPanel unavailable: %s", _bc_exc)
+    _BACKTEST_COACH_AVAILABLE = False
+
 # v0.5.1.1 Strategy Filter panel — inline (no separate panel file required)
 # ---------------------------------------------------------------------------
 _STRATEGY_FILTER_AVAILABLE = False
@@ -1512,6 +1521,13 @@ class CockpitWindow(QMainWindow if _PYSIDE6_AVAILABLE else object):
             mid_tabs.addTab(self._strategy_memory_panel, "Strategy Memory")
         else:
             self._strategy_memory_panel = None
+
+        # v0.7.3 Backtest-to-Coach Loop tab
+        if _BACKTEST_COACH_AVAILABLE:
+            self._backtest_coach_panel = BacktestCoachPanel()
+            mid_tabs.addTab(self._backtest_coach_panel, "Backtest Coach")
+        else:
+            self._backtest_coach_panel = None
 
         # v0.4.1.1 Strategy Knowledge tab
         if _STRATEGY_KNOWLEDGE_INGESTION_AVAILABLE:

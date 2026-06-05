@@ -1202,6 +1202,47 @@ class RegressionSuiteRegistry:
                 required=True,
                 description="v0.7.2 Strategy Memory report generation CLI",
             ),
+            # v0.7.3 Backtest-to-Coach Loop
+            RegressionTestCase(
+                test_id="backtest_coach_schema_import",
+                name="BacktestCoachSchema import check",
+                suite=SUITE_RESEARCH_OS,
+                category="import",
+                command=["-c", "from backtest_coach.backtest_coach_schema import CoachTrainingTask; print('schema OK')"],
+                timeout_seconds=30,
+                required=True,
+                description="v0.7.3 Backtest Coach schema import check",
+            ),
+            RegressionTestCase(
+                test_id="backtest_coach_cli",
+                name="backtest-coach --mode real --period daily",
+                suite=SUITE_RESEARCH_OS,
+                category="research_os",
+                command=["main.py", "backtest-coach", "--mode", "real", "--period", "daily"],
+                timeout_seconds=60,
+                required=True,
+                description="v0.7.3 Backtest Coach CLI runnable",
+            ),
+            RegressionTestCase(
+                test_id="backtest_coach_summary",
+                name="backtest-coach-summary",
+                suite=SUITE_RESEARCH_OS,
+                category="research_os",
+                command=["main.py", "backtest-coach-summary"],
+                timeout_seconds=30,
+                required=True,
+                description="v0.7.3 Backtest Coach summary CLI",
+            ),
+            RegressionTestCase(
+                test_id="backtest_coach_report",
+                name="backtest-coach-report --mode real",
+                suite=SUITE_RESEARCH_OS,
+                category="research_os",
+                command=["main.py", "backtest-coach-report", "--mode", "real"],
+                timeout_seconds=60,
+                required=True,
+                description="v0.7.3 Backtest Coach report generation CLI",
+            ),
         ]
 
     def build_release_gate_suite(self) -> List[RegressionTestCase]:

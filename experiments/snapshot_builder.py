@@ -669,6 +669,8 @@ class ExperimentSnapshotBuilder:
             ("regression_suite",            lambda: self.build_regression_snapshot()),
             ("data_stabilization",          lambda: self.build_data_stabilization_snapshot()),
             ("strategy_memory",             lambda: self.build_strategy_memory_snapshot()),
+            # v0.7.3 Backtest-to-Coach Loop
+            ("backtest_coach",              lambda: self.build_backtest_coach_snapshot()),
         ]
         for snap_type, fn in builders:
             try:
@@ -1178,4 +1180,38 @@ class ExperimentSnapshotBuilder:
         except Exception as exc:
             logger.warning("build_strategy_memory_snapshot: %s", exc)
             snap["warnings"].append(f"strategy_memory snapshot error: {exc}")
+        return snap
+
+    def build_backtest_coach_snapshot(self) -> dict:
+        """Snapshot type: backtest_coach. Captures latest backtest coach summary.
+
+        [!] Research Only. No Real Orders. Production Trading: BLOCKED.
+        """
+        snap = _empty_snapshot("backtest_coach")
+        try:
+            bc_dir = os.path.join(BASE_DIR, "data", "backtest_results", "backtest_coach")
+            summary_csv = os.path.join(bc_dir, "backtest_coach_summary.csv")
+            if os.path.exists(summary_csv):
+                snap["source_files"].append(summary_csv)
+                import csv as _csv
+                with open(summary_csv, newline="", encoding="utf-8") as f:
+                    rows = list(_csv.DictReader(f))
+                    if rows:
+                        row = rows[-1]
+                        snap["summary"] = {
+                            "total_tasks":          row.get("total_tasks", 0),
+                            "replay_tasks":         row.get("replay_tasks", 0),
+                            "backtest_tasks":       row.get("backtest_tasks", 0),
+                            "p0_count":             row.get("p0_count", 0),
+                            "p1_count":             row.get("p1_count", 0),
+                            "top_task":             row.get("top_task", ""),
+                            "overall_status":       row.get("overall_status", "OK"),
+                            "no_real_orders":       True,
+                            "production_blocked":   True,
+                        }
+            else:
+                snap["warnings"].append("backtest_coach_summary.csv not found — run backtest-coach first")
+        except Exception as exc:
+            logger.warning("build_backtest_coach_snapshot: %s", exc)
+            snap["warnings"].append(f"backtest_coach snapshot error: {exc}")
         return snap

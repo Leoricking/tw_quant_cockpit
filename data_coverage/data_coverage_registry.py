@@ -16,6 +16,7 @@ from data_coverage.data_coverage_schema import (
     DOMAIN_RULE_GOVERNANCE, DOMAIN_REPORT_PACK, DOMAIN_REGRESSION,
     DOMAIN_STABLE_RELEASE, DOMAIN_RESEARCH_INTELLIGENCE,
     DOMAIN_STRATEGY_MEMORY,
+    DOMAIN_BACKTEST_COACH,
 )
 
 logger = logging.getLogger(__name__)
@@ -655,5 +656,35 @@ class DataCoverageRegistry:
                     "reports/strategy_memory_report_*.md",
                 ],
                 "owner_module":     "reports.strategy_memory_report",
+            },
+            # ----------------------------------------------------------------
+            # Backtest Coach domain (v0.7.3)
+            # ----------------------------------------------------------------
+            {
+                "item_id":          "backtest_coach_store",
+                "domain":           DOMAIN_BACKTEST_COACH,
+                "dataset_name":     "Backtest Coach Task Store",
+                "required":         False,
+                "environment_limited": False,
+                "not_generated":    False,
+                "suggested_command": "python main.py backtest-coach --mode real",
+                "expected_patterns": [
+                    "data/backtest_results/backtest_coach/backtest_coach_summary*.csv",
+                    "data/backtest_results/backtest_coach/coach_training_tasks.csv",
+                ],
+                "owner_module":     "backtest_coach.backtest_coach_store",
+            },
+            {
+                "item_id":          "backtest_coach_report",
+                "domain":           DOMAIN_BACKTEST_COACH,
+                "dataset_name":     "Backtest Coach Report",
+                "required":         False,
+                "environment_limited": False,
+                "not_generated":    False,
+                "suggested_command": "python main.py backtest-coach-report --mode real",
+                "expected_patterns": [
+                    "reports/backtest_coach_report_*.md",
+                ],
+                "owner_module":     "reports.backtest_coach_report",
             },
         ]

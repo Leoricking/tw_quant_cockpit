@@ -665,6 +665,32 @@ class StableCapabilityMatrix:
                 no_real_orders=True,
                 production_blocked=True,
             ),
+            # v0.7.3 Backtest-to-Coach Loop
+            StableCapability(
+                capability_id="backtest_to_coach_loop",
+                name="Backtest-to-Coach Loop",
+                category="research_os",
+                version_added="v0.7.3",
+                status="USABLE",
+                maturity="STABLE",
+                cli_commands=[
+                    "backtest-coach", "backtest-coach-summary",
+                    "backtest-coach-signals", "backtest-coach-tasks",
+                    "backtest-coach-daily-plan", "backtest-coach-weekly-plan",
+                    "backtest-coach-report",
+                ],
+                gui_tabs=["Backtest Coach"],
+                reports=["backtest_coach"],
+                regression_coverage=True,
+                safety_status="OK",
+                known_limitations=[
+                    "Coach tasks depend on CSV outputs from other Research OS modules",
+                    "No BUY/SELL/ORDER — research coach actions only",
+                    "Research Only — no trading actions, no real orders",
+                ],
+                no_real_orders=True,
+                production_blocked=True,
+            ),
         ]
         return self
 

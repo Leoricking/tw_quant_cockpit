@@ -99,6 +99,24 @@ class ResearchIntelligenceEngine:
         except Exception as exc:
             logger.error("[ResearchIntelligenceEngine] save error: %s", exc)
 
+        # 7. Optionally load backtest_coach_summary as additional context
+        coach_context: dict = {}
+        try:
+            import os as _os
+            coach_dir = _os.path.join(self._root, "data", "backtest_results", "backtest_coach")
+            from backtest_coach.backtest_coach_store import BacktestCoachStore
+            _coach_store = BacktestCoachStore(output_dir=coach_dir)
+            _coach_sum   = _coach_store.load_latest_summary()
+            if _coach_sum:
+                coach_context = {
+                    "backtest_coach_total_tasks": _coach_sum.total_tasks,
+                    "backtest_coach_replay_tasks": _coach_sum.replay_tasks,
+                    "backtest_coach_p0": _coach_sum.p0_count,
+                    "backtest_coach_overall_status": _coach_sum.overall_status,
+                }
+        except Exception:
+            pass  # backtest_coach not yet available or no data — graceful
+
         return {
             "ok":              True,
             "summary":         summary.to_dict(),
@@ -110,6 +128,7 @@ class ResearchIntelligenceEngine:
             "no_real_orders":  True,
             "production_blocked": True,
             "research_only":   True,
+            "coach_context":   coach_context,
         }
 
     # ------------------------------------------------------------------

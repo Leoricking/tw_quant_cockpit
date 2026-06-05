@@ -5,6 +5,61 @@
 
 ---
 
+## v0.7.3 — Backtest-to-Coach Loop
+
+**Released:** 2026-06-05
+
+### Overview
+
+v0.7.3 introduces the Backtest-to-Coach Loop — a full pipeline that converts backtest weaknesses, replay mistakes, journal patterns, rule issues, strategy memories, and data gaps into safe coach training tasks. Task types: PRACTICE_REPLAY, REVIEW_RULE, REVIEW_JOURNAL, FIX_DATA, BACKTEST_MORE, READ_REPORT, UPDATE_MEMORY, WAIT. No BUY/SELL/ORDER. No trading actions.
+
+### New Files
+
+| File | Description |
+|------|-------------|
+| `backtest_coach/__init__.py` | Package docstring and safety flags |
+| `backtest_coach/backtest_coach_schema.py` | Dataclasses, constants, forbidden keyword guard |
+| `backtest_coach/backtest_signal_extractor.py` | Extracts signals from 7 Research OS sources |
+| `backtest_coach/coach_task_builder.py` | Converts signals to ranked coach training tasks |
+| `backtest_coach/backtest_coach_store.py` | CSV persistence (5 output files) |
+| `backtest_coach/backtest_coach_engine.py` | Master pipeline engine |
+| `reports/backtest_coach_report.py` | Markdown report generator (9 sections) |
+| `gui/backtest_coach_adapter.py` | GUI ↔ backend bridge |
+| `gui/backtest_coach_panel.py` | PySide6 Backtest Coach tab |
+| `docs/backtest_to_coach_loop.md` | Full documentation |
+
+### Modified Files
+
+| File | Change |
+|------|--------|
+| `main.py` | 7 CLI commands + parsers + command_map entries |
+| `research_intelligence/research_intelligence_engine.py` | Optional coach_context loading |
+| `strategy_memory/memory_extractor.py` | extract_from_backtest_coach() method |
+| `report_pack/report_pack_schema.py` | REPORT_BACKTEST_COACH constant |
+| `report_pack/report_registry.py` | Added to daily/weekly/full packs |
+| `report_pack/report_collector.py` | Pattern map for backtest_coach |
+| `regression/suite_registry.py` | 4 new regression test cases |
+| `stable_release/stable_release_checklist_v060.py` | 2 new checklist methods |
+| `stable_release/capability_matrix.py` | backtest_to_coach_loop capability |
+| `release/stable_release_checklist.py` | 2 new import/safety checks |
+| `reports/auto_report_center.py` | include_backtest_coach flag + run block |
+| `reports/auto_report_index.py` | 4 backtest_coach manifest fields |
+| `experiments/snapshot_builder.py` | build_backtest_coach_snapshot() |
+| `gui/dashboard.py` | BacktestCoachPanel tab registration |
+| `gui/navigation/tab_registry.py` | backtest_coach tab metadata |
+| `data_coverage/data_coverage_schema.py` | DOMAIN_BACKTEST_COACH |
+| `data_coverage/data_coverage_registry.py` | 2 coverage items |
+| `os_planning/module_inventory.py` | backtest_to_coach_loop entry |
+| `os_planning/regression_audit.py` | backtest_to_coach_loop audit entry |
+
+### Safety
+
+- No BUY/SELL/ORDER/EXECUTE/SUBMIT_ORDER/AUTO_TRADE/REAL_TRADE in any task output
+- `_guard()` in schema raises ValueError on forbidden keywords
+- All classes have `read_only=True`, `no_real_orders=True`, `production_blocked=True`
+
+---
+
 ## v0.7.0 — Research Intelligence Upgrade
 
 **Released:** 2026-06-05

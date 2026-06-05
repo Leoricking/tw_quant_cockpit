@@ -154,13 +154,20 @@ Research Only. No Real Orders. Production Trading: BLOCKED.
 Strategy Research Memory extracts and persists 10 memory types (STRATEGY_HYPOTHESIS, RULE_CANDIDATE, REPLAY_MISTAKE_PATTERN, JOURNAL_PATTERN, DATA_GAP, REPORT_GAP, REGRESSION_RISK, PROVIDER_LIMITATION, RESEARCH_CONCLUSION, FOLLOW_UP_TASK) from all Research OS modules. Upsert deduplication by normalized key, status/priority tracking (7 statuses, P0–P3), keyword-heuristic memory linking, 8 CLI commands, GUI panel with table/detail/links views, and 8-section Markdown report.
 Research Only. No Real Orders. Production Trading: BLOCKED.
 
+### Completed: v0.7.3 — Backtest-to-Coach Loop
+
+**Status:** Done
+
+Backtest-to-Coach Loop converts backtest weaknesses, replay mistakes, journal patterns, rule issues, strategy memories, and data gaps into safe coach training tasks (PRACTICE_REPLAY, REVIEW_RULE, REVIEW_JOURNAL, FIX_DATA, BACKTEST_MORE, READ_REPORT, UPDATE_MEMORY, WAIT — no trading actions). 7 CLI commands, GUI panel, 8-section Markdown report.
+Research Only. No Real Orders. Production Trading: BLOCKED.
+
 ### Next Steps (Planned)
 
 | Version | Feature | Priority |
 |---------|---------|---------|
-| v0.7.3 | Research Intelligence History — trend signals over time, progress charts | P2 |
-| v0.8.0 | Advanced Replay Analysis — pattern detection, multi-session comparison | P2 |
-| v0.8.1 | Strategy Memory LLM-assisted extraction scaffold | P2 |
+| v0.8.0 | Research Intelligence History — trend signals over time, progress charts | P2 |
+| v0.8.1 | Advanced Replay Analysis — pattern detection, multi-session comparison | P2 |
+| v0.8.2 | Strategy Memory LLM-assisted extraction scaffold | P2 |
 
 ---
 

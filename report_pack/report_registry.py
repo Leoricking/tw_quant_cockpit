@@ -21,6 +21,7 @@ from report_pack.report_pack_schema import (
     REPORT_REPLAY_TRAINING, REPORT_STABLE_RELEASE_V060, REPORT_RELEASE_MANIFEST,
     REPORT_DATA_COVERAGE, REPORT_RESEARCH_INTELLIGENCE,
     REPORT_STRATEGY_MEMORY,
+    REPORT_BACKTEST_COACH,
 )
 
 logger = logging.getLogger(__name__)
@@ -44,6 +45,8 @@ _PACK_DEFINITIONS: Dict[str, List[str]] = {
         REPORT_REPLAY_TRAINING,
         # v0.7.2 Strategy Research Memory (optional in daily pack)
         REPORT_STRATEGY_MEMORY,
+        # v0.7.3 Backtest-to-Coach Loop (optional in daily pack)
+        REPORT_BACKTEST_COACH,
     ],
     PACK_WEEKLY: [
         REPORT_DAILY_MARKET,
@@ -65,6 +68,8 @@ _PACK_DEFINITIONS: Dict[str, List[str]] = {
         REPORT_DATA_STABILIZATION,
         # v0.7.2 Strategy Research Memory (optional in weekly pack)
         REPORT_STRATEGY_MEMORY,
+        # v0.7.3 Backtest-to-Coach Loop (optional in weekly pack)
+        REPORT_BACKTEST_COACH,
     ],
     PACK_FULL: [
         REPORT_DAILY_MARKET,
@@ -98,6 +103,8 @@ _PACK_DEFINITIONS: Dict[str, List[str]] = {
         REPORT_RESEARCH_INTELLIGENCE,
         # v0.7.2 Strategy Research Memory (optional in full pack)
         REPORT_STRATEGY_MEMORY,
+        # v0.7.3 Backtest-to-Coach Loop (optional in full pack)
+        REPORT_BACKTEST_COACH,
     ],
 }
 

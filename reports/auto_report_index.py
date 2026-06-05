@@ -478,6 +478,11 @@ class AutoReportIndexBuilder:
                 "strategy_memory_new":             ctx.get("strategy_memory_new", 0),
                 "strategy_memory_needs_evidence":  ctx.get("strategy_memory_needs_evidence", 0),
                 "strategy_memory_report_path":     ctx.get("strategy_memory_report_path", ""),
+                # v0.7.3 Backtest-to-Coach Loop
+                "backtest_coach_total_tasks":      ctx.get("backtest_coach_total_tasks", 0),
+                "backtest_coach_replay_tasks":     ctx.get("backtest_coach_replay_tasks", 0),
+                "backtest_coach_backtest_tasks":   ctx.get("backtest_coach_backtest_tasks", 0),
+                "backtest_coach_report_path":      ctx.get("backtest_coach_report_path", ""),
             }
 
             path = os.path.join(output_dir, "manifest.json")

@@ -38,6 +38,7 @@ DOMAIN_REGRESSION            = "regression"
 DOMAIN_STABLE_RELEASE        = "stable_release"
 DOMAIN_RESEARCH_INTELLIGENCE = "research_intelligence"
 DOMAIN_STRATEGY_MEMORY       = "strategy_memory"         # v0.7.2
+DOMAIN_BACKTEST_COACH        = "backtest_coach"           # v0.7.3
 
 # Report type constant for report_pack integration
 REPORT_DATA_COVERAGE    = "data_coverage"
