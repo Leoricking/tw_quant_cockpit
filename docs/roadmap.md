@@ -54,6 +54,7 @@
 | v0.5.6.2 | Stabilize Data and Feature Store Health | Done |
 | v0.6.0 | Research OS Stable Release | Done |
 | v0.6.1 | Stable UX Polish | Done |
+| v0.6.2 | Data Coverage Expansion | Done |
 
 ---
 
@@ -83,11 +84,52 @@ Research Only. No Real Orders. Production Trading: BLOCKED.
 - `regression/suite_registry.py` — new --type alias test cases
 - `docs/` — updated release notes, roadmap, doc files, new stable_ux_polish_v0.6.1.md
 
+---
+
+## Completed: v0.6.2 — Data Coverage Expansion
+
+**Status:** Done
+
+### Summary
+
+v0.6.2 adds a comprehensive data coverage tracking system across all research domains.
+Key deliverables: DataCoverageRegistry (35 items), DataCoverageScanner, DataCoverageEngine,
+DataCoverageStore, DataCoverageReport, DataCoveragePanel (GUI), 5 new CLI commands, integration
+with report packs, regression suites, stable release checks, and auto report center.
+
+Research Only. No Real Orders. Production Trading: BLOCKED.
+
+### New Files
+
+- `data_coverage/__init__.py`
+- `data_coverage/data_coverage_schema.py`
+- `data_coverage/data_coverage_registry.py`
+- `data_coverage/data_coverage_scanner.py`
+- `data_coverage/data_coverage_engine.py`
+- `data_coverage/data_coverage_store.py`
+- `reports/data_coverage_report.py`
+- `gui/data_coverage_panel.py`
+- `gui/data_coverage_adapter.py`
+- `docs/data_coverage_expansion.md`
+
+### Modified Files
+
+- `main.py` — 5 new CLI commands: data-coverage, data-coverage-summary, data-coverage-items, data-coverage-report, data-coverage-gaps
+- `report_pack/report_pack_schema.py` — REPORT_DATA_COVERAGE constant
+- `report_pack/report_registry.py` — data_coverage in PACK_FULL
+- `report_pack/report_collector.py` — data_coverage pattern map
+- `regression/suite_registry.py` — data suite + report suite + release_gate
+- `stable_release/stable_release_checklist_v060.py` — data_coverage_engine import check
+- `stable_release/capability_matrix.py` — Data Coverage Expansion capability
+- `reports/auto_report_center.py` — optional data_coverage in full profile
+- `gui/dashboard.py` — Data Coverage tab
+- `gui/navigation/tab_registry.py` — data_coverage tab entry
+- `.gitignore` — exclude data_coverage runtime outputs
+
 ### Next Steps (Planned)
 
 | Version | Feature | Priority |
 |---------|---------|---------|
-| v0.6.2 | Data Coverage Expansion — more symbols, sectors, timeframes | P1 |
 | v0.6.3 | Replay Training UI Enhancement — chart rendering, drill UI | P1 |
 | v0.7.0 | Research Intelligence Upgrade — smarter AI review, pattern library | P2 |
 

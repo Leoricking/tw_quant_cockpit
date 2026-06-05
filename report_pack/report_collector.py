@@ -24,6 +24,7 @@ from report_pack.report_pack_schema import (
     REPORT_NOTIFICATION, REPORT_INTRADAY_REPLAY, REPORT_EXPERIMENT,
     REPORT_RELEASE, REPORT_SAFETY, REPORT_DATA_STABILIZATION,
     REPORT_REPLAY_TRAINING, REPORT_STABLE_RELEASE_V060, REPORT_RELEASE_MANIFEST,
+    REPORT_DATA_COVERAGE,
     OPTIONAL_REPORT_TYPES, ENV_LIMITED_REPORT_TYPES,
 )
 
@@ -142,6 +143,11 @@ _REPORT_PATTERNS = {
         "data/backtest_results/stable_release/release_manifest_v0.6.0.md",
         "data/backtest_results/stable_release/release_manifest*.json",
         "data/backtest_results/stable_release/release_manifest*.md",
+    ],
+    # v0.6.2 Data Coverage Expansion
+    REPORT_DATA_COVERAGE: [
+        "reports/data_coverage_report*.md",
+        "data/backtest_results/data_coverage/data_coverage_summary*.csv",
     ],
 }
 

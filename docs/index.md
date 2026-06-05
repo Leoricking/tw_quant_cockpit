@@ -3,7 +3,7 @@
 > **[!] Research Only. Read Only. No Real Orders. Production Trading: BLOCKED.**
 > **[!] Not investment advice. REAL_ORDER_READY=False.**
 
-Current version: **v0.6.1** — Stable UX Polish
+Current version: **v0.6.2** — Data Coverage Expansion
 
 ---
 
@@ -20,9 +20,10 @@ Current version: **v0.6.1** — Stable UX Polish
 | [Release Notes v0.3](release_notes_v0.3.md) | v0.3.9 through v0.3.29 change log |
 | [Release Notes v0.4](release_notes_v0.4.md) | v0.4.0 stable release change log |
 | [Release Notes v0.5](release_notes_v0.5.md) | v0.5.0 Research OS Planning change log |
-| [Release Notes v0.6](release_notes_v0.6.md) | v0.6.x change log (v0.6.0 Stable Release, v0.6.1 UX Polish) |
+| [Release Notes v0.6](release_notes_v0.6.md) | v0.6.x change log (v0.6.0 Stable Release, v0.6.1 UX Polish, v0.6.2 Data Coverage) |
 | [Research OS Stable Release v0.6.0](research_os_stable_release_v0.6.0.md) | v0.6.0 stable capability matrix, checklist, CLI/GUI usage |
 | [Stable UX Polish v0.6.1](stable_ux_polish_v0.6.1.md) | v0.6.1 CLI alias, status interpretation, optional missing, ENV_LIMITED |
+| [Data Coverage Expansion v0.6.2](data_coverage_expansion.md) | v0.6.2 data coverage tracking, gap classification, CLI and GUI usage |
 | [Release v0.4.0](release_v0.4.0.md) | v0.4.0 stable release overview and upgrade notes |
 | [Release Checklist](release_checklist.md) | Manual release verification checklist |
 | [Roadmap](roadmap.md) | Completed milestones and planned future versions |

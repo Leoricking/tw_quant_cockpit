@@ -550,6 +550,29 @@ class StableCapabilityMatrix:
                 no_real_orders=True,
                 production_blocked=True,
             ),
+            # ------------------------------------------------------------------
+            # v0.6.2 Data Coverage Expansion
+            # ------------------------------------------------------------------
+            StableCapability(
+                capability_id="data_coverage_expansion",
+                name="Data Coverage Expansion",
+                category="data",
+                version_added="v0.6.2",
+                status="STABLE",
+                maturity="STABLE",
+                cli_commands=[
+                    "data-coverage", "data-coverage-summary",
+                    "data-coverage-items", "data-coverage-report", "data-coverage-gaps",
+                ],
+                gui_tabs=["Data Coverage"],
+                reports=["data_coverage"],
+                regression_coverage=True,
+                safety_status="OK",
+                known_limitations=[
+                    "Coverage status is filesystem-scan only; no live API validation",
+                    "ENV_LIMITED items require manual token setup",
+                ],
+            ),
         ]
         return self
 

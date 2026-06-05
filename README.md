@@ -4,7 +4,29 @@
 >
 > **[!] v1: Real order execution is strictly prohibited. For research, simulation, and decision support only. Not investment advice.**
 
-**Current version: v0.6.1 — Stable UX Polish**
+**Current version: v0.6.2 — Data Coverage Expansion**
+
+---
+
+## v0.6.2 — Data Coverage Expansion
+
+**New in v0.6.2:**
+
+Comprehensive data coverage tracking and gap auditing across 12 research domains (~35 items).
+
+- **Data Coverage Registry**: tracks provider, daily data, intraday, financial, feature store, replay, experiment, rule governance, report pack, and stable release domains
+- **Gap Classification**: READY / ENV_LIMITED / NOT_GENERATED / MISSING_OPTIONAL / MISSING_REQUIRED / FAILED
+- **5 new CLI commands**: `data-coverage`, `data-coverage-summary`, `data-coverage-items`, `data-coverage-report`, `data-coverage-gaps`
+- **GUI Panel**: Coverage matrix table, summary cards, domain filter, gaps panel
+- **Coverage Score**: 0–100 weighted score
+- **Integration**: report packs, regression suites, stable release checklist, auto report center
+- **[!] Data Coverage Only. Research Only. No Real Orders. Production Trading: BLOCKED.**
+
+```bash
+python main.py data-coverage --mode real
+python main.py data-coverage-gaps
+python main.py data-coverage-report --mode real
+```
 
 ---
 

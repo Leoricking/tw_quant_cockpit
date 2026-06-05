@@ -6967,6 +6967,202 @@ def cmd_stable_v060_summary(args: argparse.Namespace) -> None:
 
 
 # ---------------------------------------------------------------------------
+# v0.6.2 Data Coverage Expansion command handlers
+# ---------------------------------------------------------------------------
+
+_DATA_COVERAGE_BANNER = (
+    "TW Quant Cockpit \u2014 Data Coverage Expansion\n"
+    "============================================================\n"
+    "[!] Data Coverage Only | Research Only | No Real Orders"
+)
+
+
+def cmd_data_coverage(args: argparse.Namespace) -> None:
+    """Run data coverage scan across all domains."""
+    mode       = getattr(args, "mode", "real")
+    domain     = getattr(args, "domain", None)
+    output_dir = getattr(args, "output_dir", "data/backtest_results/data_coverage")
+
+    print(_DATA_COVERAGE_BANNER)
+    print()
+    print(f"  Mode: {mode}")
+    if domain:
+        print(f"  Domain: {domain}")
+    print()
+
+    try:
+        from data_coverage.data_coverage_engine import DataCoverageEngine
+        engine = DataCoverageEngine(project_root=BASE_DIR, output_dir=output_dir)
+        items, summary = engine.run(mode=mode)
+
+        if domain:
+            items = [i for i in items if i.domain == domain]
+
+        print(f"  Total Items      : {summary.total_items}")
+        print(f"  Ready            : {summary.ready_count}")
+        print(f"  Env Limited      : {summary.env_limited_count}")
+        print(f"  Not Generated    : {summary.not_generated_count}")
+        print(f"  Missing Required : {summary.missing_required_count}")
+        print(f"  Missing Optional : {summary.missing_optional_count}")
+        print(f"  Failed           : {summary.failed_count}")
+        print(f"  Coverage Score   : {summary.coverage_score:.1f}")
+        print(f"  Overall Status   : {summary.overall_status}")
+        print()
+
+        if summary.blockers:
+            print("  BLOCKERS:")
+            for b in summary.blockers:
+                print(f"    ! {b}")
+            print()
+
+        from data_coverage.data_coverage_store import DataCoverageStore
+        store = DataCoverageStore(output_dir=output_dir)
+        store.save_items(items)
+        store.save_summary(summary)
+        store.save_matrix(items)
+
+    except Exception as exc:
+        print(f"  ERROR: {exc}")
+
+    print()
+    print("  [!] No real orders. Research Only.")
+
+
+def cmd_data_coverage_summary(args: argparse.Namespace) -> None:
+    """Show latest data coverage summary from store."""
+    output_dir = getattr(args, "output_dir", "data/backtest_results/data_coverage")
+
+    print(_DATA_COVERAGE_BANNER)
+    print()
+
+    try:
+        from data_coverage.data_coverage_store import DataCoverageStore
+        store   = DataCoverageStore(output_dir=output_dir)
+        summary = store.load_latest_summary()
+        if not summary:
+            print("  No summary found. Run: python main.py data-coverage --mode real")
+        else:
+            for k, v in summary.items():
+                print(f"  {k}: {v}")
+    except Exception as exc:
+        print(f"  ERROR: {exc}")
+
+    print()
+    print("  [!] No real orders. Research Only.")
+
+
+def cmd_data_coverage_items(args: argparse.Namespace) -> None:
+    """Show latest data coverage items from store."""
+    output_dir = getattr(args, "output_dir", "data/backtest_results/data_coverage")
+    domain     = getattr(args, "domain", None)
+
+    print(_DATA_COVERAGE_BANNER)
+    print()
+
+    try:
+        from data_coverage.data_coverage_store import DataCoverageStore
+        store = DataCoverageStore(output_dir=output_dir)
+        items = store.load_latest_items()
+        if not items:
+            print("  No items found. Run: python main.py data-coverage --mode real")
+        else:
+            filtered = [i for i in items if not domain or i.get("domain") == domain]
+            for item in filtered:
+                print(f"  [{item.get('domain','?'):20s}] {item.get('dataset_name','?'):40s} {item.get('status','?')}")
+    except Exception as exc:
+        print(f"  ERROR: {exc}")
+
+    print()
+    print("  [!] No real orders. Research Only.")
+
+
+def cmd_data_coverage_report(args: argparse.Namespace) -> None:
+    """Generate data coverage markdown report."""
+    mode       = getattr(args, "mode", "real")
+    report_dir = getattr(args, "report_dir", "reports")
+    output_dir = getattr(args, "output_dir", "data/backtest_results/data_coverage")
+
+    print(_DATA_COVERAGE_BANNER)
+    print()
+    print(f"  Mode      : {mode}")
+    print(f"  Report Dir: {report_dir}")
+    print()
+
+    try:
+        from reports.data_coverage_report import DataCoverageReport
+        reporter = DataCoverageReport(
+            project_root=BASE_DIR,
+            output_dir=output_dir,
+            report_dir=report_dir,
+        )
+        path = reporter.run(mode=mode)
+        print(f"  Report saved: {path}")
+    except Exception as exc:
+        print(f"  ERROR: {exc}")
+
+    print()
+    print("  [!] No real orders. Research Only.")
+
+
+def cmd_data_coverage_gaps(args: argparse.Namespace) -> None:
+    """Show data coverage gaps (missing required and missing optional)."""
+    output_dir = getattr(args, "output_dir", "data/backtest_results/data_coverage")
+
+    print(_DATA_COVERAGE_BANNER)
+    print()
+    print("  Showing coverage gaps…")
+    print()
+
+    try:
+        from data_coverage.data_coverage_engine import DataCoverageEngine
+        from data_coverage.data_coverage_schema import (
+            STATUS_MISSING_REQUIRED, STATUS_MISSING_OPTIONAL, STATUS_FAILED, STATUS_ENV_LIMITED,
+        )
+        engine = DataCoverageEngine(project_root=BASE_DIR, output_dir=output_dir)
+        items, summary = engine.run(mode="real")
+
+        required_gaps = [i for i in items if i.status == STATUS_MISSING_REQUIRED]
+        failed_items  = [i for i in items if i.status == STATUS_FAILED]
+        optional_gaps = [i for i in items if i.status == STATUS_MISSING_OPTIONAL]
+        env_limited   = [i for i in items if i.status == STATUS_ENV_LIMITED]
+
+        if required_gaps:
+            print(f"  MISSING REQUIRED ({len(required_gaps)} items):")
+            for i in required_gaps:
+                print(f"    ! [{i.domain}] {i.dataset_name}")
+                if i.suggested_command:
+                    print(f"        Fix: {i.suggested_command}")
+            print()
+        if failed_items:
+            print(f"  FAILED ({len(failed_items)} items):")
+            for i in failed_items:
+                print(f"    ! [{i.domain}] {i.dataset_name}: {i.missing_reason}")
+            print()
+        if env_limited:
+            print(f"  ENV LIMITED ({len(env_limited)} items):")
+            for i in env_limited:
+                print(f"    ~ [{i.domain}] {i.dataset_name}: {i.suggested_command}")
+            print()
+        if optional_gaps:
+            print(f"  MISSING OPTIONAL ({len(optional_gaps)} items):")
+            for i in optional_gaps:
+                print(f"    - [{i.domain}] {i.dataset_name}: {i.suggested_command}")
+            print()
+        if not (required_gaps or failed_items or optional_gaps or env_limited):
+            print("  No gaps found — all coverage items are READY or NOT_GENERATED.")
+            print()
+
+        print(f"  Coverage Score: {summary.coverage_score:.1f} / 100")
+        print(f"  Overall Status: {summary.overall_status}")
+
+    except Exception as exc:
+        print(f"  ERROR: {exc}")
+
+    print()
+    print("  [!] No real orders. Research Only.")
+
+
+# ---------------------------------------------------------------------------
 # v0.4.2.1 ML Knowledge Integration command handlers
 # ---------------------------------------------------------------------------
 
@@ -10844,6 +11040,56 @@ def _build_parser() -> argparse.ArgumentParser:
         help="Show v0.6.0 stable release summary: capabilities + checklist (v0.6.0)",
     )
 
+    # --- data-coverage (v0.6.2) ---
+    p_dc = subparsers.add_parser(
+        "data-coverage",
+        help="Run data coverage scan across all domains (v0.6.2)",
+    )
+    p_dc.add_argument("--mode", choices=["real", "mock"], default="real",
+                      help="Data mode (default: real)")
+    p_dc.add_argument("--domain", default=None,
+                      help="Filter by domain (optional)")
+    p_dc.add_argument("--output-dir", dest="output_dir",
+                      default="data/backtest_results/data_coverage",
+                      help="Output directory for coverage CSVs")
+
+    # --- data-coverage-summary (v0.6.2) ---
+    p_dcs = subparsers.add_parser(
+        "data-coverage-summary",
+        help="Show latest data coverage summary from store (v0.6.2)",
+    )
+    p_dcs.add_argument("--output-dir", dest="output_dir",
+                       default="data/backtest_results/data_coverage")
+
+    # --- data-coverage-items (v0.6.2) ---
+    p_dci = subparsers.add_parser(
+        "data-coverage-items",
+        help="Show latest data coverage items from store (v0.6.2)",
+    )
+    p_dci.add_argument("--output-dir", dest="output_dir",
+                       default="data/backtest_results/data_coverage")
+    p_dci.add_argument("--domain", default=None, help="Filter by domain")
+
+    # --- data-coverage-report (v0.6.2) ---
+    p_dcr = subparsers.add_parser(
+        "data-coverage-report",
+        help="Generate data coverage Markdown report (v0.6.2)",
+    )
+    p_dcr.add_argument("--mode", choices=["real", "mock"], default="real",
+                       help="Data mode (default: real)")
+    p_dcr.add_argument("--report-dir", dest="report_dir", default="reports",
+                       help="Output directory for report")
+    p_dcr.add_argument("--output-dir", dest="output_dir",
+                       default="data/backtest_results/data_coverage")
+
+    # --- data-coverage-gaps (v0.6.2) ---
+    p_dcg = subparsers.add_parser(
+        "data-coverage-gaps",
+        help="Show data coverage gaps (missing required and optional) (v0.6.2)",
+    )
+    p_dcg.add_argument("--output-dir", dest="output_dir",
+                       default="data/backtest_results/data_coverage")
+
     # --- strategy-knowledge-ingest (v0.4.1.1) ---
     p_ski = subparsers.add_parser(
         "strategy-knowledge-ingest",
@@ -12047,6 +12293,12 @@ def main() -> None:
         "stable-v060-capabilities":    cmd_stable_v060_capabilities,
         "stable-v060-limitations":     cmd_stable_v060_limitations,
         "stable-v060-summary":         cmd_stable_v060_summary,
+        # v0.6.2 Data Coverage Expansion
+        "data-coverage":               cmd_data_coverage,
+        "data-coverage-summary":       cmd_data_coverage_summary,
+        "data-coverage-items":         cmd_data_coverage_items,
+        "data-coverage-report":        cmd_data_coverage_report,
+        "data-coverage-gaps":          cmd_data_coverage_gaps,
         # v0.4.1.1 Strategy Knowledge Ingestion
         "strategy-knowledge-ingest":   cmd_strategy_knowledge_ingest,
         "strategy-knowledge-summary":  cmd_strategy_knowledge_summary,

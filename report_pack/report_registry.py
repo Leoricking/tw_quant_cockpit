@@ -19,6 +19,7 @@ from report_pack.report_pack_schema import (
     REPORT_NOTIFICATION, REPORT_INTRADAY_REPLAY, REPORT_EXPERIMENT,
     REPORT_RELEASE, REPORT_SAFETY, REPORT_DATA_STABILIZATION,
     REPORT_REPLAY_TRAINING, REPORT_STABLE_RELEASE_V060, REPORT_RELEASE_MANIFEST,
+    REPORT_DATA_COVERAGE,
 )
 
 logger = logging.getLogger(__name__)
@@ -86,6 +87,8 @@ _PACK_DEFINITIONS: Dict[str, List[str]] = {
         # v0.6.0 Stable Release
         REPORT_STABLE_RELEASE_V060,
         REPORT_RELEASE_MANIFEST,
+        # v0.6.2 Data Coverage Expansion (optional in full pack)
+        REPORT_DATA_COVERAGE,
     ],
 }
 

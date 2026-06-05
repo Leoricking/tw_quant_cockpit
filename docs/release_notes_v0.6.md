@@ -4,6 +4,52 @@
 
 ---
 
+## v0.6.2 — Data Coverage Expansion (2026-06-05)
+
+### Summary
+
+v0.6.2 adds a comprehensive data coverage tracking and auditing system. It tracks coverage across
+12 domains and 35+ data items, classifies gaps as READY / ENV_LIMITED / NOT_GENERATED / MISSING,
+and provides CLI commands, a GUI panel, store CSVs, and a Markdown report.
+
+### New Files
+
+- `data_coverage/` package: schema, registry (35 items), scanner, engine, store
+- `reports/data_coverage_report.py` — Markdown report generator
+- `gui/data_coverage_panel.py` — PySide6 GUI panel with coverage matrix table
+- `gui/data_coverage_adapter.py` — GUI-to-backend adapter
+- `docs/data_coverage_expansion.md` — documentation
+
+### New CLI Commands
+
+```bash
+python main.py data-coverage --mode real
+python main.py data-coverage-summary
+python main.py data-coverage-items
+python main.py data-coverage-report --mode real
+python main.py data-coverage-gaps
+```
+
+### Modified Files
+
+- `main.py` — 5 new commands
+- `report_pack/report_pack_schema.py` — REPORT_DATA_COVERAGE constant + OPTIONAL set
+- `report_pack/report_registry.py` — data_coverage in PACK_FULL
+- `report_pack/report_collector.py` — data_coverage pattern map
+- `regression/suite_registry.py` — data suite + report suite + release_gate
+- `stable_release/stable_release_checklist_v060.py` — v0.6.2 import check
+- `stable_release/capability_matrix.py` — Data Coverage Expansion capability
+- `reports/auto_report_center.py` — optional data_coverage in full profile
+- `gui/dashboard.py` — Data Coverage tab
+- `gui/navigation/tab_registry.py` — data_coverage tab entry
+- `.gitignore` — exclude runtime outputs
+
+### Safety
+
+All outputs: Data Coverage Only / Research Only / No Real Orders / Production BLOCKED.
+
+---
+
 ## v0.6.1 — Stable UX Polish (2026-06-05)
 
 ### Summary

@@ -425,6 +425,16 @@ except Exception as _ds_exc:
     _DATA_STAB_PANEL_AVAILABLE = False
     DataStabilizationPanel = None
 
+# ---------------------------------------------------------------------------
+# v0.6.2 Data Coverage Expansion panel import (guarded)
+# ---------------------------------------------------------------------------
+try:
+    from gui.data_coverage_panel import DataCoveragePanel
+    _DATA_COVERAGE_AVAILABLE = True
+except Exception as _dc_exc:
+    logger.warning("DataCoveragePanel unavailable: %s", _dc_exc)
+    _DATA_COVERAGE_AVAILABLE = False
+
 # v0.5.1.1 Strategy Filter panel — inline (no separate panel file required)
 # ---------------------------------------------------------------------------
 _STRATEGY_FILTER_AVAILABLE = False
@@ -1461,6 +1471,13 @@ class CockpitWindow(QMainWindow if _PYSIDE6_AVAILABLE else object):
             mid_tabs.addTab(self._stable_release_panel, "Stable Release")
         else:
             self._stable_release_panel = None
+
+        # v0.6.2 Data Coverage Expansion tab
+        if _DATA_COVERAGE_AVAILABLE:
+            self._data_coverage_panel = DataCoveragePanel()
+            mid_tabs.addTab(self._data_coverage_panel, "Data Coverage")
+        else:
+            self._data_coverage_panel = None
 
         # v0.4.1.1 Strategy Knowledge tab
         if _STRATEGY_KNOWLEDGE_INGESTION_AVAILABLE:

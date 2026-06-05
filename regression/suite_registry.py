@@ -519,6 +519,17 @@ class RegressionSuiteRegistry:
                 required=False,
                 description="Report pack items --type alias for --pack-type (v0.6.1)",
             ),
+            # v0.6.2 Data Coverage Expansion report test
+            RegressionTestCase(
+                test_id="data_coverage_report_suite",
+                name="data-coverage-report --mode real",
+                suite=SUITE_REPORT,
+                category="report",
+                command=["main.py", "data-coverage-report", "--mode", "real"],
+                timeout_seconds=60,
+                required=False,
+                description="Data coverage report generation in report suite (v0.6.2)",
+            ),
         ]
 
     def build_safety_suite(self) -> List[RegressionTestCase]:
@@ -712,6 +723,37 @@ class RegressionSuiteRegistry:
                 timeout_seconds=30,
                 required=False,
                 description="Leakage guard findings from store",
+            ),
+            # v0.6.2 Data Coverage Expansion
+            RegressionTestCase(
+                test_id="data_coverage_scan",
+                name="data-coverage --mode real",
+                suite=SUITE_DATA,
+                category="data",
+                command=["main.py", "data-coverage", "--mode", "real"],
+                timeout_seconds=60,
+                required=False,
+                description="Data coverage scan across all domains (v0.6.2)",
+            ),
+            RegressionTestCase(
+                test_id="data_coverage_summary",
+                name="data-coverage-summary",
+                suite=SUITE_DATA,
+                category="data",
+                command=["main.py", "data-coverage-summary"],
+                timeout_seconds=30,
+                required=False,
+                description="Data coverage summary from store (v0.6.2)",
+            ),
+            RegressionTestCase(
+                test_id="data_coverage_report",
+                name="data-coverage-report --mode real",
+                suite=SUITE_DATA,
+                category="data",
+                command=["main.py", "data-coverage-report", "--mode", "real"],
+                timeout_seconds=60,
+                required=False,
+                description="Data coverage report generation (v0.6.2)",
             ),
         ]
 
@@ -1033,6 +1075,19 @@ class RegressionSuiteRegistry:
                     timeout_seconds=30,
                     required=True,
                     description="v0.6.0 stable capability matrix",
+                ),
+            ],
+            # v0.6.2 Data Coverage gate
+            [
+                RegressionTestCase(
+                    test_id="release_gate_data_coverage_summary",
+                    name="data-coverage-summary (release gate)",
+                    suite=SUITE_RELEASE_GATE,
+                    category="data",
+                    command=["main.py", "data-coverage-summary"],
+                    timeout_seconds=30,
+                    required=False,
+                    description="Data coverage summary smoke test for release gate (v0.6.2)",
                 ),
             ],
         ]:

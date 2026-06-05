@@ -679,6 +679,43 @@ class GUITabRegistry:
                 favorite_default=False,
                 notes="Added in v0.5.3 \u2014 Regression Suite Consolidation.",
             ),
+            # v0.6.2 Data Coverage Expansion
+            GUITabMetadata(
+                tab_id="data_coverage",
+                tab_name="Data Coverage",
+                display_name="Data Coverage Expansion",
+                group="data_providers",
+                priority="P1",
+                description=(
+                    "Data Coverage Expansion v0.6.2 — scan and track coverage across provider, "
+                    "daily data, intraday, financial, feature store, replay, experiment, "
+                    "rule governance, report pack, and stable release domains. "
+                    "Classify gaps as READY, ENV_LIMITED, NOT_GENERATED, or MISSING. "
+                    "Research Only. No Real Orders."
+                ),
+                module_path="gui.data_coverage_panel",
+                class_name="DataCoveragePanel",
+                available_flag="_DATA_COVERAGE_AVAILABLE",
+                safety_level="RESEARCH_ONLY",
+                read_only=True,
+                no_real_orders=True,
+                production_blocked=True,
+                keywords=[
+                    "data coverage", "coverage", "provider", "intraday", "report pack",
+                    "feature store", "env limited", "not generated",
+                    "\u8cc7\u6599\u8986\u84cb", "\u8cc7\u6599\u7f3a\u53e3", "\u8986\u84cb\u7387",
+                ],
+                aliases=["data-coverage", "coverage-scan", "data-gaps"],
+                related_cli_commands=[
+                    "data-coverage", "data-coverage-summary",
+                    "data-coverage-items", "data-coverage-report", "data-coverage-gaps",
+                ],
+                report_types=["data_coverage"],
+                maturity="STABLE",
+                default_visible=True,
+                favorite_default=False,
+                notes="Added in v0.6.2 \u2014 Data Coverage Expansion.",
+            ),
             # v0.5.4 Report Pack Consolidation
             GUITabMetadata(
                 tab_id="report_pack",

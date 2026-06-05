@@ -277,13 +277,16 @@ class StableReleaseChecklistV060:
             )
 
     def _check_core_imports(self) -> dict:
-        """Check that key v0.6.0 modules are importable."""
+        """Check that key v0.6.0 / v0.6.2 modules are importable."""
         modules = [
             "stable_release.stable_release_schema",
             "stable_release.capability_matrix",
             "stable_release.known_limitations",
             "stable_release.release_manifest_builder",
             "reports.stable_release_v060_report",
+            # v0.6.2 Data Coverage Expansion
+            "data_coverage.data_coverage_schema",
+            "data_coverage.data_coverage_engine",
         ]
         failed = []
         for mod in modules:

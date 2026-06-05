@@ -61,6 +61,8 @@ _PROFILE_FLAGS: Dict[str, dict] = {
         include_data_stabilization=True,
         include_replay_training=True,
         include_stable_release_v060=True,
+        # v0.6.2 Data Coverage Expansion (optional in full profile)
+        include_data_coverage=True,
     ),
     "daily": dict(
         include_stock_reports=False,
@@ -186,6 +188,7 @@ class AutoReportCenter:
         include_data_stabilization: bool = False,
         include_replay_training: bool = False,
         include_stable_release_v060: bool = False,
+        include_data_coverage: bool = False,
     ):
         self.mode        = mode
         self.profile     = profile
@@ -242,6 +245,9 @@ class AutoReportCenter:
         )
         self.include_stable_release_v060 = flags.get(
             "include_stable_release_v060", include_stable_release_v060
+        )
+        self.include_data_coverage = flags.get(
+            "include_data_coverage", include_data_coverage
         )
         self.universe_name = universe_name
 
@@ -377,6 +383,28 @@ class AutoReportCenter:
         # v0.6.0 Stable Release summary (always optional, never crashes, avoids recursive loop)
         if getattr(self, "include_stable_release_v060", False):
             self.run_stable_release_v060_summary()
+
+        # v0.6.2 Data Coverage Expansion (optional, failure should not crash)
+        if getattr(self, "include_data_coverage", False):
+            try:
+                from reports.data_coverage_report import DataCoverageReport
+                dc_reporter = DataCoverageReport(
+                    project_root=_BASE_DIR,
+                    report_dir=os.path.join(self._out_dir, "data_coverage"),
+                )
+                dc_path = dc_reporter.run(mode=self.mode)
+                self._generated.append({
+                    "name": "data_coverage_report",
+                    "path": dc_path,
+                    "section": "data_coverage",
+                })
+                logger.info("DataCoverageReport generated: %s", dc_path)
+            except Exception as _dc_exc:
+                logger.warning("DataCoverageReport failed (non-blocking): %s", _dc_exc)
+                self._failed.append({
+                    "name": "data_coverage_report",
+                    "error": str(_dc_exc),
+                })
 
         # Aggregated outputs
         if self.include_daily_summary:

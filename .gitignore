@@ -286,3 +286,7 @@ reports/replay_training_report_*.md
 # v0.6.0 Research OS Stable Release — runtime outputs
 data/backtest_results/stable_release/
 reports/stable_release_v0.6.0_report_*.md
+
+# v0.6.2 Data Coverage Expansion — runtime outputs
+data/backtest_results/data_coverage/
+reports/data_coverage_report_*.md
