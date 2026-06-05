@@ -295,6 +295,27 @@ class StableCapabilityMatrix:
                 regression_coverage=True,
                 safety_status="OK",
             ),
+            StableCapability(
+                capability_id="replay_training_ui_enhancement",
+                name="Replay Training UI Enhancement",
+                category="replay",
+                version_added="v0.6.3",
+                status="STABLE",
+                maturity="STABLE",
+                cli_commands=[
+                    "replay-training", "replay-ai-review",
+                    "replay-training-score", "replay-training-drills",
+                    "replay-training-report",
+                ],
+                gui_tabs=["Replay Training"],
+                reports=["replay_training"],
+                regression_coverage=True,
+                safety_status="OK",
+                known_limitations=[
+                    "Table-based chart view; no candlestick drawing",
+                    "Bar data requires manual CSV import; no live feed",
+                ],
+            ),
             # ------------------------------------------------------------------
             # Journal / Review Capabilities
             # ------------------------------------------------------------------

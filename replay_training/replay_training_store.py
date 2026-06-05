@@ -176,3 +176,91 @@ class ReplayTrainingStore:
         except Exception as exc:
             logger.error("[ReplayTrainingStore] load_latest_summary error: %s", exc)
             return {"ok": False, "error": str(exc), "no_real_orders": True}
+
+    # ------------------------------------------------------------------
+    # v0.6.3 Load methods
+    # ------------------------------------------------------------------
+
+    def load_latest_session(self) -> dict:
+        """Load the last session record from CSV."""
+        path = self._path(_SESSIONS_CSV)
+        try:
+            if not os.path.isfile(path):
+                return {"ok": False, "error": "no_sessions_file", "no_real_orders": True}
+            with open(path, newline="", encoding="utf-8") as f:
+                rows = list(csv.DictReader(f))
+            if not rows:
+                return {"ok": False, "error": "empty_sessions", "no_real_orders": True}
+            return {"ok": True, "session": dict(rows[-1]), "no_real_orders": True}
+        except Exception as exc:
+            logger.error("[ReplayTrainingStore] load_latest_session error: %s", exc)
+            return {"ok": False, "error": str(exc), "no_real_orders": True}
+
+    def load_latest_markers(self) -> dict:
+        """Load all marker rows from CSV."""
+        path = self._path(_MARKERS_CSV)
+        try:
+            if not os.path.isfile(path):
+                return {"ok": True, "markers": [], "no_real_orders": True}
+            with open(path, newline="", encoding="utf-8") as f:
+                rows = list(csv.DictReader(f))
+            return {"ok": True, "markers": [dict(r) for r in rows], "no_real_orders": True}
+        except Exception as exc:
+            logger.error("[ReplayTrainingStore] load_latest_markers error: %s", exc)
+            return {"ok": False, "markers": [], "error": str(exc), "no_real_orders": True}
+
+    def load_latest_mistakes(self) -> dict:
+        """Load all mistake rows from CSV."""
+        path = self._path(_MISTAKES_CSV)
+        try:
+            if not os.path.isfile(path):
+                return {"ok": True, "mistakes": [], "no_real_orders": True}
+            with open(path, newline="", encoding="utf-8") as f:
+                rows = list(csv.DictReader(f))
+            return {"ok": True, "mistakes": [dict(r) for r in rows], "no_real_orders": True}
+        except Exception as exc:
+            logger.error("[ReplayTrainingStore] load_latest_mistakes error: %s", exc)
+            return {"ok": False, "mistakes": [], "error": str(exc), "no_real_orders": True}
+
+    def load_latest_ai_review(self) -> dict:
+        """Load the last AI review row from CSV."""
+        path = self._path(_AI_REVIEWS_CSV)
+        try:
+            if not os.path.isfile(path):
+                return {"ok": False, "error": "no_ai_review_file", "no_real_orders": True}
+            with open(path, newline="", encoding="utf-8") as f:
+                rows = list(csv.DictReader(f))
+            if not rows:
+                return {"ok": False, "error": "empty_ai_review", "no_real_orders": True}
+            return {"ok": True, "review": dict(rows[-1]), "no_real_orders": True}
+        except Exception as exc:
+            logger.error("[ReplayTrainingStore] load_latest_ai_review error: %s", exc)
+            return {"ok": False, "error": str(exc), "no_real_orders": True}
+
+    def load_latest_drills(self) -> dict:
+        """Load all drill rows from CSV."""
+        path = self._path(_DRILLS_CSV)
+        try:
+            if not os.path.isfile(path):
+                return {"ok": True, "drills": [], "no_real_orders": True}
+            with open(path, newline="", encoding="utf-8") as f:
+                rows = list(csv.DictReader(f))
+            return {"ok": True, "drills": [dict(r) for r in rows], "no_real_orders": True}
+        except Exception as exc:
+            logger.error("[ReplayTrainingStore] load_latest_drills error: %s", exc)
+            return {"ok": False, "drills": [], "error": str(exc), "no_real_orders": True}
+
+    def load_latest_score(self) -> dict:
+        """Load the last score row from CSV."""
+        path = self._path(_SCORES_CSV)
+        try:
+            if not os.path.isfile(path):
+                return {"ok": False, "error": "no_scores_file", "no_real_orders": True}
+            with open(path, newline="", encoding="utf-8") as f:
+                rows = list(csv.DictReader(f))
+            if not rows:
+                return {"ok": False, "error": "empty_scores", "no_real_orders": True}
+            return {"ok": True, "score": dict(rows[-1]), "no_real_orders": True}
+        except Exception as exc:
+            logger.error("[ReplayTrainingStore] load_latest_score error: %s", exc)
+            return {"ok": False, "error": str(exc), "no_real_orders": True}

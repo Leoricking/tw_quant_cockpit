@@ -4,6 +4,49 @@
 
 ---
 
+## v0.6.3 — Replay Training UI Enhancement (2026-06-05)
+
+### Summary
+
+v0.6.3 enhances the TW Replay Training Cockpit GUI to deliver a more realistic tape reading
+practice experience. This release adds replay control (Play/Pause timer, speed, Jump/slider),
+session status bar, expanded Market View (OR high/low, VWAP, volume, marker count), marker
+reason/tags inputs, strategy violations display, Drill Table, and extended Mistake Table.
+Backend helpers `get_progress`, `get_visible_bars_table`, `is_future_hidden`, `get_current_bar`
+are added to the bar engine. Six load methods added to the store. Nine new methods added to the
+adapter. All existing functionality preserved. No real orders. No broker connection.
+
+### New / Enhanced in GUI
+
+- **A. Session Control** — Reset Session button
+- **B. Replay Control** — Play/Pause with QTimer, speed 1x/2x/4x/8x, Jump to bar, Progress slider
+- **Session Status bar** — Current Bar / Total Bars / Bar Time display
+- **C. Market View** — OR High/Low, VWAP computed, volume, marker count, Future Hidden indicator
+- **D. Marker** — Reason input and Tags input fields for all markers and notes
+- **E. AI Review** — Strategy violations count, Next Drills summary
+- **G. Mistake Table** — expanded to 6 columns (Price, Related Marker added)
+- **H. Drill Table** — new table: Drill, Priority, Reason, Focus Points, Expected Skill
+- **I. Safety Banner** — Future Data Hidden: True/False dynamic indicator
+- `closeEvent` — graceful QThread cleanup on close
+
+### Modified Files
+
+- `gui/replay_training_panel.py` — UI enhancements (A-I above)
+- `gui/replay_training_adapter.py` — 9 new methods: `load_session`, `get_current_snapshot`, `jump_to_bar`, `add_note`, `calculate_score`, `build_drills`, `load_latest_markers`, `load_latest_mistakes`, `load_latest_drills`
+- `replay_training/replay_bar_engine.py` — 4 helpers: `get_progress`, `get_current_bar`, `get_visible_bars_table`, `is_future_hidden`
+- `replay_training/replay_training_store.py` — 6 load methods: `load_latest_session`, `load_latest_markers`, `load_latest_mistakes`, `load_latest_ai_review`, `load_latest_drills`, `load_latest_score`
+- `regression/suite_registry.py` — 4 new replay suite tests (ai-review, score, drills, panel import)
+- `stable_release/capability_matrix.py` — `replay_training_ui_enhancement` capability (STABLE)
+- `gui/navigation/tab_registry.py` — added keywords: 盤感訓練, replay score, drills
+- `docs/tw_replay_training_cockpit.md` — v0.6.3 GUI usage guide
+
+### Safety
+
+All outputs: Replay Training Only / Research Only / No Real Orders / Production BLOCKED.
+No broker connection. No real order execution. No external API calls.
+
+---
+
 ## v0.6.2 — Data Coverage Expansion (2026-06-05)
 
 ### Summary

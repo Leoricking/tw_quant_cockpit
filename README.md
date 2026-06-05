@@ -4,7 +4,36 @@
 >
 > **[!] v1: Real order execution is strictly prohibited. For research, simulation, and decision support only. Not investment advice.**
 
-**Current version: v0.6.2 — Data Coverage Expansion**
+**Current version: v0.6.3 — Replay Training UI Enhancement**
+
+---
+
+## v0.6.3 — Replay Training UI Enhancement
+
+**New in v0.6.3:**
+
+Enhanced TW Replay Training Cockpit GUI for closer-to-real tape reading practice experience.
+
+- **Replay Control**: Play/Pause auto-advance with QTimer, speed 1x/2x/4x/8x, Jump to bar, Progress slider
+- **Session Status bar**: Current Bar / Total Bars / Bar Time display
+- **Market View**: Opening range high/low, computed VWAP, volume, marker count, Future Hidden indicator
+- **Marker panel**: Reason input and Tags input for all marker types and notes
+- **AI Review**: Strategy violations count, Next Drills summary in-panel
+- **Drill Table (H)**: Drill, Priority, Reason, Focus Points, Expected Skill
+- **Mistake Table (G)**: expanded to 6 columns (Price, Related Marker added)
+- **Safety Banner**: Future Data Hidden: True/False dynamic display
+- **QThread cleanup**: `closeEvent` prevents "QThread destroyed" warning
+- **Backend helpers**: `get_progress`, `get_visible_bars_table`, `is_future_hidden`, `get_current_bar`
+- **Store load methods**: `load_latest_session/markers/mistakes/ai_review/drills/score`
+- **Adapter methods**: `load_session`, `jump_to_bar`, `add_note`, `calculate_score`, `build_drills`, +3 load methods
+- **[!] Replay Training Only. Research Only. No Real Orders. Production Trading: BLOCKED.**
+
+```bash
+python main.py replay-training-summary
+python main.py replay-training-report --mode real
+python main.py replay-ai-review --session-id latest
+python -c "from gui.replay_training_panel import ReplayTrainingPanel; print('OK')"
+```
 
 ---
 

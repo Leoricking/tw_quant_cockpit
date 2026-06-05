@@ -1,4 +1,4 @@
-"""gui/replay_training_panel.py — ReplayTrainingPanel for TW Replay Training Cockpit v0.5.6.
+"""gui/replay_training_panel.py — ReplayTrainingPanel for TW Replay Training Cockpit v0.6.3.
 
 [!] Replay Training Only. Research Only. No Real Orders. Production Trading: BLOCKED.
 [!] No live prediction. No auto-trading. Not investment advice.
@@ -16,9 +16,9 @@ try:
         QWidget, QVBoxLayout, QHBoxLayout, QLabel, QPushButton,
         QTableWidget, QTableWidgetItem, QHeaderView, QGroupBox, QFrame,
         QLineEdit, QComboBox, QScrollArea, QSizePolicy, QMessageBox,
-        QInputDialog, QCheckBox, QDateEdit, QTextEdit,
+        QInputDialog, QCheckBox, QDateEdit, QTextEdit, QSlider, QSpinBox,
     )
-    from PySide6.QtCore import Qt, QThread, Signal, QDate
+    from PySide6.QtCore import Qt, QThread, Signal, QDate, QTimer
     from PySide6.QtGui import QColor, QFont
     _PYSIDE6_OK = True
 except ImportError:
@@ -103,6 +103,9 @@ if _PYSIDE6_OK:
             self._adapter    = None
             self._session_id: str = ""
             self._workers    = []  # keep alive
+            self._play_timer = QTimer(self)
+            self._play_timer.timeout.connect(self._on_play_tick)
+            self._is_playing = False
             self._setup_adapter()
             self._build_ui()
 
@@ -122,7 +125,7 @@ if _PYSIDE6_OK:
             root.setContentsMargins(4, 4, 4, 4)
             root.setSpacing(4)
 
-            # A. Safety banner
+            # I. Safety banner (top)
             root.addWidget(self._build_safety_banner())
 
             # Scroll area for the rest
@@ -132,10 +135,16 @@ if _PYSIDE6_OK:
             inner_layout = QVBoxLayout(inner)
             inner_layout.setSpacing(6)
 
-            # B. Controls
+            # A. Session Control
             inner_layout.addWidget(self._build_controls())
 
-            # C. Chart area (bar table)
+            # B. Replay Control
+            inner_layout.addWidget(self._build_replay_control())
+
+            # Session Status bar
+            inner_layout.addWidget(self._build_session_status())
+
+            # C. Market View (bar table)
             inner_layout.addWidget(self._build_chart_area())
 
             # D. Marker buttons
@@ -150,10 +159,13 @@ if _PYSIDE6_OK:
             # G. Mistake table
             inner_layout.addWidget(self._build_mistake_table())
 
-            # H. Journal/Coach panel
+            # H. Drill table
+            inner_layout.addWidget(self._build_drill_table())
+
+            # Journal/Coach panel
             inner_layout.addWidget(self._build_journal_panel())
 
-            # I. Actions
+            # Actions
             inner_layout.addWidget(self._build_actions())
 
             scroll.setWidget(inner)
@@ -163,19 +175,20 @@ if _PYSIDE6_OK:
             frame  = QFrame()
             layout = QHBoxLayout(frame)
             frame.setStyleSheet("background-color: #8B0000; border-radius: 4px;")
-            label  = QLabel(
+            self._banner_label = QLabel(
                 "  TW Replay Training Cockpit  |  Replay Training Only  |  "
                 "Research Only  |  No Real Orders  |  Production Trading BLOCKED  "
+                "|  Future Data Hidden: True  "
             )
-            font = label.font()
+            font = self._banner_label.font()
             font.setBold(True)
-            label.setFont(font)
-            label.setStyleSheet("color: white; padding: 6px;")
-            layout.addWidget(label)
+            self._banner_label.setFont(font)
+            self._banner_label.setStyleSheet("color: white; padding: 6px;")
+            layout.addWidget(self._banner_label)
             return frame
 
         def _build_controls(self) -> QGroupBox:
-            box    = QGroupBox("Controls")
+            box    = QGroupBox("A. Session Control")
             layout = QHBoxLayout(box)
 
             # Symbol
@@ -209,46 +222,123 @@ if _PYSIDE6_OK:
             self._load_btn.clicked.connect(self._on_load_session)
             layout.addWidget(self._load_btn)
 
-            # Prev / Play / Pause / Next
-            self._prev_btn = QPushButton("Prev")
-            self._prev_btn.clicked.connect(self._on_prev_bar)
-            layout.addWidget(self._prev_btn)
-
-            self._next_btn = QPushButton("Next")
-            self._next_btn.clicked.connect(self._on_next_bar)
-            layout.addWidget(self._next_btn)
-
-            # Speed
-            layout.addWidget(QLabel("Speed:"))
-            self._speed_combo = QComboBox()
-            self._speed_combo.addItems(["1x", "2x", "4x", "8x"])
-            layout.addWidget(self._speed_combo)
+            # Reset Session button
+            self._reset_btn = QPushButton("Reset Session")
+            self._reset_btn.clicked.connect(self._on_reset_session)
+            layout.addWidget(self._reset_btn)
 
             return box
 
-        def _build_chart_area(self) -> QGroupBox:
-            box    = QGroupBox("Chart — Visible Bars (Replay Training Only / No Future Data)")
+        def _build_replay_control(self) -> QGroupBox:
+            box    = QGroupBox("B. Replay Control")
             layout = QVBoxLayout(box)
 
-            self._bar_table = QTableWidget(0, 7)
+            top = QHBoxLayout()
+
+            # Prev / Next / Play / Pause
+            self._prev_btn = QPushButton("◀ Prev")
+            self._prev_btn.clicked.connect(self._on_prev_bar)
+            top.addWidget(self._prev_btn)
+
+            self._next_btn = QPushButton("Next ▶")
+            self._next_btn.clicked.connect(self._on_next_bar)
+            top.addWidget(self._next_btn)
+
+            self._play_btn = QPushButton("▶ Play")
+            self._play_btn.clicked.connect(self._on_play_pause)
+            top.addWidget(self._play_btn)
+
+            # Speed
+            top.addWidget(QLabel("Speed:"))
+            self._speed_combo = QComboBox()
+            self._speed_combo.addItems(["1x", "2x", "4x", "8x"])
+            top.addWidget(self._speed_combo)
+
+            top.addStretch()
+
+            # Jump to bar
+            top.addWidget(QLabel("Jump to bar:"))
+            self._jump_spin = QSpinBox()
+            self._jump_spin.setMinimum(0)
+            self._jump_spin.setMaximum(9999)
+            self._jump_spin.setMaximumWidth(70)
+            top.addWidget(self._jump_spin)
+
+            jump_btn = QPushButton("Go")
+            jump_btn.setMaximumWidth(40)
+            jump_btn.clicked.connect(self._on_jump_to_bar)
+            top.addWidget(jump_btn)
+
+            layout.addLayout(top)
+
+            # Progress slider
+            slider_row = QHBoxLayout()
+            slider_row.addWidget(QLabel("Progress:"))
+            self._progress_slider = QSlider(Qt.Horizontal)
+            self._progress_slider.setMinimum(0)
+            self._progress_slider.setMaximum(100)
+            self._progress_slider.setValue(0)
+            self._progress_slider.sliderReleased.connect(self._on_progress_slider_released)
+            slider_row.addWidget(self._progress_slider)
+            layout.addLayout(slider_row)
+
+            return box
+
+        def _build_session_status(self) -> QFrame:
+            frame  = QFrame()
+            layout = QHBoxLayout(frame)
+            frame.setStyleSheet("background-color: #1a1a2e; border-radius: 3px;")
+            self._status_label = QLabel(
+                "Current Bar: — / —  |  Bar Time: —  |  Session Status: —"
+            )
+            self._status_label.setStyleSheet("color: #90caf9; padding: 4px; font-family: monospace;")
+            layout.addWidget(self._status_label)
+            layout.addStretch()
+            return frame
+
+        def _build_chart_area(self) -> QGroupBox:
+            box    = QGroupBox("C. Market View — Visible Bars Only / Future Data Hidden")
+            layout = QVBoxLayout(box)
+
+            # Info row: current price, OR high/low, volume, marker count
+            info_row = QHBoxLayout()
+            self._cur_price_label  = QLabel("Price: —")
+            self._or_high_label    = QLabel("OR High: —")
+            self._or_low_label     = QLabel("OR Low: —")
+            self._volume_label     = QLabel("Volume: —")
+            self._marker_cnt_label = QLabel("Markers: 0")
+            self._future_hidden_label = QLabel("Future Hidden: True")
+            self._future_hidden_label.setStyleSheet("color: #ff6b6b; font-weight: bold;")
+            for lbl in (self._cur_price_label, self._or_high_label, self._or_low_label,
+                        self._volume_label, self._marker_cnt_label):
+                lbl.setStyleSheet("color: #4fc3f7; padding: 2px 6px;")
+                info_row.addWidget(lbl)
+            info_row.addWidget(self._future_hidden_label)
+            info_row.addStretch()
+            layout.addLayout(info_row)
+
+            self._bar_table = QTableWidget(0, 9)
             self._bar_table.setHorizontalHeaderLabels(
-                ["Time", "Open", "High", "Low", "Close", "Volume", "VWAP"]
+                ["Time", "Open", "High", "Low", "Close", "Volume", "VWAP", "OR High", "OR Low"]
             )
             self._bar_table.horizontalHeader().setSectionResizeMode(QHeaderView.Stretch)
             self._bar_table.setMaximumHeight(200)
             layout.addWidget(self._bar_table)
 
-            self._no_data_label = QLabel("No data / Empty State — Load a session to begin.")
+            self._no_data_label = QLabel(
+                "Empty State — No intraday data loaded. Load a session to begin replay practice."
+            )
             self._no_data_label.setAlignment(Qt.AlignCenter)
-            self._no_data_label.setStyleSheet("color: gray; font-style: italic;")
+            self._no_data_label.setStyleSheet("color: gray; font-style: italic; padding: 8px;")
             layout.addWidget(self._no_data_label)
 
             return box
 
         def _build_marker_buttons(self) -> QGroupBox:
-            box    = QGroupBox("Mark / Annotate — Research Only / No Real Orders")
-            layout = QHBoxLayout(box)
+            box    = QGroupBox("D. Marker / Annotate — Research Only / No Real Orders")
+            layout = QVBoxLayout(box)
 
+            btn_row = QHBoxLayout()
             marker_types = [
                 ("Entry",       "ENTRY"),
                 ("Exit",        "EXIT"),
@@ -262,17 +352,34 @@ if _PYSIDE6_OK:
                 btn = QPushButton(label)
                 btn.setMaximumWidth(90)
                 btn.clicked.connect(lambda checked=False, t=mtype: self._on_add_marker(t))
-                layout.addWidget(btn)
+                btn_row.addWidget(btn)
 
             note_btn = QPushButton("Add Note")
             note_btn.clicked.connect(self._on_add_note)
-            layout.addWidget(note_btn)
+            btn_row.addWidget(note_btn)
 
-            layout.addStretch()
+            btn_row.addStretch()
+            layout.addLayout(btn_row)
+
+            # Reason input and Tags input
+            input_row = QHBoxLayout()
+            input_row.addWidget(QLabel("Reason:"))
+            self._marker_reason_edit = QLineEdit()
+            self._marker_reason_edit.setPlaceholderText("Marker reason / note...")
+            self._marker_reason_edit.setMaximumWidth(300)
+            input_row.addWidget(self._marker_reason_edit)
+            input_row.addWidget(QLabel("Tags:"))
+            self._marker_tags_edit = QLineEdit()
+            self._marker_tags_edit.setPlaceholderText("tag1,tag2,...")
+            self._marker_tags_edit.setMaximumWidth(200)
+            input_row.addWidget(self._marker_tags_edit)
+            input_row.addStretch()
+            layout.addLayout(input_row)
+
             return box
 
         def _build_ai_review_panel(self) -> QGroupBox:
-            box    = QGroupBox("AI Replay Review — Rule-Based Only / No External API")
+            box    = QGroupBox("E. AI Replay Review — Rule-Based Only / No External API")
             layout = QVBoxLayout(box)
 
             top = QHBoxLayout()
@@ -282,24 +389,38 @@ if _PYSIDE6_OK:
 
             self._score_label    = QLabel("Score: —")
             self._mistakes_label = QLabel("Mistakes: —")
+            self._violations_label = QLabel("Violations: —")
             font = QFont()
             font.setBold(True)
             self._score_label.setFont(font)
             top.addWidget(self._score_label)
             top.addWidget(self._mistakes_label)
+            top.addWidget(self._violations_label)
             top.addStretch()
             layout.addLayout(top)
 
             self._feedback_text = QTextEdit()
             self._feedback_text.setReadOnly(True)
             self._feedback_text.setMaximumHeight(80)
-            self._feedback_text.setPlaceholderText("AI review feedback will appear here...")
+            self._feedback_text.setPlaceholderText(
+                "AI review feedback will appear here... [Replay Training Only / No Real Orders]"
+            )
             layout.addWidget(self._feedback_text)
+
+            # Next drills summary
+            drills_row = QHBoxLayout()
+            drills_row.addWidget(QLabel("Next Drills:"))
+            self._next_drills_label = QLabel("—")
+            self._next_drills_label.setWordWrap(True)
+            self._next_drills_label.setStyleSheet("color: #a5d6a7; font-style: italic;")
+            drills_row.addWidget(self._next_drills_label)
+            drills_row.addStretch()
+            layout.addLayout(drills_row)
 
             return box
 
         def _build_score_panel(self) -> QGroupBox:
-            box    = QGroupBox("Score Breakdown")
+            box    = QGroupBox("F. Score Breakdown")
             layout = QHBoxLayout(box)
 
             self._score_labels = {}
@@ -320,17 +441,43 @@ if _PYSIDE6_OK:
             return box
 
         def _build_mistake_table(self) -> QGroupBox:
-            box    = QGroupBox("Detected Mistakes")
+            box    = QGroupBox("G. Detected Mistakes")
             layout = QVBoxLayout(box)
 
-            self._mistake_table = QTableWidget(0, 4)
+            self._mistake_table = QTableWidget(0, 6)
             self._mistake_table.setHorizontalHeaderLabels(
-                ["Mistake", "Severity", "Bar Time", "Suggested Fix"]
+                ["Mistake Type", "Severity", "Bar Time", "Price", "Suggested Fix", "Related Marker"]
             )
             self._mistake_table.horizontalHeader().setSectionResizeMode(QHeaderView.Stretch)
             self._mistake_table.setMaximumHeight(150)
-            layout.addWidget(self._mistake_table)
 
+            self._mistake_empty_label = QLabel("No mistakes detected — empty state.")
+            self._mistake_empty_label.setAlignment(Qt.AlignCenter)
+            self._mistake_empty_label.setStyleSheet("color: gray; font-style: italic;")
+            self._mistake_empty_label.setVisible(True)
+
+            layout.addWidget(self._mistake_table)
+            layout.addWidget(self._mistake_empty_label)
+            return box
+
+        def _build_drill_table(self) -> QGroupBox:
+            box    = QGroupBox("H. Drill Suggestions")
+            layout = QVBoxLayout(box)
+
+            self._drill_table = QTableWidget(0, 5)
+            self._drill_table.setHorizontalHeaderLabels(
+                ["Drill", "Priority", "Reason", "Focus Points", "Expected Skill"]
+            )
+            self._drill_table.horizontalHeader().setSectionResizeMode(QHeaderView.Stretch)
+            self._drill_table.setMaximumHeight(150)
+
+            self._drill_empty_label = QLabel("No drills yet — run AI Review first.")
+            self._drill_empty_label.setAlignment(Qt.AlignCenter)
+            self._drill_empty_label.setStyleSheet("color: gray; font-style: italic;")
+            self._drill_empty_label.setVisible(True)
+
+            layout.addWidget(self._drill_table)
+            layout.addWidget(self._drill_empty_label)
             return box
 
         def _build_journal_panel(self) -> QGroupBox:
@@ -389,13 +536,17 @@ if _PYSIDE6_OK:
             if result.get("ok"):
                 session = result.get("session", {})
                 self._session_id = session.get("session_id", "")
+                total = session.get("total_bars", 0)
+                self._jump_spin.setMaximum(max(total - 1, 0))
+                self._progress_slider.setMaximum(max(total - 1, 1))
                 self._feedback_text.setPlainText(
                     f"Session loaded: {session.get('session_id', '')} | "
-                    f"Bars: {session.get('total_bars', 0)} | "
+                    f"Bars: {total} | "
                     f"Status: {session.get('status', '')}\n"
                     f"[Replay Training Only / No Real Orders]"
                 )
                 self._update_bar_table()
+                self._update_status_bar()
             else:
                 self._feedback_text.setPlainText(f"Load failed: {result.get('error', 'Unknown')}")
 
@@ -405,6 +556,7 @@ if _PYSIDE6_OK:
             result = self._adapter.next_bar(self._session_id)
             if result.get("ok"):
                 self._update_bar_table()
+                self._update_status_bar()
 
         def _on_prev_bar(self):
             if not self._session_id or self._adapter is None:
@@ -412,6 +564,75 @@ if _PYSIDE6_OK:
             result = self._adapter.prev_bar(self._session_id)
             if result.get("ok"):
                 self._update_bar_table()
+                self._update_status_bar()
+
+        def _on_reset_session(self):
+            if self._is_playing:
+                self._play_timer.stop()
+                self._is_playing = False
+                self._play_btn.setText("▶ Play")
+            self._session_id = ""
+            self._bar_table.setRowCount(0)
+            self._no_data_label.setVisible(True)
+            self._status_label.setText("Current Bar: — / —  |  Bar Time: —  |  Session Status: —")
+            self._feedback_text.setPlainText("Session reset. Load a new session to begin.")
+            self._score_label.setText("Score: —")
+            self._mistakes_label.setText("Mistakes: —")
+            self._violations_label.setText("Violations: —")
+            self._mistake_table.setRowCount(0)
+            self._mistake_empty_label.setVisible(True)
+            self._drill_table.setRowCount(0)
+            self._drill_empty_label.setVisible(True)
+            self._progress_slider.setValue(0)
+
+        def _on_play_pause(self):
+            if not self._session_id:
+                return
+            if self._is_playing:
+                self._play_timer.stop()
+                self._is_playing = False
+                self._play_btn.setText("▶ Play")
+            else:
+                speed_text = self._speed_combo.currentText()
+                speeds = {"1x": 1000, "2x": 500, "4x": 250, "8x": 125}
+                interval = speeds.get(speed_text, 1000)
+                self._play_timer.start(interval)
+                self._is_playing = True
+                self._play_btn.setText("⏸ Pause")
+
+        def _on_play_tick(self):
+            if not self._session_id or self._adapter is None:
+                self._play_timer.stop()
+                self._is_playing = False
+                self._play_btn.setText("▶ Play")
+                return
+            result = self._adapter.next_bar(self._session_id)
+            if result.get("ok"):
+                self._update_bar_table()
+                self._update_status_bar()
+            else:
+                # End of bars or error — stop playback
+                self._play_timer.stop()
+                self._is_playing = False
+                self._play_btn.setText("▶ Play")
+
+        def _on_jump_to_bar(self):
+            if not self._session_id or self._adapter is None:
+                return
+            bar_index = self._jump_spin.value()
+            result = self._adapter.jump_to_bar(self._session_id, bar_index)
+            if result.get("ok"):
+                self._update_bar_table()
+                self._update_status_bar()
+
+        def _on_progress_slider_released(self):
+            if not self._session_id or self._adapter is None:
+                return
+            bar_index = self._progress_slider.value()
+            result = self._adapter.jump_to_bar(self._session_id, bar_index)
+            if result.get("ok"):
+                self._update_bar_table()
+                self._update_status_bar()
 
         def _update_bar_table(self):
             if self._adapter is None or not self._session_id:
@@ -420,35 +641,98 @@ if _PYSIDE6_OK:
                 engine = self._adapter._get_engine()
                 if engine is None:
                     return
-                bars = engine.get_visible_bars(self._session_id)
+                bars = engine.get_visible_bars_table(self._session_id, limit=100)
                 self._bar_table.setRowCount(len(bars))
                 self._no_data_label.setVisible(len(bars) == 0)
                 for row_idx, bar in enumerate(bars):
                     time_val = str(bar.get("datetime", bar.get("time", bar.get("date", row_idx))))
                     self._bar_table.setItem(row_idx, 0, QTableWidgetItem(time_val))
-                    for col, key in enumerate(["open", "high", "low", "close", "volume", "vwap"], 1):
-                        val = bar.get(key, bar.get(key.upper(), ""))
+
+                    def _fmt(v):
                         try:
-                            val = f"{float(val):.2f}"
+                            return f"{float(v):.2f}"
                         except (TypeError, ValueError):
-                            val = str(val)
-                        self._bar_table.setItem(row_idx, col, QTableWidgetItem(val))
+                            return str(v)
+
+                    for col, key in enumerate(["open", "high", "low", "close", "volume"], 1):
+                        self._bar_table.setItem(row_idx, col, QTableWidgetItem(_fmt(bar.get(key, bar.get(key.upper(), "")))))
+                    self._bar_table.setItem(row_idx, 6, QTableWidgetItem(_fmt(bar.get("vwap_computed", bar.get("vwap", "")))))
+                    self._bar_table.setItem(row_idx, 7, QTableWidgetItem(_fmt(bar.get("or_high", ""))))
+                    self._bar_table.setItem(row_idx, 8, QTableWidgetItem(_fmt(bar.get("or_low",  ""))))
+
                 if bars:
                     self._bar_table.scrollToBottom()
+                    last = bars[-1]
+                    cur_price = last.get("close", last.get("CLOSE", "—"))
+                    or_h = last.get("or_high", "—")
+                    or_l = last.get("or_low",  "—")
+                    vol  = last.get("volume", last.get("VOLUME", "—"))
+                    try: self._cur_price_label.setText(f"Price: {float(cur_price):.2f}")
+                    except: self._cur_price_label.setText(f"Price: {cur_price}")
+                    try: self._or_high_label.setText(f"OR High: {float(or_h):.2f}")
+                    except: self._or_high_label.setText(f"OR High: {or_h}")
+                    try: self._or_low_label.setText(f"OR Low: {float(or_l):.2f}")
+                    except: self._or_low_label.setText(f"OR Low: {or_l}")
+                    try: self._volume_label.setText(f"Volume: {int(float(vol)):,}")
+                    except: self._volume_label.setText(f"Volume: {vol}")
+
+                # Update marker count
+                marker_count = len(self._adapter._current_markers) if self._adapter else 0
+                self._marker_cnt_label.setText(f"Markers: {marker_count}")
+
+                # Update future hidden indicator
+                hidden = engine.is_future_hidden(self._session_id)
+                self._future_hidden_label.setText(f"Future Hidden: {'True' if hidden else 'False'}")
+                self._banner_label.setText(
+                    "  TW Replay Training Cockpit  |  Replay Training Only  |  "
+                    "Research Only  |  No Real Orders  |  Production Trading BLOCKED  "
+                    f"|  Future Data Hidden: {'True' if hidden else 'False'}  "
+                )
+
             except Exception as exc:
                 logger.warning("[ReplayTrainingPanel] update_bar_table error: %s", exc)
+
+        def _update_status_bar(self):
+            if self._adapter is None or not self._session_id:
+                return
+            try:
+                engine = self._adapter._get_engine()
+                if engine is None:
+                    return
+                progress = engine.get_progress(self._session_id)
+                cur = progress.get("current_bar", 0)
+                total = progress.get("total_bars", 0)
+                current_bar = engine.get_current_bar(self._session_id)
+                bar_time = str(current_bar.get(
+                    "datetime", current_bar.get("time", current_bar.get("date", "—"))
+                ))
+                session_state = self._adapter._sessions_meta() if hasattr(self._adapter, "_sessions_meta") else {}
+                status_text = f"Current Bar: {cur} / {total}  |  Bar Time: {bar_time}  |  Session: {self._session_id[:24]}"
+                self._status_label.setText(status_text)
+
+                # Sync progress slider without triggering the signal
+                self._progress_slider.blockSignals(True)
+                self._progress_slider.setValue(cur)
+                self._progress_slider.blockSignals(False)
+                self._jump_spin.blockSignals(True)
+                self._jump_spin.setValue(cur)
+                self._jump_spin.blockSignals(False)
+            except Exception as exc:
+                logger.warning("[ReplayTrainingPanel] update_status_bar error: %s", exc)
 
         def _on_add_marker(self, marker_type: str):
             if not self._session_id or self._adapter is None:
                 QMessageBox.information(self, "No Session", "Load a session first.")
                 return
-            result = self._adapter.add_marker(self._session_id, marker_type)
+            note = self._marker_reason_edit.text().strip()
+            result = self._adapter.add_marker(self._session_id, marker_type, note=note)
             if result.get("ok"):
                 m = result.get("marker", {})
                 self._feedback_text.setPlainText(
                     f"Marker added: {marker_type} at bar {m.get('bar_index', '?')} "
                     f"[Research Only / No Real Orders]"
                 )
+                self._marker_cnt_label.setText(f"Markers: {len(self._adapter._current_markers)}")
             else:
                 self._feedback_text.setPlainText(f"Marker error: {result.get('error', '')}")
 
@@ -456,12 +740,19 @@ if _PYSIDE6_OK:
             if not self._session_id or self._adapter is None:
                 QMessageBox.information(self, "No Session", "Load a session first.")
                 return
-            note, ok = QInputDialog.getText(self, "Add Note", "Note text:")
-            if ok and note:
-                ms = self._adapter._get_marker_store()
-                if ms:
-                    ms.add_note(self._session_id, bar_time="", note=note)
-                self._feedback_text.setPlainText(f"Note added: {note[:60]}... [Research Only]")
+            # Use reason input if filled, else prompt
+            note = self._marker_reason_edit.text().strip()
+            if not note:
+                note, ok = QInputDialog.getText(self, "Add Note", "Note text:")
+                if not (ok and note):
+                    return
+            tags = self._marker_tags_edit.text().strip()
+            result = self._adapter.add_note(self._session_id, note=note, tags=tags)
+            if result.get("ok"):
+                self._feedback_text.setPlainText(f"Note added: {note[:60]} [Research Only]")
+                self._marker_reason_edit.clear()
+            else:
+                self._feedback_text.setPlainText(f"Note error: {result.get('error', '')}")
 
         def _on_run_review(self):
             if not self._session_id or self._adapter is None:
@@ -492,6 +783,10 @@ if _PYSIDE6_OK:
             self._score_label.setText(f"Score: {total_score:.1f}/100 ({grade})")
             self._mistakes_label.setText(f"Mistakes: {len(mistakes)}")
 
+            # Strategy violations
+            violations = review.get("strategy_violations", [])
+            self._violations_label.setText(f"Violations: {len(violations)}")
+
             # Update feedback
             feedback = review.get("tape_reading_feedback", review.get("summary", ""))
             self._feedback_text.setPlainText(
@@ -499,6 +794,13 @@ if _PYSIDE6_OK:
                 f"{feedback}\n"
                 f"Next Focus: {review.get('next_training_focus', 'N/A')}"
             )
+
+            # Next drills summary
+            if drills:
+                drill_names = [d.get("drill_name", d.get("name", "")) for d in drills[:3]]
+                self._next_drills_label.setText("  |  ".join(drill_names) + ("..." if len(drills) > 3 else ""))
+            else:
+                self._next_drills_label.setText("No drills suggested")
 
             # Update score breakdown
             breakdown = score.get("breakdown", {})
@@ -508,11 +810,27 @@ if _PYSIDE6_OK:
 
             # Update mistake table
             self._mistake_table.setRowCount(len(mistakes))
+            self._mistake_empty_label.setVisible(len(mistakes) == 0)
             for row_idx, m in enumerate(mistakes):
                 self._mistake_table.setItem(row_idx, 0, QTableWidgetItem(m.get("mistake_type", "")))
                 self._mistake_table.setItem(row_idx, 1, QTableWidgetItem(m.get("severity", "")))
                 self._mistake_table.setItem(row_idx, 2, QTableWidgetItem(m.get("bar_time", "")))
-                self._mistake_table.setItem(row_idx, 3, QTableWidgetItem(m.get("suggested_fix", "")))
+                self._mistake_table.setItem(row_idx, 3, QTableWidgetItem(str(m.get("price", ""))))
+                self._mistake_table.setItem(row_idx, 4, QTableWidgetItem(m.get("suggested_fix", "")))
+                self._mistake_table.setItem(row_idx, 5, QTableWidgetItem(m.get("related_marker_id", "")))
+
+            # Update drill table
+            self._drill_table.setRowCount(len(drills))
+            self._drill_empty_label.setVisible(len(drills) == 0)
+            for row_idx, d in enumerate(drills):
+                self._drill_table.setItem(row_idx, 0, QTableWidgetItem(d.get("drill_name", d.get("name", ""))))
+                self._drill_table.setItem(row_idx, 1, QTableWidgetItem(d.get("priority", "")))
+                self._drill_table.setItem(row_idx, 2, QTableWidgetItem(d.get("reason", "")))
+                focus = d.get("focus_points", d.get("focus", ""))
+                if isinstance(focus, list):
+                    focus = ", ".join(str(f) for f in focus)
+                self._drill_table.setItem(row_idx, 3, QTableWidgetItem(str(focus)))
+                self._drill_table.setItem(row_idx, 4, QTableWidgetItem(d.get("expected_skill", d.get("skill", ""))))
 
         def _on_generate_report(self):
             if self._adapter is None:
@@ -561,6 +879,7 @@ if _PYSIDE6_OK:
 
         def _on_refresh(self):
             self._update_bar_table()
+            self._update_status_bar()
             summary = self._adapter.load_latest_summary() if self._adapter else {}
             if summary.get("ok"):
                 s = summary.get("summary", {})
@@ -569,6 +888,20 @@ if _PYSIDE6_OK:
                     f"Mistakes: {s.get('mistakes_count', 'N/A')} | "
                     f"[Replay Training Only / No Real Orders]"
                 )
+
+        def closeEvent(self, event):
+            """Stop play timer and wait for workers on close to avoid QThread destroyed warning."""
+            if self._is_playing:
+                self._play_timer.stop()
+                self._is_playing = False
+            for w in self._workers:
+                try:
+                    if w.isRunning():
+                        w.quit()
+                        w.wait(500)
+                except Exception:
+                    pass
+            super().closeEvent(event)
 
 else:
     # Stub when PySide6 not available

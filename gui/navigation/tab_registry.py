@@ -459,8 +459,8 @@ class GUITabRegistry:
                 production_blocked=True,
                 keywords=[
                     "replay", "training", "tape reading", "台股時光機", "復盤",
-                    "盤感", "逐根K", "AI復盤", "VWAP", "假突破",
-                    "開盤區間", "停損", "停利",
+                    "盤感", "盤感訓練", "逐根K", "AI復盤", "VWAP", "假突破",
+                    "開盤區間", "停損", "停利", "replay score", "drills",
                 ],
                 related_cli_commands=[
                     "replay-training", "replay-training-summary", "replay-training-next",

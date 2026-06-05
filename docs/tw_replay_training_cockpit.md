@@ -1,4 +1,4 @@
-# TW Replay Training Cockpit — v0.5.6
+# TW Replay Training Cockpit — v0.6.3
 
 > **[!] Replay Training Only. Research Only. No Real Orders. Production Trading: BLOCKED.**
 > **[!] Not investment advice. REAL_ORDER_READY=False.**
@@ -77,16 +77,59 @@ python main.py replay-training-report --mode real
 
 ---
 
-## GUI Usage
+## GUI Usage (v0.6.3 Enhanced)
 
+### A. Session Control
 1. Open the GUI: `python main.py cockpit`
-2. Click the **Replay Training** tab
-3. Enter symbol, date, timeframe
-4. Click **Load Session**
-5. Use **Prev / Next** buttons to step through bars
-6. Place markers using the marker buttons
-7. Click **Run AI Review** to get rule-based feedback
-8. Click **Generate Report** for full Markdown debrief
+2. Click the **TW Replay Training Cockpit / 台股時光機復盤練習** tab
+3. Enter **Symbol**, **Date**, **Timeframe** (1min / 5min)
+4. **Hide Future Data** checkbox — default: checked (True)
+5. Click **Load Session** — loads intraday bar data from CSV
+6. Click **Reset Session** to clear current state
+
+### B. Replay Control
+- **◀ Prev** / **Next ▶** — step back/forward one bar
+- **▶ Play** / **⏸ Pause** — auto-advance at selected speed
+- **Speed selector** — 1x / 2x / 4x / 8x
+- **Jump to bar** — enter a bar index and click Go
+- **Progress slider** — drag to seek to any bar position
+
+### C. Market View
+- Table shows OHLCV + computed VWAP + opening range high/low
+- Info row: current price, OR High, OR Low, volume, marker count
+- **Future Data Hidden: True** indicator shown when hide is active
+
+### D. Marker / Annotate
+- Click **Entry / Exit / Stop Loss / Take Profit / Fake BO / VWAP Loss / OR Fail**
+- Fill in **Reason** and **Tags** before clicking a marker button
+- Click **Add Note** to add a free-text note (uses Reason input or prompts)
+
+### E. AI Review
+- Click **Run AI Review** for rule-based analysis (no external API)
+- Shows Score, Mistakes count, Strategy Violations count
+- Tape reading feedback and Next Drills summary displayed
+
+### F. Score Breakdown
+- 6-component score: Entry Quality, Exit/Stop, Fake BO, VWAP/OR, Strategy, Notes
+
+### G. Mistake Table
+- Columns: Mistake Type, Severity, Bar Time, Price, Suggested Fix, Related Marker
+- Empty state shown when no mistakes detected
+
+### H. Drill Table
+- Columns: Drill, Priority, Reason, Focus Points, Expected Skill
+- Populated after Run AI Review; empty state shown until then
+
+### Export / Report
+- **Export to Journal** — saves research-only journal entry
+- **Generate Report** — generates Markdown debrief report
+- **Open Latest Report** — opens the most recent report file
+
+### Common Issues
+- **No intraday data** — "Empty State" is shown; no crash; place CSV in `data/intraday/{symbol}/{date}_{timeframe}.csv`
+- **No markers** — all tables show friendly empty state
+- **No AI review yet** — Drill Table shows empty state; Score shows `—`
+- **GUI freezes** — all heavy operations run in QThread; if stuck, Reset Session
 
 ---
 

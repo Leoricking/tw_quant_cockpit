@@ -55,6 +55,7 @@
 | v0.6.0 | Research OS Stable Release | Done |
 | v0.6.1 | Stable UX Polish | Done |
 | v0.6.2 | Data Coverage Expansion | Done |
+| v0.6.3 | Replay Training UI Enhancement | Done |
 
 ---
 
@@ -126,12 +127,20 @@ Research Only. No Real Orders. Production Trading: BLOCKED.
 - `gui/navigation/tab_registry.py` — data_coverage tab entry
 - `.gitignore` — exclude data_coverage runtime outputs
 
+### Completed: v0.6.3 — Replay Training UI Enhancement
+
+**Status:** Done
+
+Replay Control (Play/Pause timer, speed, Jump/slider), session status bar, enhanced Market View
+(OR high/low, VWAP, volume, marker count), marker reason/tags inputs, Drill Table, expanded
+Mistake Table, strategy violations display, QThread closeEvent cleanup.
+Research Only. No Real Orders. Production Trading: BLOCKED.
+
 ### Next Steps (Planned)
 
 | Version | Feature | Priority |
 |---------|---------|---------|
-| v0.6.3 | Replay Training UI Enhancement — chart rendering, drill UI | P1 |
-| v0.7.0 | Research Intelligence Upgrade — smarter AI review, pattern library | P2 |
+| v0.7.0 | Research Intelligence Upgrade — smarter AI review, pattern library | P1 |
 
 ---
 

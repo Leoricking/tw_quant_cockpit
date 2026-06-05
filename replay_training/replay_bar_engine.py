@@ -266,3 +266,83 @@ class ReplayBarEngine:
             "replay_training_only": True,
             "label": "Replay Training Only / Research Only / No Real Orders",
         }
+
+    # ------------------------------------------------------------------
+    # v0.6.3 Helper methods
+    # ------------------------------------------------------------------
+
+    def get_progress(self, session_id: str) -> dict:
+        """Return current bar progress for GUI progress slider."""
+        state = self._get_state(session_id)
+        if state is None:
+            return {"ok": False, "current_bar": 0, "total_bars": 0, "percent": 0}
+        session = state["session"]
+        bars    = state["bars"]
+        total   = len(bars)
+        current = session.current_bar_index
+        percent = round(100.0 * current / total, 1) if total > 0 else 0.0
+        return {
+            "ok":          True,
+            "current_bar": current,
+            "total_bars":  total,
+            "percent":     percent,
+            "no_real_orders": True,
+        }
+
+    def get_current_bar(self, session_id: str) -> dict:
+        """Return the bar dict at current_bar_index (never a future bar)."""
+        state = self._get_state(session_id)
+        if state is None:
+            return {}
+        session = state["session"]
+        bars    = state["bars"]
+        if not bars:
+            return {}
+        idx = session.current_bar_index
+        return dict(bars[idx]) if idx < len(bars) else {}
+
+    def get_visible_bars_table(self, session_id: str, limit: int = 100) -> List[dict]:
+        """Return visible bars enriched with VWAP and opening-range high/low.
+
+        [!] Only returns bars up to current_bar_index — never future bars.
+        """
+        visible = self.get_visible_bars(session_id)
+        if not visible:
+            return []
+
+        # Opening range = first 30 bars of the visible set
+        _OR_BARS = 30
+        or_slice = visible[:_OR_BARS]
+        or_high  = max((float(b.get("high",  b.get("HIGH",  0)) or 0) for b in or_slice), default=0.0)
+        or_low   = min(
+            (float(b.get("low", b.get("LOW", 0)) or 0) for b in or_slice
+             if float(b.get("low", b.get("LOW", 0)) or 0) > 0),
+            default=0.0,
+        )
+
+        # Compute cumulative VWAP across all visible bars, then slice last `limit`
+        cumulative_tp_vol = 0.0
+        cumulative_vol    = 0.0
+        enriched: List[dict] = []
+        for bar in visible:
+            try:
+                h = float(bar.get("high",   bar.get("HIGH",   0)) or 0)
+                l = float(bar.get("low",    bar.get("LOW",    0)) or 0)
+                c = float(bar.get("close",  bar.get("CLOSE",  0)) or 0)
+                v = float(bar.get("volume", bar.get("VOLUME", 0)) or 0)
+            except (TypeError, ValueError):
+                h = l = c = v = 0.0
+            tp               = (h + l + c) / 3 if (h + l + c) > 0 else c
+            cumulative_tp_vol += tp * v
+            cumulative_vol    += v
+            vwap = round(cumulative_tp_vol / cumulative_vol, 2) if cumulative_vol > 0 else 0.0
+            enriched.append({**bar, "vwap_computed": vwap, "or_high": or_high, "or_low": or_low})
+
+        return enriched[-limit:]
+
+    def is_future_hidden(self, session_id: str) -> bool:
+        """Return True if hidden_future_data is active for this session."""
+        state = self._get_state(session_id)
+        if state is None:
+            return True  # safe default
+        return bool(state["session"].hidden_future_data)

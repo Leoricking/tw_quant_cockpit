@@ -370,3 +370,126 @@ class ReplayTrainingAdapter:
         except Exception as exc:
             logger.warning("[ReplayTrainingAdapter] load_latest_report_path error: %s", exc)
             return None
+
+    # ------------------------------------------------------------------
+    # v0.6.3 additional adapter methods
+    # ------------------------------------------------------------------
+
+    def load_session(
+        self,
+        symbol: str,
+        trade_date: str,
+        timeframe: str = "1min",
+        mode: str = "real",
+    ) -> dict:
+        """Alias for create_session — GUI v0.6.3 compatibility."""
+        return self.create_session(symbol, trade_date, timeframe, mode)
+
+    def get_current_snapshot(self, session_id: str) -> dict:
+        """Return the current bar snapshot dict from the engine."""
+        try:
+            engine = self._get_engine()
+            if engine is None:
+                return {"ok": False, "error": "engine_unavailable"}
+            return engine.get_current_snapshot(session_id)
+        except Exception as exc:
+            logger.error("[ReplayTrainingAdapter] get_current_snapshot error: %s", exc)
+            return {"ok": False, "error": str(exc)}
+
+    def jump_to_bar(self, session_id: str, bar_index: int) -> dict:
+        """Jump to a specific bar index."""
+        try:
+            engine = self._get_engine()
+            if engine is None:
+                return {"ok": False, "error": "engine_unavailable"}
+            result = engine.jump_to_bar(session_id, bar_index)
+            result["no_real_orders"]       = True
+            result["replay_training_only"] = True
+            return result
+        except Exception as exc:
+            logger.error("[ReplayTrainingAdapter] jump_to_bar error: %s", exc)
+            return {"ok": False, "error": str(exc)}
+
+    def add_note(
+        self,
+        session_id: str,
+        note: str,
+        tags: str = "",
+        bar_time: str = "",
+    ) -> dict:
+        """Add a text note for the current session bar."""
+        try:
+            ms = self._get_marker_store()
+            if ms is None:
+                return {"ok": False, "error": "marker_store_unavailable"}
+            ms.add_note(session_id, bar_time=bar_time, note=note, tags=tags)
+            return {"ok": True, "note": note, "no_real_orders": True}
+        except Exception as exc:
+            logger.error("[ReplayTrainingAdapter] add_note error: %s", exc)
+            return {"ok": False, "error": str(exc)}
+
+    def calculate_score(self, session_id: str) -> dict:
+        """Calculate score for the current session state."""
+        try:
+            se = self._get_score_engine()
+            if se is None:
+                return {"ok": False, "error": "score_engine_unavailable"}
+            if self._current_session is None:
+                return {"ok": False, "error": "no_active_session"}
+            score = se.score_session(
+                self._current_session,
+                self._current_bars,
+                self._current_markers,
+                self._current_mistakes,
+            )
+            self._current_score = score
+            return {"ok": True, "score": score, "no_real_orders": True}
+        except Exception as exc:
+            logger.error("[ReplayTrainingAdapter] calculate_score error: %s", exc)
+            return {"ok": False, "error": str(exc)}
+
+    def build_drills(self, session_id: str) -> dict:
+        """Build drill suggestions from current mistakes and review."""
+        try:
+            db = self._get_drill_builder()
+            if db is None:
+                return {"ok": False, "error": "drill_builder_unavailable"}
+            drills = db.build_drills(self._current_mistakes, self._current_ai_review)
+            self._current_drills = drills
+            return {"ok": True, "drills": drills, "no_real_orders": True}
+        except Exception as exc:
+            logger.error("[ReplayTrainingAdapter] build_drills error: %s", exc)
+            return {"ok": False, "error": str(exc)}
+
+    def load_latest_markers(self) -> dict:
+        """Load all persisted markers from store CSV."""
+        try:
+            store = self._get_store()
+            if store is None:
+                return {"ok": True, "markers": [], "error": "store_unavailable"}
+            return store.load_latest_markers()
+        except Exception as exc:
+            logger.error("[ReplayTrainingAdapter] load_latest_markers error: %s", exc)
+            return {"ok": False, "markers": [], "error": str(exc)}
+
+    def load_latest_mistakes(self) -> dict:
+        """Load all persisted mistakes from store CSV."""
+        try:
+            store = self._get_store()
+            if store is None:
+                return {"ok": True, "mistakes": [], "error": "store_unavailable"}
+            return store.load_latest_mistakes()
+        except Exception as exc:
+            logger.error("[ReplayTrainingAdapter] load_latest_mistakes error: %s", exc)
+            return {"ok": False, "mistakes": [], "error": str(exc)}
+
+    def load_latest_drills(self) -> dict:
+        """Load all persisted drills from store CSV."""
+        try:
+            store = self._get_store()
+            if store is None:
+                return {"ok": True, "drills": [], "error": "store_unavailable"}
+            return store.load_latest_drills()
+        except Exception as exc:
+            logger.error("[ReplayTrainingAdapter] load_latest_drills error: %s", exc)
+            return {"ok": False, "drills": [], "error": str(exc)}
