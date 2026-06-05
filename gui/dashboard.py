@@ -445,6 +445,16 @@ except Exception as _ri_exc:
     logger.warning("ResearchIntelligencePanel unavailable: %s", _ri_exc)
     _RESEARCH_INTELLIGENCE_AVAILABLE = False
 
+# ---------------------------------------------------------------------------
+# v0.7.2 Strategy Research Memory panel import (guarded)
+# ---------------------------------------------------------------------------
+try:
+    from gui.strategy_memory_panel import StrategyMemoryPanel
+    _STRATEGY_MEMORY_AVAILABLE = True
+except Exception as _sm_exc:
+    logger.warning("StrategyMemoryPanel unavailable: %s", _sm_exc)
+    _STRATEGY_MEMORY_AVAILABLE = False
+
 # v0.5.1.1 Strategy Filter panel — inline (no separate panel file required)
 # ---------------------------------------------------------------------------
 _STRATEGY_FILTER_AVAILABLE = False
@@ -1495,6 +1505,13 @@ class CockpitWindow(QMainWindow if _PYSIDE6_AVAILABLE else object):
             mid_tabs.addTab(self._research_intelligence_panel, "Research Intelligence")
         else:
             self._research_intelligence_panel = None
+
+        # v0.7.2 Strategy Research Memory tab
+        if _STRATEGY_MEMORY_AVAILABLE:
+            self._strategy_memory_panel = StrategyMemoryPanel()
+            mid_tabs.addTab(self._strategy_memory_panel, "Strategy Memory")
+        else:
+            self._strategy_memory_panel = None
 
         # v0.4.1.1 Strategy Knowledge tab
         if _STRATEGY_KNOWLEDGE_INGESTION_AVAILABLE:

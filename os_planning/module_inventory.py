@@ -392,6 +392,26 @@ _MODULES: list[dict] = [
         "known_limitations":  "Schema validation is static; actual data not loaded — metadata only",
         "next_action":        "Integrate with provider fetch pipeline for auto-refresh on data update",
     },
+    # v0.7.2 Strategy Research Memory
+    {
+        "module_name":        "strategy_research_memory",
+        "package":            "strategy_memory",
+        "category":           "E. Research OS Layer",
+        "cli_commands":       (
+            "strategy-memory,strategy-memory-summary,strategy-memory-list,"
+            "strategy-memory-search,strategy-memory-show,"
+            "strategy-memory-update-status,strategy-memory-archive,strategy-memory-report"
+        ),
+        "gui_tab":            "Strategy Memory",
+        "report":             "yes",
+        "maturity":           "STABLE",
+        "known_limitations":  (
+            "Extraction is pattern-based (CSV/JSON scan); no NLP/LLM extraction. "
+            "Link detection is keyword-heuristic only. "
+            "No cross-session memory merge yet."
+        ),
+        "next_action":        "Add LLM-assisted extraction scaffold in v0.8.x",
+    },
 ]
 
 

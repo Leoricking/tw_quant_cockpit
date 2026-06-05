@@ -65,6 +65,8 @@ _PROFILE_FLAGS: Dict[str, dict] = {
         include_data_coverage=True,
         # v0.7.0 Research Intelligence (optional in full profile)
         include_research_intelligence=True,
+        # v0.7.2 Strategy Research Memory (optional in full profile)
+        include_strategy_memory=True,
     ),
     "daily": dict(
         include_stock_reports=False,
@@ -92,6 +94,8 @@ _PROFILE_FLAGS: Dict[str, dict] = {
         include_replay_training=False,
         # v0.7.0 Research Intelligence in daily profile
         include_research_intelligence=True,
+        # v0.7.2 Strategy Research Memory in daily profile
+        include_strategy_memory=True,
     ),
     "portfolio": dict(
         include_stock_reports=False,
@@ -194,6 +198,7 @@ class AutoReportCenter:
         include_stable_release_v060: bool = False,
         include_data_coverage: bool = False,
         include_research_intelligence: bool = False,
+        include_strategy_memory: bool = False,
     ):
         self.mode        = mode
         self.profile     = profile
@@ -256,6 +261,9 @@ class AutoReportCenter:
         )
         self.include_research_intelligence = flags.get(
             "include_research_intelligence", include_research_intelligence
+        )
+        self.include_strategy_memory = flags.get(
+            "include_strategy_memory", include_strategy_memory
         )
         self.universe_name = universe_name
 
@@ -443,6 +451,33 @@ class AutoReportCenter:
                 self._failed.append({
                     "name": "research_intelligence_report",
                     "error": str(_ri_exc),
+                })
+
+        # v0.7.2 Strategy Research Memory (optional, failure should not crash)
+        if getattr(self, "include_strategy_memory", False):
+            try:
+                from strategy_memory.strategy_memory_engine import StrategyMemoryEngine
+                from reports.strategy_memory_report import StrategyMemoryReportBuilder
+                sm_dir = os.path.join(_BASE_DIR, "data", "backtest_results", "strategy_memory")
+                sm_engine = StrategyMemoryEngine(project_root=_BASE_DIR, output_dir=sm_dir)
+                sm_engine.run(mode=self.mode)
+                sm_reporter = StrategyMemoryReportBuilder()
+                sm_path = sm_reporter.build(
+                    mode=self.mode,
+                    output_dir=os.path.join(self._out_dir, "strategy_memory"),
+                    memory_output_dir=sm_dir,
+                )
+                self._generated.append({
+                    "name": "strategy_memory_report",
+                    "path": sm_path,
+                    "section": "strategy_memory",
+                })
+                logger.info("StrategyMemoryReport generated: %s", sm_path)
+            except Exception as _sm_exc:
+                logger.warning("StrategyMemoryReport failed (non-blocking): %s", _sm_exc)
+                self._failed.append({
+                    "name": "strategy_memory_report",
+                    "error": str(_sm_exc),
                 })
 
         # Aggregated outputs

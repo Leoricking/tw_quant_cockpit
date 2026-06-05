@@ -1,0 +1,117 @@
+"""
+strategy_memory_engine.py — Strategy Research Memory Engine v0.7.2
+
+[!] Research Only. No Real Orders. Production Trading BLOCKED.
+"""
+from __future__ import annotations
+import os
+from typing import List, Dict, Any
+from datetime import datetime
+
+from strategy_memory.strategy_memory_schema import (
+    StrategyMemoryItem, StrategyMemoryLink, StrategyMemorySummary,
+    STATUS_NEW, STATUS_ARCHIVED,
+    PRIORITY_P0, PRIORITY_P1,
+)
+from strategy_memory.memory_extractor import StrategyMemoryExtractor
+from strategy_memory.memory_store import StrategyMemoryStore
+from strategy_memory.memory_linker import StrategyMemoryLinker
+
+import logging
+logger = logging.getLogger(__name__)
+
+
+class StrategyMemoryEngine:
+    """
+    Orchestrates Strategy Research Memory extraction, deduplication, linking, and reporting.
+
+    [!] Research Only. No Real Orders. Production Trading BLOCKED.
+    [!] Does NOT modify rule governance. Does NOT modify strategy weights.
+    [!] Does NOT auto-accept or auto-reject any memory.
+    """
+
+    read_only          = True
+    no_real_orders     = True
+    production_blocked = True
+
+    def __init__(
+        self,
+        project_root: str = ".",
+        output_dir:   str = "data/backtest_results/strategy_memory",
+    ):
+        self._root     = project_root
+        self._out_dir  = output_dir
+        self._extractor = StrategyMemoryExtractor(project_root=project_root)
+        self._store     = StrategyMemoryStore(output_dir=output_dir)
+        self._linker    = StrategyMemoryLinker()
+
+    def run(self, mode: str = "real") -> Dict[str, Any]:
+        """Full pipeline: extract → upsert → link → save → summarize."""
+        candidates = self._extractor.extract_all(mode=mode)
+        merged     = self._store.upsert_memories(candidates)
+        links      = self._linker.build_links(merged)
+        self._store.save_links(links)
+        summary    = self.build_summary(merged, links)
+        self._store.save_summary(summary)
+        return {
+            "memories": merged,
+            "links":    links,
+            "summary":  summary,
+            "no_real_orders": True,
+            "production_blocked": True,
+        }
+
+    def build_summary(
+        self,
+        memories: List[StrategyMemoryItem],
+        links: List[StrategyMemoryLink],
+    ) -> StrategyMemorySummary:
+        """Build aggregate summary from memories list."""
+        active   = [m for m in memories if not m.archived]
+        archived = [m for m in memories if m.archived]
+        dupes    = self._linker.detect_duplicates(memories)
+
+        top = ""
+        p0_items = [m for m in active if m.priority == PRIORITY_P0]
+        p1_items = [m for m in active if m.priority == PRIORITY_P1]
+        if p0_items:
+            top = p0_items[0].title
+        elif p1_items:
+            top = p1_items[0].title
+        elif active:
+            top = active[0].title
+
+        return StrategyMemorySummary(
+            generated_at              = datetime.now().isoformat(),
+            total_memories            = len(memories),
+            active_count              = len(active),
+            archived_count            = len(archived),
+            new_count                 = sum(1 for m in active if m.status == "NEW"),
+            reviewing_count           = sum(1 for m in active if m.status == "REVIEWING"),
+            validating_count          = sum(1 for m in active if m.status == "VALIDATING"),
+            accepted_count            = sum(1 for m in active if m.status == "ACCEPTED"),
+            rejected_count            = sum(1 for m in active if m.status == "REJECTED"),
+            needs_more_evidence_count = sum(1 for m in active if m.status == "NEEDS_MORE_EVIDENCE"),
+            p0_count                  = len(p0_items),
+            p1_count                  = len(p1_items),
+            duplicate_count           = len(dupes),
+            top_memory                = top[:80] if top else "",
+            overall_status            = "OK",
+            no_real_orders            = True,
+            production_blocked        = True,
+        )
+
+    def get_timeline(self, limit: int = 100) -> List[StrategyMemoryItem]:
+        memories = self._store.load_memories()
+        return sorted(memories, key=lambda m: m.created_at, reverse=True)[:limit]
+
+    def get_active_memories(self) -> List[StrategyMemoryItem]:
+        return [m for m in self._store.load_memories() if not m.archived]
+
+    def get_top_memories(self, limit: int = 20) -> List[StrategyMemoryItem]:
+        active = self.get_active_memories()
+        priority_order = {"P0": 0, "P1": 1, "P2": 2, "P3": 3}
+        return sorted(
+            active,
+            key=lambda m: (priority_order.get(m.priority, 9), m.created_at),
+        )[:limit]

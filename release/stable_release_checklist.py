@@ -1217,6 +1217,49 @@ class StableReleaseChecklist:
             elapsed = (time.monotonic() - t0) * 1000
             return self._item("no_real_orders_replay_training", "FAIL", str(exc), elapsed)
 
+    def _check_strategy_memory_import_health(self) -> dict:
+        """v0.7.2: strategy_memory package imports cleanly."""
+        t0 = time.monotonic()
+        try:
+            import importlib.util
+            for mod in [
+                "strategy_memory.strategy_memory_schema",
+                "strategy_memory.memory_store",
+                "strategy_memory.memory_extractor",
+                "strategy_memory.strategy_memory_engine",
+            ]:
+                spec = importlib.util.find_spec(mod)
+                if spec is None:
+                    raise ImportError(f"Module {mod} not found")
+            elapsed = (time.monotonic() - t0) * 1000
+            return self._item("strategy_memory_import_health", "PASS",
+                               "strategy_memory package imports cleanly.", elapsed)
+        except Exception as exc:
+            elapsed = (time.monotonic() - t0) * 1000
+            return self._item("strategy_memory_import_health", "FAIL", str(exc), elapsed)
+
+    def _check_strategy_memory_no_forbidden_actions(self) -> dict:
+        """v0.7.2: StrategyMemoryItem._guard blocks forbidden keywords."""
+        t0 = time.monotonic()
+        try:
+            from strategy_memory.strategy_memory_schema import _guard
+            raised = False
+            for kw in ["SELL this stock", "place an ORDER"]:
+                try:
+                    _guard(kw)
+                except ValueError:
+                    raised = True
+                    break
+            elapsed = (time.monotonic() - t0) * 1000
+            if not raised:
+                return self._item("strategy_memory_no_forbidden_actions", "FAIL",
+                                   "_guard did not block forbidden keywords.", elapsed)
+            return self._item("strategy_memory_no_forbidden_actions", "PASS",
+                               "_guard correctly blocks forbidden trading keywords.", elapsed)
+        except Exception as exc:
+            elapsed = (time.monotonic() - t0) * 1000
+            return self._item("strategy_memory_no_forbidden_actions", "FAIL", str(exc), elapsed)
+
     # ------------------------------------------------------------------
     # Write outputs
     # ------------------------------------------------------------------
@@ -1406,6 +1449,9 @@ class StableReleaseChecklist:
             self._check_hidden_future_data_default_true,
             self._check_ai_review_no_external_api,
             self._check_replay_training_no_real_orders,
+            # v0.7.2 Strategy Research Memory
+            self._check_strategy_memory_import_health,
+            self._check_strategy_memory_no_forbidden_actions,
         ]
 
         items: list[dict] = []

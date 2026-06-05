@@ -58,6 +58,7 @@
 | v0.6.3 | Replay Training UI Enhancement | Done |
 | v0.7.0 | Research Intelligence Upgrade | Done |
 | v0.7.1 | Intelligence UX Polish | Done |
+| v0.7.2 | Strategy Research Memory | Done |
 
 ---
 
@@ -146,13 +147,20 @@ Research Only. No Real Orders. Production Trading: BLOCKED.
 Today Focus card, Why Now / Risk If Ignored columns, `classify_command_safety()` with six labels, Copy Command button, priority/category/source filters, improved CLI output.
 Research Only. No Real Orders. Production Trading: BLOCKED.
 
+### Completed: v0.7.2 — Strategy Research Memory
+
+**Status:** Done
+
+Strategy Research Memory extracts and persists 10 memory types (STRATEGY_HYPOTHESIS, RULE_CANDIDATE, REPLAY_MISTAKE_PATTERN, JOURNAL_PATTERN, DATA_GAP, REPORT_GAP, REGRESSION_RISK, PROVIDER_LIMITATION, RESEARCH_CONCLUSION, FOLLOW_UP_TASK) from all Research OS modules. Upsert deduplication by normalized key, status/priority tracking (7 statuses, P0–P3), keyword-heuristic memory linking, 8 CLI commands, GUI panel with table/detail/links views, and 8-section Markdown report.
+Research Only. No Real Orders. Production Trading: BLOCKED.
+
 ### Next Steps (Planned)
 
 | Version | Feature | Priority |
 |---------|---------|---------|
-| v0.7.2 | Research Intelligence History — trend signals over time, progress charts | P2 |
-| v0.7.3 | Research Intelligence Export — export priority board to Markdown/PDF | P2 |
+| v0.7.3 | Research Intelligence History — trend signals over time, progress charts | P2 |
 | v0.8.0 | Advanced Replay Analysis — pattern detection, multi-session comparison | P2 |
+| v0.8.1 | Strategy Memory LLM-assisted extraction scaffold | P2 |
 
 ---
 

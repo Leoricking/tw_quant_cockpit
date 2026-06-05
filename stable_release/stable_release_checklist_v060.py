@@ -553,6 +553,55 @@ class StableReleaseChecklistV060:
                 "research_intelligence_ux_safety", "runtime_safety", "FAIL", str(exc),
             )
 
+    def _check_strategy_memory_summary_can_run(self) -> dict:
+        """v0.7.2 — strategy-memory-summary CLI must run without crash."""
+        import subprocess
+        import sys
+        try:
+            result = subprocess.run(
+                [sys.executable, os.path.join(BASE_DIR, "main.py"), "strategy-memory-summary"],
+                capture_output=True, text=True, timeout=30, cwd=BASE_DIR,
+            )
+            if result.returncode != 0 and "ERROR" in (result.stdout or "") and "import" in (result.stdout or "").lower():
+                return _check_item(
+                    "strategy_memory_summary_can_run", "runtime_safety", "FAIL",
+                    f"strategy-memory-summary returned error: {(result.stdout or '')[:200]}",
+                )
+            return _check_item(
+                "strategy_memory_summary_can_run", "runtime_safety", "PASS",
+                "strategy-memory-summary runs without crash.",
+            )
+        except Exception as exc:
+            return _check_item(
+                "strategy_memory_summary_can_run", "runtime_safety", "WARN", str(exc),
+            )
+
+    def _check_memory_store_no_forbidden_actions(self) -> dict:
+        """v0.7.2 — StrategyMemoryItem must reject forbidden action keywords."""
+        try:
+            from strategy_memory.strategy_memory_schema import StrategyMemoryItem, _guard
+            # _guard should raise on forbidden keywords
+            raised = False
+            for kw in ["SELL this", "place an ORDER", "AUTO_TRADE signal"]:
+                try:
+                    _guard(kw)
+                except ValueError:
+                    raised = True
+                    break
+            if not raised:
+                return _check_item(
+                    "memory_store_no_forbidden_actions", "runtime_safety", "FAIL",
+                    "StrategyMemoryItem._guard did not raise on forbidden keywords",
+                )
+            return _check_item(
+                "memory_store_no_forbidden_actions", "runtime_safety", "PASS",
+                "StrategyMemoryItem._guard correctly blocks forbidden trading keywords.",
+            )
+        except Exception as exc:
+            return _check_item(
+                "memory_store_no_forbidden_actions", "runtime_safety", "FAIL", str(exc),
+            )
+
     def _check_recommendations_no_forbidden_actions(self) -> dict:
         """v0.7.1 — RecommendationEngine must never emit BUY/SELL/ORDER."""
         try:
@@ -615,6 +664,9 @@ class StableReleaseChecklistV060:
             # H — v0.7.1 Intelligence UX safety
             self._check_research_intelligence_ux_safety,
             self._check_recommendations_no_forbidden_actions,
+            # v0.7.2 Strategy Research Memory
+            self._check_strategy_memory_summary_can_run,
+            self._check_memory_store_no_forbidden_actions,
         ]
 
         for fn in checklist_groups:

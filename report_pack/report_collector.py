@@ -25,6 +25,7 @@ from report_pack.report_pack_schema import (
     REPORT_RELEASE, REPORT_SAFETY, REPORT_DATA_STABILIZATION,
     REPORT_REPLAY_TRAINING, REPORT_STABLE_RELEASE_V060, REPORT_RELEASE_MANIFEST,
     REPORT_DATA_COVERAGE, REPORT_RESEARCH_INTELLIGENCE,
+    REPORT_STRATEGY_MEMORY,
     OPTIONAL_REPORT_TYPES, ENV_LIMITED_REPORT_TYPES,
 )
 
@@ -153,6 +154,11 @@ _REPORT_PATTERNS = {
     REPORT_RESEARCH_INTELLIGENCE: [
         "reports/research_intelligence_report*.md",
         "data/backtest_results/research_intelligence/research_intelligence_summary.csv",
+    ],
+    # v0.7.2 Strategy Research Memory
+    REPORT_STRATEGY_MEMORY: [
+        "reports/strategy_memory_report_*.md",
+        "data/backtest_results/strategy_memory/strategy_memory_summary*.csv",
     ],
 }
 

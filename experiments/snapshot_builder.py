@@ -668,6 +668,7 @@ class ExperimentSnapshotBuilder:
             ("gui_navigation",              lambda: self.build_gui_navigation_snapshot()),
             ("regression_suite",            lambda: self.build_regression_snapshot()),
             ("data_stabilization",          lambda: self.build_data_stabilization_snapshot()),
+            ("strategy_memory",             lambda: self.build_strategy_memory_snapshot()),
         ]
         for snap_type, fn in builders:
             try:
@@ -1141,4 +1142,40 @@ class ExperimentSnapshotBuilder:
             logger.warning("build_stable_release_snapshot (manifest path): %s", exc)
         snap["latest_stable_release_at"] = _now_iso()
         snap["checklist_status"] = "See stable-v060-check CLI command"
+        return snap
+
+    def build_strategy_memory_snapshot(self) -> dict:
+        """Snapshot type: strategy_memory. Captures latest strategy memory summary.
+
+        [!] Research Only. No Real Orders. Production Trading: BLOCKED.
+        """
+        snap = _empty_snapshot("strategy_memory")
+        try:
+            sm_dir = os.path.join(BASE_DIR, "data", "backtest_results", "strategy_memory")
+            summary_csv = os.path.join(sm_dir, "strategy_memory_summary.csv")
+            if os.path.exists(summary_csv):
+                snap["source_files"].append(summary_csv)
+                import csv as _csv
+                with open(summary_csv, newline="", encoding="utf-8") as f:
+                    rows = list(_csv.DictReader(f))
+                    if rows:
+                        row = rows[-1]
+                        snap["summary"] = {
+                            "total_memories":           row.get("total_memories", 0),
+                            "active_count":             row.get("active_count", 0),
+                            "new_count":                row.get("new_count", 0),
+                            "reviewing_count":          row.get("reviewing_count", 0),
+                            "p0_count":                 row.get("p0_count", 0),
+                            "p1_count":                 row.get("p1_count", 0),
+                            "needs_more_evidence_count": row.get("needs_more_evidence_count", 0),
+                            "top_memory":               row.get("top_memory", ""),
+                            "overall_status":           row.get("overall_status", "OK"),
+                            "no_real_orders":           True,
+                            "production_blocked":       True,
+                        }
+            else:
+                snap["warnings"].append("strategy_memory_summary.csv not found — run strategy-memory first")
+        except Exception as exc:
+            logger.warning("build_strategy_memory_snapshot: %s", exc)
+            snap["warnings"].append(f"strategy_memory snapshot error: {exc}")
         return snap

@@ -4,7 +4,34 @@
 >
 > **[!] v1: Real order execution is strictly prohibited. For research, simulation, and decision support only. Not investment advice.**
 
-**Current version: v0.7.1 — Intelligence UX Polish**
+**Current version: v0.7.2 — Strategy Research Memory**
+
+---
+
+## v0.7.2 — Strategy Research Memory
+
+**New in v0.7.2:**
+
+- **Strategy Research Memory Engine**: Persistent, deduplicated memory layer for all research insights
+- **10 Memory Types**: STRATEGY_HYPOTHESIS, RULE_CANDIDATE, REPLAY_MISTAKE_PATTERN, JOURNAL_PATTERN, DATA_GAP, REPORT_GAP, REGRESSION_RISK, PROVIDER_LIMITATION, RESEARCH_CONCLUSION, FOLLOW_UP_TASK
+- **7 Statuses**: NEW, REVIEWING, VALIDATING, ACCEPTED, REJECTED, ARCHIVED, NEEDS_MORE_EVIDENCE
+- **P0–P3 Priority Tracking**: Prioritize memories by research impact
+- **Memory Extraction**: Pulls from 7 Research OS modules (research_intelligence, strategy_knowledge, rule_governance, replay_training, journal, data_coverage, report_pack)
+- **Upsert Deduplication**: Deduplicated by `normalized(title)|memory_type|source_module` key
+- **Memory Linker**: 8 relation types — SUPPORTS, CONTRADICTS, DUPLICATES, REFINES, REQUIRES_DATA, REQUIRES_BACKTEST, REQUIRES_REPLAY, RELATED_TO
+- **8 CLI Commands**: `strategy-memory` through `strategy-memory-report`
+- **GUI Panel**: Strategy Memory tab with summary cards, filter controls, memory table, detail panel, links table
+- **8-Section Markdown Report**: Overview, Timeline, Top Memories, Rule/Strategy, Replay/Journal, Data/Report Gaps, Links, Safety
+- **Safety Guard**: `_guard()` raises ValueError on forbidden keywords (BUY/SELL/ORDER/EXECUTE/SUBMIT_ORDER/AUTO_TRADE)
+- **[!] Research Only. No Real Orders. Production Trading: BLOCKED.**
+
+```bash
+python main.py strategy-memory --mode real
+python main.py strategy-memory-summary
+python main.py strategy-memory-list --status NEW --priority P0
+python main.py strategy-memory-search --keyword "breakout"
+python main.py strategy-memory-report --mode real
+```
 
 ---
 

@@ -472,6 +472,12 @@ class AutoReportIndexBuilder:
                 "stable_release_capabilities":     ctx.get("stable_release_v060", {}).get("capability_count", 0),
                 "stable_release_report_path":      ctx.get("stable_release_report_path", ""),
                 "stable_release_manifest_path":    ctx.get("stable_release_manifest_path", ""),
+                # v0.7.2 Strategy Research Memory
+                "strategy_memory_total":           ctx.get("strategy_memory_total", 0),
+                "strategy_memory_active":          ctx.get("strategy_memory_active", 0),
+                "strategy_memory_new":             ctx.get("strategy_memory_new", 0),
+                "strategy_memory_needs_evidence":  ctx.get("strategy_memory_needs_evidence", 0),
+                "strategy_memory_report_path":     ctx.get("strategy_memory_report_path", ""),
             }
 
             path = os.path.join(output_dir, "manifest.json")

@@ -161,4 +161,87 @@ v0.7.1 polishes the Research Intelligence UX. Key additions: Today Focus card, W
 
 ---
 
+## v0.7.2 — Strategy Research Memory
+
+**Released:** 2026-06-05
+
+### Overview
+
+v0.7.2 introduces the Strategy Research Memory subsystem — a persistent, deduplicated memory layer that extracts, stores, links, and tracks strategy research insights across all Research OS modules. Supports 10 memory types, 7 statuses, 4 priority levels, 8 link relation types, 8 CLI commands, GUI panel, and 8-section Markdown report.
+
+### New Files
+
+| File | Description |
+|------|-------------|
+| `strategy_memory/__init__.py` | Package init with safety constants |
+| `strategy_memory/strategy_memory_schema.py` | Dataclasses, 10 memory types, 7 statuses, P0–P3, `_guard()` |
+| `strategy_memory/memory_extractor.py` | Extracts memories from 7 Research OS modules |
+| `strategy_memory/memory_store.py` | CSV persistence with upsert deduplication |
+| `strategy_memory/memory_linker.py` | Keyword-heuristic memory link detection |
+| `strategy_memory/strategy_memory_engine.py` | Master pipeline orchestrator |
+| `strategy_memory/memory_query.py` | Search/filter/get API |
+| `reports/strategy_memory_report.py` | 8-section Markdown report generator |
+| `gui/strategy_memory_adapter.py` | GUI ↔ backend bridge |
+| `gui/strategy_memory_panel.py` | PySide6 Strategy Memory tab |
+| `docs/strategy_research_memory.md` | Feature documentation |
+
+### Modified Files
+
+| File | Change |
+|------|--------|
+| `gui/dashboard.py` | Added StrategyMemoryPanel tab (guarded import) |
+| `gui/navigation/tab_registry.py` | Added strategy_memory tab metadata |
+| `regression/suite_registry.py` | Added 6 strategy memory regression tests |
+| `stable_release/capability_matrix.py` | Added `strategy_research_memory` StableCapability |
+| `report_pack/report_pack_schema.py` | Added `REPORT_STRATEGY_MEMORY` constant |
+| `report_pack/report_registry.py` | Added to daily/weekly/full packs (optional) |
+| `report_pack/report_collector.py` | Added pattern map for strategy_memory |
+| `reports/auto_report_center.py` | Added strategy memory to full/daily profiles |
+| `reports/auto_report_index.py` | Added 5 strategy_memory manifest fields |
+| `data_coverage/data_coverage_schema.py` | Added `DOMAIN_STRATEGY_MEMORY` constant |
+| `data_coverage/data_coverage_registry.py` | Added 2 strategy memory coverage items |
+| `os_planning/module_inventory.py` | Added strategy_research_memory module entry |
+| `os_planning/regression_audit.py` | Added strategy memory regression coverage entry |
+| `experiments/snapshot_builder.py` | Added `build_strategy_memory_snapshot()` |
+| `stable_release/stable_release_checklist_v060.py` | Added v0.7.2 checks |
+| `release/stable_release_checklist.py` | Added v0.7.2 import and safety checks |
+| `main.py` | Added 8 CLI commands + handlers + command_map entries |
+| `docs/roadmap.md` | Added v0.7.2 as completed, updated next steps |
+
+### New CLI Commands
+
+| Command | Description |
+|---------|-------------|
+| `python main.py strategy-memory` | Run full memory extraction pipeline |
+| `python main.py strategy-memory-summary` | Show latest memory summary |
+| `python main.py strategy-memory-list` | List memories with optional filters |
+| `python main.py strategy-memory-search` | Search memories by keyword |
+| `python main.py strategy-memory-show` | Show detail for one memory item |
+| `python main.py strategy-memory-update-status` | Update memory status |
+| `python main.py strategy-memory-archive` | Archive a memory item |
+| `python main.py strategy-memory-report` | Generate Markdown report |
+
+### Memory Types
+
+| Type | Description |
+|------|-------------|
+| `STRATEGY_HYPOTHESIS` | Unverified strategy idea from research |
+| `RULE_CANDIDATE` | Candidate trading rule from knowledge base |
+| `REPLAY_MISTAKE_PATTERN` | Repeated mistake pattern from replay training |
+| `JOURNAL_PATTERN` | Pattern extracted from portfolio journal |
+| `DATA_GAP` | Missing or incomplete data identified |
+| `REPORT_GAP` | Missing or incomplete report identified |
+| `REGRESSION_RISK` | Regression failure or risk noted |
+| `PROVIDER_LIMITATION` | Data provider limitation noted |
+| `RESEARCH_CONCLUSION` | Validated research conclusion |
+| `FOLLOW_UP_TASK` | Explicit follow-up research task |
+
+### Safety Constraints
+
+- `_guard(text)` in schema raises `ValueError` on forbidden keywords: `BUY`, `SELL`, `ORDER`, `EXECUTE`, `SUBMIT_ORDER`, `AUTO_TRADE`
+- All classes have `read_only=True`, `no_real_orders=True`, `production_blocked=True`
+- `real_order_ready=False` explicitly set
+
+---
+
 > [!] All recommendations are research actions only. No BUY/SELL/ORDER generated. Not investment advice.

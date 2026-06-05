@@ -338,6 +338,24 @@ _COVERAGE: list[dict] = [
         "missing_checks":    "Checklist covers 16 points; no automated end-to-end smoke test yet",
         "recommended_test":  "stable_v060_check, stable_v060_summary, stable_v060_capabilities in SUITE_RELEASE_GATE",
     },
+    # v0.7.2 Strategy Research Memory
+    {
+        "module":            "strategy_research_memory",
+        "command_covered":   "yes",
+        "import_covered":    "yes",
+        "gui_covered":       "yes",
+        "report_covered":    "yes",
+        "safety_covered":    "yes",
+        "missing_checks":    (
+            "No test for upsert deduplication with large memory store; "
+            "no test for link detection with symbol overlap"
+        ),
+        "recommended_test":  (
+            "strategy_memory_schema_import, strategy_memory_engine_import, "
+            "strategy_memory_cli, strategy_memory_summary, "
+            "strategy_memory_list, strategy_memory_report in SUITE_RESEARCH_OS"
+        ),
+    },
 ]
 
 

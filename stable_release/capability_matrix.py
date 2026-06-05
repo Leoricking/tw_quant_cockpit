@@ -639,6 +639,32 @@ class StableCapabilityMatrix:
                     "No BUY/SELL/ORDER — research actions only",
                 ],
             ),
+            # v0.7.2 Strategy Research Memory
+            StableCapability(
+                capability_id="strategy_research_memory",
+                name="Strategy Research Memory",
+                category="research_os",
+                version_added="v0.7.2",
+                status="USABLE",
+                maturity="STABLE",
+                cli_commands=[
+                    "strategy-memory", "strategy-memory-summary",
+                    "strategy-memory-list", "strategy-memory-search",
+                    "strategy-memory-show", "strategy-memory-update-status",
+                    "strategy-memory-archive", "strategy-memory-report",
+                ],
+                gui_tabs=["Strategy Memory"],
+                reports=["strategy_memory"],
+                regression_coverage=True,
+                safety_status="OK",
+                known_limitations=[
+                    "Memory extraction depends on CSV outputs from other Research OS modules",
+                    "No auto-accept/reject — all memory status changes are manual",
+                    "Research Only — no trading actions, no real orders",
+                ],
+                no_real_orders=True,
+                production_blocked=True,
+            ),
         ]
         return self
 

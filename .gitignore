@@ -294,3 +294,7 @@ reports/data_coverage_report_*.md
 # v0.7.0 Research Intelligence Upgrade — runtime outputs
 data/backtest_results/research_intelligence/
 reports/research_intelligence_report_*.md
+
+# v0.7.2 Strategy Research Memory — runtime outputs
+data/backtest_results/strategy_memory/
+reports/strategy_memory_report_*.md

@@ -15,6 +15,7 @@ from data_coverage.data_coverage_schema import (
     DOMAIN_CHIP, DOMAIN_FEATURE_STORE, DOMAIN_REPLAY, DOMAIN_EXPERIMENT,
     DOMAIN_RULE_GOVERNANCE, DOMAIN_REPORT_PACK, DOMAIN_REGRESSION,
     DOMAIN_STABLE_RELEASE, DOMAIN_RESEARCH_INTELLIGENCE,
+    DOMAIN_STRATEGY_MEMORY,
 )
 
 logger = logging.getLogger(__name__)
@@ -624,5 +625,35 @@ class DataCoverageRegistry:
                     "reports/research_intelligence_report*.md",
                 ],
                 "owner_module":     "reports.research_intelligence_report",
+            },
+            # ----------------------------------------------------------------
+            # Strategy Memory domain (v0.7.2)
+            # ----------------------------------------------------------------
+            {
+                "item_id":          "strategy_memory_store",
+                "domain":           DOMAIN_STRATEGY_MEMORY,
+                "dataset_name":     "Strategy Memory Store",
+                "required":         False,
+                "environment_limited": False,
+                "not_generated":    False,
+                "suggested_command": "python main.py strategy-memory --mode real",
+                "expected_patterns": [
+                    "data/backtest_results/strategy_memory/strategy_memory_items_*.csv",
+                    "data/backtest_results/strategy_memory/strategy_memory_summary*.csv",
+                ],
+                "owner_module":     "strategy_memory.memory_store",
+            },
+            {
+                "item_id":          "strategy_memory_report",
+                "domain":           DOMAIN_STRATEGY_MEMORY,
+                "dataset_name":     "Strategy Memory Report",
+                "required":         False,
+                "environment_limited": False,
+                "not_generated":    False,
+                "suggested_command": "python main.py strategy-memory-report --mode real",
+                "expected_patterns": [
+                    "reports/strategy_memory_report_*.md",
+                ],
+                "owner_module":     "reports.strategy_memory_report",
             },
         ]

@@ -759,6 +759,49 @@ class GUITabRegistry:
                 favorite_default=True,
                 notes="Added in v0.7.0; UX polish in v0.7.1 — Today Focus, Why Now, Safe Command labels, Copy Command.",
             ),
+            # v0.7.2 Strategy Research Memory
+            GUITabMetadata(
+                tab_id="strategy_memory",
+                tab_name="strategy_memory",
+                display_name="Strategy Memory",
+                group="daily_research",
+                priority="P1",
+                description=(
+                    "Strategy Research Memory v0.7.2 — extract and persist strategy hypotheses, "
+                    "rule candidates, replay mistake patterns, journal patterns, data gaps, "
+                    "report gaps, regression risks, provider limitations, research conclusions, "
+                    "and follow-up tasks. Upsert deduplication, status/priority tracking, "
+                    "memory linking, and Markdown report. "
+                    "Research Only. No Real Orders. No BUY/SELL/ORDER."
+                ),
+                module_path="gui.strategy_memory_panel",
+                class_name="StrategyMemoryPanel",
+                available_flag="_STRATEGY_MEMORY_AVAILABLE",
+                safety_level="RESEARCH_ONLY",
+                read_only=True,
+                no_real_orders=True,
+                production_blocked=True,
+                keywords=[
+                    "strategy memory", "research memory", "hypothesis", "rule memory",
+                    "replay mistake memory", "journal pattern", "data gap", "report gap",
+                    "regression risk", "research conclusion", "follow-up task",
+                    "memory extract", "memory store", "memory links",
+                    "研究記憶", "策略記憶", "策略假設", "規則候選",
+                    "復盤錯誤", "研究結論",
+                ],
+                aliases=["strategy-memory", "memory", "research-memory"],
+                related_cli_commands=[
+                    "strategy-memory", "strategy-memory-summary",
+                    "strategy-memory-list", "strategy-memory-search",
+                    "strategy-memory-show", "strategy-memory-update-status",
+                    "strategy-memory-archive", "strategy-memory-report",
+                ],
+                report_types=["strategy_memory"],
+                maturity="STABLE",
+                default_visible=True,
+                favorite_default=False,
+                notes="Added in v0.7.2 — Strategy Research Memory.",
+            ),
             # v0.5.4 Report Pack Consolidation
             GUITabMetadata(
                 tab_id="report_pack",
