@@ -166,6 +166,15 @@ class ReportPackBuilder:
                 f"",
                 f"---",
                 f"",
+                f"## 四、Report Coverage Notes",
+                f"",
+                f"- Optional missing reports are not release failures",
+                f"- Environment-limited reports require provider tokens",
+                f"- ENV_LIMITED status: provider token environment variable not set",
+                f"- NOT_GENERATED status: optional report not yet run — not a failure",
+                f"",
+                f"---",
+                f"",
                 f"*TW Quant Cockpit v0.5.4 — Research Only — Not Investment Advice*",
             ]
             path = os.path.join(pack.output_dir, "index.md")

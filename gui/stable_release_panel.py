@@ -112,6 +112,10 @@ if _PYSIDE6_OK:
             "[!] Research OS Stable Release v0.6.0 | Research Only | "
             "No Real Orders | Production Trading BLOCKED"
         )
+        _NOTE_TEXT = (
+            "Note: Report Pack optional missing does not fail stable release. "
+            "ENV_LIMITED provider reports require provider tokens."
+        )
 
         def __init__(self, mode: str = "real", parent=None):
             super().__init__(parent)
@@ -156,6 +160,14 @@ if _PYSIDE6_OK:
             )
             banner.setWordWrap(True)
             main_layout.addWidget(banner)
+
+            # Explanatory note
+            note = QLabel(self._NOTE_TEXT)
+            note.setStyleSheet(
+                "background:#1a3a1a; color:#c8e6c9; font-size:11px; padding:4px; border-radius:3px;"
+            )
+            note.setWordWrap(True)
+            main_layout.addWidget(note)
 
             # Summary cards
             main_layout.addWidget(self._build_summary_group())

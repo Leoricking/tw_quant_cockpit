@@ -53,6 +53,43 @@
 | v0.5.6 | TW Replay Training Cockpit — AI Review & Tape Reading Practice | Done |
 | v0.5.6.2 | Stabilize Data and Feature Store Health | Done |
 | v0.6.0 | Research OS Stable Release | Done |
+| v0.6.1 | Stable UX Polish | Done |
+
+---
+
+## Completed: v0.6.1 — Stable UX Polish
+
+**Status:** Done
+
+### Summary
+
+v0.6.1 is a targeted UX polish release. Key changes: `--type` alias for `--pack-type` in CLI,
+smarter report status classification (ENV_LIMITED / NOT_GENERATED), improved health wording so
+optional missing and provider-limited reports do not count as release failures.
+
+Research Only. No Real Orders. Production Trading: BLOCKED.
+
+### Modified Files
+
+- `main.py` — `--type` alias, `--mode` no-op for report-pack / report-pack-items
+- `report_pack/report_pack_schema.py` — new status constants + OPTIONAL/ENV_LIMITED sets
+- `report_pack/report_collector.py` — smarter missing classification
+- `report_pack/report_health_checker.py` — optional missing ≠ critical failure
+- `report_pack/report_pack_builder.py` — UX wording in index output
+- `gui/report_pack_panel.py` — status display improvements
+- `gui/stable_release_panel.py` — explanatory note
+- `stable_release/stable_release_checklist_v060.py` — PARTIAL pack handling
+- `reports/stable_release_v060_report.py` — Report Coverage Notes
+- `regression/suite_registry.py` — new --type alias test cases
+- `docs/` — updated release notes, roadmap, doc files, new stable_ux_polish_v0.6.1.md
+
+### Next Steps (Planned)
+
+| Version | Feature | Priority |
+|---------|---------|---------|
+| v0.6.2 | Data Coverage Expansion — more symbols, sectors, timeframes | P1 |
+| v0.6.3 | Replay Training UI Enhancement — chart rendering, drill UI | P1 |
+| v0.7.0 | Research Intelligence Upgrade — smarter AI review, pattern library | P2 |
 
 ---
 
@@ -86,7 +123,7 @@ Research Only. No Real Orders. Production Trading: BLOCKED.
 
 | Version | Feature | Priority |
 |---------|---------|---------|
-| v0.6.1 | Stable UX Polish — empty states, error messages, tab icons | P1 |
+| v0.6.1 | Stable UX Polish — CLI alias, status classification | Done |
 | v0.6.2 | Data Coverage Expansion — more symbols, sectors, timeframes | P1 |
 | v0.6.3 | Replay Training UI Enhancement — chart rendering, drill UI | P1 |
 | v0.7.0 | Research Intelligence Upgrade — smarter AI review, pattern library | P2 |

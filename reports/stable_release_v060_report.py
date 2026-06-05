@@ -264,7 +264,21 @@ class StableReleaseV060Report:
             lines.append(
                 f"| {lim['id']} | {lim['name']} | {lim['impact']} | {wk} |"
             )
-        lines.append("")
+        lines += [
+            "",
+            "### Report Coverage Notes",
+            "",
+            "- **Optional missing reports** (ENV_LIMITED, NOT_GENERATED) are NOT release failures.",
+            "- **ENV_LIMITED** provider reports (e.g., `provider`) require a provider API token "
+              "set via environment variable — not a system failure.",
+            "- **NOT_GENERATED** optional reports (e.g., `experiment`, `intraday_replay`, "
+              "`replay_training`, `stable_release_v060_report`, `release_manifest`) "
+              "are only generated on demand.",
+            "- **PARTIAL report pack** status with 0 failed and 0 required missing does NOT "
+              "imply stable release failure.",
+            "- Required reports: `daily_market`, `auto_report`, `data_quality`, `signal_quality`.",
+            "",
+        ]
         return lines
 
     def _section_v05x_completion(self) -> List[str]:

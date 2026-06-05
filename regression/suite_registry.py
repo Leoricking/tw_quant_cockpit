@@ -498,6 +498,27 @@ class RegressionSuiteRegistry:
                 required=True,
                 description="Report pack health check for daily pack",
             ),
+            # v0.6.1 CLI alias tests
+            RegressionTestCase(
+                test_id="report_pack_type_alias_full",
+                name="report-pack --type full --mode real",
+                suite=SUITE_REPORT,
+                category="report",
+                command=["main.py", "report-pack", "--type", "full", "--mode", "real"],
+                timeout_seconds=120,
+                required=False,
+                description="Report pack --type alias for --pack-type with --mode no-op (v0.6.1)",
+            ),
+            RegressionTestCase(
+                test_id="report_pack_items_type_alias_full",
+                name="report-pack-items --type full",
+                suite=SUITE_REPORT,
+                category="report",
+                command=["main.py", "report-pack-items", "--type", "full"],
+                timeout_seconds=60,
+                required=False,
+                description="Report pack items --type alias for --pack-type (v0.6.1)",
+            ),
         ]
 
     def build_safety_suite(self) -> List[RegressionTestCase]:

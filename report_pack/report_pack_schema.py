@@ -13,11 +13,15 @@ logger = logging.getLogger(__name__)
 # ---------------------------------------------------------------------------
 # Status constants
 # ---------------------------------------------------------------------------
-STATUS_READY   = "READY"
-STATUS_PARTIAL = "PARTIAL"
-STATUS_MISSING = "MISSING"
-STATUS_FAILED  = "FAILED"
-STATUS_SKIPPED = "SKIPPED"
+STATUS_READY          = "READY"
+STATUS_PARTIAL        = "PARTIAL"
+STATUS_MISSING        = "MISSING"
+STATUS_FAILED         = "FAILED"
+STATUS_SKIPPED        = "SKIPPED"
+STATUS_ENV_LIMITED    = "ENV_LIMITED"
+STATUS_NOT_GENERATED  = "NOT_GENERATED"
+STATUS_MISSING_OPT    = "MISSING_OPTIONAL"
+STATUS_MISSING_REQ    = "MISSING_REQUIRED"
 
 # ---------------------------------------------------------------------------
 # Pack type constants
@@ -65,6 +69,17 @@ ALL_REPORT_TYPES = [
     REPORT_RELEASE, REPORT_SAFETY, REPORT_DATA_STABILIZATION,
     REPORT_REPLAY_TRAINING, REPORT_STABLE_RELEASE_V060, REPORT_RELEASE_MANIFEST,
 ]
+
+# Report types that are optional — missing is NOT a release failure
+OPTIONAL_REPORT_TYPES = {
+    REPORT_EXPERIMENT, REPORT_INTRADAY_REPLAY, REPORT_RULE_GOVERNANCE,
+    REPORT_REPLAY_TRAINING, REPORT_STABLE_RELEASE_V060, REPORT_RELEASE_MANIFEST,
+}
+
+# Report types that require provider tokens / environment setup
+ENV_LIMITED_REPORT_TYPES = {
+    REPORT_PROVIDER,
+}
 
 
 @dataclass

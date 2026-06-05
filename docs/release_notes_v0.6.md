@@ -4,6 +4,55 @@
 
 ---
 
+## v0.6.1 — Stable UX Polish (2026-06-05)
+
+### Summary
+
+v0.6.1 is a targeted UX polish release — no new trading features, no trading functionality changes.
+All outputs remain research-only.
+
+### Changes
+
+- `main.py` — `report-pack` and `report-pack-items`: added `--type` as alias for `--pack-type`;
+  added `--mode` parameter (accepted, no-op, prints informational message)
+- `report_pack/report_pack_schema.py` — added `STATUS_ENV_LIMITED`, `STATUS_NOT_GENERATED`,
+  `STATUS_MISSING_OPT`, `STATUS_MISSING_REQ`; added `OPTIONAL_REPORT_TYPES` and
+  `ENV_LIMITED_REPORT_TYPES` sets
+- `report_pack/report_collector.py` — smarter missing classification: ENV_LIMITED for provider,
+  NOT_GENERATED for optional types, MISSING only for required
+- `report_pack/report_health_checker.py` — ENV_LIMITED and NOT_GENERATED do not count as critical
+  failures; HEALTHY if failed=0 and required_missing=0; improved recommendation wording
+- `report_pack/report_pack_builder.py` — added "Optional missing reports are not release failures"
+  and "Environment-limited reports require provider tokens" to index output
+- `gui/report_pack_panel.py` — ENV_LIMITED shown as "環境限制 (需設定 token)"; NOT_GENERATED shown
+  as "尚未產生 (optional)"; empty state hint added
+- `gui/stable_release_panel.py` — added explanatory note about optional missing and provider tokens
+- `stable_release/stable_release_checklist_v060.py` — added `_check_report_pack_partial` check;
+  PARTIAL pack with 0 failed / no required missing is PASS, not failure; ENV_LIMITED is warning not fail
+- `reports/stable_release_v060_report.py` — added Report Coverage Notes section to Known Limitations
+- `regression/suite_registry.py` — added `report-pack --type full --mode real` and
+  `report-pack-items --type full` test cases
+- `docs/` — updated release notes, roadmap, report_pack_consolidation, research_os_stable_release_v0.6.0,
+  README, added `docs/stable_ux_polish_v0.6.1.md`
+
+### New CLI Behavior
+
+```bash
+# --type is now an alias for --pack-type
+python main.py report-pack --type full --mode real
+python main.py report-pack --pack-type full
+python main.py report-pack-items --type full
+```
+
+### Safety
+
+- `research_only = True`
+- `no_real_orders = True`
+- `production_blocked = True`
+- `real_order_ready = False`
+
+---
+
 ## v0.6.0 — Research OS Stable Release (2026-06-04)
 
 ### Summary

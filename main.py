@@ -9469,8 +9469,11 @@ def _print_report_pack_header() -> None:
 def cmd_report_pack(args: argparse.Namespace) -> None:
     """Build a report pack (daily/weekly/full) and print summary (v0.5.4)."""
     _print_report_pack_header()
-    pack_type        = getattr(args, "pack_type", "daily")
+    pack_type        = getattr(args, "pack_type", None) or "daily"
     generate_missing = getattr(args, "generate_missing", False)
+    mode             = getattr(args, "mode", None)
+    if mode is not None:
+        print(f"  Read-only report pack mode accepted: {mode}")
     print(f"  Pack Type: {pack_type}")
     print(f"  Generate Missing: {generate_missing}")
     print()
@@ -11782,10 +11785,12 @@ def _build_parser() -> argparse.ArgumentParser:
         "report-pack",
         help="Build report pack (daily/weekly/full) (v0.5.4). [!] Research Only. No Real Orders.",
     )
-    p_rp.add_argument("--pack-type", default="daily", choices=["daily", "weekly", "full", "custom"],
-                      dest="pack_type", help="Pack type (default: daily)")
+    p_rp.add_argument("--pack-type", "--type", default="daily", choices=["daily", "weekly", "full", "custom"],
+                      dest="pack_type", help="Pack type (default: daily). --type is an alias for --pack-type")
     p_rp.add_argument("--generate-missing", action="store_true", dest="generate_missing",
                       help="Attempt to generate missing reports (default: False)")
+    p_rp.add_argument("--mode", default=None, dest="mode",
+                      help="Read-only report pack mode (accepted, no-op with informational message)")
 
     p_rps = subparsers.add_parser(
         "report-pack-summary",
@@ -11798,8 +11803,8 @@ def _build_parser() -> argparse.ArgumentParser:
         "report-pack-items",
         help="Show report items for a pack type (v0.5.4). [!] Research Only. No Real Orders.",
     )
-    p_rpi.add_argument("--pack-type", default="daily", choices=["daily", "weekly", "full"],
-                       dest="pack_type", help="Pack type (default: daily)")
+    p_rpi.add_argument("--pack-type", "--type", default="daily", choices=["daily", "weekly", "full"],
+                       dest="pack_type", help="Pack type (default: daily). --type is an alias for --pack-type")
 
     p_rph = subparsers.add_parser(
         "report-pack-health",

@@ -4,7 +4,28 @@
 >
 > **[!] v1: Real order execution is strictly prohibited. For research, simulation, and decision support only. Not investment advice.**
 
-**Current version: v0.6.0 — Research OS Stable Release**
+**Current version: v0.6.1 — Stable UX Polish**
+
+---
+
+## v0.6.1 — Stable UX Polish
+
+**New in v0.6.1:**
+
+Targeted UX polish — no new trading features, no trading functionality changes.
+
+- **CLI alias**: `--type` is now an alias for `--pack-type` in `report-pack` and `report-pack-items`
+- **`--mode` parameter**: accepted by `report-pack` (no-op, prints informational message)
+- **Smarter status classification**: `ENV_LIMITED` (provider token required), `NOT_GENERATED` (optional report not run) — neither counts as release failure
+- **Health wording**: optional missing ≠ stable release failure; HEALTHY if failed=0 and required_missing=0
+- **GUI improvements**: ENV_LIMITED shown as "環境限制 (需設定 token)"; NOT_GENERATED as "尚未產生 (optional)"
+- **Docs aligned**: release notes, roadmap, report_pack_consolidation, research_os_stable_release_v0.6.0, new stable_ux_polish_v0.6.1.md
+- **[!] Research Only. No Real Orders. Production Trading: BLOCKED.**
+
+```bash
+python main.py report-pack --type full --mode real
+python main.py report-pack-items --type full
+```
 
 ---
 

@@ -64,16 +64,19 @@ gui/
 ## CLI Commands
 
 ```bash
-# Build a report pack
+# Build a report pack (--type is an alias for --pack-type since v0.6.1)
 python main.py report-pack --pack-type daily
+python main.py report-pack --type daily          # alias
 python main.py report-pack --pack-type weekly
 python main.py report-pack --pack-type full
+python main.py report-pack --type full --mode real  # --mode accepted, no-op
 
 # Show latest summary
 python main.py report-pack-summary --pack-type daily
 
-# Show report items
+# Show report items (--type alias supported)
 python main.py report-pack-items --pack-type daily
+python main.py report-pack-items --type full    # alias
 
 # Check health
 python main.py report-pack-health --pack-type daily
@@ -84,6 +87,32 @@ python main.py report-pack-links
 # Generate consolidation report
 python main.py report-pack-report --pack-type daily --mode real
 ```
+
+## CLI Alias Policy (v0.6.1)
+
+- `--type` is an accepted alias for `--pack-type` in `report-pack` and `report-pack-items`
+- `--mode` is accepted by `report-pack` but is a no-op (prints informational message); the
+  report pack is always read-only
+
+## Status Interpretation Guide (v0.6.1)
+
+| Status | Meaning | Release Impact |
+|--------|---------|---------------|
+| `READY` | Report file found and non-empty | Good |
+| `MISSING` | Required report not found | Failure — run auto-report |
+| `ENV_LIMITED` | Provider report needs API token | Warning only — not a release failure |
+| `NOT_GENERATED` | Optional report not yet run | Info only — not a release failure |
+| `MISSING_OPTIONAL` | Optional report missing | Info only — not a release failure |
+| `FAILED` | Report generation error | Failure — investigate |
+
+### Stable Release Pass Criteria
+
+A stable release **passes** report pack checks when:
+- `failed_count == 0`
+- `required_missing_count == 0` (no STATUS_MISSING on required report types)
+
+`PARTIAL` pack status (some ready, some not) does **not** imply release failure if the above
+criteria are met. ENV_LIMITED and NOT_GENERATED are informational only.
 
 ## Output Paths
 

@@ -201,8 +201,11 @@ if _REPORT_PACK_PANEL_AVAILABLE:
             health_layout.addWidget(self._health_text)
             root.addWidget(health_group)
 
-            # 6. Status bar
-            self._status_lbl = QLabel("Ready. Select pack type and click Build Pack.")
+            # 6. Status bar / hint
+            self._status_lbl = QLabel(
+                "Ready. Select pack type and click Build Pack. "
+                "Hint: 執行: python main.py auto-report --mode real --profile daily"
+            )
             self._status_lbl.setStyleSheet("color: #aaa; font-size: 11px;")
             root.addWidget(self._status_lbl)
 
@@ -305,11 +308,20 @@ if _REPORT_PACK_PANEL_AVAILABLE:
                 path   = item.get("path", "—")
 
                 self._items_table.setItem(row, 0, QTableWidgetItem(rt))
-                status_item = QTableWidgetItem(status)
+                # Map ENV_LIMITED / NOT_GENERATED to display-friendly labels
+                if status == "ENV_LIMITED":
+                    display_status = "環境限制 (需設定 token)"
+                elif status in ("NOT_GENERATED", "MISSING_OPTIONAL"):
+                    display_status = "尚未產生 (optional)"
+                else:
+                    display_status = status
+                status_item = QTableWidgetItem(display_status)
                 if status == "READY":
                     status_item.setForeground(Qt.darkGreen)
-                elif status in ("MISSING", "FAILED"):
+                elif status in ("MISSING", "FAILED", "MISSING_REQUIRED"):
                     status_item.setForeground(Qt.red)
+                elif status in ("ENV_LIMITED", "NOT_GENERATED", "MISSING_OPTIONAL"):
+                    status_item.setForeground(Qt.darkYellow)
                 self._items_table.setItem(row, 1, status_item)
                 self._items_table.setItem(row, 2, QTableWidgetItem(size))
                 self._items_table.setItem(row, 3, QTableWidgetItem(path))

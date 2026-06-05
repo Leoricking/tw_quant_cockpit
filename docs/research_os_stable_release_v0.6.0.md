@@ -155,6 +155,29 @@ Features:
 
 ---
 
+## PARTIAL Report Pack Interpretation (v0.6.1)
+
+A `PARTIAL` report pack status means some reports are ready and some are not.
+This does **NOT** automatically imply a stable release failure.
+
+**Pass criteria:**
+- `failed_count == 0` — no report generation errors
+- `required_missing_count == 0` — no `STATUS_MISSING` on required report types
+
+**Non-failure statuses:**
+- `ENV_LIMITED` — provider report requires API token (environment variable not set)
+- `NOT_GENERATED` — optional report not yet generated (experiment, replay_training, etc.)
+- `MISSING_OPTIONAL` — optional report missing
+
+**Required report types** (absence = failure): `daily_market`, `auto_report`, `data_quality`, `signal_quality`
+
+**Optional report types** (absence = NOT_GENERATED, not failure): `experiment`, `intraday_replay`,
+`rule_governance`, `replay_training`, `stable_release_v060_report`, `release_manifest`
+
+**Provider-limited** (absence = ENV_LIMITED, not failure): `provider`
+
+---
+
 ## Release Process
 
 1. `python main.py stable-v060-check --mode real` — verify all checks pass

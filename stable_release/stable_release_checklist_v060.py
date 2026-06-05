@@ -374,12 +374,14 @@ class StableReleaseChecklistV060:
 
     def _check_report_registry(self) -> dict:
         try:
-            from report_pack.report_pack_schema import ALL_REPORT_TYPES
+            from report_pack.report_pack_schema import ALL_REPORT_TYPES, OPTIONAL_REPORT_TYPES, ENV_LIMITED_REPORT_TYPES
             has_stable = any("stable_release" in rt for rt in ALL_REPORT_TYPES)
             if has_stable:
                 return _check_item(
                     "report_registry", "reports", "PASS",
-                    "stable_release report type found in report_pack schema.",
+                    f"stable_release report type found in report_pack schema. "
+                    f"Optional types: {len(OPTIONAL_REPORT_TYPES)}. "
+                    f"ENV_LIMITED types: {len(ENV_LIMITED_REPORT_TYPES)} (provider token required — not a release failure).",
                 )
             return _check_item(
                 "report_registry", "reports", "WARN",
@@ -389,6 +391,38 @@ class StableReleaseChecklistV060:
             )
         except Exception as exc:
             return _check_item("report_registry", "reports", "WARN", str(exc))
+
+    def _check_report_pack_partial(self) -> dict:
+        """Check that PARTIAL report pack with 0 failed / no required missing is not a failure."""
+        try:
+            from report_pack.report_pack_builder import ReportPackBuilder
+            from report_pack.report_health_checker import ReportHealthChecker
+            builder = ReportPackBuilder(pack_type="daily")
+            pack = builder.build()
+            checker = ReportHealthChecker()
+            health = checker.check_pack(pack)
+            required_missing = health.get("required_missing_count", 0)
+            failed = health.get("failed_count", 0)
+            env_limited = health.get("env_limited_count", 0)
+            if failed == 0 and required_missing == 0:
+                detail = (
+                    f"Report pack status={pack.status} | health_label={health['health_label']} | "
+                    f"required_missing=0 | env_limited={env_limited} (not a failure) | failed=0"
+                )
+                return _check_item(
+                    "report_pack_partial", "reports", "PASS", detail,
+                )
+            return _check_item(
+                "report_pack_partial", "reports", "WARN",
+                f"Report pack has required_missing={required_missing} or failed={failed}",
+                warning="Required reports missing — run auto-report daily profile",
+                suggested_fix="python main.py auto-report --mode real --profile daily",
+            )
+        except Exception as exc:
+            return _check_item(
+                "report_pack_partial", "reports", "WARN", str(exc),
+                warning="Could not evaluate report pack health",
+            )
 
     # ----------------------------------------------------------------
     # F. Regression checks
@@ -517,6 +551,7 @@ class StableReleaseChecklistV060:
             # E — reports
             self._check_stable_report_exists,
             self._check_report_registry,
+            self._check_report_pack_partial,
             # F — regression
             self._check_regression_suite,
             # G — runtime safety

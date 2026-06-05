@@ -3,7 +3,7 @@
 > **[!] Research Only. Read Only. No Real Orders. Production Trading: BLOCKED.**
 > **[!] Not investment advice. REAL_ORDER_READY=False.**
 
-Current version: **v0.6.0** — Research OS Stable Release
+Current version: **v0.6.1** — Stable UX Polish
 
 ---
 
@@ -20,8 +20,9 @@ Current version: **v0.6.0** — Research OS Stable Release
 | [Release Notes v0.3](release_notes_v0.3.md) | v0.3.9 through v0.3.29 change log |
 | [Release Notes v0.4](release_notes_v0.4.md) | v0.4.0 stable release change log |
 | [Release Notes v0.5](release_notes_v0.5.md) | v0.5.0 Research OS Planning change log |
-| [Release Notes v0.6](release_notes_v0.6.md) | v0.6.0 Research OS Stable Release change log |
+| [Release Notes v0.6](release_notes_v0.6.md) | v0.6.x change log (v0.6.0 Stable Release, v0.6.1 UX Polish) |
 | [Research OS Stable Release v0.6.0](research_os_stable_release_v0.6.0.md) | v0.6.0 stable capability matrix, checklist, CLI/GUI usage |
+| [Stable UX Polish v0.6.1](stable_ux_polish_v0.6.1.md) | v0.6.1 CLI alias, status interpretation, optional missing, ENV_LIMITED |
 | [Release v0.4.0](release_v0.4.0.md) | v0.4.0 stable release overview and upgrade notes |
 | [Release Checklist](release_checklist.md) | Manual release verification checklist |
 | [Roadmap](roadmap.md) | Completed milestones and planned future versions |
@@ -80,6 +81,8 @@ Current version: **v0.6.0** — Research OS Stable Release
 | [report_pack_consolidation.md](report_pack_consolidation.md) | v0.5.4 | Report Pack Consolidation (daily/weekly/full packs, 20 report types, health checker, link registry, store, consolidation report, GUI panel, 6 CLI commands) |
 | [data_feature_store_stabilization.md](data_feature_store_stabilization.md) | v0.5.5 | Data / Feature Store Stabilization (22 schemas, lineage, readiness, health, leakage guard, store, 9-section report, GUI panel, 7 CLI commands) |
 | [tw_replay_training_cockpit.md](tw_replay_training_cockpit.md) | v0.5.6 | TW Replay Training Cockpit (bar engine, markers, tape reading detector, AI rule-based review, scoring, drills, journal bridge, 9 CLI commands, GUI panel) |
+| [research_os_stable_release_v0.6.0.md](research_os_stable_release_v0.6.0.md) | v0.6.0 | Research OS Stable Release (capability matrix, 16-point checklist, release manifest, known limitations, GUI panel, 6 CLI commands) |
+| [stable_ux_polish_v0.6.1.md](stable_ux_polish_v0.6.1.md) | v0.6.1 | Stable UX Polish (CLI alias --type/--pack-type, ENV_LIMITED/NOT_GENERATED status, optional missing behavior, stable release pass criteria) |
 
 ---
 

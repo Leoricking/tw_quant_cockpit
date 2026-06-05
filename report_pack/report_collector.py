@@ -15,6 +15,7 @@ from typing import List, Optional
 from report_pack.report_pack_schema import (
     ReportPackItem,
     STATUS_READY, STATUS_MISSING, STATUS_FAILED,
+    STATUS_ENV_LIMITED, STATUS_NOT_GENERATED,
     REPORT_DAILY_MARKET, REPORT_AUTO_REPORT, REPORT_DATA_QUALITY,
     REPORT_PROVIDER, REPORT_STRATEGY_FILTER, REPORT_SIGNAL_QUALITY,
     REPORT_RULE_GOVERNANCE, REPORT_PORTFOLIO_JOURNAL, REPORT_RESEARCH_REVIEW,
@@ -23,6 +24,7 @@ from report_pack.report_pack_schema import (
     REPORT_NOTIFICATION, REPORT_INTRADAY_REPLAY, REPORT_EXPERIMENT,
     REPORT_RELEASE, REPORT_SAFETY, REPORT_DATA_STABILIZATION,
     REPORT_REPLAY_TRAINING, REPORT_STABLE_RELEASE_V060, REPORT_RELEASE_MANIFEST,
+    OPTIONAL_REPORT_TYPES, ENV_LIMITED_REPORT_TYPES,
 )
 
 logger = logging.getLogger(__name__)
@@ -194,11 +196,21 @@ class ReportCollector:
                     size_bytes=found_size,
                     generated_at=datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
                 )
+            # Classify missing reports by type
+            if report_type in ENV_LIMITED_REPORT_TYPES:
+                missing_status = STATUS_ENV_LIMITED
+                notes = f"Environment-limited: {report_type} requires provider token setup"
+            elif report_type in OPTIONAL_REPORT_TYPES:
+                missing_status = STATUS_NOT_GENERATED
+                notes = f"Optional report not yet generated: {report_type}"
+            else:
+                missing_status = STATUS_MISSING
+                notes = f"No output found for {report_type}"
             return ReportPackItem(
                 report_type=report_type,
-                status=STATUS_MISSING,
+                status=missing_status,
                 report_date=report_date,
-                notes=f"No output found for {report_type}",
+                notes=notes,
             )
         except Exception as exc:
             logger.warning("ReportCollector._collect_one(%s) failed: %s", report_type, exc)
