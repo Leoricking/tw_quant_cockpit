@@ -22,6 +22,7 @@ from report_pack.report_pack_schema import (
     REPORT_REGRESSION, REPORT_CLI_UX, REPORT_GUI_NAVIGATION,
     REPORT_NOTIFICATION, REPORT_INTRADAY_REPLAY, REPORT_EXPERIMENT,
     REPORT_RELEASE, REPORT_SAFETY, REPORT_DATA_STABILIZATION,
+    REPORT_REPLAY_TRAINING, REPORT_STABLE_RELEASE_V060, REPORT_RELEASE_MANIFEST,
 )
 
 logger = logging.getLogger(__name__)
@@ -35,8 +36,14 @@ _REPORT_PATTERNS = {
     REPORT_DAILY_MARKET:      ["reports/auto_report_center/*/daily_market_summary*.md",
                                 "reports/auto_report_center/*/executive_summary.md"],
     REPORT_AUTO_REPORT:       ["reports/auto_report_center/*/index.md"],
-    REPORT_DATA_QUALITY:      ["reports/data_quality_gate_report*.md",
-                                "data/backtest_results/data_quality_gate*.csv"],
+    REPORT_DATA_QUALITY:      [
+        # flat patterns (preserved)
+        "reports/data_quality_gate_report*.md",
+        "data/backtest_results/data_quality_gate*.csv",
+        # nested auto_report_center patterns
+        "reports/auto_report_center/*/data_quality_gate/*.md",
+        "reports/auto_report_center/*/data_quality_gate/**/*.md",
+    ],
     REPORT_PROVIDER:          ["reports/provider_reliability_report*.md",
                                 "data/backtest_results/provider_reliability*.csv"],
     REPORT_STRATEGY_FILTER:   ["reports/strategy_filter_report*.md",
@@ -47,16 +54,47 @@ _REPORT_PATTERNS = {
                                 "data/backtest_results/governance*.csv"],
     REPORT_PORTFOLIO_JOURNAL: ["reports/portfolio_journal_report*.md",
                                 "data/backtest_results/portfolio_journal_summary.csv"],
-    REPORT_RESEARCH_REVIEW:   ["reports/research_review_report*.md",
-                                "data/backtest_results/research_review*.csv"],
-    REPORT_RESEARCH_COACH:    ["reports/research_coach_report*.md",
-                                "data/backtest_results/research_coach*.csv"],
+    REPORT_RESEARCH_REVIEW:   [
+        # flat patterns (preserved)
+        "reports/research_review_report*.md",
+        "data/backtest_results/research_review*.csv",
+        # nested auto_report_center patterns
+        "reports/auto_report_center/*/research_review.md",
+        "reports/auto_report_center/*/research_review/*.md",
+        "reports/auto_report_center/*/research_review/**/*.md",
+        "reports/research_review_dashboard_report*.md",
+    ],
+    REPORT_RESEARCH_COACH:    [
+        # flat patterns (preserved)
+        "reports/research_coach_report*.md",
+        "data/backtest_results/research_coach*.csv",
+        # nested auto_report_center patterns
+        "reports/auto_report_center/*/research_coach.md",
+        "reports/auto_report_center/*/research_coach/*.md",
+        "reports/auto_report_center/*/research_coach/**/*.md",
+        "reports/research_assistant_report*.md",
+    ],
     REPORT_RESEARCH_WORKFLOW: ["reports/research_workflow_report*.md",
                                 "data/backtest_results/research_workflow*.csv"],
-    REPORT_RESEARCH_OS:       ["reports/research_os_report*.md",
-                                "data/backtest_results/research_os*.csv"],
-    REPORT_REGRESSION:        ["data/backtest_results/regression/regression_summary*.csv",
-                                "data/backtest_results/regression/regression_results*.csv"],
+    REPORT_RESEARCH_OS:       [
+        # flat patterns (preserved)
+        "reports/research_os_report*.md",
+        "data/backtest_results/research_os*.csv",
+        # nested auto_report_center patterns
+        "reports/auto_report_center/*/research_os.md",
+        "reports/auto_report_center/*/research_os/*.md",
+        "reports/auto_report_center/*/research_os/**/*.md",
+        "reports/research_os_stabilization_report*.md",
+        "reports/stable_release_v0.6.0_report*.md",
+    ],
+    REPORT_REGRESSION:        [
+        # flat and nested regression patterns
+        "data/backtest_results/regression/regression_summary*.csv",
+        "data/backtest_results/regression/regression_results*.csv",
+        "data/backtest_results/regression/regression_coverage_matrix*.csv",
+        "data/backtest_results/regression_suite_*.csv",
+        "reports/regression_consolidation_report.md",
+    ],
     REPORT_CLI_UX:            ["reports/cli_ux_report*.md",
                                 "data/backtest_results/cli_ux*.csv"],
     REPORT_GUI_NAVIGATION:    ["reports/gui_navigation_report*.md",
@@ -71,8 +109,37 @@ _REPORT_PATTERNS = {
                                 "data/backtest_results/stable_release_checklist*.csv"],
     REPORT_SAFETY:            ["reports/stable_release_checklist_report*.md"],
     REPORT_DATA_STABILIZATION: [
+        # flat patterns (preserved)
         "reports/data_stabilization_report_*.md",
         "data/backtest_results/data_stabilization/data_stabilization_summary_*.csv",
+        # additional flat and nested patterns
+        "reports/data_stabilization_report*.md",
+        "reports/auto_report_center/*/data_stabilization.md",
+        "reports/auto_report_center/*/data_stabilization/*.md",
+        "reports/auto_report_center/*/data_stabilization/**/*.md",
+    ],
+    # v0.6.0 new report types
+    REPORT_REPLAY_TRAINING: [
+        "reports/replay_training_report*.md",
+        "reports/auto_report_center/*/replay_training.md",
+        "reports/auto_report_center/*/replay_training/*.md",
+        "reports/auto_report_center/*/replay_training/**/*.md",
+        "data/backtest_results/replay_training/replay_training_summary*.csv",
+        "data/backtest_results/replay_training/replay_ai_reviews*.csv",
+        "data/backtest_results/replay_training/replay_scores*.csv",
+    ],
+    REPORT_STABLE_RELEASE_V060: [
+        "reports/stable_release_v0.6.0_report*.md",
+        "reports/stable_release_v060_report*.md",
+        "reports/auto_report_center/*/stable_release.md",
+        "reports/auto_report_center/*/stable_release/*.md",
+        "reports/auto_report_center/*/stable_release/**/*.md",
+    ],
+    REPORT_RELEASE_MANIFEST: [
+        "data/backtest_results/stable_release/release_manifest_v0.6.0.json",
+        "data/backtest_results/stable_release/release_manifest_v0.6.0.md",
+        "data/backtest_results/stable_release/release_manifest*.json",
+        "data/backtest_results/stable_release/release_manifest*.md",
     ],
 }
 
@@ -109,7 +176,7 @@ class ReportCollector:
 
             for pattern in patterns:
                 full_pattern = os.path.join(self.base_dir, pattern)
-                matches = sorted(glob.glob(full_pattern))
+                matches = sorted(glob.glob(full_pattern, recursive=True))
                 if matches:
                     found_path = matches[-1]
                     try:
