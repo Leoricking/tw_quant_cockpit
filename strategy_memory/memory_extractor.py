@@ -1,5 +1,5 @@
 """
-memory_extractor.py — Strategy Research Memory Extractor v0.7.2
+memory_extractor.py — Strategy Research Memory Extractor v0.8.1
 
 [!] Research Only. No Real Orders. Production Trading BLOCKED.
 """
@@ -129,13 +129,18 @@ class StrategyMemoryExtractor:
                             )
                             suggested = [c for c in (cmds or "").split("|") if c.strip()]
 
+                            # v0.8.1: Set needs_action for P0/P1
+                            na = priority in (PRIORITY_P0, PRIORITY_P1)
+                            # v0.8.1: More user-friendly title
+                            friendly_title = title[:200]
                             items.append(self._make_item(
                                 memory_type=mtype,
-                                title=title[:200],
+                                title=friendly_title,
                                 summary=rationale[:300] if rationale else "",
                                 priority=priority,
                                 source_module=SOURCE_RESEARCH_INTELLIGENCE,
                                 suggested_commands=suggested[:3],
+                                needs_action=na,
                             ))
                         except Exception:
                             pass
@@ -285,13 +290,17 @@ class StrategyMemoryExtractor:
 
                     for mistake, count in mistake_counts.items():
                         if count >= 2:
+                            # v0.8.1: More user-friendly title
+                            friendly = f"Replay Mistake: {mistake} detected"[:200]
+                            pri = PRIORITY_P1 if count >= 3 else PRIORITY_P2
                             items.append(self._make_item(
                                 memory_type=MEMORY_TYPE_REPLAY_MISTAKE_PATTERN,
-                                title=f"Repeated replay mistake: {mistake}"[:200],
+                                title=friendly,
                                 summary=f"Seen {count} times in replay sessions",
-                                priority=PRIORITY_P1 if count >= 3 else PRIORITY_P2,
+                                priority=pri,
                                 source_module=SOURCE_REPLAY_TRAINING,
                                 evidence=f"count={count}",
+                                needs_action=(pri in (PRIORITY_P0, PRIORITY_P1)),
                             ))
 
                     if low_scores:
@@ -383,15 +392,8 @@ class StrategyMemoryExtractor:
                                     source_module=SOURCE_DATA_COVERAGE,
                                     suggested_commands=[cmd] if cmd else [],
                                 ))
-                            elif status_val in ("NOT_GENERATED",):
-                                items.append(self._make_item(
-                                    memory_type=MEMORY_TYPE_FOLLOW_UP_TASK,
-                                    title=f"Not yet generated: {item_id}"[:200],
-                                    summary=f"Coverage item not yet generated: {item_id}",
-                                    priority=PRIORITY_P3,
-                                    source_module=SOURCE_DATA_COVERAGE,
-                                    suggested_commands=[cmd] if cmd else [],
-                                ))
+                                            # v0.8.1: Skip NOT_GENERATED as it creates P3 noise
+                            # Only extract required items
                         except Exception:
                             pass
             except Exception as exc:

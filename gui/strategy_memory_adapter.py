@@ -1,5 +1,5 @@
 """
-gui/strategy_memory_adapter.py — StrategyMemoryAdapter v0.7.2
+gui/strategy_memory_adapter.py — StrategyMemoryAdapter v0.8.1
 
 Bridge between GUI and strategy_memory package.
 
@@ -174,3 +174,121 @@ class StrategyMemoryAdapter:
         except Exception as exc:
             logger.warning("StrategyMemoryAdapter.load_latest_report_path error: %s", exc)
             return ""
+
+    # -------------------------------------------------------------------------
+    # v0.8.1 New methods
+    # -------------------------------------------------------------------------
+
+    def search_advanced(self, **filters) -> list:
+        """Advanced search with all filters. Returns list of dicts."""
+        try:
+            from strategy_memory.memory_store import StrategyMemoryStore
+            from strategy_memory.memory_query import StrategyMemoryQuery
+            store = StrategyMemoryStore(output_dir=self._output_dir)
+            query = StrategyMemoryQuery(store=store)
+            results = query.search_advanced(**filters)
+            return [m.to_dict() for m in results]
+        except Exception as exc:
+            logger.warning("StrategyMemoryAdapter.search_advanced error: %s", exc)
+            return []
+
+    def get_validation_queue(self) -> list:
+        """Return memories in validation queue as list of dicts."""
+        try:
+            from strategy_memory.memory_store import StrategyMemoryStore
+            from strategy_memory.memory_query import StrategyMemoryQuery
+            store = StrategyMemoryStore(output_dir=self._output_dir)
+            query = StrategyMemoryQuery(store=store)
+            return [m.to_dict() for m in query.get_validation_queue()]
+        except Exception as exc:
+            logger.warning("StrategyMemoryAdapter.get_validation_queue error: %s", exc)
+            return []
+
+    def get_active_research_threads(self) -> list:
+        """Return active research threads as list of dicts."""
+        try:
+            from strategy_memory.memory_store import StrategyMemoryStore
+            from strategy_memory.memory_query import StrategyMemoryQuery
+            store = StrategyMemoryStore(output_dir=self._output_dir)
+            query = StrategyMemoryQuery(store=store)
+            return [m.to_dict() for m in query.get_active_research_threads()]
+        except Exception as exc:
+            logger.warning("StrategyMemoryAdapter.get_active_research_threads error: %s", exc)
+            return []
+
+    def get_repeated_patterns(self) -> list:
+        """Return repeated pattern memories as list of dicts."""
+        try:
+            from strategy_memory.memory_store import StrategyMemoryStore
+            from strategy_memory.memory_query import StrategyMemoryQuery
+            store = StrategyMemoryStore(output_dir=self._output_dir)
+            query = StrategyMemoryQuery(store=store)
+            return [m.to_dict() for m in query.get_repeated_patterns()]
+        except Exception as exc:
+            logger.warning("StrategyMemoryAdapter.get_repeated_patterns error: %s", exc)
+            return []
+
+    def load_memory_detail(self, memory_id: str) -> dict:
+        """Load detail for a single memory item. Returns dict or empty dict."""
+        try:
+            from strategy_memory.memory_store import StrategyMemoryStore
+            from strategy_memory.memory_query import StrategyMemoryQuery
+            store = StrategyMemoryStore(output_dir=self._output_dir)
+            memories = store.load_memories()
+            query = StrategyMemoryQuery()
+            m = query.get_memory(memories, memory_id)
+            return m.to_dict() if m else {}
+        except Exception as exc:
+            logger.warning("StrategyMemoryAdapter.load_memory_detail error: %s", exc)
+            return {}
+
+    def load_memory_links(self, memory_id: str) -> list:
+        """Load links for a specific memory item. Returns list of dicts."""
+        try:
+            from strategy_memory.memory_store import StrategyMemoryStore
+            store = StrategyMemoryStore(output_dir=self._output_dir)
+            links = store.load_links()
+            return [lk.to_dict() for lk in links if lk.source_memory_id == memory_id]
+        except Exception as exc:
+            logger.warning("StrategyMemoryAdapter.load_memory_links error: %s", exc)
+            return []
+
+    def load_safe_commands(self, memory_id: str) -> list:
+        """
+        Return list of {command, safety_label, purpose} dicts for a memory.
+
+        Safety labels: SAFE_READ_ONLY, SAFE_REPORT, SAFE_REGRESSION, SAFE_REPLAY, SAFE_DATA_CHECK.
+        Guard: never return commands with BUY/SELL/ORDER keywords.
+        """
+        _FORBIDDEN_KW = ["BUY", "SELL", "ORDER", "EXECUTE", "SUBMIT_ORDER", "AUTO_TRADE"]
+        try:
+            detail = self.load_memory_detail(memory_id)
+            cmds_raw = detail.get("suggested_commands", "")
+            if isinstance(cmds_raw, list):
+                cmds = cmds_raw
+            else:
+                cmds = [c for c in (cmds_raw or "").split("|") if c.strip()]
+            result = []
+            for cmd in cmds:
+                upper = cmd.upper()
+                if any(kw in upper for kw in _FORBIDDEN_KW):
+                    continue  # Guard: skip forbidden commands
+                if "report" in cmd.lower():
+                    label = "SAFE_REPORT"
+                elif "regression" in cmd.lower():
+                    label = "SAFE_REGRESSION"
+                elif "replay" in cmd.lower():
+                    label = "SAFE_REPLAY"
+                elif "data" in cmd.lower() or "coverage" in cmd.lower():
+                    label = "SAFE_DATA_CHECK"
+                else:
+                    label = "SAFE_READ_ONLY"
+                result.append({
+                    "command": cmd,
+                    "safety_label": label,
+                    "purpose": detail.get("title", "")[:60],
+                })
+            return result
+        except Exception as exc:
+            logger.warning("StrategyMemoryAdapter.load_safe_commands error: %s", exc)
+            return []

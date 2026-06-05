@@ -134,19 +134,43 @@ class CoachTaskBuilder:
         self,
         signals: List[BacktestCoachSignal],
         mode: str = "real",
+        memory_items: list = None,
     ) -> List[CoachTrainingTask]:
-        """Convert each signal into a CoachTrainingTask."""
+        """Convert each signal into a CoachTrainingTask.
+
+        v0.8.1: Optional memory_items list. For each task, if there is a
+        related strategy_memory item with matching title keywords, the task
+        gets related_memory_id set. Also deduplicates tasks by title+task_type,
+        keeping the higher priority one.
+        """
         tasks: List[CoachTrainingTask] = []
         for sig in signals:
             try:
-                task = self._signal_to_task(sig)
+                task = self._signal_to_task(sig, memory_items=memory_items)
                 if task:
                     tasks.append(task)
             except Exception as exc:
                 logger.warning("CoachTaskBuilder._signal_to_task failed: %s", exc)
+        # v0.8.1: Deduplicate by title + task_type, keep higher priority
+        tasks = self._deduplicate_tasks(tasks)
         return tasks
 
-    def _signal_to_task(self, sig: BacktestCoachSignal) -> CoachTrainingTask:
+    def _deduplicate_tasks(self, tasks: List[CoachTrainingTask]) -> List[CoachTrainingTask]:
+        """Deduplicate tasks by title + task_type, keeping higher priority."""
+        _PRI_ORDER = {PRIORITY_P0: 0, PRIORITY_P1: 1, PRIORITY_P2: 2, PRIORITY_P3: 3}
+        seen: dict = {}
+        for task in tasks:
+            key = f"{task.title.lower().strip()}|{task.task_type}"
+            if key not in seen:
+                seen[key] = task
+            else:
+                existing_pri = _PRI_ORDER.get(seen[key].priority, 9)
+                new_pri = _PRI_ORDER.get(task.priority, 9)
+                if new_pri < existing_pri:
+                    seen[key] = task
+        return list(seen.values())
+
+    def _signal_to_task(self, sig: BacktestCoachSignal, memory_items: list = None) -> CoachTrainingTask:
         """Convert one signal to one task."""
         task_type = _ISSUE_TO_TASK.get(sig.issue_type, TASK_READ_REPORT)
         cmd       = sig.suggested_command or _ISSUE_DEFAULT_COMMANDS.get(sig.issue_type, "")
@@ -163,6 +187,21 @@ class CoachTaskBuilder:
         title = f"[{task_type}] {issue_display}{title_suffix}"[:200]
 
         cmds = [cmd] if cmd else []
+
+        # v0.8.1: Find related memory_id if memory_items provided
+        related_memory_id = ""
+        if memory_items:
+            task_words = set(title.lower().split())
+            for mem in memory_items:
+                try:
+                    mem_title = mem.title if hasattr(mem, "title") else mem.get("title", "")
+                    mem_words = set(mem_title.lower().split())
+                    overlap = task_words & mem_words
+                    if len(overlap) >= 2:
+                        related_memory_id = mem.memory_id if hasattr(mem, "memory_id") else mem.get("memory_id", "")
+                        break
+                except Exception:
+                    pass
 
         return CoachTrainingTask(
             task_type=task_type,

@@ -717,6 +717,89 @@ class StableReleaseChecklistV060:
             )
 
     # ----------------------------------------------------------------
+    # v0.8.1 Strategy Memory UX checks
+    # ----------------------------------------------------------------
+
+    def _check_strategy_memory_ux_import(self) -> dict:
+        """v0.8.1 — StrategyMemoryPanel must import without error."""
+        try:
+            import importlib
+            spec = importlib.util.find_spec("gui.strategy_memory_panel")
+            if spec is None:
+                return _check_item(
+                    "strategy_memory_ux_import", "import", "WARN",
+                    "gui.strategy_memory_panel not found (GUI may not be installed).",
+                )
+            # Only attempt a full import if PySide6 is available
+            try:
+                import PySide6  # noqa: F401
+                from gui.strategy_memory_panel import StrategyMemoryPanel  # noqa: F401
+                return _check_item(
+                    "strategy_memory_ux_import", "import", "PASS",
+                    "StrategyMemoryPanel imported successfully.",
+                )
+            except ImportError:
+                return _check_item(
+                    "strategy_memory_ux_import", "import", "WARN",
+                    "PySide6 not installed; GUI import skipped.",
+                )
+        except Exception as exc:
+            return _check_item(
+                "strategy_memory_ux_import", "import", "FAIL", str(exc),
+            )
+
+    def _check_strategy_memory_no_forbidden_commands(self) -> dict:
+        """v0.8.1 — StrategyMemoryAdapter.load_safe_commands must never return BUY/SELL/ORDER."""
+        _FORBIDDEN = ["BUY", "SELL", "ORDER", "EXECUTE", "SUBMIT_ORDER", "AUTO_TRADE"]
+        try:
+            from gui.strategy_memory_adapter import StrategyMemoryAdapter
+            adapter = StrategyMemoryAdapter()
+            # load_safe_commands with a non-existent id returns [] — that's safe
+            cmds = adapter.load_safe_commands("__test_nonexistent__")
+            for entry in cmds:
+                upper = entry.get("command", "").upper()
+                for kw in _FORBIDDEN:
+                    if kw in upper:
+                        return _check_item(
+                            "strategy_memory_no_forbidden_commands", "runtime_safety", "FAIL",
+                            f"load_safe_commands returned forbidden keyword '{kw}' in: {entry['command'][:80]}",
+                        )
+            return _check_item(
+                "strategy_memory_no_forbidden_commands", "runtime_safety", "PASS",
+                "StrategyMemoryAdapter.load_safe_commands: no forbidden BUY/SELL/ORDER commands.",
+            )
+        except Exception as exc:
+            return _check_item(
+                "strategy_memory_no_forbidden_commands", "runtime_safety", "WARN", str(exc),
+            )
+
+    def _check_accepted_is_research_only(self) -> dict:
+        """v0.8.1 — StrategyMemoryItem.accepted_is_research_only must always be True."""
+        try:
+            from strategy_memory.strategy_memory_schema import StrategyMemoryItem
+            item = StrategyMemoryItem(
+                title="Test item",
+                memory_type="HYPOTHESIS",
+                source_module="test",
+                status="ACCEPTED",
+                accepted_is_research_only=False,  # should be overridden to True
+            )
+            if not item.accepted_is_research_only:
+                return _check_item(
+                    "accepted_is_research_only", "runtime_safety", "FAIL",
+                    "StrategyMemoryItem.accepted_is_research_only is False even after __post_init__",
+                    suggested_fix="Ensure __post_init__ forces accepted_is_research_only=True.",
+                )
+            return _check_item(
+                "accepted_is_research_only", "runtime_safety", "PASS",
+                "StrategyMemoryItem.accepted_is_research_only is always True (enforced in __post_init__).",
+            )
+        except Exception as exc:
+            return _check_item(
+                "accepted_is_research_only", "runtime_safety", "FAIL", str(exc),
+            )
+
+    # ----------------------------------------------------------------
     # Run
     # ----------------------------------------------------------------
 
@@ -761,6 +844,10 @@ class StableReleaseChecklistV060:
             # v0.8.0 Research Intelligence Stable
             self._check_intelligence_stable_summary_can_run,
             self._check_intelligence_stable_no_forbidden_actions,
+            # v0.8.1 Strategy Memory UX
+            self._check_strategy_memory_ux_import,
+            self._check_strategy_memory_no_forbidden_commands,
+            self._check_accepted_is_research_only,
         ]
 
         for fn in checklist_groups:

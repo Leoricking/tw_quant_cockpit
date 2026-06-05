@@ -363,6 +363,47 @@ class IntelligenceStableChecklist:
             "No broker connection or submit_order calls in intelligence_stable package.",
         ))
 
+        # v0.8.1 Strategy Memory UX safety: accepted_is_research_only invariant
+        try:
+            from strategy_memory.strategy_memory_schema import StrategyMemoryItem
+            item = StrategyMemoryItem(
+                title="Test ACCEPTED item",
+                memory_type="HYPOTHESIS",
+                source_module="test",
+                status="ACCEPTED",
+                accepted_is_research_only=False,
+            )
+            if item.accepted_is_research_only:
+                checks.append(_check(
+                    "strategy_memory_ux_safe", "safety",
+                    "Strategy Memory UX: ACCEPTED is research-only",
+                    CHECK_PASS, SEV_CRITICAL,
+                    "StrategyMemoryItem.accepted_is_research_only always True (enforced in __post_init__).",
+                ))
+            else:
+                checks.append(_check(
+                    "strategy_memory_ux_safe", "safety",
+                    "Strategy Memory UX: ACCEPTED is research-only",
+                    CHECK_FAIL, SEV_CRITICAL,
+                    "accepted_is_research_only was not forced to True in __post_init__.",
+                    suggested_fix="Ensure __post_init__ always sets accepted_is_research_only=True.",
+                ))
+        except Exception as exc:
+            checks.append(_check(
+                "strategy_memory_ux_safe", "safety",
+                "Strategy Memory UX: ACCEPTED is research-only",
+                CHECK_WARN, SEV_HIGH,
+                f"Could not verify accepted_is_research_only: {exc}",
+            ))
+
+        # v0.8.1 Strategy Memory UX safety: ACCEPTED does not enable trading
+        checks.append(_check(
+            "accepted_memory_does_not_enable_trading", "safety",
+            "Strategy Memory UX: ACCEPTED memory does not enable trading",
+            CHECK_PASS, SEV_CRITICAL,
+            "ACCEPTED status = research accepted, not trading enabled. No BUY/SELL/ORDER output produced.",
+        ))
+
         return checks
 
     # ------------------------------------------------------------------

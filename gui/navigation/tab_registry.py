@@ -767,11 +767,15 @@ class GUITabRegistry:
                 group="daily_research",
                 priority="P1",
                 description=(
-                    "Strategy Research Memory v0.7.2 — extract and persist strategy hypotheses, "
+                    "Strategy Research Memory v0.8.1 — extract and persist strategy hypotheses, "
                     "rule candidates, replay mistake patterns, journal patterns, data gaps, "
                     "report gaps, regression risks, provider limitations, research conclusions, "
                     "and follow-up tasks. Upsert deduplication, status/priority tracking, "
                     "memory linking, and Markdown report. "
+                    "v0.8.1 UX: validation queue, active research threads, repeated patterns, "
+                    "status flow (NEW→REVIEWING→VALIDATING→ACCEPTED/REJECTED), "
+                    "needs_action / validation_ready UX fields, safe command labels. "
+                    "ACCEPTED = research accepted, not trading enabled. "
                     "Research Only. No Real Orders. No BUY/SELL/ORDER."
                 ),
                 module_path="gui.strategy_memory_panel",
@@ -786,8 +790,10 @@ class GUITabRegistry:
                     "replay mistake memory", "journal pattern", "data gap", "report gap",
                     "regression risk", "research conclusion", "follow-up task",
                     "memory extract", "memory store", "memory links",
+                    "memory ux", "validation queue", "active threads", "repeated patterns",
+                    "status flow", "needs action", "memory detail", "safe commands",
                     "研究記憶", "策略記憶", "策略假設", "規則候選",
-                    "復盤錯誤", "研究結論",
+                    "復盤錯誤", "研究結論", "驗證佇列", "重複模式", "狀態流",
                 ],
                 aliases=["strategy-memory", "memory", "research-memory"],
                 related_cli_commands=[
@@ -795,12 +801,15 @@ class GUITabRegistry:
                     "strategy-memory-list", "strategy-memory-search",
                     "strategy-memory-show", "strategy-memory-update-status",
                     "strategy-memory-archive", "strategy-memory-report",
+                    "strategy-memory-validation-queue",
+                    "strategy-memory-active-threads",
+                    "strategy-memory-repeated-patterns",
                 ],
                 report_types=["strategy_memory"],
                 maturity="STABLE",
                 default_visible=True,
                 favorite_default=False,
-                notes="Added in v0.7.2 — Strategy Research Memory.",
+                notes="Added in v0.7.2 — Strategy Research Memory. UX polish in v0.8.1: validation queue, active threads, repeated patterns, status flow, safe command labels.",
             ),
             # v0.7.3 Backtest-to-Coach Loop
             GUITabMetadata(

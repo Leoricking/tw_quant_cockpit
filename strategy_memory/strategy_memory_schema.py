@@ -1,5 +1,5 @@
 """
-strategy_memory_schema.py — Strategy Research Memory Schema v0.7.2
+strategy_memory_schema.py — Strategy Research Memory Schema v0.8.1
 
 [!] Research Only. No Real Orders. Production Trading BLOCKED.
 """
@@ -105,6 +105,14 @@ def _guard(text: str) -> str:
     return text
 
 
+def _guard_field(text: str, field_name: str = "") -> str:
+    """Guard a field value — wrapper around _guard with field name context."""
+    try:
+        return _guard(text)
+    except ValueError as exc:
+        raise ValueError(f"Field '{field_name}': {exc}") from exc
+
+
 @dataclass
 class StrategyMemoryItem:
     """A single research memory item. Research Only. No Real Orders."""
@@ -137,14 +145,29 @@ class StrategyMemoryItem:
     read_only:                  bool      = True
     no_real_orders:             bool      = True
     production_blocked:         bool      = True
+    # v0.8.1 UX fields (optional, backward compatible)
+    display_title:              str       = ""
+    needs_action:               bool      = False
+    validation_ready:           bool      = False
+    safe_command_count:         int       = 0
+    blocked_command_count:      int       = 0
+    status_hint:                str       = ""
+    next_step:                  str       = ""
+    last_action_at:             str       = ""
+    accepted_is_research_only:  bool      = True
 
     def __post_init__(self):
         _guard(self.title)
         _guard(self.summary)
         _guard(self.hypothesis)
         _guard(self.evidence)
+        _guard_field(self.next_step, "next_step")
+        _guard_field(self.display_title, "display_title")
         for cmd in self.suggested_commands:
             _guard(cmd)
+        # SAFETY INVARIANT: accepted_is_research_only must always be True
+        if not self.accepted_is_research_only:
+            self.accepted_is_research_only = True
 
     def to_dict(self) -> dict:
         d = asdict(self)
@@ -166,21 +189,38 @@ class StrategyMemoryItem:
                 d[lst_key] = [x for x in val.split("|") if x]
             elif val is None:
                 d[lst_key] = []
-        for bool_key in ["archived", "read_only", "no_real_orders", "production_blocked"]:
-            if isinstance(d.get(bool_key), str):
-                d[bool_key] = d[bool_key].lower() in ("true", "1", "yes")
+        for bool_key in ["archived", "read_only", "no_real_orders", "production_blocked",
+                         "needs_action", "validation_ready", "accepted_is_research_only"]:
+            raw = d.get(bool_key)
+            if raw is None:
+                # Set safe defaults for new v0.8.1 bool fields
+                if bool_key == "accepted_is_research_only":
+                    d[bool_key] = True
+                else:
+                    d[bool_key] = False
+            elif isinstance(raw, str):
+                d[bool_key] = raw.lower() in ("true", "1", "yes")
+        # Ensure accepted_is_research_only is always True
+        d["accepted_is_research_only"] = True
         for float_key in ["confidence"]:
             if isinstance(d.get(float_key), str):
                 try:
                     d[float_key] = float(d[float_key])
                 except (ValueError, TypeError):
                     d[float_key] = 0.5
-        for int_key in ["seen_count"]:
-            if isinstance(d.get(int_key), str):
+        for int_key in ["seen_count", "safe_command_count", "blocked_command_count"]:
+            raw = d.get(int_key)
+            if raw is None:
+                d[int_key] = 1 if int_key == "seen_count" else 0
+            elif isinstance(raw, str):
                 try:
-                    d[int_key] = int(d[int_key])
+                    d[int_key] = int(raw)
                 except (ValueError, TypeError):
-                    d[int_key] = 1
+                    d[int_key] = 1 if int_key == "seen_count" else 0
+        # Fill in missing v0.8.1 str fields with empty defaults
+        for str_key in ["display_title", "status_hint", "next_step", "last_action_at"]:
+            if d.get(str_key) is None:
+                d[str_key] = ""
         return cls(**{k: v for k, v in d.items() if k in cls.__dataclass_fields__})
 
 
@@ -188,19 +228,28 @@ class StrategyMemoryItem:
 class StrategyMemoryLink:
     """Link between two memory items or a memory item and an external resource."""
 
-    link_id:          str = field(default_factory=lambda: str(uuid.uuid4())[:12])
-    source_memory_id: str = ""
-    target_type:      str = ""
-    target_id:        str = ""
-    relation_type:    str = RELATION_RELATED_TO
-    description:      str = ""
-    created_at:       str = field(default_factory=lambda: datetime.now().isoformat())
+    link_id:            str = field(default_factory=lambda: str(uuid.uuid4())[:12])
+    source_memory_id:   str = ""
+    target_type:        str = ""
+    target_id:          str = ""
+    relation_type:      str = RELATION_RELATED_TO
+    description:        str = ""
+    created_at:         str = field(default_factory=lambda: datetime.now().isoformat())
+    # v0.8.1 UX fields (optional, backward compatible)
+    target_title:       str = ""
+    why_linked:         str = ""
+    suggested_next_step: str = ""
 
     def to_dict(self) -> dict:
         return asdict(self)
 
     @classmethod
     def from_dict(cls, d: dict) -> "StrategyMemoryLink":
+        d = dict(d)
+        # Fill in missing v0.8.1 fields with empty defaults
+        for str_key in ["target_title", "why_linked", "suggested_next_step"]:
+            if d.get(str_key) is None:
+                d[str_key] = ""
         return cls(**{k: v for k, v in d.items() if k in cls.__dataclass_fields__})
 
 

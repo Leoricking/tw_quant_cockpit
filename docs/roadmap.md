@@ -170,13 +170,20 @@ Research Only. No Real Orders. Production Trading: BLOCKED.
 Research Intelligence Stable validates and stabilizes all Research Intelligence capabilities: Research Intelligence (v0.7.0-v0.7.1), Strategy Memory (v0.7.2), and Backtest-to-Coach Loop (v0.7.3). 29 capabilities across 5 categories (Research Intelligence, Strategy Memory, Backtest Coach, Supporting, Safety), 7-category stable checklist (Import Health, CLI Health, Report Health, Safety, Regression, Runtime, Stable Integration), release manifest (JSON + Markdown), and safety audit. 6 CLI commands, GUI panel (Intelligence Stable tab), Markdown report, CSV store.
 Research Only. No Real Orders. Production Trading: BLOCKED.
 
+### Completed: v0.8.1 — Strategy Memory UX
+
+**Status:** Done
+
+Strategy Memory UX v0.8.1 polishes the Strategy Research Memory system: full status lifecycle flow (NEW→REVIEWING→VALIDATING→ACCEPTED/REJECTED/NEEDS_MORE_EVIDENCE), actionable UX fields (needs_action, validation_ready, status_hint, next_step, last_action_at), safe command labelling (SAFE_READ_ONLY/SAFE_REPORT/SAFE_REGRESSION/SAFE_REPLAY/SAFE_DATA_CHECK), 3 new CLI views (validation-queue, active-threads, repeated-patterns), enhanced GUI panel with 7-tab detail view, conservative duplicate detection, memory link improvements (why_linked, suggested_next_step), memory store protected statuses, and Research/Backtest Coach memory integration. All backward compatible. ACCEPTED = research only, never enables trading.
+Research Only. No Real Orders. Production Trading: BLOCKED.
+
 ### Next Steps (Planned)
 
 | Version | Feature | Priority |
 |---------|---------|---------|
-| v0.8.1 | Research Intelligence History — trend signals over time, progress charts | P2 |
-| v0.8.2 | Advanced Replay Analysis — pattern detection, multi-session comparison | P2 |
-| v0.8.3 | Strategy Memory LLM-assisted extraction scaffold | P2 |
+| v0.8.2 | Research Intelligence History — trend signals over time, progress charts | P2 |
+| v0.8.3 | Advanced Replay Analysis — pattern detection, multi-session comparison | P2 |
+| v0.8.4 | Strategy Memory LLM-assisted extraction scaffold | P2 |
 | v0.9.0 | AI Review Engine Stable — LLM-assisted signal analysis and coaching | P1 |
 
 ---

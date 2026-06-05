@@ -3,6 +3,8 @@
 > **[!] Research Only. No Real Orders. Production Trading: BLOCKED.**
 > **[!] Not Investment Advice. REAL_ORDER_READY=False.**
 
+> **v0.8.1 update:** Strategy Memory UX polish released. See [strategy_memory_ux_v0.8.1.md](strategy_memory_ux_v0.8.1.md) for the v0.8.1 change log.
+
 ---
 
 ## v0.8.0 Goals

@@ -4,7 +4,36 @@
 >
 > **[!] v1: Real order execution is strictly prohibited. For research, simulation, and decision support only. Not investment advice.**
 
-**Current version: v0.8.0 — Research Intelligence Stable**
+**Current version: v0.8.1 — Strategy Memory UX**
+
+---
+
+## v0.8.1 — Strategy Memory UX
+
+**New in v0.8.1:**
+
+- **Status Lifecycle Flow**: NEW → REVIEWING → VALIDATING → ACCEPTED/REJECTED/NEEDS_MORE_EVIDENCE/ARCHIVED
+- **ACCEPTED Invariant**: `accepted_is_research_only=True` always enforced. ACCEPTED = research accepted, NOT trading enabled.
+- **New UX Fields**: `needs_action`, `validation_ready`, `status_hint`, `next_step`, `last_action_at`, `display_title`, `safe_command_count`, `blocked_command_count`
+- **Safe Command Labels**: SAFE_READ_ONLY / SAFE_REPORT / SAFE_REGRESSION / SAFE_REPLAY / SAFE_DATA_CHECK (BUY/SELL/ORDER blocked)
+- **3 New CLI Views**: `strategy-memory-validation-queue`, `strategy-memory-active-threads`, `strategy-memory-repeated-patterns`
+- **Enhanced CLI**: `strategy-memory-list --active-only --needs-action --sort`, `strategy-memory-search --needs-action --source-module`
+- **GUI Detail Tabs**: Summary, Hypothesis, Evidence, Validation, Commands, Links, Safety (7 tabs)
+- **Memory Link Improvements**: `target_title`, `why_linked`, `suggested_next_step` on all links
+- **Conservative Deduplication**: similarity > 80% AND same memory_type AND same source_module
+- **Research/Coach Integration**: memory_summary param in recommendation_engine; memory_items param in coach_task_builder
+- **[!] Research Only. No Real Orders. Production Trading: BLOCKED. ACCEPTED ≠ trading.**
+
+```bash
+python main.py strategy-memory-summary
+python main.py strategy-memory-list --active-only
+python main.py strategy-memory-list --needs-action
+python main.py strategy-memory-validation-queue
+python main.py strategy-memory-active-threads
+python main.py strategy-memory-repeated-patterns
+python main.py strategy-memory-search --needs-action
+python main.py strategy-memory-report --mode real
+```
 
 ---
 

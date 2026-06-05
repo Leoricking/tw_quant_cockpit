@@ -1,4 +1,4 @@
-# TW Quant Cockpit — Strategy Research Memory v0.7.2
+# TW Quant Cockpit — Strategy Research Memory v0.8.1
 
 > **[!] Research Only. No Real Orders. Production Trading: BLOCKED.**
 > **[!] Not Investment Advice. REAL_ORDER_READY=False.**
@@ -51,11 +51,20 @@ All items are research-only. No trading actions, no auto-accept/reject, no real 
 | `python main.py strategy-memory` | Run full extraction pipeline |
 | `python main.py strategy-memory-summary` | Show latest summary |
 | `python main.py strategy-memory-list` | List all memories |
+| `python main.py strategy-memory-list --active-only` | List active (non-archived) memories |
+| `python main.py strategy-memory-list --needs-action` | List memories needing action |
+| `python main.py strategy-memory-list --sort priority` | Sort by priority |
+| `python main.py strategy-memory-list --include-archived` | Include archived memories |
 | `python main.py strategy-memory-search --keyword replay` | Search by keyword |
-| `python main.py strategy-memory-show --memory-id XXXXX` | Show single memory |
+| `python main.py strategy-memory-search --needs-action` | Search for action-needed items |
+| `python main.py strategy-memory-search --source-module replay_training` | Filter by source module |
+| `python main.py strategy-memory-show --memory-id XXXXX` | Show single memory detail |
 | `python main.py strategy-memory-update-status --memory-id XXXXX --status REVIEWING` | Update status |
 | `python main.py strategy-memory-archive --memory-id XXXXX` | Archive a memory |
 | `python main.py strategy-memory-report` | Generate Markdown report |
+| `python main.py strategy-memory-validation-queue` | Show memories ready for validation |
+| `python main.py strategy-memory-active-threads` | Show active research threads |
+| `python main.py strategy-memory-repeated-patterns` | Show repeated pattern memories |
 
 ---
 
@@ -109,6 +118,44 @@ Links are built automatically between:
 
 ---
 
+## v0.8.1 UX Additions
+
+| Feature | Description |
+|---------|-------------|
+| `needs_action` field | True for P0/P1 items needing immediate attention |
+| `validation_ready` field | True for items in VALIDATING status |
+| `status_hint` field | Human-readable status label |
+| `next_step` field | Suggested safe CLI command for next step |
+| `last_action_at` field | ISO timestamp of last status change |
+| `display_title` field | Formatted title for GUI display |
+| `safe_command_count` field | Number of safe commands available |
+| `blocked_command_count` field | Always 0 (BUY/SELL/ORDER commands blocked) |
+| `accepted_is_research_only` | Always True — ACCEPTED ≠ trading enabled |
+
+### Status Flow
+
+```
+NEW → REVIEWING → VALIDATING → ACCEPTED
+                              → REJECTED
+                              → NEEDS_MORE_EVIDENCE
+* → ARCHIVED (any status)
+```
+
+**ACCEPTED means: research finding accepted for further study.**
+**ACCEPTED does NOT mean: strategy enabled, trade signal generated, or order placed.**
+
+### Safe Command Labels
+
+| Label | Meaning |
+|-------|---------|
+| `SAFE_READ_ONLY` | Display/list command, no side effects |
+| `SAFE_REPORT` | Report generation command |
+| `SAFE_REGRESSION` | Regression suite command |
+| `SAFE_REPLAY` | Replay training command |
+| `SAFE_DATA_CHECK` | Data coverage command |
+
+---
+
 ## Safety Invariants
 
 | Property | Value |
@@ -121,24 +168,29 @@ Links are built automatically between:
 | Modify Rule Weights | NO |
 | Connect to Broker | NO |
 | Real Order Ready | NO |
+| ACCEPTED Enables Trading | NO — research-only invariant always enforced |
+| BUY/SELL/ORDER in Commands | BLOCKED — load_safe_commands() guards all output |
 
 ---
 
-## GUI Panel
+## GUI Panel (v0.8.1)
 
 The Strategy Research Memory panel is available in the TW Quant Cockpit GUI under the `research_os` tab group.
 
 Features:
-- Safety banner always visible
-- Summary cards (Total, Active, New, Reviewing, etc.)
-- Filter by keyword, type, status, priority, symbol
-- Memory table with color-coded priority and status
-- Detail panel with hypothesis, evidence, validation plan, suggested commands
-- Links table
-- Run extraction, generate report, refresh, update status, archive
+- Safety banner: "ACCEPTED means research accepted, not trading enabled"
+- Summary cards: Total, Active, Needs Action, Validation Queue, Repeated, P0, P1, Blocked Cmds
+- Filters: keyword, type, status, priority, symbol, source module, active-only, needs-action, include-archived
+- Memory table: Priority, Status, Type, Title, Source, Symbols, Seen, Last Seen, Needs Action, Validation Ready
+- Detail panel tabs: Summary, Hypothesis, Evidence, Validation, Commands, Links, Safety
+- Commands tab: safe command list with safety labels; BUY/SELL/ORDER keywords blocked
+- Links tab: Relation, Source, Target, Why Linked, Next Step columns
+- Safety tab: research-only declaration with ACCEPTED note
+- Status action buttons: Set REVIEWING, Set VALIDATING, Set NEEDS_MORE_EVIDENCE, Set ACCEPTED, Set REJECTED, Archive
+- Run extraction, generate report, refresh
 
 ---
 
 *[!] Research Only. No Real Orders. Production Trading BLOCKED. Not Investment Advice.*
 
-*TW Quant Cockpit v0.7.2 — Strategy Research Memory.*
+*TW Quant Cockpit v0.8.1 — Strategy Research Memory UX.*

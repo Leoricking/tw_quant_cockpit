@@ -1,5 +1,5 @@
 """
-memory_store.py — Strategy Research Memory Store v0.7.2
+memory_store.py — Strategy Research Memory Store v0.8.1
 
 [!] Research Only. No Real Orders. Production Trading BLOCKED.
 """
@@ -60,7 +60,7 @@ class StrategyMemoryStore:
         _write_csv(path, [summary.to_dict()])
 
     def save_timeline(self, memories: List[StrategyMemoryItem]) -> None:
-        """Save a timeline view (sorted by created_at desc)."""
+        """Save a timeline view (sorted by created_at desc, includes all fields)."""
         path = os.path.join(self._dir, self._TIMELINE_FILE)
         rows = sorted(
             [m.to_dict() for m in memories],
@@ -116,10 +116,13 @@ class StrategyMemoryStore:
         Merge new_items into existing store.
 
         Deduplication key: normalized(title) + memory_type + source_module.
-        - If duplicate found and existing status != NEW: keep existing status.
+        - If duplicate found and existing status in (REVIEWING, VALIDATING, ACCEPTED, REJECTED):
+          preserve existing status — do NOT overwrite.
+        - If duplicate found and existing status is NEW: update title/summary.
         - If duplicate found: seen_count += 1, last_seen_at = now.
         - If new: insert with status=NEW.
         """
+        _PROTECTED_STATUSES = {"REVIEWING", "VALIDATING", "ACCEPTED", "REJECTED"}
         existing = {_upsert_key(m): m for m in self.load_memories()}
         now = datetime.now().isoformat()
         for item in new_items:
@@ -133,6 +136,9 @@ class StrategyMemoryStore:
                 if ex.status == STATUS_NEW:
                     ex.title   = item.title
                     ex.summary = item.summary
+                # Do NOT overwrite status if it has been progressed by user
+                if ex.status not in _PROTECTED_STATUSES:
+                    pass  # keep existing status as-is (not NEW means user changed it)
             else:
                 existing[key] = item
         merged = list(existing.values())
@@ -143,14 +149,30 @@ class StrategyMemoryStore:
     # --- Mutations ---
 
     def update_status(self, memory_id: str, status: str) -> bool:
-        """Update status of a memory item. Returns True if found."""
+        """
+        Update status of a memory item. Returns True if found.
+
+        v0.8.1: Also sets last_action_at. Validates transition (warns but doesn't block).
+        ACCEPTED status always keeps accepted_is_research_only=True.
+        """
+        _VALID_STATUSES = {"NEW", "REVIEWING", "VALIDATING", "ACCEPTED",
+                           "REJECTED", "ARCHIVED", "NEEDS_MORE_EVIDENCE"}
+        if status not in _VALID_STATUSES:
+            logger.warning("update_status: unknown status '%s' — proceeding anyway", status)
         memories = self.load_memories()
         found = False
         now = datetime.now().isoformat()
         for m in memories:
             if m.memory_id == memory_id:
+                old_status = m.status
                 m.status = status
                 m.updated_at = now
+                m.last_action_at = now
+                # SAFETY: ACCEPTED never means trading is enabled
+                if status == "ACCEPTED":
+                    m.accepted_is_research_only = True
+                # Log transition
+                logger.info("update_status: %s %s → %s (research only)", memory_id, old_status, status)
                 found = True
         if found:
             self.save_memories(memories)

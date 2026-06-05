@@ -11,10 +11,10 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 
 class VersionInfo:
-    """Centralized version and safety metadata for v0.8.0."""
+    """Centralized version and safety metadata for v0.8.1."""
 
-    version            = "v0.8.0"
-    release_name       = "Research Intelligence Stable"
+    version            = "v0.8.1"
+    release_name       = "Strategy Memory UX"
     release_stage      = "STABLE"
     read_only          = True
     no_real_orders     = True
@@ -23,6 +23,16 @@ class VersionInfo:
     research_only      = True
     supported_modes    = ["real", "mock"]
     major_features     = [
+        "Strategy Memory UX v0.8.1",
+        "Status lifecycle: NEW→REVIEWING→VALIDATING→ACCEPTED/REJECTED/NEEDS_MORE_EVIDENCE",
+        "accepted_is_research_only=True invariant — ACCEPTED ≠ trading enabled",
+        "UX fields: needs_action, validation_ready, status_hint, next_step, last_action_at",
+        "Safe command labels: SAFE_READ_ONLY/SAFE_REPORT/SAFE_REGRESSION/SAFE_REPLAY/SAFE_DATA_CHECK",
+        "3 new CLI views: validation-queue, active-threads, repeated-patterns",
+        "7-tab detail panel in GUI: Summary/Hypothesis/Evidence/Validation/Commands/Links/Safety",
+        "Memory link improvements: target_title, why_linked, suggested_next_step",
+        "Conservative duplicate detection (>80% similarity + same type + same module)",
+        "Research/Coach integration: memory_summary/memory_items params",
         "Research Intelligence Stable v0.8.0",
         "Intelligence Stable Schema (29 capabilities)",
         "Intelligence Capability Matrix",
@@ -133,7 +143,7 @@ def print_version_info() -> None:
 def get_safety_banner() -> str:
     """Return one-line safety banner string."""
     return (
-        "[!] v0.8.0 Research Only | No Real Orders | "
+        "[!] v0.8.1 Research Only | No Real Orders | "
         "Production BLOCKED | real_order_ready=False"
     )
 

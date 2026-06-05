@@ -1,10 +1,11 @@
 """
-reports/strategy_memory_report.py — StrategyMemoryReportBuilder v0.7.2
+reports/strategy_memory_report.py — StrategyMemoryReportBuilder v0.8.1
 
 Generates a Markdown research memory report from StrategyMemoryStore outputs.
 
 [!] Research Only. No Real Orders. Production Trading BLOCKED.
 [!] Not Investment Advice.
+[!] ACCEPTED status = research conclusion accepted. NOT a trading signal.
 """
 from __future__ import annotations
 import os
@@ -17,7 +18,8 @@ logger = logging.getLogger(__name__)
 _BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 _SAFETY_HEADER = (
-    "[!] Research Only  |  No Real Orders  |  Production Trading BLOCKED  |  Not Investment Advice"
+    "[!] Research Only  |  No Real Orders  |  Production Trading BLOCKED  |  Not Investment Advice  "
+    "|  ACCEPTED = Research Finding Only, NOT a trading signal"
 )
 
 
@@ -69,11 +71,34 @@ class StrategyMemoryReportBuilder:
 
         lines = []
 
+        # Helpers
+        from strategy_memory.memory_query import StrategyMemoryQuery
+        from strategy_memory.strategy_memory_schema import (
+            PRIORITY_P0, PRIORITY_P1,
+            MEMORY_TYPE_RULE_CANDIDATE, MEMORY_TYPE_STRATEGY_HYPOTHESIS,
+            MEMORY_TYPE_REPLAY_MISTAKE_PATTERN, MEMORY_TYPE_JOURNAL_PATTERN,
+            MEMORY_TYPE_DATA_GAP, MEMORY_TYPE_REPORT_GAP,
+            MEMORY_TYPE_PROVIDER_LIMITATION,
+        )
+
+        priority_order = {"P0": 0, "P1": 1, "P2": 2, "P3": 3}
+        active = [m for m in memories if not m.archived]
+        top_mems = sorted(active, key=lambda m: (priority_order.get(m.priority, 9), m.created_at))
+
+        # Compute today focus
+        today_focus = ""
+        focus_mem = None
+        for m in top_mems:
+            if m.status in ("NEW", "REVIEWING", "VALIDATING", "NEEDS_MORE_EVIDENCE"):
+                today_focus = m.title
+                focus_mem = m
+                break
+
         # --- Section 1: Header ---
         lines += [
-            f"# TW Quant Cockpit — Strategy Research Memory Report",
+            f"# TW Quant Cockpit — Strategy Research Memory Report v0.8.1",
             f"",
-            f"> **v0.7.2 | {today}**",
+            f"> **v0.8.1 | {today}**",
             f">",
             f"> {_SAFETY_HEADER}",
             f"",
@@ -81,176 +106,170 @@ class StrategyMemoryReportBuilder:
             "",
         ]
 
-        # --- Section 2: 總覽 Overview ---
-        lines += ["## 1. 總覽 (Overview)", ""]
+        # --- Section 2: Today Memory Focus ---
+        lines += ["## 1. Today Memory Focus", ""]
+        if focus_mem:
+            lines += [
+                f"**Top Memory:** {focus_mem.title}",
+                f"",
+                f"- **Priority:** {focus_mem.priority}",
+                f"- **Status:** {focus_mem.status}",
+                f"- **Type:** {focus_mem.memory_type}",
+                f"- **Source:** {focus_mem.source_module}",
+                f"- **Why it matters:** {focus_mem.summary[:120] or 'See evidence below.'}",
+                f"",
+            ]
+            if focus_mem.suggested_commands:
+                lines += [f"**Suggested Safe Command:** `{focus_mem.suggested_commands[0]}`", ""]
+            else:
+                lines += [f"**Suggested Safe Command:** `python main.py strategy-memory-summary`", ""]
+        else:
+            lines += ["_No active memories found._", ""]
+        lines += ["---", ""]
+
+        # --- Section 3: Memory Status Board ---
+        lines += ["## 2. Memory Status Board", ""]
         if summary:
             s = summary
             lines += [
-                f"| Item | Value |",
-                f"|------|-------|",
-                f"| Total Memories | {s.total_memories} |",
-                f"| Active | {s.active_count} |",
-                f"| Archived | {s.archived_count} |",
-                f"| New | {s.new_count} |",
-                f"| Reviewing | {s.reviewing_count} |",
-                f"| Validating | {s.validating_count} |",
-                f"| Accepted | {s.accepted_count} |",
-                f"| Rejected | {s.rejected_count} |",
-                f"| Needs Evidence | {s.needs_more_evidence_count} |",
+                f"| Status | Count |",
+                f"|--------|-------|",
+                f"| NEW | {s.new_count} |",
+                f"| REVIEWING | {s.reviewing_count} |",
+                f"| VALIDATING | {s.validating_count} |",
+                f"| ACCEPTED | {s.accepted_count} — *research only, not trading* |",
+                f"| REJECTED | {s.rejected_count} |",
+                f"| NEEDS_MORE_EVIDENCE | {s.needs_more_evidence_count} |",
+                f"| ARCHIVED | {s.archived_count} |",
+                f"| **Total** | **{s.total_memories}** |",
                 f"| P0 | {s.p0_count} |",
                 f"| P1 | {s.p1_count} |",
-                f"| Duplicates | {s.duplicate_count} |",
-                f"| Top Memory | {s.top_memory or '—'} |",
-                f"| Overall Status | {s.overall_status} |",
                 f"| Research Only | YES |",
                 f"| No Real Orders | YES |",
-                f"| Production BLOCKED | YES |",
                 "",
             ]
         else:
-            lines += [
-                "_No summary available. Run: `python main.py strategy-memory --mode real`_",
-                "",
-            ]
+            lines += ["_No summary available. Run: `python main.py strategy-memory --mode real`_", ""]
+        lines += ["---", ""]
 
-        # --- Section 3: Memory Timeline ---
-        lines += ["## 2. Memory Timeline", ""]
-        active = [m for m in memories if not m.archived]
-        timeline = sorted(active, key=lambda m: m.created_at, reverse=True)[:20]
-        if timeline:
-            lines += [
-                f"| Memory ID | Type | Priority | Status | Title | Created |",
-                f"|-----------|------|----------|--------|-------|---------|",
-            ]
-            for m in timeline:
-                lines.append(
-                    f"| {m.memory_id} | {m.memory_type[:20]} | {m.priority} | {m.status} "
-                    f"| {m.title[:50]} | {m.created_at[:10]} |"
-                )
-            lines.append("")
-        else:
-            lines += ["_No memories in timeline._", ""]
-
-        # --- Section 4: Top Active Memories ---
-        lines += ["## 3. Top Active Memories", ""]
-        from strategy_memory.strategy_memory_schema import PRIORITY_P0, PRIORITY_P1
-        priority_order = {"P0": 0, "P1": 1, "P2": 2, "P3": 3}
-        top_mems = sorted(active, key=lambda m: (priority_order.get(m.priority, 9), m.created_at))[:10]
-        for i, m in enumerate(top_mems, 1):
-            lines += [
-                f"### {i}. [{m.priority}] {m.title}",
-                f"",
-                f"- **Type:** {m.memory_type}",
-                f"- **Status:** {m.status}",
-                f"- **Source:** {m.source_module}",
-                f"- **Confidence:** {m.confidence:.2f}",
-                f"- **Seen:** {m.seen_count}x (last: {m.last_seen_at[:10]})",
-                f"",
-            ]
-            if m.hypothesis:
-                lines += [f"**Hypothesis:** {m.hypothesis}", ""]
-            if m.evidence:
-                lines += [f"**Evidence:** {m.evidence}", ""]
-            if m.validation_plan:
-                lines += [f"**Validation Plan:** {m.validation_plan}", ""]
-            if m.suggested_commands:
-                lines += [f"**Suggested Commands:**"]
-                for cmd in m.suggested_commands:
-                    lines.append(f"  - `{cmd}`")
+        # --- Section 4: Active Research Threads ---
+        lines += ["## 3. Active Research Threads", ""]
+        type_groups = {
+            "Strategy Hypotheses": MEMORY_TYPE_STRATEGY_HYPOTHESIS,
+            "Rule Candidates": MEMORY_TYPE_RULE_CANDIDATE,
+            "Replay Mistakes": MEMORY_TYPE_REPLAY_MISTAKE_PATTERN,
+            "Journal Patterns": MEMORY_TYPE_JOURNAL_PATTERN,
+            "Data Gaps": MEMORY_TYPE_DATA_GAP,
+        }
+        for group_name, mtype in type_groups.items():
+            group_mems = [m for m in active if m.memory_type == mtype and m.status not in ("ARCHIVED", "REJECTED")]
+            if group_mems:
+                lines += [f"### {group_name} ({len(group_mems)})", ""]
+                lines += ["| ID | Priority | Status | Title | Seen |", "|-----|----------|--------|-------|------|"]
+                for m in group_mems[:8]:
+                    lines.append(f"| {m.memory_id} | {m.priority} | {m.status} | {m.title[:50]} | {m.seen_count} |")
                 lines.append("")
-            if m.risk_notes:
-                lines += [f"**Risk Notes:** {m.risk_notes}", ""]
-            lines.append("---")
-            lines.append("")
+        lines += ["---", ""]
 
-        # --- Section 5: Rule / Strategy Memories ---
-        lines += ["## 4. Rule / Strategy Memories", ""]
-        from strategy_memory.strategy_memory_schema import (
-            MEMORY_TYPE_RULE_CANDIDATE, MEMORY_TYPE_STRATEGY_HYPOTHESIS
-        )
-        rule_strat = [m for m in active if m.memory_type in (
-            MEMORY_TYPE_RULE_CANDIDATE, MEMORY_TYPE_STRATEGY_HYPOTHESIS)]
-        if rule_strat:
-            lines += [
-                "| Memory ID | Type | Priority | Status | Title |",
-                "|-----------|------|----------|--------|-------|",
-            ]
-            for m in rule_strat:
-                lines.append(
-                    f"| {m.memory_id} | {m.memory_type} | {m.priority} | {m.status} | {m.title[:60]} |"
-                )
+        # --- Section 5: Validation Queue ---
+        lines += ["## 4. Validation Queue", ""]
+        val_queue = [m for m in active if
+                     m.status in ("VALIDATING", "REVIEWING") or
+                     (m.validation_plan and m.status in ("NEW", "REVIEWING"))]
+        val_queue = sorted(val_queue, key=lambda m: priority_order.get(m.priority, 9))
+        if val_queue:
+            lines += ["| ID | Priority | Status | Title | Validation Plan | Suggested Command |",
+                      "|----|----------|--------|-------|-----------------|-------------------|"]
+            for m in val_queue[:10]:
+                vp = (m.validation_plan or "—")[:60]
+                cmd = m.suggested_commands[0] if m.suggested_commands else "—"
+                lines.append(f"| {m.memory_id} | {m.priority} | {m.status} | {m.title[:45]} | {vp} | `{cmd[:50]}` |")
             lines.append("")
         else:
-            lines += ["_No rule/strategy memories._", ""]
+            lines += ["_No memories in validation queue._", ""]
+        lines += ["---", ""]
 
-        # --- Section 6: Replay / Journal Memories ---
-        lines += ["## 5. Replay / Journal Memories", ""]
-        from strategy_memory.strategy_memory_schema import (
-            MEMORY_TYPE_REPLAY_MISTAKE_PATTERN, MEMORY_TYPE_JOURNAL_PATTERN
-        )
-        replay_journal = [m for m in active if m.memory_type in (
-            MEMORY_TYPE_REPLAY_MISTAKE_PATTERN, MEMORY_TYPE_JOURNAL_PATTERN)]
-        if replay_journal:
-            lines += [
-                "| Memory ID | Type | Priority | Status | Title |",
-                "|-----------|------|----------|--------|-------|",
-            ]
-            for m in replay_journal:
-                lines.append(
-                    f"| {m.memory_id} | {m.memory_type} | {m.priority} | {m.status} | {m.title[:60]} |"
-                )
+        # --- Section 6: Repeated Patterns ---
+        lines += ["## 5. Repeated Patterns", ""]
+        repeated = sorted([m for m in active if m.seen_count > 1], key=lambda m: m.seen_count, reverse=True)
+        if repeated:
+            lines += ["| Title | Seen | Source | Priority | Next Step |",
+                      "|-------|------|--------|----------|-----------|"]
+            for m in repeated[:10]:
+                nxt = m.next_step or (m.suggested_commands[0] if m.suggested_commands else "—")
+                lines.append(f"| {m.title[:50]} | {m.seen_count} | {m.source_module} | {m.priority} | `{nxt[:50]}` |")
             lines.append("")
         else:
-            lines += ["_No replay/journal memories._", ""]
+            lines += ["_No repeated patterns found._", ""]
+        lines += ["---", ""]
 
-        # --- Section 7: Data / Report Gap Memories ---
-        lines += ["## 6. Data / Report Gap Memories", ""]
-        from strategy_memory.strategy_memory_schema import (
-            MEMORY_TYPE_DATA_GAP, MEMORY_TYPE_REPORT_GAP,
-            MEMORY_TYPE_PROVIDER_LIMITATION
-        )
-        gaps = [m for m in active if m.memory_type in (
-            MEMORY_TYPE_DATA_GAP, MEMORY_TYPE_REPORT_GAP, MEMORY_TYPE_PROVIDER_LIMITATION)]
-        if gaps:
-            lines += [
-                "| Memory ID | Type | Priority | Status | Title |",
-                "|-----------|------|----------|--------|-------|",
-            ]
-            for m in gaps:
-                lines.append(
-                    f"| {m.memory_id} | {m.memory_type} | {m.priority} | {m.status} | {m.title[:60]} |"
-                )
-            lines.append("")
-        else:
-            lines += ["_No data/report gap memories._", ""]
-
-        # --- Section 8: Memory Links ---
-        lines += ["## 7. Memory Links", ""]
+        # --- Section 7: Memory Links ---
+        lines += ["## 6. Memory Links", ""]
         if links:
             lines += [
-                "| Link ID | Source | Relation | Target | Description |",
-                "|---------|--------|----------|--------|-------------|",
+                "| Relation | Source | Target | Why Linked |",
+                "|----------|--------|--------|------------|",
             ]
             for lk in links[:30]:
+                why = getattr(lk, "why_linked", "") or lk.description[:50]
                 lines.append(
-                    f"| {lk.link_id} | {lk.source_memory_id} | {lk.relation_type} "
-                    f"| {lk.target_id[:20]} | {lk.description[:50]} |"
+                    f"| {lk.relation_type} | {lk.source_memory_id} "
+                    f"| {getattr(lk, 'target_title', None) or lk.target_id[:20]} | {why[:60]} |"
                 )
             if len(links) > 30:
                 lines.append(f"_... and {len(links) - 30} more links._")
             lines.append("")
         else:
             lines += ["_No links found._", ""]
+        lines += ["---", ""]
 
-        # --- Section 9: Safety ---
+        # --- Section 8: Suggested Safe Commands ---
+        lines += ["## 7. Suggested Safe Commands", ""]
+        safe_cmd_rows = []
+        for m in top_mems[:5]:
+            for cmd in m.suggested_commands[:2]:
+                label = "SAFE_READ_ONLY"
+                if "report" in cmd:
+                    label = "SAFE_REPORT"
+                elif "regression" in cmd:
+                    label = "SAFE_REGRESSION"
+                elif "replay" in cmd:
+                    label = "SAFE_REPLAY"
+                elif "data" in cmd:
+                    label = "SAFE_DATA_CHECK"
+                safe_cmd_rows.append((cmd, label, m.title[:40]))
+        if safe_cmd_rows:
+            lines += ["| Command | Safety Label | Purpose |", "|---------|--------------|---------|"]
+            for cmd, label, purpose in safe_cmd_rows[:10]:
+                lines.append(f"| `{cmd[:60]}` | {label} | {purpose} |")
+            lines.append("")
+        else:
+            lines += ["_No suggested commands found in active memories._", ""]
+        lines += ["---", ""]
+
+        # --- Section 9: What Not To Do ---
         lines += [
-            "## 8. Safety",
+            "## 8. What Not To Do",
+            "",
+            "- Do NOT interpret ACCEPTED status as a signal to enable or run a trading strategy.",
+            "- Do NOT auto-execute any suggested command — all commands are research-only safe reads.",
+            "- Do NOT connect memory outputs to broker APIs — this system has no broker connection.",
+            "- Do NOT treat memory counts or priorities as real-money position sizing signals.",
+            "",
+            "---",
+            "",
+        ]
+
+        # --- Section 10: Safety Declaration ---
+        lines += [
+            "## 9. Safety Declaration",
             "",
             "| Safety Property | Value |",
             "|-----------------|-------|",
             "| Research Only | YES |",
             "| No Real Orders | YES |",
             "| Production Trading | BLOCKED |",
+            "| ACCEPTED = Trading Enabled | NO — ACCEPTED means research finding only |",
             "| Auto-Accept Memory | NO |",
             "| Auto-Reject Memory | NO |",
             "| Modify Rule Weights | NO |",
@@ -259,8 +278,8 @@ class StrategyMemoryReportBuilder:
             "",
             "---",
             "",
-            "_Generated by TW Quant Cockpit v0.7.2 — Strategy Research Memory._",
-            "_[!] Research Only. No Real Orders. Production Trading BLOCKED._",
+            "_Generated by TW Quant Cockpit v0.8.1 — Strategy Research Memory._",
+            "_[!] Research Only. No Real Orders. Production Trading BLOCKED. Not Investment Advice._",
         ]
 
         content = "\n".join(lines) + "\n"

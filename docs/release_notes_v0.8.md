@@ -104,4 +104,65 @@ python main.py intelligence-stable-report       # Generate Markdown report
 
 ---
 
+## v0.8.1 — Strategy Memory UX
+
+**Released:** 2026-06-05
+
+### Overview
+
+v0.8.1 is a UX polish release for the Strategy Research Memory system. It adds a full status lifecycle flow, actionable UX fields, safe command labelling, new CLI views (validation-queue, active-threads, repeated-patterns), and enhanced GUI detail panel with 7 tabs. Backward compatible. No existing functionality removed. Research Only. No Real Orders. ACCEPTED ≠ trading enabled.
+
+### Modified Files
+
+| File | Change |
+|------|--------|
+| `strategy_memory/strategy_memory_schema.py` | 9 new optional fields on StrategyMemoryItem; 3 new fields on StrategyMemoryLink; accepted_is_research_only invariant enforced |
+| `strategy_memory/memory_query.py` | search_advanced(), sort_memories(), get_validation_queue(), get_active_research_threads(), get_repeated_patterns(); optional store= constructor |
+| `strategy_memory/memory_store.py` | Protected statuses in upsert; last_action_at tracking; accepted_is_research_only=True on ACCEPTED |
+| `strategy_memory/strategy_memory_engine.py` | today_focus, active_threads_count, validation_queue_count, needs_action_count in run() result |
+| `strategy_memory/memory_linker.py` | Conservative duplicate detection; target_title, why_linked, suggested_next_step on links |
+| `strategy_memory/memory_extractor.py` | needs_action=True for P0/P1 signals; reduced NOT_GENERATED noise |
+| `reports/strategy_memory_report.py` | 10-section format with today_focus, validation queue, repeated patterns, why_linked |
+| `gui/strategy_memory_panel.py` | 7-tab detail panel; status action buttons; source module filter; needs_action/validation_ready columns; closeEvent cleanup |
+| `gui/strategy_memory_adapter.py` | 7 new methods: search_advanced, get_validation_queue, get_active_research_threads, get_repeated_patterns, load_memory_detail, load_memory_links, load_safe_commands |
+| `main.py` | 3 new CLI commands; enhanced summary/list/search/show/update-status output |
+| `research_intelligence/recommendation_engine.py` | memory_summary parameter; P3 seen-before "(seen)" tagging |
+| `backtest_coach/coach_task_builder.py` | memory_items parameter; _deduplicate_tasks(); related_memory_id lookup |
+| `regression/suite_registry.py` | 6 new research_os test cases; 2 release gate test cases |
+| `stable_release/stable_release_checklist_v060.py` | 3 new v0.8.1 check methods |
+| `intelligence_stable/intelligence_stable_checklist.py` | 2 new v0.8.1 safety checks |
+| `stable_release/capability_matrix.py` | strategy_memory_ux StableCapability; strategy_research_memory updated |
+| `intelligence_stable/intelligence_capability_matrix.py` | sm_ux_v081 IntelligenceStableCapability |
+| `reports/intelligence_stable_report.py` | Strategy Memory Layer section updated with v0.8.1 status |
+| `gui/navigation/tab_registry.py` | memory ux, validation queue, active threads, repeated patterns keywords |
+| `docs/strategy_research_memory.md` | Updated to v0.8.1 |
+| `docs/strategy_memory_ux_v0.8.1.md` | New: full v0.8.1 UX documentation |
+
+### New CLI Commands (3)
+
+```
+python main.py strategy-memory-validation-queue   # VALIDATING-status memories ready for decision
+python main.py strategy-memory-active-threads     # REVIEWING-status active research threads
+python main.py strategy-memory-repeated-patterns  # Memories seen more than once
+```
+
+### New UX Fields on StrategyMemoryItem
+
+`display_title`, `needs_action`, `validation_ready`, `status_hint`, `next_step`, `last_action_at`, `safe_command_count`, `blocked_command_count`, `accepted_is_research_only`
+
+### Safety
+
+- `accepted_is_research_only=True` always enforced in `__post_init__` and `from_dict`
+- `load_safe_commands()` blocks BUY/SELL/ORDER/EXECUTE/SUBMIT_ORDER/AUTO_TRADE keywords
+- Status action button for ACCEPTED shows explicit research-only reminder dialog
+- 3 new checklist checks verify invariants at release time
+
+### Known Limitations
+
+- Status flow is manual — no auto-advance from REVIEWING → VALIDATING
+- Memory items do not persist GUI edits without an explicit save/update-status call
+- `related_memory_id` computed but not yet stored as StrategyMemoryItem field in CoachTrainingTask
+
+---
+
 > **[!] No real orders. Research Only. Production Trading: BLOCKED. Not Investment Advice.**

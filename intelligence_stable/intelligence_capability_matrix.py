@@ -134,7 +134,7 @@ class IntelligenceCapabilityMatrix:
             ),
 
             # ------------------------------------------------------------------
-            # Strategy Memory (7 capabilities)
+            # Strategy Memory (8 capabilities — v0.8.1 UX added)
             # ------------------------------------------------------------------
             IntelligenceStableCapability(
                 capability_id="sm_engine",
@@ -214,6 +214,33 @@ class IntelligenceCapabilityMatrix:
                 maturity="STABLE",
                 gui_tabs=["strategy_memory"],
                 safety_checks=["no BUY/SELL/ORDER displayed"],
+            ),
+            # v0.8.1 Strategy Memory UX polish
+            IntelligenceStableCapability(
+                capability_id="sm_ux_v081",
+                name="Strategy Memory UX v0.8.1",
+                category=CAT_STRATEGY_MEMORY,
+                source_module="gui.strategy_memory_panel",
+                version_added="v0.8.1",
+                stable_status=STABLE_STATUS_STABLE,
+                maturity="STABLE",
+                cli_commands=[
+                    "strategy-memory-validation-queue",
+                    "strategy-memory-active-threads",
+                    "strategy-memory-repeated-patterns",
+                    "strategy-memory-list --active-only",
+                    "strategy-memory-search --needs-action",
+                ],
+                gui_tabs=["strategy_memory"],
+                safety_checks=[
+                    "ACCEPTED = research only, not trading enabled",
+                    "no BUY/SELL/ORDER in safe commands",
+                    "accepted_is_research_only=True enforced in __post_init__",
+                ],
+                known_limitations=[
+                    "ACCEPTED status does not enable any trading",
+                    "All commands are research-only (SAFE_READ_ONLY/SAFE_REPORT/etc.)",
+                ],
             ),
 
             # ------------------------------------------------------------------

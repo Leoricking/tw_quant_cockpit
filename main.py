@@ -7429,7 +7429,7 @@ def cmd_research_intelligence_report(args: argparse.Namespace) -> None:
 
 _STRATEGY_MEMORY_BANNER = """
 ╔══════════════════════════════════════════════════════════════╗
-║      TW Quant Cockpit — Strategy Research Memory v0.7.2      ║
+║      TW Quant Cockpit — Strategy Research Memory v0.8.1      ║
 ║  Research Only  |  No Real Orders  |  Production BLOCKED     ║
 ╚══════════════════════════════════════════════════════════════╝
 """
@@ -7481,14 +7481,37 @@ def cmd_strategy_memory(args: argparse.Namespace) -> None:
 
 
 def cmd_strategy_memory_summary(args: argparse.Namespace) -> None:
-    """Show latest strategy memory summary."""
+    """Show latest strategy memory summary — v0.8.1 enhanced output."""
     output_dir = getattr(args, "output_dir", "data/backtest_results/strategy_memory")
     output_dir_abs = output_dir if os.path.isabs(output_dir) else os.path.join(BASE_DIR, output_dir)
     print(_STRATEGY_MEMORY_BANNER)
+    print("  TW Quant Cockpit — Strategy Research Memory Summary v0.8.1")
     try:
         from strategy_memory.memory_store import StrategyMemoryStore
+        from strategy_memory.memory_query import StrategyMemoryQuery
         store = StrategyMemoryStore(output_dir=output_dir_abs)
         summary = store.load_latest_summary()
+        memories = store.load_memories()
+        query = StrategyMemoryQuery(store=store)
+        val_queue = query.get_validation_queue()
+        repeated = query.get_repeated_patterns()
+        threads = query.get_active_research_threads()
+        needs_action_count = sum(1 for m in memories if m.needs_action)
+        safe_cmd_count = sum(len(m.suggested_commands) for m in memories if not m.archived)
+
+        # Today focus
+        today_focus = ""
+        for m in sorted([x for x in memories if not x.archived and x.status in ("NEW","REVIEWING","VALIDATING","NEEDS_MORE_EVIDENCE")],
+                        key=lambda m: ({"P0":0,"P1":1,"P2":2,"P3":3}.get(m.priority,9), -m.seen_count)):
+            today_focus = m.title
+            break
+
+        print(f"  Today Focus:           {today_focus or '—'}")
+        print(f"  Active Threads:        {len(threads)}")
+        print(f"  Validation Queue:      {len(val_queue)}")
+        print(f"  Repeated Patterns:     {len(repeated)}")
+        print(f"  Needs Action:          {needs_action_count}")
+        print()
         if summary is None:
             print("  No summary found. Run: python main.py strategy-memory")
         else:
@@ -7498,47 +7521,55 @@ def cmd_strategy_memory_summary(args: argparse.Namespace) -> None:
             print(f"  New:                   {s.new_count}")
             print(f"  Reviewing:             {s.reviewing_count}")
             print(f"  Validating:            {s.validating_count}")
-            print(f"  Accepted:              {s.accepted_count}")
-            print(f"  Rejected:              {s.rejected_count}")
             print(f"  Needs Evidence:        {s.needs_more_evidence_count}")
+            print(f"  Accepted:              {s.accepted_count}  [Research Only — NOT trading enabled]")
+            print(f"  Rejected:              {s.rejected_count}")
             print(f"  P0:                    {s.p0_count}")
             print(f"  P1:                    {s.p1_count}")
-            print(f"  Duplicates:            {s.duplicate_count}")
-            print(f"  Top Memory:            {s.top_memory or '—'}")
-            print(f"  Overall Status:        {s.overall_status}")
+            print(f"  Safe Commands:         {safe_cmd_count}")
+            print(f"  Research Only:         YES")
+            print(f"  No Real Orders:        YES")
     except Exception as exc:
         print(f"  ERROR: {exc}")
     print()
-    print("  [!] No real orders. Research Only.")
+    print("  [!] No real orders. Research Only. ACCEPTED = research finding, NOT trading signal.")
 
 
 def cmd_strategy_memory_list(args: argparse.Namespace) -> None:
-    """List strategy memory items with optional filters."""
-    output_dir    = getattr(args, "output_dir", "data/backtest_results/strategy_memory")
-    memory_type   = getattr(args, "memory_type", None)
-    status        = getattr(args, "status", None)
-    priority      = getattr(args, "priority", None)
-    symbol        = getattr(args, "symbol", None)
+    """List strategy memory items with optional filters — v0.8.1 extended flags."""
+    output_dir      = getattr(args, "output_dir", "data/backtest_results/strategy_memory")
+    memory_type     = getattr(args, "memory_type", None)
+    status          = getattr(args, "status", None)
+    priority        = getattr(args, "priority", None)
+    symbol          = getattr(args, "symbol", None)
+    active_only     = getattr(args, "active_only", False)
+    include_archived = getattr(args, "include_archived", False)
+    needs_action    = getattr(args, "needs_action", False)
+    sort_by         = getattr(args, "sort", "priority")
     output_dir_abs = output_dir if os.path.isabs(output_dir) else os.path.join(BASE_DIR, output_dir)
     print(_STRATEGY_MEMORY_BANNER)
     try:
         from strategy_memory.memory_store import StrategyMemoryStore
         from strategy_memory.memory_query import StrategyMemoryQuery
         store = StrategyMemoryStore(output_dir=output_dir_abs)
-        memories = store.load_memories()
-        query = StrategyMemoryQuery()
-        filters = {}
-        if memory_type: filters["memory_type"] = memory_type
-        if status:       filters["status"]      = status
-        if priority:     filters["priority"]    = priority
-        if symbol:       filters["symbol"]      = symbol
-        results = query.search(memories, **filters)
+        query = StrategyMemoryQuery(store=store)
+        results = query.search_advanced(
+            memory_type=memory_type,
+            status=status,
+            priority=priority,
+            symbol=symbol,
+            active_only=active_only,
+            include_archived=include_archived,
+            needs_action=True if needs_action else None,
+            sort_by=sort_by,
+        )
         print(f"  Total memories: {len(results)}")
         print()
-        print(f"  {'ID':12s}  {'Type':26s}  {'Pri':3s}  {'Status':22s}  Title")
-        print(f"  {'-'*12}  {'-'*26}  {'-'*3}  {'-'*22}  {'-'*40}")
+        print(f"  {'Pri':3s}  {'Status':22s}  {'Type':26s}  Title")
+        print(f"  {'-'*3}  {'-'*22}  {'-'*26}  {'-'*50}")
         for m in results:
-            print(f"  {m.memory_id:12s}  {m.memory_type:26s}  {m.priority:3s}  {m.status:22s}  {m.title[:50]}")
+            na_tag = " [!]" if m.needs_action else ""
+            print(f"  {m.priority:3s}  {m.status:22s}  {m.memory_type:26s}  {m.title[:50]}{na_tag}")
     except Exception as exc:
         print(f"  ERROR: {exc}")
     print()
@@ -7546,31 +7577,41 @@ def cmd_strategy_memory_list(args: argparse.Namespace) -> None:
 
 
 def cmd_strategy_memory_search(args: argparse.Namespace) -> None:
-    """Search strategy memory by keyword and filters."""
-    output_dir    = getattr(args, "output_dir", "data/backtest_results/strategy_memory")
-    keyword       = getattr(args, "keyword", "")
-    memory_type   = getattr(args, "memory_type", None)
-    status        = getattr(args, "status", None)
-    priority      = getattr(args, "priority", None)
-    symbol        = getattr(args, "symbol", None)
+    """Search strategy memory by keyword and filters — v0.8.1 extended."""
+    output_dir      = getattr(args, "output_dir", "data/backtest_results/strategy_memory")
+    keyword         = getattr(args, "keyword", "")
+    memory_type     = getattr(args, "memory_type", None)
+    status          = getattr(args, "status", None)
+    priority        = getattr(args, "priority", None)
+    symbol          = getattr(args, "symbol", None)
+    source_module   = getattr(args, "source_module", None)
+    rule            = getattr(args, "rule", None)
+    strategy        = getattr(args, "strategy", None)
+    needs_action    = getattr(args, "needs_action", False)
+    include_archived = getattr(args, "include_archived", False)
     output_dir_abs = output_dir if os.path.isabs(output_dir) else os.path.join(BASE_DIR, output_dir)
     print(_STRATEGY_MEMORY_BANNER)
     try:
         from strategy_memory.memory_store import StrategyMemoryStore
         from strategy_memory.memory_query import StrategyMemoryQuery
         store = StrategyMemoryStore(output_dir=output_dir_abs)
-        memories = store.load_memories()
-        query = StrategyMemoryQuery()
-        filters = {}
-        if keyword:      filters["keyword"]      = keyword
-        if memory_type:  filters["memory_type"]  = memory_type
-        if status:       filters["status"]       = status
-        if priority:     filters["priority"]     = priority
-        if symbol:       filters["symbol"]       = symbol
-        results = query.search(memories, **filters)
+        query = StrategyMemoryQuery(store=store)
+        results = query.search_advanced(
+            keyword=keyword or None,
+            memory_type=memory_type,
+            status=status,
+            priority=priority,
+            symbol=symbol,
+            source_module=source_module,
+            rule=rule,
+            strategy=strategy,
+            needs_action=True if needs_action else None,
+            include_archived=include_archived,
+        )
         print(f"  Search results: {len(results)}")
         for m in results:
-            print(f"  [{m.priority}] [{m.memory_type:26s}] {m.memory_id} — {m.title[:60]}")
+            na_tag = " [!]" if m.needs_action else ""
+            print(f"  [{m.priority}] [{m.memory_type:26s}] {m.memory_id} — {m.title[:60]}{na_tag}")
     except Exception as exc:
         print(f"  ERROR: {exc}")
     print()
@@ -7578,7 +7619,7 @@ def cmd_strategy_memory_search(args: argparse.Namespace) -> None:
 
 
 def cmd_strategy_memory_show(args: argparse.Namespace) -> None:
-    """Show detail for a single strategy memory item."""
+    """Show detail for a single strategy memory item — v0.8.1 enhanced."""
     output_dir    = getattr(args, "output_dir", "data/backtest_results/strategy_memory")
     memory_id     = getattr(args, "memory_id", "")
     output_dir_abs = output_dir if os.path.isabs(output_dir) else os.path.join(BASE_DIR, output_dir)
@@ -7591,36 +7632,58 @@ def cmd_strategy_memory_show(args: argparse.Namespace) -> None:
         from strategy_memory.memory_query import StrategyMemoryQuery
         store = StrategyMemoryStore(output_dir=output_dir_abs)
         memories = store.load_memories()
+        links_all = store.load_links()
         query = StrategyMemoryQuery()
         m = query.get_memory(memories, memory_id)
         if m is None:
             print(f"  Memory '{memory_id}' not found.")
         else:
-            print(f"  Memory ID:       {m.memory_id}")
-            print(f"  Type:            {m.memory_type}")
-            print(f"  Priority:        {m.priority}")
-            print(f"  Status:          {m.status}")
-            print(f"  Source:          {m.source_module}")
-            print(f"  Confidence:      {m.confidence:.2f}")
-            print(f"  Seen:            {m.seen_count}x")
-            print(f"  Title:           {m.title}")
-            print(f"  Summary:         {m.summary}")
-            print(f"  Hypothesis:      {m.hypothesis}")
-            print(f"  Evidence:        {m.evidence}")
-            print(f"  Validation Plan: {m.validation_plan}")
-            print(f"  Risk Notes:      {m.risk_notes}")
+            print(f"  Memory ID:        {m.memory_id}")
+            print(f"  Type:             {m.memory_type}")
+            print(f"  Priority:         {m.priority}")
+            print(f"  Status:           {m.status}")
+            print(f"  Status Hint:      {m.status_hint or '—'}")
+            print(f"  Source:           {m.source_module}")
+            print(f"  Confidence:       {m.confidence:.2f}")
+            print(f"  Seen:             {m.seen_count}x (last: {m.last_seen_at[:10]})")
+            print(f"  Needs Action:     {'YES' if m.needs_action else 'NO'}")
+            print(f"  Validation Ready: {'YES' if m.validation_ready else 'NO'}")
+            print()
+            print(f"  Title:            {m.title}")
+            print(f"  Summary:          {m.summary}")
+            print()
+            if m.hypothesis:
+                print(f"  Hypothesis:       {m.hypothesis}")
+            if m.evidence:
+                print(f"  Evidence:         {m.evidence}")
+            if m.validation_plan:
+                print(f"  Validation Plan:  {m.validation_plan}")
+            if m.next_step:
+                print(f"  Next Step:        {m.next_step}")
+            if m.risk_notes:
+                print(f"  Risk Notes:       {m.risk_notes}")
             if m.suggested_commands:
-                print(f"  Suggested Commands:")
+                print(f"  Suggested Commands (Safe Research Only):")
                 for cmd in m.suggested_commands:
                     print(f"    {cmd}")
+            # Links
+            my_links = [lk for lk in links_all if lk.source_memory_id == m.memory_id]
+            if my_links:
+                print()
+                print(f"  Links ({len(my_links)}):")
+                for lk in my_links[:5]:
+                    tgt = getattr(lk, "target_title", None) or lk.target_id
+                    why = getattr(lk, "why_linked", None) or lk.description
+                    print(f"    [{lk.relation_type}] → {tgt[:40]} | {why[:60]}")
     except Exception as exc:
         print(f"  ERROR: {exc}")
     print()
-    print("  [!] No real orders. Research Only.")
+    print("  [!] Research Only. No Real Orders. Production Trading BLOCKED.")
+    print("  [!] ACCEPTED = Research conclusion. NOT a trading signal. NOT investment advice.")
 
 
 def cmd_strategy_memory_update_status(args: argparse.Namespace) -> None:
-    """Update the status of a strategy memory item."""
+    """Update the status of a strategy memory item — v0.8.1 with research-only warning."""
     output_dir    = getattr(args, "output_dir", "data/backtest_results/strategy_memory")
     memory_id     = getattr(args, "memory_id", "")
     status        = getattr(args, "status", "")
@@ -7629,6 +7692,10 @@ def cmd_strategy_memory_update_status(args: argparse.Namespace) -> None:
     if not memory_id or not status:
         print("  ERROR: --memory-id and --status are required")
         return
+    print(f"  [!] This only updates strategy memory status.")
+    print(f"  [!] It does NOT enable trading or strategy execution.")
+    print(f"  [!] ACCEPTED = Research conclusion accepted. NOT a buy/sell signal.")
+    print()
     try:
         from strategy_memory.memory_store import StrategyMemoryStore
         store = StrategyMemoryStore(output_dir=output_dir_abs)
@@ -7640,7 +7707,7 @@ def cmd_strategy_memory_update_status(args: argparse.Namespace) -> None:
     except Exception as exc:
         print(f"  ERROR: {exc}")
     print()
-    print("  [!] No real orders. Research Only.")
+    print("  [!] No real orders. Research Only. ACCEPTED does NOT enable trading.")
 
 
 def cmd_strategy_memory_archive(args: argparse.Namespace) -> None:
@@ -7686,6 +7753,83 @@ def cmd_strategy_memory_report(args: argparse.Namespace) -> None:
             memory_output_dir=output_dir_abs,
         )
         print(f"  Report saved: {path}")
+    except Exception as exc:
+        print(f"  ERROR: {exc}")
+    print()
+    print("  [!] No real orders. Research Only.")
+
+
+# ---------------------------------------------------------------------------
+# v0.8.1 Strategy Memory UX new command handlers
+# ---------------------------------------------------------------------------
+
+def cmd_strategy_memory_validation_queue(args: argparse.Namespace) -> None:
+    """Show memories in validation queue — v0.8.1."""
+    output_dir = getattr(args, "output_dir", "data/backtest_results/strategy_memory")
+    output_dir_abs = output_dir if os.path.isabs(output_dir) else os.path.join(BASE_DIR, output_dir)
+    print(_STRATEGY_MEMORY_BANNER)
+    try:
+        from strategy_memory.memory_store import StrategyMemoryStore
+        from strategy_memory.memory_query import StrategyMemoryQuery
+        store = StrategyMemoryStore(output_dir=output_dir_abs)
+        query = StrategyMemoryQuery(store=store)
+        queue = query.get_validation_queue()
+        print(f"  Validation Queue: {len(queue)} memories")
+        print(f"  Research Only: YES  |  No Real Orders: YES")
+        print()
+        for m in queue[:10]:
+            vp = (m.validation_plan or "—")[:60]
+            print(f"  [{m.priority}] {m.title[:60]} — {m.status}")
+            if vp != "—":
+                print(f"       Validation: {vp}")
+    except Exception as exc:
+        print(f"  ERROR: {exc}")
+    print()
+    print("  [!] No real orders. Research Only.")
+
+
+def cmd_strategy_memory_active_threads(args: argparse.Namespace) -> None:
+    """Show active research threads — v0.8.1."""
+    output_dir = getattr(args, "output_dir", "data/backtest_results/strategy_memory")
+    output_dir_abs = output_dir if os.path.isabs(output_dir) else os.path.join(BASE_DIR, output_dir)
+    print(_STRATEGY_MEMORY_BANNER)
+    try:
+        from strategy_memory.memory_store import StrategyMemoryStore
+        from strategy_memory.memory_query import StrategyMemoryQuery
+        store = StrategyMemoryStore(output_dir=output_dir_abs)
+        query = StrategyMemoryQuery(store=store)
+        threads = query.get_active_research_threads()
+        print(f"  Active Research Threads: {len(threads)}")
+        print(f"  Research Only: YES  |  No Real Orders: YES")
+        print()
+        for m in threads[:15]:
+            na_tag = " [!]" if m.needs_action else ""
+            print(f"  [{m.priority}] [{m.memory_type[:22]}] {m.title[:55]}{na_tag}")
+    except Exception as exc:
+        print(f"  ERROR: {exc}")
+    print()
+    print("  [!] No real orders. Research Only.")
+
+
+def cmd_strategy_memory_repeated_patterns(args: argparse.Namespace) -> None:
+    """Show repeated patterns from memory — v0.8.1."""
+    output_dir = getattr(args, "output_dir", "data/backtest_results/strategy_memory")
+    output_dir_abs = output_dir if os.path.isabs(output_dir) else os.path.join(BASE_DIR, output_dir)
+    print(_STRATEGY_MEMORY_BANNER)
+    try:
+        from strategy_memory.memory_store import StrategyMemoryStore
+        from strategy_memory.memory_query import StrategyMemoryQuery
+        store = StrategyMemoryStore(output_dir=output_dir_abs)
+        query = StrategyMemoryQuery(store=store)
+        repeated = query.get_repeated_patterns()
+        print(f"  Repeated Patterns: {len(repeated)}")
+        print(f"  Research Only: YES  |  No Real Orders: YES")
+        print()
+        for m in repeated[:10]:
+            nxt = m.next_step or (m.suggested_commands[0] if m.suggested_commands else "—")
+            print(f"  [{m.priority}] seen={m.seen_count} [{m.source_module}] {m.title[:55]}")
+            if nxt and nxt != "—":
+                print(f"       Next: {nxt[:70]}")
     except Exception as exc:
         print(f"  ERROR: {exc}")
     print()
@@ -12088,29 +12232,46 @@ def _build_parser() -> argparse.ArgumentParser:
     p_sms.add_argument("--output-dir", dest="output_dir",
                        default="data/backtest_results/strategy_memory")
 
-    # --- strategy-memory-list (v0.7.2) ---
+    # --- strategy-memory-list (v0.7.2, enhanced v0.8.1) ---
     p_sml = subparsers.add_parser(
         "strategy-memory-list",
-        help="List strategy memory items with optional filters (v0.7.2)",
+        help="List strategy memory items with optional filters (v0.8.1)",
     )
     p_sml.add_argument("--memory-type", dest="memory_type", default=None,
                        help="Filter by memory type")
     p_sml.add_argument("--status", default=None, help="Filter by status")
     p_sml.add_argument("--priority", default=None, help="Filter by priority (P0/P1/P2/P3)")
     p_sml.add_argument("--symbol", default=None, help="Filter by related symbol")
+    p_sml.add_argument("--active-only", dest="active_only", action="store_true", default=False,
+                       help="Show only active (non-archived, non-rejected) memories")
+    p_sml.add_argument("--include-archived", dest="include_archived", action="store_true", default=False,
+                       help="Include archived memories")
+    p_sml.add_argument("--needs-action", dest="needs_action", action="store_true", default=False,
+                       help="Show only memories that need action")
+    p_sml.add_argument("--sort", default="priority",
+                       choices=["priority", "status", "last_seen", "seen_count"],
+                       help="Sort order (default: priority)")
     p_sml.add_argument("--output-dir", dest="output_dir",
                        default="data/backtest_results/strategy_memory")
 
-    # --- strategy-memory-search (v0.7.2) ---
+    # --- strategy-memory-search (v0.7.2, enhanced v0.8.1) ---
     p_smsr = subparsers.add_parser(
         "strategy-memory-search",
-        help="Search strategy memory by keyword and filters (v0.7.2)",
+        help="Search strategy memory by keyword and filters (v0.8.1)",
     )
     p_smsr.add_argument("--keyword", default="", help="Search keyword")
     p_smsr.add_argument("--memory-type", dest="memory_type", default=None)
     p_smsr.add_argument("--status", default=None)
     p_smsr.add_argument("--priority", default=None)
     p_smsr.add_argument("--symbol", default=None)
+    p_smsr.add_argument("--source-module", dest="source_module", default=None,
+                        help="Filter by source module")
+    p_smsr.add_argument("--rule", default=None, help="Filter by related rule")
+    p_smsr.add_argument("--strategy", default=None, help="Filter by related strategy")
+    p_smsr.add_argument("--needs-action", dest="needs_action", action="store_true", default=False,
+                        help="Show only memories that need action")
+    p_smsr.add_argument("--include-archived", dest="include_archived", action="store_true", default=False,
+                        help="Include archived memories in search")
     p_smsr.add_argument("--output-dir", dest="output_dir",
                         default="data/backtest_results/strategy_memory")
 
@@ -12148,12 +12309,36 @@ def _build_parser() -> argparse.ArgumentParser:
     # --- strategy-memory-report (v0.7.2) ---
     p_smr = subparsers.add_parser(
         "strategy-memory-report",
-        help="Generate strategy memory Markdown report (v0.7.2)",
+        help="Generate strategy memory Markdown report (v0.8.1)",
     )
     p_smr.add_argument("--mode", choices=["real", "mock"], default="real")
     p_smr.add_argument("--report-dir", dest="report_dir", default="reports")
     p_smr.add_argument("--output-dir", dest="output_dir",
                        default="data/backtest_results/strategy_memory")
+
+    # --- strategy-memory-validation-queue (v0.8.1) ---
+    p_smvq = subparsers.add_parser(
+        "strategy-memory-validation-queue",
+        help="Show strategy memories in the validation queue (v0.8.1)",
+    )
+    p_smvq.add_argument("--output-dir", dest="output_dir",
+                        default="data/backtest_results/strategy_memory")
+
+    # --- strategy-memory-active-threads (v0.8.1) ---
+    p_smat = subparsers.add_parser(
+        "strategy-memory-active-threads",
+        help="Show active research threads from strategy memory (v0.8.1)",
+    )
+    p_smat.add_argument("--output-dir", dest="output_dir",
+                        default="data/backtest_results/strategy_memory")
+
+    # --- strategy-memory-repeated-patterns (v0.8.1) ---
+    p_smrp = subparsers.add_parser(
+        "strategy-memory-repeated-patterns",
+        help="Show repeated patterns from strategy memory (v0.8.1)",
+    )
+    p_smrp.add_argument("--output-dir", dest="output_dir",
+                        default="data/backtest_results/strategy_memory")
 
     # --- backtest-coach (v0.7.3) ---
     p_bc = subparsers.add_parser(
@@ -13510,15 +13695,19 @@ def main() -> None:
         "intelligence-stable-checks":       cmd_intelligence_stable_checks,
         "intelligence-stable-manifest":     cmd_intelligence_stable_manifest,
         "intelligence-stable-report":       cmd_intelligence_stable_report,
-        # v0.7.2 Strategy Research Memory
-        "strategy-memory":               cmd_strategy_memory,
-        "strategy-memory-summary":       cmd_strategy_memory_summary,
-        "strategy-memory-list":          cmd_strategy_memory_list,
-        "strategy-memory-search":        cmd_strategy_memory_search,
-        "strategy-memory-show":          cmd_strategy_memory_show,
-        "strategy-memory-update-status": cmd_strategy_memory_update_status,
-        "strategy-memory-archive":       cmd_strategy_memory_archive,
-        "strategy-memory-report":        cmd_strategy_memory_report,
+        # v0.7.2 Strategy Research Memory (enhanced v0.8.1)
+        "strategy-memory":                    cmd_strategy_memory,
+        "strategy-memory-summary":            cmd_strategy_memory_summary,
+        "strategy-memory-list":               cmd_strategy_memory_list,
+        "strategy-memory-search":             cmd_strategy_memory_search,
+        "strategy-memory-show":               cmd_strategy_memory_show,
+        "strategy-memory-update-status":      cmd_strategy_memory_update_status,
+        "strategy-memory-archive":            cmd_strategy_memory_archive,
+        "strategy-memory-report":             cmd_strategy_memory_report,
+        # v0.8.1 Strategy Memory UX
+        "strategy-memory-validation-queue":   cmd_strategy_memory_validation_queue,
+        "strategy-memory-active-threads":     cmd_strategy_memory_active_threads,
+        "strategy-memory-repeated-patterns":  cmd_strategy_memory_repeated_patterns,
         # v0.4.1.1 Strategy Knowledge Ingestion
         "strategy-knowledge-ingest":   cmd_strategy_knowledge_ingest,
         "strategy-knowledge-summary":  cmd_strategy_knowledge_summary,

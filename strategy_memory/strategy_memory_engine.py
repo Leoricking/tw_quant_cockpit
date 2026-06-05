@@ -1,5 +1,5 @@
 """
-strategy_memory_engine.py — Strategy Research Memory Engine v0.7.2
+strategy_memory_engine.py — Strategy Research Memory Engine v0.8.1
 
 [!] Research Only. No Real Orders. Production Trading BLOCKED.
 """
@@ -16,6 +16,7 @@ from strategy_memory.strategy_memory_schema import (
 from strategy_memory.memory_extractor import StrategyMemoryExtractor
 from strategy_memory.memory_store import StrategyMemoryStore
 from strategy_memory.memory_linker import StrategyMemoryLinker
+from strategy_memory.memory_query import StrategyMemoryQuery
 
 import logging
 logger = logging.getLogger(__name__)
@@ -53,13 +54,30 @@ class StrategyMemoryEngine:
         self._store.save_links(links)
         summary    = self.build_summary(merged, links)
         self._store.save_summary(summary)
+        query = StrategyMemoryQuery(store=self._store)
         return {
             "memories": merged,
             "links":    links,
             "summary":  summary,
             "no_real_orders": True,
             "production_blocked": True,
+            # v0.8.1 UX fields
+            "today_focus":              self._get_today_focus(merged),
+            "active_threads_count":     len([m for m in merged if not m.archived and m.status not in ("ARCHIVED", "REJECTED")]),
+            "validation_queue_count":   len(query.get_validation_queue()),
+            "repeated_patterns_count":  len(query.get_repeated_patterns()),
+            "needs_action_count":       len([m for m in merged if m.needs_action]),
         }
+
+    def _get_today_focus(self, memories: List[StrategyMemoryItem]) -> str:
+        """Return the highest priority active memory title."""
+        active = [m for m in memories if not m.archived and m.status in (
+            "NEW", "REVIEWING", "VALIDATING", "NEEDS_MORE_EVIDENCE")]
+        p_order = {"P0": 0, "P1": 1, "P2": 2, "P3": 3}
+        if not active:
+            return ""
+        top = sorted(active, key=lambda m: (p_order.get(m.priority, 9), -m.seen_count))[0]
+        return top.title
 
     def build_summary(
         self,
@@ -115,3 +133,18 @@ class StrategyMemoryEngine:
             active,
             key=lambda m: (priority_order.get(m.priority, 9), m.created_at),
         )[:limit]
+
+    def get_validation_queue(self) -> List[StrategyMemoryItem]:
+        """Delegates to StrategyMemoryQuery.get_validation_queue()."""
+        query = StrategyMemoryQuery(store=self._store)
+        return query.get_validation_queue()
+
+    def get_active_research_threads(self) -> List[StrategyMemoryItem]:
+        """Delegates to StrategyMemoryQuery.get_active_research_threads()."""
+        query = StrategyMemoryQuery(store=self._store)
+        return query.get_active_research_threads()
+
+    def get_repeated_patterns(self) -> List[StrategyMemoryItem]:
+        """Delegates to StrategyMemoryQuery.get_repeated_patterns()."""
+        query = StrategyMemoryQuery(store=self._store)
+        return query.get_repeated_patterns()

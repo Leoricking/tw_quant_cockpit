@@ -120,13 +120,34 @@ class ResearchRecommendationEngine:
     # ------------------------------------------------------------------
 
     def build_recommendations(
-        self, signals: List[ResearchSignal], mode: str = "real"
+        self,
+        signals: List[ResearchSignal],
+        mode: str = "real",
+        memory_summary: object = None,
     ) -> List[ResearchRecommendation]:
-        """Build recommendations from signals. Returns deduplicated, ranked list."""
+        """Build recommendations from signals. Returns deduplicated, ranked list.
+
+        v0.8.1: Optional memory_summary parameter. If provided, P3 recommendations
+        that match existing memory titles get a '(seen)' suffix in rationale.
+        P0/P1 items are never filtered or downgraded regardless of seen_before.
+        """
+        # Build keyword set from existing memories (if memory_summary provided)
+        memory_keywords: set = set()
+        if memory_summary is not None:
+            try:
+                memories = getattr(memory_summary, "memories", [])
+                for m in memories:
+                    if hasattr(m, "title"):
+                        for word in m.title.lower().split():
+                            if len(word) > 3:
+                                memory_keywords.add(word)
+            except Exception:
+                pass
+
         recs = []
         for sig in signals:
             try:
-                rec = self._signal_to_recommendation(sig)
+                rec = self._signal_to_recommendation(sig, memory_keywords=memory_keywords)
                 if rec is not None:
                     recs.append(rec)
             except Exception as exc:
@@ -246,20 +267,41 @@ class ResearchRecommendationEngine:
     # Signal → Recommendation
     # ------------------------------------------------------------------
 
-    def _signal_to_recommendation(self, sig: ResearchSignal) -> ResearchRecommendation:
+    def _signal_to_recommendation(
+        self,
+        sig: ResearchSignal,
+        memory_keywords: set = None,
+    ) -> ResearchRecommendation:
+        """Convert a signal to a recommendation.
+
+        v0.8.1: Optional memory_keywords set. If a P3 signal title overlaps
+        with existing memory keywords, append '(seen)' to rationale.
+        P0/P1 items are never modified regardless of seen_before.
+        """
         action = sig.suggested_action or ACT_READ_REPORT
         _validate_action(action)
         cmd = sig.suggested_command or ""
         cmd_safety = classify_command_safety(cmd)
         friendly_title = make_user_friendly_title(sig)
         is_optional = sig.priority in (PRI_P2, PRI_P3)
+        rationale = sig.description or sig.evidence or ""
+
+        # v0.8.1: Mark P3 items as seen if they match existing memory keywords
+        seen_before = False
+        if memory_keywords and sig.priority == PRI_P3:
+            title_words = set(friendly_title.lower().split())
+            overlap = title_words & memory_keywords
+            if len(overlap) >= 2:
+                seen_before = True
+                rationale = f"{rationale} (seen)" if rationale else "(seen)"
+
         return ResearchRecommendation(
             recommendation_id=_rec_id(),
             title=friendly_title,
             category=sig.category,
             priority=sig.priority,
             action_type=action,
-            rationale=sig.description or sig.evidence,
+            rationale=rationale,
             expected_benefit=self._expected_benefit(sig),
             required_inputs=[],
             suggested_commands=[cmd] if cmd else [],
