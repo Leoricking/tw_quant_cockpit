@@ -21,6 +21,8 @@ Current version: **v0.7.2** — Strategy Research Memory
 | [Release Notes v0.4](release_notes_v0.4.md) | v0.4.0 stable release change log |
 | [Release Notes v0.5](release_notes_v0.5.md) | v0.5.0 Research OS Planning change log |
 | [Release Notes v0.6](release_notes_v0.6.md) | v0.6.x change log (v0.6.0 Stable Release, v0.6.1 UX Polish, v0.6.2 Data Coverage, v0.6.3 Replay Training UI) |
+| [Release Notes v0.8](release_notes_v0.8.md) | v0.8.x change log (v0.8.0 Research Intelligence Stable) |
+| [Research Intelligence Stable v0.8.0](research_intelligence_stable_v0.8.0.md) | v0.8.0 29 capabilities, 7-category checklist, release manifest, CLI/GUI usage |
 | [Release Notes v0.7](release_notes_v0.7.md) | v0.7.x change log (v0.7.0 Research Intelligence Upgrade, v0.7.1 Intelligence UX Polish, v0.7.2 Strategy Research Memory, v0.7.3 Backtest-to-Coach Loop) |
 | [Backtest-to-Coach Loop v0.7.3](backtest_to_coach_loop.md) | v0.7.3 coach task types, signal extraction, daily/weekly plans, CLI/GUI usage |
 | [Strategy Research Memory v0.7.2](strategy_research_memory.md) | v0.7.2 memory types, statuses, extraction, deduplication, links, CLI/GUI usage |

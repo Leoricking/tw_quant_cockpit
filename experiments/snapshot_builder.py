@@ -671,6 +671,8 @@ class ExperimentSnapshotBuilder:
             ("strategy_memory",             lambda: self.build_strategy_memory_snapshot()),
             # v0.7.3 Backtest-to-Coach Loop
             ("backtest_coach",              lambda: self.build_backtest_coach_snapshot()),
+            # v0.8.0 Research Intelligence Stable
+            ("intelligence_stable",         lambda: self.build_intelligence_stable_snapshot()),
         ]
         for snap_type, fn in builders:
             try:
@@ -1214,4 +1216,41 @@ class ExperimentSnapshotBuilder:
         except Exception as exc:
             logger.warning("build_backtest_coach_snapshot: %s", exc)
             snap["warnings"].append(f"backtest_coach snapshot error: {exc}")
+        return snap
+
+    def build_intelligence_stable_snapshot(self) -> dict:
+        """Snapshot type: intelligence_stable. Captures latest intelligence stable summary.
+
+        [!] Research Only. No Real Orders. Production Trading: BLOCKED.
+        """
+        snap = _empty_snapshot("intelligence_stable")
+        try:
+            is_dir = os.path.join(BASE_DIR, "data", "backtest_results", "intelligence_stable")
+            import glob as _glob
+            pattern = os.path.join(is_dir, "intelligence_stable_summary_*.csv")
+            files = sorted(_glob.glob(pattern))
+            if files:
+                summary_csv = files[-1]
+                snap["source_files"].append(summary_csv)
+                import csv as _csv
+                with open(summary_csv, newline="", encoding="utf-8") as f:
+                    rows = list(_csv.DictReader(f))
+                    if rows:
+                        row = rows[-1]
+                        snap["summary"] = {
+                            "version":              row.get("version", "v0.8.0"),
+                            "overall_status":       row.get("overall_status", "UNKNOWN"),
+                            "total_capabilities":   row.get("total_capabilities", 0),
+                            "stable_count":         row.get("stable_count", 0),
+                            "pass_count":           row.get("pass_count", 0),
+                            "fail_count":           row.get("fail_count", 0),
+                            "forbidden_action_count": row.get("forbidden_action_count", 0),
+                            "no_real_orders":       True,
+                            "production_blocked":   True,
+                        }
+            else:
+                snap["warnings"].append("intelligence_stable_summary not found — run intelligence-stable first")
+        except Exception as exc:
+            logger.warning("build_intelligence_stable_snapshot: %s", exc)
+            snap["warnings"].append(f"intelligence_stable snapshot error: {exc}")
         return snap

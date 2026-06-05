@@ -1314,6 +1314,29 @@ class RegressionSuiteRegistry:
                     description="Data coverage summary smoke test for release gate (v0.6.2)",
                 ),
             ],
+            # v0.8.0 Intelligence Stable gate
+            [
+                RegressionTestCase(
+                    test_id="release_gate_intelligence_stable_summary",
+                    name="intelligence-stable-summary (release gate)",
+                    suite=SUITE_RELEASE_GATE,
+                    category="stable_release",
+                    command=["main.py", "intelligence-stable-summary"],
+                    timeout_seconds=30,
+                    required=False,
+                    description="v0.8.0 intelligence stable summary smoke test",
+                ),
+                RegressionTestCase(
+                    test_id="release_gate_intelligence_stable_checks",
+                    name="intelligence-stable-checks (release gate)",
+                    suite=SUITE_RELEASE_GATE,
+                    category="stable_release",
+                    command=["main.py", "intelligence-stable-checks"],
+                    timeout_seconds=30,
+                    required=False,
+                    description="v0.8.0 intelligence stable checks smoke test",
+                ),
+            ],
         ]:
             for tc in suite_tests:
                 if tc.test_id not in seen:

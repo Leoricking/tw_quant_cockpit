@@ -373,6 +373,24 @@ _COVERAGE: list[dict] = [
             "backtest_coach_summary, backtest_coach_report in SUITE_RESEARCH_OS"
         ),
     },
+    # v0.8.0 Research Intelligence Stable
+    {
+        "module":            "research_intelligence_stable",
+        "command_covered":   "yes",
+        "import_covered":    "yes",
+        "gui_covered":       "yes",
+        "report_covered":    "yes",
+        "safety_covered":    "yes",
+        "missing_checks":    (
+            "No test for manifest build when git is unavailable; "
+            "no test for stable checklist when all upstream CSVs are absent"
+        ),
+        "recommended_test":  (
+            "intelligence_stable_schema_import, intelligence_stable_cli, "
+            "intelligence_stable_summary, intelligence_stable_checks, "
+            "intelligence_stable_report in SUITE_RESEARCH_OS"
+        ),
+    },
 ]
 
 

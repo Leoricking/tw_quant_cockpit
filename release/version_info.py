@@ -11,17 +11,33 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 
 class VersionInfo:
-    """Centralized version and safety metadata for v0.6.0."""
+    """Centralized version and safety metadata for v0.8.0."""
 
-    version            = "v0.6.0"
-    release_name       = "Research OS Stable Release"
+    version            = "v0.8.0"
+    release_name       = "Research Intelligence Stable"
     release_stage      = "STABLE"
     read_only          = True
     no_real_orders     = True
     production_blocked = True
     real_order_ready   = False
+    research_only      = True
     supported_modes    = ["real", "mock"]
     major_features     = [
+        "Research Intelligence Stable v0.8.0",
+        "Intelligence Stable Schema (29 capabilities)",
+        "Intelligence Capability Matrix",
+        "Intelligence Stable Checklist (7 categories)",
+        "Intelligence Release Manifest Builder",
+        "Intelligence Stable Engine + Store",
+        "Intelligence Stable Report (11 sections)",
+        "Intelligence Stable GUI Panel",
+        "6 new CLI commands (intelligence-stable, etc.)",
+        "Safety audit: recommendations/memories/coach tasks",
+        "Forbidden action count = 0",
+        "Research Intelligence Engine (v0.7.0)",
+        "Research Intelligence UX Polish (v0.7.1)",
+        "Strategy Research Memory (v0.7.2)",
+        "Backtest-to-Coach Loop (v0.7.3)",
         "Research OS Stable Release v0.6.0",
         "Stable Capability Matrix (30+ capabilities)",
         "v0.6.0 Stable Release Checklist",
@@ -66,6 +82,7 @@ class VersionInfo:
         "no_real_orders=True",
         "production_blocked=True",
         "real_order_ready=False",
+        "research_only=True",
         "no_broker_connection=True",
         "no_auto_weight_apply=True",
         "no_shioaji=True",
@@ -116,7 +133,7 @@ def print_version_info() -> None:
 def get_safety_banner() -> str:
     """Return one-line safety banner string."""
     return (
-        "[!] v0.6.0 Research Only | No Real Orders | "
+        "[!] v0.8.0 Research Only | No Real Orders | "
         "Production BLOCKED | real_order_ready=False"
     )
 

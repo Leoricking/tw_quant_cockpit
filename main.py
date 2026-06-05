@@ -7703,6 +7703,13 @@ _BACKTEST_COACH_BANNER = """
 ╚══════════════════════════════════════════════════════════════╝
 """
 
+_INTELLIGENCE_STABLE_BANNER = """
+╔══════════════════════════════════════════════════════════════╗
+║   TW Quant Cockpit — Research Intelligence Stable v0.8.0     ║
+║  Research Only  |  No Real Orders  |  Production BLOCKED     ║
+╚══════════════════════════════════════════════════════════════╝
+"""
+
 
 def cmd_backtest_coach(args: argparse.Namespace) -> None:
     """Run full Backtest-to-Coach Loop pipeline."""
@@ -7887,6 +7894,189 @@ def cmd_backtest_coach_report(args: argparse.Namespace) -> None:
             mode=mode,
             output_dir=report_dir_abs,
             coach_output_dir=output_dir_abs,
+        )
+        print(f"  Report saved: {path}")
+    except Exception as exc:
+        print(f"  ERROR: {exc}")
+    print()
+    print("  [!] No real orders. Research Only.")
+
+
+# ---------------------------------------------------------------------------
+# v0.8.0 Research Intelligence Stable command handlers
+# ---------------------------------------------------------------------------
+
+def cmd_intelligence_stable(args: argparse.Namespace) -> None:
+    """Run full Research Intelligence Stable validation pipeline."""
+    mode       = getattr(args, "mode", "real")
+    output_dir = getattr(args, "output_dir", "data/backtest_results/intelligence_stable")
+    report_dir = getattr(args, "report_dir", "reports")
+    output_dir_abs = output_dir if os.path.isabs(output_dir) else os.path.join(BASE_DIR, output_dir)
+    report_dir_abs = report_dir if os.path.isabs(report_dir) else os.path.join(BASE_DIR, report_dir)
+    print(_INTELLIGENCE_STABLE_BANNER)
+    print(f"  TW Quant Cockpit — Research Intelligence Stable")
+    print(f"  Mode:                       {mode}")
+    print(f"  Research Only:              YES")
+    print(f"  No Real Orders:             YES")
+    print(f"  Production Trading BLOCKED: YES")
+    print()
+    try:
+        from intelligence_stable.intelligence_stable_engine import IntelligenceStableEngine
+        engine = IntelligenceStableEngine(project_root=BASE_DIR, output_dir=output_dir_abs)
+        result = engine.run(mode=mode)
+        summary = result.get("summary")
+        if summary:
+            s = summary
+            print(f"  Overall Status:             {s.overall_status}")
+            print(f"  Total Capabilities:         {s.total_capabilities}")
+            print(f"  Stable:                     {s.stable_count}")
+            print(f"  Usable:                     {s.usable_count}")
+            print(f"  Total Checks:               {s.total_checks}")
+            print(f"  Checks PASS:                {s.pass_count}")
+            print(f"  Checks WARN:                {s.warn_count}")
+            print(f"  Checks FAIL:                {s.fail_count}")
+            print(f"  Forbidden Actions:          {s.forbidden_action_count}")
+            print(f"  No Real Orders:             {s.no_real_orders}")
+            print(f"  Production Blocked:         {s.production_blocked}")
+        try:
+            from reports.intelligence_stable_report import IntelligenceStableReportBuilder
+            builder = IntelligenceStableReportBuilder()
+            rpath = builder.build(mode=mode, output_dir=report_dir_abs, stable_output_dir=output_dir_abs)
+            print(f"  Report:                     {rpath}")
+        except Exception as _rpt_exc:
+            print(f"  Report:                     (error: {_rpt_exc})")
+    except Exception as exc:
+        print(f"  ERROR: {exc}")
+    print()
+    print("  [!] No real orders. Research Only. Production Trading BLOCKED.")
+
+
+def cmd_intelligence_stable_summary(args: argparse.Namespace) -> None:
+    """Show latest Research Intelligence Stable summary."""
+    output_dir = getattr(args, "output_dir", "data/backtest_results/intelligence_stable")
+    output_dir_abs = output_dir if os.path.isabs(output_dir) else os.path.join(BASE_DIR, output_dir)
+    print(_INTELLIGENCE_STABLE_BANNER)
+    try:
+        from intelligence_stable.intelligence_stable_store import IntelligenceStableStore
+        store   = IntelligenceStableStore(output_dir=output_dir_abs)
+        summary = store.load_latest_summary()
+        if summary is None:
+            print("  No summary found. Run: python main.py intelligence-stable --mode real")
+        else:
+            s = summary
+            print(f"  Overall Status:             {s.get('overall_status', '—')}")
+            print(f"  Total Capabilities:         {s.get('total_capabilities', 0)}")
+            print(f"  Stable:                     {s.get('stable_count', 0)}")
+            print(f"  Usable:                     {s.get('usable_count', 0)}")
+            print(f"  Partial:                    {s.get('partial_count', 0)}")
+            print(f"  Blocked:                    {s.get('blocked_count', 0)}")
+            print(f"  Total Checks:               {s.get('total_checks', 0)}")
+            print(f"  Checks PASS:                {s.get('pass_count', 0)}")
+            print(f"  Checks WARN:                {s.get('warn_count', 0)}")
+            print(f"  Checks FAIL:                {s.get('fail_count', 0)}")
+            print(f"  Forbidden Actions:          {s.get('forbidden_action_count', 0)}")
+            print(f"  No Real Orders:             {s.get('no_real_orders', True)}")
+            print(f"  Production Blocked:         {s.get('production_blocked', True)}")
+    except Exception as exc:
+        print(f"  ERROR: {exc}")
+    print()
+    print("  [!] No real orders. Research Only.")
+
+
+def cmd_intelligence_stable_capabilities(args: argparse.Namespace) -> None:
+    """List all Research Intelligence Stable capabilities."""
+    output_dir = getattr(args, "output_dir", "data/backtest_results/intelligence_stable")
+    output_dir_abs = output_dir if os.path.isabs(output_dir) else os.path.join(BASE_DIR, output_dir)
+    print(_INTELLIGENCE_STABLE_BANNER)
+    try:
+        from intelligence_stable.intelligence_stable_store import IntelligenceStableStore
+        store = IntelligenceStableStore(output_dir=output_dir_abs)
+        caps  = store.load_capabilities()
+        if not caps:
+            from intelligence_stable.intelligence_capability_matrix import IntelligenceCapabilityMatrix
+            caps = IntelligenceCapabilityMatrix().build()
+        print(f"  Total Capabilities: {len(caps)}")
+        print()
+        print(f"  {'ID':40s}  {'Category':24s}  {'Status':8s}  {'Maturity':8s}  Name")
+        print(f"  {'-'*40}  {'-'*24}  {'-'*8}  {'-'*8}  {'-'*50}")
+        for c in caps:
+            print(f"  {c.capability_id:40s}  {c.category:24s}  {c.stable_status:8s}  {c.maturity:8s}  {c.name}")
+    except Exception as exc:
+        print(f"  ERROR: {exc}")
+    print()
+    print("  [!] No real orders. Research Only.")
+
+
+def cmd_intelligence_stable_checks(args: argparse.Namespace) -> None:
+    """Show latest Research Intelligence Stable checklist results."""
+    output_dir = getattr(args, "output_dir", "data/backtest_results/intelligence_stable")
+    output_dir_abs = output_dir if os.path.isabs(output_dir) else os.path.join(BASE_DIR, output_dir)
+    print(_INTELLIGENCE_STABLE_BANNER)
+    try:
+        from intelligence_stable.intelligence_stable_store import IntelligenceStableStore
+        store  = IntelligenceStableStore(output_dir=output_dir_abs)
+        checks = store.load_latest_checks()
+        if not checks:
+            print("  No checks found. Run: python main.py intelligence-stable --mode real")
+        else:
+            print(f"  Total Checks: {len(checks)}")
+            print()
+            print(f"  {'Category':28s}  {'Check':36s}  {'Status':7s}  Detail")
+            print(f"  {'-'*28}  {'-'*36}  {'-'*7}  {'-'*50}")
+            for ch in checks:
+                cat    = ch.get("category", "")                       if isinstance(ch, dict) else ch.category
+                cname  = ch.get("name", ch.get("check_name", ""))     if isinstance(ch, dict) else getattr(ch, "name", getattr(ch, "check_name", ""))
+                status = ch.get("status", "")                         if isinstance(ch, dict) else ch.status
+                detail = ch.get("message", ch.get("detail", ""))      if isinstance(ch, dict) else getattr(ch, "message", getattr(ch, "detail", ""))
+                print(f"  {cat:28s}  {cname[:36]:36s}  {status:7s}  {detail[:60]}")
+    except Exception as exc:
+        print(f"  ERROR: {exc}")
+    print()
+    print("  [!] No real orders. Research Only.")
+
+
+def cmd_intelligence_stable_manifest(args: argparse.Namespace) -> None:
+    """Build or show Research Intelligence Stable release manifest."""
+    output_dir = getattr(args, "output_dir", "data/backtest_results/intelligence_stable")
+    version    = getattr(args, "version", "v0.8.0")
+    output_dir_abs = output_dir if os.path.isabs(output_dir) else os.path.join(BASE_DIR, output_dir)
+    print(_INTELLIGENCE_STABLE_BANNER)
+    print(f"  Version: {version}")
+    print()
+    try:
+        from intelligence_stable.intelligence_release_manifest import IntelligenceReleaseManifestBuilder
+        builder  = IntelligenceReleaseManifestBuilder(project_root=BASE_DIR, output_dir=output_dir_abs)
+        manifest = builder.build_manifest(version=version)
+        print(f"  Manifest JSON: {manifest.get('json_path', '—')}")
+        print(f"  Manifest MD:   {manifest.get('md_path', '—')}")
+        print(f"  Git Commit:    {manifest.get('git_commit', '—')}")
+        print(f"  Git Tag:       {manifest.get('git_tag', '—')}")
+        print(f"  Capabilities:  {manifest.get('total_capabilities', '—')}")
+        print(f"  Checks PASS:   {manifest.get('pass_count', '—')}")
+    except Exception as exc:
+        print(f"  ERROR: {exc}")
+    print()
+    print("  [!] No real orders. Research Only. Production Trading BLOCKED.")
+
+
+def cmd_intelligence_stable_report(args: argparse.Namespace) -> None:
+    """Generate Research Intelligence Stable Markdown report."""
+    mode       = getattr(args, "mode", "real")
+    report_dir = getattr(args, "report_dir", "reports")
+    output_dir = getattr(args, "output_dir", "data/backtest_results/intelligence_stable")
+    output_dir_abs = output_dir if os.path.isabs(output_dir) else os.path.join(BASE_DIR, output_dir)
+    report_dir_abs = report_dir if os.path.isabs(report_dir) else os.path.join(BASE_DIR, report_dir)
+    print(_INTELLIGENCE_STABLE_BANNER)
+    print(f"  Mode:       {mode}")
+    print(f"  Report Dir: {report_dir}")
+    print()
+    try:
+        from reports.intelligence_stable_report import IntelligenceStableReportBuilder
+        builder = IntelligenceStableReportBuilder()
+        path = builder.build(
+            mode=mode,
+            output_dir=report_dir_abs,
+            stable_output_dir=output_dir_abs,
         )
         print(f"  Report saved: {path}")
     except Exception as exc:
@@ -12030,6 +12220,63 @@ def _build_parser() -> argparse.ArgumentParser:
     p_bcr.add_argument("--output-dir", dest="output_dir",
                        default="data/backtest_results/backtest_coach")
 
+    # --- intelligence-stable (v0.8.0) ---
+    p_is = subparsers.add_parser(
+        "intelligence-stable",
+        help="Run full Research Intelligence Stable validation pipeline (v0.8.0)",
+    )
+    p_is.add_argument("--mode", choices=["real", "mock"], default="real",
+                      help="Data mode (default: real)")
+    p_is.add_argument("--output-dir", dest="output_dir",
+                      default="data/backtest_results/intelligence_stable",
+                      help="Output directory for stable CSVs")
+    p_is.add_argument("--report-dir", dest="report_dir", default="reports",
+                      help="Output directory for report")
+
+    # --- intelligence-stable-summary (v0.8.0) ---
+    p_iss = subparsers.add_parser(
+        "intelligence-stable-summary",
+        help="Show latest Research Intelligence Stable summary (v0.8.0)",
+    )
+    p_iss.add_argument("--output-dir", dest="output_dir",
+                       default="data/backtest_results/intelligence_stable")
+
+    # --- intelligence-stable-capabilities (v0.8.0) ---
+    p_isc = subparsers.add_parser(
+        "intelligence-stable-capabilities",
+        help="List all Research Intelligence Stable capabilities (v0.8.0)",
+    )
+    p_isc.add_argument("--output-dir", dest="output_dir",
+                       default="data/backtest_results/intelligence_stable")
+
+    # --- intelligence-stable-checks (v0.8.0) ---
+    p_isch = subparsers.add_parser(
+        "intelligence-stable-checks",
+        help="Show latest Research Intelligence Stable checklist results (v0.8.0)",
+    )
+    p_isch.add_argument("--output-dir", dest="output_dir",
+                        default="data/backtest_results/intelligence_stable")
+
+    # --- intelligence-stable-manifest (v0.8.0) ---
+    p_ism = subparsers.add_parser(
+        "intelligence-stable-manifest",
+        help="Build or show Research Intelligence Stable release manifest (v0.8.0)",
+    )
+    p_ism.add_argument("--output-dir", dest="output_dir",
+                       default="data/backtest_results/intelligence_stable")
+    p_ism.add_argument("--version", default="v0.8.0",
+                       help="Release version string (default: v0.8.0)")
+
+    # --- intelligence-stable-report (v0.8.0) ---
+    p_isr = subparsers.add_parser(
+        "intelligence-stable-report",
+        help="Generate Research Intelligence Stable Markdown report (v0.8.0)",
+    )
+    p_isr.add_argument("--mode", choices=["real", "mock"], default="real")
+    p_isr.add_argument("--report-dir", dest="report_dir", default="reports")
+    p_isr.add_argument("--output-dir", dest="output_dir",
+                       default="data/backtest_results/intelligence_stable")
+
     # --- strategy-knowledge-ingest (v0.4.1.1) ---
     p_ski = subparsers.add_parser(
         "strategy-knowledge-ingest",
@@ -13256,6 +13503,13 @@ def main() -> None:
         "backtest-coach-daily-plan": cmd_backtest_coach_daily_plan,
         "backtest-coach-weekly-plan":cmd_backtest_coach_weekly_plan,
         "backtest-coach-report":     cmd_backtest_coach_report,
+        # v0.8.0 Research Intelligence Stable
+        "intelligence-stable":              cmd_intelligence_stable,
+        "intelligence-stable-summary":      cmd_intelligence_stable_summary,
+        "intelligence-stable-capabilities": cmd_intelligence_stable_capabilities,
+        "intelligence-stable-checks":       cmd_intelligence_stable_checks,
+        "intelligence-stable-manifest":     cmd_intelligence_stable_manifest,
+        "intelligence-stable-report":       cmd_intelligence_stable_report,
         # v0.7.2 Strategy Research Memory
         "strategy-memory":               cmd_strategy_memory,
         "strategy-memory-summary":       cmd_strategy_memory_summary,

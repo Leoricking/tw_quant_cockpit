@@ -17,6 +17,7 @@ from data_coverage.data_coverage_schema import (
     DOMAIN_STABLE_RELEASE, DOMAIN_RESEARCH_INTELLIGENCE,
     DOMAIN_STRATEGY_MEMORY,
     DOMAIN_BACKTEST_COACH,
+    DOMAIN_INTELLIGENCE_STABLE,
 )
 
 logger = logging.getLogger(__name__)
@@ -686,5 +687,50 @@ class DataCoverageRegistry:
                     "reports/backtest_coach_report_*.md",
                 ],
                 "owner_module":     "reports.backtest_coach_report",
+            },
+            # ----------------------------------------------------------------
+            # Intelligence Stable domain (v0.8.0)
+            # ----------------------------------------------------------------
+            {
+                "item_id":          "intelligence_stable_store",
+                "domain":           DOMAIN_INTELLIGENCE_STABLE,
+                "dataset_name":     "Research Intelligence Stable Store",
+                "required":         False,
+                "environment_limited": False,
+                "not_generated":    False,
+                "suggested_command": "python main.py intelligence-stable --mode real",
+                "expected_patterns": [
+                    "data/backtest_results/intelligence_stable/intelligence_stable_summary*.csv",
+                    "data/backtest_results/intelligence_stable/intelligence_capabilities.csv",
+                    "data/backtest_results/intelligence_stable/intelligence_stable_checks*.csv",
+                ],
+                "owner_module":     "intelligence_stable.intelligence_stable_store",
+            },
+            {
+                "item_id":          "intelligence_stable_manifest",
+                "domain":           DOMAIN_INTELLIGENCE_STABLE,
+                "dataset_name":     "Research Intelligence Stable Release Manifest",
+                "required":         False,
+                "environment_limited": False,
+                "not_generated":    False,
+                "suggested_command": "python main.py intelligence-stable-manifest",
+                "expected_patterns": [
+                    "data/backtest_results/intelligence_stable/intelligence_release_manifest*.json",
+                    "data/backtest_results/intelligence_stable/intelligence_release_manifest*.md",
+                ],
+                "owner_module":     "intelligence_stable.intelligence_release_manifest",
+            },
+            {
+                "item_id":          "intelligence_stable_report",
+                "domain":           DOMAIN_INTELLIGENCE_STABLE,
+                "dataset_name":     "Research Intelligence Stable Report",
+                "required":         False,
+                "environment_limited": False,
+                "not_generated":    False,
+                "suggested_command": "python main.py intelligence-stable-report --mode real",
+                "expected_patterns": [
+                    "reports/intelligence_stable_report_*.md",
+                ],
+                "owner_module":     "reports.intelligence_stable_report",
             },
         ]

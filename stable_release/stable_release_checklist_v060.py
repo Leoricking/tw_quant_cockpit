@@ -676,6 +676,46 @@ class StableReleaseChecklistV060:
                 "coach_tasks_no_forbidden_actions", "runtime_safety", "FAIL", str(exc),
             )
 
+    def _check_intelligence_stable_summary_can_run(self) -> dict:
+        """v0.8.0 — IntelligenceStableStore.load_latest_summary must not crash."""
+        try:
+            from intelligence_stable.intelligence_stable_store import IntelligenceStableStore
+            store = IntelligenceStableStore()
+            store.load_latest_summary()  # may return None — that is fine
+            return _check_item(
+                "intelligence_stable_summary_can_run", "runtime_safety", "PASS",
+                "IntelligenceStableStore.load_latest_summary runs without error.",
+            )
+        except Exception as exc:
+            return _check_item(
+                "intelligence_stable_summary_can_run", "runtime_safety", "FAIL",
+                str(exc),
+                suggested_fix="Ensure intelligence_stable package is installed correctly.",
+            )
+
+    def _check_intelligence_stable_no_forbidden_actions(self) -> dict:
+        """v0.8.0 — IntelligenceCapabilityMatrix must have no forbidden actions."""
+        try:
+            from intelligence_stable.intelligence_capability_matrix import IntelligenceCapabilityMatrix
+            matrix = IntelligenceCapabilityMatrix()
+            caps = matrix.build()
+            all_safe = all(c.no_real_orders and c.production_blocked for c in caps)
+            if all_safe:
+                return _check_item(
+                    "intelligence_stable_no_forbidden_actions", "runtime_safety", "PASS",
+                    f"All {len(caps)} capabilities have no_real_orders=True and production_blocked=True.",
+                )
+            unsafe = [c.capability_id for c in caps if not (c.no_real_orders and c.production_blocked)]
+            return _check_item(
+                "intelligence_stable_no_forbidden_actions", "runtime_safety", "FAIL",
+                f"Capabilities without safety flags: {unsafe}",
+                suggested_fix="Set no_real_orders=True and production_blocked=True on all capabilities.",
+            )
+        except Exception as exc:
+            return _check_item(
+                "intelligence_stable_no_forbidden_actions", "runtime_safety", "FAIL", str(exc),
+            )
+
     # ----------------------------------------------------------------
     # Run
     # ----------------------------------------------------------------
@@ -718,6 +758,9 @@ class StableReleaseChecklistV060:
             # v0.7.3 Backtest-to-Coach Loop
             self._check_backtest_coach_summary_can_run,
             self._check_coach_tasks_no_forbidden_actions,
+            # v0.8.0 Research Intelligence Stable
+            self._check_intelligence_stable_summary_can_run,
+            self._check_intelligence_stable_no_forbidden_actions,
         ]
 
         for fn in checklist_groups:

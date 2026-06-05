@@ -59,6 +59,8 @@
 | v0.7.0 | Research Intelligence Upgrade | Done |
 | v0.7.1 | Intelligence UX Polish | Done |
 | v0.7.2 | Strategy Research Memory | Done |
+| v0.7.3 | Backtest-to-Coach Loop | Done |
+| v0.8.0 | Research Intelligence Stable | Done |
 
 ---
 
@@ -161,13 +163,21 @@ Research Only. No Real Orders. Production Trading: BLOCKED.
 Backtest-to-Coach Loop converts backtest weaknesses, replay mistakes, journal patterns, rule issues, strategy memories, and data gaps into safe coach training tasks (PRACTICE_REPLAY, REVIEW_RULE, REVIEW_JOURNAL, FIX_DATA, BACKTEST_MORE, READ_REPORT, UPDATE_MEMORY, WAIT — no trading actions). 7 CLI commands, GUI panel, 8-section Markdown report.
 Research Only. No Real Orders. Production Trading: BLOCKED.
 
+### Completed: v0.8.0 — Research Intelligence Stable
+
+**Status:** Done
+
+Research Intelligence Stable validates and stabilizes all Research Intelligence capabilities: Research Intelligence (v0.7.0-v0.7.1), Strategy Memory (v0.7.2), and Backtest-to-Coach Loop (v0.7.3). 29 capabilities across 5 categories (Research Intelligence, Strategy Memory, Backtest Coach, Supporting, Safety), 7-category stable checklist (Import Health, CLI Health, Report Health, Safety, Regression, Runtime, Stable Integration), release manifest (JSON + Markdown), and safety audit. 6 CLI commands, GUI panel (Intelligence Stable tab), Markdown report, CSV store.
+Research Only. No Real Orders. Production Trading: BLOCKED.
+
 ### Next Steps (Planned)
 
 | Version | Feature | Priority |
 |---------|---------|---------|
-| v0.8.0 | Research Intelligence History — trend signals over time, progress charts | P2 |
-| v0.8.1 | Advanced Replay Analysis — pattern detection, multi-session comparison | P2 |
-| v0.8.2 | Strategy Memory LLM-assisted extraction scaffold | P2 |
+| v0.8.1 | Research Intelligence History — trend signals over time, progress charts | P2 |
+| v0.8.2 | Advanced Replay Analysis — pattern detection, multi-session comparison | P2 |
+| v0.8.3 | Strategy Memory LLM-assisted extraction scaffold | P2 |
+| v0.9.0 | AI Review Engine Stable — LLM-assisted signal analysis and coaching | P1 |
 
 ---
 

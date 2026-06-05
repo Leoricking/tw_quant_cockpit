@@ -483,6 +483,12 @@ class AutoReportIndexBuilder:
                 "backtest_coach_replay_tasks":     ctx.get("backtest_coach_replay_tasks", 0),
                 "backtest_coach_backtest_tasks":   ctx.get("backtest_coach_backtest_tasks", 0),
                 "backtest_coach_report_path":      ctx.get("backtest_coach_report_path", ""),
+                # v0.8.0 Research Intelligence Stable
+                "intelligence_stable_status":       ctx.get("intelligence_stable", {}).get("overall_status", "UNKNOWN"),
+                "intelligence_stable_capabilities": ctx.get("intelligence_stable", {}).get("total_capabilities", 0),
+                "intelligence_stable_forbidden_actions": ctx.get("intelligence_stable", {}).get("forbidden_action_count", 0),
+                "intelligence_stable_report_path":  ctx.get("intelligence_stable", {}).get("report_path", ""),
+                "intelligence_stable_manifest_path": ctx.get("intelligence_stable", {}).get("manifest_path", ""),
             }
 
             path = os.path.join(output_dir, "manifest.json")

@@ -432,6 +432,27 @@ _MODULES: list[dict] = [
         ),
         "next_action":        "Add LLM-assisted task description enrichment in v0.8.x",
     },
+    # v0.8.0 Research Intelligence Stable
+    {
+        "module_name":        "research_intelligence_stable",
+        "package":            "intelligence_stable",
+        "category":           "E. Research OS Layer",
+        "cli_commands":       (
+            "intelligence-stable,intelligence-stable-summary,"
+            "intelligence-stable-capabilities,intelligence-stable-checks,"
+            "intelligence-stable-manifest,intelligence-stable-report"
+        ),
+        "gui_tab":            "Intelligence Stable",
+        "report":             "yes",
+        "maturity":           "STABLE",
+        "known_limitations":  (
+            "Validates Research Intelligence v0.7.0-v0.8.0 capabilities only. "
+            "No BUY/SELL/ORDER — research validation only. "
+            "Release manifest requires git subprocess (may be limited in CI). "
+            "Stable checks may show WARN if some CSV outputs not yet generated."
+        ),
+        "next_action":        "Add LLM-assisted capability scoring in v0.8.1",
+    },
 ]
 
 

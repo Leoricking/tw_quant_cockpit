@@ -27,6 +27,7 @@ from report_pack.report_pack_schema import (
     REPORT_DATA_COVERAGE, REPORT_RESEARCH_INTELLIGENCE,
     REPORT_STRATEGY_MEMORY,
     REPORT_BACKTEST_COACH,
+    REPORT_INTELLIGENCE_STABLE,
     OPTIONAL_REPORT_TYPES, ENV_LIMITED_REPORT_TYPES,
 )
 
@@ -165,6 +166,13 @@ _REPORT_PATTERNS = {
     REPORT_BACKTEST_COACH: [
         "reports/backtest_coach_report_*.md",
         "data/backtest_results/backtest_coach/backtest_coach_summary*.csv",
+    ],
+    # v0.8.0 Research Intelligence Stable
+    REPORT_INTELLIGENCE_STABLE: [
+        "reports/intelligence_stable_report_*.md",
+        "data/backtest_results/intelligence_stable/intelligence_stable_summary*.csv",
+        "data/backtest_results/intelligence_stable/intelligence_release_manifest*.json",
+        "data/backtest_results/intelligence_stable/intelligence_release_manifest*.md",
     ],
 }
 

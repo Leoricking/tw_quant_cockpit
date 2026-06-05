@@ -464,6 +464,15 @@ except Exception as _bc_exc:
     logger.warning("BacktestCoachPanel unavailable: %s", _bc_exc)
     _BACKTEST_COACH_AVAILABLE = False
 
+# v0.8.0 Research Intelligence Stable panel import (guarded)
+# ---------------------------------------------------------------------------
+try:
+    from gui.intelligence_stable_panel import IntelligenceStablePanel
+    _INTELLIGENCE_STABLE_AVAILABLE = True
+except Exception as _is_exc:
+    logger.warning("IntelligenceStablePanel unavailable: %s", _is_exc)
+    _INTELLIGENCE_STABLE_AVAILABLE = False
+
 # v0.5.1.1 Strategy Filter panel — inline (no separate panel file required)
 # ---------------------------------------------------------------------------
 _STRATEGY_FILTER_AVAILABLE = False
@@ -1528,6 +1537,13 @@ class CockpitWindow(QMainWindow if _PYSIDE6_AVAILABLE else object):
             mid_tabs.addTab(self._backtest_coach_panel, "Backtest Coach")
         else:
             self._backtest_coach_panel = None
+
+        # v0.8.0 Research Intelligence Stable tab
+        if _INTELLIGENCE_STABLE_AVAILABLE:
+            self._intelligence_stable_panel = IntelligenceStablePanel()
+            mid_tabs.addTab(self._intelligence_stable_panel, "Intelligence Stable")
+        else:
+            self._intelligence_stable_panel = None
 
         # v0.4.1.1 Strategy Knowledge tab
         if _STRATEGY_KNOWLEDGE_INGESTION_AVAILABLE:

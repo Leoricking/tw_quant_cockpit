@@ -69,6 +69,8 @@ _PROFILE_FLAGS: Dict[str, dict] = {
         include_strategy_memory=True,
         # v0.7.3 Backtest-to-Coach Loop (optional in full profile)
         include_backtest_coach=True,
+        # v0.8.0 Research Intelligence Stable (optional in full profile)
+        include_intelligence_stable=True,
     ),
     "daily": dict(
         include_stock_reports=False,
@@ -100,6 +102,8 @@ _PROFILE_FLAGS: Dict[str, dict] = {
         include_strategy_memory=True,
         # v0.7.3 Backtest-to-Coach Loop in daily profile
         include_backtest_coach=True,
+        # v0.8.0 Research Intelligence Stable summary in daily profile
+        include_intelligence_stable=True,
     ),
     "portfolio": dict(
         include_stock_reports=False,
@@ -204,6 +208,7 @@ class AutoReportCenter:
         include_research_intelligence: bool = False,
         include_strategy_memory: bool = False,
         include_backtest_coach: bool = False,
+        include_intelligence_stable: bool = False,
     ):
         self.mode        = mode
         self.profile     = profile
@@ -272,6 +277,9 @@ class AutoReportCenter:
         )
         self.include_backtest_coach = flags.get(
             "include_backtest_coach", include_backtest_coach
+        )
+        self.include_intelligence_stable = flags.get(
+            "include_intelligence_stable", include_intelligence_stable
         )
         self.universe_name = universe_name
 
@@ -513,6 +521,17 @@ class AutoReportCenter:
                 self._failed.append({
                     "name": "backtest_coach_report",
                     "error": str(_bc_exc),
+                })
+
+        # v0.8.0 Research Intelligence Stable (optional, failure should not crash)
+        if getattr(self, "include_intelligence_stable", False):
+            try:
+                self.run_intelligence_stable_summary()
+            except Exception as _is_exc:
+                logger.warning("intelligence_stable_summary failed (non-blocking): %s", _is_exc)
+                self._failed.append({
+                    "name": "intelligence_stable_summary",
+                    "error": str(_is_exc),
                 })
 
         # Aggregated outputs
@@ -1609,6 +1628,33 @@ class AutoReportCenter:
         except Exception as exc:
             logger.warning("AutoReportCenter.run_report_pack_summary: %s", exc)
             self._context["report_pack"] = {}
+
+    def run_intelligence_stable_summary(self) -> None:
+        """v0.8.0: Load intelligence stable summary (never crashes, no recursive loop).
+
+        [!] Research Only. No Real Orders. Production Trading: BLOCKED.
+        """
+        try:
+            from gui.intelligence_stable_adapter import IntelligenceStableAdapter
+            adapter = IntelligenceStableAdapter()
+            summary = adapter.load_latest_summary()
+            self._context["intelligence_stable"] = {
+                "version":            summary.get("version", "v0.8.0"),
+                "overall_status":     summary.get("overall_status", "UNKNOWN"),
+                "total_capabilities": summary.get("total_capabilities", 0),
+                "stable_count":       summary.get("stable_count", 0),
+                "pass_count":         summary.get("pass_count", 0),
+                "warn_count":         summary.get("warn_count", 0),
+                "fail_count":         summary.get("fail_count", 0),
+                "forbidden_action_count": summary.get("forbidden_action_count", 0),
+                "no_real_orders":     True,
+                "production_blocked": True,
+            }
+            report_path = adapter.load_latest_report_path()
+            self._record_success("intelligence_stable_summary", report_path or "")
+        except Exception as exc:
+            logger.warning("AutoReportCenter.run_intelligence_stable_summary: %s", exc)
+            self._context["intelligence_stable"] = {}
 
     def _record_success(self, name: str, path: Optional[str], extra: dict = None):
         entry = {

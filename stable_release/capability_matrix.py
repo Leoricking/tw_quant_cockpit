@@ -691,6 +691,31 @@ class StableCapabilityMatrix:
                 no_real_orders=True,
                 production_blocked=True,
             ),
+            # v0.8.0 Research Intelligence Stable
+            StableCapability(
+                capability_id="research_intelligence_stable",
+                name="Research Intelligence Stable",
+                category="research_os",
+                version_added="v0.8.0",
+                status="STABLE",
+                maturity="STABLE",
+                cli_commands=[
+                    "intelligence-stable", "intelligence-stable-summary",
+                    "intelligence-stable-capabilities", "intelligence-stable-checks",
+                    "intelligence-stable-manifest", "intelligence-stable-report",
+                ],
+                gui_tabs=["Intelligence Stable"],
+                reports=["intelligence_stable"],
+                regression_coverage=True,
+                safety_status="OK",
+                known_limitations=[
+                    "Validation is static; no live monitoring",
+                    "Checklist runs subprocesses which may be slow",
+                    "Research Only — no trading actions, no real orders",
+                ],
+                no_real_orders=True,
+                production_blocked=True,
+            ),
         ]
         return self
 

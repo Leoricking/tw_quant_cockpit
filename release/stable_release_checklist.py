@@ -1303,6 +1303,58 @@ class StableReleaseChecklist:
             elapsed = (time.monotonic() - t0) * 1000
             return self._item("backtest_coach_no_forbidden_actions", "FAIL", str(exc), elapsed)
 
+    def _check_intelligence_stable_import_health(self) -> dict:
+        """v0.8.0: intelligence_stable package imports cleanly."""
+        t0 = time.monotonic()
+        try:
+            from intelligence_stable.intelligence_stable_schema import IntelligenceStableSummary  # noqa: F401
+            from intelligence_stable.intelligence_capability_matrix import IntelligenceCapabilityMatrix  # noqa: F401
+            from intelligence_stable.intelligence_stable_store import IntelligenceStableStore  # noqa: F401
+            elapsed = (time.monotonic() - t0) * 1000
+            return self._item("intelligence_stable_import_health", "PASS",
+                               "intelligence_stable package imports successfully.", elapsed)
+        except ImportError as exc:
+            elapsed = (time.monotonic() - t0) * 1000
+            return self._item("intelligence_stable_import_health", "FAIL", str(exc), elapsed)
+        except Exception as exc:
+            elapsed = (time.monotonic() - t0) * 1000
+            return self._item("intelligence_stable_import_health", "WARN", str(exc), elapsed)
+
+    def _check_intelligence_stable_no_forbidden_actions(self) -> dict:
+        """v0.8.0: All intelligence_stable capabilities have safety flags set."""
+        t0 = time.monotonic()
+        try:
+            from intelligence_stable.intelligence_capability_matrix import IntelligenceCapabilityMatrix
+            matrix = IntelligenceCapabilityMatrix()
+            caps = matrix.build()
+            all_safe = all(c.no_real_orders and c.production_blocked for c in caps)
+            elapsed = (time.monotonic() - t0) * 1000
+            if all_safe:
+                return self._item("intelligence_stable_no_forbidden_actions", "PASS",
+                                   f"All {len(caps)} capabilities have safety flags set.", elapsed)
+            unsafe = [c.capability_id for c in caps if not (c.no_real_orders and c.production_blocked)]
+            return self._item("intelligence_stable_no_forbidden_actions", "FAIL",
+                               f"Unsafe capabilities: {unsafe}", elapsed)
+        except Exception as exc:
+            elapsed = (time.monotonic() - t0) * 1000
+            return self._item("intelligence_stable_no_forbidden_actions", "WARN", str(exc), elapsed)
+
+    def _check_intelligence_stable_version_info(self) -> dict:
+        """v0.8.0: VersionInfo reports v0.8.0."""
+        t0 = time.monotonic()
+        try:
+            from release.version_info import VersionInfo
+            v = VersionInfo.version
+            elapsed = (time.monotonic() - t0) * 1000
+            if v.startswith("v0.8"):
+                return self._item("intelligence_stable_version_info", "PASS",
+                                   f"VersionInfo.version={v} (v0.8.x confirmed).", elapsed)
+            return self._item("intelligence_stable_version_info", "WARN",
+                               f"VersionInfo.version={v} (expected v0.8.x).", elapsed)
+        except Exception as exc:
+            elapsed = (time.monotonic() - t0) * 1000
+            return self._item("intelligence_stable_version_info", "WARN", str(exc), elapsed)
+
     # ------------------------------------------------------------------
     # Write outputs
     # ------------------------------------------------------------------
@@ -1498,6 +1550,10 @@ class StableReleaseChecklist:
             # v0.7.3 Backtest-to-Coach Loop
             self._check_backtest_coach_import_health,
             self._check_backtest_coach_no_forbidden_actions,
+            # v0.8.0 Research Intelligence Stable
+            self._check_intelligence_stable_import_health,
+            self._check_intelligence_stable_no_forbidden_actions,
+            self._check_intelligence_stable_version_info,
         ]
 
         items: list[dict] = []

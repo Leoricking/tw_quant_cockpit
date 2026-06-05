@@ -302,3 +302,7 @@ reports/strategy_memory_report_*.md
 # v0.7.3 Backtest-to-Coach Loop — runtime outputs
 data/backtest_results/backtest_coach/
 reports/backtest_coach_report_*.md
+
+# v0.8.0 Research Intelligence Stable — runtime outputs
+data/backtest_results/intelligence_stable/
+reports/intelligence_stable_report_*.md

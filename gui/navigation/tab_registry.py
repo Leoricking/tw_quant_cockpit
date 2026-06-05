@@ -842,6 +842,45 @@ class GUITabRegistry:
                 favorite_default=False,
                 notes="Added in v0.7.3 — Backtest-to-Coach Loop.",
             ),
+            # v0.8.0 Research Intelligence Stable
+            GUITabMetadata(
+                tab_id="intelligence_stable",
+                tab_name="intelligence_stable",
+                display_name="Intelligence Stable",
+                group="research_os",
+                priority="P0",
+                description=(
+                    "Research Intelligence Stable v0.8.0 — validates and stabilizes all Research "
+                    "Intelligence capabilities: Research Intelligence (v0.7.0-0.7.1), Strategy Memory "
+                    "(v0.7.2), and Backtest-to-Coach Loop (v0.7.3). 29 capabilities across 5 categories, "
+                    "7-category stable checklist, release manifest, and safety audit. "
+                    "No BUY/SELL/ORDER. Research Only. No Real Orders. Production Trading BLOCKED."
+                ),
+                module_path="gui.intelligence_stable_panel",
+                class_name="IntelligenceStablePanel",
+                available_flag="_INTELLIGENCE_STABLE_AVAILABLE",
+                safety_level="RESEARCH_ONLY",
+                read_only=True,
+                no_real_orders=True,
+                production_blocked=True,
+                keywords=[
+                    "intelligence stable", "stable validation", "capability matrix",
+                    "stable checklist", "release manifest", "safety audit",
+                    "research intelligence", "strategy memory", "backtest coach",
+                    "研究智能穩定", "穩定驗證", "能力矩陣", "穩定清單", "安全審計",
+                ],
+                aliases=["intelligence-stable", "stable", "research-stable"],
+                related_cli_commands=[
+                    "intelligence-stable", "intelligence-stable-summary",
+                    "intelligence-stable-capabilities", "intelligence-stable-checks",
+                    "intelligence-stable-manifest", "intelligence-stable-report",
+                ],
+                report_types=["intelligence_stable"],
+                maturity="STABLE",
+                default_visible=True,
+                favorite_default=False,
+                notes="Added in v0.8.0 — Research Intelligence Stable.",
+            ),
             # v0.5.4 Report Pack Consolidation
             GUITabMetadata(
                 tab_id="report_pack",

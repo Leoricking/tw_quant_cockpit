@@ -4,7 +4,33 @@
 >
 > **[!] v1: Real order execution is strictly prohibited. For research, simulation, and decision support only. Not investment advice.**
 
-**Current version: v0.7.3 — Backtest-to-Coach Loop**
+**Current version: v0.8.0 — Research Intelligence Stable**
+
+---
+
+## v0.8.0 — Research Intelligence Stable
+
+**New in v0.8.0:**
+
+- **Research Intelligence Stable Engine**: Validates and stabilizes all Research Intelligence capabilities built across v0.7.0–v0.7.3
+- **29 Capabilities**: 5 categories — Research Intelligence (8), Strategy Memory (7), Backtest Coach (6), Supporting (8)
+- **7-Category Stable Checklist**: Import Health, CLI Health, Report Health, Safety, Regression, Runtime, Stable Integration
+- **Release Manifest**: JSON + Markdown manifest with git commit, tag, capability matrix, and checklist results
+- **11-Section Markdown Report**: Header, Release Overview, Capability Matrix, Stable Checklist, Safety Audit, Research Intelligence Layer, Strategy Memory Layer, Backtest-to-Coach Layer, Regression/Report/Data, Known Limitations, Safety Declaration
+- **6 CLI Commands**: `intelligence-stable` through `intelligence-stable-report`
+- **GUI Panel**: Intelligence Stable tab with summary cards, 4 tabs (Capability Matrix, Stable Checklist, Safety Audit, Reports & Manifest)
+- **CSV Store**: Capabilities, checks, and summary persisted per run
+- **Safety Audit**: All capabilities verified against `_FORBIDDEN = [BUY, SELL, ORDER, EXECUTE, SUBMIT_ORDER, AUTO_TRADE, REAL_TRADE]`
+- **[!] Research Only. No Real Orders. Production Trading: BLOCKED.**
+
+```bash
+python main.py intelligence-stable --mode real
+python main.py intelligence-stable-summary
+python main.py intelligence-stable-capabilities
+python main.py intelligence-stable-checks
+python main.py intelligence-stable-manifest
+python main.py intelligence-stable-report --mode real
+```
 
 ---
 
