@@ -287,6 +287,9 @@ class StableReleaseChecklistV060:
             # v0.6.2 Data Coverage Expansion
             "data_coverage.data_coverage_schema",
             "data_coverage.data_coverage_engine",
+            # v0.7.0 Research Intelligence
+            "research_intelligence.research_intelligence_schema",
+            "research_intelligence.research_intelligence_engine",
         ]
         failed = []
         for mod in modules:

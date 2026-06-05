@@ -716,6 +716,43 @@ class GUITabRegistry:
                 favorite_default=False,
                 notes="Added in v0.6.2 \u2014 Data Coverage Expansion.",
             ),
+            # v0.7.0 Research Intelligence
+            GUITabMetadata(
+                tab_id="research_intelligence",
+                tab_name="research_intelligence",
+                display_name="Research Intelligence",
+                group="daily_research",
+                priority="P0",
+                description=(
+                    "Research Intelligence v0.7.0 — aggregate signals from all Research OS modules, "
+                    "build P0/P1/P2/P3 priority boards, generate daily (7 items) and weekly (12 items) "
+                    "research plans. Research Only. No Real Orders. No BUY/SELL/ORDER."
+                ),
+                module_path="gui.research_intelligence_panel",
+                class_name="ResearchIntelligencePanel",
+                available_flag="_RESEARCH_INTELLIGENCE_AVAILABLE",
+                safety_level="RESEARCH_ONLY",
+                read_only=True,
+                no_real_orders=True,
+                production_blocked=True,
+                keywords=[
+                    "research intelligence", "priority board", "daily plan", "weekly plan",
+                    "signals", "recommendations", "p0", "p1", "gaps",
+                    "\u7814\u7a76\u667a\u80fd", "\u512a\u5148\u7d1a", "\u8a08\u756b",
+                ],
+                aliases=["research-intelligence", "ri", "intelligence"],
+                related_cli_commands=[
+                    "research-intelligence", "research-intelligence-summary",
+                    "research-intelligence-signals", "research-intelligence-recommendations",
+                    "research-intelligence-priority", "research-intelligence-daily-plan",
+                    "research-intelligence-weekly-plan", "research-intelligence-report",
+                ],
+                report_types=["research_intelligence"],
+                maturity="STABLE",
+                default_visible=True,
+                favorite_default=True,
+                notes="Added in v0.7.0 — Research Intelligence Upgrade.",
+            ),
             # v0.5.4 Report Pack Consolidation
             GUITabMetadata(
                 tab_id="report_pack",

@@ -3,7 +3,7 @@
 > **[!] Research Only. Read Only. No Real Orders. Production Trading: BLOCKED.**
 > **[!] Not investment advice. REAL_ORDER_READY=False.**
 
-Current version: **v0.6.3** — Replay Training UI Enhancement
+Current version: **v0.7.0** — Research Intelligence Upgrade
 
 ---
 
@@ -21,6 +21,8 @@ Current version: **v0.6.3** — Replay Training UI Enhancement
 | [Release Notes v0.4](release_notes_v0.4.md) | v0.4.0 stable release change log |
 | [Release Notes v0.5](release_notes_v0.5.md) | v0.5.0 Research OS Planning change log |
 | [Release Notes v0.6](release_notes_v0.6.md) | v0.6.x change log (v0.6.0 Stable Release, v0.6.1 UX Polish, v0.6.2 Data Coverage, v0.6.3 Replay Training UI) |
+| [Release Notes v0.7](release_notes_v0.7.md) | v0.7.x change log (v0.7.0 Research Intelligence Upgrade) |
+| [Research Intelligence v0.7.0](research_intelligence_upgrade.md) | v0.7.0 research intelligence pipeline, priority board, CLI/GUI usage |
 | [Research OS Stable Release v0.6.0](research_os_stable_release_v0.6.0.md) | v0.6.0 stable capability matrix, checklist, CLI/GUI usage |
 | [Stable UX Polish v0.6.1](stable_ux_polish_v0.6.1.md) | v0.6.1 CLI alias, status interpretation, optional missing, ENV_LIMITED |
 | [Data Coverage Expansion v0.6.2](data_coverage_expansion.md) | v0.6.2 data coverage tracking, gap classification, CLI and GUI usage |

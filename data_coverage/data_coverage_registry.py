@@ -14,7 +14,7 @@ from data_coverage.data_coverage_schema import (
     DOMAIN_PROVIDER, DOMAIN_DAILY_DATA, DOMAIN_INTRADAY, DOMAIN_FINANCIAL,
     DOMAIN_CHIP, DOMAIN_FEATURE_STORE, DOMAIN_REPLAY, DOMAIN_EXPERIMENT,
     DOMAIN_RULE_GOVERNANCE, DOMAIN_REPORT_PACK, DOMAIN_REGRESSION,
-    DOMAIN_STABLE_RELEASE,
+    DOMAIN_STABLE_RELEASE, DOMAIN_RESEARCH_INTELLIGENCE,
 )
 
 logger = logging.getLogger(__name__)
@@ -595,5 +595,34 @@ class DataCoverageRegistry:
                     "reports/stable_release_v0.6.0_report*.md",
                 ],
                 "owner_module":     "stable_release.capability_matrix",
+            },
+            # ----------------------------------------------------------------
+            # Research Intelligence domain (v0.7.0)
+            # ----------------------------------------------------------------
+            {
+                "item_id":          "research_intelligence_summary",
+                "domain":           DOMAIN_RESEARCH_INTELLIGENCE,
+                "dataset_name":     "Research Intelligence Summary",
+                "required":         False,
+                "environment_limited": False,
+                "not_generated":    False,
+                "suggested_command": "python main.py research-intelligence --mode real",
+                "expected_patterns": [
+                    "data/backtest_results/research_intelligence/research_intelligence_summary.csv",
+                ],
+                "owner_module":     "research_intelligence.research_intelligence_engine",
+            },
+            {
+                "item_id":          "research_intelligence_report",
+                "domain":           DOMAIN_RESEARCH_INTELLIGENCE,
+                "dataset_name":     "Research Intelligence Report",
+                "required":         False,
+                "environment_limited": False,
+                "not_generated":    False,
+                "suggested_command": "python main.py research-intelligence-report --mode real",
+                "expected_patterns": [
+                    "reports/research_intelligence_report*.md",
+                ],
+                "owner_module":     "reports.research_intelligence_report",
             },
         ]

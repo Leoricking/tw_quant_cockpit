@@ -56,6 +56,7 @@
 | v0.6.1 | Stable UX Polish | Done |
 | v0.6.2 | Data Coverage Expansion | Done |
 | v0.6.3 | Replay Training UI Enhancement | Done |
+| v0.7.0 | Research Intelligence Upgrade | Done |
 
 ---
 
@@ -127,6 +128,27 @@ Research Only. No Real Orders. Production Trading: BLOCKED.
 - `gui/navigation/tab_registry.py` — data_coverage tab entry
 - `.gitignore` — exclude data_coverage runtime outputs
 
+### Completed: v0.7.0 — Research Intelligence Upgrade
+
+**Status:** Done
+
+Research Intelligence pipeline: aggregate signals from 8 source modules → build recommendations →
+daily plan (7 items) / weekly plan (12 items) → P0/P1/P2/P3 priority board → CSV persistence → Markdown report.
+GUI tab with priority board, daily/weekly plan, all signals table. 9 new CLI commands.
+Forbidden action guard (`_validate_action()`) blocks BUY/SELL/ORDER.
+Research Only. No Real Orders. Production Trading: BLOCKED.
+
+### Next Steps (Planned)
+
+| Version | Feature | Priority |
+|---------|---------|---------|
+| v0.7.1 | Research Intelligence Feedback Loop — mark recommendations done, track completion | P1 |
+| v0.7.2 | Research Intelligence History — trend signals over time, progress charts | P2 |
+| v0.7.3 | Research Intelligence Export — export priority board to Markdown/PDF | P2 |
+| v0.8.0 | Advanced Replay Analysis — pattern detection, multi-session comparison | P2 |
+
+---
+
 ### Completed: v0.6.3 — Replay Training UI Enhancement
 
 **Status:** Done
@@ -135,12 +157,6 @@ Replay Control (Play/Pause timer, speed, Jump/slider), session status bar, enhan
 (OR high/low, VWAP, volume, marker count), marker reason/tags inputs, Drill Table, expanded
 Mistake Table, strategy violations display, QThread closeEvent cleanup.
 Research Only. No Real Orders. Production Trading: BLOCKED.
-
-### Next Steps (Planned)
-
-| Version | Feature | Priority |
-|---------|---------|---------|
-| v0.7.0 | Research Intelligence Upgrade — smarter AI review, pattern library | P1 |
 
 ---
 

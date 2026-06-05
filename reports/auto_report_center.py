@@ -63,6 +63,8 @@ _PROFILE_FLAGS: Dict[str, dict] = {
         include_stable_release_v060=True,
         # v0.6.2 Data Coverage Expansion (optional in full profile)
         include_data_coverage=True,
+        # v0.7.0 Research Intelligence (optional in full profile)
+        include_research_intelligence=True,
     ),
     "daily": dict(
         include_stock_reports=False,
@@ -88,6 +90,8 @@ _PROFILE_FLAGS: Dict[str, dict] = {
         include_report_pack=False,
         include_data_stabilization=True,
         include_replay_training=False,
+        # v0.7.0 Research Intelligence in daily profile
+        include_research_intelligence=True,
     ),
     "portfolio": dict(
         include_stock_reports=False,
@@ -189,6 +193,7 @@ class AutoReportCenter:
         include_replay_training: bool = False,
         include_stable_release_v060: bool = False,
         include_data_coverage: bool = False,
+        include_research_intelligence: bool = False,
     ):
         self.mode        = mode
         self.profile     = profile
@@ -248,6 +253,9 @@ class AutoReportCenter:
         )
         self.include_data_coverage = flags.get(
             "include_data_coverage", include_data_coverage
+        )
+        self.include_research_intelligence = flags.get(
+            "include_research_intelligence", include_research_intelligence
         )
         self.universe_name = universe_name
 
@@ -404,6 +412,37 @@ class AutoReportCenter:
                 self._failed.append({
                     "name": "data_coverage_report",
                     "error": str(_dc_exc),
+                })
+
+        # v0.7.0 Research Intelligence (optional, failure should not crash)
+        if getattr(self, "include_research_intelligence", False):
+            try:
+                from research_intelligence.research_intelligence_engine import ResearchIntelligenceEngine
+                from reports.research_intelligence_report import ResearchIntelligenceReport
+                ri_engine = ResearchIntelligenceEngine(project_root=_BASE_DIR)
+                ri_result = ri_engine.run(mode=self.mode)
+                ri_reporter = ResearchIntelligenceReport()
+                ri_content = ri_reporter.generate(
+                    summary=ri_result.get("summary", {}),
+                    signals=ri_result.get("signals", []),
+                    recommendations=ri_result.get("recommendations", []),
+                    priority_board={"rows": ri_result.get("priority_board", [])},
+                    daily_plan=ri_result.get("daily_plan", []),
+                    weekly_plan=ri_result.get("weekly_plan", []),
+                    mode=self.mode,
+                )
+                ri_path = ri_reporter.save(ri_content, report_dir=os.path.join(self._out_dir, "research_intelligence"))
+                self._generated.append({
+                    "name": "research_intelligence_report",
+                    "path": ri_path,
+                    "section": "research_intelligence",
+                })
+                logger.info("ResearchIntelligenceReport generated: %s", ri_path)
+            except Exception as _ri_exc:
+                logger.warning("ResearchIntelligenceReport failed (non-blocking): %s", _ri_exc)
+                self._failed.append({
+                    "name": "research_intelligence_report",
+                    "error": str(_ri_exc),
                 })
 
         # Aggregated outputs

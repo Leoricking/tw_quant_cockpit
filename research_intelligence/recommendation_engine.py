@@ -1,0 +1,215 @@
+"""research_intelligence/recommendation_engine.py — ResearchRecommendationEngine v0.7.0.
+
+Converts ResearchSignals into ranked ResearchRecommendations.
+
+[!] Research Intelligence Only. Research Only. No Real Orders.
+[!] Production Trading: BLOCKED. Not investment advice.
+[!] NO BUY/SELL/ORDER output. All recommendations are research actions only.
+"""
+from __future__ import annotations
+
+import logging
+import uuid
+from typing import Dict, List
+
+from research_intelligence.research_intelligence_schema import (
+    ResearchSignal, ResearchRecommendation,
+    PRI_P0, PRI_P1, PRI_P2, PRI_P3,
+    SEV_CRITICAL, SEV_HIGH, SEV_MEDIUM,
+    CAT_DATA_GAP, CAT_REPORT_GAP, CAT_REPLAY_MISTAKE, CAT_JOURNAL_PATTERN,
+    CAT_RULE_REVIEW, CAT_STRATEGY_RESEARCH, CAT_SYSTEM_RISK, CAT_TRAINING_TASK,
+    CAT_PROVIDER_LIMIT, CAT_REGRESSION_WARN, CAT_STABLE_NOTE,
+    ACT_FIX_DATA, ACT_GENERATE_REPORT, ACT_REVIEW_RULE, ACT_PRACTICE_REPLAY,
+    ACT_REVIEW_JOURNAL, ACT_RUN_BACKTEST, ACT_RUN_REGRESSION, ACT_READ_REPORT,
+    ACT_WAIT,
+    _validate_action,
+)
+
+logger = logging.getLogger(__name__)
+
+_PRIORITY_ORDER = {PRI_P0: 0, PRI_P1: 1, PRI_P2: 2, PRI_P3: 3}
+_SEVERITY_ORDER = {SEV_CRITICAL: 0, SEV_HIGH: 1, SEV_MEDIUM: 2, "LOW": 3, "INFO": 4}
+
+
+def _rec_id() -> str:
+    return f"REC-{uuid.uuid4().hex[:8].upper()}"
+
+
+class ResearchRecommendationEngine:
+    """Converts ResearchSignals into ranked ResearchRecommendations.
+
+    All suggested_commands are safe research-only commands.
+    No BUY/SELL/ORDER outputs are produced.
+
+    [!] Research Intelligence Only. Research Only. No Real Orders.
+    """
+
+    read_only          = True
+    no_real_orders     = True
+    production_blocked = True
+    real_order_ready   = False
+
+    def __init__(self) -> None:
+        pass
+
+    # ------------------------------------------------------------------
+    # Main entry points
+    # ------------------------------------------------------------------
+
+    def build_recommendations(
+        self, signals: List[ResearchSignal], mode: str = "real"
+    ) -> List[ResearchRecommendation]:
+        """Build recommendations from signals. Returns deduplicated, ranked list."""
+        recs = []
+        for sig in signals:
+            try:
+                rec = self._signal_to_recommendation(sig)
+                if rec is not None:
+                    recs.append(rec)
+            except Exception as exc:
+                logger.warning("[RecommendationEngine] signal→rec error: %s", exc)
+        recs = self.deduplicate(recs)
+        recs = self.rank_recommendations(recs)
+        return recs
+
+    def rank_recommendations(
+        self, recommendations: List[ResearchRecommendation]
+    ) -> List[ResearchRecommendation]:
+        """Sort by priority (P0 first), then by action_type importance."""
+        action_rank = {
+            ACT_RUN_REGRESSION: 0,
+            ACT_FIX_DATA:       1,
+            ACT_GENERATE_REPORT: 2,
+            ACT_PRACTICE_REPLAY: 3,
+            ACT_REVIEW_JOURNAL:  4,
+            ACT_REVIEW_RULE:     5,
+            ACT_RUN_BACKTEST:    6,
+            ACT_READ_REPORT:     7,
+            ACT_WAIT:            8,
+        }
+        return sorted(
+            recommendations,
+            key=lambda r: (
+                _PRIORITY_ORDER.get(r.priority, 9),
+                action_rank.get(r.action_type, 9),
+            ),
+        )
+
+    def deduplicate(
+        self, recommendations: List[ResearchRecommendation]
+    ) -> List[ResearchRecommendation]:
+        """Remove duplicate recommendations (same action_type + first command)."""
+        seen: Dict[str, bool] = {}
+        deduped = []
+        for rec in recommendations:
+            key = f"{rec.action_type}::{rec.suggested_commands[0] if rec.suggested_commands else rec.title}"
+            if key not in seen:
+                seen[key] = True
+                deduped.append(rec)
+        return deduped
+
+    # ------------------------------------------------------------------
+    # Plan builders
+    # ------------------------------------------------------------------
+
+    def build_daily_plan(
+        self, recommendations: List[ResearchRecommendation]
+    ) -> List[ResearchRecommendation]:
+        """Select up to 7 recommendations for today's research plan.
+
+        Quota:
+          1 system health check
+          2 data/report fix
+          2 replay/journal practice
+          1 rule/strategy review
+          1 optional improvement
+        """
+        plan: List[ResearchRecommendation] = []
+        quotas = {
+            "system":  (1, {CAT_SYSTEM_RISK, CAT_REGRESSION_WARN, CAT_STABLE_NOTE}),
+            "data":    (2, {CAT_DATA_GAP, CAT_REPORT_GAP, CAT_PROVIDER_LIMIT}),
+            "practice":(2, {CAT_REPLAY_MISTAKE, CAT_TRAINING_TASK, CAT_JOURNAL_PATTERN}),
+            "rule":    (1, {CAT_RULE_REVIEW, CAT_STRATEGY_RESEARCH}),
+            "optional":(1, set()),
+        }
+        used: Dict[str, int] = {k: 0 for k in quotas}
+        assigned: set = set()
+
+        for slot, (limit, cats) in quotas.items():
+            for rec in recommendations:
+                if rec.recommendation_id in assigned:
+                    continue
+                if slot == "optional":
+                    if used[slot] < limit:
+                        plan.append(rec)
+                        assigned.add(rec.recommendation_id)
+                        used[slot] += 1
+                elif rec.category in cats and used[slot] < limit:
+                    plan.append(rec)
+                    assigned.add(rec.recommendation_id)
+                    used[slot] += 1
+
+        return self.rank_recommendations(plan)[:7]
+
+    def build_weekly_plan(
+        self, recommendations: List[ResearchRecommendation]
+    ) -> List[ResearchRecommendation]:
+        """Select up to 12 recommendations for the weekly research plan."""
+        cats_order = [
+            CAT_DATA_GAP, CAT_REPORT_GAP, CAT_REPLAY_MISTAKE,
+            CAT_JOURNAL_PATTERN, CAT_RULE_REVIEW, CAT_STRATEGY_RESEARCH,
+            CAT_SYSTEM_RISK, CAT_REGRESSION_WARN, CAT_TRAINING_TASK,
+            CAT_PROVIDER_LIMIT, CAT_STABLE_NOTE,
+        ]
+        plan = []
+        assigned: set = set()
+        for cat in cats_order:
+            for rec in recommendations:
+                if rec.recommendation_id not in assigned and rec.category == cat:
+                    plan.append(rec)
+                    assigned.add(rec.recommendation_id)
+                    break
+        # Fill remaining slots
+        for rec in recommendations:
+            if rec.recommendation_id not in assigned and len(plan) < 12:
+                plan.append(rec)
+                assigned.add(rec.recommendation_id)
+        return self.rank_recommendations(plan)[:12]
+
+    # ------------------------------------------------------------------
+    # Signal → Recommendation
+    # ------------------------------------------------------------------
+
+    def _signal_to_recommendation(self, sig: ResearchSignal) -> ResearchRecommendation:
+        action = sig.suggested_action or ACT_READ_REPORT
+        _validate_action(action)
+        return ResearchRecommendation(
+            recommendation_id=_rec_id(),
+            title=sig.title,
+            category=sig.category,
+            priority=sig.priority,
+            action_type=action,
+            rationale=sig.description or sig.evidence,
+            expected_benefit=self._expected_benefit(sig),
+            required_inputs=[],
+            suggested_commands=[sig.suggested_command] if sig.suggested_command else [],
+            related_signals=[sig.signal_id],
+            related_modules=[sig.source_module],
+            due_hint="Today" if sig.priority in (PRI_P0, PRI_P1) else "This week",
+        )
+
+    def _expected_benefit(self, sig: ResearchSignal) -> str:
+        cat_benefit = {
+            CAT_DATA_GAP:         "Restore data completeness; unblock analysis",
+            CAT_REPORT_GAP:       "Generate missing reports for review",
+            CAT_REPLAY_MISTAKE:   "Improve tape reading accuracy and stop discipline",
+            CAT_JOURNAL_PATTERN:  "Identify recurring process errors; improve decision quality",
+            CAT_RULE_REVIEW:      "Maintain rule governance quality and strategy confidence",
+            CAT_STRATEGY_RESEARCH:"Discover and validate new strategy candidates",
+            CAT_SYSTEM_RISK:      "Restore system reliability and research trust",
+            CAT_TRAINING_TASK:    "Build trading skills through structured practice",
+            CAT_PROVIDER_LIMIT:   "Expand data availability once environment is configured",
+            CAT_REGRESSION_WARN:  "Prevent regression failures from blocking research",
+            CAT_STABLE_NOTE:      "Confirm stable release health",
+        }
+        return cat_benefit.get(sig.category, "Improve research quality")

@@ -435,6 +435,16 @@ except Exception as _dc_exc:
     logger.warning("DataCoveragePanel unavailable: %s", _dc_exc)
     _DATA_COVERAGE_AVAILABLE = False
 
+# ---------------------------------------------------------------------------
+# v0.7.0 Research Intelligence panel import (guarded)
+# ---------------------------------------------------------------------------
+try:
+    from gui.research_intelligence_panel import ResearchIntelligencePanel
+    _RESEARCH_INTELLIGENCE_AVAILABLE = True
+except Exception as _ri_exc:
+    logger.warning("ResearchIntelligencePanel unavailable: %s", _ri_exc)
+    _RESEARCH_INTELLIGENCE_AVAILABLE = False
+
 # v0.5.1.1 Strategy Filter panel — inline (no separate panel file required)
 # ---------------------------------------------------------------------------
 _STRATEGY_FILTER_AVAILABLE = False
@@ -1478,6 +1488,13 @@ class CockpitWindow(QMainWindow if _PYSIDE6_AVAILABLE else object):
             mid_tabs.addTab(self._data_coverage_panel, "Data Coverage")
         else:
             self._data_coverage_panel = None
+
+        # v0.7.0 Research Intelligence tab
+        if _RESEARCH_INTELLIGENCE_AVAILABLE:
+            self._research_intelligence_panel = ResearchIntelligencePanel()
+            mid_tabs.addTab(self._research_intelligence_panel, "Research Intelligence")
+        else:
+            self._research_intelligence_panel = None
 
         # v0.4.1.1 Strategy Knowledge tab
         if _STRATEGY_KNOWLEDGE_INGESTION_AVAILABLE:

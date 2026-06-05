@@ -7163,6 +7163,208 @@ def cmd_data_coverage_gaps(args: argparse.Namespace) -> None:
 
 
 # ---------------------------------------------------------------------------
+# v0.7.0 Research Intelligence command handlers
+# ---------------------------------------------------------------------------
+
+_RESEARCH_INTELLIGENCE_BANNER = (
+    "[!] Research Intelligence Only | Research Only | No Real Orders | "
+    "Production Trading BLOCKED | No BUY/SELL/ORDER"
+)
+
+
+def cmd_research_intelligence(args: argparse.Namespace) -> None:
+    """Run full research intelligence pipeline."""
+    mode   = getattr(args, "mode", "real")
+    period = getattr(args, "period", "daily")
+    print(_RESEARCH_INTELLIGENCE_BANNER)
+    print()
+    print(f"  Mode  : {mode}")
+    print(f"  Period: {period}")
+    print()
+    try:
+        from research_intelligence.research_intelligence_engine import ResearchIntelligenceEngine
+        engine = ResearchIntelligenceEngine(project_root=BASE_DIR)
+        result = engine.run(mode=mode, period=period)
+        summary = result.get("summary", {})
+        print(f"  Overall Status  : {summary.get('overall_status', '—')}")
+        print(f"  Total Signals   : {summary.get('total_signals', 0)}")
+        print(f"  Recommendations : {summary.get('recommendations_count', 0)}")
+        print(f"  P0 (Critical)   : {summary.get('system_risk_count', 0)}")
+        print(f"  High Priority   : {summary.get('high_priority_count', 0)}")
+        print(f"  Data Gaps       : {summary.get('data_gap_count', 0)}")
+        print(f"  Top Priority    : {summary.get('top_priority', '—')}")
+    except Exception as exc:
+        print(f"  ERROR: {exc}")
+    print()
+    print("  [!] No real orders. Research Only.")
+
+
+def cmd_research_intelligence_summary(args: argparse.Namespace) -> None:
+    """Show latest research intelligence summary from store."""
+    print(_RESEARCH_INTELLIGENCE_BANNER)
+    print()
+    try:
+        from research_intelligence.research_intelligence_store import ResearchIntelligenceStore
+        store  = ResearchIntelligenceStore()
+        result = store.load_latest_summary()
+        if not result.get("ok"):
+            print("  No summary found. Run: python main.py research-intelligence")
+        else:
+            for k, v in result.get("summary", {}).items():
+                print(f"  {k}: {v}")
+    except Exception as exc:
+        print(f"  ERROR: {exc}")
+    print()
+    print("  [!] No real orders. Research Only.")
+
+
+def cmd_research_intelligence_signals(args: argparse.Namespace) -> None:
+    """Show latest research intelligence signals from store."""
+    print(_RESEARCH_INTELLIGENCE_BANNER)
+    print()
+    try:
+        from research_intelligence.research_intelligence_store import ResearchIntelligenceStore
+        store   = ResearchIntelligenceStore()
+        result  = store.load_latest_signals()
+        signals = result.get("signals", [])
+        if not signals:
+            print("  No signals found. Run: python main.py research-intelligence")
+        else:
+            print(f"  Total signals: {len(signals)}")
+            for s in signals:
+                print(f"  [{s.get('priority','?'):2s}] [{s.get('severity','?'):8s}] {s.get('title','?')}")
+    except Exception as exc:
+        print(f"  ERROR: {exc}")
+    print()
+    print("  [!] No real orders. Research Only.")
+
+
+def cmd_research_intelligence_recommendations(args: argparse.Namespace) -> None:
+    """Show latest research intelligence recommendations from store."""
+    print(_RESEARCH_INTELLIGENCE_BANNER)
+    print()
+    try:
+        from research_intelligence.research_intelligence_store import ResearchIntelligenceStore
+        store = ResearchIntelligenceStore()
+        result = store.load_latest_recommendations()
+        recs   = result.get("recommendations", [])
+        if not recs:
+            print("  No recommendations found. Run: python main.py research-intelligence")
+        else:
+            print(f"  Total recommendations: {len(recs)}")
+            for r in recs:
+                cmd = r.get("suggested_commands", "—")
+                print(f"  [{r.get('priority','?'):2s}] {r.get('action_type','?'):20s} {r.get('title','?')}")
+                if cmd and cmd != "—":
+                    print(f"       Command: {cmd}")
+    except Exception as exc:
+        print(f"  ERROR: {exc}")
+    print()
+    print("  [!] No real orders. Research Only.")
+
+
+def cmd_research_intelligence_priority(args: argparse.Namespace) -> None:
+    """Show latest research intelligence priority board."""
+    print(_RESEARCH_INTELLIGENCE_BANNER)
+    print()
+    try:
+        from research_intelligence.research_intelligence_store import ResearchIntelligenceStore
+        store  = ResearchIntelligenceStore()
+        result = store.load_latest_priority_board()
+        board  = result.get("board", {})
+        for pri in ("P0", "P1", "P2", "P3"):
+            items = board.get(pri, [])
+            if items:
+                print(f"  {pri} ({len(items)} items):")
+                for item in items:
+                    print(f"    - {item.get('title','?')}")
+    except Exception as exc:
+        print(f"  ERROR: {exc}")
+    print()
+    print("  [!] No real orders. Research Only.")
+
+
+def cmd_research_intelligence_daily_plan(args: argparse.Namespace) -> None:
+    """Show latest research intelligence daily plan."""
+    print(_RESEARCH_INTELLIGENCE_BANNER)
+    print()
+    try:
+        from research_intelligence.research_intelligence_store import ResearchIntelligenceStore
+        store  = ResearchIntelligenceStore()
+        result = store.load_latest_daily_plan()
+        plan   = result.get("daily_plan", [])
+        if not plan:
+            print("  No daily plan found. Run: python main.py research-intelligence")
+        else:
+            print(f"  Daily Research Plan ({len(plan)} items):")
+            for i, item in enumerate(plan, 1):
+                cmd = item.get("command", "—") or "—"
+                print(f"  {i:2d}. [{item.get('priority','?'):2s}] {item.get('title','?')}")
+                if cmd and cmd != "—":
+                    print(f"       Command: {cmd}")
+    except Exception as exc:
+        print(f"  ERROR: {exc}")
+    print()
+    print("  [!] No real orders. Research Only.")
+
+
+def cmd_research_intelligence_weekly_plan(args: argparse.Namespace) -> None:
+    """Show latest research intelligence weekly plan."""
+    print(_RESEARCH_INTELLIGENCE_BANNER)
+    print()
+    try:
+        from research_intelligence.research_intelligence_store import ResearchIntelligenceStore
+        store  = ResearchIntelligenceStore()
+        result = store.load_latest_weekly_plan()
+        plan   = result.get("weekly_plan", [])
+        if not plan:
+            print("  No weekly plan found. Run: python main.py research-intelligence")
+        else:
+            print(f"  Weekly Research Plan ({len(plan)} items):")
+            for i, item in enumerate(plan, 1):
+                cmd = item.get("command", "—") or "—"
+                print(f"  {i:2d}. [{item.get('priority','?'):2s}] {item.get('title','?')}")
+                if cmd and cmd != "—":
+                    print(f"       Command: {cmd}")
+    except Exception as exc:
+        print(f"  ERROR: {exc}")
+    print()
+    print("  [!] No real orders. Research Only.")
+
+
+def cmd_research_intelligence_report(args: argparse.Namespace) -> None:
+    """Generate research intelligence Markdown report."""
+    mode       = getattr(args, "mode", "real")
+    report_dir = getattr(args, "report_dir", "reports")
+    print(_RESEARCH_INTELLIGENCE_BANNER)
+    print()
+    print(f"  Mode      : {mode}")
+    print(f"  Report Dir: {report_dir}")
+    print()
+    try:
+        from research_intelligence.research_intelligence_engine import ResearchIntelligenceEngine
+        from reports.research_intelligence_report import ResearchIntelligenceReport
+        engine = ResearchIntelligenceEngine(project_root=BASE_DIR)
+        result = engine.run(mode=mode)
+        reporter = ResearchIntelligenceReport()
+        content  = reporter.generate(
+            summary=result.get("summary", {}),
+            signals=result.get("signals", []),
+            recommendations=result.get("recommendations", []),
+            priority_board={"rows": result.get("priority_board", [])},
+            daily_plan=result.get("daily_plan", []),
+            weekly_plan=result.get("weekly_plan", []),
+            mode=mode,
+        )
+        path = reporter.save(content, report_dir=report_dir)
+        print(f"  Report saved: {path}")
+    except Exception as exc:
+        print(f"  ERROR: {exc}")
+    print()
+    print("  [!] No real orders. Research Only.")
+
+
+# ---------------------------------------------------------------------------
 # v0.4.2.1 ML Knowledge Integration command handlers
 # ---------------------------------------------------------------------------
 
@@ -11090,6 +11292,62 @@ def _build_parser() -> argparse.ArgumentParser:
     p_dcg.add_argument("--output-dir", dest="output_dir",
                        default="data/backtest_results/data_coverage")
 
+    # --- research-intelligence (v0.7.0) ---
+    p_ri = subparsers.add_parser(
+        "research-intelligence",
+        help="Run full research intelligence pipeline (v0.7.0)",
+    )
+    p_ri.add_argument("--mode", choices=["real", "mock"], default="real",
+                      help="Data mode (default: real)")
+    p_ri.add_argument("--period", choices=["daily", "weekly"], default="daily",
+                      help="Plan period (default: daily)")
+
+    # --- research-intelligence-summary (v0.7.0) ---
+    subparsers.add_parser(
+        "research-intelligence-summary",
+        help="Show latest research intelligence summary (v0.7.0)",
+    )
+
+    # --- research-intelligence-signals (v0.7.0) ---
+    subparsers.add_parser(
+        "research-intelligence-signals",
+        help="Show latest research intelligence signals (v0.7.0)",
+    )
+
+    # --- research-intelligence-recommendations (v0.7.0) ---
+    subparsers.add_parser(
+        "research-intelligence-recommendations",
+        help="Show latest research intelligence recommendations (v0.7.0)",
+    )
+
+    # --- research-intelligence-priority (v0.7.0) ---
+    subparsers.add_parser(
+        "research-intelligence-priority",
+        help="Show latest research intelligence priority board (v0.7.0)",
+    )
+
+    # --- research-intelligence-daily-plan (v0.7.0) ---
+    subparsers.add_parser(
+        "research-intelligence-daily-plan",
+        help="Show latest research intelligence daily plan (v0.7.0)",
+    )
+
+    # --- research-intelligence-weekly-plan (v0.7.0) ---
+    subparsers.add_parser(
+        "research-intelligence-weekly-plan",
+        help="Show latest research intelligence weekly plan (v0.7.0)",
+    )
+
+    # --- research-intelligence-report (v0.7.0) ---
+    p_rir = subparsers.add_parser(
+        "research-intelligence-report",
+        help="Generate research intelligence Markdown report (v0.7.0)",
+    )
+    p_rir.add_argument("--mode", choices=["real", "mock"], default="real",
+                       help="Data mode (default: real)")
+    p_rir.add_argument("--report-dir", dest="report_dir", default="reports",
+                       help="Output directory for report")
+
     # --- strategy-knowledge-ingest (v0.4.1.1) ---
     p_ski = subparsers.add_parser(
         "strategy-knowledge-ingest",
@@ -12299,6 +12557,15 @@ def main() -> None:
         "data-coverage-items":         cmd_data_coverage_items,
         "data-coverage-report":        cmd_data_coverage_report,
         "data-coverage-gaps":          cmd_data_coverage_gaps,
+        # v0.7.0 Research Intelligence
+        "research-intelligence":                cmd_research_intelligence,
+        "research-intelligence-summary":        cmd_research_intelligence_summary,
+        "research-intelligence-signals":        cmd_research_intelligence_signals,
+        "research-intelligence-recommendations": cmd_research_intelligence_recommendations,
+        "research-intelligence-priority":       cmd_research_intelligence_priority,
+        "research-intelligence-daily-plan":     cmd_research_intelligence_daily_plan,
+        "research-intelligence-weekly-plan":    cmd_research_intelligence_weekly_plan,
+        "research-intelligence-report":         cmd_research_intelligence_report,
         # v0.4.1.1 Strategy Knowledge Ingestion
         "strategy-knowledge-ingest":   cmd_strategy_knowledge_ingest,
         "strategy-knowledge-summary":  cmd_strategy_knowledge_summary,

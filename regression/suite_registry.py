@@ -1060,6 +1060,47 @@ class RegressionSuiteRegistry:
                 required=True,
                 description="Research review summary",
             ),
+            # v0.7.0 Research Intelligence
+            RegressionTestCase(
+                test_id="research_intelligence_schema_import",
+                name="ResearchIntelligenceSchema import check",
+                suite=SUITE_RESEARCH_OS,
+                category="import",
+                command=["-c", "from research_intelligence.research_intelligence_schema import ResearchSignal, ResearchRecommendation, ResearchIntelligenceSummary; print('schema OK')"],
+                timeout_seconds=30,
+                required=True,
+                description="v0.7.0 Research Intelligence schema import check",
+            ),
+            RegressionTestCase(
+                test_id="research_intelligence_engine_import",
+                name="ResearchIntelligenceEngine import check",
+                suite=SUITE_RESEARCH_OS,
+                category="import",
+                command=["-c", "from research_intelligence.research_intelligence_engine import ResearchIntelligenceEngine; print('engine OK')"],
+                timeout_seconds=30,
+                required=True,
+                description="v0.7.0 Research Intelligence engine import check",
+            ),
+            RegressionTestCase(
+                test_id="research_intelligence_panel_import",
+                name="ResearchIntelligencePanel import check",
+                suite=SUITE_RESEARCH_OS,
+                category="import",
+                command=["-c", "from gui.research_intelligence_panel import ResearchIntelligencePanel; print('panel OK')"],
+                timeout_seconds=30,
+                required=True,
+                description="v0.7.0 Research Intelligence GUI panel import check",
+            ),
+            RegressionTestCase(
+                test_id="research_intelligence_summary",
+                name="research-intelligence-summary",
+                suite=SUITE_RESEARCH_OS,
+                category="research_os",
+                command=["main.py", "research-intelligence-summary"],
+                timeout_seconds=60,
+                required=True,
+                description="v0.7.0 Research Intelligence summary CLI",
+            ),
         ]
 
     def build_release_gate_suite(self) -> List[RegressionTestCase]:

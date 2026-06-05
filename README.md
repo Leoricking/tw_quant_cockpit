@@ -4,7 +4,36 @@
 >
 > **[!] v1: Real order execution is strictly prohibited. For research, simulation, and decision support only. Not investment advice.**
 
-**Current version: v0.6.3 — Replay Training UI Enhancement**
+**Current version: v0.7.0 — Research Intelligence Upgrade**
+
+---
+
+## v0.7.0 — Research Intelligence Upgrade
+
+**New in v0.7.0:**
+
+Aggregates intelligence signals from all Research OS modules and generates actionable research plans.
+
+- **Research Intelligence Engine**: Full pipeline — collect signals → build recommendations → build plans → prioritize → save
+- **Signal Aggregation**: 8 source modules (data coverage, report pack, replay training, journal, rule governance, strategy knowledge, regression, stable release)
+- **P0/P1/P2/P2 Priority Board**: P0=必修, P1=高優先, P2=中優先, P3=低優先
+- **Daily Research Plan**: Up to 7 items with slot quotas (1 system, 2 data, 2 practice, 1 rule, 1 optional)
+- **Weekly Research Plan**: Up to 12 items across all signal categories
+- **Research Intelligence GUI Tab**: Priority board, daily/weekly plan, all signals table
+- **9 New CLI Commands**: `research-intelligence` through `research-intelligence-report`
+- **Forbidden Action Guard**: `_validate_action()` blocks BUY/SELL/ORDER — recommendations are REVIEW/RESEARCH/PRACTICE/FIX_DATA only
+- **CSV Persistence**: 6 output CSVs in `data/backtest_results/research_intelligence/`
+- **Report Pack Integration**: `REPORT_RESEARCH_INTELLIGENCE` optional in full/daily packs
+- **[!] Research Intelligence Only. Research Only. No Real Orders. Production Trading: BLOCKED.**
+
+```bash
+python main.py research-intelligence --mode real
+python main.py research-intelligence-summary
+python main.py research-intelligence-priority
+python main.py research-intelligence-daily-plan
+python main.py research-intelligence-report --mode real
+python -c "from research_intelligence.research_intelligence_engine import ResearchIntelligenceEngine; print('OK')"
+```
 
 ---
 

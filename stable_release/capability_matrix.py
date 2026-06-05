@@ -594,6 +594,29 @@ class StableCapabilityMatrix:
                     "ENV_LIMITED items require manual token setup",
                 ],
             ),
+            StableCapability(
+                capability_id="research_intelligence_upgrade",
+                name="Research Intelligence Upgrade",
+                category="research_os",
+                version_added="v0.7.0",
+                status="STABLE",
+                maturity="STABLE",
+                cli_commands=[
+                    "research-intelligence", "research-intelligence-summary",
+                    "research-intelligence-signals", "research-intelligence-recommendations",
+                    "research-intelligence-priority", "research-intelligence-daily-plan",
+                    "research-intelligence-weekly-plan", "research-intelligence-report",
+                ],
+                gui_tabs=["Research Intelligence"],
+                reports=["research_intelligence"],
+                regression_coverage=True,
+                safety_status="OK",
+                known_limitations=[
+                    "Signal aggregation depends on availability of CSV outputs from other modules",
+                    "Provider-limited signals require environment variable configuration",
+                    "No BUY/SELL/ORDER — research actions only",
+                ],
+            ),
         ]
         return self
 
