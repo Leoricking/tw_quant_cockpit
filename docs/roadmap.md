@@ -61,6 +61,8 @@
 | v0.7.2 | Strategy Research Memory | Done |
 | v0.7.3 | Backtest-to-Coach Loop | Done |
 | v0.8.0 | Research Intelligence Stable | Done |
+| v0.8.1 | Strategy Memory UX | Done |
+| v0.8.2 | Backtest Training Metrics | Done |
 
 ---
 
@@ -177,11 +179,24 @@ Research Only. No Real Orders. Production Trading: BLOCKED.
 Strategy Memory UX v0.8.1 polishes the Strategy Research Memory system: full status lifecycle flow (NEW→REVIEWING→VALIDATING→ACCEPTED/REJECTED/NEEDS_MORE_EVIDENCE), actionable UX fields (needs_action, validation_ready, status_hint, next_step, last_action_at), safe command labelling (SAFE_READ_ONLY/SAFE_REPORT/SAFE_REGRESSION/SAFE_REPLAY/SAFE_DATA_CHECK), 3 new CLI views (validation-queue, active-threads, repeated-patterns), enhanced GUI panel with 7-tab detail view, conservative duplicate detection, memory link improvements (why_linked, suggested_next_step), memory store protected statuses, and Research/Backtest Coach memory integration. All backward compatible. ACCEPTED = research only, never enables trading.
 Research Only. No Real Orders. Production Trading: BLOCKED.
 
+### Completed: v0.8.2 — Backtest Training Metrics
+
+**Status:** Done
+
+Backtest Training Metrics v0.8.2 measures training effectiveness across all Research OS modules.
+Collects 10 metric types (TASK_COMPLETION, REPLAY_SCORE, MISTAKE_REDUCTION, BACKTEST_ISSUE,
+JOURNAL_IMPROVEMENT, MEMORY_VALIDATION, RULE_REVIEW, DATA_FIX_PROGRESS, TRAINING_STREAK,
+QUALITY_SCORE) from backtest_coach, replay_training, strategy_memory, journal, and regression outputs.
+Computes IMPROVING/STABLE/WORSENING trend per metric. INSUFFICIENT_DATA shown gracefully when source
+module not yet run. Full CLI (5 commands), GUI tab, and Markdown report. Integrated into report_pack,
+regression suite, stable_release_checklist, intelligence_stable_checklist, auto_report_center,
+snapshot_builder, and data_coverage_registry.
+Research Only. No Real Orders. Production Trading: BLOCKED.
+
 ### Next Steps (Planned)
 
 | Version | Feature | Priority |
 |---------|---------|---------|
-| v0.8.2 | Research Intelligence History — trend signals over time, progress charts | P2 |
 | v0.8.3 | Advanced Replay Analysis — pattern detection, multi-session comparison | P2 |
 | v0.8.4 | Strategy Memory LLM-assisted extraction scaffold | P2 |
 | v0.9.0 | AI Review Engine Stable — LLM-assisted signal analysis and coaching | P1 |

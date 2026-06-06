@@ -18,6 +18,7 @@ from data_coverage.data_coverage_schema import (
     DOMAIN_STRATEGY_MEMORY,
     DOMAIN_BACKTEST_COACH,
     DOMAIN_INTELLIGENCE_STABLE,
+    DOMAIN_TRAINING_METRICS,
 )
 
 logger = logging.getLogger(__name__)
@@ -732,5 +733,34 @@ class DataCoverageRegistry:
                     "reports/intelligence_stable_report_*.md",
                 ],
                 "owner_module":     "reports.intelligence_stable_report",
+            },
+            # v0.8.2 Backtest Training Metrics
+            {
+                "item_id":          "training_metrics_store",
+                "domain":           DOMAIN_TRAINING_METRICS,
+                "dataset_name":     "Backtest Training Metrics Store",
+                "required":         False,
+                "environment_limited": False,
+                "not_generated":    False,
+                "suggested_command": "python main.py training-metrics --mode real",
+                "expected_patterns": [
+                    "data/backtest_results/training_metrics/training_metrics_*.csv",
+                    "data/backtest_results/training_metrics/training_metrics_history.csv",
+                    "data/backtest_results/training_metrics/training_metrics_summary_*.csv",
+                ],
+                "owner_module":     "training_metrics.training_metrics_store",
+            },
+            {
+                "item_id":          "training_metrics_report",
+                "domain":           DOMAIN_TRAINING_METRICS,
+                "dataset_name":     "Backtest Training Metrics Report",
+                "required":         False,
+                "environment_limited": False,
+                "not_generated":    False,
+                "suggested_command": "python main.py training-metrics-report --mode real",
+                "expected_patterns": [
+                    "reports/training_metrics_report_*.md",
+                ],
+                "owner_module":     "reports.training_metrics_report",
             },
         ]

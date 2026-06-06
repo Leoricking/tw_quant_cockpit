@@ -166,3 +166,76 @@ python main.py strategy-memory-repeated-patterns  # Memories seen more than once
 ---
 
 > **[!] No real orders. Research Only. Production Trading: BLOCKED. Not Investment Advice.**
+
+
+---
+
+## v0.8.2 — Backtest Training Metrics
+
+**Released:** 2026-06-05
+
+**Feature:** Measures and tracks training effectiveness across all Research OS modules.
+
+### New Package: `training_metrics/`
+
+- `training_metrics_schema.py` — `TrainingMetric`, `TrainingMetricsSummary` dataclasses with `_guard()` safety check
+- `metrics_collector.py` — Collects 10 metric types from backtest_coach, replay_training, strategy_memory, journal, regression
+- `progress_tracker.py` — Assigns IMPROVING/STABLE/WORSENING trends via historical CSV comparison
+- `training_metrics_store.py` — CSV persistence with rolling history file
+- `training_metrics_engine.py` — Orchestration pipeline
+
+### New Report: `reports/training_metrics_report.py`
+
+- Markdown report with overview, metrics table, trend analysis, safety declaration
+
+### New GUI: `gui/training_metrics_panel.py` + `gui/training_metrics_adapter.py`
+
+- PySide6 panel with summary cards, Metrics tab, Trends tab, Commands tab
+- Safety banner: Research Only | No Real Orders | Production Trading BLOCKED
+
+### New CLI Commands
+
+- `training-metrics --mode real`
+- `training-metrics-summary`
+- `training-metrics-detail`
+- `training-metrics-trend`
+- `training-metrics-report`
+
+### Integrations
+
+- `backtest_coach_engine.py` — adds `training_context` to return dict
+- `strategy_memory_engine.py` — adds `training_metrics_context` to return dict
+- `research_intelligence_engine.py` — loads `training_improvement_signal` from training_metrics store
+- `report_pack_schema.py` / `report_registry.py` / `report_collector.py` — `REPORT_TRAINING_METRICS` added to all packs (optional)
+- `regression/suite_registry.py` — 5 new test cases + 2 release gate tests
+- `stable_release/stable_release_checklist_v060.py` — 2 new checks
+- `intelligence_stable/intelligence_stable_checklist.py` — 2 new CLI/report/safety checks
+- `intelligence_stable/intelligence_capability_matrix.py` — `training_metrics` capability (USABLE)
+- `stable_release/capability_matrix.py` — `backtest_training_metrics` capability (USABLE)
+- `reports/intelligence_stable_report.py` — Training Metrics section added
+- `reports/auto_report_center.py` — `run_training_metrics_summary()` runner
+- `reports/auto_report_index.py` — 4 new manifest fields
+- `experiments/snapshot_builder.py` — `build_training_metrics_snapshot()`
+- `gui/dashboard.py` — TrainingMetricsPanel tab
+- `gui/navigation/tab_registry.py` — `training_metrics` tab (research_os group, P1)
+- `data_coverage/data_coverage_registry.py` — 2 new coverage items
+- `os_planning/module_inventory.py` — `training_metrics` module entry
+- `os_planning/regression_audit.py` — `training_metrics` audit entry
+- `.gitignore` — training_metrics runtime outputs
+
+### Safety
+
+- `_guard()` rejects BUY/SELL/ORDER/EXECUTE/SUBMIT_ORDER/AUTO_TRADE/REAL_TRADE in all metric labels
+- `INSUFFICIENT_DATA` shown gracefully when source module not yet run — never crashes
+- Production Trading BLOCKED, No Real Orders enforced via class-level constants
+
+### Known Limitations
+
+- Metrics collected from CSV outputs only — no live data feed
+- INSUFFICIENT_DATA shown when source module not yet run
+- Trend direction requires at least 2 historical data points
+- No automatic strategy activation based on any metric
+
+---
+
+> **[!] No real orders. Research Only. Production Trading: BLOCKED. Not Investment Advice.**

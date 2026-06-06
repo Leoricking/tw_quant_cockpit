@@ -129,7 +129,28 @@ class ResearchIntelligenceEngine:
             "production_blocked": True,
             "research_only":   True,
             "coach_context":   coach_context,
+            # v0.8.2: load training improvement signal from training_metrics summary
+            "training_improvement_signal": self._load_training_improvement_signal(),
         }
+
+    def _load_training_improvement_signal(self) -> dict:
+        """Load training_metrics summary as an improvement signal (v0.8.2)."""
+        try:
+            metrics_dir = os.path.join(self._root, "data", "backtest_results", "training_metrics")
+            from training_metrics.training_metrics_store import TrainingMetricsStore
+            store   = TrainingMetricsStore(output_dir=metrics_dir)
+            summary = store.load_latest_summary()
+            if summary:
+                return {
+                    "overall_trend":         summary.overall_trend,
+                    "overall_score":         summary.overall_score,
+                    "improving_count":       summary.improving_count,
+                    "worsening_count":       summary.worsening_count,
+                    "task_completion_rate":  summary.task_completion_rate,
+                }
+        except Exception as exc:
+            logger.debug("[ResearchIntelligenceEngine] training_improvement_signal: %s", exc)
+        return {}
 
     # ------------------------------------------------------------------
     # Summary builder

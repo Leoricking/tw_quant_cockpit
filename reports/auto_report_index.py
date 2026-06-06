@@ -489,6 +489,11 @@ class AutoReportIndexBuilder:
                 "intelligence_stable_forbidden_actions": ctx.get("intelligence_stable", {}).get("forbidden_action_count", 0),
                 "intelligence_stable_report_path":  ctx.get("intelligence_stable", {}).get("report_path", ""),
                 "intelligence_stable_manifest_path": ctx.get("intelligence_stable", {}).get("manifest_path", ""),
+                # v0.8.2 Backtest Training Metrics
+                "training_metrics_score":           ctx.get("training_metrics", {}).get("overall_score", 0.0),
+                "training_metrics_improving_count": ctx.get("training_metrics", {}).get("improving_count", 0),
+                "training_metrics_worsening_count": ctx.get("training_metrics", {}).get("worsening_count", 0),
+                "training_metrics_report_path":     ctx.get("training_metrics", {}).get("report_path", ""),
             }
 
             path = os.path.join(output_dir, "manifest.json")

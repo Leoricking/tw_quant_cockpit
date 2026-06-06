@@ -306,3 +306,7 @@ reports/backtest_coach_report_*.md
 # v0.8.0 Research Intelligence Stable — runtime outputs
 data/backtest_results/intelligence_stable/
 reports/intelligence_stable_report_*.md
+
+# v0.8.2 Backtest Training Metrics — runtime outputs
+data/backtest_results/training_metrics/
+reports/training_metrics_report_*.md

@@ -28,6 +28,7 @@ from report_pack.report_pack_schema import (
     REPORT_STRATEGY_MEMORY,
     REPORT_BACKTEST_COACH,
     REPORT_INTELLIGENCE_STABLE,
+    REPORT_TRAINING_METRICS,
     OPTIONAL_REPORT_TYPES, ENV_LIMITED_REPORT_TYPES,
 )
 
@@ -173,6 +174,11 @@ _REPORT_PATTERNS = {
         "data/backtest_results/intelligence_stable/intelligence_stable_summary*.csv",
         "data/backtest_results/intelligence_stable/intelligence_release_manifest*.json",
         "data/backtest_results/intelligence_stable/intelligence_release_manifest*.md",
+    ],
+    # v0.8.2 Backtest Training Metrics
+    REPORT_TRAINING_METRICS: [
+        "reports/training_metrics_report_*.md",
+        "data/backtest_results/training_metrics/training_metrics_summary*.csv",
     ],
 }
 

@@ -391,6 +391,24 @@ _COVERAGE: list[dict] = [
             "intelligence_stable_report in SUITE_RESEARCH_OS"
         ),
     },
+    # v0.8.2 Backtest Training Metrics
+    {
+        "module":            "training_metrics",
+        "command_covered":   "yes",
+        "import_covered":    "yes",
+        "gui_covered":       "yes",
+        "report_covered":    "yes",
+        "safety_covered":    "yes",
+        "missing_checks":    (
+            "No test for trend computation with multiple history rows; "
+            "no test for INSUFFICIENT_DATA when all upstream CSVs are absent"
+        ),
+        "recommended_test":  (
+            "training_metrics_schema_import, training_metrics_engine_import, "
+            "training_metrics_cli, training_metrics_summary, "
+            "training_metrics_report in SUITE_RESEARCH_OS"
+        ),
+    },
 ]
 
 

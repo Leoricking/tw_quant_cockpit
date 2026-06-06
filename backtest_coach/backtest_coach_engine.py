@@ -103,13 +103,34 @@ class BacktestCoachEngine:
         except Exception as exc:
             logger.error("[BacktestCoachEngine] save error: %s", exc)
 
+        # 7. Build training_metrics context (v0.8.2)
+        training_context: dict = {}
+        try:
+            from training_metrics.training_metrics_schema import (
+                METRIC_TASK_COMPLETION, METRIC_BACKTEST_ISSUE, STATUS_INSUFFICIENT_DATA,
+            )
+            completed  = sum(1 for t in tasks if getattr(t, "status", "") in ("DONE", "COMPLETED", "CLOSED"))
+            total      = len(tasks)
+            rate       = round(completed / total * 100.0, 1) if total > 0 else 0.0
+            high_issues= sum(1 for s in signals if getattr(s, "severity", "") in ("HIGH", "CRITICAL"))
+            training_context = {
+                "task_completion_rate": rate,
+                "total_tasks":          total,
+                "completed_tasks":      completed,
+                "open_issues":          len(signals),
+                "high_issues":          high_issues,
+            }
+        except Exception as _tm_exc:
+            logger.debug("[BacktestCoachEngine] training_metrics context: %s", _tm_exc)
+
         return {
-            "signals":          signals,
-            "tasks":            tasks,
-            "daily_tasks":      daily,
-            "weekly_tasks":     weekly,
-            "summary":          summary,
-            "no_real_orders":   True,
+            "signals":            signals,
+            "tasks":              tasks,
+            "daily_tasks":        daily,
+            "weekly_tasks":       weekly,
+            "summary":            summary,
+            "training_context":   training_context,
+            "no_real_orders":     True,
             "production_blocked": True,
         }
 

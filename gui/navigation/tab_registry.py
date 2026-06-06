@@ -924,6 +924,43 @@ class GUITabRegistry:
                 favorite_default=False,
                 notes="Added in v0.5.4 \u2014 Report Pack Consolidation.",
             ),
+            # v0.8.2 Backtest Training Metrics
+            GUITabMetadata(
+                tab_id="training_metrics",
+                tab_name="training_metrics",
+                display_name="Training Metrics",
+                group="research_os",
+                priority="P1",
+                description=(
+                    "Backtest Training Metrics \u2014 measures training effectiveness: "
+                    "task completion, replay score, mistake reduction, memory validation. "
+                    "Research Only. No Real Orders."
+                ),
+                module_path="gui.training_metrics_panel",
+                class_name="TrainingMetricsPanel",
+                available_flag="_TRAINING_METRICS_AVAILABLE",
+                safety_level="RESEARCH_ONLY",
+                read_only=True,
+                no_real_orders=True,
+                production_blocked=True,
+                keywords=[
+                    "training", "metrics", "effectiveness", "progress", "trend",
+                    "task completion", "replay score", "mistake reduction",
+                    "memory validation", "backtest issues", "quality score",
+                    "improving", "worsening", "insufficient data",
+                ],
+                aliases=["training-metrics", "training-metrics-summary", "training-metrics-trend"],
+                related_cli_commands=[
+                    "training-metrics", "training-metrics-summary",
+                    "training-metrics-detail", "training-metrics-trend",
+                    "training-metrics-report",
+                ],
+                report_types=["training_metrics"],
+                maturity="USABLE",
+                default_visible=True,
+                favorite_default=False,
+                notes="Added in v0.8.2 \u2014 Backtest Training Metrics.",
+            ),
         ]
         for tab in tabs:
             self._tabs[tab.tab_id] = tab

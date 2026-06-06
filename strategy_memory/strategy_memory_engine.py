@@ -55,6 +55,20 @@ class StrategyMemoryEngine:
         summary    = self.build_summary(merged, links)
         self._store.save_summary(summary)
         query = StrategyMemoryQuery(store=self._store)
+        # v0.8.2 training_metrics context
+        training_metrics_context: dict = {}
+        try:
+            validated = sum(1 for m in merged if m.status in ("ACCEPTED", "REJECTED", "VALIDATING"))
+            total     = len(merged)
+            rate      = round(validated / total * 100.0, 1) if total > 0 else 0.0
+            training_metrics_context = {
+                "memory_validation_rate": rate,
+                "total_memories":         total,
+                "validated_memories":     validated,
+            }
+        except Exception as _tm_exc:
+            logger.debug("[StrategyMemoryEngine] training_metrics_context: %s", _tm_exc)
+
         return {
             "memories": merged,
             "links":    links,
@@ -67,6 +81,8 @@ class StrategyMemoryEngine:
             "validation_queue_count":   len(query.get_validation_queue()),
             "repeated_patterns_count":  len(query.get_repeated_patterns()),
             "needs_action_count":       len([m for m in merged if m.needs_action]),
+            # v0.8.2
+            "training_metrics_context": training_metrics_context,
         }
 
     def _get_today_focus(self, memories: List[StrategyMemoryItem]) -> str:

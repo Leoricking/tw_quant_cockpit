@@ -4,7 +4,31 @@
 >
 > **[!] v1: Real order execution is strictly prohibited. For research, simulation, and decision support only. Not investment advice.**
 
-**Current version: v0.8.1 — Strategy Memory UX**
+**Current version: v0.8.2 — Backtest Training Metrics**
+
+---
+
+## v0.8.2 — Backtest Training Metrics
+
+**New in v0.8.2:**
+
+- **Backtest Training Metrics**: Measures training effectiveness across all Research OS modules
+- **10 Metric Types**: TASK_COMPLETION, REPLAY_SCORE, MISTAKE_REDUCTION, BACKTEST_ISSUE, JOURNAL_IMPROVEMENT, MEMORY_VALIDATION, RULE_REVIEW, DATA_FIX_PROGRESS, TRAINING_STREAK, QUALITY_SCORE
+- **Trend Detection**: IMPROVING / STABLE / WORSENING based on historical CSV comparison
+- **INSUFFICIENT_DATA**: Shown gracefully when source module not yet run — never crashes
+- **5 CLI Commands**: `training-metrics`, `training-metrics-summary`, `training-metrics-detail`, `training-metrics-trend`, `training-metrics-report`
+- **GUI Tab**: Training Metrics tab (research_os group) in TW Quant Cockpit dashboard
+- **Markdown Report**: Full metrics table, trend analysis, safety declaration
+- **Safety Guard**: `_guard()` rejects BUY/SELL/ORDER/EXECUTE/SUBMIT_ORDER/AUTO_TRADE/REAL_TRADE in all outputs
+- **[!] Research Only. No Real Orders. Production Trading: BLOCKED.**
+
+```bash
+python main.py training-metrics --mode real
+python main.py training-metrics-summary
+python main.py training-metrics-detail
+python main.py training-metrics-trend
+python main.py training-metrics-report --mode real
+```
 
 ---
 

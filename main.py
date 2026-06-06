@@ -8230,6 +8230,176 @@ def cmd_intelligence_stable_report(args: argparse.Namespace) -> None:
 
 
 # ---------------------------------------------------------------------------
+# v0.8.2 Backtest Training Metrics command handlers
+# ---------------------------------------------------------------------------
+
+_TRAINING_METRICS_BANNER = """
+╔══════════════════════════════════════════════════════════════╗
+║   TW Quant Cockpit — Backtest Training Metrics v0.8.2        ║
+║  Research Only  |  No Real Orders  |  Production BLOCKED     ║
+╚══════════════════════════════════════════════════════════════╝
+"""
+
+
+def cmd_training_metrics(args: argparse.Namespace) -> None:
+    """Run full Backtest Training Metrics pipeline."""
+    mode       = getattr(args, "mode", "real")
+    output_dir = getattr(args, "output_dir", "data/backtest_results/training_metrics")
+    report_dir = getattr(args, "report_dir", "reports")
+    output_dir_abs = output_dir if os.path.isabs(output_dir) else os.path.join(BASE_DIR, output_dir)
+    report_dir_abs = report_dir if os.path.isabs(report_dir) else os.path.join(BASE_DIR, report_dir)
+    print(_TRAINING_METRICS_BANNER)
+    print(f"  Mode:                       {mode}")
+    print(f"  Research Only:              YES")
+    print(f"  No Real Orders:             YES")
+    print(f"  Production Trading BLOCKED: YES")
+    print()
+    try:
+        from training_metrics.training_metrics_engine import TrainingMetricsEngine
+        engine = TrainingMetricsEngine(project_root=BASE_DIR, output_dir=output_dir_abs)
+        result = engine.run(mode=mode)
+        summary = result.get("summary")
+        metrics = result.get("metrics", [])
+        if summary:
+            s = summary
+            print(f"  Total Metrics:              {s.total_metrics}")
+            print(f"  Improving:                  {s.improving_count}")
+            print(f"  Stable:                     {s.stable_count}")
+            print(f"  Worsening:                  {s.worsening_count}")
+            print(f"  Insufficient Data:          {s.insufficient_count}")
+            print(f"  Overall Trend:              {s.overall_trend}")
+            print(f"  Overall Score:              {s.overall_score}%")
+        try:
+            from reports.training_metrics_report import TrainingMetricsReportBuilder
+            builder = TrainingMetricsReportBuilder()
+            rpath = builder.build(mode=mode, output_dir=report_dir_abs,
+                                  metrics_output_dir=output_dir_abs)
+            print(f"  Report:                     {rpath}")
+        except Exception as _rpt_exc:
+            print(f"  Report:                     (error: {_rpt_exc})")
+    except Exception as exc:
+        print(f"  ERROR: {exc}")
+    print()
+    print("  [!] No real orders. Research Only. Production Trading BLOCKED.")
+
+
+def cmd_training_metrics_summary(args: argparse.Namespace) -> None:
+    """Show latest Backtest Training Metrics summary."""
+    output_dir = getattr(args, "output_dir", "data/backtest_results/training_metrics")
+    output_dir_abs = output_dir if os.path.isabs(output_dir) else os.path.join(BASE_DIR, output_dir)
+    print(_TRAINING_METRICS_BANNER)
+    try:
+        from training_metrics.training_metrics_store import TrainingMetricsStore
+        store   = TrainingMetricsStore(output_dir=output_dir_abs)
+        summary = store.load_latest_summary()
+        if summary is None:
+            print("  No summary found. Run: python main.py training-metrics --mode real")
+        else:
+            s = summary
+            print(f"  Overall Trend:              {s.overall_trend}")
+            print(f"  Overall Score:              {s.overall_score}%")
+            print(f"  Total Metrics:              {s.total_metrics}")
+            print(f"  Improving:                  {s.improving_count}")
+            print(f"  Stable:                     {s.stable_count}")
+            print(f"  Worsening:                  {s.worsening_count}")
+            print(f"  Insufficient Data:          {s.insufficient_count}")
+            print(f"  Task Completion Rate:       {s.task_completion_rate}%")
+            print(f"  Avg Replay Score:           {s.replay_score_avg}")
+            print(f"  Mistake Reduction:          {s.mistake_reduction_pct}%")
+            print(f"  Memory Validation Rate:     {s.memory_validation_rate}%")
+            print(f"  Training Sessions:          {s.training_streak_days}")
+            if s.top_improving_metric:
+                print(f"  Top Improving:              {s.top_improving_metric}")
+            if s.top_worsening_metric:
+                print(f"  Top Worsening:              {s.top_worsening_metric}")
+    except Exception as exc:
+        print(f"  ERROR: {exc}")
+    print()
+    print("  [!] No real orders. Research Only.")
+
+
+def cmd_training_metrics_detail(args: argparse.Namespace) -> None:
+    """Show latest Backtest Training Metrics detail table."""
+    output_dir = getattr(args, "output_dir", "data/backtest_results/training_metrics")
+    output_dir_abs = output_dir if os.path.isabs(output_dir) else os.path.join(BASE_DIR, output_dir)
+    print(_TRAINING_METRICS_BANNER)
+    try:
+        from training_metrics.training_metrics_store import TrainingMetricsStore
+        store   = TrainingMetricsStore(output_dir=output_dir_abs)
+        metrics = store.load_latest_metrics()
+        print(f"  Total Metrics: {len(metrics)}")
+        print()
+        print(f"  {'Label':35s}  {'Type':22s}  {'Value':8s}  {'Unit':8s}  {'Trend':10s}  Status")
+        print(f"  {'-'*35}  {'-'*22}  {'-'*8}  {'-'*8}  {'-'*10}  {'-'*20}")
+        for m in metrics:
+            print(f"  {m.label:35s}  {m.metric_type:22s}  {m.value:8.1f}  {m.unit:8s}  {m.trend:10s}  {m.status}")
+    except Exception as exc:
+        print(f"  ERROR: {exc}")
+    print()
+    print("  [!] No real orders. Research Only.")
+
+
+def cmd_training_metrics_trend(args: argparse.Namespace) -> None:
+    """Show trend analysis for Backtest Training Metrics."""
+    output_dir = getattr(args, "output_dir", "data/backtest_results/training_metrics")
+    output_dir_abs = output_dir if os.path.isabs(output_dir) else os.path.join(BASE_DIR, output_dir)
+    print(_TRAINING_METRICS_BANNER)
+    try:
+        from training_metrics.training_metrics_store import TrainingMetricsStore
+        from training_metrics.training_metrics_schema import TREND_IMPROVING, TREND_WORSENING, STATUS_INSUFFICIENT_DATA
+        store   = TrainingMetricsStore(output_dir=output_dir_abs)
+        metrics = store.load_latest_metrics()
+        if not metrics:
+            print("  No metrics found. Run: python main.py training-metrics --mode real")
+        else:
+            improving = [m for m in metrics if m.trend == TREND_IMPROVING]
+            worsening = [m for m in metrics if m.trend == TREND_WORSENING]
+            insuf     = [m for m in metrics if m.status == STATUS_INSUFFICIENT_DATA]
+            if improving:
+                print("  Improving:")
+                for m in improving:
+                    print(f"    + {m.label}: {m.value} {m.unit}")
+            if worsening:
+                print("  Worsening (attention needed):")
+                for m in worsening:
+                    print(f"    - {m.label}: {m.value} {m.unit}")
+            if insuf:
+                print("  Insufficient Data (run source module):")
+                for m in insuf:
+                    print(f"    ? {m.label} (source: {m.source_module})")
+    except Exception as exc:
+        print(f"  ERROR: {exc}")
+    print()
+    print("  [!] No real orders. Research Only.")
+
+
+def cmd_training_metrics_report(args: argparse.Namespace) -> None:
+    """Generate Backtest Training Metrics Markdown report."""
+    mode       = getattr(args, "mode", "real")
+    report_dir = getattr(args, "report_dir", "reports")
+    output_dir = getattr(args, "output_dir", "data/backtest_results/training_metrics")
+    output_dir_abs = output_dir if os.path.isabs(output_dir) else os.path.join(BASE_DIR, output_dir)
+    report_dir_abs = report_dir if os.path.isabs(report_dir) else os.path.join(BASE_DIR, report_dir)
+    print(_TRAINING_METRICS_BANNER)
+    print(f"  Mode:       {mode}")
+    print(f"  Report Dir: {report_dir}")
+    print()
+    try:
+        from reports.training_metrics_report import TrainingMetricsReportBuilder
+        builder = TrainingMetricsReportBuilder()
+        path = builder.build(
+            mode=mode,
+            output_dir=report_dir_abs,
+            metrics_output_dir=output_dir_abs,
+        )
+        print(f"  Report saved: {path}")
+    except Exception as exc:
+        print(f"  ERROR: {exc}")
+    print()
+    print("  [!] No real orders. Research Only.")
+
+
+# ---------------------------------------------------------------------------
 # v0.4.2.1 ML Knowledge Integration command handlers
 # ---------------------------------------------------------------------------
 
@@ -12462,6 +12632,53 @@ def _build_parser() -> argparse.ArgumentParser:
     p_isr.add_argument("--output-dir", dest="output_dir",
                        default="data/backtest_results/intelligence_stable")
 
+    # --- training-metrics (v0.8.2) ---
+    p_tm = subparsers.add_parser(
+        "training-metrics",
+        help="Run full Backtest Training Metrics pipeline (v0.8.2)",
+    )
+    p_tm.add_argument("--mode", choices=["real", "mock"], default="real",
+                      help="Data mode (default: real)")
+    p_tm.add_argument("--output-dir", dest="output_dir",
+                      default="data/backtest_results/training_metrics",
+                      help="Output directory for metrics CSVs")
+    p_tm.add_argument("--report-dir", dest="report_dir", default="reports",
+                      help="Output directory for report")
+
+    # --- training-metrics-summary (v0.8.2) ---
+    p_tms = subparsers.add_parser(
+        "training-metrics-summary",
+        help="Show latest Backtest Training Metrics summary (v0.8.2)",
+    )
+    p_tms.add_argument("--output-dir", dest="output_dir",
+                       default="data/backtest_results/training_metrics")
+
+    # --- training-metrics-detail (v0.8.2) ---
+    p_tmd = subparsers.add_parser(
+        "training-metrics-detail",
+        help="Show Backtest Training Metrics detail table (v0.8.2)",
+    )
+    p_tmd.add_argument("--output-dir", dest="output_dir",
+                       default="data/backtest_results/training_metrics")
+
+    # --- training-metrics-trend (v0.8.2) ---
+    p_tmt = subparsers.add_parser(
+        "training-metrics-trend",
+        help="Show trend analysis for Backtest Training Metrics (v0.8.2)",
+    )
+    p_tmt.add_argument("--output-dir", dest="output_dir",
+                       default="data/backtest_results/training_metrics")
+
+    # --- training-metrics-report (v0.8.2) ---
+    p_tmr = subparsers.add_parser(
+        "training-metrics-report",
+        help="Generate Backtest Training Metrics Markdown report (v0.8.2)",
+    )
+    p_tmr.add_argument("--mode", choices=["real", "mock"], default="real")
+    p_tmr.add_argument("--report-dir", dest="report_dir", default="reports")
+    p_tmr.add_argument("--output-dir", dest="output_dir",
+                       default="data/backtest_results/training_metrics")
+
     # --- strategy-knowledge-ingest (v0.4.1.1) ---
     p_ski = subparsers.add_parser(
         "strategy-knowledge-ingest",
@@ -13695,6 +13912,12 @@ def main() -> None:
         "intelligence-stable-checks":       cmd_intelligence_stable_checks,
         "intelligence-stable-manifest":     cmd_intelligence_stable_manifest,
         "intelligence-stable-report":       cmd_intelligence_stable_report,
+        # v0.8.2 Backtest Training Metrics
+        "training-metrics":        cmd_training_metrics,
+        "training-metrics-summary": cmd_training_metrics_summary,
+        "training-metrics-detail": cmd_training_metrics_detail,
+        "training-metrics-trend":  cmd_training_metrics_trend,
+        "training-metrics-report": cmd_training_metrics_report,
         # v0.7.2 Strategy Research Memory (enhanced v0.8.1)
         "strategy-memory":                    cmd_strategy_memory,
         "strategy-memory-summary":            cmd_strategy_memory_summary,

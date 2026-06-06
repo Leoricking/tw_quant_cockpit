@@ -453,6 +453,27 @@ _MODULES: list[dict] = [
         ),
         "next_action":        "Add LLM-assisted capability scoring in v0.8.1",
     },
+    # v0.8.2 Backtest Training Metrics
+    {
+        "module_name":        "training_metrics",
+        "package":            "training_metrics",
+        "category":           "E. Research OS Layer",
+        "cli_commands":       (
+            "training-metrics,training-metrics-summary,"
+            "training-metrics-detail,training-metrics-trend,"
+            "training-metrics-report"
+        ),
+        "gui_tab":            "Training Metrics",
+        "report":             "yes",
+        "maturity":           "USABLE",
+        "known_limitations":  (
+            "Metrics collected from CSV outputs only — no live data feed. "
+            "INSUFFICIENT_DATA shown when source module not yet run. "
+            "Trend direction requires at least 2 historical data points. "
+            "No BUY/SELL/ORDER — research metrics only."
+        ),
+        "next_action":        "Improve trend window and add weekly aggregation in v0.8.3",
+    },
 ]
 
 

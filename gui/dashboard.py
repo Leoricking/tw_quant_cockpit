@@ -473,6 +473,15 @@ except Exception as _is_exc:
     logger.warning("IntelligenceStablePanel unavailable: %s", _is_exc)
     _INTELLIGENCE_STABLE_AVAILABLE = False
 
+# v0.8.2 Training Metrics panel
+# ---------------------------------------------------------------------------
+try:
+    from gui.training_metrics_panel import TrainingMetricsPanel
+    _TRAINING_METRICS_AVAILABLE = True
+except Exception as _tm_exc:
+    logger.warning("TrainingMetricsPanel unavailable: %s", _tm_exc)
+    _TRAINING_METRICS_AVAILABLE = False
+
 # v0.5.1.1 Strategy Filter panel — inline (no separate panel file required)
 # ---------------------------------------------------------------------------
 _STRATEGY_FILTER_AVAILABLE = False
@@ -1544,6 +1553,13 @@ class CockpitWindow(QMainWindow if _PYSIDE6_AVAILABLE else object):
             mid_tabs.addTab(self._intelligence_stable_panel, "Intelligence Stable")
         else:
             self._intelligence_stable_panel = None
+
+        # v0.8.2 Training Metrics tab
+        if _TRAINING_METRICS_AVAILABLE:
+            self._training_metrics_panel = TrainingMetricsPanel()
+            mid_tabs.addTab(self._training_metrics_panel, "Training Metrics")
+        else:
+            self._training_metrics_panel = None
 
         # v0.4.1.1 Strategy Knowledge tab
         if _STRATEGY_KNOWLEDGE_INGESTION_AVAILABLE:

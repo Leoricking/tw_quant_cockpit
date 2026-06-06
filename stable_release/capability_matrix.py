@@ -749,6 +749,32 @@ class StableCapabilityMatrix:
                 no_real_orders=True,
                 production_blocked=True,
             ),
+            # v0.8.2 Backtest Training Metrics
+            StableCapability(
+                capability_id="backtest_training_metrics",
+                name="Backtest Training Metrics",
+                category="research_os",
+                version_added="v0.8.2",
+                status="USABLE",
+                maturity="USABLE",
+                cli_commands=[
+                    "training-metrics", "training-metrics-summary",
+                    "training-metrics-detail", "training-metrics-trend",
+                    "training-metrics-report",
+                ],
+                gui_tabs=["Training Metrics"],
+                reports=["training_metrics"],
+                regression_coverage=True,
+                safety_status="OK",
+                known_limitations=[
+                    "Metrics collected from CSV outputs only — no live data feed",
+                    "INSUFFICIENT_DATA shown when source module not yet run",
+                    "Trend requires at least 2 historical data points",
+                    "Research Only — no trading actions, no real orders",
+                ],
+                no_real_orders=True,
+                production_blocked=True,
+            ),
         ]
         return self
 

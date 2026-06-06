@@ -402,6 +402,37 @@ class IntelligenceCapabilityMatrix:
                 cli_commands=["intelligence-stable"],
                 safety_checks=["no_real_orders=True", "production_blocked=True"],
             ),
+            # v0.8.2 Backtest Training Metrics
+            IntelligenceStableCapability(
+                capability_id="training_metrics",
+                name="Backtest Training Metrics",
+                category=CAT_BACKTEST_COACH,
+                source_module="training_metrics.training_metrics_engine",
+                version_added="v0.8.2",
+                stable_status=STABLE_STATUS_USABLE,
+                maturity="USABLE",
+                cli_commands=[
+                    "training-metrics",
+                    "training-metrics-summary",
+                    "training-metrics-detail",
+                    "training-metrics-trend",
+                    "training-metrics-report",
+                ],
+                gui_tabs=["training_metrics"],
+                reports=["training_metrics"],
+                regression_suites=["research_os"],
+                safety_checks=[
+                    "no_real_orders=True",
+                    "production_blocked=True",
+                    "_guard() rejects BUY/SELL/ORDER",
+                    "INSUFFICIENT_DATA shown gracefully",
+                ],
+                known_limitations=[
+                    "Metrics collected from CSV outputs only — no live data feed",
+                    "INSUFFICIENT_DATA shown when source module not yet run",
+                    "Trend requires at least 2 historical data points",
+                ],
+            ),
         ]
 
     def summarize(self, capabilities: List[IntelligenceStableCapability]) -> dict:

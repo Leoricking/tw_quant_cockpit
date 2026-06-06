@@ -71,6 +71,8 @@ _PROFILE_FLAGS: Dict[str, dict] = {
         include_backtest_coach=True,
         # v0.8.0 Research Intelligence Stable (optional in full profile)
         include_intelligence_stable=True,
+        # v0.8.2 Backtest Training Metrics (optional in full profile)
+        include_training_metrics=True,
     ),
     "daily": dict(
         include_stock_reports=False,
@@ -104,6 +106,8 @@ _PROFILE_FLAGS: Dict[str, dict] = {
         include_backtest_coach=True,
         # v0.8.0 Research Intelligence Stable summary in daily profile
         include_intelligence_stable=True,
+        # v0.8.2 Backtest Training Metrics in daily profile
+        include_training_metrics=True,
     ),
     "portfolio": dict(
         include_stock_reports=False,
@@ -209,6 +213,7 @@ class AutoReportCenter:
         include_strategy_memory: bool = False,
         include_backtest_coach: bool = False,
         include_intelligence_stable: bool = False,
+        include_training_metrics: bool = False,
     ):
         self.mode        = mode
         self.profile     = profile
@@ -280,6 +285,9 @@ class AutoReportCenter:
         )
         self.include_intelligence_stable = flags.get(
             "include_intelligence_stable", include_intelligence_stable
+        )
+        self.include_training_metrics = flags.get(
+            "include_training_metrics", include_training_metrics
         )
         self.universe_name = universe_name
 
@@ -532,6 +540,17 @@ class AutoReportCenter:
                 self._failed.append({
                     "name": "intelligence_stable_summary",
                     "error": str(_is_exc),
+                })
+
+        # v0.8.2 Backtest Training Metrics (optional, failure should not crash)
+        if getattr(self, "include_training_metrics", False):
+            try:
+                self.run_training_metrics_summary()
+            except Exception as _tm_exc:
+                logger.warning("training_metrics_summary failed (non-blocking): %s", _tm_exc)
+                self._failed.append({
+                    "name": "training_metrics_summary",
+                    "error": str(_tm_exc),
                 })
 
         # Aggregated outputs
@@ -1655,6 +1674,30 @@ class AutoReportCenter:
         except Exception as exc:
             logger.warning("AutoReportCenter.run_intelligence_stable_summary: %s", exc)
             self._context["intelligence_stable"] = {}
+
+    def run_training_metrics_summary(self) -> None:
+        """v0.8.2: Load training metrics summary (never crashes).
+
+        [!] Research Only. No Real Orders. Production Trading: BLOCKED.
+        """
+        try:
+            from gui.training_metrics_adapter import TrainingMetricsAdapter
+            adapter = TrainingMetricsAdapter()
+            summary = adapter.get_summary()
+            self._context["training_metrics"] = {
+                "overall_trend":         summary.get("overall_trend", "UNKNOWN"),
+                "overall_score":         summary.get("overall_score", 0.0),
+                "improving_count":       summary.get("improving_count", 0),
+                "worsening_count":       summary.get("worsening_count", 0),
+                "insufficient_count":    summary.get("insufficient_count", 0),
+                "task_completion_rate":  summary.get("task_completion_rate", 0.0),
+                "no_real_orders":        True,
+                "production_blocked":    True,
+            }
+            self._record_success("training_metrics_summary", "")
+        except Exception as exc:
+            logger.warning("AutoReportCenter.run_training_metrics_summary: %s", exc)
+            self._context["training_metrics"] = {}
 
     def _record_success(self, name: str, path: Optional[str], extra: dict = None):
         entry = {

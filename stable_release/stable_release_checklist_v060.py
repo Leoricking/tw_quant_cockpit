@@ -799,6 +799,58 @@ class StableReleaseChecklistV060:
                 "accepted_is_research_only", "runtime_safety", "FAIL", str(exc),
             )
 
+    def _check_training_metrics_summary_can_run(self) -> dict:
+        """v0.8.2 — TrainingMetricsSummary import and build check."""
+        try:
+            from training_metrics.training_metrics_schema import TrainingMetric, TrainingMetricsSummary
+            m = TrainingMetric(
+                metric_id="test", metric_type="TASK_COMPLETION",
+                source_module="test", label="Test Metric",
+                value=0.0, unit="%",
+            )
+            s = TrainingMetricsSummary()
+            if not s.no_real_orders or not s.production_blocked:
+                return _check_item(
+                    "training_metrics_summary_can_run", "training_metrics", "FAIL",
+                    "TrainingMetricsSummary safety flags not enforced.",
+                )
+            return _check_item(
+                "training_metrics_summary_can_run", "training_metrics", "PASS",
+                "TrainingMetric and TrainingMetricsSummary import and build OK.",
+            )
+        except Exception as exc:
+            return _check_item(
+                "training_metrics_summary_can_run", "training_metrics", "FAIL", str(exc),
+            )
+
+    def _check_training_metrics_no_forbidden_actions(self) -> dict:
+        """v0.8.2 — TrainingMetric label guard must reject BUY/SELL/ORDER."""
+        try:
+            from training_metrics.training_metrics_schema import TrainingMetric
+            caught = False
+            try:
+                TrainingMetric(
+                    metric_id="bad", metric_type="TASK_COMPLETION",
+                    source_module="test", label="BUY signal detected",
+                    value=0.0, unit="",
+                )
+            except ValueError:
+                caught = True
+            if not caught:
+                return _check_item(
+                    "training_metrics_no_forbidden_actions", "safety", "FAIL",
+                    "TrainingMetric _guard() did not reject forbidden keyword 'BUY'.",
+                    suggested_fix="Ensure _guard() is called in __post_init__.",
+                )
+            return _check_item(
+                "training_metrics_no_forbidden_actions", "safety", "PASS",
+                "TrainingMetric _guard() correctly rejects BUY/SELL/ORDER.",
+            )
+        except Exception as exc:
+            return _check_item(
+                "training_metrics_no_forbidden_actions", "safety", "FAIL", str(exc),
+            )
+
     # ----------------------------------------------------------------
     # Run
     # ----------------------------------------------------------------
@@ -848,6 +900,9 @@ class StableReleaseChecklistV060:
             self._check_strategy_memory_ux_import,
             self._check_strategy_memory_no_forbidden_commands,
             self._check_accepted_is_research_only,
+            # v0.8.2 Backtest Training Metrics
+            self._check_training_metrics_summary_can_run,
+            self._check_training_metrics_no_forbidden_actions,
         ]
 
         for fn in checklist_groups:

@@ -673,6 +673,8 @@ class ExperimentSnapshotBuilder:
             ("backtest_coach",              lambda: self.build_backtest_coach_snapshot()),
             # v0.8.0 Research Intelligence Stable
             ("intelligence_stable",         lambda: self.build_intelligence_stable_snapshot()),
+            # v0.8.2 Backtest Training Metrics
+            ("training_metrics",            lambda: self.build_training_metrics_snapshot()),
         ]
         for snap_type, fn in builders:
             try:
@@ -1253,4 +1255,42 @@ class ExperimentSnapshotBuilder:
         except Exception as exc:
             logger.warning("build_intelligence_stable_snapshot: %s", exc)
             snap["warnings"].append(f"intelligence_stable snapshot error: {exc}")
+        return snap
+
+    def build_training_metrics_snapshot(self) -> dict:
+        """Snapshot type: training_metrics. Captures latest training metrics summary.
+
+        [!] Research Only. No Real Orders. Production Trading: BLOCKED.
+        """
+        snap = _empty_snapshot("training_metrics")
+        try:
+            tm_dir = os.path.join(BASE_DIR, "data", "backtest_results", "training_metrics")
+            import glob as _glob
+            pattern = os.path.join(tm_dir, "training_metrics_summary_*.csv")
+            files = sorted(_glob.glob(pattern))
+            if files:
+                summary_csv = files[-1]
+                snap["source_files"].append(summary_csv)
+                import csv as _csv
+                with open(summary_csv, newline="", encoding="utf-8") as f:
+                    rows = list(_csv.DictReader(f))
+                    if rows:
+                        row = rows[-1]
+                        snap["summary"] = {
+                            "version":               row.get("version", "v0.8.2"),
+                            "overall_trend":         row.get("overall_trend", "UNKNOWN"),
+                            "overall_score":         row.get("overall_score", 0.0),
+                            "total_metrics":         row.get("total_metrics", 0),
+                            "improving_count":       row.get("improving_count", 0),
+                            "worsening_count":       row.get("worsening_count", 0),
+                            "insufficient_count":    row.get("insufficient_count", 0),
+                            "task_completion_rate":  row.get("task_completion_rate", 0.0),
+                            "no_real_orders":        True,
+                            "production_blocked":    True,
+                        }
+            else:
+                snap["warnings"].append("training_metrics_summary not found — run training-metrics first")
+        except Exception as exc:
+            logger.warning("build_training_metrics_snapshot: %s", exc)
+            snap["warnings"].append(f"training_metrics snapshot error: {exc}")
         return snap

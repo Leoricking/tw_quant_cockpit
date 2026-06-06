@@ -173,6 +173,8 @@ class IntelligenceStableChecklist:
             (["strategy-memory-list"], "cli_sm_list", "strategy-memory-list"),
             (["backtest-coach-summary"], "cli_bc_summary", "backtest-coach-summary"),
             (["backtest-coach-tasks"], "cli_bc_tasks", "backtest-coach-tasks"),
+            # v0.8.2 Training Metrics
+            (["training-metrics-summary"], "cli_tm_summary", "training-metrics-summary"),
         ]
         for cmd_args, check_id, cmd_name in cli_commands:
             rc, stdout, stderr = self._run_cli(cmd_args)
@@ -208,6 +210,9 @@ class IntelligenceStableChecklist:
              "report_bc", "Backtest Coach Report"),
             ("data/backtest_results/report_pack/",
              "report_pack_dir", "Report Pack Directory"),
+            # v0.8.2 Training Metrics report
+            ("reports/training_metrics_report_*.md",
+             "report_tm", "Training Metrics Report"),
         ]
         for pattern, check_id, name in report_patterns:
             full_pattern = os.path.join(self._root, pattern)
@@ -403,6 +408,62 @@ class IntelligenceStableChecklist:
             CHECK_PASS, SEV_CRITICAL,
             "ACCEPTED status = research accepted, not trading enabled. No BUY/SELL/ORDER output produced.",
         ))
+
+        # v0.8.2 Training Metrics safety
+        try:
+            from training_metrics.training_metrics_schema import TrainingMetric, _guard
+            caught = False
+            try:
+                _guard("BUY signal")
+            except ValueError:
+                caught = True
+            if caught:
+                checks.append(_check(
+                    "training_metrics_safe", "safety",
+                    "Training Metrics: No forbidden actions",
+                    CHECK_PASS, SEV_CRITICAL,
+                    "training_metrics _guard() correctly rejects BUY/SELL/ORDER keywords.",
+                ))
+            else:
+                checks.append(_check(
+                    "training_metrics_safe", "safety",
+                    "Training Metrics: No forbidden actions",
+                    CHECK_FAIL, SEV_CRITICAL,
+                    "_guard() did not reject forbidden keyword.",
+                ))
+        except Exception as exc:
+            checks.append(_check(
+                "training_metrics_safe", "safety",
+                "Training Metrics: No forbidden actions",
+                CHECK_WARN, SEV_HIGH,
+                f"Could not verify training_metrics safety guard: {exc}",
+            ))
+
+        # Check training_metrics outputs for forbidden keywords
+        tm_dir = os.path.join(self._root, "data", "backtest_results", "training_metrics")
+        forbidden_tm = 0
+        if os.path.isdir(tm_dir):
+            for fn in glob.glob(os.path.join(tm_dir, "*.csv")):
+                try:
+                    with open(fn, encoding="utf-8", errors="replace") as f:
+                        forbidden_tm += self._scan_for_forbidden(f.read())
+                except Exception:
+                    pass
+        if forbidden_tm == 0:
+            checks.append(_check(
+                "training_metrics_report_available", "safety",
+                "Training Metrics: No forbidden keywords in outputs",
+                CHECK_PASS, SEV_HIGH,
+                "No forbidden keywords found in training_metrics outputs (or no outputs yet).",
+            ))
+        else:
+            checks.append(_check(
+                "training_metrics_report_available", "safety",
+                "Training Metrics: No forbidden keywords in outputs",
+                CHECK_FAIL, SEV_CRITICAL,
+                f"FORBIDDEN keywords found {forbidden_tm} time(s) in training_metrics outputs.",
+                suggested_fix="Review training_metrics CSVs for trading action references.",
+            ))
 
         return checks
 
