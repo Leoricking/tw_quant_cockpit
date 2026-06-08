@@ -803,6 +803,32 @@ class StableCapabilityMatrix:
                 no_real_orders=True,
                 production_blocked=True,
             ),
+            # v0.9.0 Strategy Lab Stable
+            StableCapability(
+                capability_id="strategy_lab_stable",
+                name="Strategy Lab Stable",
+                category="research_os",
+                version_added="v0.9.0",
+                status="STABLE",
+                maturity="STABLE",
+                cli_commands=[
+                    "strategy-lab", "strategy-lab-summary",
+                    "strategy-lab-capabilities", "strategy-lab-checks",
+                    "strategy-lab-manifest", "strategy-lab-report",
+                ],
+                gui_tabs=["Strategy Lab"],
+                reports=["strategy_lab_stable"],
+                regression_coverage=True,
+                safety_status="OK",
+                known_limitations=[
+                    "No investment advice — all outputs are research tasks only",
+                    "No automatic strategy activation",
+                    "No live order execution — production trading is BLOCKED",
+                    "Checklist quality depends on source modules having been run",
+                ],
+                no_real_orders=True,
+                production_blocked=True,
+            ),
         ]
         return self
 

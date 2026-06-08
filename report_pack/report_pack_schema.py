@@ -72,6 +72,8 @@ REPORT_INTELLIGENCE_STABLE = "intelligence_stable"
 REPORT_TRAINING_METRICS = "training_metrics"
 # v0.8.3 Research Intelligence Evidence Graph
 REPORT_EVIDENCE_GRAPH = "evidence_graph"
+# v0.9.0 Strategy Lab Stable
+REPORT_STRATEGY_LAB_STABLE = "strategy_lab_stable"
 
 ALL_REPORT_TYPES = [
     REPORT_DAILY_MARKET, REPORT_AUTO_REPORT, REPORT_DATA_QUALITY,
@@ -87,6 +89,7 @@ ALL_REPORT_TYPES = [
     REPORT_INTELLIGENCE_STABLE,
     REPORT_TRAINING_METRICS,
     REPORT_EVIDENCE_GRAPH,
+    REPORT_STRATEGY_LAB_STABLE,
 ]
 
 # Report types that are optional — missing is NOT a release failure
@@ -98,6 +101,7 @@ OPTIONAL_REPORT_TYPES = {
     REPORT_INTELLIGENCE_STABLE,
     REPORT_TRAINING_METRICS,
     REPORT_EVIDENCE_GRAPH,
+    REPORT_STRATEGY_LAB_STABLE,
 }
 
 # Report types that require provider tokens / environment setup

@@ -510,6 +510,31 @@ class IntelligenceStableChecklist:
                 suggested_fix="python main.py evidence-graph-report --mode real",
             ))
 
+        # v0.9.0 Strategy Lab Stable safety
+        try:
+            from strategy_lab.strategy_lab_engine import StrategyLabEngine
+            if StrategyLabEngine.no_real_orders and StrategyLabEngine.production_blocked:
+                checks.append(_check(
+                    "strategy_lab_safe", "safety",
+                    "Strategy Lab: safety flags enforced",
+                    CHECK_PASS, SEV_HIGH,
+                    "StrategyLabEngine: no_real_orders=True, production_blocked=True.",
+                ))
+            else:
+                checks.append(_check(
+                    "strategy_lab_safe", "safety",
+                    "Strategy Lab: safety flags enforced",
+                    CHECK_FAIL, SEV_CRITICAL,
+                    "StrategyLabEngine safety flags not enforced.",
+                ))
+        except Exception as exc:
+            checks.append(_check(
+                "strategy_lab_safe", "safety",
+                "Strategy Lab: safety flags enforced",
+                CHECK_WARN, SEV_MEDIUM,
+                f"Could not verify strategy_lab safety (not yet installed or run): {exc}",
+            ))
+
         return checks
 
     # ------------------------------------------------------------------

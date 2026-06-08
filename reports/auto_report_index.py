@@ -500,6 +500,12 @@ class AutoReportIndexBuilder:
                 "evidence_graph_orphans":           ctx.get("evidence_graph", {}).get("orphan_node_count", 0),
                 "evidence_graph_requires_backtest": ctx.get("evidence_graph", {}).get("requires_backtest_count", 0),
                 "evidence_graph_report_path":       ctx.get("evidence_graph", {}).get("report_path", ""),
+                # v0.9.0 Strategy Lab Stable
+                "strategy_lab_overall_status":      ctx.get("strategy_lab", {}).get("overall_status", "UNKNOWN"),
+                "strategy_lab_total_capabilities":  ctx.get("strategy_lab", {}).get("total_capabilities", 0),
+                "strategy_lab_stable_count":        ctx.get("strategy_lab", {}).get("stable_count", 0),
+                "strategy_lab_forbidden_actions":   ctx.get("strategy_lab", {}).get("forbidden_action_count", 0),
+                "strategy_lab_report_path":         ctx.get("strategy_lab", {}).get("report_path", ""),
             }
 
             path = os.path.join(output_dir, "manifest.json")

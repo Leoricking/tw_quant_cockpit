@@ -1331,3 +1331,44 @@ class ExperimentSnapshotBuilder:
             logger.warning("build_evidence_graph_snapshot: %s", exc)
             snap["warnings"].append(f"evidence_graph snapshot error: {exc}")
         return snap
+
+    def build_strategy_lab_snapshot(self) -> dict:
+        """Snapshot type: strategy_lab. Captures latest strategy lab summary.
+
+        [!] Research Only. No Real Orders. Production Trading BLOCKED.
+        """
+        snap = _empty_snapshot("strategy_lab")
+        try:
+            sl_dir = os.path.join(BASE_DIR, "data", "backtest_results", "strategy_lab")
+            pattern = os.path.join(sl_dir, "strategy_lab_summary_*.csv")
+            files = sorted(glob.glob(pattern))
+            if files:
+                latest = files[-1]
+                snap["path"] = latest
+                snap["generated_at"] = datetime.now().isoformat()
+                snap["status"] = "ok"
+                try:
+                    from strategy_lab.strategy_lab_store import StrategyLabStore
+                    store = StrategyLabStore(output_dir=sl_dir)
+                    summary = store.load_latest_summary()
+                    if summary:
+                        snap["data"] = {
+                            "version":            summary.version,
+                            "overall_status":     summary.overall_status,
+                            "total_capabilities": summary.total_capabilities,
+                            "stable_count":       summary.stable_count,
+                            "usable_count":       summary.usable_count,
+                            "total_checks":       summary.total_checks,
+                            "pass_count":         summary.pass_count,
+                            "fail_count":         summary.fail_count,
+                            "no_real_orders":     summary.no_real_orders,
+                            "production_blocked": summary.production_blocked,
+                        }
+                except Exception as exc2:
+                    snap["warnings"].append(f"strategy_lab summary parse: {exc2}")
+            else:
+                snap["warnings"].append("strategy_lab_summary not found — run strategy-lab first")
+        except Exception as exc:
+            logger.warning("build_strategy_lab_snapshot: %s", exc)
+            snap["warnings"].append(f"strategy_lab snapshot error: {exc}")
+        return snap

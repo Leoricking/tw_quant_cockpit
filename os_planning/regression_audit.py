@@ -427,6 +427,23 @@ _COVERAGE: list[dict] = [
             "evidence_graph_report in SUITE_RELEASE_GATE"
         ),
     },
+    # v0.9.0 Strategy Lab Stable
+    {
+        "module":            "strategy_lab",
+        "command_covered":   "yes",
+        "import_covered":    "yes",
+        "gui_covered":       "yes",
+        "report_covered":    "yes",
+        "safety_covered":    "yes",
+        "missing_checks":    (
+            "No test for capability matrix with partial data; "
+            "no integration test for checklist across all 7 categories"
+        ),
+        "recommended_test":  (
+            "strategy_lab_schema_import, strategy_lab_engine_import, "
+            "strategy_lab_summary, strategy_lab_report in SUITE_RELEASE_GATE"
+        ),
+    },
 ]
 
 

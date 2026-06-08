@@ -1001,6 +1001,42 @@ class GUITabRegistry:
                 favorite_default=False,
                 notes="Added in v0.8.3 \u2014 Research Intelligence Evidence Graph.",
             ),
+            # v0.9.0 Strategy Lab Stable
+            GUITabMetadata(
+                tab_id="strategy_lab",
+                tab_name="strategy_lab",
+                display_name="Strategy Lab Stable",
+                group="research_os",
+                priority="P1",
+                description=(
+                    "Strategy Lab Stable \u2014 unified validation wrapper over Research Intelligence, "
+                    "Strategy Memory, Backtest Coach, Training Metrics, and Evidence Graph. "
+                    "47-capability matrix, 7-category checklist, release manifest, 13-section report. "
+                    "Research Only. No Real Orders. Production BLOCKED."
+                ),
+                module_path="gui.strategy_lab_panel",
+                class_name="StrategyLabPanel",
+                available_flag="_STRATEGY_LAB_AVAILABLE",
+                safety_level="RESEARCH_ONLY",
+                read_only=True,
+                no_real_orders=True,
+                production_blocked=True,
+                keywords=[
+                    "strategy lab", "stable", "capability matrix", "stable checklist",
+                    "release manifest", "strategy lab stable", "validation",
+                    "\u7b56\u7565\u5be6\u9a57\u5ba4", "\u7a69\u5b9a\u6aa2\u67e5\u8868",
+                ],
+                aliases=["strategy-lab", "strategy-lab-summary", "strategy-lab-capabilities"],
+                related_cli_commands=[
+                    "strategy-lab", "strategy-lab-summary", "strategy-lab-capabilities",
+                    "strategy-lab-checks", "strategy-lab-manifest", "strategy-lab-report",
+                ],
+                report_types=["strategy_lab_stable"],
+                maturity="STABLE",
+                default_visible=True,
+                favorite_default=False,
+                notes="Added in v0.9.0 \u2014 Strategy Lab Stable.",
+            ),
         ]
         for tab in tabs:
             self._tabs[tab.tab_id] = tab

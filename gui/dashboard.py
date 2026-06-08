@@ -491,6 +491,15 @@ except Exception as _eg_exc:
     logger.warning("EvidenceGraphPanel unavailable: %s", _eg_exc)
     _EVIDENCE_GRAPH_AVAILABLE = False
 
+# v0.9.0 Strategy Lab Stable panel
+# ---------------------------------------------------------------------------
+try:
+    from gui.strategy_lab_panel import StrategyLabPanel
+    _STRATEGY_LAB_AVAILABLE = True
+except Exception as _sl_exc:
+    logger.warning("StrategyLabPanel unavailable: %s", _sl_exc)
+    _STRATEGY_LAB_AVAILABLE = False
+
 # v0.5.1.1 Strategy Filter panel — inline (no separate panel file required)
 # ---------------------------------------------------------------------------
 _STRATEGY_FILTER_AVAILABLE = False
@@ -1576,6 +1585,13 @@ class CockpitWindow(QMainWindow if _PYSIDE6_AVAILABLE else object):
             mid_tabs.addTab(self._evidence_graph_panel, "Evidence Graph")
         else:
             self._evidence_graph_panel = None
+
+        # v0.9.0 Strategy Lab Stable tab
+        if _STRATEGY_LAB_AVAILABLE:
+            self._strategy_lab_panel = StrategyLabPanel()
+            mid_tabs.addTab(self._strategy_lab_panel, "Strategy Lab")
+        else:
+            self._strategy_lab_panel = None
 
         # v0.4.1.1 Strategy Knowledge tab
         if _STRATEGY_KNOWLEDGE_INGESTION_AVAILABLE:

@@ -469,6 +469,40 @@ class IntelligenceCapabilityMatrix:
                     "Max 20 edges per node to keep graph readable",
                 ],
             ),
+            # v0.9.0 Strategy Lab Stable
+            IntelligenceStableCapability(
+                capability_id="strategy_lab_stable",
+                name="Strategy Lab Stable",
+                category="research_os",
+                source_module="strategy_lab.strategy_lab_engine",
+                version_added="v0.9.0",
+                stable_status=STABLE_STATUS_STABLE,
+                maturity="STABLE",
+                cli_commands=[
+                    "strategy-lab",
+                    "strategy-lab-summary",
+                    "strategy-lab-capabilities",
+                    "strategy-lab-checks",
+                    "strategy-lab-manifest",
+                    "strategy-lab-report",
+                ],
+                gui_tabs=["strategy_lab"],
+                reports=["strategy_lab_stable"],
+                regression_suites=["release_gate"],
+                safety_checks=[
+                    "no_real_orders=True",
+                    "production_blocked=True",
+                    "real_order_ready=False",
+                    "read_only=True",
+                    "Does NOT modify any module status or weights",
+                ],
+                known_limitations=[
+                    "No investment advice — all outputs are research tasks only",
+                    "No automatic strategy activation",
+                    "No live order execution — production trading is BLOCKED",
+                    "Checklist quality depends on source modules having been run",
+                ],
+            ),
         ]
 
     def summarize(self, capabilities: List[IntelligenceStableCapability]) -> dict:

@@ -4,7 +4,32 @@
 >
 > **[!] v1: Real order execution is strictly prohibited. For research, simulation, and decision support only. Not investment advice.**
 
-**Current version: v0.8.3 — Research Intelligence Evidence Graph**
+**Current version: v0.9.0 — Strategy Lab Stable**
+
+---
+
+## v0.9.0 — Strategy Lab Stable
+
+**New in v0.9.0:**
+
+- **Strategy Lab Stable**: Unified validation wrapper over all Research OS modules (v0.7.x–v0.8.x)
+- **47-Capability Matrix**: Research Intelligence (9), Strategy Memory (8), Backtest Coach (7), Training Metrics (6), Evidence Graph (8), Supporting (9)
+- **Stable Checklist**: 7 categories A-G — Import Health, CLI Health, Report Health, Safety, Regression, Runtime, Integration
+- **Release Manifest**: JSON + Markdown manifest with capability summary and safety declaration
+- **Strategy Lab Report**: 13-section Markdown report with full layer status
+- **6 CLI Commands**: `strategy-lab`, `strategy-lab-summary`, `strategy-lab-capabilities`, `strategy-lab-checks`, `strategy-lab-manifest`, `strategy-lab-report`
+- **GUI Tab**: Strategy Lab tab in TW Quant Cockpit dashboard with 8 summary cards
+- **Safety**: `read_only=True`, `no_real_orders=True`, `production_blocked=True`, `real_order_ready=False` — does NOT modify any module status, weights, memory, coach tasks, or evidence graph
+- **[!] Research Only. No Real Orders. Production Trading: BLOCKED.**
+
+```bash
+python main.py strategy-lab --mode real
+python main.py strategy-lab-summary
+python main.py strategy-lab-capabilities
+python main.py strategy-lab-checks
+python main.py strategy-lab-manifest
+python main.py strategy-lab-report --mode real
+```
 
 ---
 

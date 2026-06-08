@@ -1745,6 +1745,34 @@ class AutoReportCenter:
             logger.warning("AutoReportCenter.run_evidence_graph_summary: %s", exc)
             self._context["evidence_graph"] = {}
 
+    def run_strategy_lab_summary(self) -> None:
+        """v0.9.0: Run Strategy Lab Stable summary."""
+        try:
+            from gui.strategy_lab_adapter import StrategyLabAdapter
+            adapter = StrategyLabAdapter()
+            summary = adapter.load_latest_summary()
+            report_path = adapter.load_latest_report_path()
+            manifest_path = adapter.load_latest_manifest_path()
+            if summary:
+                self._context["strategy_lab"] = {
+                    "overall_status":     summary.overall_status,
+                    "total_capabilities": summary.total_capabilities,
+                    "stable_count":       summary.stable_count,
+                    "usable_count":       summary.usable_count,
+                    "total_checks":       summary.total_checks,
+                    "pass_count":         summary.pass_count,
+                    "fail_count":         summary.fail_count,
+                    "forbidden_action_count": summary.forbidden_action_count,
+                    "report_path":        report_path,
+                    "manifest_path":      manifest_path,
+                }
+            else:
+                self._context["strategy_lab"] = {}
+            self._record_success("strategy_lab_summary", report_path or "")
+        except Exception as exc:
+            logger.warning("AutoReportCenter.run_strategy_lab_summary: %s", exc)
+            self._context["strategy_lab"] = {}
+
     def _record_success(self, name: str, path: Optional[str], extra: dict = None):
         entry = {
             "name": name,

@@ -1355,6 +1355,55 @@ class StableReleaseChecklist:
             elapsed = (time.monotonic() - t0) * 1000
             return self._item("intelligence_stable_version_info", "WARN", str(exc), elapsed)
 
+    def _check_strategy_lab_import_health(self) -> dict:
+        """v0.9.0: strategy_lab package imports cleanly."""
+        t0 = time.monotonic()
+        try:
+            from strategy_lab.strategy_lab_schema import StrategyLabCapability  # noqa: F401
+            from strategy_lab.strategy_lab_engine import StrategyLabEngine  # noqa: F401
+            from strategy_lab.strategy_lab_store import StrategyLabStore  # noqa: F401
+            elapsed = (time.monotonic() - t0) * 1000
+            return self._item("strategy_lab_import_health", "PASS",
+                               "strategy_lab package imports successfully.", elapsed)
+        except ImportError as exc:
+            elapsed = (time.monotonic() - t0) * 1000
+            return self._item("strategy_lab_import_health", "FAIL", str(exc), elapsed)
+        except Exception as exc:
+            elapsed = (time.monotonic() - t0) * 1000
+            return self._item("strategy_lab_import_health", "WARN", str(exc), elapsed)
+
+    def _check_strategy_lab_no_forbidden_actions(self) -> dict:
+        """v0.9.0: StrategyLabEngine has safety flags set."""
+        t0 = time.monotonic()
+        try:
+            from strategy_lab.strategy_lab_engine import StrategyLabEngine
+            engine = StrategyLabEngine.__new__(StrategyLabEngine)
+            assert StrategyLabEngine.no_real_orders is True
+            assert StrategyLabEngine.production_blocked is True
+            assert StrategyLabEngine.real_order_ready is False
+            elapsed = (time.monotonic() - t0) * 1000
+            return self._item("strategy_lab_no_forbidden_actions", "PASS",
+                               "StrategyLabEngine: no_real_orders=True, production_blocked=True, real_order_ready=False.", elapsed)
+        except Exception as exc:
+            elapsed = (time.monotonic() - t0) * 1000
+            return self._item("strategy_lab_no_forbidden_actions", "WARN", str(exc), elapsed)
+
+    def _check_strategy_lab_version_info(self) -> dict:
+        """v0.9.0: VersionInfo reports v0.9.0."""
+        t0 = time.monotonic()
+        try:
+            from release.version_info import VersionInfo
+            v = VersionInfo.version
+            elapsed = (time.monotonic() - t0) * 1000
+            if v.startswith("v0.9"):
+                return self._item("strategy_lab_version_info", "PASS",
+                                   f"VersionInfo.version={v} (v0.9.x confirmed).", elapsed)
+            return self._item("strategy_lab_version_info", "WARN",
+                               f"VersionInfo.version={v} (expected v0.9.x).", elapsed)
+        except Exception as exc:
+            elapsed = (time.monotonic() - t0) * 1000
+            return self._item("strategy_lab_version_info", "WARN", str(exc), elapsed)
+
     # ------------------------------------------------------------------
     # Write outputs
     # ------------------------------------------------------------------
@@ -1554,6 +1603,10 @@ class StableReleaseChecklist:
             self._check_intelligence_stable_import_health,
             self._check_intelligence_stable_no_forbidden_actions,
             self._check_intelligence_stable_version_info,
+            # v0.9.0 Strategy Lab Stable
+            self._check_strategy_lab_import_health,
+            self._check_strategy_lab_no_forbidden_actions,
+            self._check_strategy_lab_version_info,
         ]
 
         items: list[dict] = []

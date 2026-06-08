@@ -42,6 +42,7 @@ DOMAIN_BACKTEST_COACH        = "backtest_coach"           # v0.7.3
 DOMAIN_INTELLIGENCE_STABLE   = "intelligence_stable"     # v0.8.0
 DOMAIN_TRAINING_METRICS      = "training_metrics"         # v0.8.2
 DOMAIN_EVIDENCE_GRAPH        = "evidence_graph"            # v0.8.3
+DOMAIN_STRATEGY_LAB          = "strategy_lab"              # v0.9.0
 
 # Report type constant for report_pack integration
 REPORT_DATA_COVERAGE    = "data_coverage"

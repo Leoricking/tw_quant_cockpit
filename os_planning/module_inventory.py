@@ -497,6 +497,27 @@ _MODULES: list[dict] = [
         ),
         "next_action":        "Enhance edge detection and add Evidence Graph UX improvements in v0.9.1.",
     },
+    # v0.9.0 Strategy Lab Stable
+    {
+        "module_name":        "strategy_lab",
+        "package":            "strategy_lab",
+        "category":           "E. Research OS Layer",
+        "cli_commands":       (
+            "strategy-lab,strategy-lab-summary,strategy-lab-capabilities,"
+            "strategy-lab-checks,strategy-lab-manifest,strategy-lab-report"
+        ),
+        "gui_tab":            "Strategy Lab",
+        "report":             "yes",
+        "maturity":           "STABLE",
+        "known_limitations":  (
+            "No investment advice — all outputs are research tasks only. "
+            "No automatic strategy activation. "
+            "No live order execution — production trading is BLOCKED. "
+            "Checklist quality depends on source modules having been run. "
+            "Does NOT modify any module status, weights, memory, or evidence graph."
+        ),
+        "next_action":        "Evidence Graph UX improvements in v0.9.1.",
+    },
 ]
 
 

@@ -64,6 +64,33 @@
 | v0.8.1 | Strategy Memory UX | Done |
 | v0.8.2 | Backtest Training Metrics | Done |
 | v0.8.3 | Research Intelligence Evidence Graph | Done |
+| v0.9.0 | Strategy Lab Stable | Done |
+
+---
+
+## Completed: v0.9.0 — Strategy Lab Stable
+
+**Status:** Done
+
+### Summary
+
+Strategy Lab Stable v0.9.0 wraps all Research OS modules (Research Intelligence v0.7.0–v0.7.1,
+Strategy Memory v0.7.2–v0.8.1, Backtest Coach v0.7.3, Training Metrics v0.8.2, Evidence Graph v0.8.3)
+into a unified validation layer with a 47-capability matrix, stable checklist (7 categories A-G),
+release manifest (JSON + Markdown), 13-section Markdown report, 6 CLI commands, and a GUI panel with
+8 summary cards. Safety: `read_only=True`, `no_real_orders=True`, `production_blocked=True`,
+`real_order_ready=False`. Does NOT modify any module status, weights, or evidence graph.
+
+**New files:**
+- `strategy_lab/` package (schema, capability_matrix, checklist, manifest, engine, store)
+- `reports/strategy_lab_stable_report.py`
+- `gui/strategy_lab_panel.py`, `gui/strategy_lab_adapter.py`
+
+**Next Steps:**
+- v0.9.1: Evidence Graph UX — node detail drill, thread visualization
+- v0.9.2: Strategy Validation Score — cross-module confidence scoring
+- v0.9.3: Strategy Lab Dashboard Polish — unified layer status board
+- v1.0.0: Research Trading Cockpit Stable
 
 ---
 
@@ -214,8 +241,10 @@ Research Only. No Real Orders. Production Trading: BLOCKED.
 
 | Version | Feature | Priority |
 |---------|---------|---------|
-| v0.8.4 | Strategy Memory LLM-assisted extraction scaffold | P2 |
-| v0.9.0 | AI Review Engine Stable — LLM-assisted signal analysis and coaching | P1 |
+| v0.9.1 | Evidence Graph UX — node detail drill, thread visualization | P2 |
+| v0.9.2 | Strategy Validation Score — cross-module confidence scoring | P2 |
+| v0.9.3 | Strategy Lab Dashboard Polish — unified layer status board | P2 |
+| v1.0.0 | Research Trading Cockpit Stable — still No Real Orders unless explicitly enabled | P1 |
 
 ---
 

@@ -20,6 +20,7 @@ from data_coverage.data_coverage_schema import (
     DOMAIN_INTELLIGENCE_STABLE,
     DOMAIN_TRAINING_METRICS,
     DOMAIN_EVIDENCE_GRAPH,
+    DOMAIN_STRATEGY_LAB,
 )
 
 logger = logging.getLogger(__name__)
@@ -792,5 +793,35 @@ class DataCoverageRegistry:
                     "reports/evidence_graph_report_*.md",
                 ],
                 "owner_module":     "reports.evidence_graph_report",
+            },
+            # v0.9.0 Strategy Lab Stable
+            {
+                "item_id":          "strategy_lab_store",
+                "domain":           DOMAIN_STRATEGY_LAB,
+                "dataset_name":     "Strategy Lab Store",
+                "required":         False,
+                "environment_limited": False,
+                "not_generated":    False,
+                "suggested_command": "python main.py strategy-lab --mode real",
+                "expected_patterns": [
+                    "data/backtest_results/strategy_lab/strategy_lab_capabilities.csv",
+                    "data/backtest_results/strategy_lab/strategy_lab_checks_*.csv",
+                    "data/backtest_results/strategy_lab/strategy_lab_summary_*.csv",
+                    "data/backtest_results/strategy_lab/strategy_lab_release_manifest_*.json",
+                ],
+                "owner_module":     "strategy_lab.strategy_lab_store",
+            },
+            {
+                "item_id":          "strategy_lab_report",
+                "domain":           DOMAIN_STRATEGY_LAB,
+                "dataset_name":     "Strategy Lab Stable Report",
+                "required":         False,
+                "environment_limited": False,
+                "not_generated":    False,
+                "suggested_command": "python main.py strategy-lab-report --mode real",
+                "expected_patterns": [
+                    "reports/strategy_lab_stable_report_*.md",
+                ],
+                "owner_module":     "reports.strategy_lab_stable_report",
             },
         ]

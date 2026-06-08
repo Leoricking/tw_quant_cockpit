@@ -8262,6 +8262,24 @@ def _print_eg_header(mode: str = "real") -> None:
     print()
 
 
+_STRATEGY_LAB_BANNER = """
+╔══════════════════════════════════════════════════════════════╗
+║         TW Quant Cockpit — Strategy Lab Stable               ║
+║                        v0.9.0                                ║
+║  Research Only  |  No Real Orders  |  Production BLOCKED     ║
+╚══════════════════════════════════════════════════════════════╝
+"""
+
+
+def _print_sl_header(mode: str = "real") -> None:
+    print(_STRATEGY_LAB_BANNER)
+    print(f"  Mode:                       {mode}")
+    print(f"  Research Only:              YES")
+    print(f"  No Real Orders:             YES")
+    print(f"  Production Trading BLOCKED: YES")
+    print()
+
+
 def cmd_evidence_graph(args: argparse.Namespace) -> None:
     """Run full Research Intelligence Evidence Graph pipeline (v0.8.3)."""
     mode       = getattr(args, "mode", "real")
@@ -8487,6 +8505,184 @@ def cmd_evidence_graph_report(args: argparse.Namespace) -> None:
             mode=mode,
             output_dir=report_dir_abs,
             graph_output_dir=output_dir_abs,
+        )
+        print(f"  Report saved: {path}")
+    except Exception as exc:
+        print(f"  ERROR: {exc}")
+    print()
+    print("  [!] No real orders. Research Only. Production Trading BLOCKED.")
+
+
+# ---------------------------------------------------------------------------
+# v0.9.0 Strategy Lab Stable CLI commands
+# ---------------------------------------------------------------------------
+
+def cmd_strategy_lab(args: argparse.Namespace) -> None:
+    """Run full Strategy Lab Stable validation pipeline (v0.9.0)."""
+    mode       = getattr(args, "mode", "real")
+    output_dir = getattr(args, "output_dir", "data/backtest_results/strategy_lab")
+    report_dir = getattr(args, "report_dir", "reports")
+    output_dir_abs = output_dir if os.path.isabs(output_dir) else os.path.join(BASE_DIR, output_dir)
+    report_dir_abs = report_dir if os.path.isabs(report_dir) else os.path.join(BASE_DIR, report_dir)
+    _print_sl_header(mode)
+    try:
+        from strategy_lab.strategy_lab_engine import StrategyLabEngine
+        engine = StrategyLabEngine(project_root=BASE_DIR, output_dir=output_dir_abs)
+        result = engine.run(mode=mode)
+        summary = result.get("summary")
+        capabilities = result.get("capabilities", [])
+        checks = result.get("checks", [])
+        if summary:
+            s = summary
+            print(f"  Version:                    {s.version}")
+            print(f"  Release Name:               {s.release_name}")
+            print(f"  Total Capabilities:         {s.total_capabilities}")
+            print(f"  STABLE:                     {s.stable_count}")
+            print(f"  USABLE:                     {s.usable_count}")
+            print(f"  Total Checks:               {s.total_checks}")
+            print(f"  PASS:                       {s.pass_count}")
+            print(f"  WARN:                       {s.warn_count}")
+            print(f"  FAIL:                       {s.fail_count}")
+            print(f"  BLOCKED:                    {s.blocked_check_count}")
+            print(f"  Overall Status:             {s.overall_status}")
+        try:
+            from reports.strategy_lab_stable_report import StrategyLabStableReportBuilder
+            rpath = StrategyLabStableReportBuilder().build(
+                mode=mode, output_dir=report_dir_abs, lab_output_dir=output_dir_abs,
+            )
+            if rpath:
+                print(f"  Report saved:               {rpath}")
+        except Exception as exc:
+            print(f"  Report error: {exc}")
+    except Exception as exc:
+        print(f"  ERROR: {exc}")
+    print()
+    print("  [!] No real orders. Research Only. Production Trading BLOCKED.")
+
+
+def cmd_strategy_lab_summary(args: argparse.Namespace) -> None:
+    """Show Strategy Lab Stable summary (v0.9.0)."""
+    output_dir = getattr(args, "output_dir", "data/backtest_results/strategy_lab")
+    output_dir_abs = output_dir if os.path.isabs(output_dir) else os.path.join(BASE_DIR, output_dir)
+    _print_sl_header()
+    try:
+        from strategy_lab.strategy_lab_store import StrategyLabStore
+        store = StrategyLabStore(output_dir=output_dir_abs)
+        summary = store.load_latest_summary()
+        if summary:
+            s = summary
+            print(f"  Version:            {s.version}")
+            print(f"  Release Name:       {s.release_name}")
+            print(f"  Generated At:       {s.generated_at}")
+            print(f"  Mode:               {s.mode}")
+            print(f"  Capabilities:       {s.total_capabilities} total | STABLE={s.stable_count} USABLE={s.usable_count}")
+            print(f"  Checks:             {s.total_checks} total | PASS={s.pass_count} WARN={s.warn_count} FAIL={s.fail_count}")
+            print(f"  Overall Status:     {s.overall_status}")
+            print(f"  No Real Orders:     {s.no_real_orders}")
+            print(f"  Prod BLOCKED:       {s.production_blocked}")
+        else:
+            print("  No summary found. Run: python main.py strategy-lab --mode real")
+    except Exception as exc:
+        print(f"  ERROR: {exc}")
+    print()
+    print("  [!] No real orders. Research Only.")
+
+
+def cmd_strategy_lab_capabilities(args: argparse.Namespace) -> None:
+    """List Strategy Lab capabilities (v0.9.0)."""
+    output_dir = getattr(args, "output_dir", "data/backtest_results/strategy_lab")
+    output_dir_abs = output_dir if os.path.isabs(output_dir) else os.path.join(BASE_DIR, output_dir)
+    _print_sl_header()
+    try:
+        from strategy_lab.strategy_lab_store import StrategyLabStore
+        store = StrategyLabStore(output_dir=output_dir_abs)
+        caps_raw = store.load_capabilities()
+        if caps_raw:
+            from strategy_lab.strategy_lab_schema import StrategyLabCapability
+            caps = [StrategyLabCapability.from_dict(d) for d in caps_raw]
+            print(f"  Total Capabilities: {len(caps)}")
+            print()
+            print(f"  {'Capability':<40} {'Category':<22} {'Status':<10} {'Maturity'}")
+            print(f"  {'-'*40} {'-'*22} {'-'*10} {'-'*10}")
+            for cap in caps:
+                print(f"  {cap.name[:40]:<40} {cap.category[:22]:<22} {cap.stable_status:<10} {cap.maturity}")
+        else:
+            print("  No capabilities found. Run: python main.py strategy-lab --mode real")
+    except Exception as exc:
+        print(f"  ERROR: {exc}")
+    print()
+    print("  [!] No real orders. Research Only.")
+
+
+def cmd_strategy_lab_checks(args: argparse.Namespace) -> None:
+    """List Strategy Lab stable checks (v0.9.0)."""
+    output_dir = getattr(args, "output_dir", "data/backtest_results/strategy_lab")
+    output_dir_abs = output_dir if os.path.isabs(output_dir) else os.path.join(BASE_DIR, output_dir)
+    _print_sl_header()
+    try:
+        from strategy_lab.strategy_lab_store import StrategyLabStore
+        store = StrategyLabStore(output_dir=output_dir_abs)
+        chks_raw = store.load_latest_checks()
+        if chks_raw:
+            from strategy_lab.strategy_lab_schema import StrategyLabCheck
+            checks = [StrategyLabCheck.from_dict(d) for d in chks_raw]
+            passes = sum(1 for c in checks if c.status == "PASS")
+            warns  = sum(1 for c in checks if c.status == "WARN")
+            fails  = sum(1 for c in checks if c.status == "FAIL")
+            blk    = sum(1 for c in checks if c.status == "BLOCKED")
+            print(f"  Total: {len(checks)}  PASS={passes}  WARN={warns}  FAIL={fails}  BLOCKED={blk}")
+            print()
+            print(f"  {'Category':<12} {'Check':<42} {'Status':<10} {'Severity'}")
+            print(f"  {'-'*12} {'-'*42} {'-'*10} {'-'*10}")
+            for chk in checks[:60]:
+                print(f"  {chk.category[:12]:<12} {chk.name[:42]:<42} {chk.status:<10} {chk.severity}")
+        else:
+            print("  No checks found. Run: python main.py strategy-lab --mode real")
+    except Exception as exc:
+        print(f"  ERROR: {exc}")
+    print()
+    print("  [!] No real orders. Research Only.")
+
+
+def cmd_strategy_lab_manifest(args: argparse.Namespace) -> None:
+    """Build Strategy Lab release manifest (v0.9.0)."""
+    output_dir = getattr(args, "output_dir", "data/backtest_results/strategy_lab")
+    output_dir_abs = output_dir if os.path.isabs(output_dir) else os.path.join(BASE_DIR, output_dir)
+    _print_sl_header()
+    try:
+        from strategy_lab.strategy_lab_release_manifest import StrategyLabReleaseManifestBuilder
+        builder = StrategyLabReleaseManifestBuilder(output_dir=output_dir_abs)
+        manifest = builder.build_manifest()
+        print(f"  Version:        {manifest.get('version', '?')}")
+        print(f"  Release Name:   {manifest.get('release_name', '?')}")
+        print(f"  Commit:         {manifest.get('commit_hash', '?')}")
+        print(f"  Tag:            {manifest.get('tag', '?')}")
+        cap_s = manifest.get("capability_summary", {})
+        chk_s = manifest.get("checklist_summary", {})
+        print(f"  Capabilities:   total={cap_s.get('total',0)} STABLE={cap_s.get('stable',0)} USABLE={cap_s.get('usable',0)}")
+        print(f"  Checks:         total={chk_s.get('total',0)} PASS={chk_s.get('pass',0)} WARN={chk_s.get('warn',0)} FAIL={chk_s.get('fail',0)}")
+        print(f"  No Real Orders: {manifest.get('no_real_orders', True)}")
+        print(f"  Prod BLOCKED:   {manifest.get('production_blocked', True)}")
+    except Exception as exc:
+        print(f"  ERROR: {exc}")
+    print()
+    print("  [!] No real orders. Research Only. Production Trading BLOCKED.")
+
+
+def cmd_strategy_lab_report(args: argparse.Namespace) -> None:
+    """Generate Strategy Lab Stable Markdown report (v0.9.0)."""
+    mode       = getattr(args, "mode", "real")
+    report_dir = getattr(args, "report_dir", "reports")
+    output_dir = getattr(args, "output_dir", "data/backtest_results/strategy_lab")
+    output_dir_abs = output_dir if os.path.isabs(output_dir) else os.path.join(BASE_DIR, output_dir)
+    report_dir_abs = report_dir if os.path.isabs(report_dir) else os.path.join(BASE_DIR, report_dir)
+    _print_sl_header(mode)
+    try:
+        from reports.strategy_lab_stable_report import StrategyLabStableReportBuilder
+        path = StrategyLabStableReportBuilder().build(
+            mode=mode,
+            output_dir=report_dir_abs,
+            lab_output_dir=output_dir_abs,
         )
         print(f"  Report saved: {path}")
     except Exception as exc:
@@ -13012,6 +13208,58 @@ def _build_parser() -> argparse.ArgumentParser:
     p_egr.add_argument("--output-dir", dest="output_dir",
                        default="data/backtest_results/evidence_graph")
 
+    # --- strategy-lab (v0.9.0) ---
+    p_sl = subparsers.add_parser(
+        "strategy-lab",
+        help="Run full Strategy Lab Stable validation pipeline (v0.9.0)",
+    )
+    p_sl.add_argument("--mode", choices=["real", "mock"], default="real")
+    p_sl.add_argument("--output-dir", dest="output_dir",
+                      default="data/backtest_results/strategy_lab")
+    p_sl.add_argument("--report-dir", dest="report_dir", default="reports")
+
+    # --- strategy-lab-summary (v0.9.0) ---
+    p_sls = subparsers.add_parser(
+        "strategy-lab-summary",
+        help="Show Strategy Lab Stable summary (v0.9.0)",
+    )
+    p_sls.add_argument("--output-dir", dest="output_dir",
+                       default="data/backtest_results/strategy_lab")
+
+    # --- strategy-lab-capabilities (v0.9.0) ---
+    p_slc = subparsers.add_parser(
+        "strategy-lab-capabilities",
+        help="List Strategy Lab capabilities (v0.9.0)",
+    )
+    p_slc.add_argument("--output-dir", dest="output_dir",
+                       default="data/backtest_results/strategy_lab")
+
+    # --- strategy-lab-checks (v0.9.0) ---
+    p_slk = subparsers.add_parser(
+        "strategy-lab-checks",
+        help="List Strategy Lab stable checks (v0.9.0)",
+    )
+    p_slk.add_argument("--output-dir", dest="output_dir",
+                       default="data/backtest_results/strategy_lab")
+
+    # --- strategy-lab-manifest (v0.9.0) ---
+    p_slm = subparsers.add_parser(
+        "strategy-lab-manifest",
+        help="Build Strategy Lab release manifest (v0.9.0)",
+    )
+    p_slm.add_argument("--output-dir", dest="output_dir",
+                       default="data/backtest_results/strategy_lab")
+
+    # --- strategy-lab-report (v0.9.0) ---
+    p_slr = subparsers.add_parser(
+        "strategy-lab-report",
+        help="Generate Strategy Lab Stable Markdown report (v0.9.0)",
+    )
+    p_slr.add_argument("--mode", choices=["real", "mock"], default="real")
+    p_slr.add_argument("--report-dir", dest="report_dir", default="reports")
+    p_slr.add_argument("--output-dir", dest="output_dir",
+                       default="data/backtest_results/strategy_lab")
+
     # --- strategy-knowledge-ingest (v0.4.1.1) ---
     p_ski = subparsers.add_parser(
         "strategy-knowledge-ingest",
@@ -14261,6 +14509,13 @@ def main() -> None:
         "evidence-graph-requires-backtest": cmd_evidence_graph_requires_backtest,
         "evidence-graph-requires-data":     cmd_evidence_graph_requires_data,
         "evidence-graph-report":            cmd_evidence_graph_report,
+        # v0.9.0 Strategy Lab Stable
+        "strategy-lab":                     cmd_strategy_lab,
+        "strategy-lab-summary":             cmd_strategy_lab_summary,
+        "strategy-lab-capabilities":        cmd_strategy_lab_capabilities,
+        "strategy-lab-checks":              cmd_strategy_lab_checks,
+        "strategy-lab-manifest":            cmd_strategy_lab_manifest,
+        "strategy-lab-report":              cmd_strategy_lab_report,
         # v0.7.2 Strategy Research Memory (enhanced v0.8.1)
         "strategy-memory":                    cmd_strategy_memory,
         "strategy-memory-summary":            cmd_strategy_memory_summary,

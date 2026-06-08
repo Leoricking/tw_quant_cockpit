@@ -1,13 +1,14 @@
 """
-reports/intelligence_stable_report.py — IntelligenceStableReportBuilder v0.8.0
+reports/strategy_lab_stable_report.py — StrategyLabStableReportBuilder v0.9.0
 
-Generate the Research Intelligence Stable Markdown report.
+Generate the Strategy Lab Stable Markdown report.
 
 [!] Research Only. No Real Orders. Production Trading BLOCKED.
 [!] Not Investment Advice. No BUY/SELL/ORDER output.
 """
 from __future__ import annotations
 
+import glob
 import logging
 import os
 from datetime import datetime
@@ -18,11 +19,11 @@ logger = logging.getLogger(__name__)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 _DEFAULT_OUTPUT_DIR       = os.path.join(BASE_DIR, "reports")
-_DEFAULT_STABLE_OUTPUT    = "data/backtest_results/intelligence_stable"
+_DEFAULT_LAB_OUTPUT       = "data/backtest_results/strategy_lab"
 
 
-class IntelligenceStableReportBuilder:
-    """Generate the v0.8.0 Research Intelligence Stable Markdown report.
+class StrategyLabStableReportBuilder:
+    """Generate the v0.9.0 Strategy Lab Stable Markdown report.
 
     [!] Research Only. No Real Orders. Production Trading BLOCKED.
     [!] Not Investment Advice. No BUY/SELL/ORDER output.
@@ -32,189 +33,145 @@ class IntelligenceStableReportBuilder:
     no_real_orders     = True
     production_blocked = True
 
-    # ------------------------------------------------------------------
-    # Public API
-    # ------------------------------------------------------------------
-
     def build(
         self,
         mode: str = "real",
         output_dir: str = _DEFAULT_OUTPUT_DIR,
-        stable_output_dir: str = _DEFAULT_STABLE_OUTPUT,
+        lab_output_dir: str = _DEFAULT_LAB_OUTPUT,
     ) -> str:
         """Build the report. Returns path to generated Markdown file."""
         if not os.path.isabs(output_dir):
             output_dir = os.path.join(BASE_DIR, output_dir)
-        if not os.path.isabs(stable_output_dir):
-            stable_output_dir = os.path.join(BASE_DIR, stable_output_dir)
+        if not os.path.isabs(lab_output_dir):
+            lab_output_dir = os.path.join(BASE_DIR, lab_output_dir)
 
-        # Try to load from store; run engine if no data
-        data = self._load_or_run(mode=mode, stable_output_dir=stable_output_dir)
+        data = self._load_or_run(mode=mode, lab_output_dir=lab_output_dir)
 
         capabilities = data.get("capabilities", [])
         checks       = data.get("checks", [])
-        summary      = data.get("summary", {})
+        summary      = data.get("summary")
         manifest     = data.get("manifest", {})
 
-        # Build Markdown
-        lines = self._build_lines(capabilities, checks, summary, manifest)
+        lines   = self._build_lines(capabilities, checks, summary, manifest, mode)
         content = "\n".join(lines) + "\n"
 
-        # Write file
         os.makedirs(output_dir, exist_ok=True)
         today = datetime.now().strftime("%Y-%m-%d")
-        path = os.path.join(output_dir, f"intelligence_stable_report_{today}.md")
+        path  = os.path.join(output_dir, f"strategy_lab_stable_report_{today}.md")
         try:
             with open(path, "w", encoding="utf-8") as f:
                 f.write(content)
-            logger.info("IntelligenceStableReportBuilder: report written -> %s", path)
+            logger.info("StrategyLabStableReportBuilder: report written -> %s", path)
         except Exception as exc:
-            logger.warning("IntelligenceStableReportBuilder: write error: %s", exc)
-
+            logger.warning("StrategyLabStableReportBuilder: write error: %s", exc)
         return path
 
     # ------------------------------------------------------------------
-    # Internal: load or run
+    # Load or run
     # ------------------------------------------------------------------
 
-    def _load_or_run(self, mode: str, stable_output_dir: str) -> dict:
-        """Try to load from store; run engine if no data exists."""
+    def _load_or_run(self, mode: str, lab_output_dir: str) -> dict:
         try:
-            from intelligence_stable.intelligence_stable_store import IntelligenceStableStore
-            store = IntelligenceStableStore(output_dir=stable_output_dir)
+            from strategy_lab.strategy_lab_store import StrategyLabStore
+            from strategy_lab.strategy_lab_schema import StrategyLabCapability, StrategyLabCheck
+            store   = StrategyLabStore(output_dir=lab_output_dir)
             caps_raw  = store.load_capabilities()
             chks_raw  = store.load_latest_checks()
-            summ_raw  = store.load_latest_summary()
-
-            if caps_raw and chks_raw and summ_raw:
-                # Convert dicts back to objects
-                from intelligence_stable.intelligence_stable_schema import (
-                    IntelligenceStableCapability, IntelligenceStableCheck,
-                    IntelligenceStableSummary,
-                )
-                capabilities = [IntelligenceStableCapability.from_dict(d) for d in caps_raw]
-                checks       = [IntelligenceStableCheck.from_dict(d) for d in chks_raw]
-                summary      = IntelligenceStableSummary.from_dict(summ_raw)
-                manifest     = {}
-                return {
-                    "capabilities": capabilities,
-                    "checks":       checks,
-                    "summary":      summary,
-                    "manifest":     manifest,
-                }
+            summary   = store.load_latest_summary()
+            if caps_raw and chks_raw and summary:
+                capabilities = [StrategyLabCapability.from_dict(d) for d in caps_raw]
+                checks       = [StrategyLabCheck.from_dict(d) for d in chks_raw]
+                return {"capabilities": capabilities, "checks": checks,
+                        "summary": summary, "manifest": {}}
         except Exception as exc:
-            logger.warning("IntelligenceStableReportBuilder: store load error: %s", exc)
+            logger.warning("StrategyLabStableReportBuilder: store load error: %s", exc)
 
-        # Run engine if no data
         try:
-            from intelligence_stable.intelligence_stable_engine import IntelligenceStableEngine
-            engine = IntelligenceStableEngine(
-                project_root=BASE_DIR,
-                output_dir=stable_output_dir,
-            )
+            from strategy_lab.strategy_lab_engine import StrategyLabEngine
+            engine = StrategyLabEngine(project_root=BASE_DIR, output_dir=lab_output_dir)
             return engine.run(mode=mode)
         except Exception as exc:
-            logger.warning("IntelligenceStableReportBuilder: engine run error: %s", exc)
+            logger.warning("StrategyLabStableReportBuilder: engine run error: %s", exc)
             return {"capabilities": [], "checks": [], "summary": None, "manifest": {}}
 
     # ------------------------------------------------------------------
-    # Internal: build Markdown lines
+    # Build Markdown
     # ------------------------------------------------------------------
 
-    def _build_lines(self, capabilities, checks, summary, manifest) -> List[str]:
+    def _build_lines(self, capabilities, checks, summary, manifest, mode) -> List[str]:
         lines: List[str] = []
-
-        # Section 1: Header
         lines += self._section_header()
-
-        # Section 2: Release Overview
         lines += self._section_release_overview(summary, manifest)
-
-        # Section 3: Capability Matrix
         lines += self._section_capability_matrix(capabilities)
-
-        # Section 4: Stable Checklist
         lines += self._section_stable_checklist(checks, summary)
-
-        # Section 5: Safety Audit
         lines += self._section_safety_audit(summary)
-
-        # Section 6: Research Intelligence Layer
-        lines += self._section_research_intelligence_layer()
-
-        # Section 7: Strategy Memory Layer
-        lines += self._section_strategy_memory_layer()
-
-        # Section 8: Backtest-to-Coach Layer
-        lines += self._section_backtest_coach_layer()
-
-        # Section 9: Regression / Report / Data Coverage
+        lines += self._section_ri_layer()
+        lines += self._section_sm_layer()
+        lines += self._section_bc_layer()
+        lines += self._section_tm_layer()
+        lines += self._section_eg_layer()
         lines += self._section_regression_report_data()
-
-        # Section 10: Known Limitations
         lines += self._section_known_limitations()
-
-        # Section 11: Safety Declaration
+        lines += self._section_next_roadmap()
         lines += self._section_safety_declaration()
-
         return lines
 
     def _section_header(self) -> List[str]:
         today = datetime.now().strftime("%Y-%m-%d")
         return [
-            "# Research Intelligence Stable Report v0.8.0",
+            "# Strategy Lab Stable Report v0.9.0",
             "",
             f"**Date:** {today}",
             "",
             "> **[!] Research Only. No Real Orders. Production Trading BLOCKED.**",
             "> **[!] Not Investment Advice.**",
+            "> **[!] No BUY/SELL/ORDER output.**",
             "",
             "---",
             "",
         ]
 
     def _section_release_overview(self, summary, manifest) -> List[str]:
-        lines = [
-            "## Release Overview",
-            "",
-        ]
+        lines = ["## 一、Release Overview", ""]
         if summary and hasattr(summary, "version"):
             lines += [
-                f"| Field | Value |",
-                f"|-------|-------|",
+                "| Field | Value |",
+                "|-------|-------|",
                 f"| Version | {summary.version} |",
                 f"| Release Name | {summary.release_name} |",
-                f"| Previous Version | v0.7.3 |",
+                f"| Previous Version | v0.8.3 |",
                 f"| Mode | {summary.mode} |",
                 f"| Overall Status | **{summary.overall_status}** |",
                 f"| Generated At | {summary.generated_at} |",
+                f"| Research Only | True |",
+                f"| No Real Orders | True |",
+                f"| Production Trading | BLOCKED |",
             ]
         else:
-            lines += ["*(No summary available — run: python main.py intelligence-stable --mode real)*"]
+            lines += ["*(No summary available — run: python main.py strategy-lab --mode real)*"]
         lines += ["", "---", ""]
         return lines
 
     def _section_capability_matrix(self, capabilities) -> List[str]:
         lines = [
-            "## Capability Matrix",
+            "## 二、Strategy Lab Capability Matrix",
             "",
             f"**Total Capabilities:** {len(capabilities)}",
             "",
         ]
         if capabilities:
             lines += [
-                "| Capability | Category | Status | CLI | GUI | Report | Regression | Limitation |",
-                "|-----------|----------|--------|-----|-----|--------|------------|------------|",
+                "| Capability | Category | Status | Maturity | CLI | GUI | Report | Regression |",
+                "|-----------|----------|--------|----------|-----|-----|--------|------------|",
             ]
             for cap in capabilities:
-                cli   = "|".join(cap.cli_commands[:2]) or "—"
-                gui   = "|".join(cap.gui_tabs[:1]) or "—"
-                rpt   = "|".join(cap.reports[:1]) or "—"
-                reg   = "|".join(cap.regression_suites[:1]) or "—"
-                lim   = cap.known_limitations[0][:40] if cap.known_limitations else "—"
+                cli = (cap.cli_commands[0][:30] if cap.cli_commands else "—")
+                gui = (cap.gui_tabs[0][:20] if cap.gui_tabs else "—")
+                rpt = (cap.reports[0][:25] if cap.reports else "—")
+                reg = (cap.regression_suites[0][:20] if cap.regression_suites else "—")
                 lines.append(
-                    f"| {cap.name} | {cap.category} | {cap.stable_status} "
-                    f"| {cli} | {gui} | {rpt} | {reg} | {lim} |"
+                    f"| {cap.name[:35]} | {cap.category[:18]} | {cap.stable_status} "
+                    f"| {cap.maturity} | {cli} | {gui} | {rpt} | {reg} |"
                 )
         else:
             lines.append("*(No capabilities loaded)*")
@@ -222,14 +179,15 @@ class IntelligenceStableReportBuilder:
         return lines
 
     def _section_stable_checklist(self, checks, summary) -> List[str]:
-        lines = ["## Stable Checklist", ""]
+        lines = ["## 三、Stable Checklist", ""]
         if summary and hasattr(summary, "total_checks"):
             lines += [
-                f"- Total Checks: {summary.total_checks}",
+                f"- Total: {summary.total_checks}",
                 f"- PASS: {summary.pass_count}",
                 f"- WARN: {summary.warn_count}",
                 f"- FAIL: {summary.fail_count}",
                 f"- BLOCKED: {summary.blocked_check_count}",
+                f"- Overall Status: **{summary.overall_status}**",
                 "",
             ]
         if checks:
@@ -237,26 +195,28 @@ class IntelligenceStableReportBuilder:
                 "| Category | Check | Status | Severity | Message |",
                 "|----------|-------|--------|----------|---------|",
             ]
-            for chk in checks[:40]:
+            for chk in checks[:50]:
                 msg = (chk.message[:60] + "...") if len(chk.message) > 60 else chk.message
                 lines.append(
                     f"| {chk.category} | {chk.name[:40]} | {chk.status} "
                     f"| {chk.severity} | {msg} |"
                 )
         else:
-            lines.append("*(No checks loaded — run: python main.py intelligence-stable --mode real)*")
+            lines.append("*(No checks loaded — run: python main.py strategy-lab --mode real)*")
         lines += ["", "---", ""]
         return lines
 
     def _section_safety_audit(self, summary) -> List[str]:
-        lines = ["## Safety Audit", ""]
+        lines = ["## 四、Safety Audit", ""]
         if summary and hasattr(summary, "recommendations_safe"):
             lines += [
-                f"| Safety Item | Status |",
-                f"|-------------|--------|",
+                "| Safety Item | Status |",
+                "|-------------|--------|",
                 f"| Recommendations Safe | {summary.recommendations_safe} |",
                 f"| Memories Safe | {summary.memories_safe} |",
                 f"| Coach Tasks Safe | {summary.coach_tasks_safe} |",
+                f"| Training Metrics Safe | {summary.metrics_safe} |",
+                f"| Evidence Graph Safe | {summary.evidence_graph_safe} |",
                 f"| Forbidden Action Count | {summary.forbidden_action_count} |",
                 f"| No Real Orders | {summary.no_real_orders} |",
                 f"| Production Trading BLOCKED | {summary.production_blocked} |",
@@ -280,12 +240,14 @@ class IntelligenceStableReportBuilder:
         ]
         return lines
 
-    def _section_research_intelligence_layer(self) -> List[str]:
+    def _section_ri_layer(self) -> List[str]:
         return [
-            "## Research Intelligence Layer",
+            "## 五、Research Intelligence Layer",
             "",
             "The Research Intelligence layer aggregates signals from 8 source modules,",
             "builds research recommendations, and generates daily/weekly research plans.",
+            "",
+            "**Status: STABLE** (v0.7.0–v0.7.1)",
             "",
             "**Key CLI commands:**",
             "- `python main.py research-intelligence --mode real`",
@@ -296,62 +258,41 @@ class IntelligenceStableReportBuilder:
             "- `python main.py research-intelligence-weekly-plan`",
             "- `python main.py research-intelligence-report`",
             "",
-            "**Known Limitations:**",
-            "- Signal extraction depends on CSV outputs from other modules",
-            "- No live market feed",
-            "- Recommendations are research tasks only — no trading signals",
-            "",
             "---",
             "",
         ]
 
-    def _section_strategy_memory_layer(self) -> List[str]:
+    def _section_sm_layer(self) -> List[str]:
         return [
-            "## Strategy Memory Layer",
+            "## 六、Strategy Memory Layer",
             "",
-            "The Strategy Memory layer extracts and persists 10 memory types from all Research OS modules.",
-            "Memories track STRATEGY_HYPOTHESIS, RULE_CANDIDATE, REPLAY_MISTAKE_PATTERN, and others.",
+            "The Strategy Memory layer extracts and persists 10 memory types.",
+            "Status lifecycle: NEW → REVIEWING → VALIDATING → ACCEPTED/REJECTED/NEEDS_MORE_EVIDENCE.",
+            "ACCEPTED = research accepted only. ACCEPTED ≠ trading enabled.",
             "",
-            "**v0.8.1 Strategy Memory UX status: STABLE**",
-            "",
-            "New in v0.8.1:",
-            "- Status lifecycle flow: NEW → REVIEWING → VALIDATING → ACCEPTED/REJECTED/NEEDS_MORE_EVIDENCE",
-            "- `accepted_is_research_only=True` invariant: ACCEPTED means research accepted, not trading enabled",
-            "- Validation queue, active threads, repeated patterns CLI and GUI views",
-            "- `needs_action`, `validation_ready`, `status_hint`, `next_step` UX fields on all memories",
-            "- Safe command labelling: SAFE_READ_ONLY / SAFE_REPORT / SAFE_REGRESSION / SAFE_REPLAY / SAFE_DATA_CHECK",
-            "- BUY/SELL/ORDER guard in StrategyMemoryAdapter.load_safe_commands()",
-            "- Memory UX detail panel: Summary, Hypothesis, Evidence, Validation, Commands, Links, Safety tabs",
+            "**Status: STABLE** (v0.7.2–v0.8.1)",
             "",
             "**Key CLI commands:**",
             "- `python main.py strategy-memory --mode real`",
             "- `python main.py strategy-memory-summary`",
-            "- `python main.py strategy-memory-list`",
-            "- `python main.py strategy-memory-list --active-only`",
-            "- `python main.py strategy-memory-list --needs-action`",
-            "- `python main.py strategy-memory-search`",
-            "- `python main.py strategy-memory-search --needs-action`",
             "- `python main.py strategy-memory-validation-queue`",
             "- `python main.py strategy-memory-active-threads`",
             "- `python main.py strategy-memory-repeated-patterns`",
             "- `python main.py strategy-memory-report`",
             "",
-            "**Known Limitations:**",
-            "- Extraction is pattern-based; no NLP/LLM extraction",
-            "- CSV/JSON scan only; no cross-session merge",
-            "- ACCEPTED status never enables trading (research-only invariant always enforced)",
-            "",
             "---",
             "",
         ]
 
-    def _section_backtest_coach_layer(self) -> List[str]:
+    def _section_bc_layer(self) -> List[str]:
         return [
-            "## Backtest-to-Coach Layer",
+            "## 七、Backtest Coach Layer",
             "",
-            "The Backtest-to-Coach layer converts backtest weaknesses into safe coach training tasks.",
+            "The Backtest Coach layer converts backtest weaknesses into safe coach training tasks.",
             "Task types: PRACTICE_REPLAY, REVIEW_RULE, REVIEW_JOURNAL, FIX_DATA, BACKTEST_MORE,",
             "READ_REPORT, UPDATE_MEMORY, WAIT — no trading actions.",
+            "",
+            "**Status: STABLE** (v0.7.3)",
             "",
             "**Key CLI commands:**",
             "- `python main.py backtest-coach --mode real`",
@@ -361,20 +302,20 @@ class IntelligenceStableReportBuilder:
             "- `python main.py backtest-coach-weekly-plan`",
             "- `python main.py backtest-coach-report`",
             "",
-            "**Known Limitations:**",
-            "- Task extraction depends on CSV outputs from other modules",
-            "- Daily plan capped at 7 items; weekly plan capped at 12 items",
-            "",
             "---",
             "",
-            "## Backtest Training Metrics (v0.8.2)",
+        ]
+
+    def _section_tm_layer(self) -> List[str]:
+        return [
+            "## 八、Training Metrics Layer",
             "",
-            "The Backtest Training Metrics layer measures training effectiveness across all Research OS modules.",
+            "The Training Metrics layer measures training effectiveness across all Research OS modules.",
             "Metric types: TASK_COMPLETION, REPLAY_SCORE, MISTAKE_REDUCTION, BACKTEST_ISSUE,",
             "JOURNAL_IMPROVEMENT, MEMORY_VALIDATION, RULE_REVIEW, DATA_FIX_PROGRESS,",
             "TRAINING_STREAK, QUALITY_SCORE.",
             "",
-            "**v0.8.2 Training Metrics status: USABLE**",
+            "**Status: USABLE** (v0.8.2)",
             "",
             "**Key CLI commands:**",
             "- `python main.py training-metrics --mode real`",
@@ -383,22 +324,19 @@ class IntelligenceStableReportBuilder:
             "- `python main.py training-metrics-trend`",
             "- `python main.py training-metrics-report`",
             "",
-            "**Known Limitations:**",
-            "- Metrics collected from CSV outputs only — no live data feed",
-            "- INSUFFICIENT_DATA shown when source module not yet run",
-            "- Trend direction requires at least 2 historical data points",
-            "",
             "---",
             "",
-            "## Research Intelligence Evidence Graph (v0.8.3)",
+        ]
+
+    def _section_eg_layer(self) -> List[str]:
+        return [
+            "## 九、Evidence Graph Layer",
             "",
-            "The Evidence Graph links all research conclusions across Research OS modules",
-            "into a traceable, directed graph of evidence nodes and relationships.",
-            "Node types: RESEARCH_RECOMMENDATION, STRATEGY_MEMORY, BACKTEST_COACH_TASK,",
-            "TRAINING_METRIC, REPLAY_MISTAKE, DATA_GAP, REPORT_RESULT, REGRESSION_RESULT, etc.",
-            "Edge relations: SUPPORTS, CONTRADICTS, REQUIRES_BACKTEST, REQUIRES_DATA, etc.",
+            "The Evidence Graph links all research conclusions into a traceable directed graph.",
+            "14 node types. 12 edge relations. Evidence Threads via BFS max depth 3.",
+            "Conservative contradiction detection. Never auto-modifies any module status.",
             "",
-            "**v0.8.3 Evidence Graph status: USABLE**",
+            "**Status: USABLE** (v0.8.3)",
             "",
             "**Key CLI commands:**",
             "- `python main.py evidence-graph --mode real`",
@@ -409,36 +347,7 @@ class IntelligenceStableReportBuilder:
             "- `python main.py evidence-graph-orphans`",
             "- `python main.py evidence-graph-requires-backtest`",
             "- `python main.py evidence-graph-requires-data`",
-            "- `python main.py evidence-graph-report --mode real`",
-            "",
-            "**Known Limitations:**",
-            "- Edge building is heuristic-based (keyword matching, CSV reading) — not semantic",
-            "- Contradiction detection is conservative; may miss subtle conflicts",
-            "- Orphan nodes appear when source modules have not yet been run",
-            "- Evidence Graph does NOT auto-modify any module status or weights",
-            "",
-            "---",
-            "",
-            "## Strategy Lab Stable (v0.9.0)",
-            "",
-            "Strategy Lab Stable wraps all Research OS modules (RI, SM, BC, TM, EG) into",
-            "a unified validation layer with a 47-capability matrix, 7-category checklist,",
-            "release manifest, and 13-section report.",
-            "",
-            "**v0.9.0 Strategy Lab status: STABLE**",
-            "",
-            "**Key CLI commands:**",
-            "- `python main.py strategy-lab --mode real`",
-            "- `python main.py strategy-lab-summary`",
-            "- `python main.py strategy-lab-capabilities`",
-            "- `python main.py strategy-lab-checks`",
-            "- `python main.py strategy-lab-manifest`",
-            "- `python main.py strategy-lab-report --mode real`",
-            "",
-            "**Known Limitations:**",
-            "- Checklist quality depends on source modules having been run",
-            "- No investment advice — all outputs are research tasks only",
-            "- Strategy Lab does NOT modify any module status, weights, or evidence graph",
+            "- `python main.py evidence-graph-report`",
             "",
             "---",
             "",
@@ -446,7 +355,7 @@ class IntelligenceStableReportBuilder:
 
     def _section_regression_report_data(self) -> List[str]:
         return [
-            "## Regression / Report / Data Coverage",
+            "## 十、Regression / Report / Data Coverage",
             "",
             "**Release Gate:**",
             "- `python main.py regression-run --suite release_gate --mode real`",
@@ -457,11 +366,11 @@ class IntelligenceStableReportBuilder:
             "**Data Coverage:**",
             "- `python main.py data-coverage-summary`",
             "",
-            "**Replay Training:**",
-            "- Available via GUI tab",
-            "",
             "**Stable Checklist:**",
             "- `python main.py stable-v060-check --mode real`",
+            "",
+            "**Strategy Lab Validation:**",
+            "- `python main.py strategy-lab --mode real`",
             "",
             "---",
             "",
@@ -469,7 +378,7 @@ class IntelligenceStableReportBuilder:
 
     def _section_known_limitations(self) -> List[str]:
         return [
-            "## Known Limitations",
+            "## 十一、Known Limitations",
             "",
             "1. No investment advice — all outputs are research tasks only",
             "2. No automatic strategy activation",
@@ -477,6 +386,23 @@ class IntelligenceStableReportBuilder:
             "4. Provider token environment limits may affect some reports",
             "5. Optional reports may be missing if not yet generated",
             "6. Backtest quality depends on data coverage and import completeness",
+            "7. Evidence graph quality depends on available research outputs",
+            "8. Training metrics may show INSUFFICIENT_DATA until enough history accumulates",
+            "",
+            "---",
+            "",
+        ]
+
+    def _section_next_roadmap(self) -> List[str]:
+        return [
+            "## 十二、Next Roadmap",
+            "",
+            "| Version | Feature | Priority |",
+            "|---------|---------|---------|",
+            "| v0.9.1 | Evidence Graph UX — node detail drill, thread visualization | P2 |",
+            "| v0.9.2 | Strategy Validation Score — cross-module confidence scoring | P2 |",
+            "| v0.9.3 | Strategy Lab Dashboard Polish — unified layer status board | P2 |",
+            "| v1.0.0 | Research Trading Cockpit Stable — still No Real Orders unless explicitly enabled | P1 |",
             "",
             "---",
             "",
@@ -484,7 +410,7 @@ class IntelligenceStableReportBuilder:
 
     def _section_safety_declaration(self) -> List[str]:
         return [
-            "## Safety Declaration",
+            "## 十三、Safety Declaration",
             "",
             "> **Research Only** — All outputs are for research and learning purposes only.",
             ">",
@@ -498,6 +424,6 @@ class IntelligenceStableReportBuilder:
             "",
             "---",
             "",
-            "*TW Quant Cockpit v0.8.0 — Research Intelligence Stable — Research Only — Not Investment Advice*",
+            "*TW Quant Cockpit v0.9.0 — Strategy Lab Stable — Research Only — Not Investment Advice*",
             "",
         ]

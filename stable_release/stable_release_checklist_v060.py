@@ -898,6 +898,40 @@ class StableReleaseChecklistV060:
                 "evidence_graph_no_forbidden_actions", "safety", "FAIL", str(exc),
             )
 
+    def _check_strategy_lab_import_health(self) -> dict:
+        """v0.9.0: strategy_lab package imports cleanly."""
+        try:
+            from strategy_lab.strategy_lab_schema import StrategyLabCapability  # noqa: F401
+            from strategy_lab.strategy_lab_engine import StrategyLabEngine  # noqa: F401
+            return _check_item(
+                "strategy_lab_import_health", "strategy_lab", "PASS",
+                "strategy_lab package imports successfully.",
+            )
+        except ImportError as exc:
+            return _check_item(
+                "strategy_lab_import_health", "strategy_lab", "FAIL", str(exc),
+            )
+        except Exception as exc:
+            return _check_item(
+                "strategy_lab_import_health", "strategy_lab", "WARN", str(exc),
+            )
+
+    def _check_strategy_lab_no_forbidden_actions(self) -> dict:
+        """v0.9.0: StrategyLabEngine has safety flags set."""
+        try:
+            from strategy_lab.strategy_lab_engine import StrategyLabEngine
+            assert StrategyLabEngine.no_real_orders is True
+            assert StrategyLabEngine.production_blocked is True
+            assert StrategyLabEngine.real_order_ready is False
+            return _check_item(
+                "strategy_lab_no_forbidden_actions", "safety", "PASS",
+                "StrategyLabEngine: no_real_orders=True, production_blocked=True, real_order_ready=False.",
+            )
+        except Exception as exc:
+            return _check_item(
+                "strategy_lab_no_forbidden_actions", "safety", "WARN", str(exc),
+            )
+
     # ----------------------------------------------------------------
     # Run
     # ----------------------------------------------------------------
@@ -953,6 +987,9 @@ class StableReleaseChecklistV060:
             # v0.8.3 Research Intelligence Evidence Graph
             self._check_evidence_graph_summary_can_run,
             self._check_evidence_graph_no_forbidden_actions,
+            # v0.9.0 Strategy Lab Stable
+            self._check_strategy_lab_import_health,
+            self._check_strategy_lab_no_forbidden_actions,
         ]
 
         for fn in checklist_groups:

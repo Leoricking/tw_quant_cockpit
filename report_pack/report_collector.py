@@ -30,6 +30,7 @@ from report_pack.report_pack_schema import (
     REPORT_INTELLIGENCE_STABLE,
     REPORT_TRAINING_METRICS,
     REPORT_EVIDENCE_GRAPH,
+    REPORT_STRATEGY_LAB_STABLE,
     OPTIONAL_REPORT_TYPES, ENV_LIMITED_REPORT_TYPES,
 )
 
@@ -185,6 +186,12 @@ _REPORT_PATTERNS = {
     REPORT_EVIDENCE_GRAPH: [
         "reports/evidence_graph_report_*.md",
         "data/backtest_results/evidence_graph/evidence_graph_summary_*.csv",
+    ],
+    # v0.9.0 Strategy Lab Stable
+    REPORT_STRATEGY_LAB_STABLE: [
+        "reports/strategy_lab_stable_report_*.md",
+        "data/backtest_results/strategy_lab/strategy_lab_summary_*.csv",
+        "data/backtest_results/strategy_lab/strategy_lab_release_manifest_*.json",
     ],
 }
 

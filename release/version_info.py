@@ -11,10 +11,10 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 
 class VersionInfo:
-    """Centralized version and safety metadata for v0.8.1."""
+    """Centralized version and safety metadata for v0.9.0."""
 
-    version            = "v0.8.1"
-    release_name       = "Strategy Memory UX"
+    version            = "v0.9.0"
+    release_name       = "Strategy Lab Stable"
     release_stage      = "STABLE"
     read_only          = True
     no_real_orders     = True
@@ -23,6 +23,20 @@ class VersionInfo:
     research_only      = True
     supported_modes    = ["real", "mock"]
     major_features     = [
+        "Strategy Lab Stable v0.9.0",
+        "Unified Strategy Lab validation over Research OS v0.7.x-v0.8.x",
+        "47-capability matrix (RI 9, SM 8, BC 7, TM 6, EG 8, Supporting 9)",
+        "Strategy Lab stable checklist (7 categories A-G)",
+        "Strategy Lab release manifest builder (JSON + Markdown)",
+        "Strategy Lab stable report (13 sections)",
+        "Strategy Lab GUI panel (8 summary cards, capability table, checklist)",
+        "6 new CLI commands (strategy-lab, strategy-lab-summary, etc.)",
+        "Research Intelligence Evidence Graph v0.8.3",
+        "14 node types, 12 edge relations, BFS max depth 3",
+        "Conservative contradiction detection (never auto-modifies status)",
+        "Evidence graph context reading in all Research OS engines",
+        "9 new CLI commands (evidence-graph, evidence-graph-threads, etc.)",
+        "Backtest Training Metrics v0.8.2",
         "Strategy Memory UX v0.8.1",
         "Status lifecycle: NEW→REVIEWING→VALIDATING→ACCEPTED/REJECTED/NEEDS_MORE_EVIDENCE",
         "accepted_is_research_only=True invariant — ACCEPTED ≠ trading enabled",
@@ -143,7 +157,7 @@ def print_version_info() -> None:
 def get_safety_banner() -> str:
     """Return one-line safety banner string."""
     return (
-        "[!] v0.8.1 Research Only | No Real Orders | "
+        "[!] v0.9.0 Research Only | No Real Orders | "
         "Production BLOCKED | real_order_ready=False"
     )
 
