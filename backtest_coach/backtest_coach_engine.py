@@ -132,7 +132,30 @@ class BacktestCoachEngine:
             "training_context":   training_context,
             "no_real_orders":     True,
             "production_blocked": True,
+            # v0.8.3: load evidence graph context (read-only, no modification)
+            "evidence_graph_context": self._load_evidence_graph_context(),
         }
+
+    def _load_evidence_graph_context(self) -> dict:
+        """Load evidence graph summary as read-only context (v0.8.3)."""
+        try:
+            import os
+            eg_dir = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))),
+                                  "data", "backtest_results", "evidence_graph")
+            from evidence_graph.evidence_graph_store import EvidenceGraphStore
+            store   = EvidenceGraphStore(output_dir=eg_dir)
+            summary = store.load_latest_summary()
+            if summary:
+                return {
+                    "total_nodes":        summary.total_nodes,
+                    "total_edges":        summary.total_edges,
+                    "orphan_node_count":  summary.orphan_node_count,
+                    "contradiction_count": summary.contradiction_count,
+                    "overall_status":     summary.overall_status,
+                }
+        except Exception as exc:
+            logger.debug("[BacktestCoachEngine] evidence_graph_context: %s", exc)
+        return {}
 
     def build_summary(
         self,

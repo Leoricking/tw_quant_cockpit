@@ -4,7 +4,37 @@
 >
 > **[!] v1: Real order execution is strictly prohibited. For research, simulation, and decision support only. Not investment advice.**
 
-**Current version: v0.8.2 — Backtest Training Metrics**
+**Current version: v0.8.3 — Research Intelligence Evidence Graph**
+
+---
+
+## v0.8.3 — Research Intelligence Evidence Graph
+
+**New in v0.8.3:**
+
+- **Research Intelligence Evidence Graph**: Links all research conclusions across Research OS modules into a traceable directed graph
+- **14 Node Types**: RESEARCH_RECOMMENDATION, STRATEGY_MEMORY, BACKTEST_COACH_TASK, TRAINING_METRIC, REPLAY_MISTAKE, JOURNAL_PATTERN, DATA_GAP, REPORT_RESULT, REGRESSION_RESULT, RULE_CANDIDATE, STRATEGY_HYPOTHESIS, PROVIDER_LIMITATION, STABLE_CHECK, MANUAL_NOTE
+- **12 Edge Relations**: SUPPORTS, CONTRADICTS, DUPLICATES, REFINES, REQUIRES_DATA, REQUIRES_BACKTEST, REQUIRES_REPLAY, REQUIRES_JOURNAL_REVIEW, GENERATED_FROM, VALIDATED_BY, WEAKENED_BY, RELATED_TO
+- **Evidence Threads**: BFS chains (max depth 3) from anchor nodes — traceable evidence path per recommendation
+- **Conservative Contradiction Detection**: Only when title overlap ≥ 3 words AND opposing sentiment AND confidence ≥ 0.6
+- **9 CLI Commands**: `evidence-graph`, `evidence-graph-summary`, `evidence-graph-nodes`, `evidence-graph-edges`, `evidence-graph-threads`, `evidence-graph-orphans`, `evidence-graph-requires-backtest`, `evidence-graph-requires-data`, `evidence-graph-report`
+- **GUI Tab**: Evidence Graph tab (research_os group) in TW Quant Cockpit dashboard
+- **Markdown Report**: 9-section report with nodes, edges, threads, gaps, and safety declaration
+- **Safety Guard**: `_guard()` rejects BUY/SELL/ORDER/EXECUTE/SUBMIT_ORDER/AUTO_TRADE/REAL_TRADE in all outputs
+- **No Auto-Modify**: Evidence Graph never modifies strategy_memory status, coach task status, rule weights, or enabled flags
+- **[!] Research Only. No Real Orders. Production Trading: BLOCKED.**
+
+```bash
+python main.py evidence-graph --mode real
+python main.py evidence-graph-summary
+python main.py evidence-graph-nodes
+python main.py evidence-graph-edges
+python main.py evidence-graph-threads
+python main.py evidence-graph-orphans
+python main.py evidence-graph-requires-backtest
+python main.py evidence-graph-requires-data
+python main.py evidence-graph-report --mode real
+```
 
 ---
 

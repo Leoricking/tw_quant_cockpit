@@ -1294,3 +1294,40 @@ class ExperimentSnapshotBuilder:
             logger.warning("build_training_metrics_snapshot: %s", exc)
             snap["warnings"].append(f"training_metrics snapshot error: {exc}")
         return snap
+
+    def build_evidence_graph_snapshot(self) -> dict:
+        """Snapshot type: evidence_graph. Captures latest evidence graph summary.
+
+        [!] Research Only. No Real Orders. Production Trading: BLOCKED.
+        """
+        snap = _empty_snapshot("evidence_graph")
+        try:
+            eg_dir = os.path.join(BASE_DIR, "data", "backtest_results", "evidence_graph")
+            import glob as _glob
+            pattern = os.path.join(eg_dir, "evidence_graph_summary_*.csv")
+            files = sorted(_glob.glob(pattern))
+            if files:
+                summary_csv = files[-1]
+                snap["source_files"].append(summary_csv)
+                import csv as _csv
+                with open(summary_csv, newline="", encoding="utf-8") as f:
+                    rows = list(_csv.DictReader(f))
+                    if rows:
+                        row = rows[-1]
+                        snap["summary"] = {
+                            "version":               "v0.8.3",
+                            "total_nodes":           row.get("total_nodes", 0),
+                            "total_edges":           row.get("total_edges", 0),
+                            "orphan_node_count":     row.get("orphan_node_count", 0),
+                            "contradiction_count":   row.get("contradiction_count", 0),
+                            "requires_backtest_count": row.get("requires_backtest_count", 0),
+                            "overall_status":        row.get("overall_status", "INSUFFICIENT_EVIDENCE"),
+                            "no_real_orders":        True,
+                            "production_blocked":    True,
+                        }
+            else:
+                snap["warnings"].append("evidence_graph_summary not found — run evidence-graph first")
+        except Exception as exc:
+            logger.warning("build_evidence_graph_snapshot: %s", exc)
+            snap["warnings"].append(f"evidence_graph snapshot error: {exc}")
+        return snap

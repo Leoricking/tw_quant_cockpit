@@ -29,6 +29,7 @@ from report_pack.report_pack_schema import (
     REPORT_BACKTEST_COACH,
     REPORT_INTELLIGENCE_STABLE,
     REPORT_TRAINING_METRICS,
+    REPORT_EVIDENCE_GRAPH,
     OPTIONAL_REPORT_TYPES, ENV_LIMITED_REPORT_TYPES,
 )
 
@@ -179,6 +180,11 @@ _REPORT_PATTERNS = {
     REPORT_TRAINING_METRICS: [
         "reports/training_metrics_report_*.md",
         "data/backtest_results/training_metrics/training_metrics_summary*.csv",
+    ],
+    # v0.8.3 Research Intelligence Evidence Graph
+    REPORT_EVIDENCE_GRAPH: [
+        "reports/evidence_graph_report_*.md",
+        "data/backtest_results/evidence_graph/evidence_graph_summary_*.csv",
     ],
 }
 

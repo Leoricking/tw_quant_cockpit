@@ -131,7 +131,28 @@ class ResearchIntelligenceEngine:
             "coach_context":   coach_context,
             # v0.8.2: load training improvement signal from training_metrics summary
             "training_improvement_signal": self._load_training_improvement_signal(),
+            # v0.8.3: load evidence graph context (read-only, no modification)
+            "evidence_graph_context": self._load_evidence_graph_context(),
         }
+
+    def _load_evidence_graph_context(self) -> dict:
+        """Load evidence graph summary as read-only context (v0.8.3)."""
+        try:
+            eg_dir = os.path.join(self._root, "data", "backtest_results", "evidence_graph")
+            from evidence_graph.evidence_graph_store import EvidenceGraphStore
+            store   = EvidenceGraphStore(output_dir=eg_dir)
+            summary = store.load_latest_summary()
+            if summary:
+                return {
+                    "total_nodes":        summary.total_nodes,
+                    "total_edges":        summary.total_edges,
+                    "orphan_node_count":  summary.orphan_node_count,
+                    "contradiction_count": summary.contradiction_count,
+                    "overall_status":     summary.overall_status,
+                }
+        except Exception as exc:
+            logger.debug("[ResearchIntelligenceEngine] evidence_graph_context: %s", exc)
+        return {}
 
     def _load_training_improvement_signal(self) -> dict:
         """Load training_metrics summary as an improvement signal (v0.8.2)."""

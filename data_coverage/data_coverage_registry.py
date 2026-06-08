@@ -19,6 +19,7 @@ from data_coverage.data_coverage_schema import (
     DOMAIN_BACKTEST_COACH,
     DOMAIN_INTELLIGENCE_STABLE,
     DOMAIN_TRAINING_METRICS,
+    DOMAIN_EVIDENCE_GRAPH,
 )
 
 logger = logging.getLogger(__name__)
@@ -762,5 +763,34 @@ class DataCoverageRegistry:
                     "reports/training_metrics_report_*.md",
                 ],
                 "owner_module":     "reports.training_metrics_report",
+            },
+            # v0.8.3 Research Intelligence Evidence Graph
+            {
+                "item_id":          "evidence_graph_store",
+                "domain":           DOMAIN_EVIDENCE_GRAPH,
+                "dataset_name":     "Evidence Graph Outputs",
+                "required":         False,
+                "environment_limited": False,
+                "not_generated":    False,
+                "suggested_command": "python main.py evidence-graph --mode real",
+                "expected_patterns": [
+                    "data/backtest_results/evidence_graph/evidence_nodes_*.csv",
+                    "data/backtest_results/evidence_graph/evidence_edges_*.csv",
+                    "data/backtest_results/evidence_graph/evidence_graph_summary_*.csv",
+                ],
+                "owner_module":     "evidence_graph.evidence_graph_store",
+            },
+            {
+                "item_id":          "evidence_graph_report",
+                "domain":           DOMAIN_EVIDENCE_GRAPH,
+                "dataset_name":     "Evidence Graph Report",
+                "required":         False,
+                "environment_limited": False,
+                "not_generated":    False,
+                "suggested_command": "python main.py evidence-graph-report --mode real",
+                "expected_patterns": [
+                    "reports/evidence_graph_report_*.md",
+                ],
+                "owner_module":     "reports.evidence_graph_report",
             },
         ]

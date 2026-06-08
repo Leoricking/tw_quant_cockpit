@@ -8240,6 +8240,260 @@ _TRAINING_METRICS_BANNER = """
 ╚══════════════════════════════════════════════════════════════╝
 """
 
+# ---------------------------------------------------------------------------
+# v0.8.3 Evidence Graph command handlers
+# ---------------------------------------------------------------------------
+
+_EVIDENCE_GRAPH_BANNER = """
+╔══════════════════════════════════════════════════════════════╗
+║   TW Quant Cockpit — Research Intelligence Evidence Graph    ║
+║                        v0.8.3                                ║
+║  Research Only  |  No Real Orders  |  Production BLOCKED     ║
+╚══════════════════════════════════════════════════════════════╝
+"""
+
+
+def _print_eg_header(mode: str = "real") -> None:
+    print(_EVIDENCE_GRAPH_BANNER)
+    print(f"  Mode:                       {mode}")
+    print(f"  Research Only:              YES")
+    print(f"  No Real Orders:             YES")
+    print(f"  Production Trading BLOCKED: YES")
+    print()
+
+
+def cmd_evidence_graph(args: argparse.Namespace) -> None:
+    """Run full Research Intelligence Evidence Graph pipeline (v0.8.3)."""
+    mode       = getattr(args, "mode", "real")
+    output_dir = getattr(args, "output_dir", "data/backtest_results/evidence_graph")
+    report_dir = getattr(args, "report_dir", "reports")
+    output_dir_abs = output_dir if os.path.isabs(output_dir) else os.path.join(BASE_DIR, output_dir)
+    report_dir_abs = report_dir if os.path.isabs(report_dir) else os.path.join(BASE_DIR, report_dir)
+    _print_eg_header(mode)
+    try:
+        from evidence_graph.evidence_graph_engine import EvidenceGraphEngine
+        engine = EvidenceGraphEngine(project_root=BASE_DIR, output_dir=output_dir_abs)
+        result = engine.run(mode=mode)
+        summary = result.get("summary")
+        threads = result.get("threads", [])
+        nodes   = result.get("nodes", [])
+        edges   = result.get("edges", [])
+        if summary:
+            s = summary
+            print(f"  Nodes:                      {s.total_nodes}")
+            print(f"  Edges:                      {s.total_edges}")
+            print(f"  Threads:                    {len(threads)}")
+            print(f"  Orphans:                    {s.orphan_node_count}")
+            print(f"  Requires Data:              {s.requires_data_count}")
+            print(f"  Requires Backtest:          {s.requires_backtest_count}")
+            print(f"  Requires Replay:            {s.requires_replay_count}")
+            print(f"  Contradictions:             {s.contradiction_count}")
+            print(f"  Overall Status:             {s.overall_status}")
+        # Auto-generate report
+        try:
+            from reports.evidence_graph_report import EvidenceGraphReportBuilder
+            rpath = EvidenceGraphReportBuilder().build(
+                mode=mode, output_dir=report_dir_abs, graph_output_dir=output_dir_abs)
+            print(f"  Report:                     {rpath}")
+        except Exception as _rpt_exc:
+            print(f"  Report:                     (error: {_rpt_exc})")
+    except Exception as exc:
+        print(f"  ERROR: {exc}")
+    print()
+    print("  [!] No real orders. Research Only. Production Trading BLOCKED.")
+
+
+def cmd_evidence_graph_summary(args: argparse.Namespace) -> None:
+    """Show latest Evidence Graph summary (v0.8.3)."""
+    output_dir = getattr(args, "output_dir", "data/backtest_results/evidence_graph")
+    output_dir_abs = output_dir if os.path.isabs(output_dir) else os.path.join(BASE_DIR, output_dir)
+    _print_eg_header()
+    try:
+        from evidence_graph.evidence_graph_store import EvidenceGraphStore
+        store   = EvidenceGraphStore(output_dir=output_dir_abs)
+        summary = store.load_latest_summary()
+        if summary is None:
+            print("  No summary found. Run: python main.py evidence-graph --mode real")
+        else:
+            s = summary
+            print(f"  Overall Status:             {s.overall_status}")
+            print(f"  Total Nodes:                {s.total_nodes}")
+            print(f"  Total Edges:                {s.total_edges}")
+            print(f"  Orphan Nodes:               {s.orphan_node_count}")
+            print(f"  Contradictions:             {s.contradiction_count}")
+            print(f"  Requires Data:              {s.requires_data_count}")
+            print(f"  Requires Backtest:          {s.requires_backtest_count}")
+            print(f"  Requires Replay:            {s.requires_replay_count}")
+            print(f"  High Confidence Links:      {s.high_confidence_links}")
+            print(f"  Low Confidence Links:       {s.low_confidence_links}")
+            if s.top_evidence_thread:
+                print(f"  Top Thread:                 {s.top_evidence_thread}")
+    except Exception as exc:
+        print(f"  ERROR: {exc}")
+    print()
+    print("  [!] No real orders. Research Only.")
+
+
+def cmd_evidence_graph_nodes(args: argparse.Namespace) -> None:
+    """Show latest Evidence Graph node list (v0.8.3)."""
+    output_dir = getattr(args, "output_dir", "data/backtest_results/evidence_graph")
+    node_type  = getattr(args, "node_type", None)
+    source_module = getattr(args, "source_module", None)
+    keyword    = getattr(args, "keyword", None)
+    output_dir_abs = output_dir if os.path.isabs(output_dir) else os.path.join(BASE_DIR, output_dir)
+    _print_eg_header()
+    try:
+        from evidence_graph.evidence_graph_store import EvidenceGraphStore
+        from evidence_graph.evidence_graph_query import EvidenceGraphQuery
+        store = EvidenceGraphStore(output_dir=output_dir_abs)
+        query = EvidenceGraphQuery(store=store)
+        nodes = query.search_nodes(
+            keyword=keyword, node_type=node_type, source_module=source_module)
+        print(f"  Nodes: {len(nodes)}")
+        if not nodes:
+            print("  No nodes. Run: python main.py evidence-graph --mode real")
+        else:
+            print()
+            print(f"  {'Type':28s}  {'Title':45s}  {'Source':22s}  Conf")
+            print(f"  {'-'*28}  {'-'*45}  {'-'*22}  {'-'*6}")
+            for n in nodes[:40]:
+                print(f"  {n.node_type:28s}  {n.title[:45]:45s}  {n.source_module:22s}  {n.confidence:.2f}")
+    except Exception as exc:
+        print(f"  ERROR: {exc}")
+    print()
+    print("  [!] No real orders. Research Only.")
+
+
+def cmd_evidence_graph_edges(args: argparse.Namespace) -> None:
+    """Show latest Evidence Graph edge list (v0.8.3)."""
+    output_dir = getattr(args, "output_dir", "data/backtest_results/evidence_graph")
+    output_dir_abs = output_dir if os.path.isabs(output_dir) else os.path.join(BASE_DIR, output_dir)
+    _print_eg_header()
+    try:
+        from evidence_graph.evidence_graph_store import EvidenceGraphStore
+        store = EvidenceGraphStore(output_dir=output_dir_abs)
+        edges = store.load_latest_edges()
+        print(f"  Edges: {len(edges)}")
+        if edges:
+            print()
+            print(f"  {'Relation':28s}  {'Source':18s}  {'Target':18s}  Conf  Next Step")
+            print(f"  {'-'*28}  {'-'*18}  {'-'*18}  {'-'*4}  {'-'*20}")
+            for e in edges[:30]:
+                print(f"  {e.relation_type:28s}  {e.source_node_id[:18]:18s}  {e.target_node_id[:18]:18s}  {e.confidence:.2f}  {e.suggested_next_step[:20]}")
+    except Exception as exc:
+        print(f"  ERROR: {exc}")
+    print()
+    print("  [!] No real orders. Research Only.")
+
+
+def cmd_evidence_graph_threads(args: argparse.Namespace) -> None:
+    """Show latest Evidence Graph threads (v0.8.3)."""
+    output_dir = getattr(args, "output_dir", "data/backtest_results/evidence_graph")
+    output_dir_abs = output_dir if os.path.isabs(output_dir) else os.path.join(BASE_DIR, output_dir)
+    _print_eg_header()
+    try:
+        from evidence_graph.evidence_graph_store import EvidenceGraphStore
+        store   = EvidenceGraphStore(output_dir=output_dir_abs)
+        threads = store.load_latest_threads()
+        print(f"  Threads: {len(threads)}")
+        if not threads:
+            print("  No threads. Run: python main.py evidence-graph --mode real")
+        else:
+            for t in threads[:10]:
+                print(f"  Thread: {t.get('anchor_title', '')[:60]}")
+                print(f"    Path:      {t.get('evidence_path', '')}")
+                print(f"    Next Step: {t.get('suggested_next_step', 'REVIEW')}")
+                print()
+    except Exception as exc:
+        print(f"  ERROR: {exc}")
+    print()
+    print("  [!] No real orders. Research Only.")
+
+
+def cmd_evidence_graph_orphans(args: argparse.Namespace) -> None:
+    """Show orphan nodes in the Evidence Graph (v0.8.3)."""
+    output_dir = getattr(args, "output_dir", "data/backtest_results/evidence_graph")
+    output_dir_abs = output_dir if os.path.isabs(output_dir) else os.path.join(BASE_DIR, output_dir)
+    _print_eg_header()
+    try:
+        from evidence_graph.evidence_graph_store import EvidenceGraphStore
+        from evidence_graph.evidence_graph_query import EvidenceGraphQuery
+        store  = EvidenceGraphStore(output_dir=output_dir_abs)
+        query  = EvidenceGraphQuery(store=store)
+        orphans = query.find_orphans()
+        print(f"  Orphan Nodes: {len(orphans)}")
+        if not orphans:
+            print("  No orphans — all nodes are connected.")
+        else:
+            for n in orphans[:20]:
+                print(f"  [{n.node_type}] {n.title[:60]}  (source: {n.source_module})")
+    except Exception as exc:
+        print(f"  ERROR: {exc}")
+    print()
+    print("  [!] No real orders. Research Only.")
+
+
+def cmd_evidence_graph_requires_backtest(args: argparse.Namespace) -> None:
+    """Show nodes requiring backtest in the Evidence Graph (v0.8.3)."""
+    output_dir = getattr(args, "output_dir", "data/backtest_results/evidence_graph")
+    output_dir_abs = output_dir if os.path.isabs(output_dir) else os.path.join(BASE_DIR, output_dir)
+    _print_eg_header()
+    try:
+        from evidence_graph.evidence_graph_store import EvidenceGraphStore
+        from evidence_graph.evidence_graph_query import EvidenceGraphQuery
+        store = EvidenceGraphStore(output_dir=output_dir_abs)
+        query = EvidenceGraphQuery(store=store)
+        needs_bt = query.find_requires_backtest()
+        print(f"  Requires Backtest: {len(needs_bt)}")
+        for n in needs_bt[:20]:
+            print(f"  [{n.node_type}] {n.title[:60]}")
+    except Exception as exc:
+        print(f"  ERROR: {exc}")
+    print()
+    print("  [!] No real orders. Research Only. Suggested Next Step: BACKTEST_MORE")
+
+
+def cmd_evidence_graph_requires_data(args: argparse.Namespace) -> None:
+    """Show nodes requiring data in the Evidence Graph (v0.8.3)."""
+    output_dir = getattr(args, "output_dir", "data/backtest_results/evidence_graph")
+    output_dir_abs = output_dir if os.path.isabs(output_dir) else os.path.join(BASE_DIR, output_dir)
+    _print_eg_header()
+    try:
+        from evidence_graph.evidence_graph_store import EvidenceGraphStore
+        from evidence_graph.evidence_graph_query import EvidenceGraphQuery
+        store = EvidenceGraphStore(output_dir=output_dir_abs)
+        query = EvidenceGraphQuery(store=store)
+        needs_data = query.find_requires_data()
+        print(f"  Requires Data: {len(needs_data)}")
+        for n in needs_data[:20]:
+            print(f"  [{n.node_type}] {n.title[:60]}")
+    except Exception as exc:
+        print(f"  ERROR: {exc}")
+    print()
+    print("  [!] No real orders. Research Only. Suggested Next Step: FIX_DATA")
+
+
+def cmd_evidence_graph_report(args: argparse.Namespace) -> None:
+    """Generate Evidence Graph Markdown report (v0.8.3)."""
+    mode       = getattr(args, "mode", "real")
+    report_dir = getattr(args, "report_dir", "reports")
+    output_dir = getattr(args, "output_dir", "data/backtest_results/evidence_graph")
+    output_dir_abs = output_dir if os.path.isabs(output_dir) else os.path.join(BASE_DIR, output_dir)
+    report_dir_abs = report_dir if os.path.isabs(report_dir) else os.path.join(BASE_DIR, report_dir)
+    _print_eg_header(mode)
+    try:
+        from reports.evidence_graph_report import EvidenceGraphReportBuilder
+        path = EvidenceGraphReportBuilder().build(
+            mode=mode,
+            output_dir=report_dir_abs,
+            graph_output_dir=output_dir_abs,
+        )
+        print(f"  Report saved: {path}")
+    except Exception as exc:
+        print(f"  ERROR: {exc}")
+    print()
+    print("  [!] No real orders. Research Only. Production Trading BLOCKED.")
+
 
 def cmd_training_metrics(args: argparse.Namespace) -> None:
     """Run full Backtest Training Metrics pipeline."""
@@ -12679,6 +12933,85 @@ def _build_parser() -> argparse.ArgumentParser:
     p_tmr.add_argument("--output-dir", dest="output_dir",
                        default="data/backtest_results/training_metrics")
 
+    # --- evidence-graph (v0.8.3) ---
+    p_eg = subparsers.add_parser(
+        "evidence-graph",
+        help="Run full Research Intelligence Evidence Graph pipeline (v0.8.3)",
+    )
+    p_eg.add_argument("--mode", choices=["real", "mock"], default="real")
+    p_eg.add_argument("--output-dir", dest="output_dir",
+                      default="data/backtest_results/evidence_graph")
+    p_eg.add_argument("--report-dir", dest="report_dir", default="reports")
+
+    # --- evidence-graph-summary (v0.8.3) ---
+    p_egs = subparsers.add_parser(
+        "evidence-graph-summary",
+        help="Show latest Evidence Graph summary (v0.8.3)",
+    )
+    p_egs.add_argument("--output-dir", dest="output_dir",
+                       default="data/backtest_results/evidence_graph")
+
+    # --- evidence-graph-nodes (v0.8.3) ---
+    p_egn = subparsers.add_parser(
+        "evidence-graph-nodes",
+        help="Show Evidence Graph node list (v0.8.3)",
+    )
+    p_egn.add_argument("--output-dir", dest="output_dir",
+                       default="data/backtest_results/evidence_graph")
+    p_egn.add_argument("--node-type", dest="node_type", default=None)
+    p_egn.add_argument("--source-module", dest="source_module", default=None)
+    p_egn.add_argument("--keyword", default=None)
+
+    # --- evidence-graph-edges (v0.8.3) ---
+    p_ege = subparsers.add_parser(
+        "evidence-graph-edges",
+        help="Show Evidence Graph edge list (v0.8.3)",
+    )
+    p_ege.add_argument("--output-dir", dest="output_dir",
+                       default="data/backtest_results/evidence_graph")
+
+    # --- evidence-graph-threads (v0.8.3) ---
+    p_egt = subparsers.add_parser(
+        "evidence-graph-threads",
+        help="Show Evidence Graph evidence threads (v0.8.3)",
+    )
+    p_egt.add_argument("--output-dir", dest="output_dir",
+                       default="data/backtest_results/evidence_graph")
+
+    # --- evidence-graph-orphans (v0.8.3) ---
+    p_ego = subparsers.add_parser(
+        "evidence-graph-orphans",
+        help="Show orphan nodes in the Evidence Graph (v0.8.3)",
+    )
+    p_ego.add_argument("--output-dir", dest="output_dir",
+                       default="data/backtest_results/evidence_graph")
+
+    # --- evidence-graph-requires-backtest (v0.8.3) ---
+    p_egrb = subparsers.add_parser(
+        "evidence-graph-requires-backtest",
+        help="Show nodes requiring backtest in the Evidence Graph (v0.8.3)",
+    )
+    p_egrb.add_argument("--output-dir", dest="output_dir",
+                        default="data/backtest_results/evidence_graph")
+
+    # --- evidence-graph-requires-data (v0.8.3) ---
+    p_egrd = subparsers.add_parser(
+        "evidence-graph-requires-data",
+        help="Show nodes requiring data in the Evidence Graph (v0.8.3)",
+    )
+    p_egrd.add_argument("--output-dir", dest="output_dir",
+                        default="data/backtest_results/evidence_graph")
+
+    # --- evidence-graph-report (v0.8.3) ---
+    p_egr = subparsers.add_parser(
+        "evidence-graph-report",
+        help="Generate Evidence Graph Markdown report (v0.8.3)",
+    )
+    p_egr.add_argument("--mode", choices=["real", "mock"], default="real")
+    p_egr.add_argument("--report-dir", dest="report_dir", default="reports")
+    p_egr.add_argument("--output-dir", dest="output_dir",
+                       default="data/backtest_results/evidence_graph")
+
     # --- strategy-knowledge-ingest (v0.4.1.1) ---
     p_ski = subparsers.add_parser(
         "strategy-knowledge-ingest",
@@ -13918,6 +14251,16 @@ def main() -> None:
         "training-metrics-detail": cmd_training_metrics_detail,
         "training-metrics-trend":  cmd_training_metrics_trend,
         "training-metrics-report": cmd_training_metrics_report,
+        # v0.8.3 Research Intelligence Evidence Graph
+        "evidence-graph":                   cmd_evidence_graph,
+        "evidence-graph-summary":           cmd_evidence_graph_summary,
+        "evidence-graph-nodes":             cmd_evidence_graph_nodes,
+        "evidence-graph-edges":             cmd_evidence_graph_edges,
+        "evidence-graph-threads":           cmd_evidence_graph_threads,
+        "evidence-graph-orphans":           cmd_evidence_graph_orphans,
+        "evidence-graph-requires-backtest": cmd_evidence_graph_requires_backtest,
+        "evidence-graph-requires-data":     cmd_evidence_graph_requires_data,
+        "evidence-graph-report":            cmd_evidence_graph_report,
         # v0.7.2 Strategy Research Memory (enhanced v0.8.1)
         "strategy-memory":                    cmd_strategy_memory,
         "strategy-memory-summary":            cmd_strategy_memory_summary,

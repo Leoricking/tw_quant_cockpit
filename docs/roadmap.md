@@ -63,6 +63,7 @@
 | v0.8.0 | Research Intelligence Stable | Done |
 | v0.8.1 | Strategy Memory UX | Done |
 | v0.8.2 | Backtest Training Metrics | Done |
+| v0.8.3 | Research Intelligence Evidence Graph | Done |
 
 ---
 
@@ -193,11 +194,26 @@ regression suite, stable_release_checklist, intelligence_stable_checklist, auto_
 snapshot_builder, and data_coverage_registry.
 Research Only. No Real Orders. Production Trading: BLOCKED.
 
+### Completed: v0.8.3 — Research Intelligence Evidence Graph
+
+**Status:** Done
+
+Research Intelligence Evidence Graph v0.8.3 links all research conclusions across all Research OS
+modules into a traceable directed graph. 14 node types (RESEARCH_RECOMMENDATION, STRATEGY_MEMORY,
+BACKTEST_COACH_TASK, TRAINING_METRIC, REPLAY_MISTAKE, JOURNAL_PATTERN, DATA_GAP, REPORT_RESULT,
+REGRESSION_RESULT, RULE_CANDIDATE, STRATEGY_HYPOTHESIS, PROVIDER_LIMITATION, STABLE_CHECK,
+MANUAL_NOTE). 12 edge relations (SUPPORTS, CONTRADICTS, DUPLICATES, REFINES, REQUIRES_DATA,
+REQUIRES_BACKTEST, REQUIRES_REPLAY, REQUIRES_JOURNAL_REVIEW, GENERATED_FROM, VALIDATED_BY,
+WEAKENED_BY, RELATED_TO). Evidence Threads via BFS max depth 3 from anchor nodes. Conservative
+contradiction detection. Safety guard `_guard()` rejects all trading action tokens. Evidence Graph
+does NOT auto-modify any module status, weights, or enabled flags. 9 CLI commands, GUI tab
+(Evidence Graph), 9-section Markdown report.
+Research Only. No Real Orders. Production Trading: BLOCKED.
+
 ### Next Steps (Planned)
 
 | Version | Feature | Priority |
 |---------|---------|---------|
-| v0.8.3 | Advanced Replay Analysis — pattern detection, multi-session comparison | P2 |
 | v0.8.4 | Strategy Memory LLM-assisted extraction scaffold | P2 |
 | v0.9.0 | AI Review Engine Stable — LLM-assisted signal analysis and coaching | P1 |
 

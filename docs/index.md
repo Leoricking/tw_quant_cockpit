@@ -3,7 +3,7 @@
 > **[!] Research Only. Read Only. No Real Orders. Production Trading: BLOCKED.**
 > **[!] Not investment advice. REAL_ORDER_READY=False.**
 
-Current version: **v0.8.2** — Backtest Training Metrics
+Current version: **v0.8.3** — Research Intelligence Evidence Graph
 
 ---
 
@@ -21,7 +21,8 @@ Current version: **v0.8.2** — Backtest Training Metrics
 | [Release Notes v0.4](release_notes_v0.4.md) | v0.4.0 stable release change log |
 | [Release Notes v0.5](release_notes_v0.5.md) | v0.5.0 Research OS Planning change log |
 | [Release Notes v0.6](release_notes_v0.6.md) | v0.6.x change log (v0.6.0 Stable Release, v0.6.1 UX Polish, v0.6.2 Data Coverage, v0.6.3 Replay Training UI) |
-| [Release Notes v0.8](release_notes_v0.8.md) | v0.8.x change log (v0.8.0 Research Intelligence Stable, v0.8.1 Strategy Memory UX, v0.8.2 Backtest Training Metrics) |
+| [Release Notes v0.8](release_notes_v0.8.md) | v0.8.x change log (v0.8.0 Research Intelligence Stable, v0.8.1 Strategy Memory UX, v0.8.2 Backtest Training Metrics, v0.8.3 Evidence Graph) |
+| [Research Intelligence Evidence Graph v0.8.3](research_intelligence_evidence_graph.md) | v0.8.3 node types, edge relations, evidence threads, orphan nodes, contradiction detection, CLI/GUI usage |
 | [Backtest Training Metrics v0.8.2](backtest_training_metrics.md) | v0.8.2 metric types, trend computation, INSUFFICIENT_DATA, CLI/GUI usage |
 | [Strategy Memory UX v0.8.1](strategy_memory_ux_v0.8.1.md) | v0.8.1 status lifecycle, UX fields, safe command labels, validation queue, active threads, repeated patterns |
 | [Research Intelligence Stable v0.8.0](research_intelligence_stable_v0.8.0.md) | v0.8.0 29 capabilities, 7-category checklist, release manifest, CLI/GUI usage |
@@ -109,4 +110,4 @@ Current version: **v0.8.2** — Backtest Training Metrics
 
 ---
 
-*Generated for v0.7.2 Strategy Research Memory.*
+*Generated for v0.8.3 Research Intelligence Evidence Graph.*

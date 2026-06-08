@@ -482,6 +482,15 @@ except Exception as _tm_exc:
     logger.warning("TrainingMetricsPanel unavailable: %s", _tm_exc)
     _TRAINING_METRICS_AVAILABLE = False
 
+# v0.8.3 Evidence Graph panel
+# ---------------------------------------------------------------------------
+try:
+    from gui.evidence_graph_panel import EvidenceGraphPanel
+    _EVIDENCE_GRAPH_AVAILABLE = True
+except Exception as _eg_exc:
+    logger.warning("EvidenceGraphPanel unavailable: %s", _eg_exc)
+    _EVIDENCE_GRAPH_AVAILABLE = False
+
 # v0.5.1.1 Strategy Filter panel — inline (no separate panel file required)
 # ---------------------------------------------------------------------------
 _STRATEGY_FILTER_AVAILABLE = False
@@ -1560,6 +1569,13 @@ class CockpitWindow(QMainWindow if _PYSIDE6_AVAILABLE else object):
             mid_tabs.addTab(self._training_metrics_panel, "Training Metrics")
         else:
             self._training_metrics_panel = None
+
+        # v0.8.3 Evidence Graph tab
+        if _EVIDENCE_GRAPH_AVAILABLE:
+            self._evidence_graph_panel = EvidenceGraphPanel()
+            mid_tabs.addTab(self._evidence_graph_panel, "Evidence Graph")
+        else:
+            self._evidence_graph_panel = None
 
         # v0.4.1.1 Strategy Knowledge tab
         if _STRATEGY_KNOWLEDGE_INGESTION_AVAILABLE:

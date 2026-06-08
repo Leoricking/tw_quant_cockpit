@@ -494,6 +494,12 @@ class AutoReportIndexBuilder:
                 "training_metrics_improving_count": ctx.get("training_metrics", {}).get("improving_count", 0),
                 "training_metrics_worsening_count": ctx.get("training_metrics", {}).get("worsening_count", 0),
                 "training_metrics_report_path":     ctx.get("training_metrics", {}).get("report_path", ""),
+                # v0.8.3 Research Intelligence Evidence Graph
+                "evidence_graph_nodes":             ctx.get("evidence_graph", {}).get("total_nodes", 0),
+                "evidence_graph_edges":             ctx.get("evidence_graph", {}).get("total_edges", 0),
+                "evidence_graph_orphans":           ctx.get("evidence_graph", {}).get("orphan_node_count", 0),
+                "evidence_graph_requires_backtest": ctx.get("evidence_graph", {}).get("requires_backtest_count", 0),
+                "evidence_graph_report_path":       ctx.get("evidence_graph", {}).get("report_path", ""),
             }
 
             path = os.path.join(output_dir, "manifest.json")

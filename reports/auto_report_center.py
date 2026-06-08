@@ -73,6 +73,8 @@ _PROFILE_FLAGS: Dict[str, dict] = {
         include_intelligence_stable=True,
         # v0.8.2 Backtest Training Metrics (optional in full profile)
         include_training_metrics=True,
+        # v0.8.3 Research Intelligence Evidence Graph (optional in full profile)
+        include_evidence_graph=True,
     ),
     "daily": dict(
         include_stock_reports=False,
@@ -108,6 +110,8 @@ _PROFILE_FLAGS: Dict[str, dict] = {
         include_intelligence_stable=True,
         # v0.8.2 Backtest Training Metrics in daily profile
         include_training_metrics=True,
+        # v0.8.3 Research Intelligence Evidence Graph summary in daily profile
+        include_evidence_graph=True,
     ),
     "portfolio": dict(
         include_stock_reports=False,
@@ -288,6 +292,9 @@ class AutoReportCenter:
         )
         self.include_training_metrics = flags.get(
             "include_training_metrics", include_training_metrics
+        )
+        self.include_evidence_graph = flags.get(
+            "include_evidence_graph", flags.get("include_evidence_graph", False)
         )
         self.universe_name = universe_name
 
@@ -551,6 +558,17 @@ class AutoReportCenter:
                 self._failed.append({
                     "name": "training_metrics_summary",
                     "error": str(_tm_exc),
+                })
+
+        # v0.8.3 Research Intelligence Evidence Graph (optional, failure should not crash)
+        if getattr(self, "include_evidence_graph", False):
+            try:
+                self.run_evidence_graph_summary()
+            except Exception as _eg_exc:
+                logger.warning("evidence_graph_summary failed (non-blocking): %s", _eg_exc)
+                self._failed.append({
+                    "name": "evidence_graph_summary",
+                    "error": str(_eg_exc),
                 })
 
         # Aggregated outputs
@@ -1698,6 +1716,34 @@ class AutoReportCenter:
         except Exception as exc:
             logger.warning("AutoReportCenter.run_training_metrics_summary: %s", exc)
             self._context["training_metrics"] = {}
+
+    def run_evidence_graph_summary(self) -> None:
+        """v0.8.3: Load evidence graph summary (never crashes).
+
+        [!] Research Only. No Real Orders. Production Trading: BLOCKED.
+        """
+        try:
+            from gui.evidence_graph_adapter import EvidenceGraphAdapter
+            adapter = EvidenceGraphAdapter()
+            summary = adapter.load_latest_summary()
+            if summary:
+                self._context["evidence_graph"] = {
+                    "total_nodes":             summary.total_nodes,
+                    "total_edges":             summary.total_edges,
+                    "orphan_node_count":       summary.orphan_node_count,
+                    "contradiction_count":     summary.contradiction_count,
+                    "requires_data_count":     summary.requires_data_count,
+                    "requires_backtest_count": summary.requires_backtest_count,
+                    "overall_status":          summary.overall_status,
+                    "no_real_orders":          True,
+                    "production_blocked":      True,
+                }
+            else:
+                self._context["evidence_graph"] = {}
+            self._record_success("evidence_graph_summary", "")
+        except Exception as exc:
+            logger.warning("AutoReportCenter.run_evidence_graph_summary: %s", exc)
+            self._context["evidence_graph"] = {}
 
     def _record_success(self, name: str, path: Optional[str], extra: dict = None):
         entry = {

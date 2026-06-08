@@ -433,6 +433,42 @@ class IntelligenceCapabilityMatrix:
                     "Trend requires at least 2 historical data points",
                 ],
             ),
+            # v0.8.3 Research Intelligence Evidence Graph
+            IntelligenceStableCapability(
+                capability_id="evidence_graph",
+                name="Research Intelligence Evidence Graph",
+                category="research_os",
+                source_module="evidence_graph.evidence_graph_engine",
+                version_added="v0.8.3",
+                stable_status=STABLE_STATUS_USABLE,
+                maturity="USABLE",
+                cli_commands=[
+                    "evidence-graph",
+                    "evidence-graph-summary",
+                    "evidence-graph-nodes",
+                    "evidence-graph-edges",
+                    "evidence-graph-threads",
+                    "evidence-graph-orphans",
+                    "evidence-graph-requires-backtest",
+                    "evidence-graph-requires-data",
+                    "evidence-graph-report",
+                ],
+                gui_tabs=["evidence_graph"],
+                reports=["evidence_graph"],
+                regression_suites=["release_gate"],
+                safety_checks=[
+                    "no_real_orders=True",
+                    "production_blocked=True",
+                    "_guard() rejects BUY/SELL/ORDER in action fields",
+                    "Does NOT modify memory/coach/rule/strategy status",
+                    "Read-only evidence collection",
+                ],
+                known_limitations=[
+                    "Nodes collected from CSV outputs only — requires source modules to have been run",
+                    "Conservative edge building — may miss some links",
+                    "Max 20 edges per node to keep graph readable",
+                ],
+            ),
         ]
 
     def summarize(self, capabilities: List[IntelligenceStableCapability]) -> dict:

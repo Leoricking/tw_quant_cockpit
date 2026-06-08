@@ -24,6 +24,7 @@ from report_pack.report_pack_schema import (
     REPORT_BACKTEST_COACH,
     REPORT_INTELLIGENCE_STABLE,
     REPORT_TRAINING_METRICS,
+    REPORT_EVIDENCE_GRAPH,
 )
 
 logger = logging.getLogger(__name__)
@@ -53,6 +54,8 @@ _PACK_DEFINITIONS: Dict[str, List[str]] = {
         REPORT_INTELLIGENCE_STABLE,
         # v0.8.2 Backtest Training Metrics (optional in daily pack)
         REPORT_TRAINING_METRICS,
+        # v0.8.3 Research Intelligence Evidence Graph (optional in daily pack)
+        REPORT_EVIDENCE_GRAPH,
     ],
     PACK_WEEKLY: [
         REPORT_DAILY_MARKET,
@@ -80,6 +83,8 @@ _PACK_DEFINITIONS: Dict[str, List[str]] = {
         REPORT_INTELLIGENCE_STABLE,
         # v0.8.2 Backtest Training Metrics (optional in weekly pack)
         REPORT_TRAINING_METRICS,
+        # v0.8.3 Research Intelligence Evidence Graph (optional in weekly pack)
+        REPORT_EVIDENCE_GRAPH,
     ],
     PACK_FULL: [
         REPORT_DAILY_MARKET,
@@ -119,6 +124,8 @@ _PACK_DEFINITIONS: Dict[str, List[str]] = {
         REPORT_INTELLIGENCE_STABLE,
         # v0.8.2 Backtest Training Metrics (optional in full pack)
         REPORT_TRAINING_METRICS,
+        # v0.8.3 Research Intelligence Evidence Graph (optional in full pack)
+        REPORT_EVIDENCE_GRAPH,
     ],
 }
 

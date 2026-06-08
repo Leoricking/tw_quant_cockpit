@@ -83,7 +83,30 @@ class StrategyMemoryEngine:
             "needs_action_count":       len([m for m in merged if m.needs_action]),
             # v0.8.2
             "training_metrics_context": training_metrics_context,
+            # v0.8.3: load evidence graph context (read-only, no modification)
+            "evidence_graph_context": self._load_evidence_graph_context(),
         }
+
+    def _load_evidence_graph_context(self) -> dict:
+        """Load evidence graph summary as read-only context (v0.8.3)."""
+        try:
+            import os
+            eg_dir = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))),
+                                  "data", "backtest_results", "evidence_graph")
+            from evidence_graph.evidence_graph_store import EvidenceGraphStore
+            store   = EvidenceGraphStore(output_dir=eg_dir)
+            summary = store.load_latest_summary()
+            if summary:
+                return {
+                    "total_nodes":        summary.total_nodes,
+                    "total_edges":        summary.total_edges,
+                    "orphan_node_count":  summary.orphan_node_count,
+                    "contradiction_count": summary.contradiction_count,
+                    "overall_status":     summary.overall_status,
+                }
+        except Exception as exc:
+            logger.debug("[StrategyMemoryEngine] evidence_graph_context: %s", exc)
+        return {}
 
     def _get_today_focus(self, memories: List[StrategyMemoryItem]) -> str:
         """Return the highest priority active memory title."""

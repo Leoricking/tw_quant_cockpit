@@ -310,3 +310,7 @@ reports/intelligence_stable_report_*.md
 # v0.8.2 Backtest Training Metrics — runtime outputs
 data/backtest_results/training_metrics/
 reports/training_metrics_report_*.md
+
+# v0.8.3 Research Intelligence Evidence Graph — runtime outputs
+data/backtest_results/evidence_graph/
+reports/evidence_graph_report_*.md

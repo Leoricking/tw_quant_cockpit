@@ -961,6 +961,46 @@ class GUITabRegistry:
                 favorite_default=False,
                 notes="Added in v0.8.2 \u2014 Backtest Training Metrics.",
             ),
+            # v0.8.3 Research Intelligence Evidence Graph
+            GUITabMetadata(
+                tab_id="evidence_graph",
+                tab_name="evidence_graph",
+                display_name="Research Intelligence Evidence Graph",
+                group="research_os",
+                priority="P1",
+                description=(
+                    "Research Intelligence Evidence Graph \u2014 links research recommendations, "
+                    "strategy memories, backtest coach tasks, training metrics, replay mistakes, "
+                    "journal patterns, data gaps, report results, and regression results into "
+                    "evidence threads. Research Only. No Real Orders."
+                ),
+                module_path="gui.evidence_graph_panel",
+                class_name="EvidenceGraphPanel",
+                available_flag="_EVIDENCE_GRAPH_AVAILABLE",
+                safety_level="RESEARCH_ONLY",
+                read_only=True,
+                no_real_orders=True,
+                production_blocked=True,
+                keywords=[
+                    "evidence graph", "research graph", "evidence thread", "node", "edge",
+                    "requires backtest", "requires data", "requires replay",
+                    "orphan", "contradiction", "supports", "validates",
+                    "\u7814\u7a76\u8b49\u64da", "\u8b49\u64da\u5716\u8b5c",
+                    "\u8b49\u64da\u93c8", "\u95dc\u806f\u5716", "\u56de\u6e2c\u8b49\u64da",
+                ],
+                aliases=["evidence-graph", "evidence-graph-summary", "evidence-graph-nodes"],
+                related_cli_commands=[
+                    "evidence-graph", "evidence-graph-summary", "evidence-graph-nodes",
+                    "evidence-graph-edges", "evidence-graph-threads",
+                    "evidence-graph-orphans", "evidence-graph-requires-backtest",
+                    "evidence-graph-requires-data", "evidence-graph-report",
+                ],
+                report_types=["evidence_graph"],
+                maturity="USABLE",
+                default_visible=True,
+                favorite_default=False,
+                notes="Added in v0.8.3 \u2014 Research Intelligence Evidence Graph.",
+            ),
         ]
         for tab in tabs:
             self._tabs[tab.tab_id] = tab

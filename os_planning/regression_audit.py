@@ -409,6 +409,24 @@ _COVERAGE: list[dict] = [
             "training_metrics_report in SUITE_RESEARCH_OS"
         ),
     },
+    # v0.8.3 Research Intelligence Evidence Graph
+    {
+        "module":            "evidence_graph",
+        "command_covered":   "yes",
+        "import_covered":    "yes",
+        "gui_covered":       "yes",
+        "report_covered":    "yes",
+        "safety_covered":    "yes",
+        "missing_checks":    (
+            "No test for edge building with large node set; "
+            "no test for contradiction detection edge cases"
+        ),
+        "recommended_test":  (
+            "evidence_graph_schema_import, evidence_graph_engine_import, "
+            "evidence_graph_cli, evidence_graph_summary, "
+            "evidence_graph_report in SUITE_RELEASE_GATE"
+        ),
+    },
 ]
 
 

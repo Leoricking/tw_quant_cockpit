@@ -465,6 +465,51 @@ class IntelligenceStableChecklist:
                 suggested_fix="Review training_metrics CSVs for trading action references.",
             ))
 
+        # v0.8.3 Evidence Graph safety
+        try:
+            from evidence_graph.evidence_graph_schema import EvidenceGraphSummary, EvidenceNode
+            s = EvidenceGraphSummary()
+            if s.no_real_orders and s.production_blocked:
+                checks.append(_check(
+                    "evidence_graph_safe", "safety",
+                    "Evidence Graph: safety flags enforced",
+                    CHECK_PASS, SEV_HIGH,
+                    "EvidenceGraphSummary: no_real_orders=True, production_blocked=True.",
+                ))
+            else:
+                checks.append(_check(
+                    "evidence_graph_safe", "safety",
+                    "Evidence Graph: safety flags enforced",
+                    CHECK_FAIL, SEV_CRITICAL,
+                    "EvidenceGraphSummary safety flags not enforced.",
+                ))
+        except Exception as exc:
+            checks.append(_check(
+                "evidence_graph_safe", "safety",
+                "Evidence Graph: safety flags enforced",
+                CHECK_WARN, SEV_MEDIUM,
+                f"Could not verify evidence_graph safety: {exc}",
+            ))
+
+        # Check evidence_graph report availability
+        eg_dir = os.path.join(self._root, "reports")
+        eg_reports = glob.glob(os.path.join(eg_dir, "evidence_graph_report_*.md"))
+        if eg_reports:
+            checks.append(_check(
+                "evidence_graph_report_available", "safety",
+                "Evidence Graph: report available",
+                CHECK_PASS, SEV_LOW,
+                f"Found {len(eg_reports)} evidence graph report(s).",
+            ))
+        else:
+            checks.append(_check(
+                "evidence_graph_report_available", "safety",
+                "Evidence Graph: report available",
+                CHECK_WARN, SEV_LOW,
+                "No evidence graph report found. Run: python main.py evidence-graph-report --mode real",
+                suggested_fix="python main.py evidence-graph-report --mode real",
+            ))
+
         return checks
 
     # ------------------------------------------------------------------

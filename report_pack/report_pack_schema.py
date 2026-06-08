@@ -70,6 +70,8 @@ REPORT_BACKTEST_COACH  = "backtest_coach"
 REPORT_INTELLIGENCE_STABLE = "intelligence_stable"
 # v0.8.2 Backtest Training Metrics
 REPORT_TRAINING_METRICS = "training_metrics"
+# v0.8.3 Research Intelligence Evidence Graph
+REPORT_EVIDENCE_GRAPH = "evidence_graph"
 
 ALL_REPORT_TYPES = [
     REPORT_DAILY_MARKET, REPORT_AUTO_REPORT, REPORT_DATA_QUALITY,
@@ -84,6 +86,7 @@ ALL_REPORT_TYPES = [
     REPORT_STRATEGY_MEMORY, REPORT_BACKTEST_COACH,
     REPORT_INTELLIGENCE_STABLE,
     REPORT_TRAINING_METRICS,
+    REPORT_EVIDENCE_GRAPH,
 ]
 
 # Report types that are optional — missing is NOT a release failure
@@ -94,6 +97,7 @@ OPTIONAL_REPORT_TYPES = {
     REPORT_STRATEGY_MEMORY, REPORT_BACKTEST_COACH,
     REPORT_INTELLIGENCE_STABLE,
     REPORT_TRAINING_METRICS,
+    REPORT_EVIDENCE_GRAPH,
 }
 
 # Report types that require provider tokens / environment setup

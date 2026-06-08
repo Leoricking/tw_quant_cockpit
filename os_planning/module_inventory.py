@@ -472,7 +472,30 @@ _MODULES: list[dict] = [
             "Trend direction requires at least 2 historical data points. "
             "No BUY/SELL/ORDER — research metrics only."
         ),
-        "next_action":        "Improve trend window and add weekly aggregation in v0.8.3",
+        "next_action":        "Improve trend window and add weekly aggregation.",
+    },
+    # v0.8.3 Research Intelligence Evidence Graph
+    {
+        "module_name":        "evidence_graph",
+        "package":            "evidence_graph",
+        "category":           "E. Research OS Layer",
+        "cli_commands":       (
+            "evidence-graph,evidence-graph-summary,evidence-graph-nodes,"
+            "evidence-graph-edges,evidence-graph-threads,evidence-graph-orphans,"
+            "evidence-graph-requires-backtest,evidence-graph-requires-data,"
+            "evidence-graph-report"
+        ),
+        "gui_tab":            "Evidence Graph",
+        "report":             "yes",
+        "maturity":           "USABLE",
+        "known_limitations":  (
+            "Nodes collected from CSV outputs only — requires source modules to have been run. "
+            "Conservative edge building to keep graph readable. "
+            "Max 20 edges per node to prevent graph explosion. "
+            "No BUY/SELL/ORDER — research evidence only. "
+            "Does NOT modify memory/coach/rule/strategy status."
+        ),
+        "next_action":        "Enhance edge detection and add Evidence Graph UX improvements in v0.9.1.",
     },
 ]
 

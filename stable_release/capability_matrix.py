@@ -775,6 +775,34 @@ class StableCapabilityMatrix:
                 no_real_orders=True,
                 production_blocked=True,
             ),
+            # v0.8.3 Research Intelligence Evidence Graph
+            StableCapability(
+                capability_id="research_intelligence_evidence_graph",
+                name="Research Intelligence Evidence Graph",
+                category="research_os",
+                version_added="v0.8.3",
+                status="USABLE",
+                maturity="USABLE",
+                cli_commands=[
+                    "evidence-graph", "evidence-graph-summary",
+                    "evidence-graph-nodes", "evidence-graph-edges",
+                    "evidence-graph-threads", "evidence-graph-orphans",
+                    "evidence-graph-requires-backtest", "evidence-graph-requires-data",
+                    "evidence-graph-report",
+                ],
+                gui_tabs=["Evidence Graph"],
+                reports=["evidence_graph"],
+                regression_coverage=True,
+                safety_status="OK",
+                known_limitations=[
+                    "Nodes collected from CSV outputs only — requires source modules to have been run",
+                    "Conservative edge building — may miss some links for readability",
+                    "Max 20 edges per node to prevent graph explosion",
+                    "Research Only — no trading actions, no real orders, no auto-enable strategy",
+                ],
+                no_real_orders=True,
+                production_blocked=True,
+            ),
         ]
         return self
 

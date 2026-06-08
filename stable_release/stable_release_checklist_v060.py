@@ -851,6 +851,53 @@ class StableReleaseChecklistV060:
                 "training_metrics_no_forbidden_actions", "safety", "FAIL", str(exc),
             )
 
+    def _check_evidence_graph_summary_can_run(self) -> dict:
+        """v0.8.3 — EvidenceGraphSummary import and build check."""
+        try:
+            from evidence_graph.evidence_graph_schema import EvidenceGraphSummary
+            s = EvidenceGraphSummary()
+            if not s.no_real_orders or not s.production_blocked:
+                return _check_item(
+                    "evidence_graph_summary_can_run", "evidence_graph", "FAIL",
+                    "EvidenceGraphSummary safety flags not enforced.",
+                )
+            return _check_item(
+                "evidence_graph_summary_can_run", "evidence_graph", "PASS",
+                "EvidenceGraphSummary import and build OK.",
+            )
+        except Exception as exc:
+            return _check_item(
+                "evidence_graph_summary_can_run", "evidence_graph", "FAIL", str(exc),
+            )
+
+    def _check_evidence_graph_no_forbidden_actions(self) -> dict:
+        """v0.8.3 — EvidenceEdge suggested_next_step guard must reject BUY/SELL/ORDER."""
+        try:
+            from evidence_graph.evidence_graph_schema import EvidenceEdge
+            caught = False
+            try:
+                EvidenceEdge(
+                    edge_id="bad", source_node_id="a", target_node_id="b",
+                    relation_type="SUPPORTS",
+                    suggested_next_step="SELL signal",
+                )
+            except ValueError:
+                caught = True
+            if not caught:
+                return _check_item(
+                    "evidence_graph_no_forbidden_actions", "safety", "FAIL",
+                    "EvidenceEdge _guard() did not reject forbidden keyword 'SELL'.",
+                    suggested_fix="Ensure _guard() is called in EvidenceEdge.__post_init__.",
+                )
+            return _check_item(
+                "evidence_graph_no_forbidden_actions", "safety", "PASS",
+                "EvidenceEdge _guard() correctly rejects BUY/SELL/ORDER.",
+            )
+        except Exception as exc:
+            return _check_item(
+                "evidence_graph_no_forbidden_actions", "safety", "FAIL", str(exc),
+            )
+
     # ----------------------------------------------------------------
     # Run
     # ----------------------------------------------------------------
@@ -903,6 +950,9 @@ class StableReleaseChecklistV060:
             # v0.8.2 Backtest Training Metrics
             self._check_training_metrics_summary_can_run,
             self._check_training_metrics_no_forbidden_actions,
+            # v0.8.3 Research Intelligence Evidence Graph
+            self._check_evidence_graph_summary_can_run,
+            self._check_evidence_graph_no_forbidden_actions,
         ]
 
         for fn in checklist_groups:

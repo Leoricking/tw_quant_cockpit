@@ -238,4 +238,66 @@ python main.py strategy-memory-repeated-patterns  # Memories seen more than once
 
 ---
 
+## v0.8.3 — Research Intelligence Evidence Graph
+
+**Released:** 2026-06-08
+
+### Overview
+
+v0.8.3 introduces Research Intelligence Evidence Graph — links all research conclusions across all
+Research OS modules into a traceable directed graph. Every research recommendation, memory, coach task,
+training metric, replay mistake, and data gap becomes a node; relationships between them become edges.
+Evidence Threads trace the chain of support or contradiction from any anchor recommendation. Safety
+guard `_guard()` rejects all trading action tokens. The graph never auto-modifies any module status,
+weights, or enabled flags. 9 CLI commands, GUI tab, 9-section Markdown report, CSV store.
+Research Only. No Real Orders. Production Trading: BLOCKED.
+
+### New Files
+
+| File | Description |
+|------|-------------|
+| `evidence_graph/__init__.py` | Package init with safety flags |
+| `evidence_graph/evidence_graph_schema.py` | EvidenceNode, EvidenceEdge, EvidenceGraphSummary + `_guard()` |
+| `evidence_graph/evidence_collector.py` | EvidenceCollector — nodes from 10 source modules |
+| `evidence_graph/evidence_graph_builder.py` | EvidenceGraphBuilder — edges, threads, contradiction detection |
+| `evidence_graph/evidence_graph_engine.py` | EvidenceGraphEngine — master orchestration |
+| `evidence_graph/evidence_graph_store.py` | EvidenceGraphStore — CSV persistence |
+| `evidence_graph/evidence_graph_query.py` | EvidenceGraphQuery — search, neighbors, orphans |
+| `reports/evidence_graph_report.py` | 9-section Markdown report |
+| `gui/evidence_graph_adapter.py` | GUI ↔ backend bridge |
+| `gui/evidence_graph_panel.py` | PySide6 Evidence Graph tab |
+| `docs/research_intelligence_evidence_graph.md` | Full documentation |
+
+### CLI Commands (9)
+
+```bash
+python main.py evidence-graph --mode real
+python main.py evidence-graph-summary
+python main.py evidence-graph-nodes
+python main.py evidence-graph-edges
+python main.py evidence-graph-threads
+python main.py evidence-graph-orphans
+python main.py evidence-graph-requires-backtest
+python main.py evidence-graph-requires-data
+python main.py evidence-graph-report --mode real
+```
+
+### Safety
+
+- `_guard()` rejects BUY/SELL/ORDER/EXECUTE/SUBMIT_ORDER/AUTO_TRADE/REAL_TRADE in all fields
+- Never auto-modifies strategy_memory status, coach task status, rule weights, or enabled flags
+- All `suggested_next_step`: REVIEW / VALIDATE / BACKTEST_MORE / PRACTICE_REPLAY / FIX_DATA / READ_REPORT / WAIT
+- Production Trading BLOCKED, No Real Orders enforced via class-level constants
+
+### Known Limitations
+
+- Edge building is heuristic-based — not semantic NLP
+- Conservative contradiction detection may miss subtle conflicts
+- Orphan nodes appear when source modules have not yet been run
+- Max 2000 total edges; max 20 edges per node
+
+---
+
+> **[!] No real orders. Research Only. Production Trading: BLOCKED. Not Investment Advice.**
+
 > **[!] No real orders. Research Only. Production Trading: BLOCKED. Not Investment Advice.**
