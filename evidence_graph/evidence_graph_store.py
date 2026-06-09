@@ -163,6 +163,87 @@ class EvidenceGraphStore:
                 threads.append(t)
         return threads
 
+    def save_gaps(self, gaps: list) -> str:
+        """Save EvidenceGraphGap list to CSV. Returns file path."""
+        try:
+            from evidence_graph.evidence_graph_schema import EvidenceGraphGap
+            if not gaps:
+                return ""
+            os.makedirs(self.output_dir, exist_ok=True)
+            ts = datetime.now().strftime("%Y%m%d_%H%M%S")
+            path = os.path.join(self.output_dir, f"evidence_graph_gaps_{ts}.csv")
+            rows = []
+            for g in gaps:
+                if hasattr(g, 'to_dict'):
+                    rows.append(g.to_dict())
+                elif isinstance(g, dict):
+                    rows.append(g)
+            if rows:
+                with open(path, "w", newline="", encoding="utf-8") as f:
+                    writer = csv.DictWriter(f, fieldnames=list(rows[0].keys()))
+                    writer.writeheader()
+                    writer.writerows(rows)
+            return path
+        except Exception:
+            return ""
+
+    def load_latest_gaps(self) -> list:
+        """Load latest gaps CSV. Returns list of EvidenceGraphGap."""
+        try:
+            from evidence_graph.evidence_graph_schema import EvidenceGraphGap
+            path = self._latest_csv("evidence_graph_gaps")
+            if not path:
+                return []
+            gaps = []
+            with open(path, "r", encoding="utf-8") as f:
+                reader = csv.DictReader(f)
+                for row in reader:
+                    try:
+                        gaps.append(EvidenceGraphGap.from_dict(row))
+                    except Exception:
+                        pass
+            return gaps
+        except Exception:
+            return []
+
+    def save_thread_paths(self, thread_paths: list) -> str:
+        """Save thread path data (optional). Returns file path."""
+        try:
+            if not thread_paths:
+                return ""
+            os.makedirs(self.output_dir, exist_ok=True)
+            ts = datetime.now().strftime("%Y%m%d_%H%M%S")
+            path = os.path.join(self.output_dir, f"evidence_thread_paths_{ts}.csv")
+            rows = []
+            for tp in thread_paths:
+                if isinstance(tp, dict):
+                    rows.append(tp)
+                elif hasattr(tp, 'to_dict'):
+                    rows.append(tp.to_dict())
+            if rows:
+                with open(path, "w", newline="", encoding="utf-8") as f:
+                    writer = csv.DictWriter(f, fieldnames=list(rows[0].keys()))
+                    writer.writeheader()
+                    writer.writerows(rows)
+            return path
+        except Exception:
+            return ""
+
+    def load_latest_thread_paths(self) -> list:
+        """Load latest thread paths CSV. Returns list of dicts."""
+        try:
+            path = self._latest_csv("evidence_thread_paths")
+            if not path:
+                return []
+            rows = []
+            with open(path, "r", encoding="utf-8") as f:
+                reader = csv.DictReader(f)
+                for row in reader:
+                    rows.append(dict(row))
+            return rows
+        except Exception:
+            return []
+
     # ------------------------------------------------------------------
     # Helpers
     # ------------------------------------------------------------------

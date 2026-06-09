@@ -1,4 +1,4 @@
-# Research Intelligence Evidence Graph — v0.8.3
+# Research Intelligence Evidence Graph — v0.9.1 Evidence Graph UX
 
 > **[!] Research Only. No Real Orders. Production Trading: BLOCKED.**
 > **[!] Not Investment Advice. Does NOT auto-trade or auto-enable strategies.**
@@ -200,3 +200,117 @@ Evidence Graph 的結論不會自動修改任何模組狀態：
 - 不修改 backtest_coach task status
 - 不修改 rule_governance weight
 - 不修改任何 enabled 旗標
+
+---
+
+## v0.9.1 Evidence Graph UX Overview
+
+v0.9.1 adds a full UX layer on top of the Evidence Graph engine:
+
+- **Evidence Thread Quality Board** — score each thread as STRONG / PARTIAL / NEEDS_DATA / NEEDS_BACKTEST / CONFLICTED / ORPHANED
+- **Crash Reversal Evidence Chain** — 6-stage visual chain view
+- **Graph Gap View** — detect and classify orphans, missing data, contradictions
+- **Evidence Path Explanations** — explain any node or thread in plain language
+- **7 new CLI commands** for interactive research use
+
+---
+
+## Evidence Thread Quality Board
+
+Each evidence thread receives a quality label based on its nodes and edges:
+
+| Quality Label   | Meaning                                                        |
+|-----------------|----------------------------------------------------------------|
+| STRONG          | Anchor node has ≥2 supporting nodes, no contradictions         |
+| PARTIAL         | Has some support but missing data or backtest                  |
+| NEEDS_DATA      | Anchor has REQUIRES_DATA edges with no resolution              |
+| NEEDS_BACKTEST  | Anchor has REQUIRES_BACKTEST edges with no backtest result     |
+| CONFLICTED      | Thread has active contradiction edges                          |
+| ORPHANED        | Anchor node has no edges at all                                |
+
+CLI: `python main.py evidence-graph-thread-quality`
+
+---
+
+## Crash Reversal Evidence Chain
+
+6-stage evidence chain for crash reversal strategies:
+
+1. **Crash Cause** — classify the crash type (macro shock / sector rotation / earnings miss / technical failure)
+2. **Stabilization** — post-crash stabilization checklist (volume contraction, range narrowing, support hold)
+3. **Relative Strength** — which stocks outperformed during the crash (relative strength score)
+4. **EPS Dip Filter** — EPS-backed dip buy filter (Sakata method, 低接 discipline)
+5. **MA Discipline** — moving average profit discipline (月線 / 季線 stops)
+6. **Risk Guard** — high-risk industry exposure guard (avoid 轉空頭 sectors)
+
+CLI: `python main.py evidence-graph-crash-reversal`
+
+---
+
+## Graph Gap View
+
+Gap types detected by the Evidence Graph UX:
+
+| Gap Type          | Description                                          |
+|-------------------|------------------------------------------------------|
+| ORPHAN_NODE       | Node has no edges — isolated research conclusion     |
+| MISSING_DATA      | REQUIRES_DATA edge with no data node attached        |
+| MISSING_BACKTEST  | REQUIRES_BACKTEST edge with no result node           |
+| CONTRADICTION     | Two nodes with mutually contradicting evidence       |
+| STALE_THREAD      | Thread anchor is >30 days old with no new evidence   |
+
+CLI: `python main.py evidence-graph-gaps`
+
+---
+
+## Evidence Path Explanations
+
+Every node and thread can be explained:
+
+- **explain-node** — show node type, source module, evidence summary, connected edges, suggested next step
+- **explain-thread** — show thread title, quality label, evidence path, all nodes, gaps, next step
+
+CLI:
+```bash
+python main.py evidence-graph-explain-node --node-id <node_id>
+python main.py evidence-graph-explain-thread --thread-id <thread_id>
+```
+
+---
+
+## New CLI Commands (v0.9.1)
+
+| Command                              | Description                                              |
+|--------------------------------------|----------------------------------------------------------|
+| `evidence-graph-ux`                  | Full Evidence Graph UX pipeline (threads + gaps)         |
+| `evidence-graph-thread-quality`      | Thread quality board (STRONG/PARTIAL/NEEDS_DATA/…)       |
+| `evidence-graph-gaps`                | Graph gap view (orphans, missing data, contradictions)   |
+| `evidence-graph-crash-reversal`      | Crash reversal evidence chain (6 stages)                 |
+| `evidence-graph-explain-node`        | Explain a specific evidence node                         |
+| `evidence-graph-explain-thread`      | Explain a specific evidence thread                       |
+| `evidence-graph-search`              | Search threads and gaps by keyword/quality/gap type      |
+
+All commands: Research Only | No Real Orders | No BUY/SELL/ORDER output.
+
+---
+
+## GUI UX Tab (v0.9.1)
+
+The Evidence Graph GUI tab provides 6 sub-views:
+
+1. **Graph Overview** — node/edge counts, thread summary, gap summary
+2. **Thread Quality Board** — sortable table with quality labels and next steps
+3. **Crash Reversal Chain** — 6-stage evidence chain visualization
+4. **Gap View** — gap type breakdown with severity and suggested fixes
+5. **Node Explorer** — search and explain individual evidence nodes
+6. **Thread Explorer** — drill into any thread with full evidence path
+
+---
+
+## Safety Declarations
+
+- `read_only = True` — Evidence Graph UX does not write to any module
+- `no_real_orders = True` — No trading commands ever produced
+- `production_blocked = True` — Production trading permanently blocked
+- No BUY / SELL / ORDER in any output
+- Suggested next steps: REVIEW / VALIDATE / BACKTEST_MORE / PRACTICE_REPLAY / FIX_DATA / READ_REPORT / WAIT only

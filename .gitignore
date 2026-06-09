@@ -312,6 +312,7 @@ data/backtest_results/training_metrics/
 reports/training_metrics_report_*.md
 
 # v0.8.3 Research Intelligence Evidence Graph — runtime outputs
+# v0.9.1 also: evidence_graph_gaps*.csv, evidence_thread_paths*.csv (covered by directory pattern)
 data/backtest_results/evidence_graph/
 reports/evidence_graph_report_*.md
 

@@ -3,7 +3,7 @@
 > **[!] Research Only. Read Only. No Real Orders. Production Trading: BLOCKED.**
 > **[!] Not investment advice. REAL_ORDER_READY=False.**
 
-Current version: **v0.9.0.1** — Crash Reversal & Risk Discipline Strategy Pack
+Current version: **v0.9.1** — Evidence Graph UX
 
 ---
 
@@ -112,4 +112,4 @@ Current version: **v0.9.0.1** — Crash Reversal & Risk Discipline Strategy Pack
 
 ---
 
-*Generated for v0.9.0.1 Crash Reversal & Risk Discipline Strategy Pack.*
+*Generated for v0.9.1 Evidence Graph UX.*

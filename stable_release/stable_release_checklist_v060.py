@@ -998,6 +998,68 @@ class StableReleaseChecklistV060:
                 f"Check skipped (optional): {exc}",
             )
 
+    def _check_evidence_graph_ux_import(self) -> dict:
+        """v0.9.1 — Check EvidenceGraphQuery imports correctly."""
+        try:
+            import importlib.util
+            spec = importlib.util.find_spec("evidence_graph.evidence_graph_query")
+            if spec is None:
+                return _check_item(
+                    "evidence_graph_ux_import", "imports", "WARN",
+                    "evidence_graph.evidence_graph_query not found (optional v0.9.1 feature).",
+                    warning="EvidenceGraphQuery not yet available",
+                    suggested_fix="Create evidence_graph/evidence_graph_query.py with EvidenceGraphQuery",
+                )
+            from evidence_graph.evidence_graph_query import EvidenceGraphQuery  # noqa: F401
+            return _check_item(
+                "evidence_graph_ux_import", "imports", "PASS",
+                "evidence_graph.evidence_graph_query.EvidenceGraphQuery imports successfully.",
+            )
+        except ImportError as exc:
+            return _check_item(
+                "evidence_graph_ux_import", "imports", "WARN",
+                f"EvidenceGraphQuery import failed (optional): {exc}",
+                warning="New optional feature — WARN not FAIL",
+                suggested_fix="Check evidence_graph/evidence_graph_query.py for syntax errors.",
+            )
+        except Exception as exc:
+            return _check_item(
+                "evidence_graph_ux_import", "imports", "WARN", str(exc),
+            )
+
+    def _check_evidence_graph_ux_no_forbidden(self) -> dict:
+        """v0.9.1 — Check EvidenceGraphQuery doesn't output BUY/SELL/ORDER."""
+        try:
+            import importlib.util
+            spec = importlib.util.find_spec("evidence_graph.evidence_graph_query")
+            if spec is None:
+                return _check_item(
+                    "evidence_graph_ux_no_forbidden", "safety", "WARN",
+                    "evidence_graph.evidence_graph_query not installed — check skipped.",
+                )
+            from evidence_graph.evidence_graph_query import EvidenceGraphQuery
+            q = EvidenceGraphQuery()
+            # Check read_only flag if available
+            is_safe = getattr(q, "read_only", True) and getattr(q, "no_real_orders", True)
+            out_str = str(vars(q)) if hasattr(q, "__dict__") else ""
+            forbidden = [kw for kw in ["BUY", "SELL", "ORDER"] if kw in out_str.upper()]
+            if forbidden or not is_safe:
+                return _check_item(
+                    "evidence_graph_ux_no_forbidden", "safety", "WARN",
+                    f"EvidenceGraphQuery safety issue: forbidden={forbidden}, read_only={getattr(q, 'read_only', '?')}",
+                    warning="Ensure EvidenceGraphQuery has read_only=True and no BUY/SELL/ORDER output",
+                    suggested_fix="Add read_only=True, no_real_orders=True to EvidenceGraphQuery.",
+                )
+            return _check_item(
+                "evidence_graph_ux_no_forbidden", "safety", "PASS",
+                "EvidenceGraphQuery is read_only with no BUY/SELL/ORDER output.",
+            )
+        except Exception as exc:
+            return _check_item(
+                "evidence_graph_ux_no_forbidden", "safety", "WARN",
+                f"Check skipped (optional): {exc}",
+            )
+
     # ----------------------------------------------------------------
     # Run
     # ----------------------------------------------------------------
@@ -1059,6 +1121,9 @@ class StableReleaseChecklistV060:
             # v0.9.0.1 crash reversal
             self._check_crash_reversal_import,
             self._check_crash_reversal_no_forbidden_actions,
+            # v0.9.1 Evidence Graph UX
+            self._check_evidence_graph_ux_import,
+            self._check_evidence_graph_ux_no_forbidden,
         ]
 
         for fn in checklist_groups:

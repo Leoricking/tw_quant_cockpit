@@ -66,6 +66,23 @@
 | v0.8.3 | Research Intelligence Evidence Graph | Done |
 | v0.9.0 | Strategy Lab Stable | Done |
 | v0.9.0.1 | Crash Reversal & Risk Discipline Strategy Pack | Done |
+| v0.9.1 | Evidence Graph UX | Done |
+
+---
+
+### v0.9.1 — Evidence Graph UX ✅
+- Evidence Thread Quality Board (STRONG/PARTIAL/NEEDS_DATA/NEEDS_BACKTEST/CONFLICTED/ORPHANED)
+- Graph Gap View (orphans, missing data, contradictions)
+- Crash Reversal Evidence Chain (6-stage: Crash Cause → Stabilization → Relative Strength → EPS Dip Filter → MA Discipline → Risk Guard)
+- Evidence Path Explanations (explain-node, explain-thread)
+- 7 new CLI commands: evidence-graph-ux, evidence-graph-thread-quality, evidence-graph-gaps, evidence-graph-crash-reversal, evidence-graph-explain-node, evidence-graph-explain-thread, evidence-graph-search
+- Registry/checklist/docs updates: capability_matrix, checklist, suite_registry, stable_release_checklist, intelligence_stable_checklist, tab_registry
+- Research Only — No Real Orders
+
+**Next Steps:**
+- v0.9.2: Strategy Validation Score — cross-module confidence scoring
+- v0.9.3: Strategy Lab Dashboard Polish — unified layer status board
+- v1.0.0: Research Trading Cockpit Stable
 
 ---
 
@@ -100,8 +117,8 @@ release manifest (JSON + Markdown), 13-section Markdown report, 6 CLI commands, 
 - `reports/strategy_lab_stable_report.py`
 - `gui/strategy_lab_panel.py`, `gui/strategy_lab_adapter.py`
 
-**Next Steps:**
-- v0.9.1: Evidence Graph UX — node detail drill, thread visualization
+**Next Steps (updated):**
+- v0.9.1: Evidence Graph UX — DONE
 - v0.9.2: Strategy Validation Score — cross-module confidence scoring
 - v0.9.3: Strategy Lab Dashboard Polish — unified layer status board
 - v1.0.0: Research Trading Cockpit Stable
@@ -255,7 +272,7 @@ Research Only. No Real Orders. Production Trading: BLOCKED.
 
 | Version | Feature | Priority |
 |---------|---------|---------|
-| v0.9.1 | Evidence Graph UX — node detail drill, thread visualization | P2 |
+| v0.9.1 | Evidence Graph UX — thread quality board, gap view, crash reversal chain | Done |
 | v0.9.2 | Strategy Validation Score — cross-module confidence scoring | P2 |
 | v0.9.3 | Strategy Lab Dashboard Polish — unified layer status board | P2 |
 | v1.0.0 | Research Trading Cockpit Stable — still No Real Orders unless explicitly enabled | P1 |

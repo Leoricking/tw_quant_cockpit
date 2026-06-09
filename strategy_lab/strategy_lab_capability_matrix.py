@@ -62,6 +62,7 @@ class StrategyLabCapabilityMatrix:
             + self._evidence_graph_caps()
             + self._supporting_caps()
             + self._crash_reversal_caps()  # v0.9.0.1 crash reversal
+            + self._evidence_graph_ux_caps()  # v0.9.1 Evidence Graph UX
         )
         return self._capabilities
 
@@ -360,6 +361,40 @@ class StrategyLabCapabilityMatrix:
                  "v0.9.0.1", STABLE_STATUS_USABLE, "v0.9.0.1",
                  cr_cli, cr_gui, cr_rep, cr_reg, [], cr_saf,
                  cr_lim),
+        ]
+
+    # ------------------------------------------------------------------
+    # Evidence Graph UX (3 capabilities) — v0.9.1
+    # ------------------------------------------------------------------
+
+    def _evidence_graph_ux_caps(self) -> List[StrategyLabCapability]:
+        src = "evidence_graph"
+        eg_ux_cli = [
+            "evidence-graph-ux", "evidence-graph-thread-quality",
+            "evidence-graph-gaps", "evidence-graph-crash-reversal",
+            "evidence-graph-explain-node", "evidence-graph-explain-thread",
+            "evidence-graph-search",
+        ]
+        eg_ux_saf = ["no_real_orders=True", "production_blocked=True",
+                     "No BUY/SELL/ORDER output", "read_only=True"]
+        return [
+            _cap("eg_ux", "Evidence Graph UX", CAT_EVIDENCE_GRAPH, src,
+                 "v0.9.1", STABLE_STATUS_USABLE, "v0.9.1",
+                 eg_ux_cli, ["Evidence Graph"], ["evidence_graph_report"],
+                 ["release_gate", "quick"], ["evidence_graph"], eg_ux_saf,
+                 ["Evidence thread quality scoring, graph gap analysis, crash reversal evidence chains, node/thread explanations"]),
+            _cap("eg_crash_chain", "Crash Reversal Evidence Chain", CAT_EVIDENCE_GRAPH, src,
+                 "v0.9.1", STABLE_STATUS_USABLE, "v0.9.1",
+                 ["evidence-graph-crash-reversal"], ["Evidence Graph"],
+                 ["evidence_graph_report"], ["release_gate"], ["evidence_graph", "crash_reversal"],
+                 eg_ux_saf,
+                 ["Evidence chain view: Crash Cause → Stabilization → Relative Strength → EPS Dip Filter → MA Discipline → Risk Guard"]),
+            _cap("eg_thread_quality", "Thread Quality Board & Graph Gap View", CAT_EVIDENCE_GRAPH, src,
+                 "v0.9.1", STABLE_STATUS_USABLE, "v0.9.1",
+                 ["evidence-graph-thread-quality", "evidence-graph-gaps"],
+                 ["Evidence Graph"], ["evidence_graph_report"], ["release_gate", "quick"],
+                 ["evidence_graph"], eg_ux_saf,
+                 ["Thread quality scoring (STRONG/PARTIAL/NEEDS_DATA/NEEDS_BACKTEST/CONFLICTED/ORPHANED), gap detection (orphans, missing data, contradictions)"]),
         ]
 
     def _supporting_caps(self) -> List[StrategyLabCapability]:

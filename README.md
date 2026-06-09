@@ -4,7 +4,15 @@
 >
 > **[!] v1: Real order execution is strictly prohibited. For research, simulation, and decision support only. Not investment advice.**
 
-**Current version: v0.9.0 — Strategy Lab Stable**
+**Current version: v0.9.1 — Evidence Graph UX**
+
+---
+
+## v0.9.1 — Evidence Graph UX
+
+Evidence Thread Quality Board, Graph Gap View, Crash Reversal Evidence Chain, Evidence Path Explanations, and 7 new CLI commands.
+
+Research Only | No Real Orders | Not Investment Advice
 
 ---
 

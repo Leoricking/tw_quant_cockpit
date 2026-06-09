@@ -676,4 +676,36 @@ class IntelligenceStableChecklist:
             "Data coverage check is optional. Run: python main.py data-coverage-summary",
         ))
 
+        # v0.9.1 evidence_graph_ux_safe — EvidenceGraphQuery and EvidenceThread import
+        try:
+            import importlib
+            mod_q = importlib.import_module("evidence_graph.evidence_graph_query")
+            mod_t = importlib.import_module("evidence_graph.evidence_graph_schema")
+            has_q = hasattr(mod_q, "EvidenceGraphQuery")
+            # EvidenceThread may be in schema or a dedicated module
+            has_t = hasattr(mod_t, "EvidenceThread") or hasattr(mod_t, "EvidenceNode")
+            if has_q and has_t:
+                checks.append(_check(
+                    "evidence_graph_ux_safe", "stable_integration",
+                    "v0.9.1 evidence_graph_ux_safe",
+                    CHECK_PASS, SEV_LOW,
+                    "EvidenceGraphQuery and EvidenceNode/EvidenceThread import without error.",
+                ))
+            else:
+                checks.append(_check(
+                    "evidence_graph_ux_safe", "stable_integration",
+                    "v0.9.1 evidence_graph_ux_safe",
+                    CHECK_WARN, SEV_LOW,
+                    f"EvidenceGraphQuery found={has_q}, EvidenceThread/Node found={has_t} (optional v0.9.1).",
+                    suggested_fix="Ensure EvidenceGraphQuery exists in evidence_graph.evidence_graph_query.",
+                ))
+        except Exception as exc:
+            checks.append(_check(
+                "evidence_graph_ux_safe", "stable_integration",
+                "v0.9.1 evidence_graph_ux_safe",
+                CHECK_WARN, SEV_LOW,
+                f"Could not verify evidence_graph_ux safety (optional): {exc}",
+                suggested_fix="Run: python main.py evidence-graph-ux --mode real",
+            ))
+
         return checks

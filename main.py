@@ -8514,6 +8514,187 @@ def cmd_evidence_graph_report(args: argparse.Namespace) -> None:
 
 
 # ---------------------------------------------------------------------------
+# v0.9.1 Evidence Graph UX CLI commands
+# ---------------------------------------------------------------------------
+
+def cmd_evidence_graph_ux(args):
+    """Run Evidence Graph UX — full pipeline with thread quality and gaps."""
+    mode = getattr(args, 'mode', 'real')
+    try:
+        from evidence_graph.evidence_graph_engine import EvidenceGraphEngine
+        engine = EvidenceGraphEngine()
+        result = engine.run(mode=mode)
+        summary = result.get('summary')
+        threads = result.get('threads', [])
+        gaps = result.get('gaps', [])
+        print("=" * 60)
+        print("TW Quant Cockpit — Evidence Graph UX")
+        print("=" * 60)
+        print(f"Mode:                      {mode}")
+        print(f"Research Only:             True")
+        print(f"No Real Orders:            True")
+        print(f"Production Trading BLOCKED: True")
+        if summary:
+            sd = summary.to_dict() if hasattr(summary, 'to_dict') else (summary if isinstance(summary, dict) else {})
+            print(f"Threads:                   {sd.get('total_threads', len(threads))}")
+            print(f"Strong:                    {sd.get('strong_threads', 0)}")
+            print(f"Needs Data:                {sd.get('needs_data_threads', 0)}")
+            print(f"Needs Backtest:            {sd.get('needs_backtest_threads', 0)}")
+            print(f"Crash Reversal Threads:    {sd.get('crash_reversal_threads', 0)}")
+            print(f"Gaps:                      {sd.get('graph_gap_count', len(gaps))}")
+            print(f"Orphans:                   {sd.get('orphan_node_count', 0)}")
+            print(f"Contradictions:            {sd.get('contradiction_count', 0)}")
+        else:
+            print(f"Threads:                   {len(threads)}")
+            print(f"Gaps:                      {len(gaps)}")
+        print(f"Report:                    run evidence-graph-report --mode {mode}")
+        print("=" * 60)
+        print("RESEARCH ONLY — Not Investment Advice — No Real Orders")
+    except Exception as e:
+        print(f"[WARN] evidence-graph-ux: {e}")
+
+
+def cmd_evidence_graph_thread_quality(args):
+    """Show evidence thread quality board."""
+    try:
+        from evidence_graph.evidence_graph_store import EvidenceGraphStore
+        store = EvidenceGraphStore()
+        threads = store.load_latest_threads()
+        print(f"Evidence Thread Quality Board  ({len(threads)} threads)")
+        print("Research Only | No Real Orders")
+        print(f"{'Quality':<22} {'Thread':<35} {'Nodes':>5} {'Edges':>5} {'Next Step':<20}")
+        print("-" * 90)
+        for t in threads[:20]:
+            td = t.to_dict() if hasattr(t, 'to_dict') else (t if isinstance(t, dict) else {})
+            quality = str(td.get('quality_label', 'UNKNOWN'))
+            title = str(td.get('title', td.get('anchor_title', '?')))[:33]
+            nc = td.get('node_count', 0)
+            ec = td.get('edge_count', 0)
+            ns = str(td.get('suggested_next_step', 'REVIEW'))[:18]
+            print(f"  {quality:<20} {title:<35} {nc:>5} {ec:>5} {ns:<20}")
+        if not threads:
+            print("  No threads found — run: python main.py evidence-graph-ux --mode real")
+    except Exception as e:
+        print(f"[WARN] evidence-graph-thread-quality: {e}")
+
+
+def cmd_evidence_graph_gaps(args):
+    """Show graph gaps (orphans, missing data, contradictions)."""
+    try:
+        from evidence_graph.evidence_graph_store import EvidenceGraphStore
+        store = EvidenceGraphStore()
+        gaps = store.load_latest_gaps()
+        print(f"Evidence Graph Gaps  ({len(gaps)} gaps)")
+        print("Research Only | No Real Orders")
+        print(f"{'Gap Type':<25} {'Title':<35} {'Severity':<10} {'Next Step':<20}")
+        print("-" * 92)
+        for g in gaps[:30]:
+            gd = g.to_dict() if hasattr(g, 'to_dict') else (g if isinstance(g, dict) else {})
+            gt = str(gd.get('gap_type', '?'))[:23]
+            title = str(gd.get('title', '?'))[:33]
+            sev = str(gd.get('severity', 'MEDIUM'))[:8]
+            ns = str(gd.get('suggested_next_step', 'REVIEW'))[:18]
+            print(f"  {gt:<23} {title:<35} {sev:<10} {ns:<20}")
+        if not gaps:
+            print("  No gaps found — run: python main.py evidence-graph-ux --mode real")
+    except Exception as e:
+        print(f"[WARN] evidence-graph-gaps: {e}")
+
+
+def cmd_evidence_graph_crash_reversal(args):
+    """Show crash reversal evidence chain."""
+    try:
+        from evidence_graph.evidence_graph_query import EvidenceGraphQuery
+        q = EvidenceGraphQuery()
+        threads = q.get_crash_reversal_threads()
+        nodes = q.search_nodes(source_module='crash_reversal') or []
+        print(f"Crash Reversal Evidence Chain  ({len(threads)} threads, {len(nodes)} nodes)")
+        print("Research Only | No Real Orders | Production Trading BLOCKED")
+        if threads:
+            for t in threads[:5]:
+                td = t.to_dict() if hasattr(t, 'to_dict') else (t if isinstance(t, dict) else {})
+                print(f"  Thread: {td.get('title', td.get('anchor_title', '?'))}")
+                print(f"    Quality: {td.get('quality_label', 'UNKNOWN')} | Next: {td.get('suggested_next_step', 'REVIEW')}")
+                path = td.get('evidence_path', [])
+                if isinstance(path, str):
+                    path = [p for p in path.split('|') if p]
+                if path:
+                    print(f"    Path: {' → '.join(str(p) for p in path[:5])}")
+        else:
+            print("  No crash reversal threads yet — run: python main.py evidence-graph-ux --mode real")
+        if nodes:
+            print(f"\n  Crash Reversal Nodes:")
+            for n in nodes[:6]:
+                print(f"    [{n.node_type}] {n.title[:60]}")
+        print("  No BUY / SELL / ORDER outputs.")
+    except Exception as e:
+        print(f"[WARN] evidence-graph-crash-reversal: {e}")
+
+
+def cmd_evidence_graph_explain_node(args):
+    """Explain a specific evidence node."""
+    node_id = getattr(args, 'node_id', None) or ''
+    try:
+        from evidence_graph.evidence_graph_query import EvidenceGraphQuery
+        q = EvidenceGraphQuery()
+        info = q.explain_node(node_id)
+        print(f"Evidence Node Explanation — {node_id}")
+        print("Research Only | No Real Orders")
+        for k, v in info.items():
+            if k not in ('no_real_orders', 'production_blocked'):
+                print(f"  {k}: {v}")
+    except Exception as e:
+        print(f"[WARN] evidence-graph-explain-node: {e}")
+
+
+def cmd_evidence_graph_explain_thread(args):
+    """Explain a specific evidence thread."""
+    thread_id = getattr(args, 'thread_id', None) or ''
+    try:
+        from evidence_graph.evidence_graph_query import EvidenceGraphQuery
+        q = EvidenceGraphQuery()
+        info = q.explain_thread(thread_id)
+        print(f"Evidence Thread Explanation — {thread_id}")
+        print("Research Only | No Real Orders")
+        for k, v in info.items():
+            if k not in ('no_real_orders', 'production_blocked'):
+                print(f"  {k}: {v}")
+    except Exception as e:
+        print(f"[WARN] evidence-graph-explain-thread: {e}")
+
+
+def cmd_evidence_graph_search(args):
+    """Search evidence graph threads and gaps."""
+    keyword = getattr(args, 'keyword', None)
+    quality_label = getattr(args, 'quality_label', None)
+    gap_type = getattr(args, 'gap_type', None)
+    source_module = getattr(args, 'source_module', None)
+    symbol = getattr(args, 'symbol', None)
+    try:
+        from evidence_graph.evidence_graph_query import EvidenceGraphQuery
+        q = EvidenceGraphQuery()
+        print(f"Evidence Graph Search | keyword={keyword} quality={quality_label} gap={gap_type}")
+        print("Research Only | No Real Orders")
+        # Search threads
+        if keyword or quality_label or source_module or symbol:
+            threads = q.search_threads(keyword=keyword, quality_label=quality_label, source_module=source_module, symbol=symbol)
+            print(f"\n  Matching Threads ({len(threads)}):")
+            for t in threads[:10]:
+                td = t.to_dict() if hasattr(t, 'to_dict') else (t if isinstance(t, dict) else {})
+                print(f"    [{td.get('quality_label','?')}] {str(td.get('title', td.get('anchor_title','?')))[:60]}")
+        # Search gaps
+        if gap_type or (keyword and not quality_label):
+            gaps = q.search_gaps(gap_type=gap_type, keyword=keyword, source_module=source_module)
+            print(f"\n  Matching Gaps ({len(gaps)}):")
+            for g in gaps[:10]:
+                gd = g.to_dict() if hasattr(g, 'to_dict') else (g if isinstance(g, dict) else {})
+                print(f"    [{gd.get('gap_type','?')}] {str(gd.get('title','?'))[:60]} | {gd.get('suggested_next_step','REVIEW')}")
+        print("  No BUY / SELL / ORDER outputs.")
+    except Exception as e:
+        print(f"[WARN] evidence-graph-search: {e}")
+
+
+# ---------------------------------------------------------------------------
 # v0.9.0 Strategy Lab Stable CLI commands
 # ---------------------------------------------------------------------------
 
@@ -13351,6 +13532,39 @@ def _build_parser() -> argparse.ArgumentParser:
     p_egr.add_argument("--output-dir", dest="output_dir",
                        default="data/backtest_results/evidence_graph")
 
+    # v0.9.1 Evidence Graph UX
+    p_eg_ux = subparsers.add_parser("evidence-graph-ux", help="[v0.9.1] Evidence Graph UX — full pipeline with thread quality and gaps")
+    p_eg_ux.add_argument("--mode", default="real", choices=["real","mock"])
+    p_eg_ux.add_argument("--output-dir", dest="output_dir", default="data/backtest_results/evidence_graph")
+    p_eg_ux.add_argument("--report-dir", dest="report_dir", default="reports")
+
+    p_eg_tq = subparsers.add_parser("evidence-graph-thread-quality", help="[v0.9.1] Evidence thread quality board")
+    p_eg_tq.add_argument("--output-dir", dest="output_dir", default="data/backtest_results/evidence_graph")
+
+    p_eg_gaps = subparsers.add_parser("evidence-graph-gaps", help="[v0.9.1] Graph gaps — orphans, missing data, contradictions")
+    p_eg_gaps.add_argument("--output-dir", dest="output_dir", default="data/backtest_results/evidence_graph")
+
+    p_eg_cr = subparsers.add_parser("evidence-graph-crash-reversal", help="[v0.9.1] Crash reversal evidence chain")
+    p_eg_cr.add_argument("--mode", default="real", choices=["real","mock"])
+
+    p_eg_en = subparsers.add_parser("evidence-graph-explain-node", help="[v0.9.1] Explain a specific evidence node")
+    p_eg_en.add_argument("--node-id", dest="node_id", default="")
+    p_eg_en.add_argument("--output-dir", dest="output_dir", default="data/backtest_results/evidence_graph")
+
+    p_eg_et = subparsers.add_parser("evidence-graph-explain-thread", help="[v0.9.1] Explain a specific evidence thread")
+    p_eg_et.add_argument("--thread-id", dest="thread_id", default="")
+    p_eg_et.add_argument("--output-dir", dest="output_dir", default="data/backtest_results/evidence_graph")
+
+    p_eg_s = subparsers.add_parser("evidence-graph-search", help="[v0.9.1] Search evidence graph threads and gaps")
+    p_eg_s.add_argument("--keyword", default=None)
+    p_eg_s.add_argument("--quality-label", dest="quality_label", default=None)
+    p_eg_s.add_argument("--gap-type", dest="gap_type", default=None)
+    p_eg_s.add_argument("--source-module", dest="source_module", default=None)
+    p_eg_s.add_argument("--symbol", default=None)
+    p_eg_s.add_argument("--crash-reversal-only", dest="crash_reversal_only", action="store_true", default=False)
+    p_eg_s.add_argument("--output-dir", dest="output_dir", default="data/backtest_results/evidence_graph")
+    p_eg_s.add_argument("--report-dir", dest="report_dir", default="reports")
+
     # --- strategy-lab (v0.9.0) ---
     p_sl = subparsers.add_parser(
         "strategy-lab",
@@ -14667,6 +14881,14 @@ def main() -> None:
         "evidence-graph-requires-backtest": cmd_evidence_graph_requires_backtest,
         "evidence-graph-requires-data":     cmd_evidence_graph_requires_data,
         "evidence-graph-report":            cmd_evidence_graph_report,
+        # v0.9.1 Evidence Graph UX
+        "evidence-graph-ux":                cmd_evidence_graph_ux,
+        "evidence-graph-thread-quality":    cmd_evidence_graph_thread_quality,
+        "evidence-graph-gaps":              cmd_evidence_graph_gaps,
+        "evidence-graph-crash-reversal":    cmd_evidence_graph_crash_reversal,
+        "evidence-graph-explain-node":      cmd_evidence_graph_explain_node,
+        "evidence-graph-explain-thread":    cmd_evidence_graph_explain_thread,
+        "evidence-graph-search":            cmd_evidence_graph_search,
         # v0.9.0 Strategy Lab Stable
         "strategy-lab":                     cmd_strategy_lab,
         "strategy-lab-summary":             cmd_strategy_lab_summary,

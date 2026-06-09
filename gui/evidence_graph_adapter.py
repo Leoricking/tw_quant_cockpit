@@ -1,5 +1,5 @@
 """
-gui/evidence_graph_adapter.py — Evidence Graph GUI Adapter v0.8.3
+gui/evidence_graph_adapter.py — Evidence Graph GUI Adapter v0.9.1
 
 Bridge between the GUI panel and the evidence_graph package.
 
@@ -136,3 +136,98 @@ class EvidenceGraphAdapter:
             return files[-1] if files else None
         except Exception:
             return None
+
+    # ------------------------------------------------------------------
+    # v0.9.1 new methods
+    # ------------------------------------------------------------------
+
+    def load_gaps(self) -> list:
+        """Load graph gaps. Returns list of gap dicts/objects."""
+        try:
+            from evidence_graph.evidence_graph_store import EvidenceGraphStore
+            store = EvidenceGraphStore()
+            return store.load_latest_gaps()
+        except Exception:
+            return []
+
+    def load_thread_paths(self) -> list:
+        """Load thread paths. Returns list of dicts."""
+        try:
+            from evidence_graph.evidence_graph_store import EvidenceGraphStore
+            store = EvidenceGraphStore()
+            return store.load_latest_thread_paths()
+        except Exception:
+            return []
+
+    def search_threads(self, keyword=None, quality_label=None, source_module=None, symbol=None, strategy=None) -> list:
+        """Search threads. Delegates to EvidenceGraphQuery."""
+        try:
+            from evidence_graph.evidence_graph_query import EvidenceGraphQuery
+            q = EvidenceGraphQuery()
+            return q.search_threads(keyword=keyword, quality_label=quality_label, source_module=source_module, symbol=symbol, strategy=strategy)
+        except Exception:
+            return []
+
+    def search_gaps(self, gap_type=None, severity=None, source_module=None, keyword=None) -> list:
+        """Search graph gaps."""
+        try:
+            from evidence_graph.evidence_graph_query import EvidenceGraphQuery
+            q = EvidenceGraphQuery()
+            return q.search_gaps(gap_type=gap_type, severity=severity, source_module=source_module, keyword=keyword)
+        except Exception:
+            return []
+
+    def get_crash_reversal_threads(self) -> list:
+        """Get crash reversal related threads."""
+        try:
+            from evidence_graph.evidence_graph_query import EvidenceGraphQuery
+            q = EvidenceGraphQuery()
+            return q.get_crash_reversal_threads()
+        except Exception:
+            return []
+
+    def explain_node(self, node_id: str) -> dict:
+        """Explain a node."""
+        try:
+            from evidence_graph.evidence_graph_query import EvidenceGraphQuery
+            q = EvidenceGraphQuery()
+            return q.explain_node(node_id)
+        except Exception as e:
+            return {"error": str(e), "node_id": node_id}
+
+    def explain_thread(self, thread_id: str) -> dict:
+        """Explain a thread."""
+        try:
+            from evidence_graph.evidence_graph_query import EvidenceGraphQuery
+            q = EvidenceGraphQuery()
+            return q.explain_thread(thread_id)
+        except Exception as e:
+            return {"error": str(e), "thread_id": thread_id}
+
+    def copy_safe_next_step(self, node_or_thread_id: str) -> str:
+        """Get safe next step for a node or thread (never BUY/SELL/ORDER)."""
+        _FORBIDDEN = frozenset(["BUY", "SELL", "ORDER", "EXECUTE", "SUBMIT_ORDER", "AUTO_TRADE", "REAL_TRADE"])
+        _SAFE = frozenset(["REVIEW", "TRACE_EVIDENCE", "VALIDATE", "BACKTEST_MORE", "PRACTICE_REPLAY",
+                           "REVIEW_JOURNAL", "FIX_DATA", "READ_REPORT", "WAIT", "REVIEW_RISK",
+                           "REVIEW_EARNINGS", "REVIEW_CHIPS", "BUILD_WATCHLIST", "DO_NOT_CHASE"])
+        try:
+            # Try as thread first
+            from evidence_graph.evidence_graph_query import EvidenceGraphQuery
+            q = EvidenceGraphQuery()
+            t = q.get_thread(node_or_thread_id)
+            if t:
+                td = t.to_dict() if hasattr(t, 'to_dict') else (t if isinstance(t, dict) else {})
+                step = str(td.get('suggested_next_step', 'REVIEW'))
+                if step in _FORBIDDEN:
+                    return "REVIEW"
+                return step
+            # Try as node
+            n = q.get_node(node_or_thread_id)
+            if n:
+                step = str(getattr(n, 'safe_next_step', '') or 'REVIEW')
+                if step in _FORBIDDEN:
+                    return "REVIEW"
+                return step
+        except Exception:
+            pass
+        return "REVIEW"

@@ -12,6 +12,8 @@ from evidence_graph.evidence_graph_schema import (
     EvidenceNode,
     EvidenceEdge,
     EvidenceGraphSummary,
+    EvidenceThread,
+    EvidenceGraphGap,
 )
 from evidence_graph.evidence_collector import EvidenceCollector
 from evidence_graph.evidence_graph_builder import EvidenceGraphBuilder
@@ -23,6 +25,8 @@ __all__ = [
     "EvidenceNode",
     "EvidenceEdge",
     "EvidenceGraphSummary",
+    "EvidenceThread",
+    "EvidenceGraphGap",
     "EvidenceCollector",
     "EvidenceGraphBuilder",
     "EvidenceGraphEngine",

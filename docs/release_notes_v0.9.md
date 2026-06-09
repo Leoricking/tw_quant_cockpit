@@ -143,4 +143,68 @@ This version is Research Only / No Real Orders / Not Investment Advice.
 
 ---
 
-> *TW Quant Cockpit v0.9.0 — Strategy Lab Stable — Research Only — Not Investment Advice*
+## v0.9.1 — Evidence Graph UX
+
+**Release date:** 2026-06-09
+**Base:** v0.9.0.1 Crash Reversal & Risk Discipline Strategy Pack
+
+### Overview
+
+v0.9.1 adds a full UX layer on top of the v0.8.3 Evidence Graph engine, providing interactive tools for exploring evidence thread quality, graph gaps, crash reversal evidence chains, and node/thread explanations. All features are Research Only — No Real Orders.
+
+### New Features
+
+#### EvidenceThread Quality Scoring
+- New quality labels: STRONG / PARTIAL / NEEDS_DATA / NEEDS_BACKTEST / CONFLICTED / ORPHANED
+- `EvidenceThread.quality_label` and `suggested_next_step` fields
+- Thread Quality Board: sortable view of all threads by quality
+
+#### EvidenceGraphGap Detection
+- Gap types: ORPHAN_NODE / MISSING_DATA / MISSING_BACKTEST / CONTRADICTION / STALE_THREAD
+- `EvidenceGraphGap` schema with `severity`, `suggested_next_step`, `source_module`
+- Gaps stored to `data/backtest_results/evidence_graph/evidence_graph_gaps*.csv`
+
+#### EvidenceGraphQuery New Methods
+- `search_threads(keyword, quality_label, source_module, symbol)` — filter evidence threads
+- `search_gaps(gap_type, keyword, source_module)` — filter graph gaps
+- `get_crash_reversal_threads()` — retrieve crash reversal evidence threads
+- `explain_node(node_id)` — explain a specific evidence node
+- `explain_thread(thread_id)` — explain a specific evidence thread
+
+#### GUI 6 Sub-Tabs (Evidence Graph tab update)
+1. Graph Overview — node/edge/thread/gap counts
+2. Thread Quality Board — quality labels and next steps
+3. Crash Reversal Chain — 6-stage evidence chain view
+4. Gap View — gap type breakdown with severity
+5. Node Explorer — search and explain individual nodes
+6. Thread Explorer — drill into any thread
+
+#### 7 New CLI Commands
+- `evidence-graph-ux` — full pipeline with thread quality and gaps
+- `evidence-graph-thread-quality` — thread quality board
+- `evidence-graph-gaps` — graph gap view
+- `evidence-graph-crash-reversal` — crash reversal evidence chain
+- `evidence-graph-explain-node` — explain a specific node
+- `evidence-graph-explain-thread` — explain a specific thread
+- `evidence-graph-search` — search threads and gaps
+
+### Registry / Checklist / Docs Updates
+- `strategy_lab/strategy_lab_capability_matrix.py` — 3 new Evidence Graph UX capabilities
+- `strategy_lab/strategy_lab_checklist.py` — 3 new import health checks
+- `report_pack/report_collector.py` — 2 new report patterns
+- `regression/suite_registry.py` — quick/full/release_gate suite entries
+- `stable_release/stable_release_checklist_v060.py` — 2 new checks
+- `intelligence_stable/intelligence_stable_checklist.py` — stable integration check
+- `gui/navigation/tab_registry.py` — extended evidence_graph keywords
+- `docs/research_intelligence_evidence_graph.md` — updated to v0.9.1
+
+### Safety
+- No Real Orders
+- Production Trading BLOCKED
+- No BUY/SELL/ORDER outputs
+- Not Investment Advice
+- `read_only=True`, `no_real_orders=True`, `production_blocked=True` on all new classes
+
+---
+
+> *TW Quant Cockpit v0.9.1 — Evidence Graph UX — Research Only — Not Investment Advice*

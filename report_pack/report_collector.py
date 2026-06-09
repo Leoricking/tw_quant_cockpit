@@ -200,6 +200,13 @@ _REPORT_PATTERNS = {
         "reports/crash_reversal_strategy_report*.md",
         "data/backtest_results/crash_reversal/*.csv",
     ],
+    # v0.9.1 Evidence Graph UX patterns
+    "evidence_graph_gaps": [
+        "data/backtest_results/evidence_graph/evidence_graph_gaps*.csv",
+    ],
+    "evidence_thread_paths": [
+        "data/backtest_results/evidence_graph/evidence_thread_paths*.csv",
+    ],
 }
 
 

@@ -987,6 +987,10 @@ class GUITabRegistry:
                     "orphan", "contradiction", "supports", "validates",
                     "\u7814\u7a76\u8b49\u64da", "\u8b49\u64da\u5716\u8b5c",
                     "\u8b49\u64da\u93c8", "\u95dc\u806f\u5716", "\u56de\u6e2c\u8b49\u64da",
+                    # v0.9.1 Evidence Graph UX keywords
+                    "evidence graph ux", "thread quality", "evidence path", "graph gaps",
+                    "crash reversal evidence", "\u8b49\u64da\u5716\u8b5cUX", "\u8b49\u64da\u93c8",
+                    "\u8b49\u64da\u8def\u5f91", "\u5927\u8dcc\u8b49\u64da\u93c8", "\u95dc\u806f\u8def\u5f91",
                 ],
                 aliases=["evidence-graph", "evidence-graph-summary", "evidence-graph-nodes"],
                 related_cli_commands=[

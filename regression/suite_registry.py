@@ -252,6 +252,27 @@ class RegressionSuiteRegistry:
                 required=False,
                 description="v0.9.0.1 Crash Reversal summary smoke test",
             ),
+            # v0.9.1 Evidence Graph UX
+            RegressionTestCase(
+                test_id="quick_evidence_graph_ux",
+                name="evidence-graph-ux --mode real",
+                suite=SUITE_QUICK,
+                category="smoke",
+                command=["main.py", "evidence-graph-ux", "--mode", "real"],
+                timeout_seconds=60,
+                required=False,
+                description="v0.9.1 Evidence Graph UX full pipeline smoke test",
+            ),
+            RegressionTestCase(
+                test_id="quick_evidence_graph_thread_quality",
+                name="evidence-graph-thread-quality",
+                suite=SUITE_QUICK,
+                category="smoke",
+                command=["main.py", "evidence-graph-thread-quality"],
+                timeout_seconds=30,
+                required=False,
+                description="v0.9.1 Evidence thread quality board smoke test",
+            ),
         ]
 
     def build_full_suite(self) -> List[RegressionTestCase]:
@@ -1407,6 +1428,57 @@ class RegressionSuiteRegistry:
                 required=False,
                 description="v0.9.0.1 CrashReversalPanel GUI import check",
             ),
+            # v0.9.1 Evidence Graph UX
+            RegressionTestCase(
+                test_id="evidence_graph_ux_gaps",
+                name="evidence-graph-gaps",
+                suite=SUITE_RESEARCH_OS,
+                category="research_os",
+                command=["main.py", "evidence-graph-gaps"],
+                timeout_seconds=30,
+                required=False,
+                description="v0.9.1 Evidence graph gaps (orphans, missing data, contradictions)",
+            ),
+            RegressionTestCase(
+                test_id="evidence_graph_ux_crash_reversal",
+                name="evidence-graph-crash-reversal",
+                suite=SUITE_RESEARCH_OS,
+                category="research_os",
+                command=["main.py", "evidence-graph-crash-reversal"],
+                timeout_seconds=30,
+                required=False,
+                description="v0.9.1 Crash reversal evidence chain view",
+            ),
+            RegressionTestCase(
+                test_id="evidence_graph_ux_search_crash",
+                name="evidence-graph-search --keyword crash",
+                suite=SUITE_RESEARCH_OS,
+                category="research_os",
+                command=["main.py", "evidence-graph-search", "--keyword", "crash"],
+                timeout_seconds=30,
+                required=False,
+                description="v0.9.1 Evidence graph search by keyword",
+            ),
+            RegressionTestCase(
+                test_id="evidence_graph_panel_import",
+                name="EvidenceGraphPanel import",
+                suite=SUITE_RESEARCH_OS,
+                category="import",
+                command=["-c", "from gui.evidence_graph_panel import EvidenceGraphPanel; print('EvidenceGraphPanel import OK')"],
+                timeout_seconds=30,
+                required=False,
+                description="v0.9.1 EvidenceGraphPanel GUI import check",
+            ),
+            RegressionTestCase(
+                test_id="evidence_graph_query_import",
+                name="EvidenceGraphQuery import",
+                suite=SUITE_RESEARCH_OS,
+                category="import",
+                command=["-c", "from evidence_graph.evidence_graph_query import EvidenceGraphQuery; print('EvidenceGraphQuery import OK')"],
+                timeout_seconds=30,
+                required=False,
+                description="v0.9.1 EvidenceGraphQuery import check",
+            ),
         ]
 
     def build_release_gate_suite(self) -> List[RegressionTestCase]:
@@ -1662,6 +1734,29 @@ class RegressionSuiteRegistry:
                     timeout_seconds=30,
                     required=False,
                     description="v0.9.0.1 CrashReversalStrategyPack import smoke test",
+                ),
+            ],
+            # v0.9.1 Evidence Graph UX release gate
+            [
+                RegressionTestCase(
+                    test_id="release_gate_evidence_graph_ux",
+                    name="evidence-graph-ux --mode real (release gate)",
+                    suite=SUITE_RELEASE_GATE,
+                    category="research_os",
+                    command=["main.py", "evidence-graph-ux", "--mode", "real"],
+                    timeout_seconds=60,
+                    required=False,
+                    description="v0.9.1 Evidence Graph UX full pipeline smoke test",
+                ),
+                RegressionTestCase(
+                    test_id="release_gate_evidence_graph_query_import",
+                    name="EvidenceGraphQuery import (release gate)",
+                    suite=SUITE_RELEASE_GATE,
+                    category="import",
+                    command=["-c", "from evidence_graph.evidence_graph_query import EvidenceGraphQuery; print('EvidenceGraphQuery import OK')"],
+                    timeout_seconds=30,
+                    required=False,
+                    description="v0.9.1 EvidenceGraphQuery import smoke test",
                 ),
             ],
         ]:

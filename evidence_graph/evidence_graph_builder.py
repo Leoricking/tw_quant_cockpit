@@ -1,7 +1,8 @@
 """
-evidence_graph/evidence_graph_builder.py — Evidence Graph Builder v0.8.3
+evidence_graph/evidence_graph_builder.py — Evidence Graph Builder v0.9.1
 
 Builds EvidenceEdge objects from collected EvidenceNodes.
+Adds EvidenceThread and EvidenceGraphGap construction.
 
 [!] Research Only. No Real Orders. Production Trading BLOCKED.
 [!] Conservative duplicate/contradiction detection — readability over completeness.
@@ -24,7 +25,20 @@ from evidence_graph.evidence_graph_schema import (
     NODE_TRAINING_METRIC, NODE_REPLAY_MISTAKE, NODE_JOURNAL_PATTERN,
     NODE_DATA_GAP, NODE_REPORT_RESULT, NODE_REGRESSION_RESULT,
     NODE_RULE_CANDIDATE, NODE_STRATEGY_HYPOTHESIS, NODE_PROVIDER_LIMITATION,
+    THREAD_STRONG_EVIDENCE, THREAD_PARTIAL_EVIDENCE, THREAD_NEEDS_DATA,
+    THREAD_NEEDS_BACKTEST, THREAD_CONFLICTED, THREAD_ORPHANED,
+    GAP_ORPHAN_NODE, GAP_REQUIRES_DATA, GAP_REQUIRES_BACKTEST, GAP_REQUIRES_REPLAY,
+    GAP_CONTRADICTION, GAP_LOW_CONFIDENCE_EDGE, GAP_DUPLICATE_CLUSTER,
+    CRASH_STAGE_CRASH_CAUSE, CRASH_STAGE_STABILIZATION, CRASH_STAGE_RELATIVE_STRENGTH,
+    CRASH_STAGE_EPS_DIP_FILTER, CRASH_STAGE_MA_PROFIT_DISCIPLINE, CRASH_STAGE_HIGH_RISK_GUARD,
 )
+
+# v0.9.1: try to import new schema classes — backward compat if not yet added
+try:
+    from evidence_graph.evidence_graph_schema import EvidenceThread, EvidenceGraphGap
+    _THREAD_SCHEMA_AVAILABLE = True
+except ImportError:
+    _THREAD_SCHEMA_AVAILABLE = False
 
 logger = logging.getLogger(__name__)
 
@@ -76,15 +90,24 @@ class EvidenceGraphBuilder:
 
     def build_evidence_threads(
         self, nodes: List[EvidenceNode], edges: List[EvidenceEdge]
-    ) -> List[Dict]:
-        """Build evidence threads: connected chains starting from RESEARCH_RECOMMENDATION nodes."""
-        threads: List[Dict] = []
+    ) -> list:
+        """Build evidence threads: connected chains starting from RESEARCH_RECOMMENDATION nodes.
+
+        v0.9.1: Returns List[EvidenceThread] if schema available, else List[Dict].
+        Merges crash reversal threads and caps at 20 threads total.
+        """
+        threads: list = []
         node_map = {n.node_id: n for n in nodes}
 
         # Build adjacency (outgoing)
         adj: Dict[str, List[str]] = {}
         for e in edges:
             adj.setdefault(e.source_node_id, []).append(e.target_node_id)
+
+        # Build edge lookup by node
+        edges_by_node: Dict[str, List[EvidenceEdge]] = {}
+        for e in edges:
+            edges_by_node.setdefault(e.source_node_id, []).append(e)
 
         anchor_types = {NODE_RESEARCH_RECOMMENDATION, NODE_STRATEGY_HYPOTHESIS}
         anchors = [n for n in nodes if n.node_type in anchor_types]
@@ -97,26 +120,559 @@ class EvidenceGraphBuilder:
                 continue
             seen_threads.add(key)
 
+            thread_node_ids = [n.node_id for n in thread_nodes]
+            thread_node_id_set = set(thread_node_ids)
+
+            # Determine thread edges
+            thread_edge_ids = [
+                e.edge_id for e in edges
+                if e.source_node_id in thread_node_id_set
+                or e.target_node_id in thread_node_id_set
+            ]
+
             # Determine suggested next step from edges
             next_steps = []
             for e in edges:
                 if e.source_node_id == anchor.node_id and e.suggested_next_step:
                     next_steps.append(e.suggested_next_step)
 
+            # Collect metadata fields
+            thread_id = f"T_{len(threads):04d}"
+            title = anchor.title
+            summary_text = anchor.summary if hasattr(anchor, "summary") else ""
+            source_modules = list({n.source_module for n in thread_nodes if n.source_module})
+            related_symbols = list({
+                sym for n in thread_nodes for sym in (n.related_symbols or [])
+            })
+            related_strategies = list({
+                s for n in thread_nodes for s in (n.related_strategies or [])
+            })
+            related_rules = list({
+                r for n in thread_nodes for r in (n.related_rules or [])
+            })
+            evidence_path = [n.node_type for n in thread_nodes]
+            suggested_next_step = next_steps[0] if next_steps else "REVIEW"
+
+            # Count edge types in thread
+            thread_edge_set = set(thread_edge_ids)
+            thread_edges = [e for e in edges if e.edge_id in thread_edge_set]
+            support_count = sum(1 for e in thread_edges if e.relation_type == EDGE_SUPPORTS)
+            contradiction_count = sum(1 for e in thread_edges if e.relation_type == EDGE_CONTRADICTS)
+            requires_data_count = sum(1 for e in thread_edges if e.relation_type == EDGE_REQUIRES_DATA)
+            requires_backtest_count = sum(1 for e in thread_edges if e.relation_type == EDGE_REQUIRES_BACKTEST)
+            requires_replay_count = sum(1 for e in thread_edges if e.relation_type == EDGE_REQUIRES_REPLAY)
+
+            if _THREAD_SCHEMA_AVAILABLE:
+                try:
+                    quality_score, quality_label, step = self.calculate_thread_quality(
+                        thread_node_ids, thread_edge_ids, nodes, edges
+                    )
+                    if step:
+                        suggested_next_step = step
+
+                    thread_obj = EvidenceThread(
+                        thread_id=thread_id,
+                        title=title,
+                        summary=summary_text,
+                        node_ids=thread_node_ids,
+                        edge_ids=thread_edge_ids,
+                        node_count=len(thread_node_ids),
+                        edge_count=len(thread_edge_ids),
+                        support_count=support_count,
+                        contradiction_count=contradiction_count,
+                        requires_data_count=requires_data_count,
+                        requires_backtest_count=requires_backtest_count,
+                        requires_replay_count=requires_replay_count,
+                        quality_score=quality_score,
+                        quality_label=quality_label,
+                        suggested_next_step=suggested_next_step,
+                        evidence_path=evidence_path,
+                        related_symbols=related_symbols,
+                        related_strategies=related_strategies,
+                        related_rules=related_rules,
+                        source_modules=source_modules,
+                        no_real_orders=True,
+                        production_blocked=True,
+                    )
+                    threads.append(thread_obj)
+                    continue
+                except Exception as exc:
+                    logger.warning("[EvidenceGraphBuilder] EvidenceThread creation failed: %s", exc)
+
+            # Fallback: return dict (backward compat)
             threads.append({
-                "thread_id":   f"T_{len(threads):04d}",
+                "thread_id":   thread_id,
                 "anchor_node": anchor.node_id,
                 "anchor_title": anchor.title,
-                "key_nodes":   [n.node_id for n in thread_nodes],
+                "title": title,
+                "key_nodes":   thread_node_ids,
                 "node_titles": [n.title for n in thread_nodes],
-                "evidence_path": " -> ".join([n.node_type for n in thread_nodes]),
-                "suggested_next_step": next_steps[0] if next_steps else "REVIEW",
+                "evidence_path": " -> ".join(evidence_path),
+                "suggested_next_step": suggested_next_step,
                 "node_count":  len(thread_nodes),
+                "source_modules": "|".join(source_modules),
                 "no_real_orders": True,
                 "production_blocked": True,
             })
 
+        # v0.9.1: merge crash reversal threads
+        try:
+            cr_threads = self.build_crash_reversal_threads(nodes, edges)
+            for t in cr_threads:
+                if len(threads) >= 20:
+                    break
+                threads.append(t)
+        except Exception as exc:
+            logger.warning("[EvidenceGraphBuilder] build_crash_reversal_threads failed: %s", exc)
+
         return threads
+
+    # ------------------------------------------------------------------
+    # v0.9.1 New methods
+    # ------------------------------------------------------------------
+
+    def calculate_thread_quality(
+        self,
+        thread_node_ids: list,
+        thread_edge_ids: list,
+        nodes: list,
+        edges: list,
+    ) -> tuple:
+        """Returns (quality_score: float, quality_label: str, suggested_next_step: str).
+
+        Score calculation:
+          +20 per SUPPORTS edge in thread
+          +20 per VALIDATED_BY edge in thread
+          +15 if thread has strategy memory node
+          +15 if thread has training metric node (improving)
+          +10 if thread has report result node
+          -20 per REQUIRES_DATA edge
+          -15 per REQUIRES_BACKTEST edge
+          -10 per REQUIRES_REPLAY edge
+          -30 per CONTRADICTS edge
+          -20 if any node is orphan (no edges)
+          -10 per LOW_CONFIDENCE edge (confidence < 0.4)
+        Score clamped to 0-100.
+        """
+        node_id_set = set(thread_node_ids)
+        edge_id_set = set(thread_edge_ids)
+
+        thread_nodes = [n for n in nodes if n.node_id in node_id_set]
+        thread_edges = [e for e in edges if e.edge_id in edge_id_set]
+
+        # Connected node IDs for orphan check
+        connected_ids: Set[str] = set()
+        for e in edges:
+            connected_ids.add(e.source_node_id)
+            connected_ids.add(e.target_node_id)
+
+        score = 0.0
+
+        # Positive signals
+        for e in thread_edges:
+            if e.relation_type == EDGE_SUPPORTS:
+                score += 20
+            elif e.relation_type == EDGE_VALIDATED_BY:
+                score += 20
+
+        has_memory = any(n.node_type == NODE_STRATEGY_MEMORY for n in thread_nodes)
+        if has_memory:
+            score += 15
+
+        has_improving_metric = any(
+            n.node_type == NODE_TRAINING_METRIC
+            and ("IMPROVING" in n.status.upper() or "IMPROVING" in n.summary.upper())
+            for n in thread_nodes
+        )
+        if has_improving_metric:
+            score += 15
+
+        has_report = any(n.node_type == NODE_REPORT_RESULT for n in thread_nodes)
+        if has_report:
+            score += 10
+
+        # Negative signals
+        for e in thread_edges:
+            if e.relation_type == EDGE_REQUIRES_DATA:
+                score -= 20
+            elif e.relation_type == EDGE_REQUIRES_BACKTEST:
+                score -= 15
+            elif e.relation_type == EDGE_REQUIRES_REPLAY:
+                score -= 10
+            elif e.relation_type == EDGE_CONTRADICTS:
+                score -= 30
+            elif e.confidence < 0.4:
+                score -= 10
+
+        orphan_count = sum(1 for n in thread_nodes if n.node_id not in connected_ids)
+        score -= orphan_count * 20
+
+        # Clamp
+        score = max(0.0, min(100.0, score))
+
+        # Determine label
+        requires_data_count = sum(1 for e in thread_edges if e.relation_type == EDGE_REQUIRES_DATA)
+        requires_backtest_count = sum(1 for e in thread_edges if e.relation_type == EDGE_REQUIRES_BACKTEST)
+
+        if score >= 80:
+            quality_label = THREAD_STRONG_EVIDENCE
+            suggested_next_step = "REVIEW"
+        elif score >= 60:
+            quality_label = THREAD_PARTIAL_EVIDENCE
+            suggested_next_step = "VALIDATE"
+        elif score >= 40:
+            if requires_data_count > requires_backtest_count:
+                quality_label = THREAD_NEEDS_DATA
+                suggested_next_step = "FIX_DATA"
+            else:
+                quality_label = THREAD_NEEDS_BACKTEST
+                suggested_next_step = "BACKTEST_MORE"
+        else:
+            contradiction_count = sum(1 for e in thread_edges if e.relation_type == EDGE_CONTRADICTS)
+            if contradiction_count > 0 or orphan_count == 0:
+                quality_label = THREAD_CONFLICTED
+                suggested_next_step = "TRACE_EVIDENCE"
+            else:
+                quality_label = THREAD_ORPHANED
+                suggested_next_step = "REVIEW"
+
+        return (score, quality_label, suggested_next_step)
+
+    def build_graph_gaps(self, nodes: list, edges: list) -> list:
+        """Identify graph gaps: orphans, missing data, contradictions, etc.
+
+        Returns List[EvidenceGraphGap] if schema available, else List[Dict].
+        Max 50 gaps total.
+        """
+        gaps: list = []
+
+        node_map = {n.node_id: n for n in nodes}
+
+        # Build connected sets
+        connected: Set[str] = set()
+        for e in edges:
+            connected.add(e.source_node_id)
+            connected.add(e.target_node_id)
+
+        def _make_gap(gap_id, gap_type, title, description, affected_node_ids,
+                      affected_edge_ids, severity, suggested_next_step, source_module=""):
+            if _THREAD_SCHEMA_AVAILABLE:
+                try:
+                    return EvidenceGraphGap(
+                        gap_id=gap_id,
+                        gap_type=gap_type,
+                        title=title,
+                        description=description,
+                        affected_node_ids=list(affected_node_ids),
+                        affected_edge_ids=list(affected_edge_ids),
+                        severity=severity,
+                        suggested_next_step=suggested_next_step,
+                        source_module=source_module,
+                        no_real_orders=True,
+                        production_blocked=True,
+                    )
+                except Exception as exc:
+                    logger.warning("[EvidenceGraphBuilder] EvidenceGraphGap creation failed: %s", exc)
+            # Fallback dict
+            return {
+                "gap_id": gap_id,
+                "gap_type": gap_type,
+                "title": title,
+                "description": description,
+                "affected_node_ids": affected_node_ids,
+                "affected_edge_ids": affected_edge_ids,
+                "severity": severity,
+                "suggested_next_step": suggested_next_step,
+                "source_module": source_module,
+                "no_real_orders": True,
+                "production_blocked": True,
+            }
+
+        gap_idx = 0
+
+        # Gap 1: ORPHAN_NODE — nodes with no edges
+        orphan_nodes = [n for n in nodes if n.node_id not in connected]
+        if orphan_nodes:
+            severity = "HIGH" if len(orphan_nodes) >= 5 else "MEDIUM"
+            gaps.append(_make_gap(
+                gap_id=f"GAP_{gap_idx:04d}",
+                gap_type=GAP_ORPHAN_NODE,
+                title=f"Orphan nodes detected ({len(orphan_nodes)})",
+                description=f"{len(orphan_nodes)} node(s) have no connecting edges",
+                affected_node_ids=[n.node_id for n in orphan_nodes[:20]],
+                affected_edge_ids=[],
+                severity=severity,
+                suggested_next_step="REVIEW",
+                source_module="evidence_graph_builder",
+            ))
+            gap_idx += 1
+
+        if len(gaps) >= 50:
+            return gaps[:50]
+
+        # Gap 2: REQUIRES_DATA
+        req_data_edges = [e for e in edges if e.relation_type == EDGE_REQUIRES_DATA]
+        if req_data_edges:
+            affected_nodes = list({e.target_node_id for e in req_data_edges})
+            severity = "HIGH" if len(req_data_edges) >= 3 else "MEDIUM"
+            gaps.append(_make_gap(
+                gap_id=f"GAP_{gap_idx:04d}",
+                gap_type=GAP_REQUIRES_DATA,
+                title=f"Data gaps required ({len(req_data_edges)} edges)",
+                description=f"{len(req_data_edges)} edge(s) require data to be sourced",
+                affected_node_ids=affected_nodes[:20],
+                affected_edge_ids=[e.edge_id for e in req_data_edges[:20]],
+                severity=severity,
+                suggested_next_step="FIX_DATA",
+                source_module="evidence_graph_builder",
+            ))
+            gap_idx += 1
+
+        if len(gaps) >= 50:
+            return gaps[:50]
+
+        # Gap 3: REQUIRES_BACKTEST
+        req_bt_edges = [e for e in edges if e.relation_type == EDGE_REQUIRES_BACKTEST]
+        if req_bt_edges:
+            affected_nodes = list({e.target_node_id for e in req_bt_edges})
+            severity = "HIGH" if len(req_bt_edges) >= 3 else "MEDIUM"
+            gaps.append(_make_gap(
+                gap_id=f"GAP_{gap_idx:04d}",
+                gap_type=GAP_REQUIRES_BACKTEST,
+                title=f"Backtest required ({len(req_bt_edges)} edges)",
+                description=f"{len(req_bt_edges)} edge(s) require backtest validation",
+                affected_node_ids=affected_nodes[:20],
+                affected_edge_ids=[e.edge_id for e in req_bt_edges[:20]],
+                severity=severity,
+                suggested_next_step="BACKTEST_MORE",
+                source_module="evidence_graph_builder",
+            ))
+            gap_idx += 1
+
+        if len(gaps) >= 50:
+            return gaps[:50]
+
+        # Gap 4: REQUIRES_REPLAY
+        req_replay_edges = [e for e in edges if e.relation_type == EDGE_REQUIRES_REPLAY]
+        if req_replay_edges:
+            affected_nodes = list({e.target_node_id for e in req_replay_edges})
+            gaps.append(_make_gap(
+                gap_id=f"GAP_{gap_idx:04d}",
+                gap_type=GAP_REQUIRES_REPLAY,
+                title=f"Replay required ({len(req_replay_edges)} edges)",
+                description=f"{len(req_replay_edges)} edge(s) require replay practice",
+                affected_node_ids=affected_nodes[:20],
+                affected_edge_ids=[e.edge_id for e in req_replay_edges[:20]],
+                severity="MEDIUM",
+                suggested_next_step="PRACTICE_REPLAY",
+                source_module="evidence_graph_builder",
+            ))
+            gap_idx += 1
+
+        if len(gaps) >= 50:
+            return gaps[:50]
+
+        # Gap 5: CONTRADICTION
+        contradicts_edges = [e for e in edges if e.relation_type == EDGE_CONTRADICTS]
+        if contradicts_edges:
+            affected_nodes = list({
+                nid for e in contradicts_edges
+                for nid in (e.source_node_id, e.target_node_id)
+            })
+            severity = "HIGH" if len(contradicts_edges) >= 2 else "MEDIUM"
+            gaps.append(_make_gap(
+                gap_id=f"GAP_{gap_idx:04d}",
+                gap_type=GAP_CONTRADICTION,
+                title=f"Contradictions detected ({len(contradicts_edges)} pairs)",
+                description=f"{len(contradicts_edges)} contradicting edge(s) found in graph",
+                affected_node_ids=affected_nodes[:20],
+                affected_edge_ids=[e.edge_id for e in contradicts_edges[:20]],
+                severity=severity,
+                suggested_next_step="TRACE_EVIDENCE",
+                source_module="evidence_graph_builder",
+            ))
+            gap_idx += 1
+
+        if len(gaps) >= 50:
+            return gaps[:50]
+
+        # Gap 6: LOW_CONFIDENCE_EDGE
+        low_conf_edges = [e for e in edges if e.confidence < 0.35]
+        if low_conf_edges:
+            affected_nodes = list({
+                nid for e in low_conf_edges
+                for nid in (e.source_node_id, e.target_node_id)
+            })
+            severity = "HIGH" if len(low_conf_edges) >= 5 else "LOW"
+            gaps.append(_make_gap(
+                gap_id=f"GAP_{gap_idx:04d}",
+                gap_type=GAP_LOW_CONFIDENCE_EDGE,
+                title=f"Low confidence edges ({len(low_conf_edges)})",
+                description=f"{len(low_conf_edges)} edge(s) with confidence < 0.35",
+                affected_node_ids=affected_nodes[:20],
+                affected_edge_ids=[e.edge_id for e in low_conf_edges[:20]],
+                severity=severity,
+                suggested_next_step="VALIDATE",
+                source_module="evidence_graph_builder",
+            ))
+            gap_idx += 1
+
+        if len(gaps) >= 50:
+            return gaps[:50]
+
+        # Gap 7: DUPLICATE_CLUSTER
+        dup_edges = [e for e in edges if e.relation_type == EDGE_DUPLICATES]
+        if dup_edges:
+            affected_nodes = list({
+                nid for e in dup_edges
+                for nid in (e.source_node_id, e.target_node_id)
+            })
+            gaps.append(_make_gap(
+                gap_id=f"GAP_{gap_idx:04d}",
+                gap_type=GAP_DUPLICATE_CLUSTER,
+                title=f"Duplicate node cluster ({len(dup_edges)} duplicate edges)",
+                description=f"{len(dup_edges)} duplicate edge(s) suggest node consolidation",
+                affected_node_ids=affected_nodes[:20],
+                affected_edge_ids=[e.edge_id for e in dup_edges[:20]],
+                severity="LOW",
+                suggested_next_step="REVIEW",
+                source_module="evidence_graph_builder",
+            ))
+            gap_idx += 1
+
+        return gaps[:50]
+
+    def build_crash_reversal_threads(self, nodes: list, edges: list) -> list:
+        """Build crash reversal specific evidence threads.
+
+        Looks for nodes with:
+        - source_module containing 'crash_reversal'
+        - title containing crash-related keywords
+        - is_crash_reversal_node=True
+
+        Groups them by crash_stage order:
+        CRASH_CAUSE → STABILIZATION → RELATIVE_STRENGTH → EPS_DIP_FILTER
+            → MA_PROFIT_DISCIPLINE → HIGH_RISK_GUARD
+        """
+        crash_keywords = (
+            "crash", "stabilization", "relative strength", "sakata",
+            "eps", "ma profit", "industry guard", "crash_reversal",
+        )
+
+        cr_nodes = [
+            n for n in nodes
+            if getattr(n, "is_crash_reversal_node", False)
+            or "crash_reversal" in getattr(n, "source_module", "").lower()
+            or any(kw in (n.title + " " + getattr(n, "summary", "")).lower() for kw in crash_keywords)
+        ]
+
+        if not cr_nodes:
+            return []
+
+        # Stage ordering
+        stage_order = [
+            CRASH_STAGE_CRASH_CAUSE,
+            CRASH_STAGE_STABILIZATION,
+            CRASH_STAGE_RELATIVE_STRENGTH,
+            CRASH_STAGE_EPS_DIP_FILTER,
+            CRASH_STAGE_MA_PROFIT_DISCIPLINE,
+            CRASH_STAGE_HIGH_RISK_GUARD,
+        ]
+
+        # Group by crash_stage
+        stage_groups: Dict[str, List] = {s: [] for s in stage_order}
+        ungrouped = []
+        for n in cr_nodes:
+            stage = getattr(n, "crash_stage", "") or ""
+            if stage in stage_groups:
+                stage_groups[stage].append(n)
+            else:
+                ungrouped.append(n)
+
+        # Build one thread for the full crash reversal chain
+        ordered_nodes = []
+        for stage in stage_order:
+            ordered_nodes.extend(stage_groups[stage])
+        ordered_nodes.extend(ungrouped)
+
+        if not ordered_nodes:
+            return []
+
+        thread_node_ids = [n.node_id for n in ordered_nodes]
+        thread_node_id_set = set(thread_node_ids)
+        thread_edge_ids = [
+            e.edge_id for e in edges
+            if e.source_node_id in thread_node_id_set
+            or e.target_node_id in thread_node_id_set
+        ]
+        source_modules = list({n.source_module for n in ordered_nodes if n.source_module})
+        related_symbols = list({
+            sym for n in ordered_nodes for sym in (n.related_symbols or [])
+        })
+        related_strategies = list({
+            s for n in ordered_nodes for s in (n.related_strategies or [])
+        })
+        related_rules = list({
+            r for n in ordered_nodes for r in (n.related_rules or [])
+        })
+
+        thread_edges = [e for e in edges if e.edge_id in set(thread_edge_ids)]
+        support_count = sum(1 for e in thread_edges if e.relation_type == EDGE_SUPPORTS)
+        contradiction_count = sum(1 for e in thread_edges if e.relation_type == EDGE_CONTRADICTS)
+        requires_data_count = sum(1 for e in thread_edges if e.relation_type == EDGE_REQUIRES_DATA)
+        requires_backtest_count = sum(1 for e in thread_edges if e.relation_type == EDGE_REQUIRES_BACKTEST)
+        requires_replay_count = sum(1 for e in thread_edges if e.relation_type == EDGE_REQUIRES_REPLAY)
+
+        evidence_path = [n.node_type for n in ordered_nodes]
+
+        if _THREAD_SCHEMA_AVAILABLE:
+            try:
+                quality_score, quality_label, suggested_next_step = self.calculate_thread_quality(
+                    thread_node_ids, thread_edge_ids, nodes, edges
+                )
+                thread_obj = EvidenceThread(
+                    thread_id="T_CRASH_REVERSAL",
+                    title="Crash Reversal Evidence Chain",
+                    summary="Full crash reversal framework evidence chain across all stages",
+                    node_ids=thread_node_ids,
+                    edge_ids=thread_edge_ids,
+                    node_count=len(thread_node_ids),
+                    edge_count=len(thread_edge_ids),
+                    support_count=support_count,
+                    contradiction_count=contradiction_count,
+                    requires_data_count=requires_data_count,
+                    requires_backtest_count=requires_backtest_count,
+                    requires_replay_count=requires_replay_count,
+                    quality_score=quality_score,
+                    quality_label=quality_label,
+                    suggested_next_step=suggested_next_step,
+                    evidence_path=evidence_path,
+                    related_symbols=related_symbols,
+                    related_strategies=related_strategies,
+                    related_rules=related_rules,
+                    source_modules=source_modules,
+                    no_real_orders=True,
+                    production_blocked=True,
+                )
+                return [thread_obj]
+            except Exception as exc:
+                logger.warning("[EvidenceGraphBuilder] crash reversal EvidenceThread failed: %s", exc)
+
+        # Fallback dict
+        return [{
+            "thread_id": "T_CRASH_REVERSAL",
+            "anchor_node": thread_node_ids[0] if thread_node_ids else "",
+            "anchor_title": "Crash Reversal Evidence Chain",
+            "title": "Crash Reversal Evidence Chain",
+            "key_nodes": thread_node_ids,
+            "node_titles": [n.title for n in ordered_nodes],
+            "evidence_path": " -> ".join(evidence_path),
+            "suggested_next_step": "REVIEW",
+            "node_count": len(ordered_nodes),
+            "source_modules": "|".join(source_modules),
+            "no_real_orders": True,
+            "production_blocked": True,
+        }]
 
     # ------------------------------------------------------------------
     # Linkers

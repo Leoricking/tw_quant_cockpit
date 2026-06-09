@@ -138,6 +138,65 @@ class StrategyLabChecklist:
                               "crash_reversal_no_forbidden_actions",
                               CHECK_WARN, SEV_MEDIUM,
                               f"Check skipped (optional): {exc}"))
+        # v0.9.1 Evidence Graph UX — CHECK_WARN on failure (optional new features)
+        # a_eg_ux_import: EvidenceGraphQuery imports
+        try:
+            mod = __import__("evidence_graph.evidence_graph_query", fromlist=["EvidenceGraphQuery"])
+            getattr(mod, "EvidenceGraphQuery")
+            checks.append(_mk("a_eg_ux_import", "import_health",
+                              "evidence_graph_ux import",
+                              CHECK_PASS, SEV_LOW,
+                              "EvidenceGraphQuery imported successfully."))
+        except Exception as exc:
+            checks.append(_mk("a_eg_ux_import", "import_health",
+                              "evidence_graph_ux import",
+                              CHECK_WARN, SEV_MEDIUM,
+                              f"Import failed (optional): {exc}",
+                              "Check evidence_graph/evidence_graph_query.py for syntax errors."))
+        # a_eg_ux_no_forbidden: EvidenceGraphQuery doesn't output BUY/SELL/ORDER
+        try:
+            mod = __import__("evidence_graph.evidence_graph_query", fromlist=["EvidenceGraphQuery"])
+            cls_obj = getattr(mod, "EvidenceGraphQuery")
+            instance = cls_obj()
+            out_str = str(vars(instance)) if hasattr(instance, "__dict__") else ""
+            forbidden = [kw for kw in ["BUY", "SELL", "ORDER"] if kw in out_str.upper()]
+            if forbidden:
+                checks.append(_mk("a_eg_ux_no_forbidden", "import_health",
+                                  "evidence_graph_ux_no_forbidden_actions",
+                                  CHECK_WARN, SEV_HIGH,
+                                  f"Forbidden keywords found in EvidenceGraphQuery output: {forbidden}",
+                                  "Remove BUY/SELL/ORDER from EvidenceGraphQuery output."))
+            else:
+                checks.append(_mk("a_eg_ux_no_forbidden", "import_health",
+                                  "evidence_graph_ux_no_forbidden_actions",
+                                  CHECK_PASS, SEV_LOW,
+                                  "EvidenceGraphQuery output has no BUY/SELL/ORDER."))
+        except Exception as exc:
+            checks.append(_mk("a_eg_ux_no_forbidden", "import_health",
+                              "evidence_graph_ux_no_forbidden_actions",
+                              CHECK_WARN, SEV_MEDIUM,
+                              f"Check skipped (optional): {exc}"))
+        # a_cr_evidence_chain: crash reversal nodes are collectible
+        try:
+            mod = __import__("evidence_graph.evidence_graph_query", fromlist=["EvidenceGraphQuery"])
+            cls_obj = getattr(mod, "EvidenceGraphQuery")
+            q = cls_obj()
+            if hasattr(q, "get_crash_reversal_threads") or hasattr(q, "search_nodes"):
+                checks.append(_mk("a_cr_evidence_chain", "import_health",
+                                  "crash_reversal_evidence_chain_collectible",
+                                  CHECK_PASS, SEV_LOW,
+                                  "EvidenceGraphQuery has crash reversal query methods."))
+            else:
+                checks.append(_mk("a_cr_evidence_chain", "import_health",
+                                  "crash_reversal_evidence_chain_collectible",
+                                  CHECK_WARN, SEV_MEDIUM,
+                                  "EvidenceGraphQuery missing crash reversal query methods (optional v0.9.1).",
+                                  "Add get_crash_reversal_threads() to EvidenceGraphQuery."))
+        except Exception as exc:
+            checks.append(_mk("a_cr_evidence_chain", "import_health",
+                              "crash_reversal_evidence_chain_collectible",
+                              CHECK_WARN, SEV_MEDIUM,
+                              f"Check skipped (optional): {exc}"))
         # crash_reversal_cli_available
         try:
             import os
