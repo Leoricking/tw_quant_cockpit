@@ -160,6 +160,20 @@ class SignalQualityEngine:
 
         logger.info("SignalQualityEngine: saved summary to %s (%d rows)", summary_path, len(summary))
 
+        # v0.9.0.1 crash reversal metadata (read-only, does not affect scores)
+        crash_reversal_quality = None
+        dip_buy_quality        = None
+        industry_risk_guard    = None
+        try:
+            from strategy_filters.crash_reversal_strategy_pack import CrashReversalStrategyPack
+            _crsp = CrashReversalStrategyPack()
+            _cr = _crsp.evaluate_market({})
+            crash_reversal_quality = _cr.get("crash_reversal_quality")
+            dip_buy_quality        = _cr.get("dip_buy_quality")
+            industry_risk_guard    = _cr.get("high_risk_industry_guard")
+        except Exception:
+            pass
+
         return {
             "status":            "ok",
             "summary_df":        summary,
@@ -170,6 +184,9 @@ class SignalQualityEngine:
             "summary_path":      summary_path,
             "rec_path":          rec_path,
             "message":           f"Signal quality summary complete. {len(summary)} signals analyzed.",
+            "crash_reversal_quality": crash_reversal_quality,
+            "dip_buy_quality":        dip_buy_quality,
+            "industry_risk_guard":    industry_risk_guard,
         }
 
     # ------------------------------------------------------------------

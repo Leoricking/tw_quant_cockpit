@@ -1001,6 +1001,41 @@ class GUITabRegistry:
                 favorite_default=False,
                 notes="Added in v0.8.3 \u2014 Research Intelligence Evidence Graph.",
             ),
+            # v0.9.0.1 crash reversal
+            GUITabMetadata(
+                tab_id="crash_reversal",
+                tab_name="Crash Reversal",
+                display_name="Crash Reversal & Risk Discipline",
+                group="strategy_lab",
+                priority="P1",
+                description=(
+                    "Crash Reversal & Risk Discipline Strategy Pack v0.9.0.1 — "
+                    "crash cause classification, post-crash stabilization checklist, "
+                    "relative strength after crash scoring, EPS-backed dip buy filtering, "
+                    "MA profit discipline, high-risk industry guard. "
+                    "Research Only. No Real Orders. Production BLOCKED."
+                ),
+                module_path="gui.crash_reversal_panel",
+                class_name="CrashReversalPanel",
+                available_flag=True,
+                safety_level="RESEARCH_ONLY",
+                read_only=True,
+                no_real_orders=True,
+                production_blocked=True,
+                keywords=[
+                    "crash reversal", "dip buy", "crash cause", "stabilization",
+                    "relative strength after crash", "sakata", "EPS dip buy",
+                    "risk discipline", "大跌", "送分題", "轉空頭", "抗跌股",
+                    "阪田", "EPS低接", "高風險產業", "均線停利",
+                ],
+                related_cli_commands=[
+                    "crash-reversal", "crash-reversal-summary",
+                    "crash-reversal-report", "crash-reversal-score",
+                    "crash-reversal-watchlist",
+                ],
+                maturity="v0.9.0.1",
+                default_visible=True,
+            ),
             # v0.9.0 Strategy Lab Stable
             GUITabMetadata(
                 tab_id="strategy_lab",

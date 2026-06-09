@@ -62,6 +62,11 @@ class EvidenceGraphBuilder:
         edges.extend(self.link_by_task(nodes))
         edges.extend(self.detect_duplicates(nodes))
         edges.extend(self.detect_contradictions(nodes))
+        # v0.9.0.1 crash reversal
+        try:
+            edges.extend(self._link_crash_reversal_nodes(nodes))
+        except Exception as exc:
+            logger.warning("[EvidenceGraphBuilder] _link_crash_reversal_nodes failed: %s", exc)
 
         # Cap total edges to keep graph readable
         if len(edges) > MAX_TOTAL_EDGES:
@@ -339,6 +344,69 @@ class EvidenceGraphBuilder:
                                         suggested_next_step="REVIEW_JOURNAL")
                     if e:
                         edges.append(e)
+        return edges
+
+    # v0.9.0.1 crash reversal
+    def _link_crash_reversal_nodes(self, nodes: list) -> list:
+        """Create edges between crash reversal framework nodes."""
+        edges = []
+        cr_nodes = [
+            n for n in nodes
+            if any(kw in (n.node_id + " " + n.title).lower()
+                   for kw in ("crash_reversal", "crash_cause", "stabilization",
+                               "relative strength after crash", "eps-backed dip",
+                               "industry guard", "ma profit"))
+        ]
+        if len(cr_nodes) < 2:
+            return edges
+        # Map node_id to node for lookup
+        node_map = {n.node_id: n for n in cr_nodes}
+        crash_cause  = node_map.get("CR_CRASH_CAUSE")
+        stab_signal  = node_map.get("CR_STAB_SIGNAL")
+        rel_strength = node_map.get("CR_REL_STRENGTH")
+        eps_filter   = node_map.get("CR_EPS_DIP_FILTER")
+        ind_guard    = node_map.get("CR_INDUSTRY_GUARD")
+        ma_disc      = node_map.get("CR_MA_DISCIPLINE")
+        # crash cause SUPPORTS stabilization decision
+        if crash_cause and stab_signal:
+            e = self._make_edge(crash_cause.node_id, stab_signal.node_id, EDGE_SUPPORTS,
+                                confidence=0.7,
+                                description="Crash cause classification supports stabilization decision",
+                                suggested_next_step="REVIEW")
+            if e:
+                edges.append(e)
+        # relative strength SUPPORTS watchlist candidate
+        if rel_strength and eps_filter:
+            e = self._make_edge(rel_strength.node_id, eps_filter.node_id, EDGE_SUPPORTS,
+                                confidence=0.65,
+                                description="Relative strength after crash supports EPS-backed filter eligibility",
+                                suggested_next_step="VALIDATE")
+            if e:
+                edges.append(e)
+        # EPS support SUPPORTS dip eligibility
+        if eps_filter and stab_signal:
+            e = self._make_edge(eps_filter.node_id, stab_signal.node_id, EDGE_SUPPORTS,
+                                confidence=0.65,
+                                description="EPS-backed filter supports post-crash stabilization signal",
+                                suggested_next_step="VALIDATE")
+            if e:
+                edges.append(e)
+        # industry risk guard WEAKENED_BY aggressive position
+        if ind_guard and rel_strength:
+            e = self._make_edge(ind_guard.node_id, rel_strength.node_id, EDGE_WEAKENED_BY,
+                                confidence=0.6,
+                                description="Industry risk guard weakened by aggressive positioning in high-risk sector",
+                                suggested_next_step="REVIEW")
+            if e:
+                edges.append(e)
+        # MA profit discipline REFINES exit logic
+        if ma_disc and eps_filter:
+            e = self._make_edge(ma_disc.node_id, eps_filter.node_id, EDGE_REFINES,
+                                confidence=0.65,
+                                description="MA profit discipline refines exit logic for EPS-backed entry filter",
+                                suggested_next_step="VALIDATE")
+            if e:
+                edges.append(e)
         return edges
 
     # ------------------------------------------------------------------

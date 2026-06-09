@@ -93,6 +93,8 @@ class ResearchSignalAggregator:
             self.collect_strategy_knowledge_signals,
             self.collect_regression_signals,
             self.collect_stable_release_signals,
+            # v0.9.0.1 crash reversal integration
+            lambda: self._collect_crash_reversal_signals(mode),
         ]
         for collector in collectors:
             try:
@@ -582,6 +584,56 @@ class ResearchSignalAggregator:
         except Exception as exc:
             logger.warning("[SignalAggregator] regression parse error: %s", exc)
         return signals
+
+    # ------------------------------------------------------------------
+    # v0.9.0.1 Crash Reversal
+    # ------------------------------------------------------------------
+
+    def _collect_crash_reversal_signals(self, mode: str = "real") -> List[ResearchSignal]:
+        """Informational signals about crash reversal pack availability.
+
+        [!] Research Only. No Real Orders. No BUY/SELL/ORDER output.
+        """
+        try:
+            from strategy_filters.crash_reversal_strategy_pack import CrashReversalStrategyPack
+            _crsp = CrashReversalStrategyPack()
+            _cr = _crsp.evaluate_market({})  # empty context → UNKNOWN/default results
+            signals = []
+            signals.append(ResearchSignal(
+                signal_id=_sig_id(),
+                source_module="crash_reversal_strategy_pack",
+                category=CAT_STRATEGY_RESEARCH,
+                title="Crash Reversal Strategy Pack v0.9.0.1 registered",
+                description=(
+                    "CrashReversalStrategyPack is available. "
+                    "6 candidate rules loaded (NEEDS_REVIEW). "
+                    "Research Only. No Real Orders."
+                ),
+                severity=SEV_INFO,
+                priority=PRI_P3,
+                suggested_action=ACT_REVIEW_RULE,
+                suggested_command="python main.py rule-governance --mode real --snapshot",
+                evidence="crash_reversal_pack=available, rules=6, status=NEEDS_REVIEW",
+            ))
+            crash_cause = _cr.get("crash_cause", "UNKNOWN") if _cr else "UNKNOWN"
+            signals.append(ResearchSignal(
+                signal_id=_sig_id(),
+                source_module="crash_reversal_strategy_pack",
+                category=CAT_RULE_REVIEW,
+                title=f"Crash Reversal: current crash_cause={crash_cause}",
+                description=(
+                    "Crash cause classification from empty-context evaluation. "
+                    "Provide real market context for meaningful output."
+                ),
+                severity=SEV_INFO,
+                priority=PRI_P3,
+                suggested_action=ACT_GENERATE_REPORT,
+                evidence=f"crash_cause={crash_cause}",
+            ))
+            return signals
+        except Exception as exc:
+            logger.debug("[SignalAggregator] _collect_crash_reversal_signals: %s", exc)
+            return []
 
     # ------------------------------------------------------------------
     # H. Stable Release

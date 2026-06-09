@@ -786,6 +786,97 @@ class RuleRegistry:
             ),
         ]
 
+        # v0.9.0.1 crash reversal integration — 6 candidate rules (NEEDS_REVIEW)
+        _crash_reversal_defs = [
+            dict(
+                rule_id="CRASH_REVERSAL.CAUSE_CLASSIFIER.V1",
+                rule_name="Crash Cause Classifier",
+                category="crash_reversal",
+                timeframe="universal",
+                status=RULE_STATUS_NEEDS_REVIEW,
+                description=(
+                    "Classify market crash cause: Fundamental Breakdown / "
+                    "Financial Deleveraging / Technical Overheat / Systemic Crisis. "
+                    "v0.9.0.1 candidate — not backtest validated."
+                ),
+                signal_type="filter",
+                confidence=CONFIDENCE_PLANNED,
+            ),
+            dict(
+                rule_id="CRASH_REVERSAL.POST_CRASH_STABILIZATION.V1",
+                rule_name="Post-Crash Stabilization Checklist",
+                category="crash_reversal",
+                timeframe="short",
+                status=RULE_STATUS_NEEDS_REVIEW,
+                description=(
+                    "Post-crash stabilization checklist: volume dry-up, "
+                    "price base formation, MA flattening. "
+                    "v0.9.0.1 candidate — not backtest validated."
+                ),
+                signal_type="filter",
+                confidence=CONFIDENCE_PLANNED,
+            ),
+            dict(
+                rule_id="CRASH_REVERSAL.RELATIVE_STRENGTH_SCORE.V1",
+                rule_name="Relative Strength After Crash Score",
+                category="crash_reversal",
+                timeframe="short",
+                status=RULE_STATUS_NEEDS_REVIEW,
+                description=(
+                    "Score relative price strength vs. index after crash event. "
+                    "High RS (>=80) signals potential leadership. "
+                    "v0.9.0.1 candidate — not backtest validated."
+                ),
+                signal_type="filter",
+                confidence=CONFIDENCE_PLANNED,
+            ),
+            dict(
+                rule_id="CRASH_REVERSAL.SAKATA_EPS_DIP_BUY.V1",
+                rule_name="Sakata EPS-Backed Dip Buy Filter",
+                category="crash_reversal",
+                timeframe="short",
+                status=RULE_STATUS_NEEDS_REVIEW,
+                description=(
+                    "Sakata dip-buy eligibility: EPS positive + dip to MA support. "
+                    "Requires fundamental backing for crash-reversal entry. "
+                    "v0.9.0.1 candidate — not backtest validated."
+                ),
+                signal_type="filter",
+                confidence=CONFIDENCE_PLANNED,
+            ),
+            dict(
+                rule_id="CRASH_REVERSAL.MA_PROFIT_DISCIPLINE.V1",
+                rule_name="Moving Average Profit Discipline",
+                category="crash_reversal",
+                timeframe="short",
+                status=RULE_STATUS_NEEDS_REVIEW,
+                description=(
+                    "Take-profit discipline using MA slope / price-to-MA distance. "
+                    "Prevents overstaying positions in post-crash bounces. "
+                    "v0.9.0.1 candidate — not backtest validated."
+                ),
+                signal_type="filter",
+                confidence=CONFIDENCE_PLANNED,
+            ),
+            dict(
+                rule_id="CRASH_REVERSAL.HIGH_RISK_INDUSTRY_GUARD.V1",
+                rule_name="High Risk Industry Exposure Guard",
+                category="crash_reversal",
+                timeframe="universal",
+                status=RULE_STATUS_NEEDS_REVIEW,
+                description=(
+                    "Block or reduce exposure to high-risk industries during crash events: "
+                    "highly leveraged sectors, cyclicals with negative EPS. "
+                    "v0.9.0.1 candidate — not backtest validated."
+                ),
+                signal_type="filter",
+                confidence=CONFIDENCE_PLANNED,
+            ),
+        ]
+
+        for d in _crash_reversal_defs:
+            _defs.append(d)
+
         count = 0
         for d in _defs:
             self.register_rule(RuleMetadata(**d))

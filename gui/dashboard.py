@@ -500,6 +500,15 @@ except Exception as _sl_exc:
     logger.warning("StrategyLabPanel unavailable: %s", _sl_exc)
     _STRATEGY_LAB_AVAILABLE = False
 
+# v0.9.0.1 Crash Reversal
+# ---------------------------------------------------------------------------
+_CRASH_REVERSAL_AVAILABLE = False
+try:
+    from gui.crash_reversal_panel import CrashReversalPanel
+    _CRASH_REVERSAL_AVAILABLE = True
+except ImportError:
+    pass
+
 # v0.5.1.1 Strategy Filter panel — inline (no separate panel file required)
 # ---------------------------------------------------------------------------
 _STRATEGY_FILTER_AVAILABLE = False
@@ -1592,6 +1601,13 @@ class CockpitWindow(QMainWindow if _PYSIDE6_AVAILABLE else object):
             mid_tabs.addTab(self._strategy_lab_panel, "Strategy Lab")
         else:
             self._strategy_lab_panel = None
+
+        # v0.9.0.1 Crash Reversal
+        if _CRASH_REVERSAL_AVAILABLE:
+            self._crash_reversal_panel = CrashReversalPanel(mode=getattr(self, '_mode', 'real'))
+            mid_tabs.addTab(self._crash_reversal_panel, "Crash Reversal")
+        else:
+            self._crash_reversal_panel = None
 
         # v0.4.1.1 Strategy Knowledge tab
         if _STRATEGY_KNOWLEDGE_INGESTION_AVAILABLE:

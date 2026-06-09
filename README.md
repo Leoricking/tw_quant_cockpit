@@ -8,6 +8,14 @@
 
 ---
 
+## v0.9.0.1 — Crash Reversal & Risk Discipline Strategy Pack
+
+Added 6 research strategy modules: Crash Cause Classifier, Post-Crash Stabilization Checklist, Relative Strength After Crash Score, Sakata EPS-backed Dip Buy Filter, Moving Average Profit Discipline, High-Risk Industry Exposure Guard.
+
+Research Only | No Real Orders | Not Investment Advice
+
+---
+
 ## v0.9.0 — Strategy Lab Stable
 
 **New in v0.9.0:**

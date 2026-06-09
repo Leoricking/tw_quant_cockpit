@@ -98,6 +98,72 @@ class StrategyLabChecklist:
              "gui.strategy_lab_panel",
              "StrategyLabPanel"),
         ]
+        # v0.9.0.1 crash reversal — CHECK_WARN on failure (optional new feature)
+        for cid, name, module, cls in [
+            ("a_cr_pack_import", "crash_reversal_pack import",
+             "strategy_rules.crash_reversal_pack",
+             "CrashReversalStrategyPack"),
+        ]:
+            try:
+                mod = __import__(module, fromlist=[cls])
+                getattr(mod, cls)
+                checks.append(_mk(cid, "import_health", name,
+                                  CHECK_PASS, SEV_LOW, f"{cls} imported successfully."))
+            except Exception as exc:
+                checks.append(_mk(cid, "import_health", name,
+                                  CHECK_WARN, SEV_MEDIUM, f"Import failed (optional): {exc}",
+                                  f"Check {module}.py for syntax errors."))
+        # crash_reversal_no_forbidden_actions
+        try:
+            mod = __import__("strategy_rules.crash_reversal_pack",
+                             fromlist=["CrashReversalStrategyPack"])
+            cls_obj = getattr(mod, "CrashReversalStrategyPack")
+            result = cls_obj().run(mode="real") if hasattr(cls_obj(), "run") else {}
+            out_str = str(result)
+            forbidden = [kw for kw in ["BUY", "SELL", "ORDER"]
+                         if kw in out_str.upper()]
+            if forbidden:
+                checks.append(_mk("a_cr_no_forbidden", "import_health",
+                                  "crash_reversal_no_forbidden_actions",
+                                  CHECK_WARN, SEV_HIGH,
+                                  f"Forbidden keywords found in output: {forbidden}",
+                                  "Remove BUY/SELL/ORDER from CrashReversalStrategyPack output."))
+            else:
+                checks.append(_mk("a_cr_no_forbidden", "import_health",
+                                  "crash_reversal_no_forbidden_actions",
+                                  CHECK_PASS, SEV_LOW,
+                                  "CrashReversalStrategyPack output has no BUY/SELL/ORDER."))
+        except Exception as exc:
+            checks.append(_mk("a_cr_no_forbidden", "import_health",
+                              "crash_reversal_no_forbidden_actions",
+                              CHECK_WARN, SEV_MEDIUM,
+                              f"Check skipped (optional): {exc}"))
+        # crash_reversal_cli_available
+        try:
+            import os
+            main_py = os.path.join(BASE_DIR, "main.py")
+            if os.path.isfile(main_py):
+                with open(main_py, "r", encoding="utf-8", errors="ignore") as f:
+                    content = f.read()
+                if "crash-reversal" in content:
+                    checks.append(_mk("a_cr_cli", "import_health",
+                                      "crash_reversal_cli_available",
+                                      CHECK_PASS, SEV_LOW,
+                                      "crash-reversal command registered in main.py."))
+                else:
+                    checks.append(_mk("a_cr_cli", "import_health",
+                                      "crash_reversal_cli_available",
+                                      CHECK_WARN, SEV_MEDIUM,
+                                      "crash-reversal command not yet registered in main.py.",
+                                      "Add crash-reversal CLI commands to main.py."))
+            else:
+                checks.append(_mk("a_cr_cli", "import_health",
+                                  "crash_reversal_cli_available",
+                                  CHECK_WARN, SEV_MEDIUM, "main.py not found."))
+        except Exception as exc:
+            checks.append(_mk("a_cr_cli", "import_health",
+                              "crash_reversal_cli_available",
+                              CHECK_WARN, SEV_MEDIUM, f"Check skipped: {exc}"))
         for cid, name, module, cls in pairs:
             try:
                 mod = __import__(module, fromlist=[cls])

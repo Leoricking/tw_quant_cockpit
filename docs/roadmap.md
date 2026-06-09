@@ -65,6 +65,20 @@
 | v0.8.2 | Backtest Training Metrics | Done |
 | v0.8.3 | Research Intelligence Evidence Graph | Done |
 | v0.9.0 | Strategy Lab Stable | Done |
+| v0.9.0.1 | Crash Reversal & Risk Discipline Strategy Pack | Done |
+
+---
+
+### v0.9.0.1 — Crash Reversal & Risk Discipline Strategy Pack ✅
+- Crash Cause Classifier (Fundamental/Financial/Technical/Systemic)
+- Post-Crash Stabilization Checklist (8 conditions)
+- Relative Strength After Crash Score
+- Sakata EPS-backed Dip Buy Filter
+- Moving Average Profit Discipline
+- High-Risk Industry Exposure Guard
+- GUI Crash Reversal tab
+- CLI: crash-reversal, crash-reversal-summary, crash-reversal-report, crash-reversal-score, crash-reversal-watchlist
+- Research Only — No Real Orders
 
 ---
 

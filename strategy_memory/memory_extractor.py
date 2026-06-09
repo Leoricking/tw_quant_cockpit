@@ -75,6 +75,8 @@ class StrategyMemoryExtractor:
             self.extract_from_data_coverage,
             self.extract_from_report_pack,
             self.extract_from_backtest_coach,
+            # v0.9.0.1 crash reversal integration
+            lambda: self._extract_crash_reversal_memories(mode),
         ]:
             try:
                 items.extend(extractor())
@@ -440,6 +442,74 @@ class StrategyMemoryExtractor:
                         pass
         except Exception as exc:
             logger.debug("StrategyMemoryExtractor.extract_from_backtest_coach: %s", exc)
+        return items
+
+    # v0.9.0.1 crash reversal integration
+    def _extract_crash_reversal_memories(self, mode: str = "real") -> List[StrategyMemoryItem]:
+        """Extract meta-memories about the crash reversal framework being registered.
+
+        [!] Research Only. No Real Orders. Production Trading BLOCKED.
+        """
+        items: List[StrategyMemoryItem] = []
+        try:
+            items.append(self._make_item(
+                memory_type=MEMORY_TYPE_RESEARCH_CONCLUSION,
+                title="Crash Cause Classification framework registered (v0.9.0.1)",
+                summary=(
+                    "CrashReversalStrategyPack registered with 6 NEEDS_REVIEW rules. "
+                    "Classifies crash as: Fundamental Breakdown / Financial Deleveraging / "
+                    "Technical Overheat / Systemic Crisis."
+                ),
+                priority=PRIORITY_P3,
+                source_module=SOURCE_RESEARCH_INTELLIGENCE,
+            ))
+            items.append(self._make_item(
+                memory_type=MEMORY_TYPE_STRATEGY_HYPOTHESIS,
+                title="High relative strength after crash → potential leadership candidate",
+                summary=(
+                    "Hypothesis: stocks with RS >= 80 vs. index after a crash event "
+                    "may lead the recovery. Requires backtest validation."
+                ),
+                priority=PRIORITY_P3,
+                source_module=SOURCE_RULE_GOVERNANCE,
+            ))
+            items.append(self._make_item(
+                memory_type=MEMORY_TYPE_RESEARCH_CONCLUSION,
+                title="High-risk industry exposure guard registered (v0.9.0.1)",
+                summary=(
+                    "Rule CRASH_REVERSAL.HIGH_RISK_INDUSTRY_GUARD.V1 registered. "
+                    "Blocks or reduces exposure to highly-leveraged sectors during crash. "
+                    "Not yet backtest validated."
+                ),
+                priority=PRIORITY_P3,
+                source_module=SOURCE_RULE_GOVERNANCE,
+            ))
+            items.append(self._make_item(
+                memory_type=MEMORY_TYPE_RULE_CANDIDATE,
+                title="Sakata EPS-backed dip buy condition registered (v0.9.0.1)",
+                summary=(
+                    "Sakata dip-buy requires EPS positive + dip to MA support. "
+                    "Candidate rule CRASH_REVERSAL.SAKATA_EPS_DIP_BUY.V1. "
+                    "Status: NEEDS_REVIEW — not backtest validated."
+                ),
+                priority=PRIORITY_P3,
+                source_module=SOURCE_RULE_GOVERNANCE,
+                related_rules=["CRASH_REVERSAL.SAKATA_EPS_DIP_BUY.V1"],
+            ))
+            items.append(self._make_item(
+                memory_type=MEMORY_TYPE_RESEARCH_CONCLUSION,
+                title="MA profit discipline rule registered for post-crash bounces (v0.9.0.1)",
+                summary=(
+                    "Take-profit using MA slope / price-to-MA distance. "
+                    "Prevents overstaying crash-reversal positions. "
+                    "Candidate CRASH_REVERSAL.MA_PROFIT_DISCIPLINE.V1 — not validated."
+                ),
+                priority=PRIORITY_P3,
+                source_module=SOURCE_RULE_GOVERNANCE,
+                related_rules=["CRASH_REVERSAL.MA_PROFIT_DISCIPLINE.V1"],
+            ))
+        except Exception as exc:
+            logger.warning("StrategyMemoryExtractor._extract_crash_reversal_memories: %s", exc)
         return items
 
     def extract_from_report_pack(self) -> List[StrategyMemoryItem]:

@@ -8691,6 +8691,149 @@ def cmd_strategy_lab_report(args: argparse.Namespace) -> None:
     print("  [!] No real orders. Research Only. Production Trading BLOCKED.")
 
 
+# v0.9.0.1 Crash Reversal & Risk Discipline
+def cmd_crash_reversal(args):
+    """Run full crash reversal market check."""
+    mode = getattr(args, 'mode', 'real')
+    try:
+        from strategy_rules.crash_reversal_pack import CrashReversalStrategyPack
+        pack = CrashReversalStrategyPack()
+        result = pack.evaluate_market({})
+        crash_cause = result.get('crash_cause')
+        stabilization = result.get('stabilization')
+        print("=" * 60)
+        print("TW Quant Cockpit — Crash Reversal & Risk Discipline")
+        print("=" * 60)
+        print(f"Mode:                      {mode}")
+        print(f"Research Only:             True")
+        print(f"No Real Orders:            True")
+        print(f"Production Trading BLOCKED: True")
+        if crash_cause:
+            cc = crash_cause if isinstance(crash_cause, dict) else crash_cause.to_dict() if hasattr(crash_cause, 'to_dict') else {}
+            print(f"Crash Cause:               {cc.get('cause_type','UNKNOWN')}")
+        else:
+            print(f"Crash Cause:               UNKNOWN")
+        if stabilization:
+            st = stabilization if isinstance(stabilization, dict) else stabilization.to_dict() if hasattr(stabilization, 'to_dict') else {}
+            print(f"Stabilization Score:       {st.get('stabilization_score', 0.0)}")
+            print(f"Stabilization Status:      {st.get('status', 'UNKNOWN')}")
+        else:
+            print(f"Stabilization Score:       0")
+            print(f"Stabilization Status:      UNKNOWN")
+        print(f"Relative Strength Candidates: INSUFFICIENT_DATA (no live data)")
+        print(f"EPS-backed Eligible:       INSUFFICIENT_DATA (no live data)")
+        print(f"High-Risk Warnings:        INSUFFICIENT_DATA (no live data)")
+        print("=" * 60)
+        print("RESEARCH ONLY — Not Investment Advice — No Real Orders")
+    except ImportError:
+        print("[WARN] crash_reversal_pack not available")
+    except Exception as e:
+        print(f"[WARN] crash-reversal: {e}")
+
+
+def cmd_crash_reversal_summary(args):
+    """Print crash reversal strategy pack summary."""
+    try:
+        from strategy_rules.crash_reversal_pack import CrashReversalStrategyPack, VERSION as CR_VERSION
+        pack = CrashReversalStrategyPack()
+        result = pack.evaluate_market({})
+        print(f"Crash Reversal & Risk Discipline Strategy Pack {CR_VERSION}")
+        print("Research Only | No Real Orders | Production Trading BLOCKED")
+        cc = result.get('crash_cause', {})
+        st = result.get('stabilization', {})
+        if hasattr(cc, 'to_dict'):
+            cc = cc.to_dict()
+        if hasattr(st, 'to_dict'):
+            st = st.to_dict()
+        if isinstance(cc, dict):
+            print(f"  Crash Cause: {cc.get('cause_type','UNKNOWN')} (score={cc.get('score',0)}, risk={cc.get('risk_level','UNKNOWN')})")
+        if isinstance(st, dict):
+            print(f"  Stabilization: {st.get('status','UNKNOWN')} (score={st.get('stabilization_score',0)}, action={st.get('action_hint','WAIT')})")
+        print("  Modules: CrashCauseClassifier / PostCrashStabilization / RelativeStrength / SakataDipBuy / MAProfitDiscipline / HighRiskIndustryGuard")
+        print("  No BUY / SELL / ORDER outputs.")
+    except ImportError:
+        print("[WARN] crash_reversal_pack not available — check strategy_rules/crash_reversal_pack.py")
+    except Exception as e:
+        print(f"[WARN] crash-reversal-summary: {e}")
+
+
+def cmd_crash_reversal_report(args):
+    """Generate crash reversal markdown report."""
+    mode = getattr(args, 'mode', 'real')
+    report_dir = getattr(args, 'report_dir', 'reports')
+    try:
+        from strategy_rules.crash_reversal_pack import CrashReversalStrategyPack
+        from reports.crash_reversal_strategy_report import CrashReversalStrategyReportBuilder
+        pack = CrashReversalStrategyPack()
+        result = pack.evaluate_market({})
+        builder = CrashReversalStrategyReportBuilder(output_dir=report_dir)
+        path = builder.build(result, mode=mode)
+        print(f"Crash Reversal Report: {path}")
+        print("Research Only | No Real Orders | Production Trading BLOCKED")
+        print("Not Investment Advice")
+    except ImportError as e:
+        print(f"[WARN] crash-reversal-report: import error — {e}")
+    except Exception as e:
+        print(f"[WARN] crash-reversal-report: {e}")
+
+
+def cmd_crash_reversal_score(args):
+    """Score a specific stock for crash reversal eligibility."""
+    mode = getattr(args, 'mode', 'real')
+    stock = getattr(args, 'stock', None) or '2330'
+    try:
+        from strategy_rules.crash_reversal_pack import CrashReversalStrategyPack
+        pack = CrashReversalStrategyPack()
+        result = pack.evaluate_symbol(stock, {}, {})
+        print(f"Crash Reversal Score — {stock} | Mode: {mode}")
+        print("Research Only | No Real Orders | Production Trading BLOCKED")
+        rs = result.get('relative_strength', {})
+        sk = result.get('sakata_dip_buy', {})
+        ma = result.get('ma_discipline', {})
+        ig = result.get('industry_guard', {})
+        for obj in [rs, sk, ma, ig]:
+            if hasattr(obj, 'to_dict'):
+                obj = obj.to_dict()
+        if isinstance(rs, dict):
+            print(f"  Relative Strength: {rs.get('rating','UNKNOWN')} (score={rs.get('score',0)})")
+        if isinstance(sk, dict):
+            print(f"  Sakata Dip Buy: eligible={sk.get('eligible',False)} score={sk.get('score',0)} next={sk.get('next_safe_action','WAIT')}")
+        if isinstance(ma, dict):
+            print(f"  MA Discipline: {ma.get('trend_status','UNKNOWN')} action={ma.get('action_hint','HOLD_REVIEW')}")
+        if isinstance(ig, dict):
+            print(f"  Industry Guard: {ig.get('industry','UNKNOWN')} risk_mult={ig.get('risk_multiplier',1.0)}")
+        print("  No BUY / SELL / ORDER outputs.")
+    except ImportError:
+        print(f"[WARN] crash_reversal_pack not available")
+    except Exception as e:
+        print(f"[WARN] crash-reversal-score: {e}")
+
+
+def cmd_crash_reversal_watchlist(args):
+    """Show crash reversal watchlist candidates."""
+    mode = getattr(args, 'mode', 'real')
+    try:
+        from strategy_rules.crash_reversal_pack import CrashReversalStrategyPack
+        pack = CrashReversalStrategyPack()
+        result = pack.evaluate_market({})
+        st = result.get('stabilization', {})
+        if hasattr(st, 'to_dict'):
+            st = st.to_dict()
+        status = st.get('status', 'UNKNOWN') if isinstance(st, dict) else 'UNKNOWN'
+        action = st.get('action_hint', 'WAIT') if isinstance(st, dict) else 'WAIT'
+        print(f"Crash Reversal Watchlist | Mode: {mode}")
+        print("Research Only | No Real Orders | Production Trading BLOCKED")
+        print(f"  Market Stabilization Status: {status}")
+        print(f"  Action Hint: {action}")
+        print("  Watchlist Candidates: INSUFFICIENT_DATA (no live market data)")
+        print("  Provide market_context + stock_context for real scoring.")
+        print("  No BUY / SELL / ORDER outputs.")
+    except ImportError:
+        print(f"[WARN] crash_reversal_pack not available")
+    except Exception as e:
+        print(f"[WARN] crash-reversal-watchlist: {e}")
+
+
 def cmd_training_metrics(args: argparse.Namespace) -> None:
     """Run full Backtest Training Metrics pipeline."""
     mode       = getattr(args, "mode", "real")
@@ -13260,6 +13403,21 @@ def _build_parser() -> argparse.ArgumentParser:
     p_slr.add_argument("--output-dir", dest="output_dir",
                        default="data/backtest_results/strategy_lab")
 
+    # v0.9.0.1 Crash Reversal & Risk Discipline
+    p_cr = subparsers.add_parser("crash-reversal", help="[v0.9.0.1] Crash Reversal & Risk Discipline — Research Only")
+    p_cr.add_argument("--mode", default="real", choices=["real", "mock"])
+    p_cr.add_argument("--output-dir", dest="output_dir", default="data/backtest_results/crash_reversal")
+    p_cr.add_argument("--report-dir", dest="report_dir", default="reports")
+    p_cr_sum = subparsers.add_parser("crash-reversal-summary", help="[v0.9.0.1] Crash Reversal summary — Research Only")
+    p_cr_report = subparsers.add_parser("crash-reversal-report", help="[v0.9.0.1] Generate crash reversal report — Research Only")
+    p_cr_report.add_argument("--mode", default="real", choices=["real", "mock"])
+    p_cr_report.add_argument("--report-dir", dest="report_dir", default="reports")
+    p_cr_score = subparsers.add_parser("crash-reversal-score", help="[v0.9.0.1] Score a specific stock — Research Only")
+    p_cr_score.add_argument("--stock", default="2330")
+    p_cr_score.add_argument("--mode", default="real", choices=["real", "mock"])
+    p_cr_wl = subparsers.add_parser("crash-reversal-watchlist", help="[v0.9.0.1] Crash reversal watchlist candidates — Research Only")
+    p_cr_wl.add_argument("--mode", default="real", choices=["real", "mock"])
+
     # --- strategy-knowledge-ingest (v0.4.1.1) ---
     p_ski = subparsers.add_parser(
         "strategy-knowledge-ingest",
@@ -14516,6 +14674,12 @@ def main() -> None:
         "strategy-lab-checks":              cmd_strategy_lab_checks,
         "strategy-lab-manifest":            cmd_strategy_lab_manifest,
         "strategy-lab-report":              cmd_strategy_lab_report,
+        # v0.9.0.1 Crash Reversal & Risk Discipline
+        "crash-reversal":                   cmd_crash_reversal,
+        "crash-reversal-summary":           cmd_crash_reversal_summary,
+        "crash-reversal-report":            cmd_crash_reversal_report,
+        "crash-reversal-score":             cmd_crash_reversal_score,
+        "crash-reversal-watchlist":         cmd_crash_reversal_watchlist,
         # v0.7.2 Strategy Research Memory (enhanced v0.8.1)
         "strategy-memory":                    cmd_strategy_memory,
         "strategy-memory-summary":            cmd_strategy_memory_summary,

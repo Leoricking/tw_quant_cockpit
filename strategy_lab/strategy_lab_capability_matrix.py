@@ -61,6 +61,7 @@ class StrategyLabCapabilityMatrix:
             + self._training_metrics_caps()
             + self._evidence_graph_caps()
             + self._supporting_caps()
+            + self._crash_reversal_caps()  # v0.9.0.1 crash reversal
         )
         return self._capabilities
 
@@ -339,6 +340,27 @@ class StrategyLabCapabilityMatrix:
     # ------------------------------------------------------------------
     # Supporting (9 capabilities)
     # ------------------------------------------------------------------
+
+    # v0.9.0.1 crash reversal
+    def _crash_reversal_caps(self) -> List[StrategyLabCapability]:
+        src = "strategy_rules.crash_reversal_pack"
+        cr_cli = ["crash-reversal", "crash-reversal-summary", "crash-reversal-report",
+                  "crash-reversal-score", "crash-reversal-watchlist"]
+        cr_gui = ["Crash Reversal"]
+        cr_rep = ["crash_reversal_strategy_report"]
+        cr_reg = ["release_gate", "quick"]
+        cr_saf = ["no_real_orders=True", "production_blocked=True",
+                  "No BUY/SELL/ORDER output"]
+        cr_lim = ["Framework/registration nodes only — no live data feed",
+                  "Crash cause classification requires historical context",
+                  "Relative strength scoring requires comparative index data"]
+        return [
+            _cap("cr_pack", "Crash Reversal & Risk Discipline Strategy Pack",
+                 CAT_RESEARCH_INTELLIGENCE, src,
+                 "v0.9.0.1", STABLE_STATUS_USABLE, "v0.9.0.1",
+                 cr_cli, cr_gui, cr_rep, cr_reg, [], cr_saf,
+                 cr_lim),
+        ]
 
     def _supporting_caps(self) -> List[StrategyLabCapability]:
         return [

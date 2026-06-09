@@ -77,6 +77,29 @@ class StrategyFilterPack:
         # Aggregate action: pick from financial_turnaround result
         agg_action = results.get("financial_turnaround", {}).get("suggested_action", "WATCH")
 
+        # v0.9.0.1 crash reversal integration
+        crash_reversal_fields = {
+            "crash_cause":                        None,
+            "stabilization_score":                None,
+            "relative_strength_after_crash":      None,
+            "sakata_dip_buy_eligibility":         None,
+            "ma_profit_discipline":               None,
+            "high_risk_industry_guard":           None,
+        }
+        try:
+            from strategy_filters.crash_reversal_strategy_pack import CrashReversalStrategyPack
+            _crsp = CrashReversalStrategyPack()
+            _cr_result = _crsp.evaluate_market(stock_data)
+            crash_reversal_fields["crash_cause"]                   = _cr_result.get("crash_cause")
+            crash_reversal_fields["stabilization_score"]           = _cr_result.get("stabilization_score")
+            crash_reversal_fields["relative_strength_after_crash"] = _cr_result.get("relative_strength_after_crash")
+            crash_reversal_fields["sakata_dip_buy_eligibility"]    = _cr_result.get("sakata_dip_buy_eligibility")
+            crash_reversal_fields["ma_profit_discipline"]          = _cr_result.get("ma_profit_discipline")
+            crash_reversal_fields["high_risk_industry_guard"]      = _cr_result.get("high_risk_industry_guard")
+        except (ImportError, Exception) as _cr_exc:
+            logger.debug("StrategyFilterPack: crash_reversal_strategy_pack unavailable: %s", _cr_exc)
+            crash_reversal_fields = {k: "INSUFFICIENT_DATA" for k in crash_reversal_fields}
+
         return {
             "symbol":            symbol,
             "filters":           results,
@@ -86,6 +109,7 @@ class StrategyFilterPack:
             "no_real_orders":    True,
             "production_blocked": True,
             "pack_version":      self.VERSION,
+            **crash_reversal_fields,
         }
 
     def run_financial_turnaround(self, stock_data: Dict[str, Any]) -> Dict[str, Any]:

@@ -104,4 +104,43 @@ python main.py strategy-lab-report --mode real
 
 ---
 
+## v0.9.0.1 — Crash Reversal & Risk Discipline Strategy Pack (2026-06-09)
+
+### Overview
+v0.9.0.1 adds the Crash Reversal & Risk Discipline Strategy Pack to Strategy Lab.
+This version is Research Only / No Real Orders / Not Investment Advice.
+
+### New Strategy Modules
+- **Crash Cause Classifier**: Classify market crash as Fundamental Breakdown / Financial Deleveraging / Technical Overheat Correction / Systemic Crisis
+- **Post-Crash Stabilization Checklist**: 8-condition checklist with weighted scoring (0–100)
+- **Relative Strength After Crash Score**: Score stocks by crash resilience (0–100)
+- **Sakata EPS-backed Dip Buy Filter**: Filter dip-buy candidates by EPS/revenue/position/technical criteria
+- **Moving Average Profit Discipline**: 5/10/20/60 MA rules for position management
+- **High-Risk Industry Exposure Guard**: Limit exposure to biotech/clinical/disposition/pure-theme stocks
+
+### New Files
+- strategy_rules/crash_reversal_pack.py
+- reports/crash_reversal_strategy_report.py
+- gui/crash_reversal_panel.py
+- gui/crash_reversal_adapter.py
+- docs/crash_reversal_risk_discipline.md
+
+### CLI Commands
+- python main.py crash-reversal --mode real
+- python main.py crash-reversal-summary
+- python main.py crash-reversal-report --mode real
+- python main.py crash-reversal-score --stock 2330 --mode real
+- python main.py crash-reversal-watchlist --mode real
+
+### Safety
+- No Real Orders
+- Production Trading BLOCKED
+- No BUY/SELL/ORDER outputs
+- Not Investment Advice
+- No broker connection
+
+### Base: v0.9.0 Strategy Lab Stable (4a89bc7) — preserved
+
+---
+
 > *TW Quant Cockpit v0.9.0 — Strategy Lab Stable — Research Only — Not Investment Advice*

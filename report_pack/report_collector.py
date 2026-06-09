@@ -33,6 +33,8 @@ from report_pack.report_pack_schema import (
     REPORT_STRATEGY_LAB_STABLE,
     OPTIONAL_REPORT_TYPES, ENV_LIMITED_REPORT_TYPES,
 )
+# v0.9.0.1 crash reversal
+from report_pack.report_registry import REPORT_CRASH_REVERSAL
 
 logger = logging.getLogger(__name__)
 
@@ -192,6 +194,11 @@ _REPORT_PATTERNS = {
         "reports/strategy_lab_stable_report_*.md",
         "data/backtest_results/strategy_lab/strategy_lab_summary_*.csv",
         "data/backtest_results/strategy_lab/strategy_lab_release_manifest_*.json",
+    ],
+    # v0.9.0.1 Crash Reversal & Risk Discipline Strategy Pack
+    REPORT_CRASH_REVERSAL: [
+        "reports/crash_reversal_strategy_report*.md",
+        "data/backtest_results/crash_reversal/*.csv",
     ],
 }
 

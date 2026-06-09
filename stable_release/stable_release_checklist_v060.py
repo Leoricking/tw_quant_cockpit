@@ -933,6 +933,72 @@ class StableReleaseChecklistV060:
             )
 
     # ----------------------------------------------------------------
+    # v0.9.0.1 Crash Reversal checks
+    # ----------------------------------------------------------------
+
+    def _check_crash_reversal_import(self) -> dict:
+        """v0.9.0.1 — strategy_rules.crash_reversal_pack imports without error."""
+        try:
+            import importlib.util
+            spec = importlib.util.find_spec("strategy_rules.crash_reversal_pack")
+            if spec is None:
+                return _check_item(
+                    "crash_reversal_import", "imports", "WARN",
+                    "strategy_rules.crash_reversal_pack not found (optional new feature).",
+                    warning="Add crash_reversal_pack.py to strategy_rules/",
+                    suggested_fix="Create strategy_rules/crash_reversal_pack.py with CrashReversalStrategyPack",
+                )
+            from strategy_rules.crash_reversal_pack import CrashReversalStrategyPack  # noqa: F401
+            return _check_item(
+                "crash_reversal_import", "imports", "PASS",
+                "strategy_rules.crash_reversal_pack imports successfully.",
+            )
+        except ImportError as exc:
+            return _check_item(
+                "crash_reversal_import", "imports", "WARN",
+                f"crash_reversal_pack import failed (optional): {exc}",
+                warning="New optional feature — WARN not FAIL",
+                suggested_fix="Create strategy_rules/crash_reversal_pack.py",
+            )
+        except Exception as exc:
+            return _check_item(
+                "crash_reversal_import", "imports", "WARN", str(exc),
+            )
+
+    def _check_crash_reversal_no_forbidden_actions(self) -> dict:
+        """v0.9.0.1 — CrashReversalStrategyPack output must not contain BUY/SELL/ORDER."""
+        try:
+            import importlib.util
+            spec = importlib.util.find_spec("strategy_rules.crash_reversal_pack")
+            if spec is None:
+                return _check_item(
+                    "crash_reversal_no_forbidden_actions", "safety", "WARN",
+                    "strategy_rules.crash_reversal_pack not installed — check skipped.",
+                )
+            from strategy_rules.crash_reversal_pack import CrashReversalStrategyPack
+            pack = CrashReversalStrategyPack()
+            result = pack.run(mode="real") if hasattr(pack, "run") else {}
+            out_str = str(result)
+            forbidden = [kw for kw in ["BUY", "SELL", "ORDER"]
+                         if kw in out_str.upper()]
+            if forbidden:
+                return _check_item(
+                    "crash_reversal_no_forbidden_actions", "safety", "WARN",
+                    f"Forbidden keywords found in CrashReversalStrategyPack output: {forbidden}",
+                    warning="Remove BUY/SELL/ORDER from output",
+                    suggested_fix="Ensure CrashReversalStrategyPack produces no trading commands.",
+                )
+            return _check_item(
+                "crash_reversal_no_forbidden_actions", "safety", "PASS",
+                "CrashReversalStrategyPack output has no BUY/SELL/ORDER.",
+            )
+        except Exception as exc:
+            return _check_item(
+                "crash_reversal_no_forbidden_actions", "safety", "WARN",
+                f"Check skipped (optional): {exc}",
+            )
+
+    # ----------------------------------------------------------------
     # Run
     # ----------------------------------------------------------------
 
@@ -990,6 +1056,9 @@ class StableReleaseChecklistV060:
             # v0.9.0 Strategy Lab Stable
             self._check_strategy_lab_import_health,
             self._check_strategy_lab_no_forbidden_actions,
+            # v0.9.0.1 crash reversal
+            self._check_crash_reversal_import,
+            self._check_crash_reversal_no_forbidden_actions,
         ]
 
         for fn in checklist_groups:

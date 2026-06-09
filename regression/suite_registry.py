@@ -241,6 +241,17 @@ class RegressionSuiteRegistry:
                 required=False,
                 description="Paper trading smoke test (optional)",
             ),
+            # v0.9.0.1 crash reversal
+            RegressionTestCase(
+                test_id="quick_crash_reversal_summary",
+                name="crash-reversal-summary",
+                suite=SUITE_QUICK,
+                category="smoke",
+                command=["main.py", "crash-reversal-summary"],
+                timeout_seconds=30,
+                required=False,
+                description="v0.9.0.1 Crash Reversal summary smoke test",
+            ),
         ]
 
     def build_full_suite(self) -> List[RegressionTestCase]:
@@ -1355,6 +1366,47 @@ class RegressionSuiteRegistry:
                 required=True,
                 description="v0.8.2 Training metrics report generation CLI",
             ),
+            # v0.9.0.1 crash reversal
+            RegressionTestCase(
+                test_id="crash_reversal_check",
+                name="crash-reversal --mode real",
+                suite=SUITE_RESEARCH_OS,
+                category="research_os",
+                command=["main.py", "crash-reversal", "--mode", "real"],
+                timeout_seconds=60,
+                required=False,
+                description="v0.9.0.1 Crash Reversal strategy pack CLI",
+            ),
+            RegressionTestCase(
+                test_id="crash_reversal_report",
+                name="crash-reversal-report --mode real",
+                suite=SUITE_RESEARCH_OS,
+                category="research_os",
+                command=["main.py", "crash-reversal-report", "--mode", "real"],
+                timeout_seconds=60,
+                required=False,
+                description="v0.9.0.1 Crash Reversal report generation CLI",
+            ),
+            RegressionTestCase(
+                test_id="crash_reversal_imports",
+                name="CrashReversalStrategyPack import check",
+                suite=SUITE_RESEARCH_OS,
+                category="import",
+                command=["-c", "from strategy_rules.crash_reversal_pack import CrashReversalStrategyPack; print('OK')"],
+                timeout_seconds=30,
+                required=False,
+                description="v0.9.0.1 CrashReversalStrategyPack import check",
+            ),
+            RegressionTestCase(
+                test_id="gui_crash_reversal_panel",
+                name="CrashReversalPanel import check",
+                suite=SUITE_RESEARCH_OS,
+                category="import",
+                command=["-c", "from gui.crash_reversal_panel import CrashReversalPanel; print('OK')"],
+                timeout_seconds=30,
+                required=False,
+                description="v0.9.0.1 CrashReversalPanel GUI import check",
+            ),
         ]
 
     def build_release_gate_suite(self) -> List[RegressionTestCase]:
@@ -1587,6 +1639,29 @@ class RegressionSuiteRegistry:
                     timeout_seconds=60,
                     required=False,
                     description="v0.9.0 Strategy lab report smoke test",
+                ),
+            ],
+            # v0.9.0.1 crash reversal release gate
+            [
+                RegressionTestCase(
+                    test_id="release_gate_crash_reversal_summary",
+                    name="crash-reversal-summary (release gate)",
+                    suite=SUITE_RELEASE_GATE,
+                    category="research_os",
+                    command=["main.py", "crash-reversal-summary"],
+                    timeout_seconds=30,
+                    required=False,
+                    description="v0.9.0.1 Crash Reversal summary smoke test",
+                ),
+                RegressionTestCase(
+                    test_id="release_gate_crash_reversal_imports",
+                    name="CrashReversalStrategyPack import (release gate)",
+                    suite=SUITE_RELEASE_GATE,
+                    category="import",
+                    command=["-c", "from strategy_rules.crash_reversal_pack import CrashReversalStrategyPack; print('OK')"],
+                    timeout_seconds=30,
+                    required=False,
+                    description="v0.9.0.1 CrashReversalStrategyPack import smoke test",
                 ),
             ],
         ]:

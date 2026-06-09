@@ -27,6 +27,9 @@ from report_pack.report_pack_schema import (
     REPORT_EVIDENCE_GRAPH,
 )
 
+# v0.9.0.1 crash reversal
+REPORT_CRASH_REVERSAL = "crash_reversal_strategy_report"
+
 logger = logging.getLogger(__name__)
 
 # ---------------------------------------------------------------------------
@@ -56,6 +59,8 @@ _PACK_DEFINITIONS: Dict[str, List[str]] = {
         REPORT_TRAINING_METRICS,
         # v0.8.3 Research Intelligence Evidence Graph (optional in daily pack)
         REPORT_EVIDENCE_GRAPH,
+        # v0.9.0.1 Crash Reversal & Risk Discipline Strategy Pack (optional in daily pack)
+        REPORT_CRASH_REVERSAL,
     ],
     PACK_WEEKLY: [
         REPORT_DAILY_MARKET,
@@ -85,6 +90,8 @@ _PACK_DEFINITIONS: Dict[str, List[str]] = {
         REPORT_TRAINING_METRICS,
         # v0.8.3 Research Intelligence Evidence Graph (optional in weekly pack)
         REPORT_EVIDENCE_GRAPH,
+        # v0.9.0.1 Crash Reversal & Risk Discipline Strategy Pack (optional in weekly pack)
+        REPORT_CRASH_REVERSAL,
     ],
     PACK_FULL: [
         REPORT_DAILY_MARKET,
@@ -126,6 +133,8 @@ _PACK_DEFINITIONS: Dict[str, List[str]] = {
         REPORT_TRAINING_METRICS,
         # v0.8.3 Research Intelligence Evidence Graph (optional in full pack)
         REPORT_EVIDENCE_GRAPH,
+        # v0.9.0.1 Crash Reversal & Risk Discipline Strategy Pack (optional in full pack)
+        REPORT_CRASH_REVERSAL,
     ],
 }
 

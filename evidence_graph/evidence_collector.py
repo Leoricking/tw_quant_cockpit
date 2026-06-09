@@ -67,12 +67,19 @@ class EvidenceCollector:
             self.collect_regression_nodes,
             self.collect_rule_governance_nodes,
         ]
+        # v0.9.0.1 crash reversal
+        mode_arg = mode
         for fn in collectors:
             try:
                 partial = fn()
                 nodes.extend(partial)
             except Exception as exc:
                 logger.warning("[EvidenceCollector] %s failed: %s", fn.__name__, exc)
+        # v0.9.0.1 crash reversal
+        try:
+            nodes.extend(self._collect_crash_reversal_nodes(mode=mode_arg))
+        except Exception as exc:
+            logger.warning("[EvidenceCollector] _collect_crash_reversal_nodes failed: %s", exc)
         logger.info("[EvidenceCollector] collected %d nodes total", len(nodes))
         return nodes
 
@@ -439,6 +446,47 @@ class EvidenceCollector:
                             ))
         except Exception as exc:
             logger.warning("[EvidenceCollector] rule_governance: %s", exc)
+        return nodes
+
+    # v0.9.0.1 crash reversal
+    def _collect_crash_reversal_nodes(self, mode: str = "real") -> List[EvidenceNode]:
+        """Register crash reversal strategy pack framework nodes."""
+        nodes: List[EvidenceNode] = []
+        try:
+            definitions = [
+                ("CR_CRASH_CAUSE",   NODE_STRATEGY_HYPOTHESIS,
+                 "Crash Cause Classification",
+                 "Classify market crash cause: liquidity, macro, sector, sentiment. Research only."),
+                ("CR_STAB_SIGNAL",   NODE_REPORT_RESULT,
+                 "Post-Crash Stabilization Signal",
+                 "Post-crash stabilization checklist: volume dry-up, breadth recovery, bounce structure. Research only."),
+                ("CR_REL_STRENGTH",  NODE_STRATEGY_HYPOTHESIS,
+                 "Relative Strength After Crash Scoring",
+                 "Score stocks showing relative strength vs index during and after crash. Research only."),
+                ("CR_EPS_DIP_FILTER", NODE_RULE_CANDIDATE,
+                 "EPS-Backed Dip Filter",
+                 "Filter post-crash entry candidates with EPS support. Fundamental-backed research screening."),
+                ("CR_INDUSTRY_GUARD", NODE_RULE_CANDIDATE,
+                 "High-Risk Industry Guard",
+                 "Guard against high-risk industries during crash: sector rotation discipline. Research only."),
+                ("CR_MA_DISCIPLINE",  NODE_RULE_CANDIDATE,
+                 "MA Profit Discipline",
+                 "Moving-average based profit-taking and exit discipline after crash reversal. Research only."),
+            ]
+            for node_id, ntype, title, summary in definitions:
+                nodes.append(EvidenceNode(
+                    node_id=node_id,
+                    node_type=ntype,
+                    title=title,
+                    summary=summary,
+                    source_module="crash_reversal_pack",
+                    source_ref="crash_reversal_pack_v0.9.0.1",
+                    evidence_text="crash_reversal_pack_v0.9.0.1",
+                    confidence=0.7,
+                    status="ACTIVE",
+                ))
+        except Exception as exc:
+            logger.warning("[EvidenceCollector] crash_reversal_nodes: %s", exc)
         return nodes
 
     # ------------------------------------------------------------------

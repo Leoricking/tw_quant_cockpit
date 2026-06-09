@@ -79,6 +79,8 @@ class BacktestSignalExtractor:
             self.extract_from_research_intelligence,
             self.extract_from_rule_governance,
             self.extract_from_data_coverage,
+            # v0.9.0.1 crash reversal integration
+            lambda: self._extract_crash_reversal_coach_signals(mode),
         ]
         for extractor in extractors:
             try:
@@ -582,6 +584,71 @@ class BacktestSignalExtractor:
             except Exception as exc:
                 logger.debug("BacktestSignalExtractor rule_governance %s: %s", path, exc)
 
+        return signals
+
+    # v0.9.0.1 crash reversal integration
+    def _extract_crash_reversal_coach_signals(self, mode: str = "real") -> List[BacktestCoachSignal]:
+        """Informational/template coach signals for crash reversal discipline.
+
+        [!] Research Only. No Real Orders. No BUY/SELL/ORDER output.
+        These are template signals — not based on real data.
+        """
+        signals: List[BacktestCoachSignal] = []
+        try:
+            signals.append(self._make_signal(
+                source_module="crash_reversal_strategy_pack",
+                issue_type=ISSUE_RULE_LOW_CONFIDENCE,
+                severity=SEV_MEDIUM,
+                priority=PRIORITY_P2,
+                description=(
+                    "Crash reversal discipline: 追高後大跌 (chasing high then crash). "
+                    "Template: review rule confidence before entering extended positions."
+                ),
+                evidence="crash_reversal_template=chasing_high_before_crash",
+                suggested_action="Review rule governance for entry discipline rules",
+                suggested_command="python main.py rule-governance --mode real --snapshot",
+            ))
+            signals.append(self._make_signal(
+                source_module="crash_reversal_strategy_pack",
+                issue_type=ISSUE_FAKE_BREAKOUT,
+                severity=SEV_MEDIUM,
+                priority=PRIORITY_P2,
+                description=(
+                    "Crash reversal discipline: 大跌亂接弱股 (buying weak stocks in crash). "
+                    "Template: avoid fake reversal entries in weak stocks during market crash."
+                ),
+                evidence="crash_reversal_template=buying_weak_in_crash",
+                suggested_action="Practice replay to recognize weak vs. strong post-crash setups",
+                suggested_command="python main.py replay-training-drills --session-id latest",
+            ))
+            signals.append(self._make_signal(
+                source_module="crash_reversal_strategy_pack",
+                issue_type=ISSUE_POOR_RISK_REWARD,
+                severity=SEV_LOW,
+                priority=PRIORITY_P3,
+                description=(
+                    "Crash reversal discipline: 賣飛主升段 (selling too early in main move). "
+                    "Template: review reward/risk ratio before exiting crash-reversal trades."
+                ),
+                evidence="crash_reversal_template=selling_early_in_main_move",
+                suggested_action="Review journal for early-exit patterns",
+                suggested_command="python main.py strategy-memory-list --memory-type JOURNAL_PATTERN",
+            ))
+            signals.append(self._make_signal(
+                source_module="crash_reversal_strategy_pack",
+                issue_type=ISSUE_STOP_LOSS_DISCIPLINE,
+                severity=SEV_MEDIUM,
+                priority=PRIORITY_P2,
+                description=(
+                    "Crash reversal discipline: 高風險產業重壓 (overweight high-risk industry). "
+                    "Template: industry concentration risk — apply high_risk_industry_guard."
+                ),
+                evidence="crash_reversal_template=high_risk_industry_overweight",
+                suggested_action="Review risk rules for industry concentration",
+                suggested_command="python main.py rule-governance --mode real --snapshot",
+            ))
+        except Exception as exc:
+            logger.debug("BacktestSignalExtractor._extract_crash_reversal_coach_signals: %s", exc)
         return signals
 
     def extract_from_data_coverage(self) -> List[BacktestCoachSignal]:

@@ -80,6 +80,59 @@ class MetricsCollector:
         metrics += self._collect_data_fix_progress()
         metrics += self._collect_training_streak()
         metrics += self._collect_quality_score()
+        # v0.9.0.1 crash reversal optional metrics
+        try:
+            _note = "v0.9.0.1: crash reversal metrics pending data"
+            metrics.append(TrainingMetric(
+                metric_id    ="crash_reversal_rule_usage_count",
+                metric_type  =METRIC_RULE_REVIEW,
+                source_module="crash_reversal_strategy_pack",
+                label        ="Crash Reversal Rule Usage Count",
+                value        =0.0,
+                unit         ="evaluations",
+                trend        =TREND_UNKNOWN,
+                status       =STATUS_INSUFFICIENT_DATA,
+                description  =_note,
+                period       =self._period,
+            ))
+            metrics.append(TrainingMetric(
+                metric_id    ="post_crash_watchlist_quality",
+                metric_type  =METRIC_QUALITY_SCORE,
+                source_module="crash_reversal_strategy_pack",
+                label        ="Post-Crash Watchlist Quality",
+                value        =0.0,
+                unit         ="score",
+                trend        =TREND_UNKNOWN,
+                status       =STATUS_INSUFFICIENT_DATA,
+                description  =_note,
+                period       =self._period,
+            ))
+            metrics.append(TrainingMetric(
+                metric_id    ="high_risk_guard_trigger_count",
+                metric_type  =METRIC_RULE_REVIEW,
+                source_module="crash_reversal_strategy_pack",
+                label        ="High Risk Industry Guard Trigger Count",
+                value        =0.0,
+                unit         ="triggers",
+                trend        =TREND_UNKNOWN,
+                status       =STATUS_INSUFFICIENT_DATA,
+                description  =_note,
+                period       =self._period,
+            ))
+            metrics.append(TrainingMetric(
+                metric_id    ="ma_profit_discipline_follow_count",
+                metric_type  =METRIC_RULE_REVIEW,
+                source_module="crash_reversal_strategy_pack",
+                label        ="MA Profit Discipline Follow Count",
+                value        =0.0,
+                unit         ="times",
+                trend        =TREND_UNKNOWN,
+                status       =STATUS_INSUFFICIENT_DATA,
+                description  =_note,
+                period       =self._period,
+            ))
+        except Exception as exc:
+            logger.warning("MetricsCollector: crash reversal optional metrics failed: %s", exc)
         return metrics
 
     # ------------------------------------------------------------------
