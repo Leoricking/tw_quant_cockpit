@@ -133,6 +133,35 @@ class MetricsCollector:
             ))
         except Exception as exc:
             logger.warning("MetricsCollector: crash reversal optional metrics failed: %s", exc)
+        # v0.9.2 strategy validation optional metrics
+        try:
+            _sv_note = "v0.9.2: strategy validation metrics pending data"
+            metrics.append(TrainingMetric(
+                metric_id    ="validation_score_distribution",
+                metric_type  =METRIC_RULE_REVIEW,
+                source_module="strategy_validation",
+                label        ="Validation Score Distribution",
+                value        =0.0,
+                unit         ="count",
+                trend        =TREND_UNKNOWN,
+                status       =STATUS_INSUFFICIENT_DATA,
+                description  =_sv_note,
+                period       =self._period,
+            ))
+            metrics.append(TrainingMetric(
+                metric_id    ="validation_progress_count",
+                metric_type  =METRIC_QUALITY_SCORE,
+                source_module="strategy_validation",
+                label        ="Validation Progress Count",
+                value        =0.0,
+                unit         ="strategies",
+                trend        =TREND_UNKNOWN,
+                status       =STATUS_INSUFFICIENT_DATA,
+                description  =_sv_note,
+                period       =self._period,
+            ))
+        except Exception as exc:
+            logger.warning("MetricsCollector: strategy validation optional metrics failed: %s", exc)
         return metrics
 
     # ------------------------------------------------------------------

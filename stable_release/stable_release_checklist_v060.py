@@ -1027,6 +1027,78 @@ class StableReleaseChecklistV060:
                 "evidence_graph_ux_import", "imports", "WARN", str(exc),
             )
 
+    def _check_strategy_validation_import(self) -> dict:
+        """v0.9.2 — strategy_validation.strategy_validation_schema imports."""
+        try:
+            import importlib.util
+            spec = importlib.util.find_spec("strategy_validation.strategy_validation_schema")
+            if spec is None:
+                return _check_item(
+                    "strategy_validation_import", "imports", "WARN",
+                    "strategy_validation.strategy_validation_schema not found (optional v0.9.2 feature).",
+                    warning="Add strategy_validation_schema.py to strategy_validation/",
+                    suggested_fix="Create strategy_validation/strategy_validation_schema.py with StrategyValidationScore",
+                )
+            from strategy_validation.strategy_validation_schema import StrategyValidationScore  # noqa: F401
+            return _check_item(
+                "strategy_validation_import", "imports", "PASS",
+                "strategy_validation.strategy_validation_schema.StrategyValidationScore imports successfully.",
+            )
+        except ImportError as exc:
+            return _check_item(
+                "strategy_validation_import", "imports", "WARN",
+                f"StrategyValidationScore import failed (optional): {exc}",
+                warning="New optional feature — WARN not FAIL",
+                suggested_fix="Create strategy_validation/strategy_validation_schema.py",
+            )
+        except Exception as exc:
+            return _check_item(
+                "strategy_validation_import", "imports", "WARN", str(exc),
+            )
+
+    def _check_strategy_validation_no_forbidden(self) -> dict:
+        """v0.9.2 — StrategyValidationScore has no BUY/SELL/ORDER and validated_does_not_enable_trading=True."""
+        try:
+            import importlib.util
+            spec = importlib.util.find_spec("strategy_validation.strategy_validation_schema")
+            if spec is None:
+                return _check_item(
+                    "strategy_validation_no_forbidden", "safety", "WARN",
+                    "strategy_validation.strategy_validation_schema not installed — check skipped.",
+                )
+            from strategy_validation.strategy_validation_schema import StrategyValidationScore
+            # Check class-level safety flag
+            flag = getattr(StrategyValidationScore, "validated_does_not_enable_trading", None)
+            # Check an instance's suggested_next_step output — use word-boundary matching to avoid
+            # false positives from field names like "no_real_orders" (contains "ORDER" as substring)
+            import re
+            _inst = StrategyValidationScore()
+            out_str = str(_inst.to_dict()) if hasattr(_inst, "to_dict") else str(vars(_inst))
+            forbidden = [kw for kw in ["BUY", "SELL", "ORDER"] if re.search(r'\b' + kw + r'\b', out_str.upper())]
+            if forbidden:
+                return _check_item(
+                    "strategy_validation_no_forbidden", "safety", "WARN",
+                    f"StrategyValidationScore output contains forbidden keywords: {forbidden}",
+                    warning="Remove BUY/SELL/ORDER from StrategyValidationScore output",
+                    suggested_fix="Ensure StrategyValidationScore produces no trading commands.",
+                )
+            if flag is False:
+                return _check_item(
+                    "strategy_validation_no_forbidden", "safety", "WARN",
+                    "StrategyValidationScore.validated_does_not_enable_trading is False",
+                    warning="Set validated_does_not_enable_trading=True",
+                    suggested_fix="Add validated_does_not_enable_trading=True class attribute.",
+                )
+            return _check_item(
+                "strategy_validation_no_forbidden", "safety", "PASS",
+                "StrategyValidationScore: no BUY/SELL/ORDER and validated_does_not_enable_trading is safe.",
+            )
+        except Exception as exc:
+            return _check_item(
+                "strategy_validation_no_forbidden", "safety", "WARN",
+                f"Check skipped (optional): {exc}",
+            )
+
     def _check_evidence_graph_ux_no_forbidden(self) -> dict:
         """v0.9.1 — Check EvidenceGraphQuery doesn't output BUY/SELL/ORDER."""
         try:
@@ -1124,6 +1196,9 @@ class StableReleaseChecklistV060:
             # v0.9.1 Evidence Graph UX
             self._check_evidence_graph_ux_import,
             self._check_evidence_graph_ux_no_forbidden,
+            # v0.9.2 Strategy Validation Score
+            self._check_strategy_validation_import,
+            self._check_strategy_validation_no_forbidden,
         ]
 
         for fn in checklist_groups:

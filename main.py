@@ -9015,6 +9015,210 @@ def cmd_crash_reversal_watchlist(args):
         print(f"[WARN] crash-reversal-watchlist: {e}")
 
 
+# v0.9.2 Strategy Validation Score
+def cmd_strategy_validation(args):
+    """Run full Strategy Validation Score engine."""
+    mode = getattr(args, 'mode', 'real')
+    try:
+        from strategy_validation.strategy_validation_engine import StrategyValidationEngine
+        engine = StrategyValidationEngine()
+        result = engine.run(mode=mode)
+        summary = result.get('summary')
+        scores = result.get('scores', [])
+        print("=" * 60)
+        print("TW Quant Cockpit — Strategy Validation Score")
+        print("=" * 60)
+        print(f"Mode:                          {mode}")
+        print(f"Research Only:                 True")
+        print(f"No Real Orders:                True")
+        print(f"Production Trading BLOCKED:    True")
+        print(f"VALIDATED does not enable trading: True")
+        if summary:
+            sd = summary.to_dict() if hasattr(summary, 'to_dict') else (summary if isinstance(summary, dict) else {})
+            print(f"Total Strategies:              {sd.get('total_strategies', len(scores))}")
+            print(f"INSUFFICIENT:                  {sd.get('insufficient_count', 0)}")
+            print(f"OBSERVATIONAL:                 {sd.get('observational_count', 0)}")
+            print(f"VALIDATING:                    {sd.get('validating_count', 0)}")
+            print(f"VALIDATED:                     {sd.get('validated_count', 0)}")
+            print(f"CONFLICTED:                    {sd.get('conflicted_count', 0)}")
+            print(f"REJECTED:                      {sd.get('rejected_count', 0)}")
+            print(f"Average Score:                 {sd.get('avg_score', 0.0):.1f}")
+            print(f"Forbidden Actions:             {sd.get('forbidden_action_count', 0)}")
+        else:
+            print(f"Total Strategies:              {len(scores)}")
+        print(f"Report:                        run strategy-validation-report --mode {mode}")
+        print("=" * 60)
+        print("RESEARCH ONLY — Not Investment Advice — No Real Orders")
+        print("VALIDATED = Research Validated Only, does NOT enable trading")
+    except Exception as e:
+        print(f"[WARN] strategy-validation: {e}")
+
+
+def cmd_strategy_validation_summary(args):
+    """Print strategy validation summary."""
+    try:
+        from strategy_validation.strategy_validation_store import StrategyValidationStore
+        store = StrategyValidationStore()
+        summary = store.load_latest_summary()
+        if summary:
+            sd = summary.to_dict() if hasattr(summary, 'to_dict') else {}
+            print(f"Strategy Validation Summary — v0.9.2")
+            print("Research Only | No Real Orders | VALIDATED does not enable trading")
+            print(f"  Total: {sd.get('total_strategies',0)} | VALIDATED={sd.get('validated_count',0)} VALIDATING={sd.get('validating_count',0)} OBSERVATIONAL={sd.get('observational_count',0)}")
+            print(f"  INSUFFICIENT={sd.get('insufficient_count',0)} CONFLICTED={sd.get('conflicted_count',0)} REJECTED={sd.get('rejected_count',0)}")
+            print(f"  Avg Score: {sd.get('avg_score',0.0):.1f}")
+        else:
+            print("No summary found — run: python main.py strategy-validation --mode real")
+    except Exception as e:
+        print(f"[WARN] strategy-validation-summary: {e}")
+
+
+def cmd_strategy_validation_scores(args):
+    """List all strategy validation scores."""
+    grade = getattr(args, 'grade', None)
+    limit = getattr(args, 'limit', 20)
+    try:
+        from strategy_validation.strategy_validation_query import StrategyValidationQuery
+        q = StrategyValidationQuery()
+        scores = q.list_scores(grade=grade)
+        print(f"Strategy Validation Scores  ({len(scores)} total) | Research Only")
+        print(f"{'Grade':<15} {'Score':>6} {'Strategy':<40} {'Next Step':<20}")
+        print("-" * 85)
+        for s in scores[:limit]:
+            sd = s.to_dict() if hasattr(s, 'to_dict') else (s if isinstance(s, dict) else {})
+            g = str(sd.get('validation_grade','?'))[:13]
+            sc = float(sd.get('final_score', sd.get('validation_score', 0)))
+            name = str(sd.get('strategy_name','?'))[:38]
+            ns = str(sd.get('suggested_next_step','REVIEW'))[:18]
+            print(f"  {g:<13} {sc:>6.1f} {name:<40} {ns:<20}")
+        if not scores:
+            print("  No scores found — run: python main.py strategy-validation --mode real")
+    except Exception as e:
+        print(f"[WARN] strategy-validation-scores: {e}")
+
+
+def cmd_strategy_validation_components(args):
+    """List strategy validation components."""
+    try:
+        from strategy_validation.strategy_validation_store import StrategyValidationStore
+        store = StrategyValidationStore()
+        components = store.load_latest_components()
+        print(f"Strategy Validation Components  ({len(components)}) | Research Only")
+        print(f"{'Component':<22} {'Score':>6} {'Weight':>7} {'Weighted':>9}")
+        print("-" * 50)
+        for c in components[:20]:
+            cd = c.to_dict() if hasattr(c, 'to_dict') else (c if isinstance(c, dict) else {})
+            ct = str(cd.get('component_type','?'))[:20]
+            s = float(cd.get('score', 0))
+            w = float(cd.get('weight', 0))
+            ws = float(cd.get('weighted_score', 0))
+            print(f"  {ct:<20} {s:>6.1f} {w:>7.2f} {ws:>9.1f}")
+        if not components:
+            print("  No components — run: python main.py strategy-validation --mode real")
+    except Exception as e:
+        print(f"[WARN] strategy-validation-components: {e}")
+
+
+def cmd_strategy_validation_top(args):
+    """Show top validated strategies."""
+    limit = getattr(args, 'limit', 10)
+    try:
+        from strategy_validation.strategy_validation_query import StrategyValidationQuery
+        q = StrategyValidationQuery()
+        scores = q.top_validated(limit=limit)
+        print(f"Top Validated Strategies  (top {limit}) | Research Only")
+        print("VALIDATED = Research Validated Only — does NOT enable trading")
+        for s in scores:
+            sd = s.to_dict() if hasattr(s, 'to_dict') else (s if isinstance(s, dict) else {})
+            print(f"  [{sd.get('validation_grade','?')}] {str(sd.get('strategy_name','?'))[:60]}  score={sd.get('final_score',0):.1f}")
+        if not scores:
+            print("  No validated strategies yet — run: python main.py strategy-validation --mode real")
+    except Exception as e:
+        print(f"[WARN] strategy-validation-top: {e}")
+
+
+def cmd_strategy_validation_needs_backtest(args):
+    """Show strategies needing more backtest."""
+    limit = getattr(args, 'limit', 10)
+    try:
+        from strategy_validation.strategy_validation_query import StrategyValidationQuery
+        q = StrategyValidationQuery()
+        scores = q.needs_backtest(limit=limit)
+        print(f"Strategies Needing Backtest  ({len(scores)}) | Research Only")
+        for s in scores:
+            sd = s.to_dict() if hasattr(s, 'to_dict') else (s if isinstance(s, dict) else {})
+            print(f"  [{sd.get('validation_grade','?')}] {str(sd.get('strategy_name','?'))[:60]} → {sd.get('suggested_next_step','BACKTEST_MORE')}")
+        if not scores:
+            print("  No strategies needing backtest found.")
+    except Exception as e:
+        print(f"[WARN] strategy-validation-needs-backtest: {e}")
+
+
+def cmd_strategy_validation_needs_replay(args):
+    """Show strategies needing more replay."""
+    limit = getattr(args, 'limit', 10)
+    try:
+        from strategy_validation.strategy_validation_query import StrategyValidationQuery
+        q = StrategyValidationQuery()
+        scores = q.needs_replay(limit=limit)
+        print(f"Strategies Needing Replay  ({len(scores)}) | Research Only")
+        for s in scores:
+            sd = s.to_dict() if hasattr(s, 'to_dict') else (s if isinstance(s, dict) else {})
+            print(f"  [{sd.get('validation_grade','?')}] {str(sd.get('strategy_name','?'))[:60]} → {sd.get('suggested_next_step','PRACTICE_REPLAY')}")
+        if not scores:
+            print("  No strategies needing replay found.")
+    except Exception as e:
+        print(f"[WARN] strategy-validation-needs-replay: {e}")
+
+
+def cmd_strategy_validation_conflicted(args):
+    """Show conflicted strategies."""
+    limit = getattr(args, 'limit', 10)
+    try:
+        from strategy_validation.strategy_validation_query import StrategyValidationQuery
+        q = StrategyValidationQuery()
+        scores = q.conflicted(limit=limit)
+        print(f"Conflicted Strategies  ({len(scores)}) | Research Only")
+        for s in scores:
+            sd = s.to_dict() if hasattr(s, 'to_dict') else (s if isinstance(s, dict) else {})
+            print(f"  [CONFLICTED] {str(sd.get('strategy_name','?'))[:55]} | reason: {str(sd.get('reason','?'))[:30]}")
+        if not scores:
+            print("  No conflicted strategies found.")
+    except Exception as e:
+        print(f"[WARN] strategy-validation-conflicted: {e}")
+
+
+def cmd_strategy_validation_report(args):
+    """Generate strategy validation markdown report."""
+    mode = getattr(args, 'mode', 'real')
+    report_dir = getattr(args, 'report_dir', 'reports')
+    try:
+        from reports.strategy_validation_report import StrategyValidationReportBuilder
+        builder = StrategyValidationReportBuilder()
+        path = builder.build(mode=mode, output_dir=report_dir)
+        print(f"Strategy Validation Report: {path}")
+        print("Research Only | No Real Orders | VALIDATED does not enable trading")
+        print("Not Investment Advice")
+    except Exception as e:
+        print(f"[WARN] strategy-validation-report: {e}")
+
+
+def cmd_strategy_validation_explain(args):
+    """Explain a strategy validation score."""
+    strategy_id = getattr(args, 'strategy_id', None) or ''
+    try:
+        from strategy_validation.strategy_validation_query import StrategyValidationQuery
+        q = StrategyValidationQuery()
+        info = q.explain_score(strategy_id)
+        print(f"Strategy Validation Explanation — {strategy_id}")
+        print("Research Only | No Real Orders | VALIDATED does not enable trading")
+        for k, v in info.items():
+            if k not in ('no_real_orders','production_blocked','validated_does_not_enable_trading'):
+                print(f"  {k}: {v}")
+    except Exception as e:
+        print(f"[WARN] strategy-validation-explain: {e}")
+
+
 def cmd_training_metrics(args: argparse.Namespace) -> None:
     """Run full Backtest Training Metrics pipeline."""
     mode       = getattr(args, "mode", "real")
@@ -13632,6 +13836,37 @@ def _build_parser() -> argparse.ArgumentParser:
     p_cr_wl = subparsers.add_parser("crash-reversal-watchlist", help="[v0.9.0.1] Crash reversal watchlist candidates — Research Only")
     p_cr_wl.add_argument("--mode", default="real", choices=["real", "mock"])
 
+    # v0.9.2 Strategy Validation Score
+    p_sv = subparsers.add_parser("strategy-validation", help="[v0.9.2] Run Strategy Validation Score — Research Only")
+    p_sv.add_argument("--mode", default="real", choices=["real","mock"])
+    p_sv.add_argument("--output-dir", default="data/backtest_results/strategy_validation")
+    p_sv.add_argument("--report-dir", default="reports")
+
+    p_sv_sum = subparsers.add_parser("strategy-validation-summary", help="[v0.9.2] Strategy Validation summary")
+    p_sv_scores = subparsers.add_parser("strategy-validation-scores", help="[v0.9.2] List all validation scores")
+    p_sv_scores.add_argument("--grade", default=None)
+    p_sv_scores.add_argument("--limit", type=int, default=20)
+
+    p_sv_comp = subparsers.add_parser("strategy-validation-components", help="[v0.9.2] List validation components")
+    p_sv_top = subparsers.add_parser("strategy-validation-top", help="[v0.9.2] Top validated strategies")
+    p_sv_top.add_argument("--limit", type=int, default=10)
+
+    p_sv_nb = subparsers.add_parser("strategy-validation-needs-backtest", help="[v0.9.2] Strategies needing backtest")
+    p_sv_nb.add_argument("--limit", type=int, default=10)
+
+    p_sv_nr = subparsers.add_parser("strategy-validation-needs-replay", help="[v0.9.2] Strategies needing replay")
+    p_sv_nr.add_argument("--limit", type=int, default=10)
+
+    p_sv_cf = subparsers.add_parser("strategy-validation-conflicted", help="[v0.9.2] Conflicted strategies")
+    p_sv_cf.add_argument("--limit", type=int, default=10)
+
+    p_sv_rep = subparsers.add_parser("strategy-validation-report", help="[v0.9.2] Generate validation report")
+    p_sv_rep.add_argument("--mode", default="real", choices=["real","mock"])
+    p_sv_rep.add_argument("--report-dir", default="reports")
+
+    p_sv_exp = subparsers.add_parser("strategy-validation-explain", help="[v0.9.2] Explain a strategy score")
+    p_sv_exp.add_argument("--strategy-id", default="")
+
     # --- strategy-knowledge-ingest (v0.4.1.1) ---
     p_ski = subparsers.add_parser(
         "strategy-knowledge-ingest",
@@ -14902,6 +15137,17 @@ def main() -> None:
         "crash-reversal-report":            cmd_crash_reversal_report,
         "crash-reversal-score":             cmd_crash_reversal_score,
         "crash-reversal-watchlist":         cmd_crash_reversal_watchlist,
+        # v0.9.2 Strategy Validation Score
+        "strategy-validation":              cmd_strategy_validation,
+        "strategy-validation-summary":      cmd_strategy_validation_summary,
+        "strategy-validation-scores":       cmd_strategy_validation_scores,
+        "strategy-validation-components":   cmd_strategy_validation_components,
+        "strategy-validation-top":          cmd_strategy_validation_top,
+        "strategy-validation-needs-backtest": cmd_strategy_validation_needs_backtest,
+        "strategy-validation-needs-replay": cmd_strategy_validation_needs_replay,
+        "strategy-validation-conflicted":   cmd_strategy_validation_conflicted,
+        "strategy-validation-report":       cmd_strategy_validation_report,
+        "strategy-validation-explain":      cmd_strategy_validation_explain,
         # v0.7.2 Strategy Research Memory (enhanced v0.8.1)
         "strategy-memory":                    cmd_strategy_memory,
         "strategy-memory-summary":            cmd_strategy_memory_summary,

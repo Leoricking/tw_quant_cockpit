@@ -197,6 +197,69 @@ class StrategyLabChecklist:
                               "crash_reversal_evidence_chain_collectible",
                               CHECK_WARN, SEV_MEDIUM,
                               f"Check skipped (optional): {exc}"))
+        # v0.9.2 strategy validation — CHECK_WARN on failure (optional new features)
+        # a_sv_import: strategy_validation schema imports
+        try:
+            mod = __import__("strategy_validation.strategy_validation_schema",
+                             fromlist=["StrategyValidationScore"])
+            getattr(mod, "StrategyValidationScore")
+            checks.append(_mk("a_sv_import", "import_health",
+                              "strategy_validation_schema import",
+                              CHECK_PASS, SEV_LOW,
+                              "StrategyValidationScore imported successfully."))
+        except Exception as exc:
+            checks.append(_mk("a_sv_import", "import_health",
+                              "strategy_validation_schema import",
+                              CHECK_WARN, SEV_MEDIUM,
+                              f"Import failed (optional): {exc}",
+                              "Check strategy_validation/strategy_validation_schema.py for syntax errors."))
+        # a_sv_no_forbidden: StrategyValidationScore has no BUY/SELL/ORDER
+        try:
+            mod = __import__("strategy_validation.strategy_validation_schema",
+                             fromlist=["StrategyValidationScore"])
+            cls_obj = getattr(mod, "StrategyValidationScore")
+            instance = cls_obj() if callable(cls_obj) else None
+            out_str = str(vars(instance)) if instance and hasattr(instance, "__dict__") else ""
+            forbidden = [kw for kw in ["BUY", "SELL", "ORDER"] if kw in out_str.upper()]
+            if forbidden:
+                checks.append(_mk("a_sv_no_forbidden", "import_health",
+                                  "strategy_validation_no_forbidden_actions",
+                                  CHECK_WARN, SEV_HIGH,
+                                  f"Forbidden keywords found in StrategyValidationScore: {forbidden}",
+                                  "Remove BUY/SELL/ORDER from StrategyValidationScore output."))
+            else:
+                checks.append(_mk("a_sv_no_forbidden", "import_health",
+                                  "strategy_validation_no_forbidden_actions",
+                                  CHECK_PASS, SEV_LOW,
+                                  "StrategyValidationScore has no BUY/SELL/ORDER."))
+        except Exception as exc:
+            checks.append(_mk("a_sv_no_forbidden", "import_health",
+                              "strategy_validation_no_forbidden_actions",
+                              CHECK_WARN, SEV_MEDIUM,
+                              f"Check skipped (optional): {exc}"))
+        # a_sv_validated_not_trading: validated_does_not_enable_trading=True check
+        try:
+            mod = __import__("strategy_validation.strategy_validation_schema",
+                             fromlist=["StrategyValidationScore"])
+            cls_obj = getattr(mod, "StrategyValidationScore")
+            instance = cls_obj() if callable(cls_obj) else None
+            flag = getattr(instance, "validated_does_not_enable_trading", None) if instance else None
+            if flag is True:
+                checks.append(_mk("a_sv_validated_not_trading", "import_health",
+                                  "validated_does_not_enable_trading",
+                                  CHECK_PASS, SEV_LOW,
+                                  "StrategyValidationScore.validated_does_not_enable_trading=True."))
+            else:
+                checks.append(_mk("a_sv_validated_not_trading", "import_health",
+                                  "validated_does_not_enable_trading",
+                                  CHECK_WARN, SEV_MEDIUM,
+                                  "validated_does_not_enable_trading not set to True (optional v0.9.2).",
+                                  "Add validated_does_not_enable_trading=True to StrategyValidationScore."))
+        except Exception as exc:
+            checks.append(_mk("a_sv_validated_not_trading", "import_health",
+                              "validated_does_not_enable_trading",
+                              CHECK_WARN, SEV_MEDIUM,
+                              f"Check skipped (optional): {exc}"))
         # crash_reversal_cli_available
         try:
             import os

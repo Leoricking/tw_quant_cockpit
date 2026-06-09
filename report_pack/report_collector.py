@@ -34,7 +34,7 @@ from report_pack.report_pack_schema import (
     OPTIONAL_REPORT_TYPES, ENV_LIMITED_REPORT_TYPES,
 )
 # v0.9.0.1 crash reversal
-from report_pack.report_registry import REPORT_CRASH_REVERSAL
+from report_pack.report_registry import REPORT_CRASH_REVERSAL, REPORT_STRATEGY_VALIDATION
 
 logger = logging.getLogger(__name__)
 
@@ -199,6 +199,11 @@ _REPORT_PATTERNS = {
     REPORT_CRASH_REVERSAL: [
         "reports/crash_reversal_strategy_report*.md",
         "data/backtest_results/crash_reversal/*.csv",
+    ],
+    # v0.9.2 Strategy Validation Score
+    REPORT_STRATEGY_VALIDATION: [
+        "reports/strategy_validation_report*.md",
+        "data/backtest_results/strategy_validation/*.csv",
     ],
     # v0.9.1 Evidence Graph UX patterns
     "evidence_graph_gaps": [

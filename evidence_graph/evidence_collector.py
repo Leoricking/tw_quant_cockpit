@@ -80,6 +80,11 @@ class EvidenceCollector:
             nodes.extend(self._collect_crash_reversal_nodes(mode=mode_arg))
         except Exception as exc:
             logger.warning("[EvidenceCollector] _collect_crash_reversal_nodes failed: %s", exc)
+        # v0.9.2 strategy validation
+        try:
+            nodes.extend(self._collect_strategy_validation_nodes(mode=mode_arg))
+        except Exception as exc:
+            logger.warning("[EvidenceCollector] _collect_strategy_validation_nodes failed: %s", exc)
         logger.info("[EvidenceCollector] collected %d nodes total", len(nodes))
         return nodes
 
@@ -446,6 +451,51 @@ class EvidenceCollector:
                             ))
         except Exception as exc:
             logger.warning("[EvidenceCollector] rule_governance: %s", exc)
+        return nodes
+
+    # v0.9.2 strategy validation
+    def _collect_strategy_validation_nodes(self, mode: str = "real") -> List[EvidenceNode]:
+        """Register strategy validation score nodes from StrategyValidationStore.
+
+        [!] Research Only. No Real Orders. Production Trading BLOCKED.
+        """
+        nodes: List[EvidenceNode] = []
+        try:
+            from strategy_validation.strategy_validation_store import StrategyValidationStore
+            store = StrategyValidationStore()
+            scores = store.load_latest_scores()
+            if not scores:
+                return nodes
+            validated = [s for s in scores if getattr(s, "status", "") == "VALIDATED"][:5]
+            conflicted = [s for s in scores if getattr(s, "status", "") == "CONFLICTED"][:5]
+            for i, s in enumerate(validated):
+                name = getattr(s, "strategy_name", getattr(s, "name", f"Strategy_{i}"))
+                nodes.append(EvidenceNode(
+                    node_id=f"SV_VALIDATED_{i:04d}",
+                    node_type=NODE_STRATEGY_HYPOTHESIS,
+                    title=f"VALIDATED: {name}"[:120],
+                    summary=f"Strategy validation score: VALIDATED. {getattr(s, 'summary', '')}",
+                    source_module="strategy_validation",
+                    source_ref="strategy_validation_store",
+                    confidence=float(getattr(s, "confidence", 0.7)),
+                    status="VALIDATED",
+                    is_crash_reversal_node=False,
+                ))
+            for i, s in enumerate(conflicted):
+                name = getattr(s, "strategy_name", getattr(s, "name", f"Strategy_{i}"))
+                nodes.append(EvidenceNode(
+                    node_id=f"SV_CONFLICTED_{i:04d}",
+                    node_type=NODE_RULE_CANDIDATE,
+                    title=f"CONFLICTED: {name}"[:120],
+                    summary=f"Strategy validation score: CONFLICTED. {getattr(s, 'summary', '')}",
+                    source_module="strategy_validation",
+                    source_ref="strategy_validation_store",
+                    confidence=float(getattr(s, "confidence", 0.4)),
+                    status="CONFLICTED",
+                    is_crash_reversal_node=False,
+                ))
+        except Exception as exc:
+            logger.debug("[EvidenceCollector] _collect_strategy_validation_nodes: %s", exc)
         return nodes
 
     # v0.9.0.1 crash reversal

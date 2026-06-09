@@ -77,6 +77,8 @@ class StrategyMemoryExtractor:
             self.extract_from_backtest_coach,
             # v0.9.0.1 crash reversal integration
             lambda: self._extract_crash_reversal_memories(mode),
+            # v0.9.2 strategy validation integration
+            lambda: self._extract_strategy_validation_memories(mode),
         ]:
             try:
                 items.extend(extractor())
@@ -510,6 +512,52 @@ class StrategyMemoryExtractor:
             ))
         except Exception as exc:
             logger.warning("StrategyMemoryExtractor._extract_crash_reversal_memories: %s", exc)
+        return items
+
+    # v0.9.2 strategy validation integration
+    def _extract_strategy_validation_memories(self, mode: str = "real") -> List[StrategyMemoryItem]:
+        """Extract memories from strategy validation scores.
+
+        [!] Research Only. No Real Orders. Production Trading BLOCKED.
+        Does NOT modify any existing memory status.
+        """
+        items: List[StrategyMemoryItem] = []
+        try:
+            from strategy_validation.strategy_validation_store import StrategyValidationStore
+            store = StrategyValidationStore()
+            scores = store.load_latest_scores()
+            if not scores:
+                return items
+            validated = [s for s in scores if getattr(s, "status", "") == "VALIDATED"][:3]
+            validating = [s for s in scores if getattr(s, "status", "") == "VALIDATING"][:3]
+            for s in validated:
+                name = getattr(s, "strategy_name", getattr(s, "name", "Unknown strategy"))
+                items.append(self._make_item(
+                    memory_type=MEMORY_TYPE_RESEARCH_CONCLUSION,
+                    title=f"VALIDATED strategy: {name}"[:200],
+                    summary=(
+                        f"Strategy reached VALIDATED status in v0.9.2 validation scoring. "
+                        f"VALIDATED does not enable trading. {getattr(s, 'summary', '')}"[:300]
+                    ),
+                    priority=PRIORITY_P3,
+                    source_module=SOURCE_RESEARCH_INTELLIGENCE,
+                    confidence=float(getattr(s, "confidence", 0.7)),
+                ))
+            for s in validating:
+                name = getattr(s, "strategy_name", getattr(s, "name", "Unknown strategy"))
+                items.append(self._make_item(
+                    memory_type=MEMORY_TYPE_STRATEGY_HYPOTHESIS,
+                    title=f"VALIDATING strategy: {name}"[:200],
+                    summary=(
+                        f"Strategy is in VALIDATING state — collecting more evidence. "
+                        f"{getattr(s, 'summary', '')}"[:300]
+                    ),
+                    priority=PRIORITY_P3,
+                    source_module=SOURCE_RESEARCH_INTELLIGENCE,
+                    confidence=float(getattr(s, "confidence", 0.5)),
+                ))
+        except Exception as exc:
+            logger.warning("StrategyMemoryExtractor._extract_strategy_validation_memories: %s", exc)
         return items
 
     def extract_from_report_pack(self) -> List[StrategyMemoryItem]:

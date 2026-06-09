@@ -317,6 +317,69 @@ class CoachTaskBuilder:
 
         return selected[:7]
 
+    # v0.9.2 strategy validation integration — call _build_strategy_validation_tasks() when extending coach tasks
+    def _build_strategy_validation_tasks(self, mode: str = "real") -> List[CoachTrainingTask]:
+        """Build coach tasks for strategies flagged by validation scoring.
+
+        [!] Research Only. No Real Orders. Production Trading BLOCKED.
+        Does NOT auto-change any task status.
+        """
+        tasks: List[CoachTrainingTask] = []
+        try:
+            from strategy_validation.strategy_validation_store import StrategyValidationStore
+            store = StrategyValidationStore()
+            scores = store.load_latest_scores()
+            if not scores:
+                return tasks
+            for s in scores:
+                status = getattr(s, "status", "")
+                name = getattr(s, "strategy_name", getattr(s, "name", "Unknown"))
+                if status == "NEEDS_BACKTEST":
+                    tasks.append(CoachTrainingTask(
+                        task_type=TASK_BACKTEST_MORE,
+                        title=f"[BACKTEST_MORE] Strategy validation: {name}"[:200],
+                        description=f"Strategy {name} needs more backtest data for validation.",
+                        training_goal="Gather sufficient backtest samples for strategy validation",
+                        practice_method="Run hardened backtest with extended lookback",
+                        success_criteria="Backtest sample size >= 30 trades",
+                        priority=PRIORITY_P2,
+                        status=STATUS_NEW,
+                        source_module="strategy_validation",
+                        no_real_orders=True,
+                        production_blocked=True,
+                    ))
+                elif status == "NEEDS_REPLAY":
+                    tasks.append(CoachTrainingTask(
+                        task_type=TASK_PRACTICE_REPLAY,
+                        title=f"[PRACTICE_REPLAY] Strategy validation: {name}"[:200],
+                        description=f"Strategy {name} needs replay practice for validation.",
+                        training_goal="Complete replay drills to validate entry/exit execution",
+                        practice_method="Run replay training drills for strategy scenarios",
+                        success_criteria="Replay score >= 70 in next session",
+                        priority=PRIORITY_P2,
+                        status=STATUS_NEW,
+                        source_module="strategy_validation",
+                        no_real_orders=True,
+                        production_blocked=True,
+                    ))
+                elif status == "CONFLICTED":
+                    tasks.append(CoachTrainingTask(
+                        task_type=TASK_REVIEW_RULE,
+                        title=f"[REVIEW_RISK] Strategy validation CONFLICTED: {name}"[:200],
+                        description=f"Strategy {name} has conflicting validation evidence. Review and resolve.",
+                        training_goal="Resolve conflicting evidence for strategy validation",
+                        practice_method="Review evidence graph, backtest results, and journal for conflicts",
+                        success_criteria="Conflicting evidence resolved; status moves to VALIDATING or REJECTED",
+                        priority=PRIORITY_P1,
+                        status=STATUS_NEW,
+                        source_module="strategy_validation",
+                        no_real_orders=True,
+                        production_blocked=True,
+                    ))
+        except Exception as exc:
+            logger.warning("CoachTaskBuilder._build_strategy_validation_tasks: %s", exc)
+        return tasks
+
     def build_weekly_tasks(self, tasks: List[CoachTrainingTask]) -> List[CoachTrainingTask]:
         """Build weekly training plan (max 12 items from ranked+deduped list)."""
         ranked = self.rank_tasks(self.deduplicate(tasks))

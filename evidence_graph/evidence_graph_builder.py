@@ -81,6 +81,11 @@ class EvidenceGraphBuilder:
             edges.extend(self._link_crash_reversal_nodes(nodes))
         except Exception as exc:
             logger.warning("[EvidenceGraphBuilder] _link_crash_reversal_nodes failed: %s", exc)
+        # v0.9.2 strategy validation
+        try:
+            edges.extend(self._link_strategy_validation_nodes(nodes))
+        except Exception as exc:
+            logger.warning("[EvidenceGraphBuilder] _link_strategy_validation_nodes failed: %s", exc)
 
         # Cap total edges to keep graph readable
         if len(edges) > MAX_TOTAL_EDGES:
@@ -898,6 +903,43 @@ class EvidenceGraphBuilder:
                                         confidence=0.6,
                                         description="Opposing sentiment on overlapping topic",
                                         suggested_next_step="REVIEW_JOURNAL")
+                    if e:
+                        edges.append(e)
+        return edges
+
+    # v0.9.2 strategy validation
+    def _link_strategy_validation_nodes(self, nodes: list) -> list:
+        """Create edges between strategy validation nodes and existing hypotheses."""
+        edges = []
+        sv_nodes = [n for n in nodes if getattr(n, "source_module", "") == "strategy_validation"]
+        if len(sv_nodes) < 2:
+            return edges
+        hypothesis_nodes = [
+            n for n in nodes
+            if n.node_type == NODE_STRATEGY_HYPOTHESIS
+            and getattr(n, "source_module", "") != "strategy_validation"
+        ]
+        for sv in sv_nodes:
+            if getattr(sv, "status", "") == "VALIDATED":
+                # VALIDATED nodes SUPPORTS related strategy hypotheses
+                for hyp in hypothesis_nodes[:3]:
+                    e = self._make_edge(
+                        sv.node_id, hyp.node_id, EDGE_SUPPORTS,
+                        confidence=0.65,
+                        description="VALIDATED strategy score supports hypothesis",
+                        suggested_next_step="VALIDATE",
+                    )
+                    if e:
+                        edges.append(e)
+            elif getattr(sv, "status", "") == "CONFLICTED":
+                # CONFLICTED nodes WEAKENED_BY existing strategy hypotheses
+                for hyp in hypothesis_nodes[:3]:
+                    e = self._make_edge(
+                        hyp.node_id, sv.node_id, EDGE_WEAKENED_BY,
+                        confidence=0.55,
+                        description="Strategy hypothesis weakened by conflicted validation",
+                        suggested_next_step="TRACE_EVIDENCE",
+                    )
                     if e:
                         edges.append(e)
         return edges

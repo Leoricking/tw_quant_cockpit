@@ -1040,6 +1040,27 @@ class GUITabRegistry:
                 maturity="v0.9.0.1",
                 default_visible=True,
             ),
+            # v0.9.2 Strategy Validation Score
+            GUITabMetadata(
+                tab_id="strategy_validation",
+                tab_name="Strategy Validation",
+                display_name="Strategy Validation Score",
+                group="strategy_lab",
+                priority="P0",
+                module_path="gui.strategy_validation_panel",
+                class_name="StrategyValidationPanel",
+                available_flag=True,
+                safety_level="RESEARCH_ONLY",
+                read_only=True,
+                no_real_orders=True,
+                production_blocked=True,
+                keywords=["strategy validation","validation score","validated","observational",
+                          "insufficient","conflicted","rejected","策略驗證","策略分數","驗證分數",
+                          "已驗證","證據不足","策略評級"],
+                related_cli_commands=["strategy-validation","strategy-validation-summary","strategy-validation-scores","strategy-validation-report","strategy-validation-top"],
+                maturity="v0.9.2",
+                default_visible=True,
+            ),
             # v0.9.0 Strategy Lab Stable
             GUITabMetadata(
                 tab_id="strategy_lab",

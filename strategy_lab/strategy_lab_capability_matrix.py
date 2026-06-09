@@ -63,6 +63,7 @@ class StrategyLabCapabilityMatrix:
             + self._supporting_caps()
             + self._crash_reversal_caps()  # v0.9.0.1 crash reversal
             + self._evidence_graph_ux_caps()  # v0.9.1 Evidence Graph UX
+            + self._strategy_validation_caps()  # v0.9.2 strategy validation
         )
         return self._capabilities
 
@@ -395,6 +396,34 @@ class StrategyLabCapabilityMatrix:
                  ["Evidence Graph"], ["evidence_graph_report"], ["release_gate", "quick"],
                  ["evidence_graph"], eg_ux_saf,
                  ["Thread quality scoring (STRONG/PARTIAL/NEEDS_DATA/NEEDS_BACKTEST/CONFLICTED/ORPHANED), gap detection (orphans, missing data, contradictions)"]),
+        ]
+
+    # v0.9.2 strategy validation
+    def _strategy_validation_caps(self) -> List[StrategyLabCapability]:
+        return [
+            StrategyLabCapability(
+                capability_id="sv_score",
+                name="Strategy Validation Score",
+                category=CAT_RESEARCH_INTELLIGENCE,
+                source_module="strategy_validation",
+                version_added="v0.9.2",
+                stable_status=STABLE_STATUS_USABLE,
+                maturity="v0.9.2",
+                cli_commands=[],
+                gui_tabs=[],
+                reports=[],
+                regression_suites=[],
+                dependencies=[],
+                safety_checks=["no_real_orders=True", "production_blocked=True",
+                                "VALIDATED does not enable trading"],
+                known_limitations=[
+                    "Score strategy candidates as INSUFFICIENT/OBSERVATIONAL/VALIDATING/"
+                    "VALIDATED/CONFLICTED/REJECTED across evidence graph, backtest, replay, "
+                    "journal, training metrics, and risk guards. VALIDATED does not enable trading.",
+                ],
+                no_real_orders=True,
+                production_blocked=True,
+            )
         ]
 
     def _supporting_caps(self) -> List[StrategyLabCapability]:

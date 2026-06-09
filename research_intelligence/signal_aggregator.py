@@ -95,6 +95,8 @@ class ResearchSignalAggregator:
             self.collect_stable_release_signals,
             # v0.9.0.1 crash reversal integration
             lambda: self._collect_crash_reversal_signals(mode),
+            # v0.9.2 strategy validation integration
+            lambda: self._collect_strategy_validation_signals(mode),
         ]
         for collector in collectors:
             try:
@@ -633,6 +635,77 @@ class ResearchSignalAggregator:
             return signals
         except Exception as exc:
             logger.debug("[SignalAggregator] _collect_crash_reversal_signals: %s", exc)
+            return []
+
+    # ------------------------------------------------------------------
+    # v0.9.2 Strategy Validation
+    # ------------------------------------------------------------------
+
+    def _collect_strategy_validation_signals(self, mode: str = "real") -> List[ResearchSignal]:
+        """Signals from strategy validation scores.
+
+        [!] Research Only. No Real Orders. No BUY/SELL/ORDER output.
+        """
+        try:
+            from strategy_validation.strategy_validation_store import StrategyValidationStore
+            store = StrategyValidationStore()
+            summary = store.load_latest_summary()
+            if not summary:
+                return []
+            signals = []
+            conflicted_count = int(summary.get("conflicted_count", 0) or 0)
+            insufficient_count = int(summary.get("insufficient_count", 0) or 0)
+            validated_count = int(summary.get("validated_count", 0) or 0)
+            if conflicted_count > 0:
+                signals.append(ResearchSignal(
+                    signal_id=_sig_id(),
+                    source_module="strategy_validation",
+                    category=CAT_SYSTEM_RISK,
+                    title=f"Strategy Validation: {conflicted_count} CONFLICTED strategy/strategies",
+                    description=(
+                        "Conflicted strategies have contradictory evidence across modules. "
+                        "Review evidence graph and backtest quality. Research Only."
+                    ),
+                    severity=SEV_HIGH,
+                    confidence=0.8,
+                    priority=PRI_P1,
+                    suggested_action=ACT_REVIEW_RULE,
+                    evidence=f"conflicted_count={conflicted_count}",
+                ))
+            if insufficient_count > 5:
+                signals.append(ResearchSignal(
+                    signal_id=_sig_id(),
+                    source_module="strategy_validation",
+                    category=CAT_DATA_GAP,
+                    title=f"Strategy Validation: {insufficient_count} strategies with INSUFFICIENT_DATA",
+                    description=(
+                        "More than 5 strategies lack sufficient data for validation. "
+                        "Run data coverage and backtest modules. Research Only."
+                    ),
+                    severity=SEV_MEDIUM,
+                    confidence=0.7,
+                    priority=PRI_P2,
+                    suggested_action=ACT_FIX_DATA,
+                    evidence=f"insufficient_count={insufficient_count}",
+                ))
+            if validated_count > 0:
+                signals.append(ResearchSignal(
+                    signal_id=_sig_id(),
+                    source_module="strategy_validation",
+                    category=CAT_STRATEGY_RESEARCH,
+                    title=f"Strategy Validation: {validated_count} VALIDATED strategy/strategies",
+                    description=(
+                        "VALIDATED does not enable trading. "
+                        "Review validation report for research conclusions. Research Only."
+                    ),
+                    severity=SEV_INFO,
+                    priority=PRI_P3,
+                    suggested_action=ACT_READ_REPORT,
+                    evidence=f"validated_count={validated_count}",
+                ))
+            return signals
+        except Exception as exc:
+            logger.debug("[SignalAggregator] _collect_strategy_validation_signals: %s", exc)
             return []
 
     # ------------------------------------------------------------------

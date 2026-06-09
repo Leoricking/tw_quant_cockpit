@@ -4,7 +4,17 @@
 >
 > **[!] v1: Real order execution is strictly prohibited. For research, simulation, and decision support only. Not investment advice.**
 
-**Current version: v0.9.1 — Evidence Graph UX**
+**Current version: v0.9.2 — Strategy Validation Score**
+
+---
+
+## v0.9.2 — Strategy Validation Score
+
+Cross-module confidence scoring: grades each strategy as INSUFFICIENT / OBSERVATIONAL / VALIDATING / VALIDATED / CONFLICTED / REJECTED based on backtest metrics, replay scores, coach tasks, training metrics, and evidence graph support. 10 new CLI commands, GUI tab (Strategy Validation Score), Markdown report.
+
+VALIDATED = Research Validated Only — does NOT enable trading.
+
+Research Only | No Real Orders | Not Investment Advice
 
 ---
 

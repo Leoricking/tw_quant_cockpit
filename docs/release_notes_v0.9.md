@@ -5,6 +5,75 @@
 
 ---
 
+## v0.9.2 — Strategy Validation Score
+
+**Released:** 2026-06-09
+
+### Overview
+
+v0.9.2 introduces Strategy Validation Score — a cross-module confidence scoring system that grades
+each tracked strategy as INSUFFICIENT / OBSERVATIONAL / VALIDATING / VALIDATED / CONFLICTED / REJECTED
+based on evidence collected from backtest metrics, replay scores, coach tasks, training metrics, and
+evidence graph support. VALIDATED = Research Validated Only and does NOT enable or imply real trading.
+No BUY/SELL/ORDER. No trading actions. Production Trading: BLOCKED.
+`read_only=True`, `no_real_orders=True`, `production_blocked=True`, `real_order_ready=False`.
+
+### New Modules
+
+| Module | Description |
+|--------|-------------|
+| `strategy_validation/strategy_validation_schema.py` | Dataclasses: StrategyValidationScore, StrategyValidationSummary, StrategyValidationComponent; grade constants; `_guard()` |
+| `strategy_validation/strategy_validation_collector.py` | Collects evidence from backtest, replay, coach, training_metrics, evidence_graph |
+| `strategy_validation/strategy_validation_scorer.py` | Computes component scores and final validation grade |
+| `strategy_validation/strategy_validation_context_builder.py` | Builds context dict for each strategy |
+| `strategy_validation/strategy_validation_engine.py` | Master orchestration engine (read_only, no real orders, validated_does_not_enable_trading=True) |
+| `strategy_validation/strategy_validation_store.py` | CSV persistence for scores, components, summary |
+| `strategy_validation/strategy_validation_query.py` | Query helpers: list_scores, top_validated, needs_backtest, needs_replay, conflicted, explain_score |
+| `reports/strategy_validation_report.py` | Markdown report generator |
+
+### GUI
+
+- `gui/strategy_validation_panel.py` — StrategyValidationPanel: Strategy Validation Score tab with grade summary cards, scores table, component breakdown, safety notice
+
+### CLI Commands (10)
+
+| Command | Description |
+|---------|-------------|
+| `strategy-validation` | Run full Strategy Validation Score engine |
+| `strategy-validation-summary` | Print summary from store |
+| `strategy-validation-scores` | List all validation scores (filter by --grade, --limit) |
+| `strategy-validation-components` | List validation components |
+| `strategy-validation-top` | Show top validated strategies |
+| `strategy-validation-needs-backtest` | Strategies needing more backtest |
+| `strategy-validation-needs-replay` | Strategies needing more replay |
+| `strategy-validation-conflicted` | Conflicted strategies |
+| `strategy-validation-report` | Generate Markdown report |
+| `strategy-validation-explain` | Explain a strategy's validation score |
+
+### Safety
+
+- `validated_does_not_enable_trading=True` — VALIDATED grade is research-only, never enables trading
+- `no_real_orders=True`, `production_blocked=True`, `real_order_ready=False`
+- No BUY/SELL/ORDER output in any command or report
+- Research Only. Not Investment Advice.
+
+### Modified Files
+
+| File | Change |
+|------|--------|
+| `main.py` | 10 CLI command handlers, 10 parsers, 10 command_map entries |
+| `report_pack/report_registry.py` | REPORT_STRATEGY_VALIDATION constant; added to PACK_DAILY, PACK_WEEKLY, PACK_FULL |
+| `report_pack/report_collector.py` | strategy_validation import and pattern map entries |
+| `regression/suite_registry.py` | quick suite (2), research_os suite (4), release_gate suite (2) |
+| `stable_release/stable_release_checklist_v060.py` | 2 new checks: strategy_validation_import, strategy_validation_no_forbidden |
+| `intelligence_stable/intelligence_stable_checklist.py` | v0.9.2 strategy_validation_safe check in _check_stable_integration |
+| `gui/navigation/tab_registry.py` | strategy_validation GUITabMetadata entry |
+| `gui/dashboard.py` | _STRATEGY_VALIDATION_AVAILABLE guard + Strategy Validation tab |
+| `docs/` | README, roadmap, release_notes_v0.9, index updated |
+| `.gitignore` | strategy_validation runtime output patterns |
+
+---
+
 ## v0.9.0 — Strategy Lab Stable
 
 **Released:** 2026-06-09

@@ -67,6 +67,22 @@
 | v0.9.0 | Strategy Lab Stable | Done |
 | v0.9.0.1 | Crash Reversal & Risk Discipline Strategy Pack | Done |
 | v0.9.1 | Evidence Graph UX | Done |
+| v0.9.2 | Strategy Validation Score | Done |
+
+---
+
+### v0.9.2 — Strategy Validation Score ✅
+- Cross-module confidence scoring: INSUFFICIENT / OBSERVATIONAL / VALIDATING / VALIDATED / CONFLICTED / REJECTED
+- New modules: strategy_validation_schema, strategy_validation_collector, strategy_validation_scorer, strategy_validation_context_builder, strategy_validation_engine, strategy_validation_store, strategy_validation_query
+- Report: reports/strategy_validation_report.py
+- GUI: Strategy Validation Score tab (StrategyValidationPanel)
+- 10 CLI commands: strategy-validation, strategy-validation-summary, strategy-validation-scores, strategy-validation-components, strategy-validation-top, strategy-validation-needs-backtest, strategy-validation-needs-replay, strategy-validation-conflicted, strategy-validation-report, strategy-validation-explain
+- VALIDATED = Research Validated Only — does NOT enable trading
+- Research Only — No Real Orders
+
+**Next Steps:**
+- v0.9.3: Strategy Lab Dashboard Polish — unified layer status board
+- v1.0.0: Research Trading Cockpit Stable
 
 ---
 
@@ -273,7 +289,7 @@ Research Only. No Real Orders. Production Trading: BLOCKED.
 | Version | Feature | Priority |
 |---------|---------|---------|
 | v0.9.1 | Evidence Graph UX — thread quality board, gap view, crash reversal chain | Done |
-| v0.9.2 | Strategy Validation Score — cross-module confidence scoring | P2 |
+| v0.9.2 | Strategy Validation Score — cross-module confidence scoring | Done |
 | v0.9.3 | Strategy Lab Dashboard Polish — unified layer status board | P2 |
 | v1.0.0 | Research Trading Cockpit Stable — still No Real Orders unless explicitly enabled | P1 |
 

@@ -708,4 +708,35 @@ class IntelligenceStableChecklist:
                 suggested_fix="Run: python main.py evidence-graph-ux --mode real",
             ))
 
+        # v0.9.2 strategy_validation_safe — StrategyValidationEngine import and safety check
+        try:
+            import importlib
+            mod_sv = importlib.import_module("strategy_validation.strategy_validation_engine")
+            has_engine = hasattr(mod_sv, "StrategyValidationEngine")
+            engine_cls = getattr(mod_sv, "StrategyValidationEngine", None)
+            flag = getattr(engine_cls, "validated_does_not_enable_trading", None) if engine_cls else None
+            if has_engine and flag is not False:
+                checks.append(_check(
+                    "strategy_validation_safe", "stable_integration",
+                    "v0.9.2 strategy_validation_safe",
+                    CHECK_PASS, SEV_LOW,
+                    "StrategyValidationEngine imports; validated_does_not_enable_trading is safe.",
+                ))
+            else:
+                checks.append(_check(
+                    "strategy_validation_safe", "stable_integration",
+                    "v0.9.2 strategy_validation_safe",
+                    CHECK_WARN, SEV_LOW,
+                    f"StrategyValidationEngine found={has_engine}, validated_does_not_enable_trading={flag} (optional v0.9.2).",
+                    suggested_fix="Ensure StrategyValidationEngine exists with validated_does_not_enable_trading=True.",
+                ))
+        except Exception as exc:
+            checks.append(_check(
+                "strategy_validation_safe", "stable_integration",
+                "v0.9.2 strategy_validation_safe",
+                CHECK_WARN, SEV_LOW,
+                f"Could not verify strategy_validation safety (optional): {exc}",
+                suggested_fix="Run: python main.py strategy-validation --mode real",
+            ))
+
         return checks

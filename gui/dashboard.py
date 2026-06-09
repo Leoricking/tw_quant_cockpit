@@ -509,6 +509,14 @@ try:
 except ImportError:
     pass
 
+# v0.9.2 Strategy Validation
+_STRATEGY_VALIDATION_AVAILABLE = False
+try:
+    from gui.strategy_validation_panel import StrategyValidationPanel
+    _STRATEGY_VALIDATION_AVAILABLE = True
+except ImportError:
+    pass
+
 # v0.5.1.1 Strategy Filter panel — inline (no separate panel file required)
 # ---------------------------------------------------------------------------
 _STRATEGY_FILTER_AVAILABLE = False
@@ -1608,6 +1616,10 @@ class CockpitWindow(QMainWindow if _PYSIDE6_AVAILABLE else object):
             mid_tabs.addTab(self._crash_reversal_panel, "Crash Reversal")
         else:
             self._crash_reversal_panel = None
+
+        # v0.9.2 Strategy Validation
+        if _STRATEGY_VALIDATION_AVAILABLE:
+            self.tab_widget.addTab(StrategyValidationPanel(mode=getattr(self, '_mode', 'real')), "Strategy Validation")
 
         # v0.4.1.1 Strategy Knowledge tab
         if _STRATEGY_KNOWLEDGE_INGESTION_AVAILABLE:

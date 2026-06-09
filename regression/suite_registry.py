@@ -252,6 +252,27 @@ class RegressionSuiteRegistry:
                 required=False,
                 description="v0.9.0.1 Crash Reversal summary smoke test",
             ),
+            # v0.9.2 Strategy Validation Score
+            RegressionTestCase(
+                test_id="quick_strategy_validation_summary",
+                name="strategy-validation-summary",
+                suite=SUITE_QUICK,
+                category="smoke",
+                command=["main.py", "strategy-validation-summary"],
+                timeout_seconds=30,
+                required=False,
+                description="v0.9.2 Strategy Validation summary smoke test",
+            ),
+            RegressionTestCase(
+                test_id="quick_strategy_validation_scores",
+                name="strategy-validation-scores",
+                suite=SUITE_QUICK,
+                category="smoke",
+                command=["main.py", "strategy-validation-scores"],
+                timeout_seconds=30,
+                required=False,
+                description="v0.9.2 Strategy Validation scores smoke test",
+            ),
             # v0.9.1 Evidence Graph UX
             RegressionTestCase(
                 test_id="quick_evidence_graph_ux",
@@ -1479,6 +1500,47 @@ class RegressionSuiteRegistry:
                 required=False,
                 description="v0.9.1 EvidenceGraphQuery import check",
             ),
+            # v0.9.2 Strategy Validation Score
+            RegressionTestCase(
+                test_id="strategy_validation_cli",
+                name="strategy-validation --mode real",
+                suite=SUITE_RESEARCH_OS,
+                category="research_os",
+                command=["main.py", "strategy-validation", "--mode", "real"],
+                timeout_seconds=60,
+                required=False,
+                description="v0.9.2 Strategy Validation Score full pipeline CLI",
+            ),
+            RegressionTestCase(
+                test_id="strategy_validation_report_cli",
+                name="strategy-validation-report --mode real",
+                suite=SUITE_RESEARCH_OS,
+                category="research_os",
+                command=["main.py", "strategy-validation-report", "--mode", "real"],
+                timeout_seconds=60,
+                required=False,
+                description="v0.9.2 Strategy Validation report generation CLI",
+            ),
+            RegressionTestCase(
+                test_id="strategy_validation_score_import",
+                name="StrategyValidationScore import check",
+                suite=SUITE_RESEARCH_OS,
+                category="import",
+                command=["-c", "from strategy_validation.strategy_validation_schema import StrategyValidationScore; print('StrategyValidationScore import OK')"],
+                timeout_seconds=30,
+                required=False,
+                description="v0.9.2 StrategyValidationScore schema import check",
+            ),
+            RegressionTestCase(
+                test_id="strategy_validation_panel_import",
+                name="StrategyValidationPanel import check",
+                suite=SUITE_RESEARCH_OS,
+                category="import",
+                command=["-c", "from gui.strategy_validation_panel import StrategyValidationPanel; print('StrategyValidationPanel import OK')"],
+                timeout_seconds=30,
+                required=False,
+                description="v0.9.2 StrategyValidationPanel GUI import check",
+            ),
         ]
 
     def build_release_gate_suite(self) -> List[RegressionTestCase]:
@@ -1757,6 +1819,29 @@ class RegressionSuiteRegistry:
                     timeout_seconds=30,
                     required=False,
                     description="v0.9.1 EvidenceGraphQuery import smoke test",
+                ),
+            ],
+            # v0.9.2 Strategy Validation Score release gate
+            [
+                RegressionTestCase(
+                    test_id="release_gate_strategy_validation_summary",
+                    name="strategy-validation-summary (release gate)",
+                    suite=SUITE_RELEASE_GATE,
+                    category="research_os",
+                    command=["main.py", "strategy-validation-summary"],
+                    timeout_seconds=30,
+                    required=False,
+                    description="v0.9.2 Strategy Validation summary smoke test",
+                ),
+                RegressionTestCase(
+                    test_id="release_gate_strategy_validation_score_import",
+                    name="StrategyValidationScore import (release gate)",
+                    suite=SUITE_RELEASE_GATE,
+                    category="import",
+                    command=["-c", "from strategy_validation.strategy_validation_schema import StrategyValidationScore; print('StrategyValidationScore import OK')"],
+                    timeout_seconds=30,
+                    required=False,
+                    description="v0.9.2 StrategyValidationScore import smoke test",
                 ),
             ],
         ]:

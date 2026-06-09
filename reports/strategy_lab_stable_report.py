@@ -372,6 +372,11 @@ class StrategyLabStableReportBuilder:
             "**Strategy Lab Validation:**",
             "- `python main.py strategy-lab --mode real`",
             "",
+            "**Integration Notes:**",
+            "- Strategy Validation Score: v0.9.2 available"
+            " (INSUFFICIENT/OBSERVATIONAL/VALIDATING/VALIDATED/CONFLICTED/REJECTED)."
+            " VALIDATED does not enable trading.",
+            "",
             "---",
             "",
         ]
