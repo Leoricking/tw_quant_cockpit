@@ -3,7 +3,7 @@
 > **[!] Research Only. Read Only. No Real Orders. Production Trading: BLOCKED.**
 > **[!] Not investment advice. REAL_ORDER_READY=False.**
 
-Current version: **v0.9.2** — Strategy Validation Score
+Current version: **v0.9.3** — Strategy Lab Dashboard Polish
 
 ---
 
@@ -21,7 +21,8 @@ Current version: **v0.9.2** — Strategy Validation Score
 | [Release Notes v0.4](release_notes_v0.4.md) | v0.4.0 stable release change log |
 | [Release Notes v0.5](release_notes_v0.5.md) | v0.5.0 Research OS Planning change log |
 | [Release Notes v0.6](release_notes_v0.6.md) | v0.6.x change log (v0.6.0 Stable Release, v0.6.1 UX Polish, v0.6.2 Data Coverage, v0.6.3 Replay Training UI) |
-| [Release Notes v0.9](release_notes_v0.9.md) | v0.9.x change log (v0.9.0 Strategy Lab Stable, v0.9.0.1 Crash Reversal & Risk Discipline Strategy Pack) |
+| [Release Notes v0.9](release_notes_v0.9.md) | v0.9.x change log (v0.9.0 Strategy Lab Stable, v0.9.0.1 Crash Reversal, v0.9.1 Evidence Graph UX, v0.9.2 Strategy Validation Score, v0.9.3 Strategy Lab Dashboard) |
+| [Strategy Lab Dashboard v0.9.3](strategy_lab_dashboard_v0.9.3.md) | v0.9.3 unified dashboard: cards, validation board, evidence board, crash reversal board, action board, CLI/GUI |
 | [Strategy Lab Stable v0.9.0](strategy_lab_stable_v0.9.0.md) | v0.9.0 47-capability matrix, stable checklist, release manifest, CLI/GUI usage |
 | [Release Notes v0.8](release_notes_v0.8.md) | v0.8.x change log (v0.8.0 Research Intelligence Stable, v0.8.1 Strategy Memory UX, v0.8.2 Backtest Training Metrics, v0.8.3 Evidence Graph) |
 | [Research Intelligence Evidence Graph v0.8.3](research_intelligence_evidence_graph.md) | v0.8.3 node types, edge relations, evidence threads, orphan nodes, contradiction detection, CLI/GUI usage |

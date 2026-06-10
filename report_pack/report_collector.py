@@ -205,6 +205,11 @@ _REPORT_PATTERNS = {
         "reports/strategy_validation_report*.md",
         "data/backtest_results/strategy_validation/*.csv",
     ],
+    # v0.9.3 Strategy Lab Dashboard
+    "strategy_lab_dashboard_report": [
+        "reports/strategy_lab_dashboard_report*.md",
+        "data/backtest_results/strategy_lab_dashboard/*.csv",
+    ],
     # v0.9.1 Evidence Graph UX patterns
     "evidence_graph_gaps": [
         "data/backtest_results/evidence_graph/evidence_graph_gaps*.csv",

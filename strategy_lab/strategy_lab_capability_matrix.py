@@ -64,6 +64,7 @@ class StrategyLabCapabilityMatrix:
             + self._crash_reversal_caps()  # v0.9.0.1 crash reversal
             + self._evidence_graph_ux_caps()  # v0.9.1 Evidence Graph UX
             + self._strategy_validation_caps()  # v0.9.2 strategy validation
+            + self._strategy_lab_dashboard_caps()  # v0.9.3 strategy lab dashboard
         )
         return self._capabilities
 
@@ -424,6 +425,49 @@ class StrategyLabCapabilityMatrix:
                 no_real_orders=True,
                 production_blocked=True,
             )
+        ]
+
+    # v0.9.3 strategy lab dashboard
+    def _strategy_lab_dashboard_caps(self) -> List[StrategyLabCapability]:
+        src = "strategy_lab.strategy_lab_dashboard"
+        sld_cli = [
+            "strategy-lab-dashboard", "strategy-lab-dashboard-summary",
+            "strategy-lab-dashboard-cards", "strategy-lab-dashboard-actions",
+            "strategy-lab-dashboard-priorities", "strategy-lab-dashboard-needs-backtest",
+            "strategy-lab-dashboard-needs-replay", "strategy-lab-dashboard-needs-data",
+            "strategy-lab-dashboard-report",
+        ]
+        sld_gui  = ["StrategyLabDashboardPanel"]
+        sld_rep  = ["strategy_lab_dashboard_report"]
+        sld_reg  = ["release_gate", "quick"]
+        sld_saf  = ["no_real_orders=True", "production_blocked=True",
+                    "_guard() blocks BUY/SELL/ORDER", "read_only=True"]
+        sld_lim  = ["Dashboard reads from existing module stores — run sub-modules first",
+                    "Graceful fallback when sub-module stores are empty"]
+        return [
+            _cap("sld_engine", "Strategy Lab Dashboard Engine", CAT_RESEARCH_INTELLIGENCE, src,
+                 "v0.9.3", STABLE_STATUS_USABLE, "v0.9.3",
+                 sld_cli, sld_gui, sld_rep, sld_reg, [], sld_saf, sld_lim),
+            _cap("sld_cards", "Dashboard Cards", CAT_RESEARCH_INTELLIGENCE, src,
+                 "v0.9.3", STABLE_STATUS_USABLE, "v0.9.3",
+                 ["strategy-lab-dashboard-cards"], sld_gui, sld_rep, sld_reg,
+                 ["sld_engine"], sld_saf,
+                 ["12 summary cards covering all Strategy Lab modules"]),
+            _cap("sld_validation_board", "Validation Board", CAT_RESEARCH_INTELLIGENCE, src,
+                 "v0.9.3", STABLE_STATUS_USABLE, "v0.9.3",
+                 ["strategy-lab-dashboard"], sld_gui, sld_rep, sld_reg,
+                 ["sld_engine", "strategy_validation"], sld_saf,
+                 ["Shows top 10 strategy validation rows"]),
+            _cap("sld_evidence_board", "Evidence Board", CAT_RESEARCH_INTELLIGENCE, src,
+                 "v0.9.3", STABLE_STATUS_USABLE, "v0.9.3",
+                 ["strategy-lab-dashboard"], sld_gui, sld_rep, sld_reg,
+                 ["sld_engine", "evidence_graph"], sld_saf,
+                 ["Shows evidence graph rows and crash reversal rows"]),
+            _cap("sld_action_board", "Action Board", CAT_RESEARCH_INTELLIGENCE, src,
+                 "v0.9.3", STABLE_STATUS_USABLE, "v0.9.3",
+                 ["strategy-lab-dashboard-actions", "strategy-lab-dashboard-priorities"],
+                 sld_gui, sld_rep, sld_reg, ["sld_engine"], sld_saf,
+                 ["Research-only action types; no BUY/SELL/ORDER"]),
         ]
 
     def _supporting_caps(self) -> List[StrategyLabCapability]:

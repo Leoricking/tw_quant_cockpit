@@ -4,7 +4,15 @@
 >
 > **[!] v1: Real order execution is strictly prohibited. For research, simulation, and decision support only. Not investment advice.**
 
-**Current version: v0.9.2 — Strategy Validation Score**
+**Current version: v0.9.3 — Strategy Lab Dashboard Polish**
+
+---
+
+## v0.9.3 — Strategy Lab Dashboard Polish
+
+Unified single-view dashboard summarizing validation grades, evidence graph health, crash reversal risks, training metrics, coach tasks, strategy memories, and research intelligence. 9 new CLI commands, GUI tab (Strategy Lab Dashboard), Markdown report.
+
+Research Only | No Real Orders | Not Investment Advice
 
 ---
 

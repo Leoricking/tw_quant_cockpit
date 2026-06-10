@@ -739,4 +739,36 @@ class IntelligenceStableChecklist:
                 suggested_fix="Run: python main.py strategy-validation --mode real",
             ))
 
+        # v0.9.3 strategy_lab_dashboard_safe — StrategyLabDashboardEngine is read_only
+        try:
+            import importlib
+            mod_sld = importlib.import_module("strategy_lab.strategy_lab_dashboard_engine")
+            has_engine = hasattr(mod_sld, "StrategyLabDashboardEngine")
+            engine_cls = getattr(mod_sld, "StrategyLabDashboardEngine", None)
+            is_read_only = getattr(engine_cls, "read_only", None) if engine_cls else None
+            no_real_orders = getattr(engine_cls, "no_real_orders", None) if engine_cls else None
+            if has_engine and is_read_only is True and no_real_orders is True:
+                checks.append(_check(
+                    "strategy_lab_dashboard_safe", "stable_integration",
+                    "v0.9.3 strategy_lab_dashboard_safe",
+                    CHECK_PASS, SEV_LOW,
+                    "StrategyLabDashboardEngine.read_only=True and no_real_orders=True.",
+                ))
+            else:
+                checks.append(_check(
+                    "strategy_lab_dashboard_safe", "stable_integration",
+                    "v0.9.3 strategy_lab_dashboard_safe",
+                    CHECK_WARN, SEV_LOW,
+                    f"StrategyLabDashboardEngine found={has_engine}, read_only={is_read_only} (optional v0.9.3).",
+                    suggested_fix="Ensure StrategyLabDashboardEngine has read_only=True and no_real_orders=True.",
+                ))
+        except Exception as exc:
+            checks.append(_check(
+                "strategy_lab_dashboard_safe", "stable_integration",
+                "v0.9.3 strategy_lab_dashboard_safe",
+                CHECK_WARN, SEV_LOW,
+                f"Could not verify strategy_lab_dashboard safety (optional): {exc}",
+                suggested_fix="Run: python main.py strategy-lab-dashboard --mode real",
+            ))
+
         return checks

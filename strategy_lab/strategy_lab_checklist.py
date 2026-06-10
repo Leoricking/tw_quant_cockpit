@@ -260,6 +260,63 @@ class StrategyLabChecklist:
                               "validated_does_not_enable_trading",
                               CHECK_WARN, SEV_MEDIUM,
                               f"Check skipped (optional): {exc}"))
+        # v0.9.3 strategy lab dashboard — CHECK_WARN on failure (optional new features)
+        # a_sld_import: StrategyLabDashboardEngine imports
+        try:
+            mod = __import__("strategy_lab.strategy_lab_dashboard_engine",
+                             fromlist=["StrategyLabDashboardEngine"])
+            getattr(mod, "StrategyLabDashboardEngine")
+            checks.append(_mk("a_sld_import", "import_health",
+                              "strategy_lab_dashboard_engine import",
+                              CHECK_PASS, SEV_LOW,
+                              "StrategyLabDashboardEngine imported successfully."))
+        except Exception as exc:
+            checks.append(_mk("a_sld_import", "import_health",
+                              "strategy_lab_dashboard_engine import",
+                              CHECK_WARN, SEV_MEDIUM,
+                              f"Import failed (optional): {exc}",
+                              "Check strategy_lab/strategy_lab_dashboard_engine.py"))
+        # a_sld_no_forbidden: StrategyLabDashboardSummary rejects BUY
+        try:
+            mod = __import__("strategy_lab.strategy_lab_dashboard_schema",
+                             fromlist=["StrategyLabDashboardSummary", "_guard"])
+            guard_fn = getattr(mod, "_guard")
+            try:
+                guard_fn("BUY signal detected", "test")
+                checks.append(_mk("a_sld_no_forbidden", "import_health",
+                                  "dashboard_no_forbidden_actions",
+                                  CHECK_FAIL, SEV_HIGH,
+                                  "_guard() did NOT raise on 'BUY' — safety leak!",
+                                  "Fix _guard() in strategy_lab_dashboard_schema.py"))
+            except ValueError:
+                checks.append(_mk("a_sld_no_forbidden", "import_health",
+                                  "dashboard_no_forbidden_actions",
+                                  CHECK_PASS, SEV_LOW,
+                                  "StrategyLabDashboardSchema _guard() correctly rejects BUY."))
+        except Exception as exc:
+            checks.append(_mk("a_sld_no_forbidden", "import_health",
+                              "dashboard_no_forbidden_actions",
+                              CHECK_WARN, SEV_MEDIUM,
+                              f"Check skipped (optional): {exc}"))
+        # a_sld_report_available: dashboard report file exists
+        try:
+            import os
+            report_py = os.path.join(BASE_DIR, "reports", "strategy_lab_dashboard_report.py")
+            if os.path.isfile(report_py):
+                checks.append(_mk("a_sld_report_available", "import_health",
+                                  "dashboard_report_available",
+                                  CHECK_PASS, SEV_LOW,
+                                  "reports/strategy_lab_dashboard_report.py exists."))
+            else:
+                checks.append(_mk("a_sld_report_available", "import_health",
+                                  "dashboard_report_available",
+                                  CHECK_WARN, SEV_MEDIUM,
+                                  "reports/strategy_lab_dashboard_report.py not found (optional v0.9.3).",
+                                  "Create reports/strategy_lab_dashboard_report.py"))
+        except Exception as exc:
+            checks.append(_mk("a_sld_report_available", "import_health",
+                              "dashboard_report_available",
+                              CHECK_WARN, SEV_MEDIUM, f"Check skipped: {exc}"))
         # crash_reversal_cli_available
         try:
             import os

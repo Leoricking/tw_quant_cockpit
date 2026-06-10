@@ -5,6 +5,57 @@
 
 ---
 
+## v0.9.3 — Strategy Lab Dashboard Polish
+
+**Released:** 2026-06-10
+
+### Overview
+
+v0.9.3 introduces the Strategy Lab Dashboard — a unified single-view dashboard that
+summarizes validation grades, evidence graph health, crash reversal risks, training metrics,
+coach tasks, strategy memories, and research intelligence into one place.
+
+No BUY/SELL/ORDER. No trading actions. Production Trading: BLOCKED.
+`read_only=True`, `no_real_orders=True`, `production_blocked=True`, `real_order_ready=False`.
+
+### New Modules
+
+| Module | Description |
+|--------|-------------|
+| `strategy_lab/strategy_lab_dashboard_schema.py` | Dataclasses: StrategyLabDashboardCard, StrategyLabDashboardRow, StrategyLabActionItem, StrategyLabDashboardSummary; `_guard()` |
+| `strategy_lab/strategy_lab_dashboard_engine.py` | Collects context from all sub-stores and builds cards, rows, actions, summary |
+| `strategy_lab/strategy_lab_dashboard_store.py` | CSV persistence for cards, rows, actions, summary |
+| `strategy_lab/strategy_lab_dashboard_query.py` | Query helpers: list_cards, list_rows, list_actions, top_priorities, needs_backtest, needs_replay, needs_data, conflicted, explain_dashboard |
+| `reports/strategy_lab_dashboard_report.py` | Markdown report generator with 9 sections |
+
+### GUI
+
+- `gui/strategy_lab_dashboard_panel.py` — StrategyLabDashboardPanel: Strategy Lab Dashboard tab with summary cards, filter bar, 6 tabs, action buttons
+- `gui/strategy_lab_dashboard_adapter.py` — StrategyLabDashboardAdapter: GUI ↔ backend bridge
+
+### CLI Commands (9)
+
+| Command | Description |
+|---------|-------------|
+| `strategy-lab-dashboard` | Run full Strategy Lab Dashboard engine |
+| `strategy-lab-dashboard-summary` | Print summary from store |
+| `strategy-lab-dashboard-cards` | List dashboard cards |
+| `strategy-lab-dashboard-actions` | List dashboard action items |
+| `strategy-lab-dashboard-priorities` | Show top priority actions |
+| `strategy-lab-dashboard-needs-backtest` | Strategies needing more backtest |
+| `strategy-lab-dashboard-needs-replay` | Strategies needing more replay |
+| `strategy-lab-dashboard-needs-data` | Strategies with data gaps |
+| `strategy-lab-dashboard-report` | Generate Markdown report |
+
+### Safety
+
+- `no_real_orders=True`, `production_blocked=True`, `real_order_ready=False`
+- `_guard()` rejects BUY/SELL/ORDER/EXECUTE/SUBMIT_ORDER/AUTO_TRADE/REAL_TRADE
+- No BUY/SELL/ORDER output in any command or report
+- Research Only. Not Investment Advice.
+
+---
+
 ## v0.9.2 — Strategy Validation Score
 
 **Released:** 2026-06-09

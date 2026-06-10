@@ -33,6 +33,9 @@ REPORT_CRASH_REVERSAL = "crash_reversal_strategy_report"
 # v0.9.2 strategy validation
 REPORT_STRATEGY_VALIDATION = "strategy_validation_report"
 
+# v0.9.3 strategy lab dashboard
+REPORT_STRATEGY_LAB_DASHBOARD = "strategy_lab_dashboard_report"
+
 logger = logging.getLogger(__name__)
 
 # ---------------------------------------------------------------------------
@@ -66,6 +69,8 @@ _PACK_DEFINITIONS: Dict[str, List[str]] = {
         REPORT_CRASH_REVERSAL,
         # v0.9.2 Strategy Validation Score (optional in daily pack)
         REPORT_STRATEGY_VALIDATION,
+        # v0.9.3 Strategy Lab Dashboard (optional in daily pack)
+        REPORT_STRATEGY_LAB_DASHBOARD,
     ],
     PACK_WEEKLY: [
         REPORT_DAILY_MARKET,
@@ -99,6 +104,8 @@ _PACK_DEFINITIONS: Dict[str, List[str]] = {
         REPORT_CRASH_REVERSAL,
         # v0.9.2 Strategy Validation Score (optional in weekly pack)
         REPORT_STRATEGY_VALIDATION,
+        # v0.9.3 Strategy Lab Dashboard (optional in weekly pack)
+        REPORT_STRATEGY_LAB_DASHBOARD,
     ],
     PACK_FULL: [
         REPORT_DAILY_MARKET,
@@ -144,6 +151,8 @@ _PACK_DEFINITIONS: Dict[str, List[str]] = {
         REPORT_CRASH_REVERSAL,
         # v0.9.2 Strategy Validation Score (optional in full pack)
         REPORT_STRATEGY_VALIDATION,
+        # v0.9.3 Strategy Lab Dashboard (optional in full pack)
+        REPORT_STRATEGY_LAB_DASHBOARD,
     ],
 }
 

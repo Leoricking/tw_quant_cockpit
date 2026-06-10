@@ -1084,7 +1084,11 @@ class GUITabRegistry:
                 keywords=[
                     "strategy lab", "stable", "capability matrix", "stable checklist",
                     "release manifest", "strategy lab stable", "validation",
+                    "dashboard", "strategy lab dashboard", "validation board", "action board",
+                    "evidence board", "module health",
                     "\u7b56\u7565\u5be6\u9a57\u5ba4", "\u7a69\u5b9a\u6aa2\u67e5\u8868",
+                    "\u5100\u8868\u677f", "\u7b56\u7565\u7e3d\u63a7", "\u7b56\u7565\u5100\u8868\u677f",
+                    "\u9a57\u8b49\u770b\u677f", "\u884c\u52d5\u770b\u677f", "\u8b49\u64da\u770b\u677f",
                 ],
                 aliases=["strategy-lab", "strategy-lab-summary", "strategy-lab-capabilities"],
                 related_cli_commands=[
@@ -1096,6 +1100,45 @@ class GUITabRegistry:
                 default_visible=True,
                 favorite_default=False,
                 notes="Added in v0.9.0 \u2014 Strategy Lab Stable.",
+            ),
+            # v0.9.3 Strategy Lab Dashboard
+            GUITabMetadata(
+                tab_id="strategy_lab_dashboard",
+                tab_name="strategy_lab_dashboard",
+                display_name="Strategy Lab Dashboard",
+                group="strategy_lab",
+                priority="P0",
+                description=(
+                    "Strategy Lab Dashboard v0.9.3 \u2014 unified single-view dashboard "
+                    "summarizing validation grades, evidence graph health, crash reversal risks, "
+                    "training metrics, coach tasks, strategy memories, and research intelligence. "
+                    "Research Only. No Real Orders. Production BLOCKED."
+                ),
+                module_path="gui.strategy_lab_dashboard_panel",
+                class_name="StrategyLabDashboardPanel",
+                available_flag="_STRATEGY_LAB_DASHBOARD_AVAILABLE",
+                safety_level="RESEARCH_ONLY",
+                read_only=True,
+                no_real_orders=True,
+                production_blocked=True,
+                keywords=[
+                    "dashboard", "strategy lab dashboard", "validation board", "action board",
+                    "evidence board", "module health", "crash reversal board",
+                    "strategy lab status", "grade mix", "needs backtest", "needs replay",
+                    "\u5100\u8868\u677f", "\u7b56\u7565\u7e3d\u63a7", "\u7b56\u7565\u5100\u8868\u677f",
+                    "\u9a57\u8b49\u770b\u677f", "\u884c\u52d5\u770b\u677f", "\u8b49\u64da\u770b\u677f",
+                ],
+                aliases=["strategy-lab-dashboard", "strategy-lab-dashboard-summary"],
+                related_cli_commands=[
+                    "strategy-lab-dashboard", "strategy-lab-dashboard-summary",
+                    "strategy-lab-dashboard-cards", "strategy-lab-dashboard-actions",
+                    "strategy-lab-dashboard-priorities", "strategy-lab-dashboard-report",
+                ],
+                report_types=["strategy_lab_dashboard_report"],
+                maturity="v0.9.3",
+                default_visible=True,
+                favorite_default=False,
+                notes="Added in v0.9.3 \u2014 Strategy Lab Dashboard Polish.",
             ),
         ]
         for tab in tabs:

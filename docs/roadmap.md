@@ -68,6 +68,7 @@
 | v0.9.0.1 | Crash Reversal & Risk Discipline Strategy Pack | Done |
 | v0.9.1 | Evidence Graph UX | Done |
 | v0.9.2 | Strategy Validation Score | Done |
+| v0.9.3 | Strategy Lab Dashboard Polish | Done |
 
 ---
 

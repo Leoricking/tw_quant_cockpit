@@ -517,6 +517,14 @@ try:
 except ImportError:
     pass
 
+# v0.9.3 Strategy Lab Dashboard
+_STRATEGY_LAB_DASHBOARD_AVAILABLE = False
+try:
+    from gui.strategy_lab_dashboard_panel import StrategyLabDashboardPanel
+    _STRATEGY_LAB_DASHBOARD_AVAILABLE = True
+except ImportError:
+    pass
+
 # v0.5.1.1 Strategy Filter panel — inline (no separate panel file required)
 # ---------------------------------------------------------------------------
 _STRATEGY_FILTER_AVAILABLE = False
@@ -1620,6 +1628,13 @@ class CockpitWindow(QMainWindow if _PYSIDE6_AVAILABLE else object):
         # v0.9.2 Strategy Validation
         if _STRATEGY_VALIDATION_AVAILABLE:
             self.tab_widget.addTab(StrategyValidationPanel(mode=getattr(self, '_mode', 'real')), "Strategy Validation")
+
+        # v0.9.3 Strategy Lab Dashboard
+        if _STRATEGY_LAB_DASHBOARD_AVAILABLE:
+            self._strategy_lab_dashboard_panel = StrategyLabDashboardPanel(mode=getattr(self, '_mode', 'real'))
+            self.tab_widget.addTab(self._strategy_lab_dashboard_panel, "Strategy Lab Dashboard")
+        else:
+            self._strategy_lab_dashboard_panel = None
 
         # v0.4.1.1 Strategy Knowledge tab
         if _STRATEGY_KNOWLEDGE_INGESTION_AVAILABLE:

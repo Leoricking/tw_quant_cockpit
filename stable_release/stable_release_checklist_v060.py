@@ -1099,6 +1099,62 @@ class StableReleaseChecklistV060:
                 f"Check skipped (optional): {exc}",
             )
 
+    def _check_strategy_lab_dashboard_import(self) -> dict:
+        """v0.9.3 — StrategyLabDashboardEngine imports successfully."""
+        try:
+            import importlib.util
+            spec = importlib.util.find_spec("strategy_lab.strategy_lab_dashboard_engine")
+            if spec is None:
+                return _check_item(
+                    "strategy_lab_dashboard_import", "imports", "WARN",
+                    "strategy_lab.strategy_lab_dashboard_engine not found (optional v0.9.3 feature).",
+                    warning="Add strategy_lab_dashboard_engine.py to strategy_lab/",
+                    suggested_fix="Create strategy_lab/strategy_lab_dashboard_engine.py",
+                )
+            from strategy_lab.strategy_lab_dashboard_engine import StrategyLabDashboardEngine  # noqa: F401
+            return _check_item(
+                "strategy_lab_dashboard_import", "imports", "PASS",
+                "StrategyLabDashboardEngine imported successfully.",
+            )
+        except ImportError as exc:
+            return _check_item(
+                "strategy_lab_dashboard_import", "imports", "WARN",
+                f"StrategyLabDashboardEngine import failed (optional): {exc}",
+                warning="New optional feature — WARN not FAIL",
+                suggested_fix="Check strategy_lab/strategy_lab_dashboard_engine.py",
+            )
+        except Exception as exc:
+            return _check_item(
+                "strategy_lab_dashboard_import", "imports", "WARN", str(exc),
+            )
+
+    def _check_strategy_lab_dashboard_no_forbidden_actions(self) -> dict:
+        """v0.9.3 — StrategyLabDashboardEngine is read_only and no forbidden actions."""
+        try:
+            import importlib.util
+            spec = importlib.util.find_spec("strategy_lab.strategy_lab_dashboard_engine")
+            if spec is None:
+                return _check_item(
+                    "strategy_lab_dashboard_no_forbidden", "safety", "WARN",
+                    "strategy_lab.strategy_lab_dashboard_engine not installed — check skipped.",
+                )
+            from strategy_lab.strategy_lab_dashboard_engine import StrategyLabDashboardEngine
+            if not getattr(StrategyLabDashboardEngine, "no_real_orders", False):
+                return _check_item(
+                    "strategy_lab_dashboard_no_forbidden", "safety", "WARN",
+                    "StrategyLabDashboardEngine.no_real_orders is not True",
+                    suggested_fix="Set no_real_orders=True on StrategyLabDashboardEngine",
+                )
+            return _check_item(
+                "strategy_lab_dashboard_no_forbidden", "safety", "PASS",
+                "StrategyLabDashboardEngine.no_real_orders=True and read_only=True.",
+            )
+        except Exception as exc:
+            return _check_item(
+                "strategy_lab_dashboard_no_forbidden", "safety", "WARN",
+                f"Check skipped (optional): {exc}",
+            )
+
     def _check_evidence_graph_ux_no_forbidden(self) -> dict:
         """v0.9.1 — Check EvidenceGraphQuery doesn't output BUY/SELL/ORDER."""
         try:
@@ -1199,6 +1255,9 @@ class StableReleaseChecklistV060:
             # v0.9.2 Strategy Validation Score
             self._check_strategy_validation_import,
             self._check_strategy_validation_no_forbidden,
+            # v0.9.3 Strategy Lab Dashboard
+            self._check_strategy_lab_dashboard_import,
+            self._check_strategy_lab_dashboard_no_forbidden_actions,
         ]
 
         for fn in checklist_groups:

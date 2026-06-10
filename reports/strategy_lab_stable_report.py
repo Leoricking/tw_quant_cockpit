@@ -113,6 +113,7 @@ class StrategyLabStableReportBuilder:
         lines += self._section_regression_report_data()
         lines += self._section_known_limitations()
         lines += self._section_next_roadmap()
+        lines += self._section_dashboard_status()
         lines += self._section_safety_declaration()
         return lines
 
@@ -412,6 +413,42 @@ class StrategyLabStableReportBuilder:
             "---",
             "",
         ]
+
+    def _section_dashboard_status(self) -> List[str]:
+        """v0.9.3 — Dashboard Status section."""
+        lines = [
+            "## 十四、Dashboard Status (v0.9.3)",
+            "",
+        ]
+        try:
+            from strategy_lab.strategy_lab_dashboard_store import StrategyLabDashboardStore
+            store = StrategyLabDashboardStore()
+            summary = store.load_latest_summary()
+            if summary:
+                sd = summary.to_dict()
+                lines += [
+                    "| Field | Value |",
+                    "|-------|-------|",
+                    f"| Overall Status | {sd.get('overall_status','UNKNOWN')} |",
+                    f"| Health Score | {float(sd.get('overall_health_score',0)):.1f} / 100 |",
+                    f"| Strategy Count | {sd.get('strategy_count',0)} |",
+                    f"| Needs Backtest | {sd.get('needs_backtest_count',0)} |",
+                    f"| Crash Warnings | {sd.get('crash_reversal_warning_count',0)} |",
+                    f"| Forbidden Actions | {sd.get('forbidden_action_count',0)} |",
+                    "",
+                ]
+            else:
+                lines += [
+                    "*(No dashboard summary — run: python main.py strategy-lab-dashboard --mode real)*",
+                    "",
+                ]
+        except Exception as exc:
+            lines += [
+                f"*(Dashboard status unavailable: {exc})*",
+                "",
+            ]
+        lines += ["---", ""]
+        return lines
 
     def _section_safety_declaration(self) -> List[str]:
         return [

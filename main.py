@@ -9219,6 +9219,208 @@ def cmd_strategy_validation_explain(args):
         print(f"[WARN] strategy-validation-explain: {e}")
 
 
+# v0.9.3 Strategy Lab Dashboard
+def cmd_strategy_lab_dashboard(args):
+    """Run full Strategy Lab Dashboard engine."""
+    mode = getattr(args, 'mode', 'real')
+    output_dir = getattr(args, 'output_dir', 'data/backtest_results/strategy_lab_dashboard')
+    try:
+        from strategy_lab.strategy_lab_dashboard_engine import StrategyLabDashboardEngine
+        engine = StrategyLabDashboardEngine(output_dir=output_dir)
+        result = engine.run(mode=mode)
+        summary = result.get('summary')
+        print("=" * 60)
+        print("TW Quant Cockpit \u2014 Strategy Lab Dashboard")
+        print("=" * 60)
+        print(f"Mode:                          {mode}")
+        print(f"Research Only:                 True")
+        print(f"No Real Orders:                True")
+        print(f"Production Trading BLOCKED:    True")
+        if summary:
+            sd = summary.to_dict() if hasattr(summary, 'to_dict') else (summary if isinstance(summary, dict) else {})
+            print(f"Overall Health:                {sd.get('overall_health_score', 0):.1f} / 100")
+            print(f"Strategy Count:                {sd.get('strategy_count', 0)}")
+            print(f"Validated:                     {sd.get('validated_count', 0)}")
+            print(f"Validating:                    {sd.get('validating_count', 0)}")
+            print(f"Observational:                 {sd.get('observational_count', 0)}")
+            print(f"Needs Backtest:                {sd.get('needs_backtest_count', 0)}")
+            print(f"Needs Replay:                  {sd.get('needs_replay_count', 0)}")
+            print(f"Needs Data:                    {sd.get('needs_data_count', 0)}")
+            print(f"Conflicted:                    {sd.get('conflicted_count', 0)}")
+            print(f"Crash Warnings:                {sd.get('crash_reversal_warning_count', 0)}")
+            print(f"Forbidden Actions:             0")
+        print(f"Report:                        run strategy-lab-dashboard-report --mode {mode}")
+        print("=" * 60)
+        print("RESEARCH ONLY \u2014 Not Investment Advice \u2014 No Real Orders")
+        print("VALIDATED = Research Validated Only, does NOT enable trading")
+    except Exception as e:
+        print(f"[WARN] strategy-lab-dashboard: {e}")
+
+
+def cmd_strategy_lab_dashboard_summary(args):
+    """Print Strategy Lab Dashboard summary."""
+    output_dir = getattr(args, 'output_dir', 'data/backtest_results/strategy_lab_dashboard')
+    try:
+        from strategy_lab.strategy_lab_dashboard_store import StrategyLabDashboardStore
+        store = StrategyLabDashboardStore(output_dir=output_dir)
+        summary = store.load_latest_summary()
+        if summary:
+            sd = summary.to_dict() if hasattr(summary, 'to_dict') else {}
+            print(f"Strategy Lab Dashboard Summary \u2014 v0.9.3")
+            print("Research Only | No Real Orders | Production Trading BLOCKED")
+            print(f"  Status: {sd.get('overall_status','UNKNOWN')} | Health: {float(sd.get('overall_health_score',0)):.1f}/100")
+            print(f"  Strategies: {sd.get('strategy_count',0)} | VALIDATED={sd.get('validated_count',0)} VALIDATING={sd.get('validating_count',0)}")
+            print(f"  Needs Backtest={sd.get('needs_backtest_count',0)} Needs Replay={sd.get('needs_replay_count',0)} Needs Data={sd.get('needs_data_count',0)}")
+            print(f"  Crash Warnings={sd.get('crash_reversal_warning_count',0)} Forbidden={sd.get('forbidden_action_count',0)}")
+        else:
+            print("No dashboard summary found \u2014 run: python main.py strategy-lab-dashboard --mode real")
+    except Exception as e:
+        print(f"[WARN] strategy-lab-dashboard-summary: {e}")
+
+
+def cmd_strategy_lab_dashboard_cards(args):
+    """List dashboard cards."""
+    status   = getattr(args, 'status', None)
+    severity = getattr(args, 'severity', None)
+    output_dir = getattr(args, 'output_dir', 'data/backtest_results/strategy_lab_dashboard')
+    try:
+        from strategy_lab.strategy_lab_dashboard_query import StrategyLabDashboardQuery
+        from strategy_lab.strategy_lab_dashboard_store import StrategyLabDashboardStore
+        store = StrategyLabDashboardStore(output_dir=output_dir)
+        q = StrategyLabDashboardQuery(store=store)
+        cards = q.list_cards(status=status, severity=severity)
+        print(f"Dashboard Cards  ({len(cards)} total) | Research Only")
+        print(f"{'Title':<30} {'Value':<15} {'Status':<10} {'Severity':<10}")
+        print("-" * 70)
+        for c in cards:
+            cd = c.to_dict() if hasattr(c, 'to_dict') else (c if isinstance(c, dict) else {})
+            print(f"  {str(cd.get('title','')):<28} {str(cd.get('value','')):<13} {str(cd.get('status','')):<8} {str(cd.get('severity','')):<8}")
+        if not cards:
+            print("  No cards found \u2014 run: python main.py strategy-lab-dashboard --mode real")
+    except Exception as e:
+        print(f"[WARN] strategy-lab-dashboard-cards: {e}")
+
+
+def cmd_strategy_lab_dashboard_actions(args):
+    """List dashboard action items."""
+    action_type   = getattr(args, 'action_type', None)
+    source_module = getattr(args, 'source_module', None)
+    output_dir    = getattr(args, 'output_dir', 'data/backtest_results/strategy_lab_dashboard')
+    try:
+        from strategy_lab.strategy_lab_dashboard_query import StrategyLabDashboardQuery
+        from strategy_lab.strategy_lab_dashboard_store import StrategyLabDashboardStore
+        store = StrategyLabDashboardStore(output_dir=output_dir)
+        q = StrategyLabDashboardQuery(store=store)
+        actions = q.list_actions(action_type=action_type, source_module=source_module)
+        print(f"Dashboard Actions  ({len(actions)} total) | Research Only")
+        print(f"{'Priority':<10} {'Type':<18} {'Title':<40}")
+        print("-" * 72)
+        for a in actions:
+            ad = a.to_dict() if hasattr(a, 'to_dict') else (a if isinstance(a, dict) else {})
+            print(f"  {str(ad.get('priority','')):<8} {str(ad.get('action_type','')):<16} {str(ad.get('title',''))[:38]}")
+        if not actions:
+            print("  No actions found \u2014 run: python main.py strategy-lab-dashboard --mode real")
+    except Exception as e:
+        print(f"[WARN] strategy-lab-dashboard-actions: {e}")
+
+
+def cmd_strategy_lab_dashboard_priorities(args):
+    """Show top priority dashboard actions."""
+    limit      = getattr(args, 'limit', 10)
+    output_dir = getattr(args, 'output_dir', 'data/backtest_results/strategy_lab_dashboard')
+    try:
+        from strategy_lab.strategy_lab_dashboard_query import StrategyLabDashboardQuery
+        from strategy_lab.strategy_lab_dashboard_store import StrategyLabDashboardStore
+        store = StrategyLabDashboardStore(output_dir=output_dir)
+        q = StrategyLabDashboardQuery(store=store)
+        actions = q.top_priorities(limit=limit)
+        print(f"Top {limit} Priority Actions | Research Only")
+        for i, a in enumerate(actions, 1):
+            ad = a.to_dict() if hasattr(a, 'to_dict') else (a if isinstance(a, dict) else {})
+            print(f"  {i}. [{ad.get('priority','')}] {str(ad.get('action_type','')):<18} {str(ad.get('title',''))[:50]}")
+            print(f"     Command: {ad.get('safe_command','')}")
+        if not actions:
+            print("  No actions found \u2014 run: python main.py strategy-lab-dashboard --mode real")
+    except Exception as e:
+        print(f"[WARN] strategy-lab-dashboard-priorities: {e}")
+
+
+def cmd_strategy_lab_dashboard_needs_backtest(args):
+    """Show strategies needing backtest."""
+    limit      = getattr(args, 'limit', 10)
+    output_dir = getattr(args, 'output_dir', 'data/backtest_results/strategy_lab_dashboard')
+    try:
+        from strategy_lab.strategy_lab_dashboard_query import StrategyLabDashboardQuery
+        from strategy_lab.strategy_lab_dashboard_store import StrategyLabDashboardStore
+        store = StrategyLabDashboardStore(output_dir=output_dir)
+        q = StrategyLabDashboardQuery(store=store)
+        items = q.needs_backtest(limit=limit)
+        print(f"Needs Backtest  ({len(items)}) | Research Only")
+        for a in items:
+            ad = a.to_dict() if hasattr(a, 'to_dict') else (a if isinstance(a, dict) else {})
+            print(f"  [{ad.get('priority','')}] {str(ad.get('title',''))[:60]}")
+        if not items:
+            print("  No backtest-needed items found.")
+    except Exception as e:
+        print(f"[WARN] strategy-lab-dashboard-needs-backtest: {e}")
+
+
+def cmd_strategy_lab_dashboard_needs_replay(args):
+    """Show strategies needing replay."""
+    limit      = getattr(args, 'limit', 10)
+    output_dir = getattr(args, 'output_dir', 'data/backtest_results/strategy_lab_dashboard')
+    try:
+        from strategy_lab.strategy_lab_dashboard_query import StrategyLabDashboardQuery
+        from strategy_lab.strategy_lab_dashboard_store import StrategyLabDashboardStore
+        store = StrategyLabDashboardStore(output_dir=output_dir)
+        q = StrategyLabDashboardQuery(store=store)
+        items = q.needs_replay(limit=limit)
+        print(f"Needs Replay  ({len(items)}) | Research Only")
+        for a in items:
+            ad = a.to_dict() if hasattr(a, 'to_dict') else (a if isinstance(a, dict) else {})
+            print(f"  [{ad.get('priority','')}] {str(ad.get('title',''))[:60]}")
+        if not items:
+            print("  No replay-needed items found.")
+    except Exception as e:
+        print(f"[WARN] strategy-lab-dashboard-needs-replay: {e}")
+
+
+def cmd_strategy_lab_dashboard_needs_data(args):
+    """Show strategies needing data."""
+    limit      = getattr(args, 'limit', 10)
+    output_dir = getattr(args, 'output_dir', 'data/backtest_results/strategy_lab_dashboard')
+    try:
+        from strategy_lab.strategy_lab_dashboard_query import StrategyLabDashboardQuery
+        from strategy_lab.strategy_lab_dashboard_store import StrategyLabDashboardStore
+        store = StrategyLabDashboardStore(output_dir=output_dir)
+        q = StrategyLabDashboardQuery(store=store)
+        items = q.needs_data(limit=limit)
+        print(f"Needs Data  ({len(items)}) | Research Only")
+        for a in items:
+            ad = a.to_dict() if hasattr(a, 'to_dict') else (a if isinstance(a, dict) else {})
+            print(f"  [{ad.get('priority','')}] {str(ad.get('title',''))[:60]}")
+        if not items:
+            print("  No data-needed items found.")
+    except Exception as e:
+        print(f"[WARN] strategy-lab-dashboard-needs-data: {e}")
+
+
+def cmd_strategy_lab_dashboard_report(args):
+    """Generate Strategy Lab Dashboard markdown report."""
+    mode       = getattr(args, 'mode', 'real')
+    output_dir = getattr(args, 'output_dir', 'data/backtest_results/strategy_lab_dashboard')
+    report_dir = getattr(args, 'report_dir', 'reports')
+    try:
+        from reports.strategy_lab_dashboard_report import StrategyLabDashboardReportBuilder
+        builder = StrategyLabDashboardReportBuilder(output_dir=output_dir, report_dir=report_dir)
+        path = builder.build(mode=mode)
+        print(f"Strategy Lab Dashboard Report: {path}")
+        print("Research Only | No Real Orders | Production Trading BLOCKED")
+        print("Not Investment Advice")
+    except Exception as e:
+        print(f"[WARN] strategy-lab-dashboard-report: {e}")
+
+
 def cmd_training_metrics(args: argparse.Namespace) -> None:
     """Run full Backtest Training Metrics pipeline."""
     mode       = getattr(args, "mode", "real")
@@ -13867,6 +14069,46 @@ def _build_parser() -> argparse.ArgumentParser:
     p_sv_exp = subparsers.add_parser("strategy-validation-explain", help="[v0.9.2] Explain a strategy score")
     p_sv_exp.add_argument("--strategy-id", default="")
 
+    # v0.9.3 Strategy Lab Dashboard
+    p_sld = subparsers.add_parser("strategy-lab-dashboard", help="[v0.9.3] Run Strategy Lab Dashboard — Research Only")
+    p_sld.add_argument("--mode", default="real", choices=["real", "mock"])
+    p_sld.add_argument("--output-dir", default="data/backtest_results/strategy_lab_dashboard")
+    p_sld.add_argument("--report-dir", default="reports")
+
+    p_sld_sum = subparsers.add_parser("strategy-lab-dashboard-summary", help="[v0.9.3] Strategy Lab Dashboard summary")
+    p_sld_sum.add_argument("--output-dir", default="data/backtest_results/strategy_lab_dashboard")
+
+    p_sld_cards = subparsers.add_parser("strategy-lab-dashboard-cards", help="[v0.9.3] List dashboard cards")
+    p_sld_cards.add_argument("--status", default=None)
+    p_sld_cards.add_argument("--severity", default=None)
+    p_sld_cards.add_argument("--output-dir", default="data/backtest_results/strategy_lab_dashboard")
+
+    p_sld_actions = subparsers.add_parser("strategy-lab-dashboard-actions", help="[v0.9.3] List dashboard actions")
+    p_sld_actions.add_argument("--action-type", default=None)
+    p_sld_actions.add_argument("--source-module", default=None)
+    p_sld_actions.add_argument("--output-dir", default="data/backtest_results/strategy_lab_dashboard")
+
+    p_sld_prio = subparsers.add_parser("strategy-lab-dashboard-priorities", help="[v0.9.3] Top priority actions")
+    p_sld_prio.add_argument("--limit", type=int, default=10)
+    p_sld_prio.add_argument("--output-dir", default="data/backtest_results/strategy_lab_dashboard")
+
+    p_sld_nb = subparsers.add_parser("strategy-lab-dashboard-needs-backtest", help="[v0.9.3] Strategies needing backtest")
+    p_sld_nb.add_argument("--limit", type=int, default=10)
+    p_sld_nb.add_argument("--output-dir", default="data/backtest_results/strategy_lab_dashboard")
+
+    p_sld_nr = subparsers.add_parser("strategy-lab-dashboard-needs-replay", help="[v0.9.3] Strategies needing replay")
+    p_sld_nr.add_argument("--limit", type=int, default=10)
+    p_sld_nr.add_argument("--output-dir", default="data/backtest_results/strategy_lab_dashboard")
+
+    p_sld_nd = subparsers.add_parser("strategy-lab-dashboard-needs-data", help="[v0.9.3] Strategies needing data")
+    p_sld_nd.add_argument("--limit", type=int, default=10)
+    p_sld_nd.add_argument("--output-dir", default="data/backtest_results/strategy_lab_dashboard")
+
+    p_sld_rep = subparsers.add_parser("strategy-lab-dashboard-report", help="[v0.9.3] Generate dashboard report")
+    p_sld_rep.add_argument("--mode", default="real", choices=["real", "mock"])
+    p_sld_rep.add_argument("--output-dir", default="data/backtest_results/strategy_lab_dashboard")
+    p_sld_rep.add_argument("--report-dir", default="reports")
+
     # --- strategy-knowledge-ingest (v0.4.1.1) ---
     p_ski = subparsers.add_parser(
         "strategy-knowledge-ingest",
@@ -15137,6 +15379,16 @@ def main() -> None:
         "crash-reversal-report":            cmd_crash_reversal_report,
         "crash-reversal-score":             cmd_crash_reversal_score,
         "crash-reversal-watchlist":         cmd_crash_reversal_watchlist,
+        # v0.9.3 Strategy Lab Dashboard
+        "strategy-lab-dashboard":              cmd_strategy_lab_dashboard,
+        "strategy-lab-dashboard-summary":      cmd_strategy_lab_dashboard_summary,
+        "strategy-lab-dashboard-cards":        cmd_strategy_lab_dashboard_cards,
+        "strategy-lab-dashboard-actions":      cmd_strategy_lab_dashboard_actions,
+        "strategy-lab-dashboard-priorities":   cmd_strategy_lab_dashboard_priorities,
+        "strategy-lab-dashboard-needs-backtest": cmd_strategy_lab_dashboard_needs_backtest,
+        "strategy-lab-dashboard-needs-replay": cmd_strategy_lab_dashboard_needs_replay,
+        "strategy-lab-dashboard-needs-data":   cmd_strategy_lab_dashboard_needs_data,
+        "strategy-lab-dashboard-report":       cmd_strategy_lab_dashboard_report,
         # v0.9.2 Strategy Validation Score
         "strategy-validation":              cmd_strategy_validation,
         "strategy-validation-summary":      cmd_strategy_validation_summary,
