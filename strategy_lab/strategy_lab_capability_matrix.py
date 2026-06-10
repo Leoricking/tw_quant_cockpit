@@ -66,7 +66,7 @@ class StrategyLabCapabilityMatrix:
             + self._strategy_validation_caps()  # v0.9.2 strategy validation
             + self._strategy_lab_dashboard_caps()  # v0.9.3 strategy lab dashboard
         )
-        return self._capabilities
+        return self._capabilities + self._research_cockpit_stable_caps()
 
     def summarize(self) -> dict:
         """Return summary statistics."""
@@ -540,4 +540,58 @@ class StrategyLabCapabilityMatrix:
                   "training_metrics", "evidence_graph"],
                  ["Stable validation only; no auto-modify of any module status"],
                  ["Does not auto-run sub-modules; reads existing CSV outputs"]),
+        ]
+
+    # ------------------------------------------------------------------
+    # v1.0.0 Research Cockpit Stable capabilities
+    # ------------------------------------------------------------------
+
+    def _research_cockpit_stable_caps(self) -> List[StrategyLabCapability]:
+        return [
+            _cap("rcs_stable_release", "Research Cockpit Stable", CAT_STABLE_RELEASE,
+                 "release", "v1.0.0", STABLE_STATUS_STABLE, "STABLE",
+                 ["research-cockpit-stable", "research-cockpit-stable-summary",
+                  "research-cockpit-stable-checks", "research-cockpit-stable-manifest",
+                  "research-cockpit-stable-report", "version-info"],
+                 ["Strategy Lab Dashboard"], ["research_trading_cockpit_stable_report"],
+                 ["release_gate"],
+                 ["strategy_lab", "strategy_validation", "evidence_graph",
+                  "crash_reversal", "training_metrics", "backtest_coach",
+                  "strategy_memory", "research_intelligence"],
+                 ["No Real Orders", "Production Trading BLOCKED", "Broker Execution Disabled",
+                  "VALIDATED does not enable trading"],
+                 ["25-item release checklist", "14-module availability matrix"]),
+            _cap("rcs_stable_manifest", "Stable Release Manifest", CAT_STABLE_RELEASE,
+                 "release", "v1.0.0", STABLE_STATUS_STABLE, "STABLE",
+                 ["research-cockpit-stable-manifest"],
+                 [], ["research_trading_cockpit_stable_report"],
+                 ["release_gate"],
+                 ["release.research_cockpit_manifest"],
+                 ["read_only=True", "no_real_orders=True", "production_blocked=True"],
+                 ["JSON manifest saved to data/backtest_results/release/"]),
+            _cap("rcs_checklist_v100", "Stable Release Checklist v1.0.0", CAT_STABLE_RELEASE,
+                 "release", "v1.0.0", STABLE_STATUS_STABLE, "STABLE",
+                 ["research-cockpit-stable-checks"],
+                 [], ["research_trading_cockpit_stable_report"],
+                 ["release_gate"],
+                 ["release.research_cockpit_stable_checklist"],
+                 ["25 checks across version, safety, modules, GUI, regression, docs, hygiene"],
+                 ["WARN on missing optional files is non-critical"]),
+            _cap("rcs_system_report", "Stable System Report", CAT_STABLE_RELEASE,
+                 "reports", "v1.0.0", STABLE_STATUS_STABLE, "STABLE",
+                 ["research-cockpit-stable-report"],
+                 [], ["research_trading_cockpit_stable_report"],
+                 ["release_gate"],
+                 ["reports.research_trading_cockpit_stable_report"],
+                 ["No Real Orders", "Not Investment Advice"],
+                 ["11 sections; saved to reports/"]),
+            _cap("rcs_no_real_orders_guard", "No Real Orders Global Guard", CAT_SAFETY,
+                 "release", "v1.0.0", STABLE_STATUS_STABLE, "STABLE",
+                 [], [], [],
+                 ["release_gate"],
+                 ["release.version_info"],
+                 ["REAL_ORDERS_ENABLED=False", "NO_REAL_ORDERS=True",
+                  "PRODUCTION_TRADING_BLOCKED=True", "BROKER_EXECUTION_ENABLED=False",
+                  "VALIDATED_DOES_NOT_ENABLE_TRADING=True"],
+                 ["All module-level flags confirmed in version_info.py"]),
         ]

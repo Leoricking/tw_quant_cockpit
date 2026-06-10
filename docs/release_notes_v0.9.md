@@ -2,6 +2,7 @@
 
 > **[!] Research Only. No Real Orders. Production Trading: BLOCKED.**
 > **[!] All versions in this file are Strategy Lab Stable releases only.**
+> **[!] See [release_notes_v1.0.md](release_notes_v1.0.md) for v1.0.0 Research Trading Cockpit Stable.**
 
 ---
 

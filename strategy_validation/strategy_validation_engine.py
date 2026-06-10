@@ -124,6 +124,7 @@ class StrategyValidationEngine:
             "components": all_components,
             "summary":  summary,
             "mode":     mode,
+            "research_only":                     True,
             "no_real_orders":                    True,
             "production_blocked":                True,
             "validated_does_not_enable_trading": True,

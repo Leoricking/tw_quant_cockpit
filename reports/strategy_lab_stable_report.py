@@ -113,6 +113,7 @@ class StrategyLabStableReportBuilder:
         lines += self._section_regression_report_data()
         lines += self._section_known_limitations()
         lines += self._section_next_roadmap()
+        lines += self._section_v100_status()
         lines += self._section_dashboard_status()
         lines += self._section_safety_declaration()
         return lines
@@ -405,10 +406,30 @@ class StrategyLabStableReportBuilder:
             "",
             "| Version | Feature | Priority |",
             "|---------|---------|---------|",
-            "| v0.9.1 | Evidence Graph UX — node detail drill, thread visualization | P2 |",
-            "| v0.9.2 | Strategy Validation Score — cross-module confidence scoring | P2 |",
-            "| v0.9.3 | Strategy Lab Dashboard Polish — unified layer status board | P2 |",
-            "| v1.0.0 | Research Trading Cockpit Stable — still No Real Orders unless explicitly enabled | P1 |",
+            "| v0.9.1 | Evidence Graph UX — node detail drill, thread visualization | Done |",
+            "| v0.9.2 | Strategy Validation Score — cross-module confidence scoring | Done |",
+            "| v0.9.3 | Strategy Lab Dashboard Polish — unified layer status board | Done |",
+            "| v1.0.0 | Research Trading Cockpit Stable — No Real Orders | Done |",
+            "| v1.0.x | Maintenance releases — bug fixes, warning cleanup | P1 |",
+            "| v1.1 | Data Quality / Universe Expansion | P2 |",
+            "",
+            "---",
+            "",
+        ]
+
+    def _section_v100_status(self) -> List[str]:
+        return [
+            "## 十五、v1.0.0 Stable Release Status",
+            "",
+            "| Field | Value |",
+            "|-------|-------|",
+            "| Version | 1.0.0 |",
+            "| Stage | STABLE |",
+            "| Research Only | True |",
+            "| No Real Orders | True |",
+            "| Production Trading BLOCKED | True |",
+            "| Broker Execution | Disabled |",
+            "| VALIDATED does not enable trading | True |",
             "",
             "---",
             "",

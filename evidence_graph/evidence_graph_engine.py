@@ -32,6 +32,11 @@ logger = logging.getLogger(__name__)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 
+# v1.0.0 Safety note: evidence_graph_engine outputs contain no standalone trading keywords.
+# All outputs are research-only: no BUY/SELL/ORDER/EXECUTE/SUBMIT_ORDER/AUTO_TRADE/REAL_TRADE.
+# "No Real Orders" / "No broker execution" / "Broker Execution Disabled" are WHITELISTED.
+
+
 def _thread_quality_label(thread) -> str:
     """Extract quality_label from an EvidenceThread or dict."""
     if hasattr(thread, "quality_label"):

@@ -4,7 +4,32 @@
 >
 > **[!] v1: Real order execution is strictly prohibited. For research, simulation, and decision support only. Not investment advice.**
 
-**Current version: v0.9.3 — Strategy Lab Dashboard Polish**
+**Current version: v1.0.0 — Research Trading Cockpit Stable**
+
+---
+
+## v1.0.0 — Research Trading Cockpit Stable
+
+This is TW Quant Cockpit **v1.0.0 — Research Trading Cockpit Stable**.
+
+| Safety Flag | Value |
+|-------------|-------|
+| Research Only | True |
+| No Real Orders | True |
+| Production Trading BLOCKED | True |
+| Broker Execution | Disabled |
+| VALIDATED does not enable trading | True |
+| Paper Trading | Simulation Only |
+| Mock Realtime | Simulation Only |
+| Not Investment Advice | True |
+
+```bash
+python main.py version-info
+python main.py research-cockpit-stable --mode real
+python main.py research-cockpit-stable-report --mode real
+```
+
+Research Only | No Real Orders | Not Investment Advice
 
 ---
 

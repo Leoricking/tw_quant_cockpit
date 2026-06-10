@@ -5610,15 +5610,34 @@ def cmd_enrich_universe_data(args: argparse.Namespace) -> None:
 # ---------------------------------------------------------------------------
 
 def cmd_version_info(args: argparse.Namespace) -> None:
-    """Print version info for TW Quant Cockpit v0.4.0."""
+    """Print version info for TW Quant Cockpit v1.0.0 (Research Trading Cockpit Stable)."""
+    print("=" * 60)
+    print("TW Quant Cockpit \u2014 Version Info")
+    print("=" * 60)
     try:
-        from release.version_info import print_version_info, get_safety_banner
-        print_version_info()
-        print()
-        print(get_safety_banner())
+        from release.version_info import (
+            VERSION, RELEASE_NAME, RELEASE_STAGE, RELEASE_TRACK,
+            REAL_ORDERS_ENABLED, NO_REAL_ORDERS, PRODUCTION_TRADING_BLOCKED,
+            BROKER_EXECUTION_ENABLED, VALIDATED_DOES_NOT_ENABLE_TRADING,
+            PAPER_TRADING_IS_SIMULATION, MOCK_REALTIME_IS_SIMULATION,
+        )
+        print(f"{'Version:':<35} {VERSION}")
+        print(f"{'Release:':<35} {RELEASE_NAME}")
+        print(f"{'Stage:':<35} {RELEASE_STAGE}")
+        print(f"{'Track:':<35} {RELEASE_TRACK.capitalize()}")
+        print(f"{'Research Only:':<35} True")
+        print(f"{'No Real Orders:':<35} {NO_REAL_ORDERS}")
+        print(f"{'Production Trading BLOCKED:':<35} {PRODUCTION_TRADING_BLOCKED}")
+        print(f"{'Broker Execution:':<35} {'Disabled' if not BROKER_EXECUTION_ENABLED else 'Enabled'}")
+        print(f"{'VALIDATED does not enable trading:':<35} {VALIDATED_DOES_NOT_ENABLE_TRADING}")
+        print(f"{'Paper Trading:':<35} {'Simulation Only' if PAPER_TRADING_IS_SIMULATION else 'Real'}")
+        print(f"{'Mock Realtime:':<35} {'Simulation Only' if MOCK_REALTIME_IS_SIMULATION else 'Real'}")
     except Exception as exc:
-        print(f"  TW Quant Cockpit v0.4.0 — Research Only | No Real Orders | Production BLOCKED")
+        print(f"  Version:                         1.0.0")
+        print(f"  Release:                         Research Trading Cockpit Stable")
         print(f"  (version_info import error: {exc})")
+    print("=" * 60)
+    print("RESEARCH ONLY \u2014 Not Investment Advice \u2014 No Real Orders")
 
 
 def cmd_stable_release_check(args: argparse.Namespace) -> None:
@@ -9217,6 +9236,121 @@ def cmd_strategy_validation_explain(args):
                 print(f"  {k}: {v}")
     except Exception as e:
         print(f"[WARN] strategy-validation-explain: {e}")
+
+
+# v1.0.0 Research Trading Cockpit Stable
+
+
+def cmd_research_cockpit_stable(args):
+    """Run ResearchCockpitStableChecklist and print banner."""
+    import os
+    mode = getattr(args, 'mode', 'real')
+    try:
+        from release.research_cockpit_stable_checklist import ResearchCockpitStableChecklist
+        checker = ResearchCockpitStableChecklist(project_root=os.path.dirname(os.path.abspath(__file__)))
+        checks, summary = checker.run(mode=mode)
+        total         = summary.get('total', 0)
+        pass_count    = summary.get('pass_count', 0)
+        warn_count    = summary.get('warn_count', 0)
+        fail_count    = summary.get('fail_count', 0)
+        blocked_count = summary.get('blocked_count', 0)
+    except Exception as exc:
+        total = pass_count = warn_count = fail_count = blocked_count = 0
+        print(f"[WARN] research-cockpit-stable checklist error: {exc}")
+
+    print("=" * 60)
+    print("TW Quant Cockpit \u2014 Research Trading Cockpit Stable")
+    print("=" * 60)
+    print(f"{'Version:':<35} 1.0.0")
+    print(f"{'Release:':<35} Research Trading Cockpit Stable")
+    print(f"{'Stage:':<35} STABLE")
+    print(f"{'Research Only:':<35} True")
+    print(f"{'No Real Orders:':<35} True")
+    print(f"{'Production Trading BLOCKED:':<35} True")
+    print(f"{'Broker Execution:':<35} Disabled")
+    print(f"{'VALIDATED does not enable trading:':<35} True")
+    print(f"{'Modules:':<35} 14")
+    print(f"{'Checks:':<35} {total}")
+    print(f"{'PASS:':<35} {pass_count}")
+    print(f"{'WARN:':<35} {warn_count}")
+    print(f"{'FAIL:':<35} {fail_count}")
+    print(f"{'BLOCKED:':<35} {blocked_count}")
+    print(f"{'Report:':<35} run research-cockpit-stable-report --mode real")
+    print("=" * 60)
+    print("RESEARCH ONLY \u2014 Not Investment Advice \u2014 No Real Orders")
+    print("VALIDATED = Research Validated Only, does NOT enable trading")
+
+
+def cmd_research_cockpit_stable_summary(args):
+    """Print summary from the latest research cockpit stable checklist."""
+    import os
+    mode = getattr(args, 'mode', 'real')
+    try:
+        from release.research_cockpit_stable_checklist import ResearchCockpitStableChecklist
+        checker = ResearchCockpitStableChecklist(project_root=os.path.dirname(os.path.abspath(__file__)))
+        _, summary = checker.run(mode=mode)
+        print("Research Cockpit Stable v1.0.0 \u2014 Summary")
+        for k, v in summary.items():
+            print(f"  {k}: {v}")
+    except Exception as exc:
+        print(f"[WARN] research-cockpit-stable-summary: {exc}")
+
+
+def cmd_research_cockpit_stable_checks(args):
+    """Run and print all research cockpit stable checks."""
+    import os
+    mode = getattr(args, 'mode', 'real')
+    try:
+        from release.research_cockpit_stable_checklist import ResearchCockpitStableChecklist
+        checker = ResearchCockpitStableChecklist(project_root=os.path.dirname(os.path.abspath(__file__)))
+        checks, summary = checker.run(mode=mode)
+        print(f"Research Cockpit Stable v1.0.0 \u2014 {len(checks)} checks")
+        for c in checks:
+            status_icon = '\u2705' if c['status'] == 'PASS' else ('\u26a0\ufe0f' if c['status'] == 'WARN' else '\u274c')
+            print(f"  [{c['status']:7s}] {c['name']}: {c['detail'][:80]}")
+        print(f"\nOverall: {summary.get('overall_status', 'UNKNOWN')} | "
+              f"PASS={summary.get('pass_count',0)} WARN={summary.get('warn_count',0)} "
+              f"FAIL={summary.get('fail_count',0)}")
+    except Exception as exc:
+        print(f"[WARN] research-cockpit-stable-checks: {exc}")
+
+
+def cmd_research_cockpit_stable_manifest(args):
+    """Build and save the research cockpit stable manifest, print summary."""
+    import os
+    output_dir = getattr(args, 'output_dir', 'data/backtest_results/release')
+    try:
+        from release.research_cockpit_manifest import ResearchCockpitManifestBuilder
+        builder = ResearchCockpitManifestBuilder(project_root=os.path.dirname(os.path.abspath(__file__)))
+        path = builder.save(output_dir=output_dir)
+        manifest = builder.build()
+        print(f"Research Cockpit Manifest v1.0.0 saved: {path}")
+        modules = manifest.get('modules', [])
+        avail = sum(1 for m in modules if m.get('available'))
+        print(f"  Modules: {avail}/{len(modules)} available")
+        print(f"  Safety Guards: {len(manifest.get('safety_guards', []))} guards active")
+        print(f"  No Real Orders: {manifest.get('no_real_orders')}")
+        print(f"  Production Blocked: {manifest.get('production_blocked')}")
+    except Exception as exc:
+        print(f"[WARN] research-cockpit-stable-manifest: {exc}")
+
+
+def cmd_research_cockpit_stable_report(args):
+    """Generate the Research Trading Cockpit Stable report."""
+    import os
+    mode       = getattr(args, 'mode', 'real')
+    output_dir = getattr(args, 'output_dir', 'data/backtest_results/release')
+    report_dir = getattr(args, 'report_dir', 'reports')
+    try:
+        from reports.research_trading_cockpit_stable_report import ResearchTradingCockpitStableReportBuilder
+        builder = ResearchTradingCockpitStableReportBuilder(
+            output_dir=output_dir,
+            report_dir=report_dir,
+        )
+        path = builder.build(mode=mode)
+        print(f"Research Trading Cockpit Stable Report generated: {path}")
+    except Exception as exc:
+        print(f"[WARN] research-cockpit-stable-report: {exc}")
 
 
 # v0.9.3 Strategy Lab Dashboard
@@ -14109,6 +14243,42 @@ def _build_parser() -> argparse.ArgumentParser:
     p_sld_rep.add_argument("--output-dir", default="data/backtest_results/strategy_lab_dashboard")
     p_sld_rep.add_argument("--report-dir", default="reports")
 
+    # --- v1.0.0 Research Trading Cockpit Stable ---
+    p_rcs = subparsers.add_parser(
+        "research-cockpit-stable",
+        help="[v1.0.0] Research Trading Cockpit Stable — checklist and banner",
+    )
+    p_rcs.add_argument("--mode", choices=["real", "mock"], default="real",
+                       help="Data mode (default: real)")
+
+    p_rcs_sum = subparsers.add_parser(
+        "research-cockpit-stable-summary",
+        help="[v1.0.0] Print summary from latest research cockpit stable checklist",
+    )
+    p_rcs_sum.add_argument("--mode", choices=["real", "mock"], default="real")
+
+    p_rcs_chk = subparsers.add_parser(
+        "research-cockpit-stable-checks",
+        help="[v1.0.0] Run and print all research cockpit stable checks",
+    )
+    p_rcs_chk.add_argument("--mode", choices=["real", "mock"], default="real")
+
+    p_rcs_mfst = subparsers.add_parser(
+        "research-cockpit-stable-manifest",
+        help="[v1.0.0] Build and save research cockpit stable manifest",
+    )
+    p_rcs_mfst.add_argument("--output-dir", dest="output_dir",
+                             default="data/backtest_results/release")
+
+    p_rcs_rep = subparsers.add_parser(
+        "research-cockpit-stable-report",
+        help="[v1.0.0] Generate Research Trading Cockpit Stable Markdown report",
+    )
+    p_rcs_rep.add_argument("--mode", choices=["real", "mock"], default="real")
+    p_rcs_rep.add_argument("--output-dir", dest="output_dir",
+                            default="data/backtest_results/release")
+    p_rcs_rep.add_argument("--report-dir", dest="report_dir", default="reports")
+
     # --- strategy-knowledge-ingest (v0.4.1.1) ---
     p_ski = subparsers.add_parser(
         "strategy-knowledge-ingest",
@@ -15379,6 +15549,12 @@ def main() -> None:
         "crash-reversal-report":            cmd_crash_reversal_report,
         "crash-reversal-score":             cmd_crash_reversal_score,
         "crash-reversal-watchlist":         cmd_crash_reversal_watchlist,
+        # v1.0.0 Research Trading Cockpit Stable
+        "research-cockpit-stable":             cmd_research_cockpit_stable,
+        "research-cockpit-stable-summary":     cmd_research_cockpit_stable_summary,
+        "research-cockpit-stable-checks":      cmd_research_cockpit_stable_checks,
+        "research-cockpit-stable-manifest":    cmd_research_cockpit_stable_manifest,
+        "research-cockpit-stable-report":      cmd_research_cockpit_stable_report,
         # v0.9.3 Strategy Lab Dashboard
         "strategy-lab-dashboard":              cmd_strategy_lab_dashboard,
         "strategy-lab-dashboard-summary":      cmd_strategy_lab_dashboard_summary,

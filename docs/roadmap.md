@@ -69,6 +69,22 @@
 | v0.9.1 | Evidence Graph UX | Done |
 | v0.9.2 | Strategy Validation Score | Done |
 | v0.9.3 | Strategy Lab Dashboard Polish | Done |
+| v1.0.0 | Research Trading Cockpit Stable | Done |
+
+---
+
+### v1.0.0 — Research Trading Cockpit Stable ✅
+
+- **Version:** 1.0.0 — first stable research cockpit release
+- **Modules:** 14 modules: Strategy Lab Dashboard, Strategy Validation, Evidence Graph UX, Crash Reversal, Strategy Lab Stable, Training Metrics, Backtest Coach, Strategy Memory, Research Intelligence, Data Coverage, Report Pack, Regression Gate, Paper, Mock Realtime
+- **CLI:** `version-info`, `research-cockpit-stable`, `research-cockpit-stable-summary`, `research-cockpit-stable-checks`, `research-cockpit-stable-manifest`, `research-cockpit-stable-report`
+- **Safety:** No Real Orders, Production Trading BLOCKED, Broker Execution Disabled, VALIDATED does not enable trading
+- **Checklist:** 25 checks — version, safety, modules, GUI, regression, docs, hygiene
+- **Report:** `reports/research_trading_cockpit_stable_report_YYYY-MM-DD.md`
+
+**Next:**
+- v1.0.x: Maintenance releases — bug fixes, warning cleanup
+- v1.1: Data Quality / Universe Expansion
 
 ---
 

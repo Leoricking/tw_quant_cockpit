@@ -36,6 +36,9 @@ REPORT_STRATEGY_VALIDATION = "strategy_validation_report"
 # v0.9.3 strategy lab dashboard
 REPORT_STRATEGY_LAB_DASHBOARD = "strategy_lab_dashboard_report"
 
+# v1.0.0 Research Trading Cockpit Stable
+REPORT_RESEARCH_COCKPIT_STABLE = "research_trading_cockpit_stable_report"
+
 logger = logging.getLogger(__name__)
 
 # ---------------------------------------------------------------------------
@@ -153,6 +156,8 @@ _PACK_DEFINITIONS: Dict[str, List[str]] = {
         REPORT_STRATEGY_VALIDATION,
         # v0.9.3 Strategy Lab Dashboard (optional in full pack)
         REPORT_STRATEGY_LAB_DASHBOARD,
+        # v1.0.0 Research Trading Cockpit Stable (optional in full pack)
+        REPORT_RESEARCH_COCKPIT_STABLE,
     ],
 }
 

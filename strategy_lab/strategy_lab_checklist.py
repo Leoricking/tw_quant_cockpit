@@ -353,6 +353,57 @@ class StrategyLabChecklist:
                 checks.append(_mk(cid, "import_health", name,
                                   CHECK_FAIL, SEV_HIGH, f"Import failed: {exc}",
                                   f"Check {module}.py for syntax errors."))
+
+        # v1.0.0 Research Cockpit Stable checks
+        try:
+            from release.research_cockpit_stable_checklist import ResearchCockpitStableChecklist
+            checks.append(_mk("a_rcs_available", "import_health",
+                              "research_cockpit_stable_available",
+                              CHECK_PASS, SEV_LOW,
+                              "ResearchCockpitStableChecklist imported successfully."))
+        except Exception as exc:
+            checks.append(_mk("a_rcs_available", "import_health",
+                              "research_cockpit_stable_available",
+                              CHECK_WARN, SEV_MEDIUM,
+                              f"ResearchCockpitStableChecklist import failed (optional): {exc}"))
+
+        try:
+            from release.version_info import NO_REAL_ORDERS
+            if NO_REAL_ORDERS is True:
+                checks.append(_mk("a_rcs_no_real_orders", "import_health",
+                                  "research_cockpit_no_real_orders_guard",
+                                  CHECK_PASS, SEV_LOW,
+                                  "release.version_info.NO_REAL_ORDERS=True"))
+            else:
+                checks.append(_mk("a_rcs_no_real_orders", "import_health",
+                                  "research_cockpit_no_real_orders_guard",
+                                  CHECK_FAIL, SEV_HIGH,
+                                  f"NO_REAL_ORDERS={NO_REAL_ORDERS} — should be True"))
+        except Exception as exc:
+            checks.append(_mk("a_rcs_no_real_orders", "import_health",
+                              "research_cockpit_no_real_orders_guard",
+                              CHECK_WARN, SEV_MEDIUM, f"Check skipped: {exc}"))
+
+        try:
+            import os
+            rcs_report = os.path.join(BASE_DIR, "reports",
+                                      "research_trading_cockpit_stable_report.py")
+            if os.path.isfile(rcs_report):
+                checks.append(_mk("a_rcs_report", "import_health",
+                                  "research_cockpit_report_available",
+                                  CHECK_PASS, SEV_LOW,
+                                  "reports/research_trading_cockpit_stable_report.py exists."))
+            else:
+                checks.append(_mk("a_rcs_report", "import_health",
+                                  "research_cockpit_report_available",
+                                  CHECK_WARN, SEV_MEDIUM,
+                                  "reports/research_trading_cockpit_stable_report.py not found (optional v1.0.0).",
+                                  "Create reports/research_trading_cockpit_stable_report.py"))
+        except Exception as exc:
+            checks.append(_mk("a_rcs_report", "import_health",
+                              "research_cockpit_report_available",
+                              CHECK_WARN, SEV_MEDIUM, f"Check skipped: {exc}"))
+
         return checks
 
     # ------------------------------------------------------------------

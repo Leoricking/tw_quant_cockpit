@@ -331,3 +331,7 @@ reports/strategy_validation_report_*.md
 # v0.9.3 Strategy Lab Dashboard — runtime outputs
 data/backtest_results/strategy_lab_dashboard/
 reports/strategy_lab_dashboard_report_*.md
+
+# v1.0.0 Research Trading Cockpit Stable — runtime outputs
+data/backtest_results/release/
+reports/research_trading_cockpit_stable_report_*.md

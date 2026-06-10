@@ -447,6 +447,61 @@ class StrategyLabDashboardEngine:
             safe_next_step="python main.py strategy-lab-dashboard-summary",
         ))
 
+        # v1.0.0 Release Status cards
+        try:
+            from release.version_info import VERSION, RELEASE_NAME, RELEASE_STAGE, BROKER_EXECUTION_ENABLED
+            _ver_value   = f"v{VERSION} {RELEASE_NAME}"
+            _stage_value = RELEASE_STAGE
+            _broker_value = "Disabled" if not BROKER_EXECUTION_ENABLED else "Enabled"
+        except Exception:
+            _ver_value   = "v1.0.0 Research Trading Cockpit Stable"
+            _stage_value = "STABLE"
+            _broker_value = "Disabled"
+
+        cards.append(StrategyLabDashboardCard(
+            card_id="release_version",
+            title="Release Version",
+            value=_ver_value,
+            subtitle="Research Trading Cockpit Stable",
+            status=STATUS_GOOD,
+            severity=SEV_INFO,
+            source_module="release",
+            safe_next_step="python main.py version-info",
+        ))
+
+        cards.append(StrategyLabDashboardCard(
+            card_id="stable_status",
+            title="Stable Status",
+            value=_stage_value,
+            subtitle="v1.0.0 STABLE release",
+            status=STATUS_GOOD,
+            severity=SEV_INFO,
+            source_module="release",
+            safe_next_step="python main.py research-cockpit-stable --mode real",
+        ))
+
+        cards.append(StrategyLabDashboardCard(
+            card_id="broker_execution",
+            title="Broker Execution",
+            value=_broker_value,
+            subtitle="Broker Execution Disabled — No Real Orders",
+            status=STATUS_GOOD,
+            severity=SEV_INFO,
+            source_module="release",
+            safe_next_step="python main.py version-info",
+        ))
+
+        cards.append(StrategyLabDashboardCard(
+            card_id="paper_mock_simulation",
+            title="Paper / Mock",
+            value="Simulation Only",
+            subtitle="Paper trading and mock realtime are simulation only",
+            status=STATUS_GOOD,
+            severity=SEV_INFO,
+            source_module="release",
+            safe_next_step="python main.py mock-realtime --duration 10",
+        ))
+
         return cards
 
     # ------------------------------------------------------------------

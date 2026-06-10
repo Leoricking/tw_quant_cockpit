@@ -771,4 +771,36 @@ class IntelligenceStableChecklist:
                 suggested_fix="Run: python main.py strategy-lab-dashboard --mode real",
             ))
 
+        # v1.0.0 research_cockpit_stable_safe — ResearchCockpitStableChecklist read_only and no_real_orders
+        try:
+            import importlib
+            mod_rcs = importlib.import_module("release.research_cockpit_stable_checklist")
+            has_cls = hasattr(mod_rcs, "ResearchCockpitStableChecklist")
+            cls_obj = getattr(mod_rcs, "ResearchCockpitStableChecklist", None)
+            is_read_only = getattr(cls_obj, "read_only", None) if cls_obj else None
+            is_no_real   = getattr(cls_obj, "no_real_orders", None) if cls_obj else None
+            if has_cls and is_read_only is True and is_no_real is True:
+                checks.append(_check(
+                    "research_cockpit_stable_safe", "stable_integration",
+                    "v1.0.0 research_cockpit_stable_safe",
+                    CHECK_PASS, SEV_LOW,
+                    "ResearchCockpitStableChecklist.read_only=True and no_real_orders=True.",
+                ))
+            else:
+                checks.append(_check(
+                    "research_cockpit_stable_safe", "stable_integration",
+                    "v1.0.0 research_cockpit_stable_safe",
+                    CHECK_WARN, SEV_LOW,
+                    f"ResearchCockpitStableChecklist found={has_cls}, read_only={is_read_only} (optional v1.0.0).",
+                    suggested_fix="Ensure ResearchCockpitStableChecklist has read_only=True and no_real_orders=True.",
+                ))
+        except Exception as exc:
+            checks.append(_check(
+                "research_cockpit_stable_safe", "stable_integration",
+                "v1.0.0 research_cockpit_stable_safe",
+                CHECK_WARN, SEV_LOW,
+                f"Could not verify research_cockpit_stable safety (optional): {exc}",
+                suggested_fix="Run: python main.py research-cockpit-stable --mode real",
+            ))
+
         return checks

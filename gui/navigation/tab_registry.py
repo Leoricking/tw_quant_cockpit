@@ -1086,6 +1086,13 @@ class GUITabRegistry:
                     "release manifest", "strategy lab stable", "validation",
                     "dashboard", "strategy lab dashboard", "validation board", "action board",
                     "evidence board", "module health",
+                    # v1.0.0 Research Trading Cockpit Stable keywords
+                    "v1.0.0", "research cockpit", "stable release",
+                    "research trading cockpit", "stable report", "release checklist",
+                    "No Real Orders", "\u7a69\u5b9a\u7248", "\u7814\u7a76\u63a7\u76e4",
+                    "\u7814\u7a76\u63a7\u76e4\u7a69\u5b9a\u7248",
+                    "\u7121\u5be6\u76e4\u4e0b\u55ae", "\u4e0d\u63a5\u5238\u5546",
+                    "\u4e0d\u81ea\u52d5\u4ea4\u6613",
                     "\u7b56\u7565\u5be6\u9a57\u5ba4", "\u7a69\u5b9a\u6aa2\u67e5\u8868",
                     "\u5100\u8868\u677f", "\u7b56\u7565\u7e3d\u63a7", "\u7b56\u7565\u5100\u8868\u677f",
                     "\u9a57\u8b49\u770b\u677f", "\u884c\u52d5\u770b\u677f", "\u8b49\u64da\u770b\u677f",

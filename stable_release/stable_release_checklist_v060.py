@@ -1155,6 +1155,77 @@ class StableReleaseChecklistV060:
                 f"Check skipped (optional): {exc}",
             )
 
+    # ------------------------------------------------------------------
+    # v1.0.0 Research Trading Cockpit Stable checks
+    # ------------------------------------------------------------------
+
+    def _check_research_cockpit_stable_import(self) -> dict:
+        """v1.0.0 — ResearchCockpitStableChecklist is importable."""
+        try:
+            import importlib.util
+            spec = importlib.util.find_spec("release.research_cockpit_stable_checklist")
+            if spec is None:
+                return _check_item(
+                    "research_cockpit_stable_import", "imports", "WARN",
+                    "release.research_cockpit_stable_checklist not found — check skipped.",
+                )
+            from release.research_cockpit_stable_checklist import ResearchCockpitStableChecklist
+            return _check_item(
+                "research_cockpit_stable_import", "imports", "PASS",
+                "ResearchCockpitStableChecklist imported successfully.",
+            )
+        except Exception as exc:
+            return _check_item(
+                "research_cockpit_stable_import", "imports", "WARN",
+                f"ResearchCockpitStableChecklist import failed (optional): {exc}",
+            )
+
+    def _check_research_cockpit_stable_no_forbidden_actions(self) -> dict:
+        """v1.0.0 — ResearchCockpitManifestBuilder has no_real_orders=True and production_blocked=True."""
+        try:
+            import importlib.util
+            spec = importlib.util.find_spec("release.research_cockpit_manifest")
+            if spec is None:
+                return _check_item(
+                    "research_cockpit_stable_no_forbidden", "safety", "WARN",
+                    "release.research_cockpit_manifest not found — check skipped.",
+                )
+            from release.research_cockpit_manifest import ResearchCockpitManifestBuilder
+            if (getattr(ResearchCockpitManifestBuilder, "no_real_orders", False) and
+                    getattr(ResearchCockpitManifestBuilder, "production_blocked", False)):
+                return _check_item(
+                    "research_cockpit_stable_no_forbidden", "safety", "PASS",
+                    "ResearchCockpitManifestBuilder.no_real_orders=True and production_blocked=True.",
+                )
+            return _check_item(
+                "research_cockpit_stable_no_forbidden", "safety", "WARN",
+                "ResearchCockpitManifestBuilder missing no_real_orders or production_blocked.",
+            )
+        except Exception as exc:
+            return _check_item(
+                "research_cockpit_stable_no_forbidden", "safety", "WARN",
+                f"Check skipped (optional): {exc}",
+            )
+
+    def _check_version_info_v100(self) -> dict:
+        """v1.0.0 — release.version_info.VERSION == '1.0.0'."""
+        try:
+            from release.version_info import VERSION
+            if VERSION == "1.0.0":
+                return _check_item(
+                    "version_info_v100", "version", "PASS",
+                    f"release.version_info.VERSION={VERSION}",
+                )
+            return _check_item(
+                "version_info_v100", "version", "WARN",
+                f"release.version_info.VERSION={VERSION} (expected 1.0.0)",
+            )
+        except Exception as exc:
+            return _check_item(
+                "version_info_v100", "version", "WARN",
+                f"release.version_info.VERSION check failed: {exc}",
+            )
+
     def _check_evidence_graph_ux_no_forbidden(self) -> dict:
         """v0.9.1 — Check EvidenceGraphQuery doesn't output BUY/SELL/ORDER."""
         try:
@@ -1258,6 +1329,10 @@ class StableReleaseChecklistV060:
             # v0.9.3 Strategy Lab Dashboard
             self._check_strategy_lab_dashboard_import,
             self._check_strategy_lab_dashboard_no_forbidden_actions,
+            # v1.0.0 Research Trading Cockpit Stable
+            self._check_research_cockpit_stable_import,
+            self._check_research_cockpit_stable_no_forbidden_actions,
+            self._check_version_info_v100,
         ]
 
         for fn in checklist_groups:
