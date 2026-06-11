@@ -1,4 +1,4 @@
-# TW Quant Cockpit — Release Notes v1.0.0
+# TW Quant Cockpit — Release Notes v1.0
 
 > **[!] Research Only. No Real Orders. Production Trading: BLOCKED.**
 > **[!] VALIDATED does not enable trading. Broker Execution Disabled.**
@@ -172,4 +172,33 @@ All modules from v0.5 through v0.9.3 are included in v1.0.0:
 
 ---
 
-*TW Quant Cockpit v1.0.0 — Research Trading Cockpit Stable — Research Only — Not Investment Advice*
+---
+
+## v1.0.1 — Maintenance & Polish
+
+**Released:** 2026-06-11
+
+**Base Release:** v1.0.0 Research Trading Cockpit Stable
+
+v1.0.1 is a maintenance and polish release based on v1.0.0. No new features, no broker API, no live trading.
+
+### Changes in v1.0.1
+
+- **CLI consistency:** `version-info` now shows `Base Release: 1.0.0 Research Trading Cockpit Stable`
+- **Stable checklist hardening:** v1.0.x version check accepts maintenance releases; added `version_info_v101`, `research_cockpit_maintenance_safe`, `no_real_orders_false_positive_guard`, `maintenance_v101_import`, `maintenance_v101_no_forbidden_actions` checks to stable_release_checklist_v060
+- **Intelligence stable checklist:** Added `maintenance_v101_safe` check
+- **GUI navigation keywords:** Added `maintenance`, `polish`, `v1.0.1`, `research cockpit stable`, `no real orders`, `維護版` to tab_registry
+- **Regression suite:** Added `gui-nav-search --keyword maintenance`, `gui-nav-search --keyword 維護版`, `gui-nav-search --keyword research cockpit stable` tests
+- **Docs:** Added `docs/maintenance_v1.0.1.md`, updated roadmap, index, release notes
+- **No functional trading changes** — all safety flags preserved
+
+### Safety (unchanged from v1.0.0)
+
+> **Research Only** — **No Real Orders** — **Production Trading BLOCKED**
+> **Broker Execution Disabled** — **VALIDATED does not enable trading**
+> **Paper trading is simulation only** — **Mock realtime is simulation only**
+> **Not Investment Advice**
+
+---
+
+*TW Quant Cockpit v1.0.1 — Maintenance & Polish — Research Only — Not Investment Advice*

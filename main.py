@@ -5610,7 +5610,7 @@ def cmd_enrich_universe_data(args: argparse.Namespace) -> None:
 # ---------------------------------------------------------------------------
 
 def cmd_version_info(args: argparse.Namespace) -> None:
-    """Print version info for TW Quant Cockpit v1.0.0 (Research Trading Cockpit Stable)."""
+    """Print version info for TW Quant Cockpit v1.0.1 (Maintenance & Polish)."""
     print("=" * 60)
     print("TW Quant Cockpit \u2014 Version Info")
     print("=" * 60)
@@ -5621,8 +5621,11 @@ def cmd_version_info(args: argparse.Namespace) -> None:
             BROKER_EXECUTION_ENABLED, VALIDATED_DOES_NOT_ENABLE_TRADING,
             PAPER_TRADING_IS_SIMULATION, MOCK_REALTIME_IS_SIMULATION,
         )
+        base_release = getattr(__import__("release.version_info", fromlist=["BASE_RELEASE"]), "BASE_RELEASE", "1.0.0")
+        base_release_name = getattr(__import__("release.version_info", fromlist=["BASE_RELEASE_NAME"]), "BASE_RELEASE_NAME", "Research Trading Cockpit Stable")
         print(f"{'Version:':<35} {VERSION}")
         print(f"{'Release:':<35} {RELEASE_NAME}")
+        print(f"{'Base Release:':<35} {base_release} {base_release_name}")
         print(f"{'Stage:':<35} {RELEASE_STAGE}")
         print(f"{'Track:':<35} {RELEASE_TRACK.capitalize()}")
         print(f"{'Research Only:':<35} True")
@@ -5633,8 +5636,9 @@ def cmd_version_info(args: argparse.Namespace) -> None:
         print(f"{'Paper Trading:':<35} {'Simulation Only' if PAPER_TRADING_IS_SIMULATION else 'Real'}")
         print(f"{'Mock Realtime:':<35} {'Simulation Only' if MOCK_REALTIME_IS_SIMULATION else 'Real'}")
     except Exception as exc:
-        print(f"  Version:                         1.0.0")
-        print(f"  Release:                         Research Trading Cockpit Stable")
+        print(f"  Version:                         1.0.1")
+        print(f"  Release:                         Maintenance & Polish")
+        print(f"  Base Release:                    1.0.0 Research Trading Cockpit Stable")
         print(f"  (version_info import error: {exc})")
     print("=" * 60)
     print("RESEARCH ONLY \u2014 Not Investment Advice \u2014 No Real Orders")
@@ -9261,7 +9265,15 @@ def cmd_research_cockpit_stable(args):
     print("=" * 60)
     print("TW Quant Cockpit \u2014 Research Trading Cockpit Stable")
     print("=" * 60)
-    print(f"{'Version:':<35} 1.0.0")
+    try:
+        from release.version_info import VERSION as _VI_VER, BASE_RELEASE as _VI_BASE
+        _ver_display = _VI_VER
+        _base_display = _VI_BASE
+    except Exception:
+        _ver_display = "1.0.1"
+        _base_display = "1.0.0"
+    print(f"{'Version:':<35} {_ver_display}")
+    print(f"{'Base Release:':<35} {_base_display} Research Trading Cockpit Stable")
     print(f"{'Release:':<35} Research Trading Cockpit Stable")
     print(f"{'Stage:':<35} STABLE")
     print(f"{'Research Only:':<35} True")

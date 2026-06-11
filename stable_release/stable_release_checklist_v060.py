@@ -1208,22 +1208,143 @@ class StableReleaseChecklistV060:
             )
 
     def _check_version_info_v100(self) -> dict:
-        """v1.0.0 — release.version_info.VERSION == '1.0.0'."""
+        """v1.0.x — release.version_info.VERSION starts with '1.0.'."""
         try:
             from release.version_info import VERSION
-            if VERSION == "1.0.0":
+            if VERSION.startswith("1.0."):
                 return _check_item(
                     "version_info_v100", "version", "PASS",
-                    f"release.version_info.VERSION={VERSION}",
+                    f"release.version_info.VERSION={VERSION} (v1.0.x stable)",
                 )
             return _check_item(
                 "version_info_v100", "version", "WARN",
-                f"release.version_info.VERSION={VERSION} (expected 1.0.0)",
+                f"release.version_info.VERSION={VERSION} (expected 1.0.x)",
             )
         except Exception as exc:
             return _check_item(
                 "version_info_v100", "version", "WARN",
                 f"release.version_info.VERSION check failed: {exc}",
+            )
+
+    def _check_version_info_v101(self) -> dict:
+        """v1.0.1 — release.version_info.VERSION == '1.0.1' (maintenance release)."""
+        try:
+            from release.version_info import VERSION
+            if VERSION == "1.0.1":
+                return _check_item(
+                    "version_info_v101", "version", "PASS",
+                    f"release.version_info.VERSION={VERSION} (maintenance release)",
+                )
+            return _check_item(
+                "version_info_v101", "version", "WARN",
+                f"release.version_info.VERSION={VERSION} (expected 1.0.1 for maintenance)",
+            )
+        except Exception as exc:
+            return _check_item(
+                "version_info_v101", "version", "WARN",
+                f"release.version_info.VERSION check failed: {exc}",
+            )
+
+    def _check_research_cockpit_maintenance_safe(self) -> dict:
+        """v1.0.1 — maintenance release still has no_real_orders and production_blocked."""
+        try:
+            from release.version_info import (
+                NO_REAL_ORDERS, PRODUCTION_TRADING_BLOCKED,
+                MAINTENANCE_RELEASE, REAL_ORDERS_ENABLED,
+            )
+            if NO_REAL_ORDERS and PRODUCTION_TRADING_BLOCKED and not REAL_ORDERS_ENABLED:
+                return _check_item(
+                    "research_cockpit_maintenance_safe", "safety", "PASS",
+                    f"Maintenance release safety OK: no_real_orders={NO_REAL_ORDERS}, "
+                    f"production_blocked={PRODUCTION_TRADING_BLOCKED}, maintenance={MAINTENANCE_RELEASE}",
+                )
+            return _check_item(
+                "research_cockpit_maintenance_safe", "safety", "FAIL",
+                f"Maintenance release safety FAIL: no_real_orders={NO_REAL_ORDERS}, "
+                f"production_blocked={PRODUCTION_TRADING_BLOCKED}",
+            )
+        except Exception as exc:
+            return _check_item(
+                "research_cockpit_maintenance_safe", "safety", "WARN",
+                f"Maintenance safety check failed: {exc}",
+            )
+
+    def _check_no_real_orders_false_positive_guard(self) -> dict:
+        """v1.0.1 — verify 'No Real Orders' is not misclassified as forbidden ORDER keyword."""
+        import re
+        _FORBIDDEN = re.compile(
+            r'\b(BUY|SELL|ORDER|EXECUTE|SUBMIT_ORDER|AUTO_TRADE|REAL_TRADE|LIVE_TRADE|BROKER_ORDER)\b'
+        )
+        _WHITELIST = [
+            "No Real Orders", "Broker Execution Disabled", "No broker execution",
+            "Not an order", "VALIDATED does not enable trading",
+        ]
+        false_positives = []
+        for phrase in _WHITELIST:
+            cleaned = phrase
+            for w in _WHITELIST:
+                cleaned = cleaned.replace(w, "")
+            hits = _FORBIDDEN.findall(cleaned)
+            if hits:
+                false_positives.append(f"'{phrase}' → {hits}")
+        if not false_positives:
+            return _check_item(
+                "no_real_orders_false_positive_guard", "safety", "PASS",
+                "No Real Orders / Broker Execution Disabled not misclassified as forbidden.",
+            )
+        return _check_item(
+            "no_real_orders_false_positive_guard", "safety", "FAIL",
+            f"Whitelist phrases misclassified as forbidden: {false_positives}",
+        )
+
+    def _check_maintenance_v101_import(self) -> dict:
+        """v1.0.1 — docs/maintenance_v1.0.1.md exists."""
+        doc_path = os.path.join(BASE_DIR, "docs", "maintenance_v1.0.1.md")
+        if os.path.isfile(doc_path):
+            return _check_item(
+                "maintenance_v101_import", "docs", "PASS",
+                "docs/maintenance_v1.0.1.md exists",
+            )
+        return _check_item(
+            "maintenance_v101_import", "docs", "WARN",
+            "docs/maintenance_v1.0.1.md not found",
+        )
+
+    def _check_maintenance_v101_no_forbidden_actions(self) -> dict:
+        """v1.0.1 — maintenance doc does not contain forbidden action keywords."""
+        import re
+        _FORBIDDEN = re.compile(
+            r'\b(BUY|SELL|ORDER|EXECUTE|SUBMIT_ORDER|AUTO_TRADE|REAL_TRADE|LIVE_TRADE|BROKER_ORDER)\b'
+        )
+        _WHITELIST = [
+            "No Real Orders", "Broker Execution Disabled", "No broker execution",
+            "Not an order",
+        ]
+        doc_path = os.path.join(BASE_DIR, "docs", "maintenance_v1.0.1.md")
+        if not os.path.isfile(doc_path):
+            return _check_item(
+                "maintenance_v101_no_forbidden_actions", "safety", "WARN",
+                "docs/maintenance_v1.0.1.md not found — check skipped",
+            )
+        try:
+            with open(doc_path, "r", encoding="utf-8") as fh:
+                content = fh.read()
+            for phrase in _WHITELIST:
+                content = content.replace(phrase, "")
+            hits = _FORBIDDEN.findall(content)
+            if not hits:
+                return _check_item(
+                    "maintenance_v101_no_forbidden_actions", "safety", "PASS",
+                    "maintenance_v1.0.1.md: no forbidden trading keywords",
+                )
+            return _check_item(
+                "maintenance_v101_no_forbidden_actions", "safety", "FAIL",
+                f"maintenance_v1.0.1.md contains forbidden keywords: {list(set(hits))}",
+            )
+        except Exception as exc:
+            return _check_item(
+                "maintenance_v101_no_forbidden_actions", "safety", "WARN",
+                f"Could not read maintenance doc: {exc}",
             )
 
     def _check_evidence_graph_ux_no_forbidden(self) -> dict:
@@ -1333,6 +1454,12 @@ class StableReleaseChecklistV060:
             self._check_research_cockpit_stable_import,
             self._check_research_cockpit_stable_no_forbidden_actions,
             self._check_version_info_v100,
+            # v1.0.1 Maintenance & Polish
+            self._check_version_info_v101,
+            self._check_research_cockpit_maintenance_safe,
+            self._check_no_real_orders_false_positive_guard,
+            self._check_maintenance_v101_import,
+            self._check_maintenance_v101_no_forbidden_actions,
         ]
 
         for fn in checklist_groups:

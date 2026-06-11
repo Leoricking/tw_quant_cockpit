@@ -1,7 +1,8 @@
 """
-release/research_cockpit_stable_checklist.py — ResearchCockpitStableChecklist v1.0.0
+release/research_cockpit_stable_checklist.py — ResearchCockpitStableChecklist v1.0.x
 
-25-item release checklist for TW Quant Cockpit v1.0.0 Research Trading Cockpit Stable.
+25-item release checklist for TW Quant Cockpit v1.0.x Research Trading Cockpit Stable.
+Accepts v1.0.0 and all v1.0.x maintenance releases.
 
 [!] Research Only. No Real Orders. Production Trading: BLOCKED.
 [!] VALIDATED does not enable trading. Broker Execution Disabled.
@@ -64,13 +65,13 @@ class ResearchCockpitStableChecklist:
         """Run all checks. Returns (list of check dicts, summary dict)."""
         checks: List[dict] = []
 
-        # 1. version_info_v100
+        # 1. version_info_v100 — accepts v1.0.0 and v1.0.x maintenance releases
         try:
             from release.version_info import VERSION
-            if VERSION == "1.0.0":
-                checks.append(_mk("version_info_v100", "version", "PASS", f"VERSION={VERSION}"))
+            if VERSION.startswith("1.0."):
+                checks.append(_mk("version_info_v100", "version", "PASS", f"VERSION={VERSION} (v1.0.x stable)"))
             else:
-                checks.append(_mk("version_info_v100", "version", "FAIL", f"Expected 1.0.0, got {VERSION}"))
+                checks.append(_mk("version_info_v100", "version", "FAIL", f"Expected 1.0.x, got {VERSION}"))
         except Exception as exc:
             checks.append(_mk("version_info_v100", "version", "FAIL", str(exc)))
 
@@ -324,8 +325,12 @@ class ResearchCockpitStableChecklist:
         else:
             overall_status = "FAIL"
 
+        try:
+            from release.version_info import VERSION as _SUM_VER
+        except Exception:
+            _SUM_VER = "1.0.x"
         summary = {
-            "version":        "1.0.0",
+            "version":        _SUM_VER,
             "release_name":   "Research Trading Cockpit Stable",
             "total":          total,
             "pass_count":     pass_count,

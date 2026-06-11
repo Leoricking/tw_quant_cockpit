@@ -4,13 +4,22 @@
 >
 > **[!] v1: Real order execution is strictly prohibited. For research, simulation, and decision support only. Not investment advice.**
 
-**Current version: v1.0.0 — Research Trading Cockpit Stable**
+**Current version: v1.0.1 — Maintenance & Polish** (base: v1.0.0 Research Trading Cockpit Stable)
 
 ---
 
-## v1.0.0 — Research Trading Cockpit Stable
+## v1.0.1 — Maintenance & Polish
 
-This is TW Quant Cockpit **v1.0.0 — Research Trading Cockpit Stable**.
+This is TW Quant Cockpit **v1.0.1 — Maintenance & Polish**, based on **v1.0.0 Research Trading Cockpit Stable**.
+
+This is a **Research Trading Cockpit**.
+
+- **No Real Orders** — this system does not and cannot place real trading orders.
+- **Broker Execution Disabled** — no connection to any broker API.
+- **VALIDATED does not enable trading** — VALIDATED grade is research-validated only.
+- **Paper trading is simulation only** — paper trades are simulated, not real.
+- **Mock realtime is simulation only** — mock realtime is not live market data.
+- **Not investment advice** — nothing in this system constitutes investment advice.
 
 | Safety Flag | Value |
 |-------------|-------|

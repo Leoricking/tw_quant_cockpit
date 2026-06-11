@@ -803,4 +803,38 @@ class IntelligenceStableChecklist:
                 suggested_fix="Run: python main.py research-cockpit-stable --mode real",
             ))
 
+        # v1.0.1 maintenance_v101_safe — version_info MAINTENANCE_RELEASE and safety flags intact
+        try:
+            import importlib
+            mod_vi = importlib.import_module("release.version_info")
+            version    = getattr(mod_vi, "VERSION", "")
+            no_real    = getattr(mod_vi, "NO_REAL_ORDERS", None)
+            prod_block = getattr(mod_vi, "PRODUCTION_TRADING_BLOCKED", None)
+            maint      = getattr(mod_vi, "MAINTENANCE_RELEASE", False)
+            if version.startswith("1.0.") and no_real is True and prod_block is True:
+                checks.append(_check(
+                    "maintenance_v101_safe", "stable_integration",
+                    "v1.0.1 maintenance_v101_safe",
+                    CHECK_PASS, SEV_LOW,
+                    f"Maintenance release safe: VERSION={version}, no_real_orders={no_real}, "
+                    f"production_blocked={prod_block}, maintenance={maint}.",
+                ))
+            else:
+                checks.append(_check(
+                    "maintenance_v101_safe", "stable_integration",
+                    "v1.0.1 maintenance_v101_safe",
+                    CHECK_WARN, SEV_LOW,
+                    f"Maintenance release check: VERSION={version}, no_real_orders={no_real}, "
+                    f"production_blocked={prod_block} (optional v1.0.1).",
+                    suggested_fix="Ensure version_info has VERSION=1.0.1 and safety flags.",
+                ))
+        except Exception as exc:
+            checks.append(_check(
+                "maintenance_v101_safe", "stable_integration",
+                "v1.0.1 maintenance_v101_safe",
+                CHECK_WARN, SEV_LOW,
+                f"Could not verify maintenance_v101 safety (optional): {exc}",
+                suggested_fix="Run: python main.py version-info",
+            ))
+
         return checks

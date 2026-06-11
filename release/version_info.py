@@ -1,5 +1,5 @@
 """
-release/version_info.py — Centralized version info for TW Quant Cockpit v1.0.0.
+release/version_info.py — Centralized version info for TW Quant Cockpit v1.0.1.
 [!] Research Only. No Real Orders. Production Trading: BLOCKED.
 [!] VALIDATED does not enable trading. Broker Execution Disabled.
 """
@@ -11,10 +11,13 @@ logger = logging.getLogger(__name__)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 # ---------------------------------------------------------------------------
-# v1.0.0 module-level constants (Research Trading Cockpit Stable)
+# v1.0.1 module-level constants (Maintenance & Polish)
 # ---------------------------------------------------------------------------
-VERSION                             = "1.0.0"
-RELEASE_NAME                        = "Research Trading Cockpit Stable"
+VERSION                             = "1.0.1"
+RELEASE_NAME                        = "Maintenance & Polish"
+BASE_RELEASE                        = "1.0.0"
+BASE_RELEASE_NAME                   = "Research Trading Cockpit Stable"
+MAINTENANCE_RELEASE                 = True
 RELEASE_STAGE                       = "STABLE"
 RELEASE_TRACK                       = "research"
 TRADING_MODE                        = "research_only"

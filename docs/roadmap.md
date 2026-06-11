@@ -70,6 +70,19 @@
 | v0.9.2 | Strategy Validation Score | Done |
 | v0.9.3 | Strategy Lab Dashboard Polish | Done |
 | v1.0.0 | Research Trading Cockpit Stable | Done |
+| v1.0.1 | Maintenance & Polish | Done |
+
+---
+
+### v1.0.1 — Maintenance & Polish ✅
+
+- **Version:** 1.0.1 — maintenance release based on v1.0.0
+- **Type:** Polish / hardening — no new features, no broker API
+- **Changes:** CLI version-info base release line, stable checklist v1.0.x acceptance, intelligence checklist maintenance check, GUI nav keywords (maintenance, 維護版), regression suite gui-nav-search tests, docs/maintenance_v1.0.1.md
+- **Safety:** No Real Orders, Production Trading BLOCKED, Broker Execution Disabled (unchanged from v1.0.0)
+
+**Next:**
+- v1.1: Data Quality / Universe Expansion
 
 ---
 
