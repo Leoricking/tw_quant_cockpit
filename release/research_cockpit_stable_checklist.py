@@ -369,6 +369,41 @@ class ResearchCockpitStableChecklist:
             "reports.data_report_hygiene_report", "DataReportHygieneReportBuilder",
         ))
 
+        # 31. gui_health_check_available
+        checks.append(self._import_check(
+            "gui_health_check_available", "modules",
+            "gui.gui_health_check", "GuiHealthCheck",
+        ))
+
+        # 32. gui_no_forbidden_text
+        try:
+            from gui.common.gui_safety import build_research_only_banner
+            banner = build_research_only_banner()
+            cleaned = banner
+            for phrase in _WHITELIST_PHRASES:
+                cleaned = cleaned.replace(phrase, "")
+            hits = _FORBIDDEN_PATTERN.findall(cleaned)
+            if hits:
+                checks.append(_mk("gui_no_forbidden_text", "safety", "BLOCKED",
+                                  f"Forbidden text in safety banner: {hits}"))
+            else:
+                checks.append(_mk("gui_no_forbidden_text", "safety", "PASS",
+                                  "No forbidden text in GUI safety banner"))
+        except Exception as exc:
+            checks.append(_mk("gui_no_forbidden_text", "safety", "WARN", str(exc)))
+
+        # 33. gui_qthread_helper_available
+        checks.append(self._import_check(
+            "gui_qthread_helper_available", "modules",
+            "gui.common.gui_threading", "SafeWorker",
+        ))
+
+        # 34. gui_copy_utils_available
+        checks.append(self._import_check(
+            "gui_copy_utils_available", "modules",
+            "gui.common.copy_utils", "copy_safe_text",
+        ))
+
         # Build summary
         total         = len(checks)
         pass_count    = sum(1 for c in checks if c["status"] == "PASS")

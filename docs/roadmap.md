@@ -72,6 +72,19 @@
 | v1.0.0 | Research Trading Cockpit Stable | Done |
 | v1.0.1 | Maintenance & Polish | Done |
 | v1.0.2 | Data & Report Hygiene | Done |
+| v1.0.3 | GUI Stability & Usability Polish | Done |
+
+---
+
+### v1.0.3 — GUI Stability & Usability Polish ✅
+
+- **Version:** 1.0.3 — maintenance release based on v1.0.0
+- **Type:** GUI Stability & Usability Polish — no broker API, no trading, no strategy changes
+- **Changes:** gui/common/ package (gui_safety, gui_threading, table_utils, empty_state, copy_utils), gui/gui_health_check.py, reports/gui_usability_report.py, 2 new CLI commands (gui-health-check, gui-usability-report), +4 stable checklist checks, +3 v060 checklist checks, +1 intelligence checklist check, +11 regression tests, GUI nav entry, report pack entry, .gitignore updates, docs
+- **Safety:** No Real Orders, Production Trading BLOCKED, Broker Execution Disabled, GUI does not enable trading (unchanged from v1.0.0)
+
+**Next:**
+- v1.1: Data Quality / Universe Expansion
 
 ---
 

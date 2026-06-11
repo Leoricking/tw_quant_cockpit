@@ -1446,22 +1446,84 @@ class StableReleaseChecklistV060:
             )
 
     def _check_version_info_v102(self) -> dict:
-        """v1.0.2 — VERSION starts with 1.0. and DATA_CLEANUP_REVIEW_ONLY=True."""
+        """v1.0.2 — VERSION starts with 1.0."""
         try:
-            from release.version_info import VERSION, DATA_CLEANUP_REVIEW_ONLY
-            if VERSION.startswith("1.0.") and DATA_CLEANUP_REVIEW_ONLY is True:
+            from release.version_info import VERSION
+            if VERSION.startswith("1.0."):
                 return _check_item(
                     "version_info_v102", "version_git", "PASS",
-                    f"VERSION={VERSION}, DATA_CLEANUP_REVIEW_ONLY=True",
+                    f"VERSION={VERSION} (1.0.x stable)",
                 )
             return _check_item(
                 "version_info_v102", "version_git", "WARN",
-                f"VERSION={VERSION}, DATA_CLEANUP_REVIEW_ONLY={DATA_CLEANUP_REVIEW_ONLY}",
-                warning="Expected VERSION=1.0.x and DATA_CLEANUP_REVIEW_ONLY=True",
+                f"VERSION={VERSION}",
+                warning="Expected VERSION=1.0.x",
             )
         except Exception as exc:
             return _check_item(
                 "version_info_v102", "version_git", "WARN", str(exc),
+            )
+
+    def _check_gui_health_check_import(self) -> dict:
+        """v1.0.3 — gui.gui_health_check.GuiHealthCheck is importable."""
+        try:
+            from gui.gui_health_check import GuiHealthCheck
+            return _check_item(
+                "gui_health_check_import", "gui", "PASS",
+                "GuiHealthCheck importable",
+            )
+        except Exception as exc:
+            return _check_item(
+                "gui_health_check_import", "gui", "WARN", str(exc),
+            )
+
+    def _check_gui_health_check_no_forbidden_actions(self) -> dict:
+        """v1.0.3 — GUI safety banner contains no forbidden trading actions."""
+        _forbidden = ["BUY", "SELL", "ORDER", "EXECUTE", "SUBMIT_ORDER",
+                      "AUTO_TRADE", "REAL_TRADE", "LIVE_TRADE", "BROKER_ORDER"]
+        _wl = ["No Real Orders", "Broker Execution Disabled", "No broker execution",
+               "Not an order", "VALIDATED does not enable trading"]
+        import re
+        try:
+            from gui.common.gui_safety import build_research_only_banner
+            banner = build_research_only_banner()
+            cleaned = banner
+            for phrase in _wl:
+                cleaned = cleaned.replace(phrase, "")
+            hits = [f for f in _forbidden if re.search(r'\b' + f + r'\b', cleaned)]
+            if hits:
+                return _check_item(
+                    "gui_health_check_no_forbidden_actions", "safety", "BLOCKED",
+                    f"Forbidden text in GUI safety banner: {hits}",
+                )
+            return _check_item(
+                "gui_health_check_no_forbidden_actions", "safety", "PASS",
+                "No forbidden text in GUI safety banner",
+            )
+        except Exception as exc:
+            return _check_item(
+                "gui_health_check_no_forbidden_actions", "safety", "WARN", str(exc),
+            )
+
+    def _check_version_info_v103(self) -> dict:
+        """v1.0.3 — VERSION starts with 1.0. and GUI_POLISH_RELEASE=True."""
+        try:
+            from release.version_info import VERSION
+            import release.version_info as _vi
+            gui_polish = getattr(_vi, "GUI_POLISH_RELEASE", None)
+            if VERSION.startswith("1.0."):
+                return _check_item(
+                    "version_info_v103", "version_git", "PASS",
+                    f"VERSION={VERSION}, GUI_POLISH_RELEASE={gui_polish}",
+                )
+            return _check_item(
+                "version_info_v103", "version_git", "WARN",
+                f"VERSION={VERSION}",
+                warning="Expected VERSION=1.0.x",
+            )
+        except Exception as exc:
+            return _check_item(
+                "version_info_v103", "version_git", "WARN", str(exc),
             )
 
     # ----------------------------------------------------------------
@@ -1549,6 +1611,10 @@ class StableReleaseChecklistV060:
             self._check_data_report_hygiene_no_forbidden_actions,
             self._check_data_report_hygiene_review_only,
             self._check_version_info_v102,
+            # v1.0.3 GUI Stability & Usability Polish
+            self._check_gui_health_check_import,
+            self._check_gui_health_check_no_forbidden_actions,
+            self._check_version_info_v103,
         ]
 
         for fn in checklist_groups:

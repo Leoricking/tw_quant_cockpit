@@ -5610,7 +5610,7 @@ def cmd_enrich_universe_data(args: argparse.Namespace) -> None:
 # ---------------------------------------------------------------------------
 
 def cmd_version_info(args: argparse.Namespace) -> None:
-    """Print version info for TW Quant Cockpit v1.0.2 (Data & Report Hygiene)."""
+    """Print version info for TW Quant Cockpit v1.0.3 (GUI Stability & Usability Polish)."""
     print("=" * 60)
     print("TW Quant Cockpit \u2014 Version Info")
     print("=" * 60)
@@ -5620,10 +5620,12 @@ def cmd_version_info(args: argparse.Namespace) -> None:
             REAL_ORDERS_ENABLED, NO_REAL_ORDERS, PRODUCTION_TRADING_BLOCKED,
             BROKER_EXECUTION_ENABLED, VALIDATED_DOES_NOT_ENABLE_TRADING,
             PAPER_TRADING_IS_SIMULATION, MOCK_REALTIME_IS_SIMULATION,
-            DATA_CLEANUP_REVIEW_ONLY, ARCHIVE_SUGGESTIONS_ONLY,
         )
-        base_release = getattr(__import__("release.version_info", fromlist=["BASE_RELEASE"]), "BASE_RELEASE", "1.0.0")
-        base_release_name = getattr(__import__("release.version_info", fromlist=["BASE_RELEASE_NAME"]), "BASE_RELEASE_NAME", "Research Trading Cockpit Stable")
+        import release.version_info as _vi
+        base_release = getattr(_vi, "BASE_RELEASE", "1.0.0")
+        base_release_name = getattr(_vi, "BASE_RELEASE_NAME", "Research Trading Cockpit Stable")
+        gui_polish = getattr(_vi, "GUI_POLISH_RELEASE", False)
+        gui_stability = getattr(_vi, "GUI_STABILITY_FOCUS", False)
         print(f"{'Version:':<35} {VERSION}")
         print(f"{'Release:':<35} {RELEASE_NAME}")
         print(f"{'Base Release:':<35} {base_release} {base_release_name}")
@@ -5634,18 +5636,20 @@ def cmd_version_info(args: argparse.Namespace) -> None:
         print(f"{'Production Trading BLOCKED:':<35} {PRODUCTION_TRADING_BLOCKED}")
         print(f"{'Broker Execution:':<35} {'Disabled' if not BROKER_EXECUTION_ENABLED else 'Enabled'}")
         print(f"{'VALIDATED does not enable trading:':<35} {VALIDATED_DOES_NOT_ENABLE_TRADING}")
-        print(f"{'Data Cleanup:':<35} {'Review Only' if DATA_CLEANUP_REVIEW_ONLY else 'Active'}")
-        print(f"{'Archive Suggestions:':<35} {'Review Only' if ARCHIVE_SUGGESTIONS_ONLY else 'Active'}")
+        print(f"{'GUI Polish Release:':<35} {gui_polish}")
+        print(f"{'GUI Stability Focus:':<35} {gui_stability}")
         print(f"{'Paper Trading:':<35} {'Simulation Only' if PAPER_TRADING_IS_SIMULATION else 'Real'}")
         print(f"{'Mock Realtime:':<35} {'Simulation Only' if MOCK_REALTIME_IS_SIMULATION else 'Real'}")
     except Exception as exc:
-        print(f"  Version:                         1.0.2")
-        print(f"  Release:                         Data & Report Hygiene")
+        print(f"  Version:                         1.0.3")
+        print(f"  Release:                         GUI Stability & Usability Polish")
         print(f"  Base Release:                    1.0.0 Research Trading Cockpit Stable")
+        print(f"  GUI Polish Release:              True")
+        print(f"  GUI Stability Focus:             True")
         print(f"  (version_info import error: {exc})")
     print("=" * 60)
     print("RESEARCH ONLY \u2014 Not Investment Advice \u2014 No Real Orders")
-    print("Data cleanup is review-only. Archive suggestions do not move files.")
+    print("No broker execution. VALIDATED does not enable trading.")
 
 
 def cmd_stable_release_check(args: argparse.Namespace) -> None:
@@ -9557,6 +9561,33 @@ def cmd_data_report_hygiene_report(args):
         print("Data cleanup is review-only. Archive suggestions do not move files.")
     except Exception as exc:
         print(f"[WARN] data-report-hygiene-report: {exc}")
+
+
+# v1.0.3 GUI Stability & Usability Polish
+def cmd_gui_health_check(args):
+    """Run GUI health check for v1.0.3. Research Only. No Real Orders."""
+    try:
+        from gui.gui_health_check import GuiHealthCheck
+        checker = GuiHealthCheck()
+        checker.run_all()
+        checker.print_report()
+    except Exception as exc:
+        print(f"[WARN] gui-health-check: {exc}")
+
+
+def cmd_gui_usability_report(args):
+    """Generate GUI Usability Report for v1.0.3. Research Only. No Real Orders."""
+    mode = getattr(args, 'mode', 'real')
+    report_dir = getattr(args, 'report_dir', 'reports')
+    try:
+        from reports.gui_usability_report import GuiUsabilityReportBuilder
+        builder = GuiUsabilityReportBuilder(report_dir=report_dir, mode=mode)
+        path = builder.save()
+        print(f"GUI Usability Report generated: {path}")
+        print("RESEARCH ONLY \u2014 Not Investment Advice \u2014 No Real Orders")
+        print("No broker execution. VALIDATED does not enable trading.")
+    except Exception as exc:
+        print(f"[WARN] gui-usability-report: {exc}")
 
 
 # v0.9.3 Strategy Lab Dashboard
@@ -14543,6 +14574,19 @@ def _build_parser() -> argparse.ArgumentParser:
                            default="data/backtest_results/maintenance")
     p_drh_rep.add_argument("--report-dir", dest="report_dir", default="reports")
 
+    # --- v1.0.3 GUI Stability & Usability Polish ---
+    subparsers.add_parser(
+        "gui-health-check",
+        help="[v1.0.3] Run GUI health check (panels, adapters, nav, safety, utils)",
+    )
+
+    p_gur = subparsers.add_parser(
+        "gui-usability-report",
+        help="[v1.0.3] Generate GUI Stability & Usability Markdown report",
+    )
+    p_gur.add_argument("--mode", choices=["real", "mock"], default="real")
+    p_gur.add_argument("--report-dir", dest="report_dir", default="reports")
+
     # --- strategy-knowledge-ingest (v0.4.1.1) ---
     p_ski = subparsers.add_parser(
         "strategy-knowledge-ingest",
@@ -15829,6 +15873,9 @@ def main() -> None:
         "data-report-hygiene-stale":        cmd_data_report_hygiene_stale,
         "data-report-hygiene-large-files":  cmd_data_report_hygiene_large_files,
         "data-report-hygiene-report":       cmd_data_report_hygiene_report,
+        # v1.0.3 GUI Stability & Usability Polish
+        "gui-health-check":                 cmd_gui_health_check,
+        "gui-usability-report":             cmd_gui_usability_report,
         # v0.9.3 Strategy Lab Dashboard
         "strategy-lab-dashboard":              cmd_strategy_lab_dashboard,
         "strategy-lab-dashboard-summary":      cmd_strategy_lab_dashboard_summary,

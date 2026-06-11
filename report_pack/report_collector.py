@@ -39,6 +39,7 @@ from report_pack.report_registry import (
     REPORT_STRATEGY_VALIDATION,
     REPORT_RESEARCH_COCKPIT_STABLE,
     REPORT_DATA_REPORT_HYGIENE,
+    REPORT_GUI_USABILITY,
 )
 
 logger = logging.getLogger(__name__)
@@ -225,6 +226,10 @@ _REPORT_PATTERNS = {
     REPORT_DATA_REPORT_HYGIENE: [
         "reports/data_report_hygiene_report*.md",
         "data/backtest_results/maintenance/*.csv",
+    ],
+    # v1.0.3 GUI Stability & Usability Polish
+    REPORT_GUI_USABILITY: [
+        "reports/gui_usability_report*.md",
     ],
     # v0.9.1 Evidence Graph UX patterns
     "evidence_graph_gaps": [

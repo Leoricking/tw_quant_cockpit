@@ -242,3 +242,44 @@ v1.0.2 adds a review-only Data & Report Hygiene module. No new broker API, no tr
 ---
 
 *TW Quant Cockpit v1.0.2 — Data & Report Hygiene — Research Only — Not Investment Advice*
+
+---
+
+## v1.0.3 — GUI Stability & Usability Polish
+
+**Released:** 2026-06-11
+
+**Base Release:** v1.0.0 Research Trading Cockpit Stable
+
+v1.0.3 adds shared GUI stability and usability helpers. No new broker API, no trading actions, no strategy logic changes.
+
+### New in v1.0.3
+
+- **gui/common/__init__.py** — GUI common helpers package
+- **gui/common/gui_safety.py** — Safety banners, forbidden text scanner, safe label builders
+- **gui/common/gui_threading.py** — SafeWorker, run_in_qthread, cleanup_thread for safe QThread lifecycle
+- **gui/common/table_utils.py** — Table defaults, column sizing, ellipsis delegate, tooltip, empty row
+- **gui/common/empty_state.py** — Friendly empty state descriptors
+- **gui/common/copy_utils.py** — Copy safety: blocks forbidden trading actions from clipboard
+- **gui/gui_health_check.py** — GuiHealthCheck: 8-category GUI health check
+- **reports/gui_usability_report.py** — GuiUsabilityReportBuilder: Markdown GUI usability report
+- **2 new CLI commands:** gui-health-check, gui-usability-report
+- **release/version_info.py:** VERSION=1.0.3, RELEASE_NAME="GUI Stability & Usability Polish", GUI_POLISH_RELEASE=True, GUI_STABILITY_FOCUS=True
+- **Checklist updates:** +4 checks in research_cockpit_stable_checklist (checks 31-34), +3 in stable_release_checklist_v060, +1 in intelligence_stable_checklist
+- **Regression suite:** 11 new test cases in release_gate suite
+- **GUI navigation:** gui_stability_usability tab added, v1.0.3 keywords added to strategy_lab_dashboard tab
+- **Report pack:** gui_usability_report in registry and collector
+- **.gitignore:** Added reports/gui_usability_report_*.md
+- **Docs:** gui_stability_usability_v1.0.3.md
+
+### Safety (unchanged from v1.0.0)
+
+> **Research Only** — **No Real Orders** — **Production Trading BLOCKED**
+> **Broker Execution Disabled** — **VALIDATED does not enable trading**
+> **GUI does not enable trading** — GUI panels are research-only displays
+> **Paper trading is simulation only** — **Mock realtime is simulation only**
+> **Not Investment Advice**
+
+---
+
+*TW Quant Cockpit v1.0.3 — GUI Stability & Usability Polish — Research Only — Not Investment Advice*

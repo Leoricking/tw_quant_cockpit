@@ -339,3 +339,6 @@ reports/research_trading_cockpit_stable_report_*.md
 # v1.0.2 Data & Report Hygiene — runtime outputs
 data/backtest_results/maintenance/
 reports/data_report_hygiene_report_*.md
+
+# v1.0.3 GUI Stability & Usability Polish — runtime outputs
+reports/gui_usability_report_*.md

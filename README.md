@@ -4,13 +4,13 @@
 >
 > **[!] v1: Real order execution is strictly prohibited. For research, simulation, and decision support only. Not investment advice.**
 
-**Current version: v1.0.2 — Data & Report Hygiene** (base: v1.0.0 Research Trading Cockpit Stable)
+**Current version: v1.0.3 — GUI Stability & Usability Polish** (base: v1.0.0 Research Trading Cockpit Stable)
 
 ---
 
-## v1.0.2 — Data & Report Hygiene
+## v1.0.3 — GUI Stability & Usability Polish
 
-This is TW Quant Cockpit **v1.0.2 — Data & Report Hygiene**, based on **v1.0.0 Research Trading Cockpit Stable**.
+This is TW Quant Cockpit **v1.0.3 — GUI Stability & Usability Polish**, based on **v1.0.0 Research Trading Cockpit Stable**.
 
 This is a **Research Trading Cockpit**.
 

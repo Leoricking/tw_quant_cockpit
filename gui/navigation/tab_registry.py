@@ -1135,8 +1135,12 @@ class GUITabRegistry:
                     "dashboard", "strategy lab dashboard", "validation board", "action board",
                     "evidence board", "module health", "crash reversal board",
                     "strategy lab status", "grade mix", "needs backtest", "needs replay",
+                    "gui polish", "gui stability", "usability", "qthread", "table layout",
+                    "empty state", "copy safe command", "v1.0.3",
                     "\u5100\u8868\u677f", "\u7b56\u7565\u7e3d\u63a7", "\u7b56\u7565\u5100\u8868\u677f",
                     "\u9a57\u8b49\u770b\u677f", "\u884c\u52d5\u770b\u677f", "\u8b49\u64da\u770b\u677f",
+                    "GUI\u512a\u5316", "\u4ecb\u9762\u7a69\u5b9a", "\u8868\u683c\u6392\u7248",
+                    "\u7a7a\u72c0\u614b", "\u5b89\u5168\u8907\u88fd", "QThread", "\u4f7f\u7528\u6027",
                 ],
                 aliases=["strategy-lab-dashboard", "strategy-lab-dashboard-summary"],
                 related_cli_commands=[
@@ -1185,6 +1189,38 @@ class GUITabRegistry:
                 report_types=["data_report_hygiene_report"],
                 maturity="STABLE",
                 notes="Added in v1.0.2 \u2014 Data & Report Hygiene.",
+            ),
+            # v1.0.3 GUI Stability & Usability Polish
+            GUITabMetadata(
+                tab_id="gui_stability_usability",
+                tab_name="gui_stability_usability",
+                display_name="GUI Stability & Usability",
+                group="maintenance",
+                priority="P1",
+                description=(
+                    "GUI Stability & Usability Polish v1.0.3 \u2014 GUI health check, "
+                    "QThread safety, table usability, empty state, copy safety. "
+                    "Research Only. No Real Orders."
+                ),
+                module_path="gui.gui_health_check",
+                class_name="GuiHealthCheck",
+                safety_level="RESEARCH_ONLY",
+                read_only=True,
+                no_real_orders=True,
+                production_blocked=True,
+                keywords=[
+                    "gui health check", "gui stability", "gui polish", "usability",
+                    "qthread", "table layout", "empty state", "copy safe command",
+                    "v1.0.3", "maintenance", "gui usability report",
+                    "GUI\u512a\u5316", "\u4ecb\u9762\u7a69\u5b9a", "\u8868\u683c\u6392\u7248",
+                    "\u7a7a\u72c0\u614b", "\u5b89\u5168\u8907\u88fd", "QThread", "\u4f7f\u7528\u6027",
+                ],
+                related_cli_commands=[
+                    "gui-health-check", "gui-usability-report",
+                ],
+                report_types=["gui_usability_report"],
+                maturity="STABLE",
+                notes="Added in v1.0.3 \u2014 GUI Stability & Usability Polish.",
             ),
         ]
         for tab in tabs:

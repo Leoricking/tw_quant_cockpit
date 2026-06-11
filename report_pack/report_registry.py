@@ -42,6 +42,9 @@ REPORT_RESEARCH_COCKPIT_STABLE = "research_trading_cockpit_stable_report"
 # v1.0.2 Data & Report Hygiene
 REPORT_DATA_REPORT_HYGIENE = "data_report_hygiene_report"
 
+# v1.0.3 GUI Stability & Usability Polish
+REPORT_GUI_USABILITY = "gui_usability_report"
+
 logger = logging.getLogger(__name__)
 
 # ---------------------------------------------------------------------------
@@ -77,6 +80,8 @@ _PACK_DEFINITIONS: Dict[str, List[str]] = {
         REPORT_STRATEGY_VALIDATION,
         # v0.9.3 Strategy Lab Dashboard (optional in daily pack)
         REPORT_STRATEGY_LAB_DASHBOARD,
+        # v1.0.3 GUI Stability & Usability Polish (optional in daily pack)
+        REPORT_GUI_USABILITY,
     ],
     PACK_WEEKLY: [
         REPORT_DAILY_MARKET,
@@ -112,6 +117,8 @@ _PACK_DEFINITIONS: Dict[str, List[str]] = {
         REPORT_STRATEGY_VALIDATION,
         # v0.9.3 Strategy Lab Dashboard (optional in weekly pack)
         REPORT_STRATEGY_LAB_DASHBOARD,
+        # v1.0.3 GUI Stability & Usability Polish (optional in weekly pack)
+        REPORT_GUI_USABILITY,
     ],
     PACK_FULL: [
         REPORT_DAILY_MARKET,
@@ -163,6 +170,8 @@ _PACK_DEFINITIONS: Dict[str, List[str]] = {
         REPORT_RESEARCH_COCKPIT_STABLE,
         # v1.0.2 Data & Report Hygiene (full pack)
         REPORT_DATA_REPORT_HYGIENE,
+        # v1.0.3 GUI Stability & Usability Polish (optional in full pack)
+        REPORT_GUI_USABILITY,
     ],
 }
 

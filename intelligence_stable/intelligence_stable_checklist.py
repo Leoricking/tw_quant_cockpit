@@ -871,4 +871,44 @@ class IntelligenceStableChecklist:
                 suggested_fix="Run: python main.py version-info",
             ))
 
+        # v1.0.3 gui_stability_v103_safe — gui.common.gui_safety is importable and safe
+        try:
+            import importlib
+            mod_gs = importlib.import_module("gui.common.gui_safety")
+            banner_fn = getattr(mod_gs, "build_research_only_banner", None)
+            if banner_fn:
+                banner = banner_fn()
+                is_safe = "No Real Orders" in banner and "Production Trading BLOCKED" in banner
+                if is_safe:
+                    checks.append(_check(
+                        "gui_stability_v103_safe", "stable_integration",
+                        "v1.0.3 gui_stability_v103_safe",
+                        CHECK_PASS, SEV_LOW,
+                        "gui.common.gui_safety imports; safety banner contains required strings.",
+                    ))
+                else:
+                    checks.append(_check(
+                        "gui_stability_v103_safe", "stable_integration",
+                        "v1.0.3 gui_stability_v103_safe",
+                        CHECK_WARN, SEV_LOW,
+                        f"GUI safety banner missing required strings.",
+                        suggested_fix="Check gui/common/gui_safety.py SAFE_BANNER_TEXT",
+                    ))
+            else:
+                checks.append(_check(
+                    "gui_stability_v103_safe", "stable_integration",
+                    "v1.0.3 gui_stability_v103_safe",
+                    CHECK_WARN, SEV_LOW,
+                    "gui.common.gui_safety imported but build_research_only_banner not found.",
+                    suggested_fix="Ensure build_research_only_banner is defined in gui/common/gui_safety.py",
+                ))
+        except Exception as exc:
+            checks.append(_check(
+                "gui_stability_v103_safe", "stable_integration",
+                "v1.0.3 gui_stability_v103_safe",
+                CHECK_WARN, SEV_LOW,
+                f"Could not verify gui_stability_v103 safety (optional): {exc}",
+                suggested_fix="Run: python main.py gui-health-check",
+            ))
+
         return checks
