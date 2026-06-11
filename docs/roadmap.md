@@ -71,6 +71,19 @@
 | v0.9.3 | Strategy Lab Dashboard Polish | Done |
 | v1.0.0 | Research Trading Cockpit Stable | Done |
 | v1.0.1 | Maintenance & Polish | Done |
+| v1.0.2 | Data & Report Hygiene | Done |
+
+---
+
+### v1.0.2 — Data & Report Hygiene ✅
+
+- **Version:** 1.0.2 — maintenance release based on v1.0.0
+- **Type:** Data & Report Hygiene — review-only inventory, no broker API, no trading
+- **Changes:** DataReportHygieneEngine, DataReportHygieneStore, DataReportHygieneQuery, DataReportHygieneReportBuilder, DataReportHygienePanel, DataReportHygieneAdapter, 9 new CLI commands, 5 new stable checklist checks, 4 new v060 checklist checks, 1 new intelligence checklist check, regression suite updates, GUI nav entry, report pack entry, .gitignore updates
+- **Safety:** No Real Orders, Production Trading BLOCKED, Data Cleanup Review Only, Archive Suggestions Only, No file deletion (unchanged from v1.0.0)
+
+**Next:**
+- v1.1: Data Quality / Universe Expansion
 
 ---
 

@@ -46,7 +46,7 @@ def _mk(name: str, category: str, status: str, detail: str) -> dict:
 
 
 class ResearchCockpitStableChecklist:
-    """v1.0.0 Research Trading Cockpit Stable checklist — 25 checks.
+    """v1.0.0 Research Trading Cockpit Stable checklist — 30 checks.
 
     [!] Research Only. No Real Orders. Production Trading: BLOCKED.
     """
@@ -308,6 +308,66 @@ class ResearchCockpitStableChecklist:
         else:
             checks.append(_mk("release_notes_v100_available", "docs", "WARN",
                               "docs/release_notes_v1.0.md not found"))
+
+        # 26. data_report_hygiene_available — import DataReportHygieneEngine
+        checks.append(self._import_check(
+            "data_report_hygiene_available", "modules",
+            "maintenance.data_report_hygiene_engine", "DataReportHygieneEngine",
+        ))
+
+        # 27. data_report_hygiene_review_only
+        try:
+            from maintenance.data_report_hygiene_engine import DataReportHygieneEngine
+            eng = DataReportHygieneEngine()
+            if getattr(eng, "review_only", False) and getattr(eng, "no_real_orders", False):
+                checks.append(_mk("data_report_hygiene_review_only", "safety", "PASS",
+                                  "DataReportHygieneEngine.review_only=True, no_real_orders=True"))
+            else:
+                checks.append(_mk("data_report_hygiene_review_only", "safety", "FAIL",
+                                  "DataReportHygieneEngine safety flags not set"))
+        except Exception as exc:
+            checks.append(_mk("data_report_hygiene_review_only", "safety", "WARN", str(exc)))
+
+        # 28. runtime_outputs_gitignored — data/backtest_results/ in .gitignore
+        gitignore_path = os.path.join(self._root, ".gitignore")
+        try:
+            with open(gitignore_path, "r", encoding="utf-8") as fh:
+                gi_content = fh.read()
+            covered = "data/backtest_results/" in gi_content
+            if covered:
+                checks.append(_mk("runtime_outputs_gitignored", "hygiene", "PASS",
+                                  ".gitignore covers data/backtest_results/"))
+            else:
+                checks.append(_mk("runtime_outputs_gitignored", "hygiene", "WARN",
+                                  ".gitignore missing data/backtest_results/ entry"))
+        except Exception as exc:
+            checks.append(_mk("runtime_outputs_gitignored", "hygiene", "WARN",
+                              f"Cannot read .gitignore: {exc}"))
+
+        # 29. no_tracked_runtime_outputs
+        try:
+            import subprocess
+            result = subprocess.run(
+                ["git", "-C", self._root, "ls-files", "--",
+                 "data/backtest_results/",
+                 "reports/research_trading_cockpit_stable_report_*.md"],
+                capture_output=True, text=True, timeout=30,
+            )
+            tracked = [l.strip() for l in result.stdout.splitlines() if l.strip()]
+            if not tracked:
+                checks.append(_mk("no_tracked_runtime_outputs", "hygiene", "PASS",
+                                  "No tracked runtime outputs found"))
+            else:
+                checks.append(_mk("no_tracked_runtime_outputs", "hygiene", "WARN",
+                                  f"{len(tracked)} tracked runtime output(s) found: {tracked[:3]}"))
+        except Exception as exc:
+            checks.append(_mk("no_tracked_runtime_outputs", "hygiene", "WARN", str(exc)))
+
+        # 30. hygiene_report_available
+        checks.append(self._import_check(
+            "hygiene_report_available", "modules",
+            "reports.data_report_hygiene_report", "DataReportHygieneReportBuilder",
+        ))
 
         # Build summary
         total         = len(checks)

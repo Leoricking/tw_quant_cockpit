@@ -335,3 +335,7 @@ reports/strategy_lab_dashboard_report_*.md
 # v1.0.0 Research Trading Cockpit Stable — runtime outputs
 data/backtest_results/release/
 reports/research_trading_cockpit_stable_report_*.md
+
+# v1.0.2 Data & Report Hygiene — runtime outputs
+data/backtest_results/maintenance/
+reports/data_report_hygiene_report_*.md

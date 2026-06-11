@@ -5610,7 +5610,7 @@ def cmd_enrich_universe_data(args: argparse.Namespace) -> None:
 # ---------------------------------------------------------------------------
 
 def cmd_version_info(args: argparse.Namespace) -> None:
-    """Print version info for TW Quant Cockpit v1.0.1 (Maintenance & Polish)."""
+    """Print version info for TW Quant Cockpit v1.0.2 (Data & Report Hygiene)."""
     print("=" * 60)
     print("TW Quant Cockpit \u2014 Version Info")
     print("=" * 60)
@@ -5620,6 +5620,7 @@ def cmd_version_info(args: argparse.Namespace) -> None:
             REAL_ORDERS_ENABLED, NO_REAL_ORDERS, PRODUCTION_TRADING_BLOCKED,
             BROKER_EXECUTION_ENABLED, VALIDATED_DOES_NOT_ENABLE_TRADING,
             PAPER_TRADING_IS_SIMULATION, MOCK_REALTIME_IS_SIMULATION,
+            DATA_CLEANUP_REVIEW_ONLY, ARCHIVE_SUGGESTIONS_ONLY,
         )
         base_release = getattr(__import__("release.version_info", fromlist=["BASE_RELEASE"]), "BASE_RELEASE", "1.0.0")
         base_release_name = getattr(__import__("release.version_info", fromlist=["BASE_RELEASE_NAME"]), "BASE_RELEASE_NAME", "Research Trading Cockpit Stable")
@@ -5633,15 +5634,18 @@ def cmd_version_info(args: argparse.Namespace) -> None:
         print(f"{'Production Trading BLOCKED:':<35} {PRODUCTION_TRADING_BLOCKED}")
         print(f"{'Broker Execution:':<35} {'Disabled' if not BROKER_EXECUTION_ENABLED else 'Enabled'}")
         print(f"{'VALIDATED does not enable trading:':<35} {VALIDATED_DOES_NOT_ENABLE_TRADING}")
+        print(f"{'Data Cleanup:':<35} {'Review Only' if DATA_CLEANUP_REVIEW_ONLY else 'Active'}")
+        print(f"{'Archive Suggestions:':<35} {'Review Only' if ARCHIVE_SUGGESTIONS_ONLY else 'Active'}")
         print(f"{'Paper Trading:':<35} {'Simulation Only' if PAPER_TRADING_IS_SIMULATION else 'Real'}")
         print(f"{'Mock Realtime:':<35} {'Simulation Only' if MOCK_REALTIME_IS_SIMULATION else 'Real'}")
     except Exception as exc:
-        print(f"  Version:                         1.0.1")
-        print(f"  Release:                         Maintenance & Polish")
+        print(f"  Version:                         1.0.2")
+        print(f"  Release:                         Data & Report Hygiene")
         print(f"  Base Release:                    1.0.0 Research Trading Cockpit Stable")
         print(f"  (version_info import error: {exc})")
     print("=" * 60)
     print("RESEARCH ONLY \u2014 Not Investment Advice \u2014 No Real Orders")
+    print("Data cleanup is review-only. Archive suggestions do not move files.")
 
 
 def cmd_stable_release_check(args: argparse.Namespace) -> None:
@@ -9363,6 +9367,196 @@ def cmd_research_cockpit_stable_report(args):
         print(f"Research Trading Cockpit Stable Report generated: {path}")
     except Exception as exc:
         print(f"[WARN] research-cockpit-stable-report: {exc}")
+
+
+# ---------------------------------------------------------------------------
+# v1.0.2 Data & Report Hygiene
+# ---------------------------------------------------------------------------
+
+def cmd_data_report_hygiene(args):
+    """Run full Data & Report Hygiene scan (review-only)."""
+    import os
+    mode       = getattr(args, 'mode', 'real')
+    output_dir = getattr(args, 'output_dir', 'data/backtest_results/maintenance')
+    report_dir = getattr(args, 'report_dir', 'reports')
+    try:
+        from maintenance.data_report_hygiene_engine import DataReportHygieneEngine
+        from maintenance.data_report_hygiene_store import DataReportHygieneStore
+        from release.version_info import DATA_CLEANUP_REVIEW_ONLY, ARCHIVE_SUGGESTIONS_ONLY
+        root = os.path.dirname(os.path.abspath(__file__))
+        engine = DataReportHygieneEngine(project_root=root, output_dir=output_dir)
+        inventory, manifests, summary, suggestions = engine.run(mode=mode)
+        store = DataReportHygieneStore(output_dir=output_dir)
+        store.save_inventory(inventory)
+        store.save_report_manifest(manifests)
+        store.save_summary(summary)
+        print("=" * 60)
+        print("TW Quant Cockpit \u2014 Data & Report Hygiene")
+        print("=" * 60)
+        print(f"{'Mode:':<35} {mode}")
+        print(f"{'Research Only:':<35} True")
+        print(f"{'No Real Orders:':<35} True")
+        print(f"{'Production Trading BLOCKED:':<35} True")
+        print(f"{'Review Only:':<35} True")
+        print(f"{'Archive Suggestions Only:':<35} {ARCHIVE_SUGGESTIONS_ONLY}")
+        print(f"{'Total Items:':<35} {summary.total_items}")
+        print(f"{'Runtime Outputs:':<35} {summary.runtime_outputs}")
+        print(f"{'Git-tracked Runtime:':<35} {summary.git_tracked_runtime_outputs}")
+        print(f"{'Missing Gitignore:':<35} {summary.missing_gitignore_rules}")
+        print(f"{'Warnings:':<35} {summary.warning_count}")
+        print(f"{'Blocked:':<35} {summary.blocked_count}")
+        print(f"{'Report:':<35} run data-report-hygiene-report --mode real")
+        print("=" * 60)
+        print("RESEARCH ONLY \u2014 Not Investment Advice \u2014 No Real Orders")
+        print("Data cleanup is review-only. Archive suggestions do not move files.")
+    except Exception as exc:
+        print(f"[WARN] data-report-hygiene: {exc}")
+
+
+def cmd_data_report_hygiene_summary(args):
+    """Print latest Data & Report Hygiene summary."""
+    try:
+        from maintenance.data_report_hygiene_store import DataReportHygieneStore
+        store   = DataReportHygieneStore()
+        summary = store.load_latest_summary()
+        if summary is None:
+            print("[INFO] No hygiene summary found. Run: python main.py data-report-hygiene --mode real")
+            return
+        print("Data & Report Hygiene Summary")
+        for k, v in summary.to_dict().items():
+            print(f"  {k}: {v}")
+    except Exception as exc:
+        print(f"[WARN] data-report-hygiene-summary: {exc}")
+
+
+def cmd_data_report_hygiene_inventory(args):
+    """List hygiene inventory items."""
+    category = getattr(args, 'category', None)
+    severity = getattr(args, 'severity', None)
+    try:
+        from maintenance.data_report_hygiene_query import DataReportHygieneQuery
+        query = DataReportHygieneQuery()
+        items = query.list_inventory(category=category, severity=severity)
+        if not items:
+            print("[INFO] No inventory found. Run: python main.py data-report-hygiene --mode real")
+            return
+        print(f"Hygiene Inventory ({len(items)} items):")
+        print(f"  {'Path':<55} {'Category':<20} {'Age(d)':>7} {'Severity':<10} {'Action'}")
+        print("  " + "-" * 110)
+        for i in items[:50]:
+            print(f"  {i.path[-55:]:55} {i.category:<20} {i.age_days:>7.1f} {i.severity:<10} {i.action_hint}")
+        if len(items) > 50:
+            print(f"  ... ({len(items) - 50} more items)")
+    except Exception as exc:
+        print(f"[WARN] data-report-hygiene-inventory: {exc}")
+
+
+def cmd_data_report_hygiene_reports(args):
+    """List hygiene report manifest."""
+    module      = getattr(args, 'module', None)
+    latest_only = getattr(args, 'latest_only', False)
+    try:
+        from maintenance.data_report_hygiene_query import DataReportHygieneQuery
+        query     = DataReportHygieneQuery()
+        manifests = query.list_reports(module=module, latest_only=latest_only)
+        if not manifests:
+            print("[INFO] No report manifest found. Run: python main.py data-report-hygiene --mode real")
+            return
+        print(f"Report Manifest ({len(manifests)} reports):")
+        for m in manifests[:40]:
+            print(f"  [{m.report_type[:30]}] {m.report_path[-60:]} | latest={m.is_latest} | ignored={m.is_git_ignored}")
+    except Exception as exc:
+        print(f"[WARN] data-report-hygiene-reports: {exc}")
+
+
+def cmd_data_report_hygiene_gitignore(args):
+    """Check .gitignore coverage for runtime outputs."""
+    import os
+    try:
+        from maintenance.data_report_hygiene_engine import DataReportHygieneEngine
+        root     = os.path.dirname(os.path.abspath(__file__))
+        engine   = DataReportHygieneEngine(project_root=root)
+        coverage = engine.scan_gitignore_coverage()
+        print("Gitignore Coverage:")
+        for pattern, covered in coverage.items():
+            status = "OK" if covered else "MISSING"
+            print(f"  [{status}] {pattern}")
+        missing = [p for p, c in coverage.items() if not c]
+        if missing:
+            print(f"\n  Missing patterns ({len(missing)}): add to .gitignore")
+        else:
+            print("\n  All key patterns covered.")
+    except Exception as exc:
+        print(f"[WARN] data-report-hygiene-gitignore: {exc}")
+
+
+def cmd_data_report_hygiene_tracked(args):
+    """List git-tracked runtime outputs."""
+    import os
+    try:
+        from maintenance.data_report_hygiene_engine import DataReportHygieneEngine
+        root    = os.path.dirname(os.path.abspath(__file__))
+        engine  = DataReportHygieneEngine(project_root=root)
+        tracked = engine.scan_git_tracked_runtime_outputs()
+        if not tracked:
+            print("[PASS] No tracked runtime outputs found in data/backtest_results/ or reports/")
+        else:
+            print(f"[WARN] {len(tracked)} tracked runtime output(s) found:")
+            for f in tracked[:30]:
+                print(f"  {f}")
+    except Exception as exc:
+        print(f"[WARN] data-report-hygiene-tracked: {exc}")
+
+
+def cmd_data_report_hygiene_stale(args):
+    """List stale files (older than 30 days)."""
+    try:
+        from maintenance.data_report_hygiene_query import DataReportHygieneQuery
+        query = DataReportHygieneQuery()
+        stale = query.list_stale_reports(limit=20)
+        if not stale:
+            print("[INFO] No stale reports in inventory. Run scan first if needed.")
+            return
+        print(f"Stale Reports ({len(stale)}):")
+        for i in stale:
+            print(f"  {i.path[-70:]} — {i.age_days:.0f}d")
+    except Exception as exc:
+        print(f"[WARN] data-report-hygiene-stale: {exc}")
+
+
+def cmd_data_report_hygiene_large_files(args):
+    """List large files (>5MB)."""
+    try:
+        from maintenance.data_report_hygiene_query import DataReportHygieneQuery
+        query = DataReportHygieneQuery()
+        large = query.list_large_files(limit=20)
+        if not large:
+            print("[INFO] No large files in inventory. Run scan first if needed.")
+            return
+        print(f"Large Files ({len(large)}):")
+        for i in large:
+            print(f"  {i.path[-70:]} — {i.size_bytes // 1024}KB")
+    except Exception as exc:
+        print(f"[WARN] data-report-hygiene-large-files: {exc}")
+
+
+def cmd_data_report_hygiene_report(args):
+    """Generate Data & Report Hygiene Markdown report."""
+    import os
+    mode       = getattr(args, 'mode', 'real')
+    report_dir = getattr(args, 'report_dir', 'reports')
+    output_dir = getattr(args, 'output_dir', 'data/backtest_results/maintenance')
+    try:
+        from reports.data_report_hygiene_report import DataReportHygieneReportBuilder
+        root    = os.path.dirname(os.path.abspath(__file__))
+        builder = DataReportHygieneReportBuilder()
+        path    = builder.build(mode=mode, project_root=root,
+                                report_dir=report_dir, output_dir=output_dir)
+        print(f"Data & Report Hygiene Report generated: {path}")
+        print("RESEARCH ONLY \u2014 Not Investment Advice \u2014 No Real Orders")
+        print("Data cleanup is review-only. Archive suggestions do not move files.")
+    except Exception as exc:
+        print(f"[WARN] data-report-hygiene-report: {exc}")
 
 
 # v0.9.3 Strategy Lab Dashboard
@@ -14291,6 +14485,64 @@ def _build_parser() -> argparse.ArgumentParser:
                             default="data/backtest_results/release")
     p_rcs_rep.add_argument("--report-dir", dest="report_dir", default="reports")
 
+    # --- v1.0.2 Data & Report Hygiene ---
+    p_drh = subparsers.add_parser(
+        "data-report-hygiene",
+        help="[v1.0.2] Run Data & Report Hygiene scan (review-only)",
+    )
+    p_drh.add_argument("--mode", choices=["real", "mock"], default="real")
+    p_drh.add_argument("--output-dir", dest="output_dir",
+                       default="data/backtest_results/maintenance")
+    p_drh.add_argument("--report-dir", dest="report_dir", default="reports")
+
+    subparsers.add_parser(
+        "data-report-hygiene-summary",
+        help="[v1.0.2] Print latest Data & Report Hygiene summary",
+    )
+
+    p_drh_inv = subparsers.add_parser(
+        "data-report-hygiene-inventory",
+        help="[v1.0.2] List hygiene inventory items",
+    )
+    p_drh_inv.add_argument("--category", default=None)
+    p_drh_inv.add_argument("--severity", default=None)
+
+    p_drh_rpt = subparsers.add_parser(
+        "data-report-hygiene-reports",
+        help="[v1.0.2] List hygiene report manifest",
+    )
+    p_drh_rpt.add_argument("--module", default=None)
+    p_drh_rpt.add_argument("--latest-only", dest="latest_only", action="store_true", default=False)
+
+    subparsers.add_parser(
+        "data-report-hygiene-gitignore",
+        help="[v1.0.2] Check .gitignore coverage for runtime outputs",
+    )
+
+    subparsers.add_parser(
+        "data-report-hygiene-tracked",
+        help="[v1.0.2] List git-tracked runtime outputs",
+    )
+
+    subparsers.add_parser(
+        "data-report-hygiene-stale",
+        help="[v1.0.2] List stale files (older than 30 days)",
+    )
+
+    subparsers.add_parser(
+        "data-report-hygiene-large-files",
+        help="[v1.0.2] List large files (>5MB)",
+    )
+
+    p_drh_rep = subparsers.add_parser(
+        "data-report-hygiene-report",
+        help="[v1.0.2] Generate Data & Report Hygiene Markdown report",
+    )
+    p_drh_rep.add_argument("--mode", choices=["real", "mock"], default="real")
+    p_drh_rep.add_argument("--output-dir", dest="output_dir",
+                           default="data/backtest_results/maintenance")
+    p_drh_rep.add_argument("--report-dir", dest="report_dir", default="reports")
+
     # --- strategy-knowledge-ingest (v0.4.1.1) ---
     p_ski = subparsers.add_parser(
         "strategy-knowledge-ingest",
@@ -15567,6 +15819,16 @@ def main() -> None:
         "research-cockpit-stable-checks":      cmd_research_cockpit_stable_checks,
         "research-cockpit-stable-manifest":    cmd_research_cockpit_stable_manifest,
         "research-cockpit-stable-report":      cmd_research_cockpit_stable_report,
+        # v1.0.2 Data & Report Hygiene
+        "data-report-hygiene":              cmd_data_report_hygiene,
+        "data-report-hygiene-summary":      cmd_data_report_hygiene_summary,
+        "data-report-hygiene-inventory":    cmd_data_report_hygiene_inventory,
+        "data-report-hygiene-reports":      cmd_data_report_hygiene_reports,
+        "data-report-hygiene-gitignore":    cmd_data_report_hygiene_gitignore,
+        "data-report-hygiene-tracked":      cmd_data_report_hygiene_tracked,
+        "data-report-hygiene-stale":        cmd_data_report_hygiene_stale,
+        "data-report-hygiene-large-files":  cmd_data_report_hygiene_large_files,
+        "data-report-hygiene-report":       cmd_data_report_hygiene_report,
         # v0.9.3 Strategy Lab Dashboard
         "strategy-lab-dashboard":              cmd_strategy_lab_dashboard,
         "strategy-lab-dashboard-summary":      cmd_strategy_lab_dashboard_summary,

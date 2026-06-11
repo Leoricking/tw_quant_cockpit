@@ -202,3 +202,43 @@ v1.0.1 is a maintenance and polish release based on v1.0.0. No new features, no 
 ---
 
 *TW Quant Cockpit v1.0.1 — Maintenance & Polish — Research Only — Not Investment Advice*
+
+---
+
+## v1.0.2 — Data & Report Hygiene
+
+**Released:** 2026-06-11
+
+**Base Release:** v1.0.0 Research Trading Cockpit Stable
+
+v1.0.2 adds a review-only Data & Report Hygiene module. No new broker API, no trading actions.
+
+### New in v1.0.2
+
+- **maintenance/data_report_hygiene_engine.py** — DataReportHygieneEngine: scans reports/, data/backtest_results/, logs/, experiments/, data_cache/, journal_data/ for runtime outputs. Review-only, never deletes/moves/archives files.
+- **maintenance/data_report_hygiene_schema.py** — HygieneInventoryItem, HygieneReportManifest, HygieneSummary dataclasses with to_dict/from_dict.
+- **maintenance/data_report_hygiene_store.py** — DataReportHygieneStore: saves/loads inventory, report manifest, summary as CSV.
+- **maintenance/data_report_hygiene_query.py** — DataReportHygieneQuery: filters inventory, lists stale/large files, explains items.
+- **reports/data_report_hygiene_report.py** — DataReportHygieneReportBuilder: generates Markdown hygiene report with 8 sections.
+- **gui/data_report_hygiene_panel.py** — DataReportHygienePanel (PySide6): safety banner, summary cards, 6-tab view, scan worker, no delete/archive buttons.
+- **gui/data_report_hygiene_adapter.py** — DataReportHygieneAdapter: load_summary(), load_safe_commands().
+- **9 new CLI commands:** data-report-hygiene, data-report-hygiene-summary, data-report-hygiene-inventory, data-report-hygiene-reports, data-report-hygiene-gitignore, data-report-hygiene-tracked, data-report-hygiene-stale, data-report-hygiene-large-files, data-report-hygiene-report
+- **release/version_info.py:** VERSION=1.0.2, RELEASE_NAME="Data & Report Hygiene", DATA_CLEANUP_REVIEW_ONLY=True, ARCHIVE_SUGGESTIONS_ONLY=True
+- **Checklist updates:** +5 checks in research_cockpit_stable_checklist (checks 26-30), +4 in stable_release_checklist_v060, +1 in intelligence_stable_checklist
+- **Regression suite:** 16 new test cases in release_gate suite
+- **GUI navigation:** data_report_hygiene tab added to tab_registry and dashboard
+- **Report pack:** data_report_hygiene_report in registry and collector
+- **.gitignore:** Added data/backtest_results/maintenance/ and reports/data_report_hygiene_report_*.md
+
+### Safety (unchanged from v1.0.0)
+
+> **Research Only** — **No Real Orders** — **Production Trading BLOCKED**
+> **Broker Execution Disabled** — **VALIDATED does not enable trading**
+> **Data Cleanup is Review Only** — **Archive Suggestions Only**
+> **No automatic deletion** — **No file moves** — **No archive**
+> **Paper trading is simulation only** — **Mock realtime is simulation only**
+> **Not Investment Advice**
+
+---
+
+*TW Quant Cockpit v1.0.2 — Data & Report Hygiene — Research Only — Not Investment Advice*

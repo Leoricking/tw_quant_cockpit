@@ -3,7 +3,7 @@
 > **[!] Research Only. Read Only. No Real Orders. Production Trading: BLOCKED.**
 > **[!] Not investment advice. REAL_ORDER_READY=False.**
 
-Current version: **v1.0.1** — Maintenance & Polish (base: v1.0.0 Research Trading Cockpit Stable)
+Current version: **v1.0.2** — Data & Report Hygiene (base: v1.0.0 Research Trading Cockpit Stable)
 
 ---
 
@@ -22,6 +22,7 @@ Current version: **v1.0.1** — Maintenance & Polish (base: v1.0.0 Research Trad
 | [Release Notes v0.5](release_notes_v0.5.md) | v0.5.0 Research OS Planning change log |
 | [Release Notes v0.6](release_notes_v0.6.md) | v0.6.x change log (v0.6.0 Stable Release, v0.6.1 UX Polish, v0.6.2 Data Coverage, v0.6.3 Replay Training UI) |
 | [Release Notes v1.0](release_notes_v1.0.md) | v1.0.0 Research Trading Cockpit Stable and v1.0.1 Maintenance & Polish release notes |
+| [Data & Report Hygiene v1.0.2](data_report_hygiene_v1.0.2.md) | v1.0.2 data & report hygiene: inventory, report manifest, gitignore coverage, CLI/GUI, safety declaration |
 | [Maintenance v1.0.1](maintenance_v1.0.1.md) | v1.0.1 maintenance release: changes, CLI/GUI smoke tests, known warnings, safety declaration |
 | [Research Trading Cockpit Stable v1.0.0](research_trading_cockpit_stable_v1.0.0.md) | v1.0.0 overview: modules, CLI, GUI, safety declaration, roadmap |
 | [Release Notes v0.9](release_notes_v0.9.md) | v0.9.x change log (v0.9.0 Strategy Lab Stable, v0.9.0.1 Crash Reversal, v0.9.1 Evidence Graph UX, v0.9.2 Strategy Validation Score, v0.9.3 Strategy Lab Dashboard) |

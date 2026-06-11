@@ -1381,6 +1381,90 @@ class StableReleaseChecklistV060:
             )
 
     # ----------------------------------------------------------------
+    # v1.0.2 Data & Report Hygiene checks
+    # ----------------------------------------------------------------
+
+    def _check_data_report_hygiene_import(self) -> dict:
+        """v1.0.2 — DataReportHygieneEngine must be importable."""
+        try:
+            import importlib.util
+            spec = importlib.util.find_spec("maintenance.data_report_hygiene_engine")
+            if spec is None:
+                return _check_item(
+                    "data_report_hygiene_import", "safety", "WARN",
+                    "maintenance.data_report_hygiene_engine not found",
+                    suggested_fix="Create maintenance/data_report_hygiene_engine.py",
+                )
+            from maintenance.data_report_hygiene_engine import DataReportHygieneEngine
+            return _check_item(
+                "data_report_hygiene_import", "safety", "PASS",
+                "DataReportHygieneEngine imported successfully.",
+            )
+        except Exception as exc:
+            return _check_item(
+                "data_report_hygiene_import", "safety", "WARN", str(exc),
+            )
+
+    def _check_data_report_hygiene_no_forbidden_actions(self) -> dict:
+        """v1.0.2 — DataReportHygieneEngine must have review_only=True."""
+        try:
+            from maintenance.data_report_hygiene_engine import DataReportHygieneEngine
+            eng = DataReportHygieneEngine()
+            if not getattr(eng, "review_only", False):
+                return _check_item(
+                    "data_report_hygiene_no_forbidden_actions", "safety", "FAIL",
+                    "DataReportHygieneEngine.review_only is not True",
+                )
+            return _check_item(
+                "data_report_hygiene_no_forbidden_actions", "safety", "PASS",
+                "DataReportHygieneEngine.review_only=True — no forbidden actions.",
+            )
+        except Exception as exc:
+            return _check_item(
+                "data_report_hygiene_no_forbidden_actions", "safety", "WARN", str(exc),
+            )
+
+    def _check_data_report_hygiene_review_only(self) -> dict:
+        """v1.0.2 — verify review_only=True and no delete/archive flags."""
+        try:
+            from maintenance.data_report_hygiene_engine import DataReportHygieneEngine
+            eng = DataReportHygieneEngine()
+            r  = getattr(eng, "review_only", False)
+            no = getattr(eng, "no_real_orders", False)
+            if r and no:
+                return _check_item(
+                    "data_report_hygiene_review_only", "safety", "PASS",
+                    "DataReportHygieneEngine: review_only=True, no_real_orders=True.",
+                )
+            return _check_item(
+                "data_report_hygiene_review_only", "safety", "FAIL",
+                f"review_only={r}, no_real_orders={no}",
+            )
+        except Exception as exc:
+            return _check_item(
+                "data_report_hygiene_review_only", "safety", "WARN", str(exc),
+            )
+
+    def _check_version_info_v102(self) -> dict:
+        """v1.0.2 — VERSION starts with 1.0. and DATA_CLEANUP_REVIEW_ONLY=True."""
+        try:
+            from release.version_info import VERSION, DATA_CLEANUP_REVIEW_ONLY
+            if VERSION.startswith("1.0.") and DATA_CLEANUP_REVIEW_ONLY is True:
+                return _check_item(
+                    "version_info_v102", "version_git", "PASS",
+                    f"VERSION={VERSION}, DATA_CLEANUP_REVIEW_ONLY=True",
+                )
+            return _check_item(
+                "version_info_v102", "version_git", "WARN",
+                f"VERSION={VERSION}, DATA_CLEANUP_REVIEW_ONLY={DATA_CLEANUP_REVIEW_ONLY}",
+                warning="Expected VERSION=1.0.x and DATA_CLEANUP_REVIEW_ONLY=True",
+            )
+        except Exception as exc:
+            return _check_item(
+                "version_info_v102", "version_git", "WARN", str(exc),
+            )
+
+    # ----------------------------------------------------------------
     # Run
     # ----------------------------------------------------------------
 
@@ -1460,6 +1544,11 @@ class StableReleaseChecklistV060:
             self._check_no_real_orders_false_positive_guard,
             self._check_maintenance_v101_import,
             self._check_maintenance_v101_no_forbidden_actions,
+            # v1.0.2 Data & Report Hygiene
+            self._check_data_report_hygiene_import,
+            self._check_data_report_hygiene_no_forbidden_actions,
+            self._check_data_report_hygiene_review_only,
+            self._check_version_info_v102,
         ]
 
         for fn in checklist_groups:

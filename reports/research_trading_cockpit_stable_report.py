@@ -57,6 +57,7 @@ class ResearchTradingCockpitStableReportBuilder:
         lines += self._section_release_checklist(mode)
         lines += self._section_regression_summary()
         lines += self._section_known_warnings()
+        lines += self._section_data_hygiene_status()
         lines += self._section_safety_declaration()
         lines += self._section_next_roadmap()
 
@@ -311,6 +312,36 @@ class ResearchTradingCockpitStableReportBuilder:
             "| Paper smoke WARN if paper_state.json missing | WARN | Non-critical; run paper to generate |",
             "| no_real_orders flag pre-existing check | INFO | Advisory only |",
             "| Optional report_pack ENV_LIMITED | INFO | Non-critical; some providers not available |",
+            "",
+            "---",
+            "",
+        ]
+
+    def _section_data_hygiene_status(self) -> List[str]:
+        try:
+            from maintenance.data_report_hygiene_engine import DataReportHygieneEngine
+            engine_available = True
+            try:
+                eng = DataReportHygieneEngine()
+                review_only = eng.review_only
+            except Exception:
+                review_only = True
+        except ImportError:
+            engine_available = False
+            review_only = True
+        return [
+            "## 十一、Data & Report Hygiene Status (v1.0.2)",
+            "",
+            "| Field | Value |",
+            "|-------|-------|",
+            f"| Module Available | {engine_available} |",
+            f"| Review Only | {review_only} |",
+            "| Data Cleanup | Review Only — no automatic deletion |",
+            "| Archive Suggestions | Review Only — no automatic archive |",
+            "| No Real Orders | True |",
+            "| Production Blocked | True |",
+            "",
+            "> Run `python main.py data-report-hygiene --mode real` to scan.",
             "",
             "---",
             "",

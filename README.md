@@ -4,13 +4,13 @@
 >
 > **[!] v1: Real order execution is strictly prohibited. For research, simulation, and decision support only. Not investment advice.**
 
-**Current version: v1.0.1 — Maintenance & Polish** (base: v1.0.0 Research Trading Cockpit Stable)
+**Current version: v1.0.2 — Data & Report Hygiene** (base: v1.0.0 Research Trading Cockpit Stable)
 
 ---
 
-## v1.0.1 — Maintenance & Polish
+## v1.0.2 — Data & Report Hygiene
 
-This is TW Quant Cockpit **v1.0.1 — Maintenance & Polish**, based on **v1.0.0 Research Trading Cockpit Stable**.
+This is TW Quant Cockpit **v1.0.2 — Data & Report Hygiene**, based on **v1.0.0 Research Trading Cockpit Stable**.
 
 This is a **Research Trading Cockpit**.
 

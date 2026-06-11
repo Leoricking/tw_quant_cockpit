@@ -1150,6 +1150,42 @@ class GUITabRegistry:
                 favorite_default=False,
                 notes="Added in v0.9.3 \u2014 Strategy Lab Dashboard Polish.",
             ),
+            # v1.0.2 Data & Report Hygiene
+            GUITabMetadata(
+                tab_id="data_report_hygiene",
+                tab_name="data_report_hygiene",
+                display_name="Data & Report Hygiene",
+                group="maintenance",
+                priority="P1",
+                description=(
+                    "Data & Report Hygiene \u2014 review-only inventory of runtime outputs, "
+                    "report manifest, gitignore coverage. No deletion. No archive."
+                ),
+                module_path="gui.data_report_hygiene_panel",
+                class_name="DataReportHygienePanel",
+                available_flag="_DATA_REPORT_HYGIENE_AVAILABLE",
+                safety_level="RESEARCH_ONLY",
+                read_only=True,
+                no_real_orders=True,
+                production_blocked=True,
+                keywords=[
+                    "data hygiene", "report hygiene", "report index", "gitignore",
+                    "runtime output", "csv cleanup", "md report", "maintenance",
+                    "data cleanup", "report cleanup",
+                    "\u8cc7\u6599\u6e05\u7406", "\u5831\u544a\u6e05\u7406",
+                    "\u7522\u7269\u6e05\u7406", "\u7dad\u8b77\u7248",
+                    "runtime \u7522\u7269",
+                ],
+                related_cli_commands=[
+                    "data-report-hygiene", "data-report-hygiene-summary",
+                    "data-report-hygiene-inventory", "data-report-hygiene-reports",
+                    "data-report-hygiene-gitignore", "data-report-hygiene-tracked",
+                    "data-report-hygiene-report",
+                ],
+                report_types=["data_report_hygiene_report"],
+                maturity="STABLE",
+                notes="Added in v1.0.2 \u2014 Data & Report Hygiene.",
+            ),
         ]
         for tab in tabs:
             self._tabs[tab.tab_id] = tab

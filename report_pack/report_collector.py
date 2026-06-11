@@ -33,11 +33,12 @@ from report_pack.report_pack_schema import (
     REPORT_STRATEGY_LAB_STABLE,
     OPTIONAL_REPORT_TYPES, ENV_LIMITED_REPORT_TYPES,
 )
-# v0.9.0.1 crash reversal; v1.0.0 research cockpit stable
+# v0.9.0.1 crash reversal; v1.0.0 research cockpit stable; v1.0.2 hygiene
 from report_pack.report_registry import (
     REPORT_CRASH_REVERSAL,
     REPORT_STRATEGY_VALIDATION,
     REPORT_RESEARCH_COCKPIT_STABLE,
+    REPORT_DATA_REPORT_HYGIENE,
 )
 
 logger = logging.getLogger(__name__)
@@ -219,6 +220,11 @@ _REPORT_PATTERNS = {
         "reports/research_trading_cockpit_stable_report*.md",
         "data/backtest_results/release/*.csv",
         "data/backtest_results/release/*.json",
+    ],
+    # v1.0.2 Data & Report Hygiene
+    REPORT_DATA_REPORT_HYGIENE: [
+        "reports/data_report_hygiene_report*.md",
+        "data/backtest_results/maintenance/*.csv",
     ],
     # v0.9.1 Evidence Graph UX patterns
     "evidence_graph_gaps": [

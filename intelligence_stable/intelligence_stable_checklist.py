@@ -803,6 +803,40 @@ class IntelligenceStableChecklist:
                 suggested_fix="Run: python main.py research-cockpit-stable --mode real",
             ))
 
+        # v1.0.2 data_report_hygiene_safe — DataReportHygieneEngine review_only and no_real_orders
+        try:
+            import importlib
+            mod_drh = importlib.import_module("maintenance.data_report_hygiene_engine")
+            drh_cls = getattr(mod_drh, "DataReportHygieneEngine", None)
+            if drh_cls is None:
+                raise ImportError("DataReportHygieneEngine not found")
+            eng = drh_cls()
+            ro = getattr(eng, "review_only", None)
+            nr = getattr(eng, "no_real_orders", None)
+            if ro is True and nr is True:
+                checks.append(_check(
+                    "data_report_hygiene_safe", "stable_integration",
+                    "v1.0.2 data_report_hygiene_safe",
+                    CHECK_PASS, SEV_LOW,
+                    "DataReportHygieneEngine: review_only=True, no_real_orders=True.",
+                ))
+            else:
+                checks.append(_check(
+                    "data_report_hygiene_safe", "stable_integration",
+                    "v1.0.2 data_report_hygiene_safe",
+                    CHECK_WARN, SEV_LOW,
+                    f"DataReportHygieneEngine safety check: review_only={ro}, no_real_orders={nr}",
+                    suggested_fix="Ensure DataReportHygieneEngine has review_only=True.",
+                ))
+        except Exception as exc:
+            checks.append(_check(
+                "data_report_hygiene_safe", "stable_integration",
+                "v1.0.2 data_report_hygiene_safe",
+                CHECK_WARN, SEV_LOW,
+                f"Could not verify data_report_hygiene_safe (optional): {exc}",
+                suggested_fix="Create maintenance/data_report_hygiene_engine.py",
+            ))
+
         # v1.0.1 maintenance_v101_safe — version_info MAINTENANCE_RELEASE and safety flags intact
         try:
             import importlib

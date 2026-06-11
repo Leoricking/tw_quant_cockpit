@@ -525,6 +525,14 @@ try:
 except ImportError:
     pass
 
+# v1.0.2 Data & Report Hygiene
+_DATA_REPORT_HYGIENE_AVAILABLE = False
+try:
+    from gui.data_report_hygiene_panel import DataReportHygienePanel
+    _DATA_REPORT_HYGIENE_AVAILABLE = True
+except ImportError:
+    pass
+
 # v0.5.1.1 Strategy Filter panel — inline (no separate panel file required)
 # ---------------------------------------------------------------------------
 _STRATEGY_FILTER_AVAILABLE = False
@@ -1635,6 +1643,13 @@ class CockpitWindow(QMainWindow if _PYSIDE6_AVAILABLE else object):
             self.tab_widget.addTab(self._strategy_lab_dashboard_panel, "Strategy Lab Dashboard")
         else:
             self._strategy_lab_dashboard_panel = None
+
+        # v1.0.2 Data & Report Hygiene
+        if _DATA_REPORT_HYGIENE_AVAILABLE:
+            self._data_report_hygiene_panel = DataReportHygienePanel(mode=getattr(self, '_mode', 'real'))
+            self.tab_widget.addTab(self._data_report_hygiene_panel, "Data & Report Hygiene")
+        else:
+            self._data_report_hygiene_panel = None
 
         # v0.4.1.1 Strategy Knowledge tab
         if _STRATEGY_KNOWLEDGE_INGESTION_AVAILABLE:
