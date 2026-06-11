@@ -73,6 +73,19 @@
 | v1.0.1 | Maintenance & Polish | Done |
 | v1.0.2 | Data & Report Hygiene | Done |
 | v1.0.3 | GUI Stability & Usability Polish | Done |
+| v1.0.4 | Regression & Release Gate Hardening | Done |
+
+---
+
+### v1.0.4 — Regression & Release Gate Hardening ✅
+
+- **Version:** 1.0.4 — maintenance release based on v1.0.0
+- **Type:** Regression & Release Gate Hardening — no broker API, no trading, no strategy changes
+- **Changes:** regression_hardening package (safety_scanner, encoding_utils, regression_summary, release_gate_health), reports/regression_hardening_report.py, 4 new CLI commands (release-gate-health, safety-scan, regression-hardening-summary, regression-hardening-report), +5 stable checklist checks (35–39), +5 v060 checklist checks, +1 intelligence checklist check, +16 regression tests, GUI nav keywords, report pack entry, .gitignore updates, docs
+- **Safety:** No Real Orders, Production Trading BLOCKED, Broker Execution Disabled, Regression does not enable trading (unchanged from v1.0.0)
+
+**Next:**
+- v1.1: Data Quality / Universe Expansion
 
 ---
 

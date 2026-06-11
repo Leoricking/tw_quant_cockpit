@@ -1214,6 +1214,12 @@ class GUITabRegistry:
                     "v1.0.3", "maintenance", "gui usability report",
                     "GUI\u512a\u5316", "\u4ecb\u9762\u7a69\u5b9a", "\u8868\u683c\u6392\u7248",
                     "\u7a7a\u72c0\u614b", "\u5b89\u5168\u8907\u88fd", "QThread", "\u4f7f\u7528\u6027",
+                    # v1.0.4 Regression & Release Gate Hardening keywords
+                    "regression hardening", "release gate", "safety scan", "safety scanner",
+                    "known warn", "known blocked", "cp950", "paper smoke",
+                    "release gate health",
+                    "\u56de\u6b78\u6e2c\u8a66", "\u767c\u7248\u9598\u9580", "\u5b89\u5168\u6383\u63cf",
+                    "\u767d\u540d\u55ae", "\u5df2\u77e5\u8b66\u544a", "\u5df2\u77e5\u963b\u64cb",
                 ],
                 related_cli_commands=[
                     "gui-health-check", "gui-usability-report",

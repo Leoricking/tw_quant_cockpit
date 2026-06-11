@@ -58,6 +58,7 @@ class ResearchTradingCockpitStableReportBuilder:
         lines += self._section_regression_summary()
         lines += self._section_known_warnings()
         lines += self._section_data_hygiene_status()
+        lines += self._section_regression_hardening_status()
         lines += self._section_safety_declaration()
         lines += self._section_next_roadmap()
 
@@ -342,6 +343,41 @@ class ResearchTradingCockpitStableReportBuilder:
             "| Production Blocked | True |",
             "",
             "> Run `python main.py data-report-hygiene --mode real` to scan.",
+            "",
+            "---",
+            "",
+        ]
+
+    def _section_regression_hardening_status(self) -> List[str]:
+        try:
+            from regression_hardening.release_gate_health import ReleaseGateHealth
+            rgh_available = True
+        except ImportError:
+            rgh_available = False
+        try:
+            from regression_hardening.safety_scanner import SafetyScanner
+            ss_available = True
+        except ImportError:
+            ss_available = False
+        try:
+            from regression_hardening.regression_summary import build_release_summary
+            rs_available = True
+        except ImportError:
+            rs_available = False
+        return [
+            "## \u5341\u4e8c\u3001Regression Hardening Status (v1.0.4)",
+            "",
+            "| Component | Status |",
+            "|-----------|--------|",
+            f"| Regression Hardening Release | True |",
+            f"| Release Gate Hardening | True |",
+            f"| Safety Scanner Hardening | True |",
+            f"| ReleaseGateHealth available | {rgh_available} |",
+            f"| SafetyScanner available | {ss_available} |",
+            f"| regression_summary available | {rs_available} |",
+            f"| Known WARNs classified | 4 categories |",
+            f"| Known BLOCKED classified | 1 category |",
+            f"| UNKNOWN FAIL target | 0 |",
             "",
             "---",
             "",

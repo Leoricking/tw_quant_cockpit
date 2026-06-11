@@ -283,3 +283,51 @@ v1.0.3 adds shared GUI stability and usability helpers. No new broker API, no tr
 ---
 
 *TW Quant Cockpit v1.0.3 — GUI Stability & Usability Polish — Research Only — Not Investment Advice*
+
+---
+
+## v1.0.4 — Regression & Release Gate Hardening
+
+**Release Date:** 2026-06-11
+**Base Release:** v1.0.0 Research Trading Cockpit Stable
+
+v1.0.4 hardens the regression and release gate infrastructure. No new broker API, no trading actions, no strategy logic changes.
+
+### New in v1.0.4
+
+- **regression_hardening/__init__.py** — New package
+- **regression_hardening/safety_scanner.py** — SafetyScanner with expanded whitelist and context-aware forbidden detection
+- **regression_hardening/encoding_utils.py** — Windows cp950 encoding warning detection and classification
+- **regression_hardening/regression_summary.py** — Known vs unknown warning/blocked classification for release gate results
+- **regression_hardening/release_gate_health.py** — ReleaseGateHealth: checks suites, known warns, known blocked, false positive guard
+- **reports/regression_hardening_report.py** — RegressionHardeningReportBuilder: Markdown regression hardening report
+- **4 new CLI commands:** release-gate-health, safety-scan, regression-hardening-summary, regression-hardening-report
+- **release/version_info.py:** VERSION=1.0.4, RELEASE_NAME="Regression & Release Gate Hardening", REGRESSION_HARDENING_RELEASE=True, RELEASE_GATE_HARDENING=True, SAFETY_SCANNER_HARDENING=True
+- **Checklist updates:** +5 checks in research_cockpit_stable_checklist (checks 35–39), +5 in stable_release_checklist_v060, +1 in intelligence_stable_checklist
+- **Regression suite:** 16 new test cases in release_gate suite
+- **Report pack:** regression_hardening_report in registry and collector
+- **GUI navigation:** regression hardening keywords added to gui_stability_usability tab
+- **.gitignore:** Added reports/regression_hardening_report_*.md, data/backtest_results/regression_hardening/
+- **Docs:** regression_release_gate_hardening_v1.0.4.md
+
+### Known Warning Classifications
+
+| Classification | Description |
+|----------------|-------------|
+| KNOWN_CP950_WARNING | Windows cp950 subprocess encoding — non-critical |
+| KNOWN_PAPER_SMOKE_WARNING | paper_state.json missing — non-critical |
+| KNOWN_REPORT_PACK_OPTIONAL | ENV_LIMITED / NOT_GENERATED optional reports |
+| KNOWN_NO_REAL_ORDERS_FALSE_POSITIVE | no_real_orders flag pre-existing check |
+| KNOWN_NO_REAL_ORDERS_FLAG_CHECK | Known BLOCKED — pre-existing advisory |
+
+### Safety (unchanged from v1.0.0)
+
+> **Research Only** — **No Real Orders** — **Production Trading BLOCKED**
+> **Broker Execution Disabled** — **VALIDATED does not enable trading**
+> **Regression does not enable trading** — Regression checks are research-only
+> **Paper trading is simulation only** — **Mock realtime is simulation only**
+> **Not Investment Advice**
+
+---
+
+*TW Quant Cockpit v1.0.4 — Regression & Release Gate Hardening — Research Only — Not Investment Advice*

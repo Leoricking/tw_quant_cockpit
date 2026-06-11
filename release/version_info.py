@@ -1,8 +1,8 @@
 """
-release/version_info.py — Centralized version info for TW Quant Cockpit v1.0.3.
+release/version_info.py — Centralized version info for TW Quant Cockpit v1.0.4.
 [!] Research Only. No Real Orders. Production Trading: BLOCKED.
 [!] VALIDATED does not enable trading. Broker Execution Disabled.
-[!] GUI Stability & Usability Polish. No broker execution.
+[!] Regression & Release Gate Hardening. No broker execution.
 """
 from __future__ import annotations
 import logging
@@ -12,10 +12,10 @@ logger = logging.getLogger(__name__)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 # ---------------------------------------------------------------------------
-# v1.0.3 module-level constants (GUI Stability & Usability Polish)
+# v1.0.4 module-level constants (Regression & Release Gate Hardening)
 # ---------------------------------------------------------------------------
-VERSION                             = "1.0.3"
-RELEASE_NAME                        = "GUI Stability & Usability Polish"
+VERSION                             = "1.0.4"
+RELEASE_NAME                        = "Regression & Release Gate Hardening"
 BASE_RELEASE                        = "1.0.0"
 BASE_RELEASE_NAME                   = "Research Trading Cockpit Stable"
 MAINTENANCE_RELEASE                 = True
@@ -31,8 +31,9 @@ MOCK_REALTIME_IS_SIMULATION         = True
 NO_REAL_ORDERS                      = True
 read_only                           = True
 production_blocked                  = True
-GUI_POLISH_RELEASE                  = True
-GUI_STABILITY_FOCUS                 = True
+REGRESSION_HARDENING_RELEASE        = True
+RELEASE_GATE_HARDENING              = True
+SAFETY_SCANNER_HARDENING            = True
 
 
 class VersionInfo:

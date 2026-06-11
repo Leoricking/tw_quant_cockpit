@@ -911,4 +911,33 @@ class IntelligenceStableChecklist:
                 suggested_fix="Run: python main.py gui-health-check",
             ))
 
+        # v1.0.4 regression_hardening_v104_safe — regression_hardening package safe
+        try:
+            from regression_hardening.safety_scanner import SafetyScanner
+            scanner = SafetyScanner()
+            result = scanner.scan_text("No Real Orders — Research Only. No broker execution.")
+            if result.status == "PASS":
+                checks.append(_check(
+                    "regression_hardening_v104_safe", "stable_integration",
+                    "v1.0.4 regression_hardening_v104_safe",
+                    CHECK_PASS, SEV_LOW,
+                    "regression_hardening.SafetyScanner imports; No Real Orders whitelist works.",
+                ))
+            else:
+                checks.append(_check(
+                    "regression_hardening_v104_safe", "stable_integration",
+                    "v1.0.4 regression_hardening_v104_safe",
+                    CHECK_WARN, SEV_LOW,
+                    f"SafetyScanner scan returned {result.status}: {result.forbidden_hits}",
+                    suggested_fix="Check regression_hardening/safety_scanner.py WHITELIST_PHRASES",
+                ))
+        except Exception as exc:
+            checks.append(_check(
+                "regression_hardening_v104_safe", "stable_integration",
+                "v1.0.4 regression_hardening_v104_safe",
+                CHECK_WARN, SEV_LOW,
+                f"Could not verify regression_hardening_v104 safety (optional): {exc}",
+                suggested_fix="Run: python main.py release-gate-health",
+            ))
+
         return checks

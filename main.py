@@ -4641,6 +4641,13 @@ def cmd_version_info(args: argparse.Namespace) -> None:
     print(f"  Prod BLOCKED : {info.get('production_blocked', '?')}")
     print(f"  Real Order Ready: {info.get('real_order_ready', '?')}")
     print(f"  Modes        : {info.get('supported_modes', [])}")
+    try:
+        import release.version_info as _vi
+        print(f"  Regression Hardening Release: {getattr(_vi, 'REGRESSION_HARDENING_RELEASE', False)}")
+        print(f"  Release Gate Hardening: {getattr(_vi, 'RELEASE_GATE_HARDENING', False)}")
+        print(f"  Safety Scanner Hardening: {getattr(_vi, 'SAFETY_SCANNER_HARDENING', False)}")
+    except Exception:
+        pass
     print()
     print(f"  Safety Banner: {get_safety_banner()}")
     print()
@@ -9561,6 +9568,94 @@ def cmd_data_report_hygiene_report(args):
         print("Data cleanup is review-only. Archive suggestions do not move files.")
     except Exception as exc:
         print(f"[WARN] data-report-hygiene-report: {exc}")
+
+
+# v1.0.4 Regression & Release Gate Hardening
+def cmd_release_gate_health(args):
+    """Run Release Gate Health check. Research Only. No Real Orders."""
+    try:
+        from regression_hardening.release_gate_health import ReleaseGateHealth
+        checker = ReleaseGateHealth()
+        summary = checker.run_all()
+        checker.print_report(summary)
+    except Exception as exc:
+        print(f"[WARN] release-gate-health: {exc}")
+
+
+def cmd_safety_scan(args):
+    """Scan codebase for forbidden trading actions. Research Only. No Real Orders."""
+    target = getattr(args, 'target', 'all')
+    try:
+        from regression_hardening.safety_scanner import SafetyScanner
+        scanner = SafetyScanner()
+        results = []
+        if target in ('reports', 'all'):
+            results += scanner.scan_directory('reports', patterns=['*.py', '*.md'])
+        if target in ('gui', 'all'):
+            results += scanner.scan_directory('gui', patterns=['*.py'])
+        if target in ('cli', 'all'):
+            results.append(scanner.scan_file('main.py'))
+        if target in ('docs', 'all'):
+            results += scanner.scan_directory('docs', patterns=['*.md'])
+        if not results:
+            results += scanner.scan_directory('reports', patterns=['*.py', '*.md'])
+        summary = scanner.summarize(results)
+        print("=" * 60)
+        print("TW Quant Cockpit \u2014 Safety Scan")
+        print("Research Only | No Real Orders | Production Trading BLOCKED")
+        print("=" * 60)
+        print(f"  Target:          {target}")
+        print(f"  Scanned:         {summary.total_scanned}")
+        print(f"  PASS:            {summary.pass_count}")
+        print(f"  WARN:            {summary.warn_count}")
+        print(f"  BLOCKED:         {summary.blocked_count}")
+        print(f"  Overall:         {summary.overall_status}")
+        print("=" * 60)
+        if summary.blocked_count > 0:
+            print("  BLOCKED files (investigate):")
+            for r in results:
+                if r.status == "BLOCKED":
+                    print(f"    {r.target}: {r.forbidden_hits}")
+        print("  No Real Orders. No broker execution.")
+    except Exception as exc:
+        print(f"[WARN] safety-scan: {exc}")
+
+
+def cmd_regression_hardening_summary(args):
+    """Print regression hardening summary. Research Only. No Real Orders."""
+    try:
+        from regression_hardening.release_gate_health import ReleaseGateHealth
+        checker = ReleaseGateHealth()
+        summary = checker.run_all()
+        print("=" * 60)
+        print("TW Quant Cockpit \u2014 Regression Hardening Summary v1.0.4")
+        print("Research Only | No Real Orders | Production Trading BLOCKED")
+        print("Broker Execution Disabled | VALIDATED does not enable trading")
+        print("=" * 60)
+        print(f"  Regression Hardening Release: True")
+        print(f"  Release Gate Hardening:       True")
+        print(f"  Safety Scanner Hardening:     True")
+        print(f"  Overall:                      {summary.overall_status}")
+        print(f"  PASS:  {summary.pass_count}  WARN: {summary.warn_count}  FAIL: {summary.fail_count}")
+        print("=" * 60)
+        print("  No Real Orders. No broker execution.")
+    except Exception as exc:
+        print(f"[WARN] regression-hardening-summary: {exc}")
+
+
+def cmd_regression_hardening_report(args):
+    """Generate Regression Hardening Report. Research Only. No Real Orders."""
+    mode = getattr(args, 'mode', 'real')
+    report_dir = getattr(args, 'report_dir', 'reports')
+    try:
+        from reports.regression_hardening_report import RegressionHardeningReportBuilder
+        builder = RegressionHardeningReportBuilder(report_dir=report_dir, mode=mode)
+        path = builder.save()
+        print(f"Regression Hardening Report generated: {path}")
+        print("RESEARCH ONLY \u2014 Not Investment Advice \u2014 No Real Orders")
+        print("No broker execution. VALIDATED does not enable trading.")
+    except Exception as exc:
+        print(f"[WARN] regression-hardening-report: {exc}")
 
 
 # v1.0.3 GUI Stability & Usability Polish
@@ -14587,6 +14682,30 @@ def _build_parser() -> argparse.ArgumentParser:
     p_gur.add_argument("--mode", choices=["real", "mock"], default="real")
     p_gur.add_argument("--report-dir", dest="report_dir", default="reports")
 
+    # --- v1.0.4 Regression & Release Gate Hardening ---
+    subparsers.add_parser(
+        "release-gate-health",
+        help="[v1.0.4] Run Release Gate Health check",
+    )
+
+    p_ss = subparsers.add_parser(
+        "safety-scan",
+        help="[v1.0.4] Scan codebase for forbidden trading actions",
+    )
+    p_ss.add_argument("--target", choices=["reports", "gui", "cli", "docs", "all"], default="all")
+
+    subparsers.add_parser(
+        "regression-hardening-summary",
+        help="[v1.0.4] Print regression hardening summary",
+    )
+
+    p_rhr = subparsers.add_parser(
+        "regression-hardening-report",
+        help="[v1.0.4] Generate Regression Hardening Markdown report",
+    )
+    p_rhr.add_argument("--mode", choices=["real", "mock"], default="real")
+    p_rhr.add_argument("--report-dir", dest="report_dir", default="reports")
+
     # --- strategy-knowledge-ingest (v0.4.1.1) ---
     p_ski = subparsers.add_parser(
         "strategy-knowledge-ingest",
@@ -15876,6 +15995,11 @@ def main() -> None:
         # v1.0.3 GUI Stability & Usability Polish
         "gui-health-check":                 cmd_gui_health_check,
         "gui-usability-report":             cmd_gui_usability_report,
+        # v1.0.4 Regression & Release Gate Hardening
+        "release-gate-health":              cmd_release_gate_health,
+        "safety-scan":                      cmd_safety_scan,
+        "regression-hardening-summary":     cmd_regression_hardening_summary,
+        "regression-hardening-report":      cmd_regression_hardening_report,
         # v0.9.3 Strategy Lab Dashboard
         "strategy-lab-dashboard":              cmd_strategy_lab_dashboard,
         "strategy-lab-dashboard-summary":      cmd_strategy_lab_dashboard_summary,

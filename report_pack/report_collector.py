@@ -40,6 +40,7 @@ from report_pack.report_registry import (
     REPORT_RESEARCH_COCKPIT_STABLE,
     REPORT_DATA_REPORT_HYGIENE,
     REPORT_GUI_USABILITY,
+    REPORT_REGRESSION_HARDENING,
 )
 
 logger = logging.getLogger(__name__)
@@ -230,6 +231,10 @@ _REPORT_PATTERNS = {
     # v1.0.3 GUI Stability & Usability Polish
     REPORT_GUI_USABILITY: [
         "reports/gui_usability_report*.md",
+    ],
+    # v1.0.4 Regression & Release Gate Hardening
+    REPORT_REGRESSION_HARDENING: [
+        "reports/regression_hardening_report*.md",
     ],
     # v0.9.1 Evidence Graph UX patterns
     "evidence_graph_gaps": [

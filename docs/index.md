@@ -3,7 +3,7 @@
 > **[!] Research Only. Read Only. No Real Orders. Production Trading: BLOCKED.**
 > **[!] Not investment advice. REAL_ORDER_READY=False.**
 
-Current version: **v1.0.3** — GUI Stability & Usability Polish (base: v1.0.0 Research Trading Cockpit Stable)
+Current version: **v1.0.4** — Regression & Release Gate Hardening (base: v1.0.0 Research Trading Cockpit Stable)
 
 ---
 
@@ -22,6 +22,7 @@ Current version: **v1.0.3** — GUI Stability & Usability Polish (base: v1.0.0 R
 | [Release Notes v0.5](release_notes_v0.5.md) | v0.5.0 Research OS Planning change log |
 | [Release Notes v0.6](release_notes_v0.6.md) | v0.6.x change log (v0.6.0 Stable Release, v0.6.1 UX Polish, v0.6.2 Data Coverage, v0.6.3 Replay Training UI) |
 | [Release Notes v1.0](release_notes_v1.0.md) | v1.0.0 Research Trading Cockpit Stable and v1.0.1 Maintenance & Polish release notes |
+| [Regression & Release Gate Hardening v1.0.4](regression_release_gate_hardening_v1.0.4.md) | v1.0.4 regression hardening: safety scanner, release gate health, known warn/blocked classification, cp950/paper smoke/no_real_orders false positive handling |
 | [GUI Stability & Usability v1.0.3](gui_stability_usability_v1.0.3.md) | v1.0.3 GUI stability: QThread safety, table usability, empty state, copy safety, GUI health check, usability report |
 | [Data & Report Hygiene v1.0.2](data_report_hygiene_v1.0.2.md) | v1.0.2 data & report hygiene: inventory, report manifest, gitignore coverage, CLI/GUI, safety declaration |
 | [Maintenance v1.0.1](maintenance_v1.0.1.md) | v1.0.1 maintenance release: changes, CLI/GUI smoke tests, known warnings, safety declaration |

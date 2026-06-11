@@ -1527,6 +1527,97 @@ class StableReleaseChecklistV060:
             )
 
     # ----------------------------------------------------------------
+    # v1.0.4 Regression & Release Gate Hardening checks
+    # ----------------------------------------------------------------
+
+    def _check_regression_hardening_import(self) -> dict:
+        """v1.0.4 — regression_hardening package importable."""
+        try:
+            from regression_hardening.safety_scanner import SafetyScanner
+            return _check_item(
+                "regression_hardening_import", "regression", "PASS",
+                "regression_hardening.safety_scanner.SafetyScanner import OK",
+            )
+        except Exception as exc:
+            return _check_item(
+                "regression_hardening_import", "regression", "WARN",
+                str(exc), suggested_fix="Create regression_hardening package",
+            )
+
+    def _check_safety_scanner_import(self) -> dict:
+        """v1.0.4 — SafetyScanner with scan_text method available."""
+        try:
+            from regression_hardening.safety_scanner import SafetyScanner
+            scanner = SafetyScanner()
+            if hasattr(scanner, 'scan_text'):
+                return _check_item(
+                    "safety_scanner_import", "regression", "PASS",
+                    "SafetyScanner.scan_text available",
+                )
+            return _check_item(
+                "safety_scanner_import", "regression", "WARN",
+                "SafetyScanner imported but scan_text not found",
+            )
+        except Exception as exc:
+            return _check_item(
+                "safety_scanner_import", "regression", "WARN", str(exc),
+            )
+
+    def _check_release_gate_health_import(self) -> dict:
+        """v1.0.4 — ReleaseGateHealth importable."""
+        try:
+            from regression_hardening.release_gate_health import ReleaseGateHealth
+            return _check_item(
+                "release_gate_health_import", "regression", "PASS",
+                "regression_hardening.release_gate_health.ReleaseGateHealth import OK",
+            )
+        except Exception as exc:
+            return _check_item(
+                "release_gate_health_import", "regression", "WARN", str(exc),
+            )
+
+    def _check_version_info_v104(self) -> dict:
+        """v1.0.4 — VERSION starts with 1.0. and REGRESSION_HARDENING_RELEASE=True."""
+        try:
+            from release.version_info import VERSION
+            import release.version_info as _vi
+            rh = getattr(_vi, "REGRESSION_HARDENING_RELEASE", None)
+            if VERSION.startswith("1.0."):
+                return _check_item(
+                    "version_info_v104", "version_git", "PASS",
+                    f"VERSION={VERSION}, REGRESSION_HARDENING_RELEASE={rh}",
+                )
+            return _check_item(
+                "version_info_v104", "version_git", "WARN",
+                f"VERSION={VERSION}",
+                warning="Expected VERSION=1.0.x",
+            )
+        except Exception as exc:
+            return _check_item(
+                "version_info_v104", "version_git", "WARN", str(exc),
+            )
+
+    def _check_no_real_orders_false_positive_guard_v104(self) -> dict:
+        """v1.0.4 — SafetyScanner whitelist prevents No Real Orders false positive."""
+        try:
+            from regression_hardening.safety_scanner import SafetyScanner
+            scanner = SafetyScanner()
+            result = scanner.scan_text("No Real Orders — Research Only. No broker execution.")
+            if result.status == "PASS":
+                return _check_item(
+                    "no_real_orders_false_positive_guard_v104", "safety", "PASS",
+                    "No Real Orders text correctly scans as PASS (whitelisted)",
+                )
+            return _check_item(
+                "no_real_orders_false_positive_guard_v104", "safety", "WARN",
+                f"No Real Orders scan returned {result.status}: {result.forbidden_hits}",
+            )
+        except Exception as exc:
+            return _check_item(
+                "no_real_orders_false_positive_guard_v104", "safety", "WARN", str(exc),
+            )
+
+    # ----------------------------------------------------------------
     # Run
     # ----------------------------------------------------------------
 
@@ -1615,6 +1706,12 @@ class StableReleaseChecklistV060:
             self._check_gui_health_check_import,
             self._check_gui_health_check_no_forbidden_actions,
             self._check_version_info_v103,
+            # v1.0.4 Regression & Release Gate Hardening
+            self._check_regression_hardening_import,
+            self._check_safety_scanner_import,
+            self._check_release_gate_health_import,
+            self._check_version_info_v104,
+            self._check_no_real_orders_false_positive_guard_v104,
         ]
 
         for fn in checklist_groups:

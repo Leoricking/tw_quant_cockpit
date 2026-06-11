@@ -404,6 +404,51 @@ class ResearchCockpitStableChecklist:
             "gui.common.copy_utils", "copy_safe_text",
         ))
 
+        # 35. regression_hardening_available
+        checks.append(self._import_check(
+            "regression_hardening_available", "modules",
+            "regression_hardening.safety_scanner", "SafetyScanner",
+        ))
+
+        # 36. safety_scanner_available
+        try:
+            from regression_hardening.safety_scanner import SafetyScanner
+            scanner = SafetyScanner()
+            if hasattr(scanner, 'scan_text'):
+                checks.append(_mk("safety_scanner_available", "modules", "PASS",
+                                  "SafetyScanner available with scan_text method"))
+            else:
+                checks.append(_mk("safety_scanner_available", "modules", "WARN",
+                                  "SafetyScanner imported but scan_text not found"))
+        except Exception as exc:
+            checks.append(_mk("safety_scanner_available", "modules", "WARN", str(exc)))
+
+        # 37. safety_scanner_no_false_positive
+        try:
+            from regression_hardening.safety_scanner import SafetyScanner
+            scanner = SafetyScanner()
+            result = scanner.scan_text("No Real Orders — Research Only. No broker execution.")
+            if result.status == "PASS":
+                checks.append(_mk("safety_scanner_no_false_positive", "safety", "PASS",
+                                  "No Real Orders text scans as PASS (correctly whitelisted)"))
+            else:
+                checks.append(_mk("safety_scanner_no_false_positive", "safety", "WARN",
+                                  f"No Real Orders scan returned {result.status}: {result.forbidden_hits}"))
+        except Exception as exc:
+            checks.append(_mk("safety_scanner_no_false_positive", "safety", "WARN", str(exc)))
+
+        # 38. release_gate_health_available
+        checks.append(self._import_check(
+            "release_gate_health_available", "modules",
+            "regression_hardening.release_gate_health", "ReleaseGateHealth",
+        ))
+
+        # 39. known_warning_classification_available
+        checks.append(self._import_check(
+            "known_warning_classification_available", "modules",
+            "regression_hardening.regression_summary", "classify_warning",
+        ))
+
         # Build summary
         total         = len(checks)
         pass_count    = sum(1 for c in checks if c["status"] == "PASS")

@@ -342,3 +342,7 @@ reports/data_report_hygiene_report_*.md
 
 # v1.0.3 GUI Stability & Usability Polish — runtime outputs
 reports/gui_usability_report_*.md
+
+# v1.0.4 Regression & Release Gate Hardening — runtime outputs
+reports/regression_hardening_report_*.md
+data/backtest_results/regression_hardening/
