@@ -48,6 +48,9 @@ REPORT_GUI_USABILITY = "gui_usability_report"
 # v1.0.4 Regression & Release Gate Hardening
 REPORT_REGRESSION_HARDENING = "regression_hardening_report"
 
+# v1.0.5 Documentation & User Guide Polish
+REPORT_DOCUMENTATION_HEALTH = "documentation_health_report"
+
 logger = logging.getLogger(__name__)
 
 # ---------------------------------------------------------------------------
@@ -87,6 +90,8 @@ _PACK_DEFINITIONS: Dict[str, List[str]] = {
         REPORT_GUI_USABILITY,
         # v1.0.4 Regression & Release Gate Hardening (optional in daily pack)
         REPORT_REGRESSION_HARDENING,
+        # v1.0.5 Documentation & User Guide Polish (optional in daily pack)
+        REPORT_DOCUMENTATION_HEALTH,
     ],
     PACK_WEEKLY: [
         REPORT_DAILY_MARKET,
@@ -126,6 +131,8 @@ _PACK_DEFINITIONS: Dict[str, List[str]] = {
         REPORT_GUI_USABILITY,
         # v1.0.4 Regression & Release Gate Hardening (optional in weekly pack)
         REPORT_REGRESSION_HARDENING,
+        # v1.0.5 Documentation & User Guide Polish (optional in weekly pack)
+        REPORT_DOCUMENTATION_HEALTH,
     ],
     PACK_FULL: [
         REPORT_DAILY_MARKET,
@@ -181,6 +188,8 @@ _PACK_DEFINITIONS: Dict[str, List[str]] = {
         REPORT_GUI_USABILITY,
         # v1.0.4 Regression & Release Gate Hardening (optional in full pack)
         REPORT_REGRESSION_HARDENING,
+        # v1.0.5 Documentation & User Guide Polish (optional in full pack)
+        REPORT_DOCUMENTATION_HEALTH,
     ],
 }
 

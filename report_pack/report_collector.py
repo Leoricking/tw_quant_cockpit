@@ -41,6 +41,7 @@ from report_pack.report_registry import (
     REPORT_DATA_REPORT_HYGIENE,
     REPORT_GUI_USABILITY,
     REPORT_REGRESSION_HARDENING,
+    REPORT_DOCUMENTATION_HEALTH,
 )
 
 logger = logging.getLogger(__name__)
@@ -235,6 +236,10 @@ _REPORT_PATTERNS = {
     # v1.0.4 Regression & Release Gate Hardening
     REPORT_REGRESSION_HARDENING: [
         "reports/regression_hardening_report*.md",
+    ],
+    # v1.0.5 Documentation & User Guide Polish
+    REPORT_DOCUMENTATION_HEALTH: [
+        "reports/documentation_health_report*.md",
     ],
     # v0.9.1 Evidence Graph UX patterns
     "evidence_graph_gaps": [

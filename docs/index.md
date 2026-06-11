@@ -3,20 +3,64 @@
 > **[!] Research Only. Read Only. No Real Orders. Production Trading: BLOCKED.**
 > **[!] Not investment advice. REAL_ORDER_READY=False.**
 
-Current version: **v1.0.4** — Regression & Release Gate Hardening (base: v1.0.0 Research Trading Cockpit Stable)
+Current version: **v1.0.5** — Documentation & User Guide Polish (base: v1.0.0 Research Trading Cockpit Stable)
 
 ---
 
-## Documentation
+## A. Start Here
 
 | Document | Description |
 |----------|-------------|
-| [User Guide](user_guide.md) | Getting started, daily workflow, GUI usage, score interpretation |
+| [User Guide v1.0](user_guide_v1.0.md) | Getting started, daily workflow, module overview, status interpretation |
+| [Daily Workflow SOP v1.0](daily_workflow_sop_v1.0.md) | Step-by-step daily research procedures |
+| [Safety Guide v1.0](safety_guide_v1.0.md) | Safety declarations, scanner rules, safe vs forbidden actions |
+
+## B. Operation
+
+| Document | Description |
+|----------|-------------|
+| [GUI User Guide v1.0](gui_user_guide_v1.0.md) | GUI launch, tabs, empty state, copy command, QThread |
+| [CLI Cookbook v1.0](cli_cookbook_v1.0.md) | CLI commands by category: system, research, reports, maintenance, simulation |
+| [Troubleshooting v1.0](troubleshooting_v1.0.md) | Common problems and solutions |
 | [CLI Reference](cli_reference.md) | All CLI commands with usage, examples, and outputs |
 | [GUI Guide](gui_guide.md) | Cockpit tab descriptions, empty states, and warnings |
-| [Daily Research SOP](daily_research_sop.md) | Step-by-step daily research procedures |
-| [Safety & Limitations](safety_and_limitations.md) | Read-only guarantees, production block, backtest limitations |
-| [Developer Guide](developer_guide.md) | Architecture, adding CLI/GUI/reports, git conventions |
+| [User Guide (legacy)](user_guide.md) | Legacy user guide |
+
+## C. System Modules
+
+| Document | Description |
+|----------|-------------|
+| [Research Trading Cockpit Stable v1.0.0](research_trading_cockpit_stable_v1.0.0.md) | v1.0.0 overview |
+| [Regression & Release Gate Hardening v1.0.4](regression_release_gate_hardening_v1.0.4.md) | v1.0.4 regression hardening |
+| [GUI Stability & Usability v1.0.3](gui_stability_usability_v1.0.3.md) | v1.0.3 GUI stability |
+| [Data & Report Hygiene v1.0.2](data_report_hygiene_v1.0.2.md) | v1.0.2 data hygiene |
+| [Maintenance v1.0.1](maintenance_v1.0.1.md) | v1.0.1 maintenance |
+| [Strategy Lab Dashboard v0.9.3](strategy_lab_dashboard_v0.9.3.md) | v0.9.3 dashboard |
+| [Strategy Memory UX v0.8.1](strategy_memory_ux_v0.8.1.md) | v0.8.1 memory UX |
+| [Research Intelligence Evidence Graph](research_intelligence_evidence_graph.md) | v0.8.3 evidence graph |
+| [Research Intelligence Stable v0.8.0](research_intelligence_stable_v0.8.0.md) | v0.8.0 intelligence stable |
+| [Backtest Training Metrics](backtest_training_metrics.md) | v0.8.2 metrics |
+| [Crash Reversal & Risk Discipline](crash_reversal_risk_discipline.md) | v0.9.0.1 crash reversal |
+
+## D. Maintenance
+
+| Document | Description |
+|----------|-------------|
+| [Data & Report Hygiene v1.0.2](data_report_hygiene_v1.0.2.md) | Data hygiene tooling |
+| [GUI Stability & Usability v1.0.3](gui_stability_usability_v1.0.3.md) | GUI health, QThread, copy utils |
+| [Regression & Release Gate Hardening v1.0.4](regression_release_gate_hardening_v1.0.4.md) | Safety scanner, release gate |
+
+## E. Release
+
+| Document | Description |
+|----------|-------------|
+| [Release Notes v1.0](release_notes_v1.0.md) | v1.0.0–v1.0.5 change log |
+| [Version Map v1.0](version_map_v1.0.md) | All versions v0.3.x through v1.0.5 |
+| [Roadmap](roadmap.md) | Completed milestones and next steps |
+| [Handoff Guide v1.0](handoff_guide_v1.0.md) | Project handoff: rules, release process, known warnings |
+| [Release Checklist](release_checklist.md) | Manual release verification checklist |
+
+## Documentation (Original)
 | [Release Notes v0.3](release_notes_v0.3.md) | v0.3.9 through v0.3.29 change log |
 | [Release Notes v0.4](release_notes_v0.4.md) | v0.4.0 stable release change log |
 | [Release Notes v0.5](release_notes_v0.5.md) | v0.5.0 Research OS Planning change log |
@@ -119,4 +163,4 @@ Current version: **v1.0.4** — Regression & Release Gate Hardening (base: v1.0.
 
 ---
 
-*Generated for v0.9.2 Strategy Validation Score.*
+*Generated for v1.0.5 Documentation & User Guide Polish.*

@@ -1617,6 +1617,67 @@ class StableReleaseChecklistV060:
                 "no_real_orders_false_positive_guard_v104", "safety", "WARN", str(exc),
             )
 
+    def _check_documentation_health_import(self) -> dict:
+        """v1.0.5 — documentation.docs_health_check.DocumentationHealthCheck importable."""
+        try:
+            import importlib
+            mod = importlib.import_module("documentation.docs_health_check")
+            if hasattr(mod, "DocumentationHealthCheck"):
+                return _check_item(
+                    "documentation_health_import", "version_git", "PASS",
+                    "documentation.docs_health_check.DocumentationHealthCheck importable",
+                )
+            return _check_item(
+                "documentation_health_import", "version_git", "WARN",
+                "documentation.docs_health_check imported but DocumentationHealthCheck not found",
+            )
+        except Exception as exc:
+            return _check_item(
+                "documentation_health_import", "version_git", "WARN", str(exc),
+            )
+
+    def _check_documentation_health_no_forbidden_actions(self) -> dict:
+        """v1.0.5 — docs/ directory has no forbidden actions."""
+        try:
+            from regression_hardening.safety_scanner import SafetyScanner
+            scanner = SafetyScanner()
+            results = scanner.scan_directory("docs", patterns=["*.md"])
+            blocked = [r for r in results if r.status == "BLOCKED"]
+            if blocked:
+                return _check_item(
+                    "documentation_health_no_forbidden_actions", "safety", "WARN",
+                    f"{len(blocked)} docs have forbidden actions",
+                )
+            return _check_item(
+                "documentation_health_no_forbidden_actions", "safety", "PASS",
+                f"docs/ scanned: {len(results)} files, 0 blocked",
+            )
+        except Exception as exc:
+            return _check_item(
+                "documentation_health_no_forbidden_actions", "safety", "WARN", str(exc),
+            )
+
+    def _check_version_info_v105(self) -> dict:
+        """v1.0.5 — VERSION starts with 1.0. and DOCUMENTATION_POLISH_RELEASE=True."""
+        try:
+            from release.version_info import VERSION
+            import release.version_info as _vi
+            dp = getattr(_vi, "DOCUMENTATION_POLISH_RELEASE", None)
+            if VERSION.startswith("1.0."):
+                return _check_item(
+                    "version_info_v105", "version_git", "PASS",
+                    f"VERSION={VERSION}, DOCUMENTATION_POLISH_RELEASE={dp}",
+                )
+            return _check_item(
+                "version_info_v105", "version_git", "WARN",
+                f"VERSION={VERSION}",
+                warning="Expected VERSION=1.0.x",
+            )
+        except Exception as exc:
+            return _check_item(
+                "version_info_v105", "version_git", "WARN", str(exc),
+            )
+
     # ----------------------------------------------------------------
     # Run
     # ----------------------------------------------------------------
@@ -1712,6 +1773,10 @@ class StableReleaseChecklistV060:
             self._check_release_gate_health_import,
             self._check_version_info_v104,
             self._check_no_real_orders_false_positive_guard_v104,
+            # v1.0.5 Documentation & User Guide Polish
+            self._check_documentation_health_import,
+            self._check_documentation_health_no_forbidden_actions,
+            self._check_version_info_v105,
         ]
 
         for fn in checklist_groups:

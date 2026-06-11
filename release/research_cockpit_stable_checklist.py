@@ -449,6 +449,64 @@ class ResearchCockpitStableChecklist:
             "regression_hardening.regression_summary", "classify_warning",
         ))
 
+        # 40. documentation_health_available — v1.0.5
+        checks.append(self._import_check(
+            "documentation_health_available", "modules",
+            "documentation.docs_health_check", "DocumentationHealthCheck",
+        ))
+
+        # 41. user_guide_available — v1.0.5
+        try:
+            ug_path = os.path.join(self._root, "docs", "user_guide_v1.0.md")
+            if os.path.exists(ug_path):
+                checks.append(_mk("user_guide_available", "docs", "PASS",
+                                  "docs/user_guide_v1.0.md exists"))
+            else:
+                checks.append(_mk("user_guide_available", "docs", "WARN",
+                                  "docs/user_guide_v1.0.md not found"))
+        except Exception as exc:
+            checks.append(_mk("user_guide_available", "docs", "WARN", str(exc)))
+
+        # 42. safety_guide_available — v1.0.5
+        try:
+            sg_path = os.path.join(self._root, "docs", "safety_guide_v1.0.md")
+            if os.path.exists(sg_path):
+                checks.append(_mk("safety_guide_available", "docs", "PASS",
+                                  "docs/safety_guide_v1.0.md exists"))
+            else:
+                checks.append(_mk("safety_guide_available", "docs", "WARN",
+                                  "docs/safety_guide_v1.0.md not found"))
+        except Exception as exc:
+            checks.append(_mk("safety_guide_available", "docs", "WARN", str(exc)))
+
+        # 43. handoff_guide_available — v1.0.5
+        try:
+            hg_path = os.path.join(self._root, "docs", "handoff_guide_v1.0.md")
+            if os.path.exists(hg_path):
+                checks.append(_mk("handoff_guide_available", "docs", "PASS",
+                                  "docs/handoff_guide_v1.0.md exists"))
+            else:
+                checks.append(_mk("handoff_guide_available", "docs", "WARN",
+                                  "docs/handoff_guide_v1.0.md not found"))
+        except Exception as exc:
+            checks.append(_mk("handoff_guide_available", "docs", "WARN", str(exc)))
+
+        # 44. docs_no_forbidden_actions — v1.0.5
+        try:
+            from regression_hardening.safety_scanner import SafetyScanner
+            scanner = SafetyScanner()
+            docs_dir = os.path.join(self._root, "docs")
+            results = scanner.scan_directory(docs_dir, patterns=["*.md"])
+            blocked = [r for r in results if r.status == "BLOCKED"]
+            if blocked:
+                checks.append(_mk("docs_no_forbidden_actions", "safety", "WARN",
+                                  f"{len(blocked)} docs have forbidden actions"))
+            else:
+                checks.append(_mk("docs_no_forbidden_actions", "safety", "PASS",
+                                  f"docs/ scanned: {len(results)} files, 0 blocked"))
+        except Exception as exc:
+            checks.append(_mk("docs_no_forbidden_actions", "safety", "WARN", str(exc)))
+
         # Build summary
         total         = len(checks)
         pass_count    = sum(1 for c in checks if c["status"] == "PASS")

@@ -940,4 +940,33 @@ class IntelligenceStableChecklist:
                 suggested_fix="Run: python main.py release-gate-health",
             ))
 
+        # v1.0.5 documentation_v105_safe — documentation package importable and safe
+        try:
+            import importlib
+            mod_dh = importlib.import_module("documentation.docs_health_check")
+            has_cls = hasattr(mod_dh, "DocumentationHealthCheck")
+            if has_cls:
+                checks.append(_check(
+                    "documentation_v105_safe", "stable_integration",
+                    "v1.0.5 documentation_v105_safe",
+                    CHECK_PASS, SEV_LOW,
+                    "documentation.docs_health_check.DocumentationHealthCheck importable.",
+                ))
+            else:
+                checks.append(_check(
+                    "documentation_v105_safe", "stable_integration",
+                    "v1.0.5 documentation_v105_safe",
+                    CHECK_WARN, SEV_LOW,
+                    "documentation.docs_health_check imported but DocumentationHealthCheck not found.",
+                    suggested_fix="Ensure DocumentationHealthCheck is in documentation/docs_health_check.py",
+                ))
+        except Exception as exc:
+            checks.append(_check(
+                "documentation_v105_safe", "stable_integration",
+                "v1.0.5 documentation_v105_safe",
+                CHECK_WARN, SEV_LOW,
+                f"Could not verify documentation_v105 safety (optional): {exc}",
+                suggested_fix="Run: python main.py docs-health-check",
+            ))
+
         return checks

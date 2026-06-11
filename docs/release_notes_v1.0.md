@@ -330,4 +330,71 @@ v1.0.4 hardens the regression and release gate infrastructure. No new broker API
 
 ---
 
-*TW Quant Cockpit v1.0.4 — Regression & Release Gate Hardening — Research Only — Not Investment Advice*
+## v1.0.5 — Documentation & User Guide Polish
+
+**Released:** 2026-06-11
+
+**Base Release:** v1.0.0 Research Trading Cockpit Stable
+
+v1.0.5 is a documentation polish release. No broker API, no trading, no strategy changes.
+
+### What Is New in v1.0.5
+
+#### documentation/ Package
+- `documentation/__init__.py` — Documentation health and indexing package
+- `documentation/docs_health_check.py` — DocumentationHealthCheck (8 checks)
+- `documentation/docs_indexer.py` — DocumentationIndexer (manifest, categories, missing links)
+- `documentation/docs_summary.py` — DocumentationSummaryBuilder
+
+#### reports/documentation_health_report.py
+- DocumentationHealthReportBuilder — 7-section Markdown report
+
+#### 4 New CLI Commands
+- `docs-health-check` — Run documentation health check
+- `docs-index` — Index all docs and save CSV manifest
+- `docs-summary` — Print documentation summary
+- `documentation-report --mode real` — Generate documentation health report
+
+#### New Documentation Files (docs/ v1.0 guides)
+- `docs/user_guide_v1.0.md` — User Guide
+- `docs/gui_user_guide_v1.0.md` — GUI User Guide
+- `docs/cli_cookbook_v1.0.md` — CLI Cookbook
+- `docs/daily_workflow_sop_v1.0.md` — Daily Workflow SOP
+- `docs/troubleshooting_v1.0.md` — Troubleshooting Guide
+- `docs/safety_guide_v1.0.md` — Safety Guide
+- `docs/version_map_v1.0.md` — Version Map
+- `docs/handoff_guide_v1.0.md` — Handoff Guide
+
+#### Checklist Updates
+- `release/research_cockpit_stable_checklist.py` — +5 checks (40-44): documentation_health_available, user_guide_available, safety_guide_available, handoff_guide_available, docs_no_forbidden_actions
+- `stable_release/stable_release_checklist_v060.py` — +3 checks: documentation_health_import, documentation_health_no_forbidden_actions, version_info_v105
+- `intelligence_stable/intelligence_stable_checklist.py` — +1 check: documentation_v105_safe
+
+#### Regression Suite
+- `regression/suite_registry.py` — +13 test cases (v1.0.5 release gate suite)
+
+#### Report Pack
+- `report_pack/report_registry.py` — documentation_health_report in daily/weekly/full packs
+- `report_pack/report_collector.py` — documentation_health_report pattern
+
+#### Other Updates
+- `release/version_info.py` — VERSION=1.0.5, DOCUMENTATION_POLISH_RELEASE=True, USER_GUIDE_FOCUS=True, HANDOFF_GUIDE_AVAILABLE=True
+- `main.py` — version-info updated, 4 new commands, subparsers added
+- `gui/navigation/tab_registry.py` — documentation keywords added
+- `.gitignore` — documentation_health_report, data/backtest_results/documentation/
+- `README.md` — Refreshed with all new chapters
+- `docs/index.md` — Reorganized into A-E categories
+- `docs/roadmap.md` — v1.0.5 added, next steps v1.0.6/v1.1.0/v1.2.0
+- `docs/release_notes_v1.0.md` — v1.0.5 section added
+
+### Safety (unchanged from v1.0.0)
+
+> **Research Only** — **No Real Orders** — **Production Trading BLOCKED**
+> **Broker Execution Disabled** — **VALIDATED does not enable trading**
+> **Documentation does not enable trading** — Documentation polish is research-only
+> **Paper trading is simulation only** — **Mock realtime is simulation only**
+> **Not Investment Advice**
+
+---
+
+*TW Quant Cockpit v1.0.5 — Documentation & User Guide Polish — Research Only — Not Investment Advice*

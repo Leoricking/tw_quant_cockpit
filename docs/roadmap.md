@@ -74,6 +74,22 @@
 | v1.0.2 | Data & Report Hygiene | Done |
 | v1.0.3 | GUI Stability & Usability Polish | Done |
 | v1.0.4 | Regression & Release Gate Hardening | Done |
+| v1.0.5 | Documentation & User Guide Polish | Done |
+
+---
+
+### v1.0.5 — Documentation & User Guide Polish ✅
+
+- **Version:** 1.0.5 — maintenance release based on v1.0.0
+- **Type:** Documentation & User Guide Polish — no broker API, no trading, no strategy changes
+- **Changes:** documentation/ package (docs_health_check, docs_indexer, docs_summary), reports/documentation_health_report.py, 4 new CLI commands (docs-health-check, docs-index, docs-summary, documentation-report), +5 stable checklist checks (40-44), +3 v060 checklist checks, +1 intelligence checklist check, +13 regression tests, docs/ v1.0 guides (user_guide, gui_user_guide, cli_cookbook, daily_workflow_sop, troubleshooting, safety_guide, version_map, handoff_guide), GUI nav keywords, report pack entry, .gitignore updates, README refresh, docs/index.md reorganized, roadmap and release notes updated
+- **Safety:** No Real Orders, Production Trading BLOCKED, Broker Execution Disabled, Documentation does not enable trading (unchanged from v1.0.0)
+
+**Next:**
+- v1.0.6: Example Workflows & Templates
+- v1.1.0: Data Universe Expansion
+- v1.2.0: Replay Training UX
+- Broker API branch: only if explicitly requested
 
 ---
 

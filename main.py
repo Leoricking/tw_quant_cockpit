@@ -5617,7 +5617,7 @@ def cmd_enrich_universe_data(args: argparse.Namespace) -> None:
 # ---------------------------------------------------------------------------
 
 def cmd_version_info(args: argparse.Namespace) -> None:
-    """Print version info for TW Quant Cockpit v1.0.3 (GUI Stability & Usability Polish)."""
+    """Print version info for TW Quant Cockpit v1.0.5 (Documentation & User Guide Polish)."""
     print("=" * 60)
     print("TW Quant Cockpit \u2014 Version Info")
     print("=" * 60)
@@ -5631,8 +5631,9 @@ def cmd_version_info(args: argparse.Namespace) -> None:
         import release.version_info as _vi
         base_release = getattr(_vi, "BASE_RELEASE", "1.0.0")
         base_release_name = getattr(_vi, "BASE_RELEASE_NAME", "Research Trading Cockpit Stable")
-        gui_polish = getattr(_vi, "GUI_POLISH_RELEASE", False)
-        gui_stability = getattr(_vi, "GUI_STABILITY_FOCUS", False)
+        doc_polish = getattr(_vi, "DOCUMENTATION_POLISH_RELEASE", False)
+        user_guide = getattr(_vi, "USER_GUIDE_FOCUS", False)
+        handoff = getattr(_vi, "HANDOFF_GUIDE_AVAILABLE", False)
         print(f"{'Version:':<35} {VERSION}")
         print(f"{'Release:':<35} {RELEASE_NAME}")
         print(f"{'Base Release:':<35} {base_release} {base_release_name}")
@@ -5643,16 +5644,18 @@ def cmd_version_info(args: argparse.Namespace) -> None:
         print(f"{'Production Trading BLOCKED:':<35} {PRODUCTION_TRADING_BLOCKED}")
         print(f"{'Broker Execution:':<35} {'Disabled' if not BROKER_EXECUTION_ENABLED else 'Enabled'}")
         print(f"{'VALIDATED does not enable trading:':<35} {VALIDATED_DOES_NOT_ENABLE_TRADING}")
-        print(f"{'GUI Polish Release:':<35} {gui_polish}")
-        print(f"{'GUI Stability Focus:':<35} {gui_stability}")
+        print(f"{'Documentation Polish Release:':<35} {doc_polish}")
+        print(f"{'User Guide Focus:':<35} {user_guide}")
+        print(f"{'Handoff Guide Available:':<35} {handoff}")
         print(f"{'Paper Trading:':<35} {'Simulation Only' if PAPER_TRADING_IS_SIMULATION else 'Real'}")
         print(f"{'Mock Realtime:':<35} {'Simulation Only' if MOCK_REALTIME_IS_SIMULATION else 'Real'}")
     except Exception as exc:
-        print(f"  Version:                         1.0.3")
-        print(f"  Release:                         GUI Stability & Usability Polish")
+        print(f"  Version:                         1.0.5")
+        print(f"  Release:                         Documentation & User Guide Polish")
         print(f"  Base Release:                    1.0.0 Research Trading Cockpit Stable")
-        print(f"  GUI Polish Release:              True")
-        print(f"  GUI Stability Focus:             True")
+        print(f"  Documentation Polish Release:    True")
+        print(f"  User Guide Focus:                True")
+        print(f"  Handoff Guide Available:         True")
         print(f"  (version_info import error: {exc})")
     print("=" * 60)
     print("RESEARCH ONLY \u2014 Not Investment Advice \u2014 No Real Orders")
@@ -9659,6 +9662,65 @@ def cmd_regression_hardening_report(args):
 
 
 # v1.0.3 GUI Stability & Usability Polish
+# v1.0.5 Documentation & User Guide Polish
+def cmd_docs_health_check(args):
+    """Run Documentation Health Check for v1.0.5. Research Only. No Real Orders."""
+    try:
+        from documentation.docs_health_check import DocumentationHealthCheck
+        checker = DocumentationHealthCheck()
+        checker.run_all()
+        checker.print_report()
+    except Exception as exc:
+        print(f"[WARN] docs-health-check: {exc}")
+
+
+def cmd_docs_index(args):
+    """Index all documentation files. Research Only. No Real Orders."""
+    try:
+        from documentation.docs_indexer import DocumentationIndexer
+        from documentation.docs_summary import DocumentationSummaryBuilder
+        indexer = DocumentationIndexer()
+        manifest = indexer.build_doc_manifest()
+        csv_path = indexer.save_manifest_csv()
+        print("=" * 60)
+        print("TW Quant Cockpit \u2014 Documentation Index")
+        print("Research Only | No Real Orders | Production Trading BLOCKED")
+        print("=" * 60)
+        print(f"  Docs indexed: {len(manifest)}")
+        print(f"  CSV saved:    {csv_path}")
+        by_cat = indexer.categorize_docs()
+        for cat, docs in by_cat.items():
+            print(f"  {cat}: {len(docs)} docs")
+        print("=" * 60)
+    except Exception as exc:
+        print(f"[WARN] docs-index: {exc}")
+
+
+def cmd_docs_summary(args):
+    """Print documentation summary. Research Only. No Real Orders."""
+    try:
+        from documentation.docs_summary import DocumentationSummaryBuilder
+        builder = DocumentationSummaryBuilder()
+        print(builder.summarize_for_console())
+    except Exception as exc:
+        print(f"[WARN] docs-summary: {exc}")
+
+
+def cmd_documentation_report(args):
+    """Generate Documentation Health Report. Research Only. No Real Orders."""
+    mode = getattr(args, 'mode', 'real')
+    report_dir = getattr(args, 'report_dir', 'reports')
+    try:
+        from reports.documentation_health_report import DocumentationHealthReportBuilder
+        builder = DocumentationHealthReportBuilder(report_dir=report_dir, mode=mode)
+        path = builder.save()
+        print(f"Documentation Health Report generated: {path}")
+        print("RESEARCH ONLY \u2014 Not Investment Advice \u2014 No Real Orders")
+        print("No broker execution. VALIDATED does not enable trading.")
+    except Exception as exc:
+        print(f"[WARN] documentation-report: {exc}")
+
+
 def cmd_gui_health_check(args):
     """Run GUI health check for v1.0.3. Research Only. No Real Orders."""
     try:
@@ -14669,6 +14731,29 @@ def _build_parser() -> argparse.ArgumentParser:
                            default="data/backtest_results/maintenance")
     p_drh_rep.add_argument("--report-dir", dest="report_dir", default="reports")
 
+    # --- v1.0.5 Documentation & User Guide Polish ---
+    subparsers.add_parser(
+        "docs-health-check",
+        help="[v1.0.5] Run Documentation Health Check",
+    )
+
+    subparsers.add_parser(
+        "docs-index",
+        help="[v1.0.5] Index all documentation files and save CSV manifest",
+    )
+
+    subparsers.add_parser(
+        "docs-summary",
+        help="[v1.0.5] Print documentation summary",
+    )
+
+    p_docr = subparsers.add_parser(
+        "documentation-report",
+        help="[v1.0.5] Generate Documentation Health Markdown report",
+    )
+    p_docr.add_argument("--mode", choices=["real", "mock"], default="real")
+    p_docr.add_argument("--report-dir", dest="report_dir", default="reports")
+
     # --- v1.0.3 GUI Stability & Usability Polish ---
     subparsers.add_parser(
         "gui-health-check",
@@ -15992,6 +16077,11 @@ def main() -> None:
         "data-report-hygiene-stale":        cmd_data_report_hygiene_stale,
         "data-report-hygiene-large-files":  cmd_data_report_hygiene_large_files,
         "data-report-hygiene-report":       cmd_data_report_hygiene_report,
+        # v1.0.5 Documentation & User Guide Polish
+        "docs-health-check":                cmd_docs_health_check,
+        "docs-index":                       cmd_docs_index,
+        "docs-summary":                     cmd_docs_summary,
+        "documentation-report":             cmd_documentation_report,
         # v1.0.3 GUI Stability & Usability Polish
         "gui-health-check":                 cmd_gui_health_check,
         "gui-usability-report":             cmd_gui_usability_report,

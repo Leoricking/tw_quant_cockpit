@@ -4,13 +4,145 @@
 >
 > **[!] v1: Real order execution is strictly prohibited. For research, simulation, and decision support only. Not investment advice.**
 
-**Current version: v1.0.4 — Regression & Release Gate Hardening** (base: v1.0.0 Research Trading Cockpit Stable)
+**Current version: v1.0.5 — Documentation & User Guide Polish** (base: v1.0.0 Research Trading Cockpit Stable)
 
 ---
 
-## v1.0.4 — Regression & Release Gate Hardening
+## What This Is
 
-This is TW Quant Cockpit **v1.0.4 — Regression & Release Gate Hardening**, based on **v1.0.0 Research Trading Cockpit Stable**.
+TW Quant Cockpit is a **Research Trading Cockpit** for Taiwan equity markets. It provides quantitative research tools, strategy validation, evidence tracking, and daily workflow guidance. It is a read-only research platform — no real trading of any kind.
+
+---
+
+## Safety First
+
+| Safety Flag | Value |
+|-------------|-------|
+| Research Only | True |
+| No Real Orders | True |
+| Production Trading BLOCKED | True |
+| Broker Execution Disabled | True |
+| VALIDATED does not enable trading | True |
+| Paper Trading | Simulation Only |
+| Mock Realtime | Simulation Only |
+| Not Investment Advice | True |
+
+---
+
+## Current Version: v1.0.5 — Documentation & User Guide Polish
+
+This is TW Quant Cockpit **v1.0.5 — Documentation & User Guide Polish**, based on **v1.0.0 Research Trading Cockpit Stable**.
+
+New in v1.0.5: User Guide, GUI User Guide, CLI Cookbook, Daily Workflow SOP, Troubleshooting Guide, Safety Guide, Version Map, Handoff Guide, Documentation Health Check, Documentation Indexer, Documentation Report, README refresh, roadmap and release notes updates.
+
+---
+
+## Quick Start
+
+**GUI:**
+```
+python main.py cockpit
+```
+
+**CLI:**
+```
+python main.py version-info
+python main.py research-cockpit-stable --mode real
+python main.py strategy-lab-dashboard --mode real
+```
+
+---
+
+## Daily Workflow
+
+See `docs/daily_workflow_sop_v1.0.md` for the step-by-step daily workflow.
+
+Short version:
+1. `python main.py version-info`
+2. `python main.py research-cockpit-stable --mode real`
+3. `python main.py strategy-lab-dashboard --mode real`
+4. `python main.py report-pack --type daily --mode real`
+
+---
+
+## Main Modules
+
+| Module | Purpose |
+|--------|---------|
+| Research Intelligence | Priority board, daily plan, signal aggregation |
+| Strategy Memory | Memory types, validation queue |
+| Evidence Graph UX | Thread quality, gap view, contradiction detection |
+| Strategy Validation Score | INSUFFICIENT / OBSERVATIONAL / VALIDATING / VALIDATED / CONFLICTED / REJECTED |
+| Crash Reversal | Post-crash analysis, stabilization checklist |
+| Strategy Lab Dashboard | Unified single-view: validation board, evidence board, action board |
+| Backtest Coach | Coach tasks from backtests and replay mistakes |
+| Training Metrics | Training effectiveness tracking |
+| Data Report Hygiene | Runtime output inventory |
+| Regression Hardening | Safety scanner, release gate health |
+| Documentation Health | Docs presence, safety phrases, indexer |
+
+---
+
+## Reports
+
+```
+python main.py report-pack --type daily --mode real
+python main.py report-pack --type weekly --mode real
+python main.py report-pack --type full --mode real
+python main.py documentation-report --mode real
+```
+
+---
+
+## Maintenance Commands
+
+```
+python main.py safety-scan --target all
+python main.py docs-health-check
+python main.py docs-summary
+python main.py gui-health-check
+python main.py release-gate-health
+python main.py regression-run --suite release_gate --mode real
+```
+
+---
+
+## Documentation
+
+See `docs/index.md` for the full documentation index.
+
+Key documents:
+- `docs/user_guide_v1.0.md` — User Guide
+- `docs/gui_user_guide_v1.0.md` — GUI User Guide
+- `docs/cli_cookbook_v1.0.md` — CLI Cookbook
+- `docs/daily_workflow_sop_v1.0.md` — Daily Workflow SOP
+- `docs/safety_guide_v1.0.md` — Safety Guide
+- `docs/handoff_guide_v1.0.md` — Handoff Guide
+- `docs/troubleshooting_v1.0.md` — Troubleshooting
+
+---
+
+## Development Rules
+
+- Use `git -C "C:/Users/Rossi/Documents/Claude/trading_master" command` — not `cd path` then git
+- Do NOT use `git add .` — add files individually by name
+- Do NOT commit runtime outputs (.csv, .json, .md reports, .db)
+- Do NOT chain commands with `&&`, `;`, `||`, or `|`
+- Do NOT use heredoc in git commit — use multiple `-m` flags
+
+---
+
+## Disclaimer
+
+This system is for research and educational purposes only. Nothing in this system constitutes investment advice. No Real Orders. Broker Execution Disabled. VALIDATED does not enable trading.
+
+Research Only | Not Investment Advice | No broker execution
+
+---
+
+## v1.0.5 — Documentation & User Guide Polish
+
+This is TW Quant Cockpit **v1.0.5 — Documentation & User Guide Polish**, based on **v1.0.0 Research Trading Cockpit Stable**.
 
 This is a **Research Trading Cockpit**.
 

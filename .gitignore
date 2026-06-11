@@ -346,3 +346,7 @@ reports/gui_usability_report_*.md
 # v1.0.4 Regression & Release Gate Hardening — runtime outputs
 reports/regression_hardening_report_*.md
 data/backtest_results/regression_hardening/
+
+# v1.0.5 Documentation & User Guide Polish — runtime outputs
+reports/documentation_health_report_*.md
+data/backtest_results/documentation/
