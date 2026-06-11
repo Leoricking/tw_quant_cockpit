@@ -75,6 +75,22 @@
 | v1.0.3 | GUI Stability & Usability Polish | Done |
 | v1.0.4 | Regression & Release Gate Hardening | Done |
 | v1.0.5 | Documentation & User Guide Polish | Done |
+| v1.0.6 | Example Workflows & Templates | Done |
+
+---
+
+### v1.0.6 — Example Workflows & Templates ✅
+
+- **Version:** 1.0.6 — maintenance release based on v1.0.0
+- **Type:** Example Workflows & Templates — no broker API, no trading, no strategy changes
+- **Changes:** workflows/ package (workflow_template_schema, workflow_template_indexer, workflow_template_health, workflow_template_summary), reports/workflow_templates_report.py, 4 new CLI commands (workflow-templates-health, workflow-templates-index, workflow-templates-summary, workflow-templates-report), +5 stable checklist checks (45-49), +3 v060 checklist checks, +1 intelligence checklist check, +15 regression tests, docs/examples/ (10 example files), docs/templates/ (8 template files), GUI nav keywords, report pack entry, .gitignore updates, README refresh, docs/index.md updated, roadmap and release notes updated
+- **Safety:** No Real Orders, Production Trading BLOCKED, Broker Execution Disabled, Templates do not enable trading (unchanged from v1.0.0)
+
+**Next:**
+- v1.0.7: Knowledge Base Search Polish
+- v1.1.0: Data Universe Expansion
+- v1.2.0: Replay Training UX
+- Broker API branch: only if explicitly requested
 
 ---
 
@@ -86,7 +102,7 @@
 - **Safety:** No Real Orders, Production Trading BLOCKED, Broker Execution Disabled, Documentation does not enable trading (unchanged from v1.0.0)
 
 **Next:**
-- v1.0.6: Example Workflows & Templates
+- v1.0.6: Example Workflows & Templates — Done
 - v1.1.0: Data Universe Expansion
 - v1.2.0: Replay Training UX
 - Broker API branch: only if explicitly requested

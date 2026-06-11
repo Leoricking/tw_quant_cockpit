@@ -350,3 +350,7 @@ data/backtest_results/regression_hardening/
 # v1.0.5 Documentation & User Guide Polish — runtime outputs
 reports/documentation_health_report_*.md
 data/backtest_results/documentation/
+
+# v1.0.6 Example Workflows & Templates — runtime outputs
+reports/workflow_templates_report_*.md
+data/backtest_results/workflows/

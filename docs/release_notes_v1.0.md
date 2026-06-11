@@ -398,3 +398,95 @@ v1.0.5 is a documentation polish release. No broker API, no trading, no strategy
 ---
 
 *TW Quant Cockpit v1.0.5 — Documentation & User Guide Polish — Research Only — Not Investment Advice*
+
+---
+
+## v1.0.6 — Example Workflows & Templates
+
+**Released:** 2026-06-11
+
+### Overview
+
+v1.0.6 adds example workflows and reusable templates to TW Quant Cockpit.
+It provides 10 example workflow documents and 8 fillable template documents for common research scenarios.
+Still Research Only, No Real Orders, Production Trading BLOCKED.
+
+No real trading actions. No broker API. Templates do not enable trading.
+`EXAMPLE_WORKFLOWS_RELEASE=True`, `WORKFLOW_TEMPLATES_AVAILABLE=True`, `TEMPLATE_GUIDE_AVAILABLE=True`.
+
+### New in v1.0.6
+
+#### workflows/ Package
+
+New package with 4 modules:
+- `workflow_template_schema.py` — WorkflowTemplateItem dataclass, CATEGORIES list
+- `workflow_template_indexer.py` — WorkflowTemplateIndexer, indexes examples and templates
+- `workflow_template_health.py` — WorkflowTemplateHealthCheck, health checks for all workflow files
+- `workflow_template_summary.py` — WorkflowTemplateSummaryBuilder, console summary
+
+#### reports/workflow_templates_report.py
+
+WorkflowTemplatesReportBuilder — 6-section Markdown report covering overview, examples, templates, health, usage guide, and safety declaration.
+
+#### docs/examples/ — 10 Example Workflows
+
+| File | Description |
+|------|-------------|
+| daily_operation_example.md | Daily research session |
+| weekend_review_example.md | Weekend review session |
+| single_stock_research_example.md | Single stock research |
+| strategy_validation_example.md | Strategy validation workflow |
+| crash_reversal_review_example.md | Crash reversal research |
+| data_hygiene_example.md | Data hygiene workflow |
+| gui_operation_example.md | GUI operation |
+| claude_code_maintenance_example.md | Maintenance with git -C, no chain commands |
+| troubleshooting_example.md | Common issue resolution |
+| paper_mock_practice_example.md | Paper and mock simulation |
+
+#### docs/templates/ — 8 Fillable Templates
+
+| File | Description |
+|------|-------------|
+| daily_review_template.md | Daily review form |
+| single_stock_research_template.md | Single stock research form |
+| strategy_idea_template.md | Strategy hypothesis form |
+| backtest_review_template.md | Backtest review form |
+| weekly_retrospective_template.md | Weekly retrospective form |
+| error_report_template.md | Error diagnosis form |
+| release_prompt_template.md | Release checklist (git -C, no chain, no git add .) |
+| handoff_summary_template.md | Project handoff form |
+
+#### New CLI Commands (4)
+
+- `workflow-templates-health` — WorkflowTemplateHealthCheck
+- `workflow-templates-index` — WorkflowTemplateIndexer
+- `workflow-templates-summary` — WorkflowTemplateSummaryBuilder
+- `workflow-templates-report --mode real` — WorkflowTemplatesReportBuilder
+
+#### Updated Files
+
+- `release/version_info.py` — VERSION=1.0.6, EXAMPLE_WORKFLOWS_RELEASE=True, WORKFLOW_TEMPLATES_AVAILABLE=True, TEMPLATE_GUIDE_AVAILABLE=True
+- `release/research_cockpit_stable_checklist.py` — +5 checks (45-49)
+- `stable_release/stable_release_checklist_v060.py` — +3 checks
+- `intelligence_stable/intelligence_stable_checklist.py` — +1 check: workflow_templates_v106_safe
+- `regression/suite_registry.py` — +15 test cases (v1.0.6 release gate suite)
+- `report_pack/report_registry.py` — workflow_templates_report in daily/weekly/full packs
+- `report_pack/report_collector.py` — workflow_templates_report pattern
+- `main.py` — version-info updated, 4 new commands, subparsers added
+- `gui/navigation/tab_registry.py` — workflow templates keywords added
+- `.gitignore` — workflow_templates_report, data/backtest_results/workflows/
+- `README.md` — Refreshed with v1.0.6
+- `docs/index.md` — Category F: Examples & Templates added
+- `docs/roadmap.md` — v1.0.6 added, next steps v1.0.7/v1.1.0/v1.2.0
+
+### Safety (unchanged from v1.0.0)
+
+> **Research Only** — **No Real Orders** — **Production Trading BLOCKED**
+> **Broker Execution Disabled** — **VALIDATED does not enable trading**
+> **Templates do not enable trading** — All templates are research-only
+> **Paper trading is simulation only** — **Mock realtime is simulation only**
+> **Not Investment Advice**
+
+---
+
+*TW Quant Cockpit v1.0.6 — Example Workflows & Templates — Research Only — Not Investment Advice*

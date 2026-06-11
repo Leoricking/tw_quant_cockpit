@@ -126,4 +126,36 @@ These are research actions only. None of these actions result in real trading.
 
 ---
 
-*TW Quant Cockpit v1.0.5 — Documentation & User Guide Polish — Research Only — Not Investment Advice*
+## 七、Examples & Templates (v1.0.6)
+
+TW Quant Cockpit v1.0.6 adds example workflows and fillable templates to help with common research tasks.
+
+### Example Workflows
+
+Example workflows are located in `docs/examples/`. Each example shows safe CLI commands for a specific scenario:
+
+- `daily_operation_example.md` — Daily research session
+- `weekend_review_example.md` — Weekend review
+- `claude_code_maintenance_example.md` — Maintenance with git -C rules
+- (and 7 more)
+
+### Fillable Templates
+
+Templates are located in `docs/templates/`. Each template is a fillable form:
+
+- `daily_review_template.md` — Daily review form
+- `release_prompt_template.md` — Release checklist
+- `handoff_summary_template.md` — Handoff form
+- (and 5 more)
+
+### Workflow Commands
+
+```
+python main.py workflow-templates-health
+python main.py workflow-templates-summary
+python main.py workflow-templates-report --mode real
+```
+
+---
+
+*TW Quant Cockpit v1.0.6 — Example Workflows & Templates — Research Only — Not Investment Advice*

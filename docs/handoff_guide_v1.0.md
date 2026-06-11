@@ -186,4 +186,14 @@ For each new version:
 
 ---
 
-*TW Quant Cockpit v1.0.5 — Documentation & User Guide Polish — Research Only — Not Investment Advice*
+## v1.0.6 Note — Templates Available
+
+v1.0.6 adds workflow examples and templates. For handoff, use:
+- `docs/templates/handoff_summary_template.md` — Fill in the handoff summary
+- `docs/templates/release_prompt_template.md` — For release process rules
+
+These templates enforce: `git -C "path"`, no chain commands, no `git add .`, no heredoc in commits.
+
+---
+
+*TW Quant Cockpit v1.0.6 — Example Workflows & Templates — Research Only — Not Investment Advice*

@@ -969,4 +969,33 @@ class IntelligenceStableChecklist:
                 suggested_fix="Run: python main.py docs-health-check",
             ))
 
+        # v1.0.6 workflow_templates_v106_safe — workflows package importable and safe
+        try:
+            import importlib
+            mod_wt = importlib.import_module("workflows.workflow_template_health")
+            has_cls = hasattr(mod_wt, "WorkflowTemplateHealthCheck")
+            if has_cls:
+                checks.append(_check(
+                    "workflow_templates_v106_safe", "stable_integration",
+                    "v1.0.6 workflow_templates_v106_safe",
+                    CHECK_PASS, SEV_LOW,
+                    "workflows.workflow_template_health.WorkflowTemplateHealthCheck importable.",
+                ))
+            else:
+                checks.append(_check(
+                    "workflow_templates_v106_safe", "stable_integration",
+                    "v1.0.6 workflow_templates_v106_safe",
+                    CHECK_WARN, SEV_LOW,
+                    "workflows.workflow_template_health imported but WorkflowTemplateHealthCheck not found.",
+                    suggested_fix="Ensure WorkflowTemplateHealthCheck is in workflows/workflow_template_health.py",
+                ))
+        except Exception as exc:
+            checks.append(_check(
+                "workflow_templates_v106_safe", "stable_integration",
+                "v1.0.6 workflow_templates_v106_safe",
+                CHECK_WARN, SEV_LOW,
+                f"Could not verify workflow_templates_v106 safety (optional): {exc}",
+                suggested_fix="Run: python main.py workflow-templates-health",
+            ))
+
         return checks

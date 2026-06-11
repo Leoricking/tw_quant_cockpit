@@ -5631,9 +5631,9 @@ def cmd_version_info(args: argparse.Namespace) -> None:
         import release.version_info as _vi
         base_release = getattr(_vi, "BASE_RELEASE", "1.0.0")
         base_release_name = getattr(_vi, "BASE_RELEASE_NAME", "Research Trading Cockpit Stable")
-        doc_polish = getattr(_vi, "DOCUMENTATION_POLISH_RELEASE", False)
-        user_guide = getattr(_vi, "USER_GUIDE_FOCUS", False)
-        handoff = getattr(_vi, "HANDOFF_GUIDE_AVAILABLE", False)
+        example_workflows = getattr(_vi, "EXAMPLE_WORKFLOWS_RELEASE", False)
+        workflow_templates = getattr(_vi, "WORKFLOW_TEMPLATES_AVAILABLE", False)
+        template_guide = getattr(_vi, "TEMPLATE_GUIDE_AVAILABLE", False)
         print(f"{'Version:':<35} {VERSION}")
         print(f"{'Release:':<35} {RELEASE_NAME}")
         print(f"{'Base Release:':<35} {base_release} {base_release_name}")
@@ -5644,18 +5644,18 @@ def cmd_version_info(args: argparse.Namespace) -> None:
         print(f"{'Production Trading BLOCKED:':<35} {PRODUCTION_TRADING_BLOCKED}")
         print(f"{'Broker Execution:':<35} {'Disabled' if not BROKER_EXECUTION_ENABLED else 'Enabled'}")
         print(f"{'VALIDATED does not enable trading:':<35} {VALIDATED_DOES_NOT_ENABLE_TRADING}")
-        print(f"{'Documentation Polish Release:':<35} {doc_polish}")
-        print(f"{'User Guide Focus:':<35} {user_guide}")
-        print(f"{'Handoff Guide Available:':<35} {handoff}")
+        print(f"{'Example Workflows Release:':<35} {example_workflows}")
+        print(f"{'Workflow Templates Available:':<35} {workflow_templates}")
+        print(f"{'Template Guide Available:':<35} {template_guide}")
         print(f"{'Paper Trading:':<35} {'Simulation Only' if PAPER_TRADING_IS_SIMULATION else 'Real'}")
         print(f"{'Mock Realtime:':<35} {'Simulation Only' if MOCK_REALTIME_IS_SIMULATION else 'Real'}")
     except Exception as exc:
-        print(f"  Version:                         1.0.5")
-        print(f"  Release:                         Documentation & User Guide Polish")
+        print(f"  Version:                         1.0.6")
+        print(f"  Release:                         Example Workflows & Templates")
         print(f"  Base Release:                    1.0.0 Research Trading Cockpit Stable")
-        print(f"  Documentation Polish Release:    True")
-        print(f"  User Guide Focus:                True")
-        print(f"  Handoff Guide Available:         True")
+        print(f"  Example Workflows Release:       True")
+        print(f"  Workflow Templates Available:    True")
+        print(f"  Template Guide Available:        True")
         print(f"  (version_info import error: {exc})")
     print("=" * 60)
     print("RESEARCH ONLY \u2014 Not Investment Advice \u2014 No Real Orders")
@@ -9663,6 +9663,63 @@ def cmd_regression_hardening_report(args):
 
 # v1.0.3 GUI Stability & Usability Polish
 # v1.0.5 Documentation & User Guide Polish
+def cmd_workflow_templates_health(args):
+    """Run Workflow Templates Health Check for v1.0.6. Research Only. No Real Orders."""
+    try:
+        from workflows.workflow_template_health import WorkflowTemplateHealthCheck
+        checker = WorkflowTemplateHealthCheck()
+        checker.run_all()
+        checker.print_report()
+    except Exception as exc:
+        print(f"[WARN] workflow-templates-health: {exc}")
+
+
+def cmd_workflow_templates_index(args):
+    """Index workflow examples and templates. Research Only. No Real Orders."""
+    try:
+        from workflows.workflow_template_indexer import WorkflowTemplateIndexer
+        indexer = WorkflowTemplateIndexer()
+        manifest = indexer.build_manifest()
+        csv_path = indexer.save_manifest()
+        print("=" * 60)
+        print("TW Quant Cockpit \u2014 Workflow Templates Index")
+        print("Research Only | No Real Orders | Production Trading BLOCKED")
+        print("=" * 60)
+        print(f"  Items indexed: {len(manifest)}")
+        print(f"  CSV saved:    {csv_path}")
+        by_cat = indexer.categorize()
+        for cat, items in by_cat.items():
+            print(f"  {cat}: {len(items)} items")
+        print("=" * 60)
+    except Exception as exc:
+        print(f"[WARN] workflow-templates-index: {exc}")
+
+
+def cmd_workflow_templates_summary(args):
+    """Print workflow templates summary. Research Only. No Real Orders."""
+    try:
+        from workflows.workflow_template_summary import WorkflowTemplateSummaryBuilder
+        builder = WorkflowTemplateSummaryBuilder()
+        print(builder.summarize_for_console())
+    except Exception as exc:
+        print(f"[WARN] workflow-templates-summary: {exc}")
+
+
+def cmd_workflow_templates_report(args):
+    """Generate Workflow Templates Report. Research Only. No Real Orders."""
+    mode = getattr(args, 'mode', 'real')
+    report_dir = getattr(args, 'report_dir', 'reports')
+    try:
+        from reports.workflow_templates_report import WorkflowTemplatesReportBuilder
+        builder = WorkflowTemplatesReportBuilder(report_dir=report_dir, mode=mode)
+        path = builder.save()
+        print(f"Workflow Templates Report generated: {path}")
+        print("RESEARCH ONLY \u2014 Not Investment Advice \u2014 No Real Orders")
+        print("No broker execution. VALIDATED does not enable trading.")
+    except Exception as exc:
+        print(f"[WARN] workflow-templates-report: {exc}")
+
+
 def cmd_docs_health_check(args):
     """Run Documentation Health Check for v1.0.5. Research Only. No Real Orders."""
     try:
@@ -14731,6 +14788,29 @@ def _build_parser() -> argparse.ArgumentParser:
                            default="data/backtest_results/maintenance")
     p_drh_rep.add_argument("--report-dir", dest="report_dir", default="reports")
 
+    # --- v1.0.6 Example Workflows & Templates ---
+    subparsers.add_parser(
+        "workflow-templates-health",
+        help="[v1.0.6] Run Workflow Templates Health Check",
+    )
+
+    subparsers.add_parser(
+        "workflow-templates-index",
+        help="[v1.0.6] Index workflow examples and templates",
+    )
+
+    subparsers.add_parser(
+        "workflow-templates-summary",
+        help="[v1.0.6] Print workflow templates summary",
+    )
+
+    p_wtr = subparsers.add_parser(
+        "workflow-templates-report",
+        help="[v1.0.6] Generate Workflow Templates Markdown report",
+    )
+    p_wtr.add_argument("--mode", choices=["real", "mock"], default="real")
+    p_wtr.add_argument("--report-dir", dest="report_dir", default="reports")
+
     # --- v1.0.5 Documentation & User Guide Polish ---
     subparsers.add_parser(
         "docs-health-check",
@@ -16077,6 +16157,11 @@ def main() -> None:
         "data-report-hygiene-stale":        cmd_data_report_hygiene_stale,
         "data-report-hygiene-large-files":  cmd_data_report_hygiene_large_files,
         "data-report-hygiene-report":       cmd_data_report_hygiene_report,
+        # v1.0.6 Example Workflows & Templates
+        "workflow-templates-health":        cmd_workflow_templates_health,
+        "workflow-templates-index":         cmd_workflow_templates_index,
+        "workflow-templates-summary":       cmd_workflow_templates_summary,
+        "workflow-templates-report":        cmd_workflow_templates_report,
         # v1.0.5 Documentation & User Guide Polish
         "docs-health-check":                cmd_docs_health_check,
         "docs-index":                       cmd_docs_index,

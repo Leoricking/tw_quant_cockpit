@@ -46,7 +46,7 @@ def _mk(name: str, category: str, status: str, detail: str) -> dict:
 
 
 class ResearchCockpitStableChecklist:
-    """v1.0.0 Research Trading Cockpit Stable checklist — 30 checks.
+    """v1.0.0 Research Trading Cockpit Stable checklist — 49 checks.
 
     [!] Research Only. No Real Orders. Production Trading: BLOCKED.
     """
@@ -506,6 +506,79 @@ class ResearchCockpitStableChecklist:
                                   f"docs/ scanned: {len(results)} files, 0 blocked"))
         except Exception as exc:
             checks.append(_mk("docs_no_forbidden_actions", "safety", "WARN", str(exc)))
+
+        # 45. workflow_templates_available — v1.0.6
+        examples_dir = os.path.join(self._root, "docs", "examples")
+        templates_dir = os.path.join(self._root, "docs", "templates")
+        if os.path.isdir(examples_dir) and os.path.isdir(templates_dir):
+            ex_count = len([f for f in os.listdir(examples_dir) if f.endswith(".md")])
+            tmpl_count = len([f for f in os.listdir(templates_dir) if f.endswith(".md")])
+            checks.append(_mk("workflow_templates_available", "modules", "PASS",
+                              f"docs/examples/ ({ex_count} files), docs/templates/ ({tmpl_count} files)"))
+        else:
+            missing = []
+            if not os.path.isdir(examples_dir):
+                missing.append("docs/examples/")
+            if not os.path.isdir(templates_dir):
+                missing.append("docs/templates/")
+            checks.append(_mk("workflow_templates_available", "modules", "WARN",
+                              f"Missing: {missing}"))
+
+        # 46. workflow_templates_health_available — v1.0.6
+        checks.append(self._import_check(
+            "workflow_templates_health_available", "modules",
+            "workflows.workflow_template_health", "WorkflowTemplateHealthCheck",
+        ))
+
+        # 47. workflow_templates_no_forbidden_actions — v1.0.6
+        try:
+            from regression_hardening.safety_scanner import SafetyScanner
+            scanner = SafetyScanner()
+            results_ex = []
+            results_tmpl = []
+            if os.path.isdir(examples_dir):
+                results_ex = scanner.scan_directory(examples_dir, patterns=["*.md"])
+            if os.path.isdir(templates_dir):
+                results_tmpl = scanner.scan_directory(templates_dir, patterns=["*.md"])
+            blocked = [r for r in results_ex + results_tmpl if r.status == "BLOCKED"]
+            if blocked:
+                checks.append(_mk("workflow_templates_no_forbidden_actions", "safety", "WARN",
+                                  f"{len(blocked)} workflow files have forbidden actions"))
+            else:
+                total = len(results_ex) + len(results_tmpl)
+                checks.append(_mk("workflow_templates_no_forbidden_actions", "safety", "PASS",
+                                  f"{total} workflow files scanned, 0 blocked"))
+        except Exception as exc:
+            checks.append(_mk("workflow_templates_no_forbidden_actions", "safety", "WARN", str(exc)))
+
+        # 48. release_prompt_template_safe — v1.0.6
+        rpt_path = os.path.join(self._root, "docs", "templates", "release_prompt_template.md")
+        if os.path.isfile(rpt_path):
+            try:
+                with open(rpt_path, "r", encoding="utf-8") as fh:
+                    rpt_content = fh.read()
+                has_git_c = "git -C" in rpt_content
+                no_chain = "no chain" in rpt_content.lower() or "never chain" in rpt_content.lower() or "chain commands" in rpt_content.lower()
+                if has_git_c and no_chain:
+                    checks.append(_mk("release_prompt_template_safe", "docs", "PASS",
+                                      "release_prompt_template.md has git -C and no-chain guidance"))
+                else:
+                    checks.append(_mk("release_prompt_template_safe", "docs", "WARN",
+                                      f"release_prompt_template.md: git_c={has_git_c}, no_chain={no_chain}"))
+            except Exception as exc:
+                checks.append(_mk("release_prompt_template_safe", "docs", "WARN", str(exc)))
+        else:
+            checks.append(_mk("release_prompt_template_safe", "docs", "WARN",
+                              "docs/templates/release_prompt_template.md not found"))
+
+        # 49. handoff_summary_template_available — v1.0.6
+        hs_path = os.path.join(self._root, "docs", "templates", "handoff_summary_template.md")
+        if os.path.isfile(hs_path):
+            checks.append(_mk("handoff_summary_template_available", "docs", "PASS",
+                              "docs/templates/handoff_summary_template.md exists"))
+        else:
+            checks.append(_mk("handoff_summary_template_available", "docs", "WARN",
+                              "docs/templates/handoff_summary_template.md not found"))
 
         # Build summary
         total         = len(checks)

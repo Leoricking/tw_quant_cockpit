@@ -4,7 +4,7 @@
 >
 > **[!] v1: Real order execution is strictly prohibited. For research, simulation, and decision support only. Not investment advice.**
 
-**Current version: v1.0.5 — Documentation & User Guide Polish** (base: v1.0.0 Research Trading Cockpit Stable)
+**Current version: v1.0.6 — Example Workflows & Templates** (base: v1.0.0 Research Trading Cockpit Stable)
 
 ---
 
@@ -29,11 +29,11 @@ TW Quant Cockpit is a **Research Trading Cockpit** for Taiwan equity markets. It
 
 ---
 
-## Current Version: v1.0.5 — Documentation & User Guide Polish
+## Current Version: v1.0.6 — Example Workflows & Templates
 
-This is TW Quant Cockpit **v1.0.5 — Documentation & User Guide Polish**, based on **v1.0.0 Research Trading Cockpit Stable**.
+This is TW Quant Cockpit **v1.0.6 — Example Workflows & Templates**, based on **v1.0.0 Research Trading Cockpit Stable**.
 
-New in v1.0.5: User Guide, GUI User Guide, CLI Cookbook, Daily Workflow SOP, Troubleshooting Guide, Safety Guide, Version Map, Handoff Guide, Documentation Health Check, Documentation Indexer, Documentation Report, README refresh, roadmap and release notes updates.
+New in v1.0.6: 10 example workflow documents (docs/examples/), 8 fillable template documents (docs/templates/), workflows/ package, Workflow Templates Health Check, Workflow Templates Indexer, Workflow Templates Report, 4 new CLI commands, regression coverage, release notes, and stable checks.
 
 ---
 
@@ -94,6 +94,28 @@ python main.py documentation-report --mode real
 
 ---
 
+## Examples & Templates
+
+See `docs/examples/` for 10 example workflow documents:
+- `docs/examples/daily_operation_example.md`
+- `docs/examples/weekend_review_example.md`
+- `docs/examples/claude_code_maintenance_example.md`
+- (and 7 more)
+
+See `docs/templates/` for 8 fillable template documents:
+- `docs/templates/daily_review_template.md`
+- `docs/templates/release_prompt_template.md`
+- `docs/templates/handoff_summary_template.md`
+- (and 5 more)
+
+```
+python main.py workflow-templates-health
+python main.py workflow-templates-summary
+python main.py workflow-templates-report --mode real
+```
+
+---
+
 ## Maintenance Commands
 
 ```
@@ -140,9 +162,9 @@ Research Only | Not Investment Advice | No broker execution
 
 ---
 
-## v1.0.5 — Documentation & User Guide Polish
+## v1.0.6 — Example Workflows & Templates
 
-This is TW Quant Cockpit **v1.0.5 — Documentation & User Guide Polish**, based on **v1.0.0 Research Trading Cockpit Stable**.
+This is TW Quant Cockpit **v1.0.6 — Example Workflows & Templates**, based on **v1.0.0 Research Trading Cockpit Stable**.
 
 This is a **Research Trading Cockpit**.
 

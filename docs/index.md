@@ -3,7 +3,7 @@
 > **[!] Research Only. Read Only. No Real Orders. Production Trading: BLOCKED.**
 > **[!] Not investment advice. REAL_ORDER_READY=False.**
 
-Current version: **v1.0.5** — Documentation & User Guide Polish (base: v1.0.0 Research Trading Cockpit Stable)
+Current version: **v1.0.6** — Example Workflows & Templates (base: v1.0.0 Research Trading Cockpit Stable)
 
 ---
 
@@ -59,6 +59,36 @@ Current version: **v1.0.5** — Documentation & User Guide Polish (base: v1.0.0 
 | [Roadmap](roadmap.md) | Completed milestones and next steps |
 | [Handoff Guide v1.0](handoff_guide_v1.0.md) | Project handoff: rules, release process, known warnings |
 | [Release Checklist](release_checklist.md) | Manual release verification checklist |
+
+## F. Examples & Templates
+
+### Example Workflows (docs/examples/)
+
+| Example | Description |
+|---------|-------------|
+| [Daily Operation Example](examples/daily_operation_example.md) | Typical daily research session |
+| [Weekend Review Example](examples/weekend_review_example.md) | Weekly research review session |
+| [Single Stock Research Example](examples/single_stock_research_example.md) | Single stock research workflow |
+| [Strategy Validation Example](examples/strategy_validation_example.md) | Strategy validation workflow |
+| [Crash Reversal Review Example](examples/crash_reversal_review_example.md) | Crash reversal research workflow |
+| [Data Hygiene Example](examples/data_hygiene_example.md) | Data and report hygiene workflow |
+| [GUI Operation Example](examples/gui_operation_example.md) | GUI operation and navigation |
+| [Claude Code Maintenance Example](examples/claude_code_maintenance_example.md) | Maintenance workflow with git -C |
+| [Troubleshooting Example](examples/troubleshooting_example.md) | Common issue resolution |
+| [Paper & Mock Practice Example](examples/paper_mock_practice_example.md) | Paper trading and mock realtime simulation |
+
+### Templates (docs/templates/)
+
+| Template | Description |
+|----------|-------------|
+| [Daily Review Template](templates/daily_review_template.md) | Fillable daily review form |
+| [Single Stock Research Template](templates/single_stock_research_template.md) | Single stock research form |
+| [Strategy Idea Template](templates/strategy_idea_template.md) | Strategy hypothesis form |
+| [Backtest Review Template](templates/backtest_review_template.md) | Backtest review form |
+| [Weekly Retrospective Template](templates/weekly_retrospective_template.md) | Weekly retrospective form |
+| [Error Report Template](templates/error_report_template.md) | Error diagnosis form |
+| [Release Prompt Template](templates/release_prompt_template.md) | Release checklist with git -C rules |
+| [Handoff Summary Template](templates/handoff_summary_template.md) | Project handoff form |
 
 ## Documentation (Original)
 | [Release Notes v0.3](release_notes_v0.3.md) | v0.3.9 through v0.3.29 change log |
@@ -163,4 +193,4 @@ Current version: **v1.0.5** — Documentation & User Guide Polish (base: v1.0.0 
 
 ---
 
-*Generated for v1.0.5 Documentation & User Guide Polish.*
+*Generated for v1.0.6 Example Workflows & Templates.*

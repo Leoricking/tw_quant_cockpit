@@ -1678,6 +1678,69 @@ class StableReleaseChecklistV060:
                 "version_info_v105", "version_git", "WARN", str(exc),
             )
 
+    def _check_workflow_templates_import(self) -> dict:
+        """v1.0.6 — workflows.workflow_template_health.WorkflowTemplateHealthCheck importable."""
+        try:
+            import importlib
+            mod = importlib.import_module("workflows.workflow_template_health")
+            if hasattr(mod, "WorkflowTemplateHealthCheck"):
+                return _check_item(
+                    "workflow_templates_import", "version_git", "PASS",
+                    "workflows.workflow_template_health.WorkflowTemplateHealthCheck importable",
+                )
+            return _check_item(
+                "workflow_templates_import", "version_git", "WARN",
+                "workflows.workflow_template_health imported but WorkflowTemplateHealthCheck not found",
+            )
+        except Exception as exc:
+            return _check_item(
+                "workflow_templates_import", "version_git", "WARN", str(exc),
+            )
+
+    def _check_workflow_templates_no_forbidden_actions(self) -> dict:
+        """v1.0.6 — docs/examples/ and docs/templates/ have no forbidden actions."""
+        try:
+            from regression_hardening.safety_scanner import SafetyScanner
+            scanner = SafetyScanner()
+            results_ex = scanner.scan_directory("docs/examples", patterns=["*.md"])
+            results_tmpl = scanner.scan_directory("docs/templates", patterns=["*.md"])
+            blocked = [r for r in results_ex + results_tmpl if r.status == "BLOCKED"]
+            if blocked:
+                return _check_item(
+                    "workflow_templates_no_forbidden_actions", "safety", "WARN",
+                    f"{len(blocked)} workflow files have forbidden actions",
+                )
+            total = len(results_ex) + len(results_tmpl)
+            return _check_item(
+                "workflow_templates_no_forbidden_actions", "safety", "PASS",
+                f"workflow files scanned: {total} files, 0 blocked",
+            )
+        except Exception as exc:
+            return _check_item(
+                "workflow_templates_no_forbidden_actions", "safety", "WARN", str(exc),
+            )
+
+    def _check_version_info_v106(self) -> dict:
+        """v1.0.6 — VERSION starts with 1.0. and EXAMPLE_WORKFLOWS_RELEASE=True."""
+        try:
+            from release.version_info import VERSION
+            import release.version_info as _vi
+            ew = getattr(_vi, "EXAMPLE_WORKFLOWS_RELEASE", None)
+            if VERSION.startswith("1.0."):
+                return _check_item(
+                    "version_info_v106", "version_git", "PASS",
+                    f"VERSION={VERSION}, EXAMPLE_WORKFLOWS_RELEASE={ew}",
+                )
+            return _check_item(
+                "version_info_v106", "version_git", "WARN",
+                f"VERSION={VERSION}",
+                warning="Expected VERSION=1.0.x",
+            )
+        except Exception as exc:
+            return _check_item(
+                "version_info_v106", "version_git", "WARN", str(exc),
+            )
+
     # ----------------------------------------------------------------
     # Run
     # ----------------------------------------------------------------
@@ -1777,6 +1840,10 @@ class StableReleaseChecklistV060:
             self._check_documentation_health_import,
             self._check_documentation_health_no_forbidden_actions,
             self._check_version_info_v105,
+            # v1.0.6 Example Workflows & Templates
+            self._check_workflow_templates_import,
+            self._check_workflow_templates_no_forbidden_actions,
+            self._check_version_info_v106,
         ]
 
         for fn in checklist_groups:
