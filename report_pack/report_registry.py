@@ -54,6 +54,9 @@ REPORT_DOCUMENTATION_HEALTH = "documentation_health_report"
 # v1.0.6 Example Workflows & Templates
 REPORT_WORKFLOW_TEMPLATES = "workflow_templates_report"
 
+# v1.0.7 Knowledge Base Search Polish
+REPORT_KNOWLEDGE_BASE_SEARCH = "knowledge_base_search_report"
+
 logger = logging.getLogger(__name__)
 
 # ---------------------------------------------------------------------------
@@ -97,6 +100,8 @@ _PACK_DEFINITIONS: Dict[str, List[str]] = {
         REPORT_DOCUMENTATION_HEALTH,
         # v1.0.6 Example Workflows & Templates (optional in daily pack)
         REPORT_WORKFLOW_TEMPLATES,
+        # v1.0.7 Knowledge Base Search Polish (optional in daily pack)
+        REPORT_KNOWLEDGE_BASE_SEARCH,
     ],
     PACK_WEEKLY: [
         REPORT_DAILY_MARKET,
@@ -140,6 +145,8 @@ _PACK_DEFINITIONS: Dict[str, List[str]] = {
         REPORT_DOCUMENTATION_HEALTH,
         # v1.0.6 Example Workflows & Templates (optional in weekly pack)
         REPORT_WORKFLOW_TEMPLATES,
+        # v1.0.7 Knowledge Base Search Polish (optional in weekly pack)
+        REPORT_KNOWLEDGE_BASE_SEARCH,
     ],
     PACK_FULL: [
         REPORT_DAILY_MARKET,
@@ -199,6 +206,8 @@ _PACK_DEFINITIONS: Dict[str, List[str]] = {
         REPORT_DOCUMENTATION_HEALTH,
         # v1.0.6 Example Workflows & Templates (optional in full pack)
         REPORT_WORKFLOW_TEMPLATES,
+        # v1.0.7 Knowledge Base Search Polish (optional in full pack)
+        REPORT_KNOWLEDGE_BASE_SEARCH,
     ],
 }
 

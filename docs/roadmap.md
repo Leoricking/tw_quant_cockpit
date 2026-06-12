@@ -76,6 +76,7 @@
 | v1.0.4 | Regression & Release Gate Hardening | Done |
 | v1.0.5 | Documentation & User Guide Polish | Done |
 | v1.0.6 | Example Workflows & Templates | Done |
+| v1.0.7 | Knowledge Base Search Polish | Done |
 
 ---
 

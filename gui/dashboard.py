@@ -533,6 +533,14 @@ try:
 except ImportError:
     pass
 
+# v1.0.7 Knowledge Base Search Panel
+_KNOWLEDGE_BASE_SEARCH_AVAILABLE = False
+try:
+    from gui.knowledge_base_search_panel import KnowledgeBaseSearchPanel
+    _KNOWLEDGE_BASE_SEARCH_AVAILABLE = True
+except Exception:
+    pass
+
 # v0.5.1.1 Strategy Filter panel — inline (no separate panel file required)
 # ---------------------------------------------------------------------------
 _STRATEGY_FILTER_AVAILABLE = False

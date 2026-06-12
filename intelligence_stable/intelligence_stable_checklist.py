@@ -998,4 +998,35 @@ class IntelligenceStableChecklist:
                 suggested_fix="Run: python main.py workflow-templates-health",
             ))
 
+        # v1.0.7 knowledge_base_v107_safe — knowledge_base package is safe
+        try:
+            import importlib
+            mod_kb = importlib.import_module("knowledge_base")
+            no_orders = getattr(mod_kb, "NO_REAL_ORDERS", None)
+            broker_dis = getattr(mod_kb, "BROKER_DISABLED", None)
+            research = getattr(mod_kb, "RESEARCH_ONLY", None)
+            if no_orders is True and broker_dis is True and research is True:
+                checks.append(_check(
+                    "knowledge_base_v107_safe", "stable_integration",
+                    "v1.0.7 knowledge_base_v107_safe",
+                    CHECK_PASS, SEV_LOW,
+                    "knowledge_base: NO_REAL_ORDERS=True, BROKER_DISABLED=True, RESEARCH_ONLY=True.",
+                ))
+            else:
+                checks.append(_check(
+                    "knowledge_base_v107_safe", "stable_integration",
+                    "v1.0.7 knowledge_base_v107_safe",
+                    CHECK_WARN, SEV_LOW,
+                    f"knowledge_base safety flags: NO_REAL_ORDERS={no_orders}, BROKER_DISABLED={broker_dis}, RESEARCH_ONLY={research}",
+                    suggested_fix="Ensure knowledge_base/__init__.py has correct safety flags.",
+                ))
+        except Exception as exc:
+            checks.append(_check(
+                "knowledge_base_v107_safe", "stable_integration",
+                "v1.0.7 knowledge_base_v107_safe",
+                CHECK_WARN, SEV_LOW,
+                f"Could not verify knowledge_base_v107 safety (optional): {exc}",
+                suggested_fix="Run: python main.py kb-health-check",
+            ))
+
         return checks

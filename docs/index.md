@@ -3,7 +3,7 @@
 > **[!] Research Only. Read Only. No Real Orders. Production Trading: BLOCKED.**
 > **[!] Not investment advice. REAL_ORDER_READY=False.**
 
-Current version: **v1.0.6** — Example Workflows & Templates (base: v1.0.0 Research Trading Cockpit Stable)
+Current version: **v1.0.7** — Knowledge Base Search Polish (base: v1.0.0 Research Trading Cockpit Stable)
 
 ---
 
@@ -30,6 +30,7 @@ Current version: **v1.0.6** — Example Workflows & Templates (base: v1.0.0 Rese
 
 | Document | Description |
 |----------|-------------|
+| [Knowledge Base Search v1.0.7](knowledge_base_search_v1.0.7.md) | v1.0.7 Knowledge Base Search Polish — search docs, examples, templates, reports |
 | [Research Trading Cockpit Stable v1.0.0](research_trading_cockpit_stable_v1.0.0.md) | v1.0.0 overview |
 | [Regression & Release Gate Hardening v1.0.4](regression_release_gate_hardening_v1.0.4.md) | v1.0.4 regression hardening |
 | [GUI Stability & Usability v1.0.3](gui_stability_usability_v1.0.3.md) | v1.0.3 GUI stability |

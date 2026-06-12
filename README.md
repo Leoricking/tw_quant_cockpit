@@ -4,7 +4,7 @@
 >
 > **[!] v1: Real order execution is strictly prohibited. For research, simulation, and decision support only. Not investment advice.**
 
-**Current version: v1.0.6 — Example Workflows & Templates** (base: v1.0.0 Research Trading Cockpit Stable)
+**Current version: v1.0.7 — Knowledge Base Search Polish** (base: v1.0.0 Research Trading Cockpit Stable)
 
 ---
 
@@ -29,11 +29,11 @@ TW Quant Cockpit is a **Research Trading Cockpit** for Taiwan equity markets. It
 
 ---
 
-## Current Version: v1.0.6 — Example Workflows & Templates
+## Current Version: v1.0.7 — Knowledge Base Search Polish
 
-This is TW Quant Cockpit **v1.0.6 — Example Workflows & Templates**, based on **v1.0.0 Research Trading Cockpit Stable**.
+This is TW Quant Cockpit **v1.0.7 — Knowledge Base Search Polish**, based on **v1.0.0 Research Trading Cockpit Stable**.
 
-New in v1.0.6: 10 example workflow documents (docs/examples/), 8 fillable template documents (docs/templates/), workflows/ package, Workflow Templates Health Check, Workflow Templates Indexer, Workflow Templates Report, 4 new CLI commands, regression coverage, release notes, and stable checks.
+New in v1.0.7: knowledge_base/ package (kb_schema, kb_indexer, kb_search_engine, kb_store, kb_query, kb_summary, kb_health_check), local lightweight search across docs/examples/templates/reports/GUI registry, safe search summary (research-only next steps), 6 new CLI commands (kb-index, kb-summary, kb-health-check, kb-search, kb-explain, kb-report), optional GUI panel, Knowledge Base Search Report, regression coverage, and stable checks. No external API. No embedding. No network. Search does not enable trading.
 
 ---
 
@@ -161,6 +161,12 @@ This system is for research and educational purposes only. Nothing in this syste
 Research Only | Not Investment Advice | No broker execution
 
 ---
+
+## v1.0.7 — Knowledge Base Search Polish
+
+This is TW Quant Cockpit **v1.0.7 — Knowledge Base Search Polish**, based on **v1.0.0 Research Trading Cockpit Stable**.
+
+New: knowledge_base/ package with local search, safe search summary, 6 CLI commands, optional GUI panel, and regression coverage. No external API. Search does not enable trading.
 
 ## v1.0.6 — Example Workflows & Templates
 

@@ -9720,6 +9720,199 @@ def cmd_workflow_templates_report(args):
         print(f"[WARN] workflow-templates-report: {exc}")
 
 
+# ---------------------------------------------------------------------------
+# v1.0.7 Knowledge Base Search Polish
+# ---------------------------------------------------------------------------
+
+def cmd_kb_index(args):
+    """Build or rebuild the Knowledge Base index."""
+    from knowledge_base.kb_indexer import KnowledgeBaseIndexer
+    from knowledge_base.kb_store import KnowledgeBaseStore
+    import os
+    project_root = os.path.dirname(os.path.abspath(__file__))
+    output_dir = getattr(args, "output_dir", None) or os.path.join(project_root, "data", "backtest_results", "knowledge_base")
+    rebuild = getattr(args, "rebuild", False)
+    print()
+    print("=" * 60)
+    print("  TW Quant Cockpit \u2014 Knowledge Base Search")
+    print("=" * 60)
+    print("  Version: 1.0.7")
+    print("  Research Only: True")
+    print("  No Real Orders: True")
+    print("  Production Trading BLOCKED: True")
+    print("  [!] Search does not enable trading.")
+    print()
+    try:
+        indexer = KnowledgeBaseIndexer(project_root=project_root, output_dir=output_dir)
+        items = indexer.build_index()
+        store = KnowledgeBaseStore(output_dir=output_dir)
+        path = store.save_index(items)
+        summary = indexer.build_summary(items)
+        store.save_summary(summary)
+        print(f"  Status: OK")
+        print(f"  Total items indexed: {len(items)}")
+        print(f"  Index saved to: {path}")
+        print(f"  [!] Index output is research-only. Not committed.")
+    except Exception as exc:
+        print(f"  [ERROR] kb-index failed: {exc}")
+
+
+def cmd_kb_summary(args):
+    """Show Knowledge Base index summary."""
+    from knowledge_base.kb_summary import KnowledgeBaseSummaryBuilder
+    import os
+    project_root = os.path.dirname(os.path.abspath(__file__))
+    print()
+    print("=" * 60)
+    print("  TW Quant Cockpit \u2014 Knowledge Base Summary")
+    print("=" * 60)
+    print("  Research Only: True | No Real Orders: True")
+    print()
+    try:
+        builder = KnowledgeBaseSummaryBuilder()
+        text = builder.summarize_for_console()
+        print(text)
+    except Exception as exc:
+        print(f"  [ERROR] kb-summary failed: {exc}")
+
+
+def cmd_kb_health_check(args):
+    """Run Knowledge Base health check."""
+    from knowledge_base.kb_health_check import KnowledgeBaseHealthCheck
+    import os
+    project_root = os.path.dirname(os.path.abspath(__file__))
+    print()
+    print("=" * 60)
+    print("  TW Quant Cockpit \u2014 Knowledge Base Health Check")
+    print("=" * 60)
+    print("  Research Only: True | No Real Orders: True")
+    print()
+    try:
+        checker = KnowledgeBaseHealthCheck(project_root=project_root)
+        result = checker.run()
+        checks = result.get("checks", [])
+        for c in checks:
+            status = c.get("status", "?")
+            name = c.get("name", "")
+            msg = c.get("message", "")
+            print(f"  [{status:4s}] {name}: {msg}")
+        print()
+        print(f"  Total: {result.get('total', 0)}")
+        print(f"  PASS:  {result.get('pass_count', 0)}")
+        print(f"  WARN:  {result.get('warn_count', 0)}")
+        print(f"  FAIL:  {result.get('fail_count', 0)}")
+        print(f"  BLOCKED: {result.get('blocked_count', 0)}")
+        print(f"  Overall: {result.get('overall_status', 'UNKNOWN')}")
+        print()
+        print("  [!] No Real Orders. No broker execution.")
+    except Exception as exc:
+        print(f"  [ERROR] kb-health-check failed: {exc}")
+
+
+def cmd_kb_search(args):
+    """Search the Knowledge Base."""
+    from knowledge_base.kb_search_engine import KnowledgeBaseSearchEngine
+    import os
+    project_root = os.path.dirname(os.path.abspath(__file__))
+    query = getattr(args, "query", "") or ""
+    category = getattr(args, "category", None)
+    module = getattr(args, "module", None)
+    limit = getattr(args, "limit", 20)
+    output_dir = getattr(args, "output_dir", None) or os.path.join(project_root, "data", "backtest_results", "knowledge_base")
+    print()
+    print("=" * 60)
+    print("  TW Quant Cockpit \u2014 Knowledge Base Search")
+    print("=" * 60)
+    print("  Version: 1.0.7")
+    print("  Research Only: True")
+    print("  No Real Orders: True")
+    print("  Production Trading BLOCKED: True")
+    print(f"  Query: {query}")
+    print(f"  Category: {category or 'all'}")
+    print(f"  Module: {module or 'all'}")
+    print()
+    try:
+        engine = KnowledgeBaseSearchEngine()
+        results = engine.search(query=query, category=category, module=module, limit=limit)
+        if not results:
+            print("  No results found.")
+        else:
+            for i, r in enumerate(results, 1):
+                print(f"  {i:2d}. [{r.category}] {r.title}")
+                print(f"      Score: {r.score:.1f} | Match: {r.match_type} | Module: {r.module}")
+                print(f"      Path: {r.path}")
+                print(f"      Safe Next Step: {r.safe_next_step}")
+                print()
+        safe_summary = engine.build_safe_summary(results)
+        print("  Safe Summary:")
+        print(f"  {safe_summary}")
+        print()
+        print("  [!] Results: {count}".format(count=len(results)))
+        print("  [!] Search does not enable trading.")
+        print("  [!] No Real Orders. Broker Execution Disabled.")
+    except Exception as exc:
+        print(f"  [ERROR] kb-search failed: {exc}")
+
+
+def cmd_kb_explain(args):
+    """Explain a Knowledge Base item by ID."""
+    from knowledge_base.kb_search_engine import KnowledgeBaseSearchEngine
+    item_id = getattr(args, "item_id", None) or ""
+    print()
+    print("=" * 60)
+    print("  TW Quant Cockpit \u2014 Knowledge Base Explain")
+    print("=" * 60)
+    print("  Research Only: True | No Real Orders: True")
+    print()
+    try:
+        engine = KnowledgeBaseSearchEngine()
+        item = engine.explain_result(item_id)
+        if item is None:
+            print(f"  Item not found: {item_id}")
+        else:
+            print(f"  ID:       {item.item_id}")
+            print(f"  Title:    {item.title}")
+            print(f"  Category: {item.category}")
+            print(f"  Module:   {item.module}")
+            print(f"  Path:     {item.path}")
+            print(f"  Tags:     {', '.join(item.tags)}")
+            print(f"  Summary:  {item.summary}")
+            print(f"  Excerpt:  {item.content_excerpt[:200]}")
+            print()
+            print(f"  No Real Orders: {item.no_real_orders}")
+            print(f"  Research Only:  {item.research_only}")
+            print(f"  Broker Disabled: {item.broker_disabled}")
+    except Exception as exc:
+        print(f"  [ERROR] kb-explain failed: {exc}")
+
+
+def cmd_kb_report(args):
+    """Generate Knowledge Base Search report."""
+    from reports.knowledge_base_search_report import KnowledgeBaseSearchReportBuilder
+    import os
+    project_root = os.path.dirname(os.path.abspath(__file__))
+    mode = getattr(args, "mode", "real")
+    report_dir = getattr(args, "report_dir", None) or os.path.join(project_root, "reports")
+    print()
+    print("=" * 60)
+    print("  TW Quant Cockpit \u2014 Knowledge Base Search Report")
+    print("=" * 60)
+    print("  Research Only: True | No Real Orders: True")
+    print()
+    try:
+        builder = KnowledgeBaseSearchReportBuilder(
+            mode=mode,
+            output_dir=report_dir,
+            project_root=project_root,
+        )
+        path = builder.save()
+        print(f"  Report saved to: {path}")
+        print()
+        print("  [!] No Real Orders. Search does not enable trading.")
+    except Exception as exc:
+        print(f"  [ERROR] kb-report failed: {exc}")
+
+
 def cmd_docs_health_check(args):
     """Run Documentation Health Check for v1.0.5. Research Only. No Real Orders."""
     try:
@@ -14811,6 +15004,47 @@ def _build_parser() -> argparse.ArgumentParser:
     p_wtr.add_argument("--mode", choices=["real", "mock"], default="real")
     p_wtr.add_argument("--report-dir", dest="report_dir", default="reports")
 
+    # v1.0.7 Knowledge Base Search Polish
+    p_kbi = subparsers.add_parser(
+        "kb-index",
+        help="Build or rebuild the Knowledge Base index (v1.0.7). [!] Research Only. No Real Orders.",
+    )
+    p_kbi.add_argument("--rebuild", action="store_true", help="Force rebuild even if index exists")
+    p_kbi.add_argument("--output-dir", dest="output_dir", default=None, help="Output directory")
+
+    subparsers.add_parser(
+        "kb-summary",
+        help="Show Knowledge Base index summary (v1.0.7). [!] Research Only. No Real Orders.",
+    )
+
+    subparsers.add_parser(
+        "kb-health-check",
+        help="Run Knowledge Base health check (v1.0.7). [!] Research Only. No Real Orders.",
+    )
+
+    p_kbs = subparsers.add_parser(
+        "kb-search",
+        help="Search the Knowledge Base (v1.0.7). [!] Research Only. No Real Orders.",
+    )
+    p_kbs.add_argument("--query", default="", help="Search query")
+    p_kbs.add_argument("--category", default=None, help="Filter by category")
+    p_kbs.add_argument("--module", default=None, help="Filter by module")
+    p_kbs.add_argument("--limit", type=int, default=20, help="Max results (default: 20)")
+    p_kbs.add_argument("--output-dir", dest="output_dir", default=None, help="Output directory")
+
+    p_kbe = subparsers.add_parser(
+        "kb-explain",
+        help="Explain a Knowledge Base item by ID (v1.0.7). [!] Research Only. No Real Orders.",
+    )
+    p_kbe.add_argument("--item-id", dest="item_id", default="", help="Item ID to explain")
+
+    p_kbr = subparsers.add_parser(
+        "kb-report",
+        help="Generate Knowledge Base Search report (v1.0.7). [!] Research Only. No Real Orders.",
+    )
+    p_kbr.add_argument("--mode", default="real", choices=["real", "mock"], help="Data mode")
+    p_kbr.add_argument("--report-dir", dest="report_dir", default=None, help="Report output directory")
+
     # --- v1.0.5 Documentation & User Guide Polish ---
     subparsers.add_parser(
         "docs-health-check",
@@ -16162,6 +16396,13 @@ def main() -> None:
         "workflow-templates-index":         cmd_workflow_templates_index,
         "workflow-templates-summary":       cmd_workflow_templates_summary,
         "workflow-templates-report":        cmd_workflow_templates_report,
+        # v1.0.7 Knowledge Base Search Polish
+        "kb-index":        cmd_kb_index,
+        "kb-summary":      cmd_kb_summary,
+        "kb-health-check": cmd_kb_health_check,
+        "kb-search":       cmd_kb_search,
+        "kb-explain":      cmd_kb_explain,
+        "kb-report":       cmd_kb_report,
         # v1.0.5 Documentation & User Guide Polish
         "docs-health-check":                cmd_docs_health_check,
         "docs-index":                       cmd_docs_index,

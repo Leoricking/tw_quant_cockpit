@@ -33,7 +33,7 @@ from report_pack.report_pack_schema import (
     REPORT_STRATEGY_LAB_STABLE,
     OPTIONAL_REPORT_TYPES, ENV_LIMITED_REPORT_TYPES,
 )
-# v0.9.0.1 crash reversal; v1.0.0 research cockpit stable; v1.0.2 hygiene; v1.0.6 workflows
+# v0.9.0.1 crash reversal; v1.0.0 research cockpit stable; v1.0.2 hygiene; v1.0.7 kb search
 from report_pack.report_registry import (
     REPORT_CRASH_REVERSAL,
     REPORT_STRATEGY_VALIDATION,
@@ -43,6 +43,7 @@ from report_pack.report_registry import (
     REPORT_REGRESSION_HARDENING,
     REPORT_DOCUMENTATION_HEALTH,
     REPORT_WORKFLOW_TEMPLATES,
+    REPORT_KNOWLEDGE_BASE_SEARCH,
 )
 
 logger = logging.getLogger(__name__)
@@ -245,6 +246,11 @@ _REPORT_PATTERNS = {
     # v1.0.6 Example Workflows & Templates
     REPORT_WORKFLOW_TEMPLATES: [
         "reports/workflow_templates_report*.md",
+    ],
+    # v1.0.7 Knowledge Base Search Polish
+    REPORT_KNOWLEDGE_BASE_SEARCH: [
+        "reports/knowledge_base_search_report*.md",
+        "data/backtest_results/knowledge_base/*.csv",
     ],
     # v0.9.1 Evidence Graph UX patterns
     "evidence_graph_gaps": [

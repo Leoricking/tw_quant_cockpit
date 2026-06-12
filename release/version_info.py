@@ -1,8 +1,8 @@
 """
-release/version_info.py — Centralized version info for TW Quant Cockpit v1.0.6.
+release/version_info.py — Centralized version info for TW Quant Cockpit v1.0.7.
 [!] Research Only. No Real Orders. Production Trading: BLOCKED.
 [!] VALIDATED does not enable trading. Broker Execution Disabled.
-[!] Example Workflows & Templates. No broker execution.
+[!] Knowledge Base Search Polish. No broker execution. Search does not enable trading.
 """
 from __future__ import annotations
 import logging
@@ -12,10 +12,10 @@ logger = logging.getLogger(__name__)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 # ---------------------------------------------------------------------------
-# v1.0.6 module-level constants (Example Workflows & Templates)
+# v1.0.7 module-level constants (Knowledge Base Search Polish)
 # ---------------------------------------------------------------------------
-VERSION                             = "1.0.6"
-RELEASE_NAME                        = "Example Workflows & Templates"
+VERSION                             = "1.0.7"
+RELEASE_NAME                        = "Knowledge Base Search Polish"
 BASE_RELEASE                        = "1.0.0"
 BASE_RELEASE_NAME                   = "Research Trading Cockpit Stable"
 MAINTENANCE_RELEASE                 = True
@@ -34,6 +34,9 @@ production_blocked                  = True
 EXAMPLE_WORKFLOWS_RELEASE           = True
 WORKFLOW_TEMPLATES_AVAILABLE        = True
 TEMPLATE_GUIDE_AVAILABLE            = True
+KNOWLEDGE_BASE_SEARCH_RELEASE       = True
+KNOWLEDGE_BASE_INDEX_AVAILABLE      = True
+SAFE_SEARCH_SUMMARY_AVAILABLE       = True
 
 
 class VersionInfo:
@@ -158,25 +161,23 @@ def get_version_info() -> dict:
 
 def print_version_info() -> None:
     """Print formatted version info to stdout."""
-    info = get_version_info()
     print("=" * 60)
-    print(f"  TW Quant Cockpit {info['version']}")
-    print(f"  {info['release_name']}")
-    print(f"  Stage: {info['release_stage']}")
-    print("=" * 60)
-    print(f"  Read Only          : {info['read_only']}")
-    print(f"  No Real Orders     : {info['no_real_orders']}")
-    print(f"  Production BLOCKED : {info['production_blocked']}")
-    print(f"  Real Order Ready   : {info['real_order_ready']}")
-    print(f"  Supported Modes    : {', '.join(info['supported_modes'])}")
-    print()
-    print("  Safety Flags:")
-    for flag in info["safety_flags"]:
-        print(f"    [{flag}]")
-    print()
-    print("  Major Features:")
-    for i, feat in enumerate(info["major_features"], 1):
-        print(f"    {i:2d}. {feat}")
+    print("  TW Quant Cockpit — Version Info")
+    print(f"  Version: {VERSION}")
+    print(f"  Release: {RELEASE_NAME}")
+    print(f"  Base Release: {BASE_RELEASE} {BASE_RELEASE_NAME}")
+    print(f"  Stage: {RELEASE_STAGE}")
+    print(f"  Track: {RELEASE_TRACK.capitalize()}")
+    print(f"  Research Only: {not REAL_ORDERS_ENABLED}")
+    print(f"  No Real Orders: {NO_REAL_ORDERS}")
+    print(f"  Production Trading BLOCKED: {PRODUCTION_TRADING_BLOCKED}")
+    print(f"  Broker Execution Enabled: {BROKER_EXECUTION_ENABLED}")
+    print(f"  VALIDATED does not enable trading: {VALIDATED_DOES_NOT_ENABLE_TRADING}")
+    print(f"  Knowledge Base Search Release: {KNOWLEDGE_BASE_SEARCH_RELEASE}")
+    print(f"  Knowledge Base Index Available: {KNOWLEDGE_BASE_INDEX_AVAILABLE}")
+    print(f"  Safe Search Summary Available: {SAFE_SEARCH_SUMMARY_AVAILABLE}")
+    print(f"  Paper Trading: {'Simulation Only' if PAPER_TRADING_IS_SIMULATION else 'N/A'}")
+    print(f"  Mock Realtime: {'Simulation Only' if MOCK_REALTIME_IS_SIMULATION else 'N/A'}")
     print("=" * 60)
 
 

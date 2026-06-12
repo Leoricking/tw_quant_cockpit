@@ -490,3 +490,35 @@ WorkflowTemplatesReportBuilder — 6-section Markdown report covering overview, 
 ---
 
 *TW Quant Cockpit v1.0.6 — Example Workflows & Templates — Research Only — Not Investment Advice*
+
+---
+
+## v1.0.7 — Knowledge Base Search Polish
+
+**Released:** 2026-06-12
+
+### 概述
+Knowledge Base Search Polish — 把累積的文件、範例、模板、報告、Strategy Memory、Evidence Graph 變成可搜尋、可導覽、可複用的研究知識庫入口。
+
+### New in v1.0.7
+- `knowledge_base/` package: kb_schema, kb_indexer, kb_search_engine, kb_store, kb_query, kb_summary, kb_health_check
+- Local lightweight indexing and search across docs, examples, templates, reports, GUI registry, CLI metadata
+- Safe search summary (research-only next steps only)
+- CLI: kb-index, kb-summary, kb-health-check, kb-search, kb-explain, kb-report
+- Optional GUI panel: KnowledgeBaseSearchPanel
+- Knowledge Base Search Report
+- No external API. No embedding API. No network.
+- No strategy logic changes. No broker API. No real orders.
+- Search does not enable trading.
+
+### Safety (unchanged from v1.0.0)
+
+> **Research Only** — **No Real Orders** — **Production Trading BLOCKED**
+> **Broker Execution Disabled** — **VALIDATED does not enable trading**
+> **Search does not enable trading** — Search is research-only
+> **Paper trading is simulation only** — **Mock realtime is simulation only**
+> **Not Investment Advice**
+
+---
+
+*TW Quant Cockpit v1.0.7 — Knowledge Base Search Polish — Research Only — Not Investment Advice*

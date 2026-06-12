@@ -1741,6 +1741,72 @@ class StableReleaseChecklistV060:
                 "version_info_v106", "version_git", "WARN", str(exc),
             )
 
+    def _check_knowledge_base_import(self) -> dict:
+        """v1.0.7 — knowledge_base package importable."""
+        try:
+            import importlib
+            mod_kb = importlib.import_module("knowledge_base")
+            no_orders = getattr(mod_kb, "NO_REAL_ORDERS", None)
+            if no_orders is True:
+                return _check_item(
+                    "knowledge_base_import", "knowledge_base", "PASS",
+                    "knowledge_base importable, NO_REAL_ORDERS=True",
+                )
+            return _check_item(
+                "knowledge_base_import", "knowledge_base", "WARN",
+                f"knowledge_base importable but NO_REAL_ORDERS={no_orders}",
+            )
+        except Exception as exc:
+            return _check_item(
+                "knowledge_base_import", "knowledge_base", "WARN",
+                f"knowledge_base import failed (optional): {exc}",
+            )
+
+    def _check_knowledge_base_search_no_forbidden_actions(self) -> dict:
+        """v1.0.7 — knowledge_base search has no forbidden actions."""
+        try:
+            import importlib
+            mod_kbs = importlib.import_module("knowledge_base.kb_schema")
+            forbidden = getattr(mod_kbs, "FORBIDDEN_ACTIONS", [])
+            safe_steps = getattr(mod_kbs, "SAFE_NEXT_STEPS", [])
+            # Verify safe steps don't contain forbidden
+            bad = [s for s in safe_steps if any(f in s.upper() for f in ["BUY", "SELL", "ORDER", "EXECUTE"])]
+            if not bad:
+                return _check_item(
+                    "knowledge_base_search_no_forbidden_actions", "knowledge_base", "PASS",
+                    f"No forbidden actions in SAFE_NEXT_STEPS ({len(safe_steps)} steps)",
+                )
+            return _check_item(
+                "knowledge_base_search_no_forbidden_actions", "knowledge_base", "FAIL",
+                f"Forbidden actions found in SAFE_NEXT_STEPS: {bad}",
+            )
+        except Exception as exc:
+            return _check_item(
+                "knowledge_base_search_no_forbidden_actions", "knowledge_base", "WARN",
+                f"Could not verify knowledge_base search safety (optional): {exc}",
+            )
+
+    def _check_version_info_v107(self) -> dict:
+        """v1.0.7 — VERSION is 1.0.7."""
+        try:
+            from release.version_info import VERSION
+            import release.version_info as _vi
+            kb_release = getattr(_vi, "KNOWLEDGE_BASE_SEARCH_RELEASE", None)
+            if VERSION == "1.0.7":
+                return _check_item(
+                    "version_info_v107", "version_git", "PASS",
+                    f"VERSION={VERSION}, KNOWLEDGE_BASE_SEARCH_RELEASE={kb_release}",
+                )
+            return _check_item(
+                "version_info_v107", "version_git", "WARN",
+                f"VERSION={VERSION} (expected 1.0.7)",
+                warning="Expected VERSION=1.0.7",
+            )
+        except Exception as exc:
+            return _check_item(
+                "version_info_v107", "version_git", "WARN", str(exc),
+            )
+
     # ----------------------------------------------------------------
     # Run
     # ----------------------------------------------------------------
@@ -1844,6 +1910,10 @@ class StableReleaseChecklistV060:
             self._check_workflow_templates_import,
             self._check_workflow_templates_no_forbidden_actions,
             self._check_version_info_v106,
+            # v1.0.7 Knowledge Base Search Polish
+            self._check_knowledge_base_import,
+            self._check_knowledge_base_search_no_forbidden_actions,
+            self._check_version_info_v107,
         ]
 
         for fn in checklist_groups:

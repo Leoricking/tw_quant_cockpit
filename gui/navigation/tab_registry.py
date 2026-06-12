@@ -1234,6 +1234,32 @@ class GUITabRegistry:
                 maturity="STABLE",
                 notes="Added in v1.0.3 \u2014 GUI Stability & Usability Polish.",
             ),
+            # ----------------------------------------------------------------
+            # v1.0.7 Knowledge Base Search
+            # ----------------------------------------------------------------
+            GUITabMetadata(
+                tab_id="knowledge_base_search",
+                tab_name="knowledge_base_search",
+                display_name="Knowledge Base Search",
+                group="maintenance",
+                priority="P1",
+                description="Knowledge Base Search \u2014 search docs, examples, templates, reports, strategy memory, evidence graph metadata",
+                module_path="gui.knowledge_base_search_panel",
+                class_name="KnowledgeBaseSearchPanel",
+                available_flag="_KNOWLEDGE_BASE_SEARCH_AVAILABLE",
+                keywords=[
+                    "knowledge base", "kb search", "docs search", "report search",
+                    "examples search", "templates search", "strategy memory search",
+                    "evidence search", "knowledge search",
+                    "\u77e5\u8b58\u5eab", "\u641c\u5c0b", "\u6587\u4ef6\u641c\u5c0b", "\u5831\u544a\u641c\u5c0b", "\u7bc4\u4f8b\u641c\u5c0b", "\u6a21\u677f\u641c\u5c0b",
+                    "\u4ea4\u63a5", "handoff", "release gate", "safety",
+                ],
+                related_cli_commands=["kb-index", "kb-summary", "kb-health-check", "kb-search", "kb-explain", "kb-report"],
+                maturity="STABLE",
+                no_real_orders=True,
+                read_only=True,
+                production_blocked=True,
+            ),
         ]
         for tab in tabs:
             self._tabs[tab.tab_id] = tab

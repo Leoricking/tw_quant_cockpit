@@ -580,6 +580,91 @@ class ResearchCockpitStableChecklist:
             checks.append(_mk("handoff_summary_template_available", "docs", "WARN",
                               "docs/templates/handoff_summary_template.md not found"))
 
+        # 50. knowledge_base_index_available — v1.0.7
+        try:
+            import importlib
+            mod_kbi = importlib.import_module("knowledge_base.kb_indexer")
+            if hasattr(mod_kbi, "KnowledgeBaseIndexer"):
+                checks.append(_mk("knowledge_base_index_available", "knowledge_base", "PASS",
+                                  "knowledge_base.kb_indexer.KnowledgeBaseIndexer importable"))
+            else:
+                checks.append(_mk("knowledge_base_index_available", "knowledge_base", "WARN",
+                                  "knowledge_base.kb_indexer imported but KnowledgeBaseIndexer not found"))
+        except Exception as exc:
+            checks.append(_mk("knowledge_base_index_available", "knowledge_base", "WARN",
+                              f"knowledge_base.kb_indexer: {exc}"))
+
+        # 51. knowledge_base_search_available — v1.0.7
+        try:
+            import importlib
+            mod_kbs = importlib.import_module("knowledge_base.kb_search_engine")
+            if hasattr(mod_kbs, "KnowledgeBaseSearchEngine"):
+                checks.append(_mk("knowledge_base_search_available", "knowledge_base", "PASS",
+                                  "knowledge_base.kb_search_engine.KnowledgeBaseSearchEngine importable"))
+            else:
+                checks.append(_mk("knowledge_base_search_available", "knowledge_base", "WARN",
+                                  "knowledge_base.kb_search_engine imported but KnowledgeBaseSearchEngine not found"))
+        except Exception as exc:
+            checks.append(_mk("knowledge_base_search_available", "knowledge_base", "WARN",
+                              f"knowledge_base.kb_search_engine: {exc}"))
+
+        # 52. knowledge_base_health_available — v1.0.7
+        try:
+            import importlib
+            mod_kbh = importlib.import_module("knowledge_base.kb_health_check")
+            if hasattr(mod_kbh, "KnowledgeBaseHealthCheck"):
+                checks.append(_mk("knowledge_base_health_available", "knowledge_base", "PASS",
+                                  "knowledge_base.kb_health_check.KnowledgeBaseHealthCheck importable"))
+            else:
+                checks.append(_mk("knowledge_base_health_available", "knowledge_base", "WARN",
+                                  "knowledge_base.kb_health_check imported but KnowledgeBaseHealthCheck not found"))
+        except Exception as exc:
+            checks.append(_mk("knowledge_base_health_available", "knowledge_base", "WARN",
+                              f"knowledge_base.kb_health_check: {exc}"))
+
+        # 53. knowledge_base_no_forbidden_actions — v1.0.7
+        try:
+            import knowledge_base as _kb_pkg
+            no_orders = getattr(_kb_pkg, "NO_REAL_ORDERS", None)
+            broker_dis = getattr(_kb_pkg, "BROKER_DISABLED", None)
+            if no_orders is True and broker_dis is True:
+                checks.append(_mk("knowledge_base_no_forbidden_actions", "knowledge_base", "PASS",
+                                  "knowledge_base: NO_REAL_ORDERS=True, BROKER_DISABLED=True"))
+            else:
+                checks.append(_mk("knowledge_base_no_forbidden_actions", "knowledge_base", "WARN",
+                                  f"knowledge_base: NO_REAL_ORDERS={no_orders}, BROKER_DISABLED={broker_dis}"))
+        except Exception as exc:
+            checks.append(_mk("knowledge_base_no_forbidden_actions", "knowledge_base", "WARN",
+                              f"knowledge_base safety flags check: {exc}"))
+
+        # 54. knowledge_base_no_external_api — v1.0.7
+        kb_dir = os.path.join(self._root, "knowledge_base")
+        if os.path.isdir(kb_dir):
+            forbidden_imports = ["openai", "anthropic", "faiss", "chromadb"]
+            found_external = []
+            try:
+                for fname in os.listdir(kb_dir):
+                    if not fname.endswith(".py"):
+                        continue
+                    fpath = os.path.join(kb_dir, fname)
+                    with open(fpath, "r", encoding="utf-8", errors="replace") as fh:
+                        content = fh.read().lower()
+                    for imp in forbidden_imports:
+                        if f"import {imp}" in content:
+                            found_external.append(f"{fname}:{imp}")
+                if found_external:
+                    checks.append(_mk("knowledge_base_no_external_api", "knowledge_base", "FAIL",
+                                      f"External API imports found: {found_external}"))
+                else:
+                    checks.append(_mk("knowledge_base_no_external_api", "knowledge_base", "PASS",
+                                      "No external API imports in knowledge_base/"))
+            except Exception as exc:
+                checks.append(_mk("knowledge_base_no_external_api", "knowledge_base", "WARN",
+                                  f"External API check: {exc}"))
+        else:
+            checks.append(_mk("knowledge_base_no_external_api", "knowledge_base", "WARN",
+                              "knowledge_base/ directory not found"))
+
         # Build summary
         total         = len(checks)
         pass_count    = sum(1 for c in checks if c["status"] == "PASS")

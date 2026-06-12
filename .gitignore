@@ -354,3 +354,7 @@ data/backtest_results/documentation/
 # v1.0.6 Example Workflows & Templates — runtime outputs
 reports/workflow_templates_report_*.md
 data/backtest_results/workflows/
+
+# v1.0.7 Knowledge Base Search (runtime outputs — never commit)
+data/backtest_results/knowledge_base/
+reports/knowledge_base_search_report_*.md
