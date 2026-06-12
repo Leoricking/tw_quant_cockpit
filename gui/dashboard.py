@@ -541,6 +541,14 @@ try:
 except Exception:
     pass
 
+# v1.0.8 Local Research Assistant Panel
+_LOCAL_RESEARCH_ASSISTANT_AVAILABLE = False
+try:
+    from gui.local_research_assistant_panel import LocalResearchAssistantPanel
+    _LOCAL_RESEARCH_ASSISTANT_AVAILABLE = True
+except Exception:
+    pass
+
 # v0.5.1.1 Strategy Filter panel — inline (no separate panel file required)
 # ---------------------------------------------------------------------------
 _STRATEGY_FILTER_AVAILABLE = False

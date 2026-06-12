@@ -1,8 +1,8 @@
 """
-release/version_info.py — Centralized version info for TW Quant Cockpit v1.0.7.
+release/version_info.py — Centralized version info for TW Quant Cockpit v1.0.8.
 [!] Research Only. No Real Orders. Production Trading: BLOCKED.
 [!] VALIDATED does not enable trading. Broker Execution Disabled.
-[!] Knowledge Base Search Polish. No broker execution. Search does not enable trading.
+[!] Local Research Assistant Polish. No external API. Local assistant does not enable trading.
 """
 from __future__ import annotations
 import logging
@@ -14,8 +14,8 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # ---------------------------------------------------------------------------
 # v1.0.7 module-level constants (Knowledge Base Search Polish)
 # ---------------------------------------------------------------------------
-VERSION                             = "1.0.7"
-RELEASE_NAME                        = "Knowledge Base Search Polish"
+VERSION                             = "1.0.8"
+RELEASE_NAME                        = "Local Research Assistant Polish"
 BASE_RELEASE                        = "1.0.0"
 BASE_RELEASE_NAME                   = "Research Trading Cockpit Stable"
 MAINTENANCE_RELEASE                 = True
@@ -37,6 +37,10 @@ TEMPLATE_GUIDE_AVAILABLE            = True
 KNOWLEDGE_BASE_SEARCH_RELEASE       = True
 KNOWLEDGE_BASE_INDEX_AVAILABLE      = True
 SAFE_SEARCH_SUMMARY_AVAILABLE       = True
+LOCAL_RESEARCH_ASSISTANT_RELEASE    = True
+LOCAL_ONLY_ASSISTANT                = True
+EXTERNAL_API_DISABLED               = True
+SAFE_RESEARCH_SUMMARY_AVAILABLE     = True
 
 
 class VersionInfo:
@@ -176,6 +180,10 @@ def print_version_info() -> None:
     print(f"  Knowledge Base Search Release: {KNOWLEDGE_BASE_SEARCH_RELEASE}")
     print(f"  Knowledge Base Index Available: {KNOWLEDGE_BASE_INDEX_AVAILABLE}")
     print(f"  Safe Search Summary Available: {SAFE_SEARCH_SUMMARY_AVAILABLE}")
+    print(f"  Local Research Assistant Release: {LOCAL_RESEARCH_ASSISTANT_RELEASE}")
+    print(f"  Local Only Assistant: {LOCAL_ONLY_ASSISTANT}")
+    print(f"  External API Disabled: {EXTERNAL_API_DISABLED}")
+    print(f"  Safe Research Summary Available: {SAFE_RESEARCH_SUMMARY_AVAILABLE}")
     print(f"  Paper Trading: {'Simulation Only' if PAPER_TRADING_IS_SIMULATION else 'N/A'}")
     print(f"  Mock Realtime: {'Simulation Only' if MOCK_REALTIME_IS_SIMULATION else 'N/A'}")
     print("=" * 60)

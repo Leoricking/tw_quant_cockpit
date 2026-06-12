@@ -4,7 +4,7 @@
 >
 > **[!] v1: Real order execution is strictly prohibited. For research, simulation, and decision support only. Not investment advice.**
 
-**Current version: v1.0.7 — Knowledge Base Search Polish** (base: v1.0.0 Research Trading Cockpit Stable)
+**Current version: v1.0.8 — Local Research Assistant Polish** (base: v1.0.0 Research Trading Cockpit Stable)
 
 ---
 
@@ -29,11 +29,11 @@ TW Quant Cockpit is a **Research Trading Cockpit** for Taiwan equity markets. It
 
 ---
 
-## Current Version: v1.0.7 — Knowledge Base Search Polish
+## Current Version: v1.0.8 — Local Research Assistant Polish
 
-This is TW Quant Cockpit **v1.0.7 — Knowledge Base Search Polish**, based on **v1.0.0 Research Trading Cockpit Stable**.
+This is TW Quant Cockpit **v1.0.8 — Local Research Assistant Polish**, based on **v1.0.0 Research Trading Cockpit Stable**.
 
-New in v1.0.7: knowledge_base/ package (kb_schema, kb_indexer, kb_search_engine, kb_store, kb_query, kb_summary, kb_health_check), local lightweight search across docs/examples/templates/reports/GUI registry, safe search summary (research-only next steps), 6 new CLI commands (kb-index, kb-summary, kb-health-check, kb-search, kb-explain, kb-report), optional GUI panel, Knowledge Base Search Report, regression coverage, and stable checks. No external API. No embedding. No network. Search does not enable trading.
+New in v1.0.8: local_assistant/ package (assistant_schema, research_router, research_summarizer, safe_answer_builder, local_assistant_engine, local_assistant_store, local_assistant_query, local_assistant_health), safe research answer synthesis from KB search results, module routing, unsafe query blocking (BLOCKED_UNSAFE_QUERY), 5 new CLI commands (local-assistant, local-assistant-summary, local-assistant-health, local-assistant-report, local-assistant-explain), optional GUI panel, Local Research Assistant Report, regression coverage, and stable checks. No external API. No embedding. No network. Local assistant does not enable trading.
 
 ---
 

@@ -57,6 +57,9 @@ REPORT_WORKFLOW_TEMPLATES = "workflow_templates_report"
 # v1.0.7 Knowledge Base Search Polish
 REPORT_KNOWLEDGE_BASE_SEARCH = "knowledge_base_search_report"
 
+# v1.0.8 Local Research Assistant Polish
+REPORT_LOCAL_RESEARCH_ASSISTANT = "local_research_assistant_report"
+
 logger = logging.getLogger(__name__)
 
 # ---------------------------------------------------------------------------
@@ -102,6 +105,8 @@ _PACK_DEFINITIONS: Dict[str, List[str]] = {
         REPORT_WORKFLOW_TEMPLATES,
         # v1.0.7 Knowledge Base Search Polish (optional in daily pack)
         REPORT_KNOWLEDGE_BASE_SEARCH,
+        # v1.0.8 Local Research Assistant Polish (optional in daily pack)
+        REPORT_LOCAL_RESEARCH_ASSISTANT,
     ],
     PACK_WEEKLY: [
         REPORT_DAILY_MARKET,
@@ -147,6 +152,8 @@ _PACK_DEFINITIONS: Dict[str, List[str]] = {
         REPORT_WORKFLOW_TEMPLATES,
         # v1.0.7 Knowledge Base Search Polish (optional in weekly pack)
         REPORT_KNOWLEDGE_BASE_SEARCH,
+        # v1.0.8 Local Research Assistant Polish (optional in weekly pack)
+        REPORT_LOCAL_RESEARCH_ASSISTANT,
     ],
     PACK_FULL: [
         REPORT_DAILY_MARKET,
@@ -208,6 +215,8 @@ _PACK_DEFINITIONS: Dict[str, List[str]] = {
         REPORT_WORKFLOW_TEMPLATES,
         # v1.0.7 Knowledge Base Search Polish (optional in full pack)
         REPORT_KNOWLEDGE_BASE_SEARCH,
+        # v1.0.8 Local Research Assistant Polish (optional in full pack)
+        REPORT_LOCAL_RESEARCH_ASSISTANT,
     ],
 }
 

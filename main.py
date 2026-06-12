@@ -5637,6 +5637,10 @@ def cmd_version_info(args: argparse.Namespace) -> None:
         kb_search_release = getattr(_vi, "KNOWLEDGE_BASE_SEARCH_RELEASE", False)
         kb_index_available = getattr(_vi, "KNOWLEDGE_BASE_INDEX_AVAILABLE", False)
         safe_search_available = getattr(_vi, "SAFE_SEARCH_SUMMARY_AVAILABLE", False)
+        la_release = getattr(_vi, "LOCAL_RESEARCH_ASSISTANT_RELEASE", False)
+        la_local_only = getattr(_vi, "LOCAL_ONLY_ASSISTANT", False)
+        la_ext_api_disabled = getattr(_vi, "EXTERNAL_API_DISABLED", False)
+        la_safe_summary = getattr(_vi, "SAFE_RESEARCH_SUMMARY_AVAILABLE", False)
         print(f"{'Version:':<35} {VERSION}")
         print(f"{'Release:':<35} {RELEASE_NAME}")
         print(f"{'Base Release:':<35} {base_release} {base_release_name}")
@@ -5650,6 +5654,10 @@ def cmd_version_info(args: argparse.Namespace) -> None:
         print(f"{'Knowledge Base Search Release:':<35} {kb_search_release}")
         print(f"{'Knowledge Base Index Available:':<35} {kb_index_available}")
         print(f"{'Safe Search Summary Available:':<35} {safe_search_available}")
+        print(f"{'Local Research Assistant Release:':<35} {la_release}")
+        print(f"{'Local Only Assistant:':<35} {la_local_only}")
+        print(f"{'External API Disabled:':<35} {la_ext_api_disabled}")
+        print(f"{'Safe Research Summary Available:':<35} {la_safe_summary}")
         print(f"{'Paper Trading:':<35} {'Simulation Only' if PAPER_TRADING_IS_SIMULATION else 'Real'}")
         print(f"{'Mock Realtime:':<35} {'Simulation Only' if MOCK_REALTIME_IS_SIMULATION else 'Real'}")
     except Exception as exc:
@@ -9914,6 +9922,167 @@ def cmd_kb_report(args):
         print("  [!] No Real Orders. Search does not enable trading.")
     except Exception as exc:
         print(f"  [ERROR] kb-report failed: {exc}")
+
+
+# ---------------------------------------------------------------------------
+# v1.0.8 Local Research Assistant Polish
+# ---------------------------------------------------------------------------
+
+def cmd_local_assistant(args):
+    from local_assistant.local_assistant_engine import LocalResearchAssistantEngine
+    import os
+    project_root = os.path.dirname(os.path.abspath(__file__))
+    question = getattr(args, "ask", "") or ""
+    category = getattr(args, "category", None)
+    module = getattr(args, "module", None)
+    stock = getattr(args, "stock", None)
+    limit = getattr(args, "limit", 8)
+    print()
+    print("=" * 60)
+    print("  TW Quant Cockpit \u2014 Local Research Assistant")
+    print("=" * 60)
+    print("  Version: 1.0.8")
+    print("  Research Only: True")
+    print("  No Real Orders: True")
+    print("  Production Trading BLOCKED: True")
+    print("  Broker Execution Disabled: True")
+    print("  External API Used: False")
+    print(f"  Question: {question}")
+    print()
+    try:
+        engine = LocalResearchAssistantEngine()
+        answer = engine.ask(question=question, category=category, module=module, stock=stock, limit=limit)
+        print(f"  Status:    {answer.status}")
+        print(f"  Confidence: {answer.confidence}")
+        print()
+        print(f"  Answer:")
+        for line in answer.answer.splitlines():
+            print(f"    {line}")
+        print()
+        if answer.sources:
+            print(f"  Sources ({len(answer.sources)}):")
+            for s in answer.sources[:5]:
+                print(f"    - [{s.category}] {s.title}")
+                print(f"      {s.path}")
+        print()
+        if answer.module_routes:
+            print(f"  Module Routes:")
+            for r in answer.module_routes:
+                print(f"    -> {r.module}: {r.safe_action}")
+                for cli in r.suggested_cli[:2]:
+                    print(f"       CLI: {cli}")
+        print()
+        if answer.safe_next_steps:
+            print(f"  Safe Next Steps:")
+            for step in answer.safe_next_steps:
+                print(f"    [{step.action}] {step.description}")
+        print()
+        if answer.limitations:
+            print("  Limitations:")
+            for lim in answer.limitations:
+                print(f"    - {lim}")
+        print()
+        print("  [!] Not Investment Advice.")
+        print("  [!] No Real Orders. Broker Execution Disabled.")
+        print("  [!] Local assistant does not enable trading.")
+    except Exception as exc:
+        print(f"  [ERROR] local-assistant failed: {exc}")
+
+
+def cmd_local_assistant_summary(args):
+    from local_assistant.local_assistant_engine import LocalResearchAssistantEngine
+    print()
+    print("=" * 60)
+    print("  TW Quant Cockpit \u2014 Local Research Assistant Summary")
+    print("=" * 60)
+    print("  Research Only: True | No Real Orders: True | External API: Disabled")
+    print()
+    try:
+        engine = LocalResearchAssistantEngine()
+        sample_questions = ["strategy validation", "crash reversal", "data hygiene"]
+        for q in sample_questions:
+            answer = engine.ask(question=q, limit=3)
+            print(f"  Q: {q}")
+            print(f"     Status: {answer.status} | Confidence: {answer.confidence} | Sources: {len(answer.sources)}")
+        print()
+        print("  [!] Local only. No external API. No Real Orders.")
+    except Exception as exc:
+        print(f"  [ERROR] local-assistant-summary failed: {exc}")
+
+
+def cmd_local_assistant_health(args):
+    from local_assistant.local_assistant_health import LocalResearchAssistantHealthCheck
+    import os
+    project_root = os.path.dirname(os.path.abspath(__file__))
+    print()
+    print("=" * 60)
+    print("  TW Quant Cockpit \u2014 Local Research Assistant Health Check")
+    print("=" * 60)
+    print("  Research Only: True | No Real Orders: True")
+    print()
+    try:
+        checker = LocalResearchAssistantHealthCheck(project_root=project_root)
+        result = checker.run()
+        for c in result.get("checks", []):
+            status = c.get("status", "?")
+            name = c.get("name", "")
+            msg = c.get("message", "")
+            print(f"  [{status:4s}] {name}: {msg}")
+        print()
+        print(f"  Total: {result.get('total', 0)}")
+        print(f"  PASS:  {result.get('pass_count', 0)}")
+        print(f"  WARN:  {result.get('warn_count', 0)}")
+        print(f"  FAIL:  {result.get('fail_count', 0)}")
+        print(f"  BLOCKED: {result.get('blocked_count', 0)}")
+        print(f"  Overall: {result.get('overall_status', 'UNKNOWN')}")
+        print()
+        print("  [!] No Real Orders. No external API. Local assistant does not enable trading.")
+    except Exception as exc:
+        print(f"  [ERROR] local-assistant-health failed: {exc}")
+
+
+def cmd_local_assistant_report(args):
+    from reports.local_research_assistant_report import LocalResearchAssistantReportBuilder
+    import os
+    project_root = os.path.dirname(os.path.abspath(__file__))
+    mode = getattr(args, "mode", "real")
+    report_dir = getattr(args, "report_dir", None) or os.path.join(project_root, "reports")
+    print()
+    print("=" * 60)
+    print("  TW Quant Cockpit \u2014 Local Research Assistant Report")
+    print("=" * 60)
+    print("  Research Only: True | No Real Orders: True")
+    print()
+    try:
+        builder = LocalResearchAssistantReportBuilder(mode=mode, output_dir=report_dir, project_root=project_root)
+        path = builder.save()
+        print(f"  Report saved to: {path}")
+        print()
+        print("  [!] No Real Orders. Local assistant does not enable trading.")
+    except Exception as exc:
+        print(f"  [ERROR] local-assistant-report failed: {exc}")
+
+
+def cmd_local_assistant_explain(args):
+    from local_assistant.local_assistant_engine import LocalResearchAssistantEngine
+    answer_id = getattr(args, "answer_id", "") or ""
+    print()
+    print("=" * 60)
+    print("  TW Quant Cockpit \u2014 Local Research Assistant Explain")
+    print("=" * 60)
+    print("  Research Only: True | No Real Orders: True")
+    print()
+    try:
+        engine = LocalResearchAssistantEngine()
+        answer = engine.explain_answer(answer_id)
+        if answer is None:
+            print(f"  Answer not found: {answer_id}")
+        else:
+            print(f"  Question: {answer.question}")
+            print(f"  Status:   {answer.status}")
+            print(f"  Answer:   {answer.answer[:300]}")
+    except Exception as exc:
+        print(f"  [ERROR] local-assistant-explain failed: {exc}")
 
 
 def cmd_docs_health_check(args):
@@ -15048,6 +15217,41 @@ def _build_parser() -> argparse.ArgumentParser:
     p_kbr.add_argument("--mode", default="real", choices=["real", "mock"], help="Data mode")
     p_kbr.add_argument("--report-dir", dest="report_dir", default=None, help="Report output directory")
 
+    # v1.0.8 Local Research Assistant Polish
+    p_la = subparsers.add_parser(
+        "local-assistant",
+        help="Ask a research question to the Local Research Assistant (v1.0.8). [!] Research Only. No Real Orders. No external API.",
+    )
+    p_la.add_argument("--ask", default="", help="Research question to ask")
+    p_la.add_argument("--category", default=None, help="Filter by category")
+    p_la.add_argument("--module", default=None, help="Filter by module")
+    p_la.add_argument("--stock", default=None, help="Stock symbol context")
+    p_la.add_argument("--limit", type=int, default=8, help="Max KB results (default: 8)")
+    p_la.add_argument("--output-dir", dest="output_dir", default=None)
+
+    subparsers.add_parser(
+        "local-assistant-summary",
+        help="Show Local Research Assistant summary (v1.0.8). [!] Research Only. No Real Orders.",
+    )
+
+    subparsers.add_parser(
+        "local-assistant-health",
+        help="Run Local Research Assistant health check (v1.0.8). [!] Research Only. No Real Orders.",
+    )
+
+    p_lar = subparsers.add_parser(
+        "local-assistant-report",
+        help="Generate Local Research Assistant report (v1.0.8). [!] Research Only. No Real Orders.",
+    )
+    p_lar.add_argument("--mode", default="real", choices=["real", "mock"])
+    p_lar.add_argument("--report-dir", dest="report_dir", default=None)
+
+    p_lae = subparsers.add_parser(
+        "local-assistant-explain",
+        help="Explain a Local Research Assistant answer by ID (v1.0.8). [!] Research Only. No Real Orders.",
+    )
+    p_lae.add_argument("--answer-id", dest="answer_id", default="")
+
     # --- v1.0.5 Documentation & User Guide Polish ---
     subparsers.add_parser(
         "docs-health-check",
@@ -16406,6 +16610,12 @@ def main() -> None:
         "kb-search":       cmd_kb_search,
         "kb-explain":      cmd_kb_explain,
         "kb-report":       cmd_kb_report,
+        # v1.0.8 Local Research Assistant Polish
+        "local-assistant":         cmd_local_assistant,
+        "local-assistant-summary": cmd_local_assistant_summary,
+        "local-assistant-health":  cmd_local_assistant_health,
+        "local-assistant-report":  cmd_local_assistant_report,
+        "local-assistant-explain": cmd_local_assistant_explain,
         # v1.0.5 Documentation & User Guide Polish
         "docs-health-check":                cmd_docs_health_check,
         "docs-index":                       cmd_docs_index,

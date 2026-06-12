@@ -1029,4 +1029,34 @@ class IntelligenceStableChecklist:
                 suggested_fix="Run: python main.py kb-health-check",
             ))
 
+        # v1.0.8 local_assistant_v108_safe — local_assistant package is safe
+        try:
+            import importlib
+            mod_la = importlib.import_module("local_assistant")
+            no_orders_la = getattr(mod_la, "NO_REAL_ORDERS", None)
+            ext_api = getattr(mod_la, "EXTERNAL_API_DISABLED", None)
+            if no_orders_la is True and ext_api is True:
+                checks.append(_check(
+                    "local_assistant_v108_safe", "stable_integration",
+                    "v1.0.8 local_assistant_v108_safe",
+                    CHECK_PASS, SEV_LOW,
+                    "local_assistant: NO_REAL_ORDERS=True, EXTERNAL_API_DISABLED=True.",
+                ))
+            else:
+                checks.append(_check(
+                    "local_assistant_v108_safe", "stable_integration",
+                    "v1.0.8 local_assistant_v108_safe",
+                    CHECK_WARN, SEV_LOW,
+                    f"local_assistant safety flags: NO_REAL_ORDERS={no_orders_la}, EXTERNAL_API_DISABLED={ext_api}",
+                    suggested_fix="Ensure local_assistant/__init__.py has correct safety flags.",
+                ))
+        except Exception as exc:
+            checks.append(_check(
+                "local_assistant_v108_safe", "stable_integration",
+                "v1.0.8 local_assistant_v108_safe",
+                CHECK_WARN, SEV_LOW,
+                f"Could not verify local_assistant_v108 safety (optional): {exc}",
+                suggested_fix="Run: python main.py local-assistant-health",
+            ))
+
         return checks

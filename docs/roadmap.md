@@ -77,6 +77,16 @@
 | v1.0.5 | Documentation & User Guide Polish | Done |
 | v1.0.6 | Example Workflows & Templates | Done |
 | v1.0.7 | Knowledge Base Search Polish | Done |
+| v1.0.8 | Local Research Assistant Polish | Done |
+
+---
+
+### v1.0.8 — Local Research Assistant Polish ✅
+
+- **Version:** 1.0.8 — maintenance release based on v1.0.0
+- **Type:** Local Research Assistant Polish — no external API, no trading, no strategy changes
+- **Changes:** local_assistant/ package (assistant_schema, research_router, research_summarizer, safe_answer_builder, local_assistant_engine, local_assistant_store, local_assistant_query, local_assistant_health), reports/local_research_assistant_report.py, 5 new CLI commands (local-assistant, local-assistant-summary, local-assistant-health, local-assistant-report, local-assistant-explain), GUI panel + adapter, GUI nav tab, report pack entry, stable checklist checks (55-59), v060 checklist checks, intelligence checklist check, regression tests, docs/local_research_assistant_v1.0.8.md, .gitignore updates, README/docs refresh
+- **Safety:** No Real Orders, Production Trading BLOCKED, Broker Execution Disabled, External API Disabled, Local assistant does not enable trading (unchanged from v1.0.0)
 
 ---
 
@@ -88,7 +98,7 @@
 - **Safety:** No Real Orders, Production Trading BLOCKED, Broker Execution Disabled, Templates do not enable trading (unchanged from v1.0.0)
 
 **Next:**
-- v1.0.7: Knowledge Base Search Polish
+- v1.0.8: Local Research Assistant Polish
 - v1.1.0: Data Universe Expansion
 - v1.2.0: Replay Training UX
 - Broker API branch: only if explicitly requested

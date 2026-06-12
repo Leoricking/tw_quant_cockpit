@@ -358,3 +358,7 @@ data/backtest_results/workflows/
 # v1.0.7 Knowledge Base Search (runtime outputs — never commit)
 data/backtest_results/knowledge_base/
 reports/knowledge_base_search_report_*.md
+
+# v1.0.8 Local Research Assistant (runtime outputs — never commit)
+data/backtest_results/local_assistant/
+reports/local_research_assistant_report_*.md

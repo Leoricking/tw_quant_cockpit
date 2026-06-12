@@ -1799,12 +1799,95 @@ class StableReleaseChecklistV060:
                 )
             return _check_item(
                 "version_info_v107", "version_git", "WARN",
-                f"VERSION={VERSION} (expected 1.0.7)",
-                warning="Expected VERSION=1.0.7",
+                f"VERSION={VERSION} (not 1.0.7, may have been upgraded)",
+                warning="Expected VERSION=1.0.7 or newer",
             )
         except Exception as exc:
             return _check_item(
                 "version_info_v107", "version_git", "WARN", str(exc),
+            )
+
+    def _check_local_assistant_import(self) -> dict:
+        """v1.0.8 — local_assistant package importable, EXTERNAL_API_DISABLED=True."""
+        try:
+            import importlib
+            mod_la = importlib.import_module("local_assistant")
+            ext_api = getattr(mod_la, "EXTERNAL_API_DISABLED", None)
+            no_orders = getattr(mod_la, "NO_REAL_ORDERS", None)
+            if ext_api is True and no_orders is True:
+                return _check_item(
+                    "local_assistant_import", "local_assistant", "PASS",
+                    "local_assistant importable, EXTERNAL_API_DISABLED=True, NO_REAL_ORDERS=True",
+                )
+            return _check_item(
+                "local_assistant_import", "local_assistant", "WARN",
+                f"local_assistant: EXTERNAL_API_DISABLED={ext_api}, NO_REAL_ORDERS={no_orders}",
+            )
+        except Exception as exc:
+            return _check_item(
+                "local_assistant_import", "local_assistant", "WARN",
+                f"local_assistant import failed (optional): {exc}",
+            )
+
+    def _check_local_assistant_no_forbidden_actions(self) -> dict:
+        """v1.0.8 — local_assistant ALLOWED_ACTIONS has no FORBIDDEN_ACTIONS."""
+        try:
+            from local_assistant.assistant_schema import ALLOWED_ACTIONS, FORBIDDEN_ACTIONS
+            overlap = [a for a in ALLOWED_ACTIONS if a in FORBIDDEN_ACTIONS]
+            if overlap:
+                return _check_item(
+                    "local_assistant_no_forbidden_actions", "local_assistant", "FAIL",
+                    f"ALLOWED_ACTIONS contains FORBIDDEN: {overlap}",
+                )
+            return _check_item(
+                "local_assistant_no_forbidden_actions", "local_assistant", "PASS",
+                f"ALLOWED_ACTIONS safe ({len(ALLOWED_ACTIONS)} actions, 0 forbidden)",
+            )
+        except Exception as exc:
+            return _check_item(
+                "local_assistant_no_forbidden_actions", "local_assistant", "WARN",
+                f"Could not verify local_assistant action safety (optional): {exc}",
+            )
+
+    def _check_local_assistant_external_api_disabled(self) -> dict:
+        """v1.0.8 — EXTERNAL_API_DISABLED=True."""
+        try:
+            import local_assistant as _la_pkg
+            ext = getattr(_la_pkg, "EXTERNAL_API_DISABLED", None)
+            if ext is True:
+                return _check_item(
+                    "local_assistant_external_api_disabled", "local_assistant", "PASS",
+                    "local_assistant.EXTERNAL_API_DISABLED=True",
+                )
+            return _check_item(
+                "local_assistant_external_api_disabled", "local_assistant", "WARN",
+                f"local_assistant.EXTERNAL_API_DISABLED={ext} (expected True)",
+            )
+        except Exception as exc:
+            return _check_item(
+                "local_assistant_external_api_disabled", "local_assistant", "WARN",
+                f"EXTERNAL_API_DISABLED check: {exc}",
+            )
+
+    def _check_version_info_v108(self) -> dict:
+        """v1.0.8 — VERSION is 1.0.8."""
+        try:
+            from release.version_info import VERSION
+            import release.version_info as _vi
+            la_release = getattr(_vi, "LOCAL_RESEARCH_ASSISTANT_RELEASE", None)
+            if VERSION == "1.0.8":
+                return _check_item(
+                    "version_info_v108", "version_git", "PASS",
+                    f"VERSION={VERSION}, LOCAL_RESEARCH_ASSISTANT_RELEASE={la_release}",
+                )
+            return _check_item(
+                "version_info_v108", "version_git", "WARN",
+                f"VERSION={VERSION} (expected 1.0.8)",
+                warning="Expected VERSION=1.0.8",
+            )
+        except Exception as exc:
+            return _check_item(
+                "version_info_v108", "version_git", "WARN", str(exc),
             )
 
     # ----------------------------------------------------------------
@@ -1914,6 +1997,11 @@ class StableReleaseChecklistV060:
             self._check_knowledge_base_import,
             self._check_knowledge_base_search_no_forbidden_actions,
             self._check_version_info_v107,
+            # v1.0.8 Local Research Assistant Polish
+            self._check_local_assistant_import,
+            self._check_local_assistant_no_forbidden_actions,
+            self._check_local_assistant_external_api_disabled,
+            self._check_version_info_v108,
         ]
 
         for fn in checklist_groups:

@@ -44,6 +44,7 @@ from report_pack.report_registry import (
     REPORT_DOCUMENTATION_HEALTH,
     REPORT_WORKFLOW_TEMPLATES,
     REPORT_KNOWLEDGE_BASE_SEARCH,
+    REPORT_LOCAL_RESEARCH_ASSISTANT,
 )
 
 logger = logging.getLogger(__name__)
@@ -251,6 +252,11 @@ _REPORT_PATTERNS = {
     REPORT_KNOWLEDGE_BASE_SEARCH: [
         "reports/knowledge_base_search_report*.md",
         "data/backtest_results/knowledge_base/*.csv",
+    ],
+    # v1.0.8 Local Research Assistant Polish
+    REPORT_LOCAL_RESEARCH_ASSISTANT: [
+        "reports/local_research_assistant_report*.md",
+        "data/backtest_results/local_assistant/*.csv",
     ],
     # v0.9.1 Evidence Graph UX patterns
     "evidence_graph_gaps": [

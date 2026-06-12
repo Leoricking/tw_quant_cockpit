@@ -637,6 +637,78 @@ class ResearchCockpitStableChecklist:
             checks.append(_mk("knowledge_base_no_forbidden_actions", "knowledge_base", "WARN",
                               f"knowledge_base safety flags check: {exc}"))
 
+        # 55. local_assistant_available — v1.0.8
+        try:
+            import importlib
+            mod_la = importlib.import_module("knowledge_base.kb_search_engine")
+            if hasattr(mod_la, "KnowledgeBaseSearchEngine"):
+                checks.append(_mk("local_assistant_available", "local_assistant", "PASS",
+                                  "KnowledgeBaseSearchEngine importable (required for local_assistant)"))
+            else:
+                checks.append(_mk("local_assistant_available", "local_assistant", "WARN",
+                                  "kb_search_engine imported but KnowledgeBaseSearchEngine not found"))
+        except Exception as exc:
+            checks.append(_mk("local_assistant_available", "local_assistant", "WARN",
+                              f"local_assistant dependency check: {exc}"))
+
+        # 56. local_assistant_health_available — v1.0.8
+        try:
+            import importlib
+            mod_lah = importlib.import_module("local_assistant.local_assistant_health")
+            if hasattr(mod_lah, "LocalResearchAssistantHealthCheck"):
+                checks.append(_mk("local_assistant_health_available", "local_assistant", "PASS",
+                                  "LocalResearchAssistantHealthCheck importable"))
+            else:
+                checks.append(_mk("local_assistant_health_available", "local_assistant", "WARN",
+                                  "local_assistant_health imported but LocalResearchAssistantHealthCheck not found"))
+        except Exception as exc:
+            checks.append(_mk("local_assistant_health_available", "local_assistant", "WARN",
+                              f"local_assistant.local_assistant_health: {exc}"))
+
+        # 57. local_assistant_no_external_api — v1.0.8
+        try:
+            import local_assistant as _la_pkg
+            ext_api_disabled = getattr(_la_pkg, "EXTERNAL_API_DISABLED", None)
+            if ext_api_disabled is True:
+                checks.append(_mk("local_assistant_no_external_api", "local_assistant", "PASS",
+                                  "local_assistant: EXTERNAL_API_DISABLED=True"))
+            else:
+                checks.append(_mk("local_assistant_no_external_api", "local_assistant", "WARN",
+                                  f"local_assistant: EXTERNAL_API_DISABLED={ext_api_disabled}"))
+        except Exception as exc:
+            checks.append(_mk("local_assistant_no_external_api", "local_assistant", "WARN",
+                              f"local_assistant safety flags check: {exc}"))
+
+        # 58. local_assistant_no_forbidden_actions — v1.0.8
+        try:
+            from local_assistant.assistant_schema import ALLOWED_ACTIONS, FORBIDDEN_ACTIONS
+            overlap = [a for a in ALLOWED_ACTIONS if a in FORBIDDEN_ACTIONS]
+            if overlap:
+                checks.append(_mk("local_assistant_no_forbidden_actions", "local_assistant", "FAIL",
+                                   f"ALLOWED_ACTIONS contains FORBIDDEN: {overlap}"))
+            else:
+                checks.append(_mk("local_assistant_no_forbidden_actions", "local_assistant", "PASS",
+                                   "ALLOWED_ACTIONS contains no FORBIDDEN_ACTIONS"))
+        except Exception as exc:
+            checks.append(_mk("local_assistant_no_forbidden_actions", "local_assistant", "WARN",
+                              f"local_assistant schema check: {exc}"))
+
+        # 59. unsafe_query_blocking_available — v1.0.8
+        try:
+            from local_assistant.safe_answer_builder import SafeAnswerBuilder
+            from local_assistant.assistant_schema import STATUS_BLOCKED
+            builder = SafeAnswerBuilder()
+            is_blocked = builder.is_unsafe_query("should i buy")
+            if is_blocked:
+                checks.append(_mk("unsafe_query_blocking_available", "local_assistant", "PASS",
+                                   "SafeAnswerBuilder.is_unsafe_query correctly blocks 'should i buy'"))
+            else:
+                checks.append(_mk("unsafe_query_blocking_available", "local_assistant", "FAIL",
+                                   "SafeAnswerBuilder.is_unsafe_query did NOT block 'should i buy'"))
+        except Exception as exc:
+            checks.append(_mk("unsafe_query_blocking_available", "local_assistant", "WARN",
+                              f"Unsafe query blocking check: {exc}"))
+
         # 54. knowledge_base_no_external_api — v1.0.7
         kb_dir = os.path.join(self._root, "knowledge_base")
         if os.path.isdir(kb_dir):

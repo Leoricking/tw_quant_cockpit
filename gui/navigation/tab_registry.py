@@ -1260,6 +1260,30 @@ class GUITabRegistry:
                 read_only=True,
                 production_blocked=True,
             ),
+            # ----------------------------------------------------------------
+            # v1.0.8 Local Research Assistant
+            # ----------------------------------------------------------------
+            GUITabMetadata(
+                tab_id="local_research_assistant",
+                tab_name="local_research_assistant",
+                display_name="Local Research Assistant",
+                group="research",
+                priority="P1",
+                description="Local Research Assistant \u2014 safe research answers from knowledge base, module routing, safe next steps. No external API.",
+                module_path="gui.local_research_assistant_panel",
+                class_name="LocalResearchAssistantPanel",
+                available_flag="_LOCAL_RESEARCH_ASSISTANT_AVAILABLE",
+                keywords=[
+                    "local assistant", "research assistant", "kb answer", "safe summary",
+                    "local research", "assistant",
+                    "\u672c\u5730\u52a9\u7406", "\u7814\u7a76\u52a9\u7406", "\u672c\u5730\u7814\u7a76\u52a9\u7406", "\u77e5\u8b58\u5eab\u56de\u7b54", "\u5b89\u5168\u6458\u8981", "\u4e0b\u4e00\u6b65\u7814\u7a76",
+                ],
+                related_cli_commands=["local-assistant", "local-assistant-summary", "local-assistant-health", "local-assistant-report"],
+                maturity="STABLE",
+                no_real_orders=True,
+                read_only=True,
+                production_blocked=True,
+            ),
         ]
         for tab in tabs:
             self._tabs[tab.tab_id] = tab
