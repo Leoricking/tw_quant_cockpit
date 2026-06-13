@@ -196,7 +196,7 @@ These templates enforce: `git -C "path"`, no chain commands, no `git add .`, no 
 
 ---
 
-*TW Quant Cockpit v1.0.9 — Final Maintenance Rollup — Research Only — Not Investment Advice*
+*TW Quant Cockpit v1.1.0 — Data Universe Expansion — Research Only — Not Investment Advice*
 
 ---
 
@@ -205,5 +205,18 @@ These templates enforce: `git -C "path"`, no chain commands, no `git add .`, no 
 - **v1.0 Maintenance Line: COMPLETE**
 - Final rollup CLI: `python main.py final-rollup-health`
 - Long-term maintenance SOP: see `docs/final_maintenance_rollup_v1.0.9.md`
-- Next optional: v1.1.0 Data Universe Expansion (do not proceed without explicit plan)
 - **[!] No Real Orders. No broker API. Not Investment Advice.**
+
+---
+
+## v1.1.0 Handoff Notes
+
+- **Data Universe Expansion: COMPLETE** (commit `d38907f`, tag `v1.1.0`)
+- 4 universe tiers: CORE_10 / RESEARCH_30 / EXPANDED_50 / BROAD_100
+- New modules: `universe/universe_tier_registry.py`, `universe/universe_coverage.py`, `universe/universe_builder.py`, `universe/universe_health.py`, `universe/universe_store.py`, `universe/universe_query.py`, `universe/universe_schema.py`
+- Universe health: `python main.py universe-health` → 16/16 PASS
+- Coverage analysis: `python main.py universe-coverage --tier research30 --mode real`
+- Real data required: `REAL_DATA_COVERAGE_REQUIRED=True`, `MOCK_DATA_FORMAL_CONCLUSION_ALLOWED=False`
+- Full docs: `docs/data_universe_expansion_v1.1.0.md`, `docs/release_notes_v1.1.md`
+- Next: v1.1.1 Data Import UX (do not proceed without explicit plan)
+- **[!] No Real Orders. No broker API. Research Only. Not Investment Advice.**

@@ -152,3 +152,17 @@ Do not connect any broker API without explicit planning.
 - **Paper trading is simulation only**
 - **Mock realtime is simulation only**
 - **No external API**
+
+---
+
+## v1.1.0 Note
+
+v1.0.9 is the final v1.0.x maintenance release. The next feature release is **v1.1.0 Data Universe Expansion** (commit `d38907f`), which adds:
+
+- Universe tier management (CORE_10 / RESEARCH_30 / EXPANDED_50 / BROAD_100)
+- Per-symbol real data coverage analysis
+- Statistical confidence validation for universe coverage
+- 7 new CLI commands (`universe-build`, `universe-summary`, `universe-health`, `universe-coverage`, `universe-symbol`, `universe-missing`, `universe-report`)
+- `REAL_DATA_COVERAGE_REQUIRED=True`, `MOCK_DATA_FORMAL_CONCLUSION_ALLOWED=False`
+
+See `docs/data_universe_expansion_v1.1.0.md` and `docs/release_notes_v1.1.md`.

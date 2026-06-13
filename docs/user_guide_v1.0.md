@@ -158,7 +158,7 @@ python main.py workflow-templates-report --mode real
 
 ---
 
-*TW Quant Cockpit v1.0.9 — Final Maintenance Rollup — Research Only — Not Investment Advice*
+*TW Quant Cockpit v1.1.0 — Data Universe Expansion — Research Only — Not Investment Advice*
 
 ---
 
@@ -176,3 +176,39 @@ python main.py final-rollup-report --mode real
 ```
 
 **[!] Research Only. No Real Orders. Not Investment Advice. v1.0 Maintenance Line Complete.**
+
+---
+
+## v1.1.0 — Data Universe Expansion
+
+v1.1.0 adds a tiered universe management system and per-symbol real data coverage analysis.
+
+### Universe Tiers
+
+| Tier | Symbols | Description |
+|------|---------|-------------|
+| CORE_10 | 10 | 高流動性核心股 (台積電/聯發科…) |
+| RESEARCH_30 | 30 (累積) | Core + 20 研究股 |
+| EXPANDED_50 | 50 (累積) | Research + 20 擴展股 |
+| BROAD_100 | ≤100 (累積) | Schema 支援；手動添加 |
+
+### Data Coverage Requirements
+
+- `REAL_DATA_COVERAGE_REQUIRED = True` — Real data CSV required for analysis
+- `MOCK_DATA_FORMAL_CONCLUSION_ALLOWED = False` — Mock data cannot produce formal conclusions
+
+### v1.1.0 CLI Commands
+
+```
+python main.py universe-build --tier core10
+python main.py universe-summary --tier research30
+python main.py universe-health
+python main.py universe-coverage --tier research30 --mode real
+python main.py universe-symbol --stock 2454
+python main.py universe-missing --tier expanded50
+python main.py universe-report --tier research30
+```
+
+See `docs/data_universe_expansion_v1.1.0.md` for full details.
+
+**[!] Real Data Required. Mock Formal Conclusion BLOCKED. Research Only. No Real Orders.**

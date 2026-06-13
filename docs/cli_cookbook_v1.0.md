@@ -87,7 +87,7 @@ Rules:
 
 ---
 
-*TW Quant Cockpit v1.0.9 — Final Maintenance Rollup — Research Only — Not Investment Advice*
+*TW Quant Cockpit v1.1.0 — Data Universe Expansion — Research Only — Not Investment Advice*
 
 ---
 
@@ -103,3 +103,38 @@ python main.py final-rollup-report --mode real
 ```
 
 **[!] Research Only. No Real Orders. v1.0 Maintenance Line Complete.**
+
+---
+
+## v1.1.0 Data Universe Expansion Commands
+
+| Command | Purpose | Key Options |
+|---------|---------|-------------|
+| `python main.py universe-build --tier core10` | Build CORE_10 universe | `--tier core10\|research30\|expanded50\|broad100` |
+| `python main.py universe-summary --tier research30` | Show tier summary | `--tier <alias>` |
+| `python main.py universe-health` | Universe health check (16 items) | — |
+| `python main.py universe-coverage --tier research30` | Analyze data coverage per symbol | `--tier`, `--mode real\|mock` |
+| `python main.py universe-symbol --stock 2454` | Per-symbol coverage detail | `--stock <ticker>` |
+| `python main.py universe-missing --tier expanded50` | List symbols missing real data | `--tier <alias>` |
+| `python main.py universe-report --tier research30` | Build coverage expansion report | `--tier <alias>` |
+
+### Tier Reference
+
+| Alias | Canonical | Symbol Count | Description |
+|-------|-----------|--------------|-------------|
+| `core10` | `CORE_10` | 10 | High-liquidity core (台積電, 聯發科…) |
+| `research30` | `RESEARCH_30` | 30 (cumulative) | Core + 20 research names |
+| `expanded50` | `EXPANDED_50` | 50 (cumulative) | Research + 20 expanded names |
+| `broad100` | `BROAD_100` | up to 100 | Schema support; add symbols as needed |
+
+### Quality Statuses
+
+| Status | Meaning |
+|--------|---------|
+| `READY` | ≥240 rows, ≥98% OHLC, 0 invalid prices |
+| `PARTIAL` | ≥120 rows, ≥90% OHLC |
+| `INSUFFICIENT` | <120 rows of real data |
+| `MISSING` | No real data file found |
+| `INVALID` | Duplicate dates or broken schema |
+
+**[!] Real Data Required. Mock Data Formal Conclusion BLOCKED. Research Only.**
