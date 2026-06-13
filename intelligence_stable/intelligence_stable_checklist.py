@@ -1059,4 +1059,35 @@ class IntelligenceStableChecklist:
                 suggested_fix="Run: python main.py local-assistant-health",
             ))
 
+        # v1.0.9 final_rollup_v109_safe — final_rollup package is safe
+        try:
+            import importlib
+            mod_fr = importlib.import_module("final_rollup")
+            no_orders_fr = getattr(mod_fr, "NO_REAL_ORDERS", None)
+            ext_api_fr   = getattr(mod_fr, "EXTERNAL_API_DISABLED", None)
+            v1_complete  = getattr(mod_fr, "V1_MAINTENANCE_LINE_COMPLETE", None)
+            if no_orders_fr is True and ext_api_fr is True:
+                checks.append(_check(
+                    "final_rollup_v109_safe", "stable_integration",
+                    "v1.0.9 final_rollup_v109_safe",
+                    CHECK_PASS, SEV_LOW,
+                    f"final_rollup: NO_REAL_ORDERS=True, EXTERNAL_API_DISABLED=True, V1_MAINTENANCE_LINE_COMPLETE={v1_complete}.",
+                ))
+            else:
+                checks.append(_check(
+                    "final_rollup_v109_safe", "stable_integration",
+                    "v1.0.9 final_rollup_v109_safe",
+                    CHECK_WARN, SEV_LOW,
+                    f"final_rollup safety flags: NO_REAL_ORDERS={no_orders_fr}, EXTERNAL_API_DISABLED={ext_api_fr}",
+                    suggested_fix="Ensure final_rollup/__init__.py has correct safety flags.",
+                ))
+        except Exception as exc:
+            checks.append(_check(
+                "final_rollup_v109_safe", "stable_integration",
+                "v1.0.9 final_rollup_v109_safe",
+                CHECK_WARN, SEV_LOW,
+                f"Could not verify final_rollup_v109 safety (optional): {exc}",
+                suggested_fix="Run: python main.py final-rollup-health",
+            ))
+
         return checks

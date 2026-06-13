@@ -3,7 +3,7 @@
 > **[!] Research Only. Read Only. No Real Orders. Production Trading: BLOCKED.**
 > **[!] Not investment advice. REAL_ORDER_READY=False.**
 
-Current version: **v1.0.8** — Local Research Assistant Polish (base: v1.0.0 Research Trading Cockpit Stable)
+Current version: **v1.0.9** — Final Maintenance Rollup (base: v1.0.0 Research Trading Cockpit Stable) — **v1.0 Maintenance Line Complete**
 
 ---
 
@@ -30,6 +30,7 @@ Current version: **v1.0.8** — Local Research Assistant Polish (base: v1.0.0 Re
 
 | Document | Description |
 |----------|-------------|
+| [Final Maintenance Rollup v1.0.9](final_maintenance_rollup_v1.0.9.md) | v1.0.9 Final Maintenance Rollup — release history, health check, maintenance plan, smoke summary |
 | [Local Research Assistant v1.0.8](local_research_assistant_v1.0.8.md) | v1.0.8 Local Research Assistant Polish — safe research answers, module routing, unsafe query blocking |
 | [Knowledge Base Search v1.0.7](knowledge_base_search_v1.0.7.md) | v1.0.7 Knowledge Base Search Polish — search docs, examples, templates, reports |
 | [Research Trading Cockpit Stable v1.0.0](research_trading_cockpit_stable_v1.0.0.md) | v1.0.0 overview |

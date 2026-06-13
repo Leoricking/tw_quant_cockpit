@@ -551,3 +551,72 @@ Local Research Assistant Polish — 把 Knowledge Base Search 的搜尋結果整
 ---
 
 *TW Quant Cockpit v1.0.8 — Local Research Assistant Polish — Research Only — Not Investment Advice*
+
+---
+
+## v1.0.9 — Final Maintenance Rollup
+
+**Released:** 2026-06-13
+
+### 概述
+Final Maintenance Rollup — v1.0.x maintenance 線的總收尾版。整理 v1.0.0 ~ v1.0.8 功能總結、穩定性狀態、長期維護節奏、最終 smoke test、最終 release rollup report。v1.0 Maintenance Line Complete。
+
+### New in v1.0.9
+
+#### final_rollup/ package
+- `rollup_schema.py`: ReleaseEntry, FinalMaintenanceStatus, LongTermMaintenanceTask dataclasses
+- `release_history.py`: ReleaseHistoryBuilder — v1.0.0 ~ v1.0.9 release history
+- `final_health_check.py`: FinalMaintenanceHealthCheck — 22 health checks
+- `final_smoke_summary.py`: FinalSmokeSummaryBuilder — smoke test summary
+- `maintenance_plan.py`: LongTermMaintenancePlanBuilder — Daily/Weekly/Monthly/Release/Incident SOP
+- `final_rollup_engine.py`: FinalRollupEngine — orchestrates full rollup
+- `final_rollup_store.py`: FinalRollupStore — saves CSV runtime outputs
+
+#### reports/final_maintenance_rollup_report.py
+- FinalMaintenanceRollupReportBuilder — 10-chapter Markdown report
+- Output: `reports/final_maintenance_rollup_report_YYYY-MM-DD.md` (not committed)
+
+#### CLI Commands (6 new)
+```
+python main.py final-rollup
+python main.py final-rollup-history
+python main.py final-rollup-health
+python main.py final-rollup-maintenance-plan
+python main.py final-rollup-smoke
+python main.py final-rollup-report --mode real
+```
+
+#### GUI
+- Optional `gui/final_rollup_panel.py` + `gui/final_rollup_adapter.py`
+- GUI nav tab: `final_maintenance_rollup` (group: maintenance, P1)
+
+#### Docs
+- `docs/final_maintenance_rollup_v1.0.9.md`
+- Updated: README.md, docs/index.md, docs/roadmap.md, docs/release_notes_v1.0.md
+- Updated: docs/user_guide_v1.0.md, docs/handoff_guide_v1.0.md, docs/cli_cookbook_v1.0.md
+
+#### Checklists & Regression
+- `release/research_cockpit_stable_checklist.py`: +5 new checks (60-64)
+- `stable_release/stable_release_checklist_v060.py`: +3 new checks
+- `intelligence_stable/intelligence_stable_checklist.py`: +1 new check
+- `regression/suite_registry.py`: +7 final_rollup regression tests
+
+### What Changed
+- No strategy logic changes
+- No broker API
+- No real orders
+- No external API
+- No modification to validation/evidence graph scoring
+- No modification to crash reversal rules
+
+### Safety (unchanged from v1.0.0)
+
+> **Research Only** — **No Real Orders** — **Production Trading BLOCKED**
+> **Broker Execution Disabled** — **VALIDATED does not enable trading**
+> **External API Disabled** — **v1.0 Maintenance Line Complete**
+> **Paper trading is simulation only** — **Mock realtime is simulation only**
+> **Not Investment Advice**
+
+---
+
+*TW Quant Cockpit v1.0.9 — Final Maintenance Rollup — Research Only — Not Investment Advice*

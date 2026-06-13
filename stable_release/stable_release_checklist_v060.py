@@ -1890,6 +1890,62 @@ class StableReleaseChecklistV060:
                 "version_info_v108", "version_git", "WARN", str(exc),
             )
 
+    def _check_final_rollup_import(self) -> dict:
+        """v1.0.9 — final_rollup package importable."""
+        try:
+            from final_rollup.final_rollup_engine import FinalRollupEngine
+            return _check_item(
+                "final_rollup_import", "stable_integration", "PASS",
+                "FinalRollupEngine import OK",
+            )
+        except Exception as exc:
+            return _check_item(
+                "final_rollup_import", "stable_integration", "WARN",
+                f"final_rollup optional (v1.0.9): {exc}",
+                warning="Run: python main.py final-rollup",
+            )
+
+    def _check_final_rollup_no_forbidden_actions(self) -> dict:
+        """v1.0.9 — final_rollup has no_real_orders=True."""
+        try:
+            import final_rollup as _fr
+            if getattr(_fr, "NO_REAL_ORDERS", None) is True:
+                return _check_item(
+                    "final_rollup_no_forbidden_actions", "stable_integration", "PASS",
+                    "final_rollup: NO_REAL_ORDERS=True",
+                )
+            return _check_item(
+                "final_rollup_no_forbidden_actions", "stable_integration", "WARN",
+                f"final_rollup.NO_REAL_ORDERS={getattr(_fr, 'NO_REAL_ORDERS', None)}",
+                warning="Check final_rollup/__init__.py safety flags",
+            )
+        except Exception as exc:
+            return _check_item(
+                "final_rollup_no_forbidden_actions", "stable_integration", "WARN",
+                f"final_rollup import check optional: {exc}",
+            )
+
+    def _check_version_info_v109(self) -> dict:
+        """v1.0.9 — VERSION is 1.0.9."""
+        try:
+            from release.version_info import VERSION
+            import release.version_info as _vi
+            fr_release = getattr(_vi, "FINAL_MAINTENANCE_ROLLUP_RELEASE", None)
+            if VERSION == "1.0.9":
+                return _check_item(
+                    "version_info_v109", "version_git", "PASS",
+                    f"VERSION={VERSION}, FINAL_MAINTENANCE_ROLLUP_RELEASE={fr_release}",
+                )
+            return _check_item(
+                "version_info_v109", "version_git", "WARN",
+                f"VERSION={VERSION} (expected 1.0.9)",
+                warning="Expected VERSION=1.0.9",
+            )
+        except Exception as exc:
+            return _check_item(
+                "version_info_v109", "version_git", "WARN", str(exc),
+            )
+
     # ----------------------------------------------------------------
     # Run
     # ----------------------------------------------------------------
@@ -2002,6 +2058,10 @@ class StableReleaseChecklistV060:
             self._check_local_assistant_no_forbidden_actions,
             self._check_local_assistant_external_api_disabled,
             self._check_version_info_v108,
+            # v1.0.9 Final Maintenance Rollup
+            self._check_final_rollup_import,
+            self._check_final_rollup_no_forbidden_actions,
+            self._check_version_info_v109,
         ]
 
         for fn in checklist_groups:

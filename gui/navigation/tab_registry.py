@@ -1284,6 +1284,42 @@ class GUITabRegistry:
                 read_only=True,
                 production_blocked=True,
             ),
+            # ----------------------------------------------------------------
+            # v1.0.9 Final Maintenance Rollup
+            # ----------------------------------------------------------------
+            GUITabMetadata(
+                tab_id="final_maintenance_rollup",
+                tab_name="final_maintenance_rollup",
+                display_name="Final Maintenance Rollup",
+                group="maintenance",
+                priority="P1",
+                description=(
+                    "Final Maintenance Rollup v1.0.9 \u2014 v1.0.x release history, final health check, "
+                    "long-term maintenance plan, final smoke summary. "
+                    "Research Only. No Real Orders. Production Trading BLOCKED."
+                ),
+                module_path="gui.final_rollup_panel",
+                class_name="FinalRollupPanel",
+                available_flag="_FINAL_ROLLUP_AVAILABLE",
+                keywords=[
+                    "final rollup", "maintenance rollup", "v1.0 summary", "release summary",
+                    "maintenance plan", "smoke summary", "final check",
+                    "\u6700\u7d42\u5f59\u6574", "\u7dad\u8b77\u7e3d\u7d50", "\u7248\u672c\u7e3d\u7d50", "\u9577\u671f\u7dad\u8b77", "smoke test",
+                ],
+                aliases=["final-rollup", "maintenance-rollup", "rollup"],
+                related_cli_commands=[
+                    "final-rollup", "final-rollup-history", "final-rollup-health",
+                    "final-rollup-maintenance-plan", "final-rollup-smoke", "final-rollup-report",
+                ],
+                report_types=["final_maintenance_rollup_report"],
+                maturity="STABLE",
+                default_visible=True,
+                favorite_default=False,
+                no_real_orders=True,
+                read_only=True,
+                production_blocked=True,
+                notes="Added in v1.0.9 \u2014 Final Maintenance Rollup.",
+            ),
         ]
         for tab in tabs:
             self._tabs[tab.tab_id] = tab

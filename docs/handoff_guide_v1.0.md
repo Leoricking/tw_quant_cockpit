@@ -196,4 +196,14 @@ These templates enforce: `git -C "path"`, no chain commands, no `git add .`, no 
 
 ---
 
-*TW Quant Cockpit v1.0.6 — Example Workflows & Templates — Research Only — Not Investment Advice*
+*TW Quant Cockpit v1.0.9 — Final Maintenance Rollup — Research Only — Not Investment Advice*
+
+---
+
+## v1.0.9 Handoff Notes
+
+- **v1.0 Maintenance Line: COMPLETE**
+- Final rollup CLI: `python main.py final-rollup-health`
+- Long-term maintenance SOP: see `docs/final_maintenance_rollup_v1.0.9.md`
+- Next optional: v1.1.0 Data Universe Expansion (do not proceed without explicit plan)
+- **[!] No Real Orders. No broker API. Not Investment Advice.**

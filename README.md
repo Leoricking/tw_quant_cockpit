@@ -4,7 +4,7 @@
 >
 > **[!] v1: Real order execution is strictly prohibited. For research, simulation, and decision support only. Not investment advice.**
 
-**Current version: v1.0.8 — Local Research Assistant Polish** (base: v1.0.0 Research Trading Cockpit Stable)
+**Current version: v1.0.9 — Final Maintenance Rollup** (base: v1.0.0 Research Trading Cockpit Stable) — **v1.0 Maintenance Line Complete**
 
 ---
 
@@ -29,11 +29,15 @@ TW Quant Cockpit is a **Research Trading Cockpit** for Taiwan equity markets. It
 
 ---
 
-## Current Version: v1.0.8 — Local Research Assistant Polish
+## Current Version: v1.0.9 — Final Maintenance Rollup
 
-This is TW Quant Cockpit **v1.0.8 — Local Research Assistant Polish**, based on **v1.0.0 Research Trading Cockpit Stable**.
+This is TW Quant Cockpit **v1.0.9 — Final Maintenance Rollup**, based on **v1.0.0 Research Trading Cockpit Stable**.
 
-New in v1.0.8: local_assistant/ package (assistant_schema, research_router, research_summarizer, safe_answer_builder, local_assistant_engine, local_assistant_store, local_assistant_query, local_assistant_health), safe research answer synthesis from KB search results, module routing, unsafe query blocking (BLOCKED_UNSAFE_QUERY), 5 new CLI commands (local-assistant, local-assistant-summary, local-assistant-health, local-assistant-report, local-assistant-explain), optional GUI panel, Local Research Assistant Report, regression coverage, and stable checks. No external API. No embedding. No network. Local assistant does not enable trading.
+New in v1.0.9: final_rollup/ package (rollup_schema, release_history, final_health_check, final_smoke_summary, maintenance_plan, final_rollup_engine, final_rollup_store), v1.0.x release history builder, final maintenance health check (22 checks), long-term maintenance SOP (Daily/Weekly/Monthly/Release/Incident), final smoke summary, 6 new CLI commands (final-rollup, final-rollup-history, final-rollup-health, final-rollup-maintenance-plan, final-rollup-smoke, final-rollup-report), optional GUI panel + adapter, Final Maintenance Rollup Report, regression coverage, stable checklist checks, docs/final_maintenance_rollup_v1.0.9.md. No strategy logic changes. No broker API. No external API. v1.0 Maintenance Line Complete.
+
+## v1.0.8 — Local Research Assistant Polish
+
+New in v1.0.8: local_assistant/ package, safe research answer synthesis, module routing, unsafe query blocking (BLOCKED_UNSAFE_QUERY), 5 new CLI commands, optional GUI panel. No external API. Local assistant does not enable trading.
 
 ---
 

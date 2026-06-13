@@ -5658,15 +5658,22 @@ def cmd_version_info(args: argparse.Namespace) -> None:
         print(f"{'Local Only Assistant:':<35} {la_local_only}")
         print(f"{'External API Disabled:':<35} {la_ext_api_disabled}")
         print(f"{'Safe Research Summary Available:':<35} {la_safe_summary}")
+        # v1.0.9 Final Maintenance Rollup fields
+        fr_release = getattr(_vi, "FINAL_MAINTENANCE_ROLLUP_RELEASE", False)
+        v1_complete = getattr(_vi, "V1_MAINTENANCE_LINE_COMPLETE", False)
+        lt_ready = getattr(_vi, "LONG_TERM_MAINTENANCE_READY", False)
+        print(f"{'Final Maintenance Rollup Release:':<35} {fr_release}")
+        print(f"{'v1.0 Maintenance Line Complete:':<35} {v1_complete}")
+        print(f"{'Long-term Maintenance Ready:':<35} {lt_ready}")
         print(f"{'Paper Trading:':<35} {'Simulation Only' if PAPER_TRADING_IS_SIMULATION else 'Real'}")
         print(f"{'Mock Realtime:':<35} {'Simulation Only' if MOCK_REALTIME_IS_SIMULATION else 'Real'}")
     except Exception as exc:
-        print(f"  Version:                         1.0.6")
-        print(f"  Release:                         Example Workflows & Templates")
+        print(f"  Version:                         1.0.9")
+        print(f"  Release:                         Final Maintenance Rollup")
         print(f"  Base Release:                    1.0.0 Research Trading Cockpit Stable")
-        print(f"  Example Workflows Release:       True")
-        print(f"  Workflow Templates Available:    True")
-        print(f"  Template Guide Available:        True")
+        print(f"  Final Maintenance Rollup Release: True")
+        print(f"  v1.0 Maintenance Line Complete:  True")
+        print(f"  Long-term Maintenance Ready:     True")
         print(f"  (version_info import error: {exc})")
     print("=" * 60)
     print("RESEARCH ONLY \u2014 Not Investment Advice \u2014 No Real Orders")
@@ -10083,6 +10090,205 @@ def cmd_local_assistant_explain(args):
             print(f"  Answer:   {answer.answer[:300]}")
     except Exception as exc:
         print(f"  [ERROR] local-assistant-explain failed: {exc}")
+
+
+# ---------------------------------------------------------------------------
+# v1.0.9 Final Maintenance Rollup handlers
+# ---------------------------------------------------------------------------
+
+def cmd_final_rollup(args):
+    """Run the full Final Maintenance Rollup (v1.0.9). Research Only. No Real Orders."""
+    import os
+    project_root = os.path.dirname(os.path.abspath(__file__))
+    mode = getattr(args, "mode", "real")
+    output_dir = getattr(args, "output_dir", None) or os.path.join(project_root, "data", "backtest_results", "final_rollup")
+    print()
+    print("=" * 60)
+    print("  TW Quant Cockpit \u2014 Final Maintenance Rollup")
+    print("=" * 60)
+    print("  Version: 1.0.9")
+    print("  Research Only: True")
+    print("  No Real Orders: True")
+    print("  Production Trading BLOCKED: True")
+    print("  Broker Execution Disabled: True")
+    print("  External API Disabled: True")
+    print("  v1.0 Maintenance Line Complete: True")
+    print("  Long-term Maintenance Ready: True")
+    print()
+    try:
+        from final_rollup.final_rollup_engine import FinalRollupEngine
+        from final_rollup.final_rollup_store import FinalRollupStore
+        engine = FinalRollupEngine(project_root=project_root, mode=mode)
+        result = engine.run()
+        store = FinalRollupStore(project_root=project_root, output_dir=output_dir)
+        history = engine.build_release_history()
+        checks, health_summary = engine.run_final_health()
+        plan = engine.build_maintenance_plan()
+        smoke = engine.build_smoke_summary()
+        store.save_release_history(history)
+        store.save_health_check(checks)
+        store.save_maintenance_plan(plan)
+        store.save_smoke_summary(smoke)
+        print(f"  Releases:              {result['release_history_count']}")
+        print(f"  Health Overall:        {result['health_summary'].get('overall_status', 'UNKNOWN')}")
+        print(f"  Smoke Results:         {result['smoke_results']}")
+        print(f"  Maintenance Tasks:     {result['maintenance_tasks']}")
+        print(f"  Output Dir:            {output_dir}")
+        print()
+        print("  [!] Not Investment Advice.")
+        print("  [!] No Real Orders. Broker Execution Disabled.")
+        print("  [!] VALIDATED does not enable trading.")
+    except Exception as exc:
+        print(f"  [ERROR] final-rollup failed: {exc}")
+
+
+def cmd_final_rollup_history(args):
+    """Show v1.0.x Release History (v1.0.9). Research Only. No Real Orders."""
+    import os
+    project_root = os.path.dirname(os.path.abspath(__file__))
+    print()
+    print("=" * 60)
+    print("  TW Quant Cockpit \u2014 Final Rollup: Release History")
+    print("=" * 60)
+    print("  Research Only: True | No Real Orders: True")
+    print()
+    try:
+        from final_rollup.release_history import ReleaseHistoryBuilder
+        builder = ReleaseHistoryBuilder(project_root=project_root)
+        entries = builder.build()
+        for e in entries:
+            print(f"  v{e.version} | {e.title}")
+            print(f"    Commit: {e.commit} | Tag: {e.tag} | Status: {e.safety_status}")
+            print(f"    {e.summary[:80]}")
+            if e.known_warnings:
+                for w in e.known_warnings:
+                    print(f"    [WARN] {w}")
+            print()
+        summary = builder.get_summary()
+        print(f"  Total releases: {summary['total_releases']}")
+        print()
+        print("  [!] No Real Orders. VALIDATED does not enable trading.")
+    except Exception as exc:
+        print(f"  [ERROR] final-rollup-history failed: {exc}")
+
+
+def cmd_final_rollup_health(args):
+    """Run Final Maintenance Health Check (v1.0.9). Research Only. No Real Orders."""
+    import os
+    project_root = os.path.dirname(os.path.abspath(__file__))
+    print()
+    print("=" * 60)
+    print("  TW Quant Cockpit \u2014 Final Rollup: Health Check")
+    print("=" * 60)
+    print("  Research Only: True | No Real Orders: True")
+    print()
+    try:
+        from final_rollup.final_health_check import FinalMaintenanceHealthCheck
+        checker = FinalMaintenanceHealthCheck(project_root=project_root)
+        checks, summary = checker.run()
+        for c in checks:
+            status = c.get("status", "?")
+            name   = c.get("name", "")
+            detail = (c.get("detail") or "")[:80]
+            print(f"  [{status:4s}] {name}: {detail}")
+        print()
+        print(f"  Total:   {summary.get('total', 0)}")
+        print(f"  PASS:    {summary.get('pass_count', 0)}")
+        print(f"  WARN:    {summary.get('warn_count', 0)}")
+        print(f"  FAIL:    {summary.get('fail_count', 0)}")
+        print(f"  BLOCKED: {summary.get('blocked_count', 0)}")
+        print(f"  Overall: {summary.get('overall_status', 'UNKNOWN')}")
+        print()
+        print("  [!] No Real Orders. Broker Execution Disabled.")
+    except Exception as exc:
+        print(f"  [ERROR] final-rollup-health failed: {exc}")
+
+
+def cmd_final_rollup_maintenance_plan(args):
+    """Show Long-term Maintenance Plan (v1.0.9). Research Only. No Real Orders."""
+    print()
+    print("=" * 60)
+    print("  TW Quant Cockpit \u2014 Final Rollup: Maintenance Plan")
+    print("=" * 60)
+    print("  Research Only: True | No Real Orders: True")
+    print()
+    try:
+        from final_rollup.maintenance_plan import LongTermMaintenancePlanBuilder
+        from final_rollup.rollup_schema import CADENCE_DAILY, CADENCE_WEEKLY, CADENCE_MONTHLY, CADENCE_RELEASE, CADENCE_INCIDENT
+        builder = LongTermMaintenancePlanBuilder()
+        plan = builder.build()
+        for cadence in [CADENCE_DAILY, CADENCE_WEEKLY, CADENCE_MONTHLY, CADENCE_RELEASE, CADENCE_INCIDENT]:
+            tasks = [t for t in plan if t.cadence == cadence]
+            if tasks:
+                print(f"  [{cadence}]")
+                for t in tasks:
+                    print(f"    {t.title}")
+                    print(f"      CMD: {t.command}")
+                    print(f"      Expected: {t.expected_result}")
+                    print(f"      Safe Action: {t.safe_action}")
+                print()
+        summary = builder.get_summary()
+        print(f"  Total tasks: {summary['total_tasks']}")
+        print()
+        print("  [!] No Real Orders. No broker commands in this plan.")
+    except Exception as exc:
+        print(f"  [ERROR] final-rollup-maintenance-plan failed: {exc}")
+
+
+def cmd_final_rollup_smoke(args):
+    """Show Final Smoke Summary (v1.0.9). Research Only. No Real Orders."""
+    import os
+    project_root = os.path.dirname(os.path.abspath(__file__))
+    print()
+    print("=" * 60)
+    print("  TW Quant Cockpit \u2014 Final Rollup: Smoke Summary")
+    print("=" * 60)
+    print("  Research Only: True | No Real Orders: True")
+    print()
+    try:
+        from final_rollup.final_smoke_summary import FinalSmokeSummaryBuilder
+        builder = FinalSmokeSummaryBuilder(project_root=project_root)
+        results = builder.build_smoke_table()
+        for r in results:
+            status = r.get("status", "?")
+            suite  = r.get("suite", "")
+            note   = r.get("note", "")
+            print(f"  [{status:7s}] {suite}: {note}")
+        print()
+        summary = builder.get_summary()
+        print(f"  Total:   {summary.get('total', 0)}")
+        print(f"  PASS:    {summary.get('pass', 0)}")
+        print(f"  WARN:    {summary.get('warn', 0)}")
+        print(f"  UNKNOWN: {summary.get('unknown', 0)}")
+        print(f"  FAIL:    {summary.get('fail', 0)}")
+        print()
+        print("  [!] No Real Orders. Broker Execution Disabled.")
+    except Exception as exc:
+        print(f"  [ERROR] final-rollup-smoke failed: {exc}")
+
+
+def cmd_final_rollup_report(args):
+    """Generate Final Maintenance Rollup Report (v1.0.9). Research Only. No Real Orders."""
+    import os
+    project_root = os.path.dirname(os.path.abspath(__file__))
+    mode = getattr(args, "mode", "real")
+    report_dir = getattr(args, "report_dir", None) or os.path.join(project_root, "reports")
+    print()
+    print("=" * 60)
+    print("  TW Quant Cockpit \u2014 Final Maintenance Rollup Report")
+    print("=" * 60)
+    print("  Research Only: True | No Real Orders: True")
+    print()
+    try:
+        from reports.final_maintenance_rollup_report import FinalMaintenanceRollupReportBuilder
+        builder = FinalMaintenanceRollupReportBuilder(mode=mode, output_dir=report_dir, project_root=project_root)
+        path = builder.save()
+        print(f"  Report saved to: {path}")
+        print()
+        print("  [!] Not Investment Advice. No Real Orders.")
+        print("  [!] VALIDATED does not enable trading.")
+    except Exception as exc:
+        print(f"  [ERROR] final-rollup-report failed: {exc}")
 
 
 def cmd_docs_health_check(args):
@@ -15252,6 +15458,41 @@ def _build_parser() -> argparse.ArgumentParser:
     )
     p_lae.add_argument("--answer-id", dest="answer_id", default="")
 
+    # --- v1.0.9 Final Maintenance Rollup ---
+    p_fr = subparsers.add_parser(
+        "final-rollup",
+        help="[v1.0.9] Run Final Maintenance Rollup. [!] Research Only. No Real Orders.",
+    )
+    p_fr.add_argument("--mode", default="real", choices=["real", "mock"])
+    p_fr.add_argument("--output-dir", dest="output_dir", default=None)
+
+    subparsers.add_parser(
+        "final-rollup-history",
+        help="[v1.0.9] Show v1.0.x Release History. [!] Research Only. No Real Orders.",
+    )
+
+    subparsers.add_parser(
+        "final-rollup-health",
+        help="[v1.0.9] Run Final Maintenance Health Check. [!] Research Only. No Real Orders.",
+    )
+
+    subparsers.add_parser(
+        "final-rollup-maintenance-plan",
+        help="[v1.0.9] Show Long-term Maintenance Plan. [!] Research Only. No Real Orders.",
+    )
+
+    subparsers.add_parser(
+        "final-rollup-smoke",
+        help="[v1.0.9] Show Final Smoke Summary. [!] Research Only. No Real Orders.",
+    )
+
+    p_frr = subparsers.add_parser(
+        "final-rollup-report",
+        help="[v1.0.9] Generate Final Maintenance Rollup Report. [!] Research Only. No Real Orders.",
+    )
+    p_frr.add_argument("--mode", default="real", choices=["real", "mock"])
+    p_frr.add_argument("--report-dir", dest="report_dir", default=None)
+
     # --- v1.0.5 Documentation & User Guide Polish ---
     subparsers.add_parser(
         "docs-health-check",
@@ -16616,6 +16857,13 @@ def main() -> None:
         "local-assistant-health":  cmd_local_assistant_health,
         "local-assistant-report":  cmd_local_assistant_report,
         "local-assistant-explain": cmd_local_assistant_explain,
+        # v1.0.9 Final Maintenance Rollup
+        "final-rollup":                  cmd_final_rollup,
+        "final-rollup-history":          cmd_final_rollup_history,
+        "final-rollup-health":           cmd_final_rollup_health,
+        "final-rollup-maintenance-plan": cmd_final_rollup_maintenance_plan,
+        "final-rollup-smoke":            cmd_final_rollup_smoke,
+        "final-rollup-report":           cmd_final_rollup_report,
         # v1.0.5 Documentation & User Guide Polish
         "docs-health-check":                cmd_docs_health_check,
         "docs-index":                       cmd_docs_index,

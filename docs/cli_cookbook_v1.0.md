@@ -87,4 +87,19 @@ Rules:
 
 ---
 
-*TW Quant Cockpit v1.0.5 — Documentation & User Guide Polish — Research Only — Not Investment Advice*
+*TW Quant Cockpit v1.0.9 — Final Maintenance Rollup — Research Only — Not Investment Advice*
+
+---
+
+## v1.0.9 Final Maintenance Rollup Commands
+
+```bash
+python main.py final-rollup
+python main.py final-rollup-history
+python main.py final-rollup-health
+python main.py final-rollup-maintenance-plan
+python main.py final-rollup-smoke
+python main.py final-rollup-report --mode real
+```
+
+**[!] Research Only. No Real Orders. v1.0 Maintenance Line Complete.**

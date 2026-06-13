@@ -258,6 +258,11 @@ _REPORT_PATTERNS = {
         "reports/local_research_assistant_report*.md",
         "data/backtest_results/local_assistant/*.csv",
     ],
+    # v1.0.9 Final Maintenance Rollup
+    "final_maintenance_rollup_report": [
+        "reports/final_maintenance_rollup_report*.md",
+        "data/backtest_results/final_rollup/*.csv",
+    ],
     # v0.9.1 Evidence Graph UX patterns
     "evidence_graph_gaps": [
         "data/backtest_results/evidence_graph/evidence_graph_gaps*.csv",

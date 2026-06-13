@@ -190,4 +190,6 @@ Safe alternatives are listed below.
 
 ---
 
-*TW Quant Cockpit v1.0.8 — Local Research Assistant Polish*
+*TW Quant Cockpit v1.0.8 — Local Research Assistant Polish — superseded by v1.0.9 Final Maintenance Rollup*
+
+**Note (v1.0.9):** v1.0.8 is included in the v1.0.9 Final Maintenance Rollup. See `docs/final_maintenance_rollup_v1.0.9.md` for the complete v1.0.x maintenance history and long-term SOP.

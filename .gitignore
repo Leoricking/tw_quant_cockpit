@@ -362,3 +362,7 @@ reports/knowledge_base_search_report_*.md
 # v1.0.8 Local Research Assistant (runtime outputs — never commit)
 data/backtest_results/local_assistant/
 reports/local_research_assistant_report_*.md
+
+# v1.0.9 Final Maintenance Rollup (runtime outputs — never commit)
+data/backtest_results/final_rollup/
+reports/final_maintenance_rollup_report_*.md

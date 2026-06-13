@@ -158,4 +158,21 @@ python main.py workflow-templates-report --mode real
 
 ---
 
-*TW Quant Cockpit v1.0.6 — Example Workflows & Templates — Research Only — Not Investment Advice*
+*TW Quant Cockpit v1.0.9 — Final Maintenance Rollup — Research Only — Not Investment Advice*
+
+---
+
+## v1.0.9 — Final Maintenance Rollup
+
+### Final Rollup CLI Commands
+
+```
+python main.py final-rollup
+python main.py final-rollup-history
+python main.py final-rollup-health
+python main.py final-rollup-maintenance-plan
+python main.py final-rollup-smoke
+python main.py final-rollup-report --mode real
+```
+
+**[!] Research Only. No Real Orders. Not Investment Advice. v1.0 Maintenance Line Complete.**

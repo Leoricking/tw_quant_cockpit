@@ -737,6 +737,58 @@ class ResearchCockpitStableChecklist:
             checks.append(_mk("knowledge_base_no_external_api", "knowledge_base", "WARN",
                               "knowledge_base/ directory not found"))
 
+        # 60. final_rollup_available — v1.0.9
+        try:
+            from final_rollup.final_rollup_engine import FinalRollupEngine
+            checks.append(_mk("final_rollup_available", "final_rollup", "PASS",
+                               "FinalRollupEngine import OK"))
+        except Exception as exc:
+            checks.append(_mk("final_rollup_available", "final_rollup", "WARN",
+                               f"final_rollup.final_rollup_engine: {exc}"))
+
+        # 61. final_rollup_health_available — v1.0.9
+        try:
+            from final_rollup.final_health_check import FinalMaintenanceHealthCheck
+            checks.append(_mk("final_rollup_health_available", "final_rollup", "PASS",
+                               "FinalMaintenanceHealthCheck import OK"))
+        except Exception as exc:
+            checks.append(_mk("final_rollup_health_available", "final_rollup", "WARN",
+                               f"final_rollup.final_health_check: {exc}"))
+
+        # 62. final_maintenance_plan_available — v1.0.9
+        try:
+            from final_rollup.maintenance_plan import LongTermMaintenancePlanBuilder
+            checks.append(_mk("final_maintenance_plan_available", "final_rollup", "PASS",
+                               "LongTermMaintenancePlanBuilder import OK"))
+        except Exception as exc:
+            checks.append(_mk("final_maintenance_plan_available", "final_rollup", "WARN",
+                               f"final_rollup.maintenance_plan: {exc}"))
+
+        # 63. final_rollup_no_forbidden_actions — v1.0.9
+        try:
+            import final_rollup as _fr_pkg
+            if getattr(_fr_pkg, "NO_REAL_ORDERS", None) is True:
+                checks.append(_mk("final_rollup_no_forbidden_actions", "final_rollup", "PASS",
+                                   "final_rollup: NO_REAL_ORDERS=True, no forbidden actions"))
+            else:
+                checks.append(_mk("final_rollup_no_forbidden_actions", "final_rollup", "WARN",
+                                   "final_rollup: NO_REAL_ORDERS flag not found"))
+        except Exception as exc:
+            checks.append(_mk("final_rollup_no_forbidden_actions", "final_rollup", "WARN",
+                               f"final_rollup import check: {exc}"))
+
+        # 64. v1_maintenance_line_complete — v1.0.9
+        try:
+            from release.version_info import V1_MAINTENANCE_LINE_COMPLETE, VERSION
+            if V1_MAINTENANCE_LINE_COMPLETE is True and VERSION == "1.0.9":
+                checks.append(_mk("v1_maintenance_line_complete", "version", "PASS",
+                                   "V1_MAINTENANCE_LINE_COMPLETE=True, VERSION=1.0.9"))
+            else:
+                checks.append(_mk("v1_maintenance_line_complete", "version", "WARN",
+                                   f"VERSION={VERSION}, V1_MAINTENANCE_LINE_COMPLETE={V1_MAINTENANCE_LINE_COMPLETE}"))
+        except Exception as exc:
+            checks.append(_mk("v1_maintenance_line_complete", "version", "WARN", str(exc)))
+
         # Build summary
         total         = len(checks)
         pass_count    = sum(1 for c in checks if c["status"] == "PASS")

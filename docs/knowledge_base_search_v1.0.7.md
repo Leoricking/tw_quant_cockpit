@@ -138,3 +138,9 @@ python main.py kb-health-check
 # 產生知識庫搜尋報告
 python main.py kb-report --mode real
 ```
+
+---
+
+**Note (v1.0.9):** v1.0.7 is included in the v1.0.9 Final Maintenance Rollup. See `docs/final_maintenance_rollup_v1.0.9.md`.
+
+*TW Quant Cockpit v1.0.7 — Knowledge Base Search Polish — Research Only — Not Investment Advice*

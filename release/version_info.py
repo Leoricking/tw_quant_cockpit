@@ -1,8 +1,8 @@
 """
-release/version_info.py — Centralized version info for TW Quant Cockpit v1.0.8.
+release/version_info.py — Centralized version info for TW Quant Cockpit v1.0.9.
 [!] Research Only. No Real Orders. Production Trading: BLOCKED.
 [!] VALIDATED does not enable trading. Broker Execution Disabled.
-[!] Local Research Assistant Polish. No external API. Local assistant does not enable trading.
+[!] Final Maintenance Rollup. No external API. v1.0 Maintenance Line Complete.
 """
 from __future__ import annotations
 import logging
@@ -12,10 +12,10 @@ logger = logging.getLogger(__name__)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 # ---------------------------------------------------------------------------
-# v1.0.7 module-level constants (Knowledge Base Search Polish)
+# v1.0.9 module-level constants (Final Maintenance Rollup)
 # ---------------------------------------------------------------------------
-VERSION                             = "1.0.8"
-RELEASE_NAME                        = "Local Research Assistant Polish"
+VERSION                             = "1.0.9"
+RELEASE_NAME                        = "Final Maintenance Rollup"
 BASE_RELEASE                        = "1.0.0"
 BASE_RELEASE_NAME                   = "Research Trading Cockpit Stable"
 MAINTENANCE_RELEASE                 = True
@@ -41,6 +41,9 @@ LOCAL_RESEARCH_ASSISTANT_RELEASE    = True
 LOCAL_ONLY_ASSISTANT                = True
 EXTERNAL_API_DISABLED               = True
 SAFE_RESEARCH_SUMMARY_AVAILABLE     = True
+FINAL_MAINTENANCE_ROLLUP_RELEASE    = True
+V1_MAINTENANCE_LINE_COMPLETE        = True
+LONG_TERM_MAINTENANCE_READY         = True
 
 
 class VersionInfo:
@@ -177,13 +180,10 @@ def print_version_info() -> None:
     print(f"  Production Trading BLOCKED: {PRODUCTION_TRADING_BLOCKED}")
     print(f"  Broker Execution Enabled: {BROKER_EXECUTION_ENABLED}")
     print(f"  VALIDATED does not enable trading: {VALIDATED_DOES_NOT_ENABLE_TRADING}")
-    print(f"  Knowledge Base Search Release: {KNOWLEDGE_BASE_SEARCH_RELEASE}")
-    print(f"  Knowledge Base Index Available: {KNOWLEDGE_BASE_INDEX_AVAILABLE}")
-    print(f"  Safe Search Summary Available: {SAFE_SEARCH_SUMMARY_AVAILABLE}")
-    print(f"  Local Research Assistant Release: {LOCAL_RESEARCH_ASSISTANT_RELEASE}")
-    print(f"  Local Only Assistant: {LOCAL_ONLY_ASSISTANT}")
+    print(f"  Final Maintenance Rollup Release: {FINAL_MAINTENANCE_ROLLUP_RELEASE}")
+    print(f"  v1.0 Maintenance Line Complete: {V1_MAINTENANCE_LINE_COMPLETE}")
+    print(f"  Long-term Maintenance Ready: {LONG_TERM_MAINTENANCE_READY}")
     print(f"  External API Disabled: {EXTERNAL_API_DISABLED}")
-    print(f"  Safe Research Summary Available: {SAFE_RESEARCH_SUMMARY_AVAILABLE}")
     print(f"  Paper Trading: {'Simulation Only' if PAPER_TRADING_IS_SIMULATION else 'N/A'}")
     print(f"  Mock Realtime: {'Simulation Only' if MOCK_REALTIME_IS_SIMULATION else 'N/A'}")
     print("=" * 60)

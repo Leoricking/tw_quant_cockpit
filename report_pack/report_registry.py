@@ -60,6 +60,9 @@ REPORT_KNOWLEDGE_BASE_SEARCH = "knowledge_base_search_report"
 # v1.0.8 Local Research Assistant Polish
 REPORT_LOCAL_RESEARCH_ASSISTANT = "local_research_assistant_report"
 
+# v1.0.9 Final Maintenance Rollup
+REPORT_FINAL_MAINTENANCE_ROLLUP = "final_maintenance_rollup_report"
+
 logger = logging.getLogger(__name__)
 
 # ---------------------------------------------------------------------------
@@ -107,6 +110,8 @@ _PACK_DEFINITIONS: Dict[str, List[str]] = {
         REPORT_KNOWLEDGE_BASE_SEARCH,
         # v1.0.8 Local Research Assistant Polish (optional in daily pack)
         REPORT_LOCAL_RESEARCH_ASSISTANT,
+        # v1.0.9 Final Maintenance Rollup (optional in daily pack)
+        REPORT_FINAL_MAINTENANCE_ROLLUP,
     ],
     PACK_WEEKLY: [
         REPORT_DAILY_MARKET,
@@ -154,6 +159,8 @@ _PACK_DEFINITIONS: Dict[str, List[str]] = {
         REPORT_KNOWLEDGE_BASE_SEARCH,
         # v1.0.8 Local Research Assistant Polish (optional in weekly pack)
         REPORT_LOCAL_RESEARCH_ASSISTANT,
+        # v1.0.9 Final Maintenance Rollup (optional in weekly pack)
+        REPORT_FINAL_MAINTENANCE_ROLLUP,
     ],
     PACK_FULL: [
         REPORT_DAILY_MARKET,
@@ -217,6 +224,8 @@ _PACK_DEFINITIONS: Dict[str, List[str]] = {
         REPORT_KNOWLEDGE_BASE_SEARCH,
         # v1.0.8 Local Research Assistant Polish (optional in full pack)
         REPORT_LOCAL_RESEARCH_ASSISTANT,
+        # v1.0.9 Final Maintenance Rollup (optional in full pack)
+        REPORT_FINAL_MAINTENANCE_ROLLUP,
     ],
 }
 

@@ -78,6 +78,24 @@
 | v1.0.6 | Example Workflows & Templates | Done |
 | v1.0.7 | Knowledge Base Search Polish | Done |
 | v1.0.8 | Local Research Assistant Polish | Done |
+| v1.0.9 | Final Maintenance Rollup | Done |
+
+---
+
+### v1.0.9 — Final Maintenance Rollup ✅
+
+- **Version:** 1.0.9 — final maintenance release, v1.0.x maintenance line complete
+- **Type:** Final Maintenance Rollup — no strategy logic changes, no broker API, no trading
+- **Changes:** final_rollup/ package (rollup_schema, release_history, final_health_check, final_smoke_summary, maintenance_plan, final_rollup_engine, final_rollup_store), reports/final_maintenance_rollup_report.py, 6 new CLI commands (final-rollup, final-rollup-history, final-rollup-health, final-rollup-maintenance-plan, final-rollup-smoke, final-rollup-report), GUI panel + adapter, GUI nav tab, report pack entry, stable checklist checks, v060 checklist checks, intelligence checklist check, regression tests, docs/final_maintenance_rollup_v1.0.9.md, README/docs refresh
+- **Safety:** No Real Orders, Production Trading BLOCKED, Broker Execution Disabled, External API Disabled, VALIDATED does not enable trading (unchanged from v1.0.0)
+
+**v1.0 Maintenance Line: COMPLETE**
+
+**Next (optional):**
+- v1.1.0: Data Universe Expansion
+- v1.2.0: Replay Training UX
+- v1.3.0: Research Notebook / Journal Intelligence
+- Broker API branch: only if explicitly planned
 
 ---
 
