@@ -45,6 +45,7 @@ from report_pack.report_registry import (
     REPORT_WORKFLOW_TEMPLATES,
     REPORT_KNOWLEDGE_BASE_SEARCH,
     REPORT_LOCAL_RESEARCH_ASSISTANT,
+    REPORT_DATA_IMPORT_ONBOARDING,
 )
 
 logger = logging.getLogger(__name__)
@@ -267,6 +268,11 @@ _REPORT_PATTERNS = {
     "data_universe_expansion_report": [
         "reports/data_universe_expansion_report*.md",
         "data/backtest_results/universe/*.csv",
+    ],
+    # v1.1.1 Data Import UX & Batch Onboarding
+    REPORT_DATA_IMPORT_ONBOARDING: [
+        "reports/data_import_onboarding_report*.md",
+        "data/import_reports/*.csv",
     ],
     # v0.9.1 Evidence Graph UX patterns
     "evidence_graph_gaps": [

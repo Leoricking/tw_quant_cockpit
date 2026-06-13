@@ -857,6 +857,73 @@ class ResearchCockpitStableChecklist:
         else:
             overall_status = "FAIL"
 
+        # v1.1.1 import_onboarding checks
+        try:
+            import data_onboarding
+            obd_release = getattr(data_onboarding, "DATA_IMPORT_ONBOARDING_RELEASE", False)
+            if obd_release:
+                checks.append(_mk("import_onboarding_available", "import_onboarding", "PASS",
+                                  "DATA_IMPORT_ONBOARDING_RELEASE=True in data_onboarding"))
+            else:
+                checks.append(_mk("import_onboarding_available", "import_onboarding", "WARN",
+                                  "data_onboarding imported but DATA_IMPORT_ONBOARDING_RELEASE not True"))
+        except Exception as exc:
+            checks.append(_mk("import_onboarding_available", "import_onboarding", "WARN", str(exc)))
+
+        try:
+            from release.version_info import DRY_RUN_DEFAULT
+            if DRY_RUN_DEFAULT:
+                checks.append(_mk("dry_run_default", "import_onboarding", "PASS",
+                                  "DRY_RUN_DEFAULT=True in version_info"))
+            else:
+                checks.append(_mk("dry_run_default", "import_onboarding", "FAIL",
+                                  "DRY_RUN_DEFAULT is not True"))
+        except Exception as exc:
+            checks.append(_mk("dry_run_default", "import_onboarding", "WARN", str(exc)))
+
+        try:
+            from release.version_info import DESTRUCTIVE_IMPORT_DISABLED
+            if DESTRUCTIVE_IMPORT_DISABLED:
+                checks.append(_mk("destructive_import_disabled", "import_onboarding", "PASS",
+                                  "DESTRUCTIVE_IMPORT_DISABLED=True in version_info"))
+            else:
+                checks.append(_mk("destructive_import_disabled", "import_onboarding", "FAIL",
+                                  "DESTRUCTIVE_IMPORT_DISABLED is not True"))
+        except Exception as exc:
+            checks.append(_mk("destructive_import_disabled", "import_onboarding", "WARN", str(exc)))
+
+        try:
+            from release.version_info import CONFLICT_AUTO_OVERWRITE_ENABLED
+            if CONFLICT_AUTO_OVERWRITE_ENABLED is False:
+                checks.append(_mk("conflict_auto_overwrite_disabled", "import_onboarding", "PASS",
+                                  "CONFLICT_AUTO_OVERWRITE_ENABLED=False in version_info"))
+            else:
+                checks.append(_mk("conflict_auto_overwrite_disabled", "import_onboarding", "FAIL",
+                                  "CONFLICT_AUTO_OVERWRITE_ENABLED should be False"))
+        except Exception as exc:
+            checks.append(_mk("conflict_auto_overwrite_disabled", "import_onboarding", "WARN", str(exc)))
+
+        try:
+            from data_onboarding.onboarding_health import OnboardingHealthCheck
+            checker_ob = OnboardingHealthCheck()
+            health = checker_ob.run()
+            overall_ob = health.get("overall", "FAIL")
+            if overall_ob == "PASS":
+                checks.append(_mk("onboarding_no_forbidden_actions", "import_onboarding", "PASS",
+                                  f"OnboardingHealthCheck overall={overall_ob}"))
+            else:
+                checks.append(_mk("onboarding_no_forbidden_actions", "import_onboarding", "WARN",
+                                  f"OnboardingHealthCheck overall={overall_ob} (some checks non-PASS)"))
+        except Exception as exc:
+            checks.append(_mk("onboarding_no_forbidden_actions", "import_onboarding", "WARN", str(exc)))
+
+        # Rebuild summary counts to include new checks
+        total         = len(checks)
+        pass_count    = sum(1 for c in checks if c["status"] == "PASS")
+        warn_count    = sum(1 for c in checks if c["status"] == "WARN")
+        fail_count    = sum(1 for c in checks if c["status"] == "FAIL")
+        blocked_count = sum(1 for c in checks if c["status"] == "BLOCKED")
+
         try:
             from release.version_info import VERSION as _SUM_VER
         except Exception:

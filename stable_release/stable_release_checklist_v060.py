@@ -2001,6 +2001,67 @@ class StableReleaseChecklistV060:
                 "version_info_v110", "version_git", "WARN", str(exc),
             )
 
+    def _check_import_onboarding(self) -> dict:
+        """v1.1.1 — data_onboarding package imports cleanly."""
+        try:
+            import data_onboarding
+            release_flag = getattr(data_onboarding, "DATA_IMPORT_ONBOARDING_RELEASE", False)
+            dry_run      = getattr(data_onboarding, "DRY_RUN_DEFAULT", False)
+            no_orders    = getattr(data_onboarding, "NO_REAL_ORDERS", False)
+            if release_flag and dry_run and no_orders:
+                return _check_item(
+                    "_check_import_onboarding", "import_onboarding", "PASS",
+                    f"data_onboarding: RELEASE={release_flag}, DRY_RUN_DEFAULT={dry_run}, NO_REAL_ORDERS={no_orders}",
+                )
+            return _check_item(
+                "_check_import_onboarding", "import_onboarding", "WARN",
+                f"data_onboarding safety flags incomplete: RELEASE={release_flag} DRY_RUN={dry_run} NO_ORDERS={no_orders}",
+            )
+        except Exception as exc:
+            return _check_item(
+                "_check_import_onboarding", "import_onboarding", "WARN", str(exc),
+                warning="data_onboarding not importable (optional v1.1.1)",
+            )
+
+    def _check_dry_run_safe(self) -> dict:
+        """v1.1.1 — DRY_RUN_DEFAULT=True in version_info."""
+        try:
+            from release.version_info import DRY_RUN_DEFAULT, DESTRUCTIVE_IMPORT_DISABLED
+            if DRY_RUN_DEFAULT and DESTRUCTIVE_IMPORT_DISABLED:
+                return _check_item(
+                    "_check_dry_run_safe", "import_onboarding", "PASS",
+                    f"DRY_RUN_DEFAULT={DRY_RUN_DEFAULT}, DESTRUCTIVE_IMPORT_DISABLED={DESTRUCTIVE_IMPORT_DISABLED}",
+                )
+            return _check_item(
+                "_check_dry_run_safe", "import_onboarding", "FAIL",
+                f"DRY_RUN_DEFAULT={DRY_RUN_DEFAULT}, DESTRUCTIVE_IMPORT_DISABLED={DESTRUCTIVE_IMPORT_DISABLED}",
+            )
+        except Exception as exc:
+            return _check_item(
+                "_check_dry_run_safe", "import_onboarding", "WARN", str(exc),
+            )
+
+    def _check_version_info_v111(self) -> dict:
+        """v1.1.1 — VERSION is 1.1.0 or 1.1.1."""
+        try:
+            from release.version_info import VERSION
+            import release.version_info as _vi
+            obd_release = getattr(_vi, "DATA_IMPORT_ONBOARDING_RELEASE", None)
+            if VERSION in ("1.1.0", "1.1.1"):
+                return _check_item(
+                    "version_info_v111", "version_git", "PASS",
+                    f"VERSION={VERSION}, DATA_IMPORT_ONBOARDING_RELEASE={obd_release}",
+                )
+            return _check_item(
+                "version_info_v111", "version_git", "WARN",
+                f"VERSION={VERSION} (expected 1.1.0 or 1.1.1)",
+                warning="Expected VERSION in (1.1.0, 1.1.1)",
+            )
+        except Exception as exc:
+            return _check_item(
+                "version_info_v111", "version_git", "WARN", str(exc),
+            )
+
     # ----------------------------------------------------------------
     # Run
     # ----------------------------------------------------------------
@@ -2121,6 +2182,10 @@ class StableReleaseChecklistV060:
             self._check_universe_import,
             self._check_universe_real_mock_separation,
             self._check_version_info_v110,
+            # v1.1.1 Data Import UX & Batch Onboarding
+            self._check_import_onboarding,
+            self._check_dry_run_safe,
+            self._check_version_info_v111,
         ]
 
         for fn in checklist_groups:

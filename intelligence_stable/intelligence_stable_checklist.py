@@ -1124,4 +1124,37 @@ class IntelligenceStableChecklist:
                 suggested_fix="Run: python main.py universe-health",
             ))
 
+        # v1.1.1 data_import_onboarding_v111_safe — import onboarding package is safe
+        try:
+            import importlib
+            mod_obd = importlib.import_module("data_onboarding")
+            no_orders_obd = getattr(mod_obd, "NO_REAL_ORDERS", None)
+            dry_run_obd   = getattr(mod_obd, "DRY_RUN_DEFAULT", None)
+            dest_dis_obd  = getattr(mod_obd, "DESTRUCTIVE_IMPORT_DISABLED", None)
+            if no_orders_obd is True and dry_run_obd is True and dest_dis_obd is True:
+                checks.append(_check(
+                    "data_import_onboarding_v111_safe", "stable_integration",
+                    "v1.1.1 data_import_onboarding_v111_safe",
+                    CHECK_PASS, SEV_LOW,
+                    "data_onboarding: NO_REAL_ORDERS=True, DRY_RUN_DEFAULT=True, "
+                    "DESTRUCTIVE_IMPORT_DISABLED=True.",
+                ))
+            else:
+                checks.append(_check(
+                    "data_import_onboarding_v111_safe", "stable_integration",
+                    "v1.1.1 data_import_onboarding_v111_safe",
+                    CHECK_WARN, SEV_LOW,
+                    f"data_onboarding safety flags: NO_REAL_ORDERS={no_orders_obd}, "
+                    f"DRY_RUN_DEFAULT={dry_run_obd}, DESTRUCTIVE_IMPORT_DISABLED={dest_dis_obd}",
+                    suggested_fix="Ensure data_onboarding/__init__.py has correct v1.1.1 safety flags.",
+                ))
+        except Exception as exc:
+            checks.append(_check(
+                "data_import_onboarding_v111_safe", "stable_integration",
+                "v1.1.1 data_import_onboarding_v111_safe",
+                CHECK_WARN, SEV_LOW,
+                f"Could not verify data_import_onboarding v1.1.1 safety (optional): {exc}",
+                suggested_fix="Run: python main.py import-onboarding-health",
+            ))
+
         return checks

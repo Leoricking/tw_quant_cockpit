@@ -53,6 +53,12 @@ data/universe/universe_manifest.csv
 # Import / audit / plan reports (generated artifacts)
 data/import_reports/
 
+# v1.1.1 Data Import Onboarding runtime reports (generated artifacts)
+reports/data_import_onboarding_report_*.md
+
+# Fixture files ARE committed (exception)
+!tests/fixtures/import_onboarding/*.csv
+
 # XQ split export output (generated artifacts)
 data/xq_exports/
 

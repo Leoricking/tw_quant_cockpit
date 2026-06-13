@@ -71,14 +71,84 @@ python main.py universe-report --tier research30 --mode real
 
 ---
 
+---
+
+## v1.1.1 — Data Import UX & Batch Onboarding (2026-06-14)
+
+### Summary
+
+v1.1.1 adds a complete **Data Import UX & Batch Onboarding** system. Covers XQ Excel/CSV,
+standard CSV, column auto-mapping, duplicate/conflict detection, safe merge planning, dry-run
+validation, retry manifests, and universe coverage refresh integration.
+
+### New Package: `data_onboarding/`
+
+- `data_onboarding/__init__.py` — package safety flags
+- `data_onboarding/onboarding_schema.py` — ImportPlan, ImportPlanItem, ImportResult, BatchImportSummary, RetryManifest dataclasses
+- `data_onboarding/file_discovery.py` — ImportFileDiscovery
+- `data_onboarding/schema_detector.py` — ColumnMappingDetector
+- `data_onboarding/file_validator.py` — ImportFileValidator
+- `data_onboarding/duplicate_detector.py` — DuplicateDetector
+- `data_onboarding/import_planner.py` — ImportPlanner
+- `data_onboarding/batch_executor.py` — BatchImportExecutor
+- `data_onboarding/retry_manifest.py` — RetryManifestBuilder
+- `data_onboarding/onboarding_store.py` — OnboardingStore
+- `data_onboarding/onboarding_query.py` — OnboardingQuery
+- `data_onboarding/onboarding_health.py` — OnboardingHealthCheck
+
+### New Files
+
+- `reports/data_import_onboarding_report.py` — DataImportOnboardingReportBuilder
+- `gui/import_onboarding_adapter.py` — ImportOnboardingAdapter
+- `gui/import_onboarding_panel.py` — ImportOnboardingPanel (PySide6 + stub)
+- `tests/fixtures/import_onboarding/*.csv` — 6 fixture files
+- `docs/data_import_onboarding_v1.1.1.md` — full documentation
+
+### New CLI Commands
+
+```bash
+python main.py import-discover --path <dir>
+python main.py import-preview --file <file>
+python main.py import-validate --path <dir>
+python main.py import-plan --path <dir>
+python main.py import-batch --path <dir> [--dry-run] [--execute] [--allow-write]
+python main.py import-retry-manifest [--output-dir data/import_reports]
+python main.py import-onboarding-health
+python main.py import-onboarding-report [--mode real|mock]
+```
+
+### Modified Files
+
+- `release/version_info.py` — VERSION="1.1.1", DATA_IMPORT_ONBOARDING_RELEASE=True, DRY_RUN_DEFAULT=True, DESTRUCTIVE_IMPORT_DISABLED=True, CONFLICT_AUTO_OVERWRITE_ENABLED=False
+- `main.py` — 7 new handlers + subparsers; --path added to import-plan
+- `gui/navigation/tab_registry.py` — Added data_import_onboarding tab
+- `gui/dashboard.py` — Added ImportOnboardingPanel import
+- `report_pack/report_registry.py` — Added REPORT_DATA_IMPORT_ONBOARDING
+- `report_pack/report_collector.py` — Added import onboarding patterns
+- `release/research_cockpit_stable_checklist.py` — Added 5 checks
+- `stable_release/stable_release_checklist_v060.py` — Added 3 checks
+- `intelligence_stable/intelligence_stable_checklist.py` — Added data_import_onboarding_v111_safe
+- `regression/suite_registry.py` — Added 8 import onboarding test cases
+- `.gitignore` — Added onboarding report patterns + fixture exceptions
+
+### Safety Guarantees
+
+- dry_run=True by default
+- REPLACE_EXPLICIT blocked by default
+- Conflicts always → REVIEW (never auto-overwrite)
+- No Real Orders
+- Broker Execution Disabled
+- Not Investment Advice
+
+---
+
 ## Roadmap
 
 | Version | Target |
 |---------|--------|
-| v1.1.1  | Data Import UX |
 | v1.1.2  | Coverage Repair Workflow |
 | v1.2.0  | Replay Training UX |
 
 ---
 
-*TW Quant Cockpit v1.1.x — Data Universe Expansion Series — Research Only — Not Investment Advice*
+*TW Quant Cockpit v1.1.x — Data Universe & Import Series — Research Only — Not Investment Advice*

@@ -66,6 +66,9 @@ REPORT_FINAL_MAINTENANCE_ROLLUP = "final_maintenance_rollup_report"
 # v1.1.0 Data Universe Expansion
 REPORT_DATA_UNIVERSE_EXPANSION = "data_universe_expansion_report"
 
+# v1.1.1 Data Import UX & Batch Onboarding
+REPORT_DATA_IMPORT_ONBOARDING = "data_import_onboarding_report"
+
 logger = logging.getLogger(__name__)
 
 # ---------------------------------------------------------------------------
@@ -166,6 +169,8 @@ _PACK_DEFINITIONS: Dict[str, List[str]] = {
         REPORT_FINAL_MAINTENANCE_ROLLUP,
         # v1.1.0 Data Universe Expansion (optional in weekly pack)
         REPORT_DATA_UNIVERSE_EXPANSION,
+        # v1.1.1 Data Import UX & Batch Onboarding (optional in weekly pack)
+        REPORT_DATA_IMPORT_ONBOARDING,
     ],
     PACK_FULL: [
         REPORT_DAILY_MARKET,
@@ -233,6 +238,8 @@ _PACK_DEFINITIONS: Dict[str, List[str]] = {
         REPORT_FINAL_MAINTENANCE_ROLLUP,
         # v1.1.0 Data Universe Expansion (optional in full pack)
         REPORT_DATA_UNIVERSE_EXPANSION,
+        # v1.1.1 Data Import UX & Batch Onboarding (optional in full pack)
+        REPORT_DATA_IMPORT_ONBOARDING,
     ],
 }
 

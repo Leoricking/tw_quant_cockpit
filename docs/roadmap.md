@@ -80,6 +80,21 @@
 | v1.0.8 | Local Research Assistant Polish | Done |
 | v1.0.9 | Final Maintenance Rollup | Done |
 | v1.1.0 | Data Universe Expansion | Done |
+| v1.1.1 | Data Import UX & Batch Onboarding | Done |
+
+---
+
+### v1.1.1 — Data Import UX & Batch Onboarding ✅
+
+- **Version:** 1.1.1 — feature release based on v1.1.0 Data Universe Expansion
+- **Type:** Data Import UX & Batch Onboarding — no strategy logic changes, no broker API, no trading
+- **Changes:** data_onboarding/ package (12 modules), reports/data_import_onboarding_report.py, 7 new CLI commands (import-discover, import-preview, import-validate, import-plan, import-batch, import-retry-manifest, import-onboarding-health, import-onboarding-report), GUI panel + adapter, GUI nav tab (data group), report pack entry, stable checklist checks, v060 checklist checks, intelligence checklist check, regression tests (~8), tests/fixtures/import_onboarding/ (6 CSVs), docs/data_import_onboarding_v1.1.1.md, .gitignore updates, README/docs refresh
+- **Safety:** dry_run=True by default, REPLACE_EXPLICIT blocked by default, conflicts → REVIEW (never auto-overwrite), No Real Orders, Production Trading BLOCKED
+
+**Next:**
+- v1.1.2: Coverage Repair Workflow
+- v1.2.0: Replay Training UX
+- Broker API branch: only if explicitly planned
 
 ---
 
@@ -89,12 +104,6 @@
 - **Type:** Data Universe Expansion — no strategy logic changes, no broker API, no trading
 - **Changes:** universe/ package (universe_schema, universe_tier_registry, universe_builder, universe_coverage, universe_health, universe_store, universe_query), reports/data_universe_expansion_report.py, 7 new CLI commands (universe-build, universe-summary, universe-health, universe-coverage, universe-symbol, universe-missing, universe-report), GUI panel + adapter, GUI nav tab (data group), report pack entry, stable checklist checks (#65-69), v060 checklist checks, intelligence checklist check, regression tests (~10), docs/data_universe_expansion_v1.1.0.md, .gitignore updates, README/docs refresh
 - **Safety:** No Real Orders, Production Trading BLOCKED, Broker Execution Disabled, Real Data Coverage Required, Mock Data Formal Conclusion DISABLED (unchanged from v1.0.0 core)
-
-**Next:**
-- v1.1.1: Data Import UX
-- v1.1.2: Coverage Repair Workflow
-- v1.2.0: Replay Training UX
-- Broker API branch: only if explicitly planned
 
 ---
 

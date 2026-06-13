@@ -1,8 +1,9 @@
 """
-release/version_info.py — Centralized version info for TW Quant Cockpit v1.1.0.
+release/version_info.py — Centralized version info for TW Quant Cockpit v1.1.1.
 [!] Research Only. No Real Orders. Production Trading: BLOCKED.
 [!] VALIDATED does not enable trading. Broker Execution Disabled.
 [!] Data Universe Expansion. Real Data Coverage Required.
+[!] Data Import UX & Batch Onboarding. dry_run=True default.
 [!] Mock Data Formal Conclusion: DISABLED. Not Investment Advice.
 """
 from __future__ import annotations
@@ -13,12 +14,12 @@ logger = logging.getLogger(__name__)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 # ---------------------------------------------------------------------------
-# v1.1.0 module-level constants (Data Universe Expansion)
+# v1.1.1 module-level constants (Data Import UX & Batch Onboarding)
 # ---------------------------------------------------------------------------
-VERSION                             = "1.1.0"
-RELEASE_NAME                        = "Data Universe Expansion"
-BASE_RELEASE                        = "1.0.9 Final Maintenance Rollup"
-BASE_RELEASE_NAME                   = "Final Maintenance Rollup"
+VERSION                             = "1.1.1"
+RELEASE_NAME                        = "Data Import UX & Batch Onboarding"
+BASE_RELEASE                        = "1.1.0 Data Universe Expansion"
+BASE_RELEASE_NAME                   = "Data Universe Expansion"
 MAINTENANCE_RELEASE                 = False
 RELEASE_STAGE                       = "STABLE"
 RELEASE_TRACK                       = "research"
@@ -51,6 +52,11 @@ DATA_UNIVERSE_EXPANSION_RELEASE     = True
 UNIVERSE_TIERS_AVAILABLE            = True
 REAL_DATA_COVERAGE_REQUIRED         = True
 MOCK_DATA_FORMAL_CONCLUSION_ALLOWED = False
+# v1.1.1 new flags
+DATA_IMPORT_ONBOARDING_RELEASE      = True
+DRY_RUN_DEFAULT                     = True
+DESTRUCTIVE_IMPORT_DISABLED         = True
+CONFLICT_AUTO_OVERWRITE_ENABLED     = False
 
 
 class VersionInfo:
@@ -193,6 +199,10 @@ def print_version_info() -> None:
     print(f"  External API Disabled: {EXTERNAL_API_DISABLED}")
     print(f"  Paper Trading: {'Simulation Only' if PAPER_TRADING_IS_SIMULATION else 'N/A'}")
     print(f"  Mock Realtime: {'Simulation Only' if MOCK_REALTIME_IS_SIMULATION else 'N/A'}")
+    print(f"  Data Import Onboarding Release: {DATA_IMPORT_ONBOARDING_RELEASE}")
+    print(f"  Dry Run Default: {DRY_RUN_DEFAULT}")
+    print(f"  Destructive Import Disabled: {DESTRUCTIVE_IMPORT_DISABLED}")
+    print(f"  Conflict Auto-Overwrite Enabled: {CONFLICT_AUTO_OVERWRITE_ENABLED}")
     print("=" * 60)
 
 

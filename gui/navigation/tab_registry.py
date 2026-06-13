@@ -1285,6 +1285,46 @@ class GUITabRegistry:
                 production_blocked=True,
             ),
             # ----------------------------------------------------------------
+            # v1.1.1 Data Import UX & Batch Onboarding
+            # ----------------------------------------------------------------
+            GUITabMetadata(
+                tab_id="data_import_onboarding",
+                tab_name="data_import_onboarding",
+                display_name="Data Import & Batch Onboarding",
+                group="data",
+                priority="P1",
+                description=(
+                    "Data Import UX & Batch Onboarding v1.1.1 — XQ/CSV/Excel discovery, "
+                    "column mapping, duplicate/conflict detection, safe merge planning, "
+                    "retry manifests, universe coverage refresh. "
+                    "Research Only. No Real Orders. dry_run=True default."
+                ),
+                module_path="gui.import_onboarding_panel",
+                class_name="ImportOnboardingPanel",
+                available_flag="_IMPORT_ONBOARDING_AVAILABLE",
+                keywords=[
+                    "import", "data import", "batch onboarding", "xq import", "csv import",
+                    "excel import", "file discovery", "column mapping", "duplicate detection",
+                    "conflict detection", "import plan", "retry manifest", "batch import",
+                    "\u532f\u5165", "\u6279\u6b21\u532f\u5165", "\u8cc7\u6599\u532f\u5165",
+                    "XQ\u532f\u5165", "\u91cd\u8907\u8cc7\u6599", "\u885d\u7a81\u8cc7\u6599",
+                ],
+                aliases=["import", "data-import", "batch-import", "onboarding"],
+                related_cli_commands=[
+                    "import-discover", "import-preview", "import-validate", "import-plan",
+                    "import-batch", "import-retry-manifest", "import-onboarding-health",
+                    "import-onboarding-report", "import-xq-export",
+                ],
+                report_types=["data_import_onboarding_report"],
+                maturity="STABLE",
+                default_visible=True,
+                favorite_default=False,
+                no_real_orders=True,
+                read_only=True,
+                production_blocked=True,
+                notes="Added in v1.1.1 — Data Import UX & Batch Onboarding.",
+            ),
+            # ----------------------------------------------------------------
             # v1.1.0 Data Universe Expansion
             # ----------------------------------------------------------------
             GUITabMetadata(

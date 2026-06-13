@@ -566,6 +566,15 @@ try:
 except Exception:
     pass
 
+# v1.1.1 Data Import & Batch Onboarding panel — optional
+# ---------------------------------------------------------------------------
+_IMPORT_ONBOARDING_AVAILABLE = False
+try:
+    from gui.import_onboarding_panel import ImportOnboardingPanel
+    _IMPORT_ONBOARDING_AVAILABLE = True
+except Exception:
+    pass
+
 # v0.5.1.1 Strategy Filter panel — inline (no separate panel file required)
 # ---------------------------------------------------------------------------
 _STRATEGY_FILTER_AVAILABLE = False

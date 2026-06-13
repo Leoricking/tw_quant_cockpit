@@ -4,7 +4,7 @@
 >
 > **[!] v1: Real order execution is strictly prohibited. For research, simulation, and decision support only. Not investment advice.**
 
-**Current version: v1.1.0 — Data Universe Expansion** (base: v1.0.9 Final Maintenance Rollup) — **v1.0 Maintenance Line Complete**
+**Current version: v1.1.1 — Data Import UX & Batch Onboarding** (base: v1.1.0 Data Universe Expansion) — **v1.0 Maintenance Line Complete**
 
 ---
 
@@ -29,11 +29,15 @@ TW Quant Cockpit is a **Research Trading Cockpit** for Taiwan equity markets. It
 
 ---
 
-## Current Version: v1.1.0 — Data Universe Expansion
+## Current Version: v1.1.1 — Data Import UX & Batch Onboarding
 
-This is TW Quant Cockpit **v1.1.0 — Data Universe Expansion**, based on **v1.0.9 Final Maintenance Rollup**.
+This is TW Quant Cockpit **v1.1.1 — Data Import UX & Batch Onboarding**, based on **v1.1.0 Data Universe Expansion**.
 
-New in v1.1.0: universe/ package (universe_schema, universe_tier_registry, universe_builder, universe_coverage, universe_health, universe_store, universe_query), CORE_10/RESEARCH_30/EXPANDED_50/BROAD_100 tier management, per-symbol OHLC/chips/revenue/fundamental coverage analysis, statistical confidence validation, 7 new CLI commands (universe-build, universe-summary, universe-health, universe-coverage, universe-symbol, universe-missing, universe-report), optional GUI panel + adapter, Data Universe Expansion Report, regression coverage, stable checklist checks, docs/data_universe_expansion_v1.1.0.md. No strategy logic changes. No broker API. No external API. Mock Data Formal Conclusion: DISABLED.
+New in v1.1.1: data_onboarding/ package (file_discovery, schema_detector, file_validator, duplicate_detector, import_planner, batch_executor, retry_manifest, onboarding_store, onboarding_query, onboarding_health), dry_run=True by default, REPLACE_EXPLICIT blocked by default, conflict detection → REVIEW (not auto-overwrite), retry manifests, universe coverage refresh, 7 new CLI commands (import-discover, import-preview, import-validate, import-plan, import-batch, import-retry-manifest, import-onboarding-health, import-onboarding-report), optional GUI panel, docs/data_import_onboarding_v1.1.1.md. No broker API. Not Investment Advice.
+
+## v1.1.0 — Data Universe Expansion
+
+New in v1.1.0: universe/ package, CORE_10/RESEARCH_30/EXPANDED_50/BROAD_100 tier management, per-symbol coverage analysis, 7 new CLI commands (universe-build, universe-summary, universe-health, universe-coverage, universe-symbol, universe-missing, universe-report). Mock Data Formal Conclusion: DISABLED.
 
 ## v1.0.9 — Final Maintenance Rollup
 

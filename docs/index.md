@@ -3,7 +3,7 @@
 > **[!] Research Only. Read Only. No Real Orders. Production Trading: BLOCKED.**
 > **[!] Not investment advice. REAL_ORDER_READY=False.**
 
-Current version: **v1.1.0** — Data Universe Expansion (base: v1.0.9 Final Maintenance Rollup) — **v1.0 Maintenance Line Complete**
+Current version: **v1.1.1** — Data Import UX & Batch Onboarding (base: v1.1.0 Data Universe Expansion) — **v1.0 Maintenance Line Complete**
 
 ---
 

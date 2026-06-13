@@ -1918,7 +1918,38 @@ def cmd_data_audit(args: argparse.Namespace) -> None:
 # ---------------------------------------------------------------------------
 
 def cmd_import_plan(args: argparse.Namespace) -> None:
-    """Show prioritized import plan based on current data gaps."""
+    """Show prioritized import plan based on current data gaps (v0.3.3).
+    v1.1.1: if --path is given, use ImportPlanner for batch onboarding plan."""
+    path = getattr(args, 'path', None)
+    if path:
+        # v1.1.1 — use ImportPlanner
+        from data_onboarding.import_planner import ImportPlanner
+        print("=" * 60)
+        print("TW Quant Cockpit \u2014 Import Plan (v1.1.1)")
+        print(f"Research Only: True | No Real Orders: True | Dry Run Default: True")
+        print("[!] REPLACE_EXPLICIT disabled. Conflicts -> REVIEW (not auto-overwrite).")
+        print("=" * 60)
+        try:
+            planner = ImportPlanner()
+            plan = planner.build_plan(path, mode="MERGE_SAFE", dry_run=True, allow_replace=False)
+            print(f"Path:     {path}")
+            print(f"Dry Run:  {plan.dry_run}")
+            print(f"Total:    {plan.total_files}")
+            print(f"MERGE_SAFE:   {plan.merge_safe_count}")
+            print(f"APPEND_SAFE:  {plan.append_safe_count}")
+            print(f"BLOCKED:      {plan.blocked_count}")
+            print(f"REVIEW:       {plan.review_count}")
+            print()
+            for item in plan.items:
+                print(f"  [{item.action:<20}] {item.file_path} | symbol={item.symbol} "
+                      f"dataset={item.dataset}")
+                if item.blocked_reason:
+                    print(f"    BLOCKED: {item.blocked_reason}")
+            print("[!] Research Only. No Real Orders.")
+        except Exception as exc:
+            print(f"  [ERROR] import-plan (v1.1.1) failed: {exc}")
+        return
+
     from data.import_plan import ImportPlan
 
     logger_cmd = logging.getLogger("main.import_plan")
@@ -5617,7 +5648,7 @@ def cmd_enrich_universe_data(args: argparse.Namespace) -> None:
 # ---------------------------------------------------------------------------
 
 def cmd_version_info(args: argparse.Namespace) -> None:
-    """Print version info for TW Quant Cockpit v1.1.0 (Data Universe Expansion)."""
+    """Print version info for TW Quant Cockpit v1.1.1 (Data Import UX & Batch Onboarding)."""
     print("=" * 60)
     print("TW Quant Cockpit \u2014 Version Info")
     print("=" * 60)
@@ -5629,7 +5660,7 @@ def cmd_version_info(args: argparse.Namespace) -> None:
             PAPER_TRADING_IS_SIMULATION, MOCK_REALTIME_IS_SIMULATION,
         )
         import release.version_info as _vi
-        base_release = getattr(_vi, "BASE_RELEASE", "1.0.9 Final Maintenance Rollup")
+        base_release = getattr(_vi, "BASE_RELEASE", "1.1.0 Data Universe Expansion")
         print(f"{'Version:':<40} {VERSION}")
         print(f"{'Release:':<40} {RELEASE_NAME}")
         print(f"{'Base Release:':<40} {base_release}")
@@ -5640,6 +5671,15 @@ def cmd_version_info(args: argparse.Namespace) -> None:
         print(f"{'Production Trading BLOCKED:':<40} {PRODUCTION_TRADING_BLOCKED}")
         print(f"{'Broker Execution Enabled:':<40} {BROKER_EXECUTION_ENABLED}")
         print(f"{'VALIDATED does not enable trading:':<40} {VALIDATED_DOES_NOT_ENABLE_TRADING}")
+        # v1.1.1 Data Import UX & Batch Onboarding fields
+        obd_release  = getattr(_vi, "DATA_IMPORT_ONBOARDING_RELEASE", False)
+        dry_run_def  = getattr(_vi, "DRY_RUN_DEFAULT", False)
+        dest_dis     = getattr(_vi, "DESTRUCTIVE_IMPORT_DISABLED", False)
+        conf_ow      = getattr(_vi, "CONFLICT_AUTO_OVERWRITE_ENABLED", True)
+        print(f"{'Data Import Onboarding Release:':<40} {obd_release}")
+        print(f"{'Dry Run Default:':<40} {dry_run_def}")
+        print(f"{'Destructive Import Disabled:':<40} {dest_dis}")
+        print(f"{'Conflict Auto-Overwrite Enabled:':<40} {conf_ow}")
         # v1.1.0 Data Universe Expansion fields
         du_release = getattr(_vi, "DATA_UNIVERSE_EXPANSION_RELEASE", False)
         uni_tiers  = getattr(_vi, "UNIVERSE_TIERS_AVAILABLE", False)
@@ -5659,13 +5699,13 @@ def cmd_version_info(args: argparse.Namespace) -> None:
         print(f"{'Paper Trading:':<40} {'Simulation Only' if PAPER_TRADING_IS_SIMULATION else 'Real'}")
         print(f"{'Mock Realtime:':<40} {'Simulation Only' if MOCK_REALTIME_IS_SIMULATION else 'Real'}")
     except Exception as exc:
-        print(f"  Version:                              1.1.0")
-        print(f"  Release:                              Data Universe Expansion")
-        print(f"  Base Release:                         1.0.9 Final Maintenance Rollup")
-        print(f"  Data Universe Expansion Release:      True")
-        print(f"  Universe Tiers Available:             True")
-        print(f"  Real Data Coverage Required:          True")
-        print(f"  Mock Data Formal Conclusion Allowed:  False")
+        print(f"  Version:                              1.1.1")
+        print(f"  Release:                              Data Import UX & Batch Onboarding")
+        print(f"  Base Release:                         1.1.0 Data Universe Expansion")
+        print(f"  Data Import Onboarding Release:       True")
+        print(f"  Dry Run Default:                      True")
+        print(f"  Destructive Import Disabled:          True")
+        print(f"  Conflict Auto-Overwrite Enabled:      False")
         print(f"  (version_info import error: {exc})")
     print("=" * 60)
     print("RESEARCH ONLY \u2014 Not Investment Advice \u2014 No Real Orders")
@@ -10306,6 +10346,234 @@ def cmd_universe_report(args):
 
 
 # ---------------------------------------------------------------------------
+# v1.1.1 Data Import UX & Batch Onboarding handlers
+# ---------------------------------------------------------------------------
+
+def cmd_import_discover(args):
+    """Discover importable files in a directory. Research Only. No Real Orders."""
+    from data_onboarding.file_discovery import ImportFileDiscovery
+    path = getattr(args, "path", None) or "."
+    print("=" * 60)
+    print("TW Quant Cockpit \u2014 Data Import Discovery")
+    print(f"Research Only: True | No Real Orders: True | Dry Run Default: True")
+    print("=" * 60)
+    try:
+        discovery = ImportFileDiscovery()
+        files = discovery.discover(path)
+        summary = discovery.summarize(files)
+        print(f"Path:        {path}")
+        print(f"Total Files: {summary['total']}")
+        print(f"By Type:     {summary['by_type']}")
+        print(f"By Dataset:  {summary['by_dataset']}")
+        print()
+        for f in files:
+            print(f"  [{f.file_type:<15}] {f.file_name} | symbol={f.detected_symbol} "
+                  f"dataset={f.detected_dataset} confidence={f.mapping_confidence:.2f}")
+            for w in f.warnings:
+                print(f"    WARN: {w}")
+            for e in f.errors:
+                print(f"    ERROR: {e}")
+        print("[!] Research Only. No Real Orders.")
+    except Exception as exc:
+        print(f"  [ERROR] import-discover failed: {exc}")
+
+
+def cmd_import_preview(args):
+    """Preview columns of a single importable file. Research Only. No Real Orders."""
+    from data_onboarding.file_discovery import ImportFileDiscovery
+    from data_onboarding.schema_detector import ColumnMappingDetector
+    file_path = getattr(args, "file", None) or ""
+    print("=" * 60)
+    print("TW Quant Cockpit \u2014 Data Import File Preview")
+    print(f"Research Only: True | No Real Orders: True | Dry Run Default: True")
+    print("=" * 60)
+    try:
+        disc = ImportFileDiscovery()
+        preview = disc.preview_columns(file_path)
+        cols = preview.get("columns", [])
+        print(f"File:     {file_path}")
+        print(f"Columns:  {cols}")
+        print(f"Rows:     {preview.get('rows', 0)}")
+        det = ColumnMappingDetector()
+        detection = det.detect(cols)
+        print(f"Mapped:   {detection['mapped']}")
+        print(f"Datasets: {detection['datasets']}")
+        print(f"Confidence: {detection['confidence']}")
+        print(f"Missing:  {detection['missing_required']}")
+        for w in preview.get("warnings", []):
+            print(f"  WARN: {w}")
+        for e in preview.get("errors", []):
+            print(f"  ERROR: {e}")
+        print("[!] Research Only. No Real Orders.")
+    except Exception as exc:
+        print(f"  [ERROR] import-preview failed: {exc}")
+
+
+def cmd_import_validate(args):
+    """Validate all importable files in a directory. Research Only. No Real Orders."""
+    from data_onboarding.file_discovery import ImportFileDiscovery
+    from data_onboarding.file_validator import ImportFileValidator
+    path = getattr(args, "path", None) or "."
+    print("=" * 60)
+    print("TW Quant Cockpit \u2014 Data Import Validation")
+    print(f"Research Only: True | No Real Orders: True | Dry Run Default: True")
+    print("=" * 60)
+    try:
+        discovery = ImportFileDiscovery()
+        validator = ImportFileValidator()
+        files = discovery.discover(path)
+        print(f"Path:        {path}")
+        print(f"Files found: {len(files)}")
+        print()
+        ok_count = warn_count = fail_count = blocked_count = 0
+        for f in files:
+            val = validator.validate(f.file_path, f.detected_symbol, f.detected_dataset or "daily")
+            status = val.status
+            if status == "OK":
+                ok_count += 1
+            elif status == "WARNING":
+                warn_count += 1
+            elif status == "FAIL":
+                fail_count += 1
+            else:
+                blocked_count += 1
+            print(f"  [{status:<8}] {f.file_name} | rows={val.row_count} valid={val.valid_rows} "
+                  f"invalid={val.invalid_rows} dups={val.duplicate_count}")
+            for w in val.warnings[:3]:
+                print(f"    WARN: {w}")
+            for e in val.errors[:3]:
+                print(f"    ERROR: {e}")
+        print()
+        print(f"Summary: OK={ok_count} WARNING={warn_count} FAIL={fail_count} BLOCKED={blocked_count}")
+        print("[!] Research Only. No Real Orders.")
+    except Exception as exc:
+        print(f"  [ERROR] import-validate failed: {exc}")
+
+
+def cmd_import_batch(args):
+    """Execute import batch (dry-run by default). Research Only. No Real Orders."""
+    from data_onboarding.import_planner import ImportPlanner
+    from data_onboarding.batch_executor import BatchImportExecutor
+    from data_onboarding.onboarding_store import OnboardingStore
+    path = getattr(args, "path", None) or "."
+    dry_run = getattr(args, "dry_run", True)
+    allow_write = getattr(args, "allow_write", False)
+    mode_str = getattr(args, "mode", "merge-safe") or "merge-safe"
+    mode_map = {"merge-safe": "MERGE_SAFE", "append-safe": "APPEND_SAFE"}
+    mode = mode_map.get(mode_str, "MERGE_SAFE")
+    if allow_write:
+        dry_run = False
+    print("=" * 60)
+    print("TW Quant Cockpit \u2014 Batch Import")
+    print(f"Research Only: True | No Real Orders: True | dry_run={dry_run}")
+    print("[!] REPLACE_EXPLICIT disabled. Conflicts -> REVIEW (not auto-overwrite).")
+    print("=" * 60)
+    try:
+        planner = ImportPlanner()
+        plan = planner.build_plan(path, mode=mode, dry_run=dry_run, allow_replace=False)
+        executor = BatchImportExecutor()
+        summary = executor.execute(plan, allow_write=allow_write)
+        store = OnboardingStore()
+        store.save_plan(plan)
+        store.save_summary(summary)
+        print(f"Path:       {path}")
+        print(f"Dry Run:    {dry_run}")
+        print(f"Total:      {summary.total_files}")
+        print(f"Succeeded:  {summary.succeeded}")
+        print(f"Failed:     {summary.failed}")
+        print(f"Skipped:    {summary.skipped}")
+        print(f"Blocked:    {summary.blocked}")
+        print()
+        for r in summary.results[:20]:
+            print(f"  [{r.status:<8}] {r.file_path} | rows_imported={r.rows_imported}")
+        if summary.failed > 0:
+            print()
+            print("  Some files failed. Run 'import-retry-manifest' to build retry plan.")
+        print("[!] Research Only. No Real Orders.")
+    except Exception as exc:
+        print(f"  [ERROR] import-batch failed: {exc}")
+
+
+def cmd_import_retry_manifest(args):
+    """Build and show retry manifest from latest failed imports. Research Only. No Real Orders."""
+    from data_onboarding.onboarding_store import OnboardingStore
+    from data_onboarding.retry_manifest import RetryManifestBuilder
+    output_dir = getattr(args, "output_dir", "data/import_reports") or "data/import_reports"
+    print("=" * 60)
+    print("TW Quant Cockpit \u2014 Import Retry Manifest")
+    print(f"Research Only: True | No Real Orders: True | Dry Run Default: True")
+    print("=" * 60)
+    try:
+        store = OnboardingStore(output_dir=output_dir)
+        summary = store.load_latest_summary()
+        if summary is None:
+            print("  No batch summary found. Run 'import-batch' first.")
+            return
+        builder = RetryManifestBuilder()
+        manifest = builder.build(summary)
+        if not manifest.failed_files:
+            print("  No failed files in latest batch. Nothing to retry.")
+        else:
+            path = builder.save(manifest, output_dir=output_dir)
+            print(f"  Manifest ID:   {manifest.manifest_id}")
+            print(f"  Failed files:  {len(manifest.failed_files)}")
+            print(f"  Failed symbols: {manifest.failed_symbols}")
+            print(f"  Saved to:      {path}")
+        print("[!] Research Only. No Real Orders.")
+    except Exception as exc:
+        print(f"  [ERROR] import-retry-manifest failed: {exc}")
+
+
+def cmd_import_onboarding_health(args):
+    """Run onboarding health check. Research Only. No Real Orders."""
+    from data_onboarding.onboarding_health import OnboardingHealthCheck
+    print("=" * 60)
+    print("TW Quant Cockpit \u2014 Data Import Onboarding Health Check")
+    print("Research Only: True | No Real Orders: True | Dry Run Default: True")
+    print("=" * 60)
+    try:
+        checker = OnboardingHealthCheck()
+        result = checker.run()
+        total  = result["total"]
+        passed = result["passed"]
+        warned = result["warned"]
+        failed = result["failed"]
+        print(f"Total:   {total}")
+        print(f"Passed:  {passed}")
+        print(f"Warned:  {warned}")
+        print(f"Failed:  {failed}")
+        print(f"Overall: {result['overall']}")
+        print()
+        for check, status in result["results"].items():
+            icon = {"PASS": "[PASS]", "WARN": "[WARN]", "FAIL": "[FAIL]"}.get(status, "[?]")
+            print(f"  {icon} {check}")
+        print("[!] Research Only. No Real Orders.")
+    except Exception as exc:
+        print(f"  [ERROR] import-onboarding-health failed: {exc}")
+
+
+def cmd_import_onboarding_report(args):
+    """Build Data Import Onboarding Report. Research Only. No Real Orders."""
+    from reports.data_import_onboarding_report import DataImportOnboardingReportBuilder
+    from data_onboarding.onboarding_store import OnboardingStore
+    mode = getattr(args, "mode", "real") or "real"
+    print("=" * 60)
+    print("TW Quant Cockpit \u2014 Data Import Onboarding Report")
+    print(f"Research Only: True | No Real Orders: True | Dry Run Default: True")
+    print("=" * 60)
+    try:
+        store = OnboardingStore()
+        plan = store.load_latest_plan()
+        summary = store.load_latest_summary()
+        builder = DataImportOnboardingReportBuilder(plan=plan, summary=summary, mode=mode)
+        path = builder.save()
+        print(f"  Report saved to: {path}")
+        print("[!] Research Only. No Real Orders.")
+    except Exception as exc:
+        print(f"  [ERROR] import-onboarding-report failed: {exc}")
+
+
+# ---------------------------------------------------------------------------
 # v1.0.9 Final Maintenance Rollup handlers
 # ---------------------------------------------------------------------------
 
@@ -14164,6 +14432,10 @@ def _build_parser() -> argparse.ArgumentParser:
         "--export", action="store_true",
         help="Export import plan to data/import_reports/ (Markdown)",
     )
+    p_ip.add_argument(
+        "--path", default=None,
+        help="[v1.1.1] Path to discover and plan files for batch import",
+    )
 
     # --- provider-status ---
     subparsers.add_parser(
@@ -15671,6 +15943,59 @@ def _build_parser() -> argparse.ArgumentParser:
     )
     p_lae.add_argument("--answer-id", dest="answer_id", default="")
 
+    # --- v1.1.1 Data Import UX & Batch Onboarding ---
+    p_idiscover = subparsers.add_parser(
+        "import-discover",
+        help="[v1.1.1] Discover importable files in a directory. [!] Research Only.",
+    )
+    p_idiscover.add_argument("--path", default=".", help="Directory to scan")
+
+    p_ipreview = subparsers.add_parser(
+        "import-preview",
+        help="[v1.1.1] Preview columns of a single file. [!] Research Only.",
+    )
+    p_ipreview.add_argument("--file", default="", help="File to preview")
+
+    p_ival = subparsers.add_parser(
+        "import-validate",
+        help="[v1.1.1] Validate importable files. [!] Research Only.",
+    )
+    p_ival.add_argument("--path", default=".", help="Directory to validate")
+
+    p_ibatch = subparsers.add_parser(
+        "import-batch",
+        help="[v1.1.1] Batch import files (dry-run by default). [!] Research Only.",
+    )
+    p_ibatch.add_argument("--path", default=".", help="Source directory")
+    p_ibatch.add_argument("--dry-run", dest="dry_run", action="store_true", default=True,
+                          help="Dry run only (default: True)")
+    p_ibatch.add_argument("--execute", dest="dry_run", action="store_false",
+                          help="Actually execute (non-dry run)")
+    p_ibatch.add_argument("--allow-write", dest="allow_write", action="store_true", default=False,
+                          help="Allow writes (requires --execute)")
+    p_ibatch.add_argument("--mode", default="merge-safe",
+                          choices=["merge-safe", "append-safe"],
+                          help="Import mode (default: merge-safe)")
+
+    p_irm = subparsers.add_parser(
+        "import-retry-manifest",
+        help="[v1.1.1] Build retry manifest from failed imports. [!] Research Only.",
+    )
+    p_irm.add_argument("--output-dir", dest="output_dir", default="data/import_reports",
+                       help="Output directory for manifest")
+
+    subparsers.add_parser(
+        "import-onboarding-health",
+        help="[v1.1.1] Run data import onboarding health check. [!] Research Only.",
+    )
+
+    p_ior = subparsers.add_parser(
+        "import-onboarding-report",
+        help="[v1.1.1] Build Data Import Onboarding Report. [!] Research Only.",
+    )
+    p_ior.add_argument("--mode", default="real", choices=["real", "mock"],
+                       help="Report mode (default: real)")
+
     # --- v1.1.0 Data Universe Expansion ---
     p_ub = subparsers.add_parser(
         "universe-build",
@@ -17119,6 +17444,14 @@ def main() -> None:
         "local-assistant-health":  cmd_local_assistant_health,
         "local-assistant-report":  cmd_local_assistant_report,
         "local-assistant-explain": cmd_local_assistant_explain,
+        # v1.1.1 Data Import UX & Batch Onboarding
+        "import-discover":           cmd_import_discover,
+        "import-preview":            cmd_import_preview,
+        "import-validate":           cmd_import_validate,
+        "import-batch":              cmd_import_batch,
+        "import-retry-manifest":     cmd_import_retry_manifest,
+        "import-onboarding-health":  cmd_import_onboarding_health,
+        "import-onboarding-report":  cmd_import_onboarding_report,
         # v1.1.0 Data Universe Expansion
         "universe-build":    cmd_universe_build,
         "universe-summary":  cmd_universe_summary,
