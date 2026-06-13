@@ -263,6 +263,11 @@ _REPORT_PATTERNS = {
         "reports/final_maintenance_rollup_report*.md",
         "data/backtest_results/final_rollup/*.csv",
     ],
+    # v1.1.0 Data Universe Expansion
+    "data_universe_expansion_report": [
+        "reports/data_universe_expansion_report*.md",
+        "data/backtest_results/universe/*.csv",
+    ],
     # v0.9.1 Evidence Graph UX patterns
     "evidence_graph_gaps": [
         "data/backtest_results/evidence_graph/evidence_graph_gaps*.csv",

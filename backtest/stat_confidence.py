@@ -562,3 +562,75 @@ class StatConfidence:
             'reasons':            reasons,
             'scenario_count':     scenario_count,
         }
+
+    @staticmethod
+    def for_universe_coverage(
+        registered_symbols: int,
+        ready_symbols: int,
+        evaluated_symbols: int,
+        trading_days: int = None,
+        signal_count: int = None,
+    ) -> dict:
+        """
+        Evaluate confidence for a universe coverage backtest (v1.1.0).
+
+        Rules:
+          evaluated_symbols < 10                               → INSUFFICIENT
+          evaluated_symbols 10–29                              → OBSERVATIONAL
+          evaluated_symbols >= 30 and signal_count >= 200
+            and trading_days >= 120 (if provided)             → RELIABLE
+          registered >> ready (ready < registered * 0.5)      → downgrade to OBSERVATIONAL
+          is_mock_run=True                                     → DEMO_ONLY (not returned here)
+
+        Parameters
+        ----------
+        registered_symbols : total symbols registered in the tier
+        ready_symbols       : symbols with real data READY status
+        evaluated_symbols   : symbols actually evaluated (ready + partial)
+        trading_days        : trading days covered (optional)
+        signal_count        : total signals detected (optional)
+
+        Returns
+        -------
+        dict with keys: overall, universe, reasons
+        """
+        if evaluated_symbols < 10:
+            uni_lvl = 'INSUFFICIENT'
+        elif evaluated_symbols < 30:
+            uni_lvl = 'OBSERVATIONAL'
+        else:
+            uni_lvl = 'RELIABLE'
+
+        levels = [uni_lvl]
+
+        # Penalize if registered >> ready
+        if registered_symbols > 0 and ready_symbols < registered_symbols * 0.5:
+            levels.append('OBSERVATIONAL')
+
+        if trading_days is not None and trading_days < 120:
+            levels.append('OBSERVATIONAL')
+        if signal_count is not None and signal_count < 200:
+            levels.append('OBSERVATIONAL' if signal_count >= 30 else 'INSUFFICIENT')
+
+        order = ['INSUFFICIENT', 'OBSERVATIONAL', 'RELIABLE']
+        overall = 'RELIABLE'
+        for lvl in order:
+            if lvl in levels:
+                overall = lvl
+                break
+
+        reasons = []
+        if evaluated_symbols < 10:
+            reasons.append(f'evaluated_symbols {evaluated_symbols} < 10 -> INSUFFICIENT')
+        elif evaluated_symbols < 30:
+            reasons.append(f'evaluated_symbols {evaluated_symbols} < 30 -> OBSERVATIONAL')
+        if registered_symbols > 0 and ready_symbols < registered_symbols * 0.5:
+            reasons.append(
+                f'ready_symbols {ready_symbols} < 50% of registered {registered_symbols} -> downgrade'
+            )
+        if trading_days is not None and trading_days < 120:
+            reasons.append(f'trading_days {trading_days} < 120 -> not RELIABLE')
+        if signal_count is not None and signal_count < 200:
+            reasons.append(f'signal_count {signal_count} < 200 -> not RELIABLE')
+
+        return {'overall': overall, 'universe': uni_lvl, 'reasons': reasons}

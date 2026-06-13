@@ -79,6 +79,22 @@
 | v1.0.7 | Knowledge Base Search Polish | Done |
 | v1.0.8 | Local Research Assistant Polish | Done |
 | v1.0.9 | Final Maintenance Rollup | Done |
+| v1.1.0 | Data Universe Expansion | Done |
+
+---
+
+### v1.1.0 — Data Universe Expansion ✅
+
+- **Version:** 1.1.0 — feature release based on v1.0.9 Final Maintenance Rollup
+- **Type:** Data Universe Expansion — no strategy logic changes, no broker API, no trading
+- **Changes:** universe/ package (universe_schema, universe_tier_registry, universe_builder, universe_coverage, universe_health, universe_store, universe_query), reports/data_universe_expansion_report.py, 7 new CLI commands (universe-build, universe-summary, universe-health, universe-coverage, universe-symbol, universe-missing, universe-report), GUI panel + adapter, GUI nav tab (data group), report pack entry, stable checklist checks (#65-69), v060 checklist checks, intelligence checklist check, regression tests (~10), docs/data_universe_expansion_v1.1.0.md, .gitignore updates, README/docs refresh
+- **Safety:** No Real Orders, Production Trading BLOCKED, Broker Execution Disabled, Real Data Coverage Required, Mock Data Formal Conclusion DISABLED (unchanged from v1.0.0 core)
+
+**Next:**
+- v1.1.1: Data Import UX
+- v1.1.2: Coverage Repair Workflow
+- v1.2.0: Replay Training UX
+- Broker API branch: only if explicitly planned
 
 ---
 
@@ -86,16 +102,10 @@
 
 - **Version:** 1.0.9 — final maintenance release, v1.0.x maintenance line complete
 - **Type:** Final Maintenance Rollup — no strategy logic changes, no broker API, no trading
-- **Changes:** final_rollup/ package (rollup_schema, release_history, final_health_check, final_smoke_summary, maintenance_plan, final_rollup_engine, final_rollup_store), reports/final_maintenance_rollup_report.py, 6 new CLI commands (final-rollup, final-rollup-history, final-rollup-health, final-rollup-maintenance-plan, final-rollup-smoke, final-rollup-report), GUI panel + adapter, GUI nav tab, report pack entry, stable checklist checks, v060 checklist checks, intelligence checklist check, regression tests, docs/final_maintenance_rollup_v1.0.9.md, README/docs refresh
+- **Changes:** final_rollup/ package (rollup_schema, release_history, final_health_check, final_smoke_summary, maintenance_plan, final_rollup_engine, final_rollup_store), reports/final_maintenance_rollup_report.py, 6 new CLI commands, GUI panel + adapter, stable checklist checks, v060 checklist checks, intelligence checklist check, regression tests, docs/final_maintenance_rollup_v1.0.9.md, README/docs refresh
 - **Safety:** No Real Orders, Production Trading BLOCKED, Broker Execution Disabled, External API Disabled, VALIDATED does not enable trading (unchanged from v1.0.0)
 
 **v1.0 Maintenance Line: COMPLETE**
-
-**Next (optional):**
-- v1.1.0: Data Universe Expansion
-- v1.2.0: Replay Training UX
-- v1.3.0: Research Notebook / Journal Intelligence
-- Broker API branch: only if explicitly planned
 
 ---
 

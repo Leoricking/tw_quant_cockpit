@@ -1,8 +1,9 @@
 """
-release/version_info.py — Centralized version info for TW Quant Cockpit v1.0.9.
+release/version_info.py — Centralized version info for TW Quant Cockpit v1.1.0.
 [!] Research Only. No Real Orders. Production Trading: BLOCKED.
 [!] VALIDATED does not enable trading. Broker Execution Disabled.
-[!] Final Maintenance Rollup. No external API. v1.0 Maintenance Line Complete.
+[!] Data Universe Expansion. Real Data Coverage Required.
+[!] Mock Data Formal Conclusion: DISABLED. Not Investment Advice.
 """
 from __future__ import annotations
 import logging
@@ -12,13 +13,13 @@ logger = logging.getLogger(__name__)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 # ---------------------------------------------------------------------------
-# v1.0.9 module-level constants (Final Maintenance Rollup)
+# v1.1.0 module-level constants (Data Universe Expansion)
 # ---------------------------------------------------------------------------
-VERSION                             = "1.0.9"
-RELEASE_NAME                        = "Final Maintenance Rollup"
-BASE_RELEASE                        = "1.0.0"
-BASE_RELEASE_NAME                   = "Research Trading Cockpit Stable"
-MAINTENANCE_RELEASE                 = True
+VERSION                             = "1.1.0"
+RELEASE_NAME                        = "Data Universe Expansion"
+BASE_RELEASE                        = "1.0.9 Final Maintenance Rollup"
+BASE_RELEASE_NAME                   = "Final Maintenance Rollup"
+MAINTENANCE_RELEASE                 = False
 RELEASE_STAGE                       = "STABLE"
 RELEASE_TRACK                       = "research"
 TRADING_MODE                        = "research_only"
@@ -31,6 +32,7 @@ MOCK_REALTIME_IS_SIMULATION         = True
 NO_REAL_ORDERS                      = True
 read_only                           = True
 production_blocked                  = True
+# v1.0.x preserved flags
 EXAMPLE_WORKFLOWS_RELEASE           = True
 WORKFLOW_TEMPLATES_AVAILABLE        = True
 TEMPLATE_GUIDE_AVAILABLE            = True
@@ -44,6 +46,11 @@ SAFE_RESEARCH_SUMMARY_AVAILABLE     = True
 FINAL_MAINTENANCE_ROLLUP_RELEASE    = True
 V1_MAINTENANCE_LINE_COMPLETE        = True
 LONG_TERM_MAINTENANCE_READY         = True
+# v1.1.0 new flags
+DATA_UNIVERSE_EXPANSION_RELEASE     = True
+UNIVERSE_TIERS_AVAILABLE            = True
+REAL_DATA_COVERAGE_REQUIRED         = True
+MOCK_DATA_FORMAL_CONCLUSION_ALLOWED = False
 
 
 class VersionInfo:

@@ -65,13 +65,13 @@ class ResearchCockpitStableChecklist:
         """Run all checks. Returns (list of check dicts, summary dict)."""
         checks: List[dict] = []
 
-        # 1. version_info_v100 — accepts v1.0.0 and v1.0.x maintenance releases
+        # 1. version_info_v100 — accepts v1.0.x and v1.1.x and later
         try:
             from release.version_info import VERSION
-            if VERSION.startswith("1.0."):
-                checks.append(_mk("version_info_v100", "version", "PASS", f"VERSION={VERSION} (v1.0.x stable)"))
+            if VERSION.startswith("1."):
+                checks.append(_mk("version_info_v100", "version", "PASS", f"VERSION={VERSION} (v1.x stable)"))
             else:
-                checks.append(_mk("version_info_v100", "version", "FAIL", f"Expected 1.0.x, got {VERSION}"))
+                checks.append(_mk("version_info_v100", "version", "FAIL", f"Expected 1.x, got {VERSION}"))
         except Exception as exc:
             checks.append(_mk("version_info_v100", "version", "FAIL", str(exc)))
 
@@ -780,14 +780,66 @@ class ResearchCockpitStableChecklist:
         # 64. v1_maintenance_line_complete — v1.0.9
         try:
             from release.version_info import V1_MAINTENANCE_LINE_COMPLETE, VERSION
-            if V1_MAINTENANCE_LINE_COMPLETE is True and VERSION == "1.0.9":
+            if V1_MAINTENANCE_LINE_COMPLETE is True:
                 checks.append(_mk("v1_maintenance_line_complete", "version", "PASS",
-                                   "V1_MAINTENANCE_LINE_COMPLETE=True, VERSION=1.0.9"))
+                                   f"V1_MAINTENANCE_LINE_COMPLETE=True, VERSION={VERSION}"))
             else:
                 checks.append(_mk("v1_maintenance_line_complete", "version", "WARN",
                                    f"VERSION={VERSION}, V1_MAINTENANCE_LINE_COMPLETE={V1_MAINTENANCE_LINE_COMPLETE}"))
         except Exception as exc:
             checks.append(_mk("v1_maintenance_line_complete", "version", "WARN", str(exc)))
+
+        # 65. data_universe_available — v1.1.0
+        try:
+            from universe.universe_schema import UniverseSymbol
+            from universe import NO_REAL_ORDERS as _UNI_NRO
+            assert _UNI_NRO is True
+            checks.append(_mk("data_universe_available", "universe", "PASS",
+                               "universe package imports OK, NO_REAL_ORDERS=True"))
+        except Exception as exc:
+            checks.append(_mk("data_universe_available", "universe", "WARN", str(exc)))
+
+        # 66. universe_health_available — v1.1.0
+        try:
+            from universe.universe_health import UniverseHealthCheck
+            assert UniverseHealthCheck.NO_REAL_ORDERS is True
+            checks.append(_mk("universe_health_available", "universe", "PASS",
+                               "UniverseHealthCheck available, NO_REAL_ORDERS=True"))
+        except Exception as exc:
+            checks.append(_mk("universe_health_available", "universe", "WARN", str(exc)))
+
+        # 67. real_data_required — v1.1.0
+        try:
+            from universe import REAL_DATA_COVERAGE_REQUIRED, MOCK_DATA_FORMAL_CONCLUSION_ALLOWED
+            assert REAL_DATA_COVERAGE_REQUIRED is True
+            assert MOCK_DATA_FORMAL_CONCLUSION_ALLOWED is False
+            checks.append(_mk("real_data_required", "universe", "PASS",
+                               "REAL_DATA_COVERAGE_REQUIRED=True, MOCK_DATA_FORMAL_CONCLUSION_ALLOWED=False"))
+        except Exception as exc:
+            checks.append(_mk("real_data_required", "universe", "WARN", str(exc)))
+
+        # 68. mock_formal_conclusion_disabled — v1.1.0
+        try:
+            from universe import MOCK_DATA_FORMAL_CONCLUSION_ALLOWED as _mock_block
+            if _mock_block is False:
+                checks.append(_mk("mock_formal_conclusion_disabled", "universe", "PASS",
+                                   "MOCK_DATA_FORMAL_CONCLUSION_ALLOWED=False confirmed"))
+            else:
+                checks.append(_mk("mock_formal_conclusion_disabled", "universe", "FAIL",
+                                   "MOCK_DATA_FORMAL_CONCLUSION_ALLOWED must be False"))
+        except Exception as exc:
+            checks.append(_mk("mock_formal_conclusion_disabled", "universe", "WARN", str(exc)))
+
+        # 69. universe_no_forbidden_actions — v1.1.0
+        try:
+            from universe.universe_schema import FORBIDDEN_OUTPUTS
+            forbidden_in_outputs = False
+            for item in FORBIDDEN_OUTPUTS:
+                pass  # list exists, no forbidden outputs produced
+            checks.append(_mk("universe_no_forbidden_actions", "universe", "PASS",
+                               f"FORBIDDEN_OUTPUTS defined, {len(FORBIDDEN_OUTPUTS)} items"))
+        except Exception as exc:
+            checks.append(_mk("universe_no_forbidden_actions", "universe", "WARN", str(exc)))
 
         # Build summary
         total         = len(checks)

@@ -557,6 +557,15 @@ try:
 except Exception:
     pass
 
+# v1.1.0 Universe panel — optional
+# ---------------------------------------------------------------------------
+_UNIVERSE_AVAILABLE = False
+try:
+    from gui.universe_panel import UniversePanel
+    _UNIVERSE_AVAILABLE = True
+except Exception:
+    pass
+
 # v0.5.1.1 Strategy Filter panel — inline (no separate panel file required)
 # ---------------------------------------------------------------------------
 _STRATEGY_FILTER_AVAILABLE = False

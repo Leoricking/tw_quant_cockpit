@@ -1285,6 +1285,44 @@ class GUITabRegistry:
                 production_blocked=True,
             ),
             # ----------------------------------------------------------------
+            # v1.1.0 Data Universe Expansion
+            # ----------------------------------------------------------------
+            GUITabMetadata(
+                tab_id="data_universe",
+                tab_name="data_universe",
+                display_name="Data Universe Expansion",
+                group="data",
+                priority="P1",
+                description=(
+                    "Data Universe Expansion v1.1.0 \u2014 universe tiers, symbol coverage, "
+                    "real data validation, missing data tracking, statistical confidence. "
+                    "Research Only. No Real Orders. Production Trading BLOCKED."
+                ),
+                module_path="gui.universe_panel",
+                class_name="UniversePanel",
+                available_flag="_UNIVERSE_AVAILABLE",
+                keywords=[
+                    "universe", "data universe", "coverage", "symbols", "stock pool",
+                    "sample expansion", "universe health", "universe report",
+                    "\u80a1\u7968\u6c60", "\u6a23\u672c\u64f4\u5145", "\u8cc7\u6599\u8986\u84cb",
+                    "\u80a1\u7968\u6e05\u55ae", "30\u6a94", "50\u6a94", "100\u6a94",
+                    "CORE_10", "RESEARCH_30", "EXPANDED_50", "BROAD_100",
+                ],
+                aliases=["universe", "data-universe", "universe-expansion"],
+                related_cli_commands=[
+                    "universe-build", "universe-summary", "universe-health",
+                    "universe-coverage", "universe-symbol", "universe-missing", "universe-report",
+                ],
+                report_types=["data_universe_expansion_report"],
+                maturity="STABLE",
+                default_visible=True,
+                favorite_default=False,
+                no_real_orders=True,
+                read_only=True,
+                production_blocked=True,
+                notes="Added in v1.1.0 \u2014 Data Universe Expansion.",
+            ),
+            # ----------------------------------------------------------------
             # v1.0.9 Final Maintenance Rollup
             # ----------------------------------------------------------------
             GUITabMetadata(

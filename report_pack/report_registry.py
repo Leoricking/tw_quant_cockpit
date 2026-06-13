@@ -63,6 +63,9 @@ REPORT_LOCAL_RESEARCH_ASSISTANT = "local_research_assistant_report"
 # v1.0.9 Final Maintenance Rollup
 REPORT_FINAL_MAINTENANCE_ROLLUP = "final_maintenance_rollup_report"
 
+# v1.1.0 Data Universe Expansion
+REPORT_DATA_UNIVERSE_EXPANSION = "data_universe_expansion_report"
+
 logger = logging.getLogger(__name__)
 
 # ---------------------------------------------------------------------------
@@ -161,6 +164,8 @@ _PACK_DEFINITIONS: Dict[str, List[str]] = {
         REPORT_LOCAL_RESEARCH_ASSISTANT,
         # v1.0.9 Final Maintenance Rollup (optional in weekly pack)
         REPORT_FINAL_MAINTENANCE_ROLLUP,
+        # v1.1.0 Data Universe Expansion (optional in weekly pack)
+        REPORT_DATA_UNIVERSE_EXPANSION,
     ],
     PACK_FULL: [
         REPORT_DAILY_MARKET,
@@ -226,6 +231,8 @@ _PACK_DEFINITIONS: Dict[str, List[str]] = {
         REPORT_LOCAL_RESEARCH_ASSISTANT,
         # v1.0.9 Final Maintenance Rollup (optional in full pack)
         REPORT_FINAL_MAINTENANCE_ROLLUP,
+        # v1.1.0 Data Universe Expansion (optional in full pack)
+        REPORT_DATA_UNIVERSE_EXPANSION,
     ],
 }
 

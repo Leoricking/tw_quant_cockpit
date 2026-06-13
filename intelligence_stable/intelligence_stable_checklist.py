@@ -1090,4 +1090,38 @@ class IntelligenceStableChecklist:
                 suggested_fix="Run: python main.py final-rollup-health",
             ))
 
+        # v1.1.0 data_universe_v110_safe — universe package is safe
+        try:
+            import importlib
+            mod_uni = importlib.import_module("universe")
+            no_orders_uni  = getattr(mod_uni, "NO_REAL_ORDERS", None)
+            real_cov       = getattr(mod_uni, "REAL_DATA_COVERAGE_REQUIRED", None)
+            mock_block     = getattr(mod_uni, "MOCK_DATA_FORMAL_CONCLUSION_ALLOWED", True)
+            if no_orders_uni is True and real_cov is True and mock_block is False:
+                checks.append(_check(
+                    "data_universe_v110_safe", "stable_integration",
+                    "v1.1.0 data_universe_v110_safe",
+                    CHECK_PASS, SEV_LOW,
+                    f"universe: NO_REAL_ORDERS=True, REAL_DATA_COVERAGE_REQUIRED=True, "
+                    f"MOCK_DATA_FORMAL_CONCLUSION_ALLOWED=False.",
+                ))
+            else:
+                checks.append(_check(
+                    "data_universe_v110_safe", "stable_integration",
+                    "v1.1.0 data_universe_v110_safe",
+                    CHECK_WARN, SEV_LOW,
+                    f"universe safety flags: NO_REAL_ORDERS={no_orders_uni}, "
+                    f"REAL_DATA_COVERAGE_REQUIRED={real_cov}, "
+                    f"MOCK_DATA_FORMAL_CONCLUSION_ALLOWED={mock_block}",
+                    suggested_fix="Ensure universe/__init__.py has correct v1.1.0 safety flags.",
+                ))
+        except Exception as exc:
+            checks.append(_check(
+                "data_universe_v110_safe", "stable_integration",
+                "v1.1.0 data_universe_v110_safe",
+                CHECK_WARN, SEV_LOW,
+                f"Could not verify data_universe_v110 safety (optional): {exc}",
+                suggested_fix="Run: python main.py universe-health",
+            ))
+
         return checks

@@ -5617,7 +5617,7 @@ def cmd_enrich_universe_data(args: argparse.Namespace) -> None:
 # ---------------------------------------------------------------------------
 
 def cmd_version_info(args: argparse.Namespace) -> None:
-    """Print version info for TW Quant Cockpit v1.0.5 (Documentation & User Guide Polish)."""
+    """Print version info for TW Quant Cockpit v1.1.0 (Data Universe Expansion)."""
     print("=" * 60)
     print("TW Quant Cockpit \u2014 Version Info")
     print("=" * 60)
@@ -5629,51 +5629,43 @@ def cmd_version_info(args: argparse.Namespace) -> None:
             PAPER_TRADING_IS_SIMULATION, MOCK_REALTIME_IS_SIMULATION,
         )
         import release.version_info as _vi
-        base_release = getattr(_vi, "BASE_RELEASE", "1.0.0")
-        base_release_name = getattr(_vi, "BASE_RELEASE_NAME", "Research Trading Cockpit Stable")
-        example_workflows = getattr(_vi, "EXAMPLE_WORKFLOWS_RELEASE", False)
-        workflow_templates = getattr(_vi, "WORKFLOW_TEMPLATES_AVAILABLE", False)
-        template_guide = getattr(_vi, "TEMPLATE_GUIDE_AVAILABLE", False)
-        kb_search_release = getattr(_vi, "KNOWLEDGE_BASE_SEARCH_RELEASE", False)
-        kb_index_available = getattr(_vi, "KNOWLEDGE_BASE_INDEX_AVAILABLE", False)
-        safe_search_available = getattr(_vi, "SAFE_SEARCH_SUMMARY_AVAILABLE", False)
-        la_release = getattr(_vi, "LOCAL_RESEARCH_ASSISTANT_RELEASE", False)
-        la_local_only = getattr(_vi, "LOCAL_ONLY_ASSISTANT", False)
-        la_ext_api_disabled = getattr(_vi, "EXTERNAL_API_DISABLED", False)
-        la_safe_summary = getattr(_vi, "SAFE_RESEARCH_SUMMARY_AVAILABLE", False)
-        print(f"{'Version:':<35} {VERSION}")
-        print(f"{'Release:':<35} {RELEASE_NAME}")
-        print(f"{'Base Release:':<35} {base_release} {base_release_name}")
-        print(f"{'Stage:':<35} {RELEASE_STAGE}")
-        print(f"{'Track:':<35} {RELEASE_TRACK.capitalize()}")
-        print(f"{'Research Only:':<35} True")
-        print(f"{'No Real Orders:':<35} {NO_REAL_ORDERS}")
-        print(f"{'Production Trading BLOCKED:':<35} {PRODUCTION_TRADING_BLOCKED}")
-        print(f"{'Broker Execution:':<35} {'Disabled' if not BROKER_EXECUTION_ENABLED else 'Enabled'}")
-        print(f"{'VALIDATED does not enable trading:':<35} {VALIDATED_DOES_NOT_ENABLE_TRADING}")
-        print(f"{'Knowledge Base Search Release:':<35} {kb_search_release}")
-        print(f"{'Knowledge Base Index Available:':<35} {kb_index_available}")
-        print(f"{'Safe Search Summary Available:':<35} {safe_search_available}")
-        print(f"{'Local Research Assistant Release:':<35} {la_release}")
-        print(f"{'Local Only Assistant:':<35} {la_local_only}")
-        print(f"{'External API Disabled:':<35} {la_ext_api_disabled}")
-        print(f"{'Safe Research Summary Available:':<35} {la_safe_summary}")
+        base_release = getattr(_vi, "BASE_RELEASE", "1.0.9 Final Maintenance Rollup")
+        print(f"{'Version:':<40} {VERSION}")
+        print(f"{'Release:':<40} {RELEASE_NAME}")
+        print(f"{'Base Release:':<40} {base_release}")
+        print(f"{'Stage:':<40} {RELEASE_STAGE}")
+        print(f"{'Track:':<40} {RELEASE_TRACK.capitalize()}")
+        print(f"{'Research Only:':<40} True")
+        print(f"{'No Real Orders:':<40} {NO_REAL_ORDERS}")
+        print(f"{'Production Trading BLOCKED:':<40} {PRODUCTION_TRADING_BLOCKED}")
+        print(f"{'Broker Execution Enabled:':<40} {BROKER_EXECUTION_ENABLED}")
+        print(f"{'VALIDATED does not enable trading:':<40} {VALIDATED_DOES_NOT_ENABLE_TRADING}")
+        # v1.1.0 Data Universe Expansion fields
+        du_release = getattr(_vi, "DATA_UNIVERSE_EXPANSION_RELEASE", False)
+        uni_tiers  = getattr(_vi, "UNIVERSE_TIERS_AVAILABLE", False)
+        real_cov   = getattr(_vi, "REAL_DATA_COVERAGE_REQUIRED", False)
+        mock_block = getattr(_vi, "MOCK_DATA_FORMAL_CONCLUSION_ALLOWED", True)
+        print(f"{'Data Universe Expansion Release:':<40} {du_release}")
+        print(f"{'Universe Tiers Available:':<40} {uni_tiers}")
+        print(f"{'Real Data Coverage Required:':<40} {real_cov}")
+        print(f"{'Mock Data Formal Conclusion Allowed:':<40} {mock_block}")
         # v1.0.9 Final Maintenance Rollup fields
         fr_release = getattr(_vi, "FINAL_MAINTENANCE_ROLLUP_RELEASE", False)
         v1_complete = getattr(_vi, "V1_MAINTENANCE_LINE_COMPLETE", False)
         lt_ready = getattr(_vi, "LONG_TERM_MAINTENANCE_READY", False)
-        print(f"{'Final Maintenance Rollup Release:':<35} {fr_release}")
-        print(f"{'v1.0 Maintenance Line Complete:':<35} {v1_complete}")
-        print(f"{'Long-term Maintenance Ready:':<35} {lt_ready}")
-        print(f"{'Paper Trading:':<35} {'Simulation Only' if PAPER_TRADING_IS_SIMULATION else 'Real'}")
-        print(f"{'Mock Realtime:':<35} {'Simulation Only' if MOCK_REALTIME_IS_SIMULATION else 'Real'}")
+        print(f"{'Final Maintenance Rollup Release:':<40} {fr_release}")
+        print(f"{'v1.0 Maintenance Line Complete:':<40} {v1_complete}")
+        print(f"{'Long-term Maintenance Ready:':<40} {lt_ready}")
+        print(f"{'Paper Trading:':<40} {'Simulation Only' if PAPER_TRADING_IS_SIMULATION else 'Real'}")
+        print(f"{'Mock Realtime:':<40} {'Simulation Only' if MOCK_REALTIME_IS_SIMULATION else 'Real'}")
     except Exception as exc:
-        print(f"  Version:                         1.0.9")
-        print(f"  Release:                         Final Maintenance Rollup")
-        print(f"  Base Release:                    1.0.0 Research Trading Cockpit Stable")
-        print(f"  Final Maintenance Rollup Release: True")
-        print(f"  v1.0 Maintenance Line Complete:  True")
-        print(f"  Long-term Maintenance Ready:     True")
+        print(f"  Version:                              1.1.0")
+        print(f"  Release:                              Data Universe Expansion")
+        print(f"  Base Release:                         1.0.9 Final Maintenance Rollup")
+        print(f"  Data Universe Expansion Release:      True")
+        print(f"  Universe Tiers Available:             True")
+        print(f"  Real Data Coverage Required:          True")
+        print(f"  Mock Data Formal Conclusion Allowed:  False")
         print(f"  (version_info import error: {exc})")
     print("=" * 60)
     print("RESEARCH ONLY \u2014 Not Investment Advice \u2014 No Real Orders")
@@ -10090,6 +10082,227 @@ def cmd_local_assistant_explain(args):
             print(f"  Answer:   {answer.answer[:300]}")
     except Exception as exc:
         print(f"  [ERROR] local-assistant-explain failed: {exc}")
+
+
+# ---------------------------------------------------------------------------
+# v1.1.0 Data Universe Expansion handlers
+# ---------------------------------------------------------------------------
+
+def cmd_universe_build(args):
+    """Build a universe tier. Research Only. No Real Orders."""
+    tier_str = getattr(args, "tier", "core10") or "core10"
+    mode = getattr(args, "mode", "real")
+    output_dir = getattr(args, "output_dir", None)
+    print("=" * 60)
+    print("TW Quant Cockpit \u2014 Data Universe Expansion")
+    print("[!] Research Only. No Real Orders. Not Investment Advice.")
+    print("=" * 60)
+    try:
+        from universe.universe_builder import UniverseBuilder, resolve_tier
+        from universe.universe_tier_registry import UniverseTierRegistry
+        from universe.universe_store import UniverseStore
+        tier = resolve_tier(tier_str)
+        builder = UniverseBuilder(mode=mode)
+        udef = builder.build_tier(tier)
+        print(f"Tier:        {tier}")
+        print(f"Registered:  {udef.symbol_count}")
+        print(f"Symbols:     {', '.join(udef.symbols[:10])}{'...' if len(udef.symbols) > 10 else ''}")
+        # Save registry
+        registry = UniverseTierRegistry()
+        syms = registry.list_by_tier(tier)
+        out_dir = output_dir or "data/backtest_results/universe"
+        store = UniverseStore(output_dir=out_dir)
+        path = store.save_registry(syms)
+        print(f"Output:      {path}")
+        print("[!] Research Only. No Real Orders.")
+    except Exception as exc:
+        print(f"  [ERROR] universe-build failed: {exc}")
+
+
+def cmd_universe_summary(args):
+    """Show universe summary. Research Only. No Real Orders."""
+    tier_str = getattr(args, "tier", None)
+    print("=" * 60)
+    print("TW Quant Cockpit \u2014 Universe Summary")
+    print("[!] Research Only. No Real Orders. Not Investment Advice.")
+    print("=" * 60)
+    try:
+        from universe.universe_query import UniverseQuery
+        from universe.universe_store import UniverseStore
+        from universe.universe_builder import resolve_tier
+        store = UniverseStore()
+        query = UniverseQuery(coverage_store=store)
+        if tier_str:
+            tier = resolve_tier(tier_str)
+            result = query.summarize_tier(tier)
+            print(f"Tier:         {result.get('tier')}")
+            print(f"Registered:   {result.get('registered')}")
+            print(f"Ready:        {result.get('ready')}")
+            print(f"Partial:      {result.get('partial')}")
+            print(f"Insufficient: {result.get('insufficient')}")
+            print(f"Missing:      {result.get('missing')}")
+            print(f"Confidence:   {result.get('confidence')}")
+            reasons = result.get("reasons", [])
+            if reasons:
+                for r in reasons:
+                    print(f"  - {r}")
+        else:
+            tiers = query.list_tiers()
+            for t in tiers:
+                print(f"  {t['tier']:<15} {t['symbol_count']} symbols")
+        print("[!] Research Only. No Real Orders.")
+    except Exception as exc:
+        print(f"  [ERROR] universe-summary failed: {exc}")
+
+
+def cmd_universe_health(args):
+    """Run universe health check. Research Only. No Real Orders."""
+    print("=" * 60)
+    print("TW Quant Cockpit \u2014 Universe Health Check")
+    print("[!] Research Only. No Real Orders. Not Investment Advice.")
+    print("=" * 60)
+    try:
+        from universe.universe_health import UniverseHealthCheck
+        checker = UniverseHealthCheck()
+        result = checker.run()
+        print(f"Total:   {result['total']}")
+        print(f"PASS:    {result['pass']}")
+        print(f"WARN:    {result['warn']}")
+        print(f"FAIL:    {result['fail']}")
+        print(f"Overall: {result['overall']}")
+        print("")
+        for check in result.get("checks", []):
+            status = check.get("status", "?")
+            name = check.get("check", "?")
+            note = check.get("note", "")
+            print(f"  [{status:<7}] {name:<40} {note}")
+        print("[!] Research Only. No Real Orders.")
+    except Exception as exc:
+        print(f"  [ERROR] universe-health failed: {exc}")
+
+
+def cmd_universe_coverage(args):
+    """Analyze per-symbol data coverage for a tier. Research Only. No Real Orders."""
+    tier_str = getattr(args, "tier", "research30") or "research30"
+    mode = getattr(args, "mode", "real")
+    output_dir = getattr(args, "output_dir", None)
+    print("=" * 60)
+    print("TW Quant Cockpit \u2014 Universe Coverage")
+    print("[!] Research Only. No Real Orders. Not Investment Advice.")
+    print("=" * 60)
+    try:
+        from universe.universe_builder import resolve_tier
+        from universe.universe_tier_registry import UniverseTierRegistry
+        from universe.universe_coverage import UniverseCoverageAnalyzer
+        from universe.universe_store import UniverseStore
+        tier = resolve_tier(tier_str)
+        registry = UniverseTierRegistry()
+        syms = registry.list_by_tier(tier)
+        sym_strs = [s.symbol for s in syms]
+        analyzer = UniverseCoverageAnalyzer(mode=mode)
+        coverage = analyzer.analyze_symbols(sym_strs)
+        summary = analyzer.build_coverage_summary(coverage, universe_id=tier)
+        print(f"Tier:         {tier}")
+        print(f"Registered:   {summary.symbol_count}")
+        print(f"Ready:        {len(summary.ready_symbols)}")
+        print(f"Partial:      {len(summary.partial_symbols)}")
+        print(f"Insufficient: {len(summary.insufficient_symbols)}")
+        print(f"Missing:      {len(summary.missing_symbols)}")
+        print(f"Confidence:   {summary.confidence}")
+        # Save outputs
+        out_dir = output_dir or "data/backtest_results/universe"
+        store = UniverseStore(output_dir=out_dir)
+        cov_path = store.save_coverage(coverage)
+        sum_path = store.save_summary(summary)
+        mis_path = store.save_missing_data(coverage, tier=tier)
+        src_path = store.save_source_summary(coverage)
+        print(f"Coverage CSV: {cov_path}")
+        print(f"Summary CSV:  {sum_path}")
+        print("[!] Research Only. No Real Orders.")
+    except Exception as exc:
+        print(f"  [ERROR] universe-coverage failed: {exc}")
+
+
+def cmd_universe_symbol(args):
+    """Show coverage for a single symbol. Research Only. No Real Orders."""
+    stock = getattr(args, "stock", None) or getattr(args, "symbol", None)
+    if not stock:
+        print("  [!] Please provide --stock <symbol>")
+        return
+    print("=" * 60)
+    print(f"TW Quant Cockpit \u2014 Universe Symbol: {stock}")
+    print("[!] Research Only. No Real Orders. Not Investment Advice.")
+    print("=" * 60)
+    try:
+        from universe.universe_tier_registry import UniverseTierRegistry
+        from universe.universe_coverage import UniverseCoverageAnalyzer
+        registry = UniverseTierRegistry()
+        reg_sym = registry.get_symbol(stock)
+        analyzer = UniverseCoverageAnalyzer()
+        cov_sym = analyzer.analyze_symbol(stock)
+        # Merge registry info into coverage result
+        if reg_sym:
+            cov_sym.name = cov_sym.name or reg_sym.name
+            cov_sym.sector = cov_sym.sector or reg_sym.sector
+            cov_sym.tier = cov_sym.tier or reg_sym.tier
+        result = cov_sym.to_dict()
+        for k, v in result.items():
+            if k not in ("research_only", "no_real_orders"):
+                print(f"  {k:<30} {v}")
+        print("[!] Research Only. No Real Orders.")
+    except Exception as exc:
+        print(f"  [ERROR] universe-symbol failed: {exc}")
+
+
+def cmd_universe_missing(args):
+    """List missing symbols for a tier. Research Only. No Real Orders."""
+    tier_str = getattr(args, "tier", "research30") or "research30"
+    print("=" * 60)
+    print("TW Quant Cockpit \u2014 Universe Missing Data")
+    print("[!] Research Only. No Real Orders. Not Investment Advice.")
+    print("=" * 60)
+    try:
+        from universe.universe_builder import resolve_tier
+        from universe.universe_tier_registry import UniverseTierRegistry
+        from universe.universe_coverage import UniverseCoverageAnalyzer
+        tier = resolve_tier(tier_str)
+        registry = UniverseTierRegistry()
+        syms = registry.list_by_tier(tier)
+        sym_strs = [s.symbol for s in syms]
+        analyzer = UniverseCoverageAnalyzer()
+        coverage = analyzer.analyze_symbols(sym_strs)
+        from universe.universe_schema import QUALITY_MISSING, QUALITY_INSUFFICIENT
+        missing = [s for s in coverage if s.quality_status in (QUALITY_MISSING, QUALITY_INSUFFICIENT)]
+        print(f"Tier:    {tier}")
+        print(f"Missing: {len(missing)}")
+        for s in missing:
+            print(f"  {s.symbol:<10} {s.quality_status:<15} {s.reason}")
+        print("[!] Safe action: FIX_DATA — import real data for these symbols")
+    except Exception as exc:
+        print(f"  [ERROR] universe-missing failed: {exc}")
+
+
+def cmd_universe_report(args):
+    """Generate Data Universe Expansion Report. Research Only. No Real Orders."""
+    tier_str = getattr(args, "tier", "research30") or "research30"
+    mode = getattr(args, "mode", "real")
+    report_dir = getattr(args, "report_dir", None) or "reports"
+    print("=" * 60)
+    print("TW Quant Cockpit \u2014 Universe Report")
+    print("[!] Research Only. No Real Orders. Not Investment Advice.")
+    print("=" * 60)
+    try:
+        from universe.universe_builder import resolve_tier
+        from reports.data_universe_expansion_report import DataUniverseExpansionReportBuilder
+        tier = resolve_tier(tier_str)
+        builder = DataUniverseExpansionReportBuilder(tier=tier, mode=mode, report_dir=report_dir)
+        path = builder.save()
+        print(f"Tier:   {tier}")
+        print(f"Mode:   {mode}")
+        print(f"Report: {path}")
+        print("[!] Research Only. No Real Orders.")
+    except Exception as exc:
+        print(f"  [ERROR] universe-report failed: {exc}")
 
 
 # ---------------------------------------------------------------------------
@@ -15458,6 +15671,53 @@ def _build_parser() -> argparse.ArgumentParser:
     )
     p_lae.add_argument("--answer-id", dest="answer_id", default="")
 
+    # --- v1.1.0 Data Universe Expansion ---
+    p_ub = subparsers.add_parser(
+        "universe-build",
+        help="[v1.1.0] Build a universe tier. [!] Research Only. No Real Orders.",
+    )
+    p_ub.add_argument("--tier", default="core10",
+                      choices=["core10", "research30", "expanded50", "broad100",
+                               "CORE_10", "RESEARCH_30", "EXPANDED_50", "BROAD_100"],
+                      help="Universe tier to build")
+    p_ub.add_argument("--mode", default="real", choices=["real", "mock"])
+    p_ub.add_argument("--output-dir", dest="output_dir", default=None)
+
+    p_us = subparsers.add_parser(
+        "universe-summary",
+        help="[v1.1.0] Show universe summary. [!] Research Only. No Real Orders.",
+    )
+    p_us.add_argument("--tier", default=None,
+                      help="Optional tier filter (core10/research30/expanded50/broad100)")
+
+    subparsers.add_parser(
+        "universe-health",
+        help="[v1.1.0] Run universe health check. [!] Research Only. No Real Orders.",
+    )
+
+    p_uc = subparsers.add_parser(
+        "universe-coverage",
+        help="[v1.1.0] Analyze per-symbol data coverage. [!] Research Only. No Real Orders.",
+    )
+    p_uc.add_argument("--tier", default="research30",
+                      help="Universe tier (core10/research30/expanded50/broad100)")
+    p_uc.add_argument("--mode", default="real", choices=["real", "mock"])
+    p_uc.add_argument("--output-dir", dest="output_dir", default=None)
+
+    p_usym = subparsers.add_parser(
+        "universe-symbol",
+        help="[v1.1.0] Show coverage for a single symbol. [!] Research Only. No Real Orders.",
+    )
+    p_usym.add_argument("--stock", default=None, help="Symbol to look up")
+
+    p_um = subparsers.add_parser(
+        "universe-missing",
+        help="[v1.1.0] List missing symbols for a tier. [!] Research Only. No Real Orders.",
+    )
+    p_um.add_argument("--tier", default="research30",
+                      help="Universe tier (core10/research30/expanded50/broad100)")
+
+    # universe-report extended in v0.3.25 section below with --tier support
     # --- v1.0.9 Final Maintenance Rollup ---
     p_fr = subparsers.add_parser(
         "final-rollup",
@@ -15890,13 +16150,15 @@ def _build_parser() -> argparse.ArgumentParser:
     p_ue.add_argument("--target-size", dest="target_size", type=int, default=50,
                       help="Target symbol count (default: 50)")
 
-    # --- universe-report (v0.3.25) ---
+    # --- universe-report (v0.3.25 + v1.1.0 tier support) ---
     p_ur = subparsers.add_parser(
         "universe-report",
-        help="Generate Universe Expansion Markdown report (v0.3.25)",
+        help="Generate Universe Expansion Markdown report (v0.3.25/v1.1.0)",
     )
     p_ur.add_argument("--universe", default="core_30",
                       help="Universe group name (default: core_30)")
+    p_ur.add_argument("--tier", default=None,
+                      help="[v1.1.0] Universe tier (core10/research30/expanded50/broad100)")
     p_ur.add_argument("--mode", choices=["real", "mock"], default="real",
                       help="Data mode (default: real)")
     p_ur.add_argument("--report-dir", dest="report_dir", default="reports",
@@ -16857,6 +17119,14 @@ def main() -> None:
         "local-assistant-health":  cmd_local_assistant_health,
         "local-assistant-report":  cmd_local_assistant_report,
         "local-assistant-explain": cmd_local_assistant_explain,
+        # v1.1.0 Data Universe Expansion
+        "universe-build":    cmd_universe_build,
+        "universe-summary":  cmd_universe_summary,
+        "universe-health":   cmd_universe_health,
+        "universe-coverage": cmd_universe_coverage,
+        "universe-symbol":   cmd_universe_symbol,
+        "universe-missing":  cmd_universe_missing,
+        "universe-report":   cmd_universe_report,
         # v1.0.9 Final Maintenance Rollup
         "final-rollup":                  cmd_final_rollup,
         "final-rollup-history":          cmd_final_rollup_history,

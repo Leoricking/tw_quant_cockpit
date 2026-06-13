@@ -1926,24 +1926,79 @@ class StableReleaseChecklistV060:
             )
 
     def _check_version_info_v109(self) -> dict:
-        """v1.0.9 — VERSION is 1.0.9."""
+        """v1.0.9 — VERSION is at least 1.0.9 (accepts 1.1.0+)."""
         try:
             from release.version_info import VERSION
             import release.version_info as _vi
             fr_release = getattr(_vi, "FINAL_MAINTENANCE_ROLLUP_RELEASE", None)
-            if VERSION == "1.0.9":
+            if VERSION in ("1.0.9", "1.1.0"):
                 return _check_item(
                     "version_info_v109", "version_git", "PASS",
                     f"VERSION={VERSION}, FINAL_MAINTENANCE_ROLLUP_RELEASE={fr_release}",
                 )
             return _check_item(
                 "version_info_v109", "version_git", "WARN",
-                f"VERSION={VERSION} (expected 1.0.9)",
-                warning="Expected VERSION=1.0.9",
+                f"VERSION={VERSION} (expected 1.0.9+)",
+                warning="Expected VERSION=1.0.9+",
             )
         except Exception as exc:
             return _check_item(
                 "version_info_v109", "version_git", "WARN", str(exc),
+            )
+
+    def _check_universe_import(self) -> dict:
+        """v1.1.0 — universe package imports OK."""
+        try:
+            from universe.universe_schema import UniverseSymbol, UniverseDefinition
+            from universe import NO_REAL_ORDERS as _u_nro
+            assert _u_nro is True
+            return _check_item(
+                "universe_import", "stable_integration", "PASS",
+                "universe package imports OK, NO_REAL_ORDERS=True",
+            )
+        except Exception as exc:
+            return _check_item(
+                "universe_import", "stable_integration", "WARN", str(exc),
+            )
+
+    def _check_universe_real_mock_separation(self) -> dict:
+        """v1.1.0 — real/mock data separation enforced."""
+        try:
+            from universe import REAL_DATA_COVERAGE_REQUIRED, MOCK_DATA_FORMAL_CONCLUSION_ALLOWED
+            if REAL_DATA_COVERAGE_REQUIRED is True and MOCK_DATA_FORMAL_CONCLUSION_ALLOWED is False:
+                return _check_item(
+                    "universe_real_mock_separation", "stable_integration", "PASS",
+                    "REAL_DATA_COVERAGE_REQUIRED=True, MOCK_DATA_FORMAL_CONCLUSION_ALLOWED=False",
+                )
+            return _check_item(
+                "universe_real_mock_separation", "stable_integration", "FAIL",
+                f"separation flags wrong: real_required={REAL_DATA_COVERAGE_REQUIRED},"
+                f" mock_allowed={MOCK_DATA_FORMAL_CONCLUSION_ALLOWED}",
+            )
+        except Exception as exc:
+            return _check_item(
+                "universe_real_mock_separation", "stable_integration", "WARN", str(exc),
+            )
+
+    def _check_version_info_v110(self) -> dict:
+        """v1.1.0 — VERSION is 1.1.0."""
+        try:
+            from release.version_info import VERSION
+            import release.version_info as _vi
+            du_release = getattr(_vi, "DATA_UNIVERSE_EXPANSION_RELEASE", None)
+            if VERSION == "1.1.0":
+                return _check_item(
+                    "version_info_v110", "version_git", "PASS",
+                    f"VERSION={VERSION}, DATA_UNIVERSE_EXPANSION_RELEASE={du_release}",
+                )
+            return _check_item(
+                "version_info_v110", "version_git", "WARN",
+                f"VERSION={VERSION} (expected 1.1.0)",
+                warning="Expected VERSION=1.1.0",
+            )
+        except Exception as exc:
+            return _check_item(
+                "version_info_v110", "version_git", "WARN", str(exc),
             )
 
     # ----------------------------------------------------------------
@@ -2062,6 +2117,10 @@ class StableReleaseChecklistV060:
             self._check_final_rollup_import,
             self._check_final_rollup_no_forbidden_actions,
             self._check_version_info_v109,
+            # v1.1.0 Data Universe Expansion
+            self._check_universe_import,
+            self._check_universe_real_mock_separation,
+            self._check_version_info_v110,
         ]
 
         for fn in checklist_groups:

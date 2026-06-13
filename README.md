@@ -4,7 +4,7 @@
 >
 > **[!] v1: Real order execution is strictly prohibited. For research, simulation, and decision support only. Not investment advice.**
 
-**Current version: v1.0.9 — Final Maintenance Rollup** (base: v1.0.0 Research Trading Cockpit Stable) — **v1.0 Maintenance Line Complete**
+**Current version: v1.1.0 — Data Universe Expansion** (base: v1.0.9 Final Maintenance Rollup) — **v1.0 Maintenance Line Complete**
 
 ---
 
@@ -29,11 +29,15 @@ TW Quant Cockpit is a **Research Trading Cockpit** for Taiwan equity markets. It
 
 ---
 
-## Current Version: v1.0.9 — Final Maintenance Rollup
+## Current Version: v1.1.0 — Data Universe Expansion
 
-This is TW Quant Cockpit **v1.0.9 — Final Maintenance Rollup**, based on **v1.0.0 Research Trading Cockpit Stable**.
+This is TW Quant Cockpit **v1.1.0 — Data Universe Expansion**, based on **v1.0.9 Final Maintenance Rollup**.
 
-New in v1.0.9: final_rollup/ package (rollup_schema, release_history, final_health_check, final_smoke_summary, maintenance_plan, final_rollup_engine, final_rollup_store), v1.0.x release history builder, final maintenance health check (22 checks), long-term maintenance SOP (Daily/Weekly/Monthly/Release/Incident), final smoke summary, 6 new CLI commands (final-rollup, final-rollup-history, final-rollup-health, final-rollup-maintenance-plan, final-rollup-smoke, final-rollup-report), optional GUI panel + adapter, Final Maintenance Rollup Report, regression coverage, stable checklist checks, docs/final_maintenance_rollup_v1.0.9.md. No strategy logic changes. No broker API. No external API. v1.0 Maintenance Line Complete.
+New in v1.1.0: universe/ package (universe_schema, universe_tier_registry, universe_builder, universe_coverage, universe_health, universe_store, universe_query), CORE_10/RESEARCH_30/EXPANDED_50/BROAD_100 tier management, per-symbol OHLC/chips/revenue/fundamental coverage analysis, statistical confidence validation, 7 new CLI commands (universe-build, universe-summary, universe-health, universe-coverage, universe-symbol, universe-missing, universe-report), optional GUI panel + adapter, Data Universe Expansion Report, regression coverage, stable checklist checks, docs/data_universe_expansion_v1.1.0.md. No strategy logic changes. No broker API. No external API. Mock Data Formal Conclusion: DISABLED.
+
+## v1.0.9 — Final Maintenance Rollup
+
+New in v1.0.9: final_rollup/ package, v1.0.x release history builder, final maintenance health check (22 checks), long-term maintenance SOP, 6 new CLI commands. v1.0 Maintenance Line Complete.
 
 ## v1.0.8 — Local Research Assistant Polish
 

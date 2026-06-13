@@ -366,3 +366,7 @@ reports/local_research_assistant_report_*.md
 # v1.0.9 Final Maintenance Rollup (runtime outputs — never commit)
 data/backtest_results/final_rollup/
 reports/final_maintenance_rollup_report_*.md
+
+# v1.1.0 Data Universe Expansion (runtime outputs — never commit)
+data/backtest_results/universe/
+reports/data_universe_expansion_report_*.md
