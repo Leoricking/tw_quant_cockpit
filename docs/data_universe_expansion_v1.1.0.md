@@ -144,3 +144,17 @@ python main.py validate-score --mode real --symbols 2330,2454,6669
 ---
 
 *TW Quant Cockpit v1.1.0 — Data Universe Expansion — Research Only — Not Investment Advice*
+
+---
+
+## Note: v1.1.1 Follow-On
+
+v1.1.1 (Data Import UX & Batch Onboarding) builds on the v1.1.0 universe foundation:
+
+- `BatchImportExecutor` calls `UniverseCoverageAnalyzer` to refresh coverage after successful imports
+- `import-onboarding-health` checks `universe_coverage_refresh_available` (optional WARN if universe module not loaded)
+- After batch import completes, run `python main.py universe-coverage --tier research30 --mode real` to verify updated coverage
+
+See `docs/data_import_onboarding_v1.1.1.md` for the full v1.1.1 specification.
+
+**[!] v1.1.1 does not modify universe tier definitions or coverage thresholds.**

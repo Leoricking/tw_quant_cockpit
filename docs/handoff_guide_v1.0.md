@@ -220,3 +220,19 @@ These templates enforce: `git -C "path"`, no chain commands, no `git add .`, no 
 - Full docs: `docs/data_universe_expansion_v1.1.0.md`, `docs/release_notes_v1.1.md`
 - Next: v1.1.1 Data Import UX (do not proceed without explicit plan)
 - **[!] No Real Orders. No broker API. Research Only. Not Investment Advice.**
+
+---
+
+## v1.1.1 Handoff Notes
+
+- **Data Import UX & Batch Onboarding: COMPLETE** (commit `c0c2fb6`, tag `v1.1.1`)
+- New package: `data_onboarding/` (12 modules)
+- New GUI: `gui/import_onboarding_panel.py`, `gui/import_onboarding_adapter.py`
+- New report: `reports/data_import_onboarding_report.py`
+- New fixtures: `tests/fixtures/import_onboarding/*.csv` (6 files)
+- Import health: `python main.py import-onboarding-health` → 18/19 PASS (1 optional WARN)
+- Batch dry-run: `python main.py import-batch --path <dir> --dry-run`
+- Full docs: `docs/data_import_onboarding_v1.1.1.md`, `docs/release_notes_v1.1.md`
+- Safety: `dry_run=True` by default, `REPLACE_EXPLICIT` blocked, conflicts always → REVIEW
+- Next: v1.1.2 Coverage Repair Workflow (do not proceed without explicit plan)
+- **[!] No Real Orders. No broker API. DESTRUCTIVE_IMPORT_DISABLED=True. Not Investment Advice.**

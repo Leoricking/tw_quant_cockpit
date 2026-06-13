@@ -212,3 +212,63 @@ python main.py universe-report --tier research30
 See `docs/data_universe_expansion_v1.1.0.md` for full details.
 
 **[!] Real Data Required. Mock Formal Conclusion BLOCKED. Research Only. No Real Orders.**
+
+---
+
+## v1.1.1 — Data Import UX & Batch Onboarding
+
+v1.1.1 adds a complete data import pipeline: file discovery, column auto-mapping, duplicate/conflict detection, safe merge planning, dry-run validation, batch execution, retry manifests, and universe coverage refresh.
+
+### Import Modes
+
+| Mode | Default | Description |
+|------|---------|-------------|
+| `MERGE_SAFE` | Yes | Merges rows not already present |
+| `APPEND_SAFE` | No | Appends only; fails if any overlap |
+| `DRY_RUN` | Yes (batch) | Simulates all operations without writing |
+| `REPLACE_EXPLICIT` | **BLOCKED** | Disabled by default; never auto-overwrite |
+
+### Conflict Policy
+
+- Duplicate identical rows → skipped (no error)
+- Conflicting rows (same date, different values) → routed to `REVIEW`
+- `REPLACE_EXPLICIT` is **blocked** unless `--allow-replace` is set
+- Conflicts are never auto-overwritten
+
+### Supported File Types
+
+| Type | Detection |
+|------|-----------|
+| `XQ_CSV` | Chinese headers: 時間, 開盤價, 最高價, 最低價, 收盤價, 成交量 |
+| `XQ_EXCEL` | `.xlsx` with XQ column markers |
+| `STANDARD_CSV` | English OHLCV headers |
+| `EXCEL` | `.xlsx` without XQ markers |
+| `UNKNOWN` | Cannot detect schema → BLOCKED |
+
+### v1.1.1 CLI Commands
+
+```
+python main.py import-discover --path <dir>
+python main.py import-preview --file <file>
+python main.py import-validate --path <dir>
+python main.py import-plan --path <dir>
+python main.py import-batch --path <dir> --dry-run
+python main.py import-batch --path <dir> --execute --allow-write
+python main.py import-retry-manifest [--output-dir data/import_reports]
+python main.py import-onboarding-health
+python main.py import-onboarding-report [--mode real]
+```
+
+### Recommended Import SOP
+
+1. `import-discover --path <dir>` — find all importable files
+2. `import-validate --path <dir>` — check OHLC integrity, column coverage
+3. `import-plan --path <dir>` — preview MERGE_SAFE / BLOCKED / REVIEW plan
+4. `import-batch --path <dir> --dry-run` — full dry-run (no writes)
+5. Review plan; resolve BLOCKED and REVIEW items manually
+6. `import-batch --path <dir> --execute --allow-write` — execute safe items
+7. `universe-coverage --tier research30 --mode real` — verify coverage updated
+
+See `docs/data_import_onboarding_v1.1.1.md` for full details.
+
+**[!] dry_run=True by default. REPLACE_EXPLICIT BLOCKED. Conflicts → REVIEW. No Real Orders.**

@@ -138,3 +138,43 @@ python main.py final-rollup-report --mode real
 | `INVALID` | Duplicate dates or broken schema |
 
 **[!] Real Data Required. Mock Data Formal Conclusion BLOCKED. Research Only.**
+
+---
+
+## v1.1.1 Data Import UX & Batch Onboarding Commands
+
+| Command | Purpose | Key Options |
+|---------|---------|-------------|
+| `python main.py import-discover --path <dir>` | Discover importable files | `--path <dir>` |
+| `python main.py import-preview --file <file>` | Preview columns and schema for one file | `--file <path>` |
+| `python main.py import-validate --path <dir>` | Validate all files (OHLC, columns, dates) | `--path <dir>` |
+| `python main.py import-plan --path <dir>` | Build import plan (MERGE_SAFE / BLOCKED / REVIEW) | `--path <dir>` |
+| `python main.py import-batch --path <dir> --dry-run` | Dry-run batch import (no writes) | `--dry-run` |
+| `python main.py import-batch --path <dir> --execute --allow-write` | Execute safe items | `--execute --allow-write` |
+| `python main.py import-retry-manifest` | Show / save retry manifest for failed files | `--output-dir <dir>` |
+| `python main.py import-onboarding-health` | Onboarding health check (19 items) | — |
+| `python main.py import-onboarding-report` | Build import onboarding report | `--mode real\|mock` |
+
+### Import Plan Actions
+
+| Action | Meaning |
+|--------|---------|
+| `MERGE_SAFE` | New rows only; safe to execute |
+| `APPEND_SAFE` | Append; fails if any date overlap |
+| `REVIEW` | Conflicting rows detected; manual review required |
+| `BLOCKED` | Validation FAIL or REPLACE_EXPLICIT attempt; cannot execute |
+| `DRY_RUN` | Simulated only; no actual write |
+
+### Recommended Import SOP
+
+```
+1. python main.py import-discover --path <dir>
+2. python main.py import-validate --path <dir>
+3. python main.py import-plan --path <dir>
+4. python main.py import-batch --path <dir> --dry-run
+5. (resolve BLOCKED / REVIEW items manually)
+6. python main.py import-batch --path <dir> --execute --allow-write
+7. python main.py universe-coverage --tier research30 --mode real
+```
+
+**[!] dry_run=True by default. REPLACE_EXPLICIT BLOCKED. Conflicts → REVIEW. No Real Orders.**
