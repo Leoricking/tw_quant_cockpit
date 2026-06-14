@@ -2246,6 +2246,95 @@ class StableReleaseChecklistV060:
         except Exception as exc:
             return _check_item("version_info_v113", "version_git", "WARN", str(exc))
 
+    def _check_quality_gate_import(self) -> dict:
+        """v1.1.4 — quality_gates package imports correctly."""
+        try:
+            import quality_gates
+            no_real = getattr(quality_gates, "NO_REAL_ORDERS", False)
+            qg_avail = getattr(quality_gates, "COVERAGE_QUALITY_GATES_RELEASE", False)
+            if no_real and qg_avail:
+                return _check_item(
+                    "quality_gate_import", "coverage_repair",
+                    "PASS",
+                    f"quality_gates: NO_REAL_ORDERS={no_real}, COVERAGE_QUALITY_GATES_RELEASE={qg_avail}",
+                )
+            return _check_item(
+                "quality_gate_import", "coverage_repair", "FAIL",
+                f"quality_gates safety flags missing: NO_REAL_ORDERS={no_real}",
+            )
+        except Exception as exc:
+            return _check_item("quality_gate_import", "coverage_repair", "FAIL", str(exc))
+
+    def _check_quality_gate_mock_guard(self) -> dict:
+        """v1.1.4 — mock data cannot pass formal gate."""
+        try:
+            import quality_gates
+            mock_allowed = getattr(quality_gates, "MOCK_DATA_FORMAL_GATE_ALLOWED", True)
+            if not mock_allowed:
+                return _check_item(
+                    "quality_gate_mock_guard", "coverage_repair",
+                    "PASS", "MOCK_DATA_FORMAL_GATE_ALLOWED=False",
+                )
+            return _check_item(
+                "quality_gate_mock_guard", "coverage_repair", "FAIL",
+                "MOCK_DATA_FORMAL_GATE_ALLOWED must be False",
+            )
+        except Exception as exc:
+            return _check_item("quality_gate_mock_guard", "coverage_repair", "FAIL", str(exc))
+
+    def _check_quality_gate_conflict_guard(self) -> dict:
+        """v1.1.4 — conflict data cannot pass formal gate."""
+        try:
+            import quality_gates
+            conflict_allowed = getattr(quality_gates, "CONFLICT_DATA_FORMAL_GATE_ALLOWED", True)
+            if not conflict_allowed:
+                return _check_item(
+                    "quality_gate_conflict_guard", "coverage_repair",
+                    "PASS", "CONFLICT_DATA_FORMAL_GATE_ALLOWED=False",
+                )
+            return _check_item(
+                "quality_gate_conflict_guard", "coverage_repair", "FAIL",
+                "CONFLICT_DATA_FORMAL_GATE_ALLOWED must be False",
+            )
+        except Exception as exc:
+            return _check_item("quality_gate_conflict_guard", "coverage_repair", "FAIL", str(exc))
+
+    def _check_quality_gate_future_date_guard(self) -> dict:
+        """v1.1.4 — future date / invalid data cannot pass formal gate."""
+        try:
+            import quality_gates
+            invalid_allowed = getattr(quality_gates, "INVALID_DATA_FORMAL_GATE_ALLOWED", True)
+            if not invalid_allowed:
+                return _check_item(
+                    "quality_gate_future_date_guard", "coverage_repair",
+                    "PASS", "INVALID_DATA_FORMAL_GATE_ALLOWED=False",
+                )
+            return _check_item(
+                "quality_gate_future_date_guard", "coverage_repair", "FAIL",
+                "INVALID_DATA_FORMAL_GATE_ALLOWED must be False",
+            )
+        except Exception as exc:
+            return _check_item("quality_gate_future_date_guard", "coverage_repair", "FAIL", str(exc))
+
+    def _check_version_info_v114(self) -> dict:
+        """v1.1.4 — VERSION is 1.1.4 and COVERAGE_QUALITY_GATES_AVAILABLE=True."""
+        try:
+            from release.version_info import VERSION
+            import release.version_info as _vi
+            qg_available = getattr(_vi, "COVERAGE_QUALITY_GATES_AVAILABLE", None)
+            if VERSION == "1.1.4" and qg_available:
+                return _check_item(
+                    "version_info_v114", "version_git", "PASS",
+                    f"VERSION={VERSION}, COVERAGE_QUALITY_GATES_AVAILABLE={qg_available}",
+                )
+            return _check_item(
+                "version_info_v114", "version_git", "WARN",
+                f"VERSION={VERSION}, COVERAGE_QUALITY_GATES_AVAILABLE={qg_available}",
+                warning="Expected VERSION=1.1.4 with COVERAGE_QUALITY_GATES_AVAILABLE=True",
+            )
+        except Exception as exc:
+            return _check_item("version_info_v114", "version_git", "WARN", str(exc))
+
     # ----------------------------------------------------------------
     # Run
     # ----------------------------------------------------------------
@@ -2380,6 +2469,12 @@ class StableReleaseChecklistV060:
             self._check_freshness_mock_real_separation,
             self._check_freshness_future_date_guard,
             self._check_version_info_v113,
+            # v1.1.4 Coverage Quality Gates
+            self._check_quality_gate_import,
+            self._check_quality_gate_mock_guard,
+            self._check_quality_gate_conflict_guard,
+            self._check_quality_gate_future_date_guard,
+            self._check_version_info_v114,
         ]
 
         for fn in checklist_groups:

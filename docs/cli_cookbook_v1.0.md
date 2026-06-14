@@ -237,3 +237,30 @@ python main.py final-rollup-report --mode real
 - Universe tier symbol resolution logs WARNING (not crash) when no universe data is available.
 
 **[!] AUTO_EXTERNAL_REFRESH_ENABLED=False. STALE_DATA_AUTO_REPAIR_ENABLED=False. Repair handoff creates task list only. No Real Orders.**
+
+## v1.1.4 Coverage Quality Gates Commands
+
+| Command | Description |
+|---------|-------------|
+| `python main.py quality-gate-health` | Run quality gate subsystem health check (20 checks) |
+| `python main.py quality-gate-symbol --stock 2454 --gate price_backtest` | Evaluate a single symbol against a named gate |
+| `python main.py quality-gate-universe --tier research30 --gate price_backtest` | Evaluate all symbols in a tier against a gate |
+| `python main.py quality-gate-matrix --tier core10` | Build gate matrix for all 12 gates in a tier |
+| `python main.py quality-gate-summary` | Show latest stored universe gate summary |
+| `python main.py quality-gate-formal` | List FORMAL eligible symbols from latest run |
+| `python main.py quality-gate-observational` | List OBSERVATIONAL symbols from latest run |
+| `python main.py quality-gate-blocked` | List BLOCKED symbols with reason codes |
+| `python main.py quality-gate-reasons --reason PRICE_DATA_MISSING` | List decisions matching a reason code |
+| `python main.py quality-gate-explain --decision-id <id>` | Explain a specific decision by ID |
+| `python main.py quality-gate-report --tier research30 --mode real` | Build coverage quality gate Markdown report |
+| `python main.py quality-gate-override-request --decision-id <id> --level OBSERVATIONAL --reason "..." --allow-research-override` | Request research-only override (disabled by default; audit-only) |
+
+### Notes
+
+- Gate does NOT enable trading. `NO_REAL_ORDERS=True`, `BROKER_DISABLED=True`.
+- Mock/Invalid/Stale/Conflict data → FORMAL gate BLOCKED.
+- Override is disabled by default. Max override: OBSERVATIONAL. Override is audit-only.
+- Runtime outputs saved to `data/quality_gate_reports/` (gitignored).
+- Run `quality-gate-universe` first before using `quality-gate-summary/formal/blocked`.
+
+**[!] MOCK_DATA_FORMAL_GATE_ALLOWED=False. QUALITY_GATE_OVERRIDE_DISABLED_BY_DEFAULT=True. Gate does NOT enable trading. No Real Orders.**

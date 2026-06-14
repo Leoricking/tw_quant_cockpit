@@ -303,4 +303,10 @@ See freshness monitor documentation for full v1.1.3 specification.
 
 ---
 
+## v1.1.4 Integration Note
+
+v1.1.4 Coverage Quality Gates evaluates repair history via `evaluate_repairs()`. Symbols with critical unresolved repair issues are blocked from FORMAL gate. The quality gate does NOT execute repairs — it reads repair status only. See `docs/coverage_quality_gates_v1.1.4.md`.
+
+---
+
 *v1.1.2 Coverage Repair Workflow — Research Only. No Real Orders. Not Investment Advice.*

@@ -261,3 +261,17 @@ These templates enforce: `git -C "path"`, no chain commands, no `git add .`, no 
 - Approximate trading calendar is expected behavior — health check reports WARN (not FAIL) for calendar approximation
 - Freshness health: `python main.py freshness-health` → should PASS (calendar approximation → WARN is acceptable)
 - **[!] No Real Orders. No broker API. AUTO_EXTERNAL_REFRESH_ENABLED=False. Repair handoff creates task list only. Not Investment Advice.**
+
+## v1.1.4 Handoff Notes
+
+- **Coverage Quality Gates: COMPLETE** (tag `v1.1.4`)
+- New package: `quality_gates/` (gate_schema, gate_policy, symbol_gate_evaluator, universe_gate_evaluator, gate_decision_engine, gate_override, gate_store, gate_query, gate_health, __init__)
+- New GUI: coverage_quality_gate_panel + coverage_quality_gate_adapter
+- New docs: `docs/coverage_quality_gates_v1.1.4.md`
+- New CLI: 12 commands (`quality-gate-health/symbol/universe/matrix/summary/formal/observational/blocked/reasons/explain/report/override-request`)
+- Runtime outputs: `data/quality_gate_reports/` (gitignored)
+- Safety flags: `MOCK_DATA_FORMAL_GATE_ALLOWED=False`, `STALE_DATA_FORMAL_GATE_ALLOWED=False`, `CONFLICT_DATA_FORMAL_GATE_ALLOWED=False`, `INVALID_DATA_FORMAL_GATE_ALLOWED=False`, `QUALITY_GATE_OVERRIDE_DISABLED_BY_DEFAULT=True`
+- Gate levels: FORMAL / OBSERVATIONAL / DEMO / BLOCKED
+- Override: disabled by default; max level OBSERVATIONAL; audit_only=True; never enables trading
+- Health check: `python main.py quality-gate-health` → should PASS 20/20
+- **[!] No Real Orders. No broker API. Gate does NOT enable trading. Mock/Invalid/Stale/Conflict cannot pass FORMAL. Not Investment Advice.**

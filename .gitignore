@@ -388,3 +388,10 @@ reports/data_universe_expansion_report_*.md
 data/freshness_reports/
 reports/data_freshness_report_*.md
 reports/freshness_monitor_report_*.md
+
+# v1.1.4 Coverage Quality Gates (runtime outputs — never commit)
+data/quality_gate_reports/
+reports/coverage_quality_gate_report_*.md
+
+# v1.1.4 Quality Gate fixtures ARE committed (exception)
+!tests/fixtures/quality_gates/*.csv

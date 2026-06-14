@@ -5648,7 +5648,7 @@ def cmd_enrich_universe_data(args: argparse.Namespace) -> None:
 # ---------------------------------------------------------------------------
 
 def cmd_version_info(args: argparse.Namespace) -> None:
-    """Print version info for TW Quant Cockpit v1.1.3 (Data Freshness Monitor)."""
+    """Print version info for TW Quant Cockpit v1.1.4 (Coverage Quality Gates)."""
     print("=" * 60)
     print("TW Quant Cockpit \u2014 Version Info")
     print("=" * 60)
@@ -5686,6 +5686,23 @@ def cmd_version_info(args: argparse.Namespace) -> None:
         print(f"{'Stale Data Auto Repair Enabled:':<40} {stale_auto_rep}")
         print(f"{'Future Date Counts As Fresh:':<40} {future_fresh}")
         print(f"{'Mock Data Formal Freshness Allowed:':<40} {mock_frsh_fml}")
+        # v1.1.4 Coverage Quality Gates fields
+        cqg_available  = getattr(_vi, "COVERAGE_QUALITY_GATES_AVAILABLE", False)
+        fb_gate_avail  = getattr(_vi, "FORMAL_BACKTEST_GATE_AVAILABLE", False)
+        fv_gate_avail  = getattr(_vi, "FORMAL_VALIDATION_GATE_AVAILABLE", False)
+        qg_ov_dis_def  = getattr(_vi, "QUALITY_GATE_OVERRIDE_DISABLED_BY_DEFAULT", True)
+        mock_fg_allow  = getattr(_vi, "MOCK_DATA_FORMAL_GATE_ALLOWED", True)
+        stale_fg_allow = getattr(_vi, "STALE_DATA_FORMAL_GATE_ALLOWED", True)
+        conf_fg_allow  = getattr(_vi, "CONFLICT_DATA_FORMAL_GATE_ALLOWED", True)
+        inv_fg_allow   = getattr(_vi, "INVALID_DATA_FORMAL_GATE_ALLOWED", True)
+        print(f"{'Coverage Quality Gates Available:':<40} {cqg_available}")
+        print(f"{'Formal Backtest Gate Available:':<40} {fb_gate_avail}")
+        print(f"{'Formal Validation Gate Available:':<40} {fv_gate_avail}")
+        print(f"{'Quality Gate Override Disabled Default:':<40} {qg_ov_dis_def}")
+        print(f"{'Mock Data Formal Gate Allowed:':<40} {mock_fg_allow}")
+        print(f"{'Stale Data Formal Gate Allowed:':<40} {stale_fg_allow}")
+        print(f"{'Conflict Data Formal Gate Allowed:':<40} {conf_fg_allow}")
+        print(f"{'Invalid Data Formal Gate Allowed:':<40} {inv_fg_allow}")
         # v1.1.2 Coverage Repair Workflow fields
         cr_available     = getattr(_vi, "COVERAGE_REPAIR_AVAILABLE", False)
         cr_dry_run_def   = getattr(_vi, "COVERAGE_REPAIR_DRY_RUN_DEFAULT", False)
@@ -5729,12 +5746,12 @@ def cmd_version_info(args: argparse.Namespace) -> None:
         print(f"{'Paper Trading:':<40} {'Simulation Only' if PAPER_TRADING_IS_SIMULATION else 'Real'}")
         print(f"{'Mock Realtime:':<40} {'Simulation Only' if MOCK_REALTIME_IS_SIMULATION else 'Real'}")
     except Exception as exc:
-        print(f"  Version:                              1.1.3")
-        print(f"  Release:                              Data Freshness Monitor")
-        print(f"  Base Release:                         1.1.2 Coverage Repair Workflow")
-        print(f"  Data Freshness Monitor Available:     True")
-        print(f"  Auto External Refresh Enabled:        False")
-        print(f"  Future Date Counts As Fresh:          False")
+        print(f"  Version:                              1.1.4")
+        print(f"  Release:                              Coverage Quality Gates")
+        print(f"  Base Release:                         1.1.3 Data Freshness Monitor")
+        print(f"  Coverage Quality Gates Available:     True")
+        print(f"  Mock Data Formal Gate Allowed:        False")
+        print(f"  Quality Gate Override Disabled:       True")
         print(f"  (version_info import error: {exc})")
     print("=" * 60)
     print("RESEARCH ONLY \u2014 Not Investment Advice \u2014 No Real Orders")
@@ -11357,6 +11374,321 @@ def cmd_freshness_report(args):
 
 
 # ---------------------------------------------------------------------------
+# v1.1.4 Coverage Quality Gates handlers
+# [!] Research Only. No Real Orders. Gate does NOT enable trading.
+# ---------------------------------------------------------------------------
+
+def _print_quality_gate_header() -> None:
+    print("=" * 60)
+    print("TW Quant Cockpit \u2014 Coverage Quality Gates v1.1.4")
+    print("Research Only: True | No Real Orders: True")
+    print("Gate does NOT enable trading. Mock/Invalid/Stale: BLOCKED.")
+    print("=" * 60)
+
+
+def cmd_quality_gate_health(args) -> None:
+    """Run quality gate health check. [!] Research Only. No Real Orders."""
+    _print_quality_gate_header()
+    try:
+        from quality_gates.gate_health import CoverageQualityGateHealthCheck
+        checker = CoverageQualityGateHealthCheck()
+        result = checker.run_all()
+        print(checker.format_report(result))
+        print("[!] Research Only. No Real Orders.")
+    except Exception as exc:
+        print(f"  [ERROR] quality-gate-health failed: {exc}")
+        print("[!] Research Only. No Real Orders.")
+
+
+def cmd_quality_gate_symbol(args) -> None:
+    """Evaluate a single symbol against a named gate. [!] Research Only."""
+    _print_quality_gate_header()
+    stock = getattr(args, "stock", None)
+    gate  = getattr(args, "gate", "price_backtest")
+    mode  = getattr(args, "mode", "real")
+    print(f"Symbol: {stock} | Gate: {gate} | Mode: {mode}")
+    print("=" * 60)
+    if not stock:
+        print("  [ERROR] --stock is required.")
+        return
+    try:
+        from quality_gates.gate_decision_engine import CoverageQualityGateEngine
+        engine = CoverageQualityGateEngine()
+        dec = engine.evaluate_symbol(stock, gate, mode=mode)
+        d = dec.to_dict() if hasattr(dec, "to_dict") else (dec if isinstance(dec, dict) else {})
+        print(f"  Symbol:      {d.get('symbol', '?')}")
+        print(f"  Gate:        {d.get('gate_name', '?')}")
+        print(f"  Level:       {d.get('gate_level', '?')}")
+        print(f"  Decision:    {d.get('decision', '?')}")
+        print(f"  Confidence:  {d.get('confidence', '?')}")
+        codes = d.get('reason_codes', [])
+        if isinstance(codes, str):
+            import json
+            try:
+                codes = json.loads(codes)
+            except Exception:
+                codes = [codes]
+        print(f"  Reason Codes: {', '.join(str(c) for c in codes) or 'none'}")
+        print("[!] Research Only. No Real Orders.")
+    except Exception as exc:
+        print(f"  [ERROR] quality-gate-symbol failed: {exc}")
+
+
+def cmd_quality_gate_universe(args) -> None:
+    """Evaluate all symbols in a tier against a gate. [!] Research Only."""
+    _print_quality_gate_header()
+    tier = getattr(args, "tier", "core10")
+    gate = getattr(args, "gate", "price_backtest")
+    mode = getattr(args, "mode", "real")
+    print(f"Tier: {tier} | Gate: {gate} | Mode: {mode}")
+    print("=" * 60)
+    try:
+        from quality_gates.gate_decision_engine import CoverageQualityGateEngine
+        engine = CoverageQualityGateEngine()
+        result = engine.run(tier=tier, gate_name=gate, mode=mode)
+        decisions = result.get("decisions", [])
+        formal  = [d for d in decisions if d.get("gate_level") == "FORMAL"]
+        obs     = [d for d in decisions if d.get("gate_level") == "OBSERVATIONAL"]
+        blocked = [d for d in decisions if d.get("gate_level") == "BLOCKED"]
+        demo    = [d for d in decisions if d.get("gate_level") == "DEMO"]
+        print(f"  Total evaluated: {len(decisions)}")
+        print(f"  FORMAL:          {len(formal)}")
+        print(f"  OBSERVATIONAL:   {len(obs)}")
+        print(f"  DEMO:            {len(demo)}")
+        print(f"  BLOCKED:         {len(blocked)}")
+        print("[!] Research Only. No Real Orders.")
+    except Exception as exc:
+        print(f"  [ERROR] quality-gate-universe failed: {exc}")
+
+
+def cmd_quality_gate_matrix(args) -> None:
+    """Build gate matrix for all gates in a tier. [!] Research Only."""
+    _print_quality_gate_header()
+    tier = getattr(args, "tier", "core10")
+    mode = getattr(args, "mode", "real")
+    print(f"Tier: {tier} | Mode: {mode}")
+    print("=" * 60)
+    try:
+        from quality_gates.gate_decision_engine import CoverageQualityGateEngine
+        from quality_gates.gate_store import GateStore
+        engine = CoverageQualityGateEngine()
+        matrix = engine.build_gate_matrix(tier=tier, mode=mode)
+        print(f"  Symbols evaluated: {len(matrix)}")
+        for sym, gates in list(matrix.items())[:10]:
+            counts = {lvl: sum(1 for v in gates.values() if v == lvl)
+                      for lvl in ("FORMAL", "OBSERVATIONAL", "BLOCKED")}
+            print(f"  {sym:<10} FORMAL={counts['FORMAL']} OBS={counts['OBSERVATIONAL']} "
+                  f"BLOCKED={counts['BLOCKED']}")
+        if len(matrix) > 10:
+            print(f"  ... ({len(matrix) - 10} more symbols)")
+        store = GateStore()
+        path = store.save_gate_matrix(matrix)
+        print(f"  Matrix saved to: {path}")
+        print("[!] Research Only. No Real Orders.")
+    except Exception as exc:
+        print(f"  [ERROR] quality-gate-matrix failed: {exc}")
+
+
+def cmd_quality_gate_summary(args) -> None:
+    """Show latest universe gate summary. [!] Research Only."""
+    _print_quality_gate_header()
+    try:
+        from quality_gates.gate_query import GateQuery
+        query = GateQuery()
+        summary = query.latest_universe_summary()
+        if summary:
+            for k, v in summary.items():
+                print(f"  {k}: {v}")
+        else:
+            print("  No universe summary stored. Run quality-gate-universe first.")
+        print("[!] Research Only. No Real Orders.")
+    except Exception as exc:
+        print(f"  [ERROR] quality-gate-summary failed: {exc}")
+
+
+def cmd_quality_gate_formal(args) -> None:
+    """List FORMAL eligible symbols from latest run. [!] Research Only."""
+    _print_quality_gate_header()
+    try:
+        from quality_gates.gate_query import GateQuery
+        query = GateQuery()
+        decisions = query.list_formal_eligible()
+        print(f"  Formal Eligible: {len(decisions)}")
+        for d in decisions[:20]:
+            print(f"    {d.get('symbol', '?'):<10} {d.get('gate_name', '?'):<20} "
+                  f"{d.get('confidence', '?')}")
+        if len(decisions) > 20:
+            print(f"  ... ({len(decisions) - 20} more)")
+        if not decisions:
+            print("  No formal eligible symbols. Run quality-gate-universe first.")
+        print("[!] Research Only. No Real Orders.")
+    except Exception as exc:
+        print(f"  [ERROR] quality-gate-formal failed: {exc}")
+
+
+def cmd_quality_gate_observational(args) -> None:
+    """List OBSERVATIONAL symbols from latest run. [!] Research Only."""
+    _print_quality_gate_header()
+    try:
+        from quality_gates.gate_query import GateQuery
+        query = GateQuery()
+        decisions = query.list_observational()
+        print(f"  Observational: {len(decisions)}")
+        for d in decisions[:20]:
+            print(f"    {d.get('symbol', '?'):<10} {d.get('gate_name', '?')}")
+        if len(decisions) > 20:
+            print(f"  ... ({len(decisions) - 20} more)")
+        if not decisions:
+            print("  No observational symbols. Run quality-gate-universe first.")
+        print("[!] Research Only. No Real Orders.")
+    except Exception as exc:
+        print(f"  [ERROR] quality-gate-observational failed: {exc}")
+
+
+def cmd_quality_gate_blocked(args) -> None:
+    """List BLOCKED symbols from latest run. [!] Research Only."""
+    _print_quality_gate_header()
+    try:
+        from quality_gates.gate_query import GateQuery
+        query = GateQuery()
+        decisions = query.list_blocked()
+        print(f"  Blocked: {len(decisions)}")
+        for d in decisions[:20]:
+            import json
+            codes_raw = d.get("reason_codes", "[]")
+            try:
+                codes = json.loads(codes_raw) if isinstance(codes_raw, str) else codes_raw
+            except Exception:
+                codes = []
+            print(f"    {d.get('symbol', '?'):<10} {d.get('decision', '?'):<30} "
+                  f"{', '.join(str(c) for c in codes[:2])}")
+        if len(decisions) > 20:
+            print(f"  ... ({len(decisions) - 20} more)")
+        if not decisions:
+            print("  No blocked symbols. Run quality-gate-universe first.")
+        print("[!] Research Only. No Real Orders.")
+    except Exception as exc:
+        print(f"  [ERROR] quality-gate-blocked failed: {exc}")
+
+
+def cmd_quality_gate_reasons(args) -> None:
+    """List decisions for a specific reason code. [!] Research Only."""
+    _print_quality_gate_header()
+    reason = getattr(args, "reason", None)
+    print(f"Reason Code: {reason or '(all)'}")
+    print("=" * 60)
+    try:
+        from quality_gates.gate_query import GateQuery
+        query = GateQuery()
+        if reason:
+            decisions = query.list_by_reason(reason)
+        else:
+            decisions = query.latest_symbol_decisions()
+        print(f"  Matching decisions: {len(decisions)}")
+        for d in decisions[:20]:
+            print(f"    {d.get('symbol', '?'):<10} {d.get('gate_level', '?'):<15} "
+                  f"{d.get('decision', '?')}")
+        if not decisions:
+            print("  No matching decisions. Run quality-gate-universe first.")
+        print("[!] Research Only. No Real Orders.")
+    except Exception as exc:
+        print(f"  [ERROR] quality-gate-reasons failed: {exc}")
+
+
+def cmd_quality_gate_explain(args) -> None:
+    """Explain a specific decision by ID. [!] Research Only."""
+    _print_quality_gate_header()
+    decision_id = getattr(args, "decision_id", None)
+    print(f"Decision ID: {decision_id or '(none)'}")
+    print("=" * 60)
+    if not decision_id:
+        print("  [ERROR] --decision-id is required.")
+        return
+    try:
+        from quality_gates.gate_query import GateQuery
+        query = GateQuery()
+        d = query.get_decision(decision_id)
+        if d:
+            for k, v in d.items():
+                print(f"  {k}: {v}")
+        else:
+            print(f"  Decision {decision_id} not found.")
+        print("[!] Research Only. No Real Orders.")
+    except Exception as exc:
+        print(f"  [ERROR] quality-gate-explain failed: {exc}")
+
+
+def cmd_quality_gate_report(args) -> None:
+    """Build coverage quality gate report. [!] Research Only."""
+    _print_quality_gate_header()
+    tier      = getattr(args, "tier", None)
+    gate      = getattr(args, "gate", "price_backtest")
+    mode      = getattr(args, "mode", "real")
+    report_dir = getattr(args, "report_dir", "reports")
+    print(f"Tier: {tier or 'custom'} | Gate: {gate} | Mode: {mode}")
+    print("=" * 60)
+    try:
+        from quality_gates.gate_query import GateQuery
+        from reports.coverage_quality_gate_report import CoverageQualityGateReportBuilder
+        query = GateQuery()
+        decisions = query.latest_symbol_decisions()
+        summary   = query.latest_universe_summary()
+        if not decisions:
+            print("  No decisions stored. Run quality-gate-universe first.")
+            print("[!] Research Only. No Real Orders.")
+            return
+        builder = CoverageQualityGateReportBuilder(output_dir=report_dir)
+        path = builder.build(
+            decisions=decisions,
+            universe_summary=summary or {},
+            mode=mode,
+            tier=tier,
+            gate_name=gate,
+        )
+        print(f"  Report saved to: {path}")
+        print("[!] Research Only. No Real Orders.")
+    except Exception as exc:
+        print(f"  [ERROR] quality-gate-report failed: {exc}")
+
+
+def cmd_quality_gate_override_request(args) -> None:
+    """Request a research-only gate override (disabled by default). [!] Research Only."""
+    _print_quality_gate_header()
+    decision_id   = getattr(args, "decision_id", None)
+    level         = getattr(args, "level", "OBSERVATIONAL")
+    reason        = getattr(args, "reason", "")
+    allow_override = getattr(args, "allow_override", False)
+    print(f"Decision ID: {decision_id} | Requested Level: {level}")
+    print("=" * 60)
+    print("[!] Gate override is DISABLED by default.")
+    print("[!] Max override level: OBSERVATIONAL (never FORMAL).")
+    print("[!] Override does NOT enable trading.")
+    if not allow_override:
+        print("  Override not requested. Pass --allow-research-override to proceed.")
+        print("[!] Research Only. No Real Orders.")
+        return
+    if not decision_id:
+        print("  [ERROR] --decision-id is required.")
+        return
+    try:
+        from quality_gates.gate_override import QualityGateOverrideManager
+        mgr = QualityGateOverrideManager()
+        rec = mgr.request_override(
+            decision_id=decision_id,
+            requested_level=level,
+            reason=reason,
+            allow_override=True,
+        )
+        d = rec.to_dict() if hasattr(rec, "to_dict") else (rec if isinstance(rec, dict) else {})
+        print(f"  Override record created (audit only):")
+        for k, v in d.items():
+            print(f"    {k}: {v}")
+        print("[!] Override is audit-only. Research Only. No Real Orders.")
+    except Exception as exc:
+        print(f"  [ERROR] quality-gate-override-request failed: {exc}")
+
+
+# ---------------------------------------------------------------------------
 # v1.0.9 Final Maintenance Rollup handlers
 # ---------------------------------------------------------------------------
 
@@ -16901,6 +17233,88 @@ def _build_parser() -> argparse.ArgumentParser:
     p_frep.add_argument("--mode",       default="real")
     p_frep.add_argument("--report-dir", dest="report_dir", default="reports")
 
+    # --- v1.1.4 Coverage Quality Gates ---
+    subparsers.add_parser(
+        "quality-gate-health",
+        help="[v1.1.4] Run quality gate health check. [!] Research Only.",
+    )
+
+    p_qgsym = subparsers.add_parser(
+        "quality-gate-symbol",
+        help="[v1.1.4] Evaluate a single symbol against a gate. [!] Research Only.",
+    )
+    p_qgsym.add_argument("--stock", default=None, required=True, help="Stock symbol (e.g. 2454)")
+    p_qgsym.add_argument("--gate",  default="price_backtest", help="Gate name (default: price_backtest)")
+    p_qgsym.add_argument("--mode",  default="real", help="real or mock (default: real)")
+
+    p_qguniv = subparsers.add_parser(
+        "quality-gate-universe",
+        help="[v1.1.4] Evaluate all symbols in a tier against a gate. [!] Research Only.",
+    )
+    p_qguniv.add_argument("--tier", default="core10", help="Tier: core10/research30/expanded50/broad100")
+    p_qguniv.add_argument("--gate", default="price_backtest", help="Gate name (default: price_backtest)")
+    p_qguniv.add_argument("--mode", default="real", help="real or mock (default: real)")
+
+    p_qgmat = subparsers.add_parser(
+        "quality-gate-matrix",
+        help="[v1.1.4] Build gate matrix for all gates in a tier. [!] Research Only.",
+    )
+    p_qgmat.add_argument("--tier", default="core10", help="Tier name")
+    p_qgmat.add_argument("--mode", default="real",   help="real or mock (default: real)")
+
+    subparsers.add_parser(
+        "quality-gate-summary",
+        help="[v1.1.4] Show latest universe gate summary. [!] Research Only.",
+    )
+
+    subparsers.add_parser(
+        "quality-gate-formal",
+        help="[v1.1.4] List FORMAL eligible symbols from latest run. [!] Research Only.",
+    )
+
+    subparsers.add_parser(
+        "quality-gate-observational",
+        help="[v1.1.4] List OBSERVATIONAL symbols from latest run. [!] Research Only.",
+    )
+
+    subparsers.add_parser(
+        "quality-gate-blocked",
+        help="[v1.1.4] List BLOCKED symbols from latest run. [!] Research Only.",
+    )
+
+    p_qgreasons = subparsers.add_parser(
+        "quality-gate-reasons",
+        help="[v1.1.4] List decisions by reason code. [!] Research Only.",
+    )
+    p_qgreasons.add_argument("--reason", default=None, help="Reason code filter (e.g. PRICE_DATA_MISSING)")
+
+    p_qgexplain = subparsers.add_parser(
+        "quality-gate-explain",
+        help="[v1.1.4] Explain a decision by ID. [!] Research Only.",
+    )
+    p_qgexplain.add_argument("--decision-id", dest="decision_id", default=None, required=True,
+                              help="Decision ID to explain")
+
+    p_qgrep = subparsers.add_parser(
+        "quality-gate-report",
+        help="[v1.1.4] Build coverage quality gate report. [!] Research Only.",
+    )
+    p_qgrep.add_argument("--tier",       default=None, help="Tier name")
+    p_qgrep.add_argument("--gate",       default="price_backtest", help="Gate name")
+    p_qgrep.add_argument("--mode",       default="real", help="real or mock")
+    p_qgrep.add_argument("--report-dir", dest="report_dir", default="reports")
+
+    p_qgov = subparsers.add_parser(
+        "quality-gate-override-request",
+        help="[v1.1.4] Request research-only gate override (disabled by default). [!] Research Only.",
+    )
+    p_qgov.add_argument("--decision-id",          dest="decision_id",   default=None)
+    p_qgov.add_argument("--level",                default="OBSERVATIONAL", help="Max: OBSERVATIONAL")
+    p_qgov.add_argument("--reason",               default="", help="Reason for override")
+    p_qgov.add_argument("--allow-research-override", dest="allow_override",
+                        action="store_true", default=False,
+                        help="Explicitly enable override (disabled by default)")
+
     # --- v1.1.1 Data Import UX & Batch Onboarding ---
     p_idiscover = subparsers.add_parser(
         "import-discover",
@@ -18427,6 +18841,19 @@ def main() -> None:
         "freshness-repair-handoff": cmd_freshness_repair_handoff,
         "freshness-health":         cmd_freshness_health,
         "freshness-report":         cmd_freshness_report,
+        # v1.1.4 Coverage Quality Gates
+        "quality-gate-health":            cmd_quality_gate_health,
+        "quality-gate-symbol":            cmd_quality_gate_symbol,
+        "quality-gate-universe":          cmd_quality_gate_universe,
+        "quality-gate-matrix":            cmd_quality_gate_matrix,
+        "quality-gate-summary":           cmd_quality_gate_summary,
+        "quality-gate-formal":            cmd_quality_gate_formal,
+        "quality-gate-observational":     cmd_quality_gate_observational,
+        "quality-gate-blocked":           cmd_quality_gate_blocked,
+        "quality-gate-reasons":           cmd_quality_gate_reasons,
+        "quality-gate-explain":           cmd_quality_gate_explain,
+        "quality-gate-report":            cmd_quality_gate_report,
+        "quality-gate-override-request":  cmd_quality_gate_override_request,
         # v1.1.1 Data Import UX & Batch Onboarding
         "import-discover":           cmd_import_discover,
         "import-preview":            cmd_import_preview,

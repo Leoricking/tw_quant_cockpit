@@ -1413,6 +1413,51 @@ class GUITabRegistry:
                 notes="Added in v1.1.3 — Data Freshness Monitor.",
             ),
             # ----------------------------------------------------------------
+            # v1.1.4 Coverage Quality Gates
+            # ----------------------------------------------------------------
+            GUITabMetadata(
+                tab_id="coverage_quality_gates",
+                tab_name="coverage_quality_gates",
+                display_name="Coverage Quality Gates",
+                group="data",
+                priority="P1",
+                description=(
+                    "Coverage Quality Gates v1.1.4 — gate-specific data eligibility, "
+                    "formal/observational/demo/blocked classification, symbol and universe "
+                    "qualification, reason codes, mock and stale data guards. "
+                    "Research Only. No Real Orders. Gate does NOT enable trading."
+                ),
+                module_path="gui.coverage_quality_gate_panel",
+                class_name="CoverageQualityGatePanel",
+                available_flag="_DATA_QUALITY_GATE_AVAILABLE",
+                keywords=[
+                    "quality gate", "coverage gate", "formal eligible", "observational",
+                    "blocked data", "backtest eligibility", "data qualification",
+                    "gate matrix", "reason code", "data readiness",
+                    "\u54c1\u8cea\u9580\u6ebb",    # 品質門檻
+                    "\u8cc7\u6599\u9580\u6ebb",    # 資料門檻
+                    "\u6b63\u5f0f\u56de\u6e2c\u8cc7\u683c",  # 正式回測資格
+                    "\u53ef\u7528\u8cc7\u6599",    # 可用資料
+                    "\u963b\u64cb\u539f\u56e0",    # 阻擋原因
+                    "\u8cc7\u6599\u8cc7\u683c",    # 資料資格
+                ],
+                aliases=["quality-gate", "gate", "eligibility"],
+                related_cli_commands=[
+                    "quality-gate-symbol", "quality-gate-universe", "quality-gate-matrix",
+                    "quality-gate-summary", "quality-gate-formal", "quality-gate-observational",
+                    "quality-gate-blocked", "quality-gate-reasons", "quality-gate-explain",
+                    "quality-gate-health", "quality-gate-report",
+                ],
+                report_types=["coverage_quality_gate_report"],
+                maturity="STABLE",
+                default_visible=True,
+                favorite_default=False,
+                no_real_orders=True,
+                read_only=True,
+                production_blocked=True,
+                notes="Added in v1.1.4 — Coverage Quality Gates.",
+            ),
+            # ----------------------------------------------------------------
             # v1.1.0 Data Universe Expansion
             # ----------------------------------------------------------------
             GUITabMetadata(

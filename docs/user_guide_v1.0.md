@@ -353,3 +353,39 @@ python main.py freshness-report --tier research30 --mode real
 See `docs/coverage_repair_workflow_v1.1.2.md` and `docs/data_import_onboarding_v1.1.1.md` for workflow integration details.
 
 **[!] AUTO_EXTERNAL_REFRESH_ENABLED=False. STALE_DATA_AUTO_REPAIR_ENABLED=False. Repair handoff creates task list only. No Real Orders.**
+
+---
+
+## v1.1.4 — Coverage Quality Gates
+
+v1.1.4 adds Coverage Quality Gates: systematic data-eligibility evaluation for all symbols across 12 named gates. Gate produces eligibility decisions only — does not execute trades, repair data, or trigger any automated action.
+
+### Safety Guarantees
+
+| Safety Flag | Value |
+|---|---|
+| `MOCK_DATA_FORMAL_GATE_ALLOWED` | False |
+| `STALE_DATA_FORMAL_GATE_ALLOWED` | False |
+| `CONFLICT_DATA_FORMAL_GATE_ALLOWED` | False |
+| `INVALID_DATA_FORMAL_GATE_ALLOWED` | False |
+| `QUALITY_GATE_OVERRIDE_DISABLED_BY_DEFAULT` | True |
+
+### v1.1.4 CLI Commands
+
+```
+python main.py quality-gate-health
+python main.py quality-gate-symbol --stock 2454 --gate price_backtest
+python main.py quality-gate-universe --tier research30 --gate price_backtest
+python main.py quality-gate-matrix --tier core10
+python main.py quality-gate-summary
+python main.py quality-gate-formal
+python main.py quality-gate-observational
+python main.py quality-gate-blocked
+python main.py quality-gate-reasons --reason PRICE_DATA_MISSING
+python main.py quality-gate-explain --decision-id <id>
+python main.py quality-gate-report --tier research30
+```
+
+See `docs/coverage_quality_gates_v1.1.4.md` for full documentation.
+
+**[!] Mock/Invalid/Stale/Conflict data cannot pass FORMAL gate. Override disabled by default. Gate does NOT enable trading. No Real Orders.**

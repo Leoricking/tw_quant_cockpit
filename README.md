@@ -4,7 +4,7 @@
 >
 > **[!] v1: Real order execution is strictly prohibited. For research, simulation, and decision support only. Not investment advice.**
 
-**Current version: v1.1.3 — Data Freshness Monitor** (base: v1.1.2 Coverage Repair Workflow) — **v1.0 Maintenance Line Complete**
+**Current version: v1.1.4 — Coverage Quality Gates** (base: v1.1.3 Data Freshness Monitor) — **v1.0 Maintenance Line Complete**
 
 ---
 

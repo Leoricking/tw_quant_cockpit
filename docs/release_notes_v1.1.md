@@ -254,12 +254,35 @@ python main.py coverage-repair-report --plan-id latest --mode real
 
 ---
 
+## v1.1.4 — Coverage Quality Gates
+
+**Released:** 2026-06-14
+
+Coverage Quality Gates adds a systematic data-eligibility evaluation layer. Every symbol is evaluated against 12 named gates before admission to research pipelines.
+
+**New modules:** `quality_gates/` (gate_schema, gate_policy, symbol_gate_evaluator, universe_gate_evaluator, gate_decision_engine, gate_override, gate_store, gate_query, gate_health, __init__)
+
+**New CLI (12 commands):**
+```
+quality-gate-health, quality-gate-symbol, quality-gate-universe, quality-gate-matrix,
+quality-gate-summary, quality-gate-formal, quality-gate-observational, quality-gate-blocked,
+quality-gate-reasons, quality-gate-explain, quality-gate-report, quality-gate-override-request
+```
+
+**Gate levels:** FORMAL / OBSERVATIONAL / DEMO / BLOCKED
+
+**Safety:** Mock/Invalid/Stale/Conflict data → FORMAL gate BLOCKED. Override disabled by default. Max override: OBSERVATIONAL. Gate does NOT enable trading. No Real Orders.
+
+**Docs:** `docs/coverage_quality_gates_v1.1.4.md`
+
+---
+
 ## Roadmap
 
 | Version | Target |
 |---------|--------|
-| v1.1.3  | Data Freshness Monitor |
-| v1.1.4  | Coverage Quality Gates |
+| v1.1.3  | Data Freshness Monitor — Done |
+| v1.1.4  | Coverage Quality Gates — Done |
 | v1.2.0  | Replay Training UX |
 
 ---

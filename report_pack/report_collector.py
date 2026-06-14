@@ -48,6 +48,7 @@ from report_pack.report_registry import (
     REPORT_DATA_IMPORT_ONBOARDING,
     REPORT_COVERAGE_REPAIR,
     REPORT_DATA_FRESHNESS,
+    REPORT_COVERAGE_QUALITY_GATE,
 )
 
 logger = logging.getLogger(__name__)
@@ -285,6 +286,11 @@ _REPORT_PATTERNS = {
     REPORT_DATA_FRESHNESS: [
         "reports/data_freshness_report*.md",
         "data/freshness_reports/*.csv",
+    ],
+    # v1.1.4 Coverage Quality Gates
+    REPORT_COVERAGE_QUALITY_GATE: [
+        "reports/coverage_quality_gate_report*.md",
+        "data/quality_gate_reports/*.csv",
     ],
     # v0.9.1 Evidence Graph UX patterns
     "evidence_graph_gaps": [

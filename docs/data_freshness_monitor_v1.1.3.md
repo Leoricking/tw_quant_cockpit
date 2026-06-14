@@ -463,5 +463,4 @@ mock_data_formal_freshness_allowed = False
 
 ## v1.1.4 Integration Note
 
-v1.1.4 Coverage Quality Gates will use DataFreshnessEngine for freshness-gated quality checks.
-See docs/coverage_quality_gates_v1.1.4.md (planned).
+v1.1.4 Coverage Quality Gates uses freshness status in the `evaluate_freshness()` check of `SymbolQualityGateEvaluator`. Symbols with CRITICAL or MISSING freshness are blocked from FORMAL gate. See `docs/coverage_quality_gates_v1.1.4.md` for full integration details.

@@ -1026,6 +1026,54 @@ class ResearchCockpitStableChecklist:
         except Exception as exc:
             checks.append(_mk("freshness_no_forbidden_actions", "data_freshness", "WARN", str(exc)))
 
+        # v1.1.4 Coverage Quality Gates checks
+        try:
+            import quality_gates
+            _qg_avail = getattr(quality_gates, "COVERAGE_QUALITY_GATES_RELEASE", False)
+            checks.append(_mk("coverage_quality_gates_available", "quality_gates",
+                              "PASS" if _qg_avail else "FAIL",
+                              f"quality_gates: COVERAGE_QUALITY_GATES_RELEASE={_qg_avail}"))
+        except Exception as exc:
+            checks.append(_mk("coverage_quality_gates_available", "quality_gates", "FAIL", str(exc)))
+
+        try:
+            import quality_gates
+            _mock = getattr(quality_gates, "MOCK_DATA_FORMAL_GATE_ALLOWED", True)
+            checks.append(_mk("mock_formal_gate_disabled", "quality_gates",
+                              "PASS" if not _mock else "FAIL",
+                              f"MOCK_DATA_FORMAL_GATE_ALLOWED={_mock} (must be False)"))
+        except Exception as exc:
+            checks.append(_mk("mock_formal_gate_disabled", "quality_gates", "FAIL", str(exc)))
+
+        try:
+            import quality_gates
+            _invalid = getattr(quality_gates, "INVALID_DATA_FORMAL_GATE_ALLOWED", True)
+            checks.append(_mk("invalid_data_formal_gate_disabled", "quality_gates",
+                              "PASS" if not _invalid else "FAIL",
+                              f"INVALID_DATA_FORMAL_GATE_ALLOWED={_invalid} (must be False)"))
+        except Exception as exc:
+            checks.append(_mk("invalid_data_formal_gate_disabled", "quality_gates", "FAIL", str(exc)))
+
+        try:
+            import quality_gates
+            _override = getattr(quality_gates, "QUALITY_GATE_OVERRIDE_DISABLED_BY_DEFAULT", False)
+            checks.append(_mk("quality_gate_override_disabled", "quality_gates",
+                              "PASS" if _override else "FAIL",
+                              f"QUALITY_GATE_OVERRIDE_DISABLED_BY_DEFAULT={_override} (must be True)"))
+        except Exception as exc:
+            checks.append(_mk("quality_gate_override_disabled", "quality_gates", "FAIL", str(exc)))
+
+        try:
+            from quality_gates.gate_health import CoverageQualityGateHealthCheck
+            _gh = CoverageQualityGateHealthCheck()
+            _gh_result = _gh.run()
+            _gh_overall = _gh_result.get("overall", "FAIL")
+            checks.append(_mk("quality_gate_no_forbidden_actions", "quality_gates",
+                              "PASS" if _gh_overall in ("PASS", "WARN") else "FAIL",
+                              f"CoverageQualityGateHealthCheck overall={_gh_overall}"))
+        except Exception as exc:
+            checks.append(_mk("quality_gate_no_forbidden_actions", "quality_gates", "WARN", str(exc)))
+
         # Rebuild summary counts to include new checks
         total         = len(checks)
         pass_count    = sum(1 for c in checks if c["status"] == "PASS")

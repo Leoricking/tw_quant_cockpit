@@ -1226,4 +1226,40 @@ class IntelligenceStableChecklist:
                 suggested_fix="Run: python main.py freshness-health",
             ))
 
+        # v1.1.4 coverage_quality_gate_v114_safe — quality gates package is safe
+        try:
+            import importlib
+            mod_qg = importlib.import_module("quality_gates")
+            no_orders_qg   = getattr(mod_qg, "NO_REAL_ORDERS", None)
+            mock_gate      = getattr(mod_qg, "MOCK_DATA_FORMAL_GATE_ALLOWED", None)
+            invalid_gate   = getattr(mod_qg, "INVALID_DATA_FORMAL_GATE_ALLOWED", None)
+            override_off   = getattr(mod_qg, "QUALITY_GATE_OVERRIDE_DISABLED_BY_DEFAULT", None)
+            if no_orders_qg is True and mock_gate is False and invalid_gate is False and override_off is True:
+                checks.append(_check(
+                    "coverage_quality_gate_v114_safe", "stable_integration",
+                    "v1.1.4 coverage_quality_gate_v114_safe",
+                    CHECK_PASS, SEV_LOW,
+                    "quality_gates: NO_REAL_ORDERS=True, MOCK_DATA_FORMAL_GATE_ALLOWED=False, "
+                    "INVALID_DATA_FORMAL_GATE_ALLOWED=False, QUALITY_GATE_OVERRIDE_DISABLED_BY_DEFAULT=True.",
+                ))
+            else:
+                checks.append(_check(
+                    "coverage_quality_gate_v114_safe", "stable_integration",
+                    "v1.1.4 coverage_quality_gate_v114_safe",
+                    CHECK_WARN, SEV_LOW,
+                    f"quality_gates safety flags: NO_REAL_ORDERS={no_orders_qg}, "
+                    f"MOCK_DATA_FORMAL_GATE_ALLOWED={mock_gate}, "
+                    f"INVALID_DATA_FORMAL_GATE_ALLOWED={invalid_gate}, "
+                    f"QUALITY_GATE_OVERRIDE_DISABLED_BY_DEFAULT={override_off}",
+                    suggested_fix="Ensure quality_gates/__init__.py has correct v1.1.4 safety flags.",
+                ))
+        except Exception as exc:
+            checks.append(_check(
+                "coverage_quality_gate_v114_safe", "stable_integration",
+                "v1.1.4 coverage_quality_gate_v114_safe",
+                CHECK_WARN, SEV_LOW,
+                f"Could not verify quality_gates v1.1.4 safety (optional): {exc}",
+                suggested_fix="Run: python main.py quality-gate-health",
+            ))
+
         return checks
