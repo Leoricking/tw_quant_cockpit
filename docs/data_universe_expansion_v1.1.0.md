@@ -158,3 +158,12 @@ v1.1.1 (Data Import UX & Batch Onboarding) builds on the v1.1.0 universe foundat
 See `docs/data_import_onboarding_v1.1.1.md` for the full v1.1.1 specification.
 
 **[!] v1.1.1 does not modify universe tier definitions or coverage thresholds.**
+
+## v1.1.2 Integration
+
+v1.1.2 Coverage Repair Workflow uses `UniverseCoverageAnalyzer` and `UniverseStore` for:
+- Detecting stale / missing / partial coverage per tier
+- Refreshing coverage after safe repair operations (`REFRESH_COVERAGE` action)
+- Displaying before/after coverage statistics
+
+See `docs/coverage_repair_workflow_v1.1.2.md` for full v1.1.2 specification.

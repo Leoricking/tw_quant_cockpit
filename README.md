@@ -4,7 +4,7 @@
 >
 > **[!] v1: Real order execution is strictly prohibited. For research, simulation, and decision support only. Not investment advice.**
 
-**Current version: v1.1.1 — Data Import UX & Batch Onboarding** (base: v1.1.0 Data Universe Expansion) — **v1.0 Maintenance Line Complete**
+**Current version: v1.1.2 — Coverage Repair Workflow** (base: v1.1.1 Data Import UX & Batch Onboarding) — **v1.0 Maintenance Line Complete**
 
 ---
 
@@ -29,9 +29,13 @@ TW Quant Cockpit is a **Research Trading Cockpit** for Taiwan equity markets. It
 
 ---
 
-## Current Version: v1.1.1 — Data Import UX & Batch Onboarding
+## Current Version: v1.1.2 — Coverage Repair Workflow
 
-This is TW Quant Cockpit **v1.1.1 — Data Import UX & Batch Onboarding**, based on **v1.1.0 Data Universe Expansion**.
+This is TW Quant Cockpit **v1.1.2 — Coverage Repair Workflow**, based on **v1.1.1 Data Import UX & Batch Onboarding**.
+
+New in v1.1.2: coverage_repair/ package (repair_schema, issue_detector, task_builder, repair_prioritizer, repair_planner, safe_repair_executor, repair_validator, repair_store, repair_query, repair_health), 18 issue types, P0–P3 priority scoring, dry-run repair planning, safe deduplication & schema normalization, manual conflict review, source requirements workflow, before/after validation, 13 new CLI commands (coverage-repair-scan, -issues, -tasks, -plan, -run, -result, -unresolved, -source-required, -health, -report, etc.), GUI panel + adapter, nav tab (data group), report pack entry, stable/v060/intelligence checklist checks, regression tests (~20), 8 fixture CSVs (TST1/TST2 symbols), docs/coverage_repair_workflow_v1.1.2.md. INVALID OHLC → always BLOCKED. CONFLICT → always MANUAL. Synthetic repair: DISABLED. External download: DISABLED. No broker API. Not Investment Advice.
+
+## v1.1.1 — Data Import UX & Batch Onboarding
 
 New in v1.1.1: data_onboarding/ package (file_discovery, schema_detector, file_validator, duplicate_detector, import_planner, batch_executor, retry_manifest, onboarding_store, onboarding_query, onboarding_health), dry_run=True by default, REPLACE_EXPLICIT blocked by default, conflict detection → REVIEW (not auto-overwrite), retry manifests, universe coverage refresh, 7 new CLI commands (import-discover, import-preview, import-validate, import-plan, import-batch, import-retry-manifest, import-onboarding-health, import-onboarding-report), optional GUI panel, docs/data_import_onboarding_v1.1.1.md. No broker API. Not Investment Advice.
 

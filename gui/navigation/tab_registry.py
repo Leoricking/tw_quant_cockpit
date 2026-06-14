@@ -1325,6 +1325,49 @@ class GUITabRegistry:
                 notes="Added in v1.1.1 — Data Import UX & Batch Onboarding.",
             ),
             # ----------------------------------------------------------------
+            # v1.1.2 Coverage Repair Workflow
+            # ----------------------------------------------------------------
+            GUITabMetadata(
+                tab_id="coverage_repair",
+                tab_name="coverage_repair",
+                display_name="Coverage Repair Workflow",
+                group="data",
+                priority="P1",
+                description=(
+                    "Coverage Repair Workflow v1.1.2 — detect missing/partial/stale/duplicate/"
+                    "conflict/invalid coverage issues, build prioritized repair tasks, dry-run "
+                    "repair planning, safe deduplication & schema normalization, manual conflict "
+                    "review, before/after validation. "
+                    "Research Only. No Real Orders. dry_run=True default."
+                ),
+                module_path="gui.coverage_repair_panel",
+                class_name="CoverageRepairPanel",
+                available_flag="_COVERAGE_REPAIR_AVAILABLE",
+                keywords=[
+                    "coverage repair", "repair workflow", "missing data", "partial data",
+                    "stale data", "conflict data", "duplicate repair", "source required",
+                    "coverage task", "repair plan", "repair task", "safe repair",
+                    "\u8986\u84cb\u4fee\u5fa9", "\u7f3a\u8cc7\u6599", "\u8cc7\u6599\u4e0d\u8db3",
+                    "\u904e\u671f\u8cc7\u6599", "\u885d\u7a81\u8cc7\u6599",
+                    "\u4fee\u5fa9\u4efb\u52d9", "\u88dc\u8cc7\u6599",
+                ],
+                aliases=["coverage-repair", "repair", "data-repair"],
+                related_cli_commands=[
+                    "coverage-repair-scan", "coverage-repair-issues", "coverage-repair-tasks",
+                    "coverage-repair-plan", "coverage-repair-run", "coverage-repair-result",
+                    "coverage-repair-unresolved", "coverage-repair-source-required",
+                    "coverage-repair-health", "coverage-repair-report",
+                ],
+                report_types=["coverage_repair_report"],
+                maturity="STABLE",
+                default_visible=True,
+                favorite_default=False,
+                no_real_orders=True,
+                read_only=True,
+                production_blocked=True,
+                notes="Added in v1.1.2 — Coverage Repair Workflow.",
+            ),
+            # ----------------------------------------------------------------
             # v1.1.0 Data Universe Expansion
             # ----------------------------------------------------------------
             GUITabMetadata(

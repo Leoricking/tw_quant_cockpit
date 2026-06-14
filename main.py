@@ -5672,16 +5672,20 @@ def cmd_version_info(args: argparse.Namespace) -> None:
         print(f"{'Broker Execution Enabled:':<40} {BROKER_EXECUTION_ENABLED}")
         print(f"{'VALIDATED does not enable trading:':<40} {VALIDATED_DOES_NOT_ENABLE_TRADING}")
         # v1.1.2 Coverage Repair Workflow fields
-        cr_release   = getattr(_vi, "COVERAGE_REPAIR_RELEASE", False)
-        dest_rep_dis = getattr(_vi, "DESTRUCTIVE_REPAIR_DISABLED", False)
-        syn_dis      = getattr(_vi, "SYNTHETIC_OHLC_REPAIR_DISABLED", False)
-        inv_dis      = getattr(_vi, "INVALID_OHLC_AUTO_MODIFY_DISABLED", False)
-        mock_rep_dis = getattr(_vi, "MOCK_DATA_REPAIR_DISABLED", False)
-        print(f"{'Coverage Repair Release:':<40} {cr_release}")
-        print(f"{'Destructive Repair Disabled:':<40} {dest_rep_dis}")
-        print(f"{'Synthetic OHLC Repair Disabled:':<40} {syn_dis}")
-        print(f"{'Invalid OHLC Auto-Modify Disabled:':<40} {inv_dis}")
-        print(f"{'Mock Data Repair Disabled:':<40} {mock_rep_dis}")
+        cr_available     = getattr(_vi, "COVERAGE_REPAIR_AVAILABLE", False)
+        cr_dry_run_def   = getattr(_vi, "COVERAGE_REPAIR_DRY_RUN_DEFAULT", False)
+        dest_rep_dis_def = getattr(_vi, "DESTRUCTIVE_REPAIR_DISABLED_BY_DEFAULT", False)
+        conf_ow_cr       = getattr(_vi, "CONFLICT_AUTO_OVERWRITE_ENABLED", True)
+        syn_price_en     = getattr(_vi, "SYNTHETIC_PRICE_REPAIR_ENABLED", True)
+        ext_dl_en        = getattr(_vi, "EXTERNAL_DATA_DOWNLOAD_ENABLED", True)
+        mock_formal      = getattr(_vi, "MOCK_DATA_FORMAL_CONCLUSION_ALLOWED", True)
+        print(f"{'Coverage Repair Available:':<40} {cr_available}")
+        print(f"{'Coverage Repair Dry Run Default:':<40} {cr_dry_run_def}")
+        print(f"{'Destructive Repair Disabled By Default:':<40} {dest_rep_dis_def}")
+        print(f"{'Conflict Auto Overwrite Enabled:':<40} {conf_ow_cr}")
+        print(f"{'Synthetic Price Repair Enabled:':<40} {syn_price_en}")
+        print(f"{'External Data Download Enabled:':<40} {ext_dl_en}")
+        print(f"{'Mock Data Formal Conclusion Allowed:':<40} {mock_formal}")
         # v1.1.1 Data Import UX & Batch Onboarding fields
         obd_release  = getattr(_vi, "DATA_IMPORT_ONBOARDING_RELEASE", False)
         dry_run_def  = getattr(_vi, "DRY_RUN_DEFAULT", False)
@@ -10776,6 +10780,299 @@ def cmd_coverage_repair_retry(args):
         print("[!] Research Only. No Real Orders.")
     except Exception as exc:
         print(f"  [ERROR] coverage-repair-retry failed: {exc}")
+
+
+def cmd_coverage_repair_scan(args):
+    """Scan for coverage issues by tier or single stock. Research Only. No Real Orders."""
+    from coverage_repair.issue_detector import CoverageIssueDetector
+    tier    = getattr(args, "tier",    None)
+    stock   = getattr(args, "stock",   None)
+    symbols_arg = getattr(args, "symbols", None)
+    fixture_mode = getattr(args, "fixture_mode", False)
+
+    symbols = None
+    if symbols_arg:
+        symbols = [s.strip() for s in symbols_arg.split(",") if s.strip()]
+    elif stock:
+        symbols = [stock]
+
+    print("=" * 60)
+    print("TW Quant Cockpit — Coverage Repair — Scan")
+    print("Research Only: True | No Real Orders: True")
+    print(f"Tier: {tier or 'all'} | Symbols: {symbols or 'all'}")
+    print("=" * 60)
+    try:
+        detector = CoverageIssueDetector()
+        if tier:
+            try:
+                issues = detector.detect_for_tier(tier)
+            except AttributeError:
+                issues = detector.detect_all(symbols=symbols)
+        else:
+            issues = detector.detect_all(symbols=symbols)
+        from collections import Counter
+        type_counts = Counter(getattr(i, "issue_type", getattr(i, "issue_type", "?")) for i in issues)
+        print(f"Total issues:  {len(issues)}")
+        print(f"By type:       {dict(type_counts)}")
+        print()
+        for issue in issues[:30]:
+            itype   = getattr(issue, "issue_type", getattr(issue, "issue_type", "?"))
+            symbol  = getattr(issue, "symbol", "?")
+            dataset = getattr(issue, "dataset", "daily")
+            severity = getattr(issue, "severity", "")
+            print(f"  [{itype:<26}] {symbol}/{dataset} sev={severity}")
+        if len(issues) > 30:
+            print(f"  ... ({len(issues) - 30} more)")
+        print("[!] Research Only. No Real Orders.")
+    except Exception as exc:
+        print(f"  [ERROR] coverage-repair-scan failed: {exc}")
+
+
+def cmd_coverage_repair_issues(args):
+    """List detected coverage issues, optionally filtered by priority. Research Only."""
+    from coverage_repair.issue_detector import CoverageIssueDetector
+    priority_filter = getattr(args, "priority", None)
+
+    print("=" * 60)
+    print("TW Quant Cockpit — Coverage Repair — Issue List")
+    print("Research Only: True | No Real Orders: True")
+    print("=" * 60)
+    try:
+        detector = CoverageIssueDetector()
+        issues = detector.detect_all()
+        if priority_filter:
+            from coverage_repair.task_builder import CoverageRepairTaskBuilder
+            from coverage_repair.repair_schema import CoverageIssue as _CI
+            builder = CoverageRepairTaskBuilder()
+            # Build tasks to get priority, then filter
+            tasks_by_issue = {}
+            for issue_obj in issues:
+                try:
+                    issue_ci = _CI(
+                        issue_id=getattr(issue_obj, "issue_id", "?"),
+                        symbol=getattr(issue_obj, "symbol", "?"),
+                        issue_type=getattr(issue_obj, "issue_type", getattr(issue_obj, "issue_type", "?")),
+                        dataset=getattr(issue_obj, "dataset", "daily"),
+                    )
+                    task = builder.build_task(issue_ci)
+                    tasks_by_issue[issue_ci.issue_id] = task
+                except Exception:
+                    pass
+            issues = [i for i in issues
+                      if tasks_by_issue.get(getattr(i, "issue_id", ""), None) is not None
+                      and tasks_by_issue[getattr(i, "issue_id", "")].priority == priority_filter]
+
+        print(f"Issues: {len(issues)}")
+        for issue in issues[:50]:
+            itype   = getattr(issue, "issue_type", "?")
+            symbol  = getattr(issue, "symbol", "?")
+            dataset = getattr(issue, "dataset", "daily")
+            desc    = getattr(issue, "description", getattr(issue, "reason", ""))
+            print(f"  [{itype:<26}] {symbol}/{dataset} — {str(desc)[:60]}")
+        if len(issues) > 50:
+            print(f"  ... ({len(issues) - 50} more)")
+        print("[!] Research Only. No Real Orders.")
+    except Exception as exc:
+        print(f"  [ERROR] coverage-repair-issues failed: {exc}")
+
+
+def cmd_coverage_repair_tasks(args):
+    """List repair tasks, optionally filtered by stock. Research Only."""
+    stock = getattr(args, "stock", None)
+    print("=" * 60)
+    print("TW Quant Cockpit — Coverage Repair — Task List")
+    print("Research Only: True | No Real Orders: True")
+    print("=" * 60)
+    try:
+        from coverage_repair.repair_store import RepairStore
+        store = RepairStore()
+        plan = store.load_latest_plan()
+        if plan is None:
+            print("  No repair plan found. Run 'coverage-repair-scan' and 'coverage-repair-plan' first.")
+            print("[!] Research Only. No Real Orders.")
+            return
+        tasks = getattr(plan, "tasks", [])
+        if stock:
+            tasks = [t for t in tasks if getattr(t, "symbol", "") == stock]
+        print(f"Tasks: {len(tasks)}")
+        for task in tasks[:50]:
+            priority    = getattr(task, "priority", "?")
+            symbol      = getattr(task, "symbol", "?")
+            dataset     = getattr(task, "dataset", "daily")
+            action      = getattr(task, "action", "?")
+            repair_mode = getattr(task, "repair_mode", "?")
+            status      = getattr(task, "status", "?")
+            print(f"  [{priority}][{action:<20}] {symbol}/{dataset} mode={repair_mode} status={status}")
+        if len(tasks) > 50:
+            print(f"  ... ({len(tasks) - 50} more)")
+        print("[!] Research Only. No Real Orders.")
+    except Exception as exc:
+        print(f"  [ERROR] coverage-repair-tasks failed: {exc}")
+
+
+def cmd_coverage_repair_run(args):
+    """Run coverage repair plan (dry-run by default). Research Only. No Real Orders."""
+    tier         = getattr(args, "tier",       None)
+    symbols_arg  = getattr(args, "symbols",    None)
+    stock        = getattr(args, "stock",      None)
+    dry_run_flag = getattr(args, "dry_run",    False)
+    execute_flag = getattr(args, "execute",    False)
+    allow_write  = getattr(args, "allow_write", False)
+
+    # Resolve symbols
+    symbols = None
+    if symbols_arg:
+        symbols = [s.strip() for s in symbols_arg.split(",") if s.strip()]
+    elif stock:
+        symbols = [stock]
+
+    # Safety: --execute without --allow-write is BLOCKED
+    if execute_flag and not allow_write:
+        print("=" * 60)
+        print("TW Quant Cockpit — Coverage Repair — Run")
+        print("BLOCKED: --execute requires --allow-write flag.")
+        print("[!] Research Only. No Real Orders.")
+        print("=" * 60)
+        return
+
+    # --dry-run and --execute are mutually exclusive
+    if dry_run_flag and execute_flag:
+        print("  [ERROR] --dry-run and --execute are mutually exclusive.")
+        return
+
+    # Default to dry-run
+    dry_run = True if (dry_run_flag or not execute_flag) else False
+
+    print("=" * 60)
+    print("TW Quant Cockpit — Coverage Repair — Run")
+    print(f"Research Only: True | No Real Orders: True | dry_run={dry_run}")
+    print("[!] INVALID OHLC -> BLOCKED. CONFLICT -> MANUAL. destructive -> BLOCKED.")
+    print("=" * 60)
+    try:
+        from coverage_repair.repair_planner import CoverageRepairPlanner
+        from coverage_repair.safe_repair_executor import SafeCoverageRepairExecutor
+        from coverage_repair.repair_store import RepairStore
+
+        planner = CoverageRepairPlanner()
+        try:
+            plan = planner.build_plan(tier=tier, symbols=symbols, dry_run=dry_run)
+        except TypeError:
+            plan = planner.build_plan(symbols=symbols, dry_run=dry_run)
+
+        store = RepairStore()
+        store.save_plan(plan)
+
+        executor = SafeCoverageRepairExecutor()
+        run_summary = executor.execute(plan, allow_write=allow_write)
+
+        print(f"Plan ID:        {plan.plan_id}")
+        print(f"Dry Run:        {dry_run}")
+        print(f"Total Tasks:    {run_summary.total}")
+        print(f"Repaired:       {run_summary.repaired}")
+        print(f"Dry Run:        {run_summary.dry_run_count}")
+        print(f"Blocked:        {run_summary.blocked}")
+        print(f"Manual Review:  {run_summary.manual}")
+        print(f"Source Required:{run_summary.source_required}")
+        print(f"Failed:         {run_summary.failed}")
+        for r in run_summary.results[:20]:
+            symbol  = getattr(r, "symbol", "?")
+            status  = getattr(r, "status", "?")
+            itype   = getattr(r, "issue_type", "?")
+            print(f"  [{status:<14}] {symbol} | {itype}")
+        print("[!] Research Only. No Real Orders.")
+    except Exception as exc:
+        print(f"  [ERROR] coverage-repair-run failed: {exc}")
+
+
+def cmd_coverage_repair_result(args):
+    """Show repair result for a given plan-id. Research Only. No Real Orders."""
+    plan_id = getattr(args, "plan_id", "latest") or "latest"
+    print("=" * 60)
+    print("TW Quant Cockpit — Coverage Repair — Result")
+    print("Research Only: True | No Real Orders: True")
+    print("=" * 60)
+    try:
+        from coverage_repair.repair_store import RepairStore
+        store = RepairStore()
+        summary = store.load_latest_summary()
+        if summary is None:
+            print("  No repair summary found. Run 'coverage-repair-run' first.")
+            print("[!] Research Only. No Real Orders.")
+            return
+        print(f"Plan ID:        {getattr(summary, 'plan_id', '?')}")
+        print(f"Dry Run:        {getattr(summary, 'dry_run', True)}")
+        results = getattr(summary, "results", [])
+        from collections import Counter
+        status_counts = Counter(getattr(r, "status", "?") for r in results)
+        for status, count in sorted(status_counts.items()):
+            print(f"  {status:<20} {count}")
+        print("[!] Research Only. No Real Orders.")
+    except Exception as exc:
+        print(f"  [ERROR] coverage-repair-result failed: {exc}")
+
+
+def cmd_coverage_repair_unresolved(args):
+    """List unresolved coverage issues. Research Only. No Real Orders."""
+    print("=" * 60)
+    print("TW Quant Cockpit — Coverage Repair — Unresolved Issues")
+    print("Research Only: True | No Real Orders: True")
+    print("=" * 60)
+    try:
+        from coverage_repair.repair_query import RepairQuery
+        query = RepairQuery()
+        unresolved = query.list_blocked() + query.list_manual_review()
+        print(f"Unresolved: {len(unresolved)}")
+        for item in unresolved[:30]:
+            symbol  = getattr(item, "symbol", "?")
+            status  = getattr(item, "status", "?")
+            itype   = getattr(item, "issue_type", getattr(item, "action", "?"))
+            print(f"  [{status:<14}] {symbol} | {itype}")
+        if len(unresolved) > 30:
+            print(f"  ... ({len(unresolved) - 30} more)")
+        print("[!] Research Only. No Real Orders.")
+    except Exception as exc:
+        print(f"  [ERROR] coverage-repair-unresolved failed: {exc}")
+
+
+def cmd_coverage_repair_source_required(args):
+    """List issues requiring source data. Research Only. No Real Orders."""
+    print("=" * 60)
+    print("TW Quant Cockpit — Coverage Repair — Source Data Required")
+    print("Research Only: True | No Real Orders: True")
+    print("=" * 60)
+    try:
+        from coverage_repair.issue_detector import CoverageIssueDetector
+        from coverage_repair.task_builder import CoverageRepairTaskBuilder
+        from coverage_repair.repair_schema import (
+            CoverageIssue as _CI, REPAIRABILITY_SOURCE_REQUIRED, STATUS_NEEDS_SOURCE_DATA,
+        )
+        detector = CoverageIssueDetector()
+        raw_issues = detector.detect_all()
+        builder = CoverageRepairTaskBuilder()
+        source_items = []
+        for issue_obj in raw_issues:
+            itype = getattr(issue_obj, "issue_type", getattr(issue_obj, "issue_type", "?"))
+            try:
+                ci = _CI(
+                    issue_id=getattr(issue_obj, "issue_id", "?"),
+                    symbol=getattr(issue_obj, "symbol", "?"),
+                    issue_type=itype,
+                    dataset=getattr(issue_obj, "dataset", "daily"),
+                )
+                rep = builder.classify_repairability(ci)
+                if rep == REPAIRABILITY_SOURCE_REQUIRED:
+                    src = builder.build_source_requirement(ci)
+                    source_items.append((ci.symbol, ci.issue_type, src or "—"))
+            except Exception:
+                pass
+        print(f"Source Required: {len(source_items)}")
+        for symbol, itype, src in source_items[:30]:
+            print(f"  {symbol:<10} [{itype:<26}] {src}")
+        if len(source_items) > 30:
+            print(f"  ... ({len(source_items) - 30} more)")
+        print("[!] Research Only. No Real Orders.")
+    except Exception as exc:
+        print(f"  [ERROR] coverage-repair-source-required failed: {exc}")
 
 
 # ---------------------------------------------------------------------------
@@ -16186,6 +16483,77 @@ def _build_parser() -> argparse.ArgumentParser:
         help="[v1.1.2] Build retry manifest from failed repair tasks. [!] Research Only.",
     )
 
+    # --- v1.1.2 Coverage Repair — additional commands ---
+    p_crscan = subparsers.add_parser(
+        "coverage-repair-scan",
+        help="[v1.1.2] Scan coverage issues by tier or stock. [!] Research Only.",
+    )
+    p_crscan.add_argument("--tier",    default=None,
+                          help="Tier: core10/research30/expanded50/broad100")
+    p_crscan.add_argument("--stock",   default=None, help="Single stock symbol")
+    p_crscan.add_argument("--symbols", default=None, help="Comma-separated symbols")
+    p_crscan.add_argument("--fixture-mode", dest="fixture_mode", action="store_true",
+                          default=False, help="Use isolated fixture repository")
+
+    p_crissues = subparsers.add_parser(
+        "coverage-repair-issues",
+        help="[v1.1.2] List detected coverage issues. [!] Research Only.",
+    )
+    p_crissues.add_argument("--priority", default=None,
+                            help="Filter by priority: P0/P1/P2/P3")
+
+    p_crtasks = subparsers.add_parser(
+        "coverage-repair-tasks",
+        help="[v1.1.2] List repair tasks. [!] Research Only.",
+    )
+    p_crtasks.add_argument("--stock", default=None, help="Filter by stock symbol")
+
+    p_crrun = subparsers.add_parser(
+        "coverage-repair-run",
+        help="[v1.1.2] Run repair plan (dry-run by default). [!] Research Only.",
+    )
+    p_crrun.add_argument("--tier",    default=None,
+                         help="Tier: core10/research30/expanded50/broad100")
+    p_crrun.add_argument("--symbols", default=None, help="Comma-separated symbols")
+    p_crrun.add_argument("--stock",   default=None, help="Single stock symbol")
+    p_crrun.add_argument("--dry-run", dest="dry_run", action="store_true", default=False,
+                         help="Explicit dry-run (default when --execute absent)")
+    p_crrun.add_argument("--execute", dest="execute", action="store_true", default=False,
+                         help="Execute auto-safe tasks (requires --allow-write)")
+    p_crrun.add_argument("--allow-write", dest="allow_write", action="store_true", default=False,
+                         help="Permit writes for AUTO_SAFE tasks (requires --execute)")
+    p_crrun.add_argument("--fixture-mode", dest="fixture_mode", action="store_true",
+                         default=False)
+
+    p_crresult = subparsers.add_parser(
+        "coverage-repair-result",
+        help="[v1.1.2] Show repair result by plan-id. [!] Research Only.",
+    )
+    p_crresult.add_argument("--plan-id", dest="plan_id", default="latest",
+                            help="Plan ID or 'latest' (default: latest)")
+
+    subparsers.add_parser(
+        "coverage-repair-unresolved",
+        help="[v1.1.2] List unresolved coverage issues. [!] Research Only.",
+    )
+
+    subparsers.add_parser(
+        "coverage-repair-source-required",
+        help="[v1.1.2] List issues requiring source data. [!] Research Only.",
+    )
+
+    # Update coverage-repair-plan to accept --tier and --symbols
+    p_crp.add_argument("--tier",    default=None,
+                       help="Tier: core10/research30/expanded50/broad100")
+    p_crp.add_argument("--symbols", default=None, help="Comma-separated symbols")
+    p_crp.add_argument("--plan-id", dest="plan_id", default=None, help="Plan ID")
+
+    # Update coverage-repair-report to accept --plan-id
+    p_crr.add_argument("--plan-id", dest="plan_id", default="latest",
+                       help="Plan ID or 'latest' (default: latest)")
+    p_crr.add_argument("--output-dir", dest="output_dir", default="data/repair_reports")
+    p_crr.add_argument("--report-dir", dest="report_dir", default="reports")
+
     # --- v1.1.1 Data Import UX & Batch Onboarding ---
     p_idiscover = subparsers.add_parser(
         "import-discover",
@@ -17688,12 +18056,19 @@ def main() -> None:
         "local-assistant-report":  cmd_local_assistant_report,
         "local-assistant-explain": cmd_local_assistant_explain,
         # v1.1.2 Coverage Repair Workflow
-        "coverage-repair-detect":  cmd_coverage_repair_detect,
-        "coverage-repair-plan":    cmd_coverage_repair_plan,
-        "coverage-repair-execute": cmd_coverage_repair_execute,
-        "coverage-repair-health":  cmd_coverage_repair_health,
-        "coverage-repair-report":  cmd_coverage_repair_report,
-        "coverage-repair-retry":   cmd_coverage_repair_retry,
+        "coverage-repair-detect":          cmd_coverage_repair_detect,
+        "coverage-repair-plan":            cmd_coverage_repair_plan,
+        "coverage-repair-execute":         cmd_coverage_repair_execute,
+        "coverage-repair-health":          cmd_coverage_repair_health,
+        "coverage-repair-report":          cmd_coverage_repair_report,
+        "coverage-repair-retry":           cmd_coverage_repair_retry,
+        "coverage-repair-scan":            cmd_coverage_repair_scan,
+        "coverage-repair-issues":          cmd_coverage_repair_issues,
+        "coverage-repair-tasks":           cmd_coverage_repair_tasks,
+        "coverage-repair-run":             cmd_coverage_repair_run,
+        "coverage-repair-result":          cmd_coverage_repair_result,
+        "coverage-repair-unresolved":      cmd_coverage_repair_unresolved,
+        "coverage-repair-source-required": cmd_coverage_repair_source_required,
         # v1.1.1 Data Import UX & Batch Onboarding
         "import-discover":           cmd_import_discover,
         "import-preview":            cmd_import_preview,

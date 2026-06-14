@@ -81,6 +81,22 @@
 | v1.0.9 | Final Maintenance Rollup | Done |
 | v1.1.0 | Data Universe Expansion | Done |
 | v1.1.1 | Data Import UX & Batch Onboarding | Done |
+| v1.1.2 | Coverage Repair Workflow | Done |
+
+---
+
+### v1.1.2 — Coverage Repair Workflow ✅
+
+- **Version:** 1.1.2 — feature release based on v1.1.1 Data Import UX & Batch Onboarding
+- **Type:** Coverage Repair Workflow — no strategy logic changes, no broker API, no trading
+- **Changes:** coverage_repair/ package (repair_schema, issue_detector, task_builder, repair_prioritizer, repair_planner, safe_repair_executor, repair_validator, repair_store, repair_query, repair_health), reports/coverage_repair_report.py, 13 new CLI commands (coverage-repair-scan, -issues, -tasks, -plan, -run, -result, -unresolved, -source-required, -health, -report, etc.), GUI panel + adapter, GUI nav tab (data group), report pack entry, stable checklist checks (5 new), v060 checklist checks (4 new including version_info_v112), intelligence checklist check (coverage_repair_v112_safe), regression tests (~20), tests/fixtures/coverage_repair/ (8 CSVs with TST1/TST2 symbols), docs/coverage_repair_workflow_v1.1.2.md, .gitignore updates, README/docs refresh
+- **Safety:** INVALID OHLC → always BLOCKED (never auto-modify), CONFLICT → always MANUAL_REVIEW (never auto-overwrite), synthetic repair DISABLED, external data download DISABLED, dry_run=True default, destructive repair DISABLED by default, No Real Orders, Production Trading BLOCKED
+
+**Next:**
+- v1.1.3: Data Freshness Monitor
+- v1.1.4: Coverage Quality Gates
+- v1.2.0: Replay Training UX
+- Broker API branch: only if explicitly planned
 
 ---
 

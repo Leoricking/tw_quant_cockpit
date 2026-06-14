@@ -2062,6 +2062,118 @@ class StableReleaseChecklistV060:
                 "version_info_v111", "version_git", "WARN", str(exc),
             )
 
+    def _check_coverage_repair_import(self) -> dict:
+        """v1.1.2 — coverage_repair package imports cleanly with safety flags."""
+        try:
+            import coverage_repair
+            no_orders = getattr(coverage_repair, "NO_REAL_ORDERS", False)
+            dry_run   = getattr(coverage_repair, "DRY_RUN_DEFAULT", False)
+            if no_orders and dry_run:
+                return _check_item(
+                    "coverage_repair_import", "coverage_repair", "PASS",
+                    f"coverage_repair: NO_REAL_ORDERS={no_orders}, DRY_RUN_DEFAULT={dry_run}",
+                )
+            return _check_item(
+                "coverage_repair_import", "coverage_repair", "WARN",
+                f"coverage_repair safety flags incomplete: NO_REAL_ORDERS={no_orders} DRY_RUN_DEFAULT={dry_run}",
+            )
+        except Exception as exc:
+            return _check_item(
+                "coverage_repair_import", "coverage_repair", "WARN", str(exc),
+                warning="coverage_repair not importable (optional v1.1.2)",
+            )
+
+    def _check_coverage_repair_dry_run_safe(self) -> dict:
+        """v1.1.2 — COVERAGE_REPAIR_DRY_RUN_DEFAULT=True and DESTRUCTIVE_REPAIR_DISABLED_BY_DEFAULT=True."""
+        try:
+            from release.version_info import (
+                COVERAGE_REPAIR_DRY_RUN_DEFAULT, DESTRUCTIVE_REPAIR_DISABLED_BY_DEFAULT,
+            )
+            if COVERAGE_REPAIR_DRY_RUN_DEFAULT and DESTRUCTIVE_REPAIR_DISABLED_BY_DEFAULT:
+                return _check_item(
+                    "coverage_repair_dry_run_safe", "coverage_repair", "PASS",
+                    f"DRY_RUN_DEFAULT={COVERAGE_REPAIR_DRY_RUN_DEFAULT}, "
+                    f"DESTRUCTIVE_DISABLED={DESTRUCTIVE_REPAIR_DISABLED_BY_DEFAULT}",
+                )
+            return _check_item(
+                "coverage_repair_dry_run_safe", "coverage_repair", "FAIL",
+                f"DRY_RUN_DEFAULT={COVERAGE_REPAIR_DRY_RUN_DEFAULT}, "
+                f"DESTRUCTIVE_DISABLED={DESTRUCTIVE_REPAIR_DISABLED_BY_DEFAULT}",
+            )
+        except Exception as exc:
+            return _check_item(
+                "coverage_repair_dry_run_safe", "coverage_repair", "WARN", str(exc),
+            )
+
+    def _check_coverage_repair_write_blocked_without_flag(self) -> dict:
+        """v1.1.2 — SafeCoverageRepairExecutor.execute(allow_write=False) produces only safe statuses."""
+        try:
+            from coverage_repair.safe_repair_executor import SafeCoverageRepairExecutor
+            from coverage_repair.repair_schema import (
+                CoverageRepairPlan, CoverageRepairTask,
+                REPAIR_MODE_DEDUPLICATE_IDENTICAL, PRIORITY_P3, STATUS_OPEN,
+                RESULT_STATUS_DRY_RUN, RESULT_STATUS_BLOCKED,
+                RESULT_STATUS_MANUAL, RESULT_STATUS_SKIPPED, RESULT_STATUS_SOURCE_REQUIRED,
+            )
+            from datetime import datetime
+            task = CoverageRepairTask(
+                task_id="test_write_blocked",
+                issue_id="test_issue",
+                symbol="TST1",
+                repair_mode=REPAIR_MODE_DEDUPLICATE_IDENTICAL,
+                priority=PRIORITY_P3,
+                status=STATUS_OPEN,
+                dry_run=True,
+            )
+            plan = CoverageRepairPlan(
+                plan_id="test_plan_blocked",
+                created_at=datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
+                tasks=[task],
+                dry_run=True,
+            )
+            executor = SafeCoverageRepairExecutor()
+            summary = executor.execute(plan, allow_write=False)
+            safe_statuses = {
+                RESULT_STATUS_DRY_RUN, RESULT_STATUS_BLOCKED,
+                RESULT_STATUS_MANUAL, RESULT_STATUS_SKIPPED, RESULT_STATUS_SOURCE_REQUIRED,
+            }
+            all_safe = all(r.status in safe_statuses for r in summary.results)
+            if all_safe:
+                return _check_item(
+                    "coverage_repair_write_blocked_without_flag", "coverage_repair", "PASS",
+                    "execute(allow_write=False) produced only safe statuses",
+                )
+            bad = [r.status for r in summary.results if r.status not in safe_statuses]
+            return _check_item(
+                "coverage_repair_write_blocked_without_flag", "coverage_repair", "FAIL",
+                f"Unsafe statuses: {bad}",
+            )
+        except Exception as exc:
+            return _check_item(
+                "coverage_repair_write_blocked_without_flag", "coverage_repair", "WARN", str(exc),
+            )
+
+    def _check_version_info_v112(self) -> dict:
+        """v1.1.2 — VERSION is 1.1.2."""
+        try:
+            from release.version_info import VERSION
+            import release.version_info as _vi
+            cr_available = getattr(_vi, "COVERAGE_REPAIR_AVAILABLE", None)
+            if VERSION == "1.1.2":
+                return _check_item(
+                    "version_info_v112", "version_git", "PASS",
+                    f"VERSION={VERSION}, COVERAGE_REPAIR_AVAILABLE={cr_available}",
+                )
+            return _check_item(
+                "version_info_v112", "version_git", "WARN",
+                f"VERSION={VERSION} (expected 1.1.2)",
+                warning="Expected VERSION=1.1.2",
+            )
+        except Exception as exc:
+            return _check_item(
+                "version_info_v112", "version_git", "WARN", str(exc),
+            )
+
     # ----------------------------------------------------------------
     # Run
     # ----------------------------------------------------------------
@@ -2186,6 +2298,11 @@ class StableReleaseChecklistV060:
             self._check_import_onboarding,
             self._check_dry_run_safe,
             self._check_version_info_v111,
+            # v1.1.2 Coverage Repair Workflow
+            self._check_coverage_repair_import,
+            self._check_coverage_repair_dry_run_safe,
+            self._check_coverage_repair_write_blocked_without_flag,
+            self._check_version_info_v112,
         ]
 
         for fn in checklist_groups:

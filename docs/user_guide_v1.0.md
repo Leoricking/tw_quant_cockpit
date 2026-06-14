@@ -272,3 +272,39 @@ python main.py import-onboarding-report [--mode real]
 See `docs/data_import_onboarding_v1.1.1.md` for full details.
 
 **[!] dry_run=True by default. REPLACE_EXPLICIT BLOCKED. Conflicts → REVIEW. No Real Orders.**
+
+---
+
+## v1.1.2 — Coverage Repair Workflow
+
+v1.1.2 adds a Coverage Repair Workflow: detects 18 coverage issue types (missing/partial/stale/duplicate/conflict/invalid/schema/etc.), builds prioritized repair tasks (P0–P3), executes safe repairs (deduplication, schema normalization), and tracks before/after validation.
+
+### Coverage Issue Highlights
+
+| Issue | Default | Auto-fixable? |
+|---|---|---|
+| DUPLICATE_DATE (identical rows) | AUTO_SAFE | Yes (deduplicate_identical) |
+| SCHEMA_MISMATCH | AUTO_SAFE | Yes (normalize_schema) |
+| CONFLICTING_ROW | MANUAL_REVIEW | Never auto-overwrite |
+| INVALID_OHLC | BLOCKED | Never auto-modify |
+| MISSING_SYMBOL_DATA | SOURCE_REQUIRED | No (need source data) |
+
+### v1.1.2 CLI Commands
+
+```
+python main.py coverage-repair-scan --tier research30
+python main.py coverage-repair-issues
+python main.py coverage-repair-tasks
+python main.py coverage-repair-plan --tier research30
+python main.py coverage-repair-run --tier research30 --dry-run
+python main.py coverage-repair-run --tier research30 --execute --allow-write
+python main.py coverage-repair-result --plan-id latest
+python main.py coverage-repair-unresolved
+python main.py coverage-repair-source-required
+python main.py coverage-repair-health
+python main.py coverage-repair-report --plan-id latest --mode real
+```
+
+See `docs/coverage_repair_workflow_v1.1.2.md` for full details.
+
+**[!] INVALID OHLC → BLOCKED. CONFLICT → MANUAL. Synthetic repair DISABLED. No Real Orders.**

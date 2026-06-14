@@ -58,6 +58,7 @@ reports/data_import_onboarding_report_*.md
 
 # v1.1.2 Coverage Repair runtime results and reports (generated artifacts)
 data/coverage_repair_results/
+data/repair_reports/
 reports/coverage_repair_report_*.md
 
 # Fixture files ARE committed (exception)

@@ -917,6 +917,67 @@ class ResearchCockpitStableChecklist:
         except Exception as exc:
             checks.append(_mk("onboarding_no_forbidden_actions", "import_onboarding", "WARN", str(exc)))
 
+        # v1.1.2 Coverage Repair checks
+        try:
+            import coverage_repair
+            cr_available = getattr(coverage_repair, "NO_REAL_ORDERS", False)
+            if cr_available:
+                checks.append(_mk("coverage_repair_available", "coverage_repair", "PASS",
+                                  "coverage_repair.NO_REAL_ORDERS=True"))
+            else:
+                checks.append(_mk("coverage_repair_available", "coverage_repair", "WARN",
+                                  "coverage_repair imported but NO_REAL_ORDERS not True"))
+        except Exception as exc:
+            checks.append(_mk("coverage_repair_available", "coverage_repair", "WARN", str(exc)))
+
+        try:
+            from release.version_info import COVERAGE_REPAIR_DRY_RUN_DEFAULT
+            if COVERAGE_REPAIR_DRY_RUN_DEFAULT:
+                checks.append(_mk("repair_dry_run_default", "coverage_repair", "PASS",
+                                  "COVERAGE_REPAIR_DRY_RUN_DEFAULT=True in version_info"))
+            else:
+                checks.append(_mk("repair_dry_run_default", "coverage_repair", "FAIL",
+                                  "COVERAGE_REPAIR_DRY_RUN_DEFAULT is not True"))
+        except Exception as exc:
+            checks.append(_mk("repair_dry_run_default", "coverage_repair", "WARN", str(exc)))
+
+        try:
+            from release.version_info import SYNTHETIC_PRICE_REPAIR_ENABLED
+            if SYNTHETIC_PRICE_REPAIR_ENABLED is False:
+                checks.append(_mk("synthetic_repair_disabled", "coverage_repair", "PASS",
+                                  "SYNTHETIC_PRICE_REPAIR_ENABLED=False in version_info"))
+            else:
+                checks.append(_mk("synthetic_repair_disabled", "coverage_repair", "FAIL",
+                                  "SYNTHETIC_PRICE_REPAIR_ENABLED should be False"))
+        except Exception as exc:
+            checks.append(_mk("synthetic_repair_disabled", "coverage_repair", "WARN", str(exc)))
+
+        try:
+            from release.version_info import CONFLICT_AUTO_OVERWRITE_ENABLED as _CAO
+            if _CAO is False:
+                checks.append(_mk("conflict_auto_overwrite_disabled", "coverage_repair", "PASS",
+                                  "CONFLICT_AUTO_OVERWRITE_ENABLED=False"))
+            else:
+                checks.append(_mk("conflict_auto_overwrite_disabled", "coverage_repair", "FAIL",
+                                  "CONFLICT_AUTO_OVERWRITE_ENABLED should be False"))
+        except Exception as exc:
+            checks.append(_mk("conflict_auto_overwrite_disabled", "coverage_repair", "WARN", str(exc)))
+
+        try:
+            from coverage_repair.repair_health import CoverageRepairHealthCheck
+            _cr_checker = CoverageRepairHealthCheck()
+            _cr_health = _cr_checker.run()
+            _cr_overall = _cr_health.get("overall", "FAIL")
+            if _cr_overall in ("PASS", "WARN"):
+                checks.append(_mk("coverage_repair_no_forbidden_actions", "coverage_repair",
+                                  "PASS" if _cr_overall == "PASS" else "WARN",
+                                  f"CoverageRepairHealthCheck overall={_cr_overall}"))
+            else:
+                checks.append(_mk("coverage_repair_no_forbidden_actions", "coverage_repair",
+                                  "FAIL", f"CoverageRepairHealthCheck overall={_cr_overall}"))
+        except Exception as exc:
+            checks.append(_mk("coverage_repair_no_forbidden_actions", "coverage_repair", "WARN", str(exc)))
+
         # Rebuild summary counts to include new checks
         total         = len(checks)
         pass_count    = sum(1 for c in checks if c["status"] == "PASS")

@@ -178,3 +178,35 @@ python main.py final-rollup-report --mode real
 ```
 
 **[!] dry_run=True by default. REPLACE_EXPLICIT BLOCKED. Conflicts → REVIEW. No Real Orders.**
+
+---
+
+## v1.1.2 Coverage Repair Workflow Commands
+
+| Command | Description | Key Options |
+|---------|-------------|-------------|
+| `python main.py coverage-repair-scan` | Scan coverage issues by tier/stock | `--tier` `--stock` `--symbols` |
+| `python main.py coverage-repair-issues` | List detected issues | `--priority P0\|P1\|P2\|P3` |
+| `python main.py coverage-repair-tasks` | List repair tasks | `--stock` |
+| `python main.py coverage-repair-plan` | Build dry-run repair plan | `--tier` `--symbols` |
+| `python main.py coverage-repair-run` | Execute repair (dry-run default) | `--dry-run` `--execute --allow-write` |
+| `python main.py coverage-repair-result` | Show repair result | `--plan-id latest` |
+| `python main.py coverage-repair-unresolved` | List unresolved issues | — |
+| `python main.py coverage-repair-source-required` | List source-required issues | — |
+| `python main.py coverage-repair-health` | Coverage repair health check | — |
+| `python main.py coverage-repair-report` | Build repair report | `--plan-id latest --mode real` |
+
+### Coverage Repair SOP
+
+```
+1. python main.py coverage-repair-scan --tier research30
+2. python main.py coverage-repair-issues --priority P1
+3. python main.py coverage-repair-plan --tier research30
+4. python main.py coverage-repair-run --tier research30 --dry-run
+5. (review source-required and manual-review items)
+6. python main.py coverage-repair-run --tier research30 --execute --allow-write
+7. python main.py coverage-repair-result --plan-id latest
+8. python main.py coverage-repair-report --plan-id latest --mode real
+```
+
+**[!] INVALID OHLC → BLOCKED. CONFLICT → MANUAL. --execute without --allow-write → BLOCKED. No Real Orders.**

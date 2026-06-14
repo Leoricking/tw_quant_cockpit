@@ -1157,4 +1157,37 @@ class IntelligenceStableChecklist:
                 suggested_fix="Run: python main.py import-onboarding-health",
             ))
 
+        # v1.1.2 coverage_repair_v112_safe — coverage repair package is safe
+        try:
+            import importlib
+            mod_cr = importlib.import_module("coverage_repair")
+            no_orders_cr = getattr(mod_cr, "NO_REAL_ORDERS", None)
+            dry_run_cr   = getattr(mod_cr, "DRY_RUN_DEFAULT", None)
+            dest_cr      = getattr(mod_cr, "DESTRUCTIVE_REPAIR_DISABLED", None)
+            if no_orders_cr is True and dry_run_cr is True and dest_cr is True:
+                checks.append(_check(
+                    "coverage_repair_v112_safe", "stable_integration",
+                    "v1.1.2 coverage_repair_v112_safe",
+                    CHECK_PASS, SEV_LOW,
+                    "coverage_repair: NO_REAL_ORDERS=True, DRY_RUN_DEFAULT=True, "
+                    "DESTRUCTIVE_REPAIR_DISABLED=True.",
+                ))
+            else:
+                checks.append(_check(
+                    "coverage_repair_v112_safe", "stable_integration",
+                    "v1.1.2 coverage_repair_v112_safe",
+                    CHECK_WARN, SEV_LOW,
+                    f"coverage_repair safety flags: NO_REAL_ORDERS={no_orders_cr}, "
+                    f"DRY_RUN_DEFAULT={dry_run_cr}, DESTRUCTIVE_REPAIR_DISABLED={dest_cr}",
+                    suggested_fix="Ensure coverage_repair/__init__.py has correct v1.1.2 safety flags.",
+                ))
+        except Exception as exc:
+            checks.append(_check(
+                "coverage_repair_v112_safe", "stable_integration",
+                "v1.1.2 coverage_repair_v112_safe",
+                CHECK_WARN, SEV_LOW,
+                f"Could not verify coverage_repair v1.1.2 safety (optional): {exc}",
+                suggested_fix="Run: python main.py coverage-repair-health",
+            ))
+
         return checks

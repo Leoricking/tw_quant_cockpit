@@ -234,5 +234,18 @@ These templates enforce: `git -C "path"`, no chain commands, no `git add .`, no 
 - Batch dry-run: `python main.py import-batch --path <dir> --dry-run`
 - Full docs: `docs/data_import_onboarding_v1.1.1.md`, `docs/release_notes_v1.1.md`
 - Safety: `dry_run=True` by default, `REPLACE_EXPLICIT` blocked, conflicts always → REVIEW
-- Next: v1.1.2 Coverage Repair Workflow (do not proceed without explicit plan)
 - **[!] No Real Orders. No broker API. DESTRUCTIVE_IMPORT_DISABLED=True. Not Investment Advice.**
+
+## v1.1.2 Handoff Notes
+
+- **Coverage Repair Workflow: COMPLETE** (tag `v1.1.2`)
+- New package: `coverage_repair/` (repair_schema, issue_detector, task_builder, repair_prioritizer, repair_planner, safe_repair_executor, repair_validator, repair_store, repair_query, repair_health + existing modules)
+- New GUI: `gui/coverage_repair_panel.py`, `gui/coverage_repair_adapter.py`
+- New report: `reports/coverage_repair_report.py`
+- New fixtures: `tests/fixtures/coverage_repair/*.csv` (8 files using TST1/TST2 symbols)
+- New CLI: 13 commands (`coverage-repair-scan`, `-issues`, `-tasks`, `-plan`, `-run`, `-result`, `-unresolved`, `-source-required`, `-health`, `-report`, etc.)
+- Coverage repair health: `python main.py coverage-repair-health` → should PASS
+- Full docs: `docs/coverage_repair_workflow_v1.1.2.md`, `docs/release_notes_v1.1.md`
+- Safety: `dry_run=True` by default, `INVALID OHLC` always BLOCKED, conflicts always MANUAL, `SYNTHETIC_PRICE_REPAIR_ENABLED=False`, `EXTERNAL_DATA_DOWNLOAD_ENABLED=False`
+- Next: v1.1.3 Data Freshness Monitor (do not proceed without explicit plan)
+- **[!] No Real Orders. No broker API. DESTRUCTIVE_REPAIR_DISABLED_BY_DEFAULT=True. Not Investment Advice.**

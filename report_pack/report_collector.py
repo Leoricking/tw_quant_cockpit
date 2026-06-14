@@ -46,6 +46,7 @@ from report_pack.report_registry import (
     REPORT_KNOWLEDGE_BASE_SEARCH,
     REPORT_LOCAL_RESEARCH_ASSISTANT,
     REPORT_DATA_IMPORT_ONBOARDING,
+    REPORT_COVERAGE_REPAIR,
 )
 
 logger = logging.getLogger(__name__)
@@ -273,6 +274,11 @@ _REPORT_PATTERNS = {
     REPORT_DATA_IMPORT_ONBOARDING: [
         "reports/data_import_onboarding_report*.md",
         "data/import_reports/*.csv",
+    ],
+    # v1.1.2 Coverage Repair Workflow
+    REPORT_COVERAGE_REPAIR: [
+        "reports/coverage_repair_report*.md",
+        "data/repair_reports/*.csv",
     ],
     # v0.9.1 Evidence Graph UX patterns
     "evidence_graph_gaps": [

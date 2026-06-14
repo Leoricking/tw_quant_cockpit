@@ -60,10 +60,15 @@ DESTRUCTIVE_IMPORT_DISABLED         = True
 CONFLICT_AUTO_OVERWRITE_ENABLED     = False
 # v1.1.2 new flags
 COVERAGE_REPAIR_RELEASE             = True
+COVERAGE_REPAIR_AVAILABLE           = True
+COVERAGE_REPAIR_DRY_RUN_DEFAULT     = True
 DESTRUCTIVE_REPAIR_DISABLED         = True
+DESTRUCTIVE_REPAIR_DISABLED_BY_DEFAULT = True
 SYNTHETIC_OHLC_REPAIR_DISABLED      = True
 INVALID_OHLC_AUTO_MODIFY_DISABLED   = True
 MOCK_DATA_REPAIR_DISABLED           = True
+SYNTHETIC_PRICE_REPAIR_ENABLED      = False
+EXTERNAL_DATA_DOWNLOAD_ENABLED      = False
 
 
 class VersionInfo:
@@ -210,11 +215,13 @@ def print_version_info() -> None:
     print(f"  Dry Run Default: {DRY_RUN_DEFAULT}")
     print(f"  Destructive Import Disabled: {DESTRUCTIVE_IMPORT_DISABLED}")
     print(f"  Conflict Auto-Overwrite Enabled: {CONFLICT_AUTO_OVERWRITE_ENABLED}")
-    print(f"  Coverage Repair Release: {COVERAGE_REPAIR_RELEASE}")
-    print(f"  Destructive Repair Disabled: {DESTRUCTIVE_REPAIR_DISABLED}")
-    print(f"  Synthetic OHLC Repair Disabled: {SYNTHETIC_OHLC_REPAIR_DISABLED}")
-    print(f"  Invalid OHLC Auto-Modify Disabled: {INVALID_OHLC_AUTO_MODIFY_DISABLED}")
-    print(f"  Mock Data Repair Disabled: {MOCK_DATA_REPAIR_DISABLED}")
+    print(f"  Coverage Repair Available: {COVERAGE_REPAIR_AVAILABLE}")
+    print(f"  Coverage Repair Dry Run Default: {COVERAGE_REPAIR_DRY_RUN_DEFAULT}")
+    print(f"  Destructive Repair Disabled By Default: {DESTRUCTIVE_REPAIR_DISABLED_BY_DEFAULT}")
+    print(f"  Conflict Auto Overwrite Enabled: {CONFLICT_AUTO_OVERWRITE_ENABLED}")
+    print(f"  Synthetic Price Repair Enabled: {SYNTHETIC_PRICE_REPAIR_ENABLED}")
+    print(f"  External Data Download Enabled: {EXTERNAL_DATA_DOWNLOAD_ENABLED}")
+    print(f"  Mock Data Formal Conclusion Allowed: {MOCK_DATA_FORMAL_CONCLUSION_ALLOWED}")
     print("=" * 60)
 
 

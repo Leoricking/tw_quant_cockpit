@@ -199,3 +199,14 @@ python main.py universe-coverage --tier research30
 
 > [!] This documentation is for research purposes only.
 > [!] No investment advice. Not for production trading.
+
+## v1.1.2 Integration
+
+v1.1.2 Coverage Repair Workflow integrates with v1.1.1 onboarding:
+- `IMPORT_FAILED` → `CoverageIssue(IMPORT_FAILED)`
+- PARTIAL import → `CoverageIssue(PARTIAL_OHLC)`
+- conflict file → MANUAL review task
+- retry manifest → `CoverageRepairTaskBuilder`
+- `REIMPORT_SAFE` calls existing `BatchImportExecutor`, does not duplicate write logic
+
+See `docs/coverage_repair_workflow_v1.1.2.md` for full v1.1.2 specification.
