@@ -584,6 +584,15 @@ try:
 except Exception:
     pass
 
+# v1.1.3 Data Freshness Monitor panel — optional
+# ---------------------------------------------------------------------------
+_DATA_FRESHNESS_AVAILABLE = False
+try:
+    from gui.data_freshness_panel import DataFreshnessPanel
+    _DATA_FRESHNESS_AVAILABLE = True
+except Exception:
+    pass
+
 # v0.5.1.1 Strategy Filter panel — inline (no separate panel file required)
 # ---------------------------------------------------------------------------
 _STRATEGY_FILTER_AVAILABLE = False
@@ -1835,6 +1844,13 @@ class CockpitWindow(QMainWindow if _PYSIDE6_AVAILABLE else object):
             mid_tabs.addTab(self._coverage_repair_panel, "Coverage Repair")
         else:
             self._coverage_repair_panel = None
+
+        # v1.1.3 Data Freshness Monitor tab
+        if _DATA_FRESHNESS_AVAILABLE:
+            self._data_freshness_panel = DataFreshnessPanel()
+            mid_tabs.addTab(self._data_freshness_panel, "Data Freshness")
+        else:
+            self._data_freshness_panel = None
 
         h_split.addWidget(mid_tabs)
         h_split.setStretchFactor(0, 3)

@@ -72,6 +72,9 @@ REPORT_DATA_IMPORT_ONBOARDING = "data_import_onboarding_report"
 # v1.1.2 Coverage Repair Workflow
 REPORT_COVERAGE_REPAIR = "coverage_repair_report"
 
+# v1.1.3 Data Freshness Monitor
+REPORT_DATA_FRESHNESS = "data_freshness_report"
+
 logger = logging.getLogger(__name__)
 
 # ---------------------------------------------------------------------------
@@ -176,6 +179,8 @@ _PACK_DEFINITIONS: Dict[str, List[str]] = {
         REPORT_DATA_IMPORT_ONBOARDING,
         # v1.1.2 Coverage Repair Workflow (optional in weekly pack)
         REPORT_COVERAGE_REPAIR,
+        # v1.1.3 Data Freshness Monitor (optional in weekly pack)
+        REPORT_DATA_FRESHNESS,
     ],
     PACK_FULL: [
         REPORT_DAILY_MARKET,
@@ -247,6 +252,8 @@ _PACK_DEFINITIONS: Dict[str, List[str]] = {
         REPORT_DATA_IMPORT_ONBOARDING,
         # v1.1.2 Coverage Repair Workflow (optional in full pack)
         REPORT_COVERAGE_REPAIR,
+        # v1.1.3 Data Freshness Monitor (optional in full pack)
+        REPORT_DATA_FRESHNESS,
     ],
 }
 

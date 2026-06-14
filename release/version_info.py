@@ -1,10 +1,12 @@
 """
-release/version_info.py — Centralized version info for TW Quant Cockpit v1.1.2.
+release/version_info.py — Centralized version info for TW Quant Cockpit v1.1.3.
 [!] Research Only. No Real Orders. Production Trading: BLOCKED.
 [!] VALIDATED does not enable trading. Broker Execution Disabled.
 [!] Data Universe Expansion. Real Data Coverage Required.
 [!] Data Import UX & Batch Onboarding. dry_run=True default.
 [!] Coverage Repair Workflow. Destructive repair disabled.
+[!] Data Freshness Monitor. Auto external refresh DISABLED.
+[!] Future date does not count as fresh. Mock formal freshness DISABLED.
 [!] Mock Data Formal Conclusion: DISABLED. Not Investment Advice.
 """
 from __future__ import annotations
@@ -17,10 +19,10 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # ---------------------------------------------------------------------------
 # v1.1.2 module-level constants (Coverage Repair Workflow)
 # ---------------------------------------------------------------------------
-VERSION                             = "1.1.2"
-RELEASE_NAME                        = "Coverage Repair Workflow"
-BASE_RELEASE                        = "1.1.1 Data Import UX & Batch Onboarding"
-BASE_RELEASE_NAME                   = "Data Import UX & Batch Onboarding"
+VERSION                             = "1.1.3"
+RELEASE_NAME                        = "Data Freshness Monitor"
+BASE_RELEASE                        = "1.1.2 Coverage Repair Workflow"
+BASE_RELEASE_NAME                   = "Coverage Repair Workflow"
 MAINTENANCE_RELEASE                 = False
 RELEASE_STAGE                       = "STABLE"
 RELEASE_TRACK                       = "research"
@@ -69,6 +71,14 @@ INVALID_OHLC_AUTO_MODIFY_DISABLED   = True
 MOCK_DATA_REPAIR_DISABLED           = True
 SYNTHETIC_PRICE_REPAIR_ENABLED      = False
 EXTERNAL_DATA_DOWNLOAD_ENABLED      = False
+# v1.1.3 new flags
+DATA_FRESHNESS_MONITOR_AVAILABLE    = True
+FRESHNESS_SLA_AVAILABLE             = True
+SOURCE_INTERRUPTION_DETECTION_AVAILABLE = True
+AUTO_EXTERNAL_REFRESH_ENABLED       = False
+STALE_DATA_AUTO_REPAIR_ENABLED      = False
+FUTURE_DATE_COUNTS_AS_FRESH         = False
+MOCK_DATA_FORMAL_FRESHNESS_ALLOWED  = False
 
 
 class VersionInfo:
@@ -197,7 +207,7 @@ def print_version_info() -> None:
     print("  TW Quant Cockpit — Version Info")
     print(f"  Version: {VERSION}")
     print(f"  Release: {RELEASE_NAME}")
-    print(f"  Base Release: {BASE_RELEASE} {BASE_RELEASE_NAME}")
+    print(f"  Base Release: {BASE_RELEASE}")
     print(f"  Stage: {RELEASE_STAGE}")
     print(f"  Track: {RELEASE_TRACK.capitalize()}")
     print(f"  Research Only: {not REAL_ORDERS_ENABLED}")
@@ -222,6 +232,13 @@ def print_version_info() -> None:
     print(f"  Synthetic Price Repair Enabled: {SYNTHETIC_PRICE_REPAIR_ENABLED}")
     print(f"  External Data Download Enabled: {EXTERNAL_DATA_DOWNLOAD_ENABLED}")
     print(f"  Mock Data Formal Conclusion Allowed: {MOCK_DATA_FORMAL_CONCLUSION_ALLOWED}")
+    print(f"  Data Freshness Monitor Available: {DATA_FRESHNESS_MONITOR_AVAILABLE}")
+    print(f"  Freshness SLA Available: {FRESHNESS_SLA_AVAILABLE}")
+    print(f"  Source Interruption Detection Available: {SOURCE_INTERRUPTION_DETECTION_AVAILABLE}")
+    print(f"  Auto External Refresh Enabled: {AUTO_EXTERNAL_REFRESH_ENABLED}")
+    print(f"  Stale Data Auto Repair Enabled: {STALE_DATA_AUTO_REPAIR_ENABLED}")
+    print(f"  Future Date Counts As Fresh: {FUTURE_DATE_COUNTS_AS_FRESH}")
+    print(f"  Mock Data Formal Freshness Allowed: {MOCK_DATA_FORMAL_FRESHNESS_ALLOWED}")
     print("=" * 60)
 
 

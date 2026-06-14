@@ -308,3 +308,48 @@ python main.py coverage-repair-report --plan-id latest --mode real
 See `docs/coverage_repair_workflow_v1.1.2.md` for full details.
 
 **[!] INVALID OHLC → BLOCKED. CONFLICT → MANUAL. Synthetic repair DISABLED. No Real Orders.**
+
+---
+
+## v1.1.3 — Data Freshness Monitor
+
+v1.1.3 adds a Data Freshness Monitor: scans all datasets for stale, missing, or outdated records across universe tiers, generates prioritized alerts, and creates repair handoff task lists (without executing any repair).
+
+### Purpose
+
+- Detect when real data becomes stale after initial onboarding
+- Track last-updated timestamps per symbol per dataset
+- Generate freshness alerts by severity (critical / high / medium / low)
+- Provide source health status across data providers
+- Produce handoff task lists compatible with the coverage repair workflow
+
+### Safety Guarantees
+
+| Safety Flag | Value |
+|---|---|
+| AUTO_EXTERNAL_REFRESH_ENABLED | False |
+| STALE_DATA_AUTO_REPAIR_ENABLED | False |
+| FUTURE_DATE_COUNTS_AS_FRESH | False |
+
+`freshness-repair-handoff` creates a task list only. It does NOT execute any repair, fetch any external data, or modify any stored data.
+
+### v1.1.3 CLI Commands
+
+```
+python main.py freshness-scan --tier core10
+python main.py freshness-summary
+python main.py freshness-summary --tier research30
+python main.py freshness-alerts
+python main.py freshness-alerts --severity critical
+python main.py freshness-stale
+python main.py freshness-missing
+python main.py freshness-source-health
+python main.py freshness-history --stock 2454 --dataset daily_price
+python main.py freshness-repair-handoff
+python main.py freshness-health
+python main.py freshness-report --tier research30 --mode real
+```
+
+See `docs/coverage_repair_workflow_v1.1.2.md` and `docs/data_import_onboarding_v1.1.1.md` for workflow integration details.
+
+**[!] AUTO_EXTERNAL_REFRESH_ENABLED=False. STALE_DATA_AUTO_REPAIR_ENABLED=False. Repair handoff creates task list only. No Real Orders.**

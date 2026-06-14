@@ -2154,25 +2154,97 @@ class StableReleaseChecklistV060:
             )
 
     def _check_version_info_v112(self) -> dict:
-        """v1.1.2 — VERSION is 1.1.2."""
+        """v1.1.2 — VERSION is 1.1.2 or newer."""
         try:
             from release.version_info import VERSION
             import release.version_info as _vi
             cr_available = getattr(_vi, "COVERAGE_REPAIR_AVAILABLE", None)
-            if VERSION == "1.1.2":
+            if VERSION >= "1.1.2":
                 return _check_item(
                     "version_info_v112", "version_git", "PASS",
                     f"VERSION={VERSION}, COVERAGE_REPAIR_AVAILABLE={cr_available}",
                 )
             return _check_item(
                 "version_info_v112", "version_git", "WARN",
-                f"VERSION={VERSION} (expected 1.1.2)",
-                warning="Expected VERSION=1.1.2",
+                f"VERSION={VERSION} (expected 1.1.2+)",
+                warning="Expected VERSION=1.1.2+",
             )
         except Exception as exc:
             return _check_item(
                 "version_info_v112", "version_git", "WARN", str(exc),
             )
+
+    def _check_data_freshness_import(self) -> dict:
+        """v1.1.3 — data_freshness package imports correctly."""
+        try:
+            import data_freshness
+            no_real = getattr(data_freshness, "NO_REAL_ORDERS", False)
+            dry_run = getattr(data_freshness, "DATA_FRESHNESS_MONITOR_RELEASE", False)
+            if no_real and dry_run:
+                return _check_item(
+                    "data_freshness_import", "coverage_repair",
+                    "PASS",
+                    f"data_freshness: NO_REAL_ORDERS={no_real}, DATA_FRESHNESS_MONITOR_RELEASE={dry_run}",
+                )
+            return _check_item(
+                "data_freshness_import", "coverage_repair", "FAIL",
+                f"data_freshness safety flags missing: NO_REAL_ORDERS={no_real}",
+            )
+        except Exception as exc:
+            return _check_item("data_freshness_import", "coverage_repair", "FAIL", str(exc))
+
+    def _check_freshness_mock_real_separation(self) -> dict:
+        """v1.1.3 — mock data not used for formal freshness conclusions."""
+        try:
+            import data_freshness
+            mock_allowed = getattr(data_freshness, "MOCK_DATA_FORMAL_FRESHNESS_ALLOWED", True)
+            if not mock_allowed:
+                return _check_item(
+                    "freshness_mock_real_separation", "coverage_repair",
+                    "PASS", "MOCK_DATA_FORMAL_FRESHNESS_ALLOWED=False",
+                )
+            return _check_item(
+                "freshness_mock_real_separation", "coverage_repair", "FAIL",
+                "MOCK_DATA_FORMAL_FRESHNESS_ALLOWED must be False",
+            )
+        except Exception as exc:
+            return _check_item("freshness_mock_real_separation", "coverage_repair", "FAIL", str(exc))
+
+    def _check_freshness_future_date_guard(self) -> dict:
+        """v1.1.3 — future date is not counted as fresh."""
+        try:
+            import data_freshness
+            future_fresh = getattr(data_freshness, "FUTURE_DATE_COUNTS_AS_FRESH", True)
+            if not future_fresh:
+                return _check_item(
+                    "freshness_future_date_guard", "coverage_repair",
+                    "PASS", "FUTURE_DATE_COUNTS_AS_FRESH=False",
+                )
+            return _check_item(
+                "freshness_future_date_guard", "coverage_repair", "FAIL",
+                "FUTURE_DATE_COUNTS_AS_FRESH must be False",
+            )
+        except Exception as exc:
+            return _check_item("freshness_future_date_guard", "coverage_repair", "FAIL", str(exc))
+
+    def _check_version_info_v113(self) -> dict:
+        """v1.1.3 — VERSION is 1.1.3 and DATA_FRESHNESS_MONITOR_AVAILABLE=True."""
+        try:
+            from release.version_info import VERSION
+            import release.version_info as _vi
+            df_available = getattr(_vi, "DATA_FRESHNESS_MONITOR_AVAILABLE", None)
+            if VERSION == "1.1.3" and df_available:
+                return _check_item(
+                    "version_info_v113", "version_git", "PASS",
+                    f"VERSION={VERSION}, DATA_FRESHNESS_MONITOR_AVAILABLE={df_available}",
+                )
+            return _check_item(
+                "version_info_v113", "version_git", "WARN",
+                f"VERSION={VERSION}, DATA_FRESHNESS_MONITOR_AVAILABLE={df_available}",
+                warning="Expected VERSION=1.1.3 with DATA_FRESHNESS_MONITOR_AVAILABLE=True",
+            )
+        except Exception as exc:
+            return _check_item("version_info_v113", "version_git", "WARN", str(exc))
 
     # ----------------------------------------------------------------
     # Run
@@ -2303,6 +2375,11 @@ class StableReleaseChecklistV060:
             self._check_coverage_repair_dry_run_safe,
             self._check_coverage_repair_write_blocked_without_flag,
             self._check_version_info_v112,
+            # v1.1.3 Data Freshness Monitor
+            self._check_data_freshness_import,
+            self._check_freshness_mock_real_separation,
+            self._check_freshness_future_date_guard,
+            self._check_version_info_v113,
         ]
 
         for fn in checklist_groups:

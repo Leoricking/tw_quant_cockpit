@@ -210,3 +210,30 @@ python main.py final-rollup-report --mode real
 ```
 
 **[!] INVALID OHLC → BLOCKED. CONFLICT → MANUAL. --execute without --allow-write → BLOCKED. No Real Orders.**
+
+---
+
+## v1.1.3 Data Freshness Monitor Commands
+
+| Command | Description |
+|---------|-------------|
+| `python main.py freshness-scan --tier core10` | Scan freshness for core10 tier |
+| `python main.py freshness-summary` | Show latest freshness summary across all tiers |
+| `python main.py freshness-summary --tier research30` | Show freshness summary for research30 tier |
+| `python main.py freshness-alerts` | List all open freshness alerts |
+| `python main.py freshness-alerts --severity critical` | Filter alerts by severity (critical/high/medium/low) |
+| `python main.py freshness-stale` | List stale records (past freshness threshold) |
+| `python main.py freshness-missing` | List missing records (no data found) |
+| `python main.py freshness-source-health` | Show data source health status |
+| `python main.py freshness-history --stock 2454 --dataset daily_price` | Show freshness history for a symbol/dataset |
+| `python main.py freshness-repair-handoff` | Create repair task list — does NOT execute repair |
+| `python main.py freshness-health` | Run freshness monitor health check |
+| `python main.py freshness-report --tier research30 --mode real` | Build freshness report for a tier |
+
+### Notes
+
+- `freshness-repair-handoff` generates a task list compatible with the coverage repair workflow. It does NOT fetch data, modify files, or execute any repair.
+- Calendar approximation in `freshness-health` is expected — WARN (not FAIL) is acceptable.
+- Universe tier symbol resolution logs WARNING (not crash) when no universe data is available.
+
+**[!] AUTO_EXTERNAL_REFRESH_ENABLED=False. STALE_DATA_AUTO_REPAIR_ENABLED=False. Repair handoff creates task list only. No Real Orders.**

@@ -64,6 +64,7 @@ reports/coverage_repair_report_*.md
 # Fixture files ARE committed (exception)
 !tests/fixtures/import_onboarding/*.csv
 !tests/fixtures/coverage_repair/*.csv
+!tests/fixtures/data_freshness/*.csv
 
 # XQ split export output (generated artifacts)
 data/xq_exports/
@@ -382,3 +383,8 @@ reports/final_maintenance_rollup_report_*.md
 # v1.1.0 Data Universe Expansion (runtime outputs — never commit)
 data/backtest_results/universe/
 reports/data_universe_expansion_report_*.md
+
+# v1.1.3 Data Freshness Monitor (runtime outputs — never commit)
+data/freshness_reports/
+reports/data_freshness_report_*.md
+reports/freshness_monitor_report_*.md

@@ -144,6 +144,60 @@ python main.py import-onboarding-report [--mode real|mock]
 
 ---
 
+## v1.1.3 — Data Freshness Monitor (2026-06-14)
+
+### Summary
+
+v1.1.3 adds a complete Data Freshness Monitor on top of the v1.1.2 Coverage Repair Workflow. It provides trading-calendar-aware freshness monitoring, dataset-specific SLAs, source interruption detection, refresh prioritization, alert history, and coverage repair handoff. Auto external refresh is DISABLED. Stale auto repair is DISABLED. Future date is NOT counted as fresh. Mock data is NOT used for formal freshness conclusions.
+
+### New Modules
+
+- `data_freshness/freshness_schema.py` — DatasetFreshnessRecord, SourceFreshnessStatus, FreshnessAlert, FreshnessSummary dataclasses
+- `data_freshness/trading_calendar.py` — TradingCalendar with weekday heuristic, approximate=True guard
+- `data_freshness/freshness_policy.py` — Dataset SLA policies (daily/monthly/quarterly)
+- `data_freshness/freshness_detector.py` — DataFreshnessDetector
+- `data_freshness/source_monitor.py` — DataSourceFreshnessMonitor (minimum sample guard)
+- `data_freshness/freshness_prioritizer.py` — FreshnessPrioritizer (P0–P3)
+- `data_freshness/freshness_engine.py` — DataFreshnessEngine orchestration
+- `data_freshness/freshness_store.py` — FreshnessStore CSV persistence
+- `data_freshness/freshness_query.py` — FreshnessQuery read-only interface
+- `data_freshness/freshness_health.py` — DataFreshnessHealthCheck (~19 checks)
+- `reports/data_freshness_report.py` — DataFreshnessReportBuilder (10-section Markdown)
+- `gui/data_freshness_panel.py` — optional PySide6 DataFreshnessPanel
+- `gui/data_freshness_adapter.py` — DataFreshnessAdapter
+- `tests/fixtures/data_freshness/` — 9 fixture CSVs (TST symbols, fixed test clock)
+- `docs/data_freshness_monitor_v1.1.3.md` — full specification
+
+### New CLI Commands
+
+```bash
+python main.py freshness-scan --tier core10
+python main.py freshness-summary --tier research30
+python main.py freshness-alerts --severity critical
+python main.py freshness-stale
+python main.py freshness-missing
+python main.py freshness-source-health
+python main.py freshness-history --stock 2454 --dataset daily_price
+python main.py freshness-repair-handoff
+python main.py freshness-health
+python main.py freshness-report --tier research30 --mode real
+```
+
+### Safety Declaration
+
+| Safety Flag | Value |
+|-------------|-------|
+| Research Only | True |
+| No Real Orders | True |
+| Production Trading BLOCKED | True |
+| Auto External Refresh Enabled | False |
+| Stale Data Auto Repair Enabled | False |
+| Future Date Counts As Fresh | False |
+| Mock Data Formal Freshness Allowed | False |
+| Broker Execution | DISABLED |
+
+---
+
 ## v1.1.2 — Coverage Repair Workflow (2026-06-14)
 
 ### Summary

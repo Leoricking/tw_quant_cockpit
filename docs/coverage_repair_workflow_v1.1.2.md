@@ -291,4 +291,16 @@ reports/coverage_repair_report_YYYY-MM-DD.md
 
 ---
 
+## v1.1.3 Integration
+
+v1.1.3 Data Freshness Monitor integrates with the coverage repair workflow via `freshness-repair-handoff`:
+- `freshness-repair-handoff` creates `CoverageIssue`-compatible task dicts (issue_type, symbol, dataset, severity, suggested_action) that can be passed directly to `CoverageRepairTaskBuilder`
+- Freshness-detected STALE_DATA issues map to `CoverageIssue(STALE_DATA)` with `SOURCE_REQUIRED` repairability — consistent with the existing coverage repair issue taxonomy
+- Freshness-detected MISSING records map to `CoverageIssue(MISSING_SYMBOL_DATA)` or `CoverageIssue(MISSING_CHIPS/REVENUE/FUNDAMENTALS)` as appropriate
+- The handoff is one-way: `freshness-repair-handoff` creates the task list only; the coverage repair workflow owns execution
+
+See freshness monitor documentation for full v1.1.3 specification.
+
+---
+
 *v1.1.2 Coverage Repair Workflow — Research Only. No Real Orders. Not Investment Advice.*

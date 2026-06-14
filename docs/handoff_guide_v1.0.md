@@ -247,5 +247,17 @@ These templates enforce: `git -C "path"`, no chain commands, no `git add .`, no 
 - Coverage repair health: `python main.py coverage-repair-health` → should PASS
 - Full docs: `docs/coverage_repair_workflow_v1.1.2.md`, `docs/release_notes_v1.1.md`
 - Safety: `dry_run=True` by default, `INVALID OHLC` always BLOCKED, conflicts always MANUAL, `SYNTHETIC_PRICE_REPAIR_ENABLED=False`, `EXTERNAL_DATA_DOWNLOAD_ENABLED=False`
-- Next: v1.1.3 Data Freshness Monitor (do not proceed without explicit plan)
 - **[!] No Real Orders. No broker API. DESTRUCTIVE_REPAIR_DISABLED_BY_DEFAULT=True. Not Investment Advice.**
+
+## v1.1.3 Handoff Notes
+
+- **Data Freshness Monitor: COMPLETE** (tag `v1.1.3`)
+- New package: `data_freshness/` (freshness_schema, freshness_scanner, freshness_alert_builder, freshness_summary, freshness_store, freshness_query, freshness_source_health, freshness_history, freshness_repair_handoff, freshness_health)
+- New GUI: freshness monitor panel
+- New docs: `docs/` freshness monitor documentation
+- New CLI: 10 commands (`freshness-scan`, `freshness-summary`, `freshness-alerts`, `freshness-stale`, `freshness-missing`, `freshness-source-health`, `freshness-history`, `freshness-repair-handoff`, `freshness-health`, `freshness-report`)
+- Safety flags: `AUTO_EXTERNAL_REFRESH_ENABLED=False`, `STALE_DATA_AUTO_REPAIR_ENABLED=False`, `FUTURE_DATE_COUNTS_AS_FRESH=False`
+- Known graceful degradation: universe tier symbol resolution logs WARNING but does not crash when no universe data is available
+- Approximate trading calendar is expected behavior — health check reports WARN (not FAIL) for calendar approximation
+- Freshness health: `python main.py freshness-health` → should PASS (calendar approximation → WARN is acceptable)
+- **[!] No Real Orders. No broker API. AUTO_EXTERNAL_REFRESH_ENABLED=False. Repair handoff creates task list only. Not Investment Advice.**

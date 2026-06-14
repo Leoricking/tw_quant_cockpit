@@ -82,6 +82,20 @@
 | v1.1.0 | Data Universe Expansion | Done |
 | v1.1.1 | Data Import UX & Batch Onboarding | Done |
 | v1.1.2 | Coverage Repair Workflow | Done |
+| v1.1.3 | Data Freshness Monitor | Done |
+
+---
+
+### v1.1.3 — Data Freshness Monitor ✅
+
+- **Version:** 1.1.3 — feature release based on v1.1.2 Coverage Repair Workflow
+- **Type:** Data Freshness Monitor — no strategy logic changes, no broker API, no trading
+- **Changes:** data_freshness/ package (freshness_schema, trading_calendar, freshness_policy, freshness_detector, source_monitor, freshness_prioritizer, freshness_engine, freshness_store, freshness_query, freshness_health), reports/data_freshness_report.py, 10 new CLI commands (freshness-scan, -summary, -alerts, -stale, -missing, -source-health, -history, -repair-handoff, -health, -report), GUI panel + adapter, GUI nav tab (data group), report pack entry, stable checklist checks (5 new), v060 checklist checks (4 new including version_info_v113), intelligence checklist check (data_freshness_v113_safe), regression tests (~18), tests/fixtures/data_freshness/ (9 CSVs), docs/data_freshness_monitor_v1.1.3.md, .gitignore updates, README/docs refresh
+- **Safety:** Auto external refresh DISABLED, Stale auto repair DISABLED, Future date NOT fresh, Mock formal freshness DISABLED, No Real Orders, Production Trading BLOCKED
+
+**Next:**
+- v1.1.4: Coverage Quality Gates
+- v1.2.0: Replay Training UX
 
 ---
 

@@ -978,6 +978,54 @@ class ResearchCockpitStableChecklist:
         except Exception as exc:
             checks.append(_mk("coverage_repair_no_forbidden_actions", "coverage_repair", "WARN", str(exc)))
 
+        # v1.1.3 — Data Freshness Monitor checks
+        try:
+            import data_freshness
+            _df_avail = getattr(data_freshness, "DATA_FRESHNESS_MONITOR_RELEASE", False)
+            checks.append(_mk("data_freshness_available", "data_freshness",
+                              "PASS" if _df_avail else "FAIL",
+                              f"data_freshness: DATA_FRESHNESS_MONITOR_RELEASE={_df_avail}"))
+        except Exception as exc:
+            checks.append(_mk("data_freshness_available", "data_freshness", "FAIL", str(exc)))
+
+        try:
+            import data_freshness
+            _sla = getattr(data_freshness, "FRESHNESS_SLA_AVAILABLE", False)
+            checks.append(_mk("freshness_sla_available", "data_freshness",
+                              "PASS" if _sla else "FAIL",
+                              f"FRESHNESS_SLA_AVAILABLE={_sla}"))
+        except Exception as exc:
+            checks.append(_mk("freshness_sla_available", "data_freshness", "FAIL", str(exc)))
+
+        try:
+            import data_freshness
+            _future = getattr(data_freshness, "FUTURE_DATE_COUNTS_AS_FRESH", True)
+            checks.append(_mk("future_date_not_fresh", "data_freshness",
+                              "PASS" if not _future else "FAIL",
+                              f"FUTURE_DATE_COUNTS_AS_FRESH={_future} (must be False)"))
+        except Exception as exc:
+            checks.append(_mk("future_date_not_fresh", "data_freshness", "FAIL", str(exc)))
+
+        try:
+            import data_freshness
+            _auto = getattr(data_freshness, "AUTO_EXTERNAL_REFRESH_ENABLED", True)
+            checks.append(_mk("auto_external_refresh_disabled", "data_freshness",
+                              "PASS" if not _auto else "FAIL",
+                              f"AUTO_EXTERNAL_REFRESH_ENABLED={_auto} (must be False)"))
+        except Exception as exc:
+            checks.append(_mk("auto_external_refresh_disabled", "data_freshness", "FAIL", str(exc)))
+
+        try:
+            from data_freshness.freshness_health import DataFreshnessHealthCheck
+            _fh = DataFreshnessHealthCheck()
+            _fh_result = _fh.run()
+            _fh_overall = _fh_result.get("overall", "FAIL")
+            checks.append(_mk("freshness_no_forbidden_actions", "data_freshness",
+                              "PASS" if _fh_overall in ("PASS", "WARN") else "FAIL",
+                              f"DataFreshnessHealthCheck overall={_fh_overall}"))
+        except Exception as exc:
+            checks.append(_mk("freshness_no_forbidden_actions", "data_freshness", "WARN", str(exc)))
+
         # Rebuild summary counts to include new checks
         total         = len(checks)
         pass_count    = sum(1 for c in checks if c["status"] == "PASS")

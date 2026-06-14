@@ -4,7 +4,7 @@
 >
 > **[!] v1: Real order execution is strictly prohibited. For research, simulation, and decision support only. Not investment advice.**
 
-**Current version: v1.1.2 — Coverage Repair Workflow** (base: v1.1.1 Data Import UX & Batch Onboarding) — **v1.0 Maintenance Line Complete**
+**Current version: v1.1.3 — Data Freshness Monitor** (base: v1.1.2 Coverage Repair Workflow) — **v1.0 Maintenance Line Complete**
 
 ---
 
@@ -29,9 +29,13 @@ TW Quant Cockpit is a **Research Trading Cockpit** for Taiwan equity markets. It
 
 ---
 
-## Current Version: v1.1.2 — Coverage Repair Workflow
+## Current Version: v1.1.3 — Data Freshness Monitor
 
-This is TW Quant Cockpit **v1.1.2 — Coverage Repair Workflow**, based on **v1.1.1 Data Import UX & Batch Onboarding**.
+This is TW Quant Cockpit **v1.1.3 — Data Freshness Monitor**, based on **v1.1.2 Coverage Repair Workflow**.
+
+New in v1.1.3: data_freshness/ package (freshness_schema, trading_calendar, freshness_policy, freshness_detector, source_monitor, freshness_prioritizer, freshness_engine, freshness_store, freshness_query, freshness_health), trading-calendar-aware freshness monitoring, dataset-specific SLAs (daily/monthly/quarterly), stale and interruption detection, refresh prioritization, alert history, coverage repair handoff, 10 new CLI commands (freshness-scan, -summary, -alerts, -stale, -missing, -source-health, -history, -repair-handoff, -health, -report), GUI panel + adapter, nav tab (data group), report pack entry, stable/v060/intelligence checklist checks, regression tests (~18), 9 fixture CSVs (fresh/delayed/stale/future/regression/partial/monthly/quarterly/interruption), docs/data_freshness_monitor_v1.1.3.md. Auto external refresh: DISABLED. Stale auto repair: DISABLED. Future date: NOT fresh. Mock formal freshness: DISABLED. No broker API. Not Investment Advice.
+
+## v1.1.2 — Coverage Repair Workflow
 
 New in v1.1.2: coverage_repair/ package (repair_schema, issue_detector, task_builder, repair_prioritizer, repair_planner, safe_repair_executor, repair_validator, repair_store, repair_query, repair_health), 18 issue types, P0–P3 priority scoring, dry-run repair planning, safe deduplication & schema normalization, manual conflict review, source requirements workflow, before/after validation, 13 new CLI commands (coverage-repair-scan, -issues, -tasks, -plan, -run, -result, -unresolved, -source-required, -health, -report, etc.), GUI panel + adapter, nav tab (data group), report pack entry, stable/v060/intelligence checklist checks, regression tests (~20), 8 fixture CSVs (TST1/TST2 symbols), docs/coverage_repair_workflow_v1.1.2.md. INVALID OHLC → always BLOCKED. CONFLICT → always MANUAL. Synthetic repair: DISABLED. External download: DISABLED. No broker API. Not Investment Advice.
 

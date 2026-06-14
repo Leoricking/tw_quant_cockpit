@@ -210,3 +210,13 @@ v1.1.2 Coverage Repair Workflow integrates with v1.1.1 onboarding:
 - `REIMPORT_SAFE` calls existing `BatchImportExecutor`, does not duplicate write logic
 
 See `docs/coverage_repair_workflow_v1.1.2.md` for full v1.1.2 specification.
+
+## v1.1.3 Integration
+
+v1.1.3 Data Freshness Monitor extends the onboarding workflow with ongoing freshness tracking:
+- After initial onboarding via `import-batch`, the freshness monitor detects when imported data becomes stale over time
+- `freshness-scan` checks last-updated timestamps for all onboarded symbols across datasets (daily_price, chips, revenue, fundamentals)
+- `freshness-repair-handoff` creates task dicts compatible with the data onboarding workflow — tasks can be resolved by running `import-batch` with fresh source files
+- `freshness-alerts --severity critical` surfaces symbols where onboarded data has aged past the staleness threshold
+
+See freshness monitor documentation for full v1.1.3 specification.

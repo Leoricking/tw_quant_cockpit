@@ -1190,4 +1190,40 @@ class IntelligenceStableChecklist:
                 suggested_fix="Run: python main.py coverage-repair-health",
             ))
 
+        # v1.1.3 data_freshness_v113_safe — data freshness package is safe
+        try:
+            import importlib
+            mod_df = importlib.import_module("data_freshness")
+            no_orders_df = getattr(mod_df, "NO_REAL_ORDERS", None)
+            auto_refresh = getattr(mod_df, "AUTO_EXTERNAL_REFRESH_ENABLED", None)
+            future_fresh = getattr(mod_df, "FUTURE_DATE_COUNTS_AS_FRESH", None)
+            mock_fresh   = getattr(mod_df, "MOCK_DATA_FORMAL_FRESHNESS_ALLOWED", None)
+            if no_orders_df is True and auto_refresh is False and future_fresh is False and mock_fresh is False:
+                checks.append(_check(
+                    "data_freshness_v113_safe", "stable_integration",
+                    "v1.1.3 data_freshness_v113_safe",
+                    CHECK_PASS, SEV_LOW,
+                    "data_freshness: NO_REAL_ORDERS=True, AUTO_EXTERNAL_REFRESH_ENABLED=False, "
+                    "FUTURE_DATE_COUNTS_AS_FRESH=False, MOCK_DATA_FORMAL_FRESHNESS_ALLOWED=False.",
+                ))
+            else:
+                checks.append(_check(
+                    "data_freshness_v113_safe", "stable_integration",
+                    "v1.1.3 data_freshness_v113_safe",
+                    CHECK_WARN, SEV_LOW,
+                    f"data_freshness safety flags: NO_REAL_ORDERS={no_orders_df}, "
+                    f"AUTO_EXTERNAL_REFRESH_ENABLED={auto_refresh}, "
+                    f"FUTURE_DATE_COUNTS_AS_FRESH={future_fresh}, "
+                    f"MOCK_DATA_FORMAL_FRESHNESS_ALLOWED={mock_fresh}",
+                    suggested_fix="Ensure data_freshness/__init__.py has correct v1.1.3 safety flags.",
+                ))
+        except Exception as exc:
+            checks.append(_check(
+                "data_freshness_v113_safe", "stable_integration",
+                "v1.1.3 data_freshness_v113_safe",
+                CHECK_WARN, SEV_LOW,
+                f"Could not verify data_freshness v1.1.3 safety (optional): {exc}",
+                suggested_fix="Run: python main.py freshness-health",
+            ))
+
         return checks

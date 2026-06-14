@@ -47,6 +47,7 @@ from report_pack.report_registry import (
     REPORT_LOCAL_RESEARCH_ASSISTANT,
     REPORT_DATA_IMPORT_ONBOARDING,
     REPORT_COVERAGE_REPAIR,
+    REPORT_DATA_FRESHNESS,
 )
 
 logger = logging.getLogger(__name__)
@@ -279,6 +280,11 @@ _REPORT_PATTERNS = {
     REPORT_COVERAGE_REPAIR: [
         "reports/coverage_repair_report*.md",
         "data/repair_reports/*.csv",
+    ],
+    # v1.1.3 Data Freshness Monitor
+    REPORT_DATA_FRESHNESS: [
+        "reports/data_freshness_report*.md",
+        "data/freshness_reports/*.csv",
     ],
     # v0.9.1 Evidence Graph UX patterns
     "evidence_graph_gaps": [

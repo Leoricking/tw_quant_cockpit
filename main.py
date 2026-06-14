@@ -5648,7 +5648,7 @@ def cmd_enrich_universe_data(args: argparse.Namespace) -> None:
 # ---------------------------------------------------------------------------
 
 def cmd_version_info(args: argparse.Namespace) -> None:
-    """Print version info for TW Quant Cockpit v1.1.2 (Coverage Repair Workflow)."""
+    """Print version info for TW Quant Cockpit v1.1.3 (Data Freshness Monitor)."""
     print("=" * 60)
     print("TW Quant Cockpit \u2014 Version Info")
     print("=" * 60)
@@ -5660,7 +5660,7 @@ def cmd_version_info(args: argparse.Namespace) -> None:
             PAPER_TRADING_IS_SIMULATION, MOCK_REALTIME_IS_SIMULATION,
         )
         import release.version_info as _vi
-        base_release = getattr(_vi, "BASE_RELEASE", "1.1.1 Data Import UX & Batch Onboarding")
+        base_release = getattr(_vi, "BASE_RELEASE", "1.1.2 Coverage Repair Workflow")
         print(f"{'Version:':<40} {VERSION}")
         print(f"{'Release:':<40} {RELEASE_NAME}")
         print(f"{'Base Release:':<40} {base_release}")
@@ -5671,6 +5671,21 @@ def cmd_version_info(args: argparse.Namespace) -> None:
         print(f"{'Production Trading BLOCKED:':<40} {PRODUCTION_TRADING_BLOCKED}")
         print(f"{'Broker Execution Enabled:':<40} {BROKER_EXECUTION_ENABLED}")
         print(f"{'VALIDATED does not enable trading:':<40} {VALIDATED_DOES_NOT_ENABLE_TRADING}")
+        # v1.1.3 Data Freshness Monitor fields
+        df_available     = getattr(_vi, "DATA_FRESHNESS_MONITOR_AVAILABLE", False)
+        sla_available    = getattr(_vi, "FRESHNESS_SLA_AVAILABLE", False)
+        src_int_avail    = getattr(_vi, "SOURCE_INTERRUPTION_DETECTION_AVAILABLE", False)
+        auto_ext_ref     = getattr(_vi, "AUTO_EXTERNAL_REFRESH_ENABLED", True)
+        stale_auto_rep   = getattr(_vi, "STALE_DATA_AUTO_REPAIR_ENABLED", True)
+        future_fresh     = getattr(_vi, "FUTURE_DATE_COUNTS_AS_FRESH", True)
+        mock_frsh_fml    = getattr(_vi, "MOCK_DATA_FORMAL_FRESHNESS_ALLOWED", True)
+        print(f"{'Data Freshness Monitor Available:':<40} {df_available}")
+        print(f"{'Freshness SLA Available:':<40} {sla_available}")
+        print(f"{'Source Interruption Detection Available:':<40} {src_int_avail}")
+        print(f"{'Auto External Refresh Enabled:':<40} {auto_ext_ref}")
+        print(f"{'Stale Data Auto Repair Enabled:':<40} {stale_auto_rep}")
+        print(f"{'Future Date Counts As Fresh:':<40} {future_fresh}")
+        print(f"{'Mock Data Formal Freshness Allowed:':<40} {mock_frsh_fml}")
         # v1.1.2 Coverage Repair Workflow fields
         cr_available     = getattr(_vi, "COVERAGE_REPAIR_AVAILABLE", False)
         cr_dry_run_def   = getattr(_vi, "COVERAGE_REPAIR_DRY_RUN_DEFAULT", False)
@@ -5714,13 +5729,12 @@ def cmd_version_info(args: argparse.Namespace) -> None:
         print(f"{'Paper Trading:':<40} {'Simulation Only' if PAPER_TRADING_IS_SIMULATION else 'Real'}")
         print(f"{'Mock Realtime:':<40} {'Simulation Only' if MOCK_REALTIME_IS_SIMULATION else 'Real'}")
     except Exception as exc:
-        print(f"  Version:                              1.1.2")
-        print(f"  Release:                              Coverage Repair Workflow")
-        print(f"  Base Release:                         1.1.1 Data Import UX & Batch Onboarding")
-        print(f"  Coverage Repair Release:              True")
-        print(f"  Destructive Repair Disabled:          True")
-        print(f"  Synthetic OHLC Repair Disabled:       True")
-        print(f"  Invalid OHLC Auto-Modify Disabled:    True")
+        print(f"  Version:                              1.1.3")
+        print(f"  Release:                              Data Freshness Monitor")
+        print(f"  Base Release:                         1.1.2 Coverage Repair Workflow")
+        print(f"  Data Freshness Monitor Available:     True")
+        print(f"  Auto External Refresh Enabled:        False")
+        print(f"  Future Date Counts As Fresh:          False")
         print(f"  (version_info import error: {exc})")
     print("=" * 60)
     print("RESEARCH ONLY \u2014 Not Investment Advice \u2014 No Real Orders")
@@ -11073,6 +11087,273 @@ def cmd_coverage_repair_source_required(args):
         print("[!] Research Only. No Real Orders.")
     except Exception as exc:
         print(f"  [ERROR] coverage-repair-source-required failed: {exc}")
+
+
+# ---------------------------------------------------------------------------
+# v1.1.3 Data Freshness Monitor handlers
+# ---------------------------------------------------------------------------
+
+def _print_freshness_header():
+    print("=" * 60)
+    print("TW Quant Cockpit \u2014 Data Freshness Monitor")
+    print("Research Only: True | No Real Orders: True")
+    print("[!] Auto External Refresh: DISABLED. Stale Auto Repair: DISABLED.")
+    print("[!] Future date does not count as fresh.")
+
+
+def cmd_freshness_scan(args):
+    """Scan freshness for a tier or stock. Research Only. No Real Orders."""
+    _print_freshness_header()
+    tier    = getattr(args, "tier", None)
+    stock   = getattr(args, "stock", None)
+    symbols = getattr(args, "symbols", None)
+    mode    = getattr(args, "mode", "real")
+    print(f"Tier: {tier or 'all'} | Stock: {stock or 'all'} | Mode: {mode}")
+    print("=" * 60)
+    try:
+        from data_freshness.freshness_engine import DataFreshnessEngine
+        engine = DataFreshnessEngine()
+        sym_list = None
+        if stock:
+            sym_list = [s.strip() for s in stock.split(",") if s.strip()]
+        elif symbols:
+            sym_list = [s.strip() for s in symbols.split(",") if s.strip()]
+        result = engine.run(tier=tier, symbols=sym_list, mode=mode)
+        records = result.get("records", [])
+        summary = result.get("summary")
+        if summary:
+            print(f"Version:                    1.1.3")
+            import release.version_info as _vi_frsh
+            print(f"Mode:                       {mode}")
+            print(f"Tier:                       {tier or 'all'}")
+            cal = result.get("calendar_info", {})
+            print(f"Expected Latest Trading Date: {cal.get('expected_latest_date', 'N/A')}")
+            print(f"Calendar Source:            {cal.get('source', 'weekday_heuristic')}")
+            print(f"Calendar Approximate:       {cal.get('approximate', True)}")
+            print(f"Symbols:                    {len(getattr(summary, 'symbols', []))}")
+            print(f"Fresh:                      {getattr(summary, 'fresh_count', 0)}")
+            print(f"Acceptable:                 {getattr(summary, 'acceptable_count', 0)}")
+            print(f"Delayed:                    {getattr(summary, 'delayed_count', 0)}")
+            print(f"Stale:                      {getattr(summary, 'stale_count', 0)}")
+            print(f"Interrupted:                {getattr(summary, 'interrupted_count', 0)}")
+            print(f"Missing:                    {getattr(summary, 'missing_count', 0)}")
+            print(f"Critical Alerts:            {getattr(summary, 'critical_count', 0)}")
+            print(f"Overall Status:             {getattr(summary, 'overall_status', 'UNKNOWN')}")
+        else:
+            print(f"Records: {len(records)}")
+        for rec in records[:30]:
+            lag_str = f"lag={rec.trading_day_lag}" if rec.trading_day_lag is not None else "lag=N/A"
+            print(f"  [{rec.status:<16}] {rec.symbol:<8} {rec.dataset:<16} {lag_str}")
+        if len(records) > 30:
+            print(f"  ... ({len(records) - 30} more)")
+        print("[!] Research Only. No Real Orders.")
+    except Exception as exc:
+        print(f"  [ERROR] freshness-scan failed: {exc}")
+
+
+def cmd_freshness_summary(args):
+    """Show freshness summary. Research Only. No Real Orders."""
+    _print_freshness_header()
+    tier = getattr(args, "tier", None)
+    mode = getattr(args, "mode", "real")
+    print(f"Tier: {tier or 'all'} | Mode: {mode}")
+    print("=" * 60)
+    try:
+        from data_freshness.freshness_query import FreshnessQuery
+        from data_freshness.freshness_store import FreshnessStore
+        query = FreshnessQuery(store=FreshnessStore())
+        summary = query.latest_summary()
+        if summary is None:
+            # Run a fresh scan if no stored summary
+            from data_freshness.freshness_engine import DataFreshnessEngine
+            engine = DataFreshnessEngine()
+            result = engine.run(tier=tier, mode=mode)
+            summary = result.get("summary")
+        if summary:
+            d = summary.to_dict() if hasattr(summary, 'to_dict') else (summary if isinstance(summary, dict) else {})
+            for k, v in d.items():
+                if k not in ("symbols", "datasets", "source_health", "research_only", "no_real_orders"):
+                    print(f"  {k:<30} {v}")
+        else:
+            print("  No freshness summary available. Run freshness-scan first.")
+        print("[!] Research Only. No Real Orders.")
+    except Exception as exc:
+        print(f"  [ERROR] freshness-summary failed: {exc}")
+
+
+def cmd_freshness_alerts(args):
+    """List freshness alerts. Research Only. No Real Orders."""
+    _print_freshness_header()
+    severity = getattr(args, "severity", None)
+    print(f"Severity filter: {severity or 'all'}")
+    print("=" * 60)
+    try:
+        from data_freshness.freshness_query import FreshnessQuery
+        from data_freshness.freshness_store import FreshnessStore
+        query = FreshnessQuery(store=FreshnessStore())
+        alerts = query.list_open_alerts()
+        if severity:
+            alerts = [a for a in alerts if a.severity.lower() == severity.lower()]
+        print(f"Open Alerts: {len(alerts)}")
+        for alert in alerts[:30]:
+            print(f"  [{alert.severity:<8}] [{alert.alert_type:<28}] {alert.symbol:<8} {alert.dataset}")
+        if len(alerts) > 30:
+            print(f"  ... ({len(alerts) - 30} more)")
+        print("[!] Research Only. No Real Orders.")
+    except Exception as exc:
+        print(f"  [ERROR] freshness-alerts failed: {exc}")
+
+
+def cmd_freshness_stale(args):
+    """List stale symbols. Research Only. No Real Orders."""
+    _print_freshness_header()
+    print("=" * 60)
+    try:
+        from data_freshness.freshness_query import FreshnessQuery
+        from data_freshness.freshness_store import FreshnessStore
+        query = FreshnessQuery(store=FreshnessStore())
+        stale = query.list_stale()
+        print(f"Stale Records: {len(stale)}")
+        for rec in stale[:30]:
+            lag = f"lag={rec.trading_day_lag}d" if rec.trading_day_lag is not None else "lag=N/A"
+            print(f"  [{rec.status:<12}] {rec.symbol:<8} {rec.dataset:<16} {lag} last={rec.actual_latest_date}")
+        if len(stale) > 30:
+            print(f"  ... ({len(stale) - 30} more)")
+        print("[!] Research Only. No Real Orders.")
+    except Exception as exc:
+        print(f"  [ERROR] freshness-stale failed: {exc}")
+
+
+def cmd_freshness_missing(args):
+    """List missing data records. Research Only. No Real Orders."""
+    _print_freshness_header()
+    print("=" * 60)
+    try:
+        from data_freshness.freshness_query import FreshnessQuery
+        from data_freshness.freshness_store import FreshnessStore
+        query = FreshnessQuery(store=FreshnessStore())
+        missing = query.list_missing()
+        print(f"Missing Records: {len(missing)}")
+        for rec in missing[:30]:
+            print(f"  [{rec.status:<12}] {rec.symbol:<8} {rec.dataset:<16} {rec.reason[:60]}")
+        if len(missing) > 30:
+            print(f"  ... ({len(missing) - 30} more)")
+        print("[!] Research Only. No Real Orders.")
+    except Exception as exc:
+        print(f"  [ERROR] freshness-missing failed: {exc}")
+
+
+def cmd_freshness_source_health(args):
+    """Show source health status. Research Only. No Real Orders."""
+    _print_freshness_header()
+    print("=" * 60)
+    try:
+        from data_freshness.freshness_query import FreshnessQuery
+        from data_freshness.freshness_store import FreshnessStore
+        query = FreshnessQuery(store=FreshnessStore())
+        sources = query.list_source_interruptions()
+        print(f"Source Statuses: {len(sources)}")
+        for src in sources[:20]:
+            print(f"  [{src.status:<12}] {src.source_name:<20} {src.dataset:<16} "
+                  f"exp={src.symbols_expected} fresh={src.symbols_fresh} stale={src.symbols_stale}")
+        if not sources:
+            print("  No source health data available. Run freshness-scan first.")
+        print("[!] Research Only. No Real Orders.")
+    except Exception as exc:
+        print(f"  [ERROR] freshness-source-health failed: {exc}")
+
+
+def cmd_freshness_history(args):
+    """Show freshness history for a symbol and dataset. Research Only. No Real Orders."""
+    _print_freshness_header()
+    stock   = getattr(args, "stock", None)
+    dataset = getattr(args, "dataset", None)
+    print(f"Stock: {stock or 'N/A'} | Dataset: {dataset or 'N/A'}")
+    print("=" * 60)
+    try:
+        from data_freshness.freshness_query import FreshnessQuery
+        from data_freshness.freshness_store import FreshnessStore
+        query = FreshnessQuery(store=FreshnessStore())
+        history = query.freshness_history(stock, dataset)
+        print(f"History entries: {len(history)}")
+        for entry in history[:20]:
+            print(f"  {entry.get('detected_at', '')[:19]}  "
+                  f"status={entry.get('status', '?')}  "
+                  f"actual_date={entry.get('actual_latest_date', '?')}")
+        if not history:
+            print("  No history available.")
+        print("[!] Research Only. No Real Orders.")
+    except Exception as exc:
+        print(f"  [ERROR] freshness-history failed: {exc}")
+
+
+def cmd_freshness_repair_handoff(args):
+    """Build repair handoff tasks from freshness alerts. Research Only. No Real Orders."""
+    _print_freshness_header()
+    print("=" * 60)
+    try:
+        from data_freshness.freshness_engine import DataFreshnessEngine
+        from data_freshness.freshness_query import FreshnessQuery
+        from data_freshness.freshness_store import FreshnessStore
+        query = FreshnessQuery(store=FreshnessStore())
+        alerts = query.list_open_alerts()
+        engine = DataFreshnessEngine()
+        handoff = engine.create_repair_handoff(alerts)
+        print(f"Repair Handoff Tasks: {len(handoff)}")
+        for item in handoff[:20]:
+            print(f"  [{item.get('action', '?'):<24}] {item.get('symbol', '?'):<8} "
+                  f"{item.get('issue_type', '?')}")
+        if len(handoff) > 20:
+            print(f"  ... ({len(handoff) - 20} more)")
+        if not handoff:
+            print("  No repair handoff tasks. Run freshness-scan first.")
+        print("[!] Repair handoff tasks created — repair NOT executed.")
+        print("[!] Research Only. No Real Orders.")
+    except Exception as exc:
+        print(f"  [ERROR] freshness-repair-handoff failed: {exc}")
+
+
+def cmd_freshness_health(args):
+    """Run freshness health check. Research Only. No Real Orders."""
+    try:
+        from data_freshness.freshness_health import DataFreshnessHealthCheck
+        checker = DataFreshnessHealthCheck()
+        result = checker.run()
+        checker.print_health()
+    except Exception as exc:
+        print("=" * 60)
+        print("TW Quant Cockpit \u2014 Data Freshness Health Check")
+        print("Research Only: True | No Real Orders: True")
+        print("=" * 60)
+        print(f"  [ERROR] freshness-health failed: {exc}")
+        print("[!] Research Only. No Real Orders.")
+
+
+def cmd_freshness_report(args):
+    """Build freshness report. Research Only. No Real Orders."""
+    _print_freshness_header()
+    tier       = getattr(args, "tier", None)
+    mode       = getattr(args, "mode", "real")
+    report_dir = getattr(args, "report_dir", "reports")
+    print(f"Tier: {tier or 'all'} | Mode: {mode}")
+    print("=" * 60)
+    try:
+        from data_freshness.freshness_engine import DataFreshnessEngine
+        from reports.data_freshness_report import DataFreshnessReportBuilder
+        engine = DataFreshnessEngine()
+        result = engine.run(tier=tier, mode=mode)
+        builder = DataFreshnessReportBuilder()
+        path = builder.build(
+            result.get("records", []),
+            result.get("alerts", []),
+            result.get("source_health", []),
+            result.get("summary"),
+            output_dir=report_dir,
+        )
+        print(f"  Report saved to: {path}")
+        print("[!] Research Only. No Real Orders.")
+    except Exception as exc:
+        print(f"  [ERROR] freshness-report failed: {exc}")
 
 
 # ---------------------------------------------------------------------------
@@ -16554,6 +16835,72 @@ def _build_parser() -> argparse.ArgumentParser:
     p_crr.add_argument("--output-dir", dest="output_dir", default="data/repair_reports")
     p_crr.add_argument("--report-dir", dest="report_dir", default="reports")
 
+    # --- v1.1.3 Data Freshness Monitor ---
+    p_fscan = subparsers.add_parser(
+        "freshness-scan",
+        help="[v1.1.3] Scan data freshness by tier or stock. [!] Research Only.",
+    )
+    p_fscan.add_argument("--tier",    default=None, help="Tier: core10/research30/expanded50/broad100")
+    p_fscan.add_argument("--stock",   default=None, help="Single stock symbol")
+    p_fscan.add_argument("--symbols", default=None, help="Comma-separated symbols")
+    p_fscan.add_argument("--mode",    default="real", help="real or mock (default: real)")
+
+    p_fsum = subparsers.add_parser(
+        "freshness-summary",
+        help="[v1.1.3] Show freshness summary. [!] Research Only.",
+    )
+    p_fsum.add_argument("--tier", default=None)
+    p_fsum.add_argument("--mode", default="real")
+
+    p_falerts = subparsers.add_parser(
+        "freshness-alerts",
+        help="[v1.1.3] List open freshness alerts. [!] Research Only.",
+    )
+    p_falerts.add_argument("--severity", default=None, help="Filter by severity (critical/high/medium/low)")
+
+    p_fstale = subparsers.add_parser(
+        "freshness-stale",
+        help="[v1.1.3] List stale symbols. [!] Research Only.",
+    )
+
+    p_fmissing = subparsers.add_parser(
+        "freshness-missing",
+        help="[v1.1.3] List missing data records. [!] Research Only.",
+    )
+
+    p_fsrc = subparsers.add_parser(
+        "freshness-source-health",
+        help="[v1.1.3] Show source health status. [!] Research Only.",
+    )
+    p_fsrc.add_argument("--source",  default=None, help="Filter by source")
+    p_fsrc.add_argument("--dataset", default=None, help="Filter by dataset")
+
+    p_fhist = subparsers.add_parser(
+        "freshness-history",
+        help="[v1.1.3] Show freshness history for a symbol/dataset. [!] Research Only.",
+    )
+    p_fhist.add_argument("--stock",   default=None, help="Stock symbol")
+    p_fhist.add_argument("--dataset", default=None, help="Dataset name")
+
+    p_fhandoff = subparsers.add_parser(
+        "freshness-repair-handoff",
+        help="[v1.1.3] Build repair handoff tasks from freshness alerts. [!] Research Only.",
+    )
+    p_fhandoff.add_argument("--output-dir", dest="output_dir", default="data/freshness_reports")
+
+    subparsers.add_parser(
+        "freshness-health",
+        help="[v1.1.3] Run freshness health check. [!] Research Only.",
+    )
+
+    p_frep = subparsers.add_parser(
+        "freshness-report",
+        help="[v1.1.3] Build freshness report. [!] Research Only.",
+    )
+    p_frep.add_argument("--tier",       default=None)
+    p_frep.add_argument("--mode",       default="real")
+    p_frep.add_argument("--report-dir", dest="report_dir", default="reports")
+
     # --- v1.1.1 Data Import UX & Batch Onboarding ---
     p_idiscover = subparsers.add_parser(
         "import-discover",
@@ -18069,6 +18416,17 @@ def main() -> None:
         "coverage-repair-result":          cmd_coverage_repair_result,
         "coverage-repair-unresolved":      cmd_coverage_repair_unresolved,
         "coverage-repair-source-required": cmd_coverage_repair_source_required,
+        # v1.1.3 Data Freshness Monitor
+        "freshness-scan":           cmd_freshness_scan,
+        "freshness-summary":        cmd_freshness_summary,
+        "freshness-alerts":         cmd_freshness_alerts,
+        "freshness-stale":          cmd_freshness_stale,
+        "freshness-missing":        cmd_freshness_missing,
+        "freshness-source-health":  cmd_freshness_source_health,
+        "freshness-history":        cmd_freshness_history,
+        "freshness-repair-handoff": cmd_freshness_repair_handoff,
+        "freshness-health":         cmd_freshness_health,
+        "freshness-report":         cmd_freshness_report,
         # v1.1.1 Data Import UX & Batch Onboarding
         "import-discover":           cmd_import_discover,
         "import-preview":            cmd_import_preview,

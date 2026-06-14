@@ -167,3 +167,12 @@ v1.1.2 Coverage Repair Workflow uses `UniverseCoverageAnalyzer` and `UniverseSto
 - Displaying before/after coverage statistics
 
 See `docs/coverage_repair_workflow_v1.1.2.md` for full v1.1.2 specification.
+
+## v1.1.3 Integration
+
+v1.1.3 Data Freshness Monitor uses universe tier definitions as the scope for freshness scans:
+- `freshness-scan --tier core10` resolves symbols via `UniverseTierRegistry` (CORE_10, RESEARCH_30, EXPANDED_50, BROAD_100)
+- Universe health check results (READY / PARTIAL / MISSING / INSUFFICIENT) can inform freshness monitoring priorities — symbols in poor coverage states are candidates for elevated freshness alert severity
+- If no universe data is available, freshness scanner logs WARNING and falls back to all-symbol scan (does not crash)
+
+See freshness monitor documentation for full v1.1.3 specification.

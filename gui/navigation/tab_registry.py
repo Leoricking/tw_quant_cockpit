@@ -1368,6 +1368,51 @@ class GUITabRegistry:
                 notes="Added in v1.1.2 — Coverage Repair Workflow.",
             ),
             # ----------------------------------------------------------------
+            # v1.1.3 Data Freshness Monitor
+            # ----------------------------------------------------------------
+            GUITabMetadata(
+                tab_id="data_freshness",
+                tab_name="data_freshness",
+                display_name="Data Freshness Monitor",
+                group="data",
+                priority="P1",
+                description=(
+                    "Data Freshness Monitor v1.1.3 — trading-calendar-aware freshness monitoring, "
+                    "dataset-specific SLAs, stale and interruption detection, refresh prioritization, "
+                    "alert history, coverage repair handoff. "
+                    "Research Only. No Real Orders. Auto download DISABLED."
+                ),
+                module_path="gui.data_freshness_panel",
+                class_name="DataFreshnessPanel",
+                available_flag="_PYSIDE6_AVAILABLE",
+                keywords=[
+                    "freshness", "stale data", "delayed data", "source interruption",
+                    "latest date", "trading day lag", "freshness SLA", "update monitor",
+                    "\u8cc7\u6599\u65b0\u9bae\u5ea6",  # 資料新鮮度
+                    "\u8cc7\u6599\u904e\u671f",          # 資料過期
+                    "\u66f4\u65b0\u5ef6\u9072",          # 更新延遲
+                    "\u8cc7\u6599\u4e2d\u65b7",          # 資料中斷
+                    "\u6700\u5f8c\u66f4\u65b0",          # 最後更新
+                    "\u4ea4\u6613\u65e5\u843d\u5f8c",    # 交易日落後
+                    "\u6bcf\u65e5\u76e3\u63a7",          # 每日監控
+                ],
+                aliases=["freshness", "data-freshness", "stale-monitor"],
+                related_cli_commands=[
+                    "freshness-scan", "freshness-summary", "freshness-alerts",
+                    "freshness-stale", "freshness-missing", "freshness-source-health",
+                    "freshness-history", "freshness-repair-handoff",
+                    "freshness-health", "freshness-report",
+                ],
+                report_types=["data_freshness_report"],
+                maturity="STABLE",
+                default_visible=True,
+                favorite_default=False,
+                no_real_orders=True,
+                read_only=True,
+                production_blocked=True,
+                notes="Added in v1.1.3 — Data Freshness Monitor.",
+            ),
+            # ----------------------------------------------------------------
             # v1.1.0 Data Universe Expansion
             # ----------------------------------------------------------------
             GUITabMetadata(
