@@ -1,9 +1,10 @@
 """
-release/version_info.py — Centralized version info for TW Quant Cockpit v1.1.1.
+release/version_info.py — Centralized version info for TW Quant Cockpit v1.1.2.
 [!] Research Only. No Real Orders. Production Trading: BLOCKED.
 [!] VALIDATED does not enable trading. Broker Execution Disabled.
 [!] Data Universe Expansion. Real Data Coverage Required.
 [!] Data Import UX & Batch Onboarding. dry_run=True default.
+[!] Coverage Repair Workflow. Destructive repair disabled.
 [!] Mock Data Formal Conclusion: DISABLED. Not Investment Advice.
 """
 from __future__ import annotations
@@ -14,12 +15,12 @@ logger = logging.getLogger(__name__)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 # ---------------------------------------------------------------------------
-# v1.1.1 module-level constants (Data Import UX & Batch Onboarding)
+# v1.1.2 module-level constants (Coverage Repair Workflow)
 # ---------------------------------------------------------------------------
-VERSION                             = "1.1.1"
-RELEASE_NAME                        = "Data Import UX & Batch Onboarding"
-BASE_RELEASE                        = "1.1.0 Data Universe Expansion"
-BASE_RELEASE_NAME                   = "Data Universe Expansion"
+VERSION                             = "1.1.2"
+RELEASE_NAME                        = "Coverage Repair Workflow"
+BASE_RELEASE                        = "1.1.1 Data Import UX & Batch Onboarding"
+BASE_RELEASE_NAME                   = "Data Import UX & Batch Onboarding"
 MAINTENANCE_RELEASE                 = False
 RELEASE_STAGE                       = "STABLE"
 RELEASE_TRACK                       = "research"
@@ -57,6 +58,12 @@ DATA_IMPORT_ONBOARDING_RELEASE      = True
 DRY_RUN_DEFAULT                     = True
 DESTRUCTIVE_IMPORT_DISABLED         = True
 CONFLICT_AUTO_OVERWRITE_ENABLED     = False
+# v1.1.2 new flags
+COVERAGE_REPAIR_RELEASE             = True
+DESTRUCTIVE_REPAIR_DISABLED         = True
+SYNTHETIC_OHLC_REPAIR_DISABLED      = True
+INVALID_OHLC_AUTO_MODIFY_DISABLED   = True
+MOCK_DATA_REPAIR_DISABLED           = True
 
 
 class VersionInfo:
@@ -203,6 +210,11 @@ def print_version_info() -> None:
     print(f"  Dry Run Default: {DRY_RUN_DEFAULT}")
     print(f"  Destructive Import Disabled: {DESTRUCTIVE_IMPORT_DISABLED}")
     print(f"  Conflict Auto-Overwrite Enabled: {CONFLICT_AUTO_OVERWRITE_ENABLED}")
+    print(f"  Coverage Repair Release: {COVERAGE_REPAIR_RELEASE}")
+    print(f"  Destructive Repair Disabled: {DESTRUCTIVE_REPAIR_DISABLED}")
+    print(f"  Synthetic OHLC Repair Disabled: {SYNTHETIC_OHLC_REPAIR_DISABLED}")
+    print(f"  Invalid OHLC Auto-Modify Disabled: {INVALID_OHLC_AUTO_MODIFY_DISABLED}")
+    print(f"  Mock Data Repair Disabled: {MOCK_DATA_REPAIR_DISABLED}")
     print("=" * 60)
 
 

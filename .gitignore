@@ -56,8 +56,13 @@ data/import_reports/
 # v1.1.1 Data Import Onboarding runtime reports (generated artifacts)
 reports/data_import_onboarding_report_*.md
 
+# v1.1.2 Coverage Repair runtime results and reports (generated artifacts)
+data/coverage_repair_results/
+reports/coverage_repair_report_*.md
+
 # Fixture files ARE committed (exception)
 !tests/fixtures/import_onboarding/*.csv
+!tests/fixtures/coverage_repair/*.csv
 
 # XQ split export output (generated artifacts)
 data/xq_exports/

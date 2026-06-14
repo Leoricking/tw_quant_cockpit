@@ -5648,7 +5648,7 @@ def cmd_enrich_universe_data(args: argparse.Namespace) -> None:
 # ---------------------------------------------------------------------------
 
 def cmd_version_info(args: argparse.Namespace) -> None:
-    """Print version info for TW Quant Cockpit v1.1.1 (Data Import UX & Batch Onboarding)."""
+    """Print version info for TW Quant Cockpit v1.1.2 (Coverage Repair Workflow)."""
     print("=" * 60)
     print("TW Quant Cockpit \u2014 Version Info")
     print("=" * 60)
@@ -5660,7 +5660,7 @@ def cmd_version_info(args: argparse.Namespace) -> None:
             PAPER_TRADING_IS_SIMULATION, MOCK_REALTIME_IS_SIMULATION,
         )
         import release.version_info as _vi
-        base_release = getattr(_vi, "BASE_RELEASE", "1.1.0 Data Universe Expansion")
+        base_release = getattr(_vi, "BASE_RELEASE", "1.1.1 Data Import UX & Batch Onboarding")
         print(f"{'Version:':<40} {VERSION}")
         print(f"{'Release:':<40} {RELEASE_NAME}")
         print(f"{'Base Release:':<40} {base_release}")
@@ -5671,6 +5671,17 @@ def cmd_version_info(args: argparse.Namespace) -> None:
         print(f"{'Production Trading BLOCKED:':<40} {PRODUCTION_TRADING_BLOCKED}")
         print(f"{'Broker Execution Enabled:':<40} {BROKER_EXECUTION_ENABLED}")
         print(f"{'VALIDATED does not enable trading:':<40} {VALIDATED_DOES_NOT_ENABLE_TRADING}")
+        # v1.1.2 Coverage Repair Workflow fields
+        cr_release   = getattr(_vi, "COVERAGE_REPAIR_RELEASE", False)
+        dest_rep_dis = getattr(_vi, "DESTRUCTIVE_REPAIR_DISABLED", False)
+        syn_dis      = getattr(_vi, "SYNTHETIC_OHLC_REPAIR_DISABLED", False)
+        inv_dis      = getattr(_vi, "INVALID_OHLC_AUTO_MODIFY_DISABLED", False)
+        mock_rep_dis = getattr(_vi, "MOCK_DATA_REPAIR_DISABLED", False)
+        print(f"{'Coverage Repair Release:':<40} {cr_release}")
+        print(f"{'Destructive Repair Disabled:':<40} {dest_rep_dis}")
+        print(f"{'Synthetic OHLC Repair Disabled:':<40} {syn_dis}")
+        print(f"{'Invalid OHLC Auto-Modify Disabled:':<40} {inv_dis}")
+        print(f"{'Mock Data Repair Disabled:':<40} {mock_rep_dis}")
         # v1.1.1 Data Import UX & Batch Onboarding fields
         obd_release  = getattr(_vi, "DATA_IMPORT_ONBOARDING_RELEASE", False)
         dry_run_def  = getattr(_vi, "DRY_RUN_DEFAULT", False)
@@ -5699,13 +5710,13 @@ def cmd_version_info(args: argparse.Namespace) -> None:
         print(f"{'Paper Trading:':<40} {'Simulation Only' if PAPER_TRADING_IS_SIMULATION else 'Real'}")
         print(f"{'Mock Realtime:':<40} {'Simulation Only' if MOCK_REALTIME_IS_SIMULATION else 'Real'}")
     except Exception as exc:
-        print(f"  Version:                              1.1.1")
-        print(f"  Release:                              Data Import UX & Batch Onboarding")
-        print(f"  Base Release:                         1.1.0 Data Universe Expansion")
-        print(f"  Data Import Onboarding Release:       True")
-        print(f"  Dry Run Default:                      True")
-        print(f"  Destructive Import Disabled:          True")
-        print(f"  Conflict Auto-Overwrite Enabled:      False")
+        print(f"  Version:                              1.1.2")
+        print(f"  Release:                              Coverage Repair Workflow")
+        print(f"  Base Release:                         1.1.1 Data Import UX & Batch Onboarding")
+        print(f"  Coverage Repair Release:              True")
+        print(f"  Destructive Repair Disabled:          True")
+        print(f"  Synthetic OHLC Repair Disabled:       True")
+        print(f"  Invalid OHLC Auto-Modify Disabled:    True")
         print(f"  (version_info import error: {exc})")
     print("=" * 60)
     print("RESEARCH ONLY \u2014 Not Investment Advice \u2014 No Real Orders")
@@ -10571,6 +10582,200 @@ def cmd_import_onboarding_report(args):
         print("[!] Research Only. No Real Orders.")
     except Exception as exc:
         print(f"  [ERROR] import-onboarding-report failed: {exc}")
+
+
+# ---------------------------------------------------------------------------
+# v1.1.2 Coverage Repair Workflow handlers
+# ---------------------------------------------------------------------------
+
+def cmd_coverage_repair_detect(args):
+    """Detect coverage issues across all symbols. Research Only. No Real Orders."""
+    from coverage_repair.issue_detector import CoverageIssueDetector
+    symbol = getattr(args, "symbol", None)
+    symbols = [symbol] if symbol else None
+    print("=" * 60)
+    print("TW Quant Cockpit \u2014 Coverage Repair — Issue Detection")
+    print("Research Only: True | No Real Orders: True | Read-Only Detection")
+    print("=" * 60)
+    try:
+        detector = CoverageIssueDetector()
+        issues = detector.detect_all(symbols=symbols)
+        from collections import Counter
+        type_counts = Counter(i.issue_type for i in issues)
+        print(f"Symbols scanned: {'all' if symbols is None else symbols}")
+        print(f"Total issues:    {len(issues)}")
+        print(f"By type:         {dict(type_counts)}")
+        print()
+        for issue in issues[:30]:
+            print(f"  [{issue.issue_type:<13}] {issue.symbol}/{issue.dataset} "
+                  f"| rows={issue.row_count} | {issue.description[:70]}")
+        if len(issues) > 30:
+            print(f"  ... ({len(issues) - 30} more)")
+        print("[!] Research Only. No Real Orders.")
+    except Exception as exc:
+        print(f"  [ERROR] coverage-repair-detect failed: {exc}")
+
+
+def cmd_coverage_repair_plan(args):
+    """Build coverage repair plan (dry-run). Research Only. No Real Orders."""
+    from coverage_repair.repair_planner import CoverageRepairPlanner
+    from coverage_repair.repair_store import RepairStore
+    symbol = getattr(args, "symbol", None)
+    symbols = [symbol] if symbol else None
+    dry_run = True
+    print("=" * 60)
+    print("TW Quant Cockpit \u2014 Coverage Repair — Build Plan")
+    print("Research Only: True | No Real Orders: True | dry_run=True")
+    print("[!] INVALID OHLC -> BLOCKED. CONFLICT -> MANUAL_REVIEW.")
+    print("=" * 60)
+    try:
+        planner = CoverageRepairPlanner()
+        plan = planner.build_plan(symbols=symbols, dry_run=dry_run)
+        store = RepairStore()
+        store.save_plan(plan)
+        print(f"Plan ID:          {plan.plan_id}")
+        print(f"Total Issues:     {plan.total_issues}")
+        print(f"Total Tasks:      {plan.total_tasks}")
+        print(f"P0 (Critical):    {plan.p0_count}")
+        print(f"P1 (High):        {plan.p1_count}")
+        print(f"P2 (Medium):      {plan.p2_count}")
+        print(f"P3 (Low):         {plan.p3_count}")
+        print(f"AUTO_SAFE:        {plan.auto_safe_count}")
+        print(f"MANUAL_REVIEW:    {plan.manual_review_count}")
+        print(f"SOURCE_REQUIRED:  {plan.source_required_count}")
+        print(f"BLOCKED:          {plan.blocked_count}")
+        print()
+        for task in plan.tasks[:20]:
+            print(f"  [{task.priority}][{task.action:<16}] {task.symbol}/{task.dataset} "
+                  f"| {task.issue_type}")
+        if len(plan.tasks) > 20:
+            print(f"  ... ({len(plan.tasks) - 20} more)")
+        print("[!] Research Only. No Real Orders.")
+    except Exception as exc:
+        print(f"  [ERROR] coverage-repair-plan failed: {exc}")
+
+
+def cmd_coverage_repair_execute(args):
+    """Execute coverage repair plan (dry-run by default). Research Only. No Real Orders."""
+    from coverage_repair.repair_planner import CoverageRepairPlanner
+    from coverage_repair.repair_executor import CoverageRepairExecutor
+    from coverage_repair.repair_store import RepairStore
+    allow_write = getattr(args, "allow_write", False)
+    symbol = getattr(args, "symbol", None)
+    symbols = [symbol] if symbol else None
+    dry_run = not allow_write
+    print("=" * 60)
+    print("TW Quant Cockpit \u2014 Coverage Repair — Execute")
+    print(f"Research Only: True | No Real Orders: True | dry_run={dry_run}")
+    print("[!] REPLACE_EXPLICIT disabled. INVALID -> BLOCKED. CONFLICT -> MANUAL.")
+    print("=" * 60)
+    try:
+        store = RepairStore()
+        plan = store.load_latest_plan()
+        if plan is None:
+            planner = CoverageRepairPlanner()
+            plan = planner.build_plan(symbols=symbols, dry_run=dry_run)
+            store.save_plan(plan)
+        executor = CoverageRepairExecutor()
+        summary = executor.execute(plan, allow_write=allow_write)
+        store.save_summary(summary)
+        print(f"Plan ID:       {summary.plan_id}")
+        print(f"Dry Run:       {summary.dry_run}")
+        print(f"Total Tasks:   {summary.total_tasks}")
+        print(f"Succeeded:     {summary.succeeded}")
+        print(f"Partial:       {summary.partial}")
+        print(f"Failed:        {summary.failed}")
+        print(f"Skipped:       {summary.skipped}")
+        print(f"Blocked:       {summary.blocked}")
+        print(f"Manual Review: {summary.manual_review}")
+        print()
+        for r in summary.results[:20]:
+            print(f"  [{r.status:<10}] {r.symbol}/{r.dataset} | {r.issue_type} "
+                  f"| before={r.rows_before} after={r.rows_after} removed={r.rows_removed}")
+        if summary.failed > 0:
+            print()
+            print("  Some tasks failed. Run 'coverage-repair-retry' to build retry plan.")
+        print("[!] Research Only. No Real Orders.")
+    except Exception as exc:
+        print(f"  [ERROR] coverage-repair-execute failed: {exc}")
+
+
+def cmd_coverage_repair_health(args):
+    """Run coverage repair health check. Research Only. No Real Orders."""
+    from coverage_repair.repair_health import CoverageRepairHealthCheck
+    print("=" * 60)
+    print("TW Quant Cockpit \u2014 Coverage Repair Health Check")
+    print("Research Only: True | No Real Orders: True")
+    print("=" * 60)
+    try:
+        checker = CoverageRepairHealthCheck()
+        result = checker.run()
+        total  = result["total"]
+        passed = result["passed"]
+        warned = result["warned"]
+        failed = result["failed"]
+        print(f"Total:   {total}")
+        print(f"Passed:  {passed}")
+        print(f"Warned:  {warned}")
+        print(f"Failed:  {failed}")
+        print(f"Overall: {result['overall']}")
+        print()
+        for check, status in result["results"].items():
+            icon = {"PASS": "[PASS]", "WARN": "[WARN]", "FAIL": "[FAIL]"}.get(status, "[?]")
+            print(f"  {icon} {check}")
+        print("[!] Research Only. No Real Orders.")
+    except Exception as exc:
+        print(f"  [ERROR] coverage-repair-health failed: {exc}")
+
+
+def cmd_coverage_repair_report(args):
+    """Build Coverage Repair Report. Research Only. No Real Orders."""
+    from reports.coverage_repair_report import CoverageRepairReportBuilder
+    from coverage_repair.repair_store import RepairStore
+    mode = getattr(args, "mode", "real") or "real"
+    print("=" * 60)
+    print("TW Quant Cockpit \u2014 Coverage Repair Report")
+    print(f"Research Only: True | No Real Orders: True")
+    print("=" * 60)
+    try:
+        store = RepairStore()
+        plan = store.load_latest_plan()
+        summary = store.load_latest_summary()
+        builder = CoverageRepairReportBuilder(plan=plan, summary=summary, mode=mode)
+        path = builder.save()
+        print(f"  Report saved to: {path}")
+        print("[!] Research Only. No Real Orders.")
+    except Exception as exc:
+        print(f"  [ERROR] coverage-repair-report failed: {exc}")
+
+
+def cmd_coverage_repair_retry(args):
+    """Build retry manifest from failed coverage repairs. Research Only. No Real Orders."""
+    from coverage_repair.repair_store import RepairStore
+    from coverage_repair.repair_retry_manifest import RepairRetryManifestBuilder
+    print("=" * 60)
+    print("TW Quant Cockpit \u2014 Coverage Repair Retry Manifest")
+    print("Research Only: True | No Real Orders: True | dry_run=True")
+    print("=" * 60)
+    try:
+        store = RepairStore()
+        summary = store.load_latest_summary()
+        if summary is None:
+            print("  No repair summary found. Run 'coverage-repair-execute' first.")
+            return
+        builder = RepairRetryManifestBuilder()
+        manifest = builder.build(summary)
+        if not manifest.failed_tasks:
+            print("  No failed tasks in latest repair. Nothing to retry.")
+        else:
+            path = builder.save(manifest)
+            print(f"  Manifest ID:     {manifest.manifest_id}")
+            print(f"  Failed tasks:    {len(manifest.failed_tasks)}")
+            print(f"  Failed symbols:  {manifest.failed_symbols}")
+            print(f"  Saved to:        {path}")
+        print("[!] Research Only. No Real Orders.")
+    except Exception as exc:
+        print(f"  [ERROR] coverage-repair-retry failed: {exc}")
 
 
 # ---------------------------------------------------------------------------
@@ -15943,6 +16148,44 @@ def _build_parser() -> argparse.ArgumentParser:
     )
     p_lae.add_argument("--answer-id", dest="answer_id", default="")
 
+    # --- v1.1.2 Coverage Repair Workflow ---
+    p_crd = subparsers.add_parser(
+        "coverage-repair-detect",
+        help="[v1.1.2] Detect coverage issues. [!] Research Only. No Real Orders.",
+    )
+    p_crd.add_argument("--symbol", default=None, help="Single symbol to scan (default: all)")
+
+    p_crp = subparsers.add_parser(
+        "coverage-repair-plan",
+        help="[v1.1.2] Build coverage repair plan (dry-run). [!] Research Only. No Real Orders.",
+    )
+    p_crp.add_argument("--symbol", default=None, help="Single symbol to plan (default: all)")
+
+    p_cre = subparsers.add_parser(
+        "coverage-repair-execute",
+        help="[v1.1.2] Execute repair plan (dry-run by default). [!] Research Only.",
+    )
+    p_cre.add_argument("--symbol", default=None, help="Single symbol (default: all)")
+    p_cre.add_argument("--allow-write", dest="allow_write", action="store_true", default=False,
+                       help="Allow AUTO_SAFE repairs to write data (default: dry-run)")
+
+    subparsers.add_parser(
+        "coverage-repair-health",
+        help="[v1.1.2] Run coverage repair health check. [!] Research Only. No Real Orders.",
+    )
+
+    p_crr = subparsers.add_parser(
+        "coverage-repair-report",
+        help="[v1.1.2] Build Coverage Repair Report. [!] Research Only. No Real Orders.",
+    )
+    p_crr.add_argument("--mode", default="real", choices=["real", "mock"],
+                       help="Report mode (default: real)")
+
+    subparsers.add_parser(
+        "coverage-repair-retry",
+        help="[v1.1.2] Build retry manifest from failed repair tasks. [!] Research Only.",
+    )
+
     # --- v1.1.1 Data Import UX & Batch Onboarding ---
     p_idiscover = subparsers.add_parser(
         "import-discover",
@@ -17444,6 +17687,13 @@ def main() -> None:
         "local-assistant-health":  cmd_local_assistant_health,
         "local-assistant-report":  cmd_local_assistant_report,
         "local-assistant-explain": cmd_local_assistant_explain,
+        # v1.1.2 Coverage Repair Workflow
+        "coverage-repair-detect":  cmd_coverage_repair_detect,
+        "coverage-repair-plan":    cmd_coverage_repair_plan,
+        "coverage-repair-execute": cmd_coverage_repair_execute,
+        "coverage-repair-health":  cmd_coverage_repair_health,
+        "coverage-repair-report":  cmd_coverage_repair_report,
+        "coverage-repair-retry":   cmd_coverage_repair_retry,
         # v1.1.1 Data Import UX & Batch Onboarding
         "import-discover":           cmd_import_discover,
         "import-preview":            cmd_import_preview,

@@ -575,6 +575,15 @@ try:
 except Exception:
     pass
 
+# v1.1.2 Coverage Repair panel — optional
+# ---------------------------------------------------------------------------
+_COVERAGE_REPAIR_AVAILABLE = False
+try:
+    from gui.coverage_repair_panel import CoverageRepairPanel
+    _COVERAGE_REPAIR_AVAILABLE = True
+except Exception:
+    pass
+
 # v0.5.1.1 Strategy Filter panel — inline (no separate panel file required)
 # ---------------------------------------------------------------------------
 _STRATEGY_FILTER_AVAILABLE = False
@@ -1808,6 +1817,24 @@ class CockpitWindow(QMainWindow if _PYSIDE6_AVAILABLE else object):
             _sf_layout.addWidget(_sf_label)
             _sf_layout.addStretch()
             mid_tabs.addTab(_sf_widget, "Strategy Filter")
+
+        # v1.1.1 Data Import & Batch Onboarding tab
+        if _IMPORT_ONBOARDING_AVAILABLE:
+            self._import_onboarding_panel = ImportOnboardingPanel(
+                mode=self._mode if hasattr(self, "_mode") else "real"
+            )
+            mid_tabs.addTab(self._import_onboarding_panel, "Data Import & Onboarding")
+        else:
+            self._import_onboarding_panel = None
+
+        # v1.1.2 Coverage Repair tab
+        if _COVERAGE_REPAIR_AVAILABLE:
+            self._coverage_repair_panel = CoverageRepairPanel(
+                mode=self._mode if hasattr(self, "_mode") else "real"
+            )
+            mid_tabs.addTab(self._coverage_repair_panel, "Coverage Repair")
+        else:
+            self._coverage_repair_panel = None
 
         h_split.addWidget(mid_tabs)
         h_split.setStretchFactor(0, 3)
