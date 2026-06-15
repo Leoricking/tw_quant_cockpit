@@ -1,0 +1,13 @@
+{
+  "journal_entry_id": "DJR-20260616-FORBIDDEN001",
+  "session_id": "RPL-TEST-SESSION-BAD",
+  "replay_date": "2026-06-10",
+  "symbol": "TSLA",
+  "action": "BUY",
+  "confidence": 70,
+  "status": "RECORDED",
+  "simulation_only": true,
+  "_comment": "THIS FIXTURE CONTAINS FORBIDDEN FIELDS — used to test import/validation rejection",
+  "future_return": 0.15,
+  "future_max_gain": 500.0
+}

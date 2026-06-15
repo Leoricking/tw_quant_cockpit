@@ -459,3 +459,15 @@ reports/replay_scenario_session_manager_report_*.md
 !tests/fixtures/replay_manager/*.json
 !tests/fixtures/replay_manager/*.jsonl
 !replay/templates/*.json
+
+# v1.2.2 Decision Journal Integration (runtime outputs — never commit)
+data/replay_journal/
+reports/replay_decision_journal_report_*.md
+reports/replay_decision_journal_summary_report_*.md
+
+# v1.2.2 Decision Journal fixtures ARE committed (exception)
+!tests/fixtures/replay_journal/*.json
+!tests/fixtures/replay_journal/*.jsonl
+
+# v1.2.2 Journal templates ARE committed (exception)
+!replay/journal_templates/*.json

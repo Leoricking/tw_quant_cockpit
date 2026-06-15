@@ -1,0 +1,14 @@
+{
+  "template_name": "wait_confirmation",
+  "display_name": "Wait for Confirmation Check",
+  "setup_type": "FREE_FORM",
+  "time_horizon": "UNDEFINED",
+  "checklist_items": [
+    {"id": "WCF_01", "category": "DISCIPLINE", "text": "Identified the confirmation signal to wait for?", "required": true},
+    {"id": "WCF_02", "category": "EMOTION", "text": "Able to wait without acting prematurely?", "required": true},
+    {"id": "WCF_03", "category": "DATA", "text": "Confirmation criteria are objective, not subjective?", "required": true}
+  ],
+  "pre_decision_prompts": ["What confirmation are you waiting for?", "What is the exact trigger?"],
+  "post_decision_prompts": ["Did confirmation arrive?", "How long did you wait?"],
+  "simulation_only": true
+}

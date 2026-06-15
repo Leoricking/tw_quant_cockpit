@@ -1,0 +1,15 @@
+{
+  "template_name": "no_chase",
+  "display_name": "No-Chase Discipline Check",
+  "setup_type": "NO_CHASE",
+  "time_horizon": "INTRADAY",
+  "checklist_items": [
+    {"id": "NCH_01", "category": "DISCIPLINE", "text": "Price has NOT extended more than 3% from ideal entry?", "required": true},
+    {"id": "NCH_02", "category": "EMOTION", "text": "Decision is NOT driven by FOMO?", "required": true},
+    {"id": "NCH_03", "category": "RISK", "text": "Risk/reward still acceptable at current price?", "required": true},
+    {"id": "NCH_04", "category": "DISCIPLINE", "text": "Willing to SKIP if conditions not met?", "required": true}
+  ],
+  "pre_decision_prompts": ["Is this chasing? How far from ideal entry?", "Is FOMO present?"],
+  "post_decision_prompts": ["Did you skip the chase? Was that the right call?"],
+  "simulation_only": true
+}

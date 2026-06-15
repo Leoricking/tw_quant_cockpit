@@ -1,0 +1,26 @@
+{
+  "_meta": {
+    "export_version": "1.2.2",
+    "exported_at": "2026-06-16T00:00:00+00:00",
+    "simulation_only": true,
+    "no_real_orders": true
+  },
+  "entries": [
+    {
+      "journal_entry_id": "DJR-20260616-IMP001",
+      "session_id": "RPL-IMPORT-SESSION",
+      "replay_date": "2026-06-14",
+      "symbol": "IWM",
+      "action": "BUY",
+      "setup_type": "PULLBACK",
+      "time_horizon": "SWING",
+      "confidence": 68,
+      "status": "RECORDED",
+      "decision_reason": "Small-cap pullback to support with base formation.",
+      "tags": ["import_test", "pullback"],
+      "simulation_only": true,
+      "created_at": "2026-06-16T00:00:00+00:00"
+    }
+  ],
+  "revisions": []
+}

@@ -1,0 +1,14 @@
+{
+  "revision_id": "DREV-20260616-REV003",
+  "journal_entry_id": "DJR-20260616-FIN002",
+  "revision_number": 3,
+  "reason": "Revising target up due to strong breakout above resistance.",
+  "field_changed": "target_price",
+  "confidence_before": 60,
+  "confidence_after": 72,
+  "value_before": "428.00",
+  "value_after": "435.00",
+  "notes": "Price broke through prior resistance cleanly, extending target.",
+  "simulation_only": true,
+  "created_at": "2026-06-16T03:00:00+00:00"
+}

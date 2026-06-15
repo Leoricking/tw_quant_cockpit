@@ -31,6 +31,8 @@ from report_pack.report_pack_schema import (
     REPORT_TRAINING_METRICS,
     REPORT_EVIDENCE_GRAPH,
     REPORT_STRATEGY_LAB_STABLE,
+    REPORT_REPLAY_DECISION_JOURNAL,
+    REPORT_REPLAY_DECISION_JOURNAL_SUMMARY,
     OPTIONAL_REPORT_TYPES, ENV_LIMITED_REPORT_TYPES,
 )
 # v0.9.0.1 crash reversal; v1.0.0 research cockpit stable; v1.0.2 hygiene; v1.0.7 kb search
@@ -235,6 +237,14 @@ _REPORT_PATTERNS = {
         "reports/strategy_lab_stable_report_*.md",
         "data/backtest_results/strategy_lab/strategy_lab_summary_*.csv",
         "data/backtest_results/strategy_lab/strategy_lab_release_manifest_*.json",
+    ],
+    # v1.2.2 Decision Journal Integration
+    REPORT_REPLAY_DECISION_JOURNAL: [
+        "reports/replay_decision_journal_report_*.md",
+        "data/replay_journal/journal_entries.jsonl",
+    ],
+    REPORT_REPLAY_DECISION_JOURNAL_SUMMARY: [
+        "reports/replay_decision_journal_summary_report_*.md",
     ],
     # v0.9.0.1 Crash Reversal & Risk Discipline Strategy Pack
     REPORT_CRASH_REVERSAL: [

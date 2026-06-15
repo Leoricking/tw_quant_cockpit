@@ -1,0 +1,17 @@
+{
+  "journal_entry_id": "DJR-20260616-CMP-A",
+  "session_id": "RPL-TEST-SESSION-CMP",
+  "replay_date": "2026-06-12",
+  "symbol": "SPY",
+  "action": "BUY",
+  "setup_type": "BREAKOUT",
+  "time_horizon": "INTRADAY",
+  "confidence": 72,
+  "status": "RECORDED",
+  "decision_reason": "Morning breakout above VWAP with strong breadth.",
+  "pre_decision_notes": "Market showing strength early, breadth positive.",
+  "post_decision_notes": null,
+  "tags": ["breakout", "vwap", "morning"],
+  "simulation_only": true,
+  "created_at": "2026-06-16T00:00:00+00:00"
+}

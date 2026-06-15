@@ -1,0 +1,16 @@
+{
+  "template_name": "pullback",
+  "display_name": "Pullback Entry Journal",
+  "setup_type": "PULLBACK",
+  "time_horizon": "SHORT",
+  "checklist_items": [
+    {"id": "PLB_01", "category": "SETUP", "text": "Primary trend still intact?", "required": true},
+    {"id": "PLB_02", "category": "ENTRY", "text": "Buying at support/MA, not middle of range?", "required": true},
+    {"id": "PLB_03", "category": "RISK", "text": "Stop below pullback low defined?", "required": true},
+    {"id": "PLB_04", "category": "EMOTION", "text": "Not averaging down into weakness?", "required": true},
+    {"id": "PLB_05", "category": "DISCIPLINE", "text": "Pullback shallow (< 50% of prior move)?", "required": false}
+  ],
+  "pre_decision_prompts": ["What is the primary trend direction?", "Where is the pullback support?"],
+  "post_decision_prompts": ["Did pullback hold support?", "What was your entry signal?"],
+  "simulation_only": true
+}

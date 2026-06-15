@@ -1406,6 +1406,35 @@ class ResearchCockpitStableChecklist:
         except Exception as exc:
             checks.append(_mk("replay_scenario_trade_exec_disabled_v121", "replay_scenario_session_manager", "WARN", str(exc)))
 
+        # v1.2.2 Decision Journal Integration checks
+        try:
+            from replay.decision_journal_schema import (
+                DecisionJournalEntry, JOURNAL_ID_PREFIX, REVISION_ID_PREFIX
+            )
+            checks.append(_mk("decision_journal_schema_available", "decision_journal",
+                              "PASS", f"JOURNAL_ID_PREFIX={JOURNAL_ID_PREFIX}, REVISION_ID_PREFIX={REVISION_ID_PREFIX}"))
+        except Exception as exc:
+            checks.append(_mk("decision_journal_schema_available", "decision_journal", "WARN", str(exc)))
+        try:
+            from replay.decision_journal_manager import DecisionJournalManager
+            checks.append(_mk("decision_journal_manager_available", "decision_journal",
+                              "PASS", "DecisionJournalManager available"))
+        except Exception as exc:
+            checks.append(_mk("decision_journal_manager_available", "decision_journal", "WARN", str(exc)))
+        try:
+            from release.version_info import (
+                DECISION_JOURNAL_AVAILABLE, DECISION_AUTO_SCORING_ENABLED,
+                DECISION_AUTO_EXECUTION_ENABLED
+            )
+            ok = DECISION_JOURNAL_AVAILABLE and not DECISION_AUTO_SCORING_ENABLED and not DECISION_AUTO_EXECUTION_ENABLED
+            checks.append(_mk("decision_journal_flags_v122", "decision_journal",
+                              "PASS" if ok else "FAIL",
+                              f"DECISION_JOURNAL_AVAILABLE={DECISION_JOURNAL_AVAILABLE}, "
+                              f"DECISION_AUTO_SCORING_ENABLED={DECISION_AUTO_SCORING_ENABLED}, "
+                              f"DECISION_AUTO_EXECUTION_ENABLED={DECISION_AUTO_EXECUTION_ENABLED}"))
+        except Exception as exc:
+            checks.append(_mk("decision_journal_flags_v122", "decision_journal", "WARN", str(exc)))
+
         # Rebuild summary counts to include new checks
         total         = len(checks)
         pass_count    = sum(1 for c in checks if c["status"] == "PASS")

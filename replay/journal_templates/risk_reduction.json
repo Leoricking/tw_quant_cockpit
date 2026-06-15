@@ -1,0 +1,15 @@
+{
+  "template_name": "risk_reduction",
+  "display_name": "Risk Reduction Journal",
+  "setup_type": "RISK_REDUCTION",
+  "time_horizon": "INTRADAY",
+  "checklist_items": [
+    {"id": "RSK_01", "category": "RISK", "text": "Risk reduction is planned, not panic?", "required": true},
+    {"id": "RSK_02", "category": "DISCIPLINE", "text": "Following predetermined stop or plan?", "required": true},
+    {"id": "RSK_03", "category": "EMOTION", "text": "Emotional state assessed before action?", "required": true},
+    {"id": "RSK_04", "category": "EXIT", "text": "Exit size proportional to risk concern?", "required": false}
+  ],
+  "pre_decision_prompts": ["What triggered the risk reduction decision?", "Is this the plan or a reaction?"],
+  "post_decision_prompts": ["Was risk reduction executed calmly?", "Did it follow the plan?"],
+  "simulation_only": true
+}

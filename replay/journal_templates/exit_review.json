@@ -1,0 +1,14 @@
+{
+  "template_name": "exit_review",
+  "display_name": "Exit Decision Review",
+  "setup_type": "FREE_FORM",
+  "time_horizon": "UNDEFINED",
+  "checklist_items": [
+    {"id": "EXT_01", "category": "EXIT", "text": "Exit followed the original plan or updated plan?", "required": true},
+    {"id": "EXT_02", "category": "DISCIPLINE", "text": "Exit was NOT driven by panic or greed?", "required": true},
+    {"id": "EXT_03", "category": "REVIEW", "text": "Lessons identified for future decisions?", "required": false}
+  ],
+  "pre_decision_prompts": ["What is the exit reason?", "Does exit follow the original risk plan?"],
+  "post_decision_prompts": ["What happened after exit?", "What would you do differently?"],
+  "simulation_only": true
+}

@@ -1,0 +1,14 @@
+{
+  "journal_entry_id": "DJR-20260616-FORBIDDEN002",
+  "session_id": "RPL-TEST-SESSION-BAD",
+  "replay_date": "2026-06-10",
+  "symbol": "GOOGL",
+  "action": "SELL",
+  "confidence": 60,
+  "status": "RECORDED",
+  "simulation_only": true,
+  "_comment": "THIS FIXTURE CONTAINS FORBIDDEN FIELDS — realized_return and pnl must be blocked",
+  "realized_return": 0.08,
+  "pnl": 2400.0,
+  "win_rate": 0.65
+}

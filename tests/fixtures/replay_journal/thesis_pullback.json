@@ -1,0 +1,14 @@
+{
+  "thesis_id": "THESIS-TEST-001",
+  "journal_entry_id": "DJR-20260616-FIN002",
+  "setup_type": "PULLBACK",
+  "time_horizon": "SWING",
+  "symbol": "MSFT",
+  "entry_trigger": "Touch of 20-day MA with declining volume",
+  "market_context": "Uptrend intact, broad market neutral",
+  "key_levels": "Support: 415.00, Resistance: 430.00",
+  "invalidation": "Close below 20-day MA on high volume",
+  "notes": "High-quality pullback setup in a strong uptrend.",
+  "simulation_only": true,
+  "created_at": "2026-06-16T00:00:00+00:00"
+}

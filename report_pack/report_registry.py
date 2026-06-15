@@ -113,6 +113,15 @@ REPORT_GOVERNANCE_STORE_INVENTORY      = "governance_store_inventory_report"
 REPORT_GOVERNANCE_STORE_VALIDATION     = "governance_store_validation_report"
 REPORT_GOVERNANCE_ROLLUP_HISTORY       = "governance_rollup_history"
 
+# v1.2.0 Replay Training UX Foundation
+REPORT_REPLAY_TRAINING_SESSION         = "replay_training_session_report"
+REPORT_REPLAY_SCENARIO_LIBRARY         = "replay_scenario_library_report"
+REPORT_REPLAY_SESSION_MANAGER          = "replay_session_manager_report"
+
+# v1.2.2 Decision Journal Integration
+REPORT_REPLAY_DECISION_JOURNAL         = "replay_decision_journal_report"
+REPORT_REPLAY_DECISION_JOURNAL_SUMMARY = "replay_decision_journal_summary_report"
+
 logger = logging.getLogger(__name__)
 
 # ---------------------------------------------------------------------------
@@ -361,6 +370,9 @@ _PACK_DEFINITIONS: Dict[str, List[str]] = {
         REPORT_GOVERNANCE_STORE_INVENTORY,
         REPORT_GOVERNANCE_STORE_VALIDATION,
         REPORT_GOVERNANCE_ROLLUP_HISTORY,
+        # v1.2.2 Decision Journal Integration (optional in full pack)
+        REPORT_REPLAY_DECISION_JOURNAL,
+        REPORT_REPLAY_DECISION_JOURNAL_SUMMARY,
     ],
 }
 

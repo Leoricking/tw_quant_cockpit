@@ -1,0 +1,17 @@
+{
+  "journal_entry_id": "DJR-20260616-CMP-B",
+  "session_id": "RPL-TEST-SESSION-CMP",
+  "replay_date": "2026-06-12",
+  "symbol": "SPY",
+  "action": "WAIT",
+  "setup_type": "NO_SETUP",
+  "time_horizon": "INTRADAY",
+  "confidence": 35,
+  "status": "RECORDED",
+  "decision_reason": "Similar morning setup but breadth was negative. Decided to wait.",
+  "pre_decision_notes": "Market attempting breakout but breadth not confirming.",
+  "post_decision_notes": null,
+  "tags": ["wait", "no_confirm", "morning"],
+  "simulation_only": true,
+  "created_at": "2026-06-16T00:30:00+00:00"
+}

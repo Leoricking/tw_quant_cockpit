@@ -91,6 +91,16 @@
 | v1.1.9 | Data Governance Stable Rollup | Done |
 | v1.2.0 | Replay Training UX Foundation | Done |
 | v1.2.1 | Replay Scenario & Session Manager | Done |
+| v1.2.2 | Decision Journal Integration | Done |
+
+---
+
+### v1.2.2 — Decision Journal Integration ✅
+
+- **Version:** 1.2.2 — Decision Journal Integration
+- **Type:** Trade thesis capture, risk plan capture, emotional state capture (self-reported, 0-100, no psychological diagnosis), discipline checklists, append-only decision revisions (DREV- prefix), DJR- prefixed journal entries, session/scenario/checkpoint linkage, export/import with dry-run-by-default and execute+allow-write guard, GUI panels, CLI commands, regression tests.
+- **Changes:** replay/ new files (decision_journal_schema, decision_journal_store, decision_journal_manager, decision_journal_query, decision_templates, discipline_checklist, emotional_state, cognitive_bias, decision_revision, decision_comparator, decision_journal_summary, decision_journal_portability, decision_journal_health), replay/journal_templates/ (8 JSON templates), gui/ new files (replay_decision_journal_panel, replay_decision_journal_adapter, replay_journal_editor_dialog, replay_thesis_editor, replay_risk_plan_editor, replay_emotional_state_editor, replay_discipline_checklist_dialog, replay_journal_revision_dialog, replay_journal_compare_dialog), reports/ new files (replay_decision_journal_report, replay_decision_journal_summary_report), 25 new CLI commands, tests/fixtures/replay_journal/ (24 fixtures), tests/test_replay_decision_journal_regression.py (24 test cases), release/version_info.py v1.2.2 flags, docs (replay_decision_journal_v1.2.2.md, replay_decision_journal_templates.md, replay_discipline_and_emotion_guide.md, release_notes_v1.2.md v1.2.2 section)
+- **Safety:** Forbidden fields (realized_return, future_return, hindsight_score, final_result) raise ValueError; Forbidden summary stats (win_rate, pnl, alpha, sharpe) raise ValueError; Archived entries immutable; Import requires dry_run=False AND allow_write=True; Emotional state self_reported=True invariant; 0-100 range enforced; Cognitive bias only KNOWN_BIASES accepted; DECISION_AUTO_SCORING_ENABLED=False; DECISION_AUTO_GENERATION_ENABLED=False; DECISION_AUTO_EXECUTION_ENABLED=False; REPLAY_TRADE_EXECUTION_ENABLED=False; No Real Orders; Broker Disabled; Not Investment Advice
 
 ---
 

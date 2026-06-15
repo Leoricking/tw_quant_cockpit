@@ -368,6 +368,15 @@ class ReplayDecision:
     research_only: bool = True
     no_real_orders: bool = True
     simulation_decision_only: bool = True
+    # v1.2.2 journal fields — all with defaults for backward compat
+    journal_entry_id: Optional[str] = None
+    thesis_id: Optional[str] = None
+    risk_plan_id: Optional[str] = None
+    emotional_state_id: Optional[str] = None
+    checklist_ids: List[str] = field(default_factory=list)
+    revision_count: int = 0
+    latest_revision_id: Optional[str] = None
+    simulation_only: bool = True
 
     def to_dict(self) -> Dict[str, Any]:
         return {
@@ -390,6 +399,15 @@ class ReplayDecision:
             "research_only": True,
             "no_real_orders": True,
             "simulation_decision_only": True,
+            # v1.2.2 fields
+            "journal_entry_id": self.journal_entry_id,
+            "thesis_id": self.thesis_id,
+            "risk_plan_id": self.risk_plan_id,
+            "emotional_state_id": self.emotional_state_id,
+            "checklist_ids": self.checklist_ids,
+            "revision_count": self.revision_count,
+            "latest_revision_id": self.latest_revision_id,
+            "simulation_only": True,
         }
 
     @classmethod
@@ -414,6 +432,15 @@ class ReplayDecision:
             research_only=True,
             no_real_orders=True,
             simulation_decision_only=True,
+            # v1.2.2 fields — graceful defaults for old decisions
+            journal_entry_id=d.get("journal_entry_id"),
+            thesis_id=d.get("thesis_id"),
+            risk_plan_id=d.get("risk_plan_id"),
+            emotional_state_id=d.get("emotional_state_id"),
+            checklist_ids=d.get("checklist_ids", []),
+            revision_count=int(d.get("revision_count", 0)),
+            latest_revision_id=d.get("latest_revision_id"),
+            simulation_only=True,
         )
 
 

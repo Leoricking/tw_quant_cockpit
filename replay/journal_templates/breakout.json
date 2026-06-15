@@ -1,0 +1,16 @@
+{
+  "template_name": "breakout",
+  "display_name": "Breakout Entry Journal",
+  "setup_type": "BREAKOUT",
+  "time_horizon": "SHORT",
+  "checklist_items": [
+    {"id": "BRK_01", "category": "SETUP", "text": "Price breaking above key resistance with volume?", "required": true},
+    {"id": "BRK_02", "category": "ENTRY", "text": "Entry on confirmed breakout, not anticipation?", "required": true},
+    {"id": "BRK_03", "category": "RISK", "text": "Stop below breakout level defined?", "required": true},
+    {"id": "BRK_04", "category": "EMOTION", "text": "Not chasing extended breakout?", "required": true},
+    {"id": "BRK_05", "category": "DISCIPLINE", "text": "Is this a planned setup, not impulse?", "required": false}
+  ],
+  "pre_decision_prompts": ["What level is breaking out?", "What is the volume confirmation?"],
+  "post_decision_prompts": ["Did price confirm above resistance?", "What was your entry trigger?"],
+  "simulation_only": true
+}

@@ -1,0 +1,15 @@
+{
+  "_comment": "INVALID: Revision attempting to modify ARCHIVED entry — must be blocked",
+  "revision_id": "DREV-20260616-BAD001",
+  "journal_entry_id": "DJR-20260616-ARC003",
+  "revision_number": 1,
+  "reason": "Attempting to revise archived entry.",
+  "field_changed": "confidence",
+  "confidence_before": 30,
+  "confidence_after": 55,
+  "value_before": 30,
+  "value_after": 55,
+  "notes": "This revision should be blocked because the entry is ARCHIVED.",
+  "simulation_only": true,
+  "created_at": "2026-06-16T00:00:00+00:00"
+}

@@ -21426,6 +21426,117 @@ def _build_parser() -> argparse.ArgumentParser:
     p_replay_batch_create.add_argument("--allow-write", action="store_true", default=False, help="Allow writing sessions (required to create sessions)")
     p_replay_batch_create.add_argument("--execute", action="store_true", default=False, help="Preview execution (does NOT grant write permission; use --allow-write)")
 
+    # v1.2.2 Decision Journal Integration
+    subparsers.add_parser("replay-journal-health", help="[v1.2.2] Decision journal health check. Research Only.")
+    subparsers.add_parser("replay-journal-templates", help="[v1.2.2] List decision journal templates. Research Only.")
+
+    p_rj_create = subparsers.add_parser("replay-journal-create", help="[v1.2.2] Create new journal entry (DRAFT). Research Only.")
+    p_rj_create.add_argument("--action", default="BUY", help="Action (BUY/SELL/WAIT/etc)")
+    p_rj_create.add_argument("--symbol", default=None, help="Symbol (e.g. 2454)")
+    p_rj_create.add_argument("--date", default=None, help="Replay date (YYYY-MM-DD)")
+    p_rj_create.add_argument("--session-id", default=None, help="Session ID")
+    p_rj_create.add_argument("--confidence", type=int, default=50, help="Confidence 0-100")
+    p_rj_create.add_argument("--reason", default="", help="Decision reason")
+    p_rj_create.add_argument("--template", default=None, help="Template name (e.g. breakout)")
+
+    p_rj_entry = subparsers.add_parser("replay-journal-entry", help="[v1.2.2] Show journal entry detail. Research Only.")
+    p_rj_entry.add_argument("--id", default=None, help="Journal entry ID (DJR-...)")
+
+    p_rj_list = subparsers.add_parser("replay-journal-list", help="[v1.2.2] List journal entries. Research Only.")
+    p_rj_list.add_argument("--session-id", default=None, help="Filter by session ID")
+    p_rj_list.add_argument("--status", default=None, help="Filter by status (DRAFT/RECORDED/ARCHIVED)")
+    p_rj_list.add_argument("--symbol", default=None, help="Filter by symbol")
+    p_rj_list.add_argument("--limit", type=int, default=20, help="Max entries to show")
+
+    p_rj_search = subparsers.add_parser("replay-journal-search", help="[v1.2.2] Search journal entries. Research Only.")
+    p_rj_search.add_argument("--query", default="", help="Search query")
+
+    p_rj_filter = subparsers.add_parser("replay-journal-filter", help="[v1.2.2] Filter journal entries. Research Only.")
+    p_rj_filter.add_argument("--action", default=None, help="Filter by action")
+    p_rj_filter.add_argument("--setup", default=None, help="Filter by setup type")
+    p_rj_filter.add_argument("--emotion", default=None, help="Filter by primary emotion")
+    p_rj_filter.add_argument("--tag", default=None, help="Filter by tag")
+
+    p_rj_thesis = subparsers.add_parser("replay-journal-thesis", help="[v1.2.2] Add trade thesis to entry. Research Only.")
+    p_rj_thesis.add_argument("--id", default=None, help="Journal entry ID")
+    p_rj_thesis.add_argument("--setup-type", default="FREE_FORM", help="Setup type")
+    p_rj_thesis.add_argument("--notes", default="", help="Thesis notes")
+
+    p_rj_risk = subparsers.add_parser("replay-journal-risk", help="[v1.2.2] Add risk plan to entry. Research Only.")
+    p_rj_risk.add_argument("--id", default=None, help="Journal entry ID")
+    p_rj_risk.add_argument("--stop-type", default="FIXED", help="Stop type")
+    p_rj_risk.add_argument("--stop-notes", default="", help="Stop level notes")
+    p_rj_risk.add_argument("--target-notes", default="", help="Target level notes")
+
+    p_rj_emotion = subparsers.add_parser("replay-journal-emotion", help="[v1.2.2] Record emotional state. Self-reported only. Research Only.")
+    p_rj_emotion.add_argument("--id", default=None, help="Journal entry ID")
+    p_rj_emotion.add_argument("--emotion", default="NEUTRAL", help="Primary emotion")
+    p_rj_emotion.add_argument("--confidence", type=int, default=50, help="Confidence level 0-100")
+    p_rj_emotion.add_argument("--anxiety", type=int, default=50, help="Anxiety level 0-100")
+    p_rj_emotion.add_argument("--focus", type=int, default=50, help="Focus level 0-100")
+    p_rj_emotion.add_argument("--bias", default=None, help="Comma-separated cognitive bias flags")
+
+    p_rj_checklist = subparsers.add_parser("replay-journal-checklist", help="[v1.2.2] Show discipline checklist items. Research Only.")
+    p_rj_checklist.add_argument("--id", default=None, help="Journal entry ID")
+
+    p_rj_checkitem = subparsers.add_parser("replay-journal-check-item", help="[v1.2.2] Check individual checklist item. Research Only.")
+    p_rj_checkitem.add_argument("--id", default=None, help="Journal entry ID")
+    p_rj_checkitem.add_argument("--item-id", default=None, help="Checklist item ID")
+    p_rj_checkitem.add_argument("--pass", dest="passed", action="store_true", default=False)
+
+    p_rj_finalize = subparsers.add_parser("replay-journal-finalize", help="[v1.2.2] Finalize entry (RECORDED). Research Only.")
+    p_rj_finalize.add_argument("--id", default=None, help="Journal entry ID")
+
+    p_rj_revise = subparsers.add_parser("replay-journal-revise", help="[v1.2.2] Create append-only revision (DREV-). Research Only.")
+    p_rj_revise.add_argument("--id", default=None, help="Journal entry ID")
+    p_rj_revise.add_argument("--reason", default="", help="Reason for revision (REQUIRED)")
+    p_rj_revise.add_argument("--field", default="notes", help="Field to change")
+    p_rj_revise.add_argument("--value", default="", help="New value")
+
+    p_rj_revisions = subparsers.add_parser("replay-journal-revisions", help="[v1.2.2] List revisions for entry. Research Only.")
+    p_rj_revisions.add_argument("--id", default=None, help="Journal entry ID")
+
+    p_rj_compare = subparsers.add_parser("replay-journal-compare", help="[v1.2.2] Compare two entries. No performance data. Research Only.")
+    p_rj_compare.add_argument("--id-a", default=None, help="Entry A ID")
+    p_rj_compare.add_argument("--id-b", default=None, help="Entry B ID")
+
+    p_rj_archive = subparsers.add_parser("replay-journal-archive", help="[v1.2.2] Archive entry (immutable). Research Only.")
+    p_rj_archive.add_argument("--id", default=None, help="Journal entry ID")
+
+    p_rj_restore = subparsers.add_parser("replay-journal-restore", help="[v1.2.2] Restore archived entry. Research Only.")
+    p_rj_restore.add_argument("--id", default=None, help="Journal entry ID")
+
+    p_rj_hide = subparsers.add_parser("replay-journal-hide", help="[v1.2.2] Hide entry from view (not deleted). Research Only.")
+    p_rj_hide.add_argument("--id", default=None, help="Journal entry ID")
+
+    p_rj_export = subparsers.add_parser("replay-journal-export", help="[v1.2.2] Export entry metadata (no forbidden fields). Research Only.")
+    p_rj_export.add_argument("--id", default=None, help="Journal entry ID")
+    p_rj_export.add_argument("--output", default=None, help="Output file path")
+
+    p_rj_export_session = subparsers.add_parser("replay-journal-export-session", help="[v1.2.2] Export all entries for session. Research Only.")
+    p_rj_export_session.add_argument("--session-id", default=None, help="Session ID")
+    p_rj_export_session.add_argument("--output", default=None, help="Output file path")
+
+    p_rj_import = subparsers.add_parser("replay-journal-import", help="[v1.2.2] Import entries. Dry-run by default. Research Only.")
+    p_rj_import.add_argument("--file", default=None, help="Import file path")
+    p_rj_import.add_argument("--execute", action="store_true", default=False, help="Execute import (also requires --allow-write)")
+    p_rj_import.add_argument("--allow-write", action="store_true", default=False, help="Allow writing entries (required with --execute)")
+
+    p_rj_summary = subparsers.add_parser("replay-journal-summary", help="[v1.2.2] Session summary. No performance stats. Research Only.")
+    p_rj_summary.add_argument("--session-id", default=None, help="Session ID")
+
+    subparsers.add_parser("replay-journal-session-summary", help="[v1.2.2] Alias for replay-journal-summary. Research Only.")
+
+    p_rj_report = subparsers.add_parser("replay-journal-report", help="[v1.2.2] Per-session detail report. Research Only.")
+    p_rj_report.add_argument("--session-id", default=None, help="Session ID")
+    p_rj_report.add_argument("--output-dir", default=None, help="Output directory")
+
+    p_rj_summary_report = subparsers.add_parser("replay-journal-summary-report", help="[v1.2.2] Period summary report. Research Only.")
+    p_rj_summary_report.add_argument("--from", dest="date_from", default=None, help="Start date (YYYY-MM-DD)")
+    p_rj_summary_report.add_argument("--to", dest="date_to", default=None, help="End date (YYYY-MM-DD)")
+    p_rj_summary_report.add_argument("--session-id", default=None, help="Filter by session ID (comma-separated)")
+    p_rj_summary_report.add_argument("--output-dir", default=None, help="Output directory")
+
     return parser
 
 
@@ -22369,6 +22480,551 @@ def cmd_replay_batch_create(args) -> None:
 
 
 # ---------------------------------------------------------------------------
+# v1.2.2 Decision Journal Integration commands
+# ---------------------------------------------------------------------------
+
+def _get_journal_manager():
+    from replay.decision_journal_manager import DecisionJournalManager
+    return DecisionJournalManager(repo_root=BASE_DIR)
+
+
+def _get_journal_query():
+    from replay.decision_journal_query import DecisionJournalQuery
+    return DecisionJournalQuery(repo_root=BASE_DIR)
+
+
+def cmd_replay_journal_health(args) -> None:
+    """Decision journal health check. [!] Research Only. No Real Orders."""
+    print("=" * 60)
+    print("  Replay Decision Journal Health Check v1.2.2")
+    print("  [!] Research Only | No Real Orders | Simulation Decision Only")
+    print("=" * 60)
+    try:
+        from replay.decision_journal_health import DecisionJournalHealthChecker
+        checker = DecisionJournalHealthChecker(repo_root=BASE_DIR)
+        result = checker.run_health_check()
+        status = result.get("status", "UNKNOWN")
+        print(f"  Overall: {status}")
+        for check in result.get("checks", []):
+            c_name = check.get("name", "?")
+            c_status = check.get("status", "?")
+            c_detail = check.get("detail", "")
+            print(f"  [{c_status}] {c_name}: {c_detail}")
+    except Exception as exc:
+        print(f"  [FAIL] Health check error: {exc}")
+        import traceback
+        traceback.print_exc()
+
+
+def cmd_replay_journal_templates(args) -> None:
+    """List decision journal templates. [!] Research Only. No Real Orders."""
+    print("[!] Decision Journal Templates — Research Only | Simulation Only")
+    try:
+        from replay.decision_templates import DecisionTemplateLibrary
+        lib = DecisionTemplateLibrary(repo_root=BASE_DIR)
+        templates = lib.list_templates()
+        print(f"  Templates found: {len(templates)}")
+        for t in templates:
+            if isinstance(t, dict):
+                name = t.get("template_name", t.get("name", "?"))
+                setup = t.get("setup_type", "?")
+                print(f"    {name} ({setup})")
+            else:
+                # list_templates returns template names (strings)
+                loaded = lib.load_template(str(t)) if hasattr(lib, "load_template") else {}
+                if isinstance(loaded, dict):
+                    setup = loaded.get("setup_type", "?")
+                    print(f"    {t} ({setup})")
+                else:
+                    print(f"    {t}")
+    except Exception as exc:
+        print(f"  [WARN] {exc}")
+
+
+def cmd_replay_journal_create(args) -> None:
+    """Create a new journal entry (DRAFT). [!] Research Only. No Real Orders."""
+    action = getattr(args, "action", "BUY") or "BUY"
+    symbol = getattr(args, "symbol", None)
+    date = getattr(args, "date", None)
+    session_id = getattr(args, "session_id", None)
+    confidence = int(getattr(args, "confidence", 50) or 50)
+    reason = getattr(args, "reason", "") or ""
+    template = getattr(args, "template", None)
+    print("[!] Create Journal Entry — Research Only | No Real Orders | Simulation Decision Only")
+    try:
+        mgr = _get_journal_manager()
+        entry = mgr.create_entry(
+            action=action,
+            symbol=symbol,
+            replay_date=date,
+            session_id=session_id,
+            confidence=confidence,
+            decision_reason=reason,
+            template_name=template,
+        )
+        print(f"  Created: {entry.get('journal_entry_id')} | Status: {entry.get('status')}")
+        print(f"  simulation_only: {entry.get('simulation_only')}")
+    except Exception as exc:
+        print(f"  [ERROR] {exc}")
+        import traceback
+        traceback.print_exc()
+
+
+def cmd_replay_journal_entry(args) -> None:
+    """Show journal entry detail. [!] Research Only."""
+    entry_id = getattr(args, "id", None) or ""
+    if not entry_id:
+        print("[ERROR] --id required")
+        return
+    print(f"[!] Journal Entry — Research Only | {entry_id}")
+    try:
+        mgr = _get_journal_manager()
+        entry = mgr.get_entry(entry_id)
+        if not entry:
+            print(f"  [NOT FOUND] {entry_id}")
+            return
+        for k, v in entry.items():
+            print(f"  {k}: {v}")
+    except Exception as exc:
+        print(f"  [ERROR] {exc}")
+
+
+def cmd_replay_journal_list(args) -> None:
+    """List journal entries. [!] Research Only."""
+    session_id = getattr(args, "session_id", None)
+    status = getattr(args, "status", None)
+    symbol = getattr(args, "symbol", None)
+    limit = int(getattr(args, "limit", 20) or 20)
+    print("[!] Journal Entries — Research Only | No Real Orders")
+    try:
+        q = _get_journal_query()
+        entries = q.get_all()
+        if session_id:
+            entries = [e for e in entries if e.get("session_id") == session_id]
+        if status:
+            entries = [e for e in entries if e.get("status") == status.upper()]
+        if symbol:
+            entries = [e for e in entries if e.get("symbol") == symbol]
+        print(f"  Total: {len(entries)} (showing up to {limit})")
+        for e in entries[:limit]:
+            print(f"  {e.get('journal_entry_id')} | {e.get('replay_date','')} | "
+                  f"{e.get('symbol','')} | {e.get('action','')} | {e.get('status','')} | "
+                  f"conf={e.get('confidence','')}")
+    except Exception as exc:
+        print(f"  [ERROR] {exc}")
+
+
+def cmd_replay_journal_search(args) -> None:
+    """Search journal entries. [!] Research Only."""
+    query = getattr(args, "query", "") or ""
+    print(f"[!] Journal Search — Research Only | query='{query}'")
+    try:
+        q = _get_journal_query()
+        results = q.search(query)
+        print(f"  Results: {len(results)}")
+        for e in results[:20]:
+            print(f"  {e.get('journal_entry_id')} | {e.get('symbol','')} | {e.get('action','')} | {e.get('status','')}")
+    except Exception as exc:
+        print(f"  [ERROR] {exc}")
+
+
+def cmd_replay_journal_filter(args) -> None:
+    """Filter journal entries. [!] Research Only."""
+    action = getattr(args, "action", None)
+    setup = getattr(args, "setup", None)
+    emotion = getattr(args, "emotion", None)
+    tag = getattr(args, "tag", None)
+    print("[!] Journal Filter — Research Only")
+    try:
+        q = _get_journal_query()
+        entries = q.get_all()
+        if action:
+            entries = [e for e in entries if e.get("action") == action.upper()]
+        if setup:
+            entries = [e for e in entries if e.get("setup_type") == setup.upper()]
+        if emotion:
+            entries = [e for e in entries if e.get("primary_emotion") == emotion.upper()]
+        if tag:
+            entries = [e for e in entries if tag in (e.get("tags") or [])]
+        print(f"  Results: {len(entries)}")
+        for e in entries[:20]:
+            print(f"  {e.get('journal_entry_id')} | {e.get('symbol','')} | {e.get('action','')} | {e.get('status','')}")
+    except Exception as exc:
+        print(f"  [ERROR] {exc}")
+
+
+def cmd_replay_journal_thesis(args) -> None:
+    """Add trade thesis to entry. [!] Research Only."""
+    entry_id = getattr(args, "id", None) or ""
+    setup_type = getattr(args, "setup_type", "FREE_FORM") or "FREE_FORM"
+    notes = getattr(args, "notes", "") or ""
+    if not entry_id:
+        print("[ERROR] --id required")
+        return
+    print(f"[!] Add Trade Thesis — Research Only | {entry_id}")
+    try:
+        mgr = _get_journal_manager()
+        result = mgr.add_thesis(entry_id, setup_type=setup_type, notes=notes)
+        print(f"  Thesis added: {result.get('thesis_id','?')}")
+    except Exception as exc:
+        print(f"  [ERROR] {exc}")
+
+
+def cmd_replay_journal_risk(args) -> None:
+    """Add risk plan to entry. [!] Research Only."""
+    entry_id = getattr(args, "id", None) or ""
+    stop_type = getattr(args, "stop_type", "FIXED") or "FIXED"
+    stop_notes = getattr(args, "stop_notes", "") or ""
+    target_notes = getattr(args, "target_notes", "") or ""
+    if not entry_id:
+        print("[ERROR] --id required")
+        return
+    print(f"[!] Add Risk Plan — Research Only | {entry_id}")
+    try:
+        mgr = _get_journal_manager()
+        result = mgr.add_risk_plan(entry_id, stop_type=stop_type, stop_notes=stop_notes, target_notes=target_notes)
+        print(f"  Risk plan added: {result.get('risk_plan_id','?')}")
+    except Exception as exc:
+        print(f"  [ERROR] {exc}")
+
+
+def cmd_replay_journal_emotion(args) -> None:
+    """Record emotional state. Self-reported only. [!] Research Only."""
+    entry_id = getattr(args, "id", None) or ""
+    emotion = getattr(args, "emotion", "NEUTRAL") or "NEUTRAL"
+    confidence_level = int(getattr(args, "confidence", 50) or 50)
+    anxiety_level = int(getattr(args, "anxiety", 50) or 50)
+    focus_level = int(getattr(args, "focus", 50) or 50)
+    bias_raw = getattr(args, "bias", None) or ""
+    bias_flags = [b.strip() for b in bias_raw.split(",") if b.strip()] if bias_raw else []
+    print(f"[!] Record Emotional State — Self-Reported Only | NOT Psychological Assessment | {entry_id}")
+    try:
+        mgr = _get_journal_manager()
+        result = mgr.record_emotional_state(
+            entry_id,
+            primary_emotion=emotion.upper(),
+            confidence_level=confidence_level,
+            anxiety_level=anxiety_level,
+            focus_level=focus_level,
+            cognitive_bias_flags=bias_flags,
+        )
+        print(f"  Emotional state recorded: {result.get('emotional_state_id','?')}")
+    except Exception as exc:
+        print(f"  [ERROR] {exc}")
+
+
+def cmd_replay_journal_checklist(args) -> None:
+    """Show discipline checklist items. [!] Research Only."""
+    entry_id = getattr(args, "id", None) or ""
+    print(f"[!] Discipline Checklist — Research Only | {entry_id or 'All items'}")
+    try:
+        from replay.discipline_checklist import DisciplineChecklistEngine
+        engine = DisciplineChecklistEngine()
+        all_items = (
+            engine.STANDARD_DATA_ITEMS +
+            engine.STANDARD_SETUP_ITEMS +
+            engine.STANDARD_RISK_ITEMS +
+            engine.STANDARD_EMOTION_ITEMS +
+            engine.STANDARD_DISCIPLINE_ITEMS
+        )
+        print(f"  Total items: {len(all_items)}")
+        for item in all_items:
+            req = " [REQUIRED]" if item.get("required") else ""
+            print(f"  [{item.get('item_id','')}] {item.get('category','')} — {item.get('label','')}{req}")
+    except Exception as exc:
+        print(f"  [ERROR] {exc}")
+
+
+def cmd_replay_journal_check_item(args) -> None:
+    """Check individual checklist item. [!] Research Only."""
+    entry_id = getattr(args, "id", None) or ""
+    item_id = getattr(args, "item_id", None) or ""
+    passed = bool(getattr(args, "passed", False))
+    print(f"[!] Check Item — Research Only | entry={entry_id} item={item_id} pass={passed}")
+    try:
+        mgr = _get_journal_manager()
+        result = mgr.check_checklist_item(entry_id, item_id=item_id, passed=passed)
+        print(f"  Item {item_id}: {'PASS' if passed else 'FAIL'} recorded")
+    except Exception as exc:
+        print(f"  [ERROR] {exc}")
+
+
+def cmd_replay_journal_finalize(args) -> None:
+    """Finalize entry (RECORDED). [!] Research Only."""
+    entry_id = getattr(args, "id", None) or ""
+    if not entry_id:
+        print("[ERROR] --id required")
+        return
+    print(f"[!] Finalize Journal Entry — Research Only | {entry_id}")
+    try:
+        mgr = _get_journal_manager()
+        result = mgr.record_entry(entry_id)
+        print(f"  Status: {result.get('status','?')}")
+    except Exception as exc:
+        print(f"  [ERROR] {exc}")
+
+
+def cmd_replay_journal_revise(args) -> None:
+    """Create append-only revision (DREV-). [!] Research Only."""
+    entry_id = getattr(args, "id", None) or ""
+    reason = getattr(args, "reason", "") or ""
+    field = getattr(args, "field", "notes") or "notes"
+    value = getattr(args, "value", "") or ""
+    if not entry_id:
+        print("[ERROR] --id required")
+        return
+    if not reason:
+        print("[ERROR] --reason required for revision")
+        return
+    print(f"[!] Create Revision (DREV-) — Research Only | Append-Only | {entry_id}")
+    try:
+        mgr = _get_journal_manager()
+        field_changes = {field: value}
+        if field == "confidence":
+            try:
+                field_changes["confidence"] = int(value)
+            except ValueError:
+                print("[ERROR] confidence must be a number 0-100")
+                return
+        rev = mgr.revise_entry(entry_id, reason=reason, field_changes=field_changes)
+        print(f"  Revision created: {rev.get('revision_id','?')} | DREV- prefix confirmed: {str(rev.get('revision_id','')).startswith('DREV-')}")
+    except Exception as exc:
+        print(f"  [ERROR] {exc}")
+
+
+def cmd_replay_journal_revisions(args) -> None:
+    """List revisions for entry. [!] Research Only."""
+    entry_id = getattr(args, "id", None) or ""
+    if not entry_id:
+        print("[ERROR] --id required")
+        return
+    print(f"[!] Journal Revisions — Research Only | {entry_id}")
+    try:
+        mgr = _get_journal_manager()
+        revisions = mgr.get_revisions(entry_id)
+        print(f"  Revisions: {len(revisions)}")
+        for r in revisions:
+            print(f"  {r.get('revision_id','')} | rev#{r.get('revision_number','')} | "
+                  f"reason: {str(r.get('reason',''))[:50]}")
+    except Exception as exc:
+        print(f"  [ERROR] {exc}")
+
+
+def cmd_replay_journal_compare(args) -> None:
+    """Compare two entries. No performance data. [!] Research Only."""
+    id_a = getattr(args, "id_a", None) or ""
+    id_b = getattr(args, "id_b", None) or ""
+    if not id_a or not id_b:
+        print("[ERROR] --id-a and --id-b required")
+        return
+    print(f"[!] Compare Entries — Research Only | No Performance Data | A={id_a} B={id_b}")
+    try:
+        mgr = _get_journal_manager()
+        ea = mgr.get_entry(id_a) or {}
+        eb = mgr.get_entry(id_b) or {}
+        from replay.decision_comparator import DecisionJournalComparator
+        cmp = DecisionJournalComparator()
+        result = cmp.compare_entries(ea, eb)
+        diffs = result.get("differences", {})
+        print(f"  Differences: {len(diffs)}")
+        for fld, vals in diffs.items():
+            print(f"    {fld}: A={vals.get('entry_a')} | B={vals.get('entry_b')}")
+        print(cmp.render_markdown(result))
+    except Exception as exc:
+        print(f"  [ERROR] {exc}")
+
+
+def cmd_replay_journal_archive(args) -> None:
+    """Archive entry (immutable). [!] Research Only."""
+    entry_id = getattr(args, "id", None) or ""
+    if not entry_id:
+        print("[ERROR] --id required")
+        return
+    print(f"[!] Archive Journal Entry — Research Only | {entry_id}")
+    try:
+        mgr = _get_journal_manager()
+        result = mgr.archive_entry(entry_id)
+        print(f"  Status: {result.get('status','?')} | Entry is now immutable.")
+    except Exception as exc:
+        print(f"  [ERROR] {exc}")
+
+
+def cmd_replay_journal_restore(args) -> None:
+    """Restore archived entry. [!] Research Only."""
+    entry_id = getattr(args, "id", None) or ""
+    if not entry_id:
+        print("[ERROR] --id required")
+        return
+    print(f"[!] Restore Journal Entry — Research Only | {entry_id}")
+    try:
+        mgr = _get_journal_manager()
+        result = mgr.restore_entry(entry_id)
+        print(f"  Status: {result.get('status','?')}")
+    except Exception as exc:
+        print(f"  [ERROR] {exc}")
+
+
+def cmd_replay_journal_hide(args) -> None:
+    """Hide entry from view (not deleted). [!] Research Only."""
+    entry_id = getattr(args, "id", None) or ""
+    if not entry_id:
+        print("[ERROR] --id required")
+        return
+    print(f"[!] Hide Journal Entry — Research Only | {entry_id} (not deleted, hidden=True)")
+    try:
+        mgr = _get_journal_manager()
+        result = mgr.hide_entry(entry_id)
+        print(f"  hidden: {result.get('hidden','?')}")
+    except Exception as exc:
+        print(f"  [ERROR] {exc}")
+
+
+def cmd_replay_journal_export(args) -> None:
+    """Export entry metadata (no forbidden fields). [!] Research Only."""
+    entry_id = getattr(args, "id", None) or ""
+    output = getattr(args, "output", None)
+    if not entry_id:
+        print("[ERROR] --id required")
+        return
+    print(f"[!] Export Journal Entry — Research Only | No Forbidden Fields | {entry_id}")
+    try:
+        mgr = _get_journal_manager()
+        entry = mgr.get_entry(entry_id) or {}
+        from replay.decision_journal_portability import DecisionJournalPortability
+        port = DecisionJournalPortability(repo_root=BASE_DIR)
+        stripped = port._strip_forbidden_export_fields(entry)
+        import json
+        data = json.dumps(stripped, indent=2, ensure_ascii=False)
+        if output:
+            with open(output, "w", encoding="utf-8") as f:
+                f.write(data)
+            print(f"  Exported to: {output}")
+        else:
+            print(data)
+    except Exception as exc:
+        print(f"  [ERROR] {exc}")
+
+
+def cmd_replay_journal_export_session(args) -> None:
+    """Export all entries for session. [!] Research Only."""
+    session_id = getattr(args, "session_id", None) or ""
+    output = getattr(args, "output", None)
+    if not session_id:
+        print("[ERROR] --session-id required")
+        return
+    print(f"[!] Export Session Journal — Research Only | {session_id}")
+    try:
+        from replay.decision_journal_store import DecisionJournalStore
+        from replay.decision_journal_portability import DecisionJournalPortability
+        store = DecisionJournalStore(repo_root=BASE_DIR)
+        entries = [e for e in store.load_entries() if e.get("session_id") == session_id]
+        port = DecisionJournalPortability(repo_root=BASE_DIR)
+        clean_entries = [port._strip_forbidden_export_fields(e) for e in entries]
+        import json
+        data = json.dumps({"session_id": session_id, "entries": clean_entries}, indent=2, ensure_ascii=False)
+        if output:
+            with open(output, "w", encoding="utf-8") as f:
+                f.write(data)
+            print(f"  Exported {len(clean_entries)} entries to: {output}")
+        else:
+            print(f"  Session: {session_id} | Entries: {len(clean_entries)}")
+            print(data[:2000])
+    except Exception as exc:
+        print(f"  [ERROR] {exc}")
+
+
+def cmd_replay_journal_import(args) -> None:
+    """Import entries. Dry-run by default. [!] Research Only."""
+    file_path = getattr(args, "file", None) or ""
+    execute = bool(getattr(args, "execute", False))
+    allow_write = bool(getattr(args, "allow_write", False))
+    dry_run = not execute
+    print(f"[!] Import Journal — Research Only | dry_run={dry_run} | allow_write={allow_write}")
+    if not file_path:
+        print("[ERROR] --file required")
+        return
+    if execute and not allow_write:
+        print("  BLOCKED: --execute requires --allow-write to actually write entries.")
+        print("  Tip: use without --execute for a dry-run preview.")
+        return
+    try:
+        import json
+        with open(file_path, "r", encoding="utf-8") as f:
+            data = json.load(f)
+        entries = data.get("entries", data) if isinstance(data, dict) else data
+        from replay.decision_journal_portability import DecisionJournalPortability
+        port = DecisionJournalPortability(repo_root=BASE_DIR)
+        result = port.import_entries(entries, dry_run=dry_run, allow_write=allow_write)
+        print(f"  Status: {result.status}")
+        print(f"  Entries processed: {result.total}")
+        if hasattr(result, "imported"):
+            print(f"  Imported: {result.imported}")
+        if hasattr(result, "errors"):
+            for err in result.errors[:5]:
+                print(f"  [ERROR] {err}")
+    except Exception as exc:
+        print(f"  [ERROR] {exc}")
+        import traceback
+        traceback.print_exc()
+
+
+def cmd_replay_journal_summary(args) -> None:
+    """Session summary (no performance stats). [!] Research Only."""
+    session_id = getattr(args, "session_id", None) or ""
+    print(f"[!] Journal Summary — Research Only | No Performance Stats | session={session_id or 'all'}")
+    try:
+        from replay.decision_journal_summary import DecisionJournalSummaryBuilder
+        builder = DecisionJournalSummaryBuilder(repo_root=BASE_DIR)
+        summary = builder.build_summary(session_id=session_id or "")
+        import json
+        print(json.dumps(summary, indent=2, ensure_ascii=False, default=str))
+    except Exception as exc:
+        print(f"  [ERROR] {exc}")
+
+
+def cmd_replay_journal_report(args) -> None:
+    """Per-session detail report. [!] Research Only."""
+    session_id = getattr(args, "session_id", None) or ""
+    output_dir = getattr(args, "output_dir", None) or "reports"
+    if not session_id:
+        print("[ERROR] --session-id required")
+        return
+    print(f"[!] Journal Report — Research Only | session={session_id}")
+    try:
+        from reports.replay_decision_journal_report import ReplayDecisionJournalReport
+        rpt = ReplayDecisionJournalReport(repo_root=BASE_DIR)
+        md = rpt.build(session_id, output_dir=output_dir)
+        print(f"  Report generated ({len(md)} chars)")
+        print(f"  Output dir: {output_dir}")
+        print(md[:1000])
+    except Exception as exc:
+        print(f"  [ERROR] {exc}")
+        import traceback
+        traceback.print_exc()
+
+
+def cmd_replay_journal_summary_report(args) -> None:
+    """Period summary report. [!] Research Only."""
+    date_from = getattr(args, "date_from", None)
+    date_to = getattr(args, "date_to", None)
+    session_ids_raw = getattr(args, "session_id", None) or ""
+    session_ids = [s.strip() for s in session_ids_raw.split(",") if s.strip()] if session_ids_raw else None
+    output_dir = getattr(args, "output_dir", None) or "reports"
+    print(f"[!] Journal Summary Report — Research Only | from={date_from} to={date_to}")
+    try:
+        from reports.replay_decision_journal_summary_report import ReplayDecisionJournalSummaryReport
+        rpt = ReplayDecisionJournalSummaryReport(repo_root=BASE_DIR)
+        md = rpt.build(date_from=date_from, date_to=date_to, session_ids=session_ids, output_dir=output_dir)
+        print(f"  Report generated ({len(md)} chars)")
+        print(f"  Output dir: {output_dir}")
+        print(md[:1000])
+    except Exception as exc:
+        print(f"  [ERROR] {exc}")
+        import traceback
+        traceback.print_exc()
+
+
+# ---------------------------------------------------------------------------
 # Entrypoint
 # ---------------------------------------------------------------------------
 
@@ -22724,6 +23380,33 @@ def main() -> None:
         "replay-session-lineage":                   cmd_replay_session_lineage,
         "replay-batch-preview":                     cmd_replay_batch_preview,
         "replay-batch-create":                      cmd_replay_batch_create,
+        # v1.2.2 Decision Journal Integration
+        "replay-journal-health":                    cmd_replay_journal_health,
+        "replay-journal-templates":                 cmd_replay_journal_templates,
+        "replay-journal-create":                    cmd_replay_journal_create,
+        "replay-journal-entry":                     cmd_replay_journal_entry,
+        "replay-journal-list":                      cmd_replay_journal_list,
+        "replay-journal-search":                    cmd_replay_journal_search,
+        "replay-journal-filter":                    cmd_replay_journal_filter,
+        "replay-journal-thesis":                    cmd_replay_journal_thesis,
+        "replay-journal-risk":                      cmd_replay_journal_risk,
+        "replay-journal-emotion":                   cmd_replay_journal_emotion,
+        "replay-journal-checklist":                 cmd_replay_journal_checklist,
+        "replay-journal-check-item":                cmd_replay_journal_check_item,
+        "replay-journal-finalize":                  cmd_replay_journal_finalize,
+        "replay-journal-revise":                    cmd_replay_journal_revise,
+        "replay-journal-revisions":                 cmd_replay_journal_revisions,
+        "replay-journal-compare":                   cmd_replay_journal_compare,
+        "replay-journal-archive":                   cmd_replay_journal_archive,
+        "replay-journal-restore":                   cmd_replay_journal_restore,
+        "replay-journal-hide":                      cmd_replay_journal_hide,
+        "replay-journal-export":                    cmd_replay_journal_export,
+        "replay-journal-export-session":            cmd_replay_journal_export_session,
+        "replay-journal-import":                    cmd_replay_journal_import,
+        "replay-journal-summary":                   cmd_replay_journal_summary,
+        "replay-journal-session-summary":           cmd_replay_journal_summary,
+        "replay-journal-report":                    cmd_replay_journal_report,
+        "replay-journal-summary-report":            cmd_replay_journal_summary_report,
         # v1.2.0 Replay Training UX Foundation
         "replay-health":                  cmd_replay_health,
         "replay-create":                  cmd_replay_create,

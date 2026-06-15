@@ -4,6 +4,155 @@
 
 ---
 
+## v1.2.2 — Decision Journal Integration
+
+> [!] Research Only. No Real Orders. Simulation Decision Only. Not Investment Advice.
+
+### Overview
+
+v1.2.2 adds a comprehensive Decision Journal system to the Replay Training module.
+Researchers can capture trade theses, risk plans, emotional states, discipline
+checklists, and append-only decision revisions — all linked to replay sessions,
+scenarios, and checkpoints. No performance metrics, no hindsight data, no real orders.
+
+### What's New
+
+#### Decision Journal Core (`replay/decision_journal_schema.py`, `decision_journal_store.py`, `decision_journal_manager.py`, `decision_journal_query.py`)
+
+- DJR- prefixed journal entries, DREV- prefixed revisions
+- Append-only JSONL storage in `data/replay_journal/`
+- Corrupted-tail graceful recovery
+- Entry lifecycle: DRAFT → RECORDED → REVISED → ARCHIVED → restored
+- Archived entries are immutable (revision blocked with ValueError)
+- import_entry requires dry_run=False AND allow_write=True
+
+#### Trade Thesis & Risk Plan (`replay/decision_journal_schema.py`)
+
+- TradeThesis: setup_type, time_horizon, key_levels, invalidation, entry_trigger
+- RiskPlan: stop_type, target_type, stop_notes, target_notes, position_size_notes, exit_rules
+
+#### Emotional State Capture (`replay/emotional_state.py`)
+
+- Self-reported only — NOT a psychological assessment
+- Sliders: confidence_level, anxiety_level, focus_level — each 0-100 (out-of-range raises ValueError)
+- 12 primary emotions; self_reported=True invariant
+
+#### Cognitive Bias Registry (`replay/cognitive_bias.py`)
+
+- 17 known biases (FOMO, REVENGE_TRADING, CONFIRMATION_BIAS, etc.)
+- Unknown bias names raise ValueError
+
+#### Discipline Checklist (`replay/discipline_checklist.py`)
+
+- 23 standard items across 5 categories: DATA, SETUP, RISK, EMOTION, DISCIPLINE
+- Required items tracked; all_required_passed flag
+
+#### Decision Comparator (`replay/decision_comparator.py`)
+
+- Side-by-side entry comparison with forbidden field enforcement
+- Forbidden fields raise ValueError; render_markdown output shows NOT_QUALIFIED
+
+#### Summary Builder (`replay/decision_journal_summary.py`)
+
+- Allowed stats: entry_count, status counts, action/setup distributions, confidence buckets, revision_frequency
+- Forbidden stats raise ValueError
+
+#### Portability (`replay/decision_journal_portability.py`)
+
+- dry_run=True by default
+- import_entries requires dry_run=False AND allow_write=True
+- Strips api_key, secret, broker, realized_return, future_return, hindsight_score from export
+- validate_import_file rejects forbidden fields before any write
+
+#### Templates (`replay/decision_templates.py`, `replay/journal_templates/*.json`)
+
+- 8 templates: free_form, breakout, pullback, bottom_reversal, no_chase, risk_reduction, exit_review, wait_confirmation
+- All have simulation_only=True
+
+#### GUI Panels (`gui/replay_decision_journal_panel.py`, `gui/replay_*`)
+
+- ReplayDecisionJournalPanel with QThread for data loading
+- Safety banner: "RESEARCH ONLY | SIMULATION DECISION ONLY — NO ORDER WILL BE SENT"
+- 7 buttons: New, View/Edit, Revise, Archive, Export, Import (Dry Run), Refresh
+- Headless stubs when PyQt5 unavailable
+
+#### Reports (`reports/replay_decision_journal_report.py`, `reports/replay_decision_journal_summary_report.py`)
+
+- Per-session detail report: Overview, Timeline, Revision History, Safety Declaration
+- Period summary report: Status/Action/Setup/Confidence distributions, Revision stats, Completeness
+
+### CLI Commands (25 new)
+
+| Command | Description |
+|---------|-------------|
+| `replay-journal-health` | Health check for decision journal |
+| `replay-journal-create` | Create new journal entry (DRAFT) |
+| `replay-journal-entry` | Show entry detail |
+| `replay-journal-list` | List entries (with optional filters) |
+| `replay-journal-search` | Full-text search entries |
+| `replay-journal-filter` | Filter by status/action/setup/emotion |
+| `replay-journal-thesis` | Add trade thesis to entry |
+| `replay-journal-risk` | Add risk plan to entry |
+| `replay-journal-emotion` | Record emotional state |
+| `replay-journal-checklist` | Run discipline checklist |
+| `replay-journal-check-item` | Check individual item |
+| `replay-journal-finalize` | Finalize entry (RECORDED) |
+| `replay-journal-revise` | Create append-only revision (DREV-) |
+| `replay-journal-revisions` | List revisions for entry |
+| `replay-journal-compare` | Compare two entries (no perf data) |
+| `replay-journal-archive` | Archive entry (immutable) |
+| `replay-journal-restore` | Restore archived entry |
+| `replay-journal-hide` | Hide entry from view (not deleted) |
+| `replay-journal-export` | Export session metadata (no forbidden fields) |
+| `replay-journal-export-session` | Export all entries for session |
+| `replay-journal-import` | Import (dry-run by default; --execute + --allow-write to write) |
+| `replay-journal-summary` | Session summary (no perf stats) |
+| `replay-journal-session-summary` | Alias for replay-journal-summary |
+| `replay-journal-report` | Generate per-session detail report |
+| `replay-journal-summary-report` | Generate period summary report |
+
+### Backward Compatibility
+
+`ReplayDecision` schema updated with new optional fields, all defaulting safely:
+
+- `journal_entry_id: Optional[str] = None`
+- `thesis_id: Optional[str] = None`
+- `risk_plan_id: Optional[str] = None`
+- `emotional_state_id: Optional[str] = None`
+- `checklist_ids: List[str] = []`
+- `revision_count: int = 0`
+- `latest_revision_id: Optional[str] = None`
+- `simulation_only: bool = True`
+
+Old v1.2.1 session data loads without error.
+
+### Safety Invariants
+
+- `DECISION_AUTO_SCORING_ENABLED = False`
+- `DECISION_AUTO_GENERATION_ENABLED = False`
+- `DECISION_AUTO_EXECUTION_ENABLED = False`
+- `REPLAY_TRADE_EXECUTION_ENABLED = False`
+- Forbidden fields: realized_return, future_return, hindsight_score, final_result
+- Forbidden summary stats: win_rate, pnl, alpha, sharpe, accuracy
+- Archived entries immutable — revision raises ValueError
+- Import requires dry_run=False AND allow_write=True
+- Emotional state: self_reported=True invariant; 0-100 range enforced
+- Cognitive bias: only KNOWN_BIASES accepted
+- No Real Orders. No Broker Connection.
+
+### Regression Tests
+
+- `tests/test_replay_decision_journal_regression.py` — 24 test cases
+- `tests/fixtures/replay_journal/` — 24 fixture files
+
+### Documentation
+
+- `docs/replay_decision_journal_v1.2.2.md`
+- `docs/replay_decision_journal_templates.md`
+- `docs/replay_discipline_and_emotion_guide.md`
+
+---
+
 ## v1.2.1 — Replay Scenario & Session Manager
 
 > [!] Research Only. No Real Orders. Scenario templates NEVER contain future answers. Not Investment Advice.

@@ -1,0 +1,14 @@
+{
+  "emotional_state_id": "EMOT-TEST-BAD",
+  "journal_entry_id": "DJR-20260616-FIN002",
+  "primary_emotion": "ANXIOUS",
+  "_comment": "INVALID: anxiety_level=150 is out of 0-100 range — must be rejected",
+  "confidence_level": 40,
+  "anxiety_level": 150,
+  "focus_level": -5,
+  "cognitive_bias_flags": ["FOMO"],
+  "notes": "Values out of range — this fixture tests range validation.",
+  "self_reported": true,
+  "simulation_only": true,
+  "created_at": "2026-06-16T00:00:00+00:00"
+}

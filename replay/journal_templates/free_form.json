@@ -1,0 +1,10 @@
+{
+  "template_name": "free_form",
+  "display_name": "Free Form Journal",
+  "setup_type": "FREE_FORM",
+  "time_horizon": "UNDEFINED",
+  "checklist_items": [],
+  "pre_decision_prompts": ["What is your current read of the market?", "What are you observing?"],
+  "post_decision_prompts": ["What did you decide to do?", "Why did you make this decision?"],
+  "simulation_only": true
+}

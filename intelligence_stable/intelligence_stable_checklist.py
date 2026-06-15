@@ -1530,4 +1530,28 @@ class IntelligenceStableChecklist:
                 suggested_fix="Run: python main.py replay-scenario-health",
             ))
 
+        # v1.2.2 Decision Journal Integration safety check
+        try:
+            import release.version_info as _vi
+            djav = getattr(_vi, "DECISION_JOURNAL_AVAILABLE", False)
+            das = getattr(_vi, "DECISION_AUTO_SCORING_ENABLED", True)
+            dae = getattr(_vi, "DECISION_AUTO_EXECUTION_ENABLED", True)
+            safe = djav and not das and not dae
+            checks.append(_check(
+                "decision_journal_v122_safe", "stable_integration",
+                "v1.2.2 decision_journal_v122_safe",
+                CHECK_PASS if safe else CHECK_WARN, SEV_LOW,
+                f"DECISION_JOURNAL_AVAILABLE={djav}, "
+                f"AUTO_SCORING={das}, AUTO_EXECUTION={dae}",
+                suggested_fix="Run: python main.py replay-journal-health",
+            ))
+        except Exception as exc:
+            checks.append(_check(
+                "decision_journal_v122_safe", "stable_integration",
+                "v1.2.2 decision_journal_v122_safe",
+                CHECK_WARN, SEV_LOW,
+                f"Could not verify decision_journal v1.2.2 safety (optional): {exc}",
+                suggested_fix="Run: python main.py replay-journal-health",
+            ))
+
         return checks

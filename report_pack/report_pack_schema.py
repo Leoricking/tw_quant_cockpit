@@ -74,6 +74,9 @@ REPORT_TRAINING_METRICS = "training_metrics"
 REPORT_EVIDENCE_GRAPH = "evidence_graph"
 # v0.9.0 Strategy Lab Stable
 REPORT_STRATEGY_LAB_STABLE = "strategy_lab_stable"
+# v1.2.2 Decision Journal Integration
+REPORT_REPLAY_DECISION_JOURNAL = "replay_decision_journal"
+REPORT_REPLAY_DECISION_JOURNAL_SUMMARY = "replay_decision_journal_summary"
 
 ALL_REPORT_TYPES = [
     REPORT_DAILY_MARKET, REPORT_AUTO_REPORT, REPORT_DATA_QUALITY,
@@ -90,6 +93,8 @@ ALL_REPORT_TYPES = [
     REPORT_TRAINING_METRICS,
     REPORT_EVIDENCE_GRAPH,
     REPORT_STRATEGY_LAB_STABLE,
+    REPORT_REPLAY_DECISION_JOURNAL,
+    REPORT_REPLAY_DECISION_JOURNAL_SUMMARY,
 ]
 
 # Report types that are optional — missing is NOT a release failure
@@ -102,6 +107,8 @@ OPTIONAL_REPORT_TYPES = {
     REPORT_TRAINING_METRICS,
     REPORT_EVIDENCE_GRAPH,
     REPORT_STRATEGY_LAB_STABLE,
+    REPORT_REPLAY_DECISION_JOURNAL,
+    REPORT_REPLAY_DECISION_JOURNAL_SUMMARY,
 }
 
 # Report types that require provider tokens / environment setup

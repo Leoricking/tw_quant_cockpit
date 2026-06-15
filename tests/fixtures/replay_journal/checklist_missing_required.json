@@ -1,0 +1,19 @@
+{
+  "checklist_id": "CKL-TEST-BAD",
+  "journal_entry_id": "DJR-20260616-FIN002",
+  "_comment": "INVALID: required items not passed — all_required_passed=false, blocked_items populated",
+  "passed_count": 10,
+  "total_count": 23,
+  "all_required_passed": false,
+  "blocked_items": ["DATA-001", "RISK-001", "DISC-001"],
+  "responses": {
+    "DATA-001": false,
+    "DATA-002": true,
+    "DATA-003": false,
+    "DATA-004": true,
+    "RISK-001": false,
+    "DISC-001": false
+  },
+  "simulation_only": true,
+  "created_at": "2026-06-16T00:00:00+00:00"
+}

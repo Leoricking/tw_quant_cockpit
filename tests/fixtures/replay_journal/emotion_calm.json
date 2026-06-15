@@ -1,0 +1,13 @@
+{
+  "emotional_state_id": "EMOT-TEST-001",
+  "journal_entry_id": "DJR-20260616-FIN002",
+  "primary_emotion": "CALM",
+  "confidence_level": 70,
+  "anxiety_level": 20,
+  "focus_level": 85,
+  "cognitive_bias_flags": [],
+  "notes": "Feeling calm and focused. No strong biases detected.",
+  "self_reported": true,
+  "simulation_only": true,
+  "created_at": "2026-06-16T00:00:00+00:00"
+}

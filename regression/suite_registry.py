@@ -4432,6 +4432,49 @@ class RegressionSuiteRegistry:
                     description="safety-scan all passes after v1.2.1",
                 ),
             ],
+            # v1.2.2 Decision Journal Integration
+            [
+                RegressionTestCase(
+                    test_id="rg_replay_journal_health_v122",
+                    name="replay-journal-health",
+                    suite=SUITE_QUICK,
+                    category="replay_decision_journal",
+                    command=["main.py", "replay-journal-health"],
+                    timeout_seconds=60,
+                    required=False,
+                    description="replay-journal-health runs without crash",
+                ),
+                RegressionTestCase(
+                    test_id="rg_replay_journal_templates_v122",
+                    name="replay-journal-templates",
+                    suite=SUITE_QUICK,
+                    category="replay_decision_journal",
+                    command=["main.py", "replay-journal-templates"],
+                    timeout_seconds=60,
+                    required=False,
+                    description="replay-journal-templates lists builtin templates",
+                ),
+                RegressionTestCase(
+                    test_id="rg_replay_decision_journal_regression",
+                    name="test_replay_decision_journal_regression",
+                    suite=SUITE_FULL,
+                    category="replay_decision_journal",
+                    command=["-m", "pytest", "tests/test_replay_decision_journal_regression.py", "-v", "--tb=short"],
+                    timeout_seconds=180,
+                    required=False,
+                    description="Decision journal regression tests pass (24 test cases)",
+                ),
+                RegressionTestCase(
+                    test_id="rg_safety_scan_v122",
+                    name="safety-scan --target all (v1.2.2)",
+                    suite=SUITE_RELEASE_GATE,
+                    category="replay_decision_journal",
+                    command=["main.py", "safety-scan", "--target", "all"],
+                    timeout_seconds=120,
+                    required=False,
+                    description="safety-scan all passes after v1.2.2",
+                ),
+            ],
         ]:
             for tc in suite_tests:
                 if tc.test_id not in seen:

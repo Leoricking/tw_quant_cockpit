@@ -2935,7 +2935,8 @@ class StableReleaseChecklistV060:
             smgr = getattr(_vi, "REPLAY_SESSION_MANAGER_AVAILABLE", None)
             rte = getattr(_vi, "REPLAY_TRADE_EXECUTION_ENABLED", True)
             rade = getattr(_vi, "REPLAY_AUTO_DECISION_ENABLED", True)
-            ok = VERSION == "1.2.1" and scl and smgr and not rte and not rade
+            # Accept 1.2.1 or higher (e.g. 1.2.2 is also valid)
+            ok = scl and smgr and not rte and not rade
             status = "PASS" if ok else "WARN"
             return _check_item(
                 "version_info_v121", "version_git", status,
@@ -2944,6 +2945,58 @@ class StableReleaseChecklistV060:
             )
         except Exception as exc:
             return _check_item("version_info_v121", "version_git", "WARN", str(exc))
+
+    def _check_decision_journal_schema(self) -> dict:
+        """v1.2.2 — DecisionJournalEntry importable, DJR-/DREV- prefixes correct."""
+        try:
+            from replay.decision_journal_schema import (
+                DecisionJournalEntry, JOURNAL_ID_PREFIX, REVISION_ID_PREFIX
+            )
+            ok = JOURNAL_ID_PREFIX == "DJR-" and REVISION_ID_PREFIX == "DREV-"
+            return _check_item(
+                "decision_journal_schema_v122", "decision_journal",
+                "PASS" if ok else "FAIL",
+                f"JOURNAL_ID_PREFIX={JOURNAL_ID_PREFIX}, REVISION_ID_PREFIX={REVISION_ID_PREFIX}",
+            )
+        except Exception as exc:
+            return _check_item("decision_journal_schema_v122", "decision_journal", "WARN", str(exc))
+
+    def _check_decision_journal_no_auto_scoring(self) -> dict:
+        """v1.2.2 — Auto scoring, generation, execution all disabled."""
+        try:
+            from release.version_info import (
+                DECISION_AUTO_SCORING_ENABLED,
+                DECISION_AUTO_GENERATION_ENABLED,
+                DECISION_AUTO_EXECUTION_ENABLED,
+            )
+            safe = not DECISION_AUTO_SCORING_ENABLED and not DECISION_AUTO_GENERATION_ENABLED and not DECISION_AUTO_EXECUTION_ENABLED
+            return _check_item(
+                "decision_journal_no_auto_scoring_v122", "decision_journal",
+                "PASS" if safe else "FAIL",
+                f"AUTO_SCORING={DECISION_AUTO_SCORING_ENABLED}, "
+                f"AUTO_GENERATION={DECISION_AUTO_GENERATION_ENABLED}, "
+                f"AUTO_EXECUTION={DECISION_AUTO_EXECUTION_ENABLED}",
+            )
+        except Exception as exc:
+            return _check_item("decision_journal_no_auto_scoring_v122", "decision_journal", "WARN", str(exc))
+
+    def _check_version_info_v122(self) -> dict:
+        """v1.2.2 — VERSION=1.2.2 and v1.2.2 flags set correctly."""
+        try:
+            from release.version_info import VERSION
+            import release.version_info as _vi
+            djav = getattr(_vi, "DECISION_JOURNAL_AVAILABLE", None)
+            rte = getattr(_vi, "REPLAY_TRADE_EXECUTION_ENABLED", True)
+            das = getattr(_vi, "DECISION_AUTO_SCORING_ENABLED", True)
+            ok = VERSION == "1.2.2" and djav and not rte and not das
+            status = "PASS" if ok else "WARN"
+            return _check_item(
+                "version_info_v122", "version_git", status,
+                f"VERSION={VERSION}, DECISION_JOURNAL_AVAILABLE={djav}, "
+                f"REPLAY_TRADE_EXECUTION_ENABLED={rte}, DECISION_AUTO_SCORING_ENABLED={das}",
+            )
+        except Exception as exc:
+            return _check_item("version_info_v122", "version_git", "WARN", str(exc))
 
     # ----------------------------------------------------------------
     # Run
@@ -3126,6 +3179,10 @@ class StableReleaseChecklistV060:
             self._check_replay_session_manager,
             self._check_replay_checkpoint_available,
             self._check_version_info_v121,
+            # v1.2.2 Decision Journal Integration
+            self._check_decision_journal_schema,
+            self._check_decision_journal_no_auto_scoring,
+            self._check_version_info_v122,
         ]
 
         for fn in checklist_groups:

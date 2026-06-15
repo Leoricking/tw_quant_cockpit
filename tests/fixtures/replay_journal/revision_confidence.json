@@ -1,0 +1,14 @@
+{
+  "revision_id": "DREV-20260616-REV001",
+  "journal_entry_id": "DJR-20260616-FIN002",
+  "revision_number": 1,
+  "reason": "Volume not confirming strength, reducing confidence.",
+  "field_changed": "confidence",
+  "confidence_before": 78,
+  "confidence_after": 60,
+  "value_before": 78,
+  "value_after": 60,
+  "notes": "Saw volume dry up on upthrust, reduced confidence.",
+  "simulation_only": true,
+  "created_at": "2026-06-16T01:00:00+00:00"
+}

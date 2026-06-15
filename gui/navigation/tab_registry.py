@@ -1885,6 +1885,41 @@ class GUITabRegistry:
                 favorite_default=False,
                 notes="Added in v1.2.1 \u2014 Replay Scenario & Session Manager.",
             ),
+            # replay_decision_journal (v1.2.2)
+            GUITabMetadata(
+                tab_id="replay_decision_journal",
+                tab_name="replay_decision_journal",
+                display_name="Replay Decision Journal",
+                group="research",
+                priority="P0",
+                description="Decision journal for replay training — trade thesis, risk plan, emotional state, discipline checklist.",
+                module_path="gui.replay_decision_journal_panel",
+                class_name="ReplayDecisionJournalPanel",
+                available_flag="DECISION_JOURNAL_AVAILABLE",
+                safety_level="RESEARCH_ONLY",
+                read_only=True,
+                no_real_orders=True,
+                production_blocked=True,
+                keywords=[
+                    "decision journal", "trade thesis", "risk plan",
+                    "emotional state", "discipline checklist",
+                    "decision revision", "replay journal",
+                    "\u6c7a\u7b56\u65e5\u8a8c", "\u4ea4\u6613\u5047\u8a2d",
+                    "\u98a8\u96aa\u8a08\u756b", "\u60c5\u7dd2\u7d00\u9304",
+                    "\u7d00\u5f8b\u6aa2\u67e5", "\u6c7a\u7b56\u4fee\u8a02",
+                ],
+                related_cli_commands=[
+                    "replay-journal-health",
+                    "replay-journal-list",
+                    "replay-journal-create",
+                    "replay-journal-summary",
+                ],
+                report_types=["replay_decision_journal_report", "replay_decision_journal_summary"],
+                maturity="STABLE",
+                default_visible=True,
+                favorite_default=False,
+                notes="Added in v1.2.2 \u2014 Decision Journal Integration. RESEARCH ONLY. No Real Orders.",
+            ),
         ]
         for tab in tabs:
             self._tabs[tab.tab_id] = tab

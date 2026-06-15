@@ -1,0 +1,9 @@
+{
+  "link_id": "LINK-TEST-CHECKPOINT-001",
+  "journal_entry_id": "DJR-20260616-FIN002",
+  "relation_type": "CHECKPOINT",
+  "linked_id": "CKP-TEST-001",
+  "notes": "Entry linked to specific checkpoint in session.",
+  "simulation_only": true,
+  "created_at": "2026-06-16T00:00:00+00:00"
+}

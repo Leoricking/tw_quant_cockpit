@@ -1,0 +1,16 @@
+{
+  "template_name": "bottom_reversal",
+  "display_name": "Bottom Reversal Journal",
+  "setup_type": "BOTTOM_REVERSAL",
+  "time_horizon": "SWING",
+  "checklist_items": [
+    {"id": "BTM_01", "category": "SETUP", "text": "Downtrend showing exhaustion signals?", "required": true},
+    {"id": "BTM_02", "category": "SETUP", "text": "Volume climax or divergence visible?", "required": true},
+    {"id": "BTM_03", "category": "ENTRY", "text": "Waiting for reversal confirmation, not knife-catching?", "required": true},
+    {"id": "BTM_04", "category": "RISK", "text": "Stop below reversal low clearly defined?", "required": true},
+    {"id": "BTM_05", "category": "EMOTION", "text": "Not driven by bottom-fishing hope?", "required": true}
+  ],
+  "pre_decision_prompts": ["What exhaustion signals are present?", "What is the reversal trigger?"],
+  "post_decision_prompts": ["Did reversal confirm?", "What was the key signal?"],
+  "simulation_only": true
+}

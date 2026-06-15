@@ -1,5 +1,5 @@
 """
-release/version_info.py — Centralized version info for TW Quant Cockpit v1.2.1.
+release/version_info.py — Centralized version info for TW Quant Cockpit v1.2.2.
 [!] Research Only. No Real Orders. Production Trading: BLOCKED.
 [!] VALIDATED does not enable trading. Broker Execution Disabled.
 [!] Data Universe Expansion. Real Data Coverage Required.
@@ -22,6 +22,10 @@ release/version_info.py — Centralized version info for TW Quant Cockpit v1.2.1
 [!] Replay Trade Execution DISABLED. Replay decisions are SIMULATION ONLY. Not Investment Advice.
 [!] Replay Scenario & Session Manager. Scenario templates never contain future answers.
 [!] Replay Session Fork/Checkpoint NEVER copies future data. Not Investment Advice.
+[!] Decision Journal Integration. Journal decisions are SIMULATION ONLY. No paper orders. No broker.
+[!] No hindsight scoring. No future results. No realized PnL. Not Investment Advice.
+[!] Emotional state self-reported only. NOT psychological diagnosis. No auto scoring.
+[!] Cognitive bias flags self-reported or rule-triggered only. Not auto-inferred from performance.
 """
 from __future__ import annotations
 import logging
@@ -33,9 +37,9 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # ---------------------------------------------------------------------------
 # v1.1.9 module-level constants (Data Governance Stable Rollup)
 # ---------------------------------------------------------------------------
-VERSION                             = "1.2.1"
-RELEASE_NAME                        = "Replay Scenario & Session Manager"
-BASE_RELEASE                        = "1.2.0 Replay Training UX Foundation"
+VERSION                             = "1.2.2"
+RELEASE_NAME                        = "Decision Journal Integration"
+BASE_RELEASE                        = "1.2.1 Replay Scenario & Session Manager"
 BASE_RELEASE_NAME                   = "Data Governance Stable Rollup"
 MAINTENANCE_RELEASE                 = False
 RELEASE_STAGE                       = "FOUNDATION"
@@ -168,6 +172,17 @@ REPLAY_BATCH_SESSION_CREATION_AVAILABLE = True
 REPLAY_AUTO_SCORING_ENABLED             = False   # noqa: F811 (overrides above, both False)
 REPLAY_AUTO_DECISION_ENABLED            = False
 REPLAY_AUTO_EXECUTION_ENABLED           = False   # noqa: F811
+REPLAY_TRADE_EXECUTION_ENABLED          = False   # noqa: F811
+# v1.2.2 Decision Journal Integration flags
+DECISION_JOURNAL_AVAILABLE              = True
+DECISION_REVISION_HISTORY_AVAILABLE     = True
+DISCIPLINE_CHECKLIST_AVAILABLE          = True
+EMOTIONAL_STATE_CAPTURE_AVAILABLE       = True
+TRADE_THESIS_CAPTURE_AVAILABLE          = True
+RISK_PLAN_CAPTURE_AVAILABLE             = True
+DECISION_AUTO_SCORING_ENABLED           = False
+DECISION_AUTO_GENERATION_ENABLED        = False
+DECISION_AUTO_EXECUTION_ENABLED         = False
 REPLAY_TRADE_EXECUTION_ENABLED          = False   # noqa: F811
 
 
@@ -394,6 +409,16 @@ def print_version_info() -> None:
     print(f"  Replay Session Compare Available: {REPLAY_SESSION_COMPARE_AVAILABLE}")
     print(f"  Replay Batch Session Creation Available: {REPLAY_BATCH_SESSION_CREATION_AVAILABLE}")
     print(f"  Replay Auto Decision Enabled: {REPLAY_AUTO_DECISION_ENABLED}")
+    print(f"  Decision Journal Available: {DECISION_JOURNAL_AVAILABLE}")
+    print(f"  Decision Revision History Available: {DECISION_REVISION_HISTORY_AVAILABLE}")
+    print(f"  Discipline Checklist Available: {DISCIPLINE_CHECKLIST_AVAILABLE}")
+    print(f"  Emotional State Capture Available: {EMOTIONAL_STATE_CAPTURE_AVAILABLE}")
+    print(f"  Trade Thesis Capture Available: {TRADE_THESIS_CAPTURE_AVAILABLE}")
+    print(f"  Risk Plan Capture Available: {RISK_PLAN_CAPTURE_AVAILABLE}")
+    print(f"  Decision Auto Scoring Enabled: {DECISION_AUTO_SCORING_ENABLED}")
+    print(f"  Decision Auto Generation Enabled: {DECISION_AUTO_GENERATION_ENABLED}")
+    print(f"  Decision Auto Execution Enabled: {DECISION_AUTO_EXECUTION_ENABLED}")
+    print(f"  Replay Trade Execution Enabled: {REPLAY_TRADE_EXECUTION_ENABLED}")
     print("=" * 60)
 
 
