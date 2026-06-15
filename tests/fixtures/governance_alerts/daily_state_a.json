@@ -1,0 +1,1 @@
+{"snapshot_id": "TST-STATE-A-001", "date": "2026-01-14", "ready": 20, "formal": 15, "blocked": 2, "p0_actions": 0, "p1_actions": 1, "open_alerts": 1, "source_interruptions": 0, "audit_failures": 0, "stale_symbols": 3, "missing_symbols": 1, "overall_status": "WARNING", "research_only": true, "no_real_orders": true, "_test_note": "State A snapshot for daily compare test"}

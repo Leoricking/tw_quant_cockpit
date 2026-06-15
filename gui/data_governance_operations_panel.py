@@ -155,6 +155,42 @@ else:
             self._summary_table.horizontalHeader().setSectionResizeMode(0, QHeaderView.ResizeToContents)
             self._summary_table.horizontalHeader().setSectionResizeMode(1, QHeaderView.Stretch)
             summary_layout.addWidget(self._summary_table)
+
+            # v1.1.7 Governance Alerts summary sub-section
+            alerts_group = QGroupBox("Governance Alerts Summary (v1.1.7)")
+            alerts_group.setStyleSheet("QGroupBox { font-weight: bold; }")
+            alerts_layout = QHBoxLayout(alerts_group)
+            self._ga_open_label = QLabel("Open: —")
+            self._ga_p0_label = QLabel("P0: —")
+            self._ga_p0_label.setStyleSheet("color: #FF4444;")
+            self._ga_p1_label = QLabel("P1: —")
+            self._ga_p1_label.setStyleSheet("color: #FF8800;")
+            self._ga_escalated_label = QLabel("Escalated: —")
+            self._ga_snoozed_label = QLabel("Snoozed: —")
+            self._ga_reopened_label = QLabel("Reopened Today: —")
+            self._ga_checklist_label = QLabel("Checklist: —")
+            self._ga_digest_label = QLabel("Latest Digest: —")
+            self._ga_digest_label.setWordWrap(True)
+            for lbl in [
+                self._ga_open_label, self._ga_p0_label, self._ga_p1_label,
+                self._ga_escalated_label, self._ga_snoozed_label, self._ga_reopened_label,
+                self._ga_checklist_label,
+            ]:
+                alerts_layout.addWidget(lbl)
+            alerts_layout.addStretch()
+            open_alerts_btn = QPushButton("Open Governance Alerts")
+            open_alerts_btn.setToolTip("Open the Governance Alerts & Daily Operations tab")
+            open_alerts_btn.clicked.connect(self._on_open_governance_alerts)
+            checklist_btn = QPushButton("Open Daily Checklist")
+            checklist_btn.setToolTip("Run: python main.py governance-checklist")
+            checklist_btn.clicked.connect(self._on_open_daily_checklist)
+            digest_btn = QPushButton("Open Latest Digest")
+            digest_btn.setToolTip("Run: python main.py governance-digest --type daily")
+            digest_btn.clicked.connect(self._on_open_latest_digest)
+            for btn in [open_alerts_btn, checklist_btn, digest_btn]:
+                alerts_layout.addWidget(btn)
+            summary_layout.addWidget(alerts_group)
+            summary_layout.addWidget(self._ga_digest_label)
             self._tabs.addTab(summary_tab, "Summary")
 
             # Tab: Module Health (Section D)
@@ -252,6 +288,7 @@ else:
                 self._update_action_table(actions)
                 self._update_symbol_table(symbol_matrix)
                 self._update_runs_table(runs)
+                self._refresh_governance_alerts_summary()
             except Exception as exc:
                 logger.warning("_on_refresh_done error: %s", exc)
 
@@ -430,4 +467,48 @@ else:
                 self, "Command Copied",
                 f"Safe CLI command copied to clipboard:\n{cmd}\n\n"
                 "[!] This only copies the command. It does NOT execute it."
+            )
+
+        def _refresh_governance_alerts_summary(self):
+            """Refresh governance alerts summary sub-section (v1.1.7, read-only)."""
+            try:
+                from gui.governance_alerts_adapter import GovernanceAlertsAdapter
+                adapter = GovernanceAlertsAdapter()
+                s = adapter.summary()
+                self._ga_open_label.setText(f"Open: {s.get('open', 0)}")
+                self._ga_p0_label.setText(f"P0: {s.get('p0', 0)}")
+                self._ga_p1_label.setText(f"P1: {s.get('p1', 0)}")
+                self._ga_escalated_label.setText(f"Escalated: {s.get('escalated', 0)}")
+                self._ga_snoozed_label.setText(f"Snoozed: {s.get('snoozed', 0)}")
+                self._ga_reopened_label.setText(f"Reopened Today: {s.get('reopened_today', 0)}")
+                cr = s.get("checklist_completion", 0.0)
+                self._ga_checklist_label.setText(f"Checklist: {cr:.0%}")
+                digest_txt = adapter.latest_digest_summary()
+                self._ga_digest_label.setText(f"Latest Digest: {digest_txt}")
+            except Exception as exc:
+                logger.debug("_refresh_governance_alerts_summary: %s", exc)
+
+        def _on_open_governance_alerts(self):
+            """Navigate to Governance Alerts tab via informational message."""
+            QMessageBox.information(
+                self, "Governance Alerts",
+                "Open the 'Governance Alerts' tab in the main dashboard.\n\n"
+                "Or run: python main.py governance-alerts\n\n"
+                "[!] Research Only. No Real Orders."
+            )
+
+        def _on_open_daily_checklist(self):
+            """Show daily checklist command info."""
+            QMessageBox.information(
+                self, "Daily Checklist",
+                "Run: python main.py governance-checklist\n\n"
+                "[!] Research Only. No Real Orders."
+            )
+
+        def _on_open_latest_digest(self):
+            """Show latest digest command info."""
+            QMessageBox.information(
+                self, "Latest Digest",
+                "Run: python main.py governance-digest --type daily\n\n"
+                "[!] Research Only. No Real Orders."
             )

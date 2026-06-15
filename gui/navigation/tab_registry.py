@@ -1486,6 +1486,65 @@ class GUITabRegistry:
                 notes="Added in v1.1.4 — Coverage Quality Gates.",
             ),
             # ----------------------------------------------------------------
+            # v1.1.7 Governance Alerts & Daily Operations
+            # ----------------------------------------------------------------
+            GUITabMetadata(
+                tab_id="governance_alerts",
+                tab_name="Governance Alerts",
+                display_name="Governance Alerts & Daily Operations",
+                group="data",
+                priority="P0",
+                description=(
+                    "Governance Alerts & Daily Operations v1.1.7 — alert detection, "
+                    "deduplication, lifecycle, snooze, escalation, morning and end-of-day digests, "
+                    "daily checklists, safe notification previews, alert history and trends. "
+                    "Research Only. No Real Orders. External Notification Send DISABLED. No Auto Repair."
+                ),
+                module_path="gui.governance_alerts_panel",
+                class_name="GovernanceAlertsPanel",
+                available_flag="_GOVERNANCE_ALERTS_AVAILABLE",
+                keywords=[
+                    "governance alerts", "daily digest", "p0 alerts", "p1 alerts",
+                    "snooze", "escalation", "source interruption", "freshness sla",
+                    "audit failure", "daily checklist", "alert lifecycle", "alert dedup",
+                    "morning digest", "end of day digest", "notification preview",
+                    "\u6cbb\u7406\u8b66\u793a",   # 治理警示
+                    "\u6bcf\u65e5\u6458\u8981",   # 每日摘要
+                    "\u7dca\u6025\u8b66\u793a",   # 緊急警示
+                    "\u5ef6\u5f8c\u63d0\u9192",   # 延後提醒
+                    "\u5347\u7d1a\u8b66\u793a",   # 升級警示
+                    "\u4f86\u6e90\u4e2d\u65b7",   # 來源中斷
+                    "\u65b0\u9bae\u5ea6\u9055\u898f",  # 新鮮度違規
+                    "\u7a3d\u6838\u5931\u6557",   # 稽核失敗
+                    "\u6bcf\u65e5\u6aa2\u67e5",   # 每日檢查
+                ],
+                aliases=["governance-alerts", "alert-center", "daily-digest"],
+                related_cli_commands=[
+                    "governance-alerts-health", "governance-alerts-scan", "governance-alerts",
+                    "governance-alert", "governance-alert-history", "governance-alert-ack",
+                    "governance-alert-snooze", "governance-alert-resolve", "governance-alert-reopen",
+                    "governance-alert-escalations", "governance-digest", "governance-checklist",
+                    "governance-checklist-complete", "governance-notification-preview",
+                    "governance-alert-trend", "governance-alert-compare",
+                    "governance-daily-operations", "governance-alerts-report",
+                    "governance-alert-audit", "governance-alert-audit-verify",
+                ],
+                report_types=[
+                    "governance_alerts_daily_operations_report",
+                    "governance_morning_digest",
+                    "governance_end_of_day_digest",
+                    "governance_weekly_digest",
+                    "governance_alert_trend",
+                    "governance_checklist",
+                ],
+                maturity="STABLE",
+                default_visible=True,
+                favorite_default=False,
+                no_real_orders=True,
+                read_only=True,
+                production_blocked=True,
+                notes="Added in v1.1.7 \u2014 Governance Alerts & Daily Operations.",
+            ),
             # ----------------------------------------------------------------
             # v1.1.6 Data Governance Operations Dashboard
             # ----------------------------------------------------------------

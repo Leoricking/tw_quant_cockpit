@@ -90,6 +90,14 @@ REPORT_GOVERNANCE_ACTION_QUEUE    = "governance_action_queue_report"
 REPORT_GOVERNANCE_MODULE_HEALTH   = "governance_module_health_report"
 REPORT_GOVERNANCE_AUDIT_SUMMARY   = "governance_audit_summary_report"
 
+# v1.1.7 Governance Alerts & Daily Operations
+REPORT_GOVERNANCE_ALERTS_DAILY_OPS = "governance_alerts_daily_operations_report"
+REPORT_GOVERNANCE_MORNING_DIGEST    = "governance_morning_digest"
+REPORT_GOVERNANCE_EOD_DIGEST        = "governance_end_of_day_digest"
+REPORT_GOVERNANCE_WEEKLY_DIGEST     = "governance_weekly_digest"
+REPORT_GOVERNANCE_ALERT_TREND       = "governance_alert_trend"
+REPORT_GOVERNANCE_CHECKLIST         = "governance_checklist"
+
 logger = logging.getLogger(__name__)
 
 # ---------------------------------------------------------------------------
@@ -211,6 +219,12 @@ _PACK_DEFINITIONS: Dict[str, List[str]] = {
         REPORT_GOVERNANCE_ACTION_QUEUE,
         REPORT_GOVERNANCE_MODULE_HEALTH,
         REPORT_GOVERNANCE_AUDIT_SUMMARY,
+        # v1.1.7 Governance Alerts & Daily Operations (optional in weekly pack)
+        REPORT_GOVERNANCE_ALERTS_DAILY_OPS,
+        REPORT_GOVERNANCE_MORNING_DIGEST,
+        REPORT_GOVERNANCE_EOD_DIGEST,
+        REPORT_GOVERNANCE_ALERT_TREND,
+        REPORT_GOVERNANCE_CHECKLIST,
     ],
     PACK_FULL: [
         REPORT_DAILY_MARKET,
@@ -296,6 +310,13 @@ _PACK_DEFINITIONS: Dict[str, List[str]] = {
         REPORT_GOVERNANCE_ACTION_QUEUE,
         REPORT_GOVERNANCE_MODULE_HEALTH,
         REPORT_GOVERNANCE_AUDIT_SUMMARY,
+        # v1.1.7 Governance Alerts & Daily Operations (optional in full pack)
+        REPORT_GOVERNANCE_ALERTS_DAILY_OPS,
+        REPORT_GOVERNANCE_MORNING_DIGEST,
+        REPORT_GOVERNANCE_EOD_DIGEST,
+        REPORT_GOVERNANCE_WEEKLY_DIGEST,
+        REPORT_GOVERNANCE_ALERT_TREND,
+        REPORT_GOVERNANCE_CHECKLIST,
     ],
 }
 

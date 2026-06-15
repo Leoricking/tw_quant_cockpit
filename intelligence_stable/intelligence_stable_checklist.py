@@ -1336,4 +1336,41 @@ class IntelligenceStableChecklist:
                 suggested_fix="Run: python main.py governance-health",
             ))
 
+        # v1.1.7 Governance Alerts & Daily Operations safety check
+        try:
+            import governance_alerts
+            no_orders_ga = getattr(governance_alerts, "NO_REAL_ORDERS", False)
+            ext_send = getattr(governance_alerts, "EXTERNAL_NOTIFICATION_SEND_ENABLED", True)
+            auto_repair_ga = getattr(governance_alerts, "GOVERNANCE_AUTO_REPAIR_ENABLED", True)
+            auto_import = getattr(governance_alerts, "GOVERNANCE_AUTO_IMPORT_ENABLED", True)
+
+            if (no_orders_ga is True and ext_send is False
+                    and auto_repair_ga is False and auto_import is False):
+                checks.append(_check(
+                    "governance_alerts_v117_safe", "stable_integration",
+                    "v1.1.7 governance_alerts_v117_safe",
+                    CHECK_PASS, SEV_LOW,
+                    "governance_alerts: NO_REAL_ORDERS=True, EXTERNAL_NOTIFICATION_SEND_ENABLED=False, "
+                    "GOVERNANCE_AUTO_REPAIR_ENABLED=False, GOVERNANCE_AUTO_IMPORT_ENABLED=False.",
+                ))
+            else:
+                checks.append(_check(
+                    "governance_alerts_v117_safe", "stable_integration",
+                    "v1.1.7 governance_alerts_v117_safe",
+                    CHECK_WARN, SEV_LOW,
+                    f"governance_alerts safety flags: NO_REAL_ORDERS={no_orders_ga}, "
+                    f"EXTERNAL_NOTIFICATION_SEND_ENABLED={ext_send}, "
+                    f"GOVERNANCE_AUTO_REPAIR_ENABLED={auto_repair_ga}, "
+                    f"GOVERNANCE_AUTO_IMPORT_ENABLED={auto_import}",
+                    suggested_fix="Ensure governance_alerts/__init__.py has correct v1.1.7 safety flags.",
+                ))
+        except Exception as exc:
+            checks.append(_check(
+                "governance_alerts_v117_safe", "stable_integration",
+                "v1.1.7 governance_alerts_v117_safe",
+                CHECK_WARN, SEV_LOW,
+                f"Could not verify governance_alerts v1.1.7 safety (optional): {exc}",
+                suggested_fix="Run: python main.py governance-alerts-health",
+            ))
+
         return checks

@@ -12357,6 +12357,464 @@ def cmd_governance_action_resolve(args) -> None:
 
 
 # ---------------------------------------------------------------------------
+# v1.1.7 Governance Alerts & Daily Operations handlers
+# ---------------------------------------------------------------------------
+
+def _print_governance_alerts_header():
+    print("=" * 60)
+    print("TW Quant Cockpit \u2014 Governance Alerts & Daily Operations")
+    print("Research Only: True | No Real Orders: True")
+    print("No Auto Repair | No Auto Import | No Gate Override | No Trading")
+    print("External Notification Send: DISABLED")
+    print("=" * 60)
+
+
+def cmd_governance_alerts_health(args) -> None:
+    """Run governance alerts health check. [!] Research Only. No Real Orders."""
+    _print_governance_alerts_header()
+    try:
+        from governance_alerts.alert_health import GovernanceAlertsHealthCheck
+        checker = GovernanceAlertsHealthCheck()
+        results = checker.run()
+        passed = sum(1 for _, s, _ in results if s == "PASS")
+        total = len(results)
+        print(f"  Passed: {passed}/{total}")
+        for name, status, msg in results:
+            print(f"  [{status}] {name}: {msg}")
+        print("[!] Research Only. No Real Orders.")
+    except Exception as exc:
+        print(f"  [ERROR] governance-alerts-health failed: {exc}")
+        print("[!] Research Only. No Real Orders.")
+
+
+def cmd_governance_alerts_scan(args) -> None:
+    """Scan for governance alerts from all sources. [!] Research Only."""
+    _print_governance_alerts_header()
+    mode = getattr(args, "mode", "real")
+    tier = getattr(args, "tier", "research30")
+    print(f"  Mode: {mode} | Tier: {tier}")
+    print("=" * 60)
+    try:
+        from governance_alerts.alert_detector import GovernanceAlertDetector
+        detector = GovernanceAlertDetector(mode=mode, tier=tier)
+        alerts = detector.detect_all(mode=mode, tier=tier)
+        summary = detector.summarize_detection(alerts)
+        print(f"  Total Alerts Detected: {summary['total']}")
+        print(f"  P0: {summary['p0']} | P1: {summary['p1']} | P2: {summary['p2']} | P3: {summary['p3']}")
+        print(f"  Critical: {summary['critical']} | High: {summary['high']} | Medium: {summary['medium']}")
+        if alerts:
+            print(f"")
+            print(f"  {'Priority':<6} {'Type':<35} {'Title':<50}")
+            print(f"  {'-'*95}")
+            for a in alerts[:20]:
+                print(f"  {a.priority:<6} {a.alert_type:<35} {a.title[:50]}")
+        print("[!] Research Only. No Real Orders. Scan only.")
+    except Exception as exc:
+        print(f"  [ERROR] governance-alerts-scan failed: {exc}")
+
+
+def cmd_governance_alerts(args) -> None:
+    """List governance alerts. [!] Research Only."""
+    _print_governance_alerts_header()
+    priority = getattr(args, "priority", None)
+    status = getattr(args, "status", None)
+    try:
+        from governance_alerts.alert_query import latest_alerts, alerts_by_priority, alerts_by_status
+        if priority:
+            alerts = alerts_by_priority(priority.upper())
+        elif status:
+            alerts = alerts_by_status(status.upper())
+        else:
+            alerts = latest_alerts()
+        if not alerts:
+            print(f"  No alerts found{' with priority ' + priority if priority else ''}.")
+            print("  Run: python main.py governance-alerts-scan")
+        else:
+            print(f"  {'Priority':<6} {'Severity':<10} {'Type':<30} {'Status':<14} {'Title':<40}")
+            print(f"  {'-'*105}")
+            for a in alerts[:25]:
+                print(f"  {a.priority:<6} {a.severity:<10} {a.alert_type:<30} {a.status:<14} {a.title[:40]}")
+            if len(alerts) > 25:
+                print(f"  ... {len(alerts) - 25} more alerts")
+        print("[!] Research Only. No Real Orders.")
+    except Exception as exc:
+        print(f"  [ERROR] governance-alerts failed: {exc}")
+
+
+def cmd_governance_alert(args) -> None:
+    """Show detail for a single governance alert. [!] Research Only."""
+    _print_governance_alerts_header()
+    alert_id = getattr(args, "alert_id", None)
+    if not alert_id:
+        print("  [ERROR] --alert-id is required.")
+        return
+    try:
+        from governance_alerts.alert_query import latest_alerts
+        alerts = latest_alerts()
+        matching = [a for a in alerts if a.alert_id == alert_id]
+        if not matching:
+            print(f"  Alert {alert_id} not found.")
+        else:
+            a = matching[0]
+            for k, v in a.to_dict().items():
+                print(f"  {k}: {v}")
+        print("[!] Research Only. No Real Orders.")
+    except Exception as exc:
+        print(f"  [ERROR] governance-alert failed: {exc}")
+
+
+def cmd_governance_alert_history(args) -> None:
+    """Show transition history for a governance alert. [!] Research Only."""
+    _print_governance_alerts_header()
+    alert_id = getattr(args, "alert_id", None)
+    if not alert_id:
+        print("  [ERROR] --alert-id is required.")
+        return
+    try:
+        from governance_alerts.alert_query import alert_history
+        transitions = alert_history(alert_id)
+        if not transitions:
+            print(f"  No history for alert {alert_id}.")
+        else:
+            print(f"  {'Timestamp':<26} {'From':<14} {'To':<14} {'Actor':<12} {'Reason'}")
+            print(f"  {'-'*90}")
+            for t in transitions:
+                print(f"  {t.timestamp[:26]:<26} {t.from_status:<14} {t.to_status:<14} {t.actor:<12} {t.reason[:40]}")
+        print("[!] Research Only. No Real Orders.")
+    except Exception as exc:
+        print(f"  [ERROR] governance-alert-history failed: {exc}")
+
+
+def cmd_governance_alert_ack(args) -> None:
+    """Acknowledge a governance alert (metadata only). [!] Research Only."""
+    _print_governance_alerts_header()
+    alert_id = getattr(args, "alert_id", None)
+    note = getattr(args, "note", "") or ""
+    if not alert_id:
+        print("  [ERROR] --alert-id is required.")
+        return
+    try:
+        from governance_alerts.alert_lifecycle import GovernanceAlertLifecycle
+        lc = GovernanceAlertLifecycle()
+        result = lc.acknowledge(alert_id, note=note)
+        if result:
+            print(f"  Alert {alert_id}: ACKNOWLEDGED")
+        else:
+            print(f"  Alert {alert_id}: not found or transition invalid")
+        print("[!] Metadata only. Does NOT fix source data. Alert may reopen on next scan.")
+    except Exception as exc:
+        print(f"  [ERROR] governance-alert-ack failed: {exc}")
+
+
+def cmd_governance_alert_snooze(args) -> None:
+    """Snooze a governance alert (metadata only). [!] Research Only."""
+    _print_governance_alerts_header()
+    alert_id = getattr(args, "alert_id", None)
+    until = getattr(args, "until", None)
+    reason = getattr(args, "reason", "") or ""
+    if not alert_id or not until:
+        print("  [ERROR] --alert-id and --until (ISO timestamp) are required.")
+        return
+    try:
+        from governance_alerts.alert_lifecycle import GovernanceAlertLifecycle
+        lc = GovernanceAlertLifecycle()
+        result = lc.snooze(alert_id, until=until, reason=reason)
+        if result:
+            print(f"  Alert {alert_id}: SNOOZED until {until}")
+        else:
+            print(f"  Alert {alert_id}: not found or P0 snooze limit reached")
+        print("[!] Metadata only. Does NOT fix source data.")
+    except Exception as exc:
+        print(f"  [ERROR] governance-alert-snooze failed: {exc}")
+
+
+def cmd_governance_alert_resolve(args) -> None:
+    """Resolve a governance alert (metadata only). [!] Research Only."""
+    _print_governance_alerts_header()
+    alert_id = getattr(args, "alert_id", None)
+    note = getattr(args, "note", "") or ""
+    if not alert_id:
+        print("  [ERROR] --alert-id is required.")
+        return
+    try:
+        from governance_alerts.alert_lifecycle import GovernanceAlertLifecycle
+        lc = GovernanceAlertLifecycle()
+        result = lc.resolve(alert_id, note=note)
+        if result:
+            print(f"  Alert {alert_id}: RESOLVED")
+        else:
+            print(f"  Alert {alert_id}: not found or transition invalid")
+        print("[!] Metadata only. RESOLVED = metadata only. If source issue persists, alert reopens on next scan.")
+    except Exception as exc:
+        print(f"  [ERROR] governance-alert-resolve failed: {exc}")
+
+
+def cmd_governance_alert_reopen(args) -> None:
+    """Reopen a governance alert (metadata only). [!] Research Only."""
+    _print_governance_alerts_header()
+    alert_id = getattr(args, "alert_id", None)
+    reason = getattr(args, "reason", "") or ""
+    if not alert_id:
+        print("  [ERROR] --alert-id is required.")
+        return
+    try:
+        from governance_alerts.alert_lifecycle import GovernanceAlertLifecycle
+        lc = GovernanceAlertLifecycle()
+        result = lc.reopen(alert_id, reason=reason)
+        if result:
+            print(f"  Alert {alert_id}: REOPENED")
+        else:
+            print(f"  Alert {alert_id}: not found or transition invalid")
+        print("[!] Metadata only. No Real Orders.")
+    except Exception as exc:
+        print(f"  [ERROR] governance-alert-reopen failed: {exc}")
+
+
+def cmd_governance_alert_escalations(args) -> None:
+    """Show governance alert escalation summary. [!] Research Only."""
+    _print_governance_alerts_header()
+    try:
+        from governance_alerts.escalation_engine import GovernanceAlertEscalationEngine
+        from governance_alerts.alert_query import latest_alerts
+        alerts = latest_alerts()
+        engine = GovernanceAlertEscalationEngine()
+        summary = engine.build_escalation_summary(alerts)
+        print(f"  Total Escalated:  {summary['total_escalated']}")
+        print(f"  L1: {summary['l1_count']} | L2: {summary['l2_count']} | L3: {summary['l3_count']}")
+        print(f"  P0 Escalated: {summary['p0_escalated']} | P1 Escalated: {summary['p1_escalated']}")
+        print(f"  Types: {summary['types']}")
+        print("[!] Research Only. No Real Orders.")
+    except Exception as exc:
+        print(f"  [ERROR] governance-alert-escalations failed: {exc}")
+
+
+def cmd_governance_digest(args) -> None:
+    """Build a governance digest. [!] Research Only."""
+    _print_governance_alerts_header()
+    digest_type = getattr(args, "type", "daily") or "daily"
+    try:
+        from governance_alerts.digest_builder import GovernanceDigestBuilder
+        from governance_alerts.alert_query import latest_alerts
+        alerts = latest_alerts()
+        builder = GovernanceDigestBuilder()
+        dt = digest_type.lower()
+        if dt == "morning":
+            digest = builder.build_morning_digest(alerts)
+        elif dt in ("end-of-day", "eod"):
+            digest = builder.build_end_of_day_digest(alerts)
+        elif dt == "weekly":
+            digest = builder.build_weekly_digest(alerts)
+        elif dt == "manual":
+            digest = builder.build_manual_digest(alerts)
+        else:
+            digest = builder.build_daily_digest(alerts)
+        print(f"  Digest Type:         {digest.digest_type}")
+        print(f"  Generated At:        {digest.generated_at}")
+        print(f"  Overall Status:      {digest.overall_status}")
+        print(f"  P0: {digest.p0_count} | P1: {digest.p1_count} | Escalated: {digest.escalated_alerts}")
+        print(f"  New: {digest.new_alerts} | Resolved: {digest.resolved_alerts} | Reopened: {digest.reopened_alerts}")
+        print(f"  Source Interruptions: {digest.source_interruptions} | Audit Failures: {digest.audit_failures}")
+        print(f"")
+        print(f"  Safe Next Steps:")
+        for step in (digest.safe_next_steps or [])[:5]:
+            print(f"    - {step}")
+        print("[!] Research Only. No Real Orders. No external notification sent.")
+    except Exception as exc:
+        print(f"  [ERROR] governance-digest failed: {exc}")
+
+
+def cmd_governance_checklist(args) -> None:
+    """Build the daily governance operations checklist. [!] Research Only."""
+    _print_governance_alerts_header()
+    try:
+        from governance_alerts.daily_checklist import GovernanceDailyChecklistBuilder
+        builder = GovernanceDailyChecklistBuilder()
+        checklist = builder.build()
+        summary = builder.summary(checklist)
+        print(f"  Date:             {checklist.date}")
+        print(f"  Total Items:      {summary['total_items']}")
+        print(f"  Required:         {summary['required_items']}")
+        print(f"  Completed:        {summary['completed_items']}")
+        print(f"  Pending:          {summary['pending_items']}")
+        print(f"  Completion Rate:  {summary['completion_rate']:.0%}")
+        print(f"  P0 Unresolved:    {checklist.p0_unresolved}")
+        print(f"  P1 Unresolved:    {checklist.p1_unresolved}")
+        print(f"")
+        if checklist.items:
+            print(f"  {'Category':<20} {'Title':<50} {'Req':<5} {'Status'}")
+            print(f"  {'-'*90}")
+            for item in checklist.items[:15]:
+                req = "Yes" if item.required else "No"
+                print(f"  {item.category:<20} {item.title[:50]:<50} {req:<5} {item.status}")
+        print("[!] Research Only. No Real Orders. Checklist metadata only.")
+    except Exception as exc:
+        print(f"  [ERROR] governance-checklist failed: {exc}")
+
+
+def cmd_governance_checklist_complete(args) -> None:
+    """Mark a daily checklist item as complete (metadata only). [!] Research Only."""
+    _print_governance_alerts_header()
+    item_id = getattr(args, "item_id", None)
+    note = getattr(args, "note", "") or ""
+    if not item_id:
+        print("  [ERROR] --item-id is required.")
+        return
+    try:
+        from governance_alerts.daily_checklist import GovernanceDailyChecklistBuilder
+        builder = GovernanceDailyChecklistBuilder()
+        checklist = builder.build()
+        ok = builder.mark_complete(checklist.checklist_id, item_id, note)
+        print(f"  Item {item_id}: {'COMPLETE' if ok else 'not found'}")
+        print("[!] Metadata only. Does NOT auto-execute source commands.")
+    except Exception as exc:
+        print(f"  [ERROR] governance-checklist-complete failed: {exc}")
+
+
+def cmd_governance_notification_preview(args) -> None:
+    """Show governance notification preview (local only, no send). [!] Research Only."""
+    _print_governance_alerts_header()
+    digest_type = getattr(args, "type", "daily") or "daily"
+    fmt = getattr(args, "format", "markdown") or "markdown"
+    try:
+        from governance_alerts.digest_builder import GovernanceDigestBuilder
+        from governance_alerts.notification_preview import GovernanceNotificationPreview
+        from governance_alerts.alert_query import latest_alerts
+        alerts = latest_alerts()
+        builder = GovernanceDigestBuilder()
+        digest = builder.build_daily_digest(alerts)
+        preview = GovernanceNotificationPreview()
+        text = preview.preview_digest(digest, format=fmt)
+        print(text)
+        print("")
+        print("[!] LOCAL PREVIEW ONLY. External Notification Send: DISABLED.")
+        print("[!] No LINE, Telegram, Slack, email, webhook, or external notification sent.")
+    except Exception as exc:
+        print(f"  [ERROR] governance-notification-preview failed: {exc}")
+
+
+def cmd_governance_alert_trend(args) -> None:
+    """Show governance alert trend. [!] Research Only."""
+    _print_governance_alerts_header()
+    days = int(getattr(args, "days", 7) or 7)
+    try:
+        from governance_alerts.alert_query import trend
+        data = trend(days=days)
+        print(f"  {'Date':<12} {'Total':<8} {'P0':<5} {'P1':<5} {'Critical':<10} {'Audit Fail'}")
+        print(f"  {'-'*55}")
+        for row in data:
+            print(f"  {row['date']:<12} {row['total']:<8} {row['p0']:<5} {row['p1']:<5} {row['critical']:<10} {row['audit_failures']}")
+        print("[!] Research Only. No Real Orders.")
+    except Exception as exc:
+        print(f"  [ERROR] governance-alert-trend failed: {exc}")
+
+
+def cmd_governance_alert_compare(args) -> None:
+    """Compare governance alerts on two dates. [!] Research Only."""
+    _print_governance_alerts_header()
+    date_a = getattr(args, "date_a", None)
+    date_b = getattr(args, "date_b", None)
+    if not date_a or not date_b:
+        print("  [ERROR] --date-a and --date-b are required (YYYY-MM-DD).")
+        return
+    try:
+        from governance_alerts.alert_query import compare_days
+        result = compare_days(date_a, date_b)
+        for k, v in result.items():
+            if k not in ("research_only", "no_real_orders"):
+                print(f"  {k}: {v}")
+        print("[!] Research Only. No Real Orders.")
+    except Exception as exc:
+        print(f"  [ERROR] governance-alert-compare failed: {exc}")
+
+
+def cmd_governance_daily_operations(args) -> None:
+    """Run the full daily governance operations engine. [!] Research Only."""
+    _print_governance_alerts_header()
+    mode = getattr(args, "mode", "real")
+    tier = getattr(args, "tier", "research30")
+    digest_type = getattr(args, "digest_type", "daily") or "daily"
+    print(f"  Mode: {mode} | Tier: {tier} | Digest Type: {digest_type}")
+    print("=" * 60)
+    try:
+        from governance_alerts.daily_operations_engine import GovernanceDailyOperationsEngine
+        engine = GovernanceDailyOperationsEngine()
+        digest = engine.run(mode=mode, tier=tier, digest_type=digest_type)
+        if digest:
+            print(f"  Version:             1.1.7")
+            print(f"  Research Only:       True")
+            print(f"  No Real Orders:      True")
+            print(f"  Overall Status:      {digest.overall_status}")
+            print(f"  P0: {digest.p0_count} | P1: {digest.p1_count} | Escalated: {digest.escalated_alerts}")
+            print(f"  New: {digest.new_alerts} | Resolved: {digest.resolved_alerts} | Reopened: {digest.reopened_alerts}")
+            print(f"  Source Interruptions: {digest.source_interruptions} | Audit Failures: {digest.audit_failures}")
+            print(f"  Generated At:        {digest.generated_at}")
+        else:
+            print("  Daily operations engine returned no digest.")
+        print("[!] Research Only. No Real Orders. No external notification sent.")
+        print("[!] Does NOT repair, import, override gates, or enable trading.")
+    except Exception as exc:
+        print(f"  [ERROR] governance-daily-operations failed: {exc}")
+
+
+def cmd_governance_alerts_report(args) -> None:
+    """Build the Governance Alerts & Daily Operations report. [!] Research Only."""
+    _print_governance_alerts_header()
+    tier = getattr(args, "tier", "research30")
+    mode = getattr(args, "mode", "real")
+    report_dir = getattr(args, "report_dir", "reports") or "reports"
+    try:
+        from reports.governance_alerts_daily_operations_report import GovernanceAlertsDailyOperationsReportBuilder
+        builder = GovernanceAlertsDailyOperationsReportBuilder()
+        path = builder.build(tier=tier, mode=mode, output_dir=report_dir)
+        if path:
+            print(f"  Report written: {path}")
+        else:
+            print("  Report generation failed or no path returned.")
+        print("[!] Research Only. No Real Orders. Not Investment Advice.")
+    except Exception as exc:
+        print(f"  [ERROR] governance-alerts-report failed: {exc}")
+
+
+def cmd_governance_alert_audit(args) -> None:
+    """Show governance alert transition audit log. [!] Research Only."""
+    _print_governance_alerts_header()
+    alert_id = getattr(args, "alert_id", None)
+    try:
+        from governance_alerts.alert_store import GovernanceAlertStore
+        store = GovernanceAlertStore()
+        transitions = store.list_transitions(alert_id=alert_id)
+        if not transitions:
+            print(f"  No transitions found{' for alert ' + alert_id if alert_id else ''}.")
+        else:
+            print(f"  {'Timestamp':<26} {'Alert ID':<38} {'From':<14} {'To':<14} {'Actor'}")
+            print(f"  {'-'*100}")
+            for t in transitions[:30]:
+                print(f"  {t.timestamp[:26]:<26} {t.alert_id[:36]:<38} {t.from_status:<14} {t.to_status:<14} {t.actor}")
+        print("[!] Research Only. No Real Orders. Append-only audit.")
+    except Exception as exc:
+        print(f"  [ERROR] governance-alert-audit failed: {exc}")
+
+
+def cmd_governance_alert_audit_verify(args) -> None:
+    """Verify governance alert transition audit chain integrity. [!] Research Only."""
+    _print_governance_alerts_header()
+    try:
+        from governance_alerts.alert_store import GovernanceAlertStore
+        store = GovernanceAlertStore()
+        result = store.verify_transition_chain()
+        if result["valid"]:
+            print(f"  Audit chain: VALID ({result['transitions']} transitions)")
+        else:
+            print(f"  Audit chain: BROKEN at index {result['broken_at']}")
+            print(f"  Transition ID: {result.get('transition_id', 'N/A')}")
+            print(f"  Expected hash: {result.get('expected', 'N/A')}")
+            print(f"  Actual hash:   {result.get('actual', 'N/A')}")
+        print("[!] Research Only. No Real Orders.")
+    except Exception as exc:
+        print(f"  [ERROR] governance-alert-audit-verify failed: {exc}")
+
+
+# ---------------------------------------------------------------------------
 # v1.0.9 Final Maintenance Rollup handlers
 # ---------------------------------------------------------------------------
 
@@ -18126,6 +18584,139 @@ def _build_parser() -> argparse.ArgumentParser:
     p_govres.add_argument("--note", default="",
                           help="Resolution note")
 
+    # --- v1.1.7 Governance Alerts & Daily Operations ---
+    subparsers.add_parser(
+        "governance-alerts-health",
+        help="[v1.1.7] Run governance alerts health check. [!] Research Only. No Real Orders.",
+    )
+
+    p_gascan = subparsers.add_parser(
+        "governance-alerts-scan",
+        help="[v1.1.7] Scan for governance alerts from all sources. [!] Research Only.",
+    )
+    p_gascan.add_argument("--mode", choices=["real", "mock"], default="real")
+    p_gascan.add_argument("--tier", default="research30")
+
+    p_ga = subparsers.add_parser(
+        "governance-alerts",
+        help="[v1.1.7] List governance alerts. [!] Research Only.",
+    )
+    p_ga.add_argument("--priority", default=None, help="Filter by priority: P0/P1/P2/P3")
+    p_ga.add_argument("--status", default=None, help="Filter by status: OPEN/ACKNOWLEDGED/ESCALATED/SNOOZED/RESOLVED")
+
+    p_gaa = subparsers.add_parser(
+        "governance-alert",
+        help="[v1.1.7] Show detail for a single governance alert. [!] Research Only.",
+    )
+    p_gaa.add_argument("--alert-id", dest="alert_id", default=None, required=True)
+
+    p_gah = subparsers.add_parser(
+        "governance-alert-history",
+        help="[v1.1.7] Show transition history for a governance alert. [!] Research Only.",
+    )
+    p_gah.add_argument("--alert-id", dest="alert_id", default=None, required=True)
+
+    p_gaack = subparsers.add_parser(
+        "governance-alert-ack",
+        help="[v1.1.7] Acknowledge a governance alert (metadata only). [!] Research Only.",
+    )
+    p_gaack.add_argument("--alert-id", dest="alert_id", default=None, required=True)
+    p_gaack.add_argument("--note", default="")
+
+    p_gasnz = subparsers.add_parser(
+        "governance-alert-snooze",
+        help="[v1.1.7] Snooze a governance alert (metadata only). [!] Research Only.",
+    )
+    p_gasnz.add_argument("--alert-id", dest="alert_id", default=None, required=True)
+    p_gasnz.add_argument("--until", default=None, required=True, help="ISO timestamp to snooze until")
+    p_gasnz.add_argument("--reason", default="")
+
+    p_gares = subparsers.add_parser(
+        "governance-alert-resolve",
+        help="[v1.1.7] Resolve a governance alert (metadata only). [!] Research Only.",
+    )
+    p_gares.add_argument("--alert-id", dest="alert_id", default=None, required=True)
+    p_gares.add_argument("--note", default="")
+
+    p_gareo = subparsers.add_parser(
+        "governance-alert-reopen",
+        help="[v1.1.7] Reopen a governance alert (metadata only). [!] Research Only.",
+    )
+    p_gareo.add_argument("--alert-id", dest="alert_id", default=None, required=True)
+    p_gareo.add_argument("--reason", default="")
+
+    subparsers.add_parser(
+        "governance-alert-escalations",
+        help="[v1.1.7] Show governance alert escalation summary. [!] Research Only.",
+    )
+
+    p_gad = subparsers.add_parser(
+        "governance-digest",
+        help="[v1.1.7] Build governance digest. [!] Research Only.",
+    )
+    p_gad.add_argument("--type", default="daily",
+                       help="Digest type: morning/end-of-day/daily/weekly/manual (default: daily)")
+
+    subparsers.add_parser(
+        "governance-checklist",
+        help="[v1.1.7] Build daily governance operations checklist. [!] Research Only.",
+    )
+
+    p_gacc = subparsers.add_parser(
+        "governance-checklist-complete",
+        help="[v1.1.7] Mark a checklist item complete (metadata only). [!] Research Only.",
+    )
+    p_gacc.add_argument("--item-id", dest="item_id", default=None, required=True)
+    p_gacc.add_argument("--note", default="")
+
+    p_ganp = subparsers.add_parser(
+        "governance-notification-preview",
+        help="[v1.1.7] Show notification preview (local only, no send). [!] Research Only.",
+    )
+    p_ganp.add_argument("--type", default="daily")
+    p_ganp.add_argument("--format", default="markdown", help="markdown/text/email_preview/chat_preview")
+
+    p_gatr = subparsers.add_parser(
+        "governance-alert-trend",
+        help="[v1.1.7] Show governance alert trend. [!] Research Only.",
+    )
+    p_gatr.add_argument("--days", type=int, default=7)
+
+    p_gacmp = subparsers.add_parser(
+        "governance-alert-compare",
+        help="[v1.1.7] Compare governance alerts on two dates. [!] Research Only.",
+    )
+    p_gacmp.add_argument("--date-a", dest="date_a", default=None, required=True)
+    p_gacmp.add_argument("--date-b", dest="date_b", default=None, required=True)
+
+    p_gadop = subparsers.add_parser(
+        "governance-daily-operations",
+        help="[v1.1.7] Run full daily governance operations engine. [!] Research Only.",
+    )
+    p_gadop.add_argument("--mode", choices=["real", "mock"], default="real")
+    p_gadop.add_argument("--tier", default="research30")
+    p_gadop.add_argument("--digest-type", dest="digest_type", default="daily",
+                         help="Digest type: morning/end-of-day/daily/weekly")
+
+    p_garpt = subparsers.add_parser(
+        "governance-alerts-report",
+        help="[v1.1.7] Build Governance Alerts & Daily Operations report. [!] Research Only.",
+    )
+    p_garpt.add_argument("--tier", default="research30")
+    p_garpt.add_argument("--mode", choices=["real", "mock"], default="real")
+    p_garpt.add_argument("--report-dir", dest="report_dir", default="reports")
+
+    p_gaaud = subparsers.add_parser(
+        "governance-alert-audit",
+        help="[v1.1.7] Show alert transition audit log. [!] Research Only.",
+    )
+    p_gaaud.add_argument("--alert-id", dest="alert_id", default=None)
+
+    subparsers.add_parser(
+        "governance-alert-audit-verify",
+        help="[v1.1.7] Verify alert audit chain integrity. [!] Research Only.",
+    )
+
     # --- v1.1.4 Coverage Quality Gates ---
     subparsers.add_parser(
         "quality-gate-health",
@@ -19746,6 +20337,27 @@ def main() -> None:
         "gate-enforcement-compare":       cmd_gate_enforcement_compare,
         "gate-enforcement-audit":         cmd_gate_enforcement_audit,
         "gate-enforcement-report":        cmd_gate_enforcement_report,
+        # v1.1.7 Governance Alerts & Daily Operations
+        "governance-alerts-health":       cmd_governance_alerts_health,
+        "governance-alerts-scan":         cmd_governance_alerts_scan,
+        "governance-alerts":              cmd_governance_alerts,
+        "governance-alert":               cmd_governance_alert,
+        "governance-alert-history":       cmd_governance_alert_history,
+        "governance-alert-ack":           cmd_governance_alert_ack,
+        "governance-alert-snooze":        cmd_governance_alert_snooze,
+        "governance-alert-resolve":       cmd_governance_alert_resolve,
+        "governance-alert-reopen":        cmd_governance_alert_reopen,
+        "governance-alert-escalations":   cmd_governance_alert_escalations,
+        "governance-digest":              cmd_governance_digest,
+        "governance-checklist":           cmd_governance_checklist,
+        "governance-checklist-complete":  cmd_governance_checklist_complete,
+        "governance-notification-preview": cmd_governance_notification_preview,
+        "governance-alert-trend":         cmd_governance_alert_trend,
+        "governance-alert-compare":       cmd_governance_alert_compare,
+        "governance-daily-operations":    cmd_governance_daily_operations,
+        "governance-alerts-report":       cmd_governance_alerts_report,
+        "governance-alert-audit":         cmd_governance_alert_audit,
+        "governance-alert-audit-verify":  cmd_governance_alert_audit_verify,
         # v1.1.6 Data Governance Operations Dashboard
         "governance-health":              cmd_governance_health,
         "governance-dashboard":          cmd_governance_dashboard,

@@ -4,7 +4,7 @@
 >
 > **[!] v1: Real order execution is strictly prohibited. For research, simulation, and decision support only. Not investment advice.**
 
-**Current version: v1.1.6 — Data Governance Operations Dashboard** (base: v1.1.5 Quality Gate Enforcement & Audit) — **v1.0 Maintenance Line Complete**
+**Current version: v1.1.7 — Governance Alerts & Daily Operations** (base: v1.1.6 Data Governance Operations Dashboard) — **v1.0 Maintenance Line Complete**
 
 ---
 
@@ -29,9 +29,13 @@ TW Quant Cockpit is a **Research Trading Cockpit** for Taiwan equity markets. It
 
 ---
 
-## Current Version: v1.1.6 — Data Governance Operations Dashboard
+## Current Version: v1.1.7 — Governance Alerts & Daily Operations
 
-This is TW Quant Cockpit **v1.1.6 — Data Governance Operations Dashboard**, based on **v1.1.5 Quality Gate Enforcement & Audit**.
+This is TW Quant Cockpit **v1.1.7 — Governance Alerts & Daily Operations**, based on **v1.1.6 Data Governance Operations Dashboard**.
+
+New in v1.1.7: governance_alerts/ package (alert_schema, alert_policy, alert_sources, alert_detector, alert_deduplicator, alert_lifecycle, escalation_engine, digest_builder, daily_checklist, notification_preview, alert_store, alert_query, alert_health, daily_operations_engine), 24 alert types (P0/P1/P2/P3), deterministic SHA-256 fingerprint dedup, alert lifecycle (OPEN/ACK/SNOOZED/ESCALATED/RESOLVED/REOPENED/SUPPRESSED/BLOCKED), L0-L3 escalation, MORNING/END_OF_DAY/DAILY/WEEKLY/MANUAL digests, daily checklists, safe notification previews (external send DISABLED), 22 new CLI commands (governance-alerts-health/scan/alerts/alert/alert-history/alert-ack/alert-snooze/alert-resolve/alert-reopen/alert-escalations/digest/checklist/checklist-complete/notification-preview/alert-trend/alert-compare/daily-operations/alerts-report/alert-audit/alert-audit-verify), GUI panel + adapter, nav tab (data group), 6 new report types, stable/v060/intelligence checklist checks, 10 regression tests, 16 test fixtures, docs/governance_alerts_daily_operations_v1.1.7.md. External Notification Send: DISABLED. Auto Repair: DISABLED. Auto Import: DISABLED. Gate Override: DISABLED. Trade Execution: DISABLED. P0 alerts never suppressed. AUDIT_CHAIN_FAILURE never suppressed. No broker API. Not Investment Advice.
+
+## v1.1.6 — Data Governance Operations Dashboard
 
 New in v1.1.6: governance_ops/ package (governance_schema, governance_adapters, priority_engine, action_queue, governance_aggregator, operations_store, operations_engine, operations_query, operations_health), 8 governance adapters (universe/onboarding/repair/freshness/quality_gates/gate_enforcement/report_pack/regression), per-symbol status matrix, prioritized action queue (P0/P1/P2/P3, metadata-only), daily governance history (append-only JSONL), run audit summary, 18 new CLI commands (governance-health/dashboard/summary/module-health/symbols/symbol/actions/top-actions/source-health/gate-summary/audit-summary/runs/history/report/compare/action-ack/action-defer/action-resolve), GUI panel + adapter, nav tab (data group), 4 new report types, stable/v060/intelligence checklist checks, regression tests (7 new), 13 test fixtures, docs/data_governance_operations_dashboard_v1.1.6.md. Auto Repair: DISABLED. Auto Download: DISABLED. Gate Override: DISABLED. Trade Execution: DISABLED. Priority based only on data issues — never on price or signals. No broker API. Not Investment Advice.
 

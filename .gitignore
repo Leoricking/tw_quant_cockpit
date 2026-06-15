@@ -416,3 +416,11 @@ reports/data_governance_operations_report_*.md
 # v1.1.6 Governance ops fixtures ARE committed (exception)
 !tests/fixtures/governance_ops/*.json
 !tests/fixtures/governance_ops/*.jsonl
+
+# v1.1.7 Governance Alerts & Daily Operations (runtime outputs — never commit)
+data/governance_alerts/
+reports/governance_alerts_daily_operations_report_*.md
+
+# v1.1.7 Governance alerts fixtures ARE committed (exception)
+!tests/fixtures/governance_alerts/*.json
+!tests/fixtures/governance_alerts/*.jsonl

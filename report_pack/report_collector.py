@@ -57,6 +57,12 @@ from report_pack.report_registry import (
     REPORT_GOVERNANCE_ACTION_QUEUE,
     REPORT_GOVERNANCE_MODULE_HEALTH,
     REPORT_GOVERNANCE_AUDIT_SUMMARY,
+    REPORT_GOVERNANCE_ALERTS_DAILY_OPS,
+    REPORT_GOVERNANCE_MORNING_DIGEST,
+    REPORT_GOVERNANCE_EOD_DIGEST,
+    REPORT_GOVERNANCE_WEEKLY_DIGEST,
+    REPORT_GOVERNANCE_ALERT_TREND,
+    REPORT_GOVERNANCE_CHECKLIST,
 )
 
 logger = logging.getLogger(__name__)
@@ -334,6 +340,29 @@ _REPORT_PATTERNS = {
     REPORT_GOVERNANCE_AUDIT_SUMMARY: [
         "data/governance_ops/audit_summary.csv",
         "data/governance_ops/enforcement_runs.csv",
+    ],
+    # v1.1.7 Governance Alerts & Daily Operations
+    REPORT_GOVERNANCE_ALERTS_DAILY_OPS: [
+        "reports/governance_alerts_daily_operations_report*.md",
+        "data/governance_alerts/alerts.jsonl",
+        "data/governance_alerts/alert_index.csv",
+    ],
+    REPORT_GOVERNANCE_MORNING_DIGEST: [
+        "data/governance_alerts/digests.jsonl",
+        "data/governance_alerts/daily_metrics.csv",
+    ],
+    REPORT_GOVERNANCE_EOD_DIGEST: [
+        "data/governance_alerts/digests.jsonl",
+    ],
+    REPORT_GOVERNANCE_WEEKLY_DIGEST: [
+        "data/governance_alerts/digests.jsonl",
+    ],
+    REPORT_GOVERNANCE_ALERT_TREND: [
+        "data/governance_alerts/daily_metrics.csv",
+        "data/governance_alerts/alert_index.csv",
+    ],
+    REPORT_GOVERNANCE_CHECKLIST: [
+        "data/governance_alerts/daily_checklists.jsonl",
     ],
     # v0.9.1 Evidence Graph UX patterns
     "evidence_graph_gaps": [

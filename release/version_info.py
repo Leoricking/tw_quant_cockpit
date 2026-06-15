@@ -1,5 +1,5 @@
 """
-release/version_info.py — Centralized version info for TW Quant Cockpit v1.1.6.
+release/version_info.py — Centralized version info for TW Quant Cockpit v1.1.7.
 [!] Research Only. No Real Orders. Production Trading: BLOCKED.
 [!] VALIDATED does not enable trading. Broker Execution Disabled.
 [!] Data Universe Expansion. Real Data Coverage Required.
@@ -13,6 +13,8 @@ release/version_info.py — Centralized version info for TW Quant Cockpit v1.1.6
 [!] Quality Gate Enforcement & Audit. Gate bypass DISABLED. Not Investment Advice.
 [!] Data Governance Operations Dashboard. Auto Repair DISABLED. Auto Download DISABLED.
 [!] Governance Gate Override DISABLED. Trade Execution DISABLED. Not Investment Advice.
+[!] Governance Alerts & Daily Operations. External Notification Send DISABLED.
+[!] Alert detection does NOT repair, import, override gates, or enable trading. Not Investment Advice.
 """
 from __future__ import annotations
 import logging
@@ -22,11 +24,11 @@ logger = logging.getLogger(__name__)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 # ---------------------------------------------------------------------------
-# v1.1.6 module-level constants (Data Governance Operations Dashboard)
+# v1.1.7 module-level constants (Governance Alerts & Daily Operations)
 # ---------------------------------------------------------------------------
-VERSION                             = "1.1.6"
-RELEASE_NAME                        = "Data Governance Operations Dashboard"
-BASE_RELEASE                        = "1.1.5 Quality Gate Enforcement & Audit"
+VERSION                             = "1.1.7"
+RELEASE_NAME                        = "Governance Alerts & Daily Operations"
+BASE_RELEASE                        = "1.1.6 Data Governance Operations Dashboard"
 BASE_RELEASE_NAME                   = "Data Freshness Monitor"
 MAINTENANCE_RELEASE                 = False
 RELEASE_STAGE                       = "STABLE"
@@ -109,6 +111,14 @@ GOVERNANCE_AUTO_REPAIR_ENABLED          = False
 GOVERNANCE_AUTO_DOWNLOAD_ENABLED        = False
 GOVERNANCE_GATE_OVERRIDE_ENABLED        = False
 GOVERNANCE_TRADE_EXECUTION_ENABLED      = False
+# v1.1.7 new flags
+GOVERNANCE_ALERTS_AVAILABLE             = True
+GOVERNANCE_DAILY_DIGEST_AVAILABLE       = True
+GOVERNANCE_ALERT_DEDUP_AVAILABLE        = True
+GOVERNANCE_ALERT_SNOOZE_AVAILABLE       = True
+GOVERNANCE_ALERT_ESCALATION_AVAILABLE   = True
+GOVERNANCE_AUTO_IMPORT_ENABLED          = False
+EXTERNAL_NOTIFICATION_SEND_ENABLED      = False
 
 
 class VersionInfo:
@@ -291,6 +301,13 @@ def print_version_info() -> None:
     print(f"  Governance Auto Download Enabled: {GOVERNANCE_AUTO_DOWNLOAD_ENABLED}")
     print(f"  Governance Gate Override Enabled: {GOVERNANCE_GATE_OVERRIDE_ENABLED}")
     print(f"  Governance Trade Execution Enabled: {GOVERNANCE_TRADE_EXECUTION_ENABLED}")
+    print(f"  Governance Alerts Available: {GOVERNANCE_ALERTS_AVAILABLE}")
+    print(f"  Governance Daily Digest Available: {GOVERNANCE_DAILY_DIGEST_AVAILABLE}")
+    print(f"  Governance Alert Dedup Available: {GOVERNANCE_ALERT_DEDUP_AVAILABLE}")
+    print(f"  Governance Alert Snooze Available: {GOVERNANCE_ALERT_SNOOZE_AVAILABLE}")
+    print(f"  Governance Alert Escalation Available: {GOVERNANCE_ALERT_ESCALATION_AVAILABLE}")
+    print(f"  Governance Auto Import Enabled: {GOVERNANCE_AUTO_IMPORT_ENABLED}")
+    print(f"  External Notification Send Enabled: {EXTERNAL_NOTIFICATION_SEND_ENABLED}")
     print("=" * 60)
 
 

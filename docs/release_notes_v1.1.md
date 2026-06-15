@@ -333,6 +333,33 @@ gate-enforcement-compare, gate-enforcement-report
 
 ---
 
+---
+
+## v1.1.7 — Governance Alerts & Daily Operations (2026-06-15)
+
+Governance alert detection, deterministic deduplication, alert lifecycle, snooze and escalation, morning and end-of-day digests, daily checklists, safe notification previews, alert history and trends, GUI and CLI operations.
+
+**New package:** `governance_alerts/` (alert_schema, alert_policy, alert_sources, alert_detector, alert_deduplicator, alert_lifecycle, escalation_engine, digest_builder, daily_checklist, notification_preview, alert_store, alert_query, alert_health, daily_operations_engine, __init__)
+
+**New CLI (22 commands):**
+```
+governance-alerts-health, governance-alerts-scan, governance-alerts, governance-alert,
+governance-alert-history, governance-alert-ack, governance-alert-snooze,
+governance-alert-resolve, governance-alert-reopen, governance-alert-escalations,
+governance-digest, governance-checklist, governance-checklist-complete,
+governance-notification-preview, governance-alert-trend, governance-alert-compare,
+governance-daily-operations, governance-alerts-report,
+governance-alert-audit, governance-alert-audit-verify
+```
+
+**New reports:** `governance_alerts_daily_operations_report`, `governance_morning_digest`, `governance_end_of_day_digest`, `governance_weekly_digest`, `governance_alert_trend`, `governance_checklist`
+
+**Safety:** External Notification Send DISABLED. Auto Repair DISABLED. Auto Import DISABLED. Gate Override DISABLED. Trade Execution DISABLED. P0 alerts never suppressed. AUDIT_CHAIN_FAILURE never suppressed. Suggested commands allowlist only. Alert audit log append-only with immutable_hash chain. No Real Orders.
+
+**Docs:** `docs/governance_alerts_daily_operations_v1.1.7.md`
+
+---
+
 ## Roadmap
 
 | Version | Target |
@@ -340,6 +367,8 @@ gate-enforcement-compare, gate-enforcement-report
 | v1.1.3  | Data Freshness Monitor — Done |
 | v1.1.4  | Coverage Quality Gates — Done |
 | v1.1.5  | Quality Gate Enforcement & Audit — Done |
+| v1.1.6  | Data Governance Operations Dashboard — Done |
+| v1.1.7  | Governance Alerts & Daily Operations — Done |
 | v1.2.0  | Replay Training UX |
 
 ---

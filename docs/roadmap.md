@@ -86,6 +86,20 @@
 | v1.1.4 | Coverage Quality Gates | Done |
 | v1.1.5 | Quality Gate Enforcement & Audit | Done |
 | v1.1.6 | Data Governance Operations Dashboard | Done |
+| v1.1.7 | Governance Alerts & Daily Operations | Done |
+
+---
+
+### v1.1.7 — Governance Alerts & Daily Operations ✅
+
+- **Version:** 1.1.7 — feature release based on v1.1.6 Data Governance Operations Dashboard
+- **Type:** Governance Alert Detection & Daily Ops — alert lifecycle, dedup, snooze, escalation, digests, checklists, notification preview. No broker, no trading, no external notification send.
+- **Changes:** governance_alerts/ package (alert_schema, alert_policy, alert_sources, alert_detector, alert_deduplicator, alert_lifecycle, escalation_engine, digest_builder, daily_checklist, notification_preview, alert_store, alert_query, alert_health, daily_operations_engine, __init__), reports/governance_alerts_daily_operations_report.py, gui/governance_alerts_panel.py, gui/governance_alerts_adapter.py, gui/data_governance_operations_panel.py (v1.1.7 governance alerts summary section), 22 new CLI commands (governance-alerts-health/scan/alerts/alert/alert-history/alert-ack/alert-snooze/alert-resolve/alert-reopen/alert-escalations/digest/checklist/checklist-complete/notification-preview/alert-trend/alert-compare/daily-operations/alerts-report/alert-audit/alert-audit-verify), GUI nav tab (governance_alerts, data group), 6 new report types in report pack, stable checklist checks (5 new), v060 checklist checks (5 new), intelligence checklist check (governance_alerts_v117_safe), 10 regression tests, tests/fixtures/governance_alerts/ (16 fixtures), docs/governance_alerts_daily_operations_v1.1.7.md, .gitignore updates, README/docs refresh
+- **Safety:** External Notification Send DISABLED, Auto Repair DISABLED, Auto Import DISABLED, Auto Download DISABLED, Gate Override DISABLED, Trade Execution DISABLED, P0 never suppressed, AUDIT_CHAIN_FAILURE never suppressed, Suggested commands allowlist only, No Real Orders, Production Trading BLOCKED
+
+**Next:**
+- v1.1.8 TBD
+- v1.2.0: Replay Training UX
 
 ---
 

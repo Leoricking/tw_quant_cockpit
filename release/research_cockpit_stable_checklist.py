@@ -1171,6 +1171,55 @@ class ResearchCockpitStableChecklist:
         except Exception as exc:
             checks.append(_mk("governance_ops_no_forbidden_actions", "governance_ops", "WARN", str(exc)))
 
+        # v1.1.7 Governance Alerts & Daily Operations checks
+        try:
+            import governance_alerts
+            _ga_avail = getattr(governance_alerts, "EXTERNAL_NOTIFICATION_SEND_ENABLED", True)
+            checks.append(_mk("governance_alerts_available", "governance_alerts",
+                              "PASS",
+                              "governance_alerts package imported OK"))
+        except Exception as exc:
+            checks.append(_mk("governance_alerts_available", "governance_alerts", "FAIL", str(exc)))
+
+        try:
+            import governance_alerts
+            _ext_send = getattr(governance_alerts, "EXTERNAL_NOTIFICATION_SEND_ENABLED", True)
+            checks.append(_mk("governance_external_send_disabled", "governance_alerts",
+                              "PASS" if not _ext_send else "FAIL",
+                              f"EXTERNAL_NOTIFICATION_SEND_ENABLED={_ext_send} (must be False)"))
+        except Exception as exc:
+            checks.append(_mk("governance_external_send_disabled", "governance_alerts", "FAIL", str(exc)))
+
+        try:
+            import governance_alerts
+            _auto_rep = getattr(governance_alerts, "GOVERNANCE_AUTO_REPAIR_ENABLED", True)
+            checks.append(_mk("governance_auto_repair_disabled", "governance_alerts",
+                              "PASS" if not _auto_rep else "FAIL",
+                              f"GOVERNANCE_AUTO_REPAIR_ENABLED={_auto_rep} (must be False)"))
+        except Exception as exc:
+            checks.append(_mk("governance_auto_repair_disabled", "governance_alerts", "FAIL", str(exc)))
+
+        try:
+            import governance_alerts
+            _daily_dig = getattr(governance_alerts, "GOVERNANCE_DAILY_DIGEST_AVAILABLE", False) if hasattr(governance_alerts, "GOVERNANCE_DAILY_DIGEST_AVAILABLE") else False
+            from release.version_info import GOVERNANCE_DAILY_DIGEST_AVAILABLE as _vdig
+            checks.append(_mk("governance_daily_digest_available", "governance_alerts",
+                              "PASS" if _vdig else "FAIL",
+                              f"version_info.GOVERNANCE_DAILY_DIGEST_AVAILABLE={_vdig}"))
+        except Exception as exc:
+            checks.append(_mk("governance_daily_digest_available", "governance_alerts", "WARN", str(exc)))
+
+        try:
+            from governance_alerts.alert_health import GovernanceAlertsHealthCheck
+            _gah = GovernanceAlertsHealthCheck()
+            _gah_results = _gah.run()
+            _gah_fail = sum(1 for r in _gah_results if r[1] == "FAIL")
+            checks.append(_mk("governance_alerts_no_forbidden_actions", "governance_alerts",
+                              "PASS" if _gah_fail == 0 else "FAIL",
+                              f"GovernanceAlertsHealthCheck: {len(_gah_results)} checks, {_gah_fail} FAIL"))
+        except Exception as exc:
+            checks.append(_mk("governance_alerts_no_forbidden_actions", "governance_alerts", "WARN", str(exc)))
+
         # Rebuild summary counts to include new checks
         total         = len(checks)
         pass_count    = sum(1 for c in checks if c["status"] == "PASS")

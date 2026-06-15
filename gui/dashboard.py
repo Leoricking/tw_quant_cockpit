@@ -620,6 +620,15 @@ try:
 except Exception as _dgo_exc:
     logger.warning("DataGovernanceOperationsPanel unavailable: %s", _dgo_exc)
 
+# v1.1.7 Governance Alerts & Daily Operations panel — optional
+# ---------------------------------------------------------------------------
+_GOVERNANCE_ALERTS_AVAILABLE = False
+try:
+    from gui.governance_alerts_panel import GovernanceAlertsPanel
+    _GOVERNANCE_ALERTS_AVAILABLE = True
+except Exception as _ga_exc:
+    logger.warning("GovernanceAlertsPanel unavailable: %s", _ga_exc)
+
 # v0.5.1.1 Strategy Filter panel — inline (no separate panel file required)
 # ---------------------------------------------------------------------------
 _STRATEGY_FILTER_AVAILABLE = False
@@ -1892,6 +1901,13 @@ class CockpitWindow(QMainWindow if _PYSIDE6_AVAILABLE else object):
             mid_tabs.addTab(self._governance_ops_panel, "Governance Ops")
         else:
             self._governance_ops_panel = None
+
+        # v1.1.7 Governance Alerts & Daily Operations tab
+        if _GOVERNANCE_ALERTS_AVAILABLE:
+            self._governance_alerts_panel = GovernanceAlertsPanel()
+            mid_tabs.addTab(self._governance_alerts_panel, "Governance Alerts")
+        else:
+            self._governance_alerts_panel = None
 
         h_split.addWidget(mid_tabs)
         h_split.setStretchFactor(0, 3)

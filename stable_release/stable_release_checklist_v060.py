@@ -2528,6 +2528,105 @@ class StableReleaseChecklistV060:
         except Exception as exc:
             return _check_item("version_info_v116", "version_git", "WARN", str(exc))
 
+    def _check_governance_alerts_import(self) -> dict:
+        """v1.1.7 — governance_alerts package imports without error."""
+        try:
+            import governance_alerts
+            from governance_alerts.alert_schema import GovernanceAlert
+            from governance_alerts.alert_deduplicator import GovernanceAlertDeduplicator
+            return _check_item(
+                "governance_alerts_import", "governance_alerts", "PASS",
+                "governance_alerts package and key classes imported OK",
+            )
+        except Exception as exc:
+            return _check_item("governance_alerts_import", "governance_alerts", "FAIL", str(exc))
+
+    def _check_governance_alert_dedup(self) -> dict:
+        """v1.1.7 — GovernanceAlertDeduplicator available and deterministic."""
+        try:
+            from governance_alerts.alert_deduplicator import GovernanceAlertDeduplicator
+            from governance_alerts.alert_schema import GovernanceAlert
+            d = GovernanceAlertDeduplicator()
+            # Build two identical alerts to test fingerprint determinism
+            a1 = GovernanceAlert(
+                alert_id="tst-1", fingerprint="",
+                alert_type="AUDIT_CHAIN_FAILURE", severity="CRITICAL", priority="P0",
+                title="T", message="M", symbol="TST001",
+                dataset="daily_price", source="test", module="TEST",
+                reason_codes=["HASH_MISMATCH"],
+            )
+            a2 = GovernanceAlert(
+                alert_id="tst-2", fingerprint="",
+                alert_type="AUDIT_CHAIN_FAILURE", severity="CRITICAL", priority="P0",
+                title="T", message="M", symbol="TST001",
+                dataset="daily_price", source="test", module="TEST",
+                reason_codes=["HASH_MISMATCH"],
+            )
+            fp1 = d.build_fingerprint(a1)
+            fp2 = d.build_fingerprint(a2)
+            if fp1 == fp2 and len(fp1) > 10:
+                return _check_item(
+                    "governance_alert_dedup", "governance_alerts", "PASS",
+                    f"Fingerprint deterministic: {fp1[:20]}...",
+                )
+            return _check_item(
+                "governance_alert_dedup", "governance_alerts", "FAIL",
+                f"Fingerprint not deterministic: {fp1} != {fp2}",
+            )
+        except Exception as exc:
+            return _check_item("governance_alert_dedup", "governance_alerts", "FAIL", str(exc))
+
+    def _check_governance_alert_lifecycle(self) -> dict:
+        """v1.1.7 — GovernanceAlertLifecycle available."""
+        try:
+            from governance_alerts.alert_lifecycle import GovernanceAlertLifecycle
+            _lc = GovernanceAlertLifecycle()
+            return _check_item(
+                "governance_alert_lifecycle", "governance_alerts", "PASS",
+                "GovernanceAlertLifecycle imported and instantiated OK",
+            )
+        except Exception as exc:
+            return _check_item("governance_alert_lifecycle", "governance_alerts", "FAIL", str(exc))
+
+    def _check_governance_external_send_disabled(self) -> dict:
+        """v1.1.7 — EXTERNAL_NOTIFICATION_SEND_ENABLED is False."""
+        try:
+            import governance_alerts
+            _ext = getattr(governance_alerts, "EXTERNAL_NOTIFICATION_SEND_ENABLED", True)
+            if not _ext:
+                return _check_item(
+                    "governance_external_send_disabled", "governance_alerts", "PASS",
+                    f"EXTERNAL_NOTIFICATION_SEND_ENABLED={_ext} (False as required)",
+                )
+            return _check_item(
+                "governance_external_send_disabled", "governance_alerts", "FAIL",
+                f"EXTERNAL_NOTIFICATION_SEND_ENABLED={_ext} (must be False)",
+            )
+        except Exception as exc:
+            return _check_item("governance_external_send_disabled", "governance_alerts", "FAIL", str(exc))
+
+    def _check_version_info_v117(self) -> dict:
+        """v1.1.7 — VERSION is 1.1.7 and GOVERNANCE_ALERTS_AVAILABLE=True."""
+        try:
+            from release.version_info import VERSION
+            import release.version_info as _vi
+            ga_avail = getattr(_vi, "GOVERNANCE_ALERTS_AVAILABLE", None)
+            ext_send = getattr(_vi, "EXTERNAL_NOTIFICATION_SEND_ENABLED", True)
+            if VERSION == "1.1.7" and ga_avail and not ext_send:
+                return _check_item(
+                    "version_info_v117", "version_git", "PASS",
+                    f"VERSION={VERSION}, GOVERNANCE_ALERTS_AVAILABLE={ga_avail}, "
+                    f"EXTERNAL_NOTIFICATION_SEND_ENABLED={ext_send}",
+                )
+            return _check_item(
+                "version_info_v117", "version_git", "WARN",
+                f"VERSION={VERSION}, GOVERNANCE_ALERTS_AVAILABLE={ga_avail}, "
+                f"EXTERNAL_NOTIFICATION_SEND_ENABLED={ext_send}",
+                warning="Expected VERSION=1.1.7 with GOVERNANCE_ALERTS_AVAILABLE=True, EXTERNAL_NOTIFICATION_SEND_ENABLED=False",
+            )
+        except Exception as exc:
+            return _check_item("version_info_v117", "version_git", "WARN", str(exc))
+
     # ----------------------------------------------------------------
     # Run
     # ----------------------------------------------------------------
@@ -2680,6 +2779,12 @@ class StableReleaseChecklistV060:
             self._check_governance_trade_execution_disabled,
             self._check_governance_no_forbidden_actions,
             self._check_version_info_v116,
+            # v1.1.7 Governance Alerts & Daily Operations
+            self._check_governance_alerts_import,
+            self._check_governance_alert_dedup,
+            self._check_governance_alert_lifecycle,
+            self._check_governance_external_send_disabled,
+            self._check_version_info_v117,
         ]
 
         for fn in checklist_groups:
