@@ -433,3 +433,11 @@ reports/research_run_registry_report_*.md
 !tests/fixtures/research_registry/*.json
 !tests/fixtures/research_registry/*.jsonl
 !tests/fixtures/research_registry/*.txt
+
+# v1.1.9 Data Governance Stable Rollup (runtime outputs — never commit)
+data/governance_rollup/
+reports/data_governance_stable_rollup_report_*.md
+
+# v1.1.9 Governance rollup fixtures ARE committed (exception)
+!tests/fixtures/governance_rollup/*.json
+!tests/fixtures/governance_rollup/*.jsonl

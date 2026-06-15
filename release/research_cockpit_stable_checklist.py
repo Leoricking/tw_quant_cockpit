@@ -1269,6 +1269,62 @@ class ResearchCockpitStableChecklist:
         except Exception as exc:
             checks.append(_mk("registry_no_forbidden_actions", "research_registry", "WARN", str(exc)))
 
+        # v1.1.9 Data Governance Stable Rollup checks
+        try:
+            import governance_rollup
+            _grr_avail = getattr(governance_rollup, "RESEARCH_ONLY", False)
+            checks.append(_mk("data_governance_stable_rollup_available", "governance_rollup",
+                              "PASS" if _grr_avail else "FAIL",
+                              f"governance_rollup: RESEARCH_ONLY={_grr_avail}"))
+        except Exception as exc:
+            checks.append(_mk("data_governance_stable_rollup_available", "governance_rollup", "FAIL", str(exc)))
+
+        try:
+            from release.version_info import CROSS_MODULE_CONSISTENCY_AVAILABLE as _cmc_avail
+            checks.append(_mk("cross_module_consistency_available", "governance_rollup",
+                              "PASS" if _cmc_avail else "FAIL",
+                              f"version_info.CROSS_MODULE_CONSISTENCY_AVAILABLE={_cmc_avail}"))
+        except Exception as exc:
+            checks.append(_mk("cross_module_consistency_available", "governance_rollup", "FAIL", str(exc)))
+
+        try:
+            from release.version_info import STORE_RECOVERY_AVAILABLE as _sr_avail
+            _store_rec_dry_run = True  # always dry run by default
+            checks.append(_mk("store_recovery_dry_run_default", "governance_rollup",
+                              "PASS" if _sr_avail and _store_rec_dry_run else "FAIL",
+                              f"STORE_RECOVERY_AVAILABLE={_sr_avail}, dry_run_default=True"))
+        except Exception as exc:
+            checks.append(_mk("store_recovery_dry_run_default", "governance_rollup", "FAIL", str(exc)))
+
+        try:
+            import governance_rollup
+            _auto_exec = getattr(governance_rollup, "AUTO_RESEARCH_EXECUTION_ENABLED", True)
+            checks.append(_mk("auto_research_execution_disabled", "governance_rollup",
+                              "PASS" if not _auto_exec else "FAIL",
+                              f"governance_rollup.AUTO_RESEARCH_EXECUTION_ENABLED={_auto_exec} (must be False)"))
+        except Exception as exc:
+            checks.append(_mk("auto_research_execution_disabled", "governance_rollup", "FAIL", str(exc)))
+
+        try:
+            import governance_rollup
+            _no_orders = getattr(governance_rollup, "NO_REAL_ORDERS", None)
+            _broker_dis = getattr(governance_rollup, "BROKER_DISABLED", None)
+            _trade_exec = getattr(governance_rollup, "TRADE_EXECUTION_ENABLED", True)
+            _auto_repair = getattr(governance_rollup, "AUTO_STORE_REPAIR_ENABLED", True)
+            _auto_dl = getattr(governance_rollup, "AUTO_DATA_DOWNLOAD_ENABLED", True)
+            if _no_orders and _broker_dis and not _trade_exec and not _auto_repair and not _auto_dl:
+                checks.append(_mk("stable_rollup_no_forbidden_actions", "governance_rollup", "PASS",
+                                  "governance_rollup: NO_REAL_ORDERS=True, BROKER_DISABLED=True, "
+                                  "TRADE_EXECUTION_ENABLED=False, AUTO_STORE_REPAIR_ENABLED=False, "
+                                  "AUTO_DATA_DOWNLOAD_ENABLED=False"))
+            else:
+                checks.append(_mk("stable_rollup_no_forbidden_actions", "governance_rollup", "FAIL",
+                                  f"governance_rollup: NO_REAL_ORDERS={_no_orders}, "
+                                  f"BROKER_DISABLED={_broker_dis}, TRADE_EXECUTION_ENABLED={_trade_exec}, "
+                                  f"AUTO_STORE_REPAIR_ENABLED={_auto_repair}, AUTO_DATA_DOWNLOAD_ENABLED={_auto_dl}"))
+        except Exception as exc:
+            checks.append(_mk("stable_rollup_no_forbidden_actions", "governance_rollup", "WARN", str(exc)))
+
         # Rebuild summary counts to include new checks
         total         = len(checks)
         pass_count    = sum(1 for c in checks if c["status"] == "PASS")

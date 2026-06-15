@@ -4,7 +4,7 @@
 >
 > **[!] v1: Real order execution is strictly prohibited. For research, simulation, and decision support only. Not investment advice.**
 
-**Current version: v1.1.7 — Governance Alerts & Daily Operations** (base: v1.1.6 Data Governance Operations Dashboard) — **v1.0 Maintenance Line Complete**
+**Current version: v1.1.9 — Data Governance Stable Rollup** (base: v1.1.8 Research Run Registry) — **v1.0 Maintenance Line Complete**
 
 ---
 
@@ -29,7 +29,17 @@ TW Quant Cockpit is a **Research Trading Cockpit** for Taiwan equity markets. It
 
 ---
 
-## Current Version: v1.1.7 — Governance Alerts & Daily Operations
+## Current Version: v1.1.9 — Data Governance Stable Rollup
+
+This is TW Quant Cockpit **v1.1.9 — Data Governance Stable Rollup**, based on **v1.1.8 Research Run Registry**.
+
+New in v1.1.9: governance_rollup/ package (rollup_schema, schema_normalizer, path_normalizer, store_inventory, store_validator, store_recovery, index_rebuilder, metadata_migrator, consistency_checker, health_aggregator, stable_rollup_engine, rollup_store, rollup_query, gui_surface_audit, docs_surface_audit, rollup_health), cross-module consistency checker (version flags, schema contracts, safety guards, qualification labels), schema & qualification normalization (FORMAL/OBSERVATIONAL/BLOCKED), cross-machine path normalization (portable relative paths), store inventory & validation (all v1.1.x stores), dry-run corrupted tail recovery, index rebuild (preview default, --execute --allow-write required), metadata migration (preview default), stable health aggregation (health matrix), CLI/GUI/docs surface audits, 24 new CLI commands (governance-rollup-health/run/summary/modules/consistency/store-inventory/store-validate/paths/indexes/audits/recovery-plans/migration-plans/health-matrix/cli-audit/gui-audit/docs-audit/report/history/compare, governance-store-recovery-preview/execute, governance-index-rebuild, governance-metadata-migrate), GUI tab (data group), 6 new report types, stable/v060/intelligence checklist checks, 14 regression tests, new alert types (ROLLUP_CONSISTENCY_FAILURE/STORE_CORRUPTED/STORE_VALIDATION_FAILURE/PATH_MISMATCH/INDEX_STALE/HEALTH_DEGRADED/MIGRATION_NEEDED), docs (data_governance_stable_rollup_v1.1.9.md, v1.1_data_governance_architecture.md, v1.1_operations_runbook.md). No Auto Store Repair. No Auto Data Repair. No Auto Download. No Auto Import. No Auto Research Execution. No Trade Execution. Not Investment Advice.
+
+## v1.1.8 — Research Run Registry
+
+New in v1.1.8: research_registry/ package (registry_schema, registry_engine, registry_store, registry_query, registry_health, run_lineage, artifact_catalog, run_comparator, duplicate_detector), append-only registry for all research command runs, run metadata/qualification/lineage/artifacts/duplicate detection/reproducibility, run lineage graphs, artifact catalog with SHA-256 checksums, run comparison (delta analysis), duplicate detection (>80% similarity + type + module), 18 new CLI commands, GUI panel + adapter, nav tab (research group), 5 new report types, stable/v060/intelligence checklist checks, 15 regression tests, 10 test fixtures. Registry does NOT execute runs. Auto Rerun: DISABLED. Trade Execution: DISABLED. Not Investment Advice.
+
+## v1.1.7 — Governance Alerts & Daily Operations
 
 This is TW Quant Cockpit **v1.1.7 — Governance Alerts & Daily Operations**, based on **v1.1.6 Data Governance Operations Dashboard**.
 

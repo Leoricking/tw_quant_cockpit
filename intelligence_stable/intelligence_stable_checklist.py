@@ -1413,4 +1413,46 @@ class IntelligenceStableChecklist:
                 suggested_fix="Run: python main.py research-registry-health",
             ))
 
+        # v1.1.9 Data Governance Stable Rollup safety check
+        try:
+            import governance_rollup
+            no_orders_gr   = getattr(governance_rollup, "NO_REAL_ORDERS", False)
+            broker_dis_gr  = getattr(governance_rollup, "BROKER_DISABLED", False)
+            trade_exec_gr  = getattr(governance_rollup, "TRADE_EXECUTION_ENABLED", True)
+            auto_repair_gr = getattr(governance_rollup, "AUTO_STORE_REPAIR_ENABLED", True)
+            auto_exec_gr   = getattr(governance_rollup, "AUTO_RESEARCH_EXECUTION_ENABLED", True)
+            auto_dl_gr     = getattr(governance_rollup, "AUTO_DATA_DOWNLOAD_ENABLED", True)
+
+            if (no_orders_gr is True and broker_dis_gr is True
+                    and trade_exec_gr is False and auto_repair_gr is False
+                    and auto_exec_gr is False and auto_dl_gr is False):
+                checks.append(_check(
+                    "governance_rollup_v119_safe", "stable_integration",
+                    "v1.1.9 governance_rollup_v119_safe",
+                    CHECK_PASS, SEV_LOW,
+                    "governance_rollup: NO_REAL_ORDERS=True, BROKER_DISABLED=True, "
+                    "TRADE_EXECUTION_ENABLED=False, AUTO_STORE_REPAIR_ENABLED=False, "
+                    "AUTO_RESEARCH_EXECUTION_ENABLED=False, AUTO_DATA_DOWNLOAD_ENABLED=False.",
+                ))
+            else:
+                checks.append(_check(
+                    "governance_rollup_v119_safe", "stable_integration",
+                    "v1.1.9 governance_rollup_v119_safe",
+                    CHECK_WARN, SEV_LOW,
+                    f"governance_rollup safety flags: NO_REAL_ORDERS={no_orders_gr}, "
+                    f"BROKER_DISABLED={broker_dis_gr}, TRADE_EXECUTION_ENABLED={trade_exec_gr}, "
+                    f"AUTO_STORE_REPAIR_ENABLED={auto_repair_gr}, "
+                    f"AUTO_RESEARCH_EXECUTION_ENABLED={auto_exec_gr}, "
+                    f"AUTO_DATA_DOWNLOAD_ENABLED={auto_dl_gr}",
+                    suggested_fix="Ensure governance_rollup/__init__.py has correct v1.1.9 safety flags.",
+                ))
+        except Exception as exc:
+            checks.append(_check(
+                "governance_rollup_v119_safe", "stable_integration",
+                "v1.1.9 governance_rollup_v119_safe",
+                CHECK_WARN, SEV_LOW,
+                f"Could not verify governance_rollup v1.1.9 safety (optional): {exc}",
+                suggested_fix="Run: python main.py governance-rollup-health",
+            ))
+
         return checks

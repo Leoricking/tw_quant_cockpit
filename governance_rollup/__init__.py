@@ -1,0 +1,13 @@
+# governance_rollup/__init__.py
+# Data Governance Stable Rollup v1.1.9
+# Research Only — No Real Orders
+
+RESEARCH_ONLY = True
+NO_REAL_ORDERS = True
+BROKER_DISABLED = True
+AUTO_STORE_REPAIR_ENABLED = False
+AUTO_DATA_REPAIR_ENABLED = False
+AUTO_DATA_DOWNLOAD_ENABLED = False
+AUTO_DATA_IMPORT_ENABLED = False
+AUTO_RESEARCH_EXECUTION_ENABLED = False
+TRADE_EXECUTION_ENABLED = False

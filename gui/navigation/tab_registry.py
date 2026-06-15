@@ -1486,6 +1486,66 @@ class GUITabRegistry:
                 notes="Added in v1.1.4 — Coverage Quality Gates.",
             ),
             # ----------------------------------------------------------------
+            # v1.1.9 Data Governance Stable Rollup
+            # ----------------------------------------------------------------
+            GUITabMetadata(
+                tab_id="data_governance_stable_rollup",
+                tab_name="Governance Rollup",
+                display_name="Data Governance Stable Rollup",
+                group="data",
+                priority="P0",
+                description=(
+                    "Data Governance Stable Rollup v1.1.9 — cross-module consistency checks, "
+                    "schema and qualification normalization, cross-machine path portability, "
+                    "store inventory and validation, dry-run recovery and migration planning, "
+                    "index rebuild support, stable health aggregation, CLI GUI and docs surface audits. "
+                    "Research Only. No Real Orders. No Auto Store/Data Repair. No Auto Download/Import. "
+                    "No Auto Research Execution. No Trade Execution. Not Investment Advice."
+                ),
+                module_path="gui.data_governance_stable_rollup_panel",
+                class_name="DataGovernanceStableRollupPanel",
+                available_flag="_DATA_GOVERNANCE_STABLE_ROLLUP_AVAILABLE",
+                keywords=[
+                    "governance rollup", "stable rollup", "cross-module consistency",
+                    "store inventory", "store validation", "path normalization",
+                    "index rebuild", "metadata migration", "health aggregation",
+                    "cli audit", "gui audit", "docs audit",
+                    "\u6cbb\u7406\u5df7\u7e3d",       # 治理彙總
+                    "\u7a69\u5b9a\u767c\u4f48",       # 穩定發佈
+                    "\u8de8\u6a21\u7d44\u4e00\u81f4\u6027",  # 跨模組一致性
+                    "\u8cc7\u6599\u5e93\u5b58\u8ca8\u6e05\u5ee3",  # 資料庫存貨清單
+                    "\u8cc7\u6599\u5e93\u9a57\u8b49",   # 資料庫驗證
+                    "\u8def\u5f91\u6a19\u6e96\u5316",   # 路徑標準化
+                ],
+                aliases=["governance-rollup", "stable-rollup", "rollup"],
+                related_cli_commands=[
+                    "governance-rollup-health", "governance-rollup-run",
+                    "governance-rollup-summary", "governance-rollup-modules",
+                    "governance-rollup-consistency", "governance-rollup-store-inventory",
+                    "governance-rollup-store-validate", "governance-rollup-paths",
+                    "governance-rollup-indexes", "governance-rollup-audits",
+                    "governance-rollup-recovery-plans", "governance-rollup-migration-plans",
+                    "governance-rollup-health-matrix", "governance-rollup-cli-audit",
+                    "governance-rollup-gui-audit", "governance-rollup-docs-audit",
+                    "governance-rollup-report", "governance-rollup-history",
+                    "governance-rollup-compare",
+                    "governance-store-recovery-preview", "governance-store-recovery-execute",
+                    "governance-index-rebuild", "governance-metadata-migrate",
+                ],
+                report_types=[
+                    "data_governance_stable_rollup_report",
+                    "governance_rollup_consistency_report",
+                    "governance_rollup_health_matrix",
+                ],
+                maturity="STABLE",
+                default_visible=True,
+                favorite_default=False,
+                no_real_orders=True,
+                read_only=True,
+                production_blocked=True,
+                notes="Added in v1.1.9 \u2014 Data Governance Stable Rollup.",
+            ),
+            # ----------------------------------------------------------------
             # v1.1.8 Research Run Registry
             # ----------------------------------------------------------------
             GUITabMetadata(

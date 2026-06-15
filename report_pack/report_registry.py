@@ -105,6 +105,14 @@ REPORT_RUN_COMPARISON_SUMMARY       = "run_comparison_summary"
 REPORT_MISSING_ARTIFACT_SUMMARY     = "missing_artifact_summary"
 REPORT_DUPLICATE_RUN_SUMMARY        = "duplicate_run_summary"
 
+# v1.1.9 Data Governance Stable Rollup
+REPORT_DATA_GOVERNANCE_STABLE_ROLLUP   = "data_governance_stable_rollup_report"
+REPORT_GOVERNANCE_ROLLUP_CONSISTENCY   = "governance_rollup_consistency_report"
+REPORT_GOVERNANCE_ROLLUP_HEALTH_MATRIX = "governance_rollup_health_matrix"
+REPORT_GOVERNANCE_STORE_INVENTORY      = "governance_store_inventory_report"
+REPORT_GOVERNANCE_STORE_VALIDATION     = "governance_store_validation_report"
+REPORT_GOVERNANCE_ROLLUP_HISTORY       = "governance_rollup_history"
+
 logger = logging.getLogger(__name__)
 
 # ---------------------------------------------------------------------------
@@ -160,6 +168,9 @@ _PACK_DEFINITIONS: Dict[str, List[str]] = {
         # v1.1.8 Research Run Registry (optional in daily pack)
         REPORT_RESEARCH_RUN_REGISTRY,
         REPORT_LATEST_RUN_SUMMARY,
+        # v1.1.9 Data Governance Stable Rollup (optional in daily pack)
+        REPORT_DATA_GOVERNANCE_STABLE_ROLLUP,
+        REPORT_GOVERNANCE_ROLLUP_HEALTH_MATRIX,
     ],
     PACK_WEEKLY: [
         REPORT_DAILY_MARKET,
@@ -235,6 +246,16 @@ _PACK_DEFINITIONS: Dict[str, List[str]] = {
         REPORT_GOVERNANCE_EOD_DIGEST,
         REPORT_GOVERNANCE_ALERT_TREND,
         REPORT_GOVERNANCE_CHECKLIST,
+        # v1.1.8 Research Run Registry (optional in weekly pack)
+        REPORT_RESEARCH_RUN_REGISTRY,
+        REPORT_LATEST_RUN_SUMMARY,
+        REPORT_RUN_COMPARISON_SUMMARY,
+        # v1.1.9 Data Governance Stable Rollup (optional in weekly pack)
+        REPORT_DATA_GOVERNANCE_STABLE_ROLLUP,
+        REPORT_GOVERNANCE_ROLLUP_CONSISTENCY,
+        REPORT_GOVERNANCE_ROLLUP_HEALTH_MATRIX,
+        REPORT_GOVERNANCE_STORE_INVENTORY,
+        REPORT_GOVERNANCE_STORE_VALIDATION,
     ],
     PACK_FULL: [
         REPORT_DAILY_MARKET,
@@ -327,6 +348,19 @@ _PACK_DEFINITIONS: Dict[str, List[str]] = {
         REPORT_GOVERNANCE_WEEKLY_DIGEST,
         REPORT_GOVERNANCE_ALERT_TREND,
         REPORT_GOVERNANCE_CHECKLIST,
+        # v1.1.8 Research Run Registry (optional in full pack)
+        REPORT_RESEARCH_RUN_REGISTRY,
+        REPORT_LATEST_RUN_SUMMARY,
+        REPORT_RUN_COMPARISON_SUMMARY,
+        REPORT_MISSING_ARTIFACT_SUMMARY,
+        REPORT_DUPLICATE_RUN_SUMMARY,
+        # v1.1.9 Data Governance Stable Rollup (optional in full pack)
+        REPORT_DATA_GOVERNANCE_STABLE_ROLLUP,
+        REPORT_GOVERNANCE_ROLLUP_CONSISTENCY,
+        REPORT_GOVERNANCE_ROLLUP_HEALTH_MATRIX,
+        REPORT_GOVERNANCE_STORE_INVENTORY,
+        REPORT_GOVERNANCE_STORE_VALIDATION,
+        REPORT_GOVERNANCE_ROLLUP_HISTORY,
     ],
 }
 

@@ -2682,13 +2682,13 @@ class StableReleaseChecklistV060:
             return _check_item("research_registry_trade_execution_disabled", "research_registry", "FAIL", str(exc))
 
     def _check_version_info_v118(self) -> dict:
-        """v1.1.8 — VERSION is 1.1.8 and RESEARCH_RUN_REGISTRY_AVAILABLE=True."""
+        """v1.1.8 — VERSION is 1.1.8 or later and RESEARCH_RUN_REGISTRY_AVAILABLE=True."""
         try:
             from release.version_info import VERSION
             import release.version_info as _vi
             rrr_avail = getattr(_vi, "RESEARCH_RUN_REGISTRY_AVAILABLE", None)
             trade_exec = getattr(_vi, "RUN_TRADE_EXECUTION_ENABLED", True)
-            if VERSION == "1.1.8" and rrr_avail and not trade_exec:
+            if rrr_avail and not trade_exec:
                 return _check_item(
                     "version_info_v118", "version_git", "PASS",
                     f"VERSION={VERSION}, RESEARCH_RUN_REGISTRY_AVAILABLE={rrr_avail}, "
@@ -2698,10 +2698,102 @@ class StableReleaseChecklistV060:
                 "version_info_v118", "version_git", "WARN",
                 f"VERSION={VERSION}, RESEARCH_RUN_REGISTRY_AVAILABLE={rrr_avail}, "
                 f"RUN_TRADE_EXECUTION_ENABLED={trade_exec}",
-                warning="Expected VERSION=1.1.8 with RESEARCH_RUN_REGISTRY_AVAILABLE=True, RUN_TRADE_EXECUTION_ENABLED=False",
+                warning="Expected RESEARCH_RUN_REGISTRY_AVAILABLE=True, RUN_TRADE_EXECUTION_ENABLED=False",
             )
         except Exception as exc:
             return _check_item("version_info_v118", "version_git", "WARN", str(exc))
+
+    def _check_governance_rollup_import(self) -> dict:
+        """v1.1.9 — governance_rollup package imports without error."""
+        try:
+            import governance_rollup
+            from governance_rollup.rollup_schema import StableRollupSummary
+            from governance_rollup.rollup_health import DataGovernanceStableRollupHealthCheck
+            from governance_rollup.consistency_checker import CrossModuleConsistencyChecker
+            return _check_item(
+                "governance_rollup_import", "governance_rollup", "PASS",
+                "governance_rollup package and key classes imported OK",
+            )
+        except Exception as exc:
+            return _check_item("governance_rollup_import", "governance_rollup", "FAIL", str(exc))
+
+    def _check_governance_rollup_consistency(self) -> dict:
+        """v1.1.9 — CrossModuleConsistencyChecker can run."""
+        try:
+            from governance_rollup.consistency_checker import CrossModuleConsistencyChecker
+            checker = CrossModuleConsistencyChecker()
+            result = checker.check_version_consistency()
+            return _check_item(
+                "governance_rollup_consistency", "governance_rollup", "PASS",
+                f"CrossModuleConsistencyChecker ran OK: consistent={result.get('consistent', False)}",
+            )
+        except Exception as exc:
+            return _check_item("governance_rollup_consistency", "governance_rollup", "WARN", str(exc))
+
+    def _check_governance_rollup_store_validation(self) -> dict:
+        """v1.1.9 — GovernanceStoreValidator can run."""
+        try:
+            from governance_rollup.store_inventory import GovernanceStoreInventory
+            from governance_rollup.store_validator import GovernanceStoreValidator
+            inv = GovernanceStoreInventory()
+            records = inv.build_inventory()
+            validator = GovernanceStoreValidator()
+            results = [validator.validate_store(r) for r in records]
+            summary = validator.summarize(results)
+            total = summary.get("total", 0)
+            invalid = summary.get("invalid", 0)
+            status = "PASS" if invalid == 0 else "WARN"
+            return _check_item(
+                "governance_rollup_store_validation", "governance_rollup", status,
+                f"GovernanceStoreValidator ran OK: {total} stores checked, {invalid} invalid",
+            )
+        except Exception as exc:
+            return _check_item("governance_rollup_store_validation", "governance_rollup", "WARN", str(exc))
+
+    def _check_governance_rollup_trade_execution_disabled(self) -> dict:
+        """v1.1.9 — TRADE_EXECUTION_ENABLED is False in governance_rollup."""
+        try:
+            import governance_rollup
+            _trade = getattr(governance_rollup, "TRADE_EXECUTION_ENABLED", True)
+            _auto_repair = getattr(governance_rollup, "AUTO_STORE_REPAIR_ENABLED", True)
+            _auto_exec = getattr(governance_rollup, "AUTO_RESEARCH_EXECUTION_ENABLED", True)
+            if not _trade and not _auto_repair and not _auto_exec:
+                return _check_item(
+                    "governance_rollup_trade_execution_disabled", "governance_rollup", "PASS",
+                    f"TRADE_EXECUTION_ENABLED={_trade}, AUTO_STORE_REPAIR_ENABLED={_auto_repair}, "
+                    f"AUTO_RESEARCH_EXECUTION_ENABLED={_auto_exec} (all False as required)",
+                )
+            return _check_item(
+                "governance_rollup_trade_execution_disabled", "governance_rollup", "FAIL",
+                f"TRADE_EXECUTION_ENABLED={_trade}, AUTO_STORE_REPAIR_ENABLED={_auto_repair}, "
+                f"AUTO_RESEARCH_EXECUTION_ENABLED={_auto_exec} (all must be False)",
+            )
+        except Exception as exc:
+            return _check_item("governance_rollup_trade_execution_disabled", "governance_rollup", "FAIL", str(exc))
+
+    def _check_version_info_v119(self) -> dict:
+        """v1.1.9 — VERSION is 1.1.9 and DATA_GOVERNANCE_STABLE_ROLLUP_AVAILABLE=True."""
+        try:
+            from release.version_info import VERSION
+            import release.version_info as _vi
+            gr_avail = getattr(_vi, "DATA_GOVERNANCE_STABLE_ROLLUP_AVAILABLE", None)
+            trade_exec = getattr(_vi, "TRADE_EXECUTION_ENABLED", True)
+            auto_repair = getattr(_vi, "AUTO_STORE_REPAIR_ENABLED", True)
+            if VERSION == "1.1.9" and gr_avail and not trade_exec and not auto_repair:
+                return _check_item(
+                    "version_info_v119", "version_git", "PASS",
+                    f"VERSION={VERSION}, DATA_GOVERNANCE_STABLE_ROLLUP_AVAILABLE={gr_avail}, "
+                    f"TRADE_EXECUTION_ENABLED={trade_exec}, AUTO_STORE_REPAIR_ENABLED={auto_repair}",
+                )
+            return _check_item(
+                "version_info_v119", "version_git", "WARN",
+                f"VERSION={VERSION}, DATA_GOVERNANCE_STABLE_ROLLUP_AVAILABLE={gr_avail}, "
+                f"TRADE_EXECUTION_ENABLED={trade_exec}, AUTO_STORE_REPAIR_ENABLED={auto_repair}",
+                warning="Expected VERSION=1.1.9 with DATA_GOVERNANCE_STABLE_ROLLUP_AVAILABLE=True, "
+                        "TRADE_EXECUTION_ENABLED=False, AUTO_STORE_REPAIR_ENABLED=False",
+            )
+        except Exception as exc:
+            return _check_item("version_info_v119", "version_git", "WARN", str(exc))
 
     # ----------------------------------------------------------------
     # Run
@@ -2867,6 +2959,12 @@ class StableReleaseChecklistV060:
             self._check_research_registry_duplicate_detection,
             self._check_research_registry_trade_execution_disabled,
             self._check_version_info_v118,
+            # v1.1.9 Data Governance Stable Rollup
+            self._check_governance_rollup_import,
+            self._check_governance_rollup_consistency,
+            self._check_governance_rollup_store_validation,
+            self._check_governance_rollup_trade_execution_disabled,
+            self._check_version_info_v119,
         ]
 
         for fn in checklist_groups:

@@ -68,6 +68,12 @@ from report_pack.report_registry import (
     REPORT_RUN_COMPARISON_SUMMARY,
     REPORT_MISSING_ARTIFACT_SUMMARY,
     REPORT_DUPLICATE_RUN_SUMMARY,
+    REPORT_DATA_GOVERNANCE_STABLE_ROLLUP,
+    REPORT_GOVERNANCE_ROLLUP_CONSISTENCY,
+    REPORT_GOVERNANCE_ROLLUP_HEALTH_MATRIX,
+    REPORT_GOVERNANCE_STORE_INVENTORY,
+    REPORT_GOVERNANCE_STORE_VALIDATION,
+    REPORT_GOVERNANCE_ROLLUP_HISTORY,
 )
 
 logger = logging.getLogger(__name__)
@@ -384,6 +390,25 @@ _REPORT_PATTERNS = {
     ],
     REPORT_DUPLICATE_RUN_SUMMARY: [
         "data/research_registry/duplicate_index.csv",
+    ],
+    # v1.1.9 Data Governance Stable Rollup patterns
+    REPORT_DATA_GOVERNANCE_STABLE_ROLLUP: [
+        "reports/data_governance_stable_rollup_report*.md",
+    ],
+    REPORT_GOVERNANCE_ROLLUP_CONSISTENCY: [
+        "data/governance_rollup/consistency_report*.json",
+    ],
+    REPORT_GOVERNANCE_ROLLUP_HEALTH_MATRIX: [
+        "data/governance_rollup/health_matrix*.json",
+    ],
+    REPORT_GOVERNANCE_STORE_INVENTORY: [
+        "data/governance_rollup/store_inventory*.json",
+    ],
+    REPORT_GOVERNANCE_STORE_VALIDATION: [
+        "data/governance_rollup/store_validation*.json",
+    ],
+    REPORT_GOVERNANCE_ROLLUP_HISTORY: [
+        "data/governance_rollup/rollup_history.jsonl",
     ],
     # v0.9.1 Evidence Graph UX patterns
     "evidence_graph_gaps": [

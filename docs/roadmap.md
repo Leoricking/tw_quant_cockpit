@@ -88,6 +88,19 @@
 | v1.1.6 | Data Governance Operations Dashboard | Done |
 | v1.1.7 | Governance Alerts & Daily Operations | Done |
 | v1.1.8 | Research Run Registry | Done |
+| v1.1.9 | Data Governance Stable Rollup | Done |
+
+---
+
+### v1.1.9 — Data Governance Stable Rollup ✅
+
+- **Version:** 1.1.9 — stable rollup for entire v1.1.x Data Governance line
+- **Type:** Cross-module consistency, schema normalization, store inventory/validation, dry-run recovery/migration, index rebuild, health aggregation, CLI/GUI/docs surface audits, final rollup reports.
+- **Changes:** governance_rollup/ package (rollup_schema, schema_normalizer, path_normalizer, store_inventory, store_validator, store_recovery, index_rebuilder, metadata_migrator, consistency_checker, health_aggregator, stable_rollup_engine, rollup_store, rollup_query, gui_surface_audit, docs_surface_audit, rollup_health, __init__), 24 new CLI commands, GUI nav tab (data_governance_stable_rollup, data group), 6 new report types in report pack, stable checklist checks (5 new), v060 checklist checks (5 new), intelligence checklist check (governance_rollup_v119_safe), 14 regression tests, .gitignore updates (data/governance_rollup/, !tests/fixtures/governance_rollup/), 7 new alert policies (ROLLUP_CONSISTENCY_FAILURE/STORE_CORRUPTED/STORE_VALIDATION_FAILURE/PATH_MISMATCH/INDEX_STALE/HEALTH_DEGRADED/MIGRATION_NEEDED), docs (data_governance_stable_rollup_v1.1.9.md, v1.1_data_governance_architecture.md, v1.1_operations_runbook.md), README/docs refresh
+- **Safety:** No Auto Store Repair, No Auto Data Repair, No Auto Download, No Auto Import, No Auto Research Execution, No Auto Research Rerun, No Trade Execution, Recovery/Migration execution requires --allow-write, No Real Orders, Broker Disabled, Production Trading BLOCKED, Not Investment Advice
+
+**Next:**
+- v1.2.0: Replay Training UX
 
 ---
 
@@ -99,6 +112,7 @@
 - **Safety:** Auto Rerun DISABLED, Auto Execution DISABLED, Trade Execution DISABLED, Mock always DEMO_ONLY, Backfill requires explicit allow_write=True, Sensitive fields redacted, Registry failure is non-fatal, No Real Orders, Broker Disabled, Production Trading BLOCKED
 
 **Next:**
+- v1.1.9: Data Governance Stable Rollup — Done
 - v1.2.0: Replay Training UX
 
 ---

@@ -1,0 +1,3 @@
+{"run_id": "RUN-TST-20260115-020", "symbol": "TST020", "status": "COMPLETED", "research_only": true, "no_real_orders": true}
+{"run_id": "RUN-TST-CORRUPTED-MID", "symbol": "TST021", "status": INVALID_JSON_VALUE, "research_only": true}
+{"run_id": "RUN-TST-20260115-022", "symbol": "TST022", "status": "COMPLETED", "research_only": true, "no_real_orders": true}

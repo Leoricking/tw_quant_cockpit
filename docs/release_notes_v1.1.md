@@ -5,6 +5,48 @@
 
 ---
 
+## v1.1.9 — Data Governance Stable Rollup (2026-06-15)
+
+### Summary
+
+v1.1.9 is the stable rollup for the entire v1.1.x Data Governance line. It adds cross-module consistency checks, schema and qualification normalization, cross-machine path portability, store inventory and validation, dry-run recovery and migration planning, index rebuild support, stable health aggregation, CLI/GUI/docs surface audits, and final governance rollup reports.
+
+### New Features
+
+- `governance_rollup/` package: rollup_schema, schema_normalizer, path_normalizer, store_inventory, store_validator, store_recovery, index_rebuilder, metadata_migrator, consistency_checker, health_aggregator, stable_rollup_engine, rollup_store, rollup_query, gui_surface_audit, docs_surface_audit, rollup_health
+- `CrossModuleConsistencyChecker` — verifies version flags, schema contracts, safety guards, and qualification labels across all v1.1.x modules
+- `GovernanceSchemaNormalizer` — normalizes field names and qualification labels
+- `CrossMachinePathNormalizer` — produces portable relative paths for dual-computer workflows
+- `GovernanceStoreInventory` — enumerates all v1.1.x runtime stores
+- `GovernanceStoreValidator` — validates record counts, schema versions, audit chains
+- `GovernanceStoreRecoveryPlanner` — dry-run recovery plans for corrupted tail records
+- `GovernanceIndexRebuilder` — preview/rebuild lookup indexes (--execute --allow-write required)
+- `GovernanceMetadataMigrator` — preview/migrate legacy schema fields (--execute --allow-write required)
+- `GovernanceHealthAggregator` — builds per-module and overall health matrix
+- `DataGovernanceStableRollupEngine` — orchestrates full rollup run
+- `GovernanceGUISurfaceAuditor` / `GovernanceDocsSurfaceAuditor` — surface audits
+- 24 new CLI commands: `governance-rollup-health`, `governance-rollup-run`, `governance-rollup-summary`, `governance-rollup-modules`, `governance-rollup-consistency`, `governance-rollup-store-inventory`, `governance-rollup-store-validate`, `governance-rollup-paths`, `governance-rollup-indexes`, `governance-rollup-audits`, `governance-rollup-recovery-plans`, `governance-rollup-migration-plans`, `governance-rollup-health-matrix`, `governance-rollup-cli-audit`, `governance-rollup-gui-audit`, `governance-rollup-docs-audit`, `governance-rollup-report`, `governance-rollup-history`, `governance-rollup-compare`, `governance-store-recovery-preview`, `governance-store-recovery-execute`, `governance-index-rebuild`, `governance-metadata-migrate`
+- GUI: Data Governance Stable Rollup tab (data group)
+- Reports: `data_governance_stable_rollup_report`, `governance_rollup_consistency_report`, `governance_rollup_health_matrix`, `governance_store_inventory_report`, `governance_store_validation_report`, `governance_rollup_history`
+- New alert types: `ROLLUP_CONSISTENCY_FAILURE` (P1), `ROLLUP_STORE_CORRUPTED` (P0), `ROLLUP_STORE_VALIDATION_FAILURE` (P1), `ROLLUP_PATH_MISMATCH` (P2), `ROLLUP_INDEX_STALE` (P2), `ROLLUP_HEALTH_DEGRADED` (P2), `ROLLUP_MIGRATION_NEEDED` (P3)
+- 14 regression test cases for governance_rollup category
+- Docs: `data_governance_stable_rollup_v1.1.9.md`, `v1.1_data_governance_architecture.md`, `v1.1_operations_runbook.md`
+
+### Safety
+
+- `AUTO_STORE_REPAIR_ENABLED = False` — never auto-modifies stores
+- `AUTO_DATA_REPAIR_ENABLED = False` — never auto-repairs data
+- `AUTO_DATA_DOWNLOAD_ENABLED = False` — never auto-downloads data
+- `AUTO_DATA_IMPORT_ENABLED = False` — never auto-imports data
+- `AUTO_RESEARCH_EXECUTION_ENABLED = False` — never auto-executes research
+- `AUTO_RESEARCH_RERUN_ENABLED = False` — never auto-reruns research
+- `TRADE_EXECUTION_ENABLED = False` — never enables trading
+- Recovery and migration execution require explicit `--allow-write` flag
+- `NO_REAL_ORDERS = True`, `BROKER_DISABLED = True`, `RESEARCH_ONLY = True`
+- Not Investment Advice
+
+---
+
 ## v1.1.6 — Data Governance Operations Dashboard (2026-06-15)
 
 ### Summary

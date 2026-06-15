@@ -1,0 +1,3 @@
+{"entry_id": "AUD-001", "event": "run_registered", "run_id": "RUN-TST-001", "hash": "abc123def456", "ts": "2026-01-15T09:00:00+00:00", "research_only": true}
+{"entry_id": "AUD-002", "event": "run_updated", "run_id": "RUN-TST-001", "hash": "def456ghi789", "ts": "2026-01-15T09:01:00+00:00", "research_only": true}
+{"entry_id": "AUD-003", "event": "run_completed", "run_id": "RUN-TST-001", "hash": "ghi789jkl012", "ts": "2026-01-15T09:02:00+00:00", "research_only": true}

@@ -1,5 +1,5 @@
 """
-release/version_info.py — Centralized version info for TW Quant Cockpit v1.1.8.
+release/version_info.py — Centralized version info for TW Quant Cockpit v1.1.9.
 [!] Research Only. No Real Orders. Production Trading: BLOCKED.
 [!] VALIDATED does not enable trading. Broker Execution Disabled.
 [!] Data Universe Expansion. Real Data Coverage Required.
@@ -16,6 +16,8 @@ release/version_info.py — Centralized version info for TW Quant Cockpit v1.1.8
 [!] Governance Alerts & Daily Operations. External Notification Send DISABLED.
 [!] Alert detection does NOT repair, import, override gates, or enable trading. Not Investment Advice.
 [!] Research Run Registry. Registry does NOT execute commands. Auto Rerun DISABLED. Trading DISABLED.
+[!] Data Governance Stable Rollup. No Auto Store Repair. No Auto Data Repair. No Auto Download.
+[!] No Auto Import. No Auto Research Execution. No Trade Execution. Not Investment Advice.
 """
 from __future__ import annotations
 import logging
@@ -25,11 +27,11 @@ logger = logging.getLogger(__name__)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 # ---------------------------------------------------------------------------
-# v1.1.8 module-level constants (Research Run Registry)
+# v1.1.9 module-level constants (Data Governance Stable Rollup)
 # ---------------------------------------------------------------------------
-VERSION                             = "1.1.8"
-RELEASE_NAME                        = "Research Run Registry"
-BASE_RELEASE                        = "1.1.7 Governance Alerts & Daily Operations"
+VERSION                             = "1.1.9"
+RELEASE_NAME                        = "Data Governance Stable Rollup"
+BASE_RELEASE                        = "1.1.8 Research Run Registry"
 BASE_RELEASE_NAME                   = "Data Freshness Monitor"
 MAINTENANCE_RELEASE                 = False
 RELEASE_STAGE                       = "STABLE"
@@ -129,6 +131,20 @@ RUN_DUPLICATE_DETECTION_AVAILABLE       = True
 RUN_AUTO_RERUN_ENABLED                  = False
 RUN_AUTO_EXECUTION_ENABLED              = False
 RUN_TRADE_EXECUTION_ENABLED             = False
+# v1.1.9 new flags
+DATA_GOVERNANCE_STABLE_ROLLUP_AVAILABLE = True
+CROSS_MODULE_CONSISTENCY_AVAILABLE      = True
+STORE_RECOVERY_AVAILABLE                = True
+STORE_INDEX_REBUILD_AVAILABLE           = True
+CROSS_MACHINE_PATH_NORMALIZATION_AVAILABLE = True
+LEGACY_METADATA_MIGRATION_AVAILABLE     = True
+AUTO_STORE_REPAIR_ENABLED               = False
+AUTO_DATA_REPAIR_ENABLED                = False
+AUTO_DATA_DOWNLOAD_ENABLED              = False
+AUTO_DATA_IMPORT_ENABLED                = False
+AUTO_RESEARCH_EXECUTION_ENABLED         = False
+AUTO_RESEARCH_RERUN_ENABLED             = False
+TRADE_EXECUTION_ENABLED                 = False
 
 
 class VersionInfo:
@@ -326,6 +342,19 @@ def print_version_info() -> None:
     print(f"  Run Auto Rerun Enabled: {RUN_AUTO_RERUN_ENABLED}")
     print(f"  Run Auto Execution Enabled: {RUN_AUTO_EXECUTION_ENABLED}")
     print(f"  Run Trade Execution Enabled: {RUN_TRADE_EXECUTION_ENABLED}")
+    print(f"  Data Governance Stable Rollup Available: {DATA_GOVERNANCE_STABLE_ROLLUP_AVAILABLE}")
+    print(f"  Cross Module Consistency Available: {CROSS_MODULE_CONSISTENCY_AVAILABLE}")
+    print(f"  Store Recovery Available: {STORE_RECOVERY_AVAILABLE}")
+    print(f"  Store Index Rebuild Available: {STORE_INDEX_REBUILD_AVAILABLE}")
+    print(f"  Cross Machine Path Normalization Available: {CROSS_MACHINE_PATH_NORMALIZATION_AVAILABLE}")
+    print(f"  Legacy Metadata Migration Available: {LEGACY_METADATA_MIGRATION_AVAILABLE}")
+    print(f"  Auto Store Repair Enabled: {AUTO_STORE_REPAIR_ENABLED}")
+    print(f"  Auto Data Repair Enabled: {AUTO_DATA_REPAIR_ENABLED}")
+    print(f"  Auto Data Download Enabled: {AUTO_DATA_DOWNLOAD_ENABLED}")
+    print(f"  Auto Data Import Enabled: {AUTO_DATA_IMPORT_ENABLED}")
+    print(f"  Auto Research Execution Enabled: {AUTO_RESEARCH_EXECUTION_ENABLED}")
+    print(f"  Auto Research Rerun Enabled: {AUTO_RESEARCH_RERUN_ENABLED}")
+    print(f"  Trade Execution Enabled: {TRADE_EXECUTION_ENABLED}")
     print("=" * 60)
 
 
