@@ -85,6 +85,19 @@
 | v1.1.3 | Data Freshness Monitor | Done |
 | v1.1.4 | Coverage Quality Gates | Done |
 | v1.1.5 | Quality Gate Enforcement & Audit | Done |
+| v1.1.6 | Data Governance Operations Dashboard | Done |
+
+---
+
+### v1.1.6 — Data Governance Operations Dashboard ✅
+
+- **Version:** 1.1.6 — feature release based on v1.1.5 Quality Gate Enforcement & Audit
+- **Type:** Data Governance Operations Dashboard — unified governance view, no strategy changes, no broker API, no trading
+- **Changes:** governance_ops/ package (governance_schema, governance_adapters, priority_engine, action_queue, governance_aggregator, operations_store, operations_engine, operations_query, operations_health, __init__), reports/data_governance_operations_report.py, 18 new CLI commands (governance-health/dashboard/summary/module-health/symbols/symbol/actions/top-actions/source-health/gate-summary/audit-summary/runs/history/report/compare/action-ack/action-defer/action-resolve), GUI panel + adapter, GUI nav tab (data group), 4 new report types in report pack, stable checklist checks (5 new), v060 checklist checks (5 new), intelligence checklist check (governance_ops_v116_safe), regression tests (7 new), tests/fixtures/governance_ops/ (13 fixtures), docs/data_governance_operations_dashboard_v1.1.6.md, .gitignore updates, README/docs refresh
+- **Safety:** Auto Repair DISABLED, Auto Download DISABLED, Gate Override DISABLED, Trade Execution DISABLED, Priority based only on data governance issues, Actions are metadata-only, No Real Orders, Production Trading BLOCKED
+
+**Next:**
+- v1.2.0: Replay Training UX
 
 ---
 

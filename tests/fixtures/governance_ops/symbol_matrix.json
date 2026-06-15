@@ -1,0 +1,52 @@
+{
+  "_comment": "Fixture: symbol_matrix — 4-symbol governance matrix for research30. Research Only.",
+  "tier": "research30",
+  "symbols": [
+    {
+      "symbol": "2330",
+      "overall_status": "ATTENTION_REQUIRED",
+      "coverage_status": "READY",
+      "freshness_status": "STALE",
+      "gate_status": "ELIGIBLE_OBSERVATIONAL",
+      "repair_needed": false,
+      "stale": true,
+      "missing": false,
+      "blocked": false
+    },
+    {
+      "symbol": "2454",
+      "overall_status": "HEALTHY",
+      "coverage_status": "READY",
+      "freshness_status": "FRESH",
+      "gate_status": "ELIGIBLE_FORMAL",
+      "repair_needed": false,
+      "stale": false,
+      "missing": false,
+      "blocked": false
+    },
+    {
+      "symbol": "2317",
+      "overall_status": "CRITICAL",
+      "coverage_status": "MISSING",
+      "freshness_status": "MISSING",
+      "gate_status": "BLOCKED_INVALID",
+      "repair_needed": true,
+      "stale": false,
+      "missing": true,
+      "blocked": true
+    },
+    {
+      "symbol": "3008",
+      "overall_status": "HEALTHY",
+      "coverage_status": "READY",
+      "freshness_status": "FRESH",
+      "gate_status": "ELIGIBLE_FORMAL",
+      "repair_needed": false,
+      "stale": false,
+      "missing": false,
+      "blocked": false
+    }
+  ],
+  "research_only": true,
+  "no_real_orders": true
+}

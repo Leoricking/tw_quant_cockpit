@@ -1486,6 +1486,57 @@ class GUITabRegistry:
                 notes="Added in v1.1.4 — Coverage Quality Gates.",
             ),
             # ----------------------------------------------------------------
+            # ----------------------------------------------------------------
+            # v1.1.6 Data Governance Operations Dashboard
+            # ----------------------------------------------------------------
+            GUITabMetadata(
+                tab_id="data_governance_operations",
+                tab_name="Governance Ops",
+                display_name="Data Governance Operations Dashboard",
+                group="data",
+                priority="P0",
+                description=(
+                    "Data Governance Operations Dashboard v1.1.6 — unified governance dashboard "
+                    "integrating universe, onboarding, repair, freshness, quality gates, enforcement, "
+                    "audit, module health, symbol status, prioritized action queues, daily snapshots. "
+                    "Research Only. No Real Orders. No Auto Repair. No Auto Download. No Gate Override. No Trading."
+                ),
+                module_path="gui.data_governance_operations_panel",
+                class_name="DataGovernanceOperationsPanel",
+                available_flag="_DATA_GOVERNANCE_OPS_AVAILABLE",
+                keywords=[
+                    "governance dashboard", "data operations", "data health", "action queue",
+                    "module health", "source health", "audit health", "governance ops",
+                    "symbol matrix", "formal eligible", "observational", "blocked",
+                    "p0 actions", "p1 actions", "daily snapshot", "compare runs",
+                    "\u8cc7\u6599\u6cbb\u7406",       # 資料治理
+                    "\u8cc7\u6599\u7e3d\u63a7\u53f0", # 資料總控台
+                    "\u8cc7\u6599\u5065\u5eb7",       # 資料健康
+                    "\u5f85\u8655\u7406\u4efb\u52d9", # 待處理任務
+                    "\u6a21\u7d44\u5065\u5eb7",       # 模組健康
+                    "\u4f86\u6e90\u5065\u5eb7",       # 來源健康
+                    "\u7a3d\u6838\u5065\u5eb7",       # 稽核健康
+                ],
+                aliases=["governance-ops", "governance-dashboard", "data-governance"],
+                related_cli_commands=[
+                    "governance-health", "governance-dashboard", "governance-summary",
+                    "governance-module-health", "governance-symbols", "governance-actions",
+                    "governance-top-actions", "governance-source-health", "governance-gate-summary",
+                    "governance-audit-summary", "governance-runs", "governance-history",
+                    "governance-report", "governance-compare",
+                    "governance-action-ack", "governance-action-defer", "governance-action-resolve",
+                ],
+                report_types=["data_governance_operations_report", "governance_action_queue",
+                               "governance_module_health", "governance_audit_summary"],
+                maturity="STABLE",
+                default_visible=True,
+                favorite_default=False,
+                no_real_orders=True,
+                read_only=True,
+                production_blocked=True,
+                notes="Added in v1.1.6 \u2014 Data Governance Operations Dashboard.",
+            ),
+            # ----------------------------------------------------------------
             # v1.1.0 Data Universe Expansion
             # ----------------------------------------------------------------
             GUITabMetadata(

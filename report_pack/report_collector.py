@@ -53,6 +53,10 @@ from report_pack.report_registry import (
     REPORT_GATE_RUN_SUMMARY,
     REPORT_GATE_EXCLUSION_SUMMARY,
     REPORT_GATE_REPRODUCIBILITY,
+    REPORT_DATA_GOVERNANCE_OPERATIONS,
+    REPORT_GOVERNANCE_ACTION_QUEUE,
+    REPORT_GOVERNANCE_MODULE_HEALTH,
+    REPORT_GOVERNANCE_AUDIT_SUMMARY,
 )
 
 logger = logging.getLogger(__name__)
@@ -313,6 +317,23 @@ _REPORT_PATTERNS = {
     REPORT_GATE_REPRODUCIBILITY: [
         "data/quality_gate_enforcement/run_hashes.csv",
         "data/quality_gate_audit/reproducibility_hashes.csv",
+    ],
+    # v1.1.6 Data Governance Operations Dashboard
+    REPORT_DATA_GOVERNANCE_OPERATIONS: [
+        "reports/data_governance_operations_report*.md",
+        "data/governance_ops/governance_summary.json",
+        "data/governance_ops/daily_history.jsonl",
+    ],
+    REPORT_GOVERNANCE_ACTION_QUEUE: [
+        "data/governance_ops/action_queue.csv",
+        "data/governance_ops/action_audit.jsonl",
+    ],
+    REPORT_GOVERNANCE_MODULE_HEALTH: [
+        "data/governance_ops/module_health.csv",
+    ],
+    REPORT_GOVERNANCE_AUDIT_SUMMARY: [
+        "data/governance_ops/audit_summary.csv",
+        "data/governance_ops/enforcement_runs.csv",
     ],
     # v0.9.1 Evidence Graph UX patterns
     "evidence_graph_gaps": [

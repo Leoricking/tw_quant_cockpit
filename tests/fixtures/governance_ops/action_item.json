@@ -1,0 +1,21 @@
+{
+  "_comment": "Fixture: GovernanceActionItem — P1 action requiring attention. Research Only.",
+  "action_id": "test-action-001",
+  "priority": "P1",
+  "action_type": "stale_data",
+  "symbol": "2330",
+  "module": "data_freshness",
+  "status": "open",
+  "title": "Stale price data detected for 2330",
+  "description": "Price data for symbol 2330 is older than SLA threshold (3 days).",
+  "reason_codes": ["stale_data", "sla_breach"],
+  "suggested_cli_command": "python main.py freshness-symbol --stock 2330",
+  "created_at": "2026-06-15T00:00:00Z",
+  "updated_at": "2026-06-15T00:00:00Z",
+  "acknowledged_by": null,
+  "deferred_until": null,
+  "resolved_at": null,
+  "resolution_note": "",
+  "research_only": true,
+  "no_real_orders": true
+}

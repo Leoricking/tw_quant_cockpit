@@ -1,0 +1,24 @@
+{
+  "_comment": "Fixture: GovernanceSymbolStatus — per-symbol governance status. Research Only.",
+  "symbol": "2454",
+  "overall_status": "HEALTHY",
+  "coverage_status": "READY",
+  "freshness_status": "FRESH",
+  "gate_status": "ELIGIBLE_FORMAL",
+  "repair_needed": false,
+  "stale": false,
+  "missing": false,
+  "conflicted": false,
+  "blocked": false,
+  "confidence": 1.0,
+  "issues": [],
+  "module_statuses": {
+    "data_universe": "HEALTHY",
+    "data_freshness": "HEALTHY",
+    "quality_gates": "ELIGIBLE_FORMAL",
+    "gate_enforcement": "HEALTHY"
+  },
+  "last_checked_at": "2026-06-15T00:00:00Z",
+  "research_only": true,
+  "no_real_orders": true
+}

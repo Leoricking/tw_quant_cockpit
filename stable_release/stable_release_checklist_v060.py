@@ -2435,6 +2435,100 @@ class StableReleaseChecklistV060:
             return _check_item("version_info_v115", "version_git", "WARN", str(exc))
 
     # ----------------------------------------------------------------
+    # v1.1.6 Data Governance Operations Dashboard checks
+    # ----------------------------------------------------------------
+
+    def _check_governance_ops_import(self) -> dict:
+        """v1.1.6 — governance_ops package imports correctly."""
+        try:
+            import governance_ops
+            _avail = getattr(governance_ops, "DATA_GOVERNANCE_DASHBOARD_AVAILABLE", False)
+            _no_orders = getattr(governance_ops, "NO_REAL_ORDERS", False)
+            if _avail and _no_orders:
+                return _check_item(
+                    "governance_ops_import", "governance_ops", "PASS",
+                    f"governance_ops: DATA_GOVERNANCE_DASHBOARD_AVAILABLE={_avail}, NO_REAL_ORDERS={_no_orders}",
+                )
+            return _check_item(
+                "governance_ops_import", "governance_ops", "FAIL",
+                f"governance_ops: DATA_GOVERNANCE_DASHBOARD_AVAILABLE={_avail}, NO_REAL_ORDERS={_no_orders}",
+            )
+        except Exception as exc:
+            return _check_item("governance_ops_import", "governance_ops", "FAIL", str(exc))
+
+    def _check_governance_auto_repair_disabled(self) -> dict:
+        """v1.1.6 — GOVERNANCE_AUTO_REPAIR_ENABLED is False."""
+        try:
+            import governance_ops
+            _auto = getattr(governance_ops, "GOVERNANCE_AUTO_REPAIR_ENABLED", True)
+            if not _auto:
+                return _check_item(
+                    "governance_auto_repair_disabled", "governance_ops", "PASS",
+                    f"GOVERNANCE_AUTO_REPAIR_ENABLED={_auto} (must be False)",
+                )
+            return _check_item(
+                "governance_auto_repair_disabled", "governance_ops", "FAIL",
+                f"GOVERNANCE_AUTO_REPAIR_ENABLED={_auto} (must be False)",
+            )
+        except Exception as exc:
+            return _check_item("governance_auto_repair_disabled", "governance_ops", "FAIL", str(exc))
+
+    def _check_governance_trade_execution_disabled(self) -> dict:
+        """v1.1.6 — GOVERNANCE_TRADE_EXECUTION_ENABLED is False."""
+        try:
+            import governance_ops
+            _trade = getattr(governance_ops, "GOVERNANCE_TRADE_EXECUTION_ENABLED", True)
+            if not _trade:
+                return _check_item(
+                    "governance_trade_execution_disabled", "governance_ops", "PASS",
+                    f"GOVERNANCE_TRADE_EXECUTION_ENABLED={_trade} (must be False)",
+                )
+            return _check_item(
+                "governance_trade_execution_disabled", "governance_ops", "FAIL",
+                f"GOVERNANCE_TRADE_EXECUTION_ENABLED={_trade} (must be False)",
+            )
+        except Exception as exc:
+            return _check_item("governance_trade_execution_disabled", "governance_ops", "FAIL", str(exc))
+
+    def _check_governance_no_forbidden_actions(self) -> dict:
+        """v1.1.6 — governance health check passes with no FAIL."""
+        try:
+            from governance_ops.operations_health import DataGovernanceOperationsHealthCheck
+            _gh = DataGovernanceOperationsHealthCheck()
+            _results = _gh.run()
+            _fail = sum(1 for r in _results if r[1] == "FAIL")
+            if _fail == 0:
+                return _check_item(
+                    "governance_no_forbidden_actions", "governance_ops", "PASS",
+                    f"DataGovernanceOperationsHealthCheck: {len(_results)} checks, {_fail} FAIL",
+                )
+            return _check_item(
+                "governance_no_forbidden_actions", "governance_ops", "FAIL",
+                f"DataGovernanceOperationsHealthCheck: {len(_results)} checks, {_fail} FAIL",
+            )
+        except Exception as exc:
+            return _check_item("governance_no_forbidden_actions", "governance_ops", "WARN", str(exc))
+
+    def _check_version_info_v116(self) -> dict:
+        """v1.1.6 — VERSION is 1.1.6 and DATA_GOVERNANCE_DASHBOARD_AVAILABLE=True."""
+        try:
+            from release.version_info import VERSION
+            import release.version_info as _vi
+            gov_avail = getattr(_vi, "DATA_GOVERNANCE_DASHBOARD_AVAILABLE", None)
+            if VERSION == "1.1.6" and gov_avail:
+                return _check_item(
+                    "version_info_v116", "version_git", "PASS",
+                    f"VERSION={VERSION}, DATA_GOVERNANCE_DASHBOARD_AVAILABLE={gov_avail}",
+                )
+            return _check_item(
+                "version_info_v116", "version_git", "WARN",
+                f"VERSION={VERSION}, DATA_GOVERNANCE_DASHBOARD_AVAILABLE={gov_avail}",
+                warning="Expected VERSION=1.1.6 with DATA_GOVERNANCE_DASHBOARD_AVAILABLE=True",
+            )
+        except Exception as exc:
+            return _check_item("version_info_v116", "version_git", "WARN", str(exc))
+
+    # ----------------------------------------------------------------
     # Run
     # ----------------------------------------------------------------
 
@@ -2580,6 +2674,12 @@ class StableReleaseChecklistV060:
             self._check_enforcement_mock_guard,
             self._check_enforcement_audit_chain,
             self._check_version_info_v115,
+            # v1.1.6 Data Governance Operations Dashboard
+            self._check_governance_ops_import,
+            self._check_governance_auto_repair_disabled,
+            self._check_governance_trade_execution_disabled,
+            self._check_governance_no_forbidden_actions,
+            self._check_version_info_v116,
         ]
 
         for fn in checklist_groups:

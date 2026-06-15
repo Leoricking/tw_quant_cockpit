@@ -408,3 +408,11 @@ reports/gate_reproducibility_summary_report_*.md
 # v1.1.5 Gate enforcement fixtures ARE committed (exception)
 !tests/fixtures/gate_enforcement/*.json
 !tests/fixtures/gate_enforcement/*.jsonl
+
+# v1.1.6 Data Governance Operations Dashboard (runtime outputs — never commit)
+data/governance_ops/
+reports/data_governance_operations_report_*.md
+
+# v1.1.6 Governance ops fixtures ARE committed (exception)
+!tests/fixtures/governance_ops/*.json
+!tests/fixtures/governance_ops/*.jsonl

@@ -5,6 +5,36 @@
 
 ---
 
+## v1.1.6 — Data Governance Operations Dashboard (2026-06-15)
+
+### Summary
+
+v1.1.6 adds the Data Governance Operations Dashboard — a unified read-only view of data health, module status, action queue, and daily governance history. It integrates outputs of all prior v1.1.x releases into a single operations surface with 18 new CLI commands and a PySide6 GUI panel.
+
+### New Features
+
+- `governance_ops/` package: governance_schema, governance_adapters (8 adapters), priority_engine, action_queue, governance_aggregator, operations_store, operations_engine, operations_query, operations_health
+- Per-symbol governance status matrix: coverage + freshness + gate + repair status in one view
+- Prioritized action queue (P0–P3), metadata-only (no data modification)
+- Daily governance history (append-only JSONL, never overwritten)
+- Run audit summary (gate enforcement pass/fail)
+- 18 new CLI commands: `governance-health`, `governance-dashboard`, `governance-summary`, `governance-module-health`, `governance-symbols`, `governance-symbol`, `governance-actions`, `governance-top-actions`, `governance-source-health`, `governance-gate-summary`, `governance-audit-summary`, `governance-runs`, `governance-history`, `governance-report`, `governance-compare`, `governance-action-ack`, `governance-action-defer`, `governance-action-resolve`
+- GUI: Governance Ops tab with Safety Banner, Overall Health, Summary/Module/Action/Symbol/Runs sub-tabs
+- Reports: `data_governance_operations_report`, `governance_action_queue_report`, `governance_module_health_report`, `governance_audit_summary_report`
+- 13 test fixtures in `tests/fixtures/governance_ops/`
+
+### Safety
+
+- `GOVERNANCE_AUTO_REPAIR_ENABLED = False` — never auto-modifies data
+- `GOVERNANCE_AUTO_DOWNLOAD_ENABLED = False` — never auto-fetches external data
+- `GOVERNANCE_GATE_OVERRIDE_ENABLED = False` — never bypasses quality gates
+- `GOVERNANCE_TRADE_EXECUTION_ENABLED = False` — never enables trading
+- Priority based only on data governance issues — never on price, signals, or market conditions
+- Actions are metadata-only (acknowledge/defer/resolve)
+- `NO_REAL_ORDERS = True`, `RESEARCH_ONLY = True`
+
+---
+
 ## v1.1.0 — Data Universe Expansion (2026-06-13)
 
 ### Summary

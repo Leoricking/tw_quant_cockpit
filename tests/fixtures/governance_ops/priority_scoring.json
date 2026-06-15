@@ -1,0 +1,47 @@
+{
+  "_comment": "Fixture: priority_scoring — expected priority scores for action types. Research Only.",
+  "test_cases": [
+    {
+      "action_type": "missing_data",
+      "symbol": "2317",
+      "reason_codes": ["missing_data", "blocked_invalid"],
+      "expected_priority": "P0",
+      "description": "Missing + blocked = critical priority"
+    },
+    {
+      "action_type": "stale_data",
+      "symbol": "2330",
+      "reason_codes": ["stale_data", "sla_breach"],
+      "expected_priority": "P1",
+      "description": "Stale with SLA breach = high priority"
+    },
+    {
+      "action_type": "gate_blocked",
+      "symbol": "2317",
+      "reason_codes": ["gate_blocked"],
+      "expected_priority": "P2",
+      "description": "Gate blocked only = medium priority"
+    },
+    {
+      "action_type": "audit_warning",
+      "symbol": null,
+      "reason_codes": ["audit_warning"],
+      "expected_priority": "P3",
+      "description": "Audit warning = low priority"
+    }
+  ],
+  "priority_rules": {
+    "P0": "missing_data + blocked_invalid simultaneously present",
+    "P1": "stale_data or sla_breach or source_interruption",
+    "P2": "gate_blocked or conflict_data or repair_needed",
+    "P3": "audit_warning or download_needed or low severity"
+  },
+  "forbidden_factors": [
+    "trading_signal",
+    "price_movement",
+    "popularity",
+    "market_conditions"
+  ],
+  "research_only": true,
+  "no_real_orders": true
+}

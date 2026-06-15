@@ -1,0 +1,15 @@
+{
+  "_comment": "Fixture: module_health table — 8 modules, mixed status. Research Only.",
+  "modules": [
+    {"name": "data_universe",    "status": "HEALTHY",     "message": "Universe tier ok"},
+    {"name": "import_onboarding","status": "HEALTHY",     "message": "Onboarding ok"},
+    {"name": "coverage_repair",  "status": "HEALTHY",     "message": "Repair dry_run only"},
+    {"name": "data_freshness",   "status": "DEGRADED",    "message": "3 stale symbols"},
+    {"name": "quality_gates",    "status": "HEALTHY",     "message": "Gates functional"},
+    {"name": "gate_enforcement", "status": "HEALTHY",     "message": "Enforcement active"},
+    {"name": "report_pack",      "status": "HEALTHY",     "message": "Reports registered"},
+    {"name": "regression",       "status": "UNAVAILABLE", "message": "Module import failed"}
+  ],
+  "research_only": true,
+  "no_real_orders": true
+}

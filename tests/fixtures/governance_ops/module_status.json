@@ -1,0 +1,15 @@
+{
+  "_comment": "Fixture: GovernanceModuleStatus — healthy module. Research Only.",
+  "module_name": "data_universe",
+  "display_name": "Data Universe",
+  "status": "HEALTHY",
+  "coverage_pct": 95.0,
+  "stale_count": 0,
+  "missing_count": 0,
+  "error_count": 0,
+  "last_checked_at": "2026-06-15T00:00:00Z",
+  "issues": [],
+  "limitations": ["read_only=True", "REAL_DATA_COVERAGE_REQUIRED"],
+  "research_only": true,
+  "no_real_orders": true
+}

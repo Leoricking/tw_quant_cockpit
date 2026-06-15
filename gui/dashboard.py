@@ -611,6 +611,15 @@ try:
 except Exception as _qge_exc:
     logger.warning("QualityGateEnforcementPanel unavailable: %s", _qge_exc)
 
+# v1.1.6 Data Governance Operations Dashboard panel — optional
+# ---------------------------------------------------------------------------
+_DATA_GOVERNANCE_OPS_AVAILABLE = False
+try:
+    from gui.data_governance_operations_panel import DataGovernanceOperationsPanel
+    _DATA_GOVERNANCE_OPS_AVAILABLE = True
+except Exception as _dgo_exc:
+    logger.warning("DataGovernanceOperationsPanel unavailable: %s", _dgo_exc)
+
 # v0.5.1.1 Strategy Filter panel — inline (no separate panel file required)
 # ---------------------------------------------------------------------------
 _STRATEGY_FILTER_AVAILABLE = False
@@ -1876,6 +1885,13 @@ class CockpitWindow(QMainWindow if _PYSIDE6_AVAILABLE else object):
             mid_tabs.addTab(self._quality_gate_panel, "Quality Gates")
         else:
             self._quality_gate_panel = None
+
+        # v1.1.6 Data Governance Operations Dashboard tab
+        if _DATA_GOVERNANCE_OPS_AVAILABLE:
+            self._governance_ops_panel = DataGovernanceOperationsPanel()
+            mid_tabs.addTab(self._governance_ops_panel, "Governance Ops")
+        else:
+            self._governance_ops_panel = None
 
         h_split.addWidget(mid_tabs)
         h_split.setStretchFactor(0, 3)

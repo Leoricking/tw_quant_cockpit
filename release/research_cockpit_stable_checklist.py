@@ -1123,6 +1123,54 @@ class ResearchCockpitStableChecklist:
         except Exception as exc:
             checks.append(_mk("enforcement_no_forbidden_actions", "gate_enforcement", "WARN", str(exc)))
 
+        # v1.1.6 Data Governance Operations Dashboard checks
+        try:
+            import governance_ops
+            _gdash = getattr(governance_ops, "DATA_GOVERNANCE_DASHBOARD_AVAILABLE", False)
+            checks.append(_mk("data_governance_dashboard_available", "governance_ops",
+                              "PASS" if _gdash else "FAIL",
+                              f"governance_ops: DATA_GOVERNANCE_DASHBOARD_AVAILABLE={_gdash}"))
+        except Exception as exc:
+            checks.append(_mk("data_governance_dashboard_available", "governance_ops", "FAIL", str(exc)))
+
+        try:
+            import governance_ops
+            _gact = getattr(governance_ops, "GOVERNANCE_ACTION_QUEUE_AVAILABLE", False)
+            checks.append(_mk("governance_action_queue_available", "governance_ops",
+                              "PASS" if _gact else "FAIL",
+                              f"GOVERNANCE_ACTION_QUEUE_AVAILABLE={_gact}"))
+        except Exception as exc:
+            checks.append(_mk("governance_action_queue_available", "governance_ops", "FAIL", str(exc)))
+
+        try:
+            import governance_ops
+            _gauto = getattr(governance_ops, "GOVERNANCE_AUTO_REPAIR_ENABLED", True)
+            checks.append(_mk("governance_auto_repair_disabled", "governance_ops",
+                              "PASS" if not _gauto else "FAIL",
+                              f"GOVERNANCE_AUTO_REPAIR_ENABLED={_gauto} (must be False)"))
+        except Exception as exc:
+            checks.append(_mk("governance_auto_repair_disabled", "governance_ops", "FAIL", str(exc)))
+
+        try:
+            import governance_ops
+            _gtrade = getattr(governance_ops, "GOVERNANCE_TRADE_EXECUTION_ENABLED", True)
+            checks.append(_mk("governance_trade_execution_disabled", "governance_ops",
+                              "PASS" if not _gtrade else "FAIL",
+                              f"GOVERNANCE_TRADE_EXECUTION_ENABLED={_gtrade} (must be False)"))
+        except Exception as exc:
+            checks.append(_mk("governance_trade_execution_disabled", "governance_ops", "FAIL", str(exc)))
+
+        try:
+            from governance_ops.operations_health import DataGovernanceOperationsHealthCheck
+            _gh = DataGovernanceOperationsHealthCheck()
+            _gh_results = _gh.run()
+            _gh_fail = sum(1 for r in _gh_results if r[1] == "FAIL")
+            checks.append(_mk("governance_ops_no_forbidden_actions", "governance_ops",
+                              "PASS" if _gh_fail == 0 else "FAIL",
+                              f"DataGovernanceOperationsHealthCheck: {len(_gh_results)} checks, {_gh_fail} FAIL"))
+        except Exception as exc:
+            checks.append(_mk("governance_ops_no_forbidden_actions", "governance_ops", "WARN", str(exc)))
+
         # Rebuild summary counts to include new checks
         total         = len(checks)
         pass_count    = sum(1 for c in checks if c["status"] == "PASS")

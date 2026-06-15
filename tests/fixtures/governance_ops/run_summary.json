@@ -1,0 +1,16 @@
+{
+  "_comment": "Fixture: GovernanceRunSummary — single engine run record. Research Only.",
+  "run_id": "test-gov-run-001",
+  "run_at": "2026-06-15T00:00:00Z",
+  "duration_seconds": 4.2,
+  "tier": "research30",
+  "mode": "real",
+  "overall_status": "ATTENTION_REQUIRED",
+  "total_symbols": 30,
+  "ready_symbols": 25,
+  "p0_actions": 0,
+  "p1_actions": 2,
+  "error": null,
+  "research_only": true,
+  "no_real_orders": true
+}

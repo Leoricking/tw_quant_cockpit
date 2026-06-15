@@ -1,0 +1,51 @@
+{
+  "_comment": "Fixture: action queue with mixed priorities and statuses. Research Only.",
+  "actions": [
+    {
+      "action_id": "test-action-001",
+      "priority": "P1",
+      "action_type": "stale_data",
+      "symbol": "2330",
+      "module": "data_freshness",
+      "status": "open",
+      "title": "Stale price data for 2330",
+      "suggested_cli_command": "python main.py freshness-symbol --stock 2330",
+      "created_at": "2026-06-15T00:00:00Z"
+    },
+    {
+      "action_id": "test-action-002",
+      "priority": "P0",
+      "action_type": "missing_data",
+      "symbol": "2317",
+      "module": "data_universe",
+      "status": "open",
+      "title": "Missing price data for 2317 (blocked)",
+      "suggested_cli_command": "python main.py governance-symbol --stock 2317",
+      "created_at": "2026-06-15T00:00:00Z"
+    },
+    {
+      "action_id": "test-action-003",
+      "priority": "P2",
+      "action_type": "gate_blocked",
+      "symbol": "2317",
+      "module": "quality_gates",
+      "status": "acknowledged",
+      "title": "Symbol 2317 blocked at quality gate",
+      "suggested_cli_command": "python main.py quality-gate-symbol --stock 2317",
+      "created_at": "2026-06-14T00:00:00Z"
+    },
+    {
+      "action_id": "test-action-004",
+      "priority": "P3",
+      "action_type": "audit_warning",
+      "symbol": null,
+      "module": "gate_enforcement",
+      "status": "deferred",
+      "title": "Audit log chain not verified",
+      "suggested_cli_command": "python main.py gate-enforcement-audit",
+      "created_at": "2026-06-13T00:00:00Z"
+    }
+  ],
+  "research_only": true,
+  "no_real_orders": true
+}

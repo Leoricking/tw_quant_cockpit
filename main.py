@@ -5745,13 +5745,29 @@ def cmd_version_info(args: argparse.Namespace) -> None:
         print(f"{'Long-term Maintenance Ready:':<40} {lt_ready}")
         print(f"{'Paper Trading:':<40} {'Simulation Only' if PAPER_TRADING_IS_SIMULATION else 'Real'}")
         print(f"{'Mock Realtime:':<40} {'Simulation Only' if MOCK_REALTIME_IS_SIMULATION else 'Real'}")
+        # v1.1.6 Data Governance Operations Dashboard fields
+        import release.version_info as _vi116
+        gov_dash = getattr(_vi116, "DATA_GOVERNANCE_DASHBOARD_AVAILABLE", False)
+        gov_aq   = getattr(_vi116, "GOVERNANCE_ACTION_QUEUE_AVAILABLE", False)
+        gov_ds   = getattr(_vi116, "GOVERNANCE_DAILY_SUMMARY_AVAILABLE", False)
+        gov_ar   = getattr(_vi116, "GOVERNANCE_AUTO_REPAIR_ENABLED", True)
+        gov_ad   = getattr(_vi116, "GOVERNANCE_AUTO_DOWNLOAD_ENABLED", True)
+        gov_go   = getattr(_vi116, "GOVERNANCE_GATE_OVERRIDE_ENABLED", True)
+        gov_te   = getattr(_vi116, "GOVERNANCE_TRADE_EXECUTION_ENABLED", True)
+        print(f"{'Data Governance Dashboard Available:':<40} {gov_dash}")
+        print(f"{'Governance Action Queue Available:':<40} {gov_aq}")
+        print(f"{'Governance Daily Summary Available:':<40} {gov_ds}")
+        print(f"{'Governance Auto Repair Enabled:':<40} {gov_ar}")
+        print(f"{'Governance Auto Download Enabled:':<40} {gov_ad}")
+        print(f"{'Governance Gate Override Enabled:':<40} {gov_go}")
+        print(f"{'Governance Trade Execution Enabled:':<40} {gov_te}")
     except Exception as exc:
-        print(f"  Version:                              1.1.4")
-        print(f"  Release:                              Coverage Quality Gates")
-        print(f"  Base Release:                         1.1.3 Data Freshness Monitor")
-        print(f"  Coverage Quality Gates Available:     True")
-        print(f"  Mock Data Formal Gate Allowed:        False")
-        print(f"  Quality Gate Override Disabled:       True")
+        print(f"  Version:                              1.1.6")
+        print(f"  Release:                              Data Governance Operations Dashboard")
+        print(f"  Base Release:                         1.1.5 Quality Gate Enforcement & Audit")
+        print(f"  Data Governance Dashboard Available:  True")
+        print(f"  Governance Auto Repair Enabled:       False")
+        print(f"  Governance Gate Override Enabled:     False")
         print(f"  (version_info import error: {exc})")
     print("=" * 60)
     print("RESEARCH ONLY \u2014 Not Investment Advice \u2014 No Real Orders")
@@ -11941,6 +11957,406 @@ def cmd_gate_enforcement_report(args) -> None:
 
 
 # ---------------------------------------------------------------------------
+# v1.1.6 Data Governance Operations Dashboard handlers
+# ---------------------------------------------------------------------------
+
+def _print_governance_header():
+    print("=" * 60)
+    print("TW Quant Cockpit \u2014 Data Governance Operations Dashboard")
+    print("Research Only: True | No Real Orders: True")
+    print("No Auto Repair | No Auto Download | No Gate Override | No Trading")
+    print("=" * 60)
+
+
+def cmd_governance_health(args) -> None:
+    """Run data governance operations health check. [!] Research Only. No Real Orders."""
+    _print_governance_header()
+    try:
+        from governance_ops.operations_health import DataGovernanceOperationsHealthCheck
+        checker = DataGovernanceOperationsHealthCheck()
+        results = checker.run()
+        passed = sum(1 for _, s, _ in results if s == "PASS")
+        total = len(results)
+        print(f"  Passed: {passed}/{total}")
+        for name, status, msg in results:
+            print(f"  [{status}] {name}: {msg}")
+        print("[!] Research Only. No Real Orders.")
+    except Exception as exc:
+        print(f"  [ERROR] governance-health failed: {exc}")
+        print("[!] Research Only. No Real Orders.")
+
+
+def cmd_governance_dashboard(args) -> None:
+    """Run governance operations dashboard. [!] Research Only. No Real Orders."""
+    _print_governance_header()
+    mode = getattr(args, "mode", "real")
+    tier = getattr(args, "tier", "research30")
+    symbols_arg = getattr(args, "symbols", None)
+    symbols = [s.strip() for s in str(symbols_arg).split(",") if s.strip()] if symbols_arg else None
+    print(f"  Mode: {mode} | Tier: {tier}")
+    print("=" * 60)
+    try:
+        from governance_ops.operations_engine import DataGovernanceOperationsEngine
+        engine = DataGovernanceOperationsEngine()
+        summary = engine.run(mode=mode, tier=tier, symbols=symbols)
+        print(f"  Version:              1.1.6")
+        print(f"  Research Only:        True")
+        print(f"  No Real Orders:       True")
+        print(f"  Mode:                 {summary.mode}")
+        print(f"  Tier:                 {summary.tier}")
+        print(f"  Overall Status:       {summary.overall_status}")
+        print(f"  Confidence:           {summary.confidence:.0%}")
+        print(f"  Registered Symbols:   {summary.registered_symbols}")
+        print(f"  Ready Symbols:        {summary.ready_symbols}")
+        print(f"  Formal Eligible:      {summary.formal_eligible}")
+        print(f"  Observational:        {summary.observational_eligible}")
+        print(f"  Blocked:              {summary.blocked_symbols}")
+        print(f"  P0 Actions:           {summary.p0_actions}")
+        print(f"  P1 Actions:           {summary.p1_actions}")
+        print(f"  Open Actions:         {summary.open_actions}")
+        print(f"  Source Interruptions: {summary.source_interruptions}")
+        print(f"  Audit Chain Failures: {summary.audit_chain_failures}")
+        print(f"  Non-qualified Runs:   {summary.non_qualified_runs}")
+        print(f"  Generated At:         {summary.generated_at}")
+        print("[!] Research Only. No Real Orders. Dashboard does NOT repair/download/override/trade.")
+    except Exception as exc:
+        print(f"  [ERROR] governance-dashboard failed: {exc}")
+        print("[!] Research Only. No Real Orders.")
+
+
+def cmd_governance_summary(args) -> None:
+    """Show latest governance summary. [!] Research Only."""
+    _print_governance_header()
+    try:
+        from governance_ops.operations_query import OperationsQuery
+        q = OperationsQuery()
+        summary = q.latest_summary()
+        if not summary:
+            print("  No governance summary available. Run: python main.py governance-dashboard")
+        else:
+            print(f"  Overall Status:   {summary.overall_status}")
+            print(f"  Confidence:       {summary.confidence:.0%}")
+            print(f"  P0 Actions:       {summary.p0_actions}")
+            print(f"  P1 Actions:       {summary.p1_actions}")
+            print(f"  Formal Eligible:  {summary.formal_eligible}")
+            print(f"  Blocked:          {summary.blocked_symbols}")
+            print(f"  Generated At:     {summary.generated_at}")
+        print("[!] Research Only. No Real Orders.")
+    except Exception as exc:
+        print(f"  [ERROR] governance-summary failed: {exc}")
+
+
+def cmd_governance_module_health(args) -> None:
+    """Show governance module health. [!] Research Only."""
+    _print_governance_header()
+    try:
+        from governance_ops.operations_engine import DataGovernanceOperationsEngine
+        engine = DataGovernanceOperationsEngine()
+        modules = engine.build_module_health()
+        if not modules:
+            print("  No module health data. Run: python main.py governance-dashboard")
+        else:
+            print(f"  {'Module':<25} {'Available':<12} {'Status':<12} {'PASS':<6} {'WARN':<6} {'FAIL'}")
+            print("  " + "-" * 80)
+            for name, mod in modules.items():
+                print(f"  {mod.module_name:<25} {str(mod.available):<12} {mod.health_status:<12} "
+                      f"{mod.pass_count:<6} {mod.warn_count:<6} {mod.fail_count}")
+        print("[!] Research Only. No Real Orders.")
+    except Exception as exc:
+        print(f"  [ERROR] governance-module-health failed: {exc}")
+
+
+def cmd_governance_symbols(args) -> None:
+    """Show governance symbol matrix. [!] Research Only."""
+    _print_governance_header()
+    tier = getattr(args, "tier", None)
+    try:
+        from governance_ops.operations_engine import DataGovernanceOperationsEngine
+        engine = DataGovernanceOperationsEngine()
+        symbols = engine.build_symbol_matrix(tier=tier)
+        if not symbols:
+            print(f"  No symbol data{' for tier ' + tier if tier else ''}. Run: python main.py governance-dashboard")
+        else:
+            print(f"  {'Symbol':<10} {'Tier':<12} {'Coverage':<12} {'Freshness':<12} {'Qualification':<20} {'Priority'}")
+            print("  " + "-" * 85)
+            for s in symbols[:30]:
+                print(f"  {s.symbol:<10} {s.tier:<12} {s.coverage_status:<12} {s.freshness_status:<12} "
+                      f"{s.qualification:<20} {s.priority}")
+        print("[!] Research Only. No Real Orders.")
+    except Exception as exc:
+        print(f"  [ERROR] governance-symbols failed: {exc}")
+
+
+def cmd_governance_symbol(args) -> None:
+    """Show governance status for a single symbol. [!] Research Only."""
+    _print_governance_header()
+    stock = getattr(args, "stock", None)
+    if not stock:
+        print("  [ERROR] --stock is required.")
+        return
+    try:
+        from governance_ops.operations_engine import DataGovernanceOperationsEngine
+        engine = DataGovernanceOperationsEngine()
+        symbols = engine.build_symbol_matrix()
+        matching = [s for s in symbols if s.symbol == str(stock)]
+        if not matching:
+            print(f"  Symbol {stock} not found in symbol matrix.")
+        else:
+            s = matching[0]
+            for k, v in s.to_dict().items():
+                print(f"  {k}: {v}")
+        print("[!] Research Only. No Real Orders.")
+    except Exception as exc:
+        print(f"  [ERROR] governance-symbol failed: {exc}")
+
+
+def cmd_governance_actions(args) -> None:
+    """Show governance action queue. [!] Research Only."""
+    _print_governance_header()
+    priority = getattr(args, "priority", None)
+    status = getattr(args, "status", None)
+    try:
+        from governance_ops.operations_query import OperationsQuery
+        q = OperationsQuery()
+        actions = q.action_queue()
+        if priority:
+            actions = [a for a in actions if a.priority == priority.upper()]
+        if status:
+            actions = [a for a in actions if a.status == status.upper()]
+        if not actions:
+            print(f"  No actions found{' with priority ' + priority if priority else ''}.")
+        else:
+            print(f"  {'Priority':<10} {'Type':<25} {'Symbol':<10} {'Title':<40} {'Status'}")
+            print("  " + "-" * 100)
+            for a in actions[:20]:
+                sym = a.symbol or "(system)"
+                print(f"  {a.priority:<10} {a.action_type:<25} {sym:<10} {a.title[:40]:<40} {a.status}")
+        print("[!] Research Only. No Real Orders. Metadata only.")
+    except Exception as exc:
+        print(f"  [ERROR] governance-actions failed: {exc}")
+
+
+def cmd_governance_top_actions(args) -> None:
+    """Show top governance actions. [!] Research Only."""
+    _print_governance_header()
+    limit = int(getattr(args, "limit", 10) or 10)
+    try:
+        from governance_ops.operations_query import OperationsQuery
+        q = OperationsQuery()
+        actions = q.top_actions(limit=limit)
+        if not actions:
+            print(f"  No actions. Run: python main.py governance-dashboard")
+        else:
+            print(f"  Top {limit} actions:")
+            for i, a in enumerate(actions, 1):
+                sym = a.symbol or "(system)"
+                print(f"  {i:2}. [{a.priority}] {a.action_type} | {sym} | {a.title[:40]} | {a.safe_action}")
+                if a.suggested_command:
+                    print(f"       Suggested: {a.suggested_command}")
+        print("[!] Research Only. No Real Orders.")
+    except Exception as exc:
+        print(f"  [ERROR] governance-top-actions failed: {exc}")
+
+
+def cmd_governance_source_health(args) -> None:
+    """Show governance source health / interruptions. [!] Research Only."""
+    _print_governance_header()
+    try:
+        from governance_ops.operations_query import OperationsQuery
+        q = OperationsQuery()
+        interruptions = q.source_interruptions()
+        if not interruptions:
+            print("  No source interruptions detected.")
+        else:
+            for item in interruptions:
+                for k, v in item.items():
+                    print(f"  {k}: {v}")
+        print("[!] Research Only. No Real Orders.")
+    except Exception as exc:
+        print(f"  [ERROR] governance-source-health failed: {exc}")
+
+
+def cmd_governance_gate_summary(args) -> None:
+    """Show gate portion of governance summary. [!] Research Only."""
+    _print_governance_header()
+    try:
+        from governance_ops.operations_query import OperationsQuery
+        q = OperationsQuery()
+        summary = q.latest_summary()
+        if not summary:
+            print("  No governance summary. Run: python main.py governance-dashboard")
+        else:
+            print(f"  Formal Eligible:      {summary.formal_eligible}")
+            print(f"  Observational:        {summary.observational_eligible}")
+            print(f"  Demo Only:            {summary.demo_only}")
+            print(f"  Blocked:              {summary.blocked_symbols}")
+            print(f"  Non-qualified Runs:   {summary.non_qualified_runs}")
+        print("[!] Research Only. No Real Orders.")
+    except Exception as exc:
+        print(f"  [ERROR] governance-gate-summary failed: {exc}")
+
+
+def cmd_governance_audit_summary(args) -> None:
+    """Show governance audit failures. [!] Research Only."""
+    _print_governance_header()
+    try:
+        from governance_ops.operations_query import OperationsQuery
+        q = OperationsQuery()
+        failures = q.audit_failures()
+        summary = q.latest_summary()
+        if summary:
+            print(f"  Audit Chain Failures: {summary.audit_chain_failures}")
+        if not failures:
+            print("  No audit failures recorded.")
+        else:
+            for f in failures[:10]:
+                for k, v in f.items():
+                    print(f"  {k}: {v}")
+        print("[!] Research Only. No Real Orders.")
+    except Exception as exc:
+        print(f"  [ERROR] governance-audit-summary failed: {exc}")
+
+
+def cmd_governance_runs(args) -> None:
+    """Show recent governance enforcement runs. [!] Research Only."""
+    _print_governance_header()
+    try:
+        from governance_ops.operations_query import OperationsQuery
+        q = OperationsQuery()
+        runs = q.latest_runs()
+        if not runs:
+            print("  No enforcement runs found.")
+        else:
+            print(f"  {'Run ID':<36} {'Command':<20} {'Qualification':<20} {'Included':<10} {'Override'}")
+            print("  " + "-" * 100)
+            for r in runs[:20]:
+                print(f"  {r.run_id[:35]:<36} {r.command_name[:19]:<20} {r.qualification[:19]:<20} "
+                      f"{r.included_count:<10} {r.override_used}")
+        print("[!] Research Only. No Real Orders.")
+    except Exception as exc:
+        print(f"  [ERROR] governance-runs failed: {exc}")
+
+
+def cmd_governance_history(args) -> None:
+    """Show governance daily history. [!] Research Only."""
+    _print_governance_header()
+    try:
+        from governance_ops.operations_query import OperationsQuery
+        q = OperationsQuery()
+        history = q.daily_history()
+        if not history:
+            print("  No daily history found. Run governance-dashboard to generate snapshots.")
+        else:
+            print(f"  Daily history entries: {len(history)}")
+            for snap in history[-5:]:
+                print(f"  [{snap.get('generated_at', '?')[:19]}] Status: {snap.get('overall_status', '?')} | "
+                      f"P0: {snap.get('p0_actions', 0)} | Formal: {snap.get('formal_eligible', 0)}")
+        print("[!] Research Only. No Real Orders.")
+    except Exception as exc:
+        print(f"  [ERROR] governance-history failed: {exc}")
+
+
+def cmd_governance_report(args) -> None:
+    """Generate governance operations report. [!] Research Only."""
+    _print_governance_header()
+    tier = getattr(args, "tier", "research30")
+    mode = getattr(args, "mode", "real")
+    report_dir = getattr(args, "report_dir", "reports")
+    print(f"  Tier: {tier} | Mode: {mode} | Report Dir: {report_dir}")
+    print("=" * 60)
+    try:
+        from reports.data_governance_operations_report import DataGovernanceOperationsReportBuilder
+        builder = DataGovernanceOperationsReportBuilder()
+        path = builder.build(tier=tier, mode=mode, output_dir=report_dir)
+        print(f"  Report saved to: {path}")
+        print("[!] Research Only. No Real Orders. Not Investment Advice.")
+    except Exception as exc:
+        print(f"  [ERROR] governance-report failed: {exc}")
+
+
+def cmd_governance_compare(args) -> None:
+    """Compare two governance snapshots. [!] Research Only."""
+    _print_governance_header()
+    run_a = getattr(args, "run_a", None)
+    run_b = getattr(args, "run_b", None)
+    if not run_a or not run_b:
+        print("  [ERROR] --run-a and --run-b are required.")
+        return
+    try:
+        from governance_ops.operations_query import OperationsQuery
+        q = OperationsQuery()
+        diff = q.compare_days(run_a, run_b)
+        for k, v in diff.items():
+            print(f"  {k}: {v}")
+        print("[!] Research Only. No Real Orders.")
+    except Exception as exc:
+        print(f"  [ERROR] governance-compare failed: {exc}")
+
+
+def cmd_governance_action_ack(args) -> None:
+    """Acknowledge a governance action (metadata only). [!] Research Only."""
+    _print_governance_header()
+    action_id = getattr(args, "action_id", None)
+    if not action_id:
+        print("  [ERROR] --action-id is required.")
+        return
+    try:
+        from governance_ops.action_queue import GovernanceActionQueue
+        q = GovernanceActionQueue()
+        # Load actions from store first
+        from governance_ops.operations_query import OperationsQuery
+        oq = OperationsQuery()
+        q._actions = oq.action_queue()
+        ok = q.acknowledge(action_id)
+        print(f"  Action {action_id}: {'ACKNOWLEDGED' if ok else 'not found'}")
+        print("[!] Metadata only. Does NOT modify data or execute any actions.")
+    except Exception as exc:
+        print(f"  [ERROR] governance-action-ack failed: {exc}")
+
+
+def cmd_governance_action_defer(args) -> None:
+    """Defer a governance action (metadata only). [!] Research Only."""
+    _print_governance_header()
+    action_id = getattr(args, "action_id", None)
+    reason = getattr(args, "reason", "") or ""
+    if not action_id:
+        print("  [ERROR] --action-id is required.")
+        return
+    try:
+        from governance_ops.action_queue import GovernanceActionQueue
+        q = GovernanceActionQueue()
+        from governance_ops.operations_query import OperationsQuery
+        oq = OperationsQuery()
+        q._actions = oq.action_queue()
+        ok = q.defer(action_id, reason)
+        print(f"  Action {action_id}: {'DEFERRED' if ok else 'not found'}")
+        print("[!] Metadata only. Does NOT modify data.")
+    except Exception as exc:
+        print(f"  [ERROR] governance-action-defer failed: {exc}")
+
+
+def cmd_governance_action_resolve(args) -> None:
+    """Resolve a governance action (metadata only). [!] Research Only."""
+    _print_governance_header()
+    action_id = getattr(args, "action_id", None)
+    note = getattr(args, "note", "") or ""
+    if not action_id:
+        print("  [ERROR] --action-id is required.")
+        return
+    try:
+        from governance_ops.action_queue import GovernanceActionQueue
+        q = GovernanceActionQueue()
+        from governance_ops.operations_query import OperationsQuery
+        oq = OperationsQuery()
+        q._actions = oq.action_queue()
+        ok = q.resolve(action_id, note)
+        print(f"  Action {action_id}: {'RESOLVED' if ok else 'not found'}")
+        print("[!] Metadata only. Does NOT modify data. Source issue may still exist on re-aggregation.")
+    except Exception as exc:
+        print(f"  [ERROR] governance-action-resolve failed: {exc}")
+
+
+# ---------------------------------------------------------------------------
 # v1.0.9 Final Maintenance Rollup handlers
 # ---------------------------------------------------------------------------
 
@@ -17591,6 +18007,125 @@ def _build_parser() -> argparse.ArgumentParser:
     p_gearpt.add_argument("--run-id", dest="run_id", default=None)
     p_gearpt.add_argument("--report-dir", dest="report_dir", default="reports")
 
+    # --- v1.1.6 Data Governance Operations Dashboard ---
+    subparsers.add_parser(
+        "governance-health",
+        help="[v1.1.6] Run governance operations health check. [!] Research Only. No Real Orders.",
+    )
+
+    p_govdash = subparsers.add_parser(
+        "governance-dashboard",
+        help="[v1.1.6] Show full data governance operations dashboard. [!] Research Only.",
+    )
+    p_govdash.add_argument("--mode", choices=["real", "mock"], default="real")
+    p_govdash.add_argument("--tier", default="research30",
+                           help="Tier: core10/research30/expanded50/broad100")
+    p_govdash.add_argument("--symbols", default=None,
+                           help="Comma-separated symbol list override")
+
+    subparsers.add_parser(
+        "governance-summary",
+        help="[v1.1.6] Print latest governance summary. [!] Research Only.",
+    )
+
+    subparsers.add_parser(
+        "governance-module-health",
+        help="[v1.1.6] Show module health table. [!] Research Only.",
+    )
+
+    p_govsym = subparsers.add_parser(
+        "governance-symbols",
+        help="[v1.1.6] Show per-symbol governance status matrix. [!] Research Only.",
+    )
+    p_govsym.add_argument("--tier", default="research30",
+                          help="Tier: core10/research30/expanded50/broad100")
+
+    p_govsymdet = subparsers.add_parser(
+        "governance-symbol",
+        help="[v1.1.6] Show governance detail for a single symbol. [!] Research Only.",
+    )
+    p_govsymdet.add_argument("--stock", default=None, required=True,
+                             help="Stock symbol (e.g. 2454)")
+
+    p_govact = subparsers.add_parser(
+        "governance-actions",
+        help="[v1.1.6] List governance action queue. [!] Research Only.",
+    )
+    p_govact.add_argument("--priority", default=None,
+                          help="Filter by priority: P0/P1/P2/P3")
+    p_govact.add_argument("--status", default=None,
+                          help="Filter by status: open/acknowledged/deferred/resolved")
+
+    p_govtop = subparsers.add_parser(
+        "governance-top-actions",
+        help="[v1.1.6] Show top N governance actions. [!] Research Only.",
+    )
+    p_govtop.add_argument("--limit", type=int, default=10,
+                          help="Number of actions to show (default: 10)")
+
+    subparsers.add_parser(
+        "governance-source-health",
+        help="[v1.1.6] Show data source health summary. [!] Research Only.",
+    )
+
+    subparsers.add_parser(
+        "governance-gate-summary",
+        help="[v1.1.6] Show quality gate pass/fail summary. [!] Research Only.",
+    )
+
+    subparsers.add_parser(
+        "governance-audit-summary",
+        help="[v1.1.6] Show gate enforcement audit summary. [!] Research Only.",
+    )
+
+    subparsers.add_parser(
+        "governance-runs",
+        help="[v1.1.6] List recent governance engine runs. [!] Research Only.",
+    )
+
+    subparsers.add_parser(
+        "governance-history",
+        help="[v1.1.6] Show daily governance history trend. [!] Research Only.",
+    )
+
+    p_govrpt = subparsers.add_parser(
+        "governance-report",
+        help="[v1.1.6] Generate data governance operations Markdown report. [!] Research Only.",
+    )
+    p_govrpt.add_argument("--tier", default="research30",
+                          help="Tier: core10/research30/expanded50/broad100")
+    p_govrpt.add_argument("--mode", choices=["real", "mock"], default="real")
+    p_govrpt.add_argument("--report-dir", dest="report_dir", default="reports")
+
+    p_govcmp = subparsers.add_parser(
+        "governance-compare",
+        help="[v1.1.6] Compare two governance engine runs. [!] Research Only.",
+    )
+    p_govcmp.add_argument("--run-a", dest="run_a", default=None, required=True)
+    p_govcmp.add_argument("--run-b", dest="run_b", default=None, required=True)
+
+    p_govack = subparsers.add_parser(
+        "governance-action-ack",
+        help="[v1.1.6] Acknowledge a governance action (metadata only). [!] Research Only.",
+    )
+    p_govack.add_argument("--action-id", dest="action_id", default=None, required=True)
+
+    p_govdef = subparsers.add_parser(
+        "governance-action-defer",
+        help="[v1.1.6] Defer a governance action (metadata only). [!] Research Only.",
+    )
+    p_govdef.add_argument("--action-id", dest="action_id", default=None, required=True)
+    p_govdef.add_argument("--reason", default="",
+                          help="Reason for deferral")
+
+    p_govres = subparsers.add_parser(
+        "governance-action-resolve",
+        help="[v1.1.6] Resolve a governance action (metadata only). [!] Research Only.",
+    )
+    p_govres.add_argument("--action-id", dest="action_id", default=None, required=True)
+    p_govres.add_argument("--note", default="",
+                          help="Resolution note")
+
     # --- v1.1.4 Coverage Quality Gates ---
     subparsers.add_parser(
         "quality-gate-health",
@@ -19211,6 +19746,25 @@ def main() -> None:
         "gate-enforcement-compare":       cmd_gate_enforcement_compare,
         "gate-enforcement-audit":         cmd_gate_enforcement_audit,
         "gate-enforcement-report":        cmd_gate_enforcement_report,
+        # v1.1.6 Data Governance Operations Dashboard
+        "governance-health":              cmd_governance_health,
+        "governance-dashboard":          cmd_governance_dashboard,
+        "governance-summary":            cmd_governance_summary,
+        "governance-module-health":      cmd_governance_module_health,
+        "governance-symbols":            cmd_governance_symbols,
+        "governance-symbol":             cmd_governance_symbol,
+        "governance-actions":            cmd_governance_actions,
+        "governance-top-actions":        cmd_governance_top_actions,
+        "governance-source-health":      cmd_governance_source_health,
+        "governance-gate-summary":       cmd_governance_gate_summary,
+        "governance-audit-summary":      cmd_governance_audit_summary,
+        "governance-runs":               cmd_governance_runs,
+        "governance-history":            cmd_governance_history,
+        "governance-report":             cmd_governance_report,
+        "governance-compare":            cmd_governance_compare,
+        "governance-action-ack":         cmd_governance_action_ack,
+        "governance-action-defer":       cmd_governance_action_defer,
+        "governance-action-resolve":     cmd_governance_action_resolve,
         # v1.1.4 Coverage Quality Gates
         "quality-gate-health":            cmd_quality_gate_health,
         "quality-gate-symbol":            cmd_quality_gate_symbol,

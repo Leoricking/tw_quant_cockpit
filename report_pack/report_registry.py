@@ -84,6 +84,12 @@ REPORT_GATE_RUN_SUMMARY          = "gate_run_summary_report"
 REPORT_GATE_EXCLUSION_SUMMARY    = "gate_exclusion_summary_report"
 REPORT_GATE_REPRODUCIBILITY      = "gate_reproducibility_summary_report"
 
+# v1.1.6 Data Governance Operations Dashboard
+REPORT_DATA_GOVERNANCE_OPERATIONS = "data_governance_operations_report"
+REPORT_GOVERNANCE_ACTION_QUEUE    = "governance_action_queue_report"
+REPORT_GOVERNANCE_MODULE_HEALTH   = "governance_module_health_report"
+REPORT_GOVERNANCE_AUDIT_SUMMARY   = "governance_audit_summary_report"
+
 logger = logging.getLogger(__name__)
 
 # ---------------------------------------------------------------------------
@@ -133,6 +139,9 @@ _PACK_DEFINITIONS: Dict[str, List[str]] = {
         REPORT_LOCAL_RESEARCH_ASSISTANT,
         # v1.0.9 Final Maintenance Rollup (optional in daily pack)
         REPORT_FINAL_MAINTENANCE_ROLLUP,
+        # v1.1.6 Data Governance Operations Dashboard (optional in daily pack)
+        REPORT_DATA_GOVERNANCE_OPERATIONS,
+        REPORT_GOVERNANCE_ACTION_QUEUE,
     ],
     PACK_WEEKLY: [
         REPORT_DAILY_MARKET,
@@ -197,6 +206,11 @@ _PACK_DEFINITIONS: Dict[str, List[str]] = {
         REPORT_GATE_RUN_SUMMARY,
         REPORT_GATE_EXCLUSION_SUMMARY,
         REPORT_GATE_REPRODUCIBILITY,
+        # v1.1.6 Data Governance Operations Dashboard (optional in weekly pack)
+        REPORT_DATA_GOVERNANCE_OPERATIONS,
+        REPORT_GOVERNANCE_ACTION_QUEUE,
+        REPORT_GOVERNANCE_MODULE_HEALTH,
+        REPORT_GOVERNANCE_AUDIT_SUMMARY,
     ],
     PACK_FULL: [
         REPORT_DAILY_MARKET,
@@ -277,6 +291,11 @@ _PACK_DEFINITIONS: Dict[str, List[str]] = {
         REPORT_GATE_RUN_SUMMARY,
         REPORT_GATE_EXCLUSION_SUMMARY,
         REPORT_GATE_REPRODUCIBILITY,
+        # v1.1.6 Data Governance Operations Dashboard (optional in full pack)
+        REPORT_DATA_GOVERNANCE_OPERATIONS,
+        REPORT_GOVERNANCE_ACTION_QUEUE,
+        REPORT_GOVERNANCE_MODULE_HEALTH,
+        REPORT_GOVERNANCE_AUDIT_SUMMARY,
     ],
 }
 

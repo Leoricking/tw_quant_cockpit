@@ -1,5 +1,5 @@
 """
-release/version_info.py — Centralized version info for TW Quant Cockpit v1.1.5.
+release/version_info.py — Centralized version info for TW Quant Cockpit v1.1.6.
 [!] Research Only. No Real Orders. Production Trading: BLOCKED.
 [!] VALIDATED does not enable trading. Broker Execution Disabled.
 [!] Data Universe Expansion. Real Data Coverage Required.
@@ -11,6 +11,8 @@ release/version_info.py — Centralized version info for TW Quant Cockpit v1.1.5
 [!] Quality Gate Override DISABLED by default. Gate does NOT enable trading.
 [!] Mock Data Formal Conclusion: DISABLED. Not Investment Advice.
 [!] Quality Gate Enforcement & Audit. Gate bypass DISABLED. Not Investment Advice.
+[!] Data Governance Operations Dashboard. Auto Repair DISABLED. Auto Download DISABLED.
+[!] Governance Gate Override DISABLED. Trade Execution DISABLED. Not Investment Advice.
 """
 from __future__ import annotations
 import logging
@@ -20,11 +22,11 @@ logger = logging.getLogger(__name__)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 # ---------------------------------------------------------------------------
-# v1.1.5 module-level constants (Quality Gate Enforcement & Audit)
+# v1.1.6 module-level constants (Data Governance Operations Dashboard)
 # ---------------------------------------------------------------------------
-VERSION                             = "1.1.5"
-RELEASE_NAME                        = "Quality Gate Enforcement & Audit"
-BASE_RELEASE                        = "1.1.4 Coverage Quality Gates"
+VERSION                             = "1.1.6"
+RELEASE_NAME                        = "Data Governance Operations Dashboard"
+BASE_RELEASE                        = "1.1.5 Quality Gate Enforcement & Audit"
 BASE_RELEASE_NAME                   = "Data Freshness Monitor"
 MAINTENANCE_RELEASE                 = False
 RELEASE_STAGE                       = "STABLE"
@@ -99,6 +101,14 @@ QUALITY_GATE_OVERRIDE_DISABLED_BY_DEFAULT = True
 QUALITY_GATE_BYPASS_ALLOWED             = False
 MOCK_DATA_FORMAL_ENFORCEMENT_ALLOWED    = False
 BLOCKED_DATA_FORMAL_ENFORCEMENT_ALLOWED = False
+# v1.1.6 new flags
+DATA_GOVERNANCE_DASHBOARD_AVAILABLE     = True
+GOVERNANCE_ACTION_QUEUE_AVAILABLE       = True
+GOVERNANCE_DAILY_SUMMARY_AVAILABLE      = True
+GOVERNANCE_AUTO_REPAIR_ENABLED          = False
+GOVERNANCE_AUTO_DOWNLOAD_ENABLED        = False
+GOVERNANCE_GATE_OVERRIDE_ENABLED        = False
+GOVERNANCE_TRADE_EXECUTION_ENABLED      = False
 
 
 class VersionInfo:
@@ -274,6 +284,13 @@ def print_version_info() -> None:
     print(f"  Quality Gate Bypass Allowed: {QUALITY_GATE_BYPASS_ALLOWED}")
     print(f"  Mock Data Formal Enforcement Allowed: {MOCK_DATA_FORMAL_ENFORCEMENT_ALLOWED}")
     print(f"  Blocked Data Formal Enforcement Allowed: {BLOCKED_DATA_FORMAL_ENFORCEMENT_ALLOWED}")
+    print(f"  Data Governance Dashboard Available: {DATA_GOVERNANCE_DASHBOARD_AVAILABLE}")
+    print(f"  Governance Action Queue Available: {GOVERNANCE_ACTION_QUEUE_AVAILABLE}")
+    print(f"  Governance Daily Summary Available: {GOVERNANCE_DAILY_SUMMARY_AVAILABLE}")
+    print(f"  Governance Auto Repair Enabled: {GOVERNANCE_AUTO_REPAIR_ENABLED}")
+    print(f"  Governance Auto Download Enabled: {GOVERNANCE_AUTO_DOWNLOAD_ENABLED}")
+    print(f"  Governance Gate Override Enabled: {GOVERNANCE_GATE_OVERRIDE_ENABLED}")
+    print(f"  Governance Trade Execution Enabled: {GOVERNANCE_TRADE_EXECUTION_ENABLED}")
     print("=" * 60)
 
 

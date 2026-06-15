@@ -4,7 +4,7 @@
 >
 > **[!] v1: Real order execution is strictly prohibited. For research, simulation, and decision support only. Not investment advice.**
 
-**Current version: v1.1.5 — Quality Gate Enforcement & Audit** (base: v1.1.4 Coverage Quality Gates) — **v1.0 Maintenance Line Complete**
+**Current version: v1.1.6 — Data Governance Operations Dashboard** (base: v1.1.5 Quality Gate Enforcement & Audit) — **v1.0 Maintenance Line Complete**
 
 ---
 
@@ -29,9 +29,13 @@ TW Quant Cockpit is a **Research Trading Cockpit** for Taiwan equity markets. It
 
 ---
 
-## Current Version: v1.1.5 — Quality Gate Enforcement & Audit
+## Current Version: v1.1.6 — Data Governance Operations Dashboard
 
-This is TW Quant Cockpit **v1.1.5 — Quality Gate Enforcement & Audit**, based on **v1.1.4 Coverage Quality Gates**.
+This is TW Quant Cockpit **v1.1.6 — Data Governance Operations Dashboard**, based on **v1.1.5 Quality Gate Enforcement & Audit**.
+
+New in v1.1.6: governance_ops/ package (governance_schema, governance_adapters, priority_engine, action_queue, governance_aggregator, operations_store, operations_engine, operations_query, operations_health), 8 governance adapters (universe/onboarding/repair/freshness/quality_gates/gate_enforcement/report_pack/regression), per-symbol status matrix, prioritized action queue (P0/P1/P2/P3, metadata-only), daily governance history (append-only JSONL), run audit summary, 18 new CLI commands (governance-health/dashboard/summary/module-health/symbols/symbol/actions/top-actions/source-health/gate-summary/audit-summary/runs/history/report/compare/action-ack/action-defer/action-resolve), GUI panel + adapter, nav tab (data group), 4 new report types, stable/v060/intelligence checklist checks, regression tests (7 new), 13 test fixtures, docs/data_governance_operations_dashboard_v1.1.6.md. Auto Repair: DISABLED. Auto Download: DISABLED. Gate Override: DISABLED. Trade Execution: DISABLED. Priority based only on data issues — never on price or signals. No broker API. Not Investment Advice.
+
+## v1.1.5 — Quality Gate Enforcement & Audit
 
 New in v1.1.5: gate_enforcement/ package (enforcement_schema, enforcement_policy, run_gate_resolver, symbol_filter, run_snapshot, reproducibility, audit_log, enforcement_engine, enforcement_store, enforcement_query, enforcement_health), run-level gate enforcement (FORMAL/OBSERVATIONAL/DEMO/BLOCKED), immutable audit log with hash chain, run snapshots (no secrets/tokens), SHA-256 reproducibility hashes, research-only override auditing (disabled by default), 11 new CLI commands (gate-enforcement-health/preview/run/policy/audit-query/audit-verify/snapshot/hash/runs/compare/report), --quality-gate/--gate-mode flags on validate-score/backtest-buy-points/backtest-screener/backtest-strategy-knowledge, GUI panel + adapter, nav tab (data group), 4 new report types, stable/v060/intelligence checklist checks, regression tests (9 new), 11 test fixtures, docs/quality_gate_enforcement_audit_v1.1.5.md. FORMAL eligible does NOT enable trading. Gate bypass: DISABLED. Mock formal enforcement: BLOCKED. Audit failure raises RuntimeError. No broker API. Not Investment Advice.
 

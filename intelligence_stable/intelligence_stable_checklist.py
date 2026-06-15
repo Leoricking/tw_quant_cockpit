@@ -1299,4 +1299,41 @@ class IntelligenceStableChecklist:
                 suggested_fix="Run: python main.py gate-enforcement-health",
             ))
 
+        # v1.1.6 governance_ops_v116_safe — governance ops package is safe
+        try:
+            import importlib
+            mod_gov = importlib.import_module("governance_ops")
+            no_orders_gov  = getattr(mod_gov, "NO_REAL_ORDERS", None)
+            auto_repair    = getattr(mod_gov, "GOVERNANCE_AUTO_REPAIR_ENABLED", None)
+            trade_enabled  = getattr(mod_gov, "GOVERNANCE_TRADE_EXECUTION_ENABLED", None)
+            gov_dash       = getattr(mod_gov, "DATA_GOVERNANCE_DASHBOARD_AVAILABLE", None)
+            if (no_orders_gov is True and auto_repair is False
+                    and trade_enabled is False and gov_dash is True):
+                checks.append(_check(
+                    "governance_ops_v116_safe", "stable_integration",
+                    "v1.1.6 governance_ops_v116_safe",
+                    CHECK_PASS, SEV_LOW,
+                    "governance_ops: NO_REAL_ORDERS=True, GOVERNANCE_AUTO_REPAIR_ENABLED=False, "
+                    "GOVERNANCE_TRADE_EXECUTION_ENABLED=False, DATA_GOVERNANCE_DASHBOARD_AVAILABLE=True.",
+                ))
+            else:
+                checks.append(_check(
+                    "governance_ops_v116_safe", "stable_integration",
+                    "v1.1.6 governance_ops_v116_safe",
+                    CHECK_WARN, SEV_LOW,
+                    f"governance_ops safety flags: NO_REAL_ORDERS={no_orders_gov}, "
+                    f"GOVERNANCE_AUTO_REPAIR_ENABLED={auto_repair}, "
+                    f"GOVERNANCE_TRADE_EXECUTION_ENABLED={trade_enabled}, "
+                    f"DATA_GOVERNANCE_DASHBOARD_AVAILABLE={gov_dash}",
+                    suggested_fix="Ensure governance_ops/__init__.py has correct v1.1.6 safety flags.",
+                ))
+        except Exception as exc:
+            checks.append(_check(
+                "governance_ops_v116_safe", "stable_integration",
+                "v1.1.6 governance_ops_v116_safe",
+                CHECK_WARN, SEV_LOW,
+                f"Could not verify governance_ops v1.1.6 safety (optional): {exc}",
+                suggested_fix="Run: python main.py governance-health",
+            ))
+
         return checks

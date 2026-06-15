@@ -1,0 +1,3 @@
+{"date": "2026-06-13", "overall_status": "HEALTHY", "ready_symbols": 29, "stale_symbols": 1, "missing_symbols": 0, "blocked_symbols": 0, "p0_actions": 0, "p1_actions": 0, "research_only": true, "no_real_orders": true}
+{"date": "2026-06-14", "overall_status": "ATTENTION_REQUIRED", "ready_symbols": 27, "stale_symbols": 2, "missing_symbols": 1, "blocked_symbols": 1, "p0_actions": 1, "p1_actions": 1, "research_only": true, "no_real_orders": true}
+{"date": "2026-06-15", "overall_status": "ATTENTION_REQUIRED", "ready_symbols": 25, "stale_symbols": 3, "missing_symbols": 1, "blocked_symbols": 1, "p0_actions": 0, "p1_actions": 2, "research_only": true, "no_real_orders": true}

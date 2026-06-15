@@ -1,0 +1,36 @@
+{
+  "_comment": "Fixture: run audit summary — gate enforcement audit data. Research Only.",
+  "audit_summary": {
+    "total_runs": 5,
+    "pass_runs": 4,
+    "fail_runs": 1,
+    "bypass_count": 0,
+    "override_count": 0,
+    "mock_enforcement_count": 0,
+    "latest_run_id": "test-gov-run-001",
+    "latest_run_at": "2026-06-15T00:00:00Z"
+  },
+  "enforcement_runs": [
+    {
+      "run_id": "test-gov-run-001",
+      "command": "validate-score",
+      "gate_level": "FORMAL",
+      "status": "PASS",
+      "included": 20,
+      "excluded": 10,
+      "run_at": "2026-06-15T00:00:00Z"
+    },
+    {
+      "run_id": "test-gov-run-002",
+      "command": "validate-score",
+      "gate_level": "FORMAL",
+      "status": "FAIL",
+      "included": 0,
+      "excluded": 30,
+      "error": "No ELIGIBLE_FORMAL symbols found",
+      "run_at": "2026-06-14T00:00:00Z"
+    }
+  ],
+  "research_only": true,
+  "no_real_orders": true
+}

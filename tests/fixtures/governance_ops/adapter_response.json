@@ -1,0 +1,22 @@
+{
+  "_comment": "Fixture: adapter_response — sample governance adapter health/summary output. Research Only.",
+  "adapter_name": "DataUniverseGovernanceAdapter",
+  "module": "data_universe",
+  "available": true,
+  "health": [
+    ["data_universe_import", "PASS", "data_universe imported ok"],
+    ["data_universe_real_mock_separation", "PASS", "mock and real data separated"],
+    ["data_universe_no_orders", "PASS", "NO_REAL_ORDERS=True"]
+  ],
+  "latest_summary": {
+    "tier": "research30",
+    "total_symbols": 30,
+    "ready": 28,
+    "missing": 2,
+    "last_run": "2026-06-15T00:00:00Z"
+  },
+  "issues": [],
+  "limitations": ["read_only=True", "REAL_DATA_COVERAGE_REQUIRED"],
+  "research_only": true,
+  "no_real_orders": true
+}
