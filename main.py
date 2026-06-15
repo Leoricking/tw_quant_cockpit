@@ -5761,6 +5761,38 @@ def cmd_version_info(args: argparse.Namespace) -> None:
         print(f"{'Governance Auto Download Enabled:':<40} {gov_ad}")
         print(f"{'Governance Gate Override Enabled:':<40} {gov_go}")
         print(f"{'Governance Trade Execution Enabled:':<40} {gov_te}")
+        # v1.1.7 Governance Alerts fields
+        gov_alerts      = getattr(_vi116, "GOVERNANCE_ALERTS_AVAILABLE", False)
+        gov_digest      = getattr(_vi116, "GOVERNANCE_DAILY_DIGEST_AVAILABLE", False)
+        gov_dedup       = getattr(_vi116, "GOVERNANCE_ALERT_DEDUP_AVAILABLE", False)
+        gov_snooze      = getattr(_vi116, "GOVERNANCE_ALERT_SNOOZE_AVAILABLE", False)
+        gov_escalation  = getattr(_vi116, "GOVERNANCE_ALERT_ESCALATION_AVAILABLE", False)
+        gov_auto_import = getattr(_vi116, "GOVERNANCE_AUTO_IMPORT_ENABLED", True)
+        ext_notif       = getattr(_vi116, "EXTERNAL_NOTIFICATION_SEND_ENABLED", True)
+        print(f"{'Governance Alerts Available:':<40} {gov_alerts}")
+        print(f"{'Governance Daily Digest Available:':<40} {gov_digest}")
+        print(f"{'Governance Alert Dedup Available:':<40} {gov_dedup}")
+        print(f"{'Governance Alert Snooze Available:':<40} {gov_snooze}")
+        print(f"{'Governance Alert Escalation Available:':<40} {gov_escalation}")
+        print(f"{'Governance Auto Import Enabled:':<40} {gov_auto_import}")
+        print(f"{'External Notification Send Enabled:':<40} {ext_notif}")
+        # v1.1.8 Research Run Registry fields
+        rr_avail    = getattr(_vi116, "RESEARCH_RUN_REGISTRY_AVAILABLE", False)
+        lin_avail   = getattr(_vi116, "RUN_LINEAGE_AVAILABLE", False)
+        art_avail   = getattr(_vi116, "RUN_ARTIFACT_CATALOG_AVAILABLE", False)
+        cmp_avail   = getattr(_vi116, "RUN_COMPARISON_AVAILABLE", False)
+        dup_avail   = getattr(_vi116, "RUN_DUPLICATE_DETECTION_AVAILABLE", False)
+        auto_rerun  = getattr(_vi116, "RUN_AUTO_RERUN_ENABLED", True)
+        auto_exec   = getattr(_vi116, "RUN_AUTO_EXECUTION_ENABLED", True)
+        trade_exec  = getattr(_vi116, "RUN_TRADE_EXECUTION_ENABLED", True)
+        print(f"{'Research Run Registry Available:':<40} {rr_avail}")
+        print(f"{'Run Lineage Available:':<40} {lin_avail}")
+        print(f"{'Run Artifact Catalog Available:':<40} {art_avail}")
+        print(f"{'Run Comparison Available:':<40} {cmp_avail}")
+        print(f"{'Run Duplicate Detection Available:':<40} {dup_avail}")
+        print(f"{'Run Auto Rerun Enabled:':<40} {auto_rerun}")
+        print(f"{'Run Auto Execution Enabled:':<40} {auto_exec}")
+        print(f"{'Run Trade Execution Enabled:':<40} {trade_exec}")
     except Exception as exc:
         print(f"  Version:                              1.1.6")
         print(f"  Release:                              Data Governance Operations Dashboard")
@@ -12815,6 +12847,422 @@ def cmd_governance_alert_audit_verify(args) -> None:
 
 
 # ---------------------------------------------------------------------------
+# v1.1.8 Research Run Registry handlers
+# ---------------------------------------------------------------------------
+
+def _print_research_registry_header():
+    print("=" * 60)
+    print("TW Quant Cockpit \u2014 Research Run Registry")
+    print("Research Only: True | No Real Orders: True")
+    print("Registry Does NOT Execute Runs | Auto Rerun DISABLED | Trading DISABLED")
+    print("=" * 60)
+
+
+def cmd_research_registry_health(args) -> None:
+    """Run research run registry health check. [!] Research Only. No Real Orders."""
+    _print_research_registry_header()
+    try:
+        from research_registry.registry_health import ResearchRunRegistryHealthCheck
+        checker = ResearchRunRegistryHealthCheck()
+        results = checker.run()
+        passed = sum(1 for _, s, _ in results if s == "PASS")
+        total = len(results)
+        print(f"  Passed: {passed}/{total}")
+        for name, status, msg in results:
+            print(f"  [{status}] {name}: {msg}")
+        print("[!] Research Only. No Real Orders.")
+    except Exception as exc:
+        print(f"  [ERROR] research-registry-health failed: {exc}")
+        print("[!] Research Only. No Real Orders.")
+
+
+def cmd_research_registry_summary(args) -> None:
+    """Show research run registry summary. [!] Research Only."""
+    _print_research_registry_header()
+    try:
+        from research_registry.registry_query import RegistryQuery
+        q = RegistryQuery()
+        s = q.registry_summary()
+        print(f"  Total Runs:              {s.total_runs}")
+        print(f"  Completed:               {s.completed_runs}")
+        print(f"  With Warnings:           {s.warning_runs}")
+        print(f"  Blocked:                 {s.blocked_runs}")
+        print(f"  Failed:                  {s.failed_runs}")
+        print(f"  Formally Qualified:      {s.formal_runs}")
+        print(f"  Observational Only:      {s.observational_runs}")
+        print(f"  Demo Only:               {s.demo_runs}")
+        print(f"  Duplicates:              {s.duplicate_runs}")
+        print(f"  Missing Artifact Runs:   {s.missing_artifact_runs}")
+        print(f"  Reproducibility Verified:{s.reproducibility_verified_runs}")
+        print("[!] Research Only. No Real Orders.")
+    except Exception as exc:
+        print(f"  [ERROR] research-registry-summary failed: {exc}")
+
+
+def cmd_research_runs(args) -> None:
+    """List recent research runs. [!] Research Only."""
+    _print_research_registry_header()
+    try:
+        from research_registry.registry_query import RegistryQuery
+        q = RegistryQuery()
+        limit = getattr(args, "limit", 20) or 20
+        run_type = getattr(args, "type", None)
+        status = getattr(args, "status", None)
+        qualification = getattr(args, "qualification", None)
+
+        if run_type:
+            runs = q.list_by_type(run_type)
+        elif status:
+            runs = q.list_by_status(status)
+        elif qualification:
+            runs = q.list_by_qualification(qualification)
+        else:
+            runs = q.latest_runs(limit=limit)
+
+        if not runs:
+            print("  No runs found.")
+            return
+        print(f"  {'Run ID':<36} {'Command':<30} {'Status':<20} {'Qualification':<22} {'Started':<20}")
+        print("  " + "-" * 130)
+        for r in runs[:limit]:
+            print(f"  {r.run_id:<36} {r.command_name:<30} {r.status:<20} {r.qualification:<22} {(r.started_at or '')[:19]:<20}")
+        print("[!] Research Only. No Real Orders.")
+    except Exception as exc:
+        print(f"  [ERROR] research-runs failed: {exc}")
+
+
+def cmd_research_run(args) -> None:
+    """Show detail for a single research run. [!] Research Only."""
+    _print_research_registry_header()
+    run_id = getattr(args, "run_id", None)
+    if not run_id:
+        print("  [ERROR] --run-id is required.")
+        return
+    try:
+        from research_registry.registry_query import RegistryQuery
+        q = RegistryQuery()
+        r = q.get_run(run_id)
+        if r is None:
+            print(f"  Run {run_id} not found.")
+            return
+        print(f"  Run ID:          {r.run_id}")
+        print(f"  Registry ID:     {r.registry_id}")
+        print(f"  Type:            {r.run_type}")
+        print(f"  Command:         {r.command_name}")
+        print(f"  Status:          {r.status}")
+        print(f"  Qualification:   {r.qualification}")
+        print(f"  Mode:            {r.mode}")
+        print(f"  Started:         {r.started_at}")
+        print(f"  Completed:       {r.completed_at}")
+        print(f"  Duration:        {r.duration_seconds:.1f}s")
+        print(f"  Version:         {r.code_version}")
+        print(f"  Git Commit:      {r.git_commit}")
+        print(f"  Symbols:         {r.included_symbols}")
+        print(f"  Override Used:   {r.override_used}")
+        print(f"  Warnings:        {r.warning_count}")
+        print(f"  Errors:          {r.error_count}")
+        print(f"  Notes:           {r.notes}")
+        print("[!] Research Only. No Real Orders.")
+    except Exception as exc:
+        print(f"  [ERROR] research-run failed: {exc}")
+
+
+def cmd_research_run_artifacts(args) -> None:
+    """List artifacts for a research run. [!] Research Only."""
+    _print_research_registry_header()
+    run_id = getattr(args, "run_id", None)
+    if not run_id:
+        print("  [ERROR] --run-id is required.")
+        return
+    try:
+        from research_registry.registry_query import RegistryQuery
+        q = RegistryQuery()
+        arts = q.run_artifacts(run_id)
+        if not arts:
+            print(f"  No artifacts found for run {run_id}.")
+            return
+        for a in arts:
+            print(f"  [{a.artifact_type}] {a.filename} | exists={a.exists} | size={a.size_bytes} | checksum={a.checksum[:8] if a.checksum else ''}...")
+        print("[!] Research Only. No Real Orders.")
+    except Exception as exc:
+        print(f"  [ERROR] research-run-artifacts failed: {exc}")
+
+
+def cmd_research_run_lineage(args) -> None:
+    """Show lineage for a research run. [!] Research Only."""
+    _print_research_registry_header()
+    run_id = getattr(args, "run_id", None)
+    if not run_id:
+        print("  [ERROR] --run-id is required.")
+        return
+    try:
+        from research_registry.registry_query import RegistryQuery
+        q = RegistryQuery()
+        lin = q.run_lineage(run_id)
+        if lin is None:
+            print(f"  No lineage found for run {run_id}.")
+            return
+        print(f"  Run ID:          {lin.run_id}")
+        print(f"  Relation Type:   {lin.relation_type}")
+        print(f"  Parent Run ID:   {lin.parent_run_id or '(root)'}")
+        print(f"  Root Run ID:     {lin.root_run_id}")
+        print(f"  Rerun Of:        {lin.rerun_of or '—'}")
+        print(f"  Duplicate Of:    {lin.duplicate_of or '—'}")
+        print(f"  Lineage Depth:   {lin.lineage_depth}")
+        print(f"  Children:        {lin.children_run_ids}")
+        print("[!] Research Only. No Real Orders.")
+    except Exception as exc:
+        print(f"  [ERROR] research-run-lineage failed: {exc}")
+
+
+def cmd_research_run_verify(args) -> None:
+    """Validate registry integrity for a run or overall. [!] Research Only."""
+    _print_research_registry_header()
+    run_id = getattr(args, "run_id", None)
+    try:
+        from research_registry.registry_engine import ResearchRunRegistryEngine
+        engine = ResearchRunRegistryEngine()
+        result = engine.validate_registry()
+        print(f"  Registry Valid: {result.get('valid')}")
+        print(f"  Issue Count:    {result.get('issue_count', 0)}")
+        audit = result.get("audit_chain", {})
+        print(f"  Audit Chain:    {'VALID' if audit.get('valid') else 'BROKEN'} ({audit.get('event_count', 0)} events)")
+        missing = result.get("missing_artifacts", 0)
+        print(f"  Missing Artifacts: {missing}")
+        if result.get("issues"):
+            for iss in result["issues"]:
+                print(f"  [ISSUE] {iss}")
+        print("[!] Research Only. No Real Orders.")
+    except Exception as exc:
+        print(f"  [ERROR] research-run-verify failed: {exc}")
+
+
+def cmd_research_run_duplicates(args) -> None:
+    """List duplicate research runs. [!] Research Only."""
+    _print_research_registry_header()
+    try:
+        from research_registry.registry_query import RegistryQuery
+        q = RegistryQuery()
+        dups = q.list_duplicates()
+        if not dups:
+            print("  No duplicate runs detected.")
+        else:
+            print(f"  Found {len(dups)} duplicate run(s):")
+            for r in dups:
+                print(f"    {r.run_id} → duplicate of {r.duplicate_of}")
+        print("[!] Research Only. No Real Orders.")
+    except Exception as exc:
+        print(f"  [ERROR] research-run-duplicates failed: {exc}")
+
+
+def cmd_research_run_duplicate_check(args) -> None:
+    """Explain why a run is marked as duplicate. [!] Research Only."""
+    _print_research_registry_header()
+    run_id = getattr(args, "run_id", None)
+    if not run_id:
+        print("  [ERROR] --run-id is required.")
+        return
+    try:
+        from research_registry.duplicate_detector import ResearchRunDuplicateDetector
+        from research_registry.registry_store import RegistryStore
+        store = RegistryStore()
+        dup_map = store.load_duplicate_index()
+        det = ResearchRunDuplicateDetector()
+        for k, v in dup_map.items():
+            det.mark_duplicate(k, v)
+        print(f"  {det.explain_duplicate(run_id)}")
+        print("[!] Research Only. No Real Orders.")
+    except Exception as exc:
+        print(f"  [ERROR] research-run-duplicate-check failed: {exc}")
+
+
+def cmd_research_run_compare(args) -> None:
+    """Compare two research runs. [!] Research Only."""
+    _print_research_registry_header()
+    run_a = getattr(args, "run_a", None)
+    run_b = getattr(args, "run_b", None)
+    if not run_a or not run_b:
+        print("  [ERROR] --run-a and --run-b are required.")
+        return
+    try:
+        from research_registry.registry_engine import ResearchRunRegistryEngine
+        engine = ResearchRunRegistryEngine()
+        comp = engine.compare_runs(run_a, run_b)
+        if comp is None:
+            print(f"  Could not compare runs (one or both not found).")
+            return
+        from research_registry.run_comparator import ResearchRunComparator
+        comparator = ResearchRunComparator()
+        print(comparator.summarize(comp))
+        print("[!] Research Only. No Real Orders.")
+    except Exception as exc:
+        print(f"  [ERROR] research-run-compare failed: {exc}")
+
+
+def cmd_research_run_search(args) -> None:
+    """Search research runs by query string. [!] Research Only."""
+    _print_research_registry_header()
+    query = getattr(args, "query", "") or ""
+    try:
+        from research_registry.registry_query import RegistryQuery
+        q = RegistryQuery()
+        runs = q.search(query)
+        if not runs:
+            print(f"  No runs matching '{query}'.")
+        else:
+            print(f"  Found {len(runs)} run(s) matching '{query}':")
+            for r in runs[:20]:
+                print(f"    {r.run_id[:20]}... | {r.command_name} | {r.status} | {r.qualification}")
+        print("[!] Research Only. No Real Orders.")
+    except Exception as exc:
+        print(f"  [ERROR] research-run-search failed: {exc}")
+
+
+def cmd_research_run_latest_successful(args) -> None:
+    """Show latest successful research run. [!] Research Only."""
+    _print_research_registry_header()
+    command = getattr(args, "command", None)
+    try:
+        from research_registry.registry_query import RegistryQuery
+        q = RegistryQuery()
+        r = q.latest_successful(command_name=command)
+        if r is None:
+            print(f"  No successful run found{' for ' + command if command else ''}.")
+        else:
+            print(f"  Run ID:    {r.run_id}")
+            print(f"  Command:   {r.command_name}")
+            print(f"  Status:    {r.status}")
+            print(f"  Started:   {r.started_at}")
+        print("[!] Research Only. No Real Orders.")
+    except Exception as exc:
+        print(f"  [ERROR] research-run-latest-successful failed: {exc}")
+
+
+def cmd_research_run_latest_formal(args) -> None:
+    """Show latest formally qualified research run. [!] Research Only."""
+    _print_research_registry_header()
+    command = getattr(args, "command", None)
+    try:
+        from research_registry.registry_query import RegistryQuery
+        q = RegistryQuery()
+        r = q.latest_formal(command_name=command)
+        if r is None:
+            print(f"  No formally qualified run found{' for ' + command if command else ''}.")
+        else:
+            print(f"  Run ID:         {r.run_id}")
+            print(f"  Command:        {r.command_name}")
+            print(f"  Qualification:  {r.qualification}")
+            print(f"  Started:        {r.started_at}")
+        print("[!] Research Only. No Real Orders.")
+    except Exception as exc:
+        print(f"  [ERROR] research-run-latest-formal failed: {exc}")
+
+
+def cmd_research_run_missing_artifacts(args) -> None:
+    """List runs with missing artifacts. [!] Research Only."""
+    _print_research_registry_header()
+    try:
+        from research_registry.registry_query import RegistryQuery
+        q = RegistryQuery()
+        runs = q.list_missing_artifacts()
+        if not runs:
+            print("  No runs with missing artifacts.")
+        else:
+            print(f"  Found {len(runs)} run(s) with missing artifacts:")
+            for r in runs[:20]:
+                print(f"    {r.run_id[:20]}... | {r.command_name} | {r.status}")
+        print("[!] Research Only. No Real Orders.")
+    except Exception as exc:
+        print(f"  [ERROR] research-run-missing-artifacts failed: {exc}")
+
+
+def cmd_research_registry_backfill(args) -> None:
+    """Preview or execute backfill of existing runs. [!] Research Only. dry_run=True by default."""
+    _print_research_registry_header()
+    dry_run = not getattr(args, "execute", False)
+    allow_write = getattr(args, "allow_write", False)
+    try:
+        from research_registry.registry_engine import ResearchRunRegistryEngine
+        engine = ResearchRunRegistryEngine()
+        result = engine.backfill_existing_runs(dry_run=dry_run, allow_write=allow_write)
+        print(f"  Status:        {result.get('status')}")
+        print(f"  Dry Run:       {result.get('dry_run')}")
+        print(f"  Allow Write:   {result.get('allow_write')}")
+        print(f"  Found:         {result.get('found', 0)} potential sources")
+        for note in result.get("notes", []):
+            print(f"  NOTE: {note}")
+        print("[!] Research Only. No Real Orders.")
+    except Exception as exc:
+        print(f"  [ERROR] research-registry-backfill failed: {exc}")
+
+
+def cmd_research_registry_rebuild_index(args) -> None:
+    """Rebuild research registry indexes. [!] Research Only."""
+    _print_research_registry_header()
+    try:
+        from research_registry.registry_engine import ResearchRunRegistryEngine
+        engine = ResearchRunRegistryEngine()
+        ok = engine.rebuild_indexes()
+        print(f"  Rebuild indexes: {'OK' if ok else 'FAILED'}")
+        print("[!] Research Only. No Real Orders.")
+    except Exception as exc:
+        print(f"  [ERROR] research-registry-rebuild-index failed: {exc}")
+
+
+def cmd_research_registry_report(args) -> None:
+    """Build research run registry report. [!] Research Only."""
+    _print_research_registry_header()
+    report_dir = getattr(args, "report_dir", "reports") or "reports"
+    try:
+        from reports.research_run_registry_report import ResearchRunRegistryReportBuilder
+        builder = ResearchRunRegistryReportBuilder()
+        path = builder.build(output_dir=report_dir)
+        if path:
+            print(f"  Report written to: {path}")
+        else:
+            print("  [WARN] Report builder returned empty path.")
+        print("[!] Research Only. No Real Orders.")
+    except Exception as exc:
+        print(f"  [ERROR] research-registry-report failed: {exc}")
+
+
+def cmd_research_registry_audit(args) -> None:
+    """Show research registry audit events. [!] Research Only."""
+    _print_research_registry_header()
+    run_id = getattr(args, "run_id", None)
+    try:
+        from research_registry.registry_store import RegistryStore
+        store = RegistryStore()
+        events = store.list_audit_events(run_id=run_id)
+        if not events:
+            print("  No audit events found.")
+        else:
+            print(f"  Found {len(events)} audit event(s):")
+            for e in events[:20]:
+                print(f"  [{e.get('event_type', '')}] run={e.get('run_id', '')} at={e.get('timestamp', '')[:19]}")
+        print("[!] Research Only. No Real Orders.")
+    except Exception as exc:
+        print(f"  [ERROR] research-registry-audit failed: {exc}")
+
+
+def cmd_research_registry_audit_verify(args) -> None:
+    """Verify research registry audit chain integrity. [!] Research Only."""
+    _print_research_registry_header()
+    try:
+        from research_registry.registry_store import RegistryStore
+        store = RegistryStore()
+        result = store.verify_audit_chain()
+        if result.get("valid"):
+            print(f"  Audit chain: VALID ({result.get('event_count', 0)} events)")
+        else:
+            print(f"  Audit chain: BROKEN at event {result.get('broken_at', '?')}")
+            print(f"  Message: {result.get('message', '')}")
+        print("[!] Research Only. No Real Orders.")
+    except Exception as exc:
+        print(f"  [ERROR] research-registry-audit-verify failed: {exc}")
+
+
+# ---------------------------------------------------------------------------
 # v1.0.9 Final Maintenance Rollup handlers
 # ---------------------------------------------------------------------------
 
@@ -18717,6 +19165,121 @@ def _build_parser() -> argparse.ArgumentParser:
         help="[v1.1.7] Verify alert audit chain integrity. [!] Research Only.",
     )
 
+    # --- v1.1.8 Research Run Registry ---
+    subparsers.add_parser(
+        "research-registry-health",
+        help="[v1.1.8] Run research run registry health check. [!] Research Only. No Real Orders.",
+    )
+
+    subparsers.add_parser(
+        "research-registry-summary",
+        help="[v1.1.8] Show research run registry summary. [!] Research Only.",
+    )
+
+    p_rr_runs = subparsers.add_parser(
+        "research-runs",
+        help="[v1.1.8] List recent research runs. [!] Research Only.",
+    )
+    p_rr_runs.add_argument("--limit", type=int, default=20)
+    p_rr_runs.add_argument("--type", default=None, help="Filter by run type")
+    p_rr_runs.add_argument("--status", default=None, help="Filter by status")
+    p_rr_runs.add_argument("--qualification", default=None, help="Filter by qualification")
+
+    p_rr_run = subparsers.add_parser(
+        "research-run",
+        help="[v1.1.8] Show detail for a single research run. [!] Research Only.",
+    )
+    p_rr_run.add_argument("--run-id", dest="run_id", required=True)
+
+    p_rr_arts = subparsers.add_parser(
+        "research-run-artifacts",
+        help="[v1.1.8] List artifacts for a research run. [!] Research Only.",
+    )
+    p_rr_arts.add_argument("--run-id", dest="run_id", required=True)
+
+    p_rr_lin = subparsers.add_parser(
+        "research-run-lineage",
+        help="[v1.1.8] Show lineage for a research run. [!] Research Only.",
+    )
+    p_rr_lin.add_argument("--run-id", dest="run_id", required=True)
+
+    p_rr_verify = subparsers.add_parser(
+        "research-run-verify",
+        help="[v1.1.8] Validate registry integrity. [!] Research Only.",
+    )
+    p_rr_verify.add_argument("--run-id", dest="run_id", default=None)
+
+    subparsers.add_parser(
+        "research-run-duplicates",
+        help="[v1.1.8] List duplicate research runs. [!] Research Only.",
+    )
+
+    p_rr_dupchk = subparsers.add_parser(
+        "research-run-duplicate-check",
+        help="[v1.1.8] Explain why a run is marked as duplicate. [!] Research Only.",
+    )
+    p_rr_dupchk.add_argument("--run-id", dest="run_id", required=True)
+
+    p_rr_cmp = subparsers.add_parser(
+        "research-run-compare",
+        help="[v1.1.8] Compare two research runs. [!] Research Only.",
+    )
+    p_rr_cmp.add_argument("--run-a", dest="run_a", required=True)
+    p_rr_cmp.add_argument("--run-b", dest="run_b", required=True)
+
+    p_rr_search = subparsers.add_parser(
+        "research-run-search",
+        help="[v1.1.8] Search research runs. [!] Research Only.",
+    )
+    p_rr_search.add_argument("--query", default="")
+
+    p_rr_ls = subparsers.add_parser(
+        "research-run-latest-successful",
+        help="[v1.1.8] Show latest successful research run. [!] Research Only.",
+    )
+    p_rr_ls.add_argument("--run-type", dest="run_type", default=None)
+
+    p_rr_lf = subparsers.add_parser(
+        "research-run-latest-formal",
+        help="[v1.1.8] Show latest formally qualified run. [!] Research Only.",
+    )
+    p_rr_lf.add_argument("--run-type", dest="run_type", default=None)
+
+    subparsers.add_parser(
+        "research-run-missing-artifacts",
+        help="[v1.1.8] List runs with missing artifacts. [!] Research Only.",
+    )
+
+    p_rr_bf = subparsers.add_parser(
+        "research-registry-backfill",
+        help="[v1.1.8] Preview/execute backfill of existing runs. dry_run=True by default. [!] Research Only.",
+    )
+    p_rr_bf.add_argument("--dry-run", dest="dry_run", action="store_true", default=True)
+    p_rr_bf.add_argument("--execute", action="store_true", default=False)
+    p_rr_bf.add_argument("--allow-write", dest="allow_write", action="store_true", default=False)
+
+    subparsers.add_parser(
+        "research-registry-rebuild-index",
+        help="[v1.1.8] Rebuild research registry indexes. [!] Research Only.",
+    )
+
+    p_rr_rpt = subparsers.add_parser(
+        "research-registry-report",
+        help="[v1.1.8] Build research run registry report. [!] Research Only.",
+    )
+    p_rr_rpt.add_argument("--report-dir", dest="report_dir", default="reports")
+
+    p_rr_aud = subparsers.add_parser(
+        "research-registry-audit",
+        help="[v1.1.8] Show research registry audit events. [!] Research Only.",
+    )
+    p_rr_aud.add_argument("--run-id", dest="run_id", default=None)
+
+    subparsers.add_parser(
+        "research-registry-audit-verify",
+        help="[v1.1.8] Verify research registry audit chain integrity. [!] Research Only.",
+    )
+
     # --- v1.1.4 Coverage Quality Gates ---
     subparsers.add_parser(
         "quality-gate-health",
@@ -20358,6 +20921,26 @@ def main() -> None:
         "governance-alerts-report":       cmd_governance_alerts_report,
         "governance-alert-audit":         cmd_governance_alert_audit,
         "governance-alert-audit-verify":  cmd_governance_alert_audit_verify,
+        # v1.1.8 Research Run Registry
+        "research-registry-health":          cmd_research_registry_health,
+        "research-registry-summary":         cmd_research_registry_summary,
+        "research-runs":                     cmd_research_runs,
+        "research-run":                      cmd_research_run,
+        "research-run-artifacts":            cmd_research_run_artifacts,
+        "research-run-lineage":              cmd_research_run_lineage,
+        "research-run-verify":               cmd_research_run_verify,
+        "research-run-duplicates":           cmd_research_run_duplicates,
+        "research-run-duplicate-check":      cmd_research_run_duplicate_check,
+        "research-run-compare":              cmd_research_run_compare,
+        "research-run-search":               cmd_research_run_search,
+        "research-run-latest-successful":    cmd_research_run_latest_successful,
+        "research-run-latest-formal":        cmd_research_run_latest_formal,
+        "research-run-missing-artifacts":    cmd_research_run_missing_artifacts,
+        "research-registry-backfill":        cmd_research_registry_backfill,
+        "research-registry-rebuild-index":   cmd_research_registry_rebuild_index,
+        "research-registry-report":          cmd_research_registry_report,
+        "research-registry-audit":           cmd_research_registry_audit,
+        "research-registry-audit-verify":    cmd_research_registry_audit_verify,
         # v1.1.6 Data Governance Operations Dashboard
         "governance-health":              cmd_governance_health,
         "governance-dashboard":          cmd_governance_dashboard,

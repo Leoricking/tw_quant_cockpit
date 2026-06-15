@@ -360,6 +360,30 @@ governance-alert-audit, governance-alert-audit-verify
 
 ---
 
+## v1.1.8 — Research Run Registry (2026-06-15)
+
+Append-only research run registry with immutable audit hash chain, run lifecycle, qualification levels, artifact catalog, lineage graph, duplicate detection, run comparator, and registry health checks.
+
+**New package:** `research_registry/` (registry_schema, run_classifier, run_capture, run_lineage, artifact_catalog, duplicate_detector, run_comparator, registry_store, registry_query, registry_engine, registry_health, __init__)
+
+**New CLI (20 commands):**
+```
+research-registry-health, research-registry-summary, research-runs, research-run,
+research-run-artifacts, research-run-lineage, research-run-verify, research-run-duplicates,
+research-run-duplicate-check, research-run-compare, research-run-search,
+research-run-latest-successful, research-run-latest-formal, research-run-missing-artifacts,
+research-registry-backfill, research-registry-rebuild-index, research-registry-report,
+research-registry-audit, research-registry-audit-verify
+```
+
+**New reports:** `research_run_registry_report`, `registry_summary.json`, `run_comparison_summary`, `missing_artifact_summary`, `duplicate_run_summary`
+
+**Safety:** Auto Rerun DISABLED. Auto Execution DISABLED. Trade Execution DISABLED. Mock mode → DEMO_ONLY always. Backfill requires explicit allow_write=True. Sensitive fields redacted (api_key, token, secret, password, cookie, authorization). Registry failure is non-fatal. No Real Orders. Broker Disabled.
+
+**Docs:** `docs/research_run_registry_v1.1.8.md`
+
+---
+
 ## Roadmap
 
 | Version | Target |
@@ -369,6 +393,7 @@ governance-alert-audit, governance-alert-audit-verify
 | v1.1.5  | Quality Gate Enforcement & Audit — Done |
 | v1.1.6  | Data Governance Operations Dashboard — Done |
 | v1.1.7  | Governance Alerts & Daily Operations — Done |
+| v1.1.8  | Research Run Registry — Done |
 | v1.2.0  | Replay Training UX |
 
 ---

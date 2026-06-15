@@ -1373,4 +1373,44 @@ class IntelligenceStableChecklist:
                 suggested_fix="Run: python main.py governance-alerts-health",
             ))
 
+        # v1.1.8 Research Run Registry safety check
+        try:
+            import research_registry
+            no_orders_rr  = getattr(research_registry, "NO_REAL_ORDERS", False)
+            broker_dis_rr = getattr(research_registry, "BROKER_DISABLED", False)
+            auto_rerun    = getattr(research_registry, "REGISTRY_AUTO_RERUN_ENABLED", True)
+            auto_exec     = getattr(research_registry, "REGISTRY_AUTO_EXECUTION_ENABLED", True)
+            trade_exec    = getattr(research_registry, "REGISTRY_TRADE_EXECUTION_ENABLED", True)
+
+            if (no_orders_rr is True and broker_dis_rr is True
+                    and auto_rerun is False and auto_exec is False and trade_exec is False):
+                checks.append(_check(
+                    "research_run_registry_v118_safe", "stable_integration",
+                    "v1.1.8 research_run_registry_v118_safe",
+                    CHECK_PASS, SEV_LOW,
+                    "research_registry: NO_REAL_ORDERS=True, BROKER_DISABLED=True, "
+                    "REGISTRY_AUTO_RERUN_ENABLED=False, REGISTRY_AUTO_EXECUTION_ENABLED=False, "
+                    "REGISTRY_TRADE_EXECUTION_ENABLED=False.",
+                ))
+            else:
+                checks.append(_check(
+                    "research_run_registry_v118_safe", "stable_integration",
+                    "v1.1.8 research_run_registry_v118_safe",
+                    CHECK_WARN, SEV_LOW,
+                    f"research_registry safety flags: NO_REAL_ORDERS={no_orders_rr}, "
+                    f"BROKER_DISABLED={broker_dis_rr}, "
+                    f"REGISTRY_AUTO_RERUN_ENABLED={auto_rerun}, "
+                    f"REGISTRY_AUTO_EXECUTION_ENABLED={auto_exec}, "
+                    f"REGISTRY_TRADE_EXECUTION_ENABLED={trade_exec}",
+                    suggested_fix="Ensure research_registry/__init__.py has correct v1.1.8 safety flags.",
+                ))
+        except Exception as exc:
+            checks.append(_check(
+                "research_run_registry_v118_safe", "stable_integration",
+                "v1.1.8 research_run_registry_v118_safe",
+                CHECK_WARN, SEV_LOW,
+                f"Could not verify research_registry v1.1.8 safety (optional): {exc}",
+                suggested_fix="Run: python main.py research-registry-health",
+            ))
+
         return checks

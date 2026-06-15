@@ -98,6 +98,13 @@ REPORT_GOVERNANCE_WEEKLY_DIGEST     = "governance_weekly_digest"
 REPORT_GOVERNANCE_ALERT_TREND       = "governance_alert_trend"
 REPORT_GOVERNANCE_CHECKLIST         = "governance_checklist"
 
+# v1.1.8 Research Run Registry
+REPORT_RESEARCH_RUN_REGISTRY        = "research_run_registry_report"
+REPORT_LATEST_RUN_SUMMARY           = "latest_run_summary"
+REPORT_RUN_COMPARISON_SUMMARY       = "run_comparison_summary"
+REPORT_MISSING_ARTIFACT_SUMMARY     = "missing_artifact_summary"
+REPORT_DUPLICATE_RUN_SUMMARY        = "duplicate_run_summary"
+
 logger = logging.getLogger(__name__)
 
 # ---------------------------------------------------------------------------
@@ -150,6 +157,9 @@ _PACK_DEFINITIONS: Dict[str, List[str]] = {
         # v1.1.6 Data Governance Operations Dashboard (optional in daily pack)
         REPORT_DATA_GOVERNANCE_OPERATIONS,
         REPORT_GOVERNANCE_ACTION_QUEUE,
+        # v1.1.8 Research Run Registry (optional in daily pack)
+        REPORT_RESEARCH_RUN_REGISTRY,
+        REPORT_LATEST_RUN_SUMMARY,
     ],
     PACK_WEEKLY: [
         REPORT_DAILY_MARKET,

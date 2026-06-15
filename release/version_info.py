@@ -1,5 +1,5 @@
 """
-release/version_info.py — Centralized version info for TW Quant Cockpit v1.1.7.
+release/version_info.py — Centralized version info for TW Quant Cockpit v1.1.8.
 [!] Research Only. No Real Orders. Production Trading: BLOCKED.
 [!] VALIDATED does not enable trading. Broker Execution Disabled.
 [!] Data Universe Expansion. Real Data Coverage Required.
@@ -15,6 +15,7 @@ release/version_info.py — Centralized version info for TW Quant Cockpit v1.1.7
 [!] Governance Gate Override DISABLED. Trade Execution DISABLED. Not Investment Advice.
 [!] Governance Alerts & Daily Operations. External Notification Send DISABLED.
 [!] Alert detection does NOT repair, import, override gates, or enable trading. Not Investment Advice.
+[!] Research Run Registry. Registry does NOT execute commands. Auto Rerun DISABLED. Trading DISABLED.
 """
 from __future__ import annotations
 import logging
@@ -24,11 +25,11 @@ logger = logging.getLogger(__name__)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 # ---------------------------------------------------------------------------
-# v1.1.7 module-level constants (Governance Alerts & Daily Operations)
+# v1.1.8 module-level constants (Research Run Registry)
 # ---------------------------------------------------------------------------
-VERSION                             = "1.1.7"
-RELEASE_NAME                        = "Governance Alerts & Daily Operations"
-BASE_RELEASE                        = "1.1.6 Data Governance Operations Dashboard"
+VERSION                             = "1.1.8"
+RELEASE_NAME                        = "Research Run Registry"
+BASE_RELEASE                        = "1.1.7 Governance Alerts & Daily Operations"
 BASE_RELEASE_NAME                   = "Data Freshness Monitor"
 MAINTENANCE_RELEASE                 = False
 RELEASE_STAGE                       = "STABLE"
@@ -119,6 +120,15 @@ GOVERNANCE_ALERT_SNOOZE_AVAILABLE       = True
 GOVERNANCE_ALERT_ESCALATION_AVAILABLE   = True
 GOVERNANCE_AUTO_IMPORT_ENABLED          = False
 EXTERNAL_NOTIFICATION_SEND_ENABLED      = False
+# v1.1.8 new flags
+RESEARCH_RUN_REGISTRY_AVAILABLE         = True
+RUN_LINEAGE_AVAILABLE                   = True
+RUN_ARTIFACT_CATALOG_AVAILABLE          = True
+RUN_COMPARISON_AVAILABLE                = True
+RUN_DUPLICATE_DETECTION_AVAILABLE       = True
+RUN_AUTO_RERUN_ENABLED                  = False
+RUN_AUTO_EXECUTION_ENABLED              = False
+RUN_TRADE_EXECUTION_ENABLED             = False
 
 
 class VersionInfo:
@@ -308,6 +318,14 @@ def print_version_info() -> None:
     print(f"  Governance Alert Escalation Available: {GOVERNANCE_ALERT_ESCALATION_AVAILABLE}")
     print(f"  Governance Auto Import Enabled: {GOVERNANCE_AUTO_IMPORT_ENABLED}")
     print(f"  External Notification Send Enabled: {EXTERNAL_NOTIFICATION_SEND_ENABLED}")
+    print(f"  Research Run Registry Available: {RESEARCH_RUN_REGISTRY_AVAILABLE}")
+    print(f"  Run Lineage Available: {RUN_LINEAGE_AVAILABLE}")
+    print(f"  Run Artifact Catalog Available: {RUN_ARTIFACT_CATALOG_AVAILABLE}")
+    print(f"  Run Comparison Available: {RUN_COMPARISON_AVAILABLE}")
+    print(f"  Run Duplicate Detection Available: {RUN_DUPLICATE_DETECTION_AVAILABLE}")
+    print(f"  Run Auto Rerun Enabled: {RUN_AUTO_RERUN_ENABLED}")
+    print(f"  Run Auto Execution Enabled: {RUN_AUTO_EXECUTION_ENABLED}")
+    print(f"  Run Trade Execution Enabled: {RUN_TRADE_EXECUTION_ENABLED}")
     print("=" * 60)
 
 

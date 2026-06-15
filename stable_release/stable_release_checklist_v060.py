@@ -2627,6 +2627,82 @@ class StableReleaseChecklistV060:
         except Exception as exc:
             return _check_item("version_info_v117", "version_git", "WARN", str(exc))
 
+    def _check_research_registry_import(self) -> dict:
+        """v1.1.8 — research_registry package imports without error."""
+        try:
+            import research_registry
+            from research_registry.registry_schema import ResearchRunRecord
+            from research_registry.registry_engine import ResearchRunRegistryEngine
+            return _check_item(
+                "research_registry_import", "research_registry", "PASS",
+                "research_registry package and key classes imported OK",
+            )
+        except Exception as exc:
+            return _check_item("research_registry_import", "research_registry", "FAIL", str(exc))
+
+    def _check_research_registry_lineage(self) -> dict:
+        """v1.1.8 — ResearchRunLineageManager available."""
+        try:
+            from research_registry.run_lineage import ResearchRunLineageManager
+            _lm = ResearchRunLineageManager()
+            return _check_item(
+                "research_registry_lineage", "research_registry", "PASS",
+                "ResearchRunLineageManager imported and instantiated OK",
+            )
+        except Exception as exc:
+            return _check_item("research_registry_lineage", "research_registry", "FAIL", str(exc))
+
+    def _check_research_registry_duplicate_detection(self) -> dict:
+        """v1.1.8 — ResearchRunDuplicateDetector available."""
+        try:
+            from research_registry.duplicate_detector import ResearchRunDuplicateDetector
+            _dd = ResearchRunDuplicateDetector()
+            return _check_item(
+                "research_registry_duplicate_detection", "research_registry", "PASS",
+                "ResearchRunDuplicateDetector imported and instantiated OK",
+            )
+        except Exception as exc:
+            return _check_item("research_registry_duplicate_detection", "research_registry", "FAIL", str(exc))
+
+    def _check_research_registry_trade_execution_disabled(self) -> dict:
+        """v1.1.8 — REGISTRY_TRADE_EXECUTION_ENABLED is False."""
+        try:
+            import research_registry
+            _trade = getattr(research_registry, "REGISTRY_TRADE_EXECUTION_ENABLED", True)
+            if not _trade:
+                return _check_item(
+                    "research_registry_trade_execution_disabled", "research_registry", "PASS",
+                    f"REGISTRY_TRADE_EXECUTION_ENABLED={_trade} (False as required)",
+                )
+            return _check_item(
+                "research_registry_trade_execution_disabled", "research_registry", "FAIL",
+                f"REGISTRY_TRADE_EXECUTION_ENABLED={_trade} (must be False)",
+            )
+        except Exception as exc:
+            return _check_item("research_registry_trade_execution_disabled", "research_registry", "FAIL", str(exc))
+
+    def _check_version_info_v118(self) -> dict:
+        """v1.1.8 — VERSION is 1.1.8 and RESEARCH_RUN_REGISTRY_AVAILABLE=True."""
+        try:
+            from release.version_info import VERSION
+            import release.version_info as _vi
+            rrr_avail = getattr(_vi, "RESEARCH_RUN_REGISTRY_AVAILABLE", None)
+            trade_exec = getattr(_vi, "RUN_TRADE_EXECUTION_ENABLED", True)
+            if VERSION == "1.1.8" and rrr_avail and not trade_exec:
+                return _check_item(
+                    "version_info_v118", "version_git", "PASS",
+                    f"VERSION={VERSION}, RESEARCH_RUN_REGISTRY_AVAILABLE={rrr_avail}, "
+                    f"RUN_TRADE_EXECUTION_ENABLED={trade_exec}",
+                )
+            return _check_item(
+                "version_info_v118", "version_git", "WARN",
+                f"VERSION={VERSION}, RESEARCH_RUN_REGISTRY_AVAILABLE={rrr_avail}, "
+                f"RUN_TRADE_EXECUTION_ENABLED={trade_exec}",
+                warning="Expected VERSION=1.1.8 with RESEARCH_RUN_REGISTRY_AVAILABLE=True, RUN_TRADE_EXECUTION_ENABLED=False",
+            )
+        except Exception as exc:
+            return _check_item("version_info_v118", "version_git", "WARN", str(exc))
+
     # ----------------------------------------------------------------
     # Run
     # ----------------------------------------------------------------
@@ -2785,6 +2861,12 @@ class StableReleaseChecklistV060:
             self._check_governance_alert_lifecycle,
             self._check_governance_external_send_disabled,
             self._check_version_info_v117,
+            # v1.1.8 Research Run Registry
+            self._check_research_registry_import,
+            self._check_research_registry_lineage,
+            self._check_research_registry_duplicate_detection,
+            self._check_research_registry_trade_execution_disabled,
+            self._check_version_info_v118,
         ]
 
         for fn in checklist_groups:

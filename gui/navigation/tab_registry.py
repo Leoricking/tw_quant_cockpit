@@ -1486,6 +1486,54 @@ class GUITabRegistry:
                 notes="Added in v1.1.4 — Coverage Quality Gates.",
             ),
             # ----------------------------------------------------------------
+            # v1.1.8 Research Run Registry
+            # ----------------------------------------------------------------
+            GUITabMetadata(
+                tab_id="research_run_registry",
+                tab_name="Run Registry",
+                display_name="Research Run Registry",
+                group="research",
+                priority="P0",
+                description=(
+                    "Research Run Registry v1.1.8 — append-only registry for all research command runs. "
+                    "Tracks run metadata, qualification, lineage, artifacts, duplicate detection, "
+                    "reproducibility. Registry does NOT execute runs. Auto Rerun DISABLED. Trading DISABLED."
+                ),
+                module_path="gui.research_run_registry_panel",
+                class_name="ResearchRunRegistryPanel",
+                available_flag="_RESEARCH_RUN_REGISTRY_AVAILABLE",
+                keywords=[
+                    "research registry", "run registry", "experiment history",
+                    "backtest history", "run lineage", "duplicate runs",
+                    "artifacts", "reproducibility", "research runs",
+                    "\u7814\u7a76\u767b\u9304",   # 研究登錄
+                    "\u57f7\u884c\u7d00\u9304",   # 執行紀錄
+                    "\u56de\u6e2c\u6b77\u53f2",   # 回測歷史
+                    "\u5be6\u9a57\u6b77\u53f2",   # 實驗歷史
+                    "\u57f7\u884c\u8840\u7de3",   # 執行血緣
+                    "\u91cd\u8907\u5be6\u9a57",   # 重複實驗
+                    "\u7814\u7a76\u7522\u7269",   # 研究產物
+                    "\u91cd\u73fe\u6027",          # 重現性
+                ],
+                aliases=["run-registry", "research-runs", "experiment-log"],
+                related_cli_commands=[
+                    "research-registry-health", "research-registry-summary",
+                    "research-runs", "research-run", "research-run-artifacts",
+                    "research-run-lineage", "research-run-verify",
+                    "research-run-duplicates", "research-run-compare",
+                    "research-run-search", "research-registry-backfill",
+                    "research-registry-report", "research-registry-audit-verify",
+                ],
+                report_types=["research_run_registry_report"],
+                maturity="STABLE",
+                default_visible=True,
+                favorite_default=False,
+                no_real_orders=True,
+                read_only=True,
+                production_blocked=True,
+                notes="Added in v1.1.8 \u2014 Research Run Registry.",
+            ),
+            # ----------------------------------------------------------------
             # v1.1.7 Governance Alerts & Daily Operations
             # ----------------------------------------------------------------
             GUITabMetadata(

@@ -424,3 +424,12 @@ reports/governance_alerts_daily_operations_report_*.md
 # v1.1.7 Governance alerts fixtures ARE committed (exception)
 !tests/fixtures/governance_alerts/*.json
 !tests/fixtures/governance_alerts/*.jsonl
+
+# v1.1.8 Research Run Registry (runtime outputs — never commit)
+data/research_registry/
+reports/research_run_registry_report_*.md
+
+# v1.1.8 Research registry fixtures ARE committed (exception)
+!tests/fixtures/research_registry/*.json
+!tests/fixtures/research_registry/*.jsonl
+!tests/fixtures/research_registry/*.txt

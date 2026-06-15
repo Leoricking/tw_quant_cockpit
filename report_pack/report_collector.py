@@ -63,6 +63,11 @@ from report_pack.report_registry import (
     REPORT_GOVERNANCE_WEEKLY_DIGEST,
     REPORT_GOVERNANCE_ALERT_TREND,
     REPORT_GOVERNANCE_CHECKLIST,
+    REPORT_RESEARCH_RUN_REGISTRY,
+    REPORT_LATEST_RUN_SUMMARY,
+    REPORT_RUN_COMPARISON_SUMMARY,
+    REPORT_MISSING_ARTIFACT_SUMMARY,
+    REPORT_DUPLICATE_RUN_SUMMARY,
 )
 
 logger = logging.getLogger(__name__)
@@ -363,6 +368,22 @@ _REPORT_PATTERNS = {
     ],
     REPORT_GOVERNANCE_CHECKLIST: [
         "data/governance_alerts/daily_checklists.jsonl",
+    ],
+    # v1.1.8 Research Run Registry patterns
+    REPORT_RESEARCH_RUN_REGISTRY: [
+        "reports/research_run_registry_report*.md",
+    ],
+    REPORT_LATEST_RUN_SUMMARY: [
+        "data/research_registry/registry_summary.json",
+    ],
+    REPORT_RUN_COMPARISON_SUMMARY: [
+        "data/research_registry/comparisons.jsonl",
+    ],
+    REPORT_MISSING_ARTIFACT_SUMMARY: [
+        "data/research_registry/artifact_index.csv",
+    ],
+    REPORT_DUPLICATE_RUN_SUMMARY: [
+        "data/research_registry/duplicate_index.csv",
     ],
     # v0.9.1 Evidence Graph UX patterns
     "evidence_graph_gaps": [

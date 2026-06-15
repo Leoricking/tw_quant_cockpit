@@ -510,6 +510,86 @@ class GovernanceAlertDetector:
             demo_only=(self._mode == "mock"),
         )
 
+    def detect_from_research_registry(self) -> List:
+        """Detect alerts from research run registry. [!] Research Only."""
+        from governance_alerts.alert_schema import GovernanceAlert
+        from governance_alerts.alert_policy import GovernanceAlertPolicy
+        alerts = []
+        policy = GovernanceAlertPolicy()
+        try:
+            from research_registry.registry_query import RegistryQuery
+            q = RegistryQuery()
+
+            # RESEARCH_RUN_FAILED: check for recent formal failures
+            failed = q.list_failed()
+            for r in failed[-5:]:
+                is_formal = r.qualification == "FORMALLY_QUALIFIED"
+                alert_type = "RESEARCH_RUN_FAILED_FORMAL" if is_formal else "RESEARCH_RUN_FAILED_OBSERVATIONAL"
+                alert = self.build_alert(
+                    alert_type=alert_type,
+                    title=f"Research run FAILED: {r.command_name}",
+                    message=f"Run {r.run_id[:12]} ({r.command_name}) failed. Qualification: {r.qualification}.",
+                    reason_codes=["RESEARCH_RUN_FAILED"],
+                    policy=policy,
+                )
+                alerts.append(alert)
+
+            # RESEARCH_RUN_BLOCKED: check for formal blocked runs
+            blocked = q.list_blocked()
+            for r in blocked[-3:]:
+                if r.qualification in ("FORMALLY_QUALIFIED", "BLOCKED"):
+                    alert = self.build_alert(
+                        alert_type="RESEARCH_RUN_BLOCKED",
+                        title=f"Research run BLOCKED: {r.command_name}",
+                        message=f"Run {r.run_id[:12]} blocked. Reasons: {r.blocked_reason_codes}.",
+                        reason_codes=r.blocked_reason_codes or ["RESEARCH_RUN_BLOCKED"],
+                        policy=policy,
+                    )
+                    alerts.append(alert)
+
+            # RESEARCH_RUN_DUPLICATE
+            dups = q.list_duplicates()
+            if dups:
+                alert = self.build_alert(
+                    alert_type="RESEARCH_RUN_DUPLICATE",
+                    title=f"{len(dups)} duplicate research run(s) detected",
+                    message=f"Detected {len(dups)} run(s) marked as exact duplicates.",
+                    reason_codes=["RESEARCH_RUN_DUPLICATE"],
+                    policy=policy,
+                )
+                alerts.append(alert)
+
+            # RESEARCH_ARTIFACT_MISSING
+            missing = q.list_missing_artifacts()
+            formal_missing = [r for r in missing if r.qualification == "FORMALLY_QUALIFIED"]
+            if formal_missing:
+                alert = self.build_alert(
+                    alert_type="RESEARCH_ARTIFACT_MISSING_FORMAL",
+                    title=f"{len(formal_missing)} formal run(s) with missing artifacts",
+                    message=f"Formally qualified runs have missing output artifacts.",
+                    reason_codes=["RESEARCH_ARTIFACT_MISSING"],
+                    policy=policy,
+                )
+                alerts.append(alert)
+
+            # RESEARCH_REGISTRY_CORRUPTED: check audit chain
+            from research_registry.registry_store import RegistryStore
+            store = RegistryStore()
+            audit_result = store.verify_audit_chain()
+            if not audit_result.get("valid") and audit_result.get("event_count", 0) > 0:
+                alert = self.build_alert(
+                    alert_type="RESEARCH_REGISTRY_CORRUPTED",
+                    title="Research registry audit chain broken",
+                    message=f"Audit chain integrity failure detected at event {audit_result.get('broken_at', '?')}.",
+                    reason_codes=["REGISTRY_AUDIT_BROKEN"],
+                    policy=policy,
+                )
+                alerts.append(alert)
+
+        except Exception as exc:
+            logger.debug("detect_from_research_registry failed (non-fatal): %s", exc)
+        return alerts
+
     def summarize_detection(self, alerts: List) -> dict:
         if not alerts:
             return {

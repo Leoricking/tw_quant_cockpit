@@ -1,0 +1,14 @@
+This is a sample artifact file for research registry testing.
+Created: 2025-01-10
+Run ID: run-formal-backtest-001
+Artifact ID: art-001
+Type: report
+
+Contents:
+- Sample backtest output
+- No real data
+- Research only — not investment advice
+
+NO_REAL_ORDERS=True
+BROKER_DISABLED=True
+RESEARCH_ONLY=True

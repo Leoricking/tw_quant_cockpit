@@ -1,0 +1,20 @@
+{
+  "_fixture_type": "cycle_detection_test",
+  "_description": "This fixture represents an INVALID lineage state with a cycle. The registry must detect and reject this.",
+  "_expected_behavior": "ResearchRunLineageManager.detect_cycle() must return True for run-cycle-a-001",
+  "runs": [
+    {
+      "run_id": "run-cycle-a-001",
+      "parent_run_id": "run-cycle-b-001",
+      "_note": "A claims B as parent"
+    },
+    {
+      "run_id": "run-cycle-b-001",
+      "parent_run_id": "run-cycle-a-001",
+      "_note": "B claims A as parent — creates a cycle: A -> B -> A"
+    }
+  ],
+  "_safety_note": "This fixture must never be loaded into a live registry. Use only in test harness to verify cycle detection.",
+  "research_only": true,
+  "no_real_orders": true
+}

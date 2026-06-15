@@ -87,6 +87,19 @@
 | v1.1.5 | Quality Gate Enforcement & Audit | Done |
 | v1.1.6 | Data Governance Operations Dashboard | Done |
 | v1.1.7 | Governance Alerts & Daily Operations | Done |
+| v1.1.8 | Research Run Registry | Done |
+
+---
+
+### v1.1.8 — Research Run Registry ✅
+
+- **Version:** 1.1.8 — feature release based on v1.1.7 Governance Alerts & Daily Operations
+- **Type:** Append-only Research Run Registry — run lifecycle, qualification levels, artifact catalog, lineage graph, duplicate detection, run comparator, registry health checks. No broker, no trading, no auto-rerun, no auto-execution.
+- **Changes:** research_registry/ package (registry_schema, run_classifier, run_capture, run_lineage, artifact_catalog, duplicate_detector, run_comparator, registry_store, registry_query, registry_engine, registry_health, __init__), reports/research_run_registry_report.py, gui/research_run_registry_panel.py, gui/research_run_registry_adapter.py, 20 new CLI commands (research-registry-health/summary/runs/run/run-artifacts/run-lineage/run-verify/run-duplicates/run-duplicate-check/run-compare/run-search/run-latest-successful/run-latest-formal/run-missing-artifacts/registry-backfill/registry-rebuild-index/registry-report/registry-audit/registry-audit-verify), GUI nav tab (research_run_registry, research group), 5 new report types in report pack, stable checklist checks (5 new), v060 checklist checks (5 new), intelligence checklist check (research_run_registry_v118_safe), 13 regression tests, tests/fixtures/research_registry/ (18 fixtures), docs/research_run_registry_v1.1.8.md, .gitignore updates, governance_alerts integration (8 new alert policies + detect_from_research_registry), README/docs refresh
+- **Safety:** Auto Rerun DISABLED, Auto Execution DISABLED, Trade Execution DISABLED, Mock always DEMO_ONLY, Backfill requires explicit allow_write=True, Sensitive fields redacted, Registry failure is non-fatal, No Real Orders, Broker Disabled, Production Trading BLOCKED
+
+**Next:**
+- v1.2.0: Replay Training UX
 
 ---
 
@@ -98,7 +111,7 @@
 - **Safety:** External Notification Send DISABLED, Auto Repair DISABLED, Auto Import DISABLED, Auto Download DISABLED, Gate Override DISABLED, Trade Execution DISABLED, P0 never suppressed, AUDIT_CHAIN_FAILURE never suppressed, Suggested commands allowlist only, No Real Orders, Production Trading BLOCKED
 
 **Next:**
-- v1.1.8 TBD
+- v1.1.8: Research Run Registry — Done
 - v1.2.0: Replay Training UX
 
 ---

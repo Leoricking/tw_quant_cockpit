@@ -1220,6 +1220,55 @@ class ResearchCockpitStableChecklist:
         except Exception as exc:
             checks.append(_mk("governance_alerts_no_forbidden_actions", "governance_alerts", "WARN", str(exc)))
 
+        # v1.1.8 Research Run Registry checks
+        try:
+            import research_registry
+            _rrr_avail = getattr(research_registry, "RESEARCH_ONLY", False)
+            checks.append(_mk("research_run_registry_available", "research_registry",
+                              "PASS" if _rrr_avail else "FAIL",
+                              f"research_registry: RESEARCH_ONLY={_rrr_avail}"))
+        except Exception as exc:
+            checks.append(_mk("research_run_registry_available", "research_registry", "FAIL", str(exc)))
+
+        try:
+            from release.version_info import RUN_LINEAGE_AVAILABLE as _lin_avail
+            checks.append(_mk("run_lineage_available", "research_registry",
+                              "PASS" if _lin_avail else "FAIL",
+                              f"version_info.RUN_LINEAGE_AVAILABLE={_lin_avail}"))
+        except Exception as exc:
+            checks.append(_mk("run_lineage_available", "research_registry", "FAIL", str(exc)))
+
+        try:
+            from release.version_info import RUN_ARTIFACT_CATALOG_AVAILABLE as _art_avail
+            checks.append(_mk("run_artifact_catalog_available", "research_registry",
+                              "PASS" if _art_avail else "FAIL",
+                              f"version_info.RUN_ARTIFACT_CATALOG_AVAILABLE={_art_avail}"))
+        except Exception as exc:
+            checks.append(_mk("run_artifact_catalog_available", "research_registry", "FAIL", str(exc)))
+
+        try:
+            import research_registry
+            _auto_rerun = getattr(research_registry, "REGISTRY_AUTO_RERUN_ENABLED", True)
+            checks.append(_mk("run_auto_rerun_disabled", "research_registry",
+                              "PASS" if not _auto_rerun else "FAIL",
+                              f"REGISTRY_AUTO_RERUN_ENABLED={_auto_rerun} (must be False)"))
+        except Exception as exc:
+            checks.append(_mk("run_auto_rerun_disabled", "research_registry", "FAIL", str(exc)))
+
+        try:
+            import research_registry
+            _no_orders = getattr(research_registry, "NO_REAL_ORDERS", None)
+            _broker_dis = getattr(research_registry, "BROKER_DISABLED", None)
+            _trade_exec = getattr(research_registry, "REGISTRY_TRADE_EXECUTION_ENABLED", True)
+            if _no_orders is True and _broker_dis is True and _trade_exec is False:
+                checks.append(_mk("registry_no_forbidden_actions", "research_registry", "PASS",
+                                  "research_registry: NO_REAL_ORDERS=True, BROKER_DISABLED=True, REGISTRY_TRADE_EXECUTION_ENABLED=False"))
+            else:
+                checks.append(_mk("registry_no_forbidden_actions", "research_registry", "FAIL",
+                                  f"research_registry: NO_REAL_ORDERS={_no_orders}, BROKER_DISABLED={_broker_dis}, REGISTRY_TRADE_EXECUTION_ENABLED={_trade_exec}"))
+        except Exception as exc:
+            checks.append(_mk("registry_no_forbidden_actions", "research_registry", "WARN", str(exc)))
+
         # Rebuild summary counts to include new checks
         total         = len(checks)
         pass_count    = sum(1 for c in checks if c["status"] == "PASS")

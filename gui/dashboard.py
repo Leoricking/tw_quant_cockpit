@@ -629,6 +629,15 @@ try:
 except Exception as _ga_exc:
     logger.warning("GovernanceAlertsPanel unavailable: %s", _ga_exc)
 
+# v1.1.8 Research Run Registry panel — optional
+# ---------------------------------------------------------------------------
+_RESEARCH_RUN_REGISTRY_AVAILABLE = False
+try:
+    from gui.research_run_registry_panel import ResearchRunRegistryPanel
+    _RESEARCH_RUN_REGISTRY_AVAILABLE = True
+except Exception as _rrr_exc:
+    logger.warning("ResearchRunRegistryPanel unavailable: %s", _rrr_exc)
+
 # v0.5.1.1 Strategy Filter panel — inline (no separate panel file required)
 # ---------------------------------------------------------------------------
 _STRATEGY_FILTER_AVAILABLE = False
