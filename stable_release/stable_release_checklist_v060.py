@@ -2795,6 +2795,97 @@ class StableReleaseChecklistV060:
         except Exception as exc:
             return _check_item("version_info_v119", "version_git", "WARN", str(exc))
 
+    def _check_replay_import(self) -> dict:
+        """v1.2.0 — replay.replay_training_engine imports correctly."""
+        try:
+            from replay.replay_training_engine import ReplayTrainingEngine
+            from replay.replay_health import ReplayTrainingHealthCheck
+            from replay.replay_schema import ReplaySessionConfig, ReplayDecision
+            return _check_item(
+                "replay_import", "replay_training", "PASS",
+                "replay.replay_training_engine, replay.replay_health, replay.replay_schema imported OK",
+            )
+        except Exception as exc:
+            return _check_item("replay_import", "replay_training", "WARN", str(exc))
+
+    def _check_replay_timeline(self) -> dict:
+        """v1.2.0 — replay timeline navigation guards work."""
+        try:
+            from replay.replay_timeline import ReplayTimeline
+            tl = ReplayTimeline()
+            tl.initialize(["2023-01-02", "2023-01-03", "2023-01-04"])
+            prev, changed = tl.previous()
+            if changed:
+                return _check_item(
+                    "replay_timeline", "replay_training", "FAIL",
+                    "previous() at first day should return changed=False",
+                )
+            return _check_item(
+                "replay_timeline", "replay_training", "PASS",
+                "Timeline navigation guards working (previous at first day: changed=False)",
+            )
+        except Exception as exc:
+            return _check_item("replay_timeline", "replay_training", "WARN", str(exc))
+
+    def _check_replay_future_firewall(self) -> dict:
+        """v1.2.0 — replay future data firewall detects forbidden fields."""
+        try:
+            from replay.future_data_firewall import ReplayFutureDataFirewall
+            fw = ReplayFutureDataFirewall()
+            found = fw.future_field_scan({"forward_return_5": 0.05, "close": 100.0})
+            if "forward_return_5" not in found:
+                return _check_item(
+                    "replay_future_firewall", "replay_training", "FAIL",
+                    "Firewall did not detect forward_return_5 as forbidden",
+                )
+            return _check_item(
+                "replay_future_firewall", "replay_training", "PASS",
+                f"Future firewall working: detected {found}",
+            )
+        except Exception as exc:
+            return _check_item("replay_future_firewall", "replay_training", "WARN", str(exc))
+
+    def _check_replay_trade_execution_disabled(self) -> dict:
+        """v1.2.0 — REPLAY_TRADE_EXECUTION_ENABLED=False."""
+        try:
+            import release.version_info as _vi
+            rte = getattr(_vi, "REPLAY_TRADE_EXECUTION_ENABLED", True)
+            raa = getattr(_vi, "REPLAY_AUTO_EXECUTION_ENABLED", True)
+            if not rte and not raa:
+                return _check_item(
+                    "replay_trade_execution_disabled", "replay_training", "PASS",
+                    f"REPLAY_TRADE_EXECUTION_ENABLED={rte}, REPLAY_AUTO_EXECUTION_ENABLED={raa}",
+                )
+            return _check_item(
+                "replay_trade_execution_disabled", "replay_training", "FAIL",
+                f"REPLAY_TRADE_EXECUTION_ENABLED={rte} or REPLAY_AUTO_EXECUTION_ENABLED={raa} must be False",
+            )
+        except Exception as exc:
+            return _check_item("replay_trade_execution_disabled", "replay_training", "WARN", str(exc))
+
+    def _check_version_info_v120(self) -> dict:
+        """v1.2.0 — VERSION is 1.2.0 and REPLAY_TRAINING_AVAILABLE=True."""
+        try:
+            from release.version_info import VERSION
+            import release.version_info as _vi
+            rt_avail = getattr(_vi, "REPLAY_TRAINING_AVAILABLE", None)
+            rte = getattr(_vi, "REPLAY_TRADE_EXECUTION_ENABLED", True)
+            if VERSION == "1.2.0" and rt_avail and not rte:
+                return _check_item(
+                    "version_info_v120", "version_git", "PASS",
+                    f"VERSION={VERSION}, REPLAY_TRAINING_AVAILABLE={rt_avail}, "
+                    f"REPLAY_TRADE_EXECUTION_ENABLED={rte}",
+                )
+            return _check_item(
+                "version_info_v120", "version_git", "WARN",
+                f"VERSION={VERSION}, REPLAY_TRAINING_AVAILABLE={rt_avail}, "
+                f"REPLAY_TRADE_EXECUTION_ENABLED={rte}",
+                warning="Expected VERSION=1.2.0 with REPLAY_TRAINING_AVAILABLE=True, "
+                        "REPLAY_TRADE_EXECUTION_ENABLED=False",
+            )
+        except Exception as exc:
+            return _check_item("version_info_v120", "version_git", "WARN", str(exc))
+
     # ----------------------------------------------------------------
     # Run
     # ----------------------------------------------------------------
@@ -2965,6 +3056,12 @@ class StableReleaseChecklistV060:
             self._check_governance_rollup_store_validation,
             self._check_governance_rollup_trade_execution_disabled,
             self._check_version_info_v119,
+            # v1.2.0 Replay Training UX Foundation
+            self._check_replay_import,
+            self._check_replay_timeline,
+            self._check_replay_future_firewall,
+            self._check_replay_trade_execution_disabled,
+            self._check_version_info_v120,
         ]
 
         for fn in checklist_groups:

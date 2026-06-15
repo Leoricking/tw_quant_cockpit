@@ -3,7 +3,7 @@
 > **[!] Research Only. Read Only. No Real Orders. Production Trading: BLOCKED.**
 > **[!] Not investment advice. REAL_ORDER_READY=False.**
 
-Current version: **v1.1.4** — Coverage Quality Gates (base: v1.1.3 Data Freshness Monitor) — **v1.0 Maintenance Line Complete**
+Current version: **v1.2.0** — Replay Training UX Foundation (base: v1.1.9 Data Governance Stable Rollup) — **v1.1 Data Governance Line Complete**
 
 ---
 
@@ -180,6 +180,19 @@ Current version: **v1.1.4** — Coverage Quality Gates (base: v1.1.3 Data Freshn
 | [tw_replay_training_cockpit.md](tw_replay_training_cockpit.md) | v0.6.3 | TW Replay Training Cockpit — enhanced GUI, Replay Control, Market View, Drill Table, Mistake Table, Marker Reason/Tags, AI Review panel |
 | [research_os_stable_release_v0.6.0.md](research_os_stable_release_v0.6.0.md) | v0.6.0 | Research OS Stable Release (capability matrix, 16-point checklist, release manifest, known limitations, GUI panel, 6 CLI commands) |
 | [stable_ux_polish_v0.6.1.md](stable_ux_polish_v0.6.1.md) | v0.6.1 | Stable UX Polish (CLI alias --type/--pack-type, ENV_LIMITED/NOT_GENERATED status, optional missing behavior, stable release pass criteria) |
+| [data_governance_stable_rollup_v1.1.9.md](data_governance_stable_rollup_v1.1.9.md) | v1.1.9 | Data Governance Stable Rollup (cross-module consistency, schema normalizer, store inventory/validator, recovery/migration, health aggregator, CLI/GUI/docs surface audits) |
+| [research_run_registry_v1.1.8.md](research_run_registry_v1.1.8.md) | v1.1.8 | Research Run Registry (run lifecycle, qualification levels, artifact catalog, lineage graph, duplicate detection, run comparator) |
+| [governance_alerts_daily_operations_v1.1.7.md](governance_alerts_daily_operations_v1.1.7.md) | v1.1.7 | Governance Alerts & Daily Operations (alert lifecycle, dedup, snooze, escalation, digests, checklists, notification preview) |
+| [data_governance_operations_dashboard_v1.1.6.md](data_governance_operations_dashboard_v1.1.6.md) | v1.1.6 | Data Governance Operations Dashboard (unified governance view, adapters, priority engine, action queue) |
+| [quality_gate_enforcement_audit_v1.1.5.md](quality_gate_enforcement_audit_v1.1.5.md) | v1.1.5 | Quality Gate Enforcement & Audit (run-level enforcement, symbol filter, snapshot builder, audit log, reproducibility hasher) |
+| [coverage_quality_gates_v1.1.4.md](coverage_quality_gates_v1.1.4.md) | v1.1.4 | Coverage Quality Gates (12 gates, override manager, FORMAL/OBSERVATIONAL/BLOCKED qualification) |
+| [data_freshness_monitor_v1.1.3.md](data_freshness_monitor_v1.1.3.md) | v1.1.3 | Data Freshness Monitor (freshness detector, SLA policy, source monitor, prioritizer, repair handoff) |
+| [coverage_repair_workflow_v1.1.2.md](coverage_repair_workflow_v1.1.2.md) | v1.1.2 | Coverage Repair Workflow (issue detector, repair planner, safe executor, repair store) |
+| [data_import_onboarding_v1.1.1.md](data_import_onboarding_v1.1.1.md) | v1.1.1 | Data Import UX & Batch Onboarding (file discovery, schema detector, validator, import planner, batch executor) |
+| [data_universe_expansion_v1.1.0.md](data_universe_expansion_v1.1.0.md) | v1.1.0 | Data Universe Expansion (tier registry, universe builder, coverage analyzer) |
+| [replay_training_ux_foundation_v1.2.0.md](replay_training_ux_foundation_v1.2.0.md) | v1.2.0 | Replay Training UX Foundation (PIT replay, future data firewall, session lifecycle, decision capture, annotation, summary) |
+| [replay_future_data_firewall.md](replay_future_data_firewall.md) | v1.2.0 | Replay Future Data Firewall (forbidden fields, date-based blocking, PIT context builder, CLI verification) |
+| [replay_training_operations_runbook.md](replay_training_operations_runbook.md) | v1.2.0 | Replay Training Operations Runbook (session creation, navigation, decisions, annotations, reports, troubleshooting) |
 
 ---
 
@@ -196,4 +209,4 @@ Current version: **v1.1.4** — Coverage Quality Gates (base: v1.1.3 Data Freshn
 
 ---
 
-*Generated for v1.0.6 Example Workflows & Templates.*
+*Updated for v1.2.0 Replay Training UX Foundation.*

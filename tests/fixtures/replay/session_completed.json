@@ -1,0 +1,20 @@
+{
+  "session_id": "RPL-TST001-20230102-COMP",
+  "current_date": "2023-12-29",
+  "current_index": 250,
+  "total_steps": 251,
+  "status": "COMPLETED",
+  "playback_speed": 1,
+  "last_action": "HOLD",
+  "last_decision_id": "DEC-FIXTURE002",
+  "completed": true,
+  "paused": false,
+  "updated_at": "2023-12-29T15:00:00+00:00",
+  "visible_from": "2023-01-02",
+  "visible_to": "2023-12-29",
+  "available_records": 251,
+  "qualification": "DEMO_ONLY",
+  "warnings": [],
+  "research_only": true,
+  "no_real_orders": true
+}

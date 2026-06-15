@@ -1455,4 +1455,42 @@ class IntelligenceStableChecklist:
                 suggested_fix="Run: python main.py governance-rollup-health",
             ))
 
+        # v1.2.0 Replay Training UX Foundation safety check
+        try:
+            from replay.replay_training_engine import ReplayTrainingEngine
+            import release.version_info as _vi_mod
+            replay_no_orders  = getattr(ReplayTrainingEngine, "NO_REAL_ORDERS", False)
+            replay_research   = getattr(ReplayTrainingEngine, "RESEARCH_ONLY", False)
+            replay_trade_exec = getattr(_vi_mod, "REPLAY_TRADE_EXECUTION_ENABLED", True)
+            replay_auto_exec  = getattr(_vi_mod, "REPLAY_AUTO_EXECUTION_ENABLED", True)
+
+            if (replay_no_orders is True and replay_research is True
+                    and replay_trade_exec is False and replay_auto_exec is False):
+                checks.append(_check(
+                    "replay_training_v120_safe", "stable_integration",
+                    "v1.2.0 replay_training_v120_safe",
+                    CHECK_PASS, SEV_LOW,
+                    "replay_training: NO_REAL_ORDERS=True, RESEARCH_ONLY=True, "
+                    "REPLAY_TRADE_EXECUTION_ENABLED=False, REPLAY_AUTO_EXECUTION_ENABLED=False.",
+                ))
+            else:
+                checks.append(_check(
+                    "replay_training_v120_safe", "stable_integration",
+                    "v1.2.0 replay_training_v120_safe",
+                    CHECK_WARN, SEV_LOW,
+                    f"replay_training safety flags: NO_REAL_ORDERS={replay_no_orders}, "
+                    f"RESEARCH_ONLY={replay_research}, "
+                    f"REPLAY_TRADE_EXECUTION_ENABLED={replay_trade_exec}, "
+                    f"REPLAY_AUTO_EXECUTION_ENABLED={replay_auto_exec}",
+                    suggested_fix="Ensure replay/replay_training_engine.py has correct v1.2.0 safety flags.",
+                ))
+        except Exception as exc:
+            checks.append(_check(
+                "replay_training_v120_safe", "stable_integration",
+                "v1.2.0 replay_training_v120_safe",
+                CHECK_WARN, SEV_LOW,
+                f"Could not verify replay_training v1.2.0 safety (optional): {exc}",
+                suggested_fix="Run: python main.py replay-health",
+            ))
+
         return checks

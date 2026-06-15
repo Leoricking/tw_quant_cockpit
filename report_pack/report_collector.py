@@ -172,6 +172,7 @@ _REPORT_PATTERNS = {
     # v0.6.0 new report types
     REPORT_REPLAY_TRAINING: [
         "reports/replay_training_report*.md",
+        "reports/replay_training_session_report_*.md",  # v1.2.0 session reports
         "reports/auto_report_center/*/replay_training.md",
         "reports/auto_report_center/*/replay_training/*.md",
         "reports/auto_report_center/*/replay_training/**/*.md",

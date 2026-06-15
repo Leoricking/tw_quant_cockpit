@@ -1325,6 +1325,47 @@ class ResearchCockpitStableChecklist:
         except Exception as exc:
             checks.append(_mk("stable_rollup_no_forbidden_actions", "governance_rollup", "WARN", str(exc)))
 
+        # v1.2.0 Replay Training UX Foundation checks
+        try:
+            from release.version_info import REPLAY_TRAINING_AVAILABLE as _rta
+            checks.append(_mk("replay_training_available", "replay_training",
+                              "PASS" if _rta else "FAIL",
+                              f"REPLAY_TRAINING_AVAILABLE={_rta}"))
+        except Exception as exc:
+            checks.append(_mk("replay_training_available", "replay_training", "WARN", str(exc)))
+
+        try:
+            from release.version_info import REPLAY_FUTURE_DATA_FIREWALL_AVAILABLE as _rff
+            checks.append(_mk("replay_future_data_firewall_available", "replay_training",
+                              "PASS" if _rff else "FAIL",
+                              f"REPLAY_FUTURE_DATA_FIREWALL_AVAILABLE={_rff}"))
+        except Exception as exc:
+            checks.append(_mk("replay_future_data_firewall_available", "replay_training", "WARN", str(exc)))
+
+        try:
+            from release.version_info import REPLAY_DECISION_CAPTURE_AVAILABLE as _rdc
+            checks.append(_mk("replay_decision_capture_available", "replay_training",
+                              "PASS" if _rdc else "FAIL",
+                              f"REPLAY_DECISION_CAPTURE_AVAILABLE={_rdc}"))
+        except Exception as exc:
+            checks.append(_mk("replay_decision_capture_available", "replay_training", "WARN", str(exc)))
+
+        try:
+            from release.version_info import REPLAY_TRADE_EXECUTION_ENABLED as _rte
+            checks.append(_mk("replay_trade_execution_disabled", "replay_training",
+                              "PASS" if not _rte else "FAIL",
+                              f"REPLAY_TRADE_EXECUTION_ENABLED={_rte} (must be False)"))
+        except Exception as exc:
+            checks.append(_mk("replay_trade_execution_disabled", "replay_training", "WARN", str(exc)))
+
+        try:
+            from replay.replay_training_engine import ReplayTrainingEngine
+            checks.append(_mk("replay_no_forbidden_actions", "replay_training",
+                              "PASS" if ReplayTrainingEngine.NO_REAL_ORDERS else "FAIL",
+                              f"ReplayTrainingEngine.NO_REAL_ORDERS={ReplayTrainingEngine.NO_REAL_ORDERS}"))
+        except Exception as exc:
+            checks.append(_mk("replay_no_forbidden_actions", "replay_training", "WARN", str(exc)))
+
         # Rebuild summary counts to include new checks
         total         = len(checks)
         pass_count    = sum(1 for c in checks if c["status"] == "PASS")

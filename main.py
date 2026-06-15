@@ -21282,7 +21282,521 @@ def _build_parser() -> argparse.ArgumentParser:
         help="Show leakage guard findings (v0.5.5). [!] Data Stabilization Only. No Real Orders.",
     )
 
+    # v1.2.0 Replay Training UX Foundation
+    subparsers.add_parser("replay-health", help="[v1.2.0] Replay training health check. Research Only.")
+
+    p_replay_create = subparsers.add_parser("replay-create", help="[v1.2.0] Create replay training session. Research Only.")
+    p_replay_create.add_argument("--stock", default=None, help="Symbol (e.g. 2454)")
+    p_replay_create.add_argument("--symbol", default=None, help="Symbol alias")
+    p_replay_create.add_argument("--start", default=None, help="Start date YYYY-MM-DD")
+    p_replay_create.add_argument("--end", default=None, help="End date YYYY-MM-DD")
+    p_replay_create.add_argument("--name", default=None, help="Session name")
+    p_replay_create.add_argument("--mode", default="real", choices=["real", "mock"], help="Data mode")
+
+    subparsers.add_parser("replay-sessions", help="[v1.2.0] List replay sessions. Research Only.")
+
+    p_replay_session = subparsers.add_parser("replay-session", help="[v1.2.0] Show session details. Research Only.")
+    p_replay_session.add_argument("--session-id", default=None, help="Session ID")
+
+    p_replay_resume = subparsers.add_parser("replay-resume", help="[v1.2.0] Resume replay session. Research Only.")
+    p_replay_resume.add_argument("--session-id", default=None, help="Session ID")
+
+    p_replay_current = subparsers.add_parser("replay-current", help="[v1.2.0] Show current snapshot. Research Only.")
+    p_replay_current.add_argument("--session-id", default=None, help="Session ID")
+
+    p_replay_next = subparsers.add_parser("replay-next", help="[v1.2.0] Step to next day. Research Only.")
+    p_replay_next.add_argument("--session-id", default=None, help="Session ID")
+
+    p_replay_previous = subparsers.add_parser("replay-previous", help="[v1.2.0] Step to previous day. Research Only.")
+    p_replay_previous.add_argument("--session-id", default=None, help="Session ID")
+
+    p_replay_jump = subparsers.add_parser("replay-jump", help="[v1.2.0] Jump to date. Research Only.")
+    p_replay_jump.add_argument("--session-id", default=None, help="Session ID")
+    p_replay_jump.add_argument("--date", default=None, help="Target date YYYY-MM-DD")
+
+    p_replay_play_step = subparsers.add_parser("replay-play-step", help="[v1.2.0] Play one step. Research Only.")
+    p_replay_play_step.add_argument("--session-id", default=None, help="Session ID")
+
+    p_replay_pause = subparsers.add_parser("replay-pause", help="[v1.2.0] Pause replay session. Research Only.")
+    p_replay_pause.add_argument("--session-id", default=None, help="Session ID")
+
+    p_replay_decision = subparsers.add_parser("replay-decision", help="[v1.2.0] Record simulation decision. SIMULATION ONLY.")
+    p_replay_decision.add_argument("--session-id", default=None, help="Session ID")
+    p_replay_decision.add_argument("--action", default=None, help="Action (WATCH/WAIT/ENTER/ADD/HOLD/REDUCE/EXIT/STOP/SKIP)")
+    p_replay_decision.add_argument("--confidence", type=int, default=50, help="Confidence 0-100")
+    p_replay_decision.add_argument("--reason", default=None, help="Comma-separated reasons")
+    p_replay_decision.add_argument("--notes", default=None, help="Notes")
+
+    p_replay_annotation = subparsers.add_parser("replay-annotation", help="[v1.2.0] Add annotation. Research Only.")
+    p_replay_annotation.add_argument("--session-id", default=None, help="Session ID")
+    p_replay_annotation.add_argument("--type", default="NOTE", help="Annotation type")
+    p_replay_annotation.add_argument("--title", default="", help="Title")
+    p_replay_annotation.add_argument("--content", default="", help="Content")
+
+    p_replay_summary = subparsers.add_parser("replay-summary", help="[v1.2.0] Show session summary. Research Only.")
+    p_replay_summary.add_argument("--session-id", default=None, help="Session ID")
+
+    p_replay_report = subparsers.add_parser("replay-report", help="[v1.2.0] Build session report. Research Only.")
+    p_replay_report.add_argument("--session-id", default=None, help="Session ID")
+
+    p_replay_duplicate = subparsers.add_parser("replay-duplicate", help="[v1.2.0] Duplicate session. Research Only.")
+    p_replay_duplicate.add_argument("--session-id", default=None, help="Session ID")
+    p_replay_duplicate.add_argument("--name", default=None, help="New session name")
+
+    p_replay_archive = subparsers.add_parser("replay-archive", help="[v1.2.0] Archive session (immutable). Research Only.")
+    p_replay_archive.add_argument("--session-id", default=None, help="Session ID")
+
+    p_replay_fw = subparsers.add_parser("replay-firewall-check", help="[v1.2.0] Firewall check on snapshot. Research Only.")
+    p_replay_fw.add_argument("--session-id", default=None, help="Session ID")
+
+    p_replay_pit = subparsers.add_parser("replay-point-in-time-check", help="[v1.2.0] PIT check on snapshot. Research Only.")
+    p_replay_pit.add_argument("--session-id", default=None, help="Session ID")
+
     return parser
+
+
+# ---------------------------------------------------------------------------
+# v1.2.0 Replay Training UX Foundation commands
+# ---------------------------------------------------------------------------
+
+def _get_replay_engine(args=None, mode=None):
+    """Return a ReplayTrainingEngine instance."""
+    from replay.replay_training_engine import ReplayTrainingEngine
+    _mode = mode or getattr(args, "mode", "real") or "real"
+    return ReplayTrainingEngine(repo_root=BASE_DIR, mode=_mode)
+
+
+def cmd_replay_health(args) -> None:
+    """Run replay training health check. [!] Research Only. No Real Orders."""
+    print("=" * 60)
+    print("  Replay Training Health Check v1.2.0")
+    print("  [!] Research Only | No Real Orders | Replay Training Only")
+    print("=" * 60)
+    try:
+        from replay.replay_health import ReplayTrainingHealthCheck
+        hc = ReplayTrainingHealthCheck()
+        results = hc.run()
+        hc.print_results(results)
+    except Exception as exc:
+        print(f"  [FAIL] Health check error: {exc}")
+        import traceback
+        traceback.print_exc()
+
+
+def cmd_replay_create(args) -> None:
+    """Create a new replay training session. [!] Research Only. Simulation Only."""
+    print("[!] Replay Training — Research Only | No Real Orders | Simulation Only")
+    symbol = getattr(args, "stock", None) or getattr(args, "symbol", None) or ""
+    start = getattr(args, "start", None) or ""
+    end = getattr(args, "end", None) or ""
+    name = getattr(args, "name", None) or ""
+    mode = getattr(args, "mode", "real") or "real"
+    if not symbol or not start or not end:
+        print("[ERROR] --stock, --start, --end are required")
+        return
+    try:
+        engine = _get_replay_engine(mode=mode)
+        state = engine.create_session(symbol, start, end, name=name or None)
+        if state:
+            print(f"  Session created: {state.session_id}")
+            print(f"  Symbol: {symbol} | {start} ~ {end} | Mode: {mode}")
+            print(f"  Status: {state.status} | Steps: {state.total_steps}")
+            print(f"  Research Only: {state.research_only} | No Real Orders: {state.no_real_orders}")
+        else:
+            print("[ERROR] Session creation failed")
+    except Exception as exc:
+        print(f"[ERROR] {exc}")
+        import traceback
+        traceback.print_exc()
+
+
+def cmd_replay_sessions(args) -> None:
+    """List all replay training sessions. [!] Research Only."""
+    print("[!] Replay Training Sessions — Research Only | No Real Orders")
+    try:
+        engine = _get_replay_engine(args)
+        sessions = engine.list_sessions()
+        if not sessions:
+            print("  No sessions found.")
+            return
+        print(f"  Sessions: {len(sessions)}")
+        for s in sessions:
+            sid = s.get("session_id", "")
+            name = s.get("session_name", "")
+            symbol = s.get("symbol", "")
+            mode = s.get("mode", "")
+            start = s.get("start_date", "")
+            end = s.get("end_date", "")
+            print(f"  [{sid}] {name} | {symbol} | {start}~{end} | mode={mode}")
+    except Exception as exc:
+        print(f"[ERROR] {exc}")
+
+
+def cmd_replay_session(args) -> None:
+    """Show details of a replay session. [!] Research Only."""
+    session_id = getattr(args, "session_id", None) or ""
+    if not session_id:
+        print("[ERROR] --session-id required")
+        return
+    try:
+        engine = _get_replay_engine(args)
+        config = engine._store.load_session_config(session_id)
+        state = engine._store.load_session_state(session_id)
+        if not config:
+            print(f"[ERROR] Session not found: {session_id}")
+            return
+        print(f"  Session: {session_id}")
+        print(f"  Name: {config.get('session_name','')}")
+        print(f"  Symbol: {config.get('symbol','')} | Mode: {config.get('mode','')}")
+        print(f"  Range: {config.get('start_date','')} ~ {config.get('end_date','')}")
+        if state:
+            print(f"  Status: {state.get('status','')} | Current: {state.get('current_date','')}")
+            print(f"  Progress: {state.get('current_index',0)}/{state.get('total_steps',0)}")
+            print(f"  Qualification: {state.get('qualification','')}")
+            print(f"  Research Only: {state.get('research_only',True)} | No Real Orders: {state.get('no_real_orders',True)}")
+    except Exception as exc:
+        print(f"[ERROR] {exc}")
+
+
+def cmd_replay_resume(args) -> None:
+    """Resume a paused replay session. [!] Research Only."""
+    session_id = getattr(args, "session_id", None) or ""
+    if not session_id:
+        print("[ERROR] --session-id required")
+        return
+    try:
+        engine = _get_replay_engine(args)
+        state = engine.resume_session(session_id)
+        if state:
+            print(f"  Session resumed: {session_id}")
+            print(f"  Status: {state.status} | Current: {state.current_date}")
+        else:
+            print(f"[ERROR] Could not resume session: {session_id}")
+    except Exception as exc:
+        print(f"[ERROR] {exc}")
+
+
+def cmd_replay_current(args) -> None:
+    """Show current snapshot for a replay session. [!] Research Only."""
+    session_id = getattr(args, "session_id", None) or ""
+    if not session_id:
+        print("[ERROR] --session-id required")
+        return
+    try:
+        engine = _get_replay_engine(args)
+        state_dict = engine._store.load_session_state(session_id)
+        if not state_dict:
+            print(f"[ERROR] Session not found: {session_id}")
+            return
+        current_date = state_dict.get("current_date", "")
+        print(f"  Session: {session_id}")
+        print(f"  Current Date: {current_date}")
+        print(f"  Status: {state_dict.get('status','')}")
+        print(f"  Qualification: {state_dict.get('qualification','')}")
+
+        snapshot = engine.current_snapshot(session_id)
+        if snapshot:
+            print(f"  PIT Verified: {snapshot.point_in_time_verified}")
+            print(f"  Future Blocked: {snapshot.future_data_blocked_count}")
+            print(f"  Available Sections: {', '.join(snapshot.available_sections)}")
+            if snapshot.indicator_data:
+                ind = snapshot.indicator_data
+                print(f"  MA5={ind.get('MA5')} MA20={ind.get('MA20')} MA60={ind.get('MA60')}")
+                print(f"  KD_K={ind.get('KD_K')} KD_D={ind.get('KD_D')}")
+                print(f"  MACD={ind.get('MACD')} RSI={ind.get('RSI')}")
+            if snapshot.timing_warnings:
+                print(f"  Warnings: {'; '.join(snapshot.timing_warnings)}")
+        else:
+            print("  [INFO] No snapshot available (data may not be present)")
+        print(f"  Research Only: True | No Real Orders: True")
+    except Exception as exc:
+        print(f"[ERROR] {exc}")
+        import traceback
+        traceback.print_exc()
+
+
+def cmd_replay_next(args) -> None:
+    """Step to next day in replay session. [!] Research Only."""
+    session_id = getattr(args, "session_id", None) or ""
+    if not session_id:
+        print("[ERROR] --session-id required")
+        return
+    try:
+        engine = _get_replay_engine(args)
+        state = engine.step_next(session_id)
+        if state:
+            print(f"  Stepped to: {state.current_date}")
+            print(f"  Progress: {state.current_index}/{state.total_steps}")
+            print(f"  Status: {state.status}")
+        else:
+            print(f"[ERROR] step_next failed for: {session_id}")
+    except Exception as exc:
+        print(f"[ERROR] {exc}")
+
+
+def cmd_replay_previous(args) -> None:
+    """Step to previous day in replay session. [!] Research Only."""
+    session_id = getattr(args, "session_id", None) or ""
+    if not session_id:
+        print("[ERROR] --session-id required")
+        return
+    try:
+        engine = _get_replay_engine(args)
+        state = engine.step_previous(session_id)
+        if state:
+            print(f"  Stepped back to: {state.current_date}")
+            print(f"  Progress: {state.current_index}/{state.total_steps}")
+        else:
+            print(f"[ERROR] step_previous failed for: {session_id}")
+    except Exception as exc:
+        print(f"[ERROR] {exc}")
+
+
+def cmd_replay_jump(args) -> None:
+    """Jump to a specific date in replay session. [!] Research Only."""
+    session_id = getattr(args, "session_id", None) or ""
+    date = getattr(args, "date", None) or ""
+    if not session_id or not date:
+        print("[ERROR] --session-id and --date required")
+        return
+    try:
+        engine = _get_replay_engine(args)
+        state = engine.jump(session_id, date)
+        if state:
+            print(f"  Jumped to: {state.current_date}")
+            print(f"  Progress: {state.current_index}/{state.total_steps}")
+        else:
+            print(f"[ERROR] jump failed for: {session_id}")
+    except Exception as exc:
+        print(f"[ERROR] {exc}")
+
+
+def cmd_replay_play_step(args) -> None:
+    """Play one step in replay session. [!] Research Only."""
+    session_id = getattr(args, "session_id", None) or ""
+    if not session_id:
+        print("[ERROR] --session-id required")
+        return
+    try:
+        engine = _get_replay_engine(args)
+        state = engine.play_step(session_id)
+        if state:
+            print(f"  Play step: {state.current_date} | Status: {state.status}")
+        else:
+            print(f"[ERROR] play_step failed")
+    except Exception as exc:
+        print(f"[ERROR] {exc}")
+
+
+def cmd_replay_pause(args) -> None:
+    """Pause replay session. [!] Research Only."""
+    session_id = getattr(args, "session_id", None) or ""
+    if not session_id:
+        print("[ERROR] --session-id required")
+        return
+    try:
+        engine = _get_replay_engine(args)
+        state = engine.pause(session_id)
+        if state:
+            print(f"  Session paused: {session_id}")
+            print(f"  Current: {state.current_date} | Status: {state.status}")
+        else:
+            print(f"[ERROR] pause failed")
+    except Exception as exc:
+        print(f"[ERROR] {exc}")
+
+
+def cmd_replay_decision(args) -> None:
+    """Record a simulation decision. [!] SIMULATION ONLY. No Real Orders."""
+    print("[!] SIMULATION DECISION ONLY — NO ORDER WILL BE SENT — Research Only")
+    session_id = getattr(args, "session_id", None) or ""
+    action = (getattr(args, "action", None) or "").upper()
+    if not session_id or not action:
+        print("[ERROR] --session-id and --action required")
+        return
+    try:
+        engine = _get_replay_engine(args)
+        reason_arg = getattr(args, "reason", None) or ""
+        reasons = [r.strip() for r in reason_arg.split(",") if r.strip()] if reason_arg else []
+        decision = engine.record_decision(
+            session_id, action,
+            confidence=int(getattr(args, "confidence", 50) or 50),
+            reasons=reasons,
+            notes=getattr(args, "notes", "") or "",
+        )
+        if decision:
+            print(f"  Decision recorded: {decision.decision_id}")
+            print(f"  Action: {decision.action} | Confidence: {decision.confidence}%")
+            print(f"  Simulation Only: {decision.simulation_decision_only}")
+            print(f"  Research Only: {decision.research_only} | No Real Orders: {decision.no_real_orders}")
+        else:
+            print("[ERROR] Decision recording failed")
+    except Exception as exc:
+        print(f"[ERROR] {exc}")
+        import traceback
+        traceback.print_exc()
+
+
+def cmd_replay_annotation(args) -> None:
+    """Add an annotation to replay session. [!] Research Only."""
+    session_id = getattr(args, "session_id", None) or ""
+    ann_type = (getattr(args, "type", None) or "NOTE").upper()
+    title = getattr(args, "title", None) or ""
+    content = getattr(args, "content", None) or ""
+    if not session_id:
+        print("[ERROR] --session-id required")
+        return
+    try:
+        engine = _get_replay_engine(args)
+        annotation = engine.add_annotation(
+            session_id,
+            annotation_type=ann_type,
+            title=title,
+            content=content,
+        )
+        if annotation:
+            print(f"  Annotation added: {annotation.annotation_id}")
+            print(f"  Type: {annotation.annotation_type} | Title: {annotation.title}")
+            print(f"  Date: {annotation.replay_date}")
+        else:
+            print("[ERROR] Annotation failed")
+    except Exception as exc:
+        print(f"[ERROR] {exc}")
+
+
+def cmd_replay_summary(args) -> None:
+    """Show session summary. [!] Research Only. No Future Performance Evaluation."""
+    session_id = getattr(args, "session_id", None) or ""
+    if not session_id:
+        print("[ERROR] --session-id required")
+        return
+    print(f"[!] Replay Session Summary — Research Only | No Future Performance Evaluation")
+    try:
+        engine = _get_replay_engine(args)
+        summary = engine.build_summary(session_id)
+        meta = summary.get("metadata", {})
+        progress = summary.get("timeline_progress", {})
+        dc = summary.get("decision_counts", {})
+        dist = summary.get("action_distribution", {})
+        print(f"  Session: {session_id}")
+        print(f"  Name: {meta.get('session_name','')}")
+        print(f"  Symbol: {meta.get('symbol','')} | Mode: {meta.get('mode','')}")
+        print(f"  Status: {meta.get('status','')} | Qualification: {summary.get('qualification','')}")
+        print(f"  Progress: {progress.get('current_index',0)}/{progress.get('total_steps',0)} ({progress.get('progress_pct',0)}%)")
+        print(f"  Decisions: {dc.get('total',0)} | Simulation Only: {dc.get('simulation_decision_only',True)}")
+        print(f"  Annotations: {summary.get('annotation_count',0)}")
+        if dist:
+            print(f"  Action Distribution: {dist}")
+        print(f"  Research Only: True | No Real Orders: True | No Future Performance Eval: True")
+    except Exception as exc:
+        print(f"[ERROR] {exc}")
+
+
+def cmd_replay_report(args) -> None:
+    """Build and save session report. [!] Research Only."""
+    session_id = getattr(args, "session_id", None) or ""
+    if not session_id:
+        print("[ERROR] --session-id required")
+        return
+    try:
+        from reports.replay_training_session_report import ReplayTrainingSessionReportBuilder
+        engine = _get_replay_engine(args)
+        summary = engine.build_summary(session_id)
+        builder = ReplayTrainingSessionReportBuilder(repo_root=BASE_DIR)
+        content = builder.build(session_id=session_id, summary=summary)
+        fpath = builder.save(content, session_id)
+        print(f"  Report saved: {fpath}")
+        print(f"  [!] Research Only | No Real Orders | Not Investment Advice")
+    except Exception as exc:
+        print(f"[ERROR] {exc}")
+        import traceback
+        traceback.print_exc()
+
+
+def cmd_replay_duplicate(args) -> None:
+    """Duplicate a replay session. [!] Research Only."""
+    session_id = getattr(args, "session_id", None) or ""
+    new_name = getattr(args, "name", None) or ""
+    if not session_id:
+        print("[ERROR] --session-id required")
+        return
+    try:
+        engine = _get_replay_engine(args)
+        new_state = engine.duplicate_session(session_id, new_name=new_name or None)
+        if new_state:
+            print(f"  Session duplicated: {new_state.session_id}")
+            print(f"  Original: {session_id}")
+            print(f"  Research Only: {new_state.research_only} | No Real Orders: {new_state.no_real_orders}")
+        else:
+            print("[ERROR] Duplicate failed")
+    except Exception as exc:
+        print(f"[ERROR] {exc}")
+
+
+def cmd_replay_archive(args) -> None:
+    """Archive a replay session (immutable). [!] Research Only."""
+    session_id = getattr(args, "session_id", None) or ""
+    if not session_id:
+        print("[ERROR] --session-id required")
+        return
+    try:
+        engine = _get_replay_engine(args)
+        state = engine.archive_session(session_id)
+        if state:
+            print(f"  Session archived: {session_id}")
+            print(f"  Status: {state.status} (ARCHIVED = immutable)")
+            print(f"  Research Only: True | No Real Orders: True")
+        else:
+            print("[ERROR] Archive failed")
+    except Exception as exc:
+        print(f"[ERROR] {exc}")
+
+
+def cmd_replay_firewall_check(args) -> None:
+    """Run future data firewall check on current snapshot. [!] Research Only."""
+    session_id = getattr(args, "session_id", None) or ""
+    if not session_id:
+        print("[ERROR] --session-id required")
+        return
+    try:
+        engine = _get_replay_engine(args)
+        result = engine.firewall_check(session_id)
+        print(f"  Firewall Check: {session_id}")
+        print(f"  Date: {result.get('replay_date','')}")
+        print(f"  Is Clean: {result.get('is_clean', False)}")
+        print(f"  Future Data Blocked: {result.get('future_data_blocked_count', 0)}")
+        print(f"  PIT Verified: {result.get('point_in_time_verified', False)}")
+        issues = result.get("issues", [])
+        if issues:
+            print(f"  Issues: {'; '.join(issues)}")
+        else:
+            print("  No firewall issues detected.")
+        print(f"  Research Only: True | No Real Orders: True")
+    except Exception as exc:
+        print(f"[ERROR] {exc}")
+
+
+def cmd_replay_point_in_time_check(args) -> None:
+    """Run point-in-time integrity check on current snapshot. [!] Research Only."""
+    session_id = getattr(args, "session_id", None) or ""
+    if not session_id:
+        print("[ERROR] --session-id required")
+        return
+    try:
+        engine = _get_replay_engine(args)
+        result = engine.point_in_time_check(session_id)
+        print(f"  PIT Check: {session_id}")
+        print(f"  Date: {result.get('replay_date','')}")
+        print(f"  PIT Verified: {result.get('point_in_time_verified', False)}")
+        print(f"  Future Blocked: {result.get('future_data_blocked_count', 0)}")
+        print(f"  Available: {', '.join(result.get('available_sections', []))}")
+        print(f"  Unavailable: {', '.join(result.get('unavailable_sections', []))}")
+        warnings = result.get("timing_warnings", [])
+        if warnings:
+            print(f"  Warnings: {'; '.join(warnings)}")
+        print(f"  Research Only: True | No Real Orders: True")
+    except Exception as exc:
+        print(f"[ERROR] {exc}")
 
 
 # ---------------------------------------------------------------------------
@@ -21621,6 +22135,26 @@ def main() -> None:
         "governance-alerts-report":       cmd_governance_alerts_report,
         "governance-alert-audit":         cmd_governance_alert_audit,
         "governance-alert-audit-verify":  cmd_governance_alert_audit_verify,
+        # v1.2.0 Replay Training UX Foundation
+        "replay-health":                  cmd_replay_health,
+        "replay-create":                  cmd_replay_create,
+        "replay-sessions":                cmd_replay_sessions,
+        "replay-session":                 cmd_replay_session,
+        "replay-resume":                  cmd_replay_resume,
+        "replay-current":                 cmd_replay_current,
+        "replay-next":                    cmd_replay_next,
+        "replay-previous":                cmd_replay_previous,
+        "replay-jump":                    cmd_replay_jump,
+        "replay-play-step":               cmd_replay_play_step,
+        "replay-pause":                   cmd_replay_pause,
+        "replay-decision":                cmd_replay_decision,
+        "replay-annotation":              cmd_replay_annotation,
+        "replay-summary":                 cmd_replay_summary,
+        "replay-report":                  cmd_replay_report,
+        "replay-duplicate":               cmd_replay_duplicate,
+        "replay-archive":                 cmd_replay_archive,
+        "replay-firewall-check":          cmd_replay_firewall_check,
+        "replay-point-in-time-check":     cmd_replay_point_in_time_check,
         # v1.1.9 Data Governance Stable Rollup
         "governance-rollup-health":          cmd_governance_rollup_health,
         "governance-rollup-run":             cmd_governance_rollup_run,

@@ -441,3 +441,12 @@ reports/data_governance_stable_rollup_report_*.md
 # v1.1.9 Governance rollup fixtures ARE committed (exception)
 !tests/fixtures/governance_rollup/*.json
 !tests/fixtures/governance_rollup/*.jsonl
+
+# v1.2.0 Replay Training UX Foundation (runtime outputs — never commit)
+data/replay_sessions/
+reports/replay_training_session_report_*.md
+
+# v1.2.0 Replay Training fixtures ARE committed (exception)
+!tests/fixtures/replay/*.json
+!tests/fixtures/replay/*.jsonl
+!tests/fixtures/replay/*.csv

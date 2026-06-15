@@ -4356,6 +4356,39 @@ class RegressionSuiteRegistry:
                     description="safety-scan all passes after v1.1.9",
                 ),
             ],
+            # v1.2.0 Replay Training UX Foundation
+            [
+                RegressionTestCase(
+                    test_id="rg_replay_health_v120",
+                    name="replay-health",
+                    suite=SUITE_QUICK,
+                    category="replay_training",
+                    command=["main.py", "replay-health"],
+                    timeout_seconds=60,
+                    required=False,
+                    description="replay-health runs without crash",
+                ),
+                RegressionTestCase(
+                    test_id="rg_replay_training_regression",
+                    name="test_replay_training_foundation_regression",
+                    suite=SUITE_FULL,
+                    category="replay_training",
+                    command=["-m", "pytest", "tests/test_replay_training_foundation_regression.py", "-v", "--tb=short"],
+                    timeout_seconds=120,
+                    required=False,
+                    description="Replay training foundation regression tests pass",
+                ),
+                RegressionTestCase(
+                    test_id="rg_safety_scan_v120",
+                    name="safety-scan --target all (v1.2.0)",
+                    suite=SUITE_RELEASE_GATE,
+                    category="replay_training",
+                    command=["main.py", "safety-scan", "--target", "all"],
+                    timeout_seconds=120,
+                    required=False,
+                    description="safety-scan all passes after v1.2.0",
+                ),
+            ],
         ]:
             for tc in suite_tests:
                 if tc.test_id not in seen:

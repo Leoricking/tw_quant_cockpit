@@ -1777,6 +1777,45 @@ class GUITabRegistry:
                 production_blocked=True,
                 notes="Added in v1.0.9 \u2014 Final Maintenance Rollup.",
             ),
+            # ----------------------------------------------------------------
+            # Group: replay_training (v1.2.0)
+            # ----------------------------------------------------------------
+            GUITabMetadata(
+                tab_id="replay_training",
+                tab_name="replay_training",
+                display_name="Replay Training",
+                group="replay_training",
+                priority="P1",
+                description=(
+                    "Replay Training UX Foundation v1.2.0 \u2014 "
+                    "step-through historical sessions, PIT firewall, simulation decisions."
+                ),
+                module_path="gui.replay_training_panel",
+                class_name="ReplayTrainingPanel",
+                available_flag="_REPLAY_TRAINING_AVAILABLE",
+                safety_level="RESEARCH_ONLY",
+                read_only=True,
+                no_real_orders=True,
+                production_blocked=True,
+                keywords=[
+                    "replay", "training", "historical", "step", "point-in-time",
+                    "firewall", "decision", "simulation", "annotation",
+                    "\u56de\u653e", "\u8a13\u7df4", "\u6a21\u64ec",
+                ],
+                aliases=["replay-training", "replay", "pit-replay"],
+                related_cli_commands=[
+                    "replay-health", "replay-create", "replay-sessions", "replay-session",
+                    "replay-current", "replay-next", "replay-previous", "replay-jump",
+                    "replay-decision", "replay-annotation", "replay-summary", "replay-report",
+                    "replay-firewall-check", "replay-point-in-time-check",
+                    "replay-duplicate", "replay-archive",
+                ],
+                report_types=["replay_training_session_report"],
+                maturity="STABLE",
+                default_visible=True,
+                favorite_default=False,
+                notes="Added in v1.2.0 \u2014 Replay Training UX Foundation.",
+            ),
         ]
         for tab in tabs:
             self._tabs[tab.tab_id] = tab

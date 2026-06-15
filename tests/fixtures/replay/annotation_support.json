@@ -1,0 +1,16 @@
+{
+  "annotation_id": "ANN-FIXTURE-SUPP001",
+  "session_id": "RPL-TST001-20230102-TEST",
+  "replay_date": "2023-06-15",
+  "annotation_type": "SUPPORT",
+  "title": "Key Support Level",
+  "content": "MA20 acting as strong support around 115.00",
+  "tags": ["support", "MA20", "test"],
+  "price_level": 115.00,
+  "start_date": "2023-06-01",
+  "end_date": "2023-07-01",
+  "style_metadata": {"color": "#00aa00", "line_style": "dashed"},
+  "hidden": false,
+  "created_at": "2023-06-15T10:00:00+00:00",
+  "updated_at": "2023-06-15T10:00:00+00:00"
+}

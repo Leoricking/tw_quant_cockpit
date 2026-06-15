@@ -1,5 +1,5 @@
 """
-release/version_info.py — Centralized version info for TW Quant Cockpit v1.1.9.
+release/version_info.py — Centralized version info for TW Quant Cockpit v1.2.0.
 [!] Research Only. No Real Orders. Production Trading: BLOCKED.
 [!] VALIDATED does not enable trading. Broker Execution Disabled.
 [!] Data Universe Expansion. Real Data Coverage Required.
@@ -18,6 +18,8 @@ release/version_info.py — Centralized version info for TW Quant Cockpit v1.1.9
 [!] Research Run Registry. Registry does NOT execute commands. Auto Rerun DISABLED. Trading DISABLED.
 [!] Data Governance Stable Rollup. No Auto Store Repair. No Auto Data Repair. No Auto Download.
 [!] No Auto Import. No Auto Research Execution. No Trade Execution. Not Investment Advice.
+[!] Replay Training UX Foundation. Replay Auto Scoring DISABLED. Replay Auto Execution DISABLED.
+[!] Replay Trade Execution DISABLED. Replay decisions are SIMULATION ONLY. Not Investment Advice.
 """
 from __future__ import annotations
 import logging
@@ -29,13 +31,13 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # ---------------------------------------------------------------------------
 # v1.1.9 module-level constants (Data Governance Stable Rollup)
 # ---------------------------------------------------------------------------
-VERSION                             = "1.1.9"
-RELEASE_NAME                        = "Data Governance Stable Rollup"
-BASE_RELEASE                        = "1.1.8 Research Run Registry"
-BASE_RELEASE_NAME                   = "Data Freshness Monitor"
+VERSION                             = "1.2.0"
+RELEASE_NAME                        = "Replay Training UX Foundation"
+BASE_RELEASE                        = "1.1.9 Data Governance Stable Rollup"
+BASE_RELEASE_NAME                   = "Data Governance Stable Rollup"
 MAINTENANCE_RELEASE                 = False
-RELEASE_STAGE                       = "STABLE"
-RELEASE_TRACK                       = "research"
+RELEASE_STAGE                       = "FOUNDATION"
+RELEASE_TRACK                       = "replay_training"
 TRADING_MODE                        = "research_only"
 REAL_ORDERS_ENABLED                 = False
 BROKER_EXECUTION_ENABLED            = False
@@ -145,6 +147,15 @@ AUTO_DATA_IMPORT_ENABLED                = False
 AUTO_RESEARCH_EXECUTION_ENABLED         = False
 AUTO_RESEARCH_RERUN_ENABLED             = False
 TRADE_EXECUTION_ENABLED                 = False
+# v1.2.0 new flags
+REPLAY_TRAINING_AVAILABLE               = True
+REPLAY_SESSION_AVAILABLE                = True
+REPLAY_DAILY_STEP_AVAILABLE             = True
+REPLAY_FUTURE_DATA_FIREWALL_AVAILABLE   = True
+REPLAY_DECISION_CAPTURE_AVAILABLE       = True
+REPLAY_AUTO_SCORING_ENABLED             = False
+REPLAY_AUTO_EXECUTION_ENABLED           = False
+REPLAY_TRADE_EXECUTION_ENABLED          = False
 
 
 class VersionInfo:
@@ -355,6 +366,14 @@ def print_version_info() -> None:
     print(f"  Auto Research Execution Enabled: {AUTO_RESEARCH_EXECUTION_ENABLED}")
     print(f"  Auto Research Rerun Enabled: {AUTO_RESEARCH_RERUN_ENABLED}")
     print(f"  Trade Execution Enabled: {TRADE_EXECUTION_ENABLED}")
+    print(f"  Replay Training Available: {REPLAY_TRAINING_AVAILABLE}")
+    print(f"  Replay Session Available: {REPLAY_SESSION_AVAILABLE}")
+    print(f"  Replay Daily Step Available: {REPLAY_DAILY_STEP_AVAILABLE}")
+    print(f"  Replay Future Data Firewall Available: {REPLAY_FUTURE_DATA_FIREWALL_AVAILABLE}")
+    print(f"  Replay Decision Capture Available: {REPLAY_DECISION_CAPTURE_AVAILABLE}")
+    print(f"  Replay Auto Scoring Enabled: {REPLAY_AUTO_SCORING_ENABLED}")
+    print(f"  Replay Auto Execution Enabled: {REPLAY_AUTO_EXECUTION_ENABLED}")
+    print(f"  Replay Trade Execution Enabled: {REPLAY_TRADE_EXECUTION_ENABLED}")
     print("=" * 60)
 
 

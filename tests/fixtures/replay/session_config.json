@@ -1,0 +1,22 @@
+{
+  "session_id": "RPL-TST001-20230102-TEST",
+  "session_name": "Fixture Test Session",
+  "symbol": "TST001",
+  "start_date": "2023-01-02",
+  "end_date": "2023-12-29",
+  "initial_date": null,
+  "mode": "mock",
+  "tier": "",
+  "timeframe": "DAILY",
+  "visible_history_days": 120,
+  "playback_speed": 1,
+  "strict_future_firewall": true,
+  "include_strategy_knowledge": true,
+  "include_quality_gate": true,
+  "include_freshness": true,
+  "include_fundamental": true,
+  "include_chips": true,
+  "created_at": "2023-01-02T09:00:00+00:00",
+  "research_only": true,
+  "no_real_orders": true
+}

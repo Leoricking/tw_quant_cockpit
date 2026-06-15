@@ -1,0 +1,21 @@
+{
+  "decision_id": "DEC-FIXTURE-ENTER001",
+  "session_id": "RPL-TST001-20230102-TEST",
+  "symbol": "TST001",
+  "replay_date": "2023-06-15",
+  "action": "ENTER",
+  "planned_price": 119.50,
+  "planned_quantity": 1000,
+  "planned_position_pct": 50.0,
+  "stop_price": 115.00,
+  "target_price": 130.00,
+  "confidence": 72,
+  "reasons": ["KD_GOLDEN_CROSS", "MA20_SUPPORT", "VOLUME_BREAKOUT"],
+  "notes": "Fixture test enter decision",
+  "tags": ["breakout", "test"],
+  "created_at": "2023-06-15T10:00:00+00:00",
+  "updated_at": "2023-06-15T10:00:00+00:00",
+  "research_only": true,
+  "no_real_orders": true,
+  "simulation_decision_only": true
+}

@@ -1,0 +1,6 @@
+{
+  "replay_date": "2023-06-15",
+  "future_rows_expected_blocked": 5,
+  "forbidden_fields_expected": ["forward_return_5", "hindsight_score"],
+  "note": "When filtering daily_with_future_rows.csv at replay_date=2023-12-29, rows 2024-01-02 to 2024-01-05 (4 rows) should be blocked. forward_return_5 and hindsight_score should be detected as forbidden fields."
+}

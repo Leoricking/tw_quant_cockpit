@@ -89,6 +89,19 @@
 | v1.1.7 | Governance Alerts & Daily Operations | Done |
 | v1.1.8 | Research Run Registry | Done |
 | v1.1.9 | Data Governance Stable Rollup | Done |
+| v1.2.0 | Replay Training UX Foundation | Done |
+
+---
+
+### v1.2.0 — Replay Training UX Foundation ✅
+
+- **Version:** 1.2.0 — Replay Training UX Foundation
+- **Type:** Point-in-time historical replay system for structured training. No real orders. Future data firewall. Simulation decisions only.
+- **Changes:** replay/ new files (replay_schema, replay_calendar, replay_data_source, future_data_firewall, point_in_time_context, replay_timeline, replay_session_store, replay_training_session, replay_training_engine, replay_decision, replay_annotations, replay_summary, replay_query, replay_health), gui/replay_session_dialog.py, gui/replay_decision_dialog.py, reports/replay_training_session_report.py, 19 new CLI commands (replay-health/create/sessions/session/resume/current/next/previous/jump/play-step/pause/decision/annotation/summary/report/duplicate/archive/firewall-check/point-in-time-check), GUI nav tab (replay_training), 3 new regression entries (SUITE_QUICK/FULL/RELEASE_GATE), 5 new governance alert types, tests/fixtures/replay/ (17 fixtures), tests/test_replay_training_foundation_regression.py (9 test classes), stable_release_checklist updates (5 checks), research_cockpit_stable_checklist updates (5 checks), version_info.py v1.2.0 flags, .gitignore updates, docs (replay_training_ux_foundation_v1.2.0.md, replay_future_data_firewall.md, replay_training_operations_runbook.md, release_notes_v1.2.md)
+- **Safety:** REPLAY_TRADE_EXECUTION_ENABLED=False, REPLAY_AUTO_EXECUTION_ENABLED=False, REPLAY_SIMULATION_DECISION_ONLY=True, Future Data Firewall enforced at data layer, Mock mode always DEMO_ONLY, No Real Orders, Broker Disabled, Production Trading BLOCKED
+
+**Next:**
+- v1.3.0: TBD
 
 ---
 

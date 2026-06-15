@@ -4,7 +4,7 @@
 >
 > **[!] v1: Real order execution is strictly prohibited. For research, simulation, and decision support only. Not investment advice.**
 
-**Current version: v1.1.9 — Data Governance Stable Rollup** (base: v1.1.8 Research Run Registry) — **v1.0 Maintenance Line Complete**
+**Current version: v1.2.0 — Replay Training UX Foundation** (base: v1.1.9 Data Governance Stable Rollup) — **v1.1 Data Governance Line Complete**
 
 ---
 

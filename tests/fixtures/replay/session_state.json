@@ -1,0 +1,20 @@
+{
+  "session_id": "RPL-TST001-20230102-TEST",
+  "current_date": "2023-06-15",
+  "current_index": 114,
+  "total_steps": 251,
+  "status": "PAUSED",
+  "playback_speed": 1,
+  "last_action": "WAIT",
+  "last_decision_id": "DEC-FIXTURE001",
+  "completed": false,
+  "paused": true,
+  "updated_at": "2023-06-15T10:00:00+00:00",
+  "visible_from": "2023-01-02",
+  "visible_to": "2023-06-15",
+  "available_records": 251,
+  "qualification": "DEMO_ONLY",
+  "warnings": [],
+  "research_only": true,
+  "no_real_orders": true
+}

@@ -389,3 +389,46 @@ python main.py quality-gate-report --tier research30
 See `docs/coverage_quality_gates_v1.1.4.md` for full documentation.
 
 **[!] Mock/Invalid/Stale/Conflict data cannot pass FORMAL gate. Override disabled by default. Gate does NOT enable trading. No Real Orders.**
+
+---
+
+## v1.2.0 — Replay Training UX Foundation
+
+v1.2.0 introduces a complete point-in-time historical replay system for structured training on past TW market data. Step through a historical period day-by-day, record simulation decisions at each step, annotate observations, and generate a structured training record — protected by a strict future data firewall.
+
+### Safety Guarantees
+
+| Safety Flag | Value |
+|---|---|
+| `REPLAY_TRADE_EXECUTION_ENABLED` | False |
+| `REPLAY_AUTO_EXECUTION_ENABLED` | False |
+| `REPLAY_SIMULATION_DECISION_ONLY` | True |
+| Future Data Firewall | Enforced at data layer |
+| Mock mode qualification | Always DEMO_ONLY |
+
+### v1.2.0 CLI Commands
+
+```
+python main.py replay-health
+python main.py replay-create --stock 2330 --start 2023-01-01 --end 2023-12-31 --name "2330 Training"
+python main.py replay-sessions
+python main.py replay-session --session-id <ID>
+python main.py replay-resume --session-id <ID>
+python main.py replay-current --session-id <ID>
+python main.py replay-next --session-id <ID>
+python main.py replay-previous --session-id <ID>
+python main.py replay-jump --session-id <ID> --date 2023-06-01
+python main.py replay-pause --session-id <ID>
+python main.py replay-decision --session-id <ID> --action WATCH --confidence 60 --reason "waiting"
+python main.py replay-annotation --session-id <ID> --type SUPPORT --title "Title" --content "Content"
+python main.py replay-summary --session-id <ID>
+python main.py replay-report --session-id <ID>
+python main.py replay-firewall-check --session-id <ID>
+python main.py replay-point-in-time-check --session-id <ID>
+python main.py replay-duplicate --session-id <ID> --name "Copy"
+python main.py replay-archive --session-id <ID>
+```
+
+See `docs/replay_training_ux_foundation_v1.2.0.md` and `docs/replay_training_operations_runbook.md` for full documentation.
+
+**[!] REPLAY_TRADE_EXECUTION_ENABLED=False. SIMULATION_DECISION_ONLY=True. Future Data Firewall enforced. No Real Orders.**

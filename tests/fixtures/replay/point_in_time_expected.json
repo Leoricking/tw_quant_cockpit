@@ -1,0 +1,7 @@
+{
+  "replay_date": "2023-06-15",
+  "expected_indicators": ["MA5", "MA10", "MA20", "MA60", "KD_K", "KD_D", "MACD", "RSI"],
+  "no_center_rolling": true,
+  "no_backward_fill": true,
+  "note": "All indicators must be computed using only data with date <= replay_date. Rolling windows must not use center=True. No backward fill for future values."
+}

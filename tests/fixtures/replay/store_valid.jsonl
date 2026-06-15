@@ -1,0 +1,3 @@
+{"session_id": "RPL-TST001-20230102-TEST", "event_type": "SESSION_CREATED", "replay_date": "2023-01-02", "event_id": "EVT-001", "created_at": "2023-01-02T09:00:00+00:00", "research_only": true, "no_real_orders": true}
+{"session_id": "RPL-TST001-20230102-TEST", "event_type": "DATE_CHANGED", "replay_date": "2023-01-03", "event_id": "EVT-002", "created_at": "2023-01-03T09:00:00+00:00", "research_only": true, "no_real_orders": true}
+{"session_id": "RPL-TST001-20230102-TEST", "event_type": "DATE_CHANGED", "replay_date": "2023-01-04", "event_id": "EVT-003", "created_at": "2023-01-04T09:00:00+00:00", "research_only": true, "no_real_orders": true}
