@@ -1,0 +1,21 @@
+{
+  "session_id": "RPL-2317-20220601-HIDDEN",
+  "session_name": "Hidden Session Test",
+  "symbol": "2317",
+  "start_date": "2022-01-03",
+  "end_date": "2022-03-31",
+  "mode": "real",
+  "research_only": true,
+  "no_real_orders": true,
+  "_state": {
+    "session_id": "RPL-2317-20220601-HIDDEN",
+    "status": "PAUSED",
+    "hidden": true,
+    "current_date": "2022-02-15",
+    "current_index": 30,
+    "total_steps": 60,
+    "qualification": "OBSERVATIONAL_ONLY",
+    "research_only": true,
+    "no_real_orders": true
+  }
+}

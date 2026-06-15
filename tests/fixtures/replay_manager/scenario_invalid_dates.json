@@ -1,0 +1,20 @@
+{
+  "scenario_id": "RSC-TEST-INVALID-DATES-001",
+  "scenario_name": "Invalid Dates Template",
+  "description": "Template with start_date after end_date",
+  "category": "FREE_PRACTICE",
+  "difficulty": "BEGINNER",
+  "symbol_selector": "FIXED",
+  "symbols": ["2454"],
+  "date_selector": "FIXED",
+  "start_date": "2023-12-31",
+  "end_date": "2023-01-01",
+  "strict_future_firewall": true,
+  "required_datasets": ["price"],
+  "allowed_actions": ["WATCH", "WAIT"],
+  "source": "user",
+  "version": "1",
+  "archived": false,
+  "research_only": true,
+  "no_real_orders": true
+}

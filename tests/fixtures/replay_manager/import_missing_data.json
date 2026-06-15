@@ -1,0 +1,31 @@
+{
+  "session_id": "RPL-IMPORT-MISSING-001",
+  "config": {
+    "session_id": "RPL-IMPORT-MISSING-001",
+    "session_name": "Imported Session with Missing Data",
+    "symbol": "9999",
+    "start_date": "2022-01-03",
+    "end_date": "2022-03-31",
+    "mode": "real",
+    "research_only": true,
+    "no_real_orders": true
+  },
+  "state": {
+    "session_id": "RPL-IMPORT-MISSING-001",
+    "status": "CREATED",
+    "current_date": "2022-01-03",
+    "current_index": 0,
+    "total_steps": 0,
+    "qualification": "DATA_UNAVAILABLE",
+    "research_only": true,
+    "no_real_orders": true
+  },
+  "export_version": "1.2.1",
+  "exported_at": "2026-06-16T00:00:00+00:00",
+  "original_local_path": "D:/code/Claude/tw_quant_cockpit",
+  "portable_metadata_version": 1,
+  "research_only": true,
+  "no_real_orders": true,
+  "import_does_not_auto_execute": true,
+  "_note": "Local price data for symbol 9999 is not available on this machine"
+}

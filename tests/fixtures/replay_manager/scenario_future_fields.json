@@ -1,0 +1,16 @@
+{
+  "scenario_id": "RSC-TEST-FUTURE-FIELDS-001",
+  "scenario_name": "Template with Future Fields (BLOCKED)",
+  "description": "Template that contains forbidden future_return field",
+  "category": "FREE_PRACTICE",
+  "difficulty": "BEGINNER",
+  "strict_future_firewall": true,
+  "required_datasets": ["price"],
+  "allowed_actions": ["WATCH", "WAIT"],
+  "future_return": 0.15,
+  "source": "user",
+  "version": "1",
+  "archived": false,
+  "research_only": true,
+  "no_real_orders": true
+}

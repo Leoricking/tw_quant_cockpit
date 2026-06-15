@@ -481,6 +481,47 @@ _POLICIES: Dict[str, dict] = {
         "suggested_commands": ["replay-point-in-time-check", "replay-firewall-check"],
         "permanent_suppress_allowed": True,
     },
+    # v1.2.1 Replay Scenario & Session Manager alert types
+    "REPLAY_SCENARIO_ARCHIVED_INSTANTIATION_BLOCKED": {
+        "severity": "MEDIUM", "priority": "P2",
+        "suppression_window": 1800,
+        "snooze_limit": 86400,
+        "safe_actions": ["REVIEW", "READ_REPORT"],
+        "suggested_commands": ["replay-scenario-restore", "replay-scenario-show", "replay-scenario-health"],
+        "permanent_suppress_allowed": False,
+    },
+    "REPLAY_SCENARIO_VALIDATION_FAILED": {
+        "severity": "HIGH", "priority": "P1",
+        "suppression_window": 0,
+        "snooze_limit": 86400,
+        "safe_actions": ["VERIFY_AUDIT", "REVIEW"],
+        "suggested_commands": ["replay-scenario-validate", "replay-scenario-health"],
+        "permanent_suppress_allowed": False,
+    },
+    "REPLAY_SCENARIO_STORE_CORRUPTED": {
+        "severity": "HIGH", "priority": "P1",
+        "suppression_window": 1800,
+        "snooze_limit": 86400,
+        "safe_actions": ["VERIFY_AUDIT", "REVIEW"],
+        "suggested_commands": ["replay-scenario-health", "replay-scenarios"],
+        "permanent_suppress_allowed": False,
+    },
+    "REPLAY_CHECKPOINT_FUTURE_FIELD_BLOCKED": {
+        "severity": "CRITICAL", "priority": "P0",
+        "suppression_window": 0,
+        "snooze_limit": None,
+        "safe_actions": ["VERIFY_AUDIT", "REVIEW"],
+        "suggested_commands": ["replay-scenario-health", "replay-session-checkpoints"],
+        "permanent_suppress_allowed": False,
+    },
+    "REPLAY_SESSION_LINEAGE_CYCLE_DETECTED": {
+        "severity": "HIGH", "priority": "P1",
+        "suppression_window": 0,
+        "snooze_limit": 86400,
+        "safe_actions": ["VERIFY_AUDIT", "REVIEW"],
+        "suggested_commands": ["replay-session-lineage", "replay-scenario-health"],
+        "permanent_suppress_allowed": False,
+    },
 }
 
 # Default fallback

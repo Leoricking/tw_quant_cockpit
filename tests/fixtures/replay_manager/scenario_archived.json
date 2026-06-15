@@ -1,0 +1,15 @@
+{
+  "scenario_id": "RSC-TEST-ARCHIVED-001",
+  "scenario_name": "Archived Template",
+  "description": "An archived template that cannot be instantiated",
+  "category": "FREE_PRACTICE",
+  "difficulty": "BEGINNER",
+  "strict_future_firewall": true,
+  "required_datasets": ["price"],
+  "allowed_actions": ["WATCH", "WAIT"],
+  "source": "user",
+  "version": "1",
+  "archived": true,
+  "research_only": true,
+  "no_real_orders": true
+}

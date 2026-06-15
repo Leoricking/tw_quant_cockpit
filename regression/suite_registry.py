@@ -4389,6 +4389,49 @@ class RegressionSuiteRegistry:
                     description="safety-scan all passes after v1.2.0",
                 ),
             ],
+            # v1.2.1 Replay Scenario & Session Manager
+            [
+                RegressionTestCase(
+                    test_id="rg_replay_scenario_health_v121",
+                    name="replay-scenario-health",
+                    suite=SUITE_QUICK,
+                    category="replay_scenario_session_manager",
+                    command=["main.py", "replay-scenario-health"],
+                    timeout_seconds=60,
+                    required=False,
+                    description="replay-scenario-health runs without crash",
+                ),
+                RegressionTestCase(
+                    test_id="rg_replay_scenarios_v121",
+                    name="replay-scenarios",
+                    suite=SUITE_QUICK,
+                    category="replay_scenario_session_manager",
+                    command=["main.py", "replay-scenarios"],
+                    timeout_seconds=60,
+                    required=False,
+                    description="replay-scenarios lists builtin templates",
+                ),
+                RegressionTestCase(
+                    test_id="rg_replay_scenario_session_manager_regression",
+                    name="test_replay_scenario_session_manager_regression",
+                    suite=SUITE_FULL,
+                    category="replay_scenario_session_manager",
+                    command=["-m", "pytest", "tests/test_replay_scenario_session_manager_regression.py", "-v", "--tb=short"],
+                    timeout_seconds=120,
+                    required=False,
+                    description="Replay scenario & session manager regression tests pass",
+                ),
+                RegressionTestCase(
+                    test_id="rg_safety_scan_v121",
+                    name="safety-scan --target all (v1.2.1)",
+                    suite=SUITE_RELEASE_GATE,
+                    category="replay_scenario_session_manager",
+                    command=["main.py", "safety-scan", "--target", "all"],
+                    timeout_seconds=120,
+                    required=False,
+                    description="safety-scan all passes after v1.2.1",
+                ),
+            ],
         ]:
             for tc in suite_tests:
                 if tc.test_id not in seen:

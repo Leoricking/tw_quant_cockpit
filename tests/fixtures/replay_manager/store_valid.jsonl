@@ -1,0 +1,3 @@
+{"session_id": "RPL-VALID-001", "session_name": "Valid Session 1", "symbol": "2454", "start_date": "2023-01-02", "end_date": "2023-03-31", "research_only": true, "no_real_orders": true}
+{"session_id": "RPL-VALID-002", "session_name": "Valid Session 2", "symbol": "2330", "start_date": "2022-07-01", "end_date": "2022-09-30", "research_only": true, "no_real_orders": true}
+{"session_id": "RPL-VALID-003", "session_name": "Valid Session 3", "symbol": "2317", "start_date": "2022-01-03", "end_date": "2022-06-30", "research_only": true, "no_real_orders": true}

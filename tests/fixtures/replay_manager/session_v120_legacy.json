@@ -1,0 +1,22 @@
+{
+  "session_id": "RPL-2454-20230102-LEGACY",
+  "session_name": "Legacy v1.2.0 Session",
+  "symbol": "2454",
+  "start_date": "2023-01-02",
+  "end_date": "2023-03-31",
+  "initial_date": null,
+  "mode": "real",
+  "tier": "",
+  "timeframe": "DAILY",
+  "visible_history_days": 120,
+  "playback_speed": 1,
+  "strict_future_firewall": true,
+  "include_strategy_knowledge": true,
+  "include_quality_gate": true,
+  "include_freshness": true,
+  "include_fundamental": true,
+  "include_chips": true,
+  "created_at": "2023-01-02T00:00:00+00:00",
+  "research_only": true,
+  "no_real_orders": true
+}

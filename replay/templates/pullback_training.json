@@ -1,0 +1,42 @@
+{
+  "scenario_id": "RSC-BUILTIN-PULLBACK-001",
+  "scenario_name": "Pullback Training",
+  "description": "Practice observing pullbacks to MA5/MA10/MA20 and waiting for strength to return. No correct answer provided.",
+  "category": "PULLBACK",
+  "difficulty": "INTERMEDIATE",
+  "objectives": [
+    "Identify pullback patterns using MA5/MA10/MA20",
+    "Practice patience and waiting for confirmation",
+    "Record entry conditions and wait reasons"
+  ],
+  "instructions": "Observe how price interacts with moving averages. Watch for volume changes during pullback. Note when price reclaims key MAs. Do NOT chase.",
+  "rules": [
+    "Wait for MA reclaim before entry",
+    "Record your observations daily",
+    "No standard answer — your process matters"
+  ],
+  "symbol_selector": "FREE",
+  "symbols": [],
+  "date_selector": "FREE",
+  "start_date": null,
+  "end_date": null,
+  "duration_days": null,
+  "initial_visible_history_days": 120,
+  "required_datasets": ["price"],
+  "optional_datasets": [],
+  "strict_future_firewall": true,
+  "include_quality_gate": true,
+  "include_strategy_knowledge": true,
+  "include_chips": false,
+  "include_fundamental": false,
+  "default_playback_speed": 1,
+  "allowed_actions": ["WATCH", "WAIT", "ENTER", "HOLD", "REDUCE", "EXIT", "STOP", "SKIP"],
+  "tags": ["intermediate", "pullback", "ma", "patience"],
+  "source": "builtin",
+  "version": "1",
+  "archived": false,
+  "created_at": "2026-06-16T00:00:00+00:00",
+  "updated_at": "2026-06-16T00:00:00+00:00",
+  "research_only": true,
+  "no_real_orders": true
+}

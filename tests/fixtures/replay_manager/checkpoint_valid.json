@@ -1,0 +1,24 @@
+{
+  "checkpoint_id": "RCP-TEST-001",
+  "session_id": "RPL-2454-20230601-ACTIVE",
+  "replay_date": "2023-03-15",
+  "timeline_index": 50,
+  "session_status": "PLAYING",
+  "state_snapshot": {
+    "session_id": "RPL-2454-20230601-ACTIVE",
+    "current_date": "2023-03-15",
+    "current_index": 50,
+    "total_steps": 120,
+    "status": "PLAYING"
+  },
+  "latest_decision_id": null,
+  "decision_count": 5,
+  "annotation_count": 2,
+  "warning_count": 0,
+  "point_in_time_verified": false,
+  "qualification": "OBSERVATIONAL_ONLY",
+  "created_at": "2026-06-16T00:00:00+00:00",
+  "note": "Test checkpoint",
+  "research_only": true,
+  "no_real_orders": true
+}

@@ -1,0 +1,27 @@
+{
+  "description": "Fixture representing a lineage cycle A->B->C->A",
+  "lineage": [
+    {
+      "session_id": "CYCLE-A",
+      "root_session_id": "CYCLE-A",
+      "parent_session_id": "CYCLE-C",
+      "relation_type": "FORK",
+      "lineage_depth": 0
+    },
+    {
+      "session_id": "CYCLE-B",
+      "root_session_id": "CYCLE-A",
+      "parent_session_id": "CYCLE-A",
+      "relation_type": "FORK",
+      "lineage_depth": 1
+    },
+    {
+      "session_id": "CYCLE-C",
+      "root_session_id": "CYCLE-A",
+      "parent_session_id": "CYCLE-B",
+      "relation_type": "FORK",
+      "lineage_depth": 2
+    }
+  ],
+  "_note": "CYCLE-A has parent CYCLE-C which creates A->B->C->A cycle"
+}

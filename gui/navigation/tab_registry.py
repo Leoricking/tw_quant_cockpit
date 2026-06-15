@@ -1816,6 +1816,75 @@ class GUITabRegistry:
                 favorite_default=False,
                 notes="Added in v1.2.0 \u2014 Replay Training UX Foundation.",
             ),
+            # ----------------------------------------------------------------
+            # replay_scenario_library (v1.2.1)
+            # ----------------------------------------------------------------
+            GUITabMetadata(
+                tab_id="replay_scenario_library",
+                tab_name="replay_scenario_library",
+                display_name="Scenario Library",
+                group="replay_training",
+                priority="P1",
+                description="Replay Scenario Library \u2014 scenario templates, validation, batch preview",
+                module_path="gui.replay_scenario_library_panel",
+                class_name="ReplayScenarioLibraryPanel",
+                safety_level="RESEARCH_ONLY",
+                read_only=True,
+                no_real_orders=True,
+                production_blocked=True,
+                keywords=[
+                    "scenario", "library", "template", "replay",
+                    "pullback", "breakout", "free practice", "risk control",
+                    "\u56de\u653e\u5834\u666f", "\u5834\u666f\u5eab", "\u6a21\u677f",
+                    "\u56de\u64a4\u8a13\u7df4", "\u7a81\u7834", "\u56de\u6d4b",
+                ],
+                related_cli_commands=[
+                    "replay-scenario-health", "replay-scenarios", "replay-scenario",
+                    "replay-scenario-search", "replay-scenario-validate",
+                    "replay-scenario-archive", "replay-scenario-restore",
+                    "replay-scenario-export", "replay-scenario-report",
+                ],
+                report_types=["replay_scenario_library_report"],
+                maturity="STABLE",
+                default_visible=True,
+                favorite_default=False,
+                notes="Added in v1.2.1 \u2014 Replay Scenario & Session Manager.",
+            ),
+            # ----------------------------------------------------------------
+            # replay_session_manager (v1.2.1)
+            # ----------------------------------------------------------------
+            GUITabMetadata(
+                tab_id="replay_session_manager",
+                tab_name="replay_session_manager",
+                display_name="Session Manager",
+                group="replay_training",
+                priority="P1",
+                description="Replay Session Manager \u2014 session lifecycle, checkpoints, fork, lineage, compare",
+                module_path="gui.replay_session_manager_panel",
+                class_name="ReplaySessionManagerPanel",
+                safety_level="RESEARCH_ONLY",
+                read_only=True,
+                no_real_orders=True,
+                production_blocked=True,
+                keywords=[
+                    "session", "manager", "checkpoint", "fork", "lineage",
+                    "compare", "archive", "restore", "replay",
+                    "\u56de\u653e\u5834\u666f", "\u6aa2\u67e5\u9ede", "\u5c64\u7d1a", "\u5c0f\u7bc0",
+                    "\u5f37\u5236\u8868", "\u7ba1\u7406\u5668", "\u5c08\u6848",
+                ],
+                related_cli_commands=[
+                    "replay-session-manager-health", "replay-session-search",
+                    "replay-session-filter", "replay-session-checkpoint",
+                    "replay-session-fork", "replay-session-compare",
+                    "replay-session-lineage", "replay-session-export",
+                    "replay-session-manager-report",
+                ],
+                report_types=["replay_session_manager_report"],
+                maturity="STABLE",
+                default_visible=True,
+                favorite_default=False,
+                notes="Added in v1.2.1 \u2014 Replay Scenario & Session Manager.",
+            ),
         ]
         for tab in tabs:
             self._tabs[tab.tab_id] = tab

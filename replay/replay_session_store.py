@@ -157,6 +157,51 @@ class ReplaySessionStore:
                 seen[sid] = item
         return list(seen.values())
 
+    # ------------------------------------------------------------------
+    # v1.2.1 new stores
+    # ------------------------------------------------------------------
+
+    def append_lineage(self, entry) -> None:
+        """Append lineage entry to session_lineage.jsonl."""
+        self._ensure_dirs()
+        data = entry.to_dict() if hasattr(entry, "to_dict") else entry
+        self._append_jsonl(self.base_dir / "session_lineage.jsonl", data)
+
+    def append_registry(self, entry) -> None:
+        """Append registry entry to session_registry.jsonl."""
+        self._ensure_dirs()
+        self._append_jsonl(self.base_dir / "session_registry.jsonl", entry)
+
+    def append_tag(self, entry) -> None:
+        """Append tag entry to session_tags.jsonl."""
+        self._ensure_dirs()
+        self._append_jsonl(self.base_dir / "session_tags.jsonl", entry)
+
+    def append_checkpoint(self, checkpoint) -> None:
+        """Append checkpoint to checkpoints.jsonl."""
+        self._ensure_dirs()
+        data = checkpoint.to_dict() if hasattr(checkpoint, "to_dict") else checkpoint
+        self._append_jsonl(self.base_dir / "checkpoints.jsonl", data)
+
+    def load_lineage_entries(self):
+        return self._load_jsonl(self.base_dir / "session_lineage.jsonl")
+
+    def load_registry_entries(self):
+        return self._load_jsonl(self.base_dir / "session_registry.jsonl")
+
+    def load_checkpoints_index(self):
+        return self._load_jsonl(self.base_dir / "checkpoints.jsonl")
+
+    def ensure_export_dir(self):
+        d = self.base_dir / "session_exports"
+        d.mkdir(parents=True, exist_ok=True)
+        return d
+
+    def ensure_compare_dir(self):
+        d = self.base_dir / "session_compare"
+        d.mkdir(parents=True, exist_ok=True)
+        return d
+
     def rebuild_index(self) -> int:
         """Rebuild sessions.jsonl from all session_config.json files."""
         self._ensure_dirs()

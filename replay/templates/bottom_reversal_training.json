@@ -1,0 +1,43 @@
+{
+  "scenario_id": "RSC-BUILTIN-BOTTOM-REVERSAL-001",
+  "scenario_name": "Bottom Reversal Training",
+  "description": "Practice observing breakdown recovery patterns (bottom reversal) without subsequent return data.",
+  "category": "BOTTOM_REVERSAL",
+  "difficulty": "ADVANCED",
+  "objectives": [
+    "Identify oversold conditions using KD/RSI",
+    "Observe divergence patterns at potential lows",
+    "Record daily assessment of recovery signs"
+  ],
+  "instructions": "Observe price at multi-week or multi-month lows. Watch for volume drying up, then increasing on up days. Record divergence observations. Does NOT provide subsequent return data.",
+  "rules": [
+    "Record daily volume pattern observations",
+    "Note divergence between price and momentum indicators",
+    "No hindsight allowed",
+    "No subsequent return data provided"
+  ],
+  "symbol_selector": "FREE",
+  "symbols": [],
+  "date_selector": "FREE",
+  "start_date": null,
+  "end_date": null,
+  "duration_days": null,
+  "initial_visible_history_days": 120,
+  "required_datasets": ["price"],
+  "optional_datasets": [],
+  "strict_future_firewall": true,
+  "include_quality_gate": true,
+  "include_strategy_knowledge": true,
+  "include_chips": false,
+  "include_fundamental": false,
+  "default_playback_speed": 1,
+  "allowed_actions": ["WATCH", "WAIT", "ENTER", "HOLD", "REDUCE", "EXIT", "STOP", "SKIP"],
+  "tags": ["advanced", "bottom-reversal", "divergence", "oversold"],
+  "source": "builtin",
+  "version": "1",
+  "archived": false,
+  "created_at": "2026-06-16T00:00:00+00:00",
+  "updated_at": "2026-06-16T00:00:00+00:00",
+  "research_only": true,
+  "no_real_orders": true
+}

@@ -39,7 +39,26 @@ class ReplayTrainingHealthCheck:
         results["decision_simulation_only"] = self._check_decision_simulation_only()
         results["no_forbidden_actions"] = self._check_no_forbidden_actions()
         results["safety_flags"] = self._check_safety_flags()
+        # v1.2.1 scenario & session manager health
+        results["v121_scenario_session_manager"] = self._check_v121_scenario_session_manager()
         return results
+
+    def _check_v121_scenario_session_manager(self) -> Tuple[str, str]:
+        """Check v1.2.1 scenario & session manager health."""
+        try:
+            from replay.session_manager_health import ReplayScenarioSessionManagerHealthCheck
+            hc = ReplayScenarioSessionManagerHealthCheck()
+            sub_results = hc.run()
+            overall = hc.overall_status(sub_results)
+            failed = [(k, v[1]) for k, v in sub_results.items() if v[0] == "FAIL"]
+            if overall == "PASS":
+                return ("PASS", f"v1.2.1 scenario & session manager: all {len(sub_results)} checks passed")
+            elif overall == "WARN":
+                return ("WARN", f"v1.2.1 scenario & session manager: warnings in {[k for k,_ in failed]}")
+            else:
+                return ("FAIL", f"v1.2.1 scenario & session manager failures: {[f'{k}: {m}' for k, m in failed[:3]]}")
+        except Exception as exc:
+            return ("FAIL", f"v1.2.1 scenario & session manager check failed: {exc}")
 
     def _check_imports(self) -> Tuple[str, str]:
         """Check all replay submodule imports."""

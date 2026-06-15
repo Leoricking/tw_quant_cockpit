@@ -1366,6 +1366,46 @@ class ResearchCockpitStableChecklist:
         except Exception as exc:
             checks.append(_mk("replay_no_forbidden_actions", "replay_training", "WARN", str(exc)))
 
+        # v1.2.1 Replay Scenario & Session Manager checks
+        try:
+            from replay.scenario_library import ReplayScenarioLibrary
+            checks.append(_mk("replay_scenario_library_available", "replay_scenario_session_manager",
+                              "PASS", "ReplayScenarioLibrary importable"))
+        except Exception as exc:
+            checks.append(_mk("replay_scenario_library_available", "replay_scenario_session_manager", "WARN", str(exc)))
+
+        try:
+            from replay.session_manager import ReplaySessionManager
+            checks.append(_mk("replay_session_manager_available", "replay_scenario_session_manager",
+                              "PASS", "ReplaySessionManager importable"))
+        except Exception as exc:
+            checks.append(_mk("replay_session_manager_available", "replay_scenario_session_manager", "WARN", str(exc)))
+
+        try:
+            from replay.session_checkpoint import ReplayCheckpointManager
+            checks.append(_mk("replay_checkpoint_available", "replay_scenario_session_manager",
+                              "PASS", "ReplayCheckpointManager importable"))
+        except Exception as exc:
+            checks.append(_mk("replay_checkpoint_available", "replay_scenario_session_manager", "WARN", str(exc)))
+
+        try:
+            from release.version_info import REPLAY_SCENARIO_LIBRARY_AVAILABLE, REPLAY_BATCH_SESSION_CREATION_AVAILABLE
+            ok = REPLAY_SCENARIO_LIBRARY_AVAILABLE and REPLAY_BATCH_SESSION_CREATION_AVAILABLE
+            checks.append(_mk("replay_scenario_flags_v121", "replay_scenario_session_manager",
+                              "PASS" if ok else "FAIL",
+                              f"REPLAY_SCENARIO_LIBRARY_AVAILABLE={REPLAY_SCENARIO_LIBRARY_AVAILABLE}"))
+        except Exception as exc:
+            checks.append(_mk("replay_scenario_flags_v121", "replay_scenario_session_manager", "WARN", str(exc)))
+
+        try:
+            from release.version_info import REPLAY_TRADE_EXECUTION_ENABLED, REPLAY_AUTO_DECISION_ENABLED
+            safe = not REPLAY_TRADE_EXECUTION_ENABLED and not REPLAY_AUTO_DECISION_ENABLED
+            checks.append(_mk("replay_scenario_trade_exec_disabled_v121", "replay_scenario_session_manager",
+                              "PASS" if safe else "FAIL",
+                              f"REPLAY_TRADE_EXECUTION_ENABLED={REPLAY_TRADE_EXECUTION_ENABLED}, REPLAY_AUTO_DECISION_ENABLED={REPLAY_AUTO_DECISION_ENABLED}"))
+        except Exception as exc:
+            checks.append(_mk("replay_scenario_trade_exec_disabled_v121", "replay_scenario_session_manager", "WARN", str(exc)))
+
         # Rebuild summary counts to include new checks
         total         = len(checks)
         pass_count    = sum(1 for c in checks if c["status"] == "PASS")

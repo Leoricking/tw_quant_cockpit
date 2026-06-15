@@ -21352,6 +21352,80 @@ def _build_parser() -> argparse.ArgumentParser:
     p_replay_pit = subparsers.add_parser("replay-point-in-time-check", help="[v1.2.0] PIT check on snapshot. Research Only.")
     p_replay_pit.add_argument("--session-id", default=None, help="Session ID")
 
+    # v1.2.1 Replay Scenario & Session Manager
+    subparsers.add_parser("replay-scenario-health", help="[v1.2.1] Scenario & session manager health check. Research Only.")
+    subparsers.add_parser("replay-session-manager-health", help="[v1.2.1] Alias for replay-scenario-health. Research Only.")
+
+    subparsers.add_parser("replay-scenarios", help="[v1.2.1] List all scenario templates. Research Only.")
+
+    p_replay_scenario_search = subparsers.add_parser("replay-scenario-search", help="[v1.2.1] Search scenario templates. Research Only.")
+    p_replay_scenario_search.add_argument("--query", default="", help="Search query")
+    p_replay_scenario_search.add_argument("--category", default=None, help="Filter by category")
+
+    p_replay_scenario_show = subparsers.add_parser("replay-scenario-show", help="[v1.2.1] Show scenario template detail. Research Only.")
+    p_replay_scenario_show.add_argument("--scenario-id", default=None, help="Scenario ID")
+
+    p_replay_scenario_validate = subparsers.add_parser("replay-scenario-validate", help="[v1.2.1] Validate a scenario template. Research Only.")
+    p_replay_scenario_validate.add_argument("--scenario-id", default=None, help="Scenario ID")
+
+    p_replay_scenario_create = subparsers.add_parser("replay-scenario-create", help="[v1.2.1] Create a new scenario template. Research Only.")
+    p_replay_scenario_create.add_argument("--name", default=None, help="Scenario name")
+    p_replay_scenario_create.add_argument("--category", default="FREE_PRACTICE", help="Category")
+    p_replay_scenario_create.add_argument("--difficulty", default="BEGINNER", help="Difficulty")
+    p_replay_scenario_create.add_argument("--description", default="", help="Description")
+
+    p_replay_scenario_archive = subparsers.add_parser("replay-scenario-archive", help="[v1.2.1] Archive a scenario template. Research Only.")
+    p_replay_scenario_archive.add_argument("--scenario-id", default=None, help="Scenario ID")
+
+    p_replay_scenario_restore = subparsers.add_parser("replay-scenario-restore", help="[v1.2.1] Restore archived scenario template. Research Only.")
+    p_replay_scenario_restore.add_argument("--scenario-id", default=None, help="Scenario ID")
+
+    p_replay_scenario_duplicate = subparsers.add_parser("replay-scenario-duplicate", help="[v1.2.1] Duplicate a scenario template. Research Only.")
+    p_replay_scenario_duplicate.add_argument("--scenario-id", default=None, help="Scenario ID")
+    p_replay_scenario_duplicate.add_argument("--name", default=None, help="New scenario name")
+
+    p_replay_session_create_from = subparsers.add_parser("replay-session-create-from-scenario", help="[v1.2.1] Create session from scenario template. Research Only.")
+    p_replay_session_create_from.add_argument("--scenario-id", default=None, help="Scenario ID")
+    p_replay_session_create_from.add_argument("--stock", default=None, help="Symbol (e.g. 2454)")
+    p_replay_session_create_from.add_argument("--start", default=None, help="Start date YYYY-MM-DD")
+    p_replay_session_create_from.add_argument("--end", default=None, help="End date YYYY-MM-DD")
+
+    p_replay_session_search = subparsers.add_parser("replay-session-search", help="[v1.2.1] Search sessions. Research Only.")
+    p_replay_session_search.add_argument("--query", default="", help="Search query")
+    p_replay_session_search.add_argument("--symbol", default=None, help="Filter by symbol")
+    p_replay_session_search.add_argument("--status", default=None, help="Filter by status")
+
+    p_replay_session_checkpoint = subparsers.add_parser("replay-session-checkpoint", help="[v1.2.1] Create a checkpoint. Research Only.")
+    p_replay_session_checkpoint.add_argument("--session-id", default=None, help="Session ID")
+    p_replay_session_checkpoint.add_argument("--note", default="", help="Checkpoint note")
+
+    p_replay_session_checkpoints = subparsers.add_parser("replay-session-checkpoints", help="[v1.2.1] List checkpoints. Research Only.")
+    p_replay_session_checkpoints.add_argument("--session-id", default=None, help="Session ID")
+
+    p_replay_session_fork = subparsers.add_parser("replay-session-fork", help="[v1.2.1] Fork a session. Research Only.")
+    p_replay_session_fork.add_argument("--session-id", default=None, help="Session ID")
+    p_replay_session_fork.add_argument("--checkpoint-id", default=None, help="Fork from checkpoint ID")
+    p_replay_session_fork.add_argument("--name", default=None, help="New session name")
+
+    p_replay_session_compare = subparsers.add_parser("replay-session-compare", help="[v1.2.1] Compare two sessions. Research Only. No future performance.")
+    p_replay_session_compare.add_argument("--session-id-a", default=None, help="Session A ID")
+    p_replay_session_compare.add_argument("--session-id-b", default=None, help="Session B ID")
+
+    p_replay_session_lineage = subparsers.add_parser("replay-session-lineage", help="[v1.2.1] Show session lineage. Research Only.")
+    p_replay_session_lineage.add_argument("--session-id", default=None, help="Session ID")
+
+    p_replay_batch_preview = subparsers.add_parser("replay-batch-preview", help="[v1.2.1] Preview batch session creation. Research Only.")
+    p_replay_batch_preview.add_argument("--scenario-id", default=None, help="Scenario ID")
+    p_replay_batch_preview.add_argument("--symbols", default="", help="Comma-separated symbols")
+    p_replay_batch_preview.add_argument("--max-sessions", type=int, default=50, help="Max sessions")
+
+    p_replay_batch_create = subparsers.add_parser("replay-batch-create", help="[v1.2.1] Batch create sessions. BLOCKED without --allow-write. Research Only.")
+    p_replay_batch_create.add_argument("--scenario-id", default=None, help="Scenario ID")
+    p_replay_batch_create.add_argument("--symbols", default="", help="Comma-separated symbols")
+    p_replay_batch_create.add_argument("--max-sessions", type=int, default=50, help="Max sessions")
+    p_replay_batch_create.add_argument("--allow-write", action="store_true", default=False, help="Allow writing sessions (required to create sessions)")
+    p_replay_batch_create.add_argument("--execute", action="store_true", default=False, help="Preview execution (does NOT grant write permission; use --allow-write)")
+
     return parser
 
 
@@ -21800,6 +21874,501 @@ def cmd_replay_point_in_time_check(args) -> None:
 
 
 # ---------------------------------------------------------------------------
+# v1.2.1 Replay Scenario & Session Manager commands
+# ---------------------------------------------------------------------------
+
+def _get_session_manager(repo_root=None):
+    """Return a ReplaySessionManager instance."""
+    from replay.session_manager import ReplaySessionManager
+    return ReplaySessionManager(repo_root=repo_root or BASE_DIR)
+
+
+def _get_scenario_library(repo_root=None):
+    """Return a ReplayScenarioLibrary instance."""
+    from replay.scenario_library import ReplayScenarioLibrary
+    lib = ReplayScenarioLibrary(repo_root=repo_root or BASE_DIR)
+    lib._ensure_builtins()
+    return lib
+
+
+def _get_checkpoint_manager(repo_root=None):
+    """Return a ReplayCheckpointManager instance."""
+    from replay.session_checkpoint import ReplayCheckpointManager
+    from replay.replay_session_store import ReplaySessionStore
+    store = ReplaySessionStore(repo_root=repo_root or BASE_DIR)
+    return ReplayCheckpointManager(store=store, repo_root=repo_root or BASE_DIR)
+
+
+def cmd_replay_scenario_health(args) -> None:
+    """Run replay scenario & session manager health check. [!] Research Only."""
+    print("=" * 60)
+    print("  Replay Scenario & Session Manager Health Check v1.2.1")
+    print("  [!] Research Only | No Real Orders | Replay Training Only")
+    print("=" * 60)
+    try:
+        from replay.session_manager_health import ReplayScenarioSessionManagerHealthCheck
+        hc = ReplayScenarioSessionManagerHealthCheck()
+        results = hc.run()
+        any_fail = False
+        for check, (status, msg) in results.items():
+            marker = "[PASS]" if status == "PASS" else f"[{status}]"
+            print(f"  {marker} {check}: {msg}")
+            if status in ("FAIL", "BLOCKED"):
+                any_fail = True
+        print("-" * 60)
+        overall = "FAIL" if any_fail else "PASS"
+        print(f"  Overall: {overall} | {len(results)} checks")
+        print(f"  [!] Research Only | No Real Orders | Scenario templates NEVER contain future answers")
+    except Exception as exc:
+        print(f"  [FAIL] Health check error: {exc}")
+        import traceback
+        traceback.print_exc()
+
+
+def cmd_replay_scenarios(args) -> None:
+    """List all scenario templates. [!] Research Only."""
+    print("[!] Replay Scenario Library — Research Only | No Real Orders")
+    try:
+        lib = _get_scenario_library()
+        templates = lib.list_templates(include_archived=False)
+        if not templates:
+            print("  No scenario templates found.")
+            return
+        print(f"  Found {len(templates)} active scenario(s):")
+        for t in templates:
+            print(f"    {t.get('scenario_id','?')} | {t.get('scenario_name','?')} | "
+                  f"{t.get('category','?')} | {t.get('difficulty','?')} | source={t.get('source','?')}")
+    except Exception as exc:
+        print(f"[ERROR] {exc}")
+        import traceback
+        traceback.print_exc()
+
+
+def cmd_replay_scenario_search(args) -> None:
+    """Search scenario templates. [!] Research Only."""
+    query = getattr(args, "query", "") or ""
+    category = getattr(args, "category", None)
+    print(f"[!] Replay Scenario Search — Research Only | query={query!r}")
+    try:
+        lib = _get_scenario_library()
+        if category:
+            results = lib.filter_by_category(category)
+        elif query:
+            results = lib.search_templates(query)
+        else:
+            results = lib.list_templates(include_archived=False)
+        if not results:
+            print("  No matching scenarios found.")
+            return
+        print(f"  Found {len(results)} result(s):")
+        for t in results:
+            print(f"    {t.get('scenario_id','?')} | {t.get('scenario_name','?')} | "
+                  f"{t.get('category','?')} | archived={t.get('archived', False)}")
+    except Exception as exc:
+        print(f"[ERROR] {exc}")
+        import traceback
+        traceback.print_exc()
+
+
+def cmd_replay_scenario_show(args) -> None:
+    """Show scenario template detail. [!] Research Only."""
+    scenario_id = getattr(args, "scenario_id", None) or ""
+    if not scenario_id:
+        print("[ERROR] --scenario-id required")
+        return
+    try:
+        lib = _get_scenario_library()
+        summary = lib.template_summary(scenario_id)
+        if "error" in summary:
+            print(f"[ERROR] {summary['error']}")
+            return
+        t = summary.get("template", {})
+        print(f"  Scenario: {t.get('scenario_id','?')}")
+        print(f"  Name: {t.get('scenario_name','?')}")
+        print(f"  Category: {t.get('category','?')} | Difficulty: {t.get('difficulty','?')}")
+        print(f"  Description: {t.get('description','')}")
+        print(f"  Archived: {t.get('archived', False)}")
+        print(f"  Source: {t.get('source','?')}")
+        print(f"  Instances: {summary.get('instance_count', 0)}")
+        print(f"  [!] Research Only | No Real Orders")
+    except Exception as exc:
+        print(f"[ERROR] {exc}")
+
+
+def cmd_replay_scenario_validate(args) -> None:
+    """Validate a scenario template. [!] Research Only."""
+    scenario_id = getattr(args, "scenario_id", None) or ""
+    if not scenario_id:
+        print("[ERROR] --scenario-id required")
+        return
+    try:
+        lib = _get_scenario_library()
+        d = lib._store.load_template(scenario_id)
+        if d is None:
+            print(f"[ERROR] Scenario not found: {scenario_id}")
+            return
+        from replay.scenario_schema import ReplayScenarioTemplate
+        from replay.scenario_validator import ReplayScenarioValidator
+        template = ReplayScenarioTemplate.from_dict(d)
+        validator = ReplayScenarioValidator()
+        result = validator.validate_template(template)
+        print(f"  Scenario Validation: {scenario_id}")
+        print(f"  Valid: {result.valid}")
+        if result.errors:
+            print(f"  Errors: {'; '.join(result.errors)}")
+        if result.warnings:
+            print(f"  Warnings: {'; '.join(result.warnings)}")
+        if result.valid:
+            print("  [PASS] Scenario template is valid.")
+        print(f"  [!] Research Only | No Real Orders")
+    except Exception as exc:
+        print(f"[ERROR] {exc}")
+        import traceback
+        traceback.print_exc()
+
+
+def cmd_replay_scenario_create(args) -> None:
+    """Create a new scenario template. [!] Research Only."""
+    name = getattr(args, "name", None) or ""
+    category = (getattr(args, "category", None) or "FREE_PRACTICE").upper()
+    difficulty = (getattr(args, "difficulty", None) or "BEGINNER").upper()
+    description = getattr(args, "description", None) or ""
+    if not name:
+        print("[ERROR] --name required")
+        return
+    try:
+        lib = _get_scenario_library()
+        template = lib.create_template(
+            name=name, category=category, difficulty=difficulty,
+            description=description,
+        )
+        print(f"  Scenario created: {template.scenario_id}")
+        print(f"  Name: {template.scenario_name} | Category: {template.category}")
+        print(f"  [!] Research Only | No Real Orders")
+    except Exception as exc:
+        print(f"[ERROR] {exc}")
+        import traceback
+        traceback.print_exc()
+
+
+def cmd_replay_scenario_archive(args) -> None:
+    """Archive a scenario template. [!] Research Only."""
+    scenario_id = getattr(args, "scenario_id", None) or ""
+    if not scenario_id:
+        print("[ERROR] --scenario-id required")
+        return
+    try:
+        lib = _get_scenario_library()
+        ok = lib.archive_template(scenario_id)
+        if ok:
+            print(f"  Scenario archived: {scenario_id} (archived = cannot be instantiated until restored)")
+        else:
+            print(f"[ERROR] Archive failed: {scenario_id}")
+    except Exception as exc:
+        print(f"[ERROR] {exc}")
+
+
+def cmd_replay_scenario_restore(args) -> None:
+    """Restore archived scenario template. [!] Research Only."""
+    scenario_id = getattr(args, "scenario_id", None) or ""
+    if not scenario_id:
+        print("[ERROR] --scenario-id required")
+        return
+    try:
+        lib = _get_scenario_library()
+        ok = lib.restore_template(scenario_id)
+        if ok:
+            print(f"  Scenario restored: {scenario_id}")
+        else:
+            print(f"[ERROR] Restore failed: {scenario_id}")
+    except Exception as exc:
+        print(f"[ERROR] {exc}")
+
+
+def cmd_replay_scenario_duplicate(args) -> None:
+    """Duplicate a scenario template. [!] Research Only."""
+    scenario_id = getattr(args, "scenario_id", None) or ""
+    new_name = getattr(args, "name", None) or None
+    if not scenario_id:
+        print("[ERROR] --scenario-id required")
+        return
+    try:
+        lib = _get_scenario_library()
+        template = lib.duplicate_template(scenario_id, new_name=new_name)
+        if template:
+            print(f"  Scenario duplicated: {template.scenario_id}")
+            print(f"  Name: {template.scenario_name}")
+            print(f"  [!] Research Only | No Real Orders")
+        else:
+            print(f"[ERROR] Duplicate failed: {scenario_id}")
+    except Exception as exc:
+        print(f"[ERROR] {exc}")
+
+
+def cmd_replay_session_create_from_scenario(args) -> None:
+    """Create a replay session from a scenario template. [!] Research Only. Simulation Only."""
+    print("[!] Replay Session — Research Only | No Real Orders | Simulation Only")
+    scenario_id = getattr(args, "scenario_id", None) or ""
+    symbol = getattr(args, "stock", None) or ""
+    start = getattr(args, "start", None) or None
+    end = getattr(args, "end", None) or None
+    if not scenario_id or not symbol:
+        print("[ERROR] --scenario-id and --stock are required")
+        return
+    try:
+        mgr = _get_session_manager()
+        state = mgr.create_from_scenario(scenario_id, symbol, start_date=start, end_date=end)
+        if state:
+            print(f"  Session created: {state.session_id}")
+            print(f"  Scenario: {scenario_id} | Symbol: {symbol}")
+            print(f"  Status: {state.status}")
+            print(f"  Research Only: {state.research_only} | No Real Orders: {state.no_real_orders}")
+        else:
+            print("[ERROR] Session creation failed — scenario may be archived or not found")
+    except Exception as exc:
+        print(f"[ERROR] {exc}")
+        import traceback
+        traceback.print_exc()
+
+
+def cmd_replay_session_search(args) -> None:
+    """Search replay sessions. [!] Research Only."""
+    query = getattr(args, "query", "") or ""
+    symbol = getattr(args, "symbol", None)
+    status = getattr(args, "status", None)
+    print(f"[!] Replay Session Search — Research Only | query={query!r}")
+    try:
+        mgr = _get_session_manager()
+        if query:
+            results = mgr.search_sessions(query)
+        elif symbol or status:
+            results = mgr.filter_sessions(symbol=symbol, status=status)
+        else:
+            results = mgr.list_sessions(include_hidden=False)
+        if not results:
+            print("  No matching sessions found.")
+            return
+        print(f"  Found {len(results)} session(s):")
+        for s in results:
+            state = s.get("_state", {})
+            print(f"    {s.get('session_id','?')} | {s.get('session_name','?')} | "
+                  f"symbol={s.get('symbol','?')} | status={state.get('status','?')}")
+    except Exception as exc:
+        print(f"[ERROR] {exc}")
+        import traceback
+        traceback.print_exc()
+
+
+def cmd_replay_session_checkpoint(args) -> None:
+    """Create a checkpoint for a session. [!] Research Only. NO future data."""
+    session_id = getattr(args, "session_id", None) or ""
+    note = getattr(args, "note", "") or ""
+    if not session_id:
+        print("[ERROR] --session-id required")
+        return
+    try:
+        cp_mgr = _get_checkpoint_manager()
+        cp = cp_mgr.create_checkpoint(session_id, note=note)
+        if cp:
+            print(f"  Checkpoint created: {cp.checkpoint_id}")
+            print(f"  Session: {session_id} | Date: {cp.replay_date}")
+            print(f"  Note: {cp.note}")
+            print(f"  PIT Verified: {cp.point_in_time_verified}")
+            print(f"  [!] Research Only | No future data in checkpoint")
+        else:
+            print("[ERROR] Checkpoint creation failed")
+    except Exception as exc:
+        print(f"[ERROR] {exc}")
+        import traceback
+        traceback.print_exc()
+
+
+def cmd_replay_session_checkpoints(args) -> None:
+    """List checkpoints for a session. [!] Research Only."""
+    session_id = getattr(args, "session_id", None) or ""
+    if not session_id:
+        print("[ERROR] --session-id required")
+        return
+    try:
+        cp_mgr = _get_checkpoint_manager()
+        checkpoints = cp_mgr.list_checkpoints(session_id)
+        if not checkpoints:
+            print(f"  No checkpoints found for: {session_id}")
+            return
+        print(f"  Checkpoints for {session_id} ({len(checkpoints)}):")
+        for cp in checkpoints:
+            print(f"    {cp.get('checkpoint_id','?')} | date={cp.get('replay_date','?')} | "
+                  f"note={cp.get('note','')}")
+    except Exception as exc:
+        print(f"[ERROR] {exc}")
+
+
+def cmd_replay_session_fork(args) -> None:
+    """Fork a replay session. Creates new session_id. NEVER copies future data. [!] Research Only."""
+    session_id = getattr(args, "session_id", None) or ""
+    checkpoint_id = getattr(args, "checkpoint_id", None)
+    new_name = getattr(args, "name", None)
+    if not session_id:
+        print("[ERROR] --session-id required")
+        return
+    try:
+        mgr = _get_session_manager()
+        state = mgr.fork_session(session_id, checkpoint_id=checkpoint_id, new_name=new_name)
+        if state:
+            print(f"  Session forked: {state.session_id}")
+            print(f"  From: {session_id}")
+            if checkpoint_id:
+                print(f"  From checkpoint: {checkpoint_id}")
+            print(f"  Status: {state.status}")
+            print(f"  [!] Fork NEVER copies future data | Research Only | No Real Orders")
+        else:
+            print("[ERROR] Fork failed")
+    except Exception as exc:
+        print(f"[ERROR] {exc}")
+        import traceback
+        traceback.print_exc()
+
+
+def cmd_replay_session_compare(args) -> None:
+    """Compare two replay sessions. NO future performance comparison. [!] Research Only."""
+    session_id_a = getattr(args, "session_id_a", None) or ""
+    session_id_b = getattr(args, "session_id_b", None) or ""
+    if not session_id_a or not session_id_b:
+        print("[ERROR] --session-id-a and --session-id-b required")
+        return
+    print("[!] Session Compare — Research Only | No Future Performance Comparison")
+    try:
+        from replay.session_comparator import ReplaySessionComparator
+        from replay.replay_session_store import ReplaySessionStore
+        store = ReplaySessionStore(repo_root=BASE_DIR)
+        comparator = ReplaySessionComparator(store=store, repo_root=BASE_DIR)
+        result = comparator.compare(session_id_a, session_id_b)
+        print(f"  Comparing: {session_id_a} vs {session_id_b}")
+        config_cmp = result.get("config_comparison", {})
+        print(f"  Same Symbol: {config_cmp.get('same_symbol', '?')}")
+        print(f"  Same Scenario: {config_cmp.get('same_scenario', '?')}")
+        progress = result.get("progress_comparison", {})
+        print(f"  Progress A: {progress.get('a_progress', '?')} | B: {progress.get('b_progress', '?')}")
+        decisions = result.get("decision_comparison", {})
+        print(f"  Decision count A: {decisions.get('a_count', 0)} | B: {decisions.get('b_count', 0)}")
+        print(f"  [!] NO realized_return | NO future_return | NO hindsight_score")
+    except Exception as exc:
+        print(f"[ERROR] {exc}")
+        import traceback
+        traceback.print_exc()
+
+
+def cmd_replay_session_lineage(args) -> None:
+    """Show session lineage tree. [!] Research Only."""
+    session_id = getattr(args, "session_id", None) or ""
+    if not session_id:
+        print("[ERROR] --session-id required")
+        return
+    try:
+        from replay.session_lineage import ReplaySessionLineageManager
+        from replay.replay_session_store import ReplaySessionStore
+        store = ReplaySessionStore(repo_root=BASE_DIR)
+        lineage_mgr = ReplaySessionLineageManager(store=store, repo_root=BASE_DIR)
+        lin = lineage_mgr.get_lineage(session_id)
+        if lin:
+            d = lin.to_dict()
+            print(f"  Session: {session_id}")
+            print(f"  Root: {d.get('root_session_id', '?')}")
+            print(f"  Parent: {d.get('parent_session_id', 'None (root)')}")
+            print(f"  Relation: {d.get('relation_type', '?')}")
+            print(f"  Depth: {d.get('lineage_depth', 0)}")
+            children = d.get("children_session_ids", [])
+            print(f"  Children: {len(children)}")
+            for c in children:
+                print(f"    -> {c}")
+        else:
+            print(f"  No lineage record found for: {session_id}")
+            print(f"  (This may be a legacy v1.2.0 session — lineage tracking added in v1.2.1)")
+        print(f"  [!] Research Only | No Real Orders")
+    except Exception as exc:
+        print(f"[ERROR] {exc}")
+        import traceback
+        traceback.print_exc()
+
+
+def cmd_replay_batch_preview(args) -> None:
+    """Preview batch session creation. Dry-run. [!] Research Only."""
+    scenario_id = getattr(args, "scenario_id", None) or ""
+    symbols_raw = getattr(args, "symbols", "") or ""
+    symbols = [s.strip() for s in symbols_raw.split(",") if s.strip()]
+    max_sessions = int(getattr(args, "max_sessions", 50) or 50)
+    if not scenario_id or not symbols:
+        print("[ERROR] --scenario-id and --symbols required")
+        return
+    print("[!] Replay Batch Preview — Dry Run Only | Research Only | No Real Orders")
+    try:
+        from replay.batch_session_builder import ReplayBatchSessionBuilder
+        builder = ReplayBatchSessionBuilder(repo_root=BASE_DIR)
+        result = builder.preview_batch(scenario_id, symbols, max_sessions=max_sessions)
+        print(f"  Scenario: {scenario_id}")
+        print(f"  Symbols: {symbols}")
+        print(f"  Estimated sessions: {result.get('estimated_count', 0)}")
+        print(f"  OK: {result.get('ok', False)}")
+        print(f"  Dry Run: {result.get('dry_run', True)}")
+        if result.get("blocked"):
+            print(f"  BLOCKED: {result.get('reason', '')}")
+        plan = result.get("sessions_plan", [])
+        if plan:
+            print(f"  Plan ({len(plan)} entries):")
+            for entry in plan[:5]:
+                print(f"    {entry.get('symbol','?')} | {entry.get('scenario_id','?')}")
+            if len(plan) > 5:
+                print(f"    ... and {len(plan)-5} more")
+        print(f"  [!] Use replay-batch-create --allow-write to actually create sessions")
+    except Exception as exc:
+        print(f"[ERROR] {exc}")
+        import traceback
+        traceback.print_exc()
+
+
+def cmd_replay_batch_create(args) -> None:
+    """Batch create sessions from scenario. BLOCKED without --allow-write. [!] Research Only."""
+    scenario_id = getattr(args, "scenario_id", None) or ""
+    symbols_raw = getattr(args, "symbols", "") or ""
+    symbols = [s.strip() for s in symbols_raw.split(",") if s.strip()]
+    max_sessions = int(getattr(args, "max_sessions", 50) or 50)
+    allow_write = bool(getattr(args, "allow_write", False))
+    if not scenario_id or not symbols:
+        print("[ERROR] --scenario-id and --symbols required")
+        return
+    print("[!] Replay Batch Create — Research Only | No Real Orders | Simulation Only")
+    if not allow_write:
+        print("  BLOCKED: --allow-write flag is required to create sessions.")
+        print("  Use 'replay-batch-preview' for a dry run preview.")
+        print("  Tip: --execute flag does NOT grant write permission. Use --allow-write explicitly.")
+        return
+    try:
+        from replay.batch_session_builder import ReplayBatchSessionBuilder
+        mgr = _get_session_manager()
+        lib = _get_scenario_library()
+        builder = ReplayBatchSessionBuilder(session_manager=mgr, scenario_lib=lib, repo_root=BASE_DIR)
+        result = builder.build_from_scenario(
+            scenario_id, symbols=symbols,
+            allow_write=allow_write, max_sessions=max_sessions,
+        )
+        if result.get("blocked"):
+            print(f"  BLOCKED: {result.get('reason', result.get('blocked_reason', ''))}")
+            return
+        results_list = result.get("results", [])
+        print(f"  Batch complete: {len(results_list)} session(s)")
+        ok_count = sum(1 for r in results_list if r.get("ok"))
+        fail_count = len(results_list) - ok_count
+        print(f"  OK: {ok_count} | Failed: {fail_count}")
+        for r in results_list:
+            status = "OK" if r.get("ok") else f"FAIL: {r.get('error','?')}"
+            print(f"    {r.get('symbol','?')} -> {r.get('session_id', status)}")
+    except Exception as exc:
+        print(f"[ERROR] {exc}")
+        import traceback
+        traceback.print_exc()
+
+
+# ---------------------------------------------------------------------------
 # Entrypoint
 # ---------------------------------------------------------------------------
 
@@ -22135,6 +22704,26 @@ def main() -> None:
         "governance-alerts-report":       cmd_governance_alerts_report,
         "governance-alert-audit":         cmd_governance_alert_audit,
         "governance-alert-audit-verify":  cmd_governance_alert_audit_verify,
+        # v1.2.1 Replay Scenario & Session Manager
+        "replay-scenario-health":                   cmd_replay_scenario_health,
+        "replay-session-manager-health":            cmd_replay_scenario_health,
+        "replay-scenarios":                         cmd_replay_scenarios,
+        "replay-scenario-search":                   cmd_replay_scenario_search,
+        "replay-scenario-show":                     cmd_replay_scenario_show,
+        "replay-scenario-validate":                 cmd_replay_scenario_validate,
+        "replay-scenario-create":                   cmd_replay_scenario_create,
+        "replay-scenario-archive":                  cmd_replay_scenario_archive,
+        "replay-scenario-restore":                  cmd_replay_scenario_restore,
+        "replay-scenario-duplicate":                cmd_replay_scenario_duplicate,
+        "replay-session-create-from-scenario":      cmd_replay_session_create_from_scenario,
+        "replay-session-search":                    cmd_replay_session_search,
+        "replay-session-checkpoint":                cmd_replay_session_checkpoint,
+        "replay-session-checkpoints":               cmd_replay_session_checkpoints,
+        "replay-session-fork":                      cmd_replay_session_fork,
+        "replay-session-compare":                   cmd_replay_session_compare,
+        "replay-session-lineage":                   cmd_replay_session_lineage,
+        "replay-batch-preview":                     cmd_replay_batch_preview,
+        "replay-batch-create":                      cmd_replay_batch_create,
         # v1.2.0 Replay Training UX Foundation
         "replay-health":                  cmd_replay_health,
         "replay-create":                  cmd_replay_create,

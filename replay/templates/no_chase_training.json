@@ -1,0 +1,43 @@
+{
+  "scenario_id": "RSC-BUILTIN-NO-CHASE-001",
+  "scenario_name": "No Chase Training",
+  "description": "Practice recognizing overextension signals and learning to wait rather than chase. Does NOT provide final outcome.",
+  "category": "NO_CHASE",
+  "difficulty": "INTERMEDIATE",
+  "objectives": [
+    "Recognize overextension above moving averages",
+    "Practice WAIT instead of ENTER when extended",
+    "Record your reasoning for waiting vs chasing"
+  ],
+  "instructions": "Observe price when it has moved far above MA5/MA10/MA20. Identify when chasing is tempting. Practice recording WAIT decisions with your reasoning. Does NOT provide final outcome.",
+  "rules": [
+    "Record every day you feel the urge to chase",
+    "Identify the exact price level that would be acceptable to enter",
+    "No standard answer — your discipline process matters",
+    "No final outcome data provided"
+  ],
+  "symbol_selector": "FREE",
+  "symbols": [],
+  "date_selector": "FREE",
+  "start_date": null,
+  "end_date": null,
+  "duration_days": null,
+  "initial_visible_history_days": 120,
+  "required_datasets": ["price"],
+  "optional_datasets": [],
+  "strict_future_firewall": true,
+  "include_quality_gate": true,
+  "include_strategy_knowledge": true,
+  "include_chips": false,
+  "include_fundamental": false,
+  "default_playback_speed": 1,
+  "allowed_actions": ["WATCH", "WAIT", "SKIP"],
+  "tags": ["intermediate", "no-chase", "discipline", "overextension"],
+  "source": "builtin",
+  "version": "1",
+  "archived": false,
+  "created_at": "2026-06-16T00:00:00+00:00",
+  "updated_at": "2026-06-16T00:00:00+00:00",
+  "research_only": true,
+  "no_real_orders": true
+}

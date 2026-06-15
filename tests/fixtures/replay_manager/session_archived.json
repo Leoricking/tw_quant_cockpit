@@ -1,0 +1,21 @@
+{
+  "session_id": "RPL-2330-20220601-ARCHIVED",
+  "session_name": "Archived Session Test",
+  "symbol": "2330",
+  "start_date": "2022-01-03",
+  "end_date": "2022-06-30",
+  "mode": "real",
+  "research_only": true,
+  "no_real_orders": true,
+  "_state": {
+    "session_id": "RPL-2330-20220601-ARCHIVED",
+    "status": "ARCHIVED",
+    "current_date": "2022-06-30",
+    "current_index": 120,
+    "total_steps": 120,
+    "qualification": "OBSERVATIONAL_ONLY",
+    "archived_at": "2023-06-15T00:00:00+00:00",
+    "research_only": true,
+    "no_real_orders": true
+  }
+}

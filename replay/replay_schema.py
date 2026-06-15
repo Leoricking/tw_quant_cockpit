@@ -83,6 +83,15 @@ class ReplaySessionConfig:
     created_at: str = field(default_factory=_now_utc)
     research_only: bool = True
     no_real_orders: bool = True
+    # v1.2.1 new fields (all with defaults for backward compat)
+    scenario_id: Optional[str] = None
+    scenario_instance_id: Optional[str] = None
+    tags: List[str] = field(default_factory=list)
+    folder_name: Optional[str] = None
+    root_session_id: Optional[str] = None
+    parent_session_id: Optional[str] = None
+    source_checkpoint_id: Optional[str] = None
+    portable_metadata_version: int = 1
 
     def to_dict(self) -> Dict[str, Any]:
         return {
@@ -106,6 +115,15 @@ class ReplaySessionConfig:
             "created_at": self.created_at,
             "research_only": True,
             "no_real_orders": True,
+            # v1.2.1
+            "scenario_id": self.scenario_id,
+            "scenario_instance_id": self.scenario_instance_id,
+            "tags": self.tags,
+            "folder_name": self.folder_name,
+            "root_session_id": self.root_session_id,
+            "parent_session_id": self.parent_session_id,
+            "source_checkpoint_id": self.source_checkpoint_id,
+            "portable_metadata_version": self.portable_metadata_version,
         }
 
     @classmethod
@@ -131,6 +149,15 @@ class ReplaySessionConfig:
             created_at=d.get("created_at", _now_utc()),
             research_only=True,
             no_real_orders=True,
+            # v1.2.1 fields — graceful defaults for old sessions
+            scenario_id=d.get("scenario_id"),
+            scenario_instance_id=d.get("scenario_instance_id"),
+            tags=d.get("tags", []),
+            folder_name=d.get("folder_name"),
+            root_session_id=d.get("root_session_id"),
+            parent_session_id=d.get("parent_session_id"),
+            source_checkpoint_id=d.get("source_checkpoint_id"),
+            portable_metadata_version=int(d.get("portable_metadata_version", 1)),
         )
 
 
@@ -162,6 +189,14 @@ class ReplaySessionState:
     warnings: List[str] = field(default_factory=list)
     research_only: bool = True
     no_real_orders: bool = True
+    # v1.2.1 new fields (all with defaults for backward compat)
+    checkpoint_count: int = 0
+    fork_count: int = 0
+    child_session_count: int = 0
+    hidden: bool = False
+    archived_at: Optional[str] = None
+    restored_at: Optional[str] = None
+    last_checkpoint_id: Optional[str] = None
 
     def to_dict(self) -> Dict[str, Any]:
         return {
@@ -183,6 +218,14 @@ class ReplaySessionState:
             "warnings": self.warnings,
             "research_only": True,
             "no_real_orders": True,
+            # v1.2.1
+            "checkpoint_count": self.checkpoint_count,
+            "fork_count": self.fork_count,
+            "child_session_count": self.child_session_count,
+            "hidden": self.hidden,
+            "archived_at": self.archived_at,
+            "restored_at": self.restored_at,
+            "last_checkpoint_id": self.last_checkpoint_id,
         }
 
     @classmethod
@@ -206,6 +249,14 @@ class ReplaySessionState:
             warnings=d.get("warnings", []),
             research_only=True,
             no_real_orders=True,
+            # v1.2.1 fields — graceful defaults for old sessions
+            checkpoint_count=int(d.get("checkpoint_count", 0)),
+            fork_count=int(d.get("fork_count", 0)),
+            child_session_count=int(d.get("child_session_count", 0)),
+            hidden=bool(d.get("hidden", False)),
+            archived_at=d.get("archived_at"),
+            restored_at=d.get("restored_at"),
+            last_checkpoint_id=d.get("last_checkpoint_id"),
         )
 
 

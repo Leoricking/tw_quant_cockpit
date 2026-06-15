@@ -1,0 +1,43 @@
+{
+  "scenario_id": "RSC-BUILTIN-BREAKOUT-001",
+  "scenario_name": "Breakout Training",
+  "description": "Practice observing volume-confirmed price breakouts. Focus on identifying setup conditions without future outcome data.",
+  "category": "BREAKOUT",
+  "difficulty": "INTERMEDIATE",
+  "objectives": [
+    "Identify consolidation zones before breakout",
+    "Observe volume confirmation on breakout day",
+    "Record setup quality and risk levels"
+  ],
+  "instructions": "Watch for price consolidation near resistance. Observe volume on the breakout day. Record your assessment of breakout quality. Do NOT use hindsight.",
+  "rules": [
+    "Assess setup quality before the breakout bar completes",
+    "Record volume vs 5-day average volume",
+    "No standard answer — focus on setup recognition process",
+    "No future results provided"
+  ],
+  "symbol_selector": "FREE",
+  "symbols": [],
+  "date_selector": "FREE",
+  "start_date": null,
+  "end_date": null,
+  "duration_days": null,
+  "initial_visible_history_days": 120,
+  "required_datasets": ["price"],
+  "optional_datasets": [],
+  "strict_future_firewall": true,
+  "include_quality_gate": true,
+  "include_strategy_knowledge": true,
+  "include_chips": false,
+  "include_fundamental": false,
+  "default_playback_speed": 1,
+  "allowed_actions": ["WATCH", "WAIT", "ENTER", "HOLD", "REDUCE", "EXIT", "STOP", "SKIP"],
+  "tags": ["intermediate", "breakout", "volume", "resistance"],
+  "source": "builtin",
+  "version": "1",
+  "archived": false,
+  "created_at": "2026-06-16T00:00:00+00:00",
+  "updated_at": "2026-06-16T00:00:00+00:00",
+  "research_only": true,
+  "no_real_orders": true
+}

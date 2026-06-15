@@ -1,0 +1,43 @@
+{
+  "scenario_id": "RSC-BUILTIN-RISK-CONTROL-001",
+  "scenario_name": "Risk Control Training",
+  "description": "Practice stop placement, position reduction, and waiting during uncertainty. Does NOT execute orders.",
+  "category": "RISK_CONTROL",
+  "difficulty": "INTERMEDIATE",
+  "objectives": [
+    "Practice identifying stop levels before entry",
+    "Record position reduction decisions under pressure",
+    "Develop wait/reduce/exit discipline"
+  ],
+  "instructions": "Observe adverse price moves. Identify where your stop would be placed BEFORE entering. Practice recording REDUCE and STOP decisions without waiting too long. Does NOT execute orders.",
+  "rules": [
+    "Record your stop level on every entry decision",
+    "Practice REDUCE before full EXIT",
+    "No order execution — simulation only",
+    "No real orders will be placed"
+  ],
+  "symbol_selector": "FREE",
+  "symbols": [],
+  "date_selector": "FREE",
+  "start_date": null,
+  "end_date": null,
+  "duration_days": null,
+  "initial_visible_history_days": 120,
+  "required_datasets": ["price"],
+  "optional_datasets": [],
+  "strict_future_firewall": true,
+  "include_quality_gate": true,
+  "include_strategy_knowledge": true,
+  "include_chips": false,
+  "include_fundamental": false,
+  "default_playback_speed": 1,
+  "allowed_actions": ["WATCH", "WAIT", "ENTER", "HOLD", "REDUCE", "EXIT", "STOP", "SKIP"],
+  "tags": ["intermediate", "risk-control", "stop-loss", "discipline"],
+  "source": "builtin",
+  "version": "1",
+  "archived": false,
+  "created_at": "2026-06-16T00:00:00+00:00",
+  "updated_at": "2026-06-16T00:00:00+00:00",
+  "research_only": true,
+  "no_real_orders": true
+}

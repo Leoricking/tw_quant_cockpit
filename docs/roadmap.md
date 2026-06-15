@@ -90,6 +90,16 @@
 | v1.1.8 | Research Run Registry | Done |
 | v1.1.9 | Data Governance Stable Rollup | Done |
 | v1.2.0 | Replay Training UX Foundation | Done |
+| v1.2.1 | Replay Scenario & Session Manager | Done |
+
+---
+
+### v1.2.1 — Replay Scenario & Session Manager ✅
+
+- **Version:** 1.2.1 — Replay Scenario & Session Manager
+- **Type:** Scenario template library, session lifecycle management, checkpoints, fork/restore, session comparison (no future performance), batch session creation, session lineage, portable metadata, safety guards.
+- **Changes:** replay/ new files (scenario_schema, scenario_store, scenario_library, scenario_validator, scenario_query, session_manager, session_manager_health, session_checkpoint, session_lineage, session_comparator, session_portability, session_registry, batch_session_builder), replay/templates/ (6 builtin JSON templates), 19 new CLI commands (replay-scenario-health, replay-session-manager-health, replay-scenarios, replay-scenario-search, replay-scenario-show, replay-scenario-validate, replay-scenario-create, replay-scenario-archive, replay-scenario-restore, replay-scenario-duplicate, replay-session-create-from-scenario, replay-session-search, replay-session-checkpoint, replay-session-checkpoints, replay-session-fork, replay-session-compare, replay-session-lineage, replay-batch-preview, replay-batch-create), tests/fixtures/replay_manager/ (23 fixtures), tests/test_replay_scenario_session_manager_regression.py, release/version_info.py v1.2.1 flags, docs (replay_scenario_session_manager_v1.2.1.md, replay_scenario_template_authoring.md, replay_session_checkpoint_and_fork.md, release_notes_v1.2.md v1.2.1 section)
+- **Safety:** Scenario templates NEVER contain future answers/realized returns/future labels; checkpoint NEVER copies future data; fork NEVER copies future data; batch execution BLOCKED without --allow-write; archived scenarios BLOCKED from instantiation; session compare FORBIDDEN fields (realized_return, future_return, hindsight_score); REPLAY_TRADE_EXECUTION_ENABLED=False, REPLAY_AUTO_EXECUTION_ENABLED=False, No Real Orders, Broker Disabled, Production Trading BLOCKED
 
 ---
 

@@ -1,0 +1,11 @@
+{
+  "session_id": "RPL-ROOT-001",
+  "root_session_id": "RPL-ROOT-001",
+  "parent_session_id": null,
+  "source_scenario_id": "RSC-BUILTIN-PULLBACK-001",
+  "source_checkpoint_id": null,
+  "relation_type": "ROOT",
+  "children_session_ids": [],
+  "lineage_depth": 0,
+  "created_at": "2026-06-16T00:00:00+00:00"
+}

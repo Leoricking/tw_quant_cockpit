@@ -121,6 +121,121 @@ class ReplayQuery:
                         result.append(s)
         return result
 
+    # v1.2.1 extended query methods
+
+    def filter_sessions(
+        self, symbol=None, scenario=None, status=None, qualification=None,
+        date_from=None, date_to=None, tag=None, archived=None,
+        active=None, completed=None, blocked=None,
+    ) -> List[Dict[str, Any]]:
+        """Filter sessions with multiple criteria."""
+        all_sessions = self.list_sessions(limit=1000)
+        results = []
+        for s in all_sessions:
+            sid = s.get("session_id", "")
+            state = self._store.load_session_state(sid) if self._store else None
+            if symbol and s.get("symbol") != symbol:
+                continue
+            if scenario and s.get("scenario_id") != scenario:
+                continue
+            if status and (state or {}).get("status") != status:
+                continue
+            if archived is not None:
+                is_arch = (state or {}).get("status") == "ARCHIVED"
+                if archived != is_arch:
+                    continue
+            if active is not None:
+                is_active = (state or {}).get("status") in ("PLAYING", "READY", "PAUSED")
+                if active != is_active:
+                    continue
+            if completed is not None:
+                is_comp = (state or {}).get("status") == "COMPLETED"
+                if completed != is_comp:
+                    continue
+            if blocked is not None:
+                is_blocked = (state or {}).get("status") == "BLOCKED"
+                if blocked != is_blocked:
+                    continue
+            results.append(s)
+        return results
+
+    def by_scenario(self, scenario_id: str) -> List[Dict[str, Any]]:
+        all_sessions = self.list_sessions(limit=1000)
+        return [s for s in all_sessions if s.get("scenario_id") == scenario_id]
+
+    def by_symbol(self, symbol: str) -> List[Dict[str, Any]]:
+        all_sessions = self.list_sessions(limit=1000)
+        return [s for s in all_sessions if s.get("symbol") == symbol]
+
+    def by_status(self, status: str) -> List[Dict[str, Any]]:
+        all_sessions = self.list_sessions(limit=1000)
+        results = []
+        for s in all_sessions:
+            sid = s.get("session_id", "")
+            state = self._store.load_session_state(sid) if self._store else None
+            if state and state.get("status") == status:
+                results.append(s)
+        return results
+
+    def by_tag(self, tag: str) -> List[Dict[str, Any]]:
+        all_sessions = self.list_sessions(limit=1000)
+        return [s for s in all_sessions if tag in s.get("tags", [])]
+
+    def active(self) -> List[Dict[str, Any]]:
+        return self.active_sessions()
+
+    def completed(self) -> List[Dict[str, Any]]:
+        return self.completed_sessions()
+
+    def blocked(self) -> List[Dict[str, Any]]:
+        return self.by_status("BLOCKED")
+
+    def archived(self) -> List[Dict[str, Any]]:
+        return self.archived_sessions()
+
+    def hidden(self) -> List[Dict[str, Any]]:
+        all_sessions = self.list_sessions(limit=1000)
+        results = []
+        for s in all_sessions:
+            sid = s.get("session_id", "")
+            state = self._store.load_session_state(sid) if self._store else None
+            if state and state.get("hidden", False):
+                results.append(s)
+        return results
+
+    def session_checkpoints(self, session_id: str) -> List[Dict[str, Any]]:
+        if not self._store:
+            return []
+        return self._store.load_checkpoints_index() if hasattr(self._store, "load_checkpoints_index") else []
+
+    def session_children(self, session_id: str) -> List[Dict[str, Any]]:
+        all_sessions = self.list_sessions(limit=1000)
+        return [s for s in all_sessions if s.get("parent_session_id") == session_id]
+
+    def session_parent(self, session_id: str) -> Optional[Dict[str, Any]]:
+        s = self.get_session(session_id)
+        if not s:
+            return None
+        parent_id = s.get("parent_session_id")
+        if not parent_id:
+            return None
+        return self.get_session(parent_id)
+
+    def session_lineage(self, session_id: str) -> Optional[Dict[str, Any]]:
+        if not self._store or not hasattr(self._store, "load_lineage_entries"):
+            return None
+        entries = self._store.load_lineage_entries()
+        for e in entries:
+            if e.get("session_id") == session_id:
+                return e
+        return None
+
+    def latest_checkpoint(self, session_id: str) -> Optional[Dict[str, Any]]:
+        cps = self.session_checkpoints(session_id)
+        if not cps:
+            return None
+        return sorted(cps, key=lambda c: c.get("created_at", ""))[-1]
+
     def session_summary(self, session_id: str) -> Dict[str, Any]:
         """Get summary for session_id."""
         config = self.get_session(session_id) or {}

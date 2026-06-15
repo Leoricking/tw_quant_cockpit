@@ -1,5 +1,5 @@
 """
-release/version_info.py — Centralized version info for TW Quant Cockpit v1.2.0.
+release/version_info.py — Centralized version info for TW Quant Cockpit v1.2.1.
 [!] Research Only. No Real Orders. Production Trading: BLOCKED.
 [!] VALIDATED does not enable trading. Broker Execution Disabled.
 [!] Data Universe Expansion. Real Data Coverage Required.
@@ -20,6 +20,8 @@ release/version_info.py — Centralized version info for TW Quant Cockpit v1.2.0
 [!] No Auto Import. No Auto Research Execution. No Trade Execution. Not Investment Advice.
 [!] Replay Training UX Foundation. Replay Auto Scoring DISABLED. Replay Auto Execution DISABLED.
 [!] Replay Trade Execution DISABLED. Replay decisions are SIMULATION ONLY. Not Investment Advice.
+[!] Replay Scenario & Session Manager. Scenario templates never contain future answers.
+[!] Replay Session Fork/Checkpoint NEVER copies future data. Not Investment Advice.
 """
 from __future__ import annotations
 import logging
@@ -31,9 +33,9 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # ---------------------------------------------------------------------------
 # v1.1.9 module-level constants (Data Governance Stable Rollup)
 # ---------------------------------------------------------------------------
-VERSION                             = "1.2.0"
-RELEASE_NAME                        = "Replay Training UX Foundation"
-BASE_RELEASE                        = "1.1.9 Data Governance Stable Rollup"
+VERSION                             = "1.2.1"
+RELEASE_NAME                        = "Replay Scenario & Session Manager"
+BASE_RELEASE                        = "1.2.0 Replay Training UX Foundation"
 BASE_RELEASE_NAME                   = "Data Governance Stable Rollup"
 MAINTENANCE_RELEASE                 = False
 RELEASE_STAGE                       = "FOUNDATION"
@@ -156,6 +158,17 @@ REPLAY_DECISION_CAPTURE_AVAILABLE       = True
 REPLAY_AUTO_SCORING_ENABLED             = False
 REPLAY_AUTO_EXECUTION_ENABLED           = False
 REPLAY_TRADE_EXECUTION_ENABLED          = False
+# v1.2.1 new flags
+REPLAY_SCENARIO_LIBRARY_AVAILABLE       = True
+REPLAY_SESSION_MANAGER_AVAILABLE        = True
+REPLAY_CHECKPOINT_AVAILABLE             = True
+REPLAY_SESSION_FORK_AVAILABLE           = True
+REPLAY_SESSION_COMPARE_AVAILABLE        = True
+REPLAY_BATCH_SESSION_CREATION_AVAILABLE = True
+REPLAY_AUTO_SCORING_ENABLED             = False   # noqa: F811 (overrides above, both False)
+REPLAY_AUTO_DECISION_ENABLED            = False
+REPLAY_AUTO_EXECUTION_ENABLED           = False   # noqa: F811
+REPLAY_TRADE_EXECUTION_ENABLED          = False   # noqa: F811
 
 
 class VersionInfo:
@@ -374,6 +387,13 @@ def print_version_info() -> None:
     print(f"  Replay Auto Scoring Enabled: {REPLAY_AUTO_SCORING_ENABLED}")
     print(f"  Replay Auto Execution Enabled: {REPLAY_AUTO_EXECUTION_ENABLED}")
     print(f"  Replay Trade Execution Enabled: {REPLAY_TRADE_EXECUTION_ENABLED}")
+    print(f"  Replay Scenario Library Available: {REPLAY_SCENARIO_LIBRARY_AVAILABLE}")
+    print(f"  Replay Session Manager Available: {REPLAY_SESSION_MANAGER_AVAILABLE}")
+    print(f"  Replay Checkpoint Available: {REPLAY_CHECKPOINT_AVAILABLE}")
+    print(f"  Replay Session Fork Available: {REPLAY_SESSION_FORK_AVAILABLE}")
+    print(f"  Replay Session Compare Available: {REPLAY_SESSION_COMPARE_AVAILABLE}")
+    print(f"  Replay Batch Session Creation Available: {REPLAY_BATCH_SESSION_CREATION_AVAILABLE}")
+    print(f"  Replay Auto Decision Enabled: {REPLAY_AUTO_DECISION_ENABLED}")
     print("=" * 60)
 
 

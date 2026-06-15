@@ -1493,4 +1493,41 @@ class IntelligenceStableChecklist:
                 suggested_fix="Run: python main.py replay-health",
             ))
 
+        # v1.2.1 Replay Scenario & Session Manager safety check
+        try:
+            from replay.scenario_library import ReplayScenarioLibrary
+            from replay.session_manager import ReplaySessionManager
+            import release.version_info as _vi_mod121
+            scl_safe = (getattr(ReplayScenarioLibrary, "NO_REAL_ORDERS", False) is True
+                        and getattr(ReplayScenarioLibrary, "RESEARCH_ONLY", False) is True)
+            smgr_safe = (getattr(ReplaySessionManager, "NO_REAL_ORDERS", False) is True
+                         and getattr(ReplaySessionManager, "RESEARCH_ONLY", False) is True)
+            trade_exec = getattr(_vi_mod121, "REPLAY_TRADE_EXECUTION_ENABLED", True)
+            auto_dec = getattr(_vi_mod121, "REPLAY_AUTO_DECISION_ENABLED", True)
+            if scl_safe and smgr_safe and not trade_exec and not auto_dec:
+                checks.append(_check(
+                    "replay_scenario_session_manager_v121_safe", "stable_integration",
+                    "v1.2.1 replay_scenario_session_manager_v121_safe",
+                    CHECK_PASS, SEV_LOW,
+                    "replay_scenario: NO_REAL_ORDERS=True, RESEARCH_ONLY=True, "
+                    "REPLAY_TRADE_EXECUTION_ENABLED=False, REPLAY_AUTO_DECISION_ENABLED=False.",
+                ))
+            else:
+                checks.append(_check(
+                    "replay_scenario_session_manager_v121_safe", "stable_integration",
+                    "v1.2.1 replay_scenario_session_manager_v121_safe",
+                    CHECK_WARN, SEV_LOW,
+                    f"replay_scenario safety: scl={scl_safe}, smgr={smgr_safe}, "
+                    f"trade_exec={trade_exec}, auto_dec={auto_dec}",
+                    suggested_fix="Run: python main.py replay-scenario-health",
+                ))
+        except Exception as exc:
+            checks.append(_check(
+                "replay_scenario_session_manager_v121_safe", "stable_integration",
+                "v1.2.1 replay_scenario_session_manager_v121_safe",
+                CHECK_WARN, SEV_LOW,
+                f"Could not verify replay_scenario v1.2.1 safety (optional): {exc}",
+                suggested_fix="Run: python main.py replay-scenario-health",
+            ))
+
         return checks

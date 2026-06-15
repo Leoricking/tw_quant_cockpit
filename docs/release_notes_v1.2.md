@@ -1,8 +1,114 @@
-# Release Notes — v1.2.0: Replay Training UX Foundation
+# Release Notes — v1.2.x: Replay Training Series
 
 > [!] Research Only. No Real Orders. Not Investment Advice.
 
-## Overview
+---
+
+## v1.2.1 — Replay Scenario & Session Manager
+
+> [!] Research Only. No Real Orders. Scenario templates NEVER contain future answers. Not Investment Advice.
+
+### Overview
+
+v1.2.1 builds on v1.2.0 to add a structured scenario template library, full session lifecycle management (search, filter, archive, restore, fork, clone), session checkpoints, session lineage tracking, session comparison (process only — no future performance), batch session creation, and portable session metadata. All guards from v1.2.0 are preserved and extended.
+
+### What's New
+
+#### Scenario Template Library (`replay/scenario_schema.py`, `scenario_store.py`, `scenario_library.py`, `scenario_validator.py`, `scenario_query.py`)
+
+- 6 builtin templates loaded from `replay/templates/`: free_practice, pullback_training, breakout_training, bottom_reversal_training, no_chase_training, risk_control_training
+- Scenario IDs use RSC- prefix; instances use RSI- prefix
+- `archived=True` scenarios BLOCKED from instantiation (must restore first)
+- Template validation blocks: forbidden fields (future_return, outcome, final_label, answer, realized_pnl, broker, order_token, api_key, secret), invalid dates, strict_future_firewall=False
+- Duplicate detection by name+category before creation
+
+#### Session Manager (`replay/session_manager.py`, `session_manager_health.py`)
+
+- `create_from_scenario()` — Create session from template; archived scenarios BLOCKED
+- `search_sessions()`, `filter_sessions()` — Query by symbol, scenario, status, tag, date range
+- `fork_session()` — Always creates new session_id; NEVER copies future data
+- `duplicate_session()` — New session_id, CREATED status
+- `archive_session()` — Immutable; `restore_session()` to re-enable
+- `delete_from_view()` — Sets hidden=True only; does NOT delete audit record
+
+#### Session Checkpoints (`replay/session_checkpoint.py`)
+
+- RCP- prefix for checkpoint IDs
+- Checkpoint stores only data at `replay_date` — NO future data
+- Forbidden fields blocked: future_return, outcome, final_label, answer, realized_pnl, broker, order_token, api_key, secret
+- `restore_checkpoint()` creates new state revision; does NOT overwrite append-only history
+
+#### Session Lineage (`replay/session_lineage.py`)
+
+- Tracks ROOT, DUPLICATE, FORK, FORK_FROM_CHECKPOINT, RESTORED, IMPORTED, ORPHAN_IMPORTED
+- Cycle detection — no circular parent chains
+- Missing parent: WARN, don't crash
+- `root_session_id` is stable across forks
+
+#### Session Comparison (`replay/session_comparator.py`)
+
+- Compares: config, progress, decision process, annotations, PIT status, warning counts, qualification
+- FORBIDDEN in output: realized_return, future_return, hindsight_score, final_result, future_max_gain, future_max_loss
+- This compares decision process and session state ONLY, NOT performance
+
+#### Batch Session Builder (`replay/batch_session_builder.py`)
+
+- Default: preview/dry-run only
+- `allow_write=True` required to create sessions
+- Default max 50, hard limit 500
+- Does NOT auto-play, auto-decide, auto-score, auto-execute, auto-download
+
+#### Session Portability & Registry (`replay/session_portability.py`, `session_registry.py`)
+
+- `portable_metadata_version=1` field for cross-machine compatibility
+- Path normalization for Windows/Unix portability
+- Session registry with session_id index
+
+### CLI Commands (19 new)
+
+| Command | Description |
+|---------|-------------|
+| `replay-scenario-health` | Health check for scenario & session manager |
+| `replay-session-manager-health` | Alias for replay-scenario-health |
+| `replay-scenarios` | List all active scenario templates |
+| `replay-scenario-search` | Search/filter scenario templates |
+| `replay-scenario-show` | Show template detail |
+| `replay-scenario-validate` | Validate a template |
+| `replay-scenario-create` | Create new template |
+| `replay-scenario-archive` | Archive template (blocks instantiation) |
+| `replay-scenario-restore` | Restore archived template |
+| `replay-scenario-duplicate` | Duplicate template with new ID |
+| `replay-session-create-from-scenario` | Create session from template |
+| `replay-session-search` | Search/filter sessions |
+| `replay-session-checkpoint` | Create a checkpoint (no future data) |
+| `replay-session-checkpoints` | List checkpoints |
+| `replay-session-fork` | Fork session (new ID, no future data) |
+| `replay-session-compare` | Compare two sessions (no performance data) |
+| `replay-session-lineage` | Show session lineage tree |
+| `replay-batch-preview` | Preview batch session creation (dry-run) |
+| `replay-batch-create` | Batch create sessions (--allow-write required) |
+
+### Safety Invariants
+
+- `REPLAY_TRADE_EXECUTION_ENABLED = False`
+- `REPLAY_AUTO_EXECUTION_ENABLED = False`
+- `REPLAY_AUTO_DECISION_ENABLED = False`
+- `REPLAY_AUTO_SCORING_ENABLED = False`
+- Scenario templates NEVER contain: future answers, realized returns, future labels
+- Checkpoints NEVER store: future_return, outcome, final_label, answer, realized_pnl
+- Fork NEVER copies future data
+- Session comparison NEVER shows: realized_return, future_return, hindsight_score
+- Batch execution BLOCKED without explicit --allow-write
+- Archived scenario BLOCKED from instantiation until restored
+- No Real Orders. No Broker Connection. Production Trading BLOCKED.
+
+---
+
+## v1.2.0 — Replay Training UX Foundation
+
+> [!] Research Only. No Real Orders. Not Investment Advice.
+
+### Overview
 
 v1.2.0 introduces the **Replay Training UX Foundation**, a complete day-by-day historical replay system for structured training on past TW market data. Researchers can step through a historical period, record simulation decisions at each step, annotate observations, and build a structured training record — all protected by a strict future data firewall.
 

@@ -2864,13 +2864,14 @@ class StableReleaseChecklistV060:
             return _check_item("replay_trade_execution_disabled", "replay_training", "WARN", str(exc))
 
     def _check_version_info_v120(self) -> dict:
-        """v1.2.0 — VERSION is 1.2.0 and REPLAY_TRAINING_AVAILABLE=True."""
+        """v1.2.0 — VERSION is 1.2.0+ and REPLAY_TRAINING_AVAILABLE=True."""
         try:
             from release.version_info import VERSION
             import release.version_info as _vi
             rt_avail = getattr(_vi, "REPLAY_TRAINING_AVAILABLE", None)
             rte = getattr(_vi, "REPLAY_TRADE_EXECUTION_ENABLED", True)
-            if VERSION == "1.2.0" and rt_avail and not rte:
+            # Accept 1.2.0 or higher (1.2.1+)
+            if VERSION >= "1.2.0" and rt_avail and not rte:
                 return _check_item(
                     "version_info_v120", "version_git", "PASS",
                     f"VERSION={VERSION}, REPLAY_TRAINING_AVAILABLE={rt_avail}, "
@@ -2880,11 +2881,69 @@ class StableReleaseChecklistV060:
                 "version_info_v120", "version_git", "WARN",
                 f"VERSION={VERSION}, REPLAY_TRAINING_AVAILABLE={rt_avail}, "
                 f"REPLAY_TRADE_EXECUTION_ENABLED={rte}",
-                warning="Expected VERSION=1.2.0 with REPLAY_TRAINING_AVAILABLE=True, "
+                warning="Expected VERSION>=1.2.0 with REPLAY_TRAINING_AVAILABLE=True, "
                         "REPLAY_TRADE_EXECUTION_ENABLED=False",
             )
         except Exception as exc:
             return _check_item("version_info_v120", "version_git", "WARN", str(exc))
+
+    def _check_replay_scenario_library(self) -> dict:
+        """v1.2.1 — ReplayScenarioLibrary importable and NO_REAL_ORDERS=True."""
+        try:
+            from replay.scenario_library import ReplayScenarioLibrary
+            ok = ReplayScenarioLibrary.NO_REAL_ORDERS and ReplayScenarioLibrary.RESEARCH_ONLY
+            return _check_item(
+                "replay_scenario_library", "replay_scenario_session_manager",
+                "PASS" if ok else "FAIL",
+                f"ReplayScenarioLibrary.NO_REAL_ORDERS={ReplayScenarioLibrary.NO_REAL_ORDERS}",
+            )
+        except Exception as exc:
+            return _check_item("replay_scenario_library", "replay_scenario_session_manager", "WARN", str(exc))
+
+    def _check_replay_session_manager(self) -> dict:
+        """v1.2.1 — ReplaySessionManager importable."""
+        try:
+            from replay.session_manager import ReplaySessionManager
+            ok = ReplaySessionManager.NO_REAL_ORDERS
+            return _check_item(
+                "replay_session_manager_v121", "replay_scenario_session_manager",
+                "PASS" if ok else "FAIL",
+                f"ReplaySessionManager.NO_REAL_ORDERS={ok}",
+            )
+        except Exception as exc:
+            return _check_item("replay_session_manager_v121", "replay_scenario_session_manager", "WARN", str(exc))
+
+    def _check_replay_checkpoint_available(self) -> dict:
+        """v1.2.1 — ReplayCheckpointManager importable."""
+        try:
+            from replay.session_checkpoint import ReplayCheckpointManager
+            ok = ReplayCheckpointManager.NO_REAL_ORDERS
+            return _check_item(
+                "replay_checkpoint_v121", "replay_scenario_session_manager",
+                "PASS" if ok else "FAIL",
+                f"ReplayCheckpointManager.NO_REAL_ORDERS={ok}",
+            )
+        except Exception as exc:
+            return _check_item("replay_checkpoint_v121", "replay_scenario_session_manager", "WARN", str(exc))
+
+    def _check_version_info_v121(self) -> dict:
+        """v1.2.1 — VERSION=1.2.1 and v1.2.1 flags set correctly."""
+        try:
+            from release.version_info import VERSION
+            import release.version_info as _vi
+            scl = getattr(_vi, "REPLAY_SCENARIO_LIBRARY_AVAILABLE", None)
+            smgr = getattr(_vi, "REPLAY_SESSION_MANAGER_AVAILABLE", None)
+            rte = getattr(_vi, "REPLAY_TRADE_EXECUTION_ENABLED", True)
+            rade = getattr(_vi, "REPLAY_AUTO_DECISION_ENABLED", True)
+            ok = VERSION == "1.2.1" and scl and smgr and not rte and not rade
+            status = "PASS" if ok else "WARN"
+            return _check_item(
+                "version_info_v121", "version_git", status,
+                f"VERSION={VERSION}, SCENARIO_LIB={scl}, SESSION_MGR={smgr}, "
+                f"TRADE_EXEC={rte}, AUTO_DECISION={rade}",
+            )
+        except Exception as exc:
+            return _check_item("version_info_v121", "version_git", "WARN", str(exc))
 
     # ----------------------------------------------------------------
     # Run
@@ -3062,6 +3121,11 @@ class StableReleaseChecklistV060:
             self._check_replay_future_firewall,
             self._check_replay_trade_execution_disabled,
             self._check_version_info_v120,
+            # v1.2.1 Replay Scenario & Session Manager
+            self._check_replay_scenario_library,
+            self._check_replay_session_manager,
+            self._check_replay_checkpoint_available,
+            self._check_version_info_v121,
         ]
 
         for fn in checklist_groups:

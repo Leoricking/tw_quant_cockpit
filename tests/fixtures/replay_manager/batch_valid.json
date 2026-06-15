@@ -1,0 +1,9 @@
+{
+  "scenario_id": "RSC-BUILTIN-FREE-PRACTICE-001",
+  "symbols": ["2454", "2330", "2345"],
+  "date_ranges": null,
+  "max_sessions": 50,
+  "allow_write": false,
+  "estimated_count": 3,
+  "_note": "Valid batch plan for 3 symbols, within 50 limit. dry_run by default."
+}

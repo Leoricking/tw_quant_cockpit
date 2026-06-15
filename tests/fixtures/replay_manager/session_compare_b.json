@@ -1,0 +1,16 @@
+{
+  "session_id": "RPL-COMPARE-B-001",
+  "session_name": "Compare Test Session B",
+  "symbol": "2454",
+  "start_date": "2023-01-02",
+  "end_date": "2023-06-30",
+  "scenario_id": "RSC-BUILTIN-PULLBACK-001",
+  "research_only": true,
+  "no_real_orders": true,
+  "_decisions": [
+    {"action": "WATCH", "confidence": 45},
+    {"action": "WAIT", "confidence": 55},
+    {"action": "SKIP", "confidence": 40}
+  ],
+  "_note": "3 decisions, no future performance data, no realized_return, no future_return"
+}
