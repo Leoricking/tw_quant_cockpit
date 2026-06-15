@@ -277,12 +277,39 @@ quality-gate-reasons, quality-gate-explain, quality-gate-report, quality-gate-ov
 
 ---
 
+## v1.1.5 — Quality Gate Enforcement & Audit (2026-06-15)
+
+Run-level quality gate enforcement with immutable audit logging, reproducibility hashing, and GUI enforcement panel.
+
+**New modules:** `gate_enforcement/` (enforcement_schema, enforcement_policy, run_gate_resolver, symbol_filter, run_snapshot, reproducibility, audit_log, enforcement_engine, enforcement_store, enforcement_query, enforcement_health, __init__)
+
+**New CLI (11 commands):**
+```
+gate-enforcement-health, gate-enforcement-preview, gate-enforcement-run,
+gate-enforcement-policy, gate-enforcement-audit-query, gate-enforcement-audit-verify,
+gate-enforcement-snapshot, gate-enforcement-hash, gate-enforcement-runs,
+gate-enforcement-compare, gate-enforcement-report
+```
+
+**--quality-gate / --gate-mode flags added to:** `validate-score`, `backtest-buy-points`, `backtest-screener`, `backtest-strategy-knowledge`
+
+**Gate modes:** enforce / audit_only / off / auto
+
+**New reports:** `quality_gate_enforcement_audit_report`, `gate_run_summary_report`, `gate_exclusion_summary_report`, `gate_reproducibility_summary_report`
+
+**Safety:** FORMAL eligible does NOT enable trading. Gate bypass disabled. Mock data formal enforcement blocked. Audit log raises RuntimeError on failure (never silent). Override requires explicit flag and is audited. No Real Orders.
+
+**Docs:** `docs/quality_gate_enforcement_audit_v1.1.5.md`
+
+---
+
 ## Roadmap
 
 | Version | Target |
 |---------|--------|
 | v1.1.3  | Data Freshness Monitor — Done |
 | v1.1.4  | Coverage Quality Gates — Done |
+| v1.1.5  | Quality Gate Enforcement & Audit — Done |
 | v1.2.0  | Replay Training UX |
 
 ---

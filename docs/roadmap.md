@@ -84,6 +84,19 @@
 | v1.1.2 | Coverage Repair Workflow | Done |
 | v1.1.3 | Data Freshness Monitor | Done |
 | v1.1.4 | Coverage Quality Gates | Done |
+| v1.1.5 | Quality Gate Enforcement & Audit | Done |
+
+---
+
+### v1.1.5 — Quality Gate Enforcement & Audit ✅
+
+- **Version:** 1.1.5 — feature release based on v1.1.4 Coverage Quality Gates
+- **Type:** Quality Gate Enforcement & Audit — run-level enforcement layer, no strategy changes, no broker API, no trading
+- **Changes:** gate_enforcement/ package (enforcement_schema, enforcement_policy, run_gate_resolver, symbol_filter, run_snapshot, reproducibility, audit_log, enforcement_engine, enforcement_store, enforcement_query, enforcement_health, __init__), reports/quality_gate_enforcement_audit_report.py, 11 new CLI commands (gate-enforcement-health/preview/run/policy/audit-query/audit-verify/snapshot/hash/runs/compare/report), --quality-gate/--gate-mode flags on validate-score/backtest-buy-points/backtest-screener/backtest-strategy-knowledge, GUI panel + adapter, GUI nav tab (data group), 4 new report types in report pack, stable checklist checks (5 new), v060 checklist checks (5 new), intelligence checklist check (gate_enforcement_v115_safe), regression tests (9 new), tests/fixtures/gate_enforcement/ (11 fixtures), docs/quality_gate_enforcement_audit_v1.1.5.md, .gitignore updates
+- **Safety:** FORMAL eligible does NOT enable trading, Gate bypass DISABLED, Mock data formal enforcement BLOCKED, Audit log raises RuntimeError on failure, Override requires explicit flag and is audited, Override cannot enable trading, No Real Orders, Production Trading BLOCKED
+
+**Next:**
+- v1.2.0: Replay Training UX
 
 ---
 
@@ -93,9 +106,6 @@
 - **Type:** Coverage Quality Gates — data eligibility evaluation only, no strategy changes, no broker API, no trading
 - **Changes:** quality_gates/ package (gate_schema, gate_policy, symbol_gate_evaluator, universe_gate_evaluator, gate_decision_engine, gate_override, gate_store, gate_query, gate_health, __init__), reports/coverage_quality_gate_report.py, 12 new CLI commands (quality-gate-health/symbol/universe/matrix/summary/formal/observational/blocked/reasons/explain/report/override-request), GUI panel + adapter, GUI nav tab (data group), report pack entry, stable checklist checks (5 new), v060 checklist checks (5 new), intelligence checklist check (coverage_quality_gate_v114_safe), regression tests (20 new), tests/fixtures/quality_gates/ (12 CSVs), docs/coverage_quality_gates_v1.1.4.md, .gitignore updates, README/docs refresh
 - **Safety:** Mock/Invalid/Stale/Conflict data cannot pass FORMAL gate, Override DISABLED by default, Override max level OBSERVATIONAL, Gate does NOT enable trading, No Real Orders, Production Trading BLOCKED
-
-**Next:**
-- v1.2.0: Replay Training UX
 
 ---
 

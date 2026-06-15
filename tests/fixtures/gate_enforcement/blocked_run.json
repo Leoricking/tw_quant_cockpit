@@ -1,0 +1,21 @@
+{
+  "_comment": "Fixture: blocked run — all symbols have integrity-blocking decisions; formal run must be blocked. Research Only.",
+  "run_id": "test-blocked-run-001",
+  "command": "validate-score",
+  "mode": "real",
+  "requested_level": "FORMAL",
+  "quality_gate": "PRICE_BACKTEST_GATE",
+  "gate_mode": "enforce",
+  "symbols_requested": ["XX", "YY", "ZZ"],
+  "gate_decisions": {
+    "XX": "BLOCKED_INVALID",
+    "YY": "BLOCKED_CONFLICT",
+    "ZZ": "BLOCKED_FUTURE_DATE"
+  },
+  "expected_included": [],
+  "expected_excluded": ["XX", "YY", "ZZ"],
+  "run_blocked": true,
+  "no_real_orders": true,
+  "broker_disabled": true,
+  "research_only": true
+}

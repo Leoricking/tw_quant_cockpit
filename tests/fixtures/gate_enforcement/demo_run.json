@@ -1,0 +1,22 @@
+{
+  "_comment": "Fixture: demo run — FORMAL, OBSERVATIONAL, DEMO pass; integrity-blocked excluded. Research Only.",
+  "run_id": "test-demo-run-001",
+  "command": "validate-score",
+  "mode": "mock",
+  "requested_level": "DEMO",
+  "quality_gate": "PRICE_BACKTEST_GATE",
+  "gate_mode": "enforce",
+  "symbols_requested": ["AA", "BB", "CC", "DD", "EE"],
+  "gate_decisions": {
+    "AA": "ELIGIBLE_FORMAL",
+    "BB": "ELIGIBLE_OBSERVATIONAL",
+    "CC": "DEMO_ONLY",
+    "DD": "BLOCKED_INVALID",
+    "EE": "BLOCKED_CONFLICT"
+  },
+  "expected_included": ["AA", "BB", "CC"],
+  "expected_excluded": ["DD", "EE"],
+  "no_real_orders": true,
+  "broker_disabled": true,
+  "research_only": true
+}

@@ -1,5 +1,5 @@
 """
-release/version_info.py — Centralized version info for TW Quant Cockpit v1.1.4.
+release/version_info.py — Centralized version info for TW Quant Cockpit v1.1.5.
 [!] Research Only. No Real Orders. Production Trading: BLOCKED.
 [!] VALIDATED does not enable trading. Broker Execution Disabled.
 [!] Data Universe Expansion. Real Data Coverage Required.
@@ -10,6 +10,7 @@ release/version_info.py — Centralized version info for TW Quant Cockpit v1.1.4
 [!] Coverage Quality Gates. Mock/stale/conflict/invalid data cannot pass formal gate.
 [!] Quality Gate Override DISABLED by default. Gate does NOT enable trading.
 [!] Mock Data Formal Conclusion: DISABLED. Not Investment Advice.
+[!] Quality Gate Enforcement & Audit. Gate bypass DISABLED. Not Investment Advice.
 """
 from __future__ import annotations
 import logging
@@ -19,11 +20,11 @@ logger = logging.getLogger(__name__)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 # ---------------------------------------------------------------------------
-# v1.1.4 module-level constants (Coverage Quality Gates)
+# v1.1.5 module-level constants (Quality Gate Enforcement & Audit)
 # ---------------------------------------------------------------------------
-VERSION                             = "1.1.4"
-RELEASE_NAME                        = "Coverage Quality Gates"
-BASE_RELEASE                        = "1.1.3 Data Freshness Monitor"
+VERSION                             = "1.1.5"
+RELEASE_NAME                        = "Quality Gate Enforcement & Audit"
+BASE_RELEASE                        = "1.1.4 Coverage Quality Gates"
 BASE_RELEASE_NAME                   = "Data Freshness Monitor"
 MAINTENANCE_RELEASE                 = False
 RELEASE_STAGE                       = "STABLE"
@@ -81,15 +82,23 @@ AUTO_EXTERNAL_REFRESH_ENABLED       = False
 STALE_DATA_AUTO_REPAIR_ENABLED      = False
 FUTURE_DATE_COUNTS_AS_FRESH         = False
 MOCK_DATA_FORMAL_FRESHNESS_ALLOWED  = False
-# v1.1.4 new flags
+# v1.1.4 preserved flags
 COVERAGE_QUALITY_GATES_AVAILABLE    = True
 FORMAL_BACKTEST_GATE_AVAILABLE      = True
 FORMAL_VALIDATION_GATE_AVAILABLE    = True
-QUALITY_GATE_OVERRIDE_DISABLED_BY_DEFAULT = True
 MOCK_DATA_FORMAL_GATE_ALLOWED       = False
 STALE_DATA_FORMAL_GATE_ALLOWED      = False
 CONFLICT_DATA_FORMAL_GATE_ALLOWED   = False
 INVALID_DATA_FORMAL_GATE_ALLOWED    = False
+# v1.1.5 new flags
+QUALITY_GATE_ENFORCEMENT_AVAILABLE      = True
+QUALITY_GATE_AUDIT_AVAILABLE            = True
+RUN_GATE_SNAPSHOT_AVAILABLE             = True
+RUN_REPRODUCIBILITY_HASH_AVAILABLE      = True
+QUALITY_GATE_OVERRIDE_DISABLED_BY_DEFAULT = True
+QUALITY_GATE_BYPASS_ALLOWED             = False
+MOCK_DATA_FORMAL_ENFORCEMENT_ALLOWED    = False
+BLOCKED_DATA_FORMAL_ENFORCEMENT_ALLOWED = False
 
 
 class VersionInfo:
@@ -253,11 +262,18 @@ def print_version_info() -> None:
     print(f"  Coverage Quality Gates Available: {COVERAGE_QUALITY_GATES_AVAILABLE}")
     print(f"  Formal Backtest Gate Available: {FORMAL_BACKTEST_GATE_AVAILABLE}")
     print(f"  Formal Validation Gate Available: {FORMAL_VALIDATION_GATE_AVAILABLE}")
-    print(f"  Quality Gate Override Disabled By Default: {QUALITY_GATE_OVERRIDE_DISABLED_BY_DEFAULT}")
     print(f"  Mock Data Formal Gate Allowed: {MOCK_DATA_FORMAL_GATE_ALLOWED}")
     print(f"  Stale Data Formal Gate Allowed: {STALE_DATA_FORMAL_GATE_ALLOWED}")
     print(f"  Conflict Data Formal Gate Allowed: {CONFLICT_DATA_FORMAL_GATE_ALLOWED}")
     print(f"  Invalid Data Formal Gate Allowed: {INVALID_DATA_FORMAL_GATE_ALLOWED}")
+    print(f"  Quality Gate Enforcement Available: {QUALITY_GATE_ENFORCEMENT_AVAILABLE}")
+    print(f"  Quality Gate Audit Available: {QUALITY_GATE_AUDIT_AVAILABLE}")
+    print(f"  Run Gate Snapshot Available: {RUN_GATE_SNAPSHOT_AVAILABLE}")
+    print(f"  Run Reproducibility Hash Available: {RUN_REPRODUCIBILITY_HASH_AVAILABLE}")
+    print(f"  Quality Gate Override Disabled By Default: {QUALITY_GATE_OVERRIDE_DISABLED_BY_DEFAULT}")
+    print(f"  Quality Gate Bypass Allowed: {QUALITY_GATE_BYPASS_ALLOWED}")
+    print(f"  Mock Data Formal Enforcement Allowed: {MOCK_DATA_FORMAL_ENFORCEMENT_ALLOWED}")
+    print(f"  Blocked Data Formal Enforcement Allowed: {BLOCKED_DATA_FORMAL_ENFORCEMENT_ALLOWED}")
     print("=" * 60)
 
 

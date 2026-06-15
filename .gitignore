@@ -395,3 +395,16 @@ reports/coverage_quality_gate_report_*.md
 
 # v1.1.4 Quality Gate fixtures ARE committed (exception)
 !tests/fixtures/quality_gates/*.csv
+
+# v1.1.5 Quality Gate Enforcement & Audit (runtime outputs — never commit)
+data/quality_gate_enforcement/
+data/quality_gate_audit/
+data/quality_gate_reports/quality_gate_enforcement_audit_report_*.md
+reports/quality_gate_enforcement_audit_report_*.md
+reports/gate_run_summary_report_*.md
+reports/gate_exclusion_summary_report_*.md
+reports/gate_reproducibility_summary_report_*.md
+
+# v1.1.5 Gate enforcement fixtures ARE committed (exception)
+!tests/fixtures/gate_enforcement/*.json
+!tests/fixtures/gate_enforcement/*.jsonl

@@ -78,6 +78,12 @@ REPORT_DATA_FRESHNESS = "data_freshness_report"
 # v1.1.4 Coverage Quality Gates
 REPORT_COVERAGE_QUALITY_GATE = "coverage_quality_gate_report"
 
+# v1.1.5 Quality Gate Enforcement & Audit
+REPORT_GATE_ENFORCEMENT_AUDIT    = "quality_gate_enforcement_audit_report"
+REPORT_GATE_RUN_SUMMARY          = "gate_run_summary_report"
+REPORT_GATE_EXCLUSION_SUMMARY    = "gate_exclusion_summary_report"
+REPORT_GATE_REPRODUCIBILITY      = "gate_reproducibility_summary_report"
+
 logger = logging.getLogger(__name__)
 
 # ---------------------------------------------------------------------------
@@ -186,6 +192,11 @@ _PACK_DEFINITIONS: Dict[str, List[str]] = {
         REPORT_DATA_FRESHNESS,
         # v1.1.4 Coverage Quality Gates (optional in weekly pack)
         REPORT_COVERAGE_QUALITY_GATE,
+        # v1.1.5 Quality Gate Enforcement & Audit (optional in weekly pack)
+        REPORT_GATE_ENFORCEMENT_AUDIT,
+        REPORT_GATE_RUN_SUMMARY,
+        REPORT_GATE_EXCLUSION_SUMMARY,
+        REPORT_GATE_REPRODUCIBILITY,
     ],
     PACK_FULL: [
         REPORT_DAILY_MARKET,
@@ -261,6 +272,11 @@ _PACK_DEFINITIONS: Dict[str, List[str]] = {
         REPORT_DATA_FRESHNESS,
         # v1.1.4 Coverage Quality Gates (optional in full pack)
         REPORT_COVERAGE_QUALITY_GATE,
+        # v1.1.5 Quality Gate Enforcement & Audit (optional in full pack)
+        REPORT_GATE_ENFORCEMENT_AUDIT,
+        REPORT_GATE_RUN_SUMMARY,
+        REPORT_GATE_EXCLUSION_SUMMARY,
+        REPORT_GATE_REPRODUCIBILITY,
     ],
 }
 

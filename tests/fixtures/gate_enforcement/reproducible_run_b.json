@@ -1,0 +1,23 @@
+{
+  "_comment": "Fixture B for reproducibility test. Same payload as run_a must produce same hash. Research Only.",
+  "run_id": "test-repro-b",
+  "command": "validate-score",
+  "mode": "real",
+  "requested_level": "FORMAL",
+  "quality_gate": "PRICE_BACKTEST_GATE",
+  "gate_mode": "enforce",
+  "symbols": ["AA", "BB", "CC"],
+  "gate_decisions": {
+    "AA": "ELIGIBLE_FORMAL",
+    "BB": "ELIGIBLE_OBSERVATIONAL",
+    "CC": "DEMO_ONLY"
+  },
+  "args": {
+    "dry_run": true,
+    "limit": 10
+  },
+  "expected_hash_match": "reproducible_run_a",
+  "no_real_orders": true,
+  "broker_disabled": true,
+  "research_only": true
+}

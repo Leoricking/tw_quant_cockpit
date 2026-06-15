@@ -2335,6 +2335,105 @@ class StableReleaseChecklistV060:
         except Exception as exc:
             return _check_item("version_info_v114", "version_git", "WARN", str(exc))
 
+    def _check_enforcement_import(self) -> dict:
+        """v1.1.5 — gate_enforcement package imports correctly."""
+        try:
+            import gate_enforcement
+            _avail = getattr(gate_enforcement, "QUALITY_GATE_ENFORCEMENT_AVAILABLE", False)
+            _no_orders = getattr(gate_enforcement, "NO_REAL_ORDERS", False)
+            if _avail and _no_orders:
+                return _check_item(
+                    "enforcement_import", "gate_enforcement", "PASS",
+                    f"gate_enforcement: QUALITY_GATE_ENFORCEMENT_AVAILABLE={_avail}, NO_REAL_ORDERS={_no_orders}",
+                )
+            return _check_item(
+                "enforcement_import", "gate_enforcement", "FAIL",
+                f"gate_enforcement: QUALITY_GATE_ENFORCEMENT_AVAILABLE={_avail}, NO_REAL_ORDERS={_no_orders}",
+            )
+        except Exception as exc:
+            return _check_item("enforcement_import", "gate_enforcement", "FAIL", str(exc))
+
+    def _check_enforcement_formal_filter(self) -> dict:
+        """v1.1.5 — formal filter only allows ELIGIBLE_FORMAL symbols."""
+        try:
+            from gate_enforcement.symbol_filter import QualityGateSymbolFilter
+            from quality_gates.gate_schema import (
+                ELIGIBLE_FORMAL, ELIGIBLE_OBSERVATIONAL, DEMO_ONLY, BLOCKED_INVALID,
+            )
+            flt = QualityGateSymbolFilter()
+            mock_decisions = {
+                "AA": ELIGIBLE_FORMAL,
+                "BB": ELIGIBLE_OBSERVATIONAL,
+                "CC": DEMO_ONLY,
+                "DD": BLOCKED_INVALID,
+            }
+            included = flt.include_formal(mock_decisions)
+            if included == ["AA"]:
+                return _check_item(
+                    "enforcement_formal_filter", "gate_enforcement", "PASS",
+                    "Formal filter correctly restricts to ELIGIBLE_FORMAL only",
+                )
+            return _check_item(
+                "enforcement_formal_filter", "gate_enforcement", "FAIL",
+                f"Formal filter returned {included}, expected ['AA']",
+            )
+        except Exception as exc:
+            return _check_item("enforcement_formal_filter", "gate_enforcement", "WARN", str(exc))
+
+    def _check_enforcement_mock_guard(self) -> dict:
+        """v1.1.5 — MOCK_DATA_FORMAL_ENFORCEMENT_ALLOWED is False."""
+        try:
+            import gate_enforcement
+            _mock = getattr(gate_enforcement, "MOCK_DATA_FORMAL_ENFORCEMENT_ALLOWED", True)
+            if not _mock:
+                return _check_item(
+                    "enforcement_mock_guard", "gate_enforcement", "PASS",
+                    f"MOCK_DATA_FORMAL_ENFORCEMENT_ALLOWED={_mock} (must be False)",
+                )
+            return _check_item(
+                "enforcement_mock_guard", "gate_enforcement", "FAIL",
+                f"MOCK_DATA_FORMAL_ENFORCEMENT_ALLOWED={_mock} (must be False)",
+            )
+        except Exception as exc:
+            return _check_item("enforcement_mock_guard", "gate_enforcement", "FAIL", str(exc))
+
+    def _check_enforcement_audit_chain(self) -> dict:
+        """v1.1.5 — audit log chain verification does not crash."""
+        try:
+            from gate_enforcement.audit_log import QualityGateAuditLog
+            log = QualityGateAuditLog()
+            chain = log.verify_chain()
+            if isinstance(chain, dict) and "valid" in chain:
+                return _check_item(
+                    "enforcement_audit_chain", "gate_enforcement", "PASS",
+                    f"QualityGateAuditLog.verify_chain() returned valid dict: valid={chain.get('valid')}",
+                )
+            return _check_item(
+                "enforcement_audit_chain", "gate_enforcement", "WARN",
+                f"verify_chain() returned unexpected type: {type(chain)}",
+            )
+        except Exception as exc:
+            return _check_item("enforcement_audit_chain", "gate_enforcement", "WARN", str(exc))
+
+    def _check_version_info_v115(self) -> dict:
+        """v1.1.5 — VERSION is 1.1.5 and QUALITY_GATE_ENFORCEMENT_AVAILABLE=True."""
+        try:
+            from release.version_info import VERSION
+            import release.version_info as _vi
+            ge_available = getattr(_vi, "QUALITY_GATE_ENFORCEMENT_AVAILABLE", None)
+            if VERSION == "1.1.5" and ge_available:
+                return _check_item(
+                    "version_info_v115", "version_git", "PASS",
+                    f"VERSION={VERSION}, QUALITY_GATE_ENFORCEMENT_AVAILABLE={ge_available}",
+                )
+            return _check_item(
+                "version_info_v115", "version_git", "WARN",
+                f"VERSION={VERSION}, QUALITY_GATE_ENFORCEMENT_AVAILABLE={ge_available}",
+                warning="Expected VERSION=1.1.5 with QUALITY_GATE_ENFORCEMENT_AVAILABLE=True",
+            )
+        except Exception as exc:
+            return _check_item("version_info_v115", "version_git", "WARN", str(exc))
+
     # ----------------------------------------------------------------
     # Run
     # ----------------------------------------------------------------
@@ -2475,6 +2574,12 @@ class StableReleaseChecklistV060:
             self._check_quality_gate_conflict_guard,
             self._check_quality_gate_future_date_guard,
             self._check_version_info_v114,
+            # v1.1.5 Quality Gate Enforcement & Audit
+            self._check_enforcement_import,
+            self._check_enforcement_formal_filter,
+            self._check_enforcement_mock_guard,
+            self._check_enforcement_audit_chain,
+            self._check_version_info_v115,
         ]
 
         for fn in checklist_groups:

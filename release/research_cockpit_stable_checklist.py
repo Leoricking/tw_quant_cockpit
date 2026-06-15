@@ -1074,6 +1074,55 @@ class ResearchCockpitStableChecklist:
         except Exception as exc:
             checks.append(_mk("quality_gate_no_forbidden_actions", "quality_gates", "WARN", str(exc)))
 
+        # v1.1.5 Quality Gate Enforcement & Audit checks
+        try:
+            import gate_enforcement
+            _gea = getattr(gate_enforcement, "QUALITY_GATE_ENFORCEMENT_AVAILABLE", False)
+            checks.append(_mk("quality_gate_enforcement_available", "gate_enforcement",
+                              "PASS" if _gea else "FAIL",
+                              f"gate_enforcement: QUALITY_GATE_ENFORCEMENT_AVAILABLE={_gea}"))
+        except Exception as exc:
+            checks.append(_mk("quality_gate_enforcement_available", "gate_enforcement", "FAIL", str(exc)))
+
+        try:
+            import gate_enforcement
+            _snap = getattr(gate_enforcement, "RUN_GATE_SNAPSHOT_AVAILABLE", False)
+            checks.append(_mk("run_gate_snapshot_available", "gate_enforcement",
+                              "PASS" if _snap else "FAIL",
+                              f"RUN_GATE_SNAPSHOT_AVAILABLE={_snap}"))
+        except Exception as exc:
+            checks.append(_mk("run_gate_snapshot_available", "gate_enforcement", "FAIL", str(exc)))
+
+        try:
+            import gate_enforcement
+            _rhash = getattr(gate_enforcement, "RUN_REPRODUCIBILITY_HASH_AVAILABLE", False)
+            checks.append(_mk("reproducibility_hash_available", "gate_enforcement",
+                              "PASS" if _rhash else "FAIL",
+                              f"RUN_REPRODUCIBILITY_HASH_AVAILABLE={_rhash}"))
+        except Exception as exc:
+            checks.append(_mk("reproducibility_hash_available", "gate_enforcement", "FAIL", str(exc)))
+
+        try:
+            import gate_enforcement
+            _bypass = getattr(gate_enforcement, "QUALITY_GATE_BYPASS_ALLOWED", True)
+            checks.append(_mk("gate_bypass_disabled", "gate_enforcement",
+                              "PASS" if not _bypass else "FAIL",
+                              f"QUALITY_GATE_BYPASS_ALLOWED={_bypass} (must be False)"))
+        except Exception as exc:
+            checks.append(_mk("gate_bypass_disabled", "gate_enforcement", "FAIL", str(exc)))
+
+        try:
+            from gate_enforcement.enforcement_health import QualityGateEnforcementHealthCheck
+            _eh = QualityGateEnforcementHealthCheck()
+            _eh_results = _eh.run()
+            _eh_statuses = [r[1] for r in _eh_results]
+            _eh_fail = sum(1 for s in _eh_statuses if s == "FAIL")
+            checks.append(_mk("enforcement_no_forbidden_actions", "gate_enforcement",
+                              "PASS" if _eh_fail == 0 else "FAIL",
+                              f"QualityGateEnforcementHealthCheck: {len(_eh_results)} checks, {_eh_fail} FAIL"))
+        except Exception as exc:
+            checks.append(_mk("enforcement_no_forbidden_actions", "gate_enforcement", "WARN", str(exc)))
+
         # Rebuild summary counts to include new checks
         total         = len(checks)
         pass_count    = sum(1 for c in checks if c["status"] == "PASS")

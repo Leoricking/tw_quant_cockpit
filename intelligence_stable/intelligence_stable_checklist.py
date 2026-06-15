@@ -1262,4 +1262,41 @@ class IntelligenceStableChecklist:
                 suggested_fix="Run: python main.py quality-gate-health",
             ))
 
+        # v1.1.5 gate_enforcement_v115_safe — enforcement package is safe
+        try:
+            import importlib
+            mod_ge = importlib.import_module("gate_enforcement")
+            no_orders_ge    = getattr(mod_ge, "NO_REAL_ORDERS", None)
+            bypass_ge       = getattr(mod_ge, "QUALITY_GATE_BYPASS_ALLOWED", None)
+            mock_enforce_ge = getattr(mod_ge, "MOCK_DATA_FORMAL_ENFORCEMENT_ALLOWED", None)
+            enforce_avail   = getattr(mod_ge, "QUALITY_GATE_ENFORCEMENT_AVAILABLE", None)
+            if (no_orders_ge is True and bypass_ge is False
+                    and mock_enforce_ge is False and enforce_avail is True):
+                checks.append(_check(
+                    "gate_enforcement_v115_safe", "stable_integration",
+                    "v1.1.5 gate_enforcement_v115_safe",
+                    CHECK_PASS, SEV_LOW,
+                    "gate_enforcement: NO_REAL_ORDERS=True, QUALITY_GATE_BYPASS_ALLOWED=False, "
+                    "MOCK_DATA_FORMAL_ENFORCEMENT_ALLOWED=False, QUALITY_GATE_ENFORCEMENT_AVAILABLE=True.",
+                ))
+            else:
+                checks.append(_check(
+                    "gate_enforcement_v115_safe", "stable_integration",
+                    "v1.1.5 gate_enforcement_v115_safe",
+                    CHECK_WARN, SEV_LOW,
+                    f"gate_enforcement safety flags: NO_REAL_ORDERS={no_orders_ge}, "
+                    f"QUALITY_GATE_BYPASS_ALLOWED={bypass_ge}, "
+                    f"MOCK_DATA_FORMAL_ENFORCEMENT_ALLOWED={mock_enforce_ge}, "
+                    f"QUALITY_GATE_ENFORCEMENT_AVAILABLE={enforce_avail}",
+                    suggested_fix="Ensure gate_enforcement/__init__.py has correct v1.1.5 safety flags.",
+                ))
+        except Exception as exc:
+            checks.append(_check(
+                "gate_enforcement_v115_safe", "stable_integration",
+                "v1.1.5 gate_enforcement_v115_safe",
+                CHECK_WARN, SEV_LOW,
+                f"Could not verify gate_enforcement v1.1.5 safety (optional): {exc}",
+                suggested_fix="Run: python main.py gate-enforcement-health",
+            ))
+
         return checks

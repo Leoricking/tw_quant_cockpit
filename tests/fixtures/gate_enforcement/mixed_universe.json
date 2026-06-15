@@ -1,0 +1,26 @@
+{
+  "_comment": "Fixture: mixed universe — symbols across all decision levels. Research Only.",
+  "run_id": "test-mixed-universe-001",
+  "command": "backtest-buy-points",
+  "mode": "real",
+  "quality_gate": "BUY_POINT_GATE",
+  "gate_mode": "enforce",
+  "symbols_requested": ["F001", "F002", "O001", "O002", "D001", "B001", "B002", "B003"],
+  "gate_decisions": {
+    "F001": "ELIGIBLE_FORMAL",
+    "F002": "ELIGIBLE_FORMAL",
+    "O001": "ELIGIBLE_OBSERVATIONAL",
+    "O002": "ELIGIBLE_OBSERVATIONAL",
+    "D001": "DEMO_ONLY",
+    "B001": "BLOCKED_INVALID",
+    "B002": "BLOCKED_CONFLICT",
+    "B003": "BLOCKED_FUTURE_DATE"
+  },
+  "formal_count": 2,
+  "observational_count": 2,
+  "demo_count": 1,
+  "blocked_count": 3,
+  "no_real_orders": true,
+  "broker_disabled": true,
+  "research_only": true
+}

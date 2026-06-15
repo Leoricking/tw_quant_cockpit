@@ -602,6 +602,15 @@ try:
 except Exception:
     pass
 
+# v1.1.5 Quality Gate Enforcement & Audit panel — optional
+# ---------------------------------------------------------------------------
+_QUALITY_GATE_ENFORCEMENT_AVAILABLE = False
+try:
+    from gui.quality_gate_enforcement_panel import QualityGateEnforcementPanel
+    _QUALITY_GATE_ENFORCEMENT_AVAILABLE = True
+except Exception as _qge_exc:
+    logger.warning("QualityGateEnforcementPanel unavailable: %s", _qge_exc)
+
 # v0.5.1.1 Strategy Filter panel — inline (no separate panel file required)
 # ---------------------------------------------------------------------------
 _STRATEGY_FILTER_AVAILABLE = False

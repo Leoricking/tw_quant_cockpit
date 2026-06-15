@@ -1,0 +1,23 @@
+{
+  "_comment": "Fixture: override request — override disabled by default; explicit flag required. Research Only.",
+  "run_id": "test-override-001",
+  "command": "validate-score",
+  "mode": "real",
+  "requested_level": "FORMAL",
+  "quality_gate": "PRICE_BACKTEST_GATE",
+  "gate_mode": "enforce",
+  "allow_research_override": true,
+  "override_id": "test-override-id-001",
+  "override_reason": "test: explicit override for fixture",
+  "symbols_requested": ["AA", "BB"],
+  "gate_decisions": {
+    "AA": "ELIGIBLE_FORMAL",
+    "BB": "ELIGIBLE_OBSERVATIONAL"
+  },
+  "override_applied": true,
+  "override_must_be_audited": true,
+  "override_cannot_enable_trading": true,
+  "no_real_orders": true,
+  "broker_disabled": true,
+  "research_only": true
+}

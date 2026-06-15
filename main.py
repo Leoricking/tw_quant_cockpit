@@ -11689,6 +11689,258 @@ def cmd_quality_gate_override_request(args) -> None:
 
 
 # ---------------------------------------------------------------------------
+# v1.1.5 Quality Gate Enforcement & Audit handlers
+# [!] Research Only. No Real Orders. Gate does NOT enable trading.
+# [!] Gate bypass DISABLED. Override is research-only.
+# ---------------------------------------------------------------------------
+
+def _print_gate_enforcement_header() -> None:
+    print("=" * 60)
+    print("TW Quant Cockpit \u2014 Quality Gate Enforcement & Audit")
+    print("Research Only: True | No Real Orders: True")
+    print("Gate does NOT enable trading. Gate bypass: DISABLED.")
+    print("=" * 60)
+
+
+def cmd_gate_enforcement_health(args) -> None:
+    """Run gate enforcement health check. [!] Research Only. No Real Orders."""
+    _print_gate_enforcement_header()
+    try:
+        from gate_enforcement.enforcement_health import QualityGateEnforcementHealthCheck
+        checker = QualityGateEnforcementHealthCheck()
+        results = checker.run()
+        passed = sum(1 for _, s, _ in results if s == "PASS")
+        total = len(results)
+        print(f"  Passed: {passed}/{total}")
+        for name, status, msg in results:
+            print(f"  [{status}] {name}: {msg}")
+        print("[!] Research Only. No Real Orders.")
+    except Exception as exc:
+        print(f"  [ERROR] gate-enforcement-health failed: {exc}")
+        print("[!] Research Only. No Real Orders.")
+
+
+def cmd_gate_enforcement_run(args) -> None:
+    """Run quality gate enforcement for a command. [!] Research Only."""
+    _print_gate_enforcement_header()
+    command = getattr(args, "command_name", None) or getattr(args, "command", "validate-score")
+    mode = getattr(args, "mode", "real")
+    symbols_arg = getattr(args, "symbols", None)
+    stock = getattr(args, "stock", None)
+    symbols = []
+    if symbols_arg:
+        symbols = [s.strip() for s in str(symbols_arg).split(",") if s.strip()]
+    elif stock:
+        symbols = [str(stock).strip()]
+    print(f"  Command: {command} | Mode: {mode} | Symbols: {symbols}")
+    print("=" * 60)
+    try:
+        from gate_enforcement.enforcement_engine import QualityGateEnforcementEngine
+        engine = QualityGateEnforcementEngine()
+        included, result = engine.enforce(command, args, symbols, mode=mode)
+        print(f"  Status:   {result.status}")
+        print(f"  Gate:     {result.gate_name}")
+        print(f"  Level:    {result.applied_level}")
+        print(f"  Included: {len(included)} symbols")
+        print(f"  Excluded: {len(result.excluded_symbols)} symbols")
+        print(f"  Repro Hash: {result.reproducibility_hash or 'N/A'}")
+        if result.warnings:
+            for w in result.warnings:
+                print(f"  [WARN] {w}")
+        print("[!] Research Only. No Real Orders. Gate does NOT enable trading.")
+    except Exception as exc:
+        print(f"  [ERROR] gate-enforcement-run failed: {exc}")
+
+
+def cmd_gate_enforcement_preview(args) -> None:
+    """Dry-run preview of gate enforcement. [!] Research Only."""
+    _print_gate_enforcement_header()
+    command = getattr(args, "command_name", None) or getattr(args, "command", "validate-score")
+    tier = getattr(args, "tier", "core10")
+    mode = getattr(args, "mode", "real")
+    print(f"  [PREVIEW] Command: {command} | Tier: {tier} | Mode: {mode}")
+    print("  This is a dry-run preview — no data will be written.")
+    print("=" * 60)
+    try:
+        from gate_enforcement.run_gate_resolver import RunGateResolver
+        from gate_enforcement.enforcement_policy import QualityGateEnforcementPolicy
+        resolver = RunGateResolver()
+        policy = QualityGateEnforcementPolicy()
+        gate = policy.resolve_gate(command)
+        default_level = policy.resolve_default_level(command, mode)
+        print(f"  Resolved Gate:    {gate}")
+        print(f"  Default Level:    {default_level}")
+        print(f"  Observational OK: {policy.allow_observational(command)}")
+        print(f"  Demo OK:          {policy.allow_demo(command)}")
+        print(f"  Enforcement Req:  {policy.enforcement_required(command)}")
+        print(f"  Policy Version:   {policy.POLICY_VERSION}")
+        print("[!] Preview only. Research Only. No Real Orders.")
+    except Exception as exc:
+        print(f"  [ERROR] gate-enforcement-preview failed: {exc}")
+
+
+def cmd_gate_enforcement_runs(args) -> None:
+    """List latest gate enforcement runs. [!] Research Only."""
+    _print_gate_enforcement_header()
+    try:
+        from gate_enforcement.enforcement_query import EnforcementQuery
+        query = EnforcementQuery()
+        runs = query.latest_runs()
+        if not runs:
+            print("  No enforcement runs found.")
+            return
+        print(f"  {'run_id':<36}  {'status':<20}  {'gate_name':<25}  {'applied_level'}")
+        print("  " + "-" * 100)
+        for r in runs[-20:]:
+            print(f"  {r.get('run_id',''):<36}  {r.get('status',''):<20}  {r.get('gate_name',''):<25}  {r.get('applied_level','')}")
+        print("[!] Research Only. No Real Orders.")
+    except Exception as exc:
+        print(f"  [ERROR] gate-enforcement-runs failed: {exc}")
+
+
+def cmd_gate_enforcement_run_detail(args) -> None:
+    """Show detail of a specific enforcement run. [!] Research Only."""
+    _print_gate_enforcement_header()
+    run_id = getattr(args, "run_id", None)
+    if not run_id:
+        print("  [ERROR] --run-id is required.")
+        return
+    try:
+        from gate_enforcement.enforcement_query import EnforcementQuery
+        query = EnforcementQuery()
+        result = query.get_run(run_id)
+        for k, v in result.items():
+            print(f"  {k}: {v}")
+        print("[!] Research Only. No Real Orders.")
+    except Exception as exc:
+        print(f"  [ERROR] gate-enforcement-run-detail failed: {exc}")
+
+
+def cmd_gate_enforcement_exclusions(args) -> None:
+    """Show excluded symbols for a run. [!] Research Only."""
+    _print_gate_enforcement_header()
+    run_id = getattr(args, "run_id", None)
+    if not run_id:
+        print("  [ERROR] --run-id is required.")
+        return
+    try:
+        from gate_enforcement.enforcement_query import EnforcementQuery
+        query = EnforcementQuery()
+        excluded = query.get_excluded_symbols(run_id)
+        reasons = query.get_exclusion_reasons(run_id)
+        if not excluded:
+            print(f"  No excluded symbols for run {run_id}")
+        else:
+            print(f"  Excluded symbols ({len(excluded)}):")
+            for sym in excluded:
+                r = reasons.get(sym, [])
+                print(f"    {sym}: {'; '.join(r) if r else 'see gate decisions'}")
+        print("[!] Research Only. No Real Orders.")
+    except Exception as exc:
+        print(f"  [ERROR] gate-enforcement-exclusions failed: {exc}")
+
+
+def cmd_gate_enforcement_snapshot(args) -> None:
+    """Show run gate snapshot. [!] Research Only."""
+    _print_gate_enforcement_header()
+    run_id = getattr(args, "run_id", None)
+    if not run_id:
+        print("  [ERROR] --run-id is required.")
+        return
+    try:
+        from gate_enforcement.enforcement_query import EnforcementQuery
+        query = EnforcementQuery()
+        snap = query.get_snapshot(run_id)
+        for k, v in snap.items():
+            print(f"  {k}: {v}")
+        print("[!] Research Only. No Real Orders.")
+    except Exception as exc:
+        print(f"  [ERROR] gate-enforcement-snapshot failed: {exc}")
+
+
+def cmd_gate_enforcement_verify(args) -> None:
+    """Verify reproducibility hash for a run. [!] Research Only."""
+    _print_gate_enforcement_header()
+    run_id = getattr(args, "run_id", None)
+    if not run_id:
+        print("  [ERROR] --run-id is required.")
+        return
+    try:
+        from gate_enforcement.enforcement_query import EnforcementQuery
+        query = EnforcementQuery()
+        verified = query.verify_run(run_id)
+        repro_hash = query.get_reproducibility_hash(run_id)
+        print(f"  Run ID: {run_id}")
+        print(f"  Hash: {repro_hash or 'N/A'}")
+        print(f"  Verified: {'YES' if verified else 'NO'}")
+        print("[!] Research Only. No Real Orders.")
+    except Exception as exc:
+        print(f"  [ERROR] gate-enforcement-verify failed: {exc}")
+
+
+def cmd_gate_enforcement_compare(args) -> None:
+    """Compare two enforcement runs. [!] Research Only."""
+    _print_gate_enforcement_header()
+    run_a = getattr(args, "run_a", None)
+    run_b = getattr(args, "run_b", None)
+    if not run_a or not run_b:
+        print("  [ERROR] --run-a and --run-b are required.")
+        return
+    try:
+        from gate_enforcement.enforcement_query import EnforcementQuery
+        query = EnforcementQuery()
+        diff = query.compare_runs(run_a, run_b)
+        print(f"  Run A: {diff.get('run_a')}")
+        print(f"  Run B: {diff.get('run_b')}")
+        print(f"  Hashes Match: {diff.get('hashes_match')}")
+        print(f"  Status A: {diff.get('status_a')}")
+        print(f"  Status B: {diff.get('status_b')}")
+        print(f"  Included in A only: {diff.get('included_a_only')}")
+        print(f"  Included in B only: {diff.get('included_b_only')}")
+        print(f"  Included in both:   {diff.get('included_both')}")
+        print("[!] Research Only. No Real Orders.")
+    except Exception as exc:
+        print(f"  [ERROR] gate-enforcement-compare failed: {exc}")
+
+
+def cmd_gate_enforcement_audit(args) -> None:
+    """Show audit events for a run. [!] Research Only."""
+    _print_gate_enforcement_header()
+    run_id = getattr(args, "run_id", None)
+    try:
+        from gate_enforcement.audit_log import QualityGateAuditLog
+        log = QualityGateAuditLog()
+        events = log.list_events(run_id=run_id)
+        if not events:
+            print(f"  No audit events{' for run ' + run_id if run_id else ''}.")
+            return
+        for ev in events:
+            print(f"  [{ev.get('event_type','?')}] {ev.get('timestamp','')} | {ev.get('gate_name','')} | {ev.get('reason','')}")
+        chain = log.verify_chain()
+        print(f"  Chain valid: {chain.get('valid')} | Events: {chain.get('events')}")
+        print("[!] Research Only. No Real Orders.")
+    except Exception as exc:
+        print(f"  [ERROR] gate-enforcement-audit failed: {exc}")
+
+
+def cmd_gate_enforcement_report(args) -> None:
+    """Build gate enforcement audit report. [!] Research Only."""
+    _print_gate_enforcement_header()
+    run_id = getattr(args, "run_id", None)
+    report_dir = getattr(args, "report_dir", "reports")
+    print(f"  Run ID: {run_id or 'latest'} | Report Dir: {report_dir}")
+    print("=" * 60)
+    try:
+        from reports.quality_gate_enforcement_audit_report import QualityGateEnforcementAuditReportBuilder
+        builder = QualityGateEnforcementAuditReportBuilder()
+        path = builder.build(run_id=run_id, output_dir=report_dir)
+        print(f"  Report saved to: {path}")
+        print("[!] Research Only. No Real Orders.")
+    except Exception as exc:
+        print(f"  [ERROR] gate-enforcement-report failed: {exc}")
+
+
+# ---------------------------------------------------------------------------
 # v1.0.9 Final Maintenance Rollup handlers
 # ---------------------------------------------------------------------------
 
@@ -15325,6 +15577,12 @@ def _build_parser() -> argparse.ArgumentParser:
     p_vs.add_argument("--end",    default=None,   help="End date YYYY-MM-DD (optional)")
     p_vs.add_argument("--top",    type=int, default=8, help="Top-N filter (default: 8)")
     p_vs.add_argument("--output", default=None,   help="Output directory (default: data/backtest_results/)")
+    p_vs.add_argument("--quality-gate", dest="quality_gate", default=None,
+                      choices=["off", "auto", "formal", "observational", "demo"],
+                      help="[v1.1.5] Quality gate level (default: auto/policy)")
+    p_vs.add_argument("--gate-mode", dest="gate_mode", default="enforce",
+                      choices=["enforce", "audit-only", "off"],
+                      help="[v1.1.5] Gate mode (default: enforce)")
 
     # --- backtest-buy-points ---
     p_bbp = subparsers.add_parser(
@@ -15337,6 +15595,12 @@ def _build_parser() -> argparse.ArgumentParser:
     p_bbp.add_argument("--end",    default=None,   help="End date YYYY-MM-DD (optional)")
     p_bbp.add_argument("--stock",  default=None,   help="Single symbol (optional; default: all)")
     p_bbp.add_argument("--output", default=None,   help="Output directory (default: data/backtest_results/)")
+    p_bbp.add_argument("--quality-gate", dest="quality_gate", default=None,
+                       choices=["off", "auto", "formal", "observational", "demo"],
+                       help="[v1.1.5] Quality gate level")
+    p_bbp.add_argument("--gate-mode", dest="gate_mode", default="enforce",
+                       choices=["enforce", "audit-only", "off"],
+                       help="[v1.1.5] Gate mode")
 
     # --- backtest-screener ---
     p_bs = subparsers.add_parser(
@@ -15349,6 +15613,12 @@ def _build_parser() -> argparse.ArgumentParser:
     p_bs.add_argument("--end",    default=None,   help="End date YYYY-MM-DD (optional)")
     p_bs.add_argument("--top",    type=int, default=8, help="Top-N filter (default: 8)")
     p_bs.add_argument("--output", default=None,   help="Output directory (default: data/backtest_results/)")
+    p_bs.add_argument("--quality-gate", dest="quality_gate", default=None,
+                      choices=["off", "auto", "formal", "observational", "demo"],
+                      help="[v1.1.5] Quality gate level")
+    p_bs.add_argument("--gate-mode", dest="gate_mode", default="enforce",
+                      choices=["enforce", "audit-only", "off"],
+                      help="[v1.1.5] Gate mode")
 
     # --- backtest-strategy-knowledge ---
     p_bsk = subparsers.add_parser(
@@ -15368,6 +15638,12 @@ def _build_parser() -> argparse.ArgumentParser:
                        help="CSV output directory (default: data/backtest_results/)")
     p_bsk.add_argument("--report-dir",   dest="report_dir",   default=None,
                        help="Markdown report directory (default: reports/)")
+    p_bsk.add_argument("--quality-gate", dest="quality_gate", default=None,
+                       choices=["off", "auto", "formal", "observational", "demo"],
+                       help="[v1.1.5] Quality gate level")
+    p_bsk.add_argument("--gate-mode", dest="gate_mode", default="enforce",
+                       choices=["enforce", "audit-only", "off"],
+                       help="[v1.1.5] Gate mode")
 
     # --- build-universe-manifest ---
     p_bum = subparsers.add_parser(
@@ -17233,6 +17509,88 @@ def _build_parser() -> argparse.ArgumentParser:
     p_frep.add_argument("--mode",       default="real")
     p_frep.add_argument("--report-dir", dest="report_dir", default="reports")
 
+    # --- v1.1.5 Quality Gate Enforcement & Audit ---
+    subparsers.add_parser(
+        "gate-enforcement-health",
+        help="[v1.1.5] Run gate enforcement health check. [!] Research Only. No Real Orders.",
+    )
+
+    p_ger = subparsers.add_parser(
+        "gate-enforcement-run",
+        help="[v1.1.5] Run quality gate enforcement. [!] Research Only. No Real Orders.",
+    )
+    p_ger.add_argument("--command", dest="command_name", default="validate-score")
+    p_ger.add_argument("--mode", default="real", choices=["real", "mock"])
+    p_ger.add_argument("--tier", default="")
+    p_ger.add_argument("--stock", default=None)
+    p_ger.add_argument("--symbols", default=None)
+    p_ger.add_argument("--quality-gate", dest="quality_gate", default=None,
+                       choices=["off", "auto", "formal", "observational", "demo"])
+    p_ger.add_argument("--gate-mode", dest="gate_mode", default="enforce",
+                       choices=["enforce", "audit-only", "off"])
+    p_ger.add_argument("--allow-research-override", dest="allow_research_override",
+                       action="store_true", default=False)
+    p_ger.add_argument("--override-id", dest="override_id", default=None)
+    p_ger.add_argument("--output-dir", dest="output_dir", default=None)
+    p_ger.add_argument("--audit-dir", dest="audit_dir", default=None)
+
+    p_gep = subparsers.add_parser(
+        "gate-enforcement-preview",
+        help="[v1.1.5] Dry-run preview of gate enforcement. [!] Research Only.",
+    )
+    p_gep.add_argument("--command", dest="command_name", default="validate-score")
+    p_gep.add_argument("--mode", default="real", choices=["real", "mock"])
+    p_gep.add_argument("--tier", default="core10")
+
+    subparsers.add_parser(
+        "gate-enforcement-runs",
+        help="[v1.1.5] List latest enforcement runs. [!] Research Only.",
+    )
+
+    p_gerd = subparsers.add_parser(
+        "gate-enforcement-run-detail",
+        help="[v1.1.5] Show detail for a run. [!] Research Only.",
+    )
+    p_gerd.add_argument("--run-id", dest="run_id", default=None, required=True)
+
+    p_geex = subparsers.add_parser(
+        "gate-enforcement-exclusions",
+        help="[v1.1.5] Show excluded symbols for a run. [!] Research Only.",
+    )
+    p_geex.add_argument("--run-id", dest="run_id", default=None, required=True)
+
+    p_gesnap = subparsers.add_parser(
+        "gate-enforcement-snapshot",
+        help="[v1.1.5] Show run gate snapshot. [!] Research Only.",
+    )
+    p_gesnap.add_argument("--run-id", dest="run_id", default=None, required=True)
+
+    p_gev = subparsers.add_parser(
+        "gate-enforcement-verify",
+        help="[v1.1.5] Verify reproducibility hash for a run. [!] Research Only.",
+    )
+    p_gev.add_argument("--run-id", dest="run_id", default=None, required=True)
+
+    p_gecmp = subparsers.add_parser(
+        "gate-enforcement-compare",
+        help="[v1.1.5] Compare two enforcement runs. [!] Research Only.",
+    )
+    p_gecmp.add_argument("--run-a", dest="run_a", default=None, required=True)
+    p_gecmp.add_argument("--run-b", dest="run_b", default=None, required=True)
+
+    p_geau = subparsers.add_parser(
+        "gate-enforcement-audit",
+        help="[v1.1.5] Show audit events. [!] Research Only.",
+    )
+    p_geau.add_argument("--run-id", dest="run_id", default=None)
+
+    p_gearpt = subparsers.add_parser(
+        "gate-enforcement-report",
+        help="[v1.1.5] Build gate enforcement audit report. [!] Research Only.",
+    )
+    p_gearpt.add_argument("--run-id", dest="run_id", default=None)
+    p_gearpt.add_argument("--report-dir", dest="report_dir", default="reports")
+
     # --- v1.1.4 Coverage Quality Gates ---
     subparsers.add_parser(
         "quality-gate-health",
@@ -18841,6 +19199,18 @@ def main() -> None:
         "freshness-repair-handoff": cmd_freshness_repair_handoff,
         "freshness-health":         cmd_freshness_health,
         "freshness-report":         cmd_freshness_report,
+        # v1.1.5 Quality Gate Enforcement & Audit
+        "gate-enforcement-health":        cmd_gate_enforcement_health,
+        "gate-enforcement-run":           cmd_gate_enforcement_run,
+        "gate-enforcement-preview":       cmd_gate_enforcement_preview,
+        "gate-enforcement-runs":          cmd_gate_enforcement_runs,
+        "gate-enforcement-run-detail":    cmd_gate_enforcement_run_detail,
+        "gate-enforcement-exclusions":    cmd_gate_enforcement_exclusions,
+        "gate-enforcement-snapshot":      cmd_gate_enforcement_snapshot,
+        "gate-enforcement-verify":        cmd_gate_enforcement_verify,
+        "gate-enforcement-compare":       cmd_gate_enforcement_compare,
+        "gate-enforcement-audit":         cmd_gate_enforcement_audit,
+        "gate-enforcement-report":        cmd_gate_enforcement_report,
         # v1.1.4 Coverage Quality Gates
         "quality-gate-health":            cmd_quality_gate_health,
         "quality-gate-symbol":            cmd_quality_gate_symbol,

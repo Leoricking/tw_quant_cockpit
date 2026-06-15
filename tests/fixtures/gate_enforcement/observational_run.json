@@ -1,0 +1,21 @@
+{
+  "_comment": "Fixture: observational run — FORMAL and OBSERVATIONAL pass; DEMO and BLOCKED excluded. Research Only.",
+  "run_id": "test-obs-run-001",
+  "command": "validate-score",
+  "mode": "real",
+  "requested_level": "OBSERVATIONAL",
+  "quality_gate": "PRICE_BACKTEST_GATE",
+  "gate_mode": "enforce",
+  "symbols_requested": ["AA", "BB", "CC", "DD"],
+  "gate_decisions": {
+    "AA": "ELIGIBLE_FORMAL",
+    "BB": "ELIGIBLE_OBSERVATIONAL",
+    "CC": "DEMO_ONLY",
+    "DD": "BLOCKED_INVALID"
+  },
+  "expected_included": ["AA", "BB"],
+  "expected_excluded": ["CC", "DD"],
+  "no_real_orders": true,
+  "broker_disabled": true,
+  "research_only": true
+}

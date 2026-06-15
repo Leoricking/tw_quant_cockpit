@@ -264,6 +264,34 @@ class GUITabRegistry:
                 ],
                 maturity="STABLE",
             ),
+            # v1.1.5 Quality Gate Enforcement & Audit
+            GUITabMetadata(
+                tab_id="quality_gate_enforcement",
+                tab_name="quality_gate_enforcement",
+                display_name="Quality Gate Enforcement & Audit",
+                group="data",
+                priority="P1",
+                description="Quality Gate Enforcement & Audit — run-level gate enforcement, audit trail, snapshots, reproducibility",
+                module_path="gui.quality_gate_enforcement_panel",
+                class_name="QualityGateEnforcementPanel",
+                available_flag="_QUALITY_GATE_ENFORCEMENT_AVAILABLE",
+                keywords=[
+                    "gate enforcement", "audit trail", "run snapshot",
+                    "reproducibility hash", "symbol exclusion", "formal qualification",
+                    "override audit",
+                    "\u54c1\u8cea\u9580\u6a3b\u57f7\u884c", "\u7a3d\u6838\u7d00\u9304",
+                    "\u57f7\u884c\u5feb\u7167", "\u91cd\u73fe\u6027",
+                    "\u6392\u9664\u80a1\u7968", "\u6b63\u5f0f\u8cc7\u683c",
+                ],
+                related_cli_commands=[
+                    "gate-enforcement-health", "gate-enforcement-run",
+                    "gate-enforcement-preview", "gate-enforcement-runs",
+                    "gate-enforcement-snapshot", "gate-enforcement-verify",
+                    "gate-enforcement-audit", "gate-enforcement-report",
+                ],
+                no_real_orders=True,
+                maturity="STABLE",
+            ),
             # ----------------------------------------------------------------
             # Group: strategy_rules
             # ----------------------------------------------------------------

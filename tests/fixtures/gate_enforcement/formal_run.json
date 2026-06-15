@@ -1,0 +1,21 @@
+{
+  "_comment": "Fixture: formal run — only ELIGIBLE_FORMAL symbols pass. Research Only.",
+  "run_id": "test-formal-run-001",
+  "command": "validate-score",
+  "mode": "real",
+  "requested_level": "FORMAL",
+  "quality_gate": "PRICE_BACKTEST_GATE",
+  "gate_mode": "enforce",
+  "symbols_requested": ["AA", "BB", "CC", "DD"],
+  "gate_decisions": {
+    "AA": "ELIGIBLE_FORMAL",
+    "BB": "ELIGIBLE_OBSERVATIONAL",
+    "CC": "DEMO_ONLY",
+    "DD": "BLOCKED_INVALID"
+  },
+  "expected_included": ["AA"],
+  "expected_excluded": ["BB", "CC", "DD"],
+  "no_real_orders": true,
+  "broker_disabled": true,
+  "research_only": true
+}

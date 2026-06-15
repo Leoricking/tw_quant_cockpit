@@ -49,6 +49,10 @@ from report_pack.report_registry import (
     REPORT_COVERAGE_REPAIR,
     REPORT_DATA_FRESHNESS,
     REPORT_COVERAGE_QUALITY_GATE,
+    REPORT_GATE_ENFORCEMENT_AUDIT,
+    REPORT_GATE_RUN_SUMMARY,
+    REPORT_GATE_EXCLUSION_SUMMARY,
+    REPORT_GATE_REPRODUCIBILITY,
 )
 
 logger = logging.getLogger(__name__)
@@ -291,6 +295,24 @@ _REPORT_PATTERNS = {
     REPORT_COVERAGE_QUALITY_GATE: [
         "reports/coverage_quality_gate_report*.md",
         "data/quality_gate_reports/*.csv",
+    ],
+    # v1.1.5 Quality Gate Enforcement & Audit
+    REPORT_GATE_ENFORCEMENT_AUDIT: [
+        "reports/quality_gate_enforcement_audit_report*.md",
+        "data/quality_gate_enforcement/*.csv",
+        "data/quality_gate_audit/*.jsonl",
+    ],
+    REPORT_GATE_RUN_SUMMARY: [
+        "data/quality_gate_enforcement/run_results.csv",
+        "data/quality_gate_enforcement/run_requests.csv",
+    ],
+    REPORT_GATE_EXCLUSION_SUMMARY: [
+        "data/quality_gate_enforcement/symbol_exclusions.csv",
+        "data/quality_gate_audit/exclusion_records.csv",
+    ],
+    REPORT_GATE_REPRODUCIBILITY: [
+        "data/quality_gate_enforcement/run_hashes.csv",
+        "data/quality_gate_audit/reproducibility_hashes.csv",
     ],
     # v0.9.1 Evidence Graph UX patterns
     "evidence_graph_gaps": [

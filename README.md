@@ -4,7 +4,7 @@
 >
 > **[!] v1: Real order execution is strictly prohibited. For research, simulation, and decision support only. Not investment advice.**
 
-**Current version: v1.1.4 — Coverage Quality Gates** (base: v1.1.3 Data Freshness Monitor) — **v1.0 Maintenance Line Complete**
+**Current version: v1.1.5 — Quality Gate Enforcement & Audit** (base: v1.1.4 Coverage Quality Gates) — **v1.0 Maintenance Line Complete**
 
 ---
 
@@ -29,9 +29,17 @@ TW Quant Cockpit is a **Research Trading Cockpit** for Taiwan equity markets. It
 
 ---
 
-## Current Version: v1.1.3 — Data Freshness Monitor
+## Current Version: v1.1.5 — Quality Gate Enforcement & Audit
 
-This is TW Quant Cockpit **v1.1.3 — Data Freshness Monitor**, based on **v1.1.2 Coverage Repair Workflow**.
+This is TW Quant Cockpit **v1.1.5 — Quality Gate Enforcement & Audit**, based on **v1.1.4 Coverage Quality Gates**.
+
+New in v1.1.5: gate_enforcement/ package (enforcement_schema, enforcement_policy, run_gate_resolver, symbol_filter, run_snapshot, reproducibility, audit_log, enforcement_engine, enforcement_store, enforcement_query, enforcement_health), run-level gate enforcement (FORMAL/OBSERVATIONAL/DEMO/BLOCKED), immutable audit log with hash chain, run snapshots (no secrets/tokens), SHA-256 reproducibility hashes, research-only override auditing (disabled by default), 11 new CLI commands (gate-enforcement-health/preview/run/policy/audit-query/audit-verify/snapshot/hash/runs/compare/report), --quality-gate/--gate-mode flags on validate-score/backtest-buy-points/backtest-screener/backtest-strategy-knowledge, GUI panel + adapter, nav tab (data group), 4 new report types, stable/v060/intelligence checklist checks, regression tests (9 new), 11 test fixtures, docs/quality_gate_enforcement_audit_v1.1.5.md. FORMAL eligible does NOT enable trading. Gate bypass: DISABLED. Mock formal enforcement: BLOCKED. Audit failure raises RuntimeError. No broker API. Not Investment Advice.
+
+## v1.1.4 — Coverage Quality Gates
+
+New in v1.1.4: quality_gates/ package (gate_schema, gate_policy, symbol_gate_evaluator, universe_gate_evaluator, gate_decision_engine, gate_override, gate_store, gate_query, gate_health), 12 named gates (PRICE_BACKTEST_GATE, BUY_POINT_GATE, SCREENER_GATE, etc.), per-symbol gate decisions (FORMAL/OBSERVATIONAL/DEMO/BLOCKED), 12 new CLI commands, GUI panel + adapter, nav tab (data group), report pack entry, stable/v060/intelligence checklist checks, regression tests (20 new), 12 fixture CSVs, docs/coverage_quality_gates_v1.1.4.md. Mock/Invalid/Conflict/Stale data: FORMAL gate BLOCKED. Override: DISABLED by default. Gate does NOT enable trading. No broker API. Not Investment Advice.
+
+## v1.1.3 — Data Freshness Monitor
 
 New in v1.1.3: data_freshness/ package (freshness_schema, trading_calendar, freshness_policy, freshness_detector, source_monitor, freshness_prioritizer, freshness_engine, freshness_store, freshness_query, freshness_health), trading-calendar-aware freshness monitoring, dataset-specific SLAs (daily/monthly/quarterly), stale and interruption detection, refresh prioritization, alert history, coverage repair handoff, 10 new CLI commands (freshness-scan, -summary, -alerts, -stale, -missing, -source-health, -history, -repair-handoff, -health, -report), GUI panel + adapter, nav tab (data group), report pack entry, stable/v060/intelligence checklist checks, regression tests (~18), 9 fixture CSVs (fresh/delayed/stale/future/regression/partial/monthly/quarterly/interruption), docs/data_freshness_monitor_v1.1.3.md. Auto external refresh: DISABLED. Stale auto repair: DISABLED. Future date: NOT fresh. Mock formal freshness: DISABLED. No broker API. Not Investment Advice.
 
