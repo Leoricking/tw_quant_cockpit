@@ -1,0 +1,16 @@
+{
+  "score_id": "CSC-TESTBB00000001",
+  "session_id": "RPL-TST-20230111-BB",
+  "classification": "BAD_PROCESS_BAD_OUTCOME",
+  "status": "COMPOSITE",
+  "process_score": 30.0,
+  "outcome_score": 25.0,
+  "process_weight": 0.70,
+  "outcome_weight": 0.30,
+  "composite_score": 28.5,
+  "confidence_level": "OBSERVATIONAL",
+  "simulation_only": true,
+  "research_only": true,
+  "no_real_orders": true,
+  "scoring_triggers_no_orders": true
+}

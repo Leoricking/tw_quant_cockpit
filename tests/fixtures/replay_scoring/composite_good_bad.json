@@ -1,0 +1,16 @@
+{
+  "score_id": "CSC-TESTGB00000001",
+  "session_id": "RPL-TST-20230109-GB",
+  "classification": "GOOD_PROCESS_BAD_OUTCOME",
+  "status": "COMPOSITE",
+  "process_score": 72.0,
+  "outcome_score": 35.0,
+  "process_weight": 0.70,
+  "outcome_weight": 0.30,
+  "composite_score": 60.9,
+  "confidence_level": "OBSERVATIONAL",
+  "simulation_only": true,
+  "research_only": true,
+  "no_real_orders": true,
+  "scoring_triggers_no_orders": true
+}

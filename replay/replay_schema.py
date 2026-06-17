@@ -197,6 +197,16 @@ class ReplaySessionState:
     archived_at: Optional[str] = None
     restored_at: Optional[str] = None
     last_checkpoint_id: Optional[str] = None
+    # v1.2.3 scoring fields (all with defaults for backward compat)
+    process_score_status: str = "NOT_SCORED"
+    outcome_reveal_status: str = "BLOCKED"
+    composite_score_status: str = "NOT_SCORED"
+    mistake_review_status: str = "NOT_REVIEWED"
+    latest_process_score_id: Optional[str] = None
+    latest_composite_score_id: Optional[str] = None
+    suggested_mistake_count: int = 0
+    confirmed_mistake_count: int = 0
+    dismissed_mistake_count: int = 0
 
     def to_dict(self) -> Dict[str, Any]:
         return {
@@ -226,6 +236,16 @@ class ReplaySessionState:
             "archived_at": self.archived_at,
             "restored_at": self.restored_at,
             "last_checkpoint_id": self.last_checkpoint_id,
+            # v1.2.3 scoring fields
+            "process_score_status": self.process_score_status,
+            "outcome_reveal_status": self.outcome_reveal_status,
+            "composite_score_status": self.composite_score_status,
+            "mistake_review_status": self.mistake_review_status,
+            "latest_process_score_id": self.latest_process_score_id,
+            "latest_composite_score_id": self.latest_composite_score_id,
+            "suggested_mistake_count": self.suggested_mistake_count,
+            "confirmed_mistake_count": self.confirmed_mistake_count,
+            "dismissed_mistake_count": self.dismissed_mistake_count,
         }
 
     @classmethod
@@ -257,6 +277,16 @@ class ReplaySessionState:
             archived_at=d.get("archived_at"),
             restored_at=d.get("restored_at"),
             last_checkpoint_id=d.get("last_checkpoint_id"),
+            # v1.2.3 scoring fields — graceful defaults
+            process_score_status=d.get("process_score_status", "NOT_SCORED"),
+            outcome_reveal_status=d.get("outcome_reveal_status", "BLOCKED"),
+            composite_score_status=d.get("composite_score_status", "NOT_SCORED"),
+            mistake_review_status=d.get("mistake_review_status", "NOT_REVIEWED"),
+            latest_process_score_id=d.get("latest_process_score_id"),
+            latest_composite_score_id=d.get("latest_composite_score_id"),
+            suggested_mistake_count=int(d.get("suggested_mistake_count", 0)),
+            confirmed_mistake_count=int(d.get("confirmed_mistake_count", 0)),
+            dismissed_mistake_count=int(d.get("dismissed_mistake_count", 0)),
         )
 
 

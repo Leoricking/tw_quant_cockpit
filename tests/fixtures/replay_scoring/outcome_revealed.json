@@ -1,0 +1,19 @@
+{
+  "reveal_id": "REV-TESTREVEALED0001",
+  "session_id": "RPL-TST-20230106-REVEALED",
+  "symbol": "TST",
+  "session_end_date": "2023-01-06",
+  "status": "REVEALED",
+  "reveal_confirmed": true,
+  "confirm_review_flag": true,
+  "reveal_window_bars": 20,
+  "outcome_data_summary": "TST rose 3.2% over 20 bars after session end. Breakout confirmed.",
+  "original_snapshot_unchanged": true,
+  "original_journal_unchanged": true,
+  "auto_outcome_reveal_enabled": false,
+  "revealed_by": "USER",
+  "revealed_at": "2023-01-07T10:00:00+00:00",
+  "simulation_only": true,
+  "research_only": true,
+  "no_real_orders": true
+}

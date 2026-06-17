@@ -1,0 +1,15 @@
+{
+  "_note": "This is a PLANNED STOP — should NOT be classified as PANIC_SELL",
+  "session_id": "RPL-TST-20230114-PLANSTOP",
+  "action": "STOP",
+  "symbol": "TST",
+  "replay_date": "2023-01-14",
+  "risk_plan_id": "RSK-PLANNED00001",
+  "fallback_action": "STOP",
+  "decision_reason": "Stop triggered at predefined level per risk plan.",
+  "is_planned_stop": true,
+  "simulation_only": true,
+  "research_only": true,
+  "no_real_orders": true,
+  "_EXPECTED_RESULT": "no PANIC_SELL mistake should be detected"
+}

@@ -21537,7 +21537,642 @@ def _build_parser() -> argparse.ArgumentParser:
     p_rj_summary_report.add_argument("--session-id", default=None, help="Filter by session ID (comma-separated)")
     p_rj_summary_report.add_argument("--output-dir", default=None, help="Output directory")
 
+    # v1.2.3 Replay Scoring & Mistake Taxonomy
+    subparsers.add_parser("replay-scoring-health", help="[v1.2.3] Replay scoring health check. Research Only.")
+
+    p_score_process = subparsers.add_parser("replay-score-process", help="[v1.2.3] Score process quality. Research Only. No future data.")
+    p_score_process.add_argument("--session-id", default=None, help="Session ID")
+    p_score_process.add_argument("--journal-id", default=None, help="Journal entry ID (optional)")
+    p_score_process.add_argument("--notes", default="", help="Scoring notes")
+
+    p_score_process_detail = subparsers.add_parser("replay-score-process-detail", help="[v1.2.3] Show process score detail. Research Only.")
+    p_score_process_detail.add_argument("--score-id", default=None, help="Process score ID (PSC-...)")
+    p_score_process_detail.add_argument("--session-id", default=None, help="Session ID (shows latest)")
+
+    p_outcome_preview = subparsers.add_parser("replay-outcome-preview", help="[v1.2.3] Preview outcome reveal eligibility. Research Only.")
+    p_outcome_preview.add_argument("--session-id", default=None, help="Session ID")
+    p_outcome_preview.add_argument("--window", type=int, default=20, help="Reveal window bars (default 20)")
+
+    p_outcome_reveal = subparsers.add_parser("replay-outcome-reveal", help="[v1.2.3] Reveal outcome (BLOCKED by default). Research Only.")
+    p_outcome_reveal.add_argument("--session-id", default=None, help="Session ID")
+    p_outcome_reveal.add_argument("--window", type=int, default=20, help="Reveal window bars")
+    p_outcome_reveal.add_argument("--reveal", action="store_true", default=False, help="Explicit reveal flag (required)")
+    p_outcome_reveal.add_argument("--confirm-review", action="store_true", default=False, help="Confirm review complete (required)")
+    p_outcome_reveal.add_argument("--notes", default="", help="Notes")
+
+    p_score_outcome = subparsers.add_parser("replay-score-outcome", help="[v1.2.3] Score outcome (requires reveal). Research Only.")
+    p_score_outcome.add_argument("--session-id", default=None, help="Session ID")
+    p_score_outcome.add_argument("--notes", default="", help="Notes")
+
+    p_score_composite = subparsers.add_parser("replay-score-composite", help="[v1.2.3] Build composite score. Research Only.")
+    p_score_composite.add_argument("--session-id", default=None, help="Session ID")
+    p_score_composite.add_argument("--process-weight", type=float, default=0.70, help="Process weight (default 0.70)")
+    p_score_composite.add_argument("--outcome-weight", type=float, default=0.30, help="Outcome weight (default 0.30)")
+
+    p_mistakes_detect = subparsers.add_parser("replay-mistakes-detect", help="[v1.2.3] Detect mistakes (all SUGGESTED). Research Only.")
+    p_mistakes_detect.add_argument("--session-id", default=None, help="Session ID")
+
+    p_mistakes = subparsers.add_parser("replay-mistakes", help="[v1.2.3] List mistakes for a session. Research Only.")
+    p_mistakes.add_argument("--session-id", default=None, help="Session ID")
+    p_mistakes.add_argument("--status", default=None, help="Filter by status")
+
+    p_mistake = subparsers.add_parser("replay-mistake", help="[v1.2.3] Show mistake detail. Research Only.")
+    p_mistake.add_argument("--id", default=None, help="Mistake ID (MIS-...)")
+
+    p_mistake_confirm = subparsers.add_parser("replay-mistake-confirm", help="[v1.2.3] Confirm a mistake (USER only). Research Only.")
+    p_mistake_confirm.add_argument("--id", default=None, help="Mistake ID (MIS-...)")
+    p_mistake_confirm.add_argument("--rationale", default="", help="Rationale for confirmation")
+
+    p_mistake_dismiss = subparsers.add_parser("replay-mistake-dismiss", help="[v1.2.3] Dismiss a mistake. Research Only.")
+    p_mistake_dismiss.add_argument("--id", default=None, help="Mistake ID (MIS-...)")
+    p_mistake_dismiss.add_argument("--rationale", default="", help="Rationale for dismissal")
+
+    p_mistake_override = subparsers.add_parser("replay-mistake-override", help="[v1.2.3] Override mistake type/severity. Research Only.")
+    p_mistake_override.add_argument("--id", default=None, help="Mistake ID (MIS-...)")
+    p_mistake_override.add_argument("--type", default=None, dest="override_type", help="New mistake type")
+    p_mistake_override.add_argument("--severity", default=None, dest="override_severity", help="New severity")
+    p_mistake_override.add_argument("--rationale", default="", help="Rationale")
+
+    p_mistake_reopen = subparsers.add_parser("replay-mistake-reopen", help="[v1.2.3] Reopen a dismissed mistake. Research Only.")
+    p_mistake_reopen.add_argument("--id", default=None, help="Mistake ID (MIS-...)")
+    p_mistake_reopen.add_argument("--rationale", default="", help="Rationale for reopen")
+
+    p_plan_adherence = subparsers.add_parser("replay-plan-adherence", help="[v1.2.3] Evaluate plan adherence. Research Only.")
+    p_plan_adherence.add_argument("--session-id", default=None, help="Session ID")
+    p_plan_adherence.add_argument("--journal-id", default=None, help="Journal entry ID")
+
+    subparsers.add_parser("replay-scoring-summary", help="[v1.2.3] Overall scoring summary. Research Only.")
+
+    p_scoring_session_summary = subparsers.add_parser("replay-scoring-session-summary", help="[v1.2.3] Session scoring summary. Research Only.")
+    p_scoring_session_summary.add_argument("--session-id", default=None, help="Session ID")
+
+    p_scoring_symbol_summary = subparsers.add_parser("replay-scoring-symbol-summary", help="[v1.2.3] Symbol scoring summary. Research Only.")
+    p_scoring_symbol_summary.add_argument("--symbol", default=None, help="Symbol")
+
+    p_scoring_scenario_summary = subparsers.add_parser("replay-scoring-scenario-summary", help="[v1.2.3] Scenario scoring summary. Research Only.")
+    p_scoring_scenario_summary.add_argument("--scenario-id", default=None, help="Scenario ID")
+
+    p_scoring_report = subparsers.add_parser("replay-scoring-report", help="[v1.2.3] Build scoring report. Research Only.")
+    p_scoring_report.add_argument("--session-id", default=None, help="Session ID")
+    p_scoring_report.add_argument("--output-dir", default=None, help="Output directory")
+
+    p_mistake_report = subparsers.add_parser("replay-mistake-report", help="[v1.2.3] Mistake taxonomy report. Research Only.")
+    p_mistake_report.add_argument("--output-dir", default=None, help="Output directory")
+
     return parser
+
+
+# ---------------------------------------------------------------------------
+# v1.2.3 Replay Scoring & Mistake Taxonomy commands
+# ---------------------------------------------------------------------------
+
+def cmd_replay_scoring_health(args) -> None:
+    """Replay scoring health check. [!] Research Only. No Real Orders."""
+    print("=" * 65)
+    print("  Replay Scoring & Mistake Taxonomy Health Check v1.2.3")
+    print("  [!] Research Only | No Real Orders | Scoring Triggers No Orders")
+    print("=" * 65)
+    try:
+        from replay.scoring_health import ReplayScoringHealthCheck
+        hc = ReplayScoringHealthCheck()
+        results = hc.run()
+        hc.print_results(results)
+    except Exception as exc:
+        print(f"  [FAIL] Scoring health check error: {exc}")
+        import traceback
+        traceback.print_exc()
+
+
+def cmd_replay_score_process(args) -> None:
+    """Score process quality for a session. [!] No future data. Research Only."""
+    session_id = getattr(args, "session_id", None) or ""
+    journal_id = getattr(args, "journal_id", None)
+    notes = getattr(args, "notes", "") or ""
+    print("[!] Replay Score Process — Research Only | No Real Orders | No Future Data")
+    if not session_id:
+        print("  [ERROR] --session-id required")
+        return
+    try:
+        from replay.process_score_engine import ReplayProcessScoreEngine
+        from replay.replay_session_store import ReplaySessionStore
+        store = ReplaySessionStore(repo_root=BASE_DIR)
+        session_config = store.load_session_config(session_id) or {}
+        session_state = store.load_session_state(session_id) or {}
+        if not session_config and not session_state:
+            print(f"  [NOT FOUND] Session {session_id}")
+            return
+        engine = ReplayProcessScoreEngine()
+        score = engine.score(
+            session_id=session_id,
+            session_state=session_state,
+            session_config=session_config,
+            notes=notes,
+        )
+        print(f"  Score ID   : {score.score_id}")
+        print(f"  Total Score: {score.total_score:.1f} / 100")
+        print(f"  Status     : {score.status}")
+        print(f"  Confidence : {score.confidence_level}")
+        if score.warnings:
+            for w in score.warnings:
+                print(f"  [!] {w}")
+        from replay.scoring_store import ReplayScoringStore
+        sstore = ReplayScoringStore(repo_root=BASE_DIR)
+        sstore.append("process_score", score.to_dict())
+        print(f"  Saved to scoring store.")
+        print("[!] Research Only. Not Investment Advice.")
+    except Exception as exc:
+        print(f"  [ERROR] {exc}")
+        import traceback
+        traceback.print_exc()
+
+
+def cmd_replay_score_process_detail(args) -> None:
+    """Show process score dimension breakdown. [!] Research Only."""
+    score_id = getattr(args, "score_id", None)
+    session_id = getattr(args, "session_id", None)
+    print("[!] Process Score Detail — Research Only | No Real Orders")
+    try:
+        from replay.scoring_store import ReplayScoringStore
+        from replay.score_explainer import ReplayScoreExplainer
+        sstore = ReplayScoringStore(repo_root=BASE_DIR)
+        score_dict = None
+        if score_id:
+            score_dict = sstore.load_by_id("process_score", score_id, "score_id")
+        elif session_id:
+            scores = sstore.load_by_session("process_score", session_id)
+            if scores:
+                score_dict = sorted(scores, key=lambda s: s.get("scored_at", ""), reverse=True)[0]
+        if not score_dict:
+            print("  [NOT FOUND] No process score found.")
+            return
+        explainer = ReplayScoreExplainer()
+        print(explainer.explain_process_score(score_dict))
+    except Exception as exc:
+        print(f"  [ERROR] {exc}")
+
+
+def cmd_replay_outcome_preview(args) -> None:
+    """Preview outcome reveal eligibility. No actual reveal. [!] Research Only."""
+    session_id = getattr(args, "session_id", None) or ""
+    window = int(getattr(args, "window", 20) or 20)
+    print("[!] Outcome Preview — Research Only | No Real Orders | BLOCKED by Default")
+    if not session_id:
+        print("  [ERROR] --session-id required")
+        return
+    try:
+        from replay.outcome_reveal import ReplayOutcomeRevealManager
+        from replay.replay_session_store import ReplaySessionStore
+        store = ReplaySessionStore(repo_root=BASE_DIR)
+        state = store.load_session_state(session_id) or {}
+        mgr = ReplayOutcomeRevealManager()
+        preview = mgr.preview(session_id=session_id, session_state=state, window_bars=window)
+        print(f"  Eligible       : {preview['eligible_for_reveal']}")
+        print(f"  Status         : {preview['status']}")
+        print(f"  Window         : {window} bars")
+        if not preview["eligible_for_reveal"]:
+            print(f"  [!] {preview.get('ineligible_reason', 'Not eligible')}")
+        print(f"  [!] {preview['note']}")
+        print("[!] Research Only. Not Investment Advice.")
+    except Exception as exc:
+        print(f"  [ERROR] {exc}")
+
+
+def cmd_replay_outcome_reveal(args) -> None:
+    """Reveal outcome (BLOCKED unless --reveal --confirm-review). [!] Research Only."""
+    session_id = getattr(args, "session_id", None) or ""
+    window = int(getattr(args, "window", 20) or 20)
+    reveal_flag = bool(getattr(args, "reveal", False))
+    confirm_review = bool(getattr(args, "confirm_review", False))
+    notes = getattr(args, "notes", "") or ""
+    print("[!] Outcome Reveal — Research Only | No Real Orders | BLOCKED by Default")
+    if not session_id:
+        print("  [ERROR] --session-id required")
+        return
+    try:
+        from replay.outcome_reveal import ReplayOutcomeRevealManager
+        from replay.replay_session_store import ReplaySessionStore
+        store = ReplaySessionStore(repo_root=BASE_DIR)
+        state = store.load_session_state(session_id) or {}
+        config = store.load_session_config(session_id) or {}
+        mgr = ReplayOutcomeRevealManager()
+        record = mgr.reveal(
+            session_id=session_id,
+            session_state=state,
+            session_config=config,
+            reveal_flag=reveal_flag,
+            confirm_review_flag=confirm_review,
+            window_bars=window,
+            notes=notes,
+        )
+        print(f"  Status         : {record.status}")
+        print(f"  Reveal ID      : {record.reveal_id}")
+        print(f"  Confirmed      : {record.reveal_confirmed}")
+        if record.status == "BLOCKED":
+            print(f"  [!] BLOCKED: {record.notes}")
+        else:
+            from replay.scoring_store import ReplayScoringStore
+            sstore = ReplayScoringStore(repo_root=BASE_DIR)
+            sstore.append("reveal", record.to_dict())
+            print(f"  Saved to scoring store.")
+        print("[!] Research Only. Not Investment Advice.")
+    except Exception as exc:
+        print(f"  [ERROR] {exc}")
+
+
+def cmd_replay_score_outcome(args) -> None:
+    """Score outcome after reveal. [!] Research Only."""
+    session_id = getattr(args, "session_id", None) or ""
+    notes = getattr(args, "notes", "") or ""
+    print("[!] Score Outcome — Research Only | No Real Orders | Requires Reveal")
+    if not session_id:
+        print("  [ERROR] --session-id required")
+        return
+    try:
+        from replay.outcome_score_engine import ReplayOutcomeScoreEngine
+        from replay.scoring_query import ReplayScoringQuery
+        q = ReplayScoringQuery(repo_root=BASE_DIR)
+        reveal = q.get_latest_reveal(session_id)
+        engine = ReplayOutcomeScoreEngine()
+        score = engine.score(session_id=session_id, reveal_record=reveal, notes=notes)
+        print(f"  Score ID    : {score.score_id}")
+        print(f"  Status      : {score.status}")
+        print(f"  Outcome     : {score.outcome_score} ({score.outcome_label})")
+        if score.status != "BLOCKED":
+            from replay.scoring_store import ReplayScoringStore
+            sstore = ReplayScoringStore(repo_root=BASE_DIR)
+            sstore.append("outcome_score", score.to_dict())
+            print(f"  Saved to scoring store.")
+        print("[!] Research Only. Not Investment Advice.")
+    except Exception as exc:
+        print(f"  [ERROR] {exc}")
+
+
+def cmd_replay_score_composite(args) -> None:
+    """Build composite score. [!] Research Only."""
+    session_id = getattr(args, "session_id", None) or ""
+    pw = float(getattr(args, "process_weight", 0.70) or 0.70)
+    ow = float(getattr(args, "outcome_weight", 0.30) or 0.30)
+    print("[!] Composite Score — Research Only | No Real Orders")
+    if not session_id:
+        print("  [ERROR] --session-id required")
+        return
+    try:
+        from replay.composite_score_engine import ReplayCompositeScoreEngine
+        from replay.scoring_query import ReplayScoringQuery
+        from replay.scoring_store import ReplayScoringStore
+        q = ReplayScoringQuery(repo_root=BASE_DIR)
+        ps = q.get_latest_process_score(session_id)
+        reveal = q.get_latest_reveal(session_id)
+        os_ = None
+        if reveal and reveal.get("status") == "REVEALED":
+            oss = q.list_session_composite_scores(session_id)
+            if oss:
+                os_ = oss[-1]
+        engine = ReplayCompositeScoreEngine()
+        result = engine.build(
+            session_id=session_id,
+            process_score=ps,
+            outcome_score=os_,
+            process_weight=pw,
+            outcome_weight=ow,
+        )
+        print(f"  Score ID       : {result.score_id}")
+        print(f"  Classification : {result.classification}")
+        print(f"  Status         : {result.status}")
+        print(f"  Composite Score: {result.composite_score}")
+        for w in result.warnings:
+            print(f"  [!] {w}")
+        sstore = ReplayScoringStore(repo_root=BASE_DIR)
+        sstore.append("composite_score", result.to_dict())
+        print(f"  Saved to scoring store.")
+        print("[!] Research Only. Not Investment Advice.")
+    except Exception as exc:
+        print(f"  [ERROR] {exc}")
+
+
+def cmd_replay_mistakes_detect(args) -> None:
+    """Detect mistakes for a session. All results are SUGGESTED. [!] Research Only."""
+    session_id = getattr(args, "session_id", None) or ""
+    print("[!] Mistake Detection — Research Only | All SUGGESTED Status | No Auto-Confirm")
+    if not session_id:
+        print("  [ERROR] --session-id required")
+        return
+    try:
+        from replay.mistake_detector import ReplayMistakeDetector
+        from replay.replay_session_store import ReplaySessionStore
+        from replay.scoring_store import ReplayScoringStore
+        store = ReplaySessionStore(repo_root=BASE_DIR)
+        state = store.load_session_state(session_id) or {}
+        detector = ReplayMistakeDetector()
+        mistakes = detector.detect(session_id=session_id, session_state=state)
+        print(f"  Detected: {len(mistakes)} suggested mistake(s)")
+        for m in mistakes:
+            print(f"    [{m.status}] {m.mistake_type} (confidence={m.confidence}) — {m.description[:60]}")
+        if mistakes:
+            sstore = ReplayScoringStore(repo_root=BASE_DIR)
+            for m in mistakes:
+                sstore.append("mistake", m.to_dict())
+            print(f"  Saved to scoring store.")
+        print("[!] Research Only. System cannot auto-confirm. USER review required.")
+    except Exception as exc:
+        print(f"  [ERROR] {exc}")
+
+
+def cmd_replay_mistakes(args) -> None:
+    """List mistakes for a session. [!] Research Only."""
+    session_id = getattr(args, "session_id", None) or ""
+    status_filter = getattr(args, "status", None)
+    print("[!] Replay Mistakes — Research Only | No Real Orders")
+    if not session_id:
+        print("  [ERROR] --session-id required")
+        return
+    try:
+        from replay.scoring_query import ReplayScoringQuery
+        q = ReplayScoringQuery(repo_root=BASE_DIR)
+        mistakes = q.list_session_mistakes(session_id)
+        if status_filter:
+            mistakes = [m for m in mistakes if m.get("status") == status_filter.upper()]
+        print(f"  Session: {session_id}")
+        print(f"  Found  : {len(mistakes)} mistake(s)")
+        for m in mistakes:
+            print(f"    [{m.get('status','?')}] {m.get('mistake_id','?')} — "
+                  f"{m.get('mistake_type','?')} (severity={m.get('severity','?')})")
+        print("[!] Research Only. Not Investment Advice.")
+    except Exception as exc:
+        print(f"  [ERROR] {exc}")
+
+
+def cmd_replay_mistake(args) -> None:
+    """Show mistake detail. [!] Research Only."""
+    mistake_id = getattr(args, "id", None) or ""
+    if not mistake_id:
+        print("  [ERROR] --id required")
+        return
+    print(f"[!] Mistake Detail — Research Only | {mistake_id}")
+    try:
+        from replay.scoring_query import ReplayScoringQuery
+        from replay.score_explainer import ReplayScoreExplainer
+        q = ReplayScoringQuery(repo_root=BASE_DIR)
+        m = q.get_mistake(mistake_id)
+        if not m:
+            print(f"  [NOT FOUND] {mistake_id}")
+            return
+        explainer = ReplayScoreExplainer()
+        print(explainer.explain_mistake(m))
+    except Exception as exc:
+        print(f"  [ERROR] {exc}")
+
+
+def cmd_replay_mistake_confirm(args) -> None:
+    """Confirm a mistake (USER only). [!] Research Only."""
+    mistake_id = getattr(args, "id", None) or ""
+    rationale = getattr(args, "rationale", "") or ""
+    print("[!] Confirm Mistake — Research Only | USER Only | System Cannot Auto-Confirm")
+    if not mistake_id:
+        print("  [ERROR] --id required")
+        return
+    try:
+        from replay.mistake_review import ReplayMistakeReviewManager
+        from replay.scoring_query import ReplayScoringQuery
+        from replay.scoring_store import ReplayScoringStore
+        q = ReplayScoringQuery(repo_root=BASE_DIR)
+        m = q.get_mistake(mistake_id)
+        if not m:
+            print(f"  [NOT FOUND] {mistake_id}")
+            return
+        mgr = ReplayMistakeReviewManager()
+        review = mgr.confirm(mistake=m, rationale=rationale, reviewer="USER")
+        print(f"  Review ID: {review.review_id}")
+        print(f"  New Status: {review.new_status}")
+        sstore = ReplayScoringStore(repo_root=BASE_DIR)
+        sstore.append("mistake_review", review.to_dict())
+        print("[!] Research Only. Not Investment Advice.")
+    except Exception as exc:
+        print(f"  [ERROR] {exc}")
+
+
+def cmd_replay_mistake_dismiss(args) -> None:
+    """Dismiss a mistake. [!] Research Only."""
+    mistake_id = getattr(args, "id", None) or ""
+    rationale = getattr(args, "rationale", "") or ""
+    print("[!] Dismiss Mistake — Research Only | Original preserved")
+    if not mistake_id:
+        print("  [ERROR] --id required")
+        return
+    try:
+        from replay.mistake_review import ReplayMistakeReviewManager
+        from replay.scoring_query import ReplayScoringQuery
+        from replay.scoring_store import ReplayScoringStore
+        q = ReplayScoringQuery(repo_root=BASE_DIR)
+        m = q.get_mistake(mistake_id)
+        if not m:
+            print(f"  [NOT FOUND] {mistake_id}")
+            return
+        mgr = ReplayMistakeReviewManager()
+        review = mgr.dismiss(mistake=m, rationale=rationale, reviewer="USER")
+        sstore = ReplayScoringStore(repo_root=BASE_DIR)
+        sstore.append("mistake_review", review.to_dict())
+        print(f"  Dismissed. Review ID: {review.review_id}")
+        print("[!] Research Only. Not Investment Advice.")
+    except Exception as exc:
+        print(f"  [ERROR] {exc}")
+
+
+def cmd_replay_mistake_override(args) -> None:
+    """Override mistake type/severity. [!] Research Only."""
+    mistake_id = getattr(args, "id", None) or ""
+    override_type = getattr(args, "override_type", None)
+    override_severity = getattr(args, "override_severity", None)
+    rationale = getattr(args, "rationale", "") or ""
+    print("[!] Override Mistake — Research Only | Original type/severity preserved in history")
+    if not mistake_id:
+        print("  [ERROR] --id required")
+        return
+    try:
+        from replay.mistake_review import ReplayMistakeReviewManager
+        from replay.scoring_query import ReplayScoringQuery
+        from replay.scoring_store import ReplayScoringStore
+        q = ReplayScoringQuery(repo_root=BASE_DIR)
+        m = q.get_mistake(mistake_id)
+        if not m:
+            print(f"  [NOT FOUND] {mistake_id}")
+            return
+        mgr = ReplayMistakeReviewManager()
+        review = mgr.override(
+            mistake=m, override_type=override_type,
+            override_severity=override_severity, rationale=rationale, reviewer="USER",
+        )
+        sstore = ReplayScoringStore(repo_root=BASE_DIR)
+        sstore.append("mistake_review", review.to_dict())
+        print(f"  Overridden. Review ID: {review.review_id}")
+        print("[!] Research Only. Not Investment Advice.")
+    except Exception as exc:
+        print(f"  [ERROR] {exc}")
+
+
+def cmd_replay_mistake_reopen(args) -> None:
+    """Reopen a dismissed mistake. [!] Research Only."""
+    mistake_id = getattr(args, "id", None) or ""
+    rationale = getattr(args, "rationale", "") or ""
+    print("[!] Reopen Mistake — Research Only | History preserved")
+    if not mistake_id:
+        print("  [ERROR] --id required")
+        return
+    try:
+        from replay.mistake_review import ReplayMistakeReviewManager
+        from replay.scoring_query import ReplayScoringQuery
+        from replay.scoring_store import ReplayScoringStore
+        q = ReplayScoringQuery(repo_root=BASE_DIR)
+        m = q.get_mistake(mistake_id)
+        if not m:
+            print(f"  [NOT FOUND] {mistake_id}")
+            return
+        mgr = ReplayMistakeReviewManager()
+        review = mgr.reopen(mistake=m, rationale=rationale, reviewer="USER")
+        sstore = ReplayScoringStore(repo_root=BASE_DIR)
+        sstore.append("mistake_review", review.to_dict())
+        print(f"  Reopened. Review ID: {review.review_id}")
+        print("[!] Research Only. Not Investment Advice.")
+    except Exception as exc:
+        print(f"  [ERROR] {exc}")
+
+
+def cmd_replay_plan_adherence(args) -> None:
+    """Evaluate plan adherence for a session. [!] Research Only."""
+    session_id = getattr(args, "session_id", None) or ""
+    journal_id = getattr(args, "journal_id", None)
+    print("[!] Plan Adherence — Research Only | No Real Orders")
+    if not session_id:
+        print("  [ERROR] --session-id required")
+        return
+    try:
+        from replay.plan_adherence import ReplayPlanAdherenceEvaluator
+        evaluator = ReplayPlanAdherenceEvaluator()
+        result = evaluator.evaluate(session_id=session_id)
+        print(f"  Adherence Score: {result['adherence_score']:.1f}")
+        print(f"  Status        : {result['status']}")
+        print(f"  Details       : {result['details'][:100]}")
+        print("[!] Research Only. Not Investment Advice.")
+    except Exception as exc:
+        print(f"  [ERROR] {exc}")
+
+
+def cmd_replay_scoring_summary(args) -> None:
+    """Overall scoring summary. [!] Research Only."""
+    print("[!] Replay Scoring Summary — Research Only | No Real Orders")
+    try:
+        from replay.scoring_summary import ReplayScoringSummaryBuilder
+        builder = ReplayScoringSummaryBuilder(repo_root=BASE_DIR)
+        summary = builder.overall_summary()
+        print(f"  Total Process Scores: {summary['total_process_scores']}")
+        print(f"  Total Composite Scores: {summary['total_composite_scores']}")
+        print(f"  Total Reveals: {summary['total_reveals']}")
+        print(f"  Confirmed Reveals: {summary['confirmed_reveals']}")
+        print(f"  Total Mistakes: {summary['total_mistakes']}")
+        print(f"  Avg Process Score: {summary['avg_process_score']:.1f}")
+        print(f"  Confidence: {summary['confidence_note']}")
+        clf = summary.get("classification_breakdown", {})
+        if clf:
+            print("  Classifications:")
+            for k, v in clf.items():
+                print(f"    {k}: {v}")
+        print("[!] Research Only. Not Investment Advice.")
+    except Exception as exc:
+        print(f"  [ERROR] {exc}")
+
+
+def cmd_replay_scoring_session_summary(args) -> None:
+    """Session scoring summary. [!] Research Only."""
+    session_id = getattr(args, "session_id", None) or ""
+    print("[!] Session Scoring Summary — Research Only")
+    if not session_id:
+        print("  [ERROR] --session-id required")
+        return
+    try:
+        from replay.scoring_summary import ReplayScoringSummaryBuilder
+        builder = ReplayScoringSummaryBuilder(repo_root=BASE_DIR)
+        summary = builder.session_summary(session_id)
+        for k, v in summary.items():
+            if not k.startswith("_") and k not in ("simulation_only", "research_only", "no_real_orders"):
+                print(f"  {k}: {v}")
+        print("[!] Research Only. Not Investment Advice.")
+    except Exception as exc:
+        print(f"  [ERROR] {exc}")
+
+
+def cmd_replay_scoring_symbol_summary(args) -> None:
+    """Symbol scoring summary. [!] Research Only."""
+    symbol = getattr(args, "symbol", None) or ""
+    print("[!] Symbol Scoring Summary — Research Only")
+    if not symbol:
+        print("  [ERROR] --symbol required")
+        return
+    try:
+        from replay.scoring_summary import ReplayScoringSummaryBuilder
+        builder = ReplayScoringSummaryBuilder(repo_root=BASE_DIR)
+        summary = builder.symbol_summary(symbol)
+        for k, v in summary.items():
+            if not k.startswith("_") and k not in ("simulation_only", "research_only", "no_real_orders"):
+                print(f"  {k}: {v}")
+        print("[!] Research Only. Not Investment Advice.")
+    except Exception as exc:
+        print(f"  [ERROR] {exc}")
+
+
+def cmd_replay_scoring_scenario_summary(args) -> None:
+    """Scenario scoring summary. [!] Research Only."""
+    scenario_id = getattr(args, "scenario_id", None) or ""
+    print("[!] Scenario Scoring Summary — Research Only")
+    if not scenario_id:
+        print("  [ERROR] --scenario-id required")
+        return
+    try:
+        from replay.scoring_summary import ReplayScoringSummaryBuilder
+        builder = ReplayScoringSummaryBuilder(repo_root=BASE_DIR)
+        summary = builder.scenario_summary(scenario_id)
+        for k, v in summary.items():
+            if not k.startswith("_") and k not in ("simulation_only", "research_only", "no_real_orders"):
+                print(f"  {k}: {v}")
+        print("[!] Research Only. Not Investment Advice.")
+    except Exception as exc:
+        print(f"  [ERROR] {exc}")
+
+
+def cmd_replay_scoring_report(args) -> None:
+    """Build scoring report for a session. [!] Research Only."""
+    session_id = getattr(args, "session_id", None) or ""
+    print("[!] Scoring Report — Research Only | No Real Orders")
+    if not session_id:
+        print("  [ERROR] --session-id required")
+        return
+    try:
+        from reports.replay_scoring_report import ReplayScoringReportBuilder
+        from replay.scoring_query import ReplayScoringQuery
+        q = ReplayScoringQuery(repo_root=BASE_DIR)
+        ps = q.get_latest_process_score(session_id)
+        mistakes = q.list_session_mistakes(session_id)
+        builder = ReplayScoringReportBuilder(repo_root=BASE_DIR)
+        content = builder.build_session_report(
+            session_id=session_id, process_score=ps, mistakes=mistakes
+        )
+        path = builder.save_session_report(session_id, content)
+        print(f"  Report saved: {path}")
+        print("[!] Research Only. Not Investment Advice.")
+    except Exception as exc:
+        print(f"  [ERROR] {exc}")
+
+
+def cmd_replay_mistake_report(args) -> None:
+    """Build mistake taxonomy report. [!] Research Only."""
+    print("[!] Mistake Taxonomy Report — Research Only")
+    try:
+        from reports.replay_mistake_taxonomy_report import ReplayMistakeTaxonomyReport
+        builder = ReplayMistakeTaxonomyReport(repo_root=BASE_DIR)
+        path = builder.save()
+        print(f"  Report saved: {path}")
+        print("[!] Research Only. Not Investment Advice.")
+    except Exception as exc:
+        print(f"  [ERROR] {exc}")
 
 
 # ---------------------------------------------------------------------------
@@ -23427,6 +24062,28 @@ def main() -> None:
         "replay-archive":                 cmd_replay_archive,
         "replay-firewall-check":          cmd_replay_firewall_check,
         "replay-point-in-time-check":     cmd_replay_point_in_time_check,
+        # v1.2.3 Replay Scoring & Mistake Taxonomy
+        "replay-scoring-health":              cmd_replay_scoring_health,
+        "replay-score-process":               cmd_replay_score_process,
+        "replay-score-process-detail":        cmd_replay_score_process_detail,
+        "replay-outcome-preview":             cmd_replay_outcome_preview,
+        "replay-outcome-reveal":              cmd_replay_outcome_reveal,
+        "replay-score-outcome":               cmd_replay_score_outcome,
+        "replay-score-composite":             cmd_replay_score_composite,
+        "replay-mistakes-detect":             cmd_replay_mistakes_detect,
+        "replay-mistakes":                    cmd_replay_mistakes,
+        "replay-mistake":                     cmd_replay_mistake,
+        "replay-mistake-confirm":             cmd_replay_mistake_confirm,
+        "replay-mistake-dismiss":             cmd_replay_mistake_dismiss,
+        "replay-mistake-override":            cmd_replay_mistake_override,
+        "replay-mistake-reopen":              cmd_replay_mistake_reopen,
+        "replay-plan-adherence":              cmd_replay_plan_adherence,
+        "replay-scoring-summary":             cmd_replay_scoring_summary,
+        "replay-scoring-session-summary":     cmd_replay_scoring_session_summary,
+        "replay-scoring-symbol-summary":      cmd_replay_scoring_symbol_summary,
+        "replay-scoring-scenario-summary":    cmd_replay_scoring_scenario_summary,
+        "replay-scoring-report":              cmd_replay_scoring_report,
+        "replay-mistake-report":              cmd_replay_mistake_report,
         # v1.1.9 Data Governance Stable Rollup
         "governance-rollup-health":          cmd_governance_rollup_health,
         "governance-rollup-run":             cmd_governance_rollup_run,

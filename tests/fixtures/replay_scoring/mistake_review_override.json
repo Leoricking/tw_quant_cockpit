@@ -1,0 +1,17 @@
+{
+  "review_id": "MRV-TESTOVERRIDE0001",
+  "mistake_id": "MIS-TESTCHASING00001",
+  "session_id": "RPL-TST-20230112-CHASE",
+  "action": "override",
+  "new_status": "OVERRIDDEN",
+  "reviewer": "USER",
+  "rationale": "Override: This is more accurately classified as ENTERING_WITHOUT_CONFIRMATION.",
+  "override_type": "ENTERING_WITHOUT_CONFIRMATION",
+  "override_severity": "HIGH",
+  "preserve_original": true,
+  "auto_confirmed": false,
+  "reviewed_at": "2023-01-12T13:00:00+00:00",
+  "simulation_only": true,
+  "research_only": true,
+  "no_real_orders": true
+}

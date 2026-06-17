@@ -1,0 +1,16 @@
+{
+  "_note": "This fixture tests that process score does NOT contain future fields",
+  "score_id": "PSC-TESTFUTURE00001",
+  "session_id": "RPL-TST-20230104-FUTURE",
+  "symbol": "TST",
+  "replay_date": "2023-01-04",
+  "total_score": 45.0,
+  "max_score": 100.0,
+  "status": "SCORED",
+  "simulation_only": true,
+  "research_only": true,
+  "no_real_orders": true,
+  "scoring_triggers_no_orders": true,
+  "_FORBIDDEN_CHECK": "realized_pnl, future_return, hindsight_score fields must NOT appear in process scores",
+  "components": []
+}

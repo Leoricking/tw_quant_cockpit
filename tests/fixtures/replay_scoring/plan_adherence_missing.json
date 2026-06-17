@@ -1,0 +1,11 @@
+{
+  "adherence_id": "PAD-TESTMISSING00001",
+  "session_id": "RPL-TST-20230119-MISSING",
+  "action": "ENTER",
+  "adherence_score": 35.0,
+  "status": "PLAN_MISSING",
+  "details": "No planned_action, no confirmation conditions, no invalidation conditions.",
+  "simulation_only": true,
+  "research_only": true,
+  "no_real_orders": true
+}

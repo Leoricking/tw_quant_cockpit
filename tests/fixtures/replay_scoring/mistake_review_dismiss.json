@@ -1,0 +1,15 @@
+{
+  "review_id": "MRV-TESTDISMISS00001",
+  "mistake_id": "MIS-TESTPANICSELL001",
+  "session_id": "RPL-TST-20230113-PANIC",
+  "action": "dismiss",
+  "new_status": "DISMISSED",
+  "reviewer": "USER",
+  "rationale": "Dismissed: This was actually a planned response to market conditions.",
+  "preserve_original": true,
+  "auto_confirmed": false,
+  "reviewed_at": "2023-01-13T12:00:00+00:00",
+  "simulation_only": true,
+  "research_only": true,
+  "no_real_orders": true
+}

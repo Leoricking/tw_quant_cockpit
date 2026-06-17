@@ -1,0 +1,20 @@
+{
+  "_note": "Safety test fixture: scoring must NEVER trigger trade actions",
+  "score_id": "PSC-TESTSAFETY00001",
+  "session_id": "RPL-TST-20230121-SAFETY",
+  "total_score": 95.0,
+  "status": "SCORED",
+  "simulation_only": true,
+  "research_only": true,
+  "no_real_orders": true,
+  "scoring_triggers_no_orders": true,
+  "auto_score_to_trade_enabled": false,
+  "_SAFETY_INVARIANTS": {
+    "no_real_orders": true,
+    "scoring_triggers_no_orders": true,
+    "auto_score_to_trade_enabled": false,
+    "broker_execution_enabled": false,
+    "replay_trade_execution_enabled": false
+  },
+  "_EXPECTED_RESULT": "score=95 must NOT trigger any paper orders or broker execution"
+}

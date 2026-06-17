@@ -1,0 +1,15 @@
+{
+  "review_id": "MRV-TESTCONFIRM00001",
+  "mistake_id": "MIS-TESTCHASING00001",
+  "session_id": "RPL-TST-20230112-CHASE",
+  "action": "confirm",
+  "new_status": "CONFIRMED",
+  "reviewer": "USER",
+  "rationale": "Confirmed: Entry was clearly at extended price above breakout.",
+  "preserve_original": true,
+  "auto_confirmed": false,
+  "reviewed_at": "2023-01-12T12:00:00+00:00",
+  "simulation_only": true,
+  "research_only": true,
+  "no_real_orders": true
+}

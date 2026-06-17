@@ -1,0 +1,11 @@
+{
+  "adherence_id": "PAD-TESTREVISION0001",
+  "session_id": "RPL-TST-20230118-REVISION",
+  "action": "ENTER",
+  "adherence_score": 78.0,
+  "status": "PARTIAL_ADHERENCE",
+  "details": "Plan revised mid-trade with documented justification.",
+  "simulation_only": true,
+  "research_only": true,
+  "no_real_orders": true
+}

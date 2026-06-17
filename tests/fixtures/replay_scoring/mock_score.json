@@ -1,0 +1,16 @@
+{
+  "_note": "Mock mode score — confidence must be DEMO_ONLY",
+  "score_id": "PSC-TESTMOCK000001",
+  "session_id": "RPL-TST-20230120-MOCK",
+  "symbol": "TST",
+  "replay_date": "2023-01-20",
+  "total_score": 65.0,
+  "status": "SCORED",
+  "confidence_level": "DEMO_ONLY",
+  "confidence_note": "Mock mode: DEMO_ONLY. Not a real research conclusion.",
+  "simulation_only": true,
+  "research_only": true,
+  "no_real_orders": true,
+  "scoring_triggers_no_orders": true,
+  "_EXPECTED_RESULT": "confidence_level must be DEMO_ONLY for mock mode scores"
+}

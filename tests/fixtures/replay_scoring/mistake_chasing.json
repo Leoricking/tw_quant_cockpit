@@ -1,0 +1,23 @@
+{
+  "mistake_id": "MIS-TESTCHASING00001",
+  "session_id": "RPL-TST-20230112-CHASE",
+  "symbol": "TST",
+  "replay_date": "2023-01-12",
+  "mistake_type": "CHASING_BREAKOUT",
+  "category": "ENTRY",
+  "description": "Entered after a breakout was already extended.",
+  "evidence": ["action=ENTER", "price significantly above breakout level", "no risk plan"],
+  "confidence": 65,
+  "severity": "MEDIUM",
+  "status": "SUGGESTED",
+  "source": "RULE_SUGGESTED",
+  "action": "ENTER",
+  "is_wait_or_skip": false,
+  "is_planned_stop": false,
+  "is_planned_reduce": false,
+  "requires_review": true,
+  "auto_confirmed": false,
+  "simulation_only": true,
+  "research_only": true,
+  "no_real_orders": true
+}

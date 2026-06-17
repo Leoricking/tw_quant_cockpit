@@ -1,0 +1,16 @@
+{
+  "_note": "Entry with insufficient evidence — should suggest INSUFFICIENT_EVIDENCE",
+  "session_id": "RPL-TST-20230116-INSUFFEV",
+  "action": "ENTER",
+  "symbol": "TST",
+  "replay_date": "2023-01-16",
+  "evidence_for": [],
+  "evidence_against": [],
+  "thesis_id": null,
+  "risk_plan_id": null,
+  "checklist_ids": [],
+  "simulation_only": true,
+  "research_only": true,
+  "no_real_orders": true,
+  "_EXPECTED_RESULT": "NO_THESIS_DOCUMENTED and NO_STOP_DEFINED and SKIPPED_CHECKLIST should be suggested"
+}

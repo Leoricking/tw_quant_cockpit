@@ -1,0 +1,23 @@
+{
+  "score_id": "PSC-TESTINCOMPLETE01",
+  "session_id": "RPL-TST-20230103-INCOMPLETE",
+  "journal_entry_id": null,
+  "decision_id": null,
+  "symbol": "TST",
+  "replay_date": "2023-01-03",
+  "total_score": 32.0,
+  "max_score": 100.0,
+  "status": "INSUFFICIENT_DATA",
+  "confidence_level": "INSUFFICIENT",
+  "confidence_note": "No journal entry provided",
+  "scored_by": "USER",
+  "scored_at": "2023-01-03T10:00:00+00:00",
+  "created_at": "2023-01-03T10:00:00+00:00",
+  "simulation_only": true,
+  "research_only": true,
+  "no_real_orders": true,
+  "scoring_triggers_no_orders": true,
+  "components": [],
+  "flags": ["POINT_IN_TIME_NOT_VERIFIED"],
+  "warnings": ["No journal entry provided — scores are based on session state only."]
+}

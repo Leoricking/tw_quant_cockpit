@@ -1,0 +1,13 @@
+{
+  "_note": "WAIT with documented rationale — should NOT produce any mistakes",
+  "session_id": "RPL-TST-20230115-WAITVALID",
+  "action": "WAIT",
+  "symbol": "TST",
+  "replay_date": "2023-01-15",
+  "decision_reason": "No valid breakout confirmation. Volume insufficient.",
+  "no_trade_conditions": ["Volume < 1.5x average", "No price confirmation"],
+  "simulation_only": true,
+  "research_only": true,
+  "no_real_orders": true,
+  "_EXPECTED_RESULT": "no mistakes should be detected for well-reasoned WAIT"
+}

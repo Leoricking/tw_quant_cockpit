@@ -1,5 +1,5 @@
 """
-release/version_info.py — Centralized version info for TW Quant Cockpit v1.2.2.
+release/version_info.py — Centralized version info for TW Quant Cockpit v1.2.3.
 [!] Research Only. No Real Orders. Production Trading: BLOCKED.
 [!] VALIDATED does not enable trading. Broker Execution Disabled.
 [!] Data Universe Expansion. Real Data Coverage Required.
@@ -26,6 +26,11 @@ release/version_info.py — Centralized version info for TW Quant Cockpit v1.2.2
 [!] No hindsight scoring. No future results. No realized PnL. Not Investment Advice.
 [!] Emotional state self-reported only. NOT psychological diagnosis. No auto scoring.
 [!] Cognitive bias flags self-reported or rule-triggered only. Not auto-inferred from performance.
+[!] Replay Scoring & Mistake Taxonomy. Scoring NEVER triggers paper orders or broker execution.
+[!] Process scores use NO future data, NO outcome, NO PnL. Outcome reveal EXPLICIT ONLY.
+[!] Mistake detection SUGGESTED status only. System cannot auto-confirm mistakes.
+[!] Auto Outcome Reveal DISABLED. Auto Mistake Confirmation DISABLED. Score-to-Trade DISABLED.
+[!] Replay Trade Execution DISABLED. No Auto Strategy Change. Not Investment Advice.
 """
 from __future__ import annotations
 import logging
@@ -37,9 +42,9 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # ---------------------------------------------------------------------------
 # v1.1.9 module-level constants (Data Governance Stable Rollup)
 # ---------------------------------------------------------------------------
-VERSION                             = "1.2.2"
-RELEASE_NAME                        = "Decision Journal Integration"
-BASE_RELEASE                        = "1.2.1 Replay Scenario & Session Manager"
+VERSION                             = "1.2.3"
+RELEASE_NAME                        = "Replay Scoring & Mistake Taxonomy"
+BASE_RELEASE                        = "1.2.2 Decision Journal Integration"
 BASE_RELEASE_NAME                   = "Data Governance Stable Rollup"
 MAINTENANCE_RELEASE                 = False
 RELEASE_STAGE                       = "FOUNDATION"
@@ -184,6 +189,18 @@ DECISION_AUTO_SCORING_ENABLED           = False
 DECISION_AUTO_GENERATION_ENABLED        = False
 DECISION_AUTO_EXECUTION_ENABLED         = False
 REPLAY_TRADE_EXECUTION_ENABLED          = False   # noqa: F811
+# v1.2.3 Replay Scoring & Mistake Taxonomy flags
+REPLAY_SCORING_AVAILABLE                = True
+PROCESS_OUTCOME_SEPARATION_AVAILABLE    = True
+MISTAKE_TAXONOMY_AVAILABLE              = True
+MISTAKE_REVIEW_AVAILABLE                = True
+OUTCOME_REVEAL_AVAILABLE                = True
+PLAN_ADHERENCE_AVAILABLE                = True
+AUTO_OUTCOME_REVEAL_ENABLED             = False
+AUTO_MISTAKE_CONFIRMATION_ENABLED       = False
+AUTO_STRATEGY_CHANGE_ENABLED            = False
+AUTO_SCORE_TO_TRADE_ENABLED             = False
+REPLAY_TRADE_EXECUTION_ENABLED          = False   # noqa: F811 (all False)
 
 
 class VersionInfo:
@@ -419,6 +436,17 @@ def print_version_info() -> None:
     print(f"  Decision Auto Generation Enabled: {DECISION_AUTO_GENERATION_ENABLED}")
     print(f"  Decision Auto Execution Enabled: {DECISION_AUTO_EXECUTION_ENABLED}")
     print(f"  Replay Trade Execution Enabled: {REPLAY_TRADE_EXECUTION_ENABLED}")
+    # v1.2.3 flags
+    print(f"  Replay Scoring Available: {REPLAY_SCORING_AVAILABLE}")
+    print(f"  Process Outcome Separation Available: {PROCESS_OUTCOME_SEPARATION_AVAILABLE}")
+    print(f"  Mistake Taxonomy Available: {MISTAKE_TAXONOMY_AVAILABLE}")
+    print(f"  Mistake Review Available: {MISTAKE_REVIEW_AVAILABLE}")
+    print(f"  Outcome Reveal Available: {OUTCOME_REVEAL_AVAILABLE}")
+    print(f"  Plan Adherence Available: {PLAN_ADHERENCE_AVAILABLE}")
+    print(f"  Auto Outcome Reveal Enabled: {AUTO_OUTCOME_REVEAL_ENABLED}")
+    print(f"  Auto Mistake Confirmation Enabled: {AUTO_MISTAKE_CONFIRMATION_ENABLED}")
+    print(f"  Auto Strategy Change Enabled: {AUTO_STRATEGY_CHANGE_ENABLED}")
+    print(f"  Auto Score To Trade Enabled: {AUTO_SCORE_TO_TRADE_ENABLED}")
     print("=" * 60)
 
 

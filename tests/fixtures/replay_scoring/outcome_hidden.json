@@ -1,0 +1,15 @@
+{
+  "reveal_id": "REV-TESTHIDDEN00001",
+  "session_id": "RPL-TST-20230105-HIDDEN",
+  "status": "BLOCKED",
+  "reveal_confirmed": false,
+  "confirm_review_flag": false,
+  "reveal_window_bars": 0,
+  "original_snapshot_unchanged": true,
+  "original_journal_unchanged": true,
+  "auto_outcome_reveal_enabled": false,
+  "simulation_only": true,
+  "research_only": true,
+  "no_real_orders": true,
+  "notes": "Outcome not revealed. Both --reveal and --confirm-review required."
+}

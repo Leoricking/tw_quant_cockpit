@@ -1,0 +1,23 @@
+{
+  "mistake_id": "MIS-TESTPANICSELL001",
+  "session_id": "RPL-TST-20230113-PANIC",
+  "symbol": "TST",
+  "replay_date": "2023-01-13",
+  "mistake_type": "PANIC_SELL",
+  "category": "EXIT",
+  "description": "STOP action without documented risk plan. Possible PANIC_SELL — requires review. [!] Planned stop is NOT PANIC_SELL.",
+  "evidence": ["action=STOP", "risk_plan_id=None", "fallback_action=empty"],
+  "confidence": 50,
+  "severity": "MEDIUM",
+  "status": "NEEDS_REVIEW",
+  "source": "RULE_SUGGESTED",
+  "action": "STOP",
+  "is_wait_or_skip": false,
+  "is_planned_stop": false,
+  "is_planned_reduce": false,
+  "requires_review": true,
+  "auto_confirmed": false,
+  "simulation_only": true,
+  "research_only": true,
+  "no_real_orders": true
+}

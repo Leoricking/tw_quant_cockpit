@@ -92,6 +92,16 @@
 | v1.2.0 | Replay Training UX Foundation | Done |
 | v1.2.1 | Replay Scenario & Session Manager | Done |
 | v1.2.2 | Decision Journal Integration | Done |
+| v1.2.3 | Replay Scoring & Mistake Taxonomy | Done |
+
+---
+
+### v1.2.3 — Replay Scoring & Mistake Taxonomy ✅
+
+- **Version:** 1.2.3 — Replay Scoring & Mistake Taxonomy
+- **Type:** Process/outcome scoring with strict separation, explicit outcome reveal (default BLOCKED), composite classification, 31-type mistake taxonomy, SUGGESTED-only mistake detection, USER-only mistake review, plan adherence evaluation, score confidence levels, append-only JSONL store, 23 CLI commands, GUI panels, reports, regression tests.
+- **Changes:** replay/ new files (scoring_schema, process_score_engine, outcome_score_engine, composite_score_engine, score_confidence, score_explainer, outcome_reveal, plan_adherence, mistake_taxonomy, mistake_detector, mistake_review, scoring_store, scoring_query, scoring_summary, scoring_health), gui/ new files (replay_scoring_panel, replay_scoring_adapter, replay_process_score_detail_dialog, replay_outcome_reveal_dialog, replay_outcome_score_dialog, replay_composite_score_dialog, replay_mistake_review_dialog, replay_plan_adherence_dialog), reports/ new files (replay_scoring_report, replay_mistake_taxonomy_report, replay_scoring_summary_report), 23 new CLI commands, tests/fixtures/replay_scoring/ (25 fixtures), tests/test_replay_scoring_mistake_taxonomy_regression.py, release/version_info.py v1.2.3 flags, docs (replay_scoring_mistake_taxonomy_v1.2.3.md, replay_process_vs_outcome_scoring.md, replay_mistake_taxonomy_guide.md, replay_outcome_reveal_and_review.md, release_notes_v1.2.md v1.2.3 section)
+- **Safety:** SCORING_TRIGGERS_NO_ORDERS=True; AUTO_OUTCOME_REVEAL_ENABLED=False; AUTO_MISTAKE_CONFIRMATION_ENABLED=False; AUTO_SCORE_TO_TRADE_ENABLED=False; REPLAY_TRADE_EXECUTION_ENABLED=False; All mistakes start SUGGESTED; original_snapshot_unchanged=True; original_journal_unchanged=True; Process score forbidden fields (realized_return, future_return, realized_pnl, etc.) enforced; outcome_weight>0.5 warning fires; WAIT/SKIP never misclassified as mistakes; Planned stops never classified as PANIC_SELL; SYSTEM_REVIEW cannot confirm mistakes; Not Investment Advice
 
 ---
 

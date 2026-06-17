@@ -1,0 +1,3 @@
+{"score_id": "PSC-CORRUPTTEST0001", "session_id": "RPL-TST-20230125-CORR1", "total_score": 60.0, "status": "SCORED", "simulation_only": true}
+{"score_id": "PSC-CORRUPTTEST0002", "session_id": "RPL-TST-20230126-CORR2", "total_score": 70.0, "status": "SCORED", "simulation_only": true}
+CORRUPTED JSON LINE — this should be skipped, not crash

@@ -129,6 +129,15 @@ class JournalStatus(str, Enum):
     BLOCKED = "BLOCKED"
 
 
+class JournalReviewStatus(str, Enum):
+    """v1.2.3: Scoring/review status for a journal entry."""
+    NOT_REVIEWED = "NOT_REVIEWED"
+    PROCESS_SCORED = "PROCESS_SCORED"
+    OUTCOME_REVEALED = "OUTCOME_REVEALED"
+    FULLY_REVIEWED = "FULLY_REVIEWED"
+    BLOCKED = "BLOCKED"
+
+
 class RelationType(str, Enum):
     ROOT = "ROOT"
     REVISION = "REVISION"
@@ -591,6 +600,14 @@ class DecisionJournalEntry:
     simulation_only: bool = True
     research_only: bool = True
     no_real_orders: bool = True
+    # v1.2.3 Scoring fields — all with defaults for backward compat
+    latest_process_score_id: Optional[str] = None
+    latest_outcome_score_id: Optional[str] = None
+    latest_composite_score_id: Optional[str] = None
+    mistake_count: int = 0
+    confirmed_mistake_count: int = 0
+    outcome_revealed: bool = False
+    review_status: str = "NOT_REVIEWED"   # JournalReviewStatus
 
     def to_dict(self) -> Dict[str, Any]:
         return {
@@ -638,6 +655,14 @@ class DecisionJournalEntry:
             "simulation_only": True,
             "research_only": True,
             "no_real_orders": True,
+            # v1.2.3 scoring fields
+            "latest_process_score_id": self.latest_process_score_id,
+            "latest_outcome_score_id": self.latest_outcome_score_id,
+            "latest_composite_score_id": self.latest_composite_score_id,
+            "mistake_count": self.mistake_count,
+            "confirmed_mistake_count": self.confirmed_mistake_count,
+            "outcome_revealed": self.outcome_revealed,
+            "review_status": self.review_status,
         }
 
     @classmethod
@@ -690,6 +715,14 @@ class DecisionJournalEntry:
             simulation_only=True,
             research_only=True,
             no_real_orders=True,
+            # v1.2.3 scoring fields — graceful defaults for old entries
+            latest_process_score_id=d.get("latest_process_score_id"),
+            latest_outcome_score_id=d.get("latest_outcome_score_id"),
+            latest_composite_score_id=d.get("latest_composite_score_id"),
+            mistake_count=int(d.get("mistake_count", 0)),
+            confirmed_mistake_count=int(d.get("confirmed_mistake_count", 0)),
+            outcome_revealed=bool(d.get("outcome_revealed", False)),
+            review_status=d.get("review_status", "NOT_REVIEWED"),
         )
 
 

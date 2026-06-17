@@ -348,4 +348,85 @@ All existing safety flags preserved. New flags:
 Builds on v1.1.9 Data Governance Stable Rollup. All 1.1.x governance, alerts, registry, and quality gate functionality remains intact.
 
 ---
+
+## v1.2.3 — Replay Scoring & Mistake Taxonomy
+
+> [!] Research Only. No Real Orders. Scoring NEVER triggers paper orders or broker execution.
+> [!] Process scores use NO future data, NO outcome, NO PnL. Outcome reveal EXPLICIT ONLY.
+> [!] Mistake detection SUGGESTED status only. System cannot auto-confirm mistakes.
+> [!] Not Investment Advice.
+
+### Overview
+
+v1.2.3 adds complete process and outcome scoring with strict separation, explicit outcome
+reveal, composite classification, explainable mistake taxonomy and review, plan adherence
+evaluation, confidence handling, GUI and CLI review workflows, reports, and regression coverage.
+
+### Core Modules
+
+- `replay/scoring_schema.py` — ScoreComponent, ReplayProcessScore, ReplayOutcomeScore, ReplayCompositeScore, MistakeRecord, MistakeReviewRecord, OutcomeRevealRecord
+- `replay/process_score_engine.py` — 11-dimension process score; no future data
+- `replay/outcome_score_engine.py` — outcome score after explicit reveal
+- `replay/composite_score_engine.py` — process+outcome composite; PROCESS_ONLY default
+- `replay/score_confidence.py` — DEMO_ONLY / INSUFFICIENT / OBSERVATIONAL / RELIABLE
+- `replay/score_explainer.py` — human-readable score explanations
+- `replay/outcome_reveal.py` — explicit reveal workflow; default BLOCKED
+- `replay/plan_adherence.py` — pre-session plan vs. actual decisions
+- `replay/mistake_taxonomy.py` — 31 mistake types across 6 categories
+- `replay/mistake_detector.py` — SUGGESTED-only detection; never auto-confirms
+- `replay/mistake_review.py` — USER-only confirmation; SYSTEM_REVIEW blocked
+- `replay/scoring_store.py` — append-only JSONL store; corrupted line tolerance
+- `replay/scoring_query.py` — query by session, symbol, scenario
+- `replay/scoring_summary.py` — aggregate scoring summary
+- `replay/scoring_health.py` — health check with 13 invariant checks
+
+### Reports
+
+- `reports/replay_scoring_report.py`
+- `reports/replay_mistake_taxonomy_report.py`
+- `reports/replay_scoring_summary_report.py`
+
+### GUI Panels
+
+- `gui/replay_scoring_panel.py`
+- `gui/replay_scoring_adapter.py`
+- `gui/replay_process_score_detail_dialog.py`
+- `gui/replay_outcome_reveal_dialog.py`
+- `gui/replay_outcome_score_dialog.py`
+- `gui/replay_composite_score_dialog.py`
+- `gui/replay_mistake_review_dialog.py`
+- `gui/replay_plan_adherence_dialog.py`
+
+### CLI Commands (23 new commands)
+
+```
+replay-scoring-health, replay-score-process, replay-score-process-detail,
+replay-outcome-preview, replay-outcome-reveal, replay-score-outcome,
+replay-score-composite, replay-mistakes-detect, replay-mistakes,
+replay-mistake, replay-mistake-confirm, replay-mistake-dismiss,
+replay-mistake-override, replay-mistake-reopen, replay-plan-adherence,
+replay-scoring-summary, replay-scoring-session-summary,
+replay-scoring-symbol-summary, replay-scoring-scenario-summary,
+replay-scoring-report, replay-mistake-report
+```
+
+### Safety Invariants
+
+- `SCORING_TRIGGERS_NO_ORDERS = True`
+- `AUTO_OUTCOME_REVEAL_ENABLED = False`
+- `AUTO_MISTAKE_CONFIRMATION_ENABLED = False`
+- `AUTO_SCORE_TO_TRADE_ENABLED = False`
+- `REPLAY_TRADE_EXECUTION_ENABLED = False`
+- All mistakes start as `SUGGESTED` — system never auto-confirms
+- `original_snapshot_unchanged = True` — reveal never modifies session
+- Process score forbidden fields enforced: no `realized_pnl`, `future_return`, etc.
+
+### Documentation
+
+- `docs/replay_scoring_mistake_taxonomy_v1.2.3.md`
+- `docs/replay_process_vs_outcome_scoring.md`
+- `docs/replay_mistake_taxonomy_guide.md`
+- `docs/replay_outcome_reveal_and_review.md`
+
+---
 [!] Research Only. No Real Orders. Not Investment Advice.
