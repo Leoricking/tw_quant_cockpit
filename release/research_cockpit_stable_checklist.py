@@ -1435,6 +1435,70 @@ class ResearchCockpitStableChecklist:
         except Exception as exc:
             checks.append(_mk("decision_journal_flags_v122", "decision_journal", "WARN", str(exc)))
 
+        # v1.2.3 Replay Scoring & Mistake Taxonomy checks
+        try:
+            from replay.scoring_schema import ReplayProcessScore, SCORE_ID_PREFIX
+            checks.append(_mk("replay_scoring_schema_available", "replay_scoring",
+                              "PASS", f"SCORE_ID_PREFIX={SCORE_ID_PREFIX}"))
+        except Exception as exc:
+            checks.append(_mk("replay_scoring_schema_available", "replay_scoring", "WARN", str(exc)))
+        try:
+            from replay.mistake_detector import MistakeDetector
+            checks.append(_mk("replay_mistake_detector_available", "replay_scoring",
+                              "PASS", "MistakeDetector available"))
+        except Exception as exc:
+            checks.append(_mk("replay_mistake_detector_available", "replay_scoring", "WARN", str(exc)))
+        try:
+            from replay.scoring_health import ReplayScoringHealthCheck
+            checks.append(_mk("replay_scoring_health_available", "replay_scoring",
+                              "PASS", "ReplayScoringHealthCheck available"))
+        except Exception as exc:
+            checks.append(_mk("replay_scoring_health_available", "replay_scoring", "WARN", str(exc)))
+
+        # v1.2.4 Strategy Knowledge Replay checks
+        try:
+            from replay.strategy_replay_schema import StrategyReplaySnapshot
+            ssn = StrategyReplaySnapshot.__dataclass_fields__
+            future_fields = [f for f in ssn if any(p in f for p in ["forward_return", "outcome_", "hindsight_"])]
+            status = "PASS" if not future_fields else "FAIL"
+            checks.append(_mk("strategy_snapshot_no_forward_return", "replay_strategy_knowledge",
+                              status, f"No future fields in snapshot: {not bool(future_fields)}"))
+        except Exception as exc:
+            checks.append(_mk("strategy_snapshot_no_forward_return", "replay_strategy_knowledge", "WARN", str(exc)))
+        try:
+            from release.version_info import (
+                STRATEGY_KNOWLEDGE_REPLAY_AVAILABLE,
+                AUTO_STRATEGY_DECISION_ENABLED,
+                AUTO_STRATEGY_EXECUTION_ENABLED,
+                AUTO_STRATEGY_WEIGHT_CHANGE_ENABLED,
+            )
+            ok = (STRATEGY_KNOWLEDGE_REPLAY_AVAILABLE
+                  and not AUTO_STRATEGY_DECISION_ENABLED
+                  and not AUTO_STRATEGY_EXECUTION_ENABLED
+                  and not AUTO_STRATEGY_WEIGHT_CHANGE_ENABLED)
+            checks.append(_mk("strategy_knowledge_replay_v124_safe", "replay_strategy_knowledge",
+                              "PASS" if ok else "FAIL",
+                              f"STRATEGY_KNOWLEDGE_REPLAY_AVAILABLE={STRATEGY_KNOWLEDGE_REPLAY_AVAILABLE}, "
+                              f"AUTO_STRATEGY_DECISION_ENABLED={AUTO_STRATEGY_DECISION_ENABLED}, "
+                              f"AUTO_STRATEGY_EXECUTION_ENABLED={AUTO_STRATEGY_EXECUTION_ENABLED}, "
+                              f"AUTO_STRATEGY_WEIGHT_CHANGE_ENABLED={AUTO_STRATEGY_WEIGHT_CHANGE_ENABLED}"))
+        except Exception as exc:
+            checks.append(_mk("strategy_knowledge_replay_v124_safe", "replay_strategy_knowledge", "WARN", str(exc)))
+        try:
+            from replay.strategy_conflict import StrategyConflictAnalyzer, CONFLICT_NEVER_AUTO_BLOCKS_DECISION
+            checks.append(_mk("strategy_conflict_never_auto_blocks", "replay_strategy_knowledge",
+                              "PASS" if CONFLICT_NEVER_AUTO_BLOCKS_DECISION else "FAIL",
+                              f"CONFLICT_NEVER_AUTO_BLOCKS_DECISION={CONFLICT_NEVER_AUTO_BLOCKS_DECISION}"))
+        except Exception as exc:
+            checks.append(_mk("strategy_conflict_never_auto_blocks", "replay_strategy_knowledge", "WARN", str(exc)))
+        try:
+            from replay.strategy_rule_review import StrategyRuleReviewManager, AUTO_CONFIRM_ENABLED
+            checks.append(_mk("strategy_rule_review_no_auto_confirm", "replay_strategy_knowledge",
+                              "PASS" if not AUTO_CONFIRM_ENABLED else "FAIL",
+                              f"AUTO_CONFIRM_ENABLED={AUTO_CONFIRM_ENABLED}"))
+        except Exception as exc:
+            checks.append(_mk("strategy_rule_review_no_auto_confirm", "replay_strategy_knowledge", "WARN", str(exc)))
+
         # Rebuild summary counts to include new checks
         total         = len(checks)
         pass_count    = sum(1 for c in checks if c["status"] == "PASS")

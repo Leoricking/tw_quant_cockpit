@@ -1,0 +1,16 @@
+{
+  "module": "BOTTOM_REVERSAL",
+  "signal": "pending",
+  "available": true,
+  "score": 40,
+  "warning": "Confirmation not yet received",
+  "reason": "Bottom reversal signal present but no confirmation date",
+  "evidence": ["volume_surge"],
+  "confidence": "INSUFFICIENT",
+  "timing_warning": "No confirmation_date — signal_date is replay_date, not future",
+  "point_in_time_verified": true,
+  "confirmation_date": null,
+  "signal_date": "2024-01-15",
+  "replay_date": "2024-01-15",
+  "note": "No confirmation_date → signal_date is replay_date (not future). TST symbol only."
+}

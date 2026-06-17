@@ -1,0 +1,20 @@
+{
+  "review_id": "SRR-TESTFIX001",
+  "session_id": "TEST-SESSION-001",
+  "journal_entry_id": "DJR-TESTFIX001",
+  "decision_id": "DEC-TESTFIX001",
+  "replay_date": "2024-01-15",
+  "module_name": "KD_ADVANCED",
+  "rule_signal": "golden_cross",
+  "decision_action": "ENTER",
+  "relationship": "FOLLOWED",
+  "system_suggested": true,
+  "user_confirmed": false,
+  "evidence": ["Signal: golden_cross", "Action: ENTER"],
+  "counter_evidence": [],
+  "confidence": "OBSERVATIONAL",
+  "status": "SUGGESTED",
+  "note": "",
+  "research_only": true,
+  "no_real_orders": true
+}

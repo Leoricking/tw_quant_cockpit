@@ -1,0 +1,1 @@
+{"module": "NO_PANIC_SELL", "signal": "hold_with_plan", "available": true, "score": null, "warning": "", "reason": "Price still above stop level", "evidence": ["above_stop_level"], "confidence": "OBSERVATIONAL", "timing_warning": "", "point_in_time_verified": true, "replay_date": "2024-01-15"}

@@ -76,6 +76,14 @@ from report_pack.report_registry import (
     REPORT_GOVERNANCE_STORE_INVENTORY,
     REPORT_GOVERNANCE_STORE_VALIDATION,
     REPORT_GOVERNANCE_ROLLUP_HISTORY,
+    # v1.2.3 Replay Scoring & Mistake Taxonomy
+    REPORT_REPLAY_SCORING,
+    REPORT_REPLAY_SCORING_SUMMARY,
+    REPORT_REPLAY_MISTAKE_TAXONOMY,
+    # v1.2.4 Strategy Knowledge Replay
+    REPORT_REPLAY_STRATEGY_KNOWLEDGE,
+    REPORT_REPLAY_STRATEGY_TIMELINE,
+    REPORT_REPLAY_STRATEGY_SUMMARY,
 )
 
 logger = logging.getLogger(__name__)
@@ -245,6 +253,30 @@ _REPORT_PATTERNS = {
     ],
     REPORT_REPLAY_DECISION_JOURNAL_SUMMARY: [
         "reports/replay_decision_journal_summary_report_*.md",
+    ],
+    # v1.2.3 Replay Scoring & Mistake Taxonomy
+    REPORT_REPLAY_SCORING: [
+        "reports/replay_scoring_report_*.md",
+        "data/replay_scoring/process_scores.jsonl",
+    ],
+    REPORT_REPLAY_SCORING_SUMMARY: [
+        "reports/replay_scoring_summary_report_*.md",
+    ],
+    REPORT_REPLAY_MISTAKE_TAXONOMY: [
+        "reports/replay_mistake_taxonomy_report_*.md",
+        "data/replay_scoring/mistakes.jsonl",
+    ],
+    # v1.2.4 Strategy Knowledge Replay
+    REPORT_REPLAY_STRATEGY_KNOWLEDGE: [
+        "reports/replay_strategy_knowledge_report_*.md",
+        "data/replay_strategy/snapshots.jsonl",
+    ],
+    REPORT_REPLAY_STRATEGY_TIMELINE: [
+        "reports/replay_strategy_timeline_report_*.md",
+        "data/replay_strategy/timeline.jsonl",
+    ],
+    REPORT_REPLAY_STRATEGY_SUMMARY: [
+        "reports/replay_strategy_summary_report_*.md",
     ],
     # v0.9.0.1 Crash Reversal & Risk Discipline Strategy Pack
     REPORT_CRASH_REVERSAL: [

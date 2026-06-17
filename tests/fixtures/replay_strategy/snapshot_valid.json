@@ -1,0 +1,22 @@
+{
+  "strategy_snapshot_id": "SSN-TESTFIX001",
+  "session_id": "TEST-SESSION-001",
+  "symbol": "TST001",
+  "replay_date": "2024-01-15",
+  "modules": [],
+  "agreement_score": 0.67,
+  "conflict_score": 0.1,
+  "bullish_modules": ["KD_ADVANCED", "BOTTOM_REVERSAL"],
+  "bearish_modules": [],
+  "warning_modules": [],
+  "unavailable_modules": ["SHORT_INTEREST", "SECTOR_ROTATION", "FUNDAMENTAL_QUALITY", "NO_CHASE", "NO_PANIC_SELL", "DO_NOT_REBUY_YET"],
+  "point_in_time_verified": true,
+  "future_fields_blocked": [],
+  "qualification": "OBSERVATIONAL_ONLY",
+  "warnings": [],
+  "source_metadata": {},
+  "generated_at": "2024-01-15T00:00:00+00:00",
+  "research_only": true,
+  "no_real_orders": true,
+  "note": "Valid snapshot without forward_return or outcome fields. TST symbol only."
+}

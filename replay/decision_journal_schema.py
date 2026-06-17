@@ -608,6 +608,13 @@ class DecisionJournalEntry:
     confirmed_mistake_count: int = 0
     outcome_revealed: bool = False
     review_status: str = "NOT_REVIEWED"   # JournalReviewStatus
+    # v1.2.4 Strategy replay fields — all with defaults for backward compat
+    strategy_snapshot_id: Optional[str] = None
+    strategy_signals_at_decision: Optional[dict] = None
+    strategy_warnings_at_decision: Optional[list] = None
+    strategy_agreement_at_decision: Optional[float] = None
+    strategy_conflicts_at_decision: Optional[list] = None
+    strategy_rule_review_ids: List[str] = field(default_factory=list)
 
     def to_dict(self) -> Dict[str, Any]:
         return {
@@ -663,6 +670,13 @@ class DecisionJournalEntry:
             "confirmed_mistake_count": self.confirmed_mistake_count,
             "outcome_revealed": self.outcome_revealed,
             "review_status": self.review_status,
+            # v1.2.4 strategy replay fields
+            "strategy_snapshot_id": self.strategy_snapshot_id,
+            "strategy_signals_at_decision": self.strategy_signals_at_decision,
+            "strategy_warnings_at_decision": self.strategy_warnings_at_decision,
+            "strategy_agreement_at_decision": self.strategy_agreement_at_decision,
+            "strategy_conflicts_at_decision": self.strategy_conflicts_at_decision,
+            "strategy_rule_review_ids": self.strategy_rule_review_ids,
         }
 
     @classmethod
@@ -723,6 +737,13 @@ class DecisionJournalEntry:
             confirmed_mistake_count=int(d.get("confirmed_mistake_count", 0)),
             outcome_revealed=bool(d.get("outcome_revealed", False)),
             review_status=d.get("review_status", "NOT_REVIEWED"),
+            # v1.2.4 strategy replay fields — graceful defaults for old entries
+            strategy_snapshot_id=d.get("strategy_snapshot_id"),
+            strategy_signals_at_decision=d.get("strategy_signals_at_decision"),
+            strategy_warnings_at_decision=d.get("strategy_warnings_at_decision"),
+            strategy_agreement_at_decision=d.get("strategy_agreement_at_decision"),
+            strategy_conflicts_at_decision=d.get("strategy_conflicts_at_decision"),
+            strategy_rule_review_ids=d.get("strategy_rule_review_ids", []),
         )
 
 

@@ -471,3 +471,23 @@ reports/replay_decision_journal_summary_report_*.md
 
 # v1.2.2 Journal templates ARE committed (exception)
 !replay/journal_templates/*.json
+
+# v1.2.3 Replay Scoring & Mistake Taxonomy (runtime outputs — never commit)
+data/replay_scoring/
+reports/replay_scoring_report_*.md
+reports/replay_scoring_summary_report_*.md
+reports/replay_mistake_taxonomy_report_*.md
+
+# v1.2.3 Scoring fixtures ARE committed (exception)
+!tests/fixtures/replay_scoring/*.json
+!tests/fixtures/replay_scoring/*.jsonl
+
+# v1.2.4 Strategy Knowledge Replay (runtime outputs — never commit)
+data/replay_strategy/
+reports/replay_strategy_knowledge_report_*.md
+reports/replay_strategy_timeline_report_*.md
+reports/replay_strategy_summary_report_*.md
+
+# v1.2.4 Strategy fixtures ARE committed (exception)
+!tests/fixtures/replay_strategy/*.json
+!tests/fixtures/replay_strategy/*.jsonl

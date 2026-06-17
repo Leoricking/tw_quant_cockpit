@@ -1,0 +1,16 @@
+{
+  "module": "SHORT_INTEREST",
+  "signal": "short_squeeze_fuel",
+  "available": true,
+  "score": 65,
+  "warning": "",
+  "reason": "High short ratio with margin balance elevated",
+  "evidence": ["short_ratio=8.5%", "margin_balance_increasing"],
+  "confidence": "OBSERVATIONAL",
+  "timing_warning": "",
+  "point_in_time_verified": true,
+  "symbol": "TST001",
+  "replay_date": "2024-01-15",
+  "research_only": true,
+  "no_real_orders": true
+}

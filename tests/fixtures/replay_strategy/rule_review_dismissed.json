@@ -1,0 +1,9 @@
+{
+  "review_id": "SRR-TESTFIX002",
+  "session_id": "TEST-SESSION-001",
+  "original_status": "SUGGESTED",
+  "status": "DISMISSED",
+  "preserve_original": true,
+  "dismiss_reason": "Signal was not reliable for this stock type",
+  "note": "Dismissed example — original suggestion preserved. TST symbol only."
+}

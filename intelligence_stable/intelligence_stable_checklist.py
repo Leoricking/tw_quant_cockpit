@@ -1554,4 +1554,29 @@ class IntelligenceStableChecklist:
                 suggested_fix="Run: python main.py replay-journal-health",
             ))
 
+        # v1.2.4 Strategy Knowledge Replay safety check
+        try:
+            import release.version_info as _vi2
+            skra = getattr(_vi2, "STRATEGY_KNOWLEDGE_REPLAY_AVAILABLE", False)
+            asde = getattr(_vi2, "AUTO_STRATEGY_DECISION_ENABLED", True)
+            asee = getattr(_vi2, "AUTO_STRATEGY_EXECUTION_ENABLED", True)
+            aswce = getattr(_vi2, "AUTO_STRATEGY_WEIGHT_CHANGE_ENABLED", True)
+            safe_strat = skra and not asde and not asee and not aswce
+            checks.append(_check(
+                "replay_strategy_knowledge_v124_safe", "stable_integration",
+                "v1.2.4 replay_strategy_knowledge_v124_safe",
+                CHECK_PASS if safe_strat else CHECK_WARN, SEV_LOW,
+                f"STRATEGY_KNOWLEDGE_REPLAY_AVAILABLE={skra}, "
+                f"AUTO_DECISION={asde}, AUTO_EXECUTION={asee}, AUTO_WEIGHT_CHANGE={aswce}",
+                suggested_fix="Run: python main.py replay-strategy-health",
+            ))
+        except Exception as exc:
+            checks.append(_check(
+                "replay_strategy_knowledge_v124_safe", "stable_integration",
+                "v1.2.4 replay_strategy_knowledge_v124_safe",
+                CHECK_WARN, SEV_LOW,
+                f"Could not verify strategy_knowledge_replay v1.2.4 safety (optional): {exc}",
+                suggested_fix="Run: python main.py replay-strategy-health",
+            ))
+
         return checks

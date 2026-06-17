@@ -165,7 +165,7 @@ class ReplayMistakeDetector:
                 evidence=["point_in_time_verified=False"],
                 confidence=80,
                 severity=MistakeSeverity.HIGH.value,
-                status=MistakeStatus.NEEDS_REVIEW.value,
+                status=MistakeStatus.SUGGESTED.value,
                 source=MistakeSource.RULE_SUGGESTED.value,
                 action=action,
                 is_wait_or_skip=False,
@@ -197,7 +197,7 @@ class ReplayMistakeDetector:
                     evidence=["action=STOP", "risk_plan_id=None", "fallback_action=empty"],
                     confidence=50,
                     severity=MistakeSeverity.MEDIUM.value,
-                    status=MistakeStatus.NEEDS_REVIEW.value,
+                    status=MistakeStatus.SUGGESTED.value,
                     source=MistakeSource.RULE_SUGGESTED.value,
                     action=action,
                     is_wait_or_skip=False,
@@ -228,7 +228,7 @@ class ReplayMistakeDetector:
                     evidence=["emotional_state_id present", "fomo=True (self-reported)"],
                     confidence=40,
                     severity=MistakeSeverity.LOW.value,
-                    status=MistakeStatus.NEEDS_REVIEW.value,
+                    status=MistakeStatus.SUGGESTED.value,
                     source=MistakeSource.SELF_REPORTED.value,
                     action=action,
                     is_wait_or_skip=False,
@@ -251,8 +251,102 @@ class ReplayMistakeDetector:
                     evidence=["emotional_state_id present", "revenge_trading_risk=True (self-reported)"],
                     confidence=40,
                     severity=MistakeSeverity.LOW.value,
-                    status=MistakeStatus.NEEDS_REVIEW.value,
+                    status=MistakeStatus.SUGGESTED.value,
                     source=MistakeSource.SELF_REPORTED.value,
+                    action=action,
+                    is_wait_or_skip=False,
+                    auto_confirmed=False,
+                ))
+
+        # ---- v1.2.4 Strategy Knowledge Replay: strategy-related mistake suggestions ----
+        # Rules:
+        # - All need evidence + confidence; valid thesis/stop/invalidation → not auto-flagged
+        # - NEVER auto-CONFIRM — all remain SUGGESTED
+        strategy_signals = entry.get("strategy_signals_at_decision", {})
+        strategy_warnings = entry.get("strategy_warnings_at_decision", []) or []
+        strategy_conflicts = entry.get("strategy_conflicts_at_decision", []) or []
+
+        has_stop_plan = bool(entry.get("stop_price") or entry.get("risk_plan_id"))
+        has_thesis = bool(entry.get("thesis_id") or entry.get("decision_reason"))
+        has_invalidation = bool(entry.get("invalidation_conditions"))
+
+        # NO_CHASE_WARNING_IGNORED
+        if (action in ("ENTER", "ADD") and not is_wait_or_skip
+                and strategy_signals
+                and not has_thesis):
+            modules = strategy_signals.get("modules", []) if isinstance(strategy_signals, dict) else []
+            for mod in modules:
+                if (mod.get("module_name") == "NO_CHASE"
+                        and "chase_warning" in str(mod.get("signal", "")).lower()):
+                    mistakes.append(MistakeRecord(
+                        mistake_id=_new_mistake_id(),
+                        session_id=session_id,
+                        journal_entry_id=entry.get("journal_entry_id"),
+                        decision_id=entry.get("decision_id"),
+                        symbol=symbol,
+                        replay_date=replay_date,
+                        mistake_type="NO_CHASE_WARNING_IGNORED",
+                        category="STRATEGY",
+                        description="Entry made while No-Chase warning was active and no thesis documented.",
+                        evidence=["NO_CHASE signal: " + str(mod.get("signal", "")), "action=ENTER/ADD", "thesis=missing"],
+                        confidence=55,
+                        severity=MistakeSeverity.MEDIUM.value,
+                        status=MistakeStatus.SUGGESTED.value,
+                        source=MistakeSource.RULE_SUGGESTED.value,
+                        action=action,
+                        is_wait_or_skip=False,
+                        auto_confirmed=False,
+                    ))
+                    break
+
+        # NO_PANIC_SELL_WARNING_IGNORED — only if no planned stop
+        if (action in ("STOP", "EXIT") and not is_wait_or_skip
+                and not has_stop_plan and strategy_signals):
+            modules = strategy_signals.get("modules", []) if isinstance(strategy_signals, dict) else []
+            for mod in modules:
+                if (mod.get("module_name") == "NO_PANIC_SELL"
+                        and "panic_sell_warning" in str(mod.get("signal", "")).lower()):
+                    mistakes.append(MistakeRecord(
+                        mistake_id=_new_mistake_id(),
+                        session_id=session_id,
+                        journal_entry_id=entry.get("journal_entry_id"),
+                        decision_id=entry.get("decision_id"),
+                        symbol=symbol,
+                        replay_date=replay_date,
+                        mistake_type="NO_PANIC_SELL_WARNING_IGNORED",
+                        category="STRATEGY",
+                        description="Exit/stop made without a documented stop plan while panic-sell warning active.",
+                        evidence=["NO_PANIC_SELL signal active", "no stop plan documented"],
+                        confidence=55,
+                        severity=MistakeSeverity.MEDIUM.value,
+                        status=MistakeStatus.SUGGESTED.value,
+                        source=MistakeSource.RULE_SUGGESTED.value,
+                        action=action,
+                        is_planned_stop=False,
+                        is_wait_or_skip=False,
+                        auto_confirmed=False,
+                    ))
+                    break
+
+        # STRATEGY_CONFLICT_NOT_REVIEWED
+        if strategy_conflicts and action in ("ENTER", "ADD", "HOLD"):
+            high_conflicts = [c for c in strategy_conflicts if c.get("severity") == "HIGH"]
+            if high_conflicts and not entry.get("strategy_rule_review_ids"):
+                mistakes.append(MistakeRecord(
+                    mistake_id=_new_mistake_id(),
+                    session_id=session_id,
+                    journal_entry_id=entry.get("journal_entry_id"),
+                    decision_id=entry.get("decision_id"),
+                    symbol=symbol,
+                    replay_date=replay_date,
+                    mistake_type="STRATEGY_CONFLICT_NOT_REVIEWED",
+                    category="STRATEGY",
+                    description="Decision made with HIGH-severity strategy conflicts not reviewed.",
+                    evidence=[f"conflicts: {[c.get('conflict_type') for c in high_conflicts]}"],
+                    confidence=50,
+                    severity=MistakeSeverity.MEDIUM.value,
+                    status=MistakeStatus.SUGGESTED.value,
+                    source=MistakeSource.RULE_SUGGESTED.value,
                     action=action,
                     is_wait_or_skip=False,
                     auto_confirmed=False,

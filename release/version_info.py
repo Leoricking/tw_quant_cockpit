@@ -1,5 +1,5 @@
 """
-release/version_info.py — Centralized version info for TW Quant Cockpit v1.2.3.
+release/version_info.py — Centralized version info for TW Quant Cockpit v1.2.4.
 [!] Research Only. No Real Orders. Production Trading: BLOCKED.
 [!] VALIDATED does not enable trading. Broker Execution Disabled.
 [!] Data Universe Expansion. Real Data Coverage Required.
@@ -31,6 +31,9 @@ release/version_info.py — Centralized version info for TW Quant Cockpit v1.2.3
 [!] Mistake detection SUGGESTED status only. System cannot auto-confirm mistakes.
 [!] Auto Outcome Reveal DISABLED. Auto Mistake Confirmation DISABLED. Score-to-Trade DISABLED.
 [!] Replay Trade Execution DISABLED. No Auto Strategy Change. Not Investment Advice.
+[!] Strategy Knowledge Replay. Point-in-time verified. No forward return. No outcome.
+[!] Auto Strategy Decision DISABLED. Auto Strategy Execution DISABLED.
+[!] Auto Strategy Weight Change DISABLED. Broker Disabled. Not Investment Advice.
 """
 from __future__ import annotations
 import logging
@@ -42,9 +45,9 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # ---------------------------------------------------------------------------
 # v1.1.9 module-level constants (Data Governance Stable Rollup)
 # ---------------------------------------------------------------------------
-VERSION                             = "1.2.3"
-RELEASE_NAME                        = "Replay Scoring & Mistake Taxonomy"
-BASE_RELEASE                        = "1.2.2 Decision Journal Integration"
+VERSION                             = "1.2.4"
+RELEASE_NAME                        = "Strategy Knowledge Replay"
+BASE_RELEASE                        = "1.2.3 Replay Scoring & Mistake Taxonomy"
 BASE_RELEASE_NAME                   = "Data Governance Stable Rollup"
 MAINTENANCE_RELEASE                 = False
 RELEASE_STAGE                       = "FOUNDATION"
@@ -201,6 +204,17 @@ AUTO_MISTAKE_CONFIRMATION_ENABLED       = False
 AUTO_STRATEGY_CHANGE_ENABLED            = False
 AUTO_SCORE_TO_TRADE_ENABLED             = False
 REPLAY_TRADE_EXECUTION_ENABLED          = False   # noqa: F811 (all False)
+# v1.2.4 Strategy Knowledge Replay flags
+STRATEGY_KNOWLEDGE_REPLAY_AVAILABLE     = True
+STRATEGY_SIGNAL_TIMELINE_AVAILABLE      = True
+STRATEGY_RULE_REVIEW_AVAILABLE          = True
+STRATEGY_AGREEMENT_ANALYSIS_AVAILABLE   = True
+STRATEGY_CONFLICT_ANALYSIS_AVAILABLE    = True
+ABC_BUY_POINT_REPLAY_AVAILABLE          = True
+AUTO_STRATEGY_DECISION_ENABLED          = False
+AUTO_STRATEGY_EXECUTION_ENABLED         = False
+AUTO_STRATEGY_WEIGHT_CHANGE_ENABLED     = False
+AUTO_STRATEGY_MISTAKE_CONFIRMATION_ENABLED = False
 
 
 class VersionInfo:
@@ -447,6 +461,17 @@ def print_version_info() -> None:
     print(f"  Auto Mistake Confirmation Enabled: {AUTO_MISTAKE_CONFIRMATION_ENABLED}")
     print(f"  Auto Strategy Change Enabled: {AUTO_STRATEGY_CHANGE_ENABLED}")
     print(f"  Auto Score To Trade Enabled: {AUTO_SCORE_TO_TRADE_ENABLED}")
+    # v1.2.4 flags
+    print(f"  Strategy Knowledge Replay Available: {STRATEGY_KNOWLEDGE_REPLAY_AVAILABLE}")
+    print(f"  Strategy Signal Timeline Available: {STRATEGY_SIGNAL_TIMELINE_AVAILABLE}")
+    print(f"  Strategy Rule Review Available: {STRATEGY_RULE_REVIEW_AVAILABLE}")
+    print(f"  Strategy Agreement Analysis Available: {STRATEGY_AGREEMENT_ANALYSIS_AVAILABLE}")
+    print(f"  Strategy Conflict Analysis Available: {STRATEGY_CONFLICT_ANALYSIS_AVAILABLE}")
+    print(f"  ABC Buy Point Replay Available: {ABC_BUY_POINT_REPLAY_AVAILABLE}")
+    print(f"  Auto Strategy Decision Enabled: {AUTO_STRATEGY_DECISION_ENABLED}")
+    print(f"  Auto Strategy Execution Enabled: {AUTO_STRATEGY_EXECUTION_ENABLED}")
+    print(f"  Auto Strategy Weight Change Enabled: {AUTO_STRATEGY_WEIGHT_CHANGE_ENABLED}")
+    print(f"  Auto Strategy Mistake Confirmation Enabled: {AUTO_STRATEGY_MISTAKE_CONFIRMATION_ENABLED}")
     print("=" * 60)
 
 

@@ -1,0 +1,10 @@
+{
+  "operation_name": "test_batch",
+  "elapsed_seconds": 5.2,
+  "item_count": 3,
+  "completed_count": 3,
+  "failed_count": 0,
+  "status": "COMPLETED",
+  "elapsed_display": "00:00:05",
+  "note": "Batch timing example. TST symbol only. Fixed test clock."
+}

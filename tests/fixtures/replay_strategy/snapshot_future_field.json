@@ -1,0 +1,10 @@
+{
+  "strategy_snapshot_id": "SSN-TESTFIX002",
+  "session_id": "TEST-SESSION-001",
+  "symbol": "TST001",
+  "replay_date": "2024-01-15",
+  "forward_return": 0.05,
+  "outcome_label": "WIN",
+  "modules": [],
+  "note": "Has forward_return — should be BLOCKED by verifier. TST symbol only."
+}

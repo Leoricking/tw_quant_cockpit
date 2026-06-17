@@ -1,0 +1,10 @@
+{
+  "conflict_type": "TECHNICAL_BULLISH_FUNDAMENTAL_WARNING",
+  "module_a": "KD_ADVANCED",
+  "signal_a": "golden_cross",
+  "module_b": "FUNDAMENTAL_QUALITY",
+  "signal_b": "warning_negative",
+  "severity": "HIGH",
+  "auto_blocks_decision": false,
+  "note": "TECHNICAL_BULLISH_FUNDAMENTAL_WARNING example. Informational only. TST symbol only."
+}

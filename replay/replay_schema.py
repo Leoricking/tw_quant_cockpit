@@ -207,6 +207,12 @@ class ReplaySessionState:
     suggested_mistake_count: int = 0
     confirmed_mistake_count: int = 0
     dismissed_mistake_count: int = 0
+    # v1.2.4 strategy replay fields (all with defaults for backward compat)
+    strategy_snapshot_count: int = 0
+    latest_strategy_snapshot_id: Optional[str] = None
+    strategy_review_status: str = "NOT_REVIEWED"
+    strategy_rule_review_count: int = 0
+    strategy_conflict_count: int = 0
 
     def to_dict(self) -> Dict[str, Any]:
         return {
@@ -246,6 +252,12 @@ class ReplaySessionState:
             "suggested_mistake_count": self.suggested_mistake_count,
             "confirmed_mistake_count": self.confirmed_mistake_count,
             "dismissed_mistake_count": self.dismissed_mistake_count,
+            # v1.2.4 strategy replay fields
+            "strategy_snapshot_count": self.strategy_snapshot_count,
+            "latest_strategy_snapshot_id": self.latest_strategy_snapshot_id,
+            "strategy_review_status": self.strategy_review_status,
+            "strategy_rule_review_count": self.strategy_rule_review_count,
+            "strategy_conflict_count": self.strategy_conflict_count,
         }
 
     @classmethod
@@ -287,6 +299,12 @@ class ReplaySessionState:
             suggested_mistake_count=int(d.get("suggested_mistake_count", 0)),
             confirmed_mistake_count=int(d.get("confirmed_mistake_count", 0)),
             dismissed_mistake_count=int(d.get("dismissed_mistake_count", 0)),
+            # v1.2.4 strategy replay fields — graceful defaults for old sessions
+            strategy_snapshot_count=int(d.get("strategy_snapshot_count", 0)),
+            latest_strategy_snapshot_id=d.get("latest_strategy_snapshot_id"),
+            strategy_review_status=d.get("strategy_review_status", "NOT_REVIEWED"),
+            strategy_rule_review_count=int(d.get("strategy_rule_review_count", 0)),
+            strategy_conflict_count=int(d.get("strategy_conflict_count", 0)),
         )
 
 
@@ -319,6 +337,13 @@ class ReplayMarketSnapshot:
     generated_at: str = field(default_factory=_now_utc)
     research_only: bool = True
     no_real_orders: bool = True
+    # v1.2.4 strategy replay fields (all with defaults for backward compat)
+    strategy_replay_snapshot_id: Optional[str] = None
+    strategy_agreement_score: Optional[float] = None
+    strategy_conflict_score: Optional[float] = None
+    strategy_module_availability: Optional[dict] = None
+    strategy_warning_count: int = 0
+    strategy_conflict_count: int = 0
 
     def to_dict(self) -> Dict[str, Any]:
         return {
@@ -341,6 +366,13 @@ class ReplayMarketSnapshot:
             "generated_at": self.generated_at,
             "research_only": True,
             "no_real_orders": True,
+            # v1.2.4
+            "strategy_replay_snapshot_id": self.strategy_replay_snapshot_id,
+            "strategy_agreement_score": self.strategy_agreement_score,
+            "strategy_conflict_score": self.strategy_conflict_score,
+            "strategy_module_availability": self.strategy_module_availability,
+            "strategy_warning_count": self.strategy_warning_count,
+            "strategy_conflict_count": self.strategy_conflict_count,
         }
 
     @classmethod
@@ -365,6 +397,13 @@ class ReplayMarketSnapshot:
             generated_at=d.get("generated_at", _now_utc()),
             research_only=True,
             no_real_orders=True,
+            # v1.2.4 — graceful defaults for old sessions
+            strategy_replay_snapshot_id=d.get("strategy_replay_snapshot_id"),
+            strategy_agreement_score=d.get("strategy_agreement_score"),
+            strategy_conflict_score=d.get("strategy_conflict_score"),
+            strategy_module_availability=d.get("strategy_module_availability"),
+            strategy_warning_count=int(d.get("strategy_warning_count", 0)),
+            strategy_conflict_count=int(d.get("strategy_conflict_count", 0)),
         )
 
 

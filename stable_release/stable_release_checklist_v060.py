@@ -2998,6 +2998,59 @@ class StableReleaseChecklistV060:
         except Exception as exc:
             return _check_item("version_info_v122", "version_git", "WARN", str(exc))
 
+    def _check_replay_strategy_schema(self) -> dict:
+        """v1.2.4 — StrategyReplaySnapshot importable, no forward_return field."""
+        try:
+            from replay.strategy_replay_schema import StrategyReplaySnapshot
+            fields = list(StrategyReplaySnapshot.__dataclass_fields__.keys())
+            future_fields = [f for f in fields if any(
+                p in f for p in ["forward_return", "outcome_", "hindsight_", "future_"]
+            )]
+            ok = not future_fields
+            return _check_item(
+                "replay_strategy_schema_v124", "replay_strategy_knowledge",
+                "PASS" if ok else "FAIL",
+                f"StrategyReplaySnapshot importable, no future fields: {ok}",
+            )
+        except Exception as exc:
+            return _check_item("replay_strategy_schema_v124", "replay_strategy_knowledge", "WARN", str(exc))
+
+    def _check_replay_strategy_no_auto_decision(self) -> dict:
+        """v1.2.4 — AUTO_STRATEGY_DECISION_ENABLED=False, no auto execution or weight changes."""
+        try:
+            from release.version_info import (
+                AUTO_STRATEGY_DECISION_ENABLED,
+                AUTO_STRATEGY_EXECUTION_ENABLED,
+                AUTO_STRATEGY_WEIGHT_CHANGE_ENABLED,
+            )
+            safe = not AUTO_STRATEGY_DECISION_ENABLED and not AUTO_STRATEGY_EXECUTION_ENABLED and not AUTO_STRATEGY_WEIGHT_CHANGE_ENABLED
+            return _check_item(
+                "replay_strategy_no_auto_decision_v124", "replay_strategy_knowledge",
+                "PASS" if safe else "FAIL",
+                f"AUTO_DECISION={AUTO_STRATEGY_DECISION_ENABLED}, "
+                f"AUTO_EXECUTION={AUTO_STRATEGY_EXECUTION_ENABLED}, "
+                f"AUTO_WEIGHT_CHANGE={AUTO_STRATEGY_WEIGHT_CHANGE_ENABLED}",
+            )
+        except Exception as exc:
+            return _check_item("replay_strategy_no_auto_decision_v124", "replay_strategy_knowledge", "WARN", str(exc))
+
+    def _check_version_info_v124(self) -> dict:
+        """v1.2.4 — VERSION=1.2.4 and v1.2.4 flags set correctly."""
+        try:
+            from release.version_info import VERSION
+            import release.version_info as _vi
+            skra = getattr(_vi, "STRATEGY_KNOWLEDGE_REPLAY_AVAILABLE", None)
+            asde = getattr(_vi, "AUTO_STRATEGY_DECISION_ENABLED", True)
+            ok = VERSION == "1.2.4" and skra and not asde
+            status = "PASS" if ok else "WARN"
+            return _check_item(
+                "version_info_v124", "version_git", status,
+                f"VERSION={VERSION}, STRATEGY_KNOWLEDGE_REPLAY_AVAILABLE={skra}, "
+                f"AUTO_STRATEGY_DECISION_ENABLED={asde}",
+            )
+        except Exception as exc:
+            return _check_item("version_info_v124", "version_git", "WARN", str(exc))
+
     # ----------------------------------------------------------------
     # Run
     # ----------------------------------------------------------------
@@ -3183,6 +3236,10 @@ class StableReleaseChecklistV060:
             self._check_decision_journal_schema,
             self._check_decision_journal_no_auto_scoring,
             self._check_version_info_v122,
+            # v1.2.4 Strategy Knowledge Replay
+            self._check_replay_strategy_schema,
+            self._check_replay_strategy_no_auto_decision,
+            self._check_version_info_v124,
         ]
 
         for fn in checklist_groups:

@@ -4475,6 +4475,72 @@ class RegressionSuiteRegistry:
                     description="safety-scan all passes after v1.2.2",
                 ),
             ],
+            # v1.2.3 Replay Scoring & Mistake Taxonomy
+            [
+                RegressionTestCase(
+                    test_id="rg_replay_scoring_health_v123",
+                    name="replay-scoring-health",
+                    suite=SUITE_QUICK,
+                    category="replay_scoring",
+                    command=["main.py", "replay-scoring-health"],
+                    timeout_seconds=60,
+                    required=False,
+                    description="replay-scoring-health runs without crash",
+                ),
+                RegressionTestCase(
+                    test_id="rg_replay_scoring_regression_v123",
+                    name="test_replay_scoring_mistake_taxonomy_regression",
+                    suite=SUITE_FULL,
+                    category="replay_scoring",
+                    command=["-m", "pytest", "tests/test_replay_scoring_mistake_taxonomy_regression.py", "-v", "--tb=short"],
+                    timeout_seconds=180,
+                    required=False,
+                    description="Replay scoring and mistake taxonomy regression tests pass",
+                ),
+                RegressionTestCase(
+                    test_id="rg_safety_scan_v123",
+                    name="safety-scan --target all (v1.2.3)",
+                    suite=SUITE_RELEASE_GATE,
+                    category="replay_scoring",
+                    command=["main.py", "safety-scan", "--target", "all"],
+                    timeout_seconds=120,
+                    required=False,
+                    description="safety-scan all passes after v1.2.3",
+                ),
+            ],
+            # v1.2.4 Strategy Knowledge Replay
+            [
+                RegressionTestCase(
+                    test_id="rg_replay_strategy_health_v124",
+                    name="replay-strategy-health",
+                    suite=SUITE_QUICK,
+                    category="replay_strategy_knowledge",
+                    command=["main.py", "replay-strategy-health"],
+                    timeout_seconds=60,
+                    required=False,
+                    description="replay-strategy-health runs without crash",
+                ),
+                RegressionTestCase(
+                    test_id="rg_replay_strategy_regression_v124",
+                    name="test_replay_strategy_knowledge_regression",
+                    suite=SUITE_FULL,
+                    category="replay_strategy_knowledge",
+                    command=["-m", "pytest", "tests/test_replay_strategy_knowledge_regression.py", "-v", "--tb=short"],
+                    timeout_seconds=180,
+                    required=False,
+                    description="Strategy knowledge replay regression tests pass",
+                ),
+                RegressionTestCase(
+                    test_id="rg_safety_scan_v124",
+                    name="safety-scan --target all (v1.2.4)",
+                    suite=SUITE_RELEASE_GATE,
+                    category="replay_strategy_knowledge",
+                    command=["main.py", "safety-scan", "--target", "all"],
+                    timeout_seconds=120,
+                    required=False,
+                    description="safety-scan all passes after v1.2.4",
+                ),
+            ],
         ]:
             for tc in suite_tests:
                 if tc.test_id not in seen:

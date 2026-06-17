@@ -1,0 +1,1 @@
+{"module": "NO_CHASE", "signal": "no_chase_warning_cleared", "available": true, "score": null, "warning": "", "reason": "Price not extended above entry zone", "evidence": ["price_within_range"], "confidence": "OBSERVATIONAL", "timing_warning": "", "point_in_time_verified": true, "replay_date": "2024-01-15"}

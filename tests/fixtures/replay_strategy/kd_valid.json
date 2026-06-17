@@ -1,0 +1,17 @@
+{
+  "module": "KD_ADVANCED",
+  "signal": "golden_cross",
+  "available": true,
+  "score": 75,
+  "warning": "",
+  "reason": "KD low cross up — K crossed above D from oversold zone",
+  "evidence": ["K=25", "D=20", "cross_confirmed"],
+  "confidence": "OBSERVATIONAL",
+  "timing_warning": "",
+  "point_in_time_verified": true,
+  "symbol": "TST001",
+  "replay_date": "2024-01-15",
+  "research_only": true,
+  "no_real_orders": true,
+  "note": "TST symbol only. Fixed test clock."
+}

@@ -44,17 +44,23 @@ class ReplayProcessScoreEngine:
     SCORING_TRIGGERS_NO_ORDERS = True
 
     WEIGHTS = {
-        "thesis_quality": 15,
-        "risk_planning": 15,
-        "discipline_checklist": 15,
-        "evidence_quality": 10,
-        "confirmation_invalidation": 10,
-        "point_in_time_integrity": 10,
+        "thesis_quality": 13,
+        "risk_planning": 13,
+        "discipline_checklist": 13,
+        "evidence_quality": 9,
+        "confirmation_invalidation": 9,
+        "point_in_time_integrity": 9,
         "emotional_awareness": 5,
         "revision_quality": 5,
         "data_sufficiency": 5,
         "scenario_objective": 5,
         "session_completion": 5,
+        # v1.2.4 Strategy Knowledge Replay weights
+        # Scoring evaluates WHETHER trader acknowledged signals, NOT whether followed
+        "strategy_context_awareness": 5,
+        "strategy_conflict_awareness": 2,
+        "warning_acknowledgement": 1,
+        "rule_review_completeness": 1,
     }
 
     GOOD_PROCESS_THRESHOLD = 60.0

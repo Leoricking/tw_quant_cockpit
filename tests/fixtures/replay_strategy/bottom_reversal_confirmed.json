@@ -1,0 +1,16 @@
+{
+  "module": "BOTTOM_REVERSAL",
+  "signal": "confirmed",
+  "available": true,
+  "score": 80,
+  "warning": "",
+  "reason": "Bottom reversal confirmed with volume support",
+  "evidence": ["volume_surge", "price_recovery", "confirmation_date=2024-01-10"],
+  "confidence": "OBSERVATIONAL",
+  "timing_warning": "",
+  "point_in_time_verified": true,
+  "confirmation_date": "2024-01-10",
+  "signal_date": "2024-01-08",
+  "replay_date": "2024-01-15",
+  "note": "confirmation_date present and <= replay_date. TST symbol only."
+}

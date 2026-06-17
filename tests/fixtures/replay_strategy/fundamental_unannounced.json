@@ -1,0 +1,12 @@
+{
+  "module": "FUNDAMENTAL_QUALITY",
+  "signal": "positive",
+  "available": true,
+  "score": 55,
+  "announcement_date": null,
+  "timing_approximate": true,
+  "timing_warning": "No announcement_date — timing is approximate",
+  "point_in_time_verified": false,
+  "replay_date": "2024-01-15",
+  "note": "No announcement_date → timing_approximate=true. TST symbol only."
+}

@@ -1,0 +1,12 @@
+{
+  "module": "FUNDAMENTAL_QUALITY",
+  "signal": "strong",
+  "available": true,
+  "score": 75,
+  "warning": "",
+  "announcement_date": "2024-01-10",
+  "timing_approximate": false,
+  "point_in_time_verified": true,
+  "replay_date": "2024-01-15",
+  "note": "announcement_date present and <= replay_date. TST symbol only."
+}

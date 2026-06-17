@@ -5820,6 +5820,25 @@ def cmd_version_info(args: argparse.Namespace) -> None:
         print(f"{'Auto Research Execution Enabled:':<40} {auto_rexec}")
         print(f"{'Auto Research Rerun Enabled:':<40} {auto_rrerun}")
         print(f"{'Trade Execution Enabled:':<40} {trade_exec2}")
+        # v1.2.4 Strategy Knowledge Replay flags
+        skra     = getattr(_vi116, "STRATEGY_KNOWLEDGE_REPLAY_AVAILABLE", False)
+        stla     = getattr(_vi116, "STRATEGY_SIGNAL_TIMELINE_AVAILABLE", False)
+        srra     = getattr(_vi116, "STRATEGY_RULE_REVIEW_AVAILABLE", False)
+        saaa     = getattr(_vi116, "STRATEGY_AGREEMENT_ANALYSIS_AVAILABLE", False)
+        scaa     = getattr(_vi116, "STRATEGY_CONFLICT_ANALYSIS_AVAILABLE", False)
+        abca     = getattr(_vi116, "ABC_BUY_POINT_REPLAY_AVAILABLE", False)
+        asde     = getattr(_vi116, "AUTO_STRATEGY_DECISION_ENABLED", True)
+        asee     = getattr(_vi116, "AUTO_STRATEGY_EXECUTION_ENABLED", True)
+        aswce    = getattr(_vi116, "AUTO_STRATEGY_WEIGHT_CHANGE_ENABLED", True)
+        print(f"{'Strategy Knowledge Replay Available:':<40} {skra}")
+        print(f"{'Strategy Signal Timeline Available:':<40} {stla}")
+        print(f"{'Strategy Rule Review Available:':<40} {srra}")
+        print(f"{'Strategy Agreement Analysis Available:':<40} {saaa}")
+        print(f"{'Strategy Conflict Analysis Available:':<40} {scaa}")
+        print(f"{'ABC Buy Point Replay Available:':<40} {abca}")
+        print(f"{'Auto Strategy Decision Enabled:':<40} {asde}")
+        print(f"{'Auto Strategy Execution Enabled:':<40} {asee}")
+        print(f"{'Auto Strategy Weight Change Enabled:':<40} {aswce}")
     except Exception as exc:
         print(f"  Version:                              1.1.9")
         print(f"  Release:                              Data Governance Stable Rollup")
@@ -21619,6 +21638,81 @@ def _build_parser() -> argparse.ArgumentParser:
     p_mistake_report = subparsers.add_parser("replay-mistake-report", help="[v1.2.3] Mistake taxonomy report. Research Only.")
     p_mistake_report.add_argument("--output-dir", default=None, help="Output directory")
 
+    # v1.2.4 Strategy Knowledge Replay
+    subparsers.add_parser("replay-strategy-health", help="[v1.2.4] Strategy Knowledge Replay health check. Research Only.")
+
+    p_strat_current = subparsers.add_parser("replay-strategy-current", help="[v1.2.4] Current strategy snapshot. Research Only.")
+    p_strat_current.add_argument("--session-id", default=None)
+
+    p_strat_date = subparsers.add_parser("replay-strategy-date", help="[v1.2.4] Strategy snapshot at date. Research Only.")
+    p_strat_date.add_argument("--session-id", default=None)
+    p_strat_date.add_argument("--date", default=None)
+
+    p_strat_module = subparsers.add_parser("replay-strategy-module", help="[v1.2.4] Strategy module results. Research Only.")
+    p_strat_module.add_argument("--session-id", default=None)
+    p_strat_module.add_argument("--module", default=None)
+
+    p_strat_tl = subparsers.add_parser("replay-strategy-timeline", help="[v1.2.4] Signal timeline. Research Only.")
+    p_strat_tl.add_argument("--session-id", default=None)
+    p_strat_tl.add_argument("--module", default=None)
+
+    p_strat_agr = subparsers.add_parser("replay-strategy-agreement", help="[v1.2.4] Agreement analysis. Research Only.")
+    p_strat_agr.add_argument("--session-id", default=None)
+
+    p_strat_conf = subparsers.add_parser("replay-strategy-conflicts", help="[v1.2.4] Conflict analysis (informational only). Research Only.")
+    p_strat_conf.add_argument("--session-id", default=None)
+
+    p_strat_rev = subparsers.add_parser("replay-strategy-review", help="[v1.2.4] Create rule review for journal entry. Research Only.")
+    p_strat_rev.add_argument("--journal-id", default=None)
+
+    p_strat_revs = subparsers.add_parser("replay-strategy-reviews", help="[v1.2.4] List rule reviews for session. Research Only.")
+    p_strat_revs.add_argument("--session-id", default=None)
+
+    p_strat_rconf = subparsers.add_parser("replay-strategy-review-confirm", help="[v1.2.4] Confirm a rule review. Research Only.")
+    p_strat_rconf.add_argument("--review-id", default=None)
+    p_strat_rconf.add_argument("--reason", default="")
+
+    p_strat_rdism = subparsers.add_parser("replay-strategy-review-dismiss", help="[v1.2.4] Dismiss a rule review. Research Only.")
+    p_strat_rdism.add_argument("--review-id", default=None)
+    p_strat_rdism.add_argument("--reason", default="")
+
+    p_strat_rover = subparsers.add_parser("replay-strategy-review-override", help="[v1.2.4] Override rule review relationship. Research Only.")
+    p_strat_rover.add_argument("--review-id", default=None)
+    p_strat_rover.add_argument("--relationship", default=None)
+    p_strat_rover.add_argument("--reason", default="")
+
+    p_strat_cdates = subparsers.add_parser("replay-strategy-compare-dates", help="[v1.2.4] Compare snapshots at two dates. Research Only.")
+    p_strat_cdates.add_argument("--session-id", default=None)
+    p_strat_cdates.add_argument("--date-a", default=None)
+    p_strat_cdates.add_argument("--date-b", default=None)
+
+    p_strat_csess = subparsers.add_parser("replay-strategy-compare-sessions", help="[v1.2.4] Compare two sessions. Research Only.")
+    p_strat_csess.add_argument("--session-a", default=None)
+    p_strat_csess.add_argument("--session-b", default=None)
+
+    p_strat_sum = subparsers.add_parser("replay-strategy-summary", help="[v1.2.4] Session strategy summary. Research Only.")
+    p_strat_sum.add_argument("--session-id", default=None)
+
+    p_strat_symsum = subparsers.add_parser("replay-strategy-symbol-summary", help="[v1.2.4] Symbol strategy summary. Research Only.")
+    p_strat_symsum.add_argument("--stock", default=None)
+
+    p_strat_scsum = subparsers.add_parser("replay-strategy-scenario-summary", help="[v1.2.4] Scenario strategy summary. Research Only.")
+    p_strat_scsum.add_argument("--scenario-id", default=None)
+
+    p_strat_rpt = subparsers.add_parser("replay-strategy-report", help="[v1.2.4] Build strategy knowledge report. Research Only.")
+    p_strat_rpt.add_argument("--session-id", default=None)
+
+    p_strat_tlrpt = subparsers.add_parser("replay-strategy-timeline-report", help="[v1.2.4] Build timeline report. Research Only.")
+    p_strat_tlrpt.add_argument("--session-id", default=None)
+
+    p_strat_bprev = subparsers.add_parser("replay-strategy-batch-preview", help="[v1.2.4] Preview batch strategy replay. Research Only.")
+    p_strat_bprev.add_argument("--sessions", default=None, help="Comma-separated session IDs or session ID")
+
+    p_strat_brun = subparsers.add_parser("replay-strategy-batch-run", help="[v1.2.4] Run batch strategy replay (BLOCKED without --allow-write). Research Only.")
+    p_strat_brun.add_argument("--sessions", default=None)
+    p_strat_brun.add_argument("--execute", action="store_true", default=False)
+    p_strat_brun.add_argument("--allow-write", action="store_true", default=False)
+
     return parser
 
 
@@ -22173,6 +22267,558 @@ def cmd_replay_mistake_report(args) -> None:
         print("[!] Research Only. Not Investment Advice.")
     except Exception as exc:
         print(f"  [ERROR] {exc}")
+
+
+# ---------------------------------------------------------------------------
+# v1.2.4 Strategy Knowledge Replay commands
+# ---------------------------------------------------------------------------
+
+def cmd_replay_strategy_health(args) -> None:
+    """Strategy Knowledge Replay health check. [!] Research Only. No Real Orders."""
+    from replay.replay_timing import ReplayOperationTimer
+    timer = ReplayOperationTimer()
+    timer.start("replay-strategy-health")
+    print("=" * 65)
+    print("  Strategy Knowledge Replay Health Check v1.2.4")
+    print("  [!] Research Only | No Real Orders | No Auto Decision | No Auto Execution")
+    print("=" * 65)
+    try:
+        from replay.strategy_replay_health import StrategyKnowledgeReplayHealthCheck
+        hc = StrategyKnowledgeReplayHealthCheck()
+        results = hc.run_all()
+        hc.print_results(results)
+    except Exception as exc:
+        print(f"  [FAIL] Strategy health check error: {exc}")
+        import traceback
+        traceback.print_exc()
+    timer.finish("COMPLETED")
+    print()
+    timer.print_summary()
+    print("[!] Research Only. Not Investment Advice.")
+
+
+def cmd_replay_strategy_current(args) -> None:
+    """Show current strategy snapshot. [!] Research Only."""
+    from replay.replay_timing import ReplayOperationTimer
+    timer = ReplayOperationTimer()
+    timer.start("replay-strategy-current", item_count=1)
+    session_id = getattr(args, "session_id", None) or ""
+    print("[!] Current Strategy Snapshot — Research Only | No Real Orders")
+    if not session_id:
+        print("  [ERROR] --session-id required")
+        timer.finish("FAILED")
+        return
+    try:
+        from replay.strategy_replay_query import StrategyReplayQuery
+        q = StrategyReplayQuery(repo_root=BASE_DIR)
+        snapshot = q.latest_snapshot(session_id)
+        if not snapshot:
+            print(f"  [NOT FOUND] No snapshot for session: {session_id}")
+            timer.finish("COMPLETED")
+        else:
+            print(f"  Snapshot ID  : {snapshot.get('strategy_snapshot_id', '')}")
+            print(f"  Replay Date  : {snapshot.get('replay_date', '')}")
+            print(f"  Agreement    : {snapshot.get('agreement_score', 0):.3f}")
+            print(f"  Conflict     : {snapshot.get('conflict_score', 0):.3f}")
+            print(f"  Bullish      : {snapshot.get('bullish_modules', [])}")
+            print(f"  Bearish      : {snapshot.get('bearish_modules', [])}")
+            print(f"  Warnings     : {snapshot.get('warning_modules', [])}")
+            print(f"  Unavailable  : {snapshot.get('unavailable_modules', [])}")
+            print(f"  PIT Verified : {snapshot.get('point_in_time_verified', False)}")
+            timer.finish("COMPLETED")
+    except Exception as exc:
+        print(f"  [ERROR] {exc}")
+        timer.finish("FAILED")
+    timer.print_summary()
+    print("[!] Research Only. Not Investment Advice.")
+
+
+def cmd_replay_strategy_date(args) -> None:
+    """Show strategy snapshot at a specific date. [!] Research Only."""
+    from replay.replay_timing import ReplayOperationTimer
+    timer = ReplayOperationTimer()
+    timer.start("replay-strategy-date", item_count=1)
+    session_id = getattr(args, "session_id", None) or ""
+    date = getattr(args, "date", None) or ""
+    print("[!] Strategy Snapshot at Date — Research Only")
+    if not session_id or not date:
+        print("  [ERROR] --session-id and --date required")
+        timer.finish("FAILED")
+        return
+    try:
+        from replay.strategy_replay_query import StrategyReplayQuery
+        q = StrategyReplayQuery(repo_root=BASE_DIR)
+        snaps = q.snapshots(session_id)
+        found = next((s for s in snaps if s.get("replay_date") == date), None)
+        if not found:
+            print(f"  [NOT FOUND] No snapshot for {session_id} on {date}")
+        else:
+            print(f"  Replay Date  : {found.get('replay_date', '')}")
+            print(f"  Agreement    : {found.get('agreement_score', 0):.3f}")
+            print(f"  PIT Verified : {found.get('point_in_time_verified', False)}")
+        timer.finish("COMPLETED")
+    except Exception as exc:
+        print(f"  [ERROR] {exc}")
+        timer.finish("FAILED")
+    timer.print_summary()
+    print("[!] Research Only. Not Investment Advice.")
+
+
+def cmd_replay_strategy_module(args) -> None:
+    """Show module results. [!] Research Only."""
+    from replay.replay_timing import ReplayOperationTimer
+    timer = ReplayOperationTimer()
+    timer.start("replay-strategy-module", item_count=1)
+    session_id = getattr(args, "session_id", None) or ""
+    module = getattr(args, "module", None) or ""
+    print(f"[!] Strategy Module Results ({module or 'all'}) — Research Only")
+    try:
+        from replay.strategy_replay_query import StrategyReplayQuery
+        q = StrategyReplayQuery(repo_root=BASE_DIR)
+        results = q.module_results(session_id) if session_id else q.module_results()
+        if module:
+            results = [r for r in results if r.get("module_name") == module]
+        print(f"  Results: {len(results)}")
+        for r in results[:5]:
+            print(f"    [{r.get('replay_date', '')}] {r.get('module_name', '')}: {r.get('signal', '')} (score={r.get('score')})")
+        timer.finish("COMPLETED")
+    except Exception as exc:
+        print(f"  [ERROR] {exc}")
+        timer.finish("FAILED")
+    timer.print_summary()
+    print("[!] Research Only. Not Investment Advice.")
+
+
+def cmd_replay_strategy_timeline(args) -> None:
+    """Show signal timeline. [!] Research Only."""
+    from replay.replay_timing import ReplayOperationTimer
+    timer = ReplayOperationTimer()
+    timer.start("replay-strategy-timeline", item_count=1)
+    session_id = getattr(args, "session_id", None) or ""
+    module = getattr(args, "module", None)
+    print("[!] Signal Timeline — Research Only")
+    try:
+        from replay.strategy_replay_query import StrategyReplayQuery
+        q = StrategyReplayQuery(repo_root=BASE_DIR)
+        tl = q.signal_timeline(session_id)
+        if module:
+            tl = [r for r in tl if r.get("module_name") == module]
+        print(f"  Timeline records: {len(tl)}")
+        timer.finish("COMPLETED")
+    except Exception as exc:
+        print(f"  [ERROR] {exc}")
+        timer.finish("FAILED")
+    timer.print_summary()
+    print("[!] Research Only. Not Investment Advice.")
+
+
+def cmd_replay_strategy_agreement(args) -> None:
+    """Show agreement analysis. [!] Research Only."""
+    from replay.replay_timing import ReplayOperationTimer
+    timer = ReplayOperationTimer()
+    timer.start("replay-strategy-agreement", item_count=1)
+    session_id = getattr(args, "session_id", None) or ""
+    print("[!] Strategy Agreement Analysis — Research Only")
+    try:
+        from replay.strategy_replay_query import StrategyReplayQuery
+        q = StrategyReplayQuery(repo_root=BASE_DIR)
+        agreements = q.agreements(session_id)
+        if agreements:
+            latest = sorted(agreements, key=lambda a: a.get("created_at", ""), reverse=True)[0]
+            print(f"  Status       : {latest.get('status', '')}")
+            print(f"  Agreement    : {latest.get('agreement_score', 0):.3f}")
+            print(f"  Conflict     : {latest.get('conflict_score', 0):.3f}")
+            print(f"  Bullish      : {latest.get('bullish_count', 0)}")
+            print(f"  Bearish      : {latest.get('bearish_count', 0)}")
+            print(f"  Unavailable  : {latest.get('unavailable_count', 0)} (not counted as bearish)")
+            print(f"  Confidence   : {latest.get('confidence', '')}")
+        else:
+            print(f"  [NOT FOUND] No agreements for session: {session_id}")
+        timer.finish("COMPLETED")
+    except Exception as exc:
+        print(f"  [ERROR] {exc}")
+        timer.finish("FAILED")
+    timer.print_summary()
+    print("[!] Research Only. Not Investment Advice.")
+
+
+def cmd_replay_strategy_conflicts(args) -> None:
+    """Show conflicts (informational only). [!] Research Only."""
+    from replay.replay_timing import ReplayOperationTimer
+    timer = ReplayOperationTimer()
+    timer.start("replay-strategy-conflicts", item_count=1)
+    session_id = getattr(args, "session_id", None) or ""
+    print("[!] Strategy Conflicts — Informational Only | Conflicts NEVER auto-block decisions")
+    try:
+        from replay.strategy_replay_query import StrategyReplayQuery
+        q = StrategyReplayQuery(repo_root=BASE_DIR)
+        conflicts = q.conflicts(session_id)
+        print(f"  Conflicts: {len(conflicts)}")
+        for c in conflicts[:10]:
+            print(f"    [{c.get('severity','LOW')}] {c.get('conflict_type','')}: "
+                  f"{c.get('module_a','')} vs {c.get('module_b','')}")
+        timer.finish("COMPLETED")
+    except Exception as exc:
+        print(f"  [ERROR] {exc}")
+        timer.finish("FAILED")
+    timer.print_summary()
+    print("[!] Research Only. Not Investment Advice.")
+
+
+def cmd_replay_strategy_review(args) -> None:
+    """Create rule review for journal entry. [!] Research Only."""
+    from replay.replay_timing import ReplayOperationTimer
+    timer = ReplayOperationTimer()
+    timer.start("replay-strategy-review", item_count=1)
+    journal_id = getattr(args, "journal_id", None) or ""
+    print("[!] Strategy Rule Review — All start as SUGGESTED | Research Only")
+    if not journal_id:
+        print("  [ERROR] --journal-id required")
+        timer.finish("FAILED")
+        return
+    try:
+        from replay.strategy_rule_review import StrategyRuleReviewManager
+        mgr = StrategyRuleReviewManager()
+        records = mgr.review_entry(journal_id)
+        print(f"  Review records created: {len(records)}")
+        for r in records:
+            print(f"    {r.get('module_name','')}: {r.get('relationship','')} — {r.get('status','')}")
+        timer.finish("COMPLETED")
+    except Exception as exc:
+        print(f"  [ERROR] {exc}")
+        timer.finish("FAILED")
+    timer.print_summary()
+    print("[!] Research Only. Not Investment Advice.")
+
+
+def cmd_replay_strategy_reviews(args) -> None:
+    """List rule reviews for session. [!] Research Only."""
+    from replay.replay_timing import ReplayOperationTimer
+    timer = ReplayOperationTimer()
+    timer.start("replay-strategy-reviews", item_count=1)
+    session_id = getattr(args, "session_id", None) or ""
+    print("[!] Strategy Rule Reviews — Research Only")
+    try:
+        from replay.strategy_replay_query import StrategyReplayQuery
+        q = StrategyReplayQuery(repo_root=BASE_DIR)
+        reviews = q.rule_reviews(session_id)
+        print(f"  Reviews: {len(reviews)}")
+        pending = q.pending_reviews(session_id)
+        confirmed = q.confirmed_reviews(session_id)
+        print(f"  Pending  : {len(pending)}")
+        print(f"  Confirmed: {len(confirmed)}")
+        timer.finish("COMPLETED")
+    except Exception as exc:
+        print(f"  [ERROR] {exc}")
+        timer.finish("FAILED")
+    timer.print_summary()
+    print("[!] Research Only. Not Investment Advice.")
+
+
+def cmd_replay_strategy_review_confirm(args) -> None:
+    """Confirm a rule review. [!] Research Only."""
+    from replay.replay_timing import ReplayOperationTimer
+    timer = ReplayOperationTimer()
+    timer.start("replay-strategy-review-confirm", item_count=1)
+    review_id = getattr(args, "review_id", None) or ""
+    reason = getattr(args, "reason", "") or ""
+    print("[!] Confirm Rule Review — Research Only")
+    if not review_id:
+        print("  [ERROR] --review-id required")
+        timer.finish("FAILED")
+        return
+    try:
+        from replay.strategy_rule_review import StrategyRuleReviewManager
+        from replay.strategy_replay_store import StrategyReplayStore
+        mgr = StrategyRuleReviewManager()
+        history_entry = mgr.confirm(review_id, reason)
+        store = StrategyReplayStore(repo_root=BASE_DIR)
+        store.append_review_history(history_entry)
+        print(f"  Confirmed: {review_id}")
+        print(f"  Reason: {reason}")
+        timer.finish("COMPLETED")
+    except Exception as exc:
+        print(f"  [ERROR] {exc}")
+        timer.finish("FAILED")
+    timer.print_summary()
+    print("[!] Research Only. Not Investment Advice.")
+
+
+def cmd_replay_strategy_review_dismiss(args) -> None:
+    """Dismiss a rule review. [!] Research Only."""
+    from replay.replay_timing import ReplayOperationTimer
+    timer = ReplayOperationTimer()
+    timer.start("replay-strategy-review-dismiss", item_count=1)
+    review_id = getattr(args, "review_id", None) or ""
+    reason = getattr(args, "reason", "") or ""
+    print("[!] Dismiss Rule Review — Research Only")
+    if not review_id:
+        print("  [ERROR] --review-id required")
+        timer.finish("FAILED")
+        return
+    try:
+        from replay.strategy_rule_review import StrategyRuleReviewManager
+        from replay.strategy_replay_store import StrategyReplayStore
+        mgr = StrategyRuleReviewManager()
+        history_entry = mgr.dismiss(review_id, reason)
+        store = StrategyReplayStore(repo_root=BASE_DIR)
+        store.append_review_history(history_entry)
+        print(f"  Dismissed: {review_id} (original preserved)")
+        timer.finish("COMPLETED")
+    except Exception as exc:
+        print(f"  [ERROR] {exc}")
+        timer.finish("FAILED")
+    timer.print_summary()
+    print("[!] Research Only. Not Investment Advice.")
+
+
+def cmd_replay_strategy_review_override(args) -> None:
+    """Override rule review relationship. [!] Research Only."""
+    from replay.replay_timing import ReplayOperationTimer
+    timer = ReplayOperationTimer()
+    timer.start("replay-strategy-review-override", item_count=1)
+    review_id = getattr(args, "review_id", None) or ""
+    relationship = getattr(args, "relationship", None) or ""
+    reason = getattr(args, "reason", "") or ""
+    print("[!] Override Rule Review — Research Only")
+    if not review_id or not relationship:
+        print("  [ERROR] --review-id and --relationship required")
+        timer.finish("FAILED")
+        return
+    try:
+        from replay.strategy_rule_review import StrategyRuleReviewManager
+        from replay.strategy_replay_store import StrategyReplayStore
+        mgr = StrategyRuleReviewManager()
+        history_entry = mgr.override(review_id, relationship, reason)
+        store = StrategyReplayStore(repo_root=BASE_DIR)
+        store.append_review_history(history_entry)
+        print(f"  Overridden: {review_id} -> {relationship} (original preserved)")
+        timer.finish("COMPLETED")
+    except Exception as exc:
+        print(f"  [ERROR] {exc}")
+        timer.finish("FAILED")
+    timer.print_summary()
+    print("[!] Research Only. Not Investment Advice.")
+
+
+def cmd_replay_strategy_compare_dates(args) -> None:
+    """Compare strategy snapshots at two dates. [!] Research Only."""
+    from replay.replay_timing import ReplayOperationTimer
+    timer = ReplayOperationTimer()
+    timer.start("replay-strategy-compare-dates", item_count=1)
+    session_id = getattr(args, "session_id", None) or ""
+    date_a = getattr(args, "date_a", None) or ""
+    date_b = getattr(args, "date_b", None) or ""
+    print("[!] Compare Strategy Snapshots — Research Only | No Forward Return")
+    if not session_id or not date_a or not date_b:
+        print("  [ERROR] --session-id --date-a --date-b required")
+        timer.finish("FAILED")
+        return
+    try:
+        from replay.strategy_replay_query import StrategyReplayQuery
+        q = StrategyReplayQuery(repo_root=BASE_DIR)
+        result = q.compare_records(session_id, date_a, date_b)
+        changes = result.get("module_changes", [])
+        print(f"  Date A: {date_a}  Date B: {date_b}")
+        print(f"  Agreement Delta: {result.get('agreement_delta', 0):.3f}")
+        print(f"  Module Changes : {len(changes)}")
+        for ch in changes:
+            print(f"    {ch.get('module_name','')}: {ch.get('signal_a','')} → {ch.get('signal_b','')}")
+        timer.finish("COMPLETED")
+    except Exception as exc:
+        print(f"  [ERROR] {exc}")
+        timer.finish("FAILED")
+    timer.print_summary()
+    print("[!] Research Only. Not Investment Advice.")
+
+
+def cmd_replay_strategy_compare_sessions(args) -> None:
+    """Compare two sessions. [!] Research Only."""
+    from replay.replay_timing import ReplayOperationTimer
+    timer = ReplayOperationTimer()
+    timer.start("replay-strategy-compare-sessions", item_count=1)
+    session_a = getattr(args, "session_a", None) or ""
+    session_b = getattr(args, "session_b", None) or ""
+    print("[!] Compare Strategy Sessions — Research Only")
+    try:
+        from replay.strategy_replay_comparator import StrategyReplayComparator
+        comp = StrategyReplayComparator()
+        result = comp.compare_sessions(session_a, session_b, "")
+        print(f"  Session A: {session_a}")
+        print(f"  Session B: {session_b}")
+        print(f"  Note: {result.get('note', '')}")
+        timer.finish("COMPLETED")
+    except Exception as exc:
+        print(f"  [ERROR] {exc}")
+        timer.finish("FAILED")
+    timer.print_summary()
+    print("[!] Research Only. Not Investment Advice.")
+
+
+def cmd_replay_strategy_summary(args) -> None:
+    """Show session strategy summary. [!] Research Only. NEVER claims effectiveness."""
+    from replay.replay_timing import ReplayOperationTimer
+    timer = ReplayOperationTimer()
+    timer.start("replay-strategy-summary", item_count=1)
+    session_id = getattr(args, "session_id", None) or ""
+    print("[!] Strategy Session Summary — Research Only | NEVER claims strategy effectiveness")
+    if not session_id:
+        print("  [ERROR] --session-id required")
+        timer.finish("FAILED")
+        return
+    try:
+        from replay.strategy_replay_summary import StrategyReplaySummaryBuilder
+        sb = StrategyReplaySummaryBuilder(repo_root=BASE_DIR)
+        summary = sb.session_summary(session_id)
+        print(f"  Snapshots    : {summary.get('snapshots_count', 0)}")
+        print(f"  Confidence   : {summary.get('confidence', '')}")
+        print(f"  Rule Followed: {summary.get('rule_followed', 0)}")
+        print(f"  Rule Ignored : {summary.get('rule_ignored', 0)}")
+        print(f"  Suggested Rev: {summary.get('suggested_reviews', 0)}")
+        timer.finish("COMPLETED")
+    except Exception as exc:
+        print(f"  [ERROR] {exc}")
+        timer.finish("FAILED")
+    timer.print_summary()
+    print("[!] Research Only. Not Investment Advice.")
+
+
+def cmd_replay_strategy_symbol_summary(args) -> None:
+    """Show symbol strategy summary. [!] Research Only."""
+    from replay.replay_timing import ReplayOperationTimer
+    timer = ReplayOperationTimer()
+    timer.start("replay-strategy-symbol-summary", item_count=1)
+    stock = getattr(args, "stock", None) or ""
+    print("[!] Strategy Symbol Summary — Research Only")
+    if not stock:
+        print("  [ERROR] --stock required")
+        timer.finish("FAILED")
+        return
+    try:
+        from replay.strategy_replay_summary import StrategyReplaySummaryBuilder
+        sb = StrategyReplaySummaryBuilder(repo_root=BASE_DIR)
+        summary = sb.symbol_summary(stock)
+        print(f"  Symbol: {stock}  Snapshots: {summary.get('snapshots_count', 0)}")
+        timer.finish("COMPLETED")
+    except Exception as exc:
+        print(f"  [ERROR] {exc}")
+        timer.finish("FAILED")
+    timer.print_summary()
+    print("[!] Research Only. Not Investment Advice.")
+
+
+def cmd_replay_strategy_scenario_summary(args) -> None:
+    """Show scenario strategy summary. [!] Research Only."""
+    from replay.replay_timing import ReplayOperationTimer
+    timer = ReplayOperationTimer()
+    timer.start("replay-strategy-scenario-summary", item_count=1)
+    scenario_id = getattr(args, "scenario_id", None) or ""
+    print("[!] Strategy Scenario Summary — Research Only")
+    try:
+        from replay.strategy_replay_summary import StrategyReplaySummaryBuilder
+        sb = StrategyReplaySummaryBuilder(repo_root=BASE_DIR)
+        summary = sb.scenario_summary(scenario_id)
+        print(f"  Scenario: {scenario_id}  Snapshots: {summary.get('snapshots_count', 0)}")
+        timer.finish("COMPLETED")
+    except Exception as exc:
+        print(f"  [ERROR] {exc}")
+        timer.finish("FAILED")
+    timer.print_summary()
+    print("[!] Research Only. Not Investment Advice.")
+
+
+def cmd_replay_strategy_report(args) -> None:
+    """Build strategy knowledge report. [!] Research Only."""
+    from replay.replay_timing import ReplayOperationTimer
+    timer = ReplayOperationTimer()
+    timer.start("replay-strategy-report", item_count=1)
+    session_id = getattr(args, "session_id", None) or ""
+    print("[!] Strategy Knowledge Report — Research Only | NEVER claims effectiveness")
+    if not session_id:
+        print("  [ERROR] --session-id required")
+        timer.finish("FAILED")
+        return
+    try:
+        from reports.replay_strategy_knowledge_report import ReplayStrategyKnowledgeReportBuilder
+        builder = ReplayStrategyKnowledgeReportBuilder(repo_root=BASE_DIR)
+        path = builder.build(session_id)
+        print(f"  Report saved: {path}")
+        timer.finish("COMPLETED")
+    except Exception as exc:
+        print(f"  [ERROR] {exc}")
+        timer.finish("FAILED")
+    timer.print_summary()
+    print("[!] Research Only. Not Investment Advice.")
+
+
+def cmd_replay_strategy_timeline_report(args) -> None:
+    """Build timeline report. [!] Research Only."""
+    from replay.replay_timing import ReplayOperationTimer
+    timer = ReplayOperationTimer()
+    timer.start("replay-strategy-timeline-report", item_count=1)
+    session_id = getattr(args, "session_id", None) or ""
+    print("[!] Strategy Timeline Report — Research Only")
+    try:
+        from reports.replay_strategy_timeline_report import ReplayStrategyTimelineReportBuilder
+        builder = ReplayStrategyTimelineReportBuilder(repo_root=BASE_DIR)
+        path = builder.build(session_id or "global")
+        print(f"  Report saved: {path}")
+        timer.finish("COMPLETED")
+    except Exception as exc:
+        print(f"  [ERROR] {exc}")
+        timer.finish("FAILED")
+    timer.print_summary()
+    print("[!] Research Only. Not Investment Advice.")
+
+
+def cmd_replay_strategy_batch_preview(args) -> None:
+    """Preview batch strategy replay. [!] Research Only."""
+    from replay.replay_timing import ReplayOperationTimer
+    timer = ReplayOperationTimer()
+    sessions_arg = getattr(args, "sessions", None) or ""
+    sessions = [s.strip() for s in sessions_arg.split(",") if s.strip()] if sessions_arg else []
+    timer.start("replay-strategy-batch-preview", item_count=len(sessions))
+    print("[!] Strategy Batch Preview — Research Only | Use --allow-write to execute")
+    print(f"  Sessions: {sessions}")
+    print(f"  Count   : {len(sessions)}")
+    print(f"  Status  : PREVIEW (not executed)")
+    timer.finish("COMPLETED")
+    timer.print_summary()
+    print("[!] Research Only. Not Investment Advice.")
+
+
+def cmd_replay_strategy_batch_run(args) -> None:
+    """Run batch strategy replay. BLOCKED without --allow-write. [!] Research Only."""
+    from replay.replay_timing import ReplayOperationTimer
+    timer = ReplayOperationTimer()
+    sessions_arg = getattr(args, "sessions", None) or ""
+    sessions = [s.strip() for s in sessions_arg.split(",") if s.strip()] if sessions_arg else []
+    execute = bool(getattr(args, "execute", False))
+    allow_write = bool(getattr(args, "allow_write", False))
+    timer.start("replay-strategy-batch-run", item_count=len(sessions))
+    print("[!] Strategy Batch Run — Research Only | No Real Orders")
+    if not allow_write:
+        print("  Status  : BLOCKED")
+        print("  Reason  : --allow-write flag required to execute batch run")
+        print("  Items   : 0")
+        print("  Completed: 0")
+        print("  Failed  : 0")
+        timer.finish("BLOCKED" if hasattr(timer, "_status") else "COMPLETED")
+        print()
+        timer.print_summary()
+        print("[!] BLOCKED — Research Only. Not Investment Advice.")
+        return
+    if not execute:
+        print("  Status  : BLOCKED")
+        print("  Reason  : --execute flag required")
+        timer.finish("COMPLETED")
+        timer.print_summary()
+        return
+    print(f"  Sessions: {sessions}")
+    print(f"  Status  : COMPLETED (stub)")
+    timer.finish("COMPLETED")
+    timer.print_summary()
+    print("[!] Research Only. Not Investment Advice.")
 
 
 # ---------------------------------------------------------------------------
@@ -24084,6 +24730,28 @@ def main() -> None:
         "replay-scoring-scenario-summary":    cmd_replay_scoring_scenario_summary,
         "replay-scoring-report":              cmd_replay_scoring_report,
         "replay-mistake-report":              cmd_replay_mistake_report,
+        # v1.2.4 Strategy Knowledge Replay
+        "replay-strategy-health":             cmd_replay_strategy_health,
+        "replay-strategy-current":            cmd_replay_strategy_current,
+        "replay-strategy-date":               cmd_replay_strategy_date,
+        "replay-strategy-module":             cmd_replay_strategy_module,
+        "replay-strategy-timeline":           cmd_replay_strategy_timeline,
+        "replay-strategy-agreement":          cmd_replay_strategy_agreement,
+        "replay-strategy-conflicts":          cmd_replay_strategy_conflicts,
+        "replay-strategy-review":             cmd_replay_strategy_review,
+        "replay-strategy-reviews":            cmd_replay_strategy_reviews,
+        "replay-strategy-review-confirm":     cmd_replay_strategy_review_confirm,
+        "replay-strategy-review-dismiss":     cmd_replay_strategy_review_dismiss,
+        "replay-strategy-review-override":    cmd_replay_strategy_review_override,
+        "replay-strategy-compare-dates":      cmd_replay_strategy_compare_dates,
+        "replay-strategy-compare-sessions":   cmd_replay_strategy_compare_sessions,
+        "replay-strategy-summary":            cmd_replay_strategy_summary,
+        "replay-strategy-symbol-summary":     cmd_replay_strategy_symbol_summary,
+        "replay-strategy-scenario-summary":   cmd_replay_strategy_scenario_summary,
+        "replay-strategy-report":             cmd_replay_strategy_report,
+        "replay-strategy-timeline-report":    cmd_replay_strategy_timeline_report,
+        "replay-strategy-batch-preview":      cmd_replay_strategy_batch_preview,
+        "replay-strategy-batch-run":          cmd_replay_strategy_batch_run,
         # v1.1.9 Data Governance Stable Rollup
         "governance-rollup-health":          cmd_governance_rollup_health,
         "governance-rollup-run":             cmd_governance_rollup_run,

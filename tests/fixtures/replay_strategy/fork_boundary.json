@@ -1,0 +1,7 @@
+{
+  "session_id": "TEST-SESSION-FORK",
+  "parent_session_id": "TEST-SESSION-001",
+  "fork_date": "2024-01-15",
+  "post_fork_records_excluded": true,
+  "note": "Fork boundary example — post-fork records excluded. TST symbol only."
+}

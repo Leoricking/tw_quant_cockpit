@@ -122,6 +122,16 @@ REPORT_REPLAY_SESSION_MANAGER          = "replay_session_manager_report"
 REPORT_REPLAY_DECISION_JOURNAL         = "replay_decision_journal_report"
 REPORT_REPLAY_DECISION_JOURNAL_SUMMARY = "replay_decision_journal_summary_report"
 
+# v1.2.3 Replay Scoring & Mistake Taxonomy
+REPORT_REPLAY_SCORING                  = "replay_scoring_report"
+REPORT_REPLAY_SCORING_SUMMARY          = "replay_scoring_summary_report"
+REPORT_REPLAY_MISTAKE_TAXONOMY         = "replay_mistake_taxonomy_report"
+
+# v1.2.4 Strategy Knowledge Replay
+REPORT_REPLAY_STRATEGY_KNOWLEDGE       = "replay_strategy_knowledge_report"
+REPORT_REPLAY_STRATEGY_TIMELINE        = "replay_strategy_timeline_report"
+REPORT_REPLAY_STRATEGY_SUMMARY         = "replay_strategy_summary_report"
+
 logger = logging.getLogger(__name__)
 
 # ---------------------------------------------------------------------------
@@ -373,6 +383,14 @@ _PACK_DEFINITIONS: Dict[str, List[str]] = {
         # v1.2.2 Decision Journal Integration (optional in full pack)
         REPORT_REPLAY_DECISION_JOURNAL,
         REPORT_REPLAY_DECISION_JOURNAL_SUMMARY,
+        # v1.2.3 Replay Scoring & Mistake Taxonomy (optional in full pack)
+        REPORT_REPLAY_SCORING,
+        REPORT_REPLAY_SCORING_SUMMARY,
+        REPORT_REPLAY_MISTAKE_TAXONOMY,
+        # v1.2.4 Strategy Knowledge Replay (optional in full pack)
+        REPORT_REPLAY_STRATEGY_KNOWLEDGE,
+        REPORT_REPLAY_STRATEGY_TIMELINE,
+        REPORT_REPLAY_STRATEGY_SUMMARY,
     ],
 }
 

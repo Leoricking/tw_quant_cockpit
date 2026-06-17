@@ -1,0 +1,10 @@
+{
+  "conflict_type": "BREAKOUT_WITH_NO_CHASE_WARNING",
+  "module_a": "KD_ADVANCED",
+  "signal_a": "golden_cross",
+  "module_b": "NO_CHASE",
+  "signal_b": "chase_warning",
+  "severity": "MEDIUM",
+  "auto_blocks_decision": false,
+  "note": "BREAKOUT_WITH_NO_CHASE_WARNING example. Informational only. TST symbol only."
+}

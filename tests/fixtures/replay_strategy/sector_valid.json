@@ -1,0 +1,16 @@
+{
+  "module": "SECTOR_ROTATION",
+  "signal": "sector_linkage_support",
+  "available": true,
+  "score": 70,
+  "warning": "",
+  "reason": "Sector leader strong with 60d rolling past data",
+  "evidence": ["leader_up_5pct", "sector_peers_positive"],
+  "confidence": "OBSERVATIONAL",
+  "timing_warning": "",
+  "point_in_time_verified": true,
+  "window_days": 60,
+  "source_dates": ["2023-11-16", "2024-01-15"],
+  "replay_date": "2024-01-15",
+  "note": "Uses 60d rolling past data only. TST symbol only."
+}

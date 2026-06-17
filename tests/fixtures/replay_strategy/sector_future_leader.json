@@ -1,0 +1,8 @@
+{
+  "module": "SECTOR_ROTATION",
+  "signal": "sector_linkage_support",
+  "available": true,
+  "leader_definition_date": "2024-02-01",
+  "future_leader_defined": true,
+  "note": "Uses future leader definition → should be BLOCKED by verifier. TST symbol only."
+}

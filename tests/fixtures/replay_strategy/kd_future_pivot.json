@@ -1,0 +1,9 @@
+{
+  "module": "KD_ADVANCED",
+  "has_future_pivot": true,
+  "future_swing_high": 150.0,
+  "forward_return": 0.05,
+  "signal": "golden_cross",
+  "available": true,
+  "note": "This fixture has future_pivot fields — should be BLOCKED by verifier. TST symbol only."
+}

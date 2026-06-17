@@ -1,0 +1,18 @@
+{
+  "agreement_id": "SAG-TESTFIX002",
+  "session_id": "TEST-SESSION-001",
+  "replay_date": "2024-01-15",
+  "bullish_count": 2,
+  "bearish_count": 1,
+  "neutral_count": 1,
+  "warning_count": 1,
+  "unavailable_count": 4,
+  "agreement_score": 0.4,
+  "conflict_score": 0.3,
+  "aligned_modules": ["KD_ADVANCED", "SHORT_INTEREST"],
+  "conflicting_modules": ["FUNDAMENTAL_QUALITY"],
+  "reasons": ["Bullish: KD_ADVANCED, SHORT_INTEREST", "Bearish: FUNDAMENTAL_QUALITY"],
+  "confidence": "OBSERVATIONAL",
+  "status": "MIXED",
+  "note": "MIXED example. TST symbol only."
+}
