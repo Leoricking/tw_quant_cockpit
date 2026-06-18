@@ -3003,7 +3003,10 @@ class StableReleaseChecklistV060:
         try:
             from replay.strategy_replay_schema import StrategyReplaySnapshot
             fields = list(StrategyReplaySnapshot.__dataclass_fields__.keys())
-            future_fields = [f for f in fields if any(
+            # "future_fields_blocked" is a safety counter (how many future fields were blocked),
+            # not a forbidden future-data field — exclude it from the check.
+            SAFE_EXCEPTIONS = {"future_fields_blocked"}
+            future_fields = [f for f in fields if f not in SAFE_EXCEPTIONS and any(
                 p in f for p in ["forward_return", "outcome_", "hindsight_", "future_"]
             )]
             ok = not future_fields
