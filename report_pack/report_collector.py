@@ -296,6 +296,24 @@ _REPORT_PATTERNS = {
     REPORT_REPLAY_MTF_SUMMARY: [
         "reports/replay_multi_timeframe_summary_report_*.md",
     ],
+    # v1.2.6 Replay Review Dashboard
+    "replay_review_dashboard_report": [
+        "reports/replay_review_dashboard_*.md",
+        "data/replay_review/sessions.jsonl",
+        "data/replay_review/queue.jsonl",
+        "data/replay_review/progress.jsonl",
+        "data/replay_review/notes.jsonl",
+        "data/replay_review/tags.jsonl",
+        "data/replay_review/checklist.jsonl",
+    ],
+    "replay_review_summary_report": [
+        "reports/replay_review_summary_*.md",
+        "data/replay_review/*",
+    ],
+    "replay_review_queue_report": [
+        "reports/replay_review_queue_*.md",
+        "data/replay_review/queue.jsonl",
+    ],
     # v0.9.0.1 Crash Reversal & Risk Discipline Strategy Pack
     REPORT_CRASH_REVERSAL: [
         "reports/crash_reversal_strategy_report*.md",

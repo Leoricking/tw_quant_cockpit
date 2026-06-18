@@ -291,6 +291,16 @@ except Exception as _mtf_exc:
     _MTF_REPLAY_AVAILABLE = False
 
 # ---------------------------------------------------------------------------
+# v1.2.6 Replay Review Dashboard panel import (guarded)
+# ---------------------------------------------------------------------------
+try:
+    from gui.replay_review_dashboard import ReplayReviewDashboardWidget
+    _REPLAY_REVIEW_AVAILABLE = True
+except Exception as _rrd_exc:
+    logger.warning("ReplayReviewDashboardWidget unavailable: %s", _rrd_exc)
+    _REPLAY_REVIEW_AVAILABLE = False
+
+# ---------------------------------------------------------------------------
 # v0.6.0 Stable Release panel import (guarded)
 # ---------------------------------------------------------------------------
 try:

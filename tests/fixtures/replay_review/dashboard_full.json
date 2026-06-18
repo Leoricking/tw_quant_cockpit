@@ -1,0 +1,10 @@
+{
+  "snapshot_id": "RRD-FULL",
+  "mode": "real",
+  "total_sessions": 5,
+  "avg_process_score": 72.5,
+  "suggested_mistakes": 3,
+  "confidence": "SUFFICIENT",
+  "research_only": true,
+  "auto_review_complete_enabled": false
+}

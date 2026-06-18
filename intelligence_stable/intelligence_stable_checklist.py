@@ -1579,4 +1579,31 @@ class IntelligenceStableChecklist:
                 suggested_fix="Run: python main.py replay-strategy-health",
             ))
 
+        # v1.2.6 Replay Review Dashboard
+        try:
+            import release.version_info as _vi3
+            rrd = getattr(_vi3, "REPLAY_REVIEW_DASHBOARD_AVAILABLE", False)
+            arc = getattr(_vi3, "AUTO_REVIEW_COMPLETE_ENABLED", True)
+            aor = getattr(_vi3, "AUTO_OUTCOME_REVEAL_ENABLED", True)
+            amc = getattr(_vi3, "AUTO_MISTAKE_CONFIRMATION_ENABLED", True)
+            rte = getattr(_vi3, "REPLAY_TRADE_EXECUTION_ENABLED", True)
+            safe_review = rrd and not arc and not aor and not amc and not rte
+            checks.append(_check(
+                "replay_review_dashboard_v126_safe", "stable_integration",
+                "v1.2.6 replay_review_dashboard_v126_safe",
+                CHECK_PASS if safe_review else CHECK_WARN, SEV_LOW,
+                f"REPLAY_REVIEW_DASHBOARD_AVAILABLE={rrd}, "
+                f"AUTO_REVIEW_COMPLETE={arc}, AUTO_OUTCOME_REVEAL={aor}, "
+                f"AUTO_MISTAKE_CONFIRMATION={amc}, TRADE_EXECUTION={rte}",
+                suggested_fix="Run: python main.py replay-review-health",
+            ))
+        except Exception as exc:
+            checks.append(_check(
+                "replay_review_dashboard_v126_safe", "stable_integration",
+                "v1.2.6 replay_review_dashboard_v126_safe",
+                CHECK_WARN, SEV_LOW,
+                f"Could not verify replay_review_dashboard v1.2.6 safety (optional): {exc}",
+                suggested_fix="Run: python main.py replay-review-health",
+            ))
+
         return checks

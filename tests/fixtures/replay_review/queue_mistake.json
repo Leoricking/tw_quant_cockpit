@@ -1,0 +1,5 @@
+{
+  "queue_item_id": "QI-MISTAKE-001",
+  "queue_type": "MISTAKE_REVIEW_PENDING",
+  "auto_confirm_on_complete": false
+}

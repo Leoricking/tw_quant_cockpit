@@ -21790,6 +21790,112 @@ def _build_parser() -> argparse.ArgumentParser:
 
     subparsers.add_parser("replay-mtf-store-check", help="[v1.2.5] MTF store integrity check. Research Only.")
 
+    # v1.2.6 Replay Review Dashboard subparsers
+    subparsers.add_parser("replay-review-health", help="[v1.2.6] Replay review dashboard health checks. Research Only.")
+
+    p_rrd = subparsers.add_parser("replay-review-dashboard", help="[v1.2.6] Build replay review dashboard. Research Only.")
+    p_rrd.add_argument("--mode", default="real", choices=["real", "mock"])
+    p_rrd.add_argument("--session-id", default=None)
+
+    p_rrs = subparsers.add_parser("replay-review-session", help="[v1.2.6] List review sessions. Research Only.")
+    p_rrs.add_argument("--symbol", default=None)
+    p_rrs.add_argument("--status", default=None)
+    p_rrs.add_argument("--page", type=int, default=1)
+
+    p_rrsd = subparsers.add_parser("replay-review-session-detail", help="[v1.2.6] Show review session detail. Research Only.")
+    p_rrsd.add_argument("--session-id", required=False, default=None)
+
+    p_rrq = subparsers.add_parser("replay-review-queue", help="[v1.2.6] List review queue items. Research Only.")
+    p_rrq.add_argument("--status", default=None)
+    p_rrq.add_argument("--priority", default=None)
+    p_rrq.add_argument("--type", default=None)
+
+    p_rrstart = subparsers.add_parser("replay-review-start", help="[v1.2.6] Start review of a queue item. Research Only.")
+    p_rrstart.add_argument("--queue-item-id", default=None)
+
+    p_rrcomp = subparsers.add_parser("replay-review-complete", help="[v1.2.6] Complete review of a queue item. Does NOT auto-confirm mistakes or auto-reveal outcome. Research Only.")
+    p_rrcomp.add_argument("--queue-item-id", default=None)
+    p_rrcomp.add_argument("--note", default="")
+
+    p_rrdism = subparsers.add_parser("replay-review-dismiss", help="[v1.2.6] Dismiss review queue item. Research Only.")
+    p_rrdism.add_argument("--queue-item-id", default=None)
+    p_rrdism.add_argument("--reason", default="")
+
+    p_rrreo = subparsers.add_parser("replay-review-reopen", help="[v1.2.6] Reopen completed/dismissed review item. Research Only.")
+    p_rrreo.add_argument("--queue-item-id", default=None)
+
+    p_rrprog = subparsers.add_parser("replay-review-progress", help="[v1.2.6] Show review progress for a session. Research Only.")
+    p_rrprog.add_argument("--session-id", default=None)
+
+    p_rrchk = subparsers.add_parser("replay-review-checklist", help="[v1.2.6] Show review checklist for a session. Research Only.")
+    p_rrchk.add_argument("--session-id", default=None)
+
+    p_rrnote = subparsers.add_parser("replay-review-note", help="[v1.2.6] Add review note to a session. Append-only. Research Only.")
+    p_rrnote.add_argument("--session-id", default=None)
+    p_rrnote.add_argument("--note", default="")
+    p_rrnote.add_argument("--category", default="GENERAL")
+
+    p_rrtag = subparsers.add_parser("replay-review-tag", help="[v1.2.6] Add review tag to a session. Research Only.")
+    p_rrtag.add_argument("--session-id", default=None)
+    p_rrtag.add_argument("--tag", default="")
+
+    p_rrtags = subparsers.add_parser("replay-review-tags", help="[v1.2.6] List review tags for a session. Research Only.")
+    p_rrtags.add_argument("--session-id", default=None)
+
+    p_rrsrch = subparsers.add_parser("replay-review-search", help="[v1.2.6] Search review sessions. Research Only.")
+    p_rrsrch.add_argument("--query", default="")
+    p_rrsrch.add_argument("--field", default=None)
+
+    p_rrfilt = subparsers.add_parser("replay-review-filter", help="[v1.2.6] Filter review sessions. Research Only.")
+    p_rrfilt.add_argument("--symbol", default=None)
+    p_rrfilt.add_argument("--status", default=None)
+    p_rrfilt.add_argument("--score-min", type=float, default=None)
+    p_rrfilt.add_argument("--score-max", type=float, default=None)
+
+    p_rrcmps = subparsers.add_parser("replay-review-compare-sessions", help="[v1.2.6] Compare review sessions. Research Only.")
+    p_rrcmps.add_argument("--session-a", default=None)
+    p_rrcmps.add_argument("--session-b", default=None)
+
+    p_rrcmpy = subparsers.add_parser("replay-review-compare-symbols", help="[v1.2.6] Compare symbols across review sessions. Research Only.")
+    p_rrcmpy.add_argument("--symbol-a", default=None)
+    p_rrcmpy.add_argument("--symbol-b", default=None)
+
+    p_rrcmpsc = subparsers.add_parser("replay-review-compare-scenarios", help="[v1.2.6] Compare scenarios across review sessions. Research Only.")
+    p_rrcmpsc.add_argument("--scenario-a", default=None)
+    p_rrcmpsc.add_argument("--scenario-b", default=None)
+
+    p_rrsum = subparsers.add_parser("replay-review-summary", help="[v1.2.6] Build review summary. Research Only.")
+    p_rrsum.add_argument("--mode", default="real", choices=["real", "mock"])
+
+    p_rrsyms = subparsers.add_parser("replay-review-symbol-summary", help="[v1.2.6] Review summary by symbol. Research Only.")
+    p_rrsyms.add_argument("--symbol", default=None)
+    p_rrsyms.add_argument("--mode", default="real", choices=["real", "mock"])
+
+    p_rrscens = subparsers.add_parser("replay-review-scenario-summary", help="[v1.2.6] Review summary by scenario. Research Only.")
+    p_rrscens.add_argument("--scenario-id", default=None)
+    p_rrscens.add_argument("--mode", default="real", choices=["real", "mock"])
+
+    p_rrrpt = subparsers.add_parser("replay-review-report", help="[v1.2.6] Build review session report. Research Only.")
+    p_rrrpt.add_argument("--session-id", default=None)
+    p_rrrpt.add_argument("--output-dir", default=None)
+
+    p_rrsrpt = subparsers.add_parser("replay-review-summary-report", help="[v1.2.6] Build review summary report. Research Only.")
+    p_rrsrpt.add_argument("--mode", default="real", choices=["real", "mock"])
+    p_rrsrpt.add_argument("--output-dir", default=None)
+
+    p_rrqrpt = subparsers.add_parser("replay-review-queue-report", help="[v1.2.6] Build review queue report. Research Only.")
+    p_rrqrpt.add_argument("--output-dir", default=None)
+
+    p_rrbprev = subparsers.add_parser("replay-review-batch-preview", help="[v1.2.6] Preview batch review operation. Default preview mode. Research Only.")
+    p_rrbprev.add_argument("--action", default="mark_reviewed")
+    p_rrbprev.add_argument("--session-ids", default=None)
+
+    p_rrbrun = subparsers.add_parser("replay-review-batch-run", help="[v1.2.6] Run batch review operation. BLOCKED without --execute --allow-write. Research Only.")
+    p_rrbrun.add_argument("--action", default="mark_reviewed")
+    p_rrbrun.add_argument("--session-ids", default=None)
+    p_rrbrun.add_argument("--execute", action="store_true", default=False)
+    p_rrbrun.add_argument("--allow-write", action="store_true", default=False)
+
     return parser
 
 
@@ -24763,6 +24869,355 @@ def cmd_replay_mtf_store_check(args) -> None:
 # Entrypoint
 # ---------------------------------------------------------------------------
 
+# ---------------------------------------------------------------------------
+# v1.2.6 Replay Review Dashboard commands
+# ---------------------------------------------------------------------------
+logger_cmd_rr = logging.getLogger("main.replay_review")
+
+
+def cmd_replay_review_health(args) -> None:
+    """Run Replay Review Dashboard health check. [!] Research Only."""
+    try:
+        from replay.review_health import ReplayReviewDashboardHealthCheck
+        checker = ReplayReviewDashboardHealthCheck()
+        results = checker.run()
+        print("[!] Replay Review Health Check — Research Only | No Real Orders")
+        pass_count = sum(1 for s, _ in results.values() if s == "PASS")
+        fail_count = sum(1 for s, _ in results.values() if s == "FAIL")
+        warn_count = sum(1 for s, _ in results.values() if s not in ("PASS", "FAIL"))
+        for name, (status, msg) in results.items():
+            print(f"  [{status:4}] {name}: {msg}")
+        print(f"  Total: {len(results)}  PASS: {pass_count}  FAIL: {fail_count}  WARN/SKIP: {warn_count}")
+        print("[!] Research Only. Not Investment Advice.")
+    except Exception as exc:
+        print(f"[!] Replay Review Health Check — Research Only | No Real Orders")
+        print(f"  [ERROR] {exc}")
+        import traceback; traceback.print_exc()
+
+
+def cmd_replay_review_dashboard(args) -> None:
+    """Show Replay Review Dashboard. [!] Research Only."""
+    mode = getattr(args, "mode", None) or "real"
+    try:
+        from replay.review_dashboard_engine import ReplayReviewDashboardEngine
+        engine = ReplayReviewDashboardEngine(mode=mode)
+        dashboard = engine.build_global_dashboard(mode=mode)
+        snap = dashboard.get("dashboard", {})
+        print()
+        print("TW Quant Cockpit \u2014 Replay Review Dashboard")
+        print(f"Version: 1.2.6")
+        print(f"Mode: {mode}")
+        print(f"Research Only: True")
+        print(f"No Real Orders: True")
+        print(f"Sessions: {snap.get('session_count', 0)}")
+        print(f"Review Complete: {snap.get('review_complete_sessions', 0)}")
+        print(f"Review Incomplete: {snap.get('review_incomplete_sessions', 0)}")
+        pending = dashboard.get("queue_summary", {}).get("open", 0)
+        print(f"Pending Queue: {pending}")
+        print(f"Process Score Average: {snap.get('process_score_average', 'N/A')}")
+        print(f"Outcome Score Average: {snap.get('outcome_score_average', 'NOT_REVEALED')}")
+        print(f"Suggested Mistakes: {snap.get('pending_mistakes', 0)}")
+        print(f"Confirmed Mistakes: 0")
+        print(f"Strategy Conflicts: {snap.get('strategy_conflict_count', 0)}")
+        print(f"Timeframe Conflicts: {snap.get('timeframe_conflict_count', 0)}")
+        print(f"Point-in-Time Failures: {snap.get('point_in_time_failure_count', 0)}")
+        print(f"Total Review Elapsed: {snap.get('total_review_elapsed_seconds', 0.0)}s")
+        print(f"Confidence: {snap.get('qualification', 'OBSERVATIONAL')}")
+        warnings = snap.get("warnings", [])
+        print(f"Warnings: {len(warnings)}")
+        for w in warnings:
+            print(f"  [WARN] {w}")
+        print()
+        print("[!] Research Only. No Auto Reveal. No Auto Confirm. No Real Orders. Not Investment Advice.")
+    except Exception as exc:
+        print(f"  [ERROR] {exc}")
+        import traceback; traceback.print_exc()
+
+
+def cmd_replay_review_session(args) -> None:
+    """Show Replay Review session detail. [!] Research Only."""
+    session_id = getattr(args, "session_id", None) or "DEMO_SESSION"
+    try:
+        from replay.review_dashboard_engine import ReplayReviewDashboardEngine
+        engine = ReplayReviewDashboardEngine()
+        detail = engine.build_session_dashboard(session_id)
+        print(f"[!] Replay Review Session — Research Only | session_id={session_id}")
+        print(f"  Outcome Revealed: {detail.get('outcome_revealed', False)}")
+        print(f"  Outcome Note: {detail.get('outcome_note', 'N/A')}")
+        print("[!] Research Only. Not Investment Advice.")
+    except Exception as exc:
+        print(f"  [ERROR] {exc}")
+
+
+def cmd_replay_review_session_detail(args) -> None:
+    """Show detailed replay review session. [!] Research Only."""
+    cmd_replay_review_session(args)
+
+
+def cmd_replay_review_queue(args) -> None:
+    """Show Replay Review Queue. [!] Research Only."""
+    priority = getattr(args, "priority", None)
+    queue_type = getattr(args, "type", None)
+    try:
+        from replay.review_queue import ReplayReviewQueueManager
+        mgr = ReplayReviewQueueManager()
+        summary = mgr.summary()
+        print("[!] Replay Review Queue — Research Only | No Auto Confirm | No Auto Reveal")
+        print(f"  Total: {summary.get('total', 0)}")
+        print(f"  Open: {summary.get('open', 0)}")
+        print(f"  In Review: {summary.get('in_review', 0)}")
+        print(f"  Completed: {summary.get('completed', 0)}")
+        print(f"  P0: {summary.get('p0', 0)} | P1: {summary.get('p1', 0)} | P2: {summary.get('p2', 0)} | P3: {summary.get('p3', 0)}")
+        print("[!] Research Only. Not Investment Advice.")
+    except Exception as exc:
+        print(f"  [ERROR] {exc}")
+
+
+def cmd_replay_review_start(args) -> None:
+    """Start a review queue item. [!] Research Only."""
+    queue_item_id = getattr(args, "queue_item_id", None) or ""
+    print(f"[!] Replay Review Start — Research Only | queue_item_id={queue_item_id}")
+    print("  [INFO] No auto-confirm. No auto-reveal. Manual review required.")
+
+
+def cmd_replay_review_complete(args) -> None:
+    """Complete a review queue item. [!] Research Only."""
+    queue_item_id = getattr(args, "queue_item_id", None) or ""
+    note = getattr(args, "note", None) or ""
+    print(f"[!] Replay Review Complete — Research Only | queue_item_id={queue_item_id}")
+    print("  [INFO] Queue complete ≠ auto-confirm mistake. ≠ auto-reveal outcome.")
+
+
+def cmd_replay_review_dismiss(args) -> None:
+    """Dismiss a review queue item. [!] Research Only."""
+    queue_item_id = getattr(args, "queue_item_id", None) or ""
+    reason = getattr(args, "reason", None) or ""
+    print(f"[!] Replay Review Dismiss — Research Only | queue_item_id={queue_item_id} reason={reason}")
+
+
+def cmd_replay_review_reopen(args) -> None:
+    """Reopen a review queue item. [!] Research Only."""
+    queue_item_id = getattr(args, "queue_item_id", None) or ""
+    reason = getattr(args, "reason", None) or ""
+    print(f"[!] Replay Review Reopen — Research Only | queue_item_id={queue_item_id}")
+
+
+def cmd_replay_review_progress(args) -> None:
+    """Show review progress for a session. [!] Research Only."""
+    session_id = getattr(args, "session_id", None) or "DEMO_SESSION"
+    try:
+        from replay.review_progress import ReplayReviewProgressCalculator
+        calc = ReplayReviewProgressCalculator()
+        result = calc.calculate(session_id)
+        print(f"[!] Replay Review Progress — Research Only | session_id={session_id}")
+        print(f"  Status: {result.get('status', 'N/A')}")
+        print(f"  Progress: {result.get('progress_percent', 0.0)}%")
+        print(f"  Required: {len(result.get('required_steps', []))}")
+        print(f"  Completed: {len(result.get('completed_steps', []))}")
+        print(f"  Missing: {result.get('missing_items', [])}")
+        print("[!] Research Only. Process review complete without outcome reveal. Not Investment Advice.")
+    except Exception as exc:
+        print(f"  [ERROR] {exc}")
+
+
+def cmd_replay_review_checklist(args) -> None:
+    """Show review checklist for a session. [!] Research Only."""
+    session_id = getattr(args, "session_id", None) or "DEMO_SESSION"
+    try:
+        from replay.review_checklist import ReplayReviewChecklistManager
+        mgr = ReplayReviewChecklistManager()
+        items = mgr.default_checklist(session_id)
+        required = [i for i in items if i.get("required")]
+        optional = [i for i in items if not i.get("required")]
+        print(f"[!] Replay Review Checklist — Research Only | session_id={session_id}")
+        print(f"  Required: {len(required)}")
+        print(f"  Optional: {len(optional)}")
+        print("[!] Research Only. Not Investment Advice.")
+    except Exception as exc:
+        print(f"  [ERROR] {exc}")
+
+
+def cmd_replay_review_note(args) -> None:
+    """Add a review note to a session. [!] Research Only."""
+    session_id = getattr(args, "session_id", None) or "DEMO_SESSION"
+    text = getattr(args, "text", None) or ""
+    print(f"[!] Replay Review Note — Research Only | session_id={session_id}")
+    print(f"  Note (append-only): {text[:80]}")
+
+
+def cmd_replay_review_tag(args) -> None:
+    """Add a review tag to a session. [!] Research Only."""
+    session_id = getattr(args, "session_id", None) or "DEMO_SESSION"
+    tag = getattr(args, "tag", None) or ""
+    print(f"[!] Replay Review Tag — Research Only | session_id={session_id} tag={tag}")
+    print("  [INFO] Tags never affect Score or trading decisions.")
+
+
+def cmd_replay_review_tags(args) -> None:
+    """Show review tags for a session. [!] Research Only."""
+    session_id = getattr(args, "session_id", None) or "DEMO_SESSION"
+    print(f"[!] Replay Review Tags — Research Only | session_id={session_id}")
+
+
+def cmd_replay_review_search(args) -> None:
+    """Search replay review sessions. [!] Research Only."""
+    query = getattr(args, "query", None) or ""
+    print(f"[!] Replay Review Search — Research Only | query={query}")
+
+
+def cmd_replay_review_filter(args) -> None:
+    """Filter replay review sessions. [!] Research Only."""
+    classification = getattr(args, "classification", None)
+    confidence = getattr(args, "confidence", None)
+    status = getattr(args, "status", None)
+    print(f"[!] Replay Review Filter — Research Only | classification={classification} confidence={confidence} status={status}")
+
+
+def cmd_replay_review_compare_sessions(args) -> None:
+    """Compare two replay review sessions. [!] Research Only."""
+    session_a = getattr(args, "session_a", None) or ""
+    session_b = getattr(args, "session_b", None) or ""
+    print(f"[!] Replay Review Compare Sessions — Research Only | A={session_a} B={session_b}")
+    print("  [INFO] Outcome not revealed → NOT_AVAILABLE. No future outcome comparison.")
+
+
+def cmd_replay_review_compare_symbols(args) -> None:
+    """Compare two symbols in replay review. [!] Research Only."""
+    symbol_a = getattr(args, "symbol_a", None) or ""
+    symbol_b = getattr(args, "symbol_b", None) or ""
+    print(f"[!] Replay Review Compare Symbols — Research Only | A={symbol_a} B={symbol_b}")
+
+
+def cmd_replay_review_compare_scenarios(args) -> None:
+    """Compare two scenarios in replay review. [!] Research Only."""
+    scenario_a = getattr(args, "scenario_a", None) or ""
+    scenario_b = getattr(args, "scenario_b", None) or ""
+    print(f"[!] Replay Review Compare Scenarios — Research Only | A={scenario_a} B={scenario_b}")
+
+
+def cmd_replay_review_summary(args) -> None:
+    """Show global replay review summary. [!] Research Only."""
+    try:
+        from replay.review_summary import ReplayReviewSummaryBuilder
+        builder = ReplayReviewSummaryBuilder()
+        summary = builder.global_summary()
+        print("[!] Replay Review Summary — Research Only | No Real Orders")
+        print(f"  Total Sessions: {summary.get('total_sessions', 0)}")
+        print(f"  Real Sessions: {summary.get('real_sessions', 0)}")
+        print(f"  Mock Sessions: {summary.get('mock_sessions', 0)}")
+        print(f"  Review Complete: {summary.get('review_complete', 0)}")
+        print(f"  Suggested Mistakes: {summary.get('suggested_mistakes_total', 0)}")
+        print(f"  Strategy Conflicts: {summary.get('strategy_conflicts_total', 0)}")
+        print(f"  MTF Conflicts: {summary.get('timeframe_conflicts_total', 0)}")
+        print("[!] Research Only. Not Investment Advice.")
+    except Exception as exc:
+        print(f"  [ERROR] {exc}")
+
+
+def cmd_replay_review_symbol_summary(args) -> None:
+    """Show replay review summary for a symbol. [!] Research Only."""
+    symbol = getattr(args, "stock", None) or getattr(args, "symbol", None) or ""
+    try:
+        from replay.review_summary import ReplayReviewSummaryBuilder
+        builder = ReplayReviewSummaryBuilder()
+        summary = builder.symbol_summary(symbol)
+        print(f"[!] Replay Review Symbol Summary — Research Only | symbol={symbol}")
+        print(f"  Sessions: {summary.get('session_count', 0)}")
+    except Exception as exc:
+        print(f"  [ERROR] {exc}")
+
+
+def cmd_replay_review_scenario_summary(args) -> None:
+    """Show replay review summary for a scenario. [!] Research Only."""
+    scenario_id = getattr(args, "scenario_id", None) or ""
+    try:
+        from replay.review_summary import ReplayReviewSummaryBuilder
+        builder = ReplayReviewSummaryBuilder()
+        summary = builder.scenario_summary(scenario_id)
+        print(f"[!] Replay Review Scenario Summary — Research Only | scenario_id={scenario_id}")
+        print(f"  Sessions: {summary.get('session_count', 0)}")
+    except Exception as exc:
+        print(f"  [ERROR] {exc}")
+
+
+def cmd_replay_review_report(args) -> None:
+    """Generate replay review report for a session. [!] Research Only."""
+    session_id = getattr(args, "session_id", None) or "DEMO_SESSION"
+    try:
+        from replay.review_report import ReplayReviewReportBuilder
+        builder = ReplayReviewReportBuilder(base_dir=BASE_DIR)
+        path = builder.save_session_report(session_id)
+        print(f"[!] Replay Review Report — Research Only | session_id={session_id}")
+        print(f"  Report saved: {path}")
+    except Exception as exc:
+        print(f"  [ERROR] {exc}")
+
+
+def cmd_replay_review_summary_report(args) -> None:
+    """Generate replay review summary report. [!] Research Only."""
+    try:
+        from replay.review_report import ReplayReviewReportBuilder
+        builder = ReplayReviewReportBuilder(base_dir=BASE_DIR)
+        path = builder.save_summary_report()
+        print(f"[!] Replay Review Summary Report — Research Only")
+        print(f"  Report saved: {path}")
+    except Exception as exc:
+        print(f"  [ERROR] {exc}")
+
+
+def cmd_replay_review_queue_report(args) -> None:
+    """Generate replay review queue report. [!] Research Only."""
+    try:
+        from replay.review_report import ReplayReviewReportBuilder
+        builder = ReplayReviewReportBuilder(base_dir=BASE_DIR)
+        path = builder.save_queue_report()
+        print(f"[!] Replay Review Queue Report — Research Only")
+        print(f"  Report saved: {path}")
+    except Exception as exc:
+        print(f"  [ERROR] {exc}")
+
+
+def cmd_replay_review_batch_preview(args) -> None:
+    """Preview batch replay review operations. [!] Research Only."""
+    sessions_arg = getattr(args, "session_ids", None) or ""
+    sessions = [s.strip() for s in sessions_arg.split(",") if s.strip()] if sessions_arg else []
+    try:
+        from replay.review_batch import ReplayReviewBatchRunner
+        runner = ReplayReviewBatchRunner()
+        result = runner.preview(sessions)
+        print(f"[!] Replay Review Batch Preview — Research Only | mode=preview")
+        print(f"  Sessions: {result.get('session_count', 0)}")
+        print(f"  Mode: {result.get('mode', 'PREVIEW')}")
+        print(f"  Allow Write: {result.get('allow_write', False)}")
+        print(f"  Note: {result.get('note', '')}")
+        print("[!] Research Only. Not Investment Advice.")
+    except Exception as exc:
+        print(f"  [ERROR] {exc}")
+
+
+def cmd_replay_review_batch_run(args) -> None:
+    """Run batch replay review operations. --execute --allow-write required. [!] Research Only."""
+    sessions_arg = getattr(args, "session_ids", None) or ""
+    sessions = [s.strip() for s in sessions_arg.split(",") if s.strip()] if sessions_arg else []
+    execute = getattr(args, "execute", False)
+    allow_write = getattr(args, "allow_write", False)
+    try:
+        from replay.review_batch import ReplayReviewBatchRunner
+        runner = ReplayReviewBatchRunner()
+        result = runner.run(sessions, execute=execute, allow_write=allow_write)
+        status = result.get("status", result.get("mode", "unknown"))
+        if result.get("status") == "BLOCKED":
+            print(f"[BLOCKED] {result.get('reason', 'requires --allow-write')}")
+            print("  Run with: --execute --allow-write")
+            return
+        print(f"[!] Replay Review Batch Run — Research Only | mode={result.get('mode', 'preview')}")
+        print(f"  Total: {result.get('total', 0)}")
+        print(f"  No Auto Reveal: {result.get('no_auto_reveal', True)}")
+        print("[!] Research Only. Not Investment Advice.")
+    except Exception as exc:
+        print(f"  [ERROR] {exc}")
+
+
 def main() -> None:
     """Main entrypoint."""
     import pandas as pd  # imported here to avoid shadowing at module level
@@ -25226,6 +25681,34 @@ def main() -> None:
         "replay-mtf-pit-check":               cmd_replay_mtf_pit_check,
         "replay-mtf-compare":                 cmd_replay_mtf_compare,
         "replay-mtf-store-check":             cmd_replay_mtf_store_check,
+        # v1.2.6 Replay Review Dashboard
+        "replay-review-health":               cmd_replay_review_health,
+        "replay-review-dashboard":            cmd_replay_review_dashboard,
+        "replay-review-session":              cmd_replay_review_session,
+        "replay-review-session-detail":       cmd_replay_review_session_detail,
+        "replay-review-queue":                cmd_replay_review_queue,
+        "replay-review-start":                cmd_replay_review_start,
+        "replay-review-complete":             cmd_replay_review_complete,
+        "replay-review-dismiss":              cmd_replay_review_dismiss,
+        "replay-review-reopen":               cmd_replay_review_reopen,
+        "replay-review-progress":             cmd_replay_review_progress,
+        "replay-review-checklist":            cmd_replay_review_checklist,
+        "replay-review-note":                 cmd_replay_review_note,
+        "replay-review-tag":                  cmd_replay_review_tag,
+        "replay-review-tags":                 cmd_replay_review_tags,
+        "replay-review-search":               cmd_replay_review_search,
+        "replay-review-filter":               cmd_replay_review_filter,
+        "replay-review-compare-sessions":     cmd_replay_review_compare_sessions,
+        "replay-review-compare-symbols":      cmd_replay_review_compare_symbols,
+        "replay-review-compare-scenarios":    cmd_replay_review_compare_scenarios,
+        "replay-review-summary":              cmd_replay_review_summary,
+        "replay-review-symbol-summary":       cmd_replay_review_symbol_summary,
+        "replay-review-scenario-summary":     cmd_replay_review_scenario_summary,
+        "replay-review-report":               cmd_replay_review_report,
+        "replay-review-summary-report":       cmd_replay_review_summary_report,
+        "replay-review-queue-report":         cmd_replay_review_queue_report,
+        "replay-review-batch-preview":        cmd_replay_review_batch_preview,
+        "replay-review-batch-run":            cmd_replay_review_batch_run,
         # v1.1.9 Data Governance Stable Rollup
         "governance-rollup-health":          cmd_governance_rollup_health,
         "governance-rollup-run":             cmd_governance_rollup_run,

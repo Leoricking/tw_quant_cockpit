@@ -429,4 +429,94 @@ replay-scoring-report, replay-mistake-report
 - `docs/replay_outcome_reveal_and_review.md`
 
 ---
+
+## v1.2.6 — Replay Review Dashboard
+
+### Overview
+
+Adds a comprehensive review dashboard for completed replay sessions. Separates process quality
+from outcome quality. Outcome is hidden by default and requires explicit user reveal.
+
+### New Files
+
+**replay/ (22 files)**
+
+- `review_dashboard_schema.py` — Dataclasses with enums and safety invariants
+- `review_dashboard_adapter.py` — Module adapter with safe_unavailable() fallback
+- `review_dashboard_engine.py` — Engine: build_global_dashboard(), build_session_dashboard()
+- `review_dashboard_cards.py` — Score cards; outcome/composite HIDDEN until revealed
+- `review_dashboard_tables.py` — Paginated tables with sort/filter
+- `review_dashboard_charts.py` — Charts with process_outcome_separated=True
+- `review_queue.py` — Queue with complete() that does NOT auto-confirm or auto-reveal
+- `review_progress.py` — 8 required + 4 optional steps; OUTCOME_REVEAL_REQUIRED=False
+- `review_checklist.py` — Checklist with NO_AUTO_COMPLETE for 4 manual items
+- `review_notes.py` — Append-only notes (APPEND_ONLY=True)
+- `review_tags.py` — Tags (TAG_AFFECTS_SCORE=False, TAG_AFFECTS_TRADING=False)
+- `review_search.py`, `review_filters.py`, `review_sorting.py`, `review_grouping.py`
+- `review_comparator.py` — NOT_AVAILABLE sentinel for unrevealed outcomes
+- `review_batch.py` — DEFAULT_PREVIEW_MODE=True; BLOCKED without --execute --allow-write
+- `review_store.py` — Append-only JSONL; atomic write via .tmp + os.replace()
+- `review_query.py`, `review_summary.py`, `review_report.py`
+- `review_health.py` — 30+ health checks; run() returns Dict[str, Tuple[str, str]]
+
+**reports/ (3 files)**
+
+- `replay_review_dashboard_report.py`
+- `replay_review_summary_report.py`
+- `replay_review_queue_report.py`
+
+**gui/ (17 files)**
+
+- `replay_review_dashboard.py` — Main dashboard widget (framework-agnostic)
+- 16 panel stub files with RESEARCH_ONLY=True
+
+**tests/ (27 fixtures + 1 regression file)**
+
+- `tests/fixtures/replay_review/` — 25 JSON + 2 JSONL fixtures
+- `tests/test_replay_review_dashboard_regression.py`
+
+**docs/ (3 files)**
+
+- `docs/replay_review_dashboard_v1.2.6.md`
+- `docs/replay_review_workflow.md`
+- `docs/replay_review_queue_and_progress.md`
+
+### CLI Commands (30+)
+
+```
+replay-review-health, replay-review-dashboard, replay-review-session,
+replay-review-session-detail, replay-review-queue, replay-review-start,
+replay-review-complete, replay-review-dismiss, replay-review-reopen,
+replay-review-progress, replay-review-checklist, replay-review-note,
+replay-review-tag, replay-review-tags, replay-review-search,
+replay-review-filter, replay-review-compare-sessions,
+replay-review-compare-symbols, replay-review-compare-scenarios,
+replay-review-summary, replay-review-symbol-summary,
+replay-review-scenario-summary, replay-review-report,
+replay-review-summary-report, replay-review-queue-report,
+replay-review-batch-preview, replay-review-batch-run
+```
+
+### Safety Invariants
+
+- `AUTO_REVIEW_COMPLETE_ENABLED = False`
+- `AUTO_OUTCOME_REVEAL_ENABLED = False`
+- `AUTO_MISTAKE_CONFIRMATION_ENABLED = False`
+- `AUTO_SCORE_TO_TRADE_ENABLED = False`
+- `REPLAY_TRADE_EXECUTION_ENABLED = False`
+- complete() does NOT auto-confirm mistakes or auto-reveal outcomes
+- Outcome hidden in to_dict() when outcome_revealed=False
+- Batch default preview mode; execute requires --execute --allow-write
+- Missing modules return UNAVAILABLE (no crash)
+- Append-only JSONL stores; atomic state write via .tmp + os.replace()
+- PROCESS_REVIEW_COMPLETE does NOT require Outcome Reveal
+- outcome_reveal_required = False always
+
+### Documentation
+
+- `docs/replay_review_dashboard_v1.2.6.md`
+- `docs/replay_review_workflow.md`
+- `docs/replay_review_queue_and_progress.md`
+
+---
 [!] Research Only. No Real Orders. Not Investment Advice.

@@ -264,3 +264,19 @@ python main.py final-rollup-report --mode real
 - Run `quality-gate-universe` first before using `quality-gate-summary/formal/blocked`.
 
 **[!] MOCK_DATA_FORMAL_GATE_ALLOWED=False. QUALITY_GATE_OVERRIDE_DISABLED_BY_DEFAULT=True. Gate does NOT enable trading. No Real Orders.**
+
+## v1.2.6 Replay Review Dashboard
+
+| Command | Description |
+|---------|-------------|
+| `python main.py replay-review-health` | Run all replay review health checks |
+| `python main.py replay-review-dashboard --mode mock` | Build global review dashboard (mock mode) |
+| `python main.py replay-review-queue` | List all queue items |
+| `python main.py replay-review-progress --session-id <ID>` | Show review progress for a session |
+| `python main.py replay-review-checklist --session-id <ID>` | Show review checklist for a session |
+| `python main.py replay-review-note --session-id <ID> --note "..."` | Add a review note |
+| `python main.py replay-review-summary` | Build review summary |
+| `python main.py replay-review-batch-preview --action mark_reviewed` | Preview batch operation (BLOCKED without --execute) |
+| `python main.py replay-review-batch-run --action mark_reviewed --execute --allow-write` | Run batch (requires both flags) |
+
+**[!] AUTO_REVIEW_COMPLETE_ENABLED=False. AUTO_OUTCOME_REVEAL_ENABLED=False. complete() does NOT auto-confirm or auto-reveal. Batch default preview. No Real Orders.**

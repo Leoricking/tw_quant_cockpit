@@ -84,6 +84,7 @@ class ResearchRunClassifier:
     _DATA_REPAIR_PREFIXES = ["coverage-repair-"]
     _DATA_FRESHNESS_PREFIXES = ["freshness-"]
     _QUALITY_GATE_PREFIXES = ["quality-gate-"]
+    _REPLAY_REVIEW_PREFIXES = ["replay-review-"]
 
     def classify(self, command_name: str) -> str:
         """Return run_type string for the given command name."""
@@ -121,6 +122,10 @@ class ResearchRunClassifier:
         for prefix in self._QUALITY_GATE_PREFIXES:
             if command_name.startswith(prefix):
                 return "QUALITY_GATE"
+
+        for prefix in self._REPLAY_REVIEW_PREFIXES:
+            if command_name.startswith(prefix):
+                return "REPLAY_REVIEW_DASHBOARD_BUILT"
 
         for suffix in self._HEALTH_PREFIXES:
             if command_name.endswith(suffix) or command_name == suffix.lstrip("-"):

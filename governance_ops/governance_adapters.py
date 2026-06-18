@@ -691,3 +691,78 @@ class MultiTimeframeReplayGovernanceAdapter(_BaseGovernanceAdapter):
             "Conflict detection is NEEDS_REVIEW only. No auto-block.",
             "Batch default preview mode. Execute requires --execute --allow-write.",
         ]
+
+
+class ReplayReviewDashboardGovernanceAdapter(_BaseGovernanceAdapter):
+    """
+    Adapter for Replay Review Dashboard governance dashboard fields.
+    v1.2.6 — Research Only. No Real Orders. No Auto-Complete. No Auto-Reveal.
+    """
+
+    MODULE_NAME = "REPLAY_REVIEW_DASHBOARD"
+
+    def available(self) -> bool:
+        try:
+            from replay.review_health import ReplayReviewDashboardHealthCheck  # noqa: F401
+            return True
+        except ImportError:
+            return False
+
+    def health(self) -> "GovernanceModuleStatus":
+        checks_pass = 0
+        checks_warn = 0
+        checks_fail = 0
+        try:
+            from replay.review_health import ReplayReviewDashboardHealthCheck
+            hc = ReplayReviewDashboardHealthCheck()
+            results = hc.run()
+            for _name, (status, _msg) in results.items():
+                if status == "PASS":
+                    checks_pass += 1
+                elif status == "FAIL":
+                    checks_fail += 1
+                else:
+                    checks_warn += 1
+        except Exception:
+            checks_warn += 1
+        overall = "PASS" if checks_fail == 0 and checks_warn == 0 else ("WARN" if checks_fail == 0 else "FAIL")
+        return GovernanceModuleStatus(
+            module_name=self.MODULE_NAME,
+            available=True,
+            health_status=overall,
+            pass_count=checks_pass,
+            warn_count=checks_warn,
+            fail_count=checks_fail,
+        )
+
+    def dashboard_fields(self) -> dict:
+        """Return Replay Review Dashboard governance fields. [!] Research Only. No Real Orders."""
+        return {
+            "module": self.MODULE_NAME,
+            "version": "v1.2.6",
+            "replay_review_dashboard_available": True,
+            "replay_review_queue_available": True,
+            "replay_review_progress_available": True,
+            "outcome_reveal_required": False,
+            "outcome_hidden_by_default": True,
+            "no_auto_complete": True,
+            "no_auto_reveal": True,
+            "no_auto_confirm_mistakes": True,
+            "no_score_to_trade": True,
+            "batch_default_preview": True,
+            "append_only_history": True,
+            "atomic_state_write": True,
+            "missing_module_graceful": True,
+            "research_only": True,
+            "no_real_orders": True,
+        }
+
+    def limitations(self) -> list:
+        return [
+            "Replay Review Dashboard is Research Only. Not Investment Advice.",
+            "Outcome score hidden until explicit user reveal.",
+            "Suggested mistakes are NOT auto-confirmed.",
+            "complete() does NOT auto-confirm mistakes or auto-reveal outcomes.",
+            "Batch operations default to preview mode. Execute requires --execute --allow-write.",
+            "Score-to-trade is BLOCKED. Research only.",
+        ]

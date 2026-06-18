@@ -1265,4 +1265,19 @@ The following are explicitly out of scope for all future versions:
 
 ---
 
-*TW Quant Cockpit v0.3.23 — Research Only — Not Investment Advice*
+## v1.2.6 — Replay Review Dashboard (Current)
+
+- Review queue with 10 item types and 4 priority levels (P0-P3)
+- Review progress with 8 required steps + 4 optional steps
+- Process/outcome separation: outcome hidden until explicit reveal
+- Checklist with NO_AUTO_COMPLETE protection for 4 manual-only items
+- Batch operations default to preview mode; execute requires --execute --allow-write
+- Append-only JSONL stores with atomic state write (tmp + os.replace)
+- Missing modules return UNAVAILABLE (no crash)
+- 27 test fixtures, regression test suite, health check with 30+ checks
+- 30+ CLI commands added to main.py
+- complete() does NOT auto-confirm mistakes or auto-reveal outcomes
+
+---
+
+*TW Quant Cockpit v1.2.6 — Research Only — Not Investment Advice*

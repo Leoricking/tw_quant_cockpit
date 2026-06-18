@@ -1971,6 +1971,62 @@ class GUITabRegistry:
                 favorite_default=False,
                 notes="Added in v1.2.5 \u2014 Multi-Timeframe Replay. RESEARCH ONLY. No Real Orders. No Auto-Trade.",
             ),
+            # ----------------------------------------------------------------
+            # replay_review_dashboard (v1.2.6)
+            # ----------------------------------------------------------------
+            GUITabMetadata(
+                tab_id="replay_review_dashboard",
+                tab_name="Replay Review",
+                display_name="Replay Review Dashboard",
+                group="research",
+                priority="P0",
+                description=(
+                    "Replay Review Dashboard v1.2.6 \u2014 "
+                    "Unified review integrating sessions, journals, scoring, mistakes, "
+                    "Strategy Knowledge, multi-timeframe context, review queues, "
+                    "progress tracking, search, filtering, comparison, timing, reports. "
+                    "[!] Research Only. No Real Orders. No Auto Review Complete. "
+                    "No Auto Outcome Reveal. No Auto Confirm. Not Investment Advice."
+                ),
+                module_path="gui.replay_review_dashboard",
+                class_name="ReplayReviewDashboardWidget",
+                available_flag="REPLAY_REVIEW_DASHBOARD_AVAILABLE",
+                safety_level="RESEARCH_ONLY",
+                read_only=True,
+                no_real_orders=True,
+                production_blocked=True,
+                keywords=[
+                    "replay review", "review dashboard", "replay summary",
+                    "decision review", "mistake review", "strategy review",
+                    "timeframe review",
+                    "\u5fa9\u76e4\u7e3d\u63a7\u53f0", "\u56de\u653e\u5fa9\u76e4",
+                    "\u6c7a\u7b56\u5fa9\u76e4", "\u932f\u8aa4\u5fa9\u76e4",
+                    "\u7b56\u7565\u5fa9\u76e4", "\u591a\u9031\u671f\u5fa9\u76e4",
+                    "\u5fa9\u76e4\u4f47\u5217", "\u5fa9\u76e4\u9032\u5ea6",
+                ],
+                related_cli_commands=[
+                    "replay-review-health",
+                    "replay-review-dashboard",
+                    "replay-review-session",
+                    "replay-review-queue",
+                    "replay-review-progress",
+                    "replay-review-checklist",
+                    "replay-review-summary",
+                    "replay-review-report",
+                    "replay-review-batch-preview",
+                ],
+                report_types=[
+                    "replay_review_dashboard_report",
+                    "replay_review_summary_report",
+                    "replay_review_queue_report",
+                    "replay_review_progress_summary",
+                    "replay_review_integrity_summary",
+                ],
+                maturity="STABLE",
+                default_visible=True,
+                favorite_default=False,
+                notes="Added in v1.2.6 \u2014 Replay Review Dashboard. RESEARCH ONLY. No Real Orders. No Auto Review Complete.",
+            ),
         ]
         for tab in tabs:
             self._tabs[tab.tab_id] = tab

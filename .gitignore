@@ -501,3 +501,13 @@ reports/replay_multi_timeframe_summary_report_*.md
 # v1.2.5 MTF fixtures ARE committed (exception)
 !tests/fixtures/replay_mtf/*.json
 !tests/fixtures/replay_mtf/*.jsonl
+
+# v1.2.6 Replay Review Dashboard data (ignore generated runtime data)
+data/replay_review/
+reports/replay_review_dashboard_*.md
+reports/replay_review_summary_*.md
+reports/replay_review_queue_*.md
+
+# v1.2.6 Replay Review fixtures ARE committed (exception)
+!tests/fixtures/replay_review/*.json
+!tests/fixtures/replay_review/*.jsonl

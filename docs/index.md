@@ -3,7 +3,7 @@
 > **[!] Research Only. Read Only. No Real Orders. Production Trading: BLOCKED.**
 > **[!] Not investment advice. REAL_ORDER_READY=False.**
 
-Current version: **v1.2.0** — Replay Training UX Foundation (base: v1.1.9 Data Governance Stable Rollup) — **v1.1 Data Governance Line Complete**
+Current version: **v1.2.6** — Replay Review Dashboard (base: v1.2.5 Multi-Timeframe Replay) — **v1.2 Replay Training Line**
 
 ---
 
@@ -193,6 +193,9 @@ Current version: **v1.2.0** — Replay Training UX Foundation (base: v1.1.9 Data
 | [replay_training_ux_foundation_v1.2.0.md](replay_training_ux_foundation_v1.2.0.md) | v1.2.0 | Replay Training UX Foundation (PIT replay, future data firewall, session lifecycle, decision capture, annotation, summary) |
 | [replay_future_data_firewall.md](replay_future_data_firewall.md) | v1.2.0 | Replay Future Data Firewall (forbidden fields, date-based blocking, PIT context builder, CLI verification) |
 | [replay_training_operations_runbook.md](replay_training_operations_runbook.md) | v1.2.0 | Replay Training Operations Runbook (session creation, navigation, decisions, annotations, reports, troubleshooting) |
+| [replay_review_dashboard_v1.2.6.md](replay_review_dashboard_v1.2.6.md) | v1.2.6 | Replay Review Dashboard (review queue, progress tracking, checklist, batch operations, health check) |
+| [replay_review_workflow.md](replay_review_workflow.md) | v1.2.6 | Replay Review Workflow (step-by-step, process/outcome separation, CLI commands) |
+| [replay_review_queue_and_progress.md](replay_review_queue_and_progress.md) | v1.2.6 | Replay Review Queue and Progress (queue item types, priority levels, progress steps, status values) |
 
 ---
 
@@ -209,4 +212,4 @@ Current version: **v1.2.0** — Replay Training UX Foundation (base: v1.1.9 Data
 
 ---
 
-*Updated for v1.2.0 Replay Training UX Foundation.*
+*Updated for v1.2.6 Replay Review Dashboard.*

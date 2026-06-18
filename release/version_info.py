@@ -1,5 +1,5 @@
 """
-release/version_info.py — Centralized version info for TW Quant Cockpit v1.2.5.
+release/version_info.py — Centralized version info for TW Quant Cockpit v1.2.6.
 [!] Research Only. No Real Orders. Production Trading: BLOCKED.
 [!] VALIDATED does not enable trading. Broker Execution Disabled.
 [!] Data Universe Expansion. Real Data Coverage Required.
@@ -38,6 +38,8 @@ release/version_info.py — Centralized version info for TW Quant Cockpit v1.2.5
 [!] Partial bar NEVER used for confirmed signals. Past-only asof join. No bfill.
 [!] Agreement/Conflict analysis is TRAINING ONLY. No Auto-Trade. No Auto-Block.
 [!] Batch default preview mode. BLOCKED without --execute --allow-write.
+[!] Replay Review Dashboard. No Auto Review Complete. No Auto Outcome Reveal. No Auto Confirm.
+[!] No Auto Decision. No Auto Execution. No Score-to-Trade. Broker Disabled. Not Investment Advice.
 """
 from __future__ import annotations
 import logging
@@ -49,9 +51,9 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # ---------------------------------------------------------------------------
 # v1.1.9 module-level constants (Data Governance Stable Rollup)
 # ---------------------------------------------------------------------------
-VERSION                             = "1.2.5"
-RELEASE_NAME                        = "Multi-Timeframe Replay"
-BASE_RELEASE                        = "1.2.4 Strategy Knowledge Replay"
+VERSION                             = "1.2.6"
+RELEASE_NAME                        = "Replay Review Dashboard"
+BASE_RELEASE                        = "1.2.5 Multi-timeframe Replay"
 BASE_RELEASE_NAME                   = "Data Governance Stable Rollup"
 MAINTENANCE_RELEASE                 = False
 RELEASE_STAGE                       = "FOUNDATION"
@@ -243,6 +245,20 @@ MTF_BATCH_AUTO_EXECUTE_ENABLED          = False
 AUTO_MULTI_TIMEFRAME_DECISION_ENABLED       = False
 AUTO_TIMEFRAME_MISTAKE_CONFIRMATION_ENABLED = False
 AUTO_TIMEFRAME_STRATEGY_EXECUTION_ENABLED   = False
+# v1.2.6 Replay Review Dashboard flags
+REPLAY_REVIEW_DASHBOARD_AVAILABLE      = True
+REPLAY_REVIEW_QUEUE_AVAILABLE          = True
+REPLAY_REVIEW_PROGRESS_AVAILABLE       = True
+REPLAY_CROSS_MODULE_NAVIGATION_AVAILABLE = True
+REPLAY_REVIEW_COMPARISON_AVAILABLE     = True
+REPLAY_BATCH_REVIEW_AVAILABLE          = True
+AUTO_REVIEW_COMPLETE_ENABLED           = False
+AUTO_OUTCOME_REVEAL_ENABLED            = False  # noqa: F811
+AUTO_MISTAKE_CONFIRMATION_ENABLED      = False  # noqa: F811
+AUTO_DECISION_CREATION_ENABLED         = False
+AUTO_STRATEGY_CHANGE_ENABLED           = False  # noqa: F811
+AUTO_SCORE_TO_TRADE_ENABLED            = False  # noqa: F811
+REPLAY_TRADE_EXECUTION_ENABLED         = False  # noqa: F811
 
 
 class VersionInfo:
@@ -520,6 +536,20 @@ def print_version_info() -> None:
     print(f"  MTF Auto Block Enabled: {MTF_AUTO_BLOCK_ENABLED}")
     print(f"  MTF Auto Decision Enabled: {MTF_AUTO_DECISION_ENABLED}")
     print(f"  MTF Batch Auto Execute Enabled: {MTF_BATCH_AUTO_EXECUTE_ENABLED}")
+    # v1.2.6 flags
+    print(f"  Replay Review Dashboard Available: {REPLAY_REVIEW_DASHBOARD_AVAILABLE}")
+    print(f"  Replay Review Queue Available: {REPLAY_REVIEW_QUEUE_AVAILABLE}")
+    print(f"  Replay Review Progress Available: {REPLAY_REVIEW_PROGRESS_AVAILABLE}")
+    print(f"  Replay Cross Module Navigation Available: {REPLAY_CROSS_MODULE_NAVIGATION_AVAILABLE}")
+    print(f"  Replay Review Comparison Available: {REPLAY_REVIEW_COMPARISON_AVAILABLE}")
+    print(f"  Replay Batch Review Available: {REPLAY_BATCH_REVIEW_AVAILABLE}")
+    print(f"  Auto Review Complete Enabled: {AUTO_REVIEW_COMPLETE_ENABLED}")
+    print(f"  Auto Outcome Reveal Enabled: {AUTO_OUTCOME_REVEAL_ENABLED}")
+    print(f"  Auto Mistake Confirmation Enabled: {AUTO_MISTAKE_CONFIRMATION_ENABLED}")
+    print(f"  Auto Decision Creation Enabled: {AUTO_DECISION_CREATION_ENABLED}")
+    print(f"  Auto Strategy Change Enabled: {AUTO_STRATEGY_CHANGE_ENABLED}")
+    print(f"  Auto Score To Trade Enabled: {AUTO_SCORE_TO_TRADE_ENABLED}")
+    print(f"  Replay Trade Execution Enabled: {REPLAY_TRADE_EXECUTION_ENABLED}")
     print("=" * 60)
 
 

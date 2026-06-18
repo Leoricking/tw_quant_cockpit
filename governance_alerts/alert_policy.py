@@ -796,6 +796,81 @@ _POLICIES: Dict[str, dict] = {
         "suggested_commands": ["replay-mtf-store-check"],
         "permanent_suppress_allowed": False,
     },
+    # v1.2.6 Replay Review Dashboard alert types
+    # P0 — Critical
+    "REPLAY_REVIEW_DATA_LEAK": {
+        "severity": "CRITICAL", "priority": "P0",
+        "suppression_window": 0,
+        "snooze_limit": None,
+        "safe_actions": ["VERIFY_AUDIT", "REVIEW"],
+        "suggested_commands": ["replay-review-health"],
+        "permanent_suppress_allowed": False,
+    },
+    "REPLAY_REVIEW_OUTCOME_VISIBLE_BEFORE_REVEAL": {
+        "severity": "CRITICAL", "priority": "P0",
+        "suppression_window": 0,
+        "snooze_limit": None,
+        "safe_actions": ["VERIFY_AUDIT", "REVIEW"],
+        "suggested_commands": ["replay-review-health"],
+        "permanent_suppress_allowed": False,
+    },
+    "REPLAY_REVIEW_AUTO_CONFIRM_ATTEMPT": {
+        "severity": "CRITICAL", "priority": "P0",
+        "suppression_window": 0,
+        "snooze_limit": None,
+        "safe_actions": ["VERIFY_AUDIT", "REVIEW"],
+        "suggested_commands": ["replay-review-health"],
+        "permanent_suppress_allowed": False,
+    },
+    "REPLAY_REVIEW_AUTO_COMPLETE_ATTEMPT": {
+        "severity": "CRITICAL", "priority": "P0",
+        "suppression_window": 0,
+        "snooze_limit": None,
+        "safe_actions": ["VERIFY_AUDIT", "REVIEW"],
+        "suggested_commands": ["replay-review-health"],
+        "permanent_suppress_allowed": False,
+    },
+    "REPLAY_REVIEW_SCORE_TO_TRADE_ATTEMPT": {
+        "severity": "CRITICAL", "priority": "P0",
+        "suppression_window": 0,
+        "snooze_limit": None,
+        "safe_actions": ["VERIFY_AUDIT", "REVIEW"],
+        "suggested_commands": ["replay-review-health"],
+        "permanent_suppress_allowed": False,
+    },
+    # P1 — High
+    "REPLAY_REVIEW_ORPHANED_SESSION_REF": {
+        "severity": "HIGH", "priority": "P1",
+        "suppression_window": 1800,
+        "snooze_limit": 86400,
+        "safe_actions": ["VERIFY_AUDIT", "REVIEW"],
+        "suggested_commands": ["replay-review-health", "replay-review-summary"],
+        "permanent_suppress_allowed": False,
+    },
+    "REPLAY_REVIEW_STORE_CORRUPTED": {
+        "severity": "HIGH", "priority": "P1",
+        "suppression_window": 1800,
+        "snooze_limit": 86400,
+        "safe_actions": ["VERIFY_AUDIT", "REVIEW"],
+        "suggested_commands": ["replay-review-health"],
+        "permanent_suppress_allowed": False,
+    },
+    "REPLAY_REVIEW_MODULE_UNAVAILABLE": {
+        "severity": "HIGH", "priority": "P1",
+        "suppression_window": 1800,
+        "snooze_limit": 86400,
+        "safe_actions": ["VERIFY_AUDIT", "REVIEW"],
+        "suggested_commands": ["replay-review-health"],
+        "permanent_suppress_allowed": False,
+    },
+    "REPLAY_REVIEW_BATCH_FAILED": {
+        "severity": "HIGH", "priority": "P1",
+        "suppression_window": 1800,
+        "snooze_limit": 86400,
+        "safe_actions": ["VERIFY_AUDIT", "REVIEW"],
+        "suggested_commands": ["replay-review-health", "replay-review-batch-preview"],
+        "permanent_suppress_allowed": False,
+    },
 }
 
 # Default fallback

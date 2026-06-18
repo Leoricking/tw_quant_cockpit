@@ -275,3 +275,21 @@ These templates enforce: `git -C "path"`, no chain commands, no `git add .`, no 
 - Override: disabled by default; max level OBSERVATIONAL; audit_only=True; never enables trading
 - Health check: `python main.py quality-gate-health` → should PASS 20/20
 - **[!] No Real Orders. No broker API. Gate does NOT enable trading. Mock/Invalid/Stale/Conflict cannot pass FORMAL. Not Investment Advice.**
+
+## v1.2.6 Handoff Notes
+
+- **Replay Review Dashboard: COMPLETE** (tag `v1.2.6`)
+- New package: `replay/` (22 review_* files: schema, adapter, engine, cards, tables, charts, queue, progress, checklist, notes, tags, search, filters, sorting, grouping, comparator, batch, store, query, summary, report, health)
+- New reports: `reports/replay_review_dashboard_report.py`, `replay_review_summary_report.py`, `replay_review_queue_report.py`
+- New GUI: `gui/replay_review_dashboard.py` + 16 panel stubs
+- New tests: 27 fixtures in `tests/fixtures/replay_review/`, regression file `tests/test_replay_review_dashboard_regression.py`
+- New docs: `docs/replay_review_dashboard_v1.2.6.md`, `docs/replay_review_workflow.md`, `docs/replay_review_queue_and_progress.md`
+- New CLI: 30+ commands (`replay-review-health`, `replay-review-dashboard`, `replay-review-queue`, etc.)
+- Safety flags: `AUTO_REVIEW_COMPLETE_ENABLED=False`, `AUTO_OUTCOME_REVEAL_ENABLED=False`, `AUTO_MISTAKE_CONFIRMATION_ENABLED=False`, `AUTO_SCORE_TO_TRADE_ENABLED=False`, `REPLAY_TRADE_EXECUTION_ENABLED=False`
+- Process/Outcome: outcome_score hidden in to_dict() when outcome_revealed=False; PROCESS_REVIEW_COMPLETE does NOT require Outcome Reveal
+- complete() does NOT auto-confirm mistakes or auto-reveal outcomes
+- Batch: DEFAULT_PREVIEW_MODE=True; BLOCKED without --execute AND --allow-write
+- Store: append-only JSONL; atomic write via .tmp + os.replace(); corrupted tail graceful recovery
+- Missing modules: safe_unavailable() returns {"status": "UNAVAILABLE", ...} (no crash)
+- Health check: `python main.py replay-review-health` -- should PASS
+- **[!] No Real Orders. No broker API. Score does NOT enable trading. Outcome hidden until explicit reveal. Not Investment Advice.**

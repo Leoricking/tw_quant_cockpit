@@ -1,0 +1,5 @@
+{
+  "queue_item_id": "QI-OUT-001",
+  "queue_type": "OUTCOME_REVEAL_PENDING",
+  "auto_reveal_on_complete": false
+}

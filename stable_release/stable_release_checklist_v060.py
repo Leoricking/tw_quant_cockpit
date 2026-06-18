@@ -3054,6 +3054,81 @@ class StableReleaseChecklistV060:
         except Exception as exc:
             return _check_item("version_info_v124", "version_git", "WARN", str(exc))
 
+    def _check_replay_review_import(self) -> dict:
+        """v1.2.6 — Replay Review Dashboard core modules importable."""
+        try:
+            from replay.review_dashboard_schema import (
+                ReplayReviewSessionRow, ReviewQueueItem, ReviewProgress,
+            )
+            from replay.review_queue import ReplayReviewQueue
+            from replay.review_progress import ReplayReviewProgress
+            from replay.review_health import ReplayReviewDashboardHealthCheck
+            return _check_item("replay_review_import", "replay_review_dashboard", "PASS",
+                               "Core review modules importable")
+        except Exception as exc:
+            return _check_item("replay_review_import", "replay_review_dashboard", "WARN", str(exc))
+
+    def _check_replay_review_outcome_hidden(self) -> dict:
+        """v1.2.6 — Outcome score hidden until explicit reveal."""
+        try:
+            from replay.review_dashboard_schema import ReplayReviewSessionRow
+            row = ReplayReviewSessionRow(
+                session_id="TEST-001",
+                symbol="TAIEX",
+                scenario_id="SC-001",
+                outcome_score=0.9,
+                outcome_revealed=False,
+            )
+            d = row.to_dict()
+            hidden_ok = (d.get("outcome_score") is None and d.get("outcome_score_hidden") is True)
+            return _check_item("replay_review_outcome_hidden", "replay_review_dashboard",
+                               "PASS" if hidden_ok else "FAIL",
+                               f"outcome_score={d.get('outcome_score')}, hidden={d.get('outcome_score_hidden')}")
+        except Exception as exc:
+            return _check_item("replay_review_outcome_hidden", "replay_review_dashboard", "WARN", str(exc))
+
+    def _check_replay_review_suggested_not_confirmed(self) -> dict:
+        """v1.2.6 — Suggested mistakes NOT auto-confirmed."""
+        try:
+            from release.version_info import AUTO_MISTAKE_CONFIRMATION_ENABLED
+            ok = not AUTO_MISTAKE_CONFIRMATION_ENABLED
+            return _check_item("replay_review_suggested_not_confirmed", "replay_review_dashboard",
+                               "PASS" if ok else "FAIL",
+                               f"AUTO_MISTAKE_CONFIRMATION_ENABLED={AUTO_MISTAKE_CONFIRMATION_ENABLED}")
+        except Exception as exc:
+            return _check_item("replay_review_suggested_not_confirmed", "replay_review_dashboard", "WARN", str(exc))
+
+    def _check_replay_review_read_only_default(self) -> dict:
+        """v1.2.6 — Batch operations preview-mode by default."""
+        try:
+            from replay.review_batch import ReplayReviewBatch, DEFAULT_PREVIEW_MODE
+            ok = DEFAULT_PREVIEW_MODE is True
+            result = ReplayReviewBatch().run("mark_reviewed", session_ids=[], execute=False, allow_write=False)
+            blocked_ok = result.get("status") == "BLOCKED"
+            return _check_item("replay_review_read_only_default", "replay_review_dashboard",
+                               "PASS" if (ok and blocked_ok) else "FAIL",
+                               f"DEFAULT_PREVIEW_MODE={DEFAULT_PREVIEW_MODE}, batch_blocked={blocked_ok}")
+        except Exception as exc:
+            return _check_item("replay_review_read_only_default", "replay_review_dashboard", "WARN", str(exc))
+
+    def _check_version_info_v126(self) -> dict:
+        """v1.2.6 — VERSION=1.2.6 and v1.2.6 flags set correctly."""
+        try:
+            from release.version_info import VERSION
+            import release.version_info as _vi
+            rrd = getattr(_vi, "REPLAY_REVIEW_DASHBOARD_AVAILABLE", None)
+            arc = getattr(_vi, "AUTO_REVIEW_COMPLETE_ENABLED", True)
+            aor = getattr(_vi, "AUTO_OUTCOME_REVEAL_ENABLED", True)
+            ok = (VERSION == "1.2.6" and rrd and not arc and not aor)
+            status = "PASS" if ok else "WARN"
+            return _check_item(
+                "version_info_v126", "version_git", status,
+                f"VERSION={VERSION}, REPLAY_REVIEW_DASHBOARD_AVAILABLE={rrd}, "
+                f"AUTO_REVIEW_COMPLETE_ENABLED={arc}, AUTO_OUTCOME_REVEAL_ENABLED={aor}",
+            )
+        except Exception as exc:
+            return _check_item("version_info_v126", "version_git", "WARN", str(exc))
+
     # ----------------------------------------------------------------
     # Run
     # ----------------------------------------------------------------
@@ -3243,6 +3318,12 @@ class StableReleaseChecklistV060:
             self._check_replay_strategy_schema,
             self._check_replay_strategy_no_auto_decision,
             self._check_version_info_v124,
+            # v1.2.6 Replay Review Dashboard
+            self._check_replay_review_import,
+            self._check_replay_review_outcome_hidden,
+            self._check_replay_review_suggested_not_confirmed,
+            self._check_replay_review_read_only_default,
+            self._check_version_info_v126,
         ]
 
         for fn in checklist_groups:

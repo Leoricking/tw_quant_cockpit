@@ -1530,6 +1530,50 @@ class ResearchCockpitStableChecklist:
         except Exception as exc:
             checks.append(_mk("mtf_future_firewall_active", "replay_multi_timeframe", "WARN", str(exc)))
 
+        # v1.2.6 Replay Review Dashboard checks
+        try:
+            from release.version_info import (
+                REPLAY_REVIEW_DASHBOARD_AVAILABLE,
+                REPLAY_REVIEW_QUEUE_AVAILABLE,
+                REPLAY_REVIEW_PROGRESS_AVAILABLE,
+                AUTO_REVIEW_COMPLETE_ENABLED,
+                AUTO_OUTCOME_REVEAL_ENABLED,
+                AUTO_MISTAKE_CONFIRMATION_ENABLED,
+                REPLAY_TRADE_EXECUTION_ENABLED,
+            )
+            ok = (REPLAY_REVIEW_DASHBOARD_AVAILABLE
+                  and REPLAY_REVIEW_QUEUE_AVAILABLE
+                  and REPLAY_REVIEW_PROGRESS_AVAILABLE
+                  and not AUTO_REVIEW_COMPLETE_ENABLED
+                  and not AUTO_OUTCOME_REVEAL_ENABLED
+                  and not AUTO_MISTAKE_CONFIRMATION_ENABLED
+                  and not REPLAY_TRADE_EXECUTION_ENABLED)
+            checks.append(_mk("replay_review_dashboard_available", "replay_review_dashboard",
+                              "PASS" if ok else "FAIL",
+                              f"DASHBOARD={REPLAY_REVIEW_DASHBOARD_AVAILABLE}, "
+                              f"QUEUE={REPLAY_REVIEW_QUEUE_AVAILABLE}, "
+                              f"PROGRESS={REPLAY_REVIEW_PROGRESS_AVAILABLE}"))
+        except Exception as exc:
+            checks.append(_mk("replay_review_dashboard_available", "replay_review_dashboard", "WARN", str(exc)))
+        try:
+            from release.version_info import AUTO_REVIEW_COMPLETE_ENABLED, AUTO_MISTAKE_CONFIRMATION_ENABLED
+            no_auto = (not AUTO_REVIEW_COMPLETE_ENABLED and not AUTO_MISTAKE_CONFIRMATION_ENABLED)
+            checks.append(_mk("replay_review_no_auto_complete", "replay_review_dashboard",
+                              "PASS" if no_auto else "FAIL",
+                              f"AUTO_COMPLETE={AUTO_REVIEW_COMPLETE_ENABLED}, "
+                              f"AUTO_CONFIRM={AUTO_MISTAKE_CONFIRMATION_ENABLED}"))
+        except Exception as exc:
+            checks.append(_mk("replay_review_no_auto_complete", "replay_review_dashboard", "WARN", str(exc)))
+        try:
+            from release.version_info import REPLAY_TRADE_EXECUTION_ENABLED, AUTO_SCORE_TO_TRADE_ENABLED
+            no_forbidden = (not REPLAY_TRADE_EXECUTION_ENABLED and not AUTO_SCORE_TO_TRADE_ENABLED)
+            checks.append(_mk("replay_review_no_forbidden_actions", "replay_review_dashboard",
+                              "PASS" if no_forbidden else "FAIL",
+                              f"TRADE_EXEC={REPLAY_TRADE_EXECUTION_ENABLED}, "
+                              f"SCORE_TO_TRADE={AUTO_SCORE_TO_TRADE_ENABLED}"))
+        except Exception as exc:
+            checks.append(_mk("replay_review_no_forbidden_actions", "replay_review_dashboard", "WARN", str(exc)))
+
         # Rebuild summary counts to include new checks
         total         = len(checks)
         pass_count    = sum(1 for c in checks if c["status"] == "PASS")

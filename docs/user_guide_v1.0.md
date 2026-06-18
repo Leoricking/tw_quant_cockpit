@@ -432,3 +432,24 @@ python main.py replay-archive --session-id <ID>
 See `docs/replay_training_ux_foundation_v1.2.0.md` and `docs/replay_training_operations_runbook.md` for full documentation.
 
 **[!] REPLAY_TRADE_EXECUTION_ENABLED=False. SIMULATION_DECISION_ONLY=True. Future Data Firewall enforced. No Real Orders.**
+
+## Replay Review Dashboard (v1.2.6)
+
+After completing a replay session, use the review dashboard to track review progress:
+
+```
+python main.py replay-review-health
+python main.py replay-review-dashboard --mode mock
+python main.py replay-review-queue
+python main.py replay-review-progress --session-id <ID>
+python main.py replay-review-checklist --session-id <ID>
+python main.py replay-review-summary
+```
+
+Key safety rules:
+- Outcome hidden until explicit reveal (`replay-review-complete` does NOT reveal outcome)
+- Suggested mistakes are NOT auto-confirmed
+- Batch operations default to preview mode
+- PROCESS_REVIEW_COMPLETE does NOT require Outcome Reveal
+
+See `docs/replay_review_dashboard_v1.2.6.md` and `docs/replay_review_workflow.md` for full documentation.

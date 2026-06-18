@@ -616,6 +616,49 @@ class GovernanceAlertDetector:
             logger.debug("detect_from_mtf_replay failed (non-fatal): %s", exc)
         return alerts
 
+    def detect_from_replay_review(self) -> List:
+        """Detect alerts from replay review dashboard module. [!] Research Only."""
+        from governance_alerts.alert_schema import GovernanceAlert
+        from governance_alerts.alert_policy import GovernanceAlertPolicy
+        alerts = []
+        policy = GovernanceAlertPolicy()
+        try:
+            from replay.review_health import ReplayReviewDashboardHealthCheck
+            hc = ReplayReviewDashboardHealthCheck()
+            results = hc.run()
+            for check_name, (status, detail) in results.items():
+                if status == "FAIL":
+                    # Map check names to alert types
+                    if "data_leak" in check_name or "future" in check_name:
+                        alert_type = "REPLAY_REVIEW_DATA_LEAK"
+                    elif "outcome_visible" in check_name or "outcome_hidden" in check_name:
+                        alert_type = "REPLAY_REVIEW_OUTCOME_VISIBLE_BEFORE_REVEAL"
+                    elif "auto_confirm" in check_name:
+                        alert_type = "REPLAY_REVIEW_AUTO_CONFIRM_ATTEMPT"
+                    elif "auto_complete" in check_name or "auto_review" in check_name:
+                        alert_type = "REPLAY_REVIEW_AUTO_COMPLETE_ATTEMPT"
+                    elif "score_to_trade" in check_name or "trade_exec" in check_name:
+                        alert_type = "REPLAY_REVIEW_SCORE_TO_TRADE_ATTEMPT"
+                    elif "store" in check_name or "corrupted" in check_name:
+                        alert_type = "REPLAY_REVIEW_STORE_CORRUPTED"
+                    elif "module" in check_name or "unavailable" in check_name:
+                        alert_type = "REPLAY_REVIEW_MODULE_UNAVAILABLE"
+                    elif "orphan" in check_name:
+                        alert_type = "REPLAY_REVIEW_ORPHANED_SESSION_REF"
+                    else:
+                        alert_type = "REPLAY_REVIEW_MODULE_UNAVAILABLE"
+                    alert = self.build_alert(
+                        alert_type=alert_type,
+                        title=f"Replay Review health check FAILED: {check_name}",
+                        message=f"Replay Review health check {check_name} failed. {detail}",
+                        reason_codes=["REPLAY_REVIEW_HEALTH_FAIL"],
+                        policy=policy,
+                    )
+                    alerts.append(alert)
+        except Exception as exc:
+            logger.debug("detect_from_replay_review failed (non-fatal): %s", exc)
+        return alerts
+
     def summarize_detection(self, alerts: List) -> dict:
         if not alerts:
             return {

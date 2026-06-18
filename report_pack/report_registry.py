@@ -136,6 +136,13 @@ REPORT_REPLAY_MULTI_TIMEFRAME          = "replay_multi_timeframe_report"
 REPORT_REPLAY_MTF_TIMELINE             = "replay_multi_timeframe_timeline_report"
 REPORT_REPLAY_MTF_SUMMARY              = "replay_multi_timeframe_summary_report"
 
+# v1.2.6 Replay Review Dashboard
+REPORT_REPLAY_REVIEW_DASHBOARD         = "replay_review_dashboard_report"
+REPORT_REPLAY_REVIEW_SUMMARY           = "replay_review_summary_report"
+REPORT_REPLAY_REVIEW_QUEUE             = "replay_review_queue_report"
+REPORT_REPLAY_REVIEW_PROGRESS_SUMMARY  = "replay_review_progress_summary"
+REPORT_REPLAY_REVIEW_INTEGRITY_SUMMARY = "replay_review_integrity_summary"
+
 logger = logging.getLogger(__name__)
 
 # ---------------------------------------------------------------------------
