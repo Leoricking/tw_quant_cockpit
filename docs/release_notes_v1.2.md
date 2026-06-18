@@ -563,4 +563,47 @@ replay-review-batch-preview, replay-review-batch-run
 - `docs/replay_challenge_scoring.md`
 
 ---
+
+## v1.2.8 — Replay Dataset & Session Registry
+
+**Research Only. No Real Orders. Dataset Registry Only. No Broker.**
+
+### Features
+
+- Complete Replay Dataset Catalog, Registry, Manifest, Versioning, Fingerprint, Lineage, Qualification, Snapshot, Freeze, Validator, Integrity, Portability, Package, Import/Export, Path Remap, Conflict Detection
+- Session Registry with Dataset Bindings, Fingerprint, Lineage
+- Deterministic path-independent fingerprints (SHA-256; excludes absolute paths, machine names, timestamps)
+- Frozen datasets immutable — hash mismatch after freeze → CORRUPTED
+- RELATIVE_ONLY path mode for portable packages
+- Dataset qualification levels: VERIFIED_REAL, REAL_UNVERIFIED, MOCK_DEMO_ONLY, INSUFFICIENT, BLOCKED, INCOMPATIBLE
+- Session status: ACTIVE, PAUSED, COMPLETED, ARCHIVED, ORPHANED, BLOCKED, INSUFFICIENT
+- Append-only JSONL storage with graceful corrupted-tail handling
+- Session-Dataset binding locked after session creation; COMPLETED sessions cannot be directly rebound
+- Mock datasets can never be VERIFIED_REAL; real datasets with mock contamination → BLOCKED
+- Package never contains secrets, .env, API tokens, broker credentials, absolute paths
+- Registry Repair: preview by default; execute requires --allow-write
+- ~50 registry health checks
+- 35 new CLI commands (replay-registry-*, replay-dataset-*, replay-session-*, replay-package-*)
+- 17 new GUI panels and dialogs
+- 4 new report types
+- 27 test fixtures
+
+### Safety Invariants
+
+- `NO_REAL_ORDERS = True` throughout all modules
+- `RESEARCH_ONLY = True` throughout all modules
+- `AUTO_DATASET_OVERWRITE_ENABLED = False`
+- `AUTO_DATASET_REPAIR_ENABLED = False`
+- `AUTO_SESSION_REBIND_ENABLED = False`
+- `AUTO_PACKAGE_IMPORT_ENABLED = False`
+- `AUTO_REGISTRY_CONFLICT_RESOLUTION_ENABLED = False`
+- `AUTO_REGISTRY_REPAIR_ENABLED = False`
+
+### Documentation
+
+- `docs/replay_dataset_session_registry_v1.2.8.md`
+- `docs/replay_dataset_versioning_and_lineage.md`
+- `docs/replay_portable_package_and_path_remap.md`
+
+---
 [!] Research Only. No Real Orders. Not Investment Advice.

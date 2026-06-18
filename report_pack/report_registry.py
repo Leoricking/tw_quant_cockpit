@@ -150,6 +150,12 @@ REPORT_REPLAY_CHALLENGE_SUMMARY        = "replay_challenge_summary_report"
 REPORT_REPLAY_CHALLENGE_LEADERBOARD    = "replay_challenge_leaderboard_report"
 REPORT_REPLAY_CHALLENGE_HEALTH         = "replay_challenge_health_report"
 
+# v1.2.8 Replay Dataset & Session Registry
+REPORT_REPLAY_DATASET_REGISTRY         = "replay_dataset_registry_report"
+REPORT_REPLAY_SESSION_REGISTRY         = "replay_session_registry_report"
+REPORT_REPLAY_REGISTRY_INTEGRITY       = "replay_registry_integrity_report"
+REPORT_REPLAY_REGISTRY_PORTABILITY     = "replay_registry_portability_report"
+
 logger = logging.getLogger(__name__)
 
 # ---------------------------------------------------------------------------
@@ -415,6 +421,11 @@ _PACK_DEFINITIONS: Dict[str, List[str]] = {
         REPORT_REPLAY_CHALLENGE_SUMMARY,
         REPORT_REPLAY_CHALLENGE_LEADERBOARD,
         REPORT_REPLAY_CHALLENGE_HEALTH,
+        # v1.2.8 Replay Dataset & Session Registry (optional in full pack)
+        REPORT_REPLAY_DATASET_REGISTRY,
+        REPORT_REPLAY_SESSION_REGISTRY,
+        REPORT_REPLAY_REGISTRY_INTEGRITY,
+        REPORT_REPLAY_REGISTRY_PORTABILITY,
     ],
 }
 

@@ -1,0 +1,1 @@
+{"dataset_id": "DS-FROZEN-001", "name": "TW50 Daily 2022 Frozen", "mode": "REAL", "qualification": "VERIFIED_REAL", "status": "FROZEN", "version": "1.0.0", "symbols": ["0050.TW"], "timeframes": ["1d"], "row_count": 245, "fingerprint": "sha256:frozenfp001", "frozen_at": "2023-01-01T00:00:00Z", "research_only": true, "no_real_orders": true}

@@ -1,0 +1,1 @@
+{"check": "registry_health", "passed": 48, "warned": 2, "failed": 0, "blocked": 0, "ok": true, "warnings": ["stale_hash detected in DS-REAL-002", "orphaned session SESS-003"], "research_only": true, "no_real_orders": true, "version": "1.2.8"}

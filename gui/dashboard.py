@@ -311,6 +311,16 @@ except Exception as _rcp_exc:
     _REPLAY_CHALLENGE_AVAILABLE = False
 
 # ---------------------------------------------------------------------------
+# v1.2.8 Replay Registry panel import (guarded)
+# ---------------------------------------------------------------------------
+try:
+    from gui.replay_registry_panel import ReplayRegistryPanel
+    _REPLAY_REGISTRY_AVAILABLE = True
+except Exception as _rrp_exc:
+    logger.warning("ReplayRegistryPanel unavailable: %s", _rrp_exc)
+    _REPLAY_REGISTRY_AVAILABLE = False
+
+# ---------------------------------------------------------------------------
 # v0.6.0 Stable Release panel import (guarded)
 # ---------------------------------------------------------------------------
 try:
@@ -1711,6 +1721,13 @@ class CockpitWindow(QMainWindow if _PYSIDE6_AVAILABLE else object):
             mid_tabs.addTab(self._replay_challenge_panel, "Replay Challenge")
         else:
             self._replay_challenge_panel = None
+
+        # v1.2.8 Replay Registry tab
+        if _REPLAY_REGISTRY_AVAILABLE:
+            self._replay_registry_panel = ReplayRegistryPanel()
+            mid_tabs.addTab(self._replay_registry_panel, "Replay Registry")
+        else:
+            self._replay_registry_panel = None
 
         # v0.6.0 Stable Release tab
         if _STABLE_RELEASE_AVAILABLE:

@@ -337,6 +337,23 @@ _REPORT_PATTERNS = {
     "replay_challenge_health_report": [
         "reports/replay_challenge_health_*.md",
     ],
+    # v1.2.8 Replay Dataset & Session Registry
+    "replay_dataset_registry_report": [
+        "reports/replay_dataset_registry_report*.md",
+        "data/replay_registry/datasets.jsonl",
+    ],
+    "replay_session_registry_report": [
+        "reports/replay_session_registry_report*.md",
+        "data/replay_registry/sessions.jsonl",
+        "data/replay_registry/session_bindings.jsonl",
+    ],
+    "replay_registry_integrity_report": [
+        "reports/replay_registry_integrity_report*.md",
+        "data/replay_registry/registry_audit.jsonl",
+    ],
+    "replay_registry_portability_report": [
+        "reports/replay_registry_portability_report*.md",
+    ],
     # v0.9.0.1 Crash Reversal & Risk Discipline Strategy Pack
     REPORT_CRASH_REVERSAL: [
         "reports/crash_reversal_strategy_report*.md",

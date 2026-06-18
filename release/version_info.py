@@ -1,5 +1,5 @@
 """
-release/version_info.py — Centralized version info for TW Quant Cockpit v1.2.7.
+release/version_info.py — Centralized version info for TW Quant Cockpit v1.2.8.
 [!] Research Only. No Real Orders. Production Trading: BLOCKED.
 [!] VALIDATED does not enable trading. Broker Execution Disabled.
 [!] Replay Challenge Mode. Challenge Training Only. Simulation Only.
@@ -45,6 +45,11 @@ release/version_info.py — Centralized version info for TW Quant Cockpit v1.2.7
 [!] Batch default preview mode. BLOCKED without --execute --allow-write.
 [!] Replay Review Dashboard. No Auto Review Complete. No Auto Outcome Reveal. No Auto Confirm.
 [!] No Auto Decision. No Auto Execution. No Score-to-Trade. Broker Disabled. Not Investment Advice.
+[!] Replay Dataset & Session Registry. Dataset Registry Only. Session Registry Only.
+[!] No Auto Dataset Overwrite. No Auto Dataset Repair. No Auto Session Rebind.
+[!] No Auto Package Import. No Auto Conflict Resolution. Registry does not execute trades.
+[!] Portable packages use RELATIVE_ONLY paths. No absolute paths in portable manifests.
+[!] Frozen datasets are immutable. Modification requires new version. Not Investment Advice.
 """
 from __future__ import annotations
 import logging
@@ -56,9 +61,9 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # ---------------------------------------------------------------------------
 # v1.1.9 module-level constants (Data Governance Stable Rollup)
 # ---------------------------------------------------------------------------
-VERSION                             = "1.2.7"
-RELEASE_NAME                        = "Replay Challenge Mode"
-BASE_RELEASE                        = "1.2.6 Replay Review Dashboard"
+VERSION                             = "1.2.8"
+RELEASE_NAME                        = "Replay Dataset & Session Registry"
+BASE_RELEASE                        = "1.2.7 Replay Challenge Mode"
 BASE_RELEASE_NAME                   = "Data Governance Stable Rollup"
 MAINTENANCE_RELEASE                 = False
 RELEASE_STAGE                       = "FOUNDATION"
@@ -280,6 +285,24 @@ AUTO_CHALLENGE_MISTAKE_CONFIRMATION_ENABLED = False
 AUTO_STRATEGY_CHANGE_ENABLED                = False  # noqa: F811
 AUTO_SCORE_TO_TRADE_ENABLED                 = False  # noqa: F811
 REPLAY_TRADE_EXECUTION_ENABLED              = False  # noqa: F811
+# v1.2.8 Replay Dataset & Session Registry flags
+REPLAY_DATASET_REGISTRY_AVAILABLE          = True
+REPLAY_SESSION_REGISTRY_AVAILABLE          = True
+DATASET_VERSIONING_AVAILABLE               = True
+DATASET_FINGERPRINT_AVAILABLE              = True
+SESSION_FINGERPRINT_AVAILABLE              = True
+DATASET_LINEAGE_AVAILABLE                  = True
+SESSION_LINEAGE_AVAILABLE                  = True
+PORTABLE_REPLAY_PACKAGE_AVAILABLE          = True
+CROSS_COMPUTER_PATH_REMAP_AVAILABLE        = True
+REGISTRY_REPAIR_PREVIEW_AVAILABLE          = True
+AUTO_DATASET_OVERWRITE_ENABLED             = False
+AUTO_DATASET_REPAIR_ENABLED                = False
+AUTO_SESSION_REBIND_ENABLED                = False
+AUTO_PACKAGE_IMPORT_ENABLED                = False
+AUTO_REGISTRY_CONFLICT_RESOLUTION_ENABLED  = False
+AUTO_TRADING_ENABLED                       = False
+REPLAY_TRADE_EXECUTION_ENABLED             = False  # noqa: F811
 
 
 class VersionInfo:
@@ -584,6 +607,26 @@ def print_version_info() -> None:
     print(f"  Auto Challenge Decision Enabled: {AUTO_CHALLENGE_DECISION_ENABLED}")
     print(f"  Auto Challenge Outcome Reveal Enabled: {AUTO_CHALLENGE_OUTCOME_REVEAL_ENABLED}")
     print(f"  Auto Challenge Mistake Confirmation Enabled: {AUTO_CHALLENGE_MISTAKE_CONFIRMATION_ENABLED}")
+    # v1.2.8 flags
+    print(f"  Replay Dataset Registry Available: {REPLAY_DATASET_REGISTRY_AVAILABLE}")
+    print(f"  Replay Session Registry Available: {REPLAY_SESSION_REGISTRY_AVAILABLE}")
+    print(f"  Dataset Versioning Available: {DATASET_VERSIONING_AVAILABLE}")
+    print(f"  Dataset Fingerprint Available: {DATASET_FINGERPRINT_AVAILABLE}")
+    print(f"  Session Fingerprint Available: {SESSION_FINGERPRINT_AVAILABLE}")
+    print(f"  Dataset Lineage Available: {DATASET_LINEAGE_AVAILABLE}")
+    print(f"  Session Lineage Available: {SESSION_LINEAGE_AVAILABLE}")
+    print(f"  Portable Replay Package Available: {PORTABLE_REPLAY_PACKAGE_AVAILABLE}")
+    print(f"  Cross Computer Path Remap Available: {CROSS_COMPUTER_PATH_REMAP_AVAILABLE}")
+    print(f"  Registry Repair Preview Available: {REGISTRY_REPAIR_PREVIEW_AVAILABLE}")
+    print(f"  Auto Dataset Overwrite Enabled: {AUTO_DATASET_OVERWRITE_ENABLED}")
+    print(f"  Auto Dataset Repair Enabled: {AUTO_DATASET_REPAIR_ENABLED}")
+    print(f"  Auto Session Rebind Enabled: {AUTO_SESSION_REBIND_ENABLED}")
+    print(f"  Auto Package Import Enabled: {AUTO_PACKAGE_IMPORT_ENABLED}")
+    print(f"  Auto Registry Conflict Resolution Enabled: {AUTO_REGISTRY_CONFLICT_RESOLUTION_ENABLED}")
+    print(f"  Replay Trade Execution Enabled: {REPLAY_TRADE_EXECUTION_ENABLED}")
+    print(f"  No Real Orders: {NO_REAL_ORDERS}")
+    print(f"  Broker Execution Enabled: {BROKER_EXECUTION_ENABLED}")
+    print(f"  Production Trading BLOCKED: {PRODUCTION_TRADING_BLOCKED}")
     print("=" * 60)
 
 

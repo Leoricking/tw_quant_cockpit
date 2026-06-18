@@ -1621,6 +1621,42 @@ class ResearchCockpitStableChecklist:
         except Exception as exc:
             checks.append(_mk("replay_challenge_version_flags", "replay_challenge_mode", "WARN", str(exc)))
 
+        # v1.2.8 Replay Dataset & Session Registry checks
+        try:
+            from release.version_info import REPLAY_DATASET_REGISTRY_AVAILABLE, REPLAY_SESSION_REGISTRY_AVAILABLE
+            checks.append(_mk("replay_registry_available", "replay_registry",
+                              "PASS" if REPLAY_DATASET_REGISTRY_AVAILABLE and REPLAY_SESSION_REGISTRY_AVAILABLE else "WARN",
+                              f"REPLAY_DATASET_REGISTRY_AVAILABLE={REPLAY_DATASET_REGISTRY_AVAILABLE}, "
+                              f"REPLAY_SESSION_REGISTRY_AVAILABLE={REPLAY_SESSION_REGISTRY_AVAILABLE}"))
+        except Exception as exc:
+            checks.append(_mk("replay_registry_available", "replay_registry", "WARN", str(exc)))
+
+        try:
+            from release.version_info import AUTO_DATASET_OVERWRITE_ENABLED, AUTO_DATASET_REPAIR_ENABLED
+            checks.append(_mk("replay_registry_no_auto_overwrite_repair", "replay_registry",
+                              "PASS" if not AUTO_DATASET_OVERWRITE_ENABLED and not AUTO_DATASET_REPAIR_ENABLED else "FAIL",
+                              f"AUTO_DATASET_OVERWRITE_ENABLED={AUTO_DATASET_OVERWRITE_ENABLED}, "
+                              f"AUTO_DATASET_REPAIR_ENABLED={AUTO_DATASET_REPAIR_ENABLED}"))
+        except Exception as exc:
+            checks.append(_mk("replay_registry_no_auto_overwrite_repair", "replay_registry", "WARN", str(exc)))
+
+        try:
+            from release.version_info import AUTO_SESSION_REBIND_ENABLED, AUTO_PACKAGE_IMPORT_ENABLED
+            checks.append(_mk("replay_registry_no_auto_rebind_import", "replay_registry",
+                              "PASS" if not AUTO_SESSION_REBIND_ENABLED and not AUTO_PACKAGE_IMPORT_ENABLED else "FAIL",
+                              f"AUTO_SESSION_REBIND_ENABLED={AUTO_SESSION_REBIND_ENABLED}, "
+                              f"AUTO_PACKAGE_IMPORT_ENABLED={AUTO_PACKAGE_IMPORT_ENABLED}"))
+        except Exception as exc:
+            checks.append(_mk("replay_registry_no_auto_rebind_import", "replay_registry", "WARN", str(exc)))
+
+        try:
+            from release.version_info import AUTO_REGISTRY_CONFLICT_RESOLUTION_ENABLED
+            checks.append(_mk("replay_registry_no_auto_conflict_resolve", "replay_registry",
+                              "PASS" if not AUTO_REGISTRY_CONFLICT_RESOLUTION_ENABLED else "FAIL",
+                              f"AUTO_REGISTRY_CONFLICT_RESOLUTION_ENABLED={AUTO_REGISTRY_CONFLICT_RESOLUTION_ENABLED}"))
+        except Exception as exc:
+            checks.append(_mk("replay_registry_no_auto_conflict_resolve", "replay_registry", "WARN", str(exc)))
+
         # Rebuild summary counts to include new checks
         total         = len(checks)
         pass_count    = sum(1 for c in checks if c["status"] == "PASS")

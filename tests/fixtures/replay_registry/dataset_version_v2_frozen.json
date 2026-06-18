@@ -1,0 +1,1 @@
+{"dataset_id": "DS-REAL-001", "version": "1.1.0", "status": "FROZEN", "frozen": true, "fingerprint": "sha256:v2fp001", "created_at": "2023-06-01T00:00:00Z", "frozen_at": "2023-07-01T00:00:00Z", "notes": "Frozen version — immutable", "research_only": true, "no_real_orders": true}

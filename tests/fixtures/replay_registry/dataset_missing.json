@@ -1,0 +1,1 @@
+{"dataset_id": "DS-MISS-001", "name": "Missing Dataset", "mode": "REAL", "qualification": "REAL_UNVERIFIED", "status": "MISSING", "version": "1.0.0", "symbols": ["0050.TW"], "timeframes": ["1d"], "row_count": 0, "fingerprint": "sha256:missingfp001", "research_only": true, "no_real_orders": true}

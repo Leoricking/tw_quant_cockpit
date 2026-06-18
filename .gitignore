@@ -521,3 +521,14 @@ reports/replay_challenge_summary_*.md
 # v1.2.7 Challenge fixtures ARE committed (exception)
 !tests/fixtures/replay_challenge/*.json
 !tests/fixtures/replay_challenge/*.jsonl
+
+# v1.2.8 Replay Dataset & Session Registry
+data/replay_registry/
+reports/replay_dataset_registry_report*.md
+reports/replay_session_registry_report*.md
+reports/replay_registry_integrity_report*.md
+reports/replay_registry_portability_report*.md
+
+# v1.2.8 Registry fixtures ARE committed (exception)
+!tests/fixtures/replay_registry/*.json
+!tests/fixtures/replay_registry/*.jsonl

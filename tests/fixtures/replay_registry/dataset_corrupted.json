@@ -1,0 +1,1 @@
+{"dataset_id": "DS-CORR-001", "name": "Corrupted Dataset", "mode": "REAL", "qualification": "BLOCKED", "status": "CORRUPTED", "version": "1.0.0", "symbols": ["0050.TW"], "timeframes": ["1d"], "row_count": 245, "fingerprint": "sha256:corruptedfp001", "warnings": ["STALE_HASH: hash mismatch detected after freeze"], "research_only": true, "no_real_orders": true}

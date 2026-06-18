@@ -1,0 +1,1 @@
+{"session_id": "SESS-001", "scenario_id": "SCN-001", "challenge_id": null, "mode": "REAL", "status": "ACTIVE", "dataset_id": "DS-REAL-001", "dataset_version": "1.0.0", "binding_status": "BOUND", "session_fingerprint": "sha256:sessfp001", "research_only": true, "no_real_orders": true}

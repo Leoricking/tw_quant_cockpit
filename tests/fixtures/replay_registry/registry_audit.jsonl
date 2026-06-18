@@ -1,0 +1,5 @@
+{"timestamp": "2023-06-01T00:00:00Z", "event_type": "DATASET_REGISTERED", "dataset_id": "DS-REAL-001", "dataset_version": "1.0.0", "status": "OK", "elapsed_seconds": 0.12, "research_only": true, "no_real_orders": true}
+{"timestamp": "2023-06-02T00:00:00Z", "event_type": "DATASET_VALIDATED", "dataset_id": "DS-REAL-001", "dataset_version": "1.0.0", "status": "OK", "elapsed_seconds": 0.05, "research_only": true, "no_real_orders": true}
+{"timestamp": "2023-07-01T00:00:00Z", "event_type": "DATASET_FROZEN", "dataset_id": "DS-FROZEN-001", "dataset_version": "1.0.0", "status": "OK", "elapsed_seconds": 0.08, "research_only": true, "no_real_orders": true}
+{"timestamp": "2023-07-15T00:00:00Z", "event_type": "SESSION_REGISTERED", "session_id": "SESS-001", "dataset_id": "DS-REAL-001", "status": "OK", "elapsed_seconds": 0.03, "research_only": true, "no_real_orders": true}
+{"timestamp": "2023-07-15T00:01:00Z", "event_type": "SESSION_DATASET_BOUND", "session_id": "SESS-001", "dataset_id": "DS-REAL-001", "dataset_version": "1.0.0", "status": "OK", "elapsed_seconds": 0.02, "research_only": true, "no_real_orders": true}

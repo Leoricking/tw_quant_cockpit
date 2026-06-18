@@ -1,0 +1,1 @@
+{"dataset_id": "DS-MOCK-001", "name": "Mock Demo Dataset", "mode": "MOCK", "qualification": "MOCK_DEMO_ONLY", "status": "ACTIVE", "version": "1.0.0", "symbols": ["MOCK_A"], "timeframes": ["1d"], "row_count": 100, "fingerprint": "sha256:mockfp001", "research_only": true, "no_real_orders": true}

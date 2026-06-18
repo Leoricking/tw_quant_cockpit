@@ -1,0 +1,1 @@
+{"dataset_id": "DS-REAL-001", "name": "TW50 Daily 2020-2023", "mode": "REAL", "qualification": "VERIFIED_REAL", "status": "ACTIVE", "version": "1.0.0", "symbols": ["0050.TW"], "timeframes": ["1d"], "row_count": 756, "fingerprint": "sha256:aabbcc001122", "research_only": true, "no_real_orders": true}

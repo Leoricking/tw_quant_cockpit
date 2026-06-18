@@ -1,0 +1,1 @@
+{"session_id": "SESS-003", "scenario_id": "SCN-DELETED", "challenge_id": null, "mode": "REAL", "status": "ORPHANED", "dataset_id": "DS-MISS-001", "dataset_version": "1.0.0", "binding_status": "STALE", "session_fingerprint": "sha256:sessfp003", "research_only": true, "no_real_orders": true}

@@ -2069,6 +2069,60 @@ class GUITabRegistry:
                 favorite_default=False,
                 notes="Added in v1.2.7 \u2014 Replay Challenge Mode. CHALLENGE TRAINING ONLY. No Real Orders. No Auto-Decision. No Public Leaderboard.",
             ),
+            # replay_registry (v1.2.8)
+            GUITabMetadata(
+                tab_id="replay_registry",
+                display_name="Replay Registry",
+                description=(
+                    "Dataset & Session Registry \u2014 v1.2.8. "
+                    "Dataset catalog, versioning, fingerprint, lineage, validation, "
+                    "integrity, portability, session binding, registry repair, audit log. "
+                    "\u7814\u7a76\u7528\u6578\u64da\u96c6\u8207\u56de\u653e\u6703\u8a71\u767b\u9304\u7cfb\u7d71 \u50c5\u4f9b\u7814\u7a76\u7528\u9014"
+                ),
+                group="research",
+                priority="P0",
+                keywords=[
+                    "registry", "dataset", "session", "fingerprint", "lineage",
+                    "version", "portability", "package", "import", "export",
+                    "repair", "audit", "validation", "integrity",
+                    "\u767b\u9304", "\u6578\u64da\u96c6", "\u7248\u672c", "\u56de\u653e", "\u7814\u7a76",
+                ],
+                related_cli_commands=[
+                    "replay-registry-health",
+                    "replay-dataset-list",
+                    "replay-dataset-search",
+                    "replay-dataset-show",
+                    "replay-dataset-versions",
+                    "replay-dataset-lineage",
+                    "replay-dataset-register-preview",
+                    "replay-dataset-validate",
+                    "replay-dataset-integrity",
+                    "replay-dataset-freeze-preview",
+                    "replay-session-registry-list",
+                    "replay-session-registry-show",
+                    "replay-session-bindings",
+                    "replay-session-bind-preview",
+                    "replay-package-export-preview",
+                    "replay-package-import-preview",
+                    "replay-registry-repair-preview",
+                    "replay-registry-audit",
+                    "replay-dataset-summary",
+                    "replay-session-registry-summary",
+                    "replay-dataset-registry-report",
+                    "replay-session-registry-report",
+                    "replay-registry-integrity-report",
+                ],
+                report_types=[
+                    "replay_dataset_registry_report",
+                    "replay_session_registry_report",
+                    "replay_registry_integrity_report",
+                    "replay_registry_portability_report",
+                ],
+                maturity="STABLE",
+                default_visible=True,
+                favorite_default=False,
+                notes="Added in v1.2.8 \u2014 Replay Dataset & Session Registry. RESEARCH ONLY. No Real Orders. No Broker. All writes require preview + execute + allow-write.",
+            ),
         ]
         for tab in tabs:
             self._tabs[tab.tab_id] = tab

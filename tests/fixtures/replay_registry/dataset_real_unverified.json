@@ -1,0 +1,1 @@
+{"dataset_id": "DS-REAL-002", "name": "TW50 Intraday 1m 2023", "mode": "REAL", "qualification": "REAL_UNVERIFIED", "status": "ACTIVE", "version": "1.0.0", "symbols": ["0050.TW"], "timeframes": ["1m"], "row_count": 98340, "fingerprint": "sha256:bbccdd223344", "research_only": true, "no_real_orders": true}

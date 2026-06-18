@@ -1,0 +1,1 @@
+{"session_id": "SESS-001", "dataset_id": "DS-REAL-001", "dataset_version": "1.0.0", "binding_type": "PRIMARY", "binding_status": "BOUND", "bound_at": "2023-06-01T00:00:00Z", "fingerprint_at_binding": "sha256:aabbcc001122", "research_only": true, "no_real_orders": true}

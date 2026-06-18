@@ -21965,6 +21965,101 @@ def _build_parser() -> argparse.ArgumentParser:
     p_rcbrun.add_argument("--execute", action="store_true", default=False)
     p_rcbrun.add_argument("--allow-write", action="store_true", default=False)
 
+    # v1.2.8 Replay Dataset & Session Registry subparsers
+    subparsers.add_parser("replay-registry-health", help="[v1.2.8] Dataset & Session Registry health check. Research Only.")
+    subparsers.add_parser("replay-dataset-list", help="[v1.2.8] List all registered datasets. Research Only.")
+    p_rds = subparsers.add_parser("replay-dataset-search", help="[v1.2.8] Search datasets. Research Only.")
+    p_rds.add_argument("--query", default="")
+    p_rdshow = subparsers.add_parser("replay-dataset-show", help="[v1.2.8] Show dataset details. Research Only.")
+    p_rdshow.add_argument("--dataset-id", default=None)
+    p_rdvers = subparsers.add_parser("replay-dataset-versions", help="[v1.2.8] List dataset versions. Research Only.")
+    p_rdvers.add_argument("--dataset-id", default=None)
+    p_rdlin = subparsers.add_parser("replay-dataset-lineage", help="[v1.2.8] Show dataset lineage. Research Only.")
+    p_rdlin.add_argument("--dataset-id", default=None)
+    p_rdregprev = subparsers.add_parser("replay-dataset-register-preview", help="[v1.2.8] Preview dataset registration. Research Only.")
+    p_rdregprev.add_argument("--path", default=None)
+    p_rdregprev.add_argument("--mode", default="mock", choices=["real", "mock"])
+    p_rdreg = subparsers.add_parser("replay-dataset-register", help="[v1.2.8] Register dataset. BLOCKED without --execute --allow-write. Research Only.")
+    p_rdreg.add_argument("--path", default=None)
+    p_rdreg.add_argument("--mode", default="mock", choices=["real", "mock"])
+    p_rdreg.add_argument("--execute", action="store_true", default=False)
+    p_rdreg.add_argument("--allow-write", action="store_true", default=False)
+    p_rdval = subparsers.add_parser("replay-dataset-validate", help="[v1.2.8] Validate dataset. Research Only.")
+    p_rdval.add_argument("--dataset-id", default=None)
+    p_rdint = subparsers.add_parser("replay-dataset-integrity", help="[v1.2.8] Check dataset integrity. Research Only.")
+    p_rdint.add_argument("--dataset-id", default=None)
+    p_rdfrzprev = subparsers.add_parser("replay-dataset-freeze-preview", help="[v1.2.8] Preview dataset freeze. Research Only.")
+    p_rdfrzprev.add_argument("--dataset-id", default=None)
+    p_rdfrzprev.add_argument("--version", default="1.0.0")
+    p_rdfrz = subparsers.add_parser("replay-dataset-freeze", help="[v1.2.8] Freeze dataset version. BLOCKED without --execute --allow-write. Research Only.")
+    p_rdfrz.add_argument("--dataset-id", default=None)
+    p_rdfrz.add_argument("--version", default="1.0.0")
+    p_rdfrz.add_argument("--execute", action="store_true", default=False)
+    p_rdfrz.add_argument("--allow-write", action="store_true", default=False)
+    p_rdnvprev = subparsers.add_parser("replay-dataset-create-version-preview", help="[v1.2.8] Preview new dataset version. Research Only.")
+    p_rdnvprev.add_argument("--dataset-id", default=None)
+    p_rdnvprev.add_argument("--reason", default="")
+    p_rdnv = subparsers.add_parser("replay-dataset-create-version", help="[v1.2.8] Create new dataset version. BLOCKED without --execute --allow-write. Research Only.")
+    p_rdnv.add_argument("--dataset-id", default=None)
+    p_rdnv.add_argument("--reason", default="")
+    p_rdnv.add_argument("--execute", action="store_true", default=False)
+    p_rdnv.add_argument("--allow-write", action="store_true", default=False)
+    subparsers.add_parser("replay-session-registry-list", help="[v1.2.8] List all registered sessions. Research Only.")
+    p_rssl = subparsers.add_parser("replay-session-registry-show", help="[v1.2.8] Show session registry record. Research Only.")
+    p_rssl.add_argument("--session-id", default=None)
+    p_rsss = subparsers.add_parser("replay-session-registry-search", help="[v1.2.8] Search session registry. Research Only.")
+    p_rsss.add_argument("--query", default="")
+    p_rsbind = subparsers.add_parser("replay-session-bindings", help="[v1.2.8] Show session bindings. Research Only.")
+    p_rsbind.add_argument("--session-id", default=None)
+    # replay-session-lineage already registered at v1.2.1; v1.2.8 reuses it
+    p_rsbprev = subparsers.add_parser("replay-session-bind-preview", help="[v1.2.8] Preview session-dataset bind. Research Only.")
+    p_rsbprev.add_argument("--session-id", default=None)
+    p_rsbprev.add_argument("--dataset-id", default=None)
+    p_rsbprev.add_argument("--version", default="1.0.0")
+    p_rsb = subparsers.add_parser("replay-session-bind", help="[v1.2.8] Bind session to dataset. BLOCKED without --execute --allow-write. Research Only.")
+    p_rsb.add_argument("--session-id", default=None)
+    p_rsb.add_argument("--dataset-id", default=None)
+    p_rsb.add_argument("--version", default="1.0.0")
+    p_rsb.add_argument("--execute", action="store_true", default=False)
+    p_rsb.add_argument("--allow-write", action="store_true", default=False)
+    p_rsrbprev = subparsers.add_parser("replay-session-rebind-preview", help="[v1.2.8] Preview session rebind. Research Only.")
+    p_rsrbprev.add_argument("--session-id", default=None)
+    p_rsrbprev.add_argument("--dataset-id", default=None)
+    p_rsrbprev.add_argument("--version", default="1.0.0")
+    p_rsrb = subparsers.add_parser("replay-session-rebind", help="[v1.2.8] Rebind session dataset. BLOCKED without --execute --allow-write. Research Only.")
+    p_rsrb.add_argument("--session-id", default=None)
+    p_rsrb.add_argument("--dataset-id", default=None)
+    p_rsrb.add_argument("--version", default="1.0.0")
+    p_rsrb.add_argument("--execute", action="store_true", default=False)
+    p_rsrb.add_argument("--allow-write", action="store_true", default=False)
+    p_rpeprev = subparsers.add_parser("replay-package-export-preview", help="[v1.2.8] Preview package export. Research Only.")
+    p_rpeprev.add_argument("--dataset-id", default=None)
+    p_rpeprev.add_argument("--type", default="MANIFEST_ONLY", dest="pkg_type",
+                           choices=["MANIFEST_ONLY", "METADATA_ONLY", "FULL_PORTABLE"])
+    p_rpe = subparsers.add_parser("replay-package-export", help="[v1.2.8] Export dataset package. BLOCKED without --execute --allow-write. Research Only.")
+    p_rpe.add_argument("--dataset-id", default=None)
+    p_rpe.add_argument("--type", default="MANIFEST_ONLY", dest="pkg_type",
+                       choices=["MANIFEST_ONLY", "METADATA_ONLY", "FULL_PORTABLE"])
+    p_rpe.add_argument("--execute", action="store_true", default=False)
+    p_rpe.add_argument("--allow-write", action="store_true", default=False)
+    p_rpe.add_argument("--output-dir", default="data/replay_registry/exports")
+    p_rpiprev = subparsers.add_parser("replay-package-import-preview", help="[v1.2.8] Preview package import. Research Only.")
+    p_rpiprev.add_argument("--package", default=None)
+    p_rpi = subparsers.add_parser("replay-package-import", help="[v1.2.8] Import dataset package. BLOCKED without --execute --allow-write. Research Only.")
+    p_rpi.add_argument("--package", default=None)
+    p_rpi.add_argument("--execute", action="store_true", default=False)
+    p_rpi.add_argument("--allow-write", action="store_true", default=False)
+    subparsers.add_parser("replay-registry-repair-preview", help="[v1.2.8] Preview registry repair plan. Research Only.")
+    p_rrr = subparsers.add_parser("replay-registry-repair", help="[v1.2.8] Execute registry repair. BLOCKED without --execute --allow-write. Research Only.")
+    p_rrr.add_argument("--execute", action="store_true", default=False)
+    p_rrr.add_argument("--allow-write", action="store_true", default=False)
+    subparsers.add_parser("replay-registry-audit", help="[v1.2.8] Show registry audit events. Research Only.")
+    subparsers.add_parser("replay-dataset-summary", help="[v1.2.8] Dataset registry summary. Research Only.")
+    subparsers.add_parser("replay-session-registry-summary", help="[v1.2.8] Session registry summary. Research Only.")
+    subparsers.add_parser("replay-dataset-registry-report", help="[v1.2.8] Generate dataset registry report. Research Only.")
+    subparsers.add_parser("replay-session-registry-report", help="[v1.2.8] Generate session registry report. Research Only.")
+    subparsers.add_parser("replay-registry-integrity-report", help="[v1.2.8] Generate registry integrity report. Research Only.")
+
     return parser
 
 
@@ -22544,6 +22639,657 @@ def cmd_replay_challenge_batch_run(args) -> None:
         if result.get("status") not in ("PREVIEW", "BLOCKED"):
             print(f"  Completed: {result.get('completed')} / {result.get('total')}")
             print(f"  Total Elapsed: {result.get('total_elapsed', 0.0):.2f}s")
+        print("[!] Research Only. Not Investment Advice.")
+    except Exception as exc:
+        print(f"  [ERROR] {exc}")
+
+
+# ---------------------------------------------------------------------------
+# v1.2.8 Replay Dataset & Session Registry commands
+# ---------------------------------------------------------------------------
+
+def cmd_replay_registry_health(args) -> None:
+    """Dataset & Session Registry health check. [!] Research Only."""
+    print("=" * 70)
+    print("  Replay Dataset & Session Registry Health Check v1.2.8")
+    print("  [!] Dataset Registry Only | Session Registry Only | No Real Orders")
+    print("=" * 70)
+    try:
+        from replay.registry_health import ReplayRegistryHealthCheck
+        hc = ReplayRegistryHealthCheck()
+        results = hc.run()
+        hc.print_results(results)
+    except Exception as exc:
+        print(f"  [FAIL] Health check error: {exc}")
+        import traceback; traceback.print_exc()
+
+
+def cmd_replay_dataset_list(args) -> None:
+    """List all registered datasets. [!] Research Only."""
+    print("[!] Replay Dataset List — Dataset Registry Only | No Real Orders")
+    try:
+        from replay.dataset_registry import ReplayDatasetRegistry
+        reg = ReplayDatasetRegistry()
+        datasets = reg.list_datasets()
+        print(f"  Total datasets: {len(datasets)}")
+        for d in datasets[:30]:
+            frozen = "[F]" if d.frozen_at else "   "
+            print(f"  {frozen} {d.dataset_id:24s} v{d.dataset_version:8s} {d.mode:4s} {d.qualification}")
+        if len(datasets) > 30:
+            print(f"  ... and {len(datasets)-30} more")
+        print("[!] Research Only. Not Investment Advice.")
+    except Exception as exc:
+        print(f"  [ERROR] {exc}")
+
+
+def cmd_replay_dataset_search(args) -> None:
+    """Search datasets. [!] Research Only."""
+    query = getattr(args, "query", "") or ""
+    print(f"[!] Replay Dataset Search: '{query}' — Research Only")
+    try:
+        from replay.dataset_registry import ReplayDatasetRegistry
+        reg = ReplayDatasetRegistry()
+        results = reg.search(query)
+        print(f"  Results: {len(results)}")
+        for d in results[:20]:
+            print(f"  {d.dataset_id:24s} {d.mode:4s} {d.qualification}")
+        print("[!] Research Only. Not Investment Advice.")
+    except Exception as exc:
+        print(f"  [ERROR] {exc}")
+
+
+def cmd_replay_dataset_show(args) -> None:
+    """Show dataset details. [!] Research Only."""
+    dataset_id = getattr(args, "dataset_id", None)
+    print(f"[!] Replay Dataset Show: {dataset_id} — Research Only")
+    try:
+        from replay.dataset_summary import ReplayDatasetSummary
+        from replay.dataset_registry import ReplayDatasetRegistry
+        reg = ReplayDatasetRegistry()
+        summ = ReplayDatasetSummary(reg)
+        print(summ.per_dataset(dataset_id or ""))
+        print("[!] Research Only. Not Investment Advice.")
+    except Exception as exc:
+        print(f"  [ERROR] {exc}")
+
+
+def cmd_replay_dataset_versions(args) -> None:
+    """List dataset versions. [!] Research Only."""
+    dataset_id = getattr(args, "dataset_id", None)
+    print(f"[!] Replay Dataset Versions: {dataset_id} — Research Only")
+    try:
+        from replay.dataset_version import ReplayDatasetVersionManager
+        vm = ReplayDatasetVersionManager()
+        print(vm.summary(dataset_id or ""))
+        print("[!] Research Only. Not Investment Advice.")
+    except Exception as exc:
+        print(f"  [ERROR] {exc}")
+
+
+def cmd_replay_dataset_lineage(args) -> None:
+    """Show dataset lineage. [!] Research Only."""
+    dataset_id = getattr(args, "dataset_id", None)
+    print(f"[!] Replay Dataset Lineage: {dataset_id} — Research Only")
+    try:
+        from replay.dataset_lineage import ReplayDatasetLineageManager
+        lm = ReplayDatasetLineageManager()
+        print(lm.render_tree(dataset_id or ""))
+        print("[!] Research Only. Not Investment Advice.")
+    except Exception as exc:
+        print(f"  [ERROR] {exc}")
+
+
+def cmd_replay_dataset_register_preview(args) -> None:
+    """Preview dataset registration. [!] Research Only."""
+    path = getattr(args, "path", None) or ""
+    mode = getattr(args, "mode", "mock")
+    print(f"[!] Replay Dataset Register Preview: path={path} mode={mode} — Research Only")
+    try:
+        from replay.dataset_manifest import ReplayDatasetManifestBuilder
+        from replay.dataset_registry import ReplayDatasetRegistry
+        import os, hashlib
+        dataset_id = "PREVIEW-" + hashlib.sha256(path.encode()).hexdigest()[:8]
+        builder = ReplayDatasetManifestBuilder()
+        manifest = builder.build(
+            dataset_id=dataset_id,
+            dataset_name=os.path.basename(path) if path else "preview",
+            dataset_path=path,
+            mode=mode.upper(),
+        )
+        reg = ReplayDatasetRegistry()
+        result = reg.register_preview(manifest)
+        print(f"  Dataset ID:    {result.get('dataset_id')}")
+        print(f"  Mode:          {result.get('mode')}")
+        print(f"  Qualification: {result.get('qualification')}")
+        print(f"  Fingerprint:   {result.get('fingerprint')}")
+        print(f"  Warnings:      {result.get('warnings')}")
+        print(f"  Note:          {result.get('note')}")
+        print("[!] Research Only. Not Investment Advice.")
+    except Exception as exc:
+        print(f"  [ERROR] {exc}")
+
+
+def cmd_replay_dataset_register(args) -> None:
+    """Register dataset. BLOCKED without --execute --allow-write. [!] Research Only."""
+    path = getattr(args, "path", None) or ""
+    mode = getattr(args, "mode", "mock")
+    execute = getattr(args, "execute", False)
+    allow_write = getattr(args, "allow_write", False)
+    print(f"[!] Replay Dataset Register: path={path} — Research Only")
+    if execute and not allow_write:
+        print("  [BLOCKED] replay-dataset-register requires both --execute AND --allow-write")
+        print("  BLOCKED because --allow-write is required")
+        print("[!] Research Only. Not Investment Advice.")
+        return
+    try:
+        from replay.dataset_manifest import ReplayDatasetManifestBuilder
+        from replay.dataset_registry import ReplayDatasetRegistry
+        import os, hashlib
+        dataset_id = "DS-" + hashlib.sha256(path.encode()).hexdigest()[:8]
+        builder = ReplayDatasetManifestBuilder()
+        manifest = builder.build(
+            dataset_id=dataset_id,
+            dataset_name=os.path.basename(path) if path else "dataset",
+            dataset_path=path,
+            mode=mode.upper(),
+        )
+        reg = ReplayDatasetRegistry()
+        result = reg.register(manifest, allow_write=allow_write and execute)
+        if result.get("blocked"):
+            print(f"  [BLOCKED] {result.get('reason')}")
+        else:
+            print(f"  Status:    {result.get('status')}")
+            print(f"  Dataset:   {result.get('dataset_id')}")
+        print("[!] Research Only. Not Investment Advice.")
+    except Exception as exc:
+        print(f"  [ERROR] {exc}")
+
+
+def cmd_replay_dataset_validate(args) -> None:
+    """Validate dataset. [!] Research Only."""
+    dataset_id = getattr(args, "dataset_id", None)
+    print(f"[!] Replay Dataset Validate: {dataset_id} — Research Only")
+    try:
+        from replay.dataset_validator import ReplayDatasetValidator
+        from replay.dataset_registry import ReplayDatasetRegistry
+        reg = ReplayDatasetRegistry()
+        d = reg.get_dataset(dataset_id or "")
+        if d is None:
+            print(f"  Dataset {dataset_id} not found in registry.")
+        else:
+            v = ReplayDatasetValidator()
+            results = v.validate(d)
+            for name, (status, msg) in results.items():
+                print(f"  [{status}] {name}: {msg}")
+        print("[!] Research Only. Not Investment Advice.")
+    except Exception as exc:
+        print(f"  [ERROR] {exc}")
+
+
+def cmd_replay_dataset_integrity(args) -> None:
+    """Check dataset integrity. [!] Research Only."""
+    dataset_id = getattr(args, "dataset_id", None)
+    print(f"[!] Replay Dataset Integrity: {dataset_id} — Research Only")
+    try:
+        from replay.dataset_integrity import ReplayDatasetIntegrityChecker
+        from replay.dataset_registry import ReplayDatasetRegistry
+        reg = ReplayDatasetRegistry()
+        d = reg.get_dataset(dataset_id or "")
+        if d is None:
+            print(f"  Dataset {dataset_id} not found.")
+        else:
+            checker = ReplayDatasetIntegrityChecker()
+            result = checker.check(d)
+            print(f"  Overall: {result.get('overall')}")
+            for path, fr in result.get("files", {}).items():
+                print(f"  [{fr['status']}] {path}")
+        print("[!] Research Only. Not Investment Advice.")
+    except Exception as exc:
+        print(f"  [ERROR] {exc}")
+
+
+def cmd_replay_dataset_freeze_preview(args) -> None:
+    """Preview dataset freeze. [!] Research Only."""
+    dataset_id = getattr(args, "dataset_id", None)
+    version    = getattr(args, "version", "1.0.0")
+    print(f"[!] Replay Dataset Freeze Preview: {dataset_id}@{version} — Research Only")
+    try:
+        from replay.dataset_freeze import ReplayDatasetFreezeManager
+        fm = ReplayDatasetFreezeManager()
+        result = fm.freeze_preview(dataset_id or "", version, "", "")
+        for k, v in result.items():
+            print(f"  {k}: {v}")
+        print("[!] Research Only. Not Investment Advice.")
+    except Exception as exc:
+        print(f"  [ERROR] {exc}")
+
+
+def cmd_replay_dataset_freeze(args) -> None:
+    """Freeze dataset version. BLOCKED without --execute --allow-write. [!] Research Only."""
+    dataset_id = getattr(args, "dataset_id", None)
+    version    = getattr(args, "version", "1.0.0")
+    execute    = getattr(args, "execute", False)
+    allow_write = getattr(args, "allow_write", False)
+    print(f"[!] Replay Dataset Freeze: {dataset_id}@{version} — Research Only")
+    if execute and not allow_write:
+        print("  [BLOCKED] replay-dataset-freeze requires both --execute AND --allow-write")
+        print("  BLOCKED because --allow-write is required")
+        print("[!] Research Only. Not Investment Advice.")
+        return
+    try:
+        from replay.dataset_registry import ReplayDatasetRegistry
+        reg = ReplayDatasetRegistry()
+        result = reg.freeze(dataset_id or "", version, allow_write=allow_write and execute)
+        if result.get("blocked"):
+            print(f"  [BLOCKED] {result.get('reason')}")
+        else:
+            print(f"  Status: {result.get('status')}")
+        print("[!] Research Only. Not Investment Advice.")
+    except Exception as exc:
+        print(f"  [ERROR] {exc}")
+
+
+def cmd_replay_dataset_create_version_preview(args) -> None:
+    """Preview new dataset version. [!] Research Only."""
+    dataset_id = getattr(args, "dataset_id", None)
+    reason     = getattr(args, "reason", "")
+    print(f"[!] Replay Dataset Create Version Preview: {dataset_id} reason='{reason}' — Research Only")
+    print(f"  Would create new patch version for {dataset_id}.")
+    print(f"  Reason: {reason}")
+    print(f"  Note: Run with --execute --allow-write to create.")
+    print("[!] Research Only. Not Investment Advice.")
+
+
+def cmd_replay_dataset_create_version(args) -> None:
+    """Create new dataset version. BLOCKED without --execute --allow-write. [!] Research Only."""
+    dataset_id = getattr(args, "dataset_id", None)
+    reason     = getattr(args, "reason", "")
+    execute    = getattr(args, "execute", False)
+    allow_write = getattr(args, "allow_write", False)
+    print(f"[!] Replay Dataset Create Version: {dataset_id} reason='{reason}' — Research Only")
+    if execute and not allow_write:
+        print("  [BLOCKED] replay-dataset-create-version requires both --execute AND --allow-write")
+        print("  BLOCKED because --allow-write is required")
+        print("[!] Research Only. Not Investment Advice.")
+        return
+    try:
+        from replay.dataset_version import ReplayDatasetVersionManager
+        vm = ReplayDatasetVersionManager()
+        rec = vm.create_next_version(dataset_id or "", "1.0.0", reason, "patch")
+        print(f"  New version: {rec.version}")
+        print("[!] Research Only. Not Investment Advice.")
+    except Exception as exc:
+        print(f"  [ERROR] {exc}")
+
+
+def cmd_replay_session_registry_list(args) -> None:
+    """List all registered sessions. [!] Research Only."""
+    print("[!] Replay Session Registry List — Session Registry Only | No Real Orders")
+    try:
+        from replay.session_registry_v128 import ReplaySessionRegistryV128
+        reg = ReplaySessionRegistryV128()
+        sessions = reg.list()
+        print(f"  Total sessions: {len(sessions)}")
+        for s in sessions[:20]:
+            print(f"  {s.session_id:24s} {s.session_type:20s} {s.session_status:12s} {s.symbol}")
+        if len(sessions) > 20:
+            print(f"  ... and {len(sessions)-20} more")
+        print("[!] Research Only. Not Investment Advice.")
+    except Exception as exc:
+        print(f"  [ERROR] {exc}")
+
+
+def cmd_replay_session_registry_show(args) -> None:
+    """Show session registry record. [!] Research Only."""
+    session_id = getattr(args, "session_id", None)
+    print(f"[!] Replay Session Registry Show: {session_id} — Research Only")
+    try:
+        from replay.session_registry_summary import ReplaySessionRegistrySummary
+        from replay.session_registry_v128 import ReplaySessionRegistryV128
+        reg  = ReplaySessionRegistryV128()
+        summ = ReplaySessionRegistrySummary(reg)
+        print(summ.per_session(session_id or ""))
+        print("[!] Research Only. Not Investment Advice.")
+    except Exception as exc:
+        print(f"  [ERROR] {exc}")
+
+
+def cmd_replay_session_registry_search(args) -> None:
+    """Search session registry. [!] Research Only."""
+    query = getattr(args, "query", "") or ""
+    print(f"[!] Replay Session Registry Search: '{query}' — Research Only")
+    try:
+        from replay.session_registry_v128 import ReplaySessionRegistryV128
+        reg = ReplaySessionRegistryV128()
+        results = reg.search(query)
+        print(f"  Results: {len(results)}")
+        for s in results[:20]:
+            print(f"  {s.session_id:24s} {s.symbol}")
+        print("[!] Research Only. Not Investment Advice.")
+    except Exception as exc:
+        print(f"  [ERROR] {exc}")
+
+
+def cmd_replay_session_bindings(args) -> None:
+    """Show session bindings. [!] Research Only."""
+    session_id = getattr(args, "session_id", None)
+    print(f"[!] Replay Session Bindings: {session_id} — Research Only")
+    try:
+        from replay.session_dataset_binding import ReplaySessionDatasetBinder
+        binder = ReplaySessionDatasetBinder()
+        print(binder.summary(session_id or ""))
+        print("[!] Research Only. Not Investment Advice.")
+    except Exception as exc:
+        print(f"  [ERROR] {exc}")
+
+
+def cmd_replay_session_lineage_v128(args) -> None:
+    """Show session lineage (v1.2.8 registry). [!] Research Only."""
+    session_id = getattr(args, "session_id", None)
+    print(f"[!] Replay Session Lineage: {session_id} — Research Only")
+    try:
+        from replay.session_lineage_registry import ReplaySessionLineageRegistry
+        lr = ReplaySessionLineageRegistry()
+        print(lr.render_tree(session_id or ""))
+        print("[!] Research Only. Not Investment Advice.")
+    except Exception as exc:
+        print(f"  [ERROR] {exc}")
+
+
+def cmd_replay_session_bind_preview(args) -> None:
+    """Preview session-dataset bind. [!] Research Only."""
+    session_id = getattr(args, "session_id", None)
+    dataset_id = getattr(args, "dataset_id", None)
+    version    = getattr(args, "version", "1.0.0")
+    print(f"[!] Replay Session Bind Preview: {session_id} -> {dataset_id}@{version} — Research Only")
+    try:
+        from replay.session_dataset_binding import ReplaySessionDatasetBinder
+        binder = ReplaySessionDatasetBinder()
+        result = binder.preview_bind(session_id or "", dataset_id or "", version)
+        for k, v in result.items():
+            print(f"  {k}: {v}")
+        print("[!] Research Only. Not Investment Advice.")
+    except Exception as exc:
+        print(f"  [ERROR] {exc}")
+
+
+def cmd_replay_session_bind(args) -> None:
+    """Bind session to dataset. BLOCKED without --execute --allow-write. [!] Research Only."""
+    session_id = getattr(args, "session_id", None)
+    dataset_id = getattr(args, "dataset_id", None)
+    version    = getattr(args, "version", "1.0.0")
+    execute    = getattr(args, "execute", False)
+    allow_write = getattr(args, "allow_write", False)
+    print(f"[!] Replay Session Bind: {session_id} -> {dataset_id}@{version} — Research Only")
+    if execute and not allow_write:
+        print("  [BLOCKED] replay-session-bind requires both --execute AND --allow-write")
+        print("  BLOCKED because --allow-write is required")
+        print("[!] Research Only. Not Investment Advice.")
+        return
+    try:
+        from replay.session_dataset_binding import ReplaySessionDatasetBinder
+        binder = ReplaySessionDatasetBinder()
+        result = binder.bind(session_id or "", dataset_id or "", version,
+                             allow_write=allow_write and execute)
+        if result.get("blocked"):
+            print(f"  [BLOCKED] {result.get('reason')}")
+        else:
+            print(f"  Status: {result.get('status')}")
+        print("[!] Research Only. Not Investment Advice.")
+    except Exception as exc:
+        print(f"  [ERROR] {exc}")
+
+
+def cmd_replay_session_rebind_preview(args) -> None:
+    """Preview session rebind. [!] Research Only."""
+    session_id = getattr(args, "session_id", None)
+    dataset_id = getattr(args, "dataset_id", None)
+    version    = getattr(args, "version", "1.0.0")
+    print(f"[!] Replay Session Rebind Preview: {session_id} -> {dataset_id}@{version} — Research Only")
+    try:
+        from replay.session_dataset_binding import ReplaySessionDatasetBinder
+        binder = ReplaySessionDatasetBinder()
+        result = binder.rebind_preview(session_id or "", dataset_id or "", version)
+        for k, v in result.items():
+            print(f"  {k}: {v}")
+        print("[!] Research Only. Not Investment Advice.")
+    except Exception as exc:
+        print(f"  [ERROR] {exc}")
+
+
+def cmd_replay_session_rebind(args) -> None:
+    """Rebind session dataset. BLOCKED without --execute --allow-write. [!] Research Only."""
+    session_id = getattr(args, "session_id", None)
+    dataset_id = getattr(args, "dataset_id", None)
+    version    = getattr(args, "version", "1.0.0")
+    execute    = getattr(args, "execute", False)
+    allow_write = getattr(args, "allow_write", False)
+    print(f"[!] Replay Session Rebind: {session_id} -> {dataset_id}@{version} — Research Only")
+    if execute and not allow_write:
+        print("  [BLOCKED] replay-session-rebind requires both --execute AND --allow-write")
+        print("  BLOCKED because --allow-write is required")
+        print("[!] Research Only. Not Investment Advice.")
+        return
+    try:
+        from replay.session_dataset_binding import ReplaySessionDatasetBinder
+        binder = ReplaySessionDatasetBinder()
+        result = binder.rebind_execute(session_id or "", dataset_id or "", version,
+                                       allow_write=allow_write and execute)
+        if result.get("blocked"):
+            print(f"  [BLOCKED] {result.get('reason')}")
+        else:
+            print(f"  Status: {result.get('status')}")
+        print("[!] Research Only. Not Investment Advice.")
+    except Exception as exc:
+        print(f"  [ERROR] {exc}")
+
+
+def cmd_replay_package_export_preview(args) -> None:
+    """Preview package export. [!] Research Only."""
+    dataset_id = getattr(args, "dataset_id", None)
+    pkg_type   = getattr(args, "pkg_type", "MANIFEST_ONLY")
+    print(f"[!] Replay Package Export Preview: {dataset_id} type={pkg_type} — Research Only")
+    try:
+        from replay.dataset_exporter import ReplayDatasetExporter
+        exp = ReplayDatasetExporter()
+        result = exp.preview(dataset_id or "UNKNOWN", pkg_type)
+        for k, v in result.items():
+            print(f"  {k}: {v}")
+        print("[!] Research Only. Not Investment Advice.")
+    except Exception as exc:
+        print(f"  [ERROR] {exc}")
+
+
+def cmd_replay_package_export(args) -> None:
+    """Export dataset package. BLOCKED without --execute --allow-write. [!] Research Only."""
+    dataset_id  = getattr(args, "dataset_id", None)
+    pkg_type    = getattr(args, "pkg_type", "MANIFEST_ONLY")
+    execute     = getattr(args, "execute", False)
+    allow_write = getattr(args, "allow_write", False)
+    output_dir  = getattr(args, "output_dir", "data/replay_registry/exports")
+    print(f"[!] Replay Package Export: {dataset_id} type={pkg_type} — Research Only")
+    if execute and not allow_write:
+        print("  [BLOCKED] replay-package-export requires both --execute AND --allow-write")
+        print("  BLOCKED because --allow-write is required")
+        print("[!] Research Only. Not Investment Advice.")
+        return
+    try:
+        from replay.dataset_exporter import ReplayDatasetExporter
+        exp = ReplayDatasetExporter()
+        result = exp.execute(
+            dataset_id or "UNKNOWN",
+            pkg_type,
+            output_dir=output_dir,
+            allow_write=allow_write and execute,
+        )
+        if result.get("blocked"):
+            print(f"  [BLOCKED] {result.get('reason')}")
+        else:
+            print(f"  Status: {result.get('status')}")
+        print("[!] Research Only. Not Investment Advice.")
+    except Exception as exc:
+        print(f"  [ERROR] {exc}")
+
+
+def cmd_replay_package_import_preview(args) -> None:
+    """Preview package import. [!] Research Only."""
+    package = getattr(args, "package", None) or ""
+    print(f"[!] Replay Package Import Preview: {package} — Research Only")
+    try:
+        from replay.dataset_importer import ReplayDatasetImporter
+        imp = ReplayDatasetImporter()
+        result = imp.preview(package)
+        for k, v in result.items():
+            print(f"  {k}: {v}")
+        print("[!] Research Only. Not Investment Advice.")
+    except Exception as exc:
+        print(f"  [ERROR] {exc}")
+
+
+def cmd_replay_package_import(args) -> None:
+    """Import dataset package. BLOCKED without --execute --allow-write. [!] Research Only."""
+    package     = getattr(args, "package", None) or ""
+    execute     = getattr(args, "execute", False)
+    allow_write = getattr(args, "allow_write", False)
+    print(f"[!] Replay Package Import: {package} — Research Only")
+    if execute and not allow_write:
+        print("  [BLOCKED] replay-package-import requires both --execute AND --allow-write")
+        print("  BLOCKED because --allow-write is required")
+        print("[!] Research Only. Not Investment Advice.")
+        return
+    try:
+        from replay.dataset_importer import ReplayDatasetImporter
+        imp = ReplayDatasetImporter()
+        result = imp.execute(package, allow_write=allow_write and execute)
+        if result.get("blocked"):
+            print(f"  [BLOCKED] {result.get('reason')}")
+        else:
+            print(f"  Status: {result.get('status')}")
+        print("[!] Research Only. Not Investment Advice.")
+    except Exception as exc:
+        print(f"  [ERROR] {exc}")
+
+
+def cmd_replay_registry_repair_preview(args) -> None:
+    """Preview registry repair plan. [!] Research Only."""
+    print("[!] Replay Registry Repair Preview — Research Only")
+    try:
+        from replay.registry_repair import ReplayRegistryRepairPlanner
+        planner = ReplayRegistryRepairPlanner()
+        result = planner.preview()
+        print(f"  Issues found: {result.get('issues_found', 0)}")
+        print(f"  Blocked:      {result.get('blocked_count', 0)}")
+        print(f"  Safe:         {result.get('safe_count', 0)}")
+        for item in result.get("plan", []):
+            b = "[BLOCKED]" if item.get("blocked") else "[SAFE]   "
+            print(f"  {b} {item.get('issue_type')}: {item.get('proposed_action')}")
+        print(f"  Note: {result.get('note')}")
+        print("[!] Research Only. Not Investment Advice.")
+    except Exception as exc:
+        print(f"  [ERROR] {exc}")
+
+
+def cmd_replay_registry_repair(args) -> None:
+    """Execute registry repair. BLOCKED without --execute --allow-write. [!] Research Only."""
+    execute     = getattr(args, "execute", False)
+    allow_write = getattr(args, "allow_write", False)
+    print("[!] Replay Registry Repair — Research Only")
+    if execute and not allow_write:
+        print("  [BLOCKED] replay-registry-repair requires both --execute AND --allow-write")
+        print("  BLOCKED because --allow-write is required")
+        print("[!] Research Only. Not Investment Advice.")
+        return
+    try:
+        from replay.registry_repair import ReplayRegistryRepairPlanner
+        planner = ReplayRegistryRepairPlanner()
+        result = planner.execute(allow_write=allow_write and execute)
+        if result.get("blocked"):
+            print(f"  [BLOCKED] {result.get('reason')}")
+        else:
+            print(f"  Status:   {result.get('status')}")
+            print(f"  Repaired: {result.get('repaired_count')}")
+        print("[!] Research Only. Not Investment Advice.")
+    except Exception as exc:
+        print(f"  [ERROR] {exc}")
+
+
+def cmd_replay_registry_audit(args) -> None:
+    """Show registry audit events. [!] Research Only."""
+    print("[!] Replay Registry Audit — Research Only")
+    try:
+        from replay.registry_audit import ReplayRegistryAudit
+        audit = ReplayRegistryAudit()
+        print(audit.summary())
+        print("[!] Research Only. Not Investment Advice.")
+    except Exception as exc:
+        print(f"  [ERROR] {exc}")
+
+
+def cmd_replay_dataset_summary(args) -> None:
+    """Dataset registry summary. [!] Research Only."""
+    print("[!] Replay Dataset Summary — Research Only")
+    try:
+        from replay.dataset_summary import ReplayDatasetSummary
+        from replay.dataset_registry import ReplayDatasetRegistry
+        reg  = ReplayDatasetRegistry()
+        summ = ReplayDatasetSummary(reg)
+        print(summ.full_summary())
+        print("[!] Research Only. Not Investment Advice.")
+    except Exception as exc:
+        print(f"  [ERROR] {exc}")
+
+
+def cmd_replay_session_registry_summary(args) -> None:
+    """Session registry summary. [!] Research Only."""
+    print("[!] Replay Session Registry Summary — Research Only")
+    try:
+        from replay.session_registry_summary import ReplaySessionRegistrySummary
+        from replay.session_registry_v128 import ReplaySessionRegistryV128
+        reg  = ReplaySessionRegistryV128()
+        summ = ReplaySessionRegistrySummary(reg)
+        print(summ.full_summary())
+        print("[!] Research Only. Not Investment Advice.")
+    except Exception as exc:
+        print(f"  [ERROR] {exc}")
+
+
+def cmd_replay_dataset_registry_report(args) -> None:
+    """Generate dataset registry report. [!] Research Only."""
+    print("[!] Replay Dataset Registry Report — Research Only")
+    try:
+        from replay.dataset_report import ReplayDatasetReport
+        from replay.dataset_registry import ReplayDatasetRegistry
+        reg = ReplayDatasetRegistry()
+        rpt = ReplayDatasetReport(reg)
+        print(rpt.generate())
+        print("[!] Research Only. Not Investment Advice.")
+    except Exception as exc:
+        print(f"  [ERROR] {exc}")
+
+
+def cmd_replay_session_registry_report(args) -> None:
+    """Generate session registry report. [!] Research Only."""
+    print("[!] Replay Session Registry Report — Research Only")
+    try:
+        from replay.session_registry_v128 import ReplaySessionRegistryV128
+        from replay.session_registry_summary import ReplaySessionRegistrySummary
+        reg  = ReplaySessionRegistryV128()
+        summ = ReplaySessionRegistrySummary(reg)
+        print(summ.full_summary())
+        print("[!] Research Only. Not Investment Advice.")
+    except Exception as exc:
+        print(f"  [ERROR] {exc}")
+
+
+def cmd_replay_registry_integrity_report(args) -> None:
+    """Generate registry integrity report. [!] Research Only."""
+    print("[!] Replay Registry Integrity Report — Research Only")
+    try:
+        from replay.registry_repair import ReplayRegistryRepairPlanner
+        planner = ReplayRegistryRepairPlanner()
+        result  = planner.preview()
+        print(f"  Issues: {result.get('issues_found', 0)}")
+        print(f"  Blocked: {result.get('blocked_count', 0)}")
         print("[!] Research Only. Not Investment Advice.")
     except Exception as exc:
         print(f"  [ERROR] {exc}")
@@ -26393,6 +27139,42 @@ def main() -> None:
         "replay-challenge-progress-report":   cmd_replay_challenge_progress_report,
         "replay-challenge-batch-preview":     cmd_replay_challenge_batch_preview,
         "replay-challenge-batch-run":         cmd_replay_challenge_batch_run,
+        # v1.2.8 Replay Dataset & Session Registry
+        "replay-registry-health":                    cmd_replay_registry_health,
+        "replay-dataset-list":                       cmd_replay_dataset_list,
+        "replay-dataset-search":                     cmd_replay_dataset_search,
+        "replay-dataset-show":                       cmd_replay_dataset_show,
+        "replay-dataset-versions":                   cmd_replay_dataset_versions,
+        "replay-dataset-lineage":                    cmd_replay_dataset_lineage,
+        "replay-dataset-register-preview":           cmd_replay_dataset_register_preview,
+        "replay-dataset-register":                   cmd_replay_dataset_register,
+        "replay-dataset-validate":                   cmd_replay_dataset_validate,
+        "replay-dataset-integrity":                  cmd_replay_dataset_integrity,
+        "replay-dataset-freeze-preview":             cmd_replay_dataset_freeze_preview,
+        "replay-dataset-freeze":                     cmd_replay_dataset_freeze,
+        "replay-dataset-create-version-preview":     cmd_replay_dataset_create_version_preview,
+        "replay-dataset-create-version":             cmd_replay_dataset_create_version,
+        "replay-session-registry-list":              cmd_replay_session_registry_list,
+        "replay-session-registry-show":              cmd_replay_session_registry_show,
+        "replay-session-registry-search":            cmd_replay_session_registry_search,
+        "replay-session-bindings":                   cmd_replay_session_bindings,
+        "replay-session-lineage":                    cmd_replay_session_lineage_v128,
+        "replay-session-bind-preview":               cmd_replay_session_bind_preview,
+        "replay-session-bind":                       cmd_replay_session_bind,
+        "replay-session-rebind-preview":             cmd_replay_session_rebind_preview,
+        "replay-session-rebind":                     cmd_replay_session_rebind,
+        "replay-package-export-preview":             cmd_replay_package_export_preview,
+        "replay-package-export":                     cmd_replay_package_export,
+        "replay-package-import-preview":             cmd_replay_package_import_preview,
+        "replay-package-import":                     cmd_replay_package_import,
+        "replay-registry-repair-preview":            cmd_replay_registry_repair_preview,
+        "replay-registry-repair":                    cmd_replay_registry_repair,
+        "replay-registry-audit":                     cmd_replay_registry_audit,
+        "replay-dataset-summary":                    cmd_replay_dataset_summary,
+        "replay-session-registry-summary":           cmd_replay_session_registry_summary,
+        "replay-dataset-registry-report":            cmd_replay_dataset_registry_report,
+        "replay-session-registry-report":            cmd_replay_session_registry_report,
+        "replay-registry-integrity-report":          cmd_replay_registry_integrity_report,
         # v1.1.9 Data Governance Stable Rollup
         "governance-rollup-health":          cmd_governance_rollup_health,
         "governance-rollup-run":             cmd_governance_rollup_run,

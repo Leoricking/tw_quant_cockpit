@@ -1280,7 +1280,22 @@ The following are explicitly out of scope for all future versions:
 
 ---
 
-## v1.2.7 — Replay Challenge Mode (Current)
+## v1.2.8 — Replay Dataset & Session Registry (Current)
+
+- Complete Replay Dataset Catalog, Registry, Manifest, Versioning, Fingerprint, Lineage, Qualification, Snapshot, Freeze, Validator, Integrity, Portability, Package, Import/Export, Path Remap, Conflict Detection
+- Session Registry with Dataset Bindings, Fingerprint, Lineage
+- Deterministic path-independent fingerprints (SHA-256)
+- Frozen datasets immutable — hash mismatch → CORRUPTED
+- RELATIVE_ONLY path mode; no secrets, no broker credentials in packages
+- Dataset qualification levels: VERIFIED_REAL, REAL_UNVERIFIED, MOCK_DEMO_ONLY, INSUFFICIENT, BLOCKED, INCOMPATIBLE
+- Append-only JSONL storage; graceful corrupted-tail handling
+- Binding locked after session creation; COMPLETED sessions cannot be directly rebound
+- ~50 registry health checks; all AUTO_*_ENABLED=False
+- 35 new CLI commands, 17 GUI panels/dialogs, 4 report types, 27 test fixtures
+
+---
+
+## v1.2.7 — Replay Challenge Mode
 
 - Structured scored challenge scenarios wrapping existing replay infrastructure
 - 12 built-in challenge templates across 5 difficulty levels (BEGINNER to EXPERT)
@@ -1300,4 +1315,4 @@ The following are explicitly out of scope for all future versions:
 
 ---
 
-*TW Quant Cockpit v1.2.7 — Research Only — Not Investment Advice*
+*TW Quant Cockpit v1.2.8 — Research Only — Not Investment Advice*
