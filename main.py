@@ -16903,12 +16903,14 @@ def cmd_regression_run(args: argparse.Namespace) -> None:
         print(f"  ERROR: {exc}")
         sys.exit(1)
 
-    status   = result.get("status", "UNKNOWN")
-    total    = result.get("total", 0)
-    passed   = result.get("passed", 0)
-    warnings = result.get("warnings", 0)
-    failed   = result.get("failed", 0)
-    timeouts = result.get("timeouts", 0)
+    status                 = result.get("status", "UNKNOWN")
+    total                  = result.get("total", 0)
+    passed                 = result.get("passed", 0)
+    warnings               = result.get("warnings", 0)
+    failed                 = result.get("failed", 0)
+    timeouts               = result.get("timeouts", 0)
+    blocked                = result.get("blocked", 0)
+    expected_safety_blocks = result.get("expected_safety_blocks", 0)
 
     print(f"  Status   : {status}")
     print(f"  Total    : {total}")
@@ -16916,17 +16918,36 @@ def cmd_regression_run(args: argparse.Namespace) -> None:
     print(f"  Warnings : {warnings}")
     print(f"  Failed   : {failed}")
     print(f"  Timeouts : {timeouts}")
+    if expected_safety_blocks > 0:
+        print(f"  Expected Safety Blocks: {expected_safety_blocks}")
+    if blocked > 0:
+        print(f"  Unexpected Blocked: {blocked}")
     print()
 
     for t in result.get("tests", []):
         st  = t.get("status", "?")
         nm  = t.get("name", "?")[:45]
         dur = t.get("duration_seconds", 0)
-        marker = "\u2713" if st == "PASS" else ("\u26a0" if st == "WARNING" else ("\u2717" if st == "FAIL" else "\u23f1"))
-        print(f"  [{marker}] {nm:<46}  {st:<10}  {dur:.1f}s")
+        msg = ""
+        if t.get("counts_as_pass") and t.get("expected_block"):
+            msg = " — expected safety block confirmed"
+            nm = nm[:40]
+        if st == "PASS":
+            marker = "\u2713"
+        elif st == "WARNING":
+            marker = "\u26a0"
+        elif st == "FAIL":
+            marker = "\u2717"
+        else:
+            marker = "\u23f1"
+        print(f"  [{marker}] {nm:<46}  {st:<10}  {dur:.1f}s{msg}")
     print()
     print("  [!] No real orders. Research Only.")
     print()
+
+    # Propagate exit code: PASS/WARNING => 0, FAIL or unexpected blocked => 1
+    if failed > 0 or blocked > 0:
+        raise SystemExit(1)
 
 
 def cmd_regression_coverage(args: argparse.Namespace) -> None:

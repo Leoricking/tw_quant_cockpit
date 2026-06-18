@@ -40,6 +40,12 @@ class RegressionTestCase:
     """Schema for a single regression test case.
 
     [!] Regression Only. Research Only. No Real Orders. Production Trading: BLOCKED.
+
+    expected_block: set True when the test intentionally verifies that the system
+    *correctly* blocks a dangerous operation (e.g. real orders, broker execution).
+    When True and the test result is BLOCKED, the runner classifies the outcome as
+    PASS ("expected safety block confirmed") rather than a blocking failure.
+    This MUST NOT be used to hide genuine execution failures.
     """
 
     test_id:          str
@@ -55,6 +61,10 @@ class RegressionTestCase:
     description:      str  = ""
     tags:             List[str] = field(default_factory=list)
 
+    # expected_block: True means the test verifies that a dangerous operation is
+    # correctly blocked.  BLOCKED result => PASS ("safety guard confirmed").
+    expected_block:   bool = False
+
     # Safety invariants — always True, never modified
     read_only:          bool = True
     no_real_orders:     bool = True
@@ -69,6 +79,7 @@ class RegressionTestCase:
             "command":          self.command,
             "timeout_seconds":  self.timeout_seconds,
             "expected_status":  self.expected_status,
+            "expected_block":   self.expected_block,
             "required":         self.required,
             "mode":             self.mode,
             "safety_level":     self.safety_level,
@@ -85,6 +96,11 @@ class RegressionTestResult:
     """Schema for a single regression test result.
 
     [!] Regression Only. Research Only. No Real Orders. Production Trading: BLOCKED.
+
+    expected_block: carried from the test case — True when the test intentionally
+    verifies that the system blocks a dangerous operation.
+    counts_as_pass: True when an expected_block test produced the expected BLOCKED
+    result and is therefore counted as a passing check.
     """
 
     test_id:          str
@@ -99,6 +115,10 @@ class RegressionTestResult:
     error:            str   = ""
     started_at:       str   = ""
     finished_at:      str   = ""
+
+    # expected-block fields
+    expected_block:  bool = False
+    counts_as_pass:  bool = False
 
     # Safety invariants — always True, never modified
     read_only:          bool = True
@@ -119,6 +139,8 @@ class RegressionTestResult:
             "error":            self.error,
             "started_at":       self.started_at,
             "finished_at":      self.finished_at,
+            "expected_block":   self.expected_block,
+            "counts_as_pass":   self.counts_as_pass,
             "read_only":        self.read_only,
             "no_real_orders":   self.no_real_orders,
             "production_blocked": self.production_blocked,

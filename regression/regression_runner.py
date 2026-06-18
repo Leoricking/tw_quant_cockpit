@@ -14,7 +14,7 @@ from regression.regression_schema import (
     RegressionTestCase, RegressionTestResult,
     STATUS_PASS, STATUS_WARNING, STATUS_FAIL, STATUS_BLOCKED, STATUS_TIMEOUT,
 )
-from regression.suite_registry import RegressionSuiteRegistry, _FORBIDDEN_KEYWORDS
+from regression.suite_registry import RegressionSuiteRegistry, _is_forbidden
 
 logger = logging.getLogger(__name__)
 
@@ -71,19 +71,32 @@ class RegressionRunner:
         started_at = datetime.now().isoformat()
         t0 = time.monotonic()
 
-        # Forbidden keyword check
-        all_tokens = [t.lower() for t in test_case.command]
-        for kw in _FORBIDDEN_KEYWORDS:
-            if any(kw in tok for tok in all_tokens):
+        # Forbidden keyword check — use suite_registry._is_forbidden() which
+        # correctly handles -c inline code (not scanned) and -m module names.
+        if _is_forbidden(test_case.command):
+            # A genuinely forbidden command is an unexpected block unless
+            # the test case explicitly declares expected_block=True.
+            if test_case.expected_block:
                 return RegressionTestResult(
                     test_id=test_case.test_id,
                     name=test_case.name,
                     suite=test_case.suite,
-                    status=STATUS_BLOCKED,
-                    error=f"Command blocked: contains forbidden keyword '{kw}'",
+                    status=STATUS_PASS,
+                    expected_block=True,
+                    counts_as_pass=True,
+                    warning="Expected safety block confirmed: dangerous command correctly rejected",
                     started_at=started_at,
                     finished_at=datetime.now().isoformat(),
                 )
+            return RegressionTestResult(
+                test_id=test_case.test_id,
+                name=test_case.name,
+                suite=test_case.suite,
+                status=STATUS_BLOCKED,
+                error=f"Command blocked: contains forbidden keyword (unexpected block)",
+                started_at=started_at,
+                finished_at=datetime.now().isoformat(),
+            )
 
         # Build subprocess command
         cmd = self._build_command(test_case.command)
@@ -110,10 +123,22 @@ class RegressionRunner:
             return_code = proc.returncode
 
             if return_code == 0:
-                status = STATUS_PASS
-                warning = ""
-                error   = ""
+                status        = STATUS_PASS
+                warning       = ""
+                error         = ""
+                expected_block = False
+                counts_as_pass = False
+            elif test_case.expected_block:
+                # The test is designed to verify that the system correctly blocks
+                # a dangerous operation.  Non-zero return = safety guard worked.
+                status        = STATUS_PASS
+                warning       = "Expected safety block confirmed: dangerous execution correctly blocked"
+                error         = ""
+                expected_block = True
+                counts_as_pass = True
             else:
+                expected_block = False
+                counts_as_pass = False
                 if test_case.required:
                     status  = STATUS_FAIL
                     warning = ""
@@ -134,6 +159,8 @@ class RegressionRunner:
                 stderr_tail=stderr_tail,
                 warning=warning,
                 error=error,
+                expected_block=expected_block,
+                counts_as_pass=counts_as_pass,
                 started_at=started_at,
                 finished_at=finished_at,
             )
@@ -166,13 +193,23 @@ class RegressionRunner:
             )
 
     def build_summary(self, results: list[RegressionTestResult], suite_name: str = "custom") -> dict:
-        passed    = sum(1 for r in results if r.status == STATUS_PASS)
+        # Separate expected safety blocks (counts_as_pass=True) from others.
+        # expected safety blocks have status=PASS but were originally blocked operations.
+        expected_safety_blocks = sum(1 for r in results if r.counts_as_pass and r.expected_block)
+        passed    = sum(1 for r in results if r.status == STATUS_PASS)  # includes expected safety blocks
         failed    = sum(1 for r in results if r.status == STATUS_FAIL)
         warned    = sum(1 for r in results if r.status == STATUS_WARNING)
         timed_out = sum(1 for r in results if r.status == STATUS_TIMEOUT)
-        blocked   = sum(1 for r in results if r.status == STATUS_BLOCKED)
+        # Only count genuinely unexpected blocked results (not expected safety blocks)
+        unexpected_blocked = sum(
+            1 for r in results if r.status == STATUS_BLOCKED and not r.counts_as_pass
+        )
 
-        if failed > 0 or blocked > 0:
+        # Overall status rules:
+        #   FAIL > 0 or unexpected_blocked > 0  => FAIL
+        #   warned > 0 or timed_out > 0          => WARNING
+        #   all pass                              => PASS
+        if failed > 0 or unexpected_blocked > 0:
             overall = "FAIL"
         elif warned > 0 or timed_out > 0:
             overall = "WARNING"
@@ -180,18 +217,19 @@ class RegressionRunner:
             overall = "PASS"
 
         return {
-            "suite":              suite_name,
-            "status":             overall,
-            "passed":             passed,
-            "failed":             failed,
-            "warnings":           warned,
-            "timeouts":           timed_out,
-            "blocked":            blocked,
-            "total":              len(results),
-            "tests":              [r.to_dict() for r in results],
-            "read_only":          True,
-            "no_real_orders":     True,
-            "production_blocked": True,
+            "suite":                  suite_name,
+            "status":                 overall,
+            "passed":                 passed,
+            "failed":                 failed,
+            "warnings":               warned,
+            "timeouts":               timed_out,
+            "blocked":                unexpected_blocked,
+            "expected_safety_blocks": expected_safety_blocks,
+            "total":                  len(results),
+            "tests":                  [r.to_dict() for r in results],
+            "read_only":              True,
+            "no_real_orders":         True,
+            "production_blocked":     True,
         }
 
     # ------------------------------------------------------------------
