@@ -1920,6 +1920,57 @@ class GUITabRegistry:
                 favorite_default=False,
                 notes="Added in v1.2.2 \u2014 Decision Journal Integration. RESEARCH ONLY. No Real Orders.",
             ),
+            # ----------------------------------------------------------------
+            # replay_multi_timeframe (v1.2.5)
+            # ----------------------------------------------------------------
+            GUITabMetadata(
+                tab_id="replay_multi_timeframe",
+                tab_name="replay_multi_timeframe",
+                display_name="Multi-TF Replay",
+                group="replay_training",
+                priority="P0",
+                description=(
+                    "Multi-Timeframe Replay v1.2.5 \u2014 "
+                    "Synchronized D1/60m/20m/5m/1m replay. "
+                    "Point-in-time verified. No future K-lines. "
+                    "Agreement/Conflict analysis (training only). "
+                    "[!] Research Only. No Real Orders. No Auto-Trade."
+                ),
+                module_path="gui.replay_multi_timeframe_panel",
+                class_name="ReplayMultiTimeframePanel",
+                available_flag="MULTI_TIMEFRAME_REPLAY_AVAILABLE",
+                safety_level="RESEARCH_ONLY",
+                read_only=True,
+                no_real_orders=True,
+                production_blocked=True,
+                keywords=[
+                    "multi-timeframe", "mtf", "synchronized", "D1", "M60", "M20", "M5", "M1",
+                    "agreement", "conflict", "partial bar", "future firewall",
+                    "replay", "point-in-time", "timeframe alignment",
+                ],
+                related_cli_commands=[
+                    "replay-timeframe-health",
+                    "replay-timeframes",
+                    "replay-mtf-list",
+                    "replay-mtf-snapshot",
+                    "replay-mtf-agreement",
+                    "replay-mtf-conflicts",
+                    "replay-mtf-summary",
+                    "replay-mtf-report",
+                    "replay-mtf-batch-preview",
+                    "replay-mtf-firewall-check",
+                    "replay-mtf-pit-check",
+                ],
+                report_types=[
+                    "replay_multi_timeframe_report",
+                    "replay_multi_timeframe_timeline_report",
+                    "replay_multi_timeframe_summary_report",
+                ],
+                maturity="STABLE",
+                default_visible=True,
+                favorite_default=False,
+                notes="Added in v1.2.5 \u2014 Multi-Timeframe Replay. RESEARCH ONLY. No Real Orders. No Auto-Trade.",
+            ),
         ]
         for tab in tabs:
             self._tabs[tab.tab_id] = tab

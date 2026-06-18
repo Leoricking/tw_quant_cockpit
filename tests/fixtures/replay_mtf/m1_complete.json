@@ -1,0 +1,23 @@
+{
+  "_fixture": "m1_complete",
+  "_description": "Completed 1m bar",
+  "_research_only": true,
+  "_no_real_orders": true,
+  "symbol": "TST",
+  "timeframe": "M1",
+  "timestamp": "2023-01-06T09:00:00",
+  "session_date": "2023-01-06",
+  "open": 100.0,
+  "high": 100.3,
+  "low": 99.9,
+  "close": 100.2,
+  "volume": 300.0,
+  "amount": 30060.0,
+  "is_complete": true,
+  "is_partial": false,
+  "source": "DIRECT",
+  "available_at": "2023-01-06T09:01:00",
+  "point_in_time_verified": true,
+  "qualification": "CONFIRMED",
+  "replay_timestamp": "2023-01-06T09:01:30"
+}

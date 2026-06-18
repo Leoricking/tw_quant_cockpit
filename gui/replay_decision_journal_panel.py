@@ -1,5 +1,5 @@
 """
-gui/replay_decision_journal_panel.py — ReplayDecisionJournalPanel v1.2.2
+gui/replay_decision_journal_panel.py — ReplayDecisionJournalPanel v1.2.5
 
 [!] Research Only. No Real Orders. Replay Training Only.
 [!] SIMULATION DECISION ONLY — NO ORDER WILL BE SENT
@@ -160,6 +160,23 @@ if HAS_QT:
 
             layout.addLayout(btn_layout)
 
+            # Multi-Timeframe Context section
+            mtf_box = QGroupBox("Timeframe Context — Research Only / No Auto-Trade")
+            mtf_layout = QVBoxLayout(mtf_box)
+            mtf_layout.setSpacing(2)
+            self._mtf_timestamp_lbl = QLabel("Replay Timestamp: —")
+            self._mtf_agreement_lbl = QLabel("Agreement: —")
+            self._mtf_conflicts_lbl = QLabel("Conflicts: —")
+            self._mtf_available_lbl = QLabel("Available TFs: —")
+            self._mtf_partial_lbl   = QLabel("")
+            self._mtf_partial_lbl.setStyleSheet("color: #ff8a65; font-weight: bold;")
+            for lbl in (self._mtf_timestamp_lbl, self._mtf_agreement_lbl,
+                        self._mtf_conflicts_lbl, self._mtf_available_lbl):
+                lbl.setStyleSheet("color: #90caf9; font-family: monospace; font-size: 11px;")
+                mtf_layout.addWidget(lbl)
+            mtf_layout.addWidget(self._mtf_partial_lbl)
+            layout.addWidget(mtf_box)
+
             # Status bar
             self._status_label = QLabel("Ready")
             self._status_label.setStyleSheet("color: #888; font-size: 11px;")
@@ -302,6 +319,35 @@ if HAS_QT:
                 "Use CLI: python main.py replay-journal-import --file <path> --dry-run\n\n"
                 "[!] Import requires --execute --allow-write flags to write."
             )
+
+        def update_mtf_context(self, context: dict) -> None:
+            """Update Timeframe Context section from MTF session context dict."""
+            try:
+                self._mtf_timestamp_lbl.setText(
+                    f"Replay Timestamp: {context.get('replay_timestamp', '—')}"
+                )
+                agreement = context.get("agreement", {})
+                self._mtf_agreement_lbl.setText(
+                    f"Agreement: {agreement.get('status', '—')}  "
+                    f"(score: {agreement.get('agreement_score', '—')})"
+                )
+                conflicts = context.get("conflicts", [])
+                self._mtf_conflicts_lbl.setText(
+                    f"Conflicts: {len(conflicts) if isinstance(conflicts, list) else '—'}"
+                )
+                available = context.get("available_timeframes", [])
+                self._mtf_available_lbl.setText(
+                    f"Available TFs: {', '.join(available) if available else '—'}"
+                )
+                partial_warns = context.get("partial_bar_warnings", [])
+                if partial_warns:
+                    self._mtf_partial_lbl.setText(
+                        "[!] Partial Bar: " + "; ".join(str(w) for w in partial_warns[:2])
+                    )
+                else:
+                    self._mtf_partial_lbl.setText("")
+            except Exception as exc:
+                logger.warning("[ReplayDecisionJournalPanel] update_mtf_context: %s", exc)
 
 else:
     class ReplayDecisionJournalPanel:

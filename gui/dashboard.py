@@ -281,6 +281,16 @@ except Exception as _rtp_exc:
     _REPLAY_TRAINING_AVAILABLE = False
 
 # ---------------------------------------------------------------------------
+# v1.2.5 Multi-Timeframe Replay panel import (guarded)
+# ---------------------------------------------------------------------------
+try:
+    from gui.replay_multi_timeframe_panel import ReplayMultiTimeframePanel
+    _MTF_REPLAY_AVAILABLE = True
+except Exception as _mtf_exc:
+    logger.warning("ReplayMultiTimeframePanel unavailable: %s", _mtf_exc)
+    _MTF_REPLAY_AVAILABLE = False
+
+# ---------------------------------------------------------------------------
 # v0.6.0 Stable Release panel import (guarded)
 # ---------------------------------------------------------------------------
 try:
@@ -1667,6 +1677,13 @@ class CockpitWindow(QMainWindow if _PYSIDE6_AVAILABLE else object):
             mid_tabs.addTab(self._replay_training_panel, "Replay Training")
         else:
             self._replay_training_panel = None
+
+        # v1.2.5 Multi-Timeframe Replay tab
+        if _MTF_REPLAY_AVAILABLE:
+            self._mtf_replay_panel = ReplayMultiTimeframePanel(parent=self)
+            mid_tabs.addTab(self._mtf_replay_panel, "Multi-TF Replay")
+        else:
+            self._mtf_replay_panel = None
 
         # v0.6.0 Stable Release tab
         if _STABLE_RELEASE_AVAILABLE:

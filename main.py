@@ -21713,6 +21713,83 @@ def _build_parser() -> argparse.ArgumentParser:
     p_strat_brun.add_argument("--execute", action="store_true", default=False)
     p_strat_brun.add_argument("--allow-write", action="store_true", default=False)
 
+    # -----------------------------------------------------------------------
+    # v1.2.5 Multi-Timeframe Replay
+    # -----------------------------------------------------------------------
+    subparsers.add_parser("replay-timeframe-health", help="[v1.2.5] MTF replay health checks. Research Only.")
+
+    p_tfs = subparsers.add_parser("replay-timeframes", help="[v1.2.5] List MTF timeframes. Research Only.")
+    p_tfs.add_argument("--symbol", default=None)
+    p_tfs.add_argument("--date", default=None)
+
+    p_mtf_create = subparsers.add_parser("replay-mtf-session-create", help="[v1.2.5] Create MTF session. Research Only.")
+    p_mtf_create.add_argument("--symbol", default=None)
+    p_mtf_create.add_argument("--date", default=None)
+    p_mtf_create.add_argument("--primary-tf", default=None)
+    p_mtf_create.add_argument("--trigger-tf", default=None)
+
+    p_mtf_snap = subparsers.add_parser("replay-mtf-snapshot", help="[v1.2.5] Show MTF snapshot. Research Only.")
+    p_mtf_snap.add_argument("--session-id", default=None)
+
+    p_mtf_next = subparsers.add_parser("replay-mtf-next", help="[v1.2.5] Advance MTF bar. Research Only.")
+    p_mtf_next.add_argument("--session-id", default=None)
+    p_mtf_next.add_argument("--timeframe", default=None)
+
+    p_mtf_prev = subparsers.add_parser("replay-mtf-previous", help="[v1.2.5] Step back MTF bar. Research Only.")
+    p_mtf_prev.add_argument("--session-id", default=None)
+    p_mtf_prev.add_argument("--timeframe", default=None)
+
+    p_mtf_jump = subparsers.add_parser("replay-mtf-jump", help="[v1.2.5] Jump to timestamp. Research Only.")
+    p_mtf_jump.add_argument("--session-id", default=None)
+    p_mtf_jump.add_argument("--timestamp", default=None)
+
+    p_mtf_agree = subparsers.add_parser("replay-mtf-agreement", help="[v1.2.5] MTF agreement analysis. No Auto-Trade. Research Only.")
+    p_mtf_agree.add_argument("--session-id", default=None)
+    p_mtf_agree.add_argument("--timestamp", default=None)
+
+    p_mtf_conf = subparsers.add_parser("replay-mtf-conflicts", help="[v1.2.5] MTF conflict analysis. No Auto-Block. Research Only.")
+    p_mtf_conf.add_argument("--session-id", default=None)
+    p_mtf_conf.add_argument("--timestamp", default=None)
+
+    p_mtf_list = subparsers.add_parser("replay-mtf-list", help="[v1.2.5] List MTF sessions. Research Only.")
+    p_mtf_list.add_argument("--symbol", default=None)
+    p_mtf_list.add_argument("--date", default=None)
+
+    p_mtf_sum = subparsers.add_parser("replay-mtf-summary", help="[v1.2.5] MTF summary. Research Only.")
+    p_mtf_sum.add_argument("--session-id", default=None)
+    p_mtf_sum.add_argument("--scope", default=None)
+
+    p_mtf_rpt = subparsers.add_parser("replay-mtf-report", help="[v1.2.5] MTF report. Research Only.")
+    p_mtf_rpt.add_argument("--session-id", default=None)
+    p_mtf_rpt.add_argument("--output-dir", default=None)
+
+    p_mtf_trpt = subparsers.add_parser("replay-mtf-timeline-report", help="[v1.2.5] MTF timeline report. Research Only.")
+    p_mtf_trpt.add_argument("--session-id", default=None)
+    p_mtf_trpt.add_argument("--output-dir", default=None)
+
+    p_mtf_bprev = subparsers.add_parser("replay-mtf-batch-preview", help="[v1.2.5] MTF batch preview (default mode). Research Only.")
+    p_mtf_bprev.add_argument("--sessions", default=None)
+
+    p_mtf_brun = subparsers.add_parser("replay-mtf-batch-run", help="[v1.2.5] MTF batch run (BLOCKED without --execute --allow-write). Research Only.")
+    p_mtf_brun.add_argument("--sessions", default=None)
+    p_mtf_brun.add_argument("--execute", action="store_true", default=False)
+    p_mtf_brun.add_argument("--allow-write", action="store_true", default=False)
+
+    p_mtf_fw = subparsers.add_parser("replay-mtf-firewall-check", help="[v1.2.5] MTF future data firewall check. Research Only.")
+    p_mtf_fw.add_argument("--session-id", default=None)
+    p_mtf_fw.add_argument("--timestamp", default=None)
+
+    p_mtf_pit = subparsers.add_parser("replay-mtf-pit-check", help="[v1.2.5] MTF point-in-time integrity check. Research Only.")
+    p_mtf_pit.add_argument("--session-id", default=None)
+    p_mtf_pit.add_argument("--timestamp", default=None)
+
+    p_mtf_cmp = subparsers.add_parser("replay-mtf-compare", help="[v1.2.5] Compare MTF sessions. No future reveal. Research Only.")
+    p_mtf_cmp.add_argument("--session-a", default=None)
+    p_mtf_cmp.add_argument("--session-b", default=None)
+    p_mtf_cmp.add_argument("--mode", default=None)
+
+    subparsers.add_parser("replay-mtf-store-check", help="[v1.2.5] MTF store integrity check. Research Only.")
+
     return parser
 
 
@@ -24306,6 +24383,383 @@ def cmd_replay_journal_summary_report(args) -> None:
 
 
 # ---------------------------------------------------------------------------
+# v1.2.5 Multi-Timeframe Replay commands
+# ---------------------------------------------------------------------------
+
+def cmd_replay_timeframe_health(args) -> None:
+    """Run multi-timeframe replay health checks. [!] Research Only."""
+    try:
+        from replay.timeframe_health import run_health_check
+        run_health_check()
+    except Exception as exc:
+        print(f"[!] Multi-Timeframe Replay Health Check — Research Only | No Real Orders")
+        print(f"  [ERROR] {exc}")
+        import traceback; traceback.print_exc()
+
+
+def cmd_replay_timeframes(args) -> None:
+    """List multi-timeframe replay data for a symbol/date. [!] Research Only."""
+    symbol = getattr(args, "symbol", None) or "2454"
+    trade_date = getattr(args, "date", None) or str(date.today())
+    print(f"[!] Multi-Timeframe Replay — Research Only | symbol={symbol} date={trade_date}")
+    try:
+        from replay.timeframe_registry import ReplayTimeframeRegistry
+        reg = ReplayTimeframeRegistry()
+        print(f"  Available timeframes: {reg.list_timeframes()}")
+        print(f"  Hierarchy: D1 > M60 > M20 > M5 > M1")
+        print(f"  Primary TF: M5 | Trigger TF: M1 (fallback M5 if M1 missing)")
+        print("[!] Research Only. No Real Orders. Not Investment Advice.")
+    except Exception as exc:
+        print(f"  [ERROR] {exc}")
+        import traceback; traceback.print_exc()
+
+
+def cmd_replay_mtf_session_create(args) -> None:
+    """Create a multi-timeframe replay session. [!] Research Only."""
+    symbol = getattr(args, "symbol", None) or "2454"
+    trade_date = getattr(args, "date", None) or str(date.today())
+    primary_tf = getattr(args, "primary_tf", None) or "M5"
+    trigger_tf = getattr(args, "trigger_tf", None) or "M1"
+    print(f"[!] MTF Session Create — Research Only | symbol={symbol} date={trade_date}")
+    print(f"  primary_tf={primary_tf}  trigger_tf={trigger_tf}")
+    try:
+        from replay.timeframe_session import MultiTimeframeReplaySession
+        session = MultiTimeframeReplaySession(
+            symbol=symbol,
+            trade_date=trade_date,
+            repo_root=BASE_DIR,
+        )
+        summary = session.summary()
+        print(f"  Session ID  : {summary.get('session_id', '?')}")
+        print(f"  Status      : {summary.get('status', '?')}")
+        print(f"  Primary TF  : {summary.get('primary_timeframe', '?')}")
+        print(f"  Trigger TF  : {summary.get('trigger_timeframe', '?')}")
+        print("[!] Research Only. No Real Orders. Not Investment Advice.")
+    except Exception as exc:
+        print(f"  [ERROR] {exc}")
+        import traceback; traceback.print_exc()
+
+
+def cmd_replay_mtf_snapshot(args) -> None:
+    """Show current multi-timeframe snapshot. [!] Research Only."""
+    session_id = getattr(args, "session_id", None) or ""
+    print(f"[!] MTF Snapshot — Research Only | session={session_id}")
+    try:
+        from replay.timeframe_query import TimeframeQueryEngine
+        engine = TimeframeQueryEngine(repo_root=BASE_DIR)
+        snap = engine.latest_snapshot(session_id=session_id) if session_id else {}
+        if snap:
+            ts = snap.get("replay_timestamp", "—")
+            print(f"  Timestamp      : {ts}")
+            print(f"  Available TFs  : {snap.get('available_timeframes', [])}")
+            print(f"  PIT Verified   : {snap.get('point_in_time_verified', False)}")
+            print(f"  Research Only  : {snap.get('research_only', True)}")
+        else:
+            print("  No snapshot found. Create a session first.")
+        print("[!] Research Only. No Real Orders. Not Investment Advice.")
+    except Exception as exc:
+        print(f"  [ERROR] {exc}")
+        import traceback; traceback.print_exc()
+
+
+def cmd_replay_mtf_next(args) -> None:
+    """Advance multi-timeframe replay by one bar. [!] Research Only."""
+    session_id = getattr(args, "session_id", None) or ""
+    timeframe = getattr(args, "timeframe", None) or "M5"
+    print(f"[!] MTF Next Bar — Research Only | session={session_id} tf={timeframe}")
+    try:
+        from replay.timeframe_session import MultiTimeframeReplaySession
+        session = MultiTimeframeReplaySession(session_id=session_id, repo_root=BASE_DIR)
+        result = session.move_next(timeframe=timeframe)
+        print(f"  Status         : {result.get('status', '?')}")
+        print(f"  Timestamp      : {result.get('replay_timestamp', '—')}")
+        print(f"  Is Partial     : {result.get('is_partial', False)}")
+        print("[!] Research Only. No Real Orders.")
+    except Exception as exc:
+        print(f"  [ERROR] {exc}")
+        import traceback; traceback.print_exc()
+
+
+def cmd_replay_mtf_previous(args) -> None:
+    """Step back one bar in multi-timeframe replay. [!] Research Only."""
+    session_id = getattr(args, "session_id", None) or ""
+    timeframe = getattr(args, "timeframe", None) or "M5"
+    print(f"[!] MTF Previous Bar — Research Only | session={session_id} tf={timeframe}")
+    try:
+        from replay.timeframe_session import MultiTimeframeReplaySession
+        session = MultiTimeframeReplaySession(session_id=session_id, repo_root=BASE_DIR)
+        result = session.move_previous(timeframe=timeframe)
+        print(f"  Status         : {result.get('status', '?')}")
+        print(f"  Timestamp      : {result.get('replay_timestamp', '—')}")
+        print("[!] Research Only. No Real Orders.")
+    except Exception as exc:
+        print(f"  [ERROR] {exc}")
+        import traceback; traceback.print_exc()
+
+
+def cmd_replay_mtf_jump(args) -> None:
+    """Jump to a specific timestamp in multi-timeframe replay. [!] Research Only."""
+    session_id = getattr(args, "session_id", None) or ""
+    timestamp = getattr(args, "timestamp", None) or ""
+    print(f"[!] MTF Jump — Research Only | session={session_id} ts={timestamp}")
+    try:
+        from replay.timeframe_session import MultiTimeframeReplaySession
+        session = MultiTimeframeReplaySession(session_id=session_id, repo_root=BASE_DIR)
+        result = session.jump(timestamp=timestamp)
+        print(f"  Status         : {result.get('status', '?')}")
+        print(f"  Timestamp      : {result.get('replay_timestamp', '—')}")
+        print("[!] Research Only. No Real Orders.")
+    except Exception as exc:
+        print(f"  [ERROR] {exc}")
+        import traceback; traceback.print_exc()
+
+
+def cmd_replay_mtf_agreement(args) -> None:
+    """Show multi-timeframe agreement analysis. [!] Research Only. No Auto-Trade."""
+    session_id = getattr(args, "session_id", None) or ""
+    timestamp = getattr(args, "timestamp", None) or ""
+    print(f"[!] MTF Agreement — Research Only | No Auto-Trade | session={session_id}")
+    try:
+        from replay.timeframe_agreement import MultiTimeframeAgreementAnalyzer
+        analyzer = MultiTimeframeAgreementAnalyzer()
+        result = analyzer.analyze(multi_context={"replay_timestamp": timestamp})
+        print(f"  Status         : {result.get('status', '?')}")
+        print(f"  Agreement Score: {result.get('agreement_score', '—')}")
+        print(f"  Conflict Score : {result.get('conflict_score', '—')}")
+        print(f"  Bullish TFs    : {result.get('bullish_timeframes', [])}")
+        print(f"  Bearish TFs    : {result.get('bearish_timeframes', [])}")
+        print(f"  Unavailable TFs: {result.get('unavailable_timeframes', [])}")
+        print(f"  Training Only  : {result.get('training_only', True)}")
+        print(f"  No Auto Trade  : {result.get('no_auto_trade', True)}")
+        print("[!] Research Only. Not Investment Advice.")
+    except Exception as exc:
+        print(f"  [ERROR] {exc}")
+        import traceback; traceback.print_exc()
+
+
+def cmd_replay_mtf_conflicts(args) -> None:
+    """Show multi-timeframe conflict analysis. [!] Research Only. No Auto-Block."""
+    session_id = getattr(args, "session_id", None) or ""
+    timestamp = getattr(args, "timestamp", None) or ""
+    print(f"[!] MTF Conflicts — Research Only | No Auto-Block | session={session_id}")
+    try:
+        from replay.timeframe_conflict import MultiTimeframeConflictAnalyzer
+        analyzer = MultiTimeframeConflictAnalyzer()
+        conflicts = analyzer.detect(multi_context={"replay_timestamp": timestamp})
+        print(f"  Conflicts      : {len(conflicts)}")
+        for c in conflicts[:5]:
+            ct = c.get("conflict_type", "?")
+            sev = c.get("severity", "?")
+            print(f"    [{sev}] {ct} — auto_block={c.get('auto_block', False)}")
+        print(f"  No Auto Block  : True")
+        print("[!] Research Only. Not Investment Advice.")
+    except Exception as exc:
+        print(f"  [ERROR] {exc}")
+        import traceback; traceback.print_exc()
+
+
+def cmd_replay_mtf_list(args) -> None:
+    """List multi-timeframe replay sessions. [!] Research Only."""
+    symbol = getattr(args, "symbol", None) or ""
+    trade_date = getattr(args, "date", None) or ""
+    print(f"[!] MTF Session List — Research Only | symbol={symbol} date={trade_date}")
+    try:
+        from replay.timeframe_query import TimeframeQueryEngine
+        engine = TimeframeQueryEngine(repo_root=BASE_DIR)
+        sessions = engine.by_symbol(symbol=symbol) if symbol else engine.search(query={})
+        print(f"  Found: {len(sessions)} sessions")
+        for s in sessions[:10]:
+            print(f"    {s.get('session_id', '?')[:24]}  {s.get('primary_timeframe', '—')}  "
+                  f"{s.get('status', '—')}")
+        print("[!] Research Only. No Real Orders. Not Investment Advice.")
+    except Exception as exc:
+        print(f"  [ERROR] {exc}")
+        import traceback; traceback.print_exc()
+
+
+def cmd_replay_mtf_summary(args) -> None:
+    """Show multi-timeframe replay summary. [!] Research Only."""
+    session_id = getattr(args, "session_id", None) or ""
+    scope = getattr(args, "scope", None) or "session"
+    print(f"[!] MTF Summary — Research Only | session={session_id} scope={scope}")
+    try:
+        from replay.timeframe_summary import MultiTimeframeSummaryBuilder
+        builder = MultiTimeframeSummaryBuilder(repo_root=BASE_DIR)
+        result = builder.build(scope=scope, session_id=session_id)
+        print(f"  Scope          : {result.get('scope', scope)}")
+        print(f"  Sessions       : {result.get('session_count', '—')}")
+        print(f"  Snapshots      : {result.get('snapshot_count', '—')}")
+        print(f"  Research Only  : {result.get('research_only', True)}")
+        disc = result.get("disclaimer", "")
+        if disc:
+            print(f"  Disclaimer     : {disc[:80]}")
+        print("[!] Research Only. Not Investment Advice.")
+    except Exception as exc:
+        print(f"  [ERROR] {exc}")
+        import traceback; traceback.print_exc()
+
+
+def cmd_replay_mtf_report(args) -> None:
+    """Generate multi-timeframe replay report. [!] Research Only."""
+    session_id = getattr(args, "session_id", None) or ""
+    output_dir = getattr(args, "output_dir", None) or "reports"
+    print(f"[!] MTF Report — Research Only | session={session_id}")
+    try:
+        from reports.replay_multi_timeframe_report import MultiTimeframeReplayReport
+        rpt = MultiTimeframeReplayReport(repo_root=BASE_DIR)
+        md = rpt.build(session_id=session_id, output_dir=output_dir)
+        print(f"  Report generated ({len(md)} chars)")
+        print(f"  Output dir: {output_dir}")
+        print(md[:800])
+        print("[!] Research Only. Not Investment Advice.")
+    except Exception as exc:
+        print(f"  [ERROR] {exc}")
+        import traceback; traceback.print_exc()
+
+
+def cmd_replay_mtf_timeline_report(args) -> None:
+    """Generate multi-timeframe timeline report. [!] Research Only."""
+    session_id = getattr(args, "session_id", None) or ""
+    output_dir = getattr(args, "output_dir", None) or "reports"
+    print(f"[!] MTF Timeline Report — Research Only | session={session_id}")
+    try:
+        from reports.replay_multi_timeframe_timeline_report import MultiTimeframeTimelineReport
+        rpt = MultiTimeframeTimelineReport(repo_root=BASE_DIR)
+        md = rpt.build(session_id=session_id, output_dir=output_dir)
+        print(f"  Report generated ({len(md)} chars)")
+        print(md[:600])
+        print("[!] Research Only. Not Investment Advice.")
+    except Exception as exc:
+        print(f"  [ERROR] {exc}")
+        import traceback; traceback.print_exc()
+
+
+def cmd_replay_mtf_batch_preview(args) -> None:
+    """Preview multi-timeframe batch replay (default mode). [!] Research Only."""
+    sessions_arg = getattr(args, "sessions", None) or ""
+    sessions = [s.strip() for s in sessions_arg.split(",") if s.strip()] if sessions_arg else []
+    print(f"[!] MTF Batch Preview — Research Only | No Auto Execute | items={len(sessions)}")
+    print(f"  Status  : PREVIEW")
+    print(f"  Items   : {len(sessions)}")
+    print(f"  Note    : Default preview mode. Use --execute --allow-write to run.")
+    print("[!] Research Only. No Real Orders. Not Investment Advice.")
+
+
+def cmd_replay_mtf_batch_run(args) -> None:
+    """Run multi-timeframe batch replay. BLOCKED without --execute --allow-write. [!] Research Only."""
+    import time as _time
+    sessions_arg = getattr(args, "sessions", None) or ""
+    sessions = [s.strip() for s in sessions_arg.split(",") if s.strip()] if sessions_arg else []
+    execute = bool(getattr(args, "execute", False))
+    allow_write = bool(getattr(args, "allow_write", False))
+    print(f"[!] MTF Batch Run — Research Only | No Real Orders | items={len(sessions)}")
+    if not (execute and allow_write):
+        print("  Status  : BLOCKED")
+        print("  Reason  : Requires --execute --allow-write flags")
+        print("[!] Research Only. Not Investment Advice.")
+        return
+    try:
+        from replay.timeframe_batch import MultiTimeframeReplayBatchRunner
+        runner = MultiTimeframeReplayBatchRunner(
+            sessions=sessions,
+            allow_write=allow_write,
+            execute=execute,
+            repo_root=BASE_DIR,
+        )
+        result = runner.run()
+        elapsed = runner.total_elapsed
+        print(f"  Status     : {result.get('status', '?')}")
+        print(f"  Completed  : {result.get('completed', 0)}")
+        print(f"  Failed     : {result.get('failed', 0)}")
+        print(f"  Elapsed    : {elapsed:.2f}s" if elapsed else "  Elapsed    : —")
+        print("[!] Research Only. Not Investment Advice.")
+    except Exception as exc:
+        print(f"  [ERROR] {exc}")
+        import traceback; traceback.print_exc()
+
+
+def cmd_replay_mtf_firewall_check(args) -> None:
+    """Check multi-timeframe future data firewall. [!] Research Only."""
+    session_id = getattr(args, "session_id", None) or ""
+    timestamp = getattr(args, "timestamp", None) or ""
+    print(f"[!] MTF Firewall Check — Research Only | session={session_id} ts={timestamp}")
+    try:
+        from replay.timeframe_future_firewall import MultiTimeframeFutureDataFirewall
+        fw = MultiTimeframeFutureDataFirewall()
+        # Run a test filter to demonstrate the firewall is active
+        test_future = {"timestamp": "9999-12-31", "close": 0.0}
+        test_past = {"timestamp": "2025-01-01T09:00:00", "close": 100.0}
+        res = fw.filter_bars([test_future, test_past], replay_timestamp="2025-01-01T09:05:00", timeframe="M5")
+        filtered_bars = res.get("filtered_bars", res) if isinstance(res, dict) else (res or [])
+        blocked_ct = res.get("blocked_count", 0) if isinstance(res, dict) else (2 - len(filtered_bars))
+        print(f"  Firewall Active           : True")
+        print(f"  Test: past bar allowed    : {len(filtered_bars) >= 1}")
+        print(f"  Test: future bars blocked : {blocked_ct >= 1}")
+        print(f"  Forbidden fields          : forward_return, realized_pnl, hindsight_score, outcome, ...")
+        print("[!] Research Only. Not Investment Advice.")
+    except Exception as exc:
+        print(f"  [ERROR] {exc}")
+        import traceback; traceback.print_exc()
+
+
+def cmd_replay_mtf_pit_check(args) -> None:
+    """Check point-in-time integrity for multi-timeframe snapshot. [!] Research Only."""
+    session_id = getattr(args, "session_id", None) or ""
+    timestamp = getattr(args, "timestamp", None) or ""
+    print(f"[!] MTF Point-in-Time Check — Research Only | session={session_id} ts={timestamp}")
+    try:
+        from replay.timeframe_point_in_time import MultiTimeframePointInTimeVerifier
+        verifier = MultiTimeframePointInTimeVerifier()
+        # verify_multi_snapshot takes a multi_snapshot dict
+        multi_snapshot = {"session_id": session_id, "replay_timestamp": timestamp or "2025-01-01T09:00:00"}
+        result = verifier.verify_multi_snapshot(multi_snapshot=multi_snapshot)
+        print(f"  Verified       : {result.get('all_verified', result.get('verified', '—'))}")
+        print(f"  Blocked TFs    : {result.get('blocked_timeframes', [])}")
+        print(f"  Warnings       : {result.get('warning_count', 0)}")
+        print("[!] Research Only. Not Investment Advice.")
+    except Exception as exc:
+        print(f"  [ERROR] {exc}")
+        import traceback; traceback.print_exc()
+
+
+def cmd_replay_mtf_compare(args) -> None:
+    """Compare two MTF timestamps, timeframes, or sessions. No future reveal. [!] Research Only."""
+    session_a = getattr(args, "session_a", None) or ""
+    session_b = getattr(args, "session_b", None) or ""
+    mode = getattr(args, "mode", None) or "SESSION"
+    print(f"[!] MTF Compare — Research Only | No Future Reveal | mode={mode}")
+    print(f"  A: {session_a}")
+    print(f"  B: {session_b}")
+    try:
+        from replay.timeframe_comparator import MultiTimeframeReplayComparator
+        comparator = MultiTimeframeReplayComparator(repo_root=BASE_DIR)
+        result = comparator.compare_sessions(session_id_a=session_a, session_id_b=session_b)
+        print(f"  Status         : {result.get('status', '?')}")
+        print(f"  No Future Reveal: {result.get('no_future_reveal', True)}")
+        print("[!] Research Only. Not Investment Advice.")
+    except Exception as exc:
+        print(f"  [ERROR] {exc}")
+        import traceback; traceback.print_exc()
+
+
+def cmd_replay_mtf_store_check(args) -> None:
+    """Check multi-timeframe replay store integrity. [!] Research Only."""
+    print("[!] MTF Store Check — Research Only | No Real Orders")
+    try:
+        from replay.timeframe_store import MultiTimeframeReplayStore
+        store = MultiTimeframeReplayStore(repo_root=BASE_DIR)
+        result = store.validate()
+        print(f"  Status         : {result.get('status', '?')}")
+        print(f"  Files          : {result.get('file_count', '—')}")
+        print(f"  Corrupted Lines: {result.get('corrupted_lines', 0)}")
+        print(f"  Recovered      : {result.get('recovered_lines', 0)}")
+        print("[!] Research Only. Not Investment Advice.")
+    except Exception as exc:
+        print(f"  [ERROR] {exc}")
+        import traceback; traceback.print_exc()
+
+
+# ---------------------------------------------------------------------------
 # Entrypoint
 # ---------------------------------------------------------------------------
 
@@ -24752,6 +25206,26 @@ def main() -> None:
         "replay-strategy-timeline-report":    cmd_replay_strategy_timeline_report,
         "replay-strategy-batch-preview":      cmd_replay_strategy_batch_preview,
         "replay-strategy-batch-run":          cmd_replay_strategy_batch_run,
+        # v1.2.5 Multi-Timeframe Replay
+        "replay-timeframe-health":            cmd_replay_timeframe_health,
+        "replay-timeframes":                  cmd_replay_timeframes,
+        "replay-mtf-session-create":          cmd_replay_mtf_session_create,
+        "replay-mtf-snapshot":                cmd_replay_mtf_snapshot,
+        "replay-mtf-next":                    cmd_replay_mtf_next,
+        "replay-mtf-previous":                cmd_replay_mtf_previous,
+        "replay-mtf-jump":                    cmd_replay_mtf_jump,
+        "replay-mtf-agreement":               cmd_replay_mtf_agreement,
+        "replay-mtf-conflicts":               cmd_replay_mtf_conflicts,
+        "replay-mtf-list":                    cmd_replay_mtf_list,
+        "replay-mtf-summary":                 cmd_replay_mtf_summary,
+        "replay-mtf-report":                  cmd_replay_mtf_report,
+        "replay-mtf-timeline-report":         cmd_replay_mtf_timeline_report,
+        "replay-mtf-batch-preview":           cmd_replay_mtf_batch_preview,
+        "replay-mtf-batch-run":               cmd_replay_mtf_batch_run,
+        "replay-mtf-firewall-check":          cmd_replay_mtf_firewall_check,
+        "replay-mtf-pit-check":               cmd_replay_mtf_pit_check,
+        "replay-mtf-compare":                 cmd_replay_mtf_compare,
+        "replay-mtf-store-check":             cmd_replay_mtf_store_check,
         # v1.1.9 Data Governance Stable Rollup
         "governance-rollup-health":          cmd_governance_rollup_health,
         "governance-rollup-run":             cmd_governance_rollup_run,

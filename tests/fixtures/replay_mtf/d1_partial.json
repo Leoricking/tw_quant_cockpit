@@ -1,0 +1,30 @@
+{
+  "_fixture": "d1_partial",
+  "_description": "Partial D1 bar, replay_timestamp intraday, is_partial=true, qualification=PARTIAL_OBSERVATION",
+  "_research_only": true,
+  "_no_real_orders": true,
+  "symbol": "TST",
+  "timeframe": "D1",
+  "timestamp": "2023-01-06T09:00:00",
+  "session_date": "2023-01-06",
+  "open": 100.0,
+  "high": 102.5,
+  "low": 99.0,
+  "close": 101.5,
+  "volume": 30000.0,
+  "amount": 3045000.0,
+  "is_complete": false,
+  "is_partial": true,
+  "source": "DIRECT",
+  "source_timestamp": "2023-01-06T11:00:00",
+  "available_at": "2023-01-06T11:00:00",
+  "point_in_time_verified": true,
+  "qualification": "PARTIAL_OBSERVATION",
+  "replay_timestamp": "2023-01-06T11:00:00",
+  "_notes": [
+    "D1 bar started at 09:00, market closes at 13:30",
+    "At 11:00 replay_timestamp, bar is partial",
+    "close/high/low at 11:00 are NOT confirmed final values",
+    "confirmed_close=false, confirmed_breakout=false"
+  ]
+}

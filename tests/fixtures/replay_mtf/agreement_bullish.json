@@ -1,0 +1,19 @@
+{
+  "_fixture": "agreement_bullish",
+  "_description": "All timeframes bullish, FULL_BULLISH_ALIGNMENT",
+  "_research_only": true,
+  "_no_real_orders": true,
+  "replay_timestamp": "2023-01-06T10:30:00",
+  "symbol": "TST",
+  "timeframes": {
+    "D1":  {"has_data": true, "trend_state": "UPTREND"},
+    "M60": {"has_data": true, "trend_state": "UPTREND"},
+    "M20": {"has_data": true, "trend_state": "UPTREND"},
+    "M5":  {"has_data": true, "trend_state": "UPTREND"},
+    "M1":  {"has_data": true, "trend_state": "UPTREND"}
+  },
+  "expected_agreement_status": "FULL_BULLISH_ALIGNMENT",
+  "expected_no_auto_trade": true,
+  "expected_training_only": true,
+  "_safety": "Agreement for training awareness only. No auto-trade. Not Investment Advice."
+}

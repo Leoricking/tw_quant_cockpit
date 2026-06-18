@@ -1,0 +1,20 @@
+{
+  "_fixture": "alignment_valid",
+  "_description": "Valid multi-timeframe alignment at replay_timestamp",
+  "_research_only": true,
+  "_no_real_orders": true,
+  "replay_timestamp": "2023-01-06T10:30:00",
+  "symbol": "TST",
+  "session_date": "2023-01-06",
+  "timeframes": {
+    "D1": {"status": "ALIGNED", "latest_bar_timestamp": "2023-01-05T13:30:00", "is_complete": true, "qualification": "CONFIRMED"},
+    "M60": {"status": "ALIGNED", "latest_bar_timestamp": "2023-01-06T09:00:00", "is_complete": true, "qualification": "CONFIRMED"},
+    "M20": {"status": "ALIGNED", "latest_bar_timestamp": "2023-01-06T10:20:00", "is_complete": true, "qualification": "CONFIRMED"},
+    "M5": {"status": "ALIGNED", "latest_bar_timestamp": "2023-01-06T10:25:00", "is_complete": true, "qualification": "CONFIRMED"},
+    "M1": {"status": "ALIGNED", "latest_bar_timestamp": "2023-01-06T10:29:00", "is_complete": true, "qualification": "CONFIRMED"}
+  },
+  "alignment_ok": true,
+  "no_future_bars": true,
+  "no_bfill": true,
+  "point_in_time_verified": true
+}

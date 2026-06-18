@@ -52,6 +52,14 @@ class ReplayCheckpoint:
     note: str = ""
     research_only: bool = True
     no_real_orders: bool = True
+    # v1.2.5 MTF checkpoint fields
+    mtf_session_id: Optional[str] = None
+    mtf_replay_timestamp: Optional[str] = None
+    mtf_primary_timeframe: Optional[str] = None
+    mtf_available_timeframes: Optional[List[str]] = None
+    mtf_agreement_status: Optional[str] = None
+    mtf_conflict_count: int = 0
+    mtf_partial_bar_warning: bool = False
 
     def to_dict(self) -> Dict[str, Any]:
         return {
@@ -71,6 +79,14 @@ class ReplayCheckpoint:
             "note": self.note,
             "research_only": True,
             "no_real_orders": True,
+            # v1.2.5 MTF fields
+            "mtf_session_id": self.mtf_session_id,
+            "mtf_replay_timestamp": self.mtf_replay_timestamp,
+            "mtf_primary_timeframe": self.mtf_primary_timeframe,
+            "mtf_available_timeframes": self.mtf_available_timeframes or [],
+            "mtf_agreement_status": self.mtf_agreement_status,
+            "mtf_conflict_count": self.mtf_conflict_count,
+            "mtf_partial_bar_warning": self.mtf_partial_bar_warning,
         }
 
     @classmethod
@@ -92,6 +108,14 @@ class ReplayCheckpoint:
             note=d.get("note", ""),
             research_only=True,
             no_real_orders=True,
+            # v1.2.5 MTF fields
+            mtf_session_id=d.get("mtf_session_id"),
+            mtf_replay_timestamp=d.get("mtf_replay_timestamp"),
+            mtf_primary_timeframe=d.get("mtf_primary_timeframe"),
+            mtf_available_timeframes=d.get("mtf_available_timeframes"),
+            mtf_agreement_status=d.get("mtf_agreement_status"),
+            mtf_conflict_count=int(d.get("mtf_conflict_count", 0)),
+            mtf_partial_bar_warning=bool(d.get("mtf_partial_bar_warning", False)),
         )
 
 

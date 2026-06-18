@@ -1,0 +1,21 @@
+{
+  "_fixture": "conflict_daily_intraday",
+  "_description": "Daily bullish / intraday bearish conflict",
+  "_research_only": true,
+  "_no_real_orders": true,
+  "replay_timestamp": "2023-01-06T10:30:00",
+  "symbol": "TST",
+  "timeframes": {
+    "D1":  {"has_data": true, "trend_state": "UPTREND"},
+    "M60": {"has_data": true, "trend_state": "DOWNTREND"},
+    "M20": {"has_data": true, "trend_state": "DOWNTREND"},
+    "M5":  {"has_data": true, "trend_state": "DOWNTREND"},
+    "M1":  {"has_data": false, "trend_state": "UNKNOWN"}
+  },
+  "expected_conflict_type": "DAILY_BULLISH_INTRADAY_BEARISH",
+  "expected_needs_review": true,
+  "expected_auto_block": false,
+  "expected_auto_decision": false,
+  "expected_auto_trade": false,
+  "_notes": "Conflict → NEEDS_REVIEW only. Cannot auto-block. Cannot auto-decide."
+}

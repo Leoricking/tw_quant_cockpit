@@ -1499,6 +1499,37 @@ class ResearchCockpitStableChecklist:
         except Exception as exc:
             checks.append(_mk("strategy_rule_review_no_auto_confirm", "replay_strategy_knowledge", "WARN", str(exc)))
 
+        # v1.2.5 Multi-Timeframe Replay checks
+        try:
+            from release.version_info import MULTI_TIMEFRAME_REPLAY_AVAILABLE, MTF_NO_FUTURE_KLINES
+            from release.version_info import MTF_AUTO_TRADE_ENABLED, MTF_AUTO_BLOCK_ENABLED
+            ok = (MULTI_TIMEFRAME_REPLAY_AVAILABLE
+                  and MTF_NO_FUTURE_KLINES
+                  and not MTF_AUTO_TRADE_ENABLED
+                  and not MTF_AUTO_BLOCK_ENABLED)
+            checks.append(_mk("mtf_replay_v125_safe", "replay_multi_timeframe",
+                              "PASS" if ok else "FAIL",
+                              f"MTF_AVAILABLE={MULTI_TIMEFRAME_REPLAY_AVAILABLE}, "
+                              f"NO_FUTURE_KLINES={MTF_NO_FUTURE_KLINES}, "
+                              f"AUTO_TRADE={MTF_AUTO_TRADE_ENABLED}, "
+                              f"AUTO_BLOCK={MTF_AUTO_BLOCK_ENABLED}"))
+        except Exception as exc:
+            checks.append(_mk("mtf_replay_v125_safe", "replay_multi_timeframe", "WARN", str(exc)))
+        try:
+            from replay.timeframe_future_firewall import MultiTimeframeFutureDataFirewall
+            fw = MultiTimeframeFutureDataFirewall()
+            future_bar = {"timestamp": "9999-12-31T23:59:59", "close": 999.0}
+            result = fw.filter_bars([future_bar], replay_timestamp="2025-01-01T09:00:00", timeframe="M5")
+            if isinstance(result, dict):
+                filtered = result.get("filtered_bars", [])
+            else:
+                filtered = result or []
+            checks.append(_mk("mtf_future_firewall_active", "replay_multi_timeframe",
+                              "PASS" if not filtered else "FAIL",
+                              f"future bar blocked={not bool(filtered)}"))
+        except Exception as exc:
+            checks.append(_mk("mtf_future_firewall_active", "replay_multi_timeframe", "WARN", str(exc)))
+
         # Rebuild summary counts to include new checks
         total         = len(checks)
         pass_count    = sum(1 for c in checks if c["status"] == "PASS")

@@ -1,0 +1,16 @@
+{
+  "_fixture": "alignment_future",
+  "_description": "Alignment with future bar leak, should BLOCK",
+  "_research_only": true,
+  "_no_real_orders": true,
+  "_expected_result": "BLOCKED",
+  "replay_timestamp": "2023-01-06T09:30:00",
+  "symbol": "TST",
+  "timeframes": {
+    "M5": {"status": "BLOCKED", "bar_timestamp": "2023-01-06T10:00:00", "violation": "future bar: 10:00 > replay 09:30"},
+    "M1": {"status": "BLOCKED", "bar_timestamp": "2023-01-06T11:00:00", "violation": "future bar: 11:00 > replay 09:30"}
+  },
+  "alignment_ok": false,
+  "future_bars_detected": true,
+  "point_in_time_verified": false
+}

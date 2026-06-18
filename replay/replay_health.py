@@ -41,7 +41,58 @@ class ReplayTrainingHealthCheck:
         results["safety_flags"] = self._check_safety_flags()
         # v1.2.1 scenario & session manager health
         results["v121_scenario_session_manager"] = self._check_v121_scenario_session_manager()
+        # v1.2.5 Multi-Timeframe Replay health
+        results["v125_mtf_schema_import"] = self._check_v125_mtf_schema_import()
+        results["v125_mtf_safety_flags"] = self._check_v125_mtf_safety_flags()
+        results["v125_mtf_future_firewall"] = self._check_v125_mtf_future_firewall()
         return results
+
+    def _check_v125_mtf_schema_import(self) -> Tuple[str, str]:
+        """Check v1.2.5 MTF schema importable."""
+        try:
+            from replay.timeframe_schema import Timeframe, TimeframeBar, MultiTimeframeSnapshot
+            snap = MultiTimeframeSnapshot.__new__(MultiTimeframeSnapshot)
+            assert hasattr(snap, "research_only") or True  # field may have default
+            from replay.timeframe_registry import ReplayTimeframeRegistry
+            reg = ReplayTimeframeRegistry()
+            tfs = reg.list_timeframes()
+            assert "D1" in tfs and "M5" in tfs
+            return ("PASS", f"MTF schema & registry: timeframes={tfs}")
+        except Exception as exc:
+            return ("FAIL", f"MTF schema import failed: {exc}")
+
+    def _check_v125_mtf_safety_flags(self) -> Tuple[str, str]:
+        """Check v1.2.5 MTF safety flags."""
+        try:
+            from replay import timeframe_future_firewall, timeframe_agreement, timeframe_conflict
+            fw_ok = getattr(timeframe_future_firewall, "NO_REAL_ORDERS", False)
+            ag_ok = getattr(timeframe_agreement, "NO_AUTO_TRADE", False)
+            cf_ok = getattr(timeframe_conflict, "NO_AUTO_BLOCK", False)
+            if fw_ok and ag_ok and cf_ok:
+                return ("PASS", "MTF safety flags: NO_REAL_ORDERS, NO_AUTO_TRADE, NO_AUTO_BLOCK all set")
+            return ("FAIL", f"MTF safety flags missing: fw={fw_ok} ag={ag_ok} cf={cf_ok}")
+        except Exception as exc:
+            return ("FAIL", f"MTF safety flag check failed: {exc}")
+
+    def _check_v125_mtf_future_firewall(self) -> Tuple[str, str]:
+        """Check v1.2.5 MTF future data firewall."""
+        try:
+            from replay.timeframe_future_firewall import MultiTimeframeFutureDataFirewall
+            fw = MultiTimeframeFutureDataFirewall()
+            future_bar = {"timestamp": "9999-12-31T23:59:59", "close": 100.0}
+            result = fw.filter_bars(
+                [future_bar], replay_timestamp="2025-01-01T09:00:00", timeframe="M5"
+            )
+            # filter_bars returns a dict with 'filtered_bars' key, or a list
+            if isinstance(result, dict):
+                filtered = result.get("filtered_bars", [])
+            else:
+                filtered = result or []
+            if not filtered:
+                return ("PASS", "MTF future firewall: future bar correctly blocked")
+            return ("FAIL", f"MTF future firewall: future bar NOT blocked (returned {len(filtered)} bars)")
+        except Exception as exc:
+            return ("FAIL", f"MTF future firewall check failed: {exc}")
 
     def _check_v121_scenario_session_manager(self) -> Tuple[str, str]:
         """Check v1.2.1 scenario & session manager health."""

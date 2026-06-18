@@ -615,6 +615,18 @@ class DecisionJournalEntry:
     strategy_agreement_at_decision: Optional[float] = None
     strategy_conflicts_at_decision: Optional[list] = None
     strategy_rule_review_ids: List[str] = field(default_factory=list)
+    # v1.2.5 MTF journal fields — all with defaults for backward compat
+    mtf_session_id: Optional[str] = None
+    mtf_replay_timestamp: Optional[str] = None
+    mtf_primary_timeframe: Optional[str] = None
+    mtf_trigger_timeframe: Optional[str] = None
+    mtf_available_timeframes: Optional[List[str]] = None
+    mtf_agreement_status: Optional[str] = None
+    mtf_agreement_score: Optional[float] = None
+    mtf_conflict_count: int = 0
+    mtf_conflicts_at_decision: Optional[List[dict]] = None
+    mtf_partial_bar_warning: bool = False
+    mtf_point_in_time_verified: bool = False
 
     def to_dict(self) -> Dict[str, Any]:
         return {

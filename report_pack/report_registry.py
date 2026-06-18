@@ -131,6 +131,10 @@ REPORT_REPLAY_MISTAKE_TAXONOMY         = "replay_mistake_taxonomy_report"
 REPORT_REPLAY_STRATEGY_KNOWLEDGE       = "replay_strategy_knowledge_report"
 REPORT_REPLAY_STRATEGY_TIMELINE        = "replay_strategy_timeline_report"
 REPORT_REPLAY_STRATEGY_SUMMARY         = "replay_strategy_summary_report"
+# v1.2.5 Multi-Timeframe Replay
+REPORT_REPLAY_MULTI_TIMEFRAME          = "replay_multi_timeframe_report"
+REPORT_REPLAY_MTF_TIMELINE             = "replay_multi_timeframe_timeline_report"
+REPORT_REPLAY_MTF_SUMMARY              = "replay_multi_timeframe_summary_report"
 
 logger = logging.getLogger(__name__)
 

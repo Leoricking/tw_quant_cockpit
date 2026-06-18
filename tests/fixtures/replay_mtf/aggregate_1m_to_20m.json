@@ -1,0 +1,17 @@
+{
+  "_fixture": "aggregate_1m_to_20m",
+  "_description": "20 1m bars that aggregate to 1 20m bar",
+  "_research_only": true,
+  "_no_real_orders": true,
+  "source_timeframe": "M1",
+  "target_timeframe": "M20",
+  "bar_count": 20,
+  "first_bar": {"timestamp": "2023-01-06T09:00:00", "open": 100.0},
+  "expected_result": {
+    "source": "AGGREGATED_FROM_M1",
+    "is_complete": true,
+    "qualification": "CONFIRMED",
+    "ohlc_rules": "open=first, high=max, low=min, close=last",
+    "volume_rule": "sum"
+  }
+}

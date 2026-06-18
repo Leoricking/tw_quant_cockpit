@@ -1,0 +1,14 @@
+{
+  "_fixture": "aggregate_1m_to_60m",
+  "_description": "60 1m bars that aggregate to 1 60m bar",
+  "_research_only": true,
+  "_no_real_orders": true,
+  "source_timeframe": "M1",
+  "target_timeframe": "M60",
+  "bar_count": 60,
+  "expected_result": {
+    "source": "AGGREGATED_FROM_M1",
+    "is_complete": true,
+    "qualification": "CONFIRMED"
+  }
+}

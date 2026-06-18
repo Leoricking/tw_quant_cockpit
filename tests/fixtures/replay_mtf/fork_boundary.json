@@ -1,0 +1,21 @@
+{
+  "_fixture": "fork_boundary",
+  "_description": "Fork state, no post-fork timeframe bars",
+  "_research_only": true,
+  "_no_real_orders": true,
+  "fork_id": "FRK-TEST001",
+  "parent_session_id": "MTF-PARENT001",
+  "fork_session_id": "MTF-FORK001",
+  "fork_timestamp": "2023-01-06T10:00:00",
+  "no_post_fork_bars": true,
+  "copied_timeframes": {
+    "D1": "pre-fork only",
+    "M60": "pre-fork only",
+    "M5": "pre-fork only"
+  },
+  "_notes": [
+    "Fork copies only pre-fork timeframe bars",
+    "No post-fork data embedded in fork",
+    "Each timeframe boundary verified independently"
+  ]
+}

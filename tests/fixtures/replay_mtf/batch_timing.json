@@ -1,0 +1,29 @@
+{
+  "_fixture": "batch_timing",
+  "_description": "Batch run with timing metadata",
+  "_research_only": true,
+  "_no_real_orders": true,
+  "batch_id": "BAT-TEST001",
+  "status": "COMPLETED",
+  "items_total": 5,
+  "items_completed": 5,
+  "items_failed": 0,
+  "items_skipped": 0,
+  "items_cancelled": 0,
+  "total_elapsed": "00:02",
+  "average_per_item": "00:00",
+  "estimated_remaining": "00:00",
+  "timing": {
+    "clock_type": "monotonic for duration, wall for display",
+    "paused_time_excluded": true,
+    "cancelled_elapsed_preserved": true
+  },
+  "auto_play": false,
+  "auto_decision": false,
+  "auto_journal": false,
+  "auto_score": false,
+  "auto_reveal": false,
+  "auto_trade": false,
+  "research_only": true,
+  "no_real_orders": true
+}

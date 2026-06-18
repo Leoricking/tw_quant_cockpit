@@ -1,0 +1,17 @@
+{
+  "_fixture": "agreement_mixed",
+  "_description": "Mixed alignment, MIXED_STRUCTURE",
+  "_research_only": true,
+  "_no_real_orders": true,
+  "replay_timestamp": "2023-01-06T10:30:00",
+  "symbol": "TST",
+  "timeframes": {
+    "D1":  {"has_data": true, "trend_state": "UPTREND"},
+    "M60": {"has_data": true, "trend_state": "SIDEWAYS"},
+    "M20": {"has_data": true, "trend_state": "DOWNTREND"},
+    "M5":  {"has_data": true, "trend_state": "UPTREND"},
+    "M1":  {"has_data": true, "trend_state": "DOWNTREND"}
+  },
+  "expected_agreement_status": "MIXED_STRUCTURE",
+  "expected_no_auto_trade": true
+}

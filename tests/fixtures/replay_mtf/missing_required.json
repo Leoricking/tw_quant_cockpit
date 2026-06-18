@@ -1,0 +1,15 @@
+{
+  "_fixture": "missing_required",
+  "_description": "Required timeframe missing, BLOCKED",
+  "_research_only": true,
+  "_no_real_orders": true,
+  "replay_timestamp": "2023-01-06T10:30:00",
+  "symbol": "TST",
+  "required_timeframes": ["D1", "M5"],
+  "optional_timeframes": ["M60", "M20", "M1"],
+  "available_timeframes": ["M60", "M20", "M1"],
+  "missing_required_timeframes": ["D1", "M5"],
+  "expected_status": "BLOCKED",
+  "expected_blocked": true,
+  "_notes": "Required timeframes D1 and M5 missing — session BLOCKED for those timeframes."
+}

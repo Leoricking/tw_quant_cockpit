@@ -590,6 +590,32 @@ class GovernanceAlertDetector:
             logger.debug("detect_from_research_registry failed (non-fatal): %s", exc)
         return alerts
 
+    def detect_from_mtf_replay(self) -> List:
+        """Detect alerts from multi-timeframe replay module. [!] Research Only."""
+        from governance_alerts.alert_schema import GovernanceAlert
+        from governance_alerts.alert_policy import GovernanceAlertPolicy
+        alerts = []
+        policy = GovernanceAlertPolicy()
+        try:
+            from replay.timeframe_health import run_health_check
+            results = run_health_check()
+            failed = [r for r in results if r.get("status") == "FAIL"]
+            for r in failed:
+                check_name = r.get("check", r.get("name", "unknown"))
+                detail = r.get("detail", "")
+                alert_type = "MTF_STORE_CORRUPTED" if "store" in check_name.lower() else "MTF_FUTURE_KLINE_DETECTED"
+                alert = self.build_alert(
+                    alert_type=alert_type,
+                    title=f"MTF health check FAILED: {check_name}",
+                    message=f"MTF replay health check {check_name} failed. {detail}",
+                    reason_codes=["MTF_HEALTH_FAIL"],
+                    policy=policy,
+                )
+                alerts.append(alert)
+        except Exception as exc:
+            logger.debug("detect_from_mtf_replay failed (non-fatal): %s", exc)
+        return alerts
+
     def summarize_detection(self, alerts: List) -> dict:
         if not alerts:
             return {

@@ -162,6 +162,9 @@ if _PYSIDE6_OK:
             # H. Drill table
             inner_layout.addWidget(self._build_drill_table())
 
+            # I. Multi-timeframe Replay Context
+            inner_layout.addWidget(self._build_mtf_panel())
+
             # Journal/Coach panel
             inner_layout.addWidget(self._build_journal_panel())
 
@@ -478,6 +481,58 @@ if _PYSIDE6_OK:
 
             layout.addWidget(self._drill_table)
             layout.addWidget(self._drill_empty_label)
+            return box
+
+        def _build_mtf_panel(self) -> QGroupBox:
+            box    = QGroupBox("I. Multi-Timeframe Replay Context — Research Only / No Auto-Trade")
+            layout = QVBoxLayout(box)
+
+            row1 = QHBoxLayout()
+            row1.addWidget(QLabel("Replay Timestamp:"))
+            self._mtf_timestamp_label = QLabel("—")
+            self._mtf_timestamp_label.setStyleSheet("color: #4fc3f7; font-family: monospace;")
+            row1.addWidget(self._mtf_timestamp_label)
+            row1.addSpacing(16)
+            row1.addWidget(QLabel("Primary TF:"))
+            self._mtf_primary_tf_label = QLabel("—")
+            self._mtf_primary_tf_label.setStyleSheet("color: #a5d6a7;")
+            row1.addWidget(self._mtf_primary_tf_label)
+            row1.addSpacing(16)
+            row1.addWidget(QLabel("Trigger TF:"))
+            self._mtf_trigger_tf_label = QLabel("—")
+            self._mtf_trigger_tf_label.setStyleSheet("color: #a5d6a7;")
+            row1.addWidget(self._mtf_trigger_tf_label)
+            row1.addStretch()
+            layout.addLayout(row1)
+
+            row2 = QHBoxLayout()
+            row2.addWidget(QLabel("Available TFs:"))
+            self._mtf_available_tfs_label = QLabel("—")
+            self._mtf_available_tfs_label.setStyleSheet("color: #fff176;")
+            row2.addWidget(self._mtf_available_tfs_label)
+            row2.addSpacing(16)
+            row2.addWidget(QLabel("Agreement:"))
+            self._mtf_agreement_label = QLabel("—")
+            self._mtf_agreement_label.setStyleSheet("color: #80cbc4;")
+            row2.addWidget(self._mtf_agreement_label)
+            row2.addSpacing(16)
+            row2.addWidget(QLabel("Conflicts:"))
+            self._mtf_conflicts_label = QLabel("—")
+            self._mtf_conflicts_label.setStyleSheet("color: #ef9a9a;")
+            row2.addWidget(self._mtf_conflicts_label)
+            row2.addStretch()
+            layout.addLayout(row2)
+
+            row3 = QHBoxLayout()
+            self._mtf_partial_bar_warning = QLabel("")
+            self._mtf_partial_bar_warning.setStyleSheet("color: #ff8a65; font-weight: bold;")
+            row3.addWidget(self._mtf_partial_bar_warning)
+            row3.addStretch()
+            self._open_mtf_btn = QPushButton("Open Multi-timeframe Replay")
+            self._open_mtf_btn.clicked.connect(self._on_open_mtf_replay)
+            row3.addWidget(self._open_mtf_btn)
+            layout.addLayout(row3)
+
             return box
 
         def _build_journal_panel(self) -> QGroupBox:
@@ -876,6 +931,40 @@ if _PYSIDE6_OK:
             result = self._adapter.export_to_journal(self._session_id)
             status = result.get("status", "unknown")
             self._journal_status_label.setText(f"Journal: {status}")
+
+        def _on_open_mtf_replay(self):
+            try:
+                from gui.replay_multi_timeframe_panel import ReplayMultiTimeframePanel
+                symbol = self._symbol_edit.text().strip() or "2454"
+                trade_date = self._date_edit.date().toString("yyyy-MM-dd")
+                panel = ReplayMultiTimeframePanel(symbol=symbol, trade_date=trade_date, parent=None)
+                panel.show()
+            except Exception as exc:
+                if _PYSIDE6_OK:
+                    from PySide6.QtWidgets import QMessageBox
+                    QMessageBox.information(
+                        self, "Multi-timeframe Replay",
+                        f"[Research Only] MTF panel: {exc}"
+                    )
+
+        def update_mtf_context(self, context: dict) -> None:
+            """Update MTF display fields from a MultiTimeframeReplaySession context dict."""
+            self._mtf_timestamp_label.setText(str(context.get("replay_timestamp", "—")))
+            self._mtf_primary_tf_label.setText(str(context.get("primary_timeframe", "—")))
+            self._mtf_trigger_tf_label.setText(str(context.get("trigger_timeframe", "—")))
+            available = context.get("available_timeframes", [])
+            self._mtf_available_tfs_label.setText(", ".join(available) if available else "—")
+            agreement = context.get("agreement", {})
+            self._mtf_agreement_label.setText(str(agreement.get("status", "—")))
+            conflicts = context.get("conflicts", [])
+            self._mtf_conflicts_label.setText(str(len(conflicts)) if isinstance(conflicts, list) else "—")
+            partial_warns = context.get("partial_bar_warnings", [])
+            if partial_warns:
+                self._mtf_partial_bar_warning.setText(
+                    "[!] Partial Bar: " + "; ".join(str(w) for w in partial_warns[:2])
+                )
+            else:
+                self._mtf_partial_bar_warning.setText("")
 
         def _on_refresh(self):
             self._update_bar_table()

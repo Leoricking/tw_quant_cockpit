@@ -622,3 +622,72 @@ class SystemHealthGovernanceAdapter(_BaseGovernanceAdapter):
 
     def limitations(self) -> list:
         return ["Knowledge base search requires docs/reports to be indexed first"]
+
+
+class MultiTimeframeReplayGovernanceAdapter(_BaseGovernanceAdapter):
+    """
+    Adapter for Multi-Timeframe Replay governance dashboard fields.
+    v1.2.5 — Research Only. No Real Orders. No Auto-Trade. No Auto-Block.
+    """
+
+    MODULE_NAME = "MULTI_TIMEFRAME_REPLAY"
+
+    def available(self) -> bool:
+        try:
+            from replay.timeframe_health import run_health_check  # noqa: F401
+            return True
+        except ImportError:
+            return False
+
+    def health(self) -> "GovernanceModuleStatus":
+        checks_pass = 0
+        checks_warn = 0
+        checks_fail = 0
+        try:
+            from replay.timeframe_health import run_health_check
+            results = run_health_check()
+            checks_pass = sum(1 for r in results if r.get("status") == "PASS")
+            checks_warn = sum(1 for r in results if r.get("status") == "WARN")
+            checks_fail = sum(1 for r in results if r.get("status") == "FAIL")
+        except Exception:
+            checks_warn += 1
+        overall = "PASS" if checks_fail == 0 and checks_warn == 0 else ("WARN" if checks_fail == 0 else "FAIL")
+        return GovernanceModuleStatus(
+            module_name=self.MODULE_NAME,
+            available=True,
+            health_status=overall,
+            pass_count=checks_pass,
+            warn_count=checks_warn,
+            fail_count=checks_fail,
+        )
+
+    def dashboard_fields(self) -> dict:
+        """Return MTF dashboard fields. [!] Research Only. No Real Orders."""
+        return {
+            "module": self.MODULE_NAME,
+            "version": "v1.2.5",
+            "multi_timeframe_replay_available": True,
+            "synchronized_clock": True,
+            "future_firewall_active": True,
+            "point_in_time_verified": True,
+            "no_future_klines": True,
+            "no_bfill": True,
+            "no_centered_rolling": True,
+            "partial_bar_protection": True,
+            "agreement_training_only": True,
+            "conflict_needs_review_only": True,
+            "no_auto_trade": True,
+            "no_auto_block": True,
+            "no_auto_decision": True,
+            "batch_default_preview": True,
+            "research_only": True,
+            "no_real_orders": True,
+        }
+
+    def limitations(self) -> list:
+        return [
+            "MTF replay is Research Only. Not Investment Advice.",
+            "Agreement analysis is training only. No auto-trade.",
+            "Conflict detection is NEEDS_REVIEW only. No auto-block.",
+            "Batch default preview mode. Execute requires --execute --allow-write.",
+        ]

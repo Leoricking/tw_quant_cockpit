@@ -1,0 +1,3 @@
+{"snapshot_id": "SNP-001", "session_id": "S1", "symbol": "TST", "timeframe": "M5", "replay_timestamp": "2023-01-06T09:05:00", "research_only": true, "no_real_orders": true}
+{"snapshot_id": "SNP-002", "session_id": "S1", "symbol": "TST", "timeframe": "M5", "replay_timestamp": "2023-01-06T09:10:00", "research_only": true, "no_real_orders": true}
+{"snapshot_id": "SNP-003", "session_id": "S1", "symbol": "TST", "timeframe": "D1", "replay_timestamp": "2023-01-06T09:10:00", "research_only": true, "no_real_orders": true}

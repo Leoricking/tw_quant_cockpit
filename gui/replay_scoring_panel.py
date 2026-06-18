@@ -1,5 +1,5 @@
 """
-gui/replay_scoring_panel.py — Replay Scoring Panel for v1.2.3
+gui/replay_scoring_panel.py — Replay Scoring Panel for v1.2.5
 
 [!] Research Only. No Real Orders. Replay Training Only.
 [!] Scoring NEVER triggers paper orders or broker execution.
@@ -86,7 +86,7 @@ if _QT_AVAILABLE:
             layout.addWidget(banner)
 
             # Header
-            header = QLabel("Replay Scoring & Mistake Taxonomy v1.2.3")
+            header = QLabel("Replay Scoring & Mistake Taxonomy v1.2.5")
             font = QFont()
             font.setPointSize(12)
             font.setBold(True)
@@ -174,3 +174,33 @@ if _QT_AVAILABLE:
 
         def set_session_id(self, session_id: str) -> None:
             self._session_id = session_id
+
+        def update_mtf_scoring_context(self, mtf_context: dict) -> None:
+            """
+            Update MTF scoring components display.
+            Shows agreement score, conflict score, per-TF scoring, partial bar penalty notes.
+            [!] Research Only. Scoring triggers no orders.
+            """
+            try:
+                agreement = mtf_context.get("agreement", {})
+                conflicts = mtf_context.get("conflicts", [])
+                partial_warns = mtf_context.get("partial_bar_warnings", [])
+
+                lines = [
+                    "[MTF Scoring Context — Research Only / No Real Orders]",
+                    f"Agreement: {agreement.get('status', '—')}  "
+                    f"(agreement_score={agreement.get('agreement_score', '—')}, "
+                    f"conflict_score={agreement.get('conflict_score', '—')})",
+                    f"Conflicts detected: {len(conflicts) if isinstance(conflicts, list) else '—'}",
+                ]
+                if partial_warns:
+                    lines.append(
+                        "[!] Partial Bar Warnings: " + "; ".join(str(w) for w in partial_warns[:3])
+                    )
+                available = mtf_context.get("available_timeframes", [])
+                if available:
+                    lines.append(f"Available TFs for scoring: {', '.join(available)}")
+                lines.append("[Scoring NEVER Triggers Orders]")
+                self._output.setPlainText("\n".join(lines))
+            except Exception as exc:
+                logger.warning("[ReplayScoringPanel] update_mtf_scoring_context: %s", exc)

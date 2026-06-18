@@ -1,5 +1,5 @@
 """
-gui/replay_session_manager_panel.py — ReplaySessionManagerPanel v1.2.1
+gui/replay_session_manager_panel.py — ReplaySessionManagerPanel v1.2.5
 
 [!] Replay Training Only. Research Only. No Real Orders. Production Trading: BLOCKED.
 [!] No Auto Play All. No Auto Decision. No Auto Score. No Buy/Sell Order. No Broker Login.
@@ -109,9 +109,12 @@ if _PYSIDE6_OK:
             filter_row.addStretch()
             layout.addLayout(filter_row)
 
-            # Session table
-            self._table = QTableWidget(0, 6)
-            self._table.setHorizontalHeaderLabels(["Session ID", "Name", "Symbol", "Status", "Scenario", "Qualification"])
+            # Session table (with MTF columns)
+            self._table = QTableWidget(0, 9)
+            self._table.setHorizontalHeaderLabels([
+                "Session ID", "Name", "Symbol", "Status", "Scenario", "Qualification",
+                "Primary TF", "Available TFs", "MTF Status",
+            ])
             self._table.horizontalHeader().setSectionResizeMode(QHeaderView.Stretch)
             self._table.setSelectionBehavior(QTableWidget.SelectRows)
             self._table.selectionModel().selectionChanged.connect(self._on_selection_changed)
@@ -155,6 +158,27 @@ if _PYSIDE6_OK:
 
             layout.addLayout(btn_row)
 
+            # Multi-timeframe tab
+            mtf_tabs = QTabWidget()
+            mtf_tab = QWidget()
+            mtf_tab_layout = QVBoxLayout(mtf_tab)
+            mtf_info = QLabel(
+                "Multi-Timeframe Replay Sessions\n"
+                "D1 / M60 / M20 / M5 / M1 — Point-in-Time Verified\n"
+                "[!] Research Only. No Real Orders. No Auto-Trade.\n"
+                "Use: python main.py replay-mtf-list --symbol <SYM> --date <DATE>"
+            )
+            mtf_info.setWordWrap(True)
+            mtf_info.setStyleSheet("color: #90caf9; padding: 8px; font-family: monospace;")
+            mtf_tab_layout.addWidget(mtf_info)
+            self._mtf_detail_text = QTextEdit()
+            self._mtf_detail_text.setReadOnly(True)
+            self._mtf_detail_text.setMaximumHeight(120)
+            self._mtf_detail_text.setPlaceholderText("MTF session details will appear here...")
+            mtf_tab_layout.addWidget(self._mtf_detail_text)
+            mtf_tabs.addTab(mtf_tab, "Multi-Timeframe")
+            layout.addWidget(mtf_tabs)
+
             self._status_label = QLabel("Ready — Research Only | No Real Orders")
             layout.addWidget(self._status_label)
 
@@ -189,6 +213,7 @@ if _PYSIDE6_OK:
             self._table.setRowCount(0)
             for row_idx, s in enumerate(sessions):
                 state = s.get("_state", {})
+                mtf = s.get("multi_timeframe", {})
                 self._table.insertRow(row_idx)
                 self._table.setItem(row_idx, 0, QTableWidgetItem(s.get("session_id", "")[:24]))
                 self._table.setItem(row_idx, 1, QTableWidgetItem(s.get("session_name", "")[:24]))
@@ -196,6 +221,11 @@ if _PYSIDE6_OK:
                 self._table.setItem(row_idx, 3, QTableWidgetItem(state.get("status", "")))
                 self._table.setItem(row_idx, 4, QTableWidgetItem(s.get("scenario_id", "N/A")))
                 self._table.setItem(row_idx, 5, QTableWidgetItem(state.get("qualification", "")))
+                # MTF columns
+                self._table.setItem(row_idx, 6, QTableWidgetItem(mtf.get("primary_timeframe", "—")))
+                available = mtf.get("available_timeframes", [])
+                self._table.setItem(row_idx, 7, QTableWidgetItem(", ".join(available) if available else "—"))
+                self._table.setItem(row_idx, 8, QTableWidgetItem(mtf.get("status", "—")))
 
         def _get_selected_session_id(self):
             row = self._table.currentRow()

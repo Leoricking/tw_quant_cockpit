@@ -84,6 +84,10 @@ from report_pack.report_registry import (
     REPORT_REPLAY_STRATEGY_KNOWLEDGE,
     REPORT_REPLAY_STRATEGY_TIMELINE,
     REPORT_REPLAY_STRATEGY_SUMMARY,
+    # v1.2.5 Multi-Timeframe Replay
+    REPORT_REPLAY_MULTI_TIMEFRAME,
+    REPORT_REPLAY_MTF_TIMELINE,
+    REPORT_REPLAY_MTF_SUMMARY,
 )
 
 logger = logging.getLogger(__name__)
@@ -277,6 +281,20 @@ _REPORT_PATTERNS = {
     ],
     REPORT_REPLAY_STRATEGY_SUMMARY: [
         "reports/replay_strategy_summary_report_*.md",
+    ],
+    # v1.2.5 Multi-Timeframe Replay
+    REPORT_REPLAY_MULTI_TIMEFRAME: [
+        "reports/replay_multi_timeframe_report_*.md",
+        "data/replay_timeframes/multi_snapshots.jsonl",
+        "data/replay_timeframes/timeframe_agreements.jsonl",
+        "data/replay_timeframes/timeframe_conflicts.jsonl",
+    ],
+    REPORT_REPLAY_MTF_TIMELINE: [
+        "reports/replay_multi_timeframe_timeline_report_*.md",
+        "data/replay_timeframes/timeline_events.jsonl",
+    ],
+    REPORT_REPLAY_MTF_SUMMARY: [
+        "reports/replay_multi_timeframe_summary_report_*.md",
     ],
     # v0.9.0.1 Crash Reversal & Risk Discipline Strategy Pack
     REPORT_CRASH_REVERSAL: [

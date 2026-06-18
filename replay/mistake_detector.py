@@ -352,6 +352,53 @@ class ReplayMistakeDetector:
                     auto_confirmed=False,
                 ))
 
+        # v1.2.5 MTF mistake types (SUGGESTED only — never auto-confirmed)
+        mtf_agreement = entry.get("mtf_agreement_status")
+        mtf_conflicts = entry.get("mtf_conflicts_at_decision") or []
+        mtf_partial = entry.get("mtf_partial_bar_warning", False)
+
+        if mtf_partial and action not in ("WAIT", "SKIP", "REDUCE", "PASS"):
+            mistakes.append(MistakeRecord(
+                mistake_id=_new_mistake_id(),
+                session_id=session_id,
+                journal_entry_id=entry.get("journal_entry_id"),
+                decision_id=entry.get("decision_id"),
+                symbol=symbol,
+                replay_date=replay_date,
+                mistake_type="MTF_PARTIAL_BAR_NOT_ACKNOWLEDGED",
+                category="MTF",
+                description="Decision made without acknowledging active partial bar warning.",
+                evidence=["mtf_partial_bar_warning=True was present at decision time"],
+                confidence=40,
+                severity=MistakeSeverity.LOW.value,
+                status=MistakeStatus.SUGGESTED.value,
+                source=MistakeSource.RULE_SUGGESTED.value,
+                action=action,
+                is_wait_or_skip=False,
+                auto_confirmed=False,
+            ))
+
+        if mtf_conflicts and len(mtf_conflicts) >= 3 and action not in ("WAIT", "SKIP"):
+            mistakes.append(MistakeRecord(
+                mistake_id=_new_mistake_id(),
+                session_id=session_id,
+                journal_entry_id=entry.get("journal_entry_id"),
+                decision_id=entry.get("decision_id"),
+                symbol=symbol,
+                replay_date=replay_date,
+                mistake_type="MTF_HIGH_CONFLICT_NOT_REVIEWED",
+                category="MTF",
+                description="Multiple MTF conflicts present but decision taken without WAIT/SKIP.",
+                evidence=[f"mtf_conflict_count={len(mtf_conflicts)}"],
+                confidence=40,
+                severity=MistakeSeverity.LOW.value,
+                status=MistakeStatus.SUGGESTED.value,
+                source=MistakeSource.RULE_SUGGESTED.value,
+                action=action,
+                is_wait_or_skip=False,
+                auto_confirmed=False,
+            ))
+
         # Ensure none are auto-confirmed
         for m in mistakes:
             m.auto_confirmed = False

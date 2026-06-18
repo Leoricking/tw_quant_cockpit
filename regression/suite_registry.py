@@ -4541,6 +4541,39 @@ class RegressionSuiteRegistry:
                     description="safety-scan all passes after v1.2.4",
                 ),
             ],
+            # v1.2.5 Multi-Timeframe Replay
+            [
+                RegressionTestCase(
+                    test_id="rg_replay_mtf_health_v125",
+                    name="replay-timeframe-health",
+                    suite=SUITE_QUICK,
+                    category="replay_multi_timeframe",
+                    command=["main.py", "replay-timeframe-health"],
+                    timeout_seconds=60,
+                    required=False,
+                    description="replay-timeframe-health runs without crash",
+                ),
+                RegressionTestCase(
+                    test_id="rg_replay_mtf_regression_v125",
+                    name="test_replay_multi_timeframe_regression",
+                    suite=SUITE_FULL,
+                    category="replay_multi_timeframe",
+                    command=["-m", "pytest", "tests/test_replay_multi_timeframe_regression.py", "-v", "--tb=short"],
+                    timeout_seconds=180,
+                    required=False,
+                    description="Multi-timeframe replay regression tests pass",
+                ),
+                RegressionTestCase(
+                    test_id="rg_safety_scan_v125",
+                    name="safety-scan --target all (v1.2.5)",
+                    suite=SUITE_RELEASE_GATE,
+                    category="replay_multi_timeframe",
+                    command=["main.py", "safety-scan", "--target", "all"],
+                    timeout_seconds=120,
+                    required=False,
+                    description="safety-scan all passes after v1.2.5",
+                ),
+            ],
         ]:
             for tc in suite_tests:
                 if tc.test_id not in seen:

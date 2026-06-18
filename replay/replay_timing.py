@@ -1,5 +1,5 @@
 """
-replay/replay_timing.py — Operation timing for replay batch operations v1.2.4.
+replay/replay_timing.py — Operation timing for replay batch operations v1.2.5.
 
 [!] Research Only. No Real Orders. Replay Training Only.
 Uses monotonic clock for duration, wall clock for display.
@@ -159,3 +159,14 @@ class ReplayOperationTimer:
             print(f"  Avg/Item      : {t.average_item_seconds:.2f}s")
         if t.estimated_remaining_seconds is not None:
             print(f"  Est Remaining : {t.estimated_remaining_seconds:.1f}s")
+
+
+def create_mtf_batch_timer(operation_name: str = "mtf-batch", item_count: int = 0) -> ReplayOperationTimer:
+    """
+    Create a ReplayOperationTimer for MTF batch operations.
+    Uses monotonic clock. Elapsed preserved on cancel.
+    [!] Research Only. No Real Orders.
+    """
+    timer = ReplayOperationTimer()
+    timer.start(operation_name, item_count=item_count)
+    return timer

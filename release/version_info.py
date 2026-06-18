@@ -1,5 +1,5 @@
 """
-release/version_info.py — Centralized version info for TW Quant Cockpit v1.2.4.
+release/version_info.py — Centralized version info for TW Quant Cockpit v1.2.5.
 [!] Research Only. No Real Orders. Production Trading: BLOCKED.
 [!] VALIDATED does not enable trading. Broker Execution Disabled.
 [!] Data Universe Expansion. Real Data Coverage Required.
@@ -34,6 +34,10 @@ release/version_info.py — Centralized version info for TW Quant Cockpit v1.2.4
 [!] Strategy Knowledge Replay. Point-in-time verified. No forward return. No outcome.
 [!] Auto Strategy Decision DISABLED. Auto Strategy Execution DISABLED.
 [!] Auto Strategy Weight Change DISABLED. Broker Disabled. Not Investment Advice.
+[!] Multi-Timeframe Replay. Synchronized D1/M60/M20/M5/M1. No future K-lines.
+[!] Partial bar NEVER used for confirmed signals. Past-only asof join. No bfill.
+[!] Agreement/Conflict analysis is TRAINING ONLY. No Auto-Trade. No Auto-Block.
+[!] Batch default preview mode. BLOCKED without --execute --allow-write.
 """
 from __future__ import annotations
 import logging
@@ -45,9 +49,9 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # ---------------------------------------------------------------------------
 # v1.1.9 module-level constants (Data Governance Stable Rollup)
 # ---------------------------------------------------------------------------
-VERSION                             = "1.2.4"
-RELEASE_NAME                        = "Strategy Knowledge Replay"
-BASE_RELEASE                        = "1.2.3 Replay Scoring & Mistake Taxonomy"
+VERSION                             = "1.2.5"
+RELEASE_NAME                        = "Multi-Timeframe Replay"
+BASE_RELEASE                        = "1.2.4 Strategy Knowledge Replay"
 BASE_RELEASE_NAME                   = "Data Governance Stable Rollup"
 MAINTENANCE_RELEASE                 = False
 RELEASE_STAGE                       = "FOUNDATION"
@@ -215,6 +219,30 @@ AUTO_STRATEGY_DECISION_ENABLED          = False
 AUTO_STRATEGY_EXECUTION_ENABLED         = False
 AUTO_STRATEGY_WEIGHT_CHANGE_ENABLED     = False
 AUTO_STRATEGY_MISTAKE_CONFIRMATION_ENABLED = False
+# v1.2.5 Multi-Timeframe Replay flags
+MULTI_TIMEFRAME_REPLAY_AVAILABLE        = True
+MTF_SYNCHRONIZED_CLOCK_AVAILABLE        = True
+MTF_FUTURE_FIREWALL_AVAILABLE           = True
+MTF_POINT_IN_TIME_VERIFIER_AVAILABLE    = True
+MTF_AGREEMENT_ANALYSIS_AVAILABLE        = True
+MTF_CONFLICT_ANALYSIS_AVAILABLE         = True
+MTF_BAR_AGGREGATION_AVAILABLE           = True
+MTF_BATCH_RUNNER_AVAILABLE              = True
+MTF_PARTIAL_BAR_PROTECTION_AVAILABLE    = True
+MTF_PAST_ONLY_ASOF_JOIN                 = True
+MTF_NO_BFILL                            = True
+MTF_NO_CENTERED_ROLLING                 = True
+MTF_NO_FUTURE_KLINES                    = True
+MTF_DAILY_NO_FAKE_INTRADAY              = True
+MTF_REAL_NO_MOCK_FALLBACK               = True
+MTF_AUTO_TRADE_ENABLED                  = False
+MTF_AUTO_BLOCK_ENABLED                  = False
+MTF_AUTO_DECISION_ENABLED               = False
+MTF_BATCH_AUTO_EXECUTE_ENABLED          = False
+# Aliases used by health check
+AUTO_MULTI_TIMEFRAME_DECISION_ENABLED       = False
+AUTO_TIMEFRAME_MISTAKE_CONFIRMATION_ENABLED = False
+AUTO_TIMEFRAME_STRATEGY_EXECUTION_ENABLED   = False
 
 
 class VersionInfo:
@@ -472,6 +500,26 @@ def print_version_info() -> None:
     print(f"  Auto Strategy Execution Enabled: {AUTO_STRATEGY_EXECUTION_ENABLED}")
     print(f"  Auto Strategy Weight Change Enabled: {AUTO_STRATEGY_WEIGHT_CHANGE_ENABLED}")
     print(f"  Auto Strategy Mistake Confirmation Enabled: {AUTO_STRATEGY_MISTAKE_CONFIRMATION_ENABLED}")
+    # v1.2.5 flags
+    print(f"  Multi Timeframe Replay Available: {MULTI_TIMEFRAME_REPLAY_AVAILABLE}")
+    print(f"  MTF Synchronized Clock Available: {MTF_SYNCHRONIZED_CLOCK_AVAILABLE}")
+    print(f"  MTF Future Firewall Available: {MTF_FUTURE_FIREWALL_AVAILABLE}")
+    print(f"  MTF Point In Time Verifier Available: {MTF_POINT_IN_TIME_VERIFIER_AVAILABLE}")
+    print(f"  MTF Agreement Analysis Available: {MTF_AGREEMENT_ANALYSIS_AVAILABLE}")
+    print(f"  MTF Conflict Analysis Available: {MTF_CONFLICT_ANALYSIS_AVAILABLE}")
+    print(f"  MTF Bar Aggregation Available: {MTF_BAR_AGGREGATION_AVAILABLE}")
+    print(f"  MTF Batch Runner Available: {MTF_BATCH_RUNNER_AVAILABLE}")
+    print(f"  MTF Partial Bar Protection Available: {MTF_PARTIAL_BAR_PROTECTION_AVAILABLE}")
+    print(f"  MTF Past Only Asof Join: {MTF_PAST_ONLY_ASOF_JOIN}")
+    print(f"  MTF No Bfill: {MTF_NO_BFILL}")
+    print(f"  MTF No Centered Rolling: {MTF_NO_CENTERED_ROLLING}")
+    print(f"  MTF No Future Klines: {MTF_NO_FUTURE_KLINES}")
+    print(f"  MTF Daily No Fake Intraday: {MTF_DAILY_NO_FAKE_INTRADAY}")
+    print(f"  MTF Real No Mock Fallback: {MTF_REAL_NO_MOCK_FALLBACK}")
+    print(f"  MTF Auto Trade Enabled: {MTF_AUTO_TRADE_ENABLED}")
+    print(f"  MTF Auto Block Enabled: {MTF_AUTO_BLOCK_ENABLED}")
+    print(f"  MTF Auto Decision Enabled: {MTF_AUTO_DECISION_ENABLED}")
+    print(f"  MTF Batch Auto Execute Enabled: {MTF_BATCH_AUTO_EXECUTE_ENABLED}")
     print("=" * 60)
 
 

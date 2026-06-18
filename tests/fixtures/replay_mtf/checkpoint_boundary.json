@@ -1,0 +1,24 @@
+{
+  "_fixture": "checkpoint_boundary",
+  "_description": "Checkpoint state at boundary, no post-checkpoint data",
+  "_research_only": true,
+  "_no_real_orders": true,
+  "checkpoint_id": "CKP-TEST001",
+  "session_id": "MTF-TEST001",
+  "replay_timestamp": "2023-01-06T10:00:00",
+  "enabled_timeframes": ["D1", "M60", "M20", "M5"],
+  "primary_timeframe": "M5",
+  "trigger_timeframe": "M5",
+  "no_post_checkpoint_data": true,
+  "timeframe_snapshot_ids": {
+    "D1": "SNP-D1-001",
+    "M60": "SNP-M60-001",
+    "M20": "SNP-M20-001",
+    "M5": "SNP-M5-001"
+  },
+  "_notes": [
+    "Checkpoint stores only data available at replay_timestamp",
+    "No future bars embedded",
+    "Restore triggers re-run of point-in-time verification"
+  ]
+}

@@ -1,0 +1,4 @@
+{"snapshot_id": "SNP-001", "session_id": "S1", "symbol": "TST", "timeframe": "M5", "research_only": true}
+{"snapshot_id": "SNP-002", "session_id": "S1", "symbol": "TST", "timeframe": "M5", "research_only": true}
+{THIS IS CORRUPTED JSON AND SHOULD BE SKIPPED GRACEFULLY
+{"snapshot_id": "SNP-003", "session_id": "S1", "symbol": "TST", "timeframe": "D1", "research_only": true}

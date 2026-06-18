@@ -491,3 +491,13 @@ reports/replay_strategy_summary_report_*.md
 # v1.2.4 Strategy fixtures ARE committed (exception)
 !tests/fixtures/replay_strategy/*.json
 !tests/fixtures/replay_strategy/*.jsonl
+
+# v1.2.5 Multi-Timeframe Replay data (ignore generated runtime data)
+data/replay_timeframes/
+reports/replay_multi_timeframe_report_*.md
+reports/replay_multi_timeframe_timeline_report_*.md
+reports/replay_multi_timeframe_summary_report_*.md
+
+# v1.2.5 MTF fixtures ARE committed (exception)
+!tests/fixtures/replay_mtf/*.json
+!tests/fixtures/replay_mtf/*.jsonl

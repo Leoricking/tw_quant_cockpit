@@ -61,6 +61,13 @@ class ReplayProcessScoreEngine:
         "strategy_conflict_awareness": 2,
         "warning_acknowledgement": 1,
         "rule_review_completeness": 1,
+        # v1.2.5 Multi-Timeframe Replay weights
+        # MTF scoring: agreement awareness, conflict acknowledgement, partial bar awareness
+        # Scoring NEVER triggers orders. Training only. Research only.
+        "mtf_agreement_awareness": 3,
+        "mtf_conflict_acknowledgement": 2,
+        "mtf_partial_bar_awareness": 2,
+        "mtf_pit_verification_noted": 1,
     }
 
     GOOD_PROCESS_THRESHOLD = 60.0

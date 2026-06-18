@@ -1,0 +1,20 @@
+{
+  "_fixture": "stale_data",
+  "_description": "Stale timeframe data, STALE_TIMEFRAME_CONFLICT",
+  "_research_only": true,
+  "_no_real_orders": true,
+  "replay_timestamp": "2023-01-06T10:30:00",
+  "symbol": "TST",
+  "timeframes": {
+    "D1": {
+      "status": "STALE",
+      "latest_bar_timestamp": "2023-01-04T13:30:00",
+      "bar_age_minutes": 2820,
+      "stale_threshold_minutes": 90
+    },
+    "M60": {"status": "ALIGNED", "latest_bar_timestamp": "2023-01-06T09:00:00"}
+  },
+  "expected_conflict_type": "STALE_TIMEFRAME_CONFLICT",
+  "expected_severity": "P2",
+  "expected_needs_review": true
+}
