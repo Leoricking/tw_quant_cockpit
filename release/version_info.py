@@ -1,5 +1,5 @@
 """
-release/version_info.py — Centralized version info for TW Quant Cockpit v1.2.9.
+release/version_info.py — Centralized version info for TW Quant Cockpit v1.3.0.
 [!] Research Only. No Real Orders. Production Trading: BLOCKED.
 [!] VALIDATED does not enable trading. Broker Execution Disabled.
 [!] Replay Challenge Mode. Challenge Training Only. Simulation Only.
@@ -54,6 +54,10 @@ release/version_info.py — Centralized version info for TW Quant Cockpit v1.2.9
 [!] No new trading functionality. Stable manifests, audits, contracts only. Not Investment Advice.
 [!] No Auto Replay Decision. No Auto Replay Execution. No Auto Conflict Resolution.
 [!] Stable health check does NOT repair, execute, or enable trading. Research Only.
+[!] Real Data Quality Foundation. Mock fallback DISABLED. Real mode does not substitute mock data.
+[!] BLOCKED status: no precise prices, no formal buy recommendations. Research Only.
+[!] UNAVAILABLE: returns REAL DATA UNAVAILABLE. No mock fallback. Not Investment Advice.
+[!] Data quality score 0-100. CRITICAL issue caps score at 49. Not Investment Advice.
 """
 from __future__ import annotations
 import logging
@@ -63,15 +67,15 @@ logger = logging.getLogger(__name__)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 # ---------------------------------------------------------------------------
-# v1.2.9 module-level constants (Replay Training Stable Rollup)
+# v1.3.0 module-level constants (Real Data Quality Foundation)
 # ---------------------------------------------------------------------------
-VERSION                             = "1.2.9"
-RELEASE_NAME                        = "Replay Training Stable Rollup"
-BASE_RELEASE                        = "1.2.8 Replay Dataset & Session Registry"
+VERSION                             = "1.3.0"
+RELEASE_NAME                        = "Real Data Quality Foundation"
+BASE_RELEASE                        = "1.2.9 Replay Training Stable Rollup"
 BASE_RELEASE_NAME                   = "Data Governance Stable Rollup"
 MAINTENANCE_RELEASE                 = False
 RELEASE_STAGE                       = "STABLE"
-RELEASE_TRACK                       = "replay_training"
+RELEASE_TRACK                       = "real_data_quality"
 STABLE_ROLLUP                       = True
 REPLAY_TRAINING_LINE_COMPLETE       = True
 LONG_TERM_MAINTENANCE_READY         = True
@@ -336,6 +340,18 @@ AUTO_OUTCOME_REVEAL_ENABLED                 = False  # noqa: F811
 AUTO_STRATEGY_CHANGE_ENABLED                = False  # noqa: F811
 AUTO_STRATEGY_WEIGHT_CHANGE_ENABLED         = False
 AUTO_CONFLICT_RESOLUTION_ENABLED            = False
+# v1.3.0 Real Data Quality Foundation flags
+REAL_DATA_QUALITY_FOUNDATION                = True
+REAL_DATA_QUALITY_VALIDATOR                 = True
+DATA_COMPLETENESS_GATE_PROFILES             = True
+QUALITY_SCORE_0_100                         = True
+DATA_PROVENANCE_TRACKING                    = True
+MOCK_FALLBACK_ENABLED                       = False  # ALWAYS FALSE
+REAL_NO_MOCK_FALLBACK                       = True
+MOCK_DEMO_ONLY_LABEL_ENFORCED               = True
+REAL_DATA_QUALITY_CLI_ENABLED               = True
+REAL_DATA_QUALITY_GUI_PANEL                 = True
+REAL_DATA_QUALITY_HEALTH                    = True
 
 
 class VersionInfo:
@@ -668,6 +684,18 @@ def print_version_info() -> None:
     print(f"  Auto Replay Decision Enabled: {AUTO_REPLAY_DECISION_ENABLED}")
     print(f"  Auto Replay Execution Enabled: {AUTO_REPLAY_EXECUTION_ENABLED}")
     print(f"  Auto Conflict Resolution Enabled: {AUTO_CONFLICT_RESOLUTION_ENABLED}")
+    # v1.3.0 flags
+    print(f"  Real Data Quality Foundation: {REAL_DATA_QUALITY_FOUNDATION}")
+    print(f"  Real Data Quality Validator: {REAL_DATA_QUALITY_VALIDATOR}")
+    print(f"  Data Completeness Gate Profiles: {DATA_COMPLETENESS_GATE_PROFILES}")
+    print(f"  Quality Score 0-100: {QUALITY_SCORE_0_100}")
+    print(f"  Data Provenance Tracking: {DATA_PROVENANCE_TRACKING}")
+    print(f"  Mock Fallback Enabled: {MOCK_FALLBACK_ENABLED}")
+    print(f"  Real No Mock Fallback: {REAL_NO_MOCK_FALLBACK}")
+    print(f"  Mock Demo Only Label Enforced: {MOCK_DEMO_ONLY_LABEL_ENFORCED}")
+    print(f"  Real Data Quality CLI Enabled: {REAL_DATA_QUALITY_CLI_ENABLED}")
+    print(f"  Real Data Quality GUI Panel: {REAL_DATA_QUALITY_GUI_PANEL}")
+    print(f"  Real Data Quality Health: {REAL_DATA_QUALITY_HEALTH}")
     print(f"  No Real Orders: {NO_REAL_ORDERS}")
     print(f"  Broker Execution Enabled: {BROKER_EXECUTION_ENABLED}")
     print(f"  Production Trading BLOCKED: {PRODUCTION_TRADING_BLOCKED}")

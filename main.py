@@ -22114,6 +22114,25 @@ def _build_parser() -> argparse.ArgumentParser:
     p_rsreport.add_argument("--output-dir", default="reports")
     p_rsreport.add_argument("--format", default="text", choices=["text", "json"])
 
+    # v1.3.0 Real Data Quality Foundation
+    p_dq = subparsers.add_parser(
+        "data-quality",
+        help="[v1.3.0] Real Data Quality check for a symbol. Research Only. No Real Orders.",
+    )
+    p_dq.add_argument("--symbol", default=None, help="Stock symbol, e.g. 2330")
+    p_dq.add_argument("--profile", default="default",
+                      choices=["default", "stock_screening", "precise_price", "backtest", "abc_buy_point"],
+                      help="Completeness profile (default: default)")
+    p_dq.add_argument("--json", action="store_true", default=False,
+                      help="Output as JSON")
+    p_dq.add_argument("--all", action="store_true", default=False,
+                      help="Check all symbols in universe (placeholder)")
+
+    subparsers.add_parser(
+        "real-data-quality-health",
+        help="[v1.3.0] Real Data Quality system health check. Research Only.",
+    )
+
     return parser
 
 
@@ -23361,6 +23380,93 @@ def cmd_replay_registry_integrity_report(args) -> None:
         print("[!] Research Only. Not Investment Advice.")
     except Exception as exc:
         print(f"  [ERROR] {exc}")
+
+
+# ---------------------------------------------------------------------------
+# v1.3.0 Real Data Quality Foundation commands
+# ---------------------------------------------------------------------------
+
+def cmd_data_quality(args) -> None:
+    """
+    data-quality command handler.
+    [!] Research Only. No Real Orders. Not Investment Advice.
+    [!] Real mode with mock source -> BLOCKED. No mock fallback.
+    """
+    from real_data_quality.dq_validator import DataQualityValidator
+    from real_data_quality.dq_profiles import DataCompletenessGate, CompletenessProfile
+    from real_data_quality.dq_report import format_quality_report_text, make_unavailable_output
+    from real_data_quality.dq_schema import DataMode
+    import json as _json
+
+    print("[!] Data Quality Check — Research Only. No Real Orders. Not Investment Advice.")
+
+    validator = DataQualityValidator()
+
+    symbol = getattr(args, "symbol", None)
+    profile = getattr(args, "profile", "default")
+    as_json = getattr(args, "json", False)
+    all_mode = getattr(args, "all", False)
+
+    if not symbol and not all_mode:
+        print("[ERROR] --symbol or --all required")
+        raise SystemExit(2)
+
+    symbols = [symbol] if symbol else []
+
+    results = []
+    for sym in symbols:
+        data = {
+            "symbol": sym,
+            "market": "TW",
+            "data_mode": DataMode.UNAVAILABLE,
+            "source": [],
+        }
+        report = validator.validate(data, profile=profile)
+        results.append(report)
+
+    if as_json:
+        print(_json.dumps([r.to_dict() for r in results], ensure_ascii=False, indent=2))
+    else:
+        for r in results:
+            print(format_quality_report_text(r))
+
+    any_blocked = any(r.status in ("BLOCKED", "UNAVAILABLE") for r in results)
+    if any_blocked:
+        raise SystemExit(1)
+
+
+def cmd_real_data_quality_health(args) -> None:
+    """
+    real-data-quality-health command handler.
+    [!] Research Only. No Real Orders. Not Investment Advice.
+    """
+    print("=" * 70)
+    print("  Real Data Quality Health Check v1.3.0")
+    print("  [!] Research Only | No Real Orders | Mock Fallback DISABLED")
+    print("=" * 70)
+    try:
+        from real_data_quality.dq_health import RealDataQualityHealth
+        hc = RealDataQualityHealth()
+        results = hc.run()
+        fail_count = 0
+        for check_name, (status, detail) in results.items():
+            icon = "PASS" if status == "PASS" else ("FAIL" if status == "FAIL" else "WARN")
+            print(f"  [{icon}] {check_name}: {detail}")
+            if status == "FAIL":
+                fail_count += 1
+        summary = hc.get_health_summary()
+        print("-" * 70)
+        print(f"  Overall Status : {summary['real_data_quality_status']}")
+        print(f"  Score          : {summary['real_data_quality_score']}/100")
+        print(f"  Mock Fallback  : {summary['mock_fallback_enabled']} (always False)")
+        print("[!] Research Only. Not Investment Advice.")
+        if fail_count > 0:
+            raise SystemExit(1)
+    except SystemExit:
+        raise
+    except Exception as exc:
+        print(f"  [FAIL] Health check error: {exc}")
+        raise SystemExit(1)
 
 
 # ---------------------------------------------------------------------------
@@ -27586,6 +27692,9 @@ def main() -> None:
         "replay-challenge-progress-report":   cmd_replay_challenge_progress_report,
         "replay-challenge-batch-preview":     cmd_replay_challenge_batch_preview,
         "replay-challenge-batch-run":         cmd_replay_challenge_batch_run,
+        # v1.3.0 Real Data Quality Foundation
+        "data-quality":                              cmd_data_quality,
+        "real-data-quality-health":                  cmd_real_data_quality_health,
         # v1.2.9 Replay Training Stable Rollup
         "replay-stable-health":                      cmd_replay_stable_health,
         "replay-stable-summary":                     cmd_replay_stable_summary,

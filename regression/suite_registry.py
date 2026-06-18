@@ -15,6 +15,8 @@ from regression.regression_schema import (
 
 # v1.2.9 suite constant
 SUITE_REPLAY_STABLE = "replay_stable"
+# v1.3.0 suite constant
+SUITE_REAL_DATA_QUALITY = "real_data_quality"
 
 logger = logging.getLogger(__name__)
 
@@ -95,8 +97,9 @@ class RegressionSuiteRegistry:
         self._suites[SUITE_STRATEGY]     = self.build_strategy_suite()
         self._suites[SUITE_REPLAY]       = self.build_replay_suite()
         self._suites[SUITE_RESEARCH_OS]  = self.build_research_os_suite()
-        self._suites[SUITE_REPLAY_STABLE] = self.build_replay_stable_suite()
-        self._suites[SUITE_RELEASE_GATE] = self.build_release_gate_suite()
+        self._suites[SUITE_REPLAY_STABLE]      = self.build_replay_stable_suite()
+        self._suites[SUITE_REAL_DATA_QUALITY]  = self.build_real_data_quality_suite()
+        self._suites[SUITE_RELEASE_GATE]       = self.build_release_gate_suite()
 
     # ------------------------------------------------------------------
     # Public API
@@ -5018,5 +5021,231 @@ class RegressionSuiteRegistry:
                 timeout_seconds=60,
                 required=False,
                 description="runtime isolation: data dirs and reports in .gitignore",
+            ),
+            # v1.3.0 Real Data Quality Foundation — release gate entries
+            RegressionTestCase(
+                test_id="rg_rdq_schema_import",
+                name="rdq_schema import check",
+                suite=SUITE_REAL_DATA_QUALITY,
+                category="real_data_quality",
+                command=["-c", "from real_data_quality.dq_schema import DataMode, DataQualityStatus, DataQualityIssueSeverity, DataQualityIssue, DataQualityReport, DataProvenanceRecord; assert DataMode.REAL == 'REAL'; assert DataMode.MOCK == 'MOCK'; assert DataMode.UNAVAILABLE == 'UNAVAILABLE'; print('PASS: dq_schema imports verified')"],
+                timeout_seconds=30,
+                required=True,
+                description="Verify dq_schema imports and DataMode constants",
+            ),
+            RegressionTestCase(
+                test_id="rg_rdq_validator_import",
+                name="rdq_validator import check",
+                suite=SUITE_REAL_DATA_QUALITY,
+                category="real_data_quality",
+                command=["-c", "from real_data_quality.dq_validator import DataQualityValidator; v = DataQualityValidator(); assert v.NO_REAL_ORDERS is True; assert v.MOCK_FALLBACK_ENABLED is False; print('PASS: DataQualityValidator verified')"],
+                timeout_seconds=30,
+                required=True,
+                description="Verify DataQualityValidator imports and safety constants",
+            ),
+            RegressionTestCase(
+                test_id="rg_rdq_profiles_import",
+                name="rdq_profiles import check",
+                suite=SUITE_REAL_DATA_QUALITY,
+                category="real_data_quality",
+                command=["-c", "from real_data_quality.dq_profiles import DataCompletenessGate, CompletenessProfile; assert CompletenessProfile.STOCK_SCREENING == 'stock_screening'; print('PASS: dq_profiles imports verified')"],
+                timeout_seconds=30,
+                required=True,
+                description="Verify dq_profiles imports",
+            ),
+            RegressionTestCase(
+                test_id="rg_rdq_health_import",
+                name="rdq_health import check",
+                suite=SUITE_REAL_DATA_QUALITY,
+                category="real_data_quality",
+                command=["-c", "from real_data_quality.dq_health import RealDataQualityHealth; h = RealDataQualityHealth(); assert h.MOCK_FALLBACK_ENABLED is False; print('PASS: dq_health imports verified')"],
+                timeout_seconds=30,
+                required=True,
+                description="Verify dq_health imports and safety constants",
+            ),
+            RegressionTestCase(
+                test_id="rg_rdq_report_import",
+                name="rdq_report import check",
+                suite=SUITE_REAL_DATA_QUALITY,
+                category="real_data_quality",
+                command=["-c", "from real_data_quality.dq_report import format_quality_report_text, make_blocked_output, make_unavailable_output; print('PASS: dq_report imports verified')"],
+                timeout_seconds=30,
+                required=True,
+                description="Verify dq_report imports",
+            ),
+            RegressionTestCase(
+                test_id="rg_rdq_mock_fallback_disabled",
+                name="MOCK_FALLBACK_ENABLED=False in all modules",
+                suite=SUITE_REAL_DATA_QUALITY,
+                category="real_data_quality",
+                command=["-c", "from real_data_quality import dq_schema, dq_validator, dq_profiles, dq_scorer, dq_health; checks = [getattr(m, 'MOCK_FALLBACK_ENABLED', None) for m in [dq_schema, dq_validator, dq_profiles, dq_scorer, dq_health]]; assert all(v is False for v in checks), f'FAIL: {checks}'; print('PASS: MOCK_FALLBACK_ENABLED=False in all modules')"],
+                timeout_seconds=30,
+                required=True,
+                description="MOCK_FALLBACK_ENABLED=False in all real_data_quality modules",
+            ),
+            RegressionTestCase(
+                test_id="rg_rdq_real_no_mock_fallback",
+                name="REAL_NO_MOCK_FALLBACK=True in version_info",
+                suite=SUITE_REAL_DATA_QUALITY,
+                category="real_data_quality",
+                command=["-c", "from release import version_info; assert getattr(version_info, 'REAL_NO_MOCK_FALLBACK', False) is True, 'FAIL: REAL_NO_MOCK_FALLBACK not True'; print('PASS: REAL_NO_MOCK_FALLBACK=True in version_info')"],
+                timeout_seconds=30,
+                required=True,
+                description="REAL_NO_MOCK_FALLBACK=True in version_info",
+            ),
+            RegressionTestCase(
+                test_id="rg_rdq_data_mode_constants",
+                name="DataMode constants present",
+                suite=SUITE_REAL_DATA_QUALITY,
+                category="real_data_quality",
+                command=["-c", "from real_data_quality.dq_schema import DataMode; assert DataMode.REAL == 'REAL'; assert DataMode.MOCK == 'MOCK'; assert DataMode.UNAVAILABLE == 'UNAVAILABLE'; print('PASS: DataMode constants verified')"],
+                timeout_seconds=30,
+                required=True,
+                description="DataMode.REAL, MOCK, UNAVAILABLE constants present",
+            ),
+            RegressionTestCase(
+                test_id="rg_rdq_quality_status_constants",
+                name="DataQualityStatus constants present",
+                suite=SUITE_REAL_DATA_QUALITY,
+                category="real_data_quality",
+                command=["-c", "from real_data_quality.dq_schema import DataQualityStatus; assert DataQualityStatus.PASS == 'PASS'; assert DataQualityStatus.DEGRADED == 'DEGRADED'; assert DataQualityStatus.BLOCKED == 'BLOCKED'; assert DataQualityStatus.UNAVAILABLE == 'UNAVAILABLE'; print('PASS: DataQualityStatus constants verified')"],
+                timeout_seconds=30,
+                required=True,
+                description="DataQualityStatus PASS, DEGRADED, BLOCKED, UNAVAILABLE constants",
+            ),
+            RegressionTestCase(
+                test_id="rg_rdq_gui_panel_import",
+                name="rdq gui panel import check",
+                suite=SUITE_REAL_DATA_QUALITY,
+                category="real_data_quality",
+                command=["-c", "from gui.real_data_quality_panel import RealDataQualityPanel; p = RealDataQualityPanel(); assert p.NO_REAL_ORDERS is True; assert p.MOCK_FALLBACK_ENABLED is False; print('PASS: RealDataQualityPanel import verified')"],
+                timeout_seconds=30,
+                required=True,
+                description="GUI panel imports without PySide6",
+            ),
+            RegressionTestCase(
+                test_id="rg_rdq_version_130",
+                name="version-info shows 1.3.0",
+                suite=SUITE_REAL_DATA_QUALITY,
+                category="real_data_quality",
+                command=["-c", "from release import version_info; assert version_info.VERSION == '1.3.0', f'Expected 1.3.0, got {version_info.VERSION}'; print('PASS: VERSION=1.3.0')"],
+                timeout_seconds=30,
+                required=True,
+                description="version_info.VERSION == '1.3.0'",
+            ),
+        ]
+
+    def build_real_data_quality_suite(self) -> List[RegressionTestCase]:
+        """v1.3.0 Real Data Quality Foundation regression suite."""
+        return [
+            RegressionTestCase(
+                test_id="rdq_schema_import",
+                name="rdq_schema import",
+                suite=SUITE_REAL_DATA_QUALITY,
+                category="real_data_quality",
+                command=["-c", "from real_data_quality.dq_schema import DataMode, DataQualityStatus, DataQualityIssueSeverity, DataQualityIssue, DataQualityReport, DataProvenanceRecord; assert DataMode.REAL == 'REAL'; print('PASS: dq_schema')"],
+                timeout_seconds=30,
+                required=True,
+                description="Verify dq_schema imports",
+            ),
+            RegressionTestCase(
+                test_id="rdq_validator_import",
+                name="rdq_validator import",
+                suite=SUITE_REAL_DATA_QUALITY,
+                category="real_data_quality",
+                command=["-c", "from real_data_quality.dq_validator import DataQualityValidator; v = DataQualityValidator(); assert v.NO_REAL_ORDERS is True; print('PASS: dq_validator')"],
+                timeout_seconds=30,
+                required=True,
+                description="Verify DataQualityValidator imports",
+            ),
+            RegressionTestCase(
+                test_id="rdq_profiles_import",
+                name="rdq_profiles import",
+                suite=SUITE_REAL_DATA_QUALITY,
+                category="real_data_quality",
+                command=["-c", "from real_data_quality.dq_profiles import DataCompletenessGate, CompletenessProfile; print('PASS: dq_profiles')"],
+                timeout_seconds=30,
+                required=True,
+                description="Verify dq_profiles imports",
+            ),
+            RegressionTestCase(
+                test_id="rdq_health_import",
+                name="rdq_health import",
+                suite=SUITE_REAL_DATA_QUALITY,
+                category="real_data_quality",
+                command=["-c", "from real_data_quality.dq_health import RealDataQualityHealth; h = RealDataQualityHealth(); assert h.MOCK_FALLBACK_ENABLED is False; print('PASS: dq_health')"],
+                timeout_seconds=30,
+                required=True,
+                description="Verify dq_health imports",
+            ),
+            RegressionTestCase(
+                test_id="rdq_report_import",
+                name="rdq_report import",
+                suite=SUITE_REAL_DATA_QUALITY,
+                category="real_data_quality",
+                command=["-c", "from real_data_quality.dq_report import format_quality_report_text, make_blocked_output, make_unavailable_output; print('PASS: dq_report')"],
+                timeout_seconds=30,
+                required=True,
+                description="Verify dq_report imports",
+            ),
+            RegressionTestCase(
+                test_id="rdq_mock_fallback_disabled",
+                name="MOCK_FALLBACK_ENABLED=False",
+                suite=SUITE_REAL_DATA_QUALITY,
+                category="real_data_quality",
+                command=["-c", "from real_data_quality import dq_schema, dq_validator; assert dq_schema.MOCK_FALLBACK_ENABLED is False; assert dq_validator.MOCK_FALLBACK_ENABLED is False; print('PASS: mock fallback disabled')"],
+                timeout_seconds=30,
+                required=True,
+                description="MOCK_FALLBACK_ENABLED=False in schema and validator",
+            ),
+            RegressionTestCase(
+                test_id="rdq_real_no_mock_fallback",
+                name="REAL_NO_MOCK_FALLBACK in version_info",
+                suite=SUITE_REAL_DATA_QUALITY,
+                category="real_data_quality",
+                command=["-c", "from release import version_info; assert getattr(version_info, 'REAL_NO_MOCK_FALLBACK', False) is True; print('PASS: REAL_NO_MOCK_FALLBACK=True')"],
+                timeout_seconds=30,
+                required=True,
+                description="REAL_NO_MOCK_FALLBACK=True in version_info",
+            ),
+            RegressionTestCase(
+                test_id="rdq_data_mode_constants",
+                name="DataMode constants",
+                suite=SUITE_REAL_DATA_QUALITY,
+                category="real_data_quality",
+                command=["-c", "from real_data_quality.dq_schema import DataMode; assert DataMode.REAL == 'REAL'; assert DataMode.MOCK == 'MOCK'; assert DataMode.UNAVAILABLE == 'UNAVAILABLE'; print('PASS: DataMode constants')"],
+                timeout_seconds=30,
+                required=True,
+                description="DataMode.REAL, MOCK, UNAVAILABLE constants",
+            ),
+            RegressionTestCase(
+                test_id="rdq_quality_status_constants",
+                name="DataQualityStatus constants",
+                suite=SUITE_REAL_DATA_QUALITY,
+                category="real_data_quality",
+                command=["-c", "from real_data_quality.dq_schema import DataQualityStatus; assert DataQualityStatus.PASS == 'PASS'; assert DataQualityStatus.DEGRADED == 'DEGRADED'; assert DataQualityStatus.BLOCKED == 'BLOCKED'; assert DataQualityStatus.UNAVAILABLE == 'UNAVAILABLE'; print('PASS: DataQualityStatus constants')"],
+                timeout_seconds=30,
+                required=True,
+                description="DataQualityStatus PASS/DEGRADED/BLOCKED/UNAVAILABLE constants",
+            ),
+            RegressionTestCase(
+                test_id="rdq_gui_panel_import",
+                name="GUI panel import",
+                suite=SUITE_REAL_DATA_QUALITY,
+                category="real_data_quality",
+                command=["-c", "from gui.real_data_quality_panel import RealDataQualityPanel; p = RealDataQualityPanel(); assert p.NO_REAL_ORDERS is True; assert p.MOCK_FALLBACK_ENABLED is False; print('PASS: RealDataQualityPanel')"],
+                timeout_seconds=30,
+                required=True,
+                description="GUI panel imports without PySide6",
+            ),
+            RegressionTestCase(
+                test_id="rdq_version_130",
+                name="VERSION=1.3.0",
+                suite=SUITE_REAL_DATA_QUALITY,
+                category="real_data_quality",
+                command=["-c", "from release import version_info; assert version_info.VERSION == '1.3.0'; print('PASS: VERSION=1.3.0')"],
+                timeout_seconds=30,
+                required=True,
+                description="version_info.VERSION == 1.3.0",
             ),
         ]
