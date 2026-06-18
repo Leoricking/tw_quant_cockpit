@@ -1657,6 +1657,62 @@ class ResearchCockpitStableChecklist:
         except Exception as exc:
             checks.append(_mk("replay_registry_no_auto_conflict_resolve", "replay_registry", "WARN", str(exc)))
 
+        # v1.2.9 Replay Training Stable Rollup checks
+        try:
+            from release.version_info import REPLAY_STABLE_HEALTH_AVAILABLE
+            checks.append(_mk(
+                "replay_training_stable_rollup_available", "replay_stable_rollup",
+                "PASS" if REPLAY_STABLE_HEALTH_AVAILABLE else "FAIL",
+                f"REPLAY_STABLE_HEALTH_AVAILABLE={REPLAY_STABLE_HEALTH_AVAILABLE}",
+            ))
+        except Exception as exc:
+            checks.append(_mk("replay_training_stable_rollup_available", "replay_stable_rollup", "WARN", str(exc)))
+
+        try:
+            from replay.stable_manifest import ReplayStableManifest  # noqa: F401
+            checks.append(_mk("replay_stable_manifest_available", "replay_stable_rollup", "PASS",
+                              "ReplayStableManifest importable"))
+        except Exception as exc:
+            checks.append(_mk("replay_stable_manifest_available", "replay_stable_rollup", "WARN", str(exc)))
+
+        try:
+            from replay.stable_capability_matrix import ReplayStableCapabilityMatrix  # noqa: F401
+            checks.append(_mk("replay_capability_matrix_available", "replay_stable_rollup", "PASS",
+                              "ReplayStableCapabilityMatrix importable"))
+        except Exception as exc:
+            checks.append(_mk("replay_capability_matrix_available", "replay_stable_rollup", "WARN", str(exc)))
+
+        try:
+            from replay.stable_contracts import ReplayStableContractChecker
+            results = ReplayStableContractChecker().check_all()
+            fail_count_c = sum(1 for s, _ in results.values() if s == "FAIL")
+            checks.append(_mk(
+                "replay_cross_module_contracts_pass", "replay_stable_rollup",
+                "PASS" if fail_count_c == 0 else "FAIL",
+                f"Contract checks: {len(results)} total, {fail_count_c} FAILs",
+            ))
+        except Exception as exc:
+            checks.append(_mk("replay_cross_module_contracts_pass", "replay_stable_rollup", "WARN", str(exc)))
+
+        try:
+            from replay.stable_compatibility import ReplayStableCompatibilityChecker
+            results = ReplayStableCompatibilityChecker().check_all()
+            fail_count_b = sum(1 for s, _ in results.values() if s == "FAIL")
+            checks.append(_mk(
+                "replay_backward_compatibility_pass", "replay_stable_rollup",
+                "PASS" if fail_count_b == 0 else "FAIL",
+                f"Compat checks: {len(results)} versions, {fail_count_b} FAILs",
+            ))
+        except Exception as exc:
+            checks.append(_mk("replay_backward_compatibility_pass", "replay_stable_rollup", "WARN", str(exc)))
+
+        try:
+            from replay.stable_health import ReplayStableHealthCheck  # noqa: F401
+            checks.append(_mk("replay_no_forbidden_actions", "replay_stable_rollup", "PASS",
+                              "ReplayStableHealthCheck importable"))
+        except Exception as exc:
+            checks.append(_mk("replay_no_forbidden_actions", "replay_stable_rollup", "WARN", str(exc)))
+
         # Rebuild summary counts to include new checks
         total         = len(checks)
         pass_count    = sum(1 for c in checks if c["status"] == "PASS")

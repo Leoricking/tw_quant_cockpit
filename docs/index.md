@@ -3,7 +3,7 @@
 > **[!] Research Only. Read Only. No Real Orders. Production Trading: BLOCKED.**
 > **[!] Not investment advice. REAL_ORDER_READY=False.**
 
-Current version: **v1.2.7** — Replay Challenge Mode (base: v1.2.6 Replay Review Dashboard) — **v1.2 Replay Training Line**
+Current version: **v1.2.9** — Replay Training Stable Rollup (base: v1.2.8 Replay Dataset & Session Registry) — **v1.2 Replay Training Line Complete**
 
 ---
 
@@ -30,6 +30,12 @@ Current version: **v1.2.7** — Replay Challenge Mode (base: v1.2.6 Replay Revie
 
 | Document | Description |
 |----------|-------------|
+| [Replay Training Stable Rollup v1.2.9](replay_training_stable_rollup_v1.2.9.md) | v1.2.9 Stable Rollup — module architecture, CLI commands, safety declarations |
+| [Replay Training Capability Matrix](replay_training_capability_matrix.md) | 16 capability matrix with per-capability safety qualifications |
+| [Replay Training Maintenance Baseline](replay_training_maintenance_baseline.md) | Maintenance SOP, dependency upgrade SOP, rollback SOP, long-term readiness checklist |
+| [Replay Training Backward Compatibility](replay_training_backward_compatibility.md) | Backward compat guarantees per version (v1.2.0–v1.2.8), store format, safety flag guarantees |
+| [Replay Challenge Mode v1.2.7](replay_challenge_mode_v1.2.7.md) | v1.2.7 Challenge Mode — timed challenges, hidden outcome, personal leaderboard |
+| [Replay Dataset & Session Registry v1.2.8](replay_dataset_session_registry_v1.2.8.md) | v1.2.8 Dataset versioning, fingerprint, lineage, session packages |
 | [Final Maintenance Rollup v1.0.9](final_maintenance_rollup_v1.0.9.md) | v1.0.9 Final Maintenance Rollup — release history, health check, maintenance plan, smoke summary |
 | [Local Research Assistant v1.0.8](local_research_assistant_v1.0.8.md) | v1.0.8 Local Research Assistant Polish — safe research answers, module routing, unsafe query blocking |
 | [Knowledge Base Search v1.0.7](knowledge_base_search_v1.0.7.md) | v1.0.7 Knowledge Base Search Polish — search docs, examples, templates, reports |
@@ -57,6 +63,8 @@ Current version: **v1.2.7** — Replay Challenge Mode (base: v1.2.6 Replay Revie
 
 | Document | Description |
 |----------|-------------|
+| [Release Notes v1.2](release_notes_v1.2.md) | v1.2.x Replay Training Series change log |
+| [Release Notes v1.1](release_notes_v1.1.md) | v1.1.x Data Governance Series change log |
 | [Release Notes v1.0](release_notes_v1.0.md) | v1.0.0–v1.0.5 change log |
 | [Version Map v1.0](version_map_v1.0.md) | All versions v0.3.x through v1.0.5 |
 | [Roadmap](roadmap.md) | Completed milestones and next steps |

@@ -1,0 +1,17 @@
+[
+  {
+    "capability_id": "replay_session_step",
+    "module": "replay_foundation",
+    "introduced_version": "1.2.0",
+    "current_status": "STABLE",
+    "health_command": "replay-health",
+    "CLI_available": true,
+    "GUI_available": true,
+    "report_available": true,
+    "backward_compatible": true,
+    "safety_qualified": true,
+    "research_only": true,
+    "no_real_orders": true,
+    "notes": "Test fixture. TST symbol. Fixed clock 2023-01-01."
+  }
+]

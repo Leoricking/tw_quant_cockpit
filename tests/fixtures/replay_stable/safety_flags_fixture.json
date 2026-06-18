@@ -1,0 +1,18 @@
+{
+  "VERSION": "1.2.9",
+  "REPLAY_TRAINING_LINE_COMPLETE": true,
+  "STABLE_ROLLUP": true,
+  "NO_REAL_ORDERS": true,
+  "REAL_ORDERS_ENABLED": false,
+  "BROKER_EXECUTION_ENABLED": false,
+  "PRODUCTION_TRADING_BLOCKED": true,
+  "AUTO_REPLAY_DECISION_ENABLED": false,
+  "AUTO_REPLAY_EXECUTION_ENABLED": false,
+  "AUTO_MISTAKE_CONFIRMATION_ENABLED": false,
+  "AUTO_OUTCOME_REVEAL_ENABLED": false,
+  "AUTO_STRATEGY_CHANGE_ENABLED": false,
+  "AUTO_DATASET_REPAIR_ENABLED": false,
+  "AUTO_SESSION_REBIND_ENABLED": false,
+  "REPLAY_TRADE_EXECUTION_ENABLED": false,
+  "_note": "Test fixture only. Expected safety flag values for v1.2.9. No real data."
+}

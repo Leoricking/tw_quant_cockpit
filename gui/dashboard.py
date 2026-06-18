@@ -321,6 +321,16 @@ except Exception as _rrp_exc:
     _REPLAY_REGISTRY_AVAILABLE = False
 
 # ---------------------------------------------------------------------------
+# v1.2.9 Replay Training Stable Rollup panel import (guarded)
+# ---------------------------------------------------------------------------
+try:
+    from gui.replay_stable_rollup_panel import ReplayStableRollupPanel
+    _REPLAY_STABLE_AVAILABLE = True
+except Exception as _rsr_exc:
+    logger.warning("ReplayStableRollupPanel unavailable: %s", _rsr_exc)
+    _REPLAY_STABLE_AVAILABLE = False
+
+# ---------------------------------------------------------------------------
 # v0.6.0 Stable Release panel import (guarded)
 # ---------------------------------------------------------------------------
 try:

@@ -4,7 +4,7 @@
 >
 > **[!] v1: Real order execution is strictly prohibited. For research, simulation, and decision support only. Not investment advice.**
 
-**Current version: v1.2.0 — Replay Training UX Foundation** (base: v1.1.9 Data Governance Stable Rollup) — **v1.1 Data Governance Line Complete**
+**Current version: v1.2.9 — Replay Training Stable Rollup** (base: v1.2.8 Replay Dataset & Session Registry) — **v1.2 Replay Training Line Complete**
 
 ---
 
@@ -29,9 +29,17 @@ TW Quant Cockpit is a **Research Trading Cockpit** for Taiwan equity markets. It
 
 ---
 
-## Current Version: v1.1.9 — Data Governance Stable Rollup
+## Current Version: v1.2.9 — Replay Training Stable Rollup
 
-This is TW Quant Cockpit **v1.1.9 — Data Governance Stable Rollup**, based on **v1.1.8 Research Run Registry**.
+This is TW Quant Cockpit **v1.2.9 — Replay Training Stable Rollup**, based on **v1.2.8 Replay Dataset & Session Registry**. The complete Replay Training v1.2 line (v1.2.0–v1.2.8) is frozen and validated. `STABLE_ROLLUP = True`. `REPLAY_TRAINING_LINE_COMPLETE = True`. `LONG_TERM_MAINTENANCE_READY = True`.
+
+New in v1.2.9: 16 new `replay/stable_*.py` modules (stable_schema, stable_manifest, stable_capability_matrix, stable_contracts, stable_compatibility, stable_store_audit, stable_runtime_isolation, stable_cli_audit, stable_gui_audit, stable_report_audit, stable_safety_audit, stable_regression_audit, stable_release_gate, stable_summary, stable_report, stable_health), 8 new GUI panels (replay_stable_rollup_panel + adapter, replay_stable_capability_panel, replay_stable_health_panel, replay_stable_contract_panel, replay_stable_compatibility_panel, replay_stable_audit_panel, replay_stable_report_panel), reports/replay_training_stable_rollup_report.py, 14 new CLI commands (replay-stable-health/summary/manifest/capabilities/contracts/compatibility/store-audit/runtime-audit/cli-audit/gui-audit/report-audit/safety-audit/regression-audit/report), 44+ health check points, 16 cross-module contracts, 9-version backward compat check (v1.2.0–v1.2.8), 10 store audits, regression suite (replay_stable, 17 test cases), 8 test classes in test_replay_training_stable_rollup.py, 5 fixtures in tests/fixtures/replay_stable/, 4 new docs. No new trading functionality. All safety flags unchanged. No broker. No auto-decision. No auto-execution. Not Investment Advice.
+
+## v1.2.8 — Replay Dataset & Session Registry
+
+New in v1.2.8: dataset versioning with SHA-256 fingerprints and lineage tracking, session registry with portable session packages (zip export/import), dataset_registry/ and session_registry/ packages, append-only JSONL stores, 16+ new CLI commands (replay-dataset-health, replay-registry-health, etc.), GUI panels, regression tests, fixtures. AUTO_DATASET_REPAIR_ENABLED=False. AUTO_SESSION_REBIND_ENABLED=False. No Real Orders. Not Investment Advice.
+
+## v1.1.9 — Data Governance Stable Rollup
 
 New in v1.1.9: governance_rollup/ package (rollup_schema, schema_normalizer, path_normalizer, store_inventory, store_validator, store_recovery, index_rebuilder, metadata_migrator, consistency_checker, health_aggregator, stable_rollup_engine, rollup_store, rollup_query, gui_surface_audit, docs_surface_audit, rollup_health), cross-module consistency checker (version flags, schema contracts, safety guards, qualification labels), schema & qualification normalization (FORMAL/OBSERVATIONAL/BLOCKED), cross-machine path normalization (portable relative paths), store inventory & validation (all v1.1.x stores), dry-run corrupted tail recovery, index rebuild (preview default, --execute --allow-write required), metadata migration (preview default), stable health aggregation (health matrix), CLI/GUI/docs surface audits, 24 new CLI commands (governance-rollup-health/run/summary/modules/consistency/store-inventory/store-validate/paths/indexes/audits/recovery-plans/migration-plans/health-matrix/cli-audit/gui-audit/docs-audit/report/history/compare, governance-store-recovery-preview/execute, governance-index-rebuild, governance-metadata-migrate), GUI tab (data group), 6 new report types, stable/v060/intelligence checklist checks, 14 regression tests, new alert types (ROLLUP_CONSISTENCY_FAILURE/STORE_CORRUPTED/STORE_VALIDATION_FAILURE/PATH_MISMATCH/INDEX_STALE/HEALTH_DEGRADED/MIGRATION_NEEDED), docs (data_governance_stable_rollup_v1.1.9.md, v1.1_data_governance_architecture.md, v1.1_operations_runbook.md). No Auto Store Repair. No Auto Data Repair. No Auto Download. No Auto Import. No Auto Research Execution. No Trade Execution. Not Investment Advice.
 

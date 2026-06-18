@@ -4,6 +4,129 @@
 
 ---
 
+## v1.2.9 — Replay Training Stable Rollup
+
+> [!] Research Only. No Real Orders. Not Investment Advice.
+> [!] Replay Training Stable Rollup. No broker. No trading. Simulation Only.
+
+### Overview
+
+v1.2.9 is the **Replay Training Stable Rollup** — a freeze-and-validate
+milestone for the complete Replay Training v1.2 line (v1.2.0–v1.2.8). No new
+trading functionality is added. This release adds stable manifests, capability
+matrices, cross-module contracts, backward compatibility checks, store and
+runtime audits, CLI/GUI/report/safety/regression audits, and release gate
+integration.
+
+`STABLE_ROLLUP = True`, `REPLAY_TRAINING_LINE_COMPLETE = True`,
+`LONG_TERM_MAINTENANCE_READY = True`.
+
+### What's New
+
+#### Stable Schema (`replay/stable_schema.py`)
+
+- `StableModuleInfo`, `StableCapability`, `StableManifest`, `StableContractResult`,
+  `StableCompatibilityResult`, `StableAuditResult` dataclasses
+- All carry `no_real_orders=True`, `research_only=True` defaults
+
+#### Stable Manifest (`replay/stable_manifest.py`)
+
+- `ReplayStableManifest` — release manifest for the complete v1.2 line
+- Lists 12 modules, 16 capabilities, 24 CLI commands, 10 store paths,
+  backward compatibility range v1.2.0–v1.2.8, all safety flags
+
+#### Capability Matrix (`replay/stable_capability_matrix.py`)
+
+- `ReplayStableCapabilityMatrix` — 16 capabilities, all with `safety_qualified=True`
+- Machine-readable; used by health checks and release gate
+
+#### Contract Checker (`replay/stable_contracts.py`)
+
+- `ReplayStableContractChecker` — 16 cross-module contracts
+- Includes process/outcome separation, future firewall, hidden outcome, safety
+  invariants
+
+#### Compatibility Checker (`replay/stable_compatibility.py`)
+
+- `ReplayStableCompatibilityChecker` — backward compat v1.2.0–v1.2.8 (9 versions)
+- Fixture-based schema checks per version
+
+#### Store Audit (`replay/stable_store_audit.py`)
+
+- `ReplayStableStoreAudit` — 10 data store audits
+- Checks import, class existence, no forbidden fields, append-only contract
+
+#### Runtime Isolation (`replay/stable_runtime_isolation.py`)
+
+- `ReplayStableRuntimeIsolation` — .gitignore and sys.path checks
+- Verifies all store paths and report dirs are excluded from git
+
+#### CLI / GUI / Report / Safety / Regression Audits
+
+- `stable_cli_audit.py` — 24 CLI commands verified in main.py
+- `stable_gui_audit.py` — 8 GUI panel imports verified
+- `stable_report_audit.py` — 8 report generators verified
+- `stable_safety_audit.py` — 13 required safety flags, dangerous keyword scan
+- `stable_regression_audit.py` — 7 regression suite checks
+
+#### Release Gate (`replay/stable_release_gate.py`)
+
+- `ReplayStableReleaseGate` — runs all 9 sub-audits
+- PASS / WARNING / FAIL with counts; used in CI
+
+#### Health Check (`replay/stable_health.py`)
+
+- `ReplayStableHealthCheck` — 44+ checks across all audit categories
+- Includes data integrity invariants, auto-action guards, broker/execution
+  guards, runtime hygiene
+- `replay-stable-health --strict` → exit 1 on any FAIL
+
+#### GUI Panels (8 new panels)
+
+- `replay_stable_rollup_panel.py` — main panel
+- `replay_stable_capability_panel.py` — capability matrix table
+- `replay_stable_health_panel.py` — health check results
+- `replay_stable_contract_panel.py` — contract check results
+- `replay_stable_compatibility_panel.py` — backward compat results
+- `replay_stable_audit_panel.py` — release gate results
+- `replay_stable_report_panel.py` — report generation
+- `replay_stable_rollup_adapter.py` — adapter
+
+### CLI Commands
+
+```
+replay-stable-health          — Full health check (FAIL > 0 → exit 1)
+replay-stable-summary         — Summary dict
+replay-stable-manifest        — Release manifest
+replay-stable-capabilities    — Capability matrix (16 capabilities)
+replay-stable-contracts       — Cross-module contract checks
+replay-stable-compatibility   — Backward compat v1.2.0–v1.2.8
+replay-stable-store-audit     — 10 data store audits
+replay-stable-runtime-audit   — Runtime isolation checks
+replay-stable-cli-audit       — CLI command registration audit
+replay-stable-gui-audit       — GUI panel import audit
+replay-stable-report-audit    — Report generator audit
+replay-stable-safety-audit    — Safety flag and keyword scan
+replay-stable-regression-audit — Regression suite audit
+replay-stable-report          — Generate stable rollup report
+```
+
+### Safety
+
+- STABLE_ROLLUP = True
+- REPLAY_TRAINING_LINE_COMPLETE = True
+- LONG_TERM_MAINTENANCE_READY = True
+- NO_REAL_ORDERS = True
+- REAL_ORDERS_ENABLED = False
+- BROKER_EXECUTION_ENABLED = False
+- PRODUCTION_TRADING_BLOCKED = True
+- All AUTO_* flags = False
+- REPLAY_TRADE_EXECUTION_ENABLED = False
+- VALIDATED does not enable trading
+- Not Investment Advice
+
+---
+
 ## v1.2.2 — Decision Journal Integration
 
 > [!] Research Only. No Real Orders. Simulation Decision Only. Not Investment Advice.

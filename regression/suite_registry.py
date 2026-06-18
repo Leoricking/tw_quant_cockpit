@@ -13,6 +13,9 @@ from regression.regression_schema import (
     SUITE_RESEARCH_OS, SUITE_RELEASE_GATE,
 )
 
+# v1.2.9 suite constant
+SUITE_REPLAY_STABLE = "replay_stable"
+
 logger = logging.getLogger(__name__)
 
 # ---------------------------------------------------------------------------
@@ -92,6 +95,7 @@ class RegressionSuiteRegistry:
         self._suites[SUITE_STRATEGY]     = self.build_strategy_suite()
         self._suites[SUITE_REPLAY]       = self.build_replay_suite()
         self._suites[SUITE_RESEARCH_OS]  = self.build_research_os_suite()
+        self._suites[SUITE_REPLAY_STABLE] = self.build_replay_stable_suite()
         self._suites[SUITE_RELEASE_GATE] = self.build_release_gate_suite()
 
     # ------------------------------------------------------------------
@@ -4823,9 +4827,196 @@ class RegressionSuiteRegistry:
                     description="safety-scan all passes after v1.2.8",
                 ),
             ],
+            # v1.2.9 Replay Training Stable Rollup tests
+            self.build_replay_stable_suite(),
         ]:
             for tc in suite_tests:
                 if tc.test_id not in seen:
                     combined.append(tc)
                     seen.add(tc.test_id)
         return combined
+
+    def build_replay_stable_suite(self):
+        """v1.2.9 Replay Training Stable Rollup regression tests."""
+        return [
+            RegressionTestCase(
+                test_id="rg_replay_stable_health_v129",
+                name="replay-stable-health (v1.2.9)",
+                suite=SUITE_RELEASE_GATE,
+                category="replay_stable",
+                command=["main.py", "replay-stable-health"],
+                timeout_seconds=120,
+                required=False,
+                description="replay-stable-health passes v1.2.9",
+            ),
+            RegressionTestCase(
+                test_id="rg_replay_stable_summary_v129",
+                name="replay-stable-summary (v1.2.9)",
+                suite=SUITE_QUICK,
+                category="replay_stable",
+                command=["main.py", "replay-stable-summary"],
+                timeout_seconds=60,
+                required=False,
+                description="replay-stable-summary returns without error",
+            ),
+            RegressionTestCase(
+                test_id="rg_replay_stable_manifest_v129",
+                name="replay-stable-manifest (v1.2.9)",
+                suite=SUITE_QUICK,
+                category="replay_stable",
+                command=["main.py", "replay-stable-manifest"],
+                timeout_seconds=60,
+                required=False,
+                description="replay-stable-manifest returns without error",
+            ),
+            RegressionTestCase(
+                test_id="rg_replay_stable_capabilities_v129",
+                name="replay-stable-capabilities (v1.2.9)",
+                suite=SUITE_QUICK,
+                category="replay_stable",
+                command=["main.py", "replay-stable-capabilities"],
+                timeout_seconds=60,
+                required=False,
+                description="replay-stable-capabilities returns 16 capabilities",
+            ),
+            RegressionTestCase(
+                test_id="rg_replay_stable_contracts_v129",
+                name="replay-stable-contracts (v1.2.9)",
+                suite=SUITE_RELEASE_GATE,
+                category="replay_stable",
+                command=["main.py", "replay-stable-contracts"],
+                timeout_seconds=120,
+                required=False,
+                description="cross-module contracts: no FAILs",
+            ),
+            RegressionTestCase(
+                test_id="rg_replay_stable_compatibility_v129",
+                name="replay-stable-compatibility (v1.2.9)",
+                suite=SUITE_RELEASE_GATE,
+                category="replay_stable",
+                command=["main.py", "replay-stable-compatibility"],
+                timeout_seconds=120,
+                required=False,
+                description="backward compat v1.2.0–v1.2.8: no FAILs",
+            ),
+            RegressionTestCase(
+                test_id="rg_replay_stable_store_audit_v129",
+                name="replay-stable-store-audit (v1.2.9)",
+                suite=SUITE_RELEASE_GATE,
+                category="replay_stable",
+                command=["main.py", "replay-stable-store-audit"],
+                timeout_seconds=120,
+                required=False,
+                description="store audit: 10 stores, no FAILs",
+            ),
+            RegressionTestCase(
+                test_id="rg_replay_stable_runtime_audit_v129",
+                name="replay-stable-runtime-audit (v1.2.9)",
+                suite=SUITE_RELEASE_GATE,
+                category="replay_stable",
+                command=["main.py", "replay-stable-runtime-audit"],
+                timeout_seconds=120,
+                required=False,
+                description="runtime isolation: .gitignore covers replay data dirs",
+            ),
+            RegressionTestCase(
+                test_id="rg_replay_stable_cli_audit_v129",
+                name="replay-stable-cli-audit (v1.2.9)",
+                suite=SUITE_RELEASE_GATE,
+                category="replay_stable",
+                command=["main.py", "replay-stable-cli-audit"],
+                timeout_seconds=120,
+                required=False,
+                description="CLI audit: all replay-stable commands registered in main.py",
+            ),
+            RegressionTestCase(
+                test_id="rg_replay_stable_gui_audit_v129",
+                name="replay-stable-gui-audit (v1.2.9)",
+                suite=SUITE_RELEASE_GATE,
+                category="replay_stable",
+                command=["main.py", "replay-stable-gui-audit"],
+                timeout_seconds=120,
+                required=False,
+                description="GUI audit: all stable panels importable",
+            ),
+            RegressionTestCase(
+                test_id="rg_replay_stable_report_audit_v129",
+                name="replay-stable-report-audit (v1.2.9)",
+                suite=SUITE_RELEASE_GATE,
+                category="replay_stable",
+                command=["main.py", "replay-stable-report-audit"],
+                timeout_seconds=120,
+                required=False,
+                description="report audit: no forbidden template strings",
+            ),
+            RegressionTestCase(
+                test_id="rg_replay_stable_safety_audit_v129",
+                name="replay-stable-safety-audit (v1.2.9)",
+                suite=SUITE_RELEASE_GATE,
+                category="replay_stable",
+                command=["main.py", "replay-stable-safety-audit"],
+                timeout_seconds=120,
+                required=False,
+                description="safety audit: all flags correct, no dangerous keywords",
+            ),
+            RegressionTestCase(
+                test_id="rg_replay_stable_regression_audit_v129",
+                name="replay-stable-regression-audit (v1.2.9)",
+                suite=SUITE_RELEASE_GATE,
+                category="replay_stable",
+                command=["main.py", "replay-stable-regression-audit"],
+                timeout_seconds=120,
+                required=False,
+                description="regression audit: suite_registry, schemas, guards all OK",
+            ),
+            RegressionTestCase(
+                test_id="rg_replay_stable_backward_compat_v120",
+                name="replay-stable-compatibility v1.2.0 check",
+                suite=SUITE_RELEASE_GATE,
+                category="replay_stable",
+                command=["main.py", "replay-stable-compatibility"],
+                timeout_seconds=120,
+                required=False,
+                description="backward compat v1.2.0 returns 0",
+            ),
+            RegressionTestCase(
+                test_id="rg_replay_stable_expected_safety_block_v129",
+                name="expected_safety_block semantics check (v1.2.9)",
+                suite=SUITE_RELEASE_GATE,
+                category="replay_stable",
+                command=["-c", "from regression.regression_schema import RegressionTestCase; assert 'expected_block' in RegressionTestCase.__dataclass_fields__; print('PASS: expected_block field exists')"],
+                timeout_seconds=30,
+                required=False,
+                description="RegressionTestCase.expected_block field exists",
+            ),
+            RegressionTestCase(
+                test_id="rg_replay_stable_version_v129",
+                name="version-info shows 1.2.9",
+                suite=SUITE_QUICK,
+                category="replay_stable",
+                command=["main.py", "version-info"],
+                timeout_seconds=30,
+                required=False,
+                description="version-info reports VERSION=1.2.9",
+            ),
+            RegressionTestCase(
+                test_id="rg_replay_stable_safety_v129",
+                name="replay stable safety: no auto-decision, no auto-execution, no broker",
+                suite=SUITE_RELEASE_GATE,
+                category="replay_stable",
+                command=["main.py", "replay-stable-safety-audit"],
+                timeout_seconds=120,
+                required=False,
+                description="safety invariants pass: all AUTO_*_ENABLED=False, NO_REAL_ORDERS=True",
+            ),
+            RegressionTestCase(
+                test_id="rg_replay_stable_runtime_isolation_v129",
+                name="replay stable runtime isolation",
+                suite=SUITE_RELEASE_GATE,
+                category="replay_stable",
+                command=["main.py", "replay-stable-runtime-audit"],
+                timeout_seconds=60,
+                required=False,
+                description="runtime isolation: data dirs and reports in .gitignore",
+            ),
+        ]

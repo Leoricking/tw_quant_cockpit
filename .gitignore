@@ -532,3 +532,13 @@ reports/replay_registry_portability_report*.md
 # v1.2.8 Registry fixtures ARE committed (exception)
 !tests/fixtures/replay_registry/*.json
 !tests/fixtures/replay_registry/*.jsonl
+
+# v1.2.9 Replay Training Stable Rollup (ignore generated runtime data)
+data/replay_stable/
+reports/replay_training_stable_rollup_*.md
+reports/replay_stable_*.md
+run_v128_post_release_check_fixed.bat
+
+# v1.2.9 Stable Rollup fixtures ARE committed (exception)
+!tests/fixtures/replay_stable/*.json
+!tests/fixtures/replay_stable/*.jsonl

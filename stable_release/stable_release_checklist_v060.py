@@ -3208,6 +3208,87 @@ class StableReleaseChecklistV060:
             return _check_item("version_info_v127", "version_git", "WARN", str(exc))
 
     # ----------------------------------------------------------------
+    # v1.2.9 Replay Training Stable Rollup checks
+    # ----------------------------------------------------------------
+
+    def _check_replay_stable_health(self) -> dict:
+        """v1.2.9 — ReplayStableHealthCheck importable."""
+        try:
+            from replay.stable_health import ReplayStableHealthCheck  # noqa: F401
+            return _check_item("replay_stable_health", "import", "PASS",
+                               "ReplayStableHealthCheck imported OK")
+        except ImportError as exc:
+            return _check_item("replay_stable_health", "import", "WARN", str(exc))
+        except Exception as exc:
+            return _check_item("replay_stable_health", "import", "WARN", str(exc))
+
+    def _check_replay_stable_manifest(self) -> dict:
+        """v1.2.9 — ReplayStableManifest importable."""
+        try:
+            from replay.stable_manifest import ReplayStableManifest  # noqa: F401
+            return _check_item("replay_stable_manifest", "import", "PASS",
+                               "ReplayStableManifest imported OK")
+        except ImportError as exc:
+            return _check_item("replay_stable_manifest", "import", "WARN", str(exc))
+        except Exception as exc:
+            return _check_item("replay_stable_manifest", "import", "WARN", str(exc))
+
+    def _check_replay_stable_contracts(self) -> dict:
+        """v1.2.9 — ReplayStableContractChecker importable."""
+        try:
+            from replay.stable_contracts import ReplayStableContractChecker  # noqa: F401
+            return _check_item("replay_stable_contracts", "import", "PASS",
+                               "ReplayStableContractChecker imported OK")
+        except ImportError as exc:
+            return _check_item("replay_stable_contracts", "import", "WARN", str(exc))
+        except Exception as exc:
+            return _check_item("replay_stable_contracts", "import", "WARN", str(exc))
+
+    def _check_replay_stable_compatibility(self) -> dict:
+        """v1.2.9 — ReplayStableCompatibilityChecker importable."""
+        try:
+            from replay.stable_compatibility import ReplayStableCompatibilityChecker  # noqa: F401
+            return _check_item("replay_stable_compatibility", "import", "PASS",
+                               "ReplayStableCompatibilityChecker imported OK")
+        except ImportError as exc:
+            return _check_item("replay_stable_compatibility", "import", "WARN", str(exc))
+        except Exception as exc:
+            return _check_item("replay_stable_compatibility", "import", "WARN", str(exc))
+
+    def _check_replay_release_gate_semantics(self) -> dict:
+        """v1.2.9 — regression_schema has expected_block field."""
+        try:
+            from regression.regression_schema import RegressionTestCase
+            fields = RegressionTestCase.__dataclass_fields__
+            if "expected_block" not in fields:
+                return _check_item("replay_release_gate_semantics", "regression", "FAIL",
+                                   "RegressionTestCase missing expected_block field")
+            return _check_item("replay_release_gate_semantics", "regression", "PASS",
+                               "RegressionTestCase.expected_block field exists")
+        except Exception as exc:
+            return _check_item("replay_release_gate_semantics", "regression", "WARN", str(exc))
+
+    def _check_version_info_v129(self) -> dict:
+        """v1.2.9 — VERSION=1.2.9 and REPLAY_TRAINING_LINE_COMPLETE=True."""
+        try:
+            from release.version_info import VERSION, REPLAY_TRAINING_LINE_COMPLETE, STABLE_ROLLUP
+            ar = getattr(__import__("release.version_info", fromlist=["AUTO_REPLAY_DECISION_ENABLED"]),
+                         "AUTO_REPLAY_DECISION_ENABLED", True)
+            ae = getattr(__import__("release.version_info", fromlist=["AUTO_REPLAY_EXECUTION_ENABLED"]),
+                         "AUTO_REPLAY_EXECUTION_ENABLED", True)
+            ok = (VERSION == "1.2.9" and REPLAY_TRAINING_LINE_COMPLETE and STABLE_ROLLUP
+                  and not ar and not ae)
+            status = "PASS" if ok else "WARN"
+            return _check_item(
+                "version_info_v129", "version_git", status,
+                f"VERSION={VERSION}, REPLAY_TRAINING_LINE_COMPLETE={REPLAY_TRAINING_LINE_COMPLETE}, "
+                f"STABLE_ROLLUP={STABLE_ROLLUP}, AUTO_REPLAY_DECISION_ENABLED={ar}, "
+                f"AUTO_REPLAY_EXECUTION_ENABLED={ae}",
+            )
+        except Exception as exc:
+            return _check_item("version_info_v129", "version_git", "WARN", str(exc))
+
+    # ----------------------------------------------------------------
     # Run
     # ----------------------------------------------------------------
 
@@ -3408,6 +3489,13 @@ class StableReleaseChecklistV060:
             self._check_replay_challenge_process_weight,
             self._check_replay_challenge_no_public_leaderboard,
             self._check_version_info_v127,
+            # v1.2.9 Replay Training Stable Rollup
+            self._check_replay_stable_health,
+            self._check_replay_stable_manifest,
+            self._check_replay_stable_contracts,
+            self._check_replay_stable_compatibility,
+            self._check_replay_release_gate_semantics,
+            self._check_version_info_v129,
         ]
 
         for fn in checklist_groups:

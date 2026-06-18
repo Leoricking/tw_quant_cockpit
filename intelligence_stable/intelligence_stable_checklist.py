@@ -1633,4 +1633,33 @@ class IntelligenceStableChecklist:
                 suggested_fix="Run: python main.py replay-challenge-health",
             ))
 
+        # v1.2.9 Replay Training Stable Rollup
+        try:
+            import release.version_info as _vi5
+            ver = getattr(_vi5, "VERSION", None)
+            rtlc = getattr(_vi5, "REPLAY_TRAINING_LINE_COMPLETE", False)
+            sr = getattr(_vi5, "STABLE_ROLLUP", False)
+            ar_d = getattr(_vi5, "AUTO_REPLAY_DECISION_ENABLED", True)
+            ar_e = getattr(_vi5, "AUTO_REPLAY_EXECUTION_ENABLED", True)
+            am_c = getattr(_vi5, "AUTO_MISTAKE_CONFIRMATION_ENABLED", True)
+            ao_r = getattr(_vi5, "AUTO_OUTCOME_REVEAL_ENABLED", True)
+            safe_stable = (ver == "1.2.9" and rtlc and not ar_d and not ar_e and not am_c and not ao_r)
+            checks.append(_check(
+                "replay_training_stable_rollup_v129_safe", "stable_integration",
+                "v1.2.9 replay_training_stable_rollup_v129_safe",
+                CHECK_PASS if safe_stable else CHECK_WARN, SEV_LOW,
+                f"VERSION={ver}, REPLAY_TRAINING_LINE_COMPLETE={rtlc}, STABLE_ROLLUP={sr}, "
+                f"AUTO_REPLAY_DECISION={ar_d}, AUTO_REPLAY_EXECUTION={ar_e}, "
+                f"AUTO_MISTAKE_CONFIRMATION={am_c}, AUTO_OUTCOME_REVEAL={ao_r}",
+                suggested_fix="Run: python main.py replay-stable-health",
+            ))
+        except Exception as exc:
+            checks.append(_check(
+                "replay_training_stable_rollup_v129_safe", "stable_integration",
+                "v1.2.9 replay_training_stable_rollup_v129_safe",
+                CHECK_WARN, SEV_LOW,
+                f"Could not verify replay_training_stable_rollup v1.2.9 safety (optional): {exc}",
+                suggested_fix="Run: python main.py replay-stable-health",
+            ))
+
         return checks

@@ -1,5 +1,5 @@
 """
-release/version_info.py — Centralized version info for TW Quant Cockpit v1.2.8.
+release/version_info.py — Centralized version info for TW Quant Cockpit v1.2.9.
 [!] Research Only. No Real Orders. Production Trading: BLOCKED.
 [!] VALIDATED does not enable trading. Broker Execution Disabled.
 [!] Replay Challenge Mode. Challenge Training Only. Simulation Only.
@@ -50,6 +50,10 @@ release/version_info.py — Centralized version info for TW Quant Cockpit v1.2.8
 [!] No Auto Package Import. No Auto Conflict Resolution. Registry does not execute trades.
 [!] Portable packages use RELATIVE_ONLY paths. No absolute paths in portable manifests.
 [!] Frozen datasets are immutable. Modification requires new version. Not Investment Advice.
+[!] Replay Training Stable Rollup. Freeze and validate Replay Training v1.2 line.
+[!] No new trading functionality. Stable manifests, audits, contracts only. Not Investment Advice.
+[!] No Auto Replay Decision. No Auto Replay Execution. No Auto Conflict Resolution.
+[!] Stable health check does NOT repair, execute, or enable trading. Research Only.
 """
 from __future__ import annotations
 import logging
@@ -59,15 +63,18 @@ logger = logging.getLogger(__name__)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 # ---------------------------------------------------------------------------
-# v1.1.9 module-level constants (Data Governance Stable Rollup)
+# v1.2.9 module-level constants (Replay Training Stable Rollup)
 # ---------------------------------------------------------------------------
-VERSION                             = "1.2.8"
-RELEASE_NAME                        = "Replay Dataset & Session Registry"
-BASE_RELEASE                        = "1.2.7 Replay Challenge Mode"
+VERSION                             = "1.2.9"
+RELEASE_NAME                        = "Replay Training Stable Rollup"
+BASE_RELEASE                        = "1.2.8 Replay Dataset & Session Registry"
 BASE_RELEASE_NAME                   = "Data Governance Stable Rollup"
 MAINTENANCE_RELEASE                 = False
-RELEASE_STAGE                       = "FOUNDATION"
+RELEASE_STAGE                       = "STABLE"
 RELEASE_TRACK                       = "replay_training"
+STABLE_ROLLUP                       = True
+REPLAY_TRAINING_LINE_COMPLETE       = True
+LONG_TERM_MAINTENANCE_READY         = True
 TRADING_MODE                        = "research_only"
 REAL_ORDERS_ENABLED                 = False
 BROKER_EXECUTION_ENABLED            = False
@@ -303,6 +310,32 @@ AUTO_PACKAGE_IMPORT_ENABLED                = False
 AUTO_REGISTRY_CONFLICT_RESOLUTION_ENABLED  = False
 AUTO_TRADING_ENABLED                       = False
 REPLAY_TRADE_EXECUTION_ENABLED             = False  # noqa: F811
+# v1.2.9 Replay Training Stable Rollup flags
+REPLAY_STABLE_HEALTH_AVAILABLE              = True
+REPLAY_STABLE_MANIFEST_AVAILABLE            = True
+REPLAY_CAPABILITY_MATRIX_AVAILABLE          = True
+REPLAY_BACKWARD_COMPATIBILITY_AVAILABLE     = True
+REPLAY_CROSS_MODULE_CONTRACT_CHECK_AVAILABLE = True
+REPLAY_RELEASE_GATE_AVAILABLE               = True
+REPLAY_FOUNDATION_AVAILABLE                 = True
+REPLAY_SCENARIO_MANAGER_AVAILABLE           = True
+REPLAY_SESSION_MANAGER_AVAILABLE            = True  # noqa: F811
+REPLAY_DECISION_JOURNAL_AVAILABLE           = True
+REPLAY_SCORING_AVAILABLE                    = True  # noqa: F811
+REPLAY_MISTAKE_TAXONOMY_AVAILABLE           = True
+REPLAY_STRATEGY_KNOWLEDGE_AVAILABLE         = True
+REPLAY_MULTI_TIMEFRAME_AVAILABLE            = True
+REPLAY_REVIEW_DASHBOARD_AVAILABLE           = True  # noqa: F811
+REPLAY_CHALLENGE_MODE_AVAILABLE             = True  # noqa: F811
+REPLAY_DATASET_REGISTRY_AVAILABLE           = True  # noqa: F811
+REPLAY_SESSION_REGISTRY_AVAILABLE           = True  # noqa: F811
+AUTO_REPLAY_DECISION_ENABLED                = False
+AUTO_REPLAY_EXECUTION_ENABLED               = False
+AUTO_MISTAKE_CONFIRMATION_ENABLED           = False  # noqa: F811
+AUTO_OUTCOME_REVEAL_ENABLED                 = False  # noqa: F811
+AUTO_STRATEGY_CHANGE_ENABLED                = False  # noqa: F811
+AUTO_STRATEGY_WEIGHT_CHANGE_ENABLED         = False
+AUTO_CONFLICT_RESOLUTION_ENABLED            = False
 
 
 class VersionInfo:
@@ -624,6 +657,17 @@ def print_version_info() -> None:
     print(f"  Auto Package Import Enabled: {AUTO_PACKAGE_IMPORT_ENABLED}")
     print(f"  Auto Registry Conflict Resolution Enabled: {AUTO_REGISTRY_CONFLICT_RESOLUTION_ENABLED}")
     print(f"  Replay Trade Execution Enabled: {REPLAY_TRADE_EXECUTION_ENABLED}")
+    # v1.2.9 flags
+    print(f"  Stable Rollup: {STABLE_ROLLUP}")
+    print(f"  Replay Training Line Complete: {REPLAY_TRAINING_LINE_COMPLETE}")
+    print(f"  Replay Stable Health Available: {REPLAY_STABLE_HEALTH_AVAILABLE}")
+    print(f"  Replay Stable Manifest Available: {REPLAY_STABLE_MANIFEST_AVAILABLE}")
+    print(f"  Replay Capability Matrix Available: {REPLAY_CAPABILITY_MATRIX_AVAILABLE}")
+    print(f"  Replay Cross Module Contract Check Available: {REPLAY_CROSS_MODULE_CONTRACT_CHECK_AVAILABLE}")
+    print(f"  Replay Release Gate Available: {REPLAY_RELEASE_GATE_AVAILABLE}")
+    print(f"  Auto Replay Decision Enabled: {AUTO_REPLAY_DECISION_ENABLED}")
+    print(f"  Auto Replay Execution Enabled: {AUTO_REPLAY_EXECUTION_ENABLED}")
+    print(f"  Auto Conflict Resolution Enabled: {AUTO_CONFLICT_RESOLUTION_ENABLED}")
     print(f"  No Real Orders: {NO_REAL_ORDERS}")
     print(f"  Broker Execution Enabled: {BROKER_EXECUTION_ENABLED}")
     print(f"  Production Trading BLOCKED: {PRODUCTION_TRADING_BLOCKED}")

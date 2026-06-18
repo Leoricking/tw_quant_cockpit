@@ -1,0 +1,8 @@
+{
+  "contract_id": "no_real_orders_invariant",
+  "status": "PASS",
+  "message": "NO_REAL_ORDERS=True, REAL_ORDERS_ENABLED=False",
+  "no_real_orders": true,
+  "research_only": true,
+  "_note": "Test fixture only. TST symbol. Fixed clock 2023-01-01. No real data."
+}

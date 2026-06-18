@@ -22081,6 +22081,39 @@ def _build_parser() -> argparse.ArgumentParser:
     subparsers.add_parser("replay-session-registry-report", help="[v1.2.8] Generate session registry report. Research Only.")
     subparsers.add_parser("replay-registry-integrity-report", help="[v1.2.8] Generate registry integrity report. Research Only.")
 
+    # v1.2.9 Replay Training Stable Rollup subparsers
+    p_rsh = subparsers.add_parser("replay-stable-health", help="[v1.2.9] Replay Training Stable Rollup health check. Research Only.")
+    p_rsh.add_argument("--mode", default="real", choices=["real", "mock"])
+    p_rsh.add_argument("--strict", action="store_true", default=False)
+    p_rssumm = subparsers.add_parser("replay-stable-summary", help="[v1.2.9] Stable rollup summary. Research Only.")
+    p_rssumm.add_argument("--format", default="text", choices=["text", "json"])
+    p_rsmanif = subparsers.add_parser("replay-stable-manifest", help="[v1.2.9] Stable release manifest. Research Only.")
+    p_rsmanif.add_argument("--format", default="text", choices=["text", "json"])
+    p_rscaps = subparsers.add_parser("replay-stable-capabilities", help="[v1.2.9] Stable capability matrix. Research Only.")
+    p_rscaps.add_argument("--format", default="text", choices=["text", "json"])
+    p_rscontr = subparsers.add_parser("replay-stable-contracts", help="[v1.2.9] Cross-module contract check. Research Only.")
+    p_rscontr.add_argument("--format", default="text", choices=["text", "json"])
+    p_rscontr.add_argument("--strict", action="store_true", default=False)
+    p_rscompat = subparsers.add_parser("replay-stable-compatibility", help="[v1.2.9] Backward compatibility check v1.2.0–v1.2.8. Research Only.")
+    p_rscompat.add_argument("--format", default="text", choices=["text", "json"])
+    p_rsstore = subparsers.add_parser("replay-stable-store-audit", help="[v1.2.9] Store audit. Research Only.")
+    p_rsstore.add_argument("--format", default="text", choices=["text", "json"])
+    p_rsrt = subparsers.add_parser("replay-stable-runtime-audit", help="[v1.2.9] Runtime isolation audit. Research Only.")
+    p_rsrt.add_argument("--format", default="text", choices=["text", "json"])
+    p_rscli = subparsers.add_parser("replay-stable-cli-audit", help="[v1.2.9] CLI command audit. Research Only.")
+    p_rscli.add_argument("--include-warnings", action="store_true", default=False)
+    p_rsgui = subparsers.add_parser("replay-stable-gui-audit", help="[v1.2.9] GUI panel audit. Research Only.")
+    p_rsgui.add_argument("--format", default="text", choices=["text", "json"])
+    p_rsrep = subparsers.add_parser("replay-stable-report-audit", help="[v1.2.9] Report generator audit. Research Only.")
+    p_rsrep.add_argument("--format", default="text", choices=["text", "json"])
+    p_rssafe = subparsers.add_parser("replay-stable-safety-audit", help="[v1.2.9] Safety audit. Research Only.")
+    p_rssafe.add_argument("--format", default="text", choices=["text", "json"])
+    p_rsreg = subparsers.add_parser("replay-stable-regression-audit", help="[v1.2.9] Regression suite audit. Research Only.")
+    p_rsreg.add_argument("--format", default="text", choices=["text", "json"])
+    p_rsreport = subparsers.add_parser("replay-stable-report", help="[v1.2.9] Generate Replay Training Stable Rollup report. Research Only.")
+    p_rsreport.add_argument("--output-dir", default="reports")
+    p_rsreport.add_argument("--format", default="text", choices=["text", "json"])
+
     return parser
 
 
@@ -23325,6 +23358,335 @@ def cmd_replay_registry_integrity_report(args) -> None:
         result  = planner.preview()
         print(f"  Issues: {result.get('issues_found', 0)}")
         print(f"  Blocked: {result.get('blocked_count', 0)}")
+        print("[!] Research Only. Not Investment Advice.")
+    except Exception as exc:
+        print(f"  [ERROR] {exc}")
+
+
+# ---------------------------------------------------------------------------
+# v1.2.9 Replay Training Stable Rollup commands
+# ---------------------------------------------------------------------------
+
+def cmd_replay_stable_health(args) -> None:
+    """[v1.2.9] Replay Training Stable Rollup health check. [!] Research Only. No Real Orders."""
+    print("=" * 70)
+    print("  Replay Training Stable Rollup Health Check v1.2.9")
+    print("  [!] Research Only | No Real Orders | Replay Training Line Complete")
+    print("=" * 70)
+    strict = getattr(args, "strict", False)
+    try:
+        from replay.stable_health import ReplayStableHealthCheck
+        hc = ReplayStableHealthCheck()
+        results = hc.run()
+        hc.print_results(results)
+        fail_count  = sum(1 for s, _ in results.values() if s == "FAIL")
+        block_count = sum(1 for s, _ in results.values() if s == "BLOCKED")
+        if fail_count > 0 or block_count > 0:
+            raise SystemExit(1)
+        if strict:
+            warn_count = sum(1 for s, _ in results.values() if s == "WARN")
+            if warn_count > 0:
+                print(f"  [STRICT] {warn_count} WARN(s) in strict mode — exiting 1")
+                raise SystemExit(1)
+    except SystemExit:
+        raise
+    except Exception as exc:
+        print(f"  [FAIL] Health check error: {exc}")
+        import traceback; traceback.print_exc()
+        raise SystemExit(1)
+
+
+def cmd_replay_stable_summary(args) -> None:
+    """[v1.2.9] Replay Training Stable Rollup summary. [!] Research Only."""
+    fmt = getattr(args, "format", "text") or "text"
+    print("=" * 60)
+    print("  Replay Training Stable Rollup Summary v1.2.9")
+    print("  [!] Research Only | No Real Orders")
+    print("=" * 60)
+    try:
+        from replay.stable_summary import ReplayStableSummary
+        summary = ReplayStableSummary().build()
+        if fmt == "json":
+            import json
+            print(json.dumps(summary, indent=2))
+        else:
+            for k, v in summary.items():
+                if k == "safety_flags":
+                    print(f"  Safety Flags:")
+                    for fk, fv in v.items():
+                        print(f"    {fk}: {fv}")
+                elif k == "backward_compatibility_versions":
+                    print(f"  Backward Compat Versions: {', '.join(v)}")
+                else:
+                    print(f"  {k}: {v}")
+        print("[!] Research Only. Not Investment Advice.")
+    except Exception as exc:
+        print(f"  [ERROR] {exc}")
+
+
+def cmd_replay_stable_manifest(args) -> None:
+    """[v1.2.9] Show stable release manifest. [!] Research Only."""
+    fmt = getattr(args, "format", "text") or "text"
+    print("[!] Replay Training Stable Manifest v1.2.9 — Research Only | No Real Orders")
+    try:
+        from replay.stable_manifest import ReplayStableManifest
+        manifest = ReplayStableManifest().build()
+        if fmt == "json":
+            import json
+            print(json.dumps(manifest, indent=2))
+        else:
+            for k, v in manifest.items():
+                if isinstance(v, list):
+                    print(f"  {k}: [{len(v)} items]")
+                elif isinstance(v, dict):
+                    print(f"  {k}: {v}")
+                else:
+                    print(f"  {k}: {v}")
+        print("[!] Research Only. Not Investment Advice.")
+    except Exception as exc:
+        print(f"  [ERROR] {exc}")
+
+
+def cmd_replay_stable_capabilities(args) -> None:
+    """[v1.2.9] Show stable capability matrix. [!] Research Only."""
+    fmt = getattr(args, "format", "text") or "text"
+    print("[!] Replay Training Stable Capability Matrix v1.2.9 — Research Only")
+    try:
+        from replay.stable_capability_matrix import ReplayStableCapabilityMatrix
+        caps = ReplayStableCapabilityMatrix().build()
+        if fmt == "json":
+            import json
+            print(json.dumps(caps, indent=2))
+        else:
+            print(f"  Total capabilities: {len(caps)}")
+            for cap in caps:
+                status = cap.get("current_status", "?")
+                cid = cap.get("capability_id", "?")
+                mod = cap.get("module", "?")
+                ver = cap.get("introduced_version", "?")
+                safe = "OK" if cap.get("safety_qualified") and cap.get("no_real_orders") else "WARN"
+                print(f"  [{status:8s}] {cid:35s} {mod:25s} v{ver}  safety={safe}")
+        print("[!] Research Only. Not Investment Advice.")
+    except Exception as exc:
+        print(f"  [ERROR] {exc}")
+
+
+def cmd_replay_stable_contracts(args) -> None:
+    """[v1.2.9] Cross-module contract check. [!] Research Only."""
+    fmt = getattr(args, "format", "text") or "text"
+    strict = getattr(args, "strict", False)
+    print("[!] Replay Stable Cross-Module Contracts v1.2.9 — Research Only")
+    try:
+        from replay.stable_contracts import ReplayStableContractChecker
+        results = ReplayStableContractChecker().check_all()
+        fail_count = 0
+        for k, (status, message) in results.items():
+            icon = {"PASS": "[PASS]", "WARN": "[WARN]", "FAIL": "[FAIL]"}.get(status, "[?]")
+            print(f"  {icon} {k}: {message}")
+            if status == "FAIL":
+                fail_count += 1
+        print(f"  Total: {len(results)}  FAILs: {fail_count}")
+        print("[!] Research Only. Not Investment Advice.")
+        if fail_count > 0:
+            raise SystemExit(1)
+    except SystemExit:
+        raise
+    except Exception as exc:
+        print(f"  [ERROR] {exc}")
+
+
+def cmd_replay_stable_compatibility(args) -> None:
+    """[v1.2.9] Backward compatibility check v1.2.0–v1.2.8. [!] Research Only."""
+    fmt = getattr(args, "format", "text") or "text"
+    print("[!] Replay Stable Backward Compatibility v1.2.9 — Research Only")
+    try:
+        from replay.stable_compatibility import ReplayStableCompatibilityChecker
+        results = ReplayStableCompatibilityChecker().check_all()
+        fail_count = 0
+        for version, (status, message) in results.items():
+            icon = {"PASS": "[PASS]", "WARN": "[WARN]", "FAIL": "[FAIL]"}.get(status, "[?]")
+            print(f"  {icon} v{version}: {message}")
+            if status == "FAIL":
+                fail_count += 1
+        print(f"  Total: {len(results)}  FAILs: {fail_count}")
+        print("[!] Research Only. Not Investment Advice.")
+        if fail_count > 0:
+            raise SystemExit(1)
+    except SystemExit:
+        raise
+    except Exception as exc:
+        print(f"  [ERROR] {exc}")
+
+
+def cmd_replay_stable_store_audit(args) -> None:
+    """[v1.2.9] Store audit for all 10 replay stores. [!] Research Only."""
+    print("[!] Replay Stable Store Audit v1.2.9 — Research Only | No Real Orders")
+    try:
+        from replay.stable_store_audit import ReplayStableStoreAudit
+        results = ReplayStableStoreAudit().audit_all()
+        fail_count = 0
+        for store, (status, message) in results.items():
+            icon = {"PASS": "[PASS]", "WARN": "[WARN]", "FAIL": "[FAIL]"}.get(status, "[?]")
+            print(f"  {icon} {store:20s}: {message}")
+            if status == "FAIL":
+                fail_count += 1
+        print(f"  Total: {len(results)}  FAILs: {fail_count}")
+        print("[!] Research Only. Not Investment Advice.")
+        if fail_count > 0:
+            raise SystemExit(1)
+    except SystemExit:
+        raise
+    except Exception as exc:
+        print(f"  [ERROR] {exc}")
+
+
+def cmd_replay_stable_runtime_audit(args) -> None:
+    """[v1.2.9] Runtime isolation audit. [!] Research Only."""
+    print("[!] Replay Stable Runtime Isolation Audit v1.2.9 — Research Only")
+    try:
+        from replay.stable_runtime_isolation import ReplayStableRuntimeIsolation
+        results = ReplayStableRuntimeIsolation().check_all()
+        fail_count = 0
+        for check, (status, message) in results.items():
+            icon = {"PASS": "[PASS]", "WARN": "[WARN]", "FAIL": "[FAIL]"}.get(status, "[?]")
+            print(f"  {icon} {check}: {message}")
+            if status == "FAIL":
+                fail_count += 1
+        print(f"  Total: {len(results)}  FAILs: {fail_count}")
+        print("[!] Research Only. Not Investment Advice.")
+        if fail_count > 0:
+            raise SystemExit(1)
+    except SystemExit:
+        raise
+    except Exception as exc:
+        print(f"  [ERROR] {exc}")
+
+
+def cmd_replay_stable_cli_audit(args) -> None:
+    """[v1.2.9] CLI command audit. [!] Research Only."""
+    include_warnings = getattr(args, "include_warnings", False)
+    print("[!] Replay Stable CLI Audit v1.2.9 — Research Only")
+    try:
+        from replay.stable_cli_audit import ReplayStableCLIAudit
+        results = ReplayStableCLIAudit().audit_all()
+        fail_count = 0
+        warn_count = 0
+        for cmd, (status, message) in results.items():
+            if status == "FAIL" or (include_warnings and status == "WARN") or status == "PASS":
+                icon = {"PASS": "[PASS]", "WARN": "[WARN]", "FAIL": "[FAIL]"}.get(status, "[?]")
+                print(f"  {icon} {cmd}: {message}")
+            if status == "FAIL":
+                fail_count += 1
+            if status == "WARN":
+                warn_count += 1
+        print(f"  Total: {len(results)}  FAILs: {fail_count}  WARNs: {warn_count}")
+        print("[!] Research Only. Not Investment Advice.")
+        if fail_count > 0:
+            raise SystemExit(1)
+    except SystemExit:
+        raise
+    except Exception as exc:
+        print(f"  [ERROR] {exc}")
+
+
+def cmd_replay_stable_gui_audit(args) -> None:
+    """[v1.2.9] GUI panel audit. [!] Research Only."""
+    print("[!] Replay Stable GUI Audit v1.2.9 — Research Only")
+    try:
+        from replay.stable_gui_audit import ReplayStableGUIAudit
+        results = ReplayStableGUIAudit().audit_all()
+        fail_count = 0
+        for panel, (status, message) in results.items():
+            icon = {"PASS": "[PASS]", "WARN": "[WARN]", "FAIL": "[FAIL]"}.get(status, "[?]")
+            print(f"  {icon} {panel}: {message}")
+            if status == "FAIL":
+                fail_count += 1
+        print(f"  Total: {len(results)}  FAILs: {fail_count}")
+        print("[!] Research Only. Not Investment Advice.")
+        if fail_count > 0:
+            raise SystemExit(1)
+    except SystemExit:
+        raise
+    except Exception as exc:
+        print(f"  [ERROR] {exc}")
+
+
+def cmd_replay_stable_report_audit(args) -> None:
+    """[v1.2.9] Report generator audit. [!] Research Only."""
+    print("[!] Replay Stable Report Audit v1.2.9 — Research Only")
+    try:
+        from replay.stable_report_audit import ReplayStableReportAudit
+        results = ReplayStableReportAudit().audit_all()
+        fail_count = 0
+        for module, (status, message) in results.items():
+            icon = {"PASS": "[PASS]", "WARN": "[WARN]", "FAIL": "[FAIL]"}.get(status, "[?]")
+            print(f"  {icon} {module}: {message}")
+            if status == "FAIL":
+                fail_count += 1
+        print(f"  Total: {len(results)}  FAILs: {fail_count}")
+        print("[!] Research Only. Not Investment Advice.")
+        if fail_count > 0:
+            raise SystemExit(1)
+    except SystemExit:
+        raise
+    except Exception as exc:
+        print(f"  [ERROR] {exc}")
+
+
+def cmd_replay_stable_safety_audit(args) -> None:
+    """[v1.2.9] Safety audit — version_info flags and keyword scan. [!] Research Only."""
+    print("[!] Replay Stable Safety Audit v1.2.9 — Research Only | No Real Orders")
+    try:
+        from replay.stable_safety_audit import ReplayStableSafetyAudit
+        results = ReplayStableSafetyAudit().audit_all()
+        fail_count = 0
+        for check, (status, message) in results.items():
+            icon = {"PASS": "[PASS]", "WARN": "[WARN]", "FAIL": "[FAIL]"}.get(status, "[?]")
+            print(f"  {icon} {check}: {message}")
+            if status == "FAIL":
+                fail_count += 1
+        print(f"  Total: {len(results)}  FAILs: {fail_count}")
+        print("[!] Research Only. Not Investment Advice.")
+        if fail_count > 0:
+            raise SystemExit(1)
+    except SystemExit:
+        raise
+    except Exception as exc:
+        print(f"  [ERROR] {exc}")
+
+
+def cmd_replay_stable_regression_audit(args) -> None:
+    """[v1.2.9] Regression suite audit. [!] Research Only."""
+    print("[!] Replay Stable Regression Audit v1.2.9 — Research Only")
+    try:
+        from replay.stable_regression_audit import ReplayStableRegressionAudit
+        results = ReplayStableRegressionAudit().audit_all()
+        fail_count = 0
+        for check, (status, message) in results.items():
+            icon = {"PASS": "[PASS]", "WARN": "[WARN]", "FAIL": "[FAIL]"}.get(status, "[?]")
+            print(f"  {icon} {check}: {message}")
+            if status == "FAIL":
+                fail_count += 1
+        print(f"  Total: {len(results)}  FAILs: {fail_count}")
+        print("[!] Research Only. Not Investment Advice.")
+        if fail_count > 0:
+            raise SystemExit(1)
+    except SystemExit:
+        raise
+    except Exception as exc:
+        print(f"  [ERROR] {exc}")
+
+
+def cmd_replay_stable_report(args) -> None:
+    """[v1.2.9] Generate Replay Training Stable Rollup report. [!] Research Only."""
+    output_dir = getattr(args, "output_dir", "reports") or "reports"
+    print(f"[!] Generating Replay Training Stable Rollup Report v1.2.9 → {output_dir}/")
+    print("[!] Research Only. No Real Orders. Not Investment Advice.")
+    try:
+        from replay.stable_report import ReplayStableReport
+        r = ReplayStableReport()
+        path = r.generate(output_dir=output_dir)
+        print(f"  [OK] Report written: {path}")
         print("[!] Research Only. Not Investment Advice.")
     except Exception as exc:
         print(f"  [ERROR] {exc}")
@@ -27224,6 +27586,21 @@ def main() -> None:
         "replay-challenge-progress-report":   cmd_replay_challenge_progress_report,
         "replay-challenge-batch-preview":     cmd_replay_challenge_batch_preview,
         "replay-challenge-batch-run":         cmd_replay_challenge_batch_run,
+        # v1.2.9 Replay Training Stable Rollup
+        "replay-stable-health":                      cmd_replay_stable_health,
+        "replay-stable-summary":                     cmd_replay_stable_summary,
+        "replay-stable-manifest":                    cmd_replay_stable_manifest,
+        "replay-stable-capabilities":                cmd_replay_stable_capabilities,
+        "replay-stable-contracts":                   cmd_replay_stable_contracts,
+        "replay-stable-compatibility":               cmd_replay_stable_compatibility,
+        "replay-stable-store-audit":                 cmd_replay_stable_store_audit,
+        "replay-stable-runtime-audit":               cmd_replay_stable_runtime_audit,
+        "replay-stable-cli-audit":                   cmd_replay_stable_cli_audit,
+        "replay-stable-gui-audit":                   cmd_replay_stable_gui_audit,
+        "replay-stable-report-audit":                cmd_replay_stable_report_audit,
+        "replay-stable-safety-audit":                cmd_replay_stable_safety_audit,
+        "replay-stable-regression-audit":            cmd_replay_stable_regression_audit,
+        "replay-stable-report":                      cmd_replay_stable_report,
         # v1.2.8 Replay Dataset & Session Registry
         "replay-registry-health":                    cmd_replay_registry_health,
         "replay-dataset-list":                       cmd_replay_dataset_list,

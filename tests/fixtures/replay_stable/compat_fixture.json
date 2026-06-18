@@ -1,0 +1,13 @@
+{
+  "version": "1.2.0",
+  "status": "PASS",
+  "message": "v1.2.0: replay_schema imports OK",
+  "no_real_orders": true,
+  "research_only": true,
+  "session_id": "SES-TST-v120",
+  "symbol": "TST001",
+  "start_date": "2023-01-01",
+  "current_date": "2023-01-10",
+  "mode": "mock",
+  "_note": "Test fixture only. TST symbol. Fixed clock 2023-01-01. No real data."
+}

@@ -1,0 +1,13 @@
+{
+  "release_version": "1.2.9",
+  "release_name": "Replay Training Stable Rollup",
+  "base_release": "1.2.8 Replay Dataset & Session Registry",
+  "generated_at": "2023-01-01T00:00:00+00:00",
+  "module_count": 12,
+  "no_real_orders": true,
+  "broker_disabled": true,
+  "research_only": true,
+  "stable_rollup": true,
+  "replay_training_line_complete": true,
+  "_note": "Test fixture only. TST symbol. Fixed clock 2023-01-01. No real data."
+}

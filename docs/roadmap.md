@@ -93,6 +93,24 @@
 | v1.2.1 | Replay Scenario & Session Manager | Done |
 | v1.2.2 | Decision Journal Integration | Done |
 | v1.2.3 | Replay Scoring & Mistake Taxonomy | Done |
+| v1.2.4 | Strategy Knowledge Replay | Done |
+| v1.2.5 | Multi-Timeframe Replay | Done |
+| v1.2.6 | Replay Review Dashboard | Done |
+| v1.2.7 | Replay Challenge Mode | Done |
+| v1.2.8 | Replay Dataset & Session Registry | Done |
+| v1.2.9 | Replay Training Stable Rollup | Done — **Replay Training v1.2 Line Complete** |
+
+---
+
+### v1.2.9 — Replay Training Stable Rollup ✅
+
+- **Version:** 1.2.9 — Replay Training Stable Rollup
+- **Type:** Freeze-and-validate milestone for the complete v1.2 Replay Training line (v1.2.0–v1.2.8). No new trading functionality. Stable manifests, capability matrices, cross-module contracts, backward compatibility checks, store and runtime audits, CLI/GUI/report/safety/regression audits, release gate, health check.
+- **Changes:** replay/ new files (stable_schema, stable_manifest, stable_capability_matrix, stable_contracts, stable_compatibility, stable_store_audit, stable_runtime_isolation, stable_cli_audit, stable_gui_audit, stable_report_audit, stable_safety_audit, stable_regression_audit, stable_release_gate, stable_summary, stable_report, stable_health), gui/ new files (replay_stable_rollup_panel, replay_stable_rollup_adapter, replay_stable_capability_panel, replay_stable_health_panel, replay_stable_contract_panel, replay_stable_compatibility_panel, replay_stable_audit_panel, replay_stable_report_panel), reports/replay_training_stable_rollup_report.py, 14 new CLI commands (replay-stable-health/summary/manifest/capabilities/contracts/compatibility/store-audit/runtime-audit/cli-audit/gui-audit/report-audit/safety-audit/regression-audit/report), tests/test_replay_training_stable_rollup.py (8 test classes, 56+ tests), tests/fixtures/replay_stable/ (5 fixtures), release/version_info.py v1.2.9 flags (STABLE_ROLLUP=True, REPLAY_TRAINING_LINE_COMPLETE=True, LONG_TERM_MAINTENANCE_READY=True), docs (replay_training_stable_rollup_v1.2.9.md, replay_training_capability_matrix.md, replay_training_maintenance_baseline.md, replay_training_backward_compatibility.md)
+- **Safety:** STABLE_ROLLUP=True; REPLAY_TRAINING_LINE_COMPLETE=True; LONG_TERM_MAINTENANCE_READY=True; NO_REAL_ORDERS=True; REAL_ORDERS_ENABLED=False; BROKER_EXECUTION_ENABLED=False; PRODUCTION_TRADING_BLOCKED=True; AUTO_REPLAY_DECISION_ENABLED=False; AUTO_REPLAY_EXECUTION_ENABLED=False; AUTO_MISTAKE_CONFIRMATION_ENABLED=False; AUTO_OUTCOME_REVEAL_ENABLED=False; AUTO_STRATEGY_CHANGE_ENABLED=False; AUTO_DATASET_REPAIR_ENABLED=False; AUTO_SESSION_REBIND_ENABLED=False; REPLAY_TRADE_EXECUTION_ENABLED=False; VALIDATED does not enable trading; Not Investment Advice
+
+**Next:**
+- v1.3.0: TBD
 
 ---
 
@@ -130,8 +148,6 @@
 - **Changes:** replay/ new files (replay_schema, replay_calendar, replay_data_source, future_data_firewall, point_in_time_context, replay_timeline, replay_session_store, replay_training_session, replay_training_engine, replay_decision, replay_annotations, replay_summary, replay_query, replay_health), gui/replay_session_dialog.py, gui/replay_decision_dialog.py, reports/replay_training_session_report.py, 19 new CLI commands (replay-health/create/sessions/session/resume/current/next/previous/jump/play-step/pause/decision/annotation/summary/report/duplicate/archive/firewall-check/point-in-time-check), GUI nav tab (replay_training), 3 new regression entries (SUITE_QUICK/FULL/RELEASE_GATE), 5 new governance alert types, tests/fixtures/replay/ (17 fixtures), tests/test_replay_training_foundation_regression.py (9 test classes), stable_release_checklist updates (5 checks), research_cockpit_stable_checklist updates (5 checks), version_info.py v1.2.0 flags, .gitignore updates, docs (replay_training_ux_foundation_v1.2.0.md, replay_future_data_firewall.md, replay_training_operations_runbook.md, release_notes_v1.2.md)
 - **Safety:** REPLAY_TRADE_EXECUTION_ENABLED=False, REPLAY_AUTO_EXECUTION_ENABLED=False, REPLAY_SIMULATION_DECISION_ONLY=True, Future Data Firewall enforced at data layer, Mock mode always DEMO_ONLY, No Real Orders, Broker Disabled, Production Trading BLOCKED
 
-**Next:**
-- v1.3.0: TBD
 
 ---
 
