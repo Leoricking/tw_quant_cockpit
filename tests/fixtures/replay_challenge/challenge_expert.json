@@ -1,0 +1,1 @@
+{"challenge_id": "CHG-EXPERT001", "title": "Expert Point-in-Time", "challenge_type": "POINT_IN_TIME", "difficulty": "EXPERT", "hidden_outcome": true, "hidden_symbol": true, "hidden_date": true, "process_weight": 0.90, "outcome_weight": 0.10, "hint_limit": 0, "future_firewall": true, "research_only": true, "no_real_orders": true}

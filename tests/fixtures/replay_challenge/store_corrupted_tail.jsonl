@@ -1,0 +1,3 @@
+{"challenge_id": "CHG-VALID001", "title": "Valid Record", "research_only": true, "_stored_at": "2026-06-18T00:00:00+00:00"}
+{"challenge_id": "CHG-VALID002", "title": "Another Valid", "research_only": true, "_stored_at": "2026-06-18T00:01:00+00:00"}
+{CORRUPTED_JSON_LINE_SHOULD_BE_SKIPPED

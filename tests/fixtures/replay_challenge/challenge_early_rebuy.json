@@ -1,0 +1,1 @@
+{"challenge_id": "CHG-REBUY001", "title": "Do Not Rebuy Yet", "challenge_type": "DO_NOT_REBUY_YET", "difficulty": "ADVANCED", "hidden_outcome": true, "process_weight": 0.85, "outcome_weight": 0.15, "research_only": true, "no_real_orders": true}

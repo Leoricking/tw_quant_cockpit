@@ -1,0 +1,1 @@
+{"challenge_id": "CHG-BOTTOM01", "title": "Bottom Reversal Confirmation", "challenge_type": "BOTTOM_REVERSAL", "difficulty": "ADVANCED", "hidden_outcome": true, "process_weight": 0.80, "outcome_weight": 0.20, "research_only": true, "no_real_orders": true}

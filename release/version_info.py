@@ -1,7 +1,12 @@
 """
-release/version_info.py — Centralized version info for TW Quant Cockpit v1.2.6.
+release/version_info.py — Centralized version info for TW Quant Cockpit v1.2.7.
 [!] Research Only. No Real Orders. Production Trading: BLOCKED.
 [!] VALIDATED does not enable trading. Broker Execution Disabled.
+[!] Replay Challenge Mode. Challenge Training Only. Simulation Only.
+[!] Future data hidden. Outcome hidden until explicit reveal. Answer Key separate.
+[!] No Public Leaderboard. No Network Submission. Local personal records only.
+[!] Process weight always >= Outcome weight. No auto-decision. No auto-reveal.
+[!] Deterministic seed: same seed + data version = same challenge.
 [!] Data Universe Expansion. Real Data Coverage Required.
 [!] Data Import UX & Batch Onboarding. dry_run=True default.
 [!] Coverage Repair Workflow. Destructive repair disabled.
@@ -51,9 +56,9 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # ---------------------------------------------------------------------------
 # v1.1.9 module-level constants (Data Governance Stable Rollup)
 # ---------------------------------------------------------------------------
-VERSION                             = "1.2.6"
-RELEASE_NAME                        = "Replay Review Dashboard"
-BASE_RELEASE                        = "1.2.5 Multi-timeframe Replay"
+VERSION                             = "1.2.7"
+RELEASE_NAME                        = "Replay Challenge Mode"
+BASE_RELEASE                        = "1.2.6 Replay Review Dashboard"
 BASE_RELEASE_NAME                   = "Data Governance Stable Rollup"
 MAINTENANCE_RELEASE                 = False
 RELEASE_STAGE                       = "FOUNDATION"
@@ -259,6 +264,22 @@ AUTO_DECISION_CREATION_ENABLED         = False
 AUTO_STRATEGY_CHANGE_ENABLED           = False  # noqa: F811
 AUTO_SCORE_TO_TRADE_ENABLED            = False  # noqa: F811
 REPLAY_TRADE_EXECUTION_ENABLED         = False  # noqa: F811
+# v1.2.7 Replay Challenge Mode flags
+REPLAY_CHALLENGE_MODE_AVAILABLE             = True
+REPLAY_CHALLENGE_LIBRARY_AVAILABLE          = True
+TIMED_CHALLENGE_AVAILABLE                   = True
+HIDDEN_FUTURE_CHALLENGE_AVAILABLE           = True
+CHALLENGE_DIFFICULTY_AVAILABLE              = True
+CHALLENGE_PERSONAL_LEADERBOARD_AVAILABLE    = True
+CHALLENGE_MISTAKE_TRAINING_AVAILABLE        = True
+PUBLIC_LEADERBOARD_ENABLED                  = False
+NETWORK_SCORE_SUBMISSION_ENABLED            = False
+AUTO_CHALLENGE_DECISION_ENABLED             = False
+AUTO_CHALLENGE_OUTCOME_REVEAL_ENABLED       = False
+AUTO_CHALLENGE_MISTAKE_CONFIRMATION_ENABLED = False
+AUTO_STRATEGY_CHANGE_ENABLED                = False  # noqa: F811
+AUTO_SCORE_TO_TRADE_ENABLED                 = False  # noqa: F811
+REPLAY_TRADE_EXECUTION_ENABLED              = False  # noqa: F811
 
 
 class VersionInfo:
@@ -550,6 +571,19 @@ def print_version_info() -> None:
     print(f"  Auto Strategy Change Enabled: {AUTO_STRATEGY_CHANGE_ENABLED}")
     print(f"  Auto Score To Trade Enabled: {AUTO_SCORE_TO_TRADE_ENABLED}")
     print(f"  Replay Trade Execution Enabled: {REPLAY_TRADE_EXECUTION_ENABLED}")
+    # v1.2.7 flags
+    print(f"  Replay Challenge Mode Available: {REPLAY_CHALLENGE_MODE_AVAILABLE}")
+    print(f"  Replay Challenge Library Available: {REPLAY_CHALLENGE_LIBRARY_AVAILABLE}")
+    print(f"  Timed Challenge Available: {TIMED_CHALLENGE_AVAILABLE}")
+    print(f"  Hidden Future Challenge Available: {HIDDEN_FUTURE_CHALLENGE_AVAILABLE}")
+    print(f"  Challenge Difficulty Available: {CHALLENGE_DIFFICULTY_AVAILABLE}")
+    print(f"  Challenge Personal Leaderboard Available: {CHALLENGE_PERSONAL_LEADERBOARD_AVAILABLE}")
+    print(f"  Challenge Mistake Training Available: {CHALLENGE_MISTAKE_TRAINING_AVAILABLE}")
+    print(f"  Public Leaderboard Enabled: {PUBLIC_LEADERBOARD_ENABLED}")
+    print(f"  Network Score Submission Enabled: {NETWORK_SCORE_SUBMISSION_ENABLED}")
+    print(f"  Auto Challenge Decision Enabled: {AUTO_CHALLENGE_DECISION_ENABLED}")
+    print(f"  Auto Challenge Outcome Reveal Enabled: {AUTO_CHALLENGE_OUTCOME_REVEAL_ENABLED}")
+    print(f"  Auto Challenge Mistake Confirmation Enabled: {AUTO_CHALLENGE_MISTAKE_CONFIRMATION_ENABLED}")
     print("=" * 60)
 
 

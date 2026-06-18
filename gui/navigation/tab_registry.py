@@ -2027,6 +2027,48 @@ class GUITabRegistry:
                 favorite_default=False,
                 notes="Added in v1.2.6 \u2014 Replay Review Dashboard. RESEARCH ONLY. No Real Orders. No Auto Review Complete.",
             ),
+            # replay_challenge (v1.2.7)
+            GUITabMetadata(
+                tab_id="replay_challenge",
+                display_name="Replay Challenge",
+                description=(
+                    "Replay Challenge Mode v1.2.7 \u2014 "
+                    "Structured scored challenge scenarios. "
+                    "Challenge Training Only. No Real Orders. "
+                    "Future data hidden. Outcome hidden until explicit reveal. "
+                    "No auto-decision. No auto-reveal. No public leaderboard. "
+                    "\u5929\u6a5f\u6311\u6230\u8a13\u7df4 \u4ec5\u4f9b\u7814\u7a76\u7528\u9014"
+                ),
+                group="research",
+                priority="P0",
+                keywords=[
+                    "challenge", "replay", "training", "scored", "timed",
+                    "process", "discipline", "hidden", "future firewall",
+                    "\u6311\u6230", "\u8a13\u7df4", "\u8907\u76e4", "\u7814\u7a76",
+                ],
+                related_cli_commands=[
+                    "replay-challenge-health",
+                    "replay-challenge-list",
+                    "replay-challenge-templates",
+                    "replay-challenge-preview",
+                    "replay-challenge-summary",
+                    "replay-challenge-progress",
+                    "replay-challenge-leaderboard",
+                    "replay-challenge-batch-preview",
+                    "replay-challenge-health",
+                ],
+                report_types=[
+                    "replay_challenge_attempt_report",
+                    "replay_challenge_progress_report",
+                    "replay_challenge_summary_report",
+                    "replay_challenge_leaderboard_report",
+                    "replay_challenge_health_report",
+                ],
+                maturity="STABLE",
+                default_visible=True,
+                favorite_default=False,
+                notes="Added in v1.2.7 \u2014 Replay Challenge Mode. CHALLENGE TRAINING ONLY. No Real Orders. No Auto-Decision. No Public Leaderboard.",
+            ),
         ]
         for tab in tabs:
             self._tabs[tab.tab_id] = tab

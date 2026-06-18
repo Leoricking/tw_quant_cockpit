@@ -511,3 +511,13 @@ reports/replay_review_queue_*.md
 # v1.2.6 Replay Review fixtures ARE committed (exception)
 !tests/fixtures/replay_review/*.json
 !tests/fixtures/replay_review/*.jsonl
+
+# v1.2.7 Replay Challenge Mode (ignore generated runtime data)
+data/replay_challenges/
+reports/replay_challenge_attempt_*.md
+reports/replay_challenge_progress_*.md
+reports/replay_challenge_summary_*.md
+
+# v1.2.7 Challenge fixtures ARE committed (exception)
+!tests/fixtures/replay_challenge/*.json
+!tests/fixtures/replay_challenge/*.jsonl

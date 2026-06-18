@@ -301,6 +301,16 @@ except Exception as _rrd_exc:
     _REPLAY_REVIEW_AVAILABLE = False
 
 # ---------------------------------------------------------------------------
+# v1.2.7 Replay Challenge Mode panel import (guarded)
+# ---------------------------------------------------------------------------
+try:
+    from gui.replay_challenge_panel import ReplayChallengePanel
+    _REPLAY_CHALLENGE_AVAILABLE = True
+except Exception as _rcp_exc:
+    logger.warning("ReplayChallengePanel unavailable: %s", _rcp_exc)
+    _REPLAY_CHALLENGE_AVAILABLE = False
+
+# ---------------------------------------------------------------------------
 # v0.6.0 Stable Release panel import (guarded)
 # ---------------------------------------------------------------------------
 try:
@@ -1694,6 +1704,13 @@ class CockpitWindow(QMainWindow if _PYSIDE6_AVAILABLE else object):
             mid_tabs.addTab(self._mtf_replay_panel, "Multi-TF Replay")
         else:
             self._mtf_replay_panel = None
+
+        # v1.2.7 Replay Challenge Mode tab
+        if _REPLAY_CHALLENGE_AVAILABLE:
+            self._replay_challenge_panel = ReplayChallengePanel(parent=self)
+            mid_tabs.addTab(self._replay_challenge_panel, "Replay Challenge")
+        else:
+            self._replay_challenge_panel = None
 
         # v0.6.0 Stable Release tab
         if _STABLE_RELEASE_AVAILABLE:

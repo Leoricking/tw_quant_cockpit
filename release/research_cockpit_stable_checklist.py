@@ -1574,6 +1574,53 @@ class ResearchCockpitStableChecklist:
         except Exception as exc:
             checks.append(_mk("replay_review_no_forbidden_actions", "replay_review_dashboard", "WARN", str(exc)))
 
+        # v1.2.7 Replay Challenge Mode checks
+        try:
+            from replay.challenge_schema import ReplayChallengeDefinition  # noqa: F401
+            from replay.challenge_engine import ReplayChallengeEngine  # noqa: F401
+            checks.append(_mk("replay_challenge_mode_available", "replay_challenge_mode",
+                              "PASS", "ReplayChallengeDefinition and ReplayChallengeEngine importable"))
+        except Exception as exc:
+            checks.append(_mk("replay_challenge_mode_available", "replay_challenge_mode", "WARN", str(exc)))
+        try:
+            from replay.challenge_engine import ReplayChallengeEngine
+            no_auto = (not ReplayChallengeEngine.AUTO_DECISION_ENABLED
+                       and not ReplayChallengeEngine.AUTO_REVEAL_ENABLED
+                       and not ReplayChallengeEngine.AUTO_CONFIRM_ENABLED)
+            checks.append(_mk("replay_challenge_no_auto_decision", "replay_challenge_mode",
+                              "PASS" if no_auto else "FAIL",
+                              f"AUTO_DECISION={ReplayChallengeEngine.AUTO_DECISION_ENABLED}, "
+                              f"AUTO_REVEAL={ReplayChallengeEngine.AUTO_REVEAL_ENABLED}, "
+                              f"AUTO_CONFIRM={ReplayChallengeEngine.AUTO_CONFIRM_ENABLED}"))
+        except Exception as exc:
+            checks.append(_mk("replay_challenge_no_auto_decision", "replay_challenge_mode", "WARN", str(exc)))
+        try:
+            from replay.challenge_leaderboard import PUBLIC_LEADERBOARD_ENABLED, NETWORK_SCORE_SUBMISSION_ENABLED
+            no_public = not PUBLIC_LEADERBOARD_ENABLED and not NETWORK_SCORE_SUBMISSION_ENABLED
+            checks.append(_mk("replay_challenge_no_public_leaderboard", "replay_challenge_mode",
+                              "PASS" if no_public else "FAIL",
+                              f"PUBLIC_LEADERBOARD={PUBLIC_LEADERBOARD_ENABLED}, "
+                              f"NETWORK_SUBMISSION={NETWORK_SCORE_SUBMISSION_ENABLED}"))
+        except Exception as exc:
+            checks.append(_mk("replay_challenge_no_public_leaderboard", "replay_challenge_mode", "WARN", str(exc)))
+        try:
+            from replay.challenge_hidden_data import ReplayChallengeHiddenDataGuard
+            fw_active = getattr(ReplayChallengeHiddenDataGuard, "FUTURE_FIREWALL_ACTIVE", False)
+            checks.append(_mk("replay_challenge_future_firewall", "replay_challenge_mode",
+                              "PASS" if fw_active else "FAIL",
+                              f"FUTURE_FIREWALL_ACTIVE={fw_active}"))
+        except Exception as exc:
+            checks.append(_mk("replay_challenge_future_firewall", "replay_challenge_mode", "WARN", str(exc)))
+        try:
+            from release.version_info import REPLAY_CHALLENGE_MODE_AVAILABLE, AUTO_CHALLENGE_DECISION_ENABLED
+            ok = REPLAY_CHALLENGE_MODE_AVAILABLE and not AUTO_CHALLENGE_DECISION_ENABLED
+            checks.append(_mk("replay_challenge_version_flags", "replay_challenge_mode",
+                              "PASS" if ok else "WARN",
+                              f"REPLAY_CHALLENGE_MODE_AVAILABLE={REPLAY_CHALLENGE_MODE_AVAILABLE}, "
+                              f"AUTO_CHALLENGE_DECISION_ENABLED={AUTO_CHALLENGE_DECISION_ENABLED}"))
+        except Exception as exc:
+            checks.append(_mk("replay_challenge_version_flags", "replay_challenge_mode", "WARN", str(exc)))
+
         # Rebuild summary counts to include new checks
         total         = len(checks)
         pass_count    = sum(1 for c in checks if c["status"] == "PASS")

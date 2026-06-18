@@ -1,0 +1,1 @@
+{"challenge_id": "CHG-ADV001", "title": "Advanced Strategy Conflict", "challenge_type": "STRATEGY_CONFLICT", "difficulty": "ADVANCED", "hidden_outcome": true, "process_weight": 0.85, "outcome_weight": 0.15, "hint_limit": 1, "research_only": true, "no_real_orders": true}

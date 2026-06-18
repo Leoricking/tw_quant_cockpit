@@ -1606,4 +1606,31 @@ class IntelligenceStableChecklist:
                 suggested_fix="Run: python main.py replay-review-health",
             ))
 
+        # v1.2.7 Replay Challenge Mode
+        try:
+            import release.version_info as _vi4
+            rcm = getattr(_vi4, "REPLAY_CHALLENGE_MODE_AVAILABLE", False)
+            acd = getattr(_vi4, "AUTO_CHALLENGE_DECISION_ENABLED", True)
+            acr = getattr(_vi4, "AUTO_CHALLENGE_OUTCOME_REVEAL_ENABLED", True)
+            pub = getattr(_vi4, "PUBLIC_LEADERBOARD_ENABLED", True)
+            net = getattr(_vi4, "NETWORK_SCORE_SUBMISSION_ENABLED", True)
+            safe_challenge = rcm and not acd and not acr and not pub and not net
+            checks.append(_check(
+                "replay_challenge_mode_v127_safe", "stable_integration",
+                "v1.2.7 replay_challenge_mode_v127_safe",
+                CHECK_PASS if safe_challenge else CHECK_WARN, SEV_LOW,
+                f"REPLAY_CHALLENGE_MODE_AVAILABLE={rcm}, "
+                f"AUTO_CHALLENGE_DECISION={acd}, AUTO_OUTCOME_REVEAL={acr}, "
+                f"PUBLIC_LEADERBOARD={pub}, NETWORK_SUBMISSION={net}",
+                suggested_fix="Run: python main.py replay-challenge-health",
+            ))
+        except Exception as exc:
+            checks.append(_check(
+                "replay_challenge_mode_v127_safe", "stable_integration",
+                "v1.2.7 replay_challenge_mode_v127_safe",
+                CHECK_WARN, SEV_LOW,
+                f"Could not verify replay_challenge_mode v1.2.7 safety (optional): {exc}",
+                suggested_fix="Run: python main.py replay-challenge-health",
+            ))
+
         return checks

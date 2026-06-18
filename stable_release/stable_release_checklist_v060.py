@@ -3119,7 +3119,7 @@ class StableReleaseChecklistV060:
             rrd = getattr(_vi, "REPLAY_REVIEW_DASHBOARD_AVAILABLE", None)
             arc = getattr(_vi, "AUTO_REVIEW_COMPLETE_ENABLED", True)
             aor = getattr(_vi, "AUTO_OUTCOME_REVEAL_ENABLED", True)
-            ok = (VERSION == "1.2.6" and rrd and not arc and not aor)
+            ok = (rrd and not arc and not aor)
             status = "PASS" if ok else "WARN"
             return _check_item(
                 "version_info_v126", "version_git", status,
@@ -3128,6 +3128,84 @@ class StableReleaseChecklistV060:
             )
         except Exception as exc:
             return _check_item("version_info_v126", "version_git", "WARN", str(exc))
+
+    def _check_replay_challenge_import(self) -> dict:
+        """v1.2.7 — Replay Challenge Mode core modules importable."""
+        try:
+            from replay.challenge_schema import ReplayChallengeDefinition  # noqa: F401
+            from replay.challenge_engine import ReplayChallengeEngine  # noqa: F401
+            from replay.challenge_hidden_data import ReplayChallengeHiddenDataGuard  # noqa: F401
+            return _check_item("replay_challenge_import", "replay_challenge_mode", "PASS",
+                               "challenge_schema, challenge_engine, challenge_hidden_data importable")
+        except Exception as exc:
+            return _check_item("replay_challenge_import", "replay_challenge_mode", "WARN", str(exc))
+
+    def _check_replay_challenge_future_firewall(self) -> dict:
+        """v1.2.7 — Future firewall active, no auto-decision, no auto-reveal."""
+        try:
+            from replay.challenge_hidden_data import ReplayChallengeHiddenDataGuard
+            from replay.challenge_engine import ReplayChallengeEngine
+            fw = getattr(ReplayChallengeHiddenDataGuard, "FUTURE_FIREWALL_ACTIVE", False)
+            no_auto = getattr(ReplayChallengeEngine, "AUTO_DECISION_ENABLED", True)
+            no_reveal = getattr(ReplayChallengeEngine, "AUTO_REVEAL_ENABLED", True)
+            ok = fw and not no_auto and not no_reveal
+            status = "PASS" if ok else "WARN"
+            return _check_item(
+                "replay_challenge_future_firewall", "replay_challenge_mode", status,
+                f"FUTURE_FIREWALL_ACTIVE={fw}, AUTO_DECISION_ENABLED={no_auto}, AUTO_REVEAL_ENABLED={no_reveal}",
+            )
+        except Exception as exc:
+            return _check_item("replay_challenge_future_firewall", "replay_challenge_mode", "WARN", str(exc))
+
+    def _check_replay_challenge_process_weight(self) -> dict:
+        """v1.2.7 — Process weight >= outcome weight (outcome max 20%)."""
+        try:
+            from replay.challenge_scoring import DEFAULT_WEIGHTS
+            process_total = sum(v for k, v in DEFAULT_WEIGHTS.items() if k != "outcome")
+            outcome_w = DEFAULT_WEIGHTS.get("outcome", 0.0)
+            ok = process_total >= outcome_w and outcome_w <= 0.20
+            status = "PASS" if ok else "WARN"
+            return _check_item(
+                "replay_challenge_process_weight", "replay_challenge_mode", status,
+                f"process_total={process_total:.2f}, outcome_weight={outcome_w:.2f}",
+            )
+        except Exception as exc:
+            return _check_item("replay_challenge_process_weight", "replay_challenge_mode", "WARN", str(exc))
+
+    def _check_replay_challenge_no_public_leaderboard(self) -> dict:
+        """v1.2.7 — No public leaderboard, no network submission."""
+        try:
+            from replay.challenge_leaderboard import PUBLIC_LEADERBOARD_ENABLED, NETWORK_SCORE_SUBMISSION_ENABLED
+            ok = not PUBLIC_LEADERBOARD_ENABLED and not NETWORK_SCORE_SUBMISSION_ENABLED
+            status = "PASS" if ok else "WARN"
+            return _check_item(
+                "replay_challenge_no_public_leaderboard", "replay_challenge_mode", status,
+                f"PUBLIC_LEADERBOARD_ENABLED={PUBLIC_LEADERBOARD_ENABLED}, "
+                f"NETWORK_SCORE_SUBMISSION_ENABLED={NETWORK_SCORE_SUBMISSION_ENABLED}",
+            )
+        except Exception as exc:
+            return _check_item("replay_challenge_no_public_leaderboard", "replay_challenge_mode", "WARN", str(exc))
+
+    def _check_version_info_v127(self) -> dict:
+        """v1.2.7 — VERSION=1.2.7 and challenge flags set correctly."""
+        try:
+            from release.version_info import VERSION
+            import release.version_info as _vi
+            rcm = getattr(_vi, "REPLAY_CHALLENGE_MODE_AVAILABLE", None)
+            acd = getattr(_vi, "AUTO_CHALLENGE_DECISION_ENABLED", True)
+            acr = getattr(_vi, "AUTO_CHALLENGE_OUTCOME_REVEAL_ENABLED", True)
+            acm = getattr(_vi, "AUTO_CHALLENGE_MISTAKE_CONFIRMATION_ENABLED", True)
+            pub = getattr(_vi, "PUBLIC_LEADERBOARD_ENABLED", True)
+            ok = (VERSION == "1.2.7" and rcm and not acd and not acr and not acm and not pub)
+            status = "PASS" if ok else "WARN"
+            return _check_item(
+                "version_info_v127", "version_git", status,
+                f"VERSION={VERSION}, REPLAY_CHALLENGE_MODE_AVAILABLE={rcm}, "
+                f"AUTO_CHALLENGE_DECISION_ENABLED={acd}, AUTO_CHALLENGE_OUTCOME_REVEAL_ENABLED={acr}, "
+                f"AUTO_CHALLENGE_MISTAKE_CONFIRMATION_ENABLED={acm}, PUBLIC_LEADERBOARD_ENABLED={pub}",
+            )
+        except Exception as exc:
+            return _check_item("version_info_v127", "version_git", "WARN", str(exc))
 
     # ----------------------------------------------------------------
     # Run
@@ -3324,6 +3402,12 @@ class StableReleaseChecklistV060:
             self._check_replay_review_suggested_not_confirmed,
             self._check_replay_review_read_only_default,
             self._check_version_info_v126,
+            # v1.2.7 Replay Challenge Mode
+            self._check_replay_challenge_import,
+            self._check_replay_challenge_future_firewall,
+            self._check_replay_challenge_process_weight,
+            self._check_replay_challenge_no_public_leaderboard,
+            self._check_version_info_v127,
         ]
 
         for fn in checklist_groups:

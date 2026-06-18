@@ -1,0 +1,1 @@
+{"challenge_id": "CHG-PIT001", "title": "Point-in-Time Integrity", "challenge_type": "POINT_IN_TIME", "difficulty": "EXPERT", "hidden_outcome": true, "future_firewall": true, "process_weight": 0.90, "outcome_weight": 0.10, "research_only": true, "no_real_orders": true}

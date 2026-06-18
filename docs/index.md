@@ -3,7 +3,7 @@
 > **[!] Research Only. Read Only. No Real Orders. Production Trading: BLOCKED.**
 > **[!] Not investment advice. REAL_ORDER_READY=False.**
 
-Current version: **v1.2.6** — Replay Review Dashboard (base: v1.2.5 Multi-Timeframe Replay) — **v1.2 Replay Training Line**
+Current version: **v1.2.7** — Replay Challenge Mode (base: v1.2.6 Replay Review Dashboard) — **v1.2 Replay Training Line**
 
 ---
 
@@ -196,6 +196,9 @@ Current version: **v1.2.6** — Replay Review Dashboard (base: v1.2.5 Multi-Time
 | [replay_review_dashboard_v1.2.6.md](replay_review_dashboard_v1.2.6.md) | v1.2.6 | Replay Review Dashboard (review queue, progress tracking, checklist, batch operations, health check) |
 | [replay_review_workflow.md](replay_review_workflow.md) | v1.2.6 | Replay Review Workflow (step-by-step, process/outcome separation, CLI commands) |
 | [replay_review_queue_and_progress.md](replay_review_queue_and_progress.md) | v1.2.6 | Replay Review Queue and Progress (queue item types, priority levels, progress steps, status values) |
+| [replay_challenge_mode_v1.2.7.md](replay_challenge_mode_v1.2.7.md) | v1.2.7 | Replay Challenge Mode (challenge scenarios, scoring, hidden data, difficulty, leaderboard, batch) |
+| [replay_challenge_hidden_data_rules.md](replay_challenge_hidden_data_rules.md) | v1.2.7 | Challenge Hidden Data Rules (forbidden fields, future firewall, reveal rules) |
+| [replay_challenge_scoring.md](replay_challenge_scoring.md) | v1.2.7 | Challenge Scoring (weights, classifications, suggested mistakes) |
 
 ---
 
@@ -212,4 +215,4 @@ Current version: **v1.2.6** — Replay Review Dashboard (base: v1.2.5 Multi-Time
 
 ---
 
-*Updated for v1.2.6 Replay Review Dashboard.*
+*Updated for v1.2.7 Replay Challenge Mode.*

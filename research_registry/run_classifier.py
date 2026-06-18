@@ -85,6 +85,7 @@ class ResearchRunClassifier:
     _DATA_FRESHNESS_PREFIXES = ["freshness-"]
     _QUALITY_GATE_PREFIXES = ["quality-gate-"]
     _REPLAY_REVIEW_PREFIXES = ["replay-review-"]
+    _REPLAY_CHALLENGE_PREFIXES = ["replay-challenge-"]
 
     def classify(self, command_name: str) -> str:
         """Return run_type string for the given command name."""
@@ -126,6 +127,29 @@ class ResearchRunClassifier:
         for prefix in self._REPLAY_REVIEW_PREFIXES:
             if command_name.startswith(prefix):
                 return "REPLAY_REVIEW_DASHBOARD_BUILT"
+
+        for prefix in self._REPLAY_CHALLENGE_PREFIXES:
+            if command_name.startswith(prefix):
+                if "start" in command_name:
+                    return "CHALLENGE_STARTED"
+                elif "complete" in command_name:
+                    return "CHALLENGE_COMPLETED"
+                elif "cancel" in command_name:
+                    return "CHALLENGE_CANCELLED"
+                elif "timeout" in command_name:
+                    return "CHALLENGE_TIMEOUT"
+                elif "hint" in command_name:
+                    return "CHALLENGE_HINT_USED"
+                elif "review" in command_name:
+                    return "CHALLENGE_REVIEWED"
+                elif "result" in command_name:
+                    return "CHALLENGE_RESULT_CREATED"
+                elif "batch" in command_name:
+                    return "CHALLENGE_BATCH_COMPLETED"
+                elif "create" in command_name:
+                    return "CHALLENGE_CREATED"
+                else:
+                    return "CHALLENGE_CREATED"
 
         for suffix in self._HEALTH_PREFIXES:
             if command_name.endswith(suffix) or command_name == suffix.lstrip("-"):

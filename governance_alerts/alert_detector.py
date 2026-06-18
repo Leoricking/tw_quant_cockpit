@@ -659,6 +659,50 @@ class GovernanceAlertDetector:
             logger.debug("detect_from_replay_review failed (non-fatal): %s", exc)
         return alerts
 
+    def detect_from_replay_challenge(self) -> List:
+        """Detect alerts from replay challenge mode module. [!] Research Only."""
+        from governance_alerts.alert_schema import GovernanceAlert
+        from governance_alerts.alert_policy import GovernanceAlertPolicy
+        alerts = []
+        policy = GovernanceAlertPolicy()
+        try:
+            from replay.challenge_health import ReplayChallengeHealthCheck
+            hc = ReplayChallengeHealthCheck()
+            results = hc.run()
+            for check_name, (status, detail) in results.items():
+                if status == "FAIL":
+                    if "future_data" in check_name or "hidden_future" in check_name or "firewall" in check_name:
+                        alert_type = "REPLAY_CHALLENGE_FUTURE_DATA_LEAK"
+                    elif "outcome_leak" in check_name or "outcome_hidden" in check_name or "hidden_outcome" in check_name:
+                        alert_type = "REPLAY_CHALLENGE_OUTCOME_LEAK"
+                    elif "answer_key" in check_name:
+                        alert_type = "REPLAY_CHALLENGE_ANSWER_KEY_LEAK"
+                    elif "auto_decision" in check_name:
+                        alert_type = "REPLAY_CHALLENGE_AUTO_DECISION_ATTEMPT"
+                    elif "auto_reveal" in check_name:
+                        alert_type = "REPLAY_CHALLENGE_AUTO_REVEAL_ATTEMPT"
+                    elif "auto_confirm" in check_name:
+                        alert_type = "REPLAY_CHALLENGE_AUTO_CONFIRM_ATTEMPT"
+                    elif "score_to_trade" in check_name:
+                        alert_type = "REPLAY_CHALLENGE_SCORE_TO_TRADE_ATTEMPT"
+                    elif "store" in check_name or "corrupted" in check_name:
+                        alert_type = "REPLAY_CHALLENGE_STORE_CORRUPTED"
+                    elif "network" in check_name:
+                        alert_type = "REPLAY_CHALLENGE_NETWORK_SUBMISSION_ATTEMPT"
+                    else:
+                        alert_type = "REPLAY_CHALLENGE_STORE_CORRUPTED"
+                    alert = self.build_alert(
+                        alert_type=alert_type,
+                        title=f"Replay Challenge health check FAILED: {check_name}",
+                        message=f"Replay Challenge health check {check_name} failed. {detail}",
+                        reason_codes=["REPLAY_CHALLENGE_HEALTH_FAIL"],
+                        policy=policy,
+                    )
+                    alerts.append(alert)
+        except Exception as exc:
+            logger.debug("detect_from_replay_challenge failed (non-fatal): %s", exc)
+        return alerts
+
     def summarize_detection(self, alerts: List) -> dict:
         if not alerts:
             return {

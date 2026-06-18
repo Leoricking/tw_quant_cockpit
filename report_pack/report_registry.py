@@ -143,6 +143,13 @@ REPORT_REPLAY_REVIEW_QUEUE             = "replay_review_queue_report"
 REPORT_REPLAY_REVIEW_PROGRESS_SUMMARY  = "replay_review_progress_summary"
 REPORT_REPLAY_REVIEW_INTEGRITY_SUMMARY = "replay_review_integrity_summary"
 
+# v1.2.7 Replay Challenge Mode
+REPORT_REPLAY_CHALLENGE_ATTEMPT        = "replay_challenge_attempt_report"
+REPORT_REPLAY_CHALLENGE_PROGRESS       = "replay_challenge_progress_report"
+REPORT_REPLAY_CHALLENGE_SUMMARY        = "replay_challenge_summary_report"
+REPORT_REPLAY_CHALLENGE_LEADERBOARD    = "replay_challenge_leaderboard_report"
+REPORT_REPLAY_CHALLENGE_HEALTH         = "replay_challenge_health_report"
+
 logger = logging.getLogger(__name__)
 
 # ---------------------------------------------------------------------------
@@ -402,6 +409,12 @@ _PACK_DEFINITIONS: Dict[str, List[str]] = {
         REPORT_REPLAY_STRATEGY_KNOWLEDGE,
         REPORT_REPLAY_STRATEGY_TIMELINE,
         REPORT_REPLAY_STRATEGY_SUMMARY,
+        # v1.2.7 Replay Challenge Mode (optional in full pack)
+        REPORT_REPLAY_CHALLENGE_ATTEMPT,
+        REPORT_REPLAY_CHALLENGE_PROGRESS,
+        REPORT_REPLAY_CHALLENGE_SUMMARY,
+        REPORT_REPLAY_CHALLENGE_LEADERBOARD,
+        REPORT_REPLAY_CHALLENGE_HEALTH,
     ],
 }
 

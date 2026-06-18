@@ -21896,7 +21896,657 @@ def _build_parser() -> argparse.ArgumentParser:
     p_rrbrun.add_argument("--execute", action="store_true", default=False)
     p_rrbrun.add_argument("--allow-write", action="store_true", default=False)
 
+    # v1.2.7 Replay Challenge Mode subparsers
+    subparsers.add_parser("replay-challenge-health", help="[v1.2.7] Challenge mode health check. Research Only.")
+    subparsers.add_parser("replay-challenge-list", help="[v1.2.7] List all challenges. Research Only.")
+    p_rcsch = subparsers.add_parser("replay-challenge-search", help="[v1.2.7] Search challenges. Research Only.")
+    p_rcsch.add_argument("--query", default="")
+    p_rcshow = subparsers.add_parser("replay-challenge-show", help="[v1.2.7] Show challenge details. Research Only.")
+    p_rcshow.add_argument("--challenge-id", required=True)
+    subparsers.add_parser("replay-challenge-templates", help="[v1.2.7] List built-in challenge templates. Research Only.")
+    p_rccreate = subparsers.add_parser("replay-challenge-create", help="[v1.2.7] Create a challenge from template. Research Only.")
+    p_rccreate.add_argument("--template", default="FREE_DECISION_PRACTICE")
+    p_rccreate.add_argument("--difficulty", default="INTERMEDIATE")
+    p_rcgen = subparsers.add_parser("replay-challenge-generate", help="[v1.2.7] Generate challenge from session. Research Only.")
+    p_rcgen.add_argument("--session-id", default=None)
+    p_rcgen.add_argument("--difficulty", default="INTERMEDIATE")
+    p_rcgen.add_argument("--seed", default=None)
+    p_rcprev = subparsers.add_parser("replay-challenge-preview", help="[v1.2.7] Preview challenge definition. Research Only.")
+    p_rcprev.add_argument("--challenge-id", required=True)
+    p_rcstart = subparsers.add_parser("replay-challenge-start", help="[v1.2.7] Start a challenge attempt. Simulation Only. Research Only.")
+    p_rcstart.add_argument("--challenge-id", required=True)
+    p_rcatt = subparsers.add_parser("replay-challenge-attempt", help="[v1.2.7] Show attempt status. Research Only.")
+    p_rcatt.add_argument("--attempt-id", required=True)
+    p_rcact = subparsers.add_parser("replay-challenge-action", help="[v1.2.7] Perform challenge action. Simulation Only. Research Only.")
+    p_rcact.add_argument("--attempt-id", required=True)
+    p_rcact.add_argument("--action", required=True)
+    p_rcact.add_argument("--reason", default="")
+    p_rchint = subparsers.add_parser("replay-challenge-hint", help="[v1.2.7] Request a hint. Research Only.")
+    p_rchint.add_argument("--attempt-id", required=True)
+    p_rcpause = subparsers.add_parser("replay-challenge-pause", help="[v1.2.7] Pause attempt. Research Only.")
+    p_rcpause.add_argument("--attempt-id", required=True)
+    p_rcresume = subparsers.add_parser("replay-challenge-resume", help="[v1.2.7] Resume attempt. Research Only.")
+    p_rcresume.add_argument("--attempt-id", required=True)
+    p_rcsubmit = subparsers.add_parser("replay-challenge-submit", help="[v1.2.7] Submit/complete attempt. Research Only.")
+    p_rcsubmit.add_argument("--attempt-id", required=True)
+    p_rccancel = subparsers.add_parser("replay-challenge-cancel", help="[v1.2.7] Cancel attempt. Preserves elapsed. Research Only.")
+    p_rccancel.add_argument("--attempt-id", required=True)
+    p_rcresult = subparsers.add_parser("replay-challenge-result", help="[v1.2.7] Show challenge result. Research Only.")
+    p_rcresult.add_argument("--attempt-id", required=True)
+    p_rcreview = subparsers.add_parser("replay-challenge-review", help="[v1.2.7] Start challenge review. Research Only.")
+    p_rcreview.add_argument("--attempt-id", required=True)
+    p_rcreveal = subparsers.add_parser("replay-challenge-reveal-outcome", help="[v1.2.7] Reveal outcome. Requires --reveal AND --confirm-review. BLOCKED if missing either. Research Only.")
+    p_rcreveal.add_argument("--attempt-id", required=True)
+    p_rcreveal.add_argument("--reveal", action="store_true", default=False)
+    p_rcreveal.add_argument("--confirm-review", action="store_true", default=False)
+    p_rcretry = subparsers.add_parser("replay-challenge-retry", help="[v1.2.7] Retry a challenge. Research Only.")
+    p_rcretry.add_argument("--attempt-id", required=True)
+    subparsers.add_parser("replay-challenge-progress", help="[v1.2.7] Show challenge progress. Research Only.")
+    subparsers.add_parser("replay-challenge-streak", help="[v1.2.7] Show challenge streaks. Research Only.")
+    subparsers.add_parser("replay-challenge-badges", help="[v1.2.7] Show challenge badges. Training Only. Research Only.")
+    p_rclb = subparsers.add_parser("replay-challenge-leaderboard", help="[v1.2.7] Personal local leaderboard. No public/network. Research Only.")
+    p_rclb.add_argument("--difficulty", default=None)
+    p_rccmp = subparsers.add_parser("replay-challenge-compare", help="[v1.2.7] Compare two attempts. Research Only.")
+    p_rccmp.add_argument("--attempt-a", required=True)
+    p_rccmp.add_argument("--attempt-b", required=True)
+    subparsers.add_parser("replay-challenge-summary", help="[v1.2.7] Global challenge summary. Research Only.")
+    p_rctsum = subparsers.add_parser("replay-challenge-type-summary", help="[v1.2.7] Summary by challenge type. Research Only.")
+    p_rctsum.add_argument("--type", required=True)
+    p_rcdsum = subparsers.add_parser("replay-challenge-difficulty-summary", help="[v1.2.7] Summary by difficulty. Research Only.")
+    p_rcdsum.add_argument("--difficulty", required=True)
+    p_rcrpt = subparsers.add_parser("replay-challenge-report", help="[v1.2.7] Generate attempt report. Research Only.")
+    p_rcrpt.add_argument("--attempt-id", required=True)
+    subparsers.add_parser("replay-challenge-summary-report", help="[v1.2.7] Generate summary report. Research Only.")
+    subparsers.add_parser("replay-challenge-progress-report", help="[v1.2.7] Generate progress report. Research Only.")
+    p_rcbprev = subparsers.add_parser("replay-challenge-batch-preview", help="[v1.2.7] Preview batch challenge generation. Dry-run. Research Only.")
+    p_rcbprev.add_argument("--sessions", nargs="+", default=[])
+    p_rcbrun = subparsers.add_parser("replay-challenge-batch-run", help="[v1.2.7] Run batch challenge generation. BLOCKED without --execute --allow-write. Research Only.")
+    p_rcbrun.add_argument("--sessions", nargs="+", default=[])
+    p_rcbrun.add_argument("--execute", action="store_true", default=False)
+    p_rcbrun.add_argument("--allow-write", action="store_true", default=False)
+
     return parser
+
+
+# ---------------------------------------------------------------------------
+# v1.2.7 Replay Challenge Mode commands
+# ---------------------------------------------------------------------------
+
+_challenge_engine = None
+
+def _get_challenge_engine():
+    global _challenge_engine
+    if _challenge_engine is None:
+        from replay.challenge_engine import ReplayChallengeEngine
+        _challenge_engine = ReplayChallengeEngine(repo_root=BASE_DIR)
+    return _challenge_engine
+
+
+def cmd_replay_challenge_health(args) -> None:
+    """Challenge mode health check. [!] Challenge Training Only. Simulation Only. Research Only."""
+    print("=" * 70)
+    print("  Replay Challenge Mode Health Check v1.2.7")
+    print("  [!] Challenge Training Only | Simulation Only | No Real Orders")
+    print("=" * 70)
+    try:
+        from replay.challenge_health import ReplayChallengeHealthCheck
+        hc = ReplayChallengeHealthCheck()
+        results = hc.run()
+        hc.print_results(results)
+    except Exception as exc:
+        print(f"  [FAIL] Health check error: {exc}")
+        import traceback; traceback.print_exc()
+
+
+def cmd_replay_challenge_list(args) -> None:
+    """List all challenges. [!] Research Only."""
+    print("[!] Replay Challenge List — Research Only | No Real Orders")
+    try:
+        from replay.challenge_library import ReplayChallengeLibrary
+        lib = ReplayChallengeLibrary()
+        challenges = lib.list_challenges()
+        print(f"  Total challenges: {len(challenges)}")
+        for c in challenges[:20]:
+            print(f"  [{c.get('difficulty','?'):12s}] {c.get('template_id') or c.get('challenge_id','?')}: {c.get('title','')}")
+        if len(challenges) > 20:
+            print(f"  ... and {len(challenges)-20} more")
+        print("[!] Research Only. Not Investment Advice.")
+    except Exception as exc:
+        print(f"  [ERROR] {exc}")
+
+
+def cmd_replay_challenge_search(args) -> None:
+    """Search challenges. [!] Research Only."""
+    query = getattr(args, "query", "") or ""
+    print(f"[!] Replay Challenge Search: '{query}' — Research Only")
+    try:
+        from replay.challenge_library import ReplayChallengeLibrary
+        lib = ReplayChallengeLibrary()
+        results = lib.search(query)
+        print(f"  Found {len(results)} challenges")
+        for c in results:
+            print(f"  {c.get('template_id') or c.get('challenge_id','?')}: {c.get('title','')}")
+    except Exception as exc:
+        print(f"  [ERROR] {exc}")
+
+
+def cmd_replay_challenge_show(args) -> None:
+    """Show challenge details. [!] Research Only."""
+    challenge_id = getattr(args, "challenge_id", "") or ""
+    print(f"[!] Replay Challenge Show: {challenge_id} — Research Only")
+    try:
+        from replay.challenge_library import ReplayChallengeLibrary
+        lib = ReplayChallengeLibrary()
+        c = lib.show(challenge_id)
+        if c is None:
+            print(f"  [NOT FOUND] {challenge_id}")
+            return
+        for k, v in c.items():
+            print(f"  {k}: {v}")
+        print("[!] Research Only. Not Investment Advice.")
+    except Exception as exc:
+        print(f"  [ERROR] {exc}")
+
+
+def cmd_replay_challenge_templates(args) -> None:
+    """List built-in challenge templates. [!] Research Only."""
+    print("[!] Replay Challenge Templates — Research Only | No Real Orders")
+    try:
+        from replay.challenge_template import list_templates
+        templates = list_templates()
+        print(f"  Total built-in templates: {len(templates)}")
+        for t in templates:
+            print(f"  [{t.get('difficulty','?'):12s}] [{t.get('challenge_type','?'):20s}] {t.get('template_id','')}: hints={t.get('max_hints',0)}, time={t.get('time_limit')}")
+        print("[!] No Broker. No Live Orders. No API tokens. No automatic decisions.")
+    except Exception as exc:
+        print(f"  [ERROR] {exc}")
+
+
+def cmd_replay_challenge_create(args) -> None:
+    """Create a challenge from template. [!] Research Only."""
+    template = getattr(args, "template", "FREE_DECISION_PRACTICE") or "FREE_DECISION_PRACTICE"
+    difficulty = getattr(args, "difficulty", "INTERMEDIATE") or "INTERMEDIATE"
+    print(f"[!] Replay Challenge Create: template={template} difficulty={difficulty} — Research Only")
+    try:
+        eng = _get_challenge_engine()
+        result = eng.create_challenge(template_id=template, difficulty=difficulty)
+        if result.get("status") == "CREATED":
+            print(f"  [CREATED] challenge_id={result.get('challenge_id')}")
+        elif result.get("status") == "NOT_FOUND":
+            print(f"  [NOT_FOUND] Template '{template}' not found")
+        else:
+            print(f"  {result}")
+        print("[!] Research Only. Not Investment Advice.")
+    except Exception as exc:
+        print(f"  [ERROR] {exc}")
+
+
+def cmd_replay_challenge_generate(args) -> None:
+    """Generate challenge from session. [!] Research Only."""
+    session_id = getattr(args, "session_id", None)
+    difficulty = getattr(args, "difficulty", "INTERMEDIATE") or "INTERMEDIATE"
+    seed = getattr(args, "seed", None)
+    print(f"[!] Replay Challenge Generate: session={session_id} difficulty={difficulty} — Research Only")
+    try:
+        from replay.challenge_generator import ReplayChallengeGenerator
+        gen = ReplayChallengeGenerator()
+        defn = gen.generate_from_session(session_id or "DEMO", difficulty=difficulty, seed=seed)
+        print(f"  challenge_id: {defn.get('challenge_id')}")
+        print(f"  seed: {defn.get('seed')}")
+        print(f"  hidden_outcome: {defn.get('hidden_outcome')}")
+        print(f"  future_data_embedded: {defn.get('future_data_embedded')}")
+        print("[!] Research Only. Not Investment Advice.")
+    except Exception as exc:
+        print(f"  [ERROR] {exc}")
+
+
+def cmd_replay_challenge_preview(args) -> None:
+    """Preview challenge definition. [!] Research Only."""
+    challenge_id = getattr(args, "challenge_id", "") or ""
+    print(f"[!] Replay Challenge Preview: {challenge_id} — Research Only")
+    try:
+        eng = _get_challenge_engine()
+        result = eng.preview_challenge(challenge_id)
+        if result.get("status") == "PREVIEW":
+            c = result.get("challenge", {})
+            print(f"  Title: {c.get('title','')}")
+            print(f"  Type: {c.get('challenge_type','')}")
+            print(f"  Difficulty: {c.get('difficulty','')}")
+            print(f"  Future Data Hidden: {result.get('future_data_hidden')}")
+            print(f"  Answer Key Separate: {result.get('answer_key_separate')}")
+        else:
+            print(f"  {result}")
+        print("[!] Research Only. Not Investment Advice.")
+    except Exception as exc:
+        print(f"  [ERROR] {exc}")
+
+
+def cmd_replay_challenge_start(args) -> None:
+    """Start a challenge attempt. Simulation Only. [!] Research Only."""
+    challenge_id = getattr(args, "challenge_id", "") or ""
+    print(f"[!] Replay Challenge Start: {challenge_id} — Simulation Only | Research Only")
+    try:
+        eng = _get_challenge_engine()
+        result = eng.start_challenge(challenge_id)
+        if result.get("status") == "STARTED":
+            print(f"  [STARTED] attempt_id={result.get('attempt_id')}")
+            print(f"  Modifies Original Session: {result.get('modifies_original_session')}")
+            print(f"  Auto Decision: {result.get('auto_decision')}")
+            print(f"  Simulation Only: {result.get('simulation_only')}")
+        else:
+            print(f"  {result}")
+        print("[!] Challenge Training Only. Simulation Only. Not Investment Advice.")
+    except Exception as exc:
+        print(f"  [ERROR] {exc}")
+
+
+def cmd_replay_challenge_attempt(args) -> None:
+    """Show attempt status. [!] Research Only."""
+    attempt_id = getattr(args, "attempt_id", "") or ""
+    print(f"[!] Replay Challenge Attempt: {attempt_id} — Research Only")
+    try:
+        eng = _get_challenge_engine()
+        result = eng.get_attempt(attempt_id)
+        if result.get("status") == "OK":
+            a = result.get("attempt", {})
+            print(f"  Status: {a.get('status')}")
+            print(f"  Challenge ID: {a.get('challenge_id')}")
+            print(f"  Active Elapsed: {a.get('active_elapsed_seconds', 0.0):.1f}s")
+            print(f"  Hints Used: {a.get('hints_used', 0)}")
+            print(f"  Steps Used: {a.get('steps_used', 0)}")
+            print(f"  Actions: {len(a.get('actions', []))}")
+        else:
+            print(f"  {result}")
+        print("[!] Research Only. Not Investment Advice.")
+    except Exception as exc:
+        print(f"  [ERROR] {exc}")
+
+
+def cmd_replay_challenge_action(args) -> None:
+    """Perform challenge action. Simulation Only. [!] Research Only."""
+    attempt_id = getattr(args, "attempt_id", "") or ""
+    action = getattr(args, "action", "VIEW_CONTEXT") or "VIEW_CONTEXT"
+    reason = getattr(args, "reason", "") or ""
+    print(f"[!] Challenge Action: attempt={attempt_id} action={action} — Simulation Only | Research Only")
+    try:
+        eng = _get_challenge_engine()
+        result = eng.perform_action(attempt_id, action, reason=reason)
+        print(f"  Status: {result.get('status')}")
+        print(f"  Simulation Decision Only: {result.get('simulation_decision_only')}")
+        print(f"  No Paper Order: {result.get('no_paper_order')}")
+        print(f"  No Broker Order: {result.get('no_broker_order')}")
+        print("[!] All trading actions are SIMULATION DECISION ONLY.")
+    except Exception as exc:
+        print(f"  [ERROR] {exc}")
+
+
+def cmd_replay_challenge_hint(args) -> None:
+    """Request a hint. [!] Research Only."""
+    attempt_id = getattr(args, "attempt_id", "") or ""
+    print(f"[!] Challenge Hint: {attempt_id} — Research Only")
+    try:
+        eng = _get_challenge_engine()
+        result = eng.request_hint(attempt_id)
+        print(f"  Status: {result.get('status')}")
+        if result.get("status") == "OK":
+            hint = result.get("hint", {})
+            print(f"  Level: {hint.get('level')}")
+            print(f"  Content: {hint.get('content')}")
+            print(f"  Penalty: {hint.get('penalty')}")
+            print(f"  Contains Future Outcome: {hint.get('contains_future_outcome')}")
+            print(f"  Tells Buy/Sell Answer: {hint.get('tells_buy_sell_answer')}")
+        print("[!] Hints never contain future outcome or direct buy/sell answer.")
+    except Exception as exc:
+        print(f"  [ERROR] {exc}")
+
+
+def cmd_replay_challenge_pause(args) -> None:
+    """Pause attempt. [!] Research Only."""
+    attempt_id = getattr(args, "attempt_id", "") or ""
+    print(f"[!] Challenge Pause: {attempt_id}")
+    try:
+        eng = _get_challenge_engine()
+        result = eng.pause_attempt(attempt_id)
+        print(f"  Status: {result.get('status')}")
+    except Exception as exc:
+        print(f"  [ERROR] {exc}")
+
+
+def cmd_replay_challenge_resume(args) -> None:
+    """Resume attempt. [!] Research Only."""
+    attempt_id = getattr(args, "attempt_id", "") or ""
+    print(f"[!] Challenge Resume: {attempt_id}")
+    try:
+        eng = _get_challenge_engine()
+        result = eng.resume_attempt(attempt_id)
+        print(f"  Status: {result.get('status')}")
+    except Exception as exc:
+        print(f"  [ERROR] {exc}")
+
+
+def cmd_replay_challenge_submit(args) -> None:
+    """Submit/complete attempt. [!] Research Only."""
+    attempt_id = getattr(args, "attempt_id", "") or ""
+    print(f"[!] Challenge Submit: {attempt_id} — Research Only")
+    try:
+        eng = _get_challenge_engine()
+        result = eng.complete_attempt(attempt_id)
+        print(f"  Status: {result.get('status')}")
+        res = result.get("result", {})
+        if res:
+            print(f"  Completed: {res.get('completed')}")
+            print(f"  Process Score: {res.get('process_score')}")
+            print(f"  Total Score: {res.get('total_score')}")
+            print(f"  Badges: {res.get('badges_awarded', [])}")
+        print("[!] Research Only. Not Investment Advice.")
+    except Exception as exc:
+        print(f"  [ERROR] {exc}")
+
+
+def cmd_replay_challenge_cancel(args) -> None:
+    """Cancel attempt. Preserves elapsed. [!] Research Only."""
+    attempt_id = getattr(args, "attempt_id", "") or ""
+    print(f"[!] Challenge Cancel: {attempt_id}")
+    try:
+        eng = _get_challenge_engine()
+        result = eng.cancel_attempt(attempt_id)
+        print(f"  Status: {result.get('status')}")
+        print(f"  Elapsed Preserved: {result.get('elapsed_preserved')}")
+    except Exception as exc:
+        print(f"  [ERROR] {exc}")
+
+
+def cmd_replay_challenge_result(args) -> None:
+    """Show challenge result. [!] Research Only."""
+    attempt_id = getattr(args, "attempt_id", "") or ""
+    print(f"[!] Challenge Result: {attempt_id} — Research Only")
+    try:
+        eng = _get_challenge_engine()
+        result = eng.build_result(attempt_id)
+        if result.get("status") == "OK":
+            res = result.get("result", {})
+            score = result.get("score", {})
+            print(f"  Process Score: {res.get('process_score')}")
+            print(f"  Total Score: {res.get('total_score')}")
+            print(f"  Completed: {res.get('completed')}")
+            print(f"  Timed Out: {res.get('timed_out')}")
+            print(f"  Hints Used: {res.get('hints_used')}")
+            print(f"  Suggested Mistakes: {res.get('mistakes_suggested', [])}")
+            print(f"  Badges: {res.get('badges_awarded', [])}")
+        else:
+            print(f"  {result}")
+        print("[!] Research Only. Outcome not revealed. Not Investment Advice.")
+    except Exception as exc:
+        print(f"  [ERROR] {exc}")
+
+
+def cmd_replay_challenge_review(args) -> None:
+    """Start challenge review. [!] Research Only."""
+    attempt_id = getattr(args, "attempt_id", "") or ""
+    print(f"[!] Challenge Review: {attempt_id} — Research Only")
+    try:
+        eng = _get_challenge_engine()
+        result = eng.review_attempt(attempt_id)
+        review = result.get("review", {})
+        print(f"  Status: {result.get('status')}")
+        print(f"  Outcome Revealed: {result.get('outcome_revealed', False)}")
+        print(f"  Process Score: {review.get('process_score')}")
+        print(f"  Hints Used: {review.get('hints_used')}")
+        print(f"  Auto Confirm Mistake: {review.get('auto_confirm_mistake')}")
+        print("[!] Outcome hidden until explicit reveal with --reveal --confirm-review.")
+    except Exception as exc:
+        print(f"  [ERROR] {exc}")
+
+
+def cmd_replay_challenge_reveal_outcome(args) -> None:
+    """Reveal outcome. BLOCKED if missing --reveal OR --confirm-review. [!] Research Only."""
+    attempt_id = getattr(args, "attempt_id", "") or ""
+    reveal = getattr(args, "reveal", False)
+    confirm_review = getattr(args, "confirm_review", False)
+    print(f"[!] Challenge Reveal Outcome: {attempt_id} — Explicit Reveal Required")
+    if not reveal or not confirm_review:
+        print("  [BLOCKED] Outcome reveal requires both --reveal AND --confirm-review flags.")
+        print("  Example: python main.py replay-challenge-reveal-outcome --attempt-id <id> --reveal --confirm-review")
+        print("[!] Research Only. Not Investment Advice.")
+        return
+    try:
+        from replay.challenge_review import ReplayChallengeReviewManager
+        mgr = ReplayChallengeReviewManager()
+        result = mgr.reveal_outcome(attempt_id, explicit=reveal, confirm_review=confirm_review)
+        if result["status"] == "NOT_FOUND":
+            print(f"  [INFO] No review found for attempt {attempt_id} in this session. Use --attempt-id for a valid attempt.")
+        else:
+            print(f"  Status: {result.get('status')}")
+            print(f"  Outcome: {result.get('outcome')}")
+            print(f"  Auto Confirm Mistake: {result.get('auto_confirm_mistake')}")
+        print("[!] Research Only. Not Investment Advice.")
+    except Exception as exc:
+        print(f"  [ERROR] {exc}")
+
+
+def cmd_replay_challenge_retry(args) -> None:
+    """Retry a challenge. [!] Research Only."""
+    attempt_id = getattr(args, "attempt_id", "") or ""
+    print(f"[!] Challenge Retry: {attempt_id}")
+    try:
+        eng = _get_challenge_engine()
+        result = eng.retry_attempt(attempt_id)
+        print(f"  Status: {result.get('status')}")
+        print(f"  New Attempt ID: {result.get('new_attempt_id')}")
+    except Exception as exc:
+        print(f"  [ERROR] {exc}")
+
+
+def cmd_replay_challenge_progress(args) -> None:
+    """Show challenge progress. [!] Research Only."""
+    print("[!] Challenge Progress — Research Only | No Real Orders")
+    try:
+        eng = _get_challenge_engine()
+        summary = eng.summary()
+        progress = summary.get("progress", {})
+        print(f"  Challenges Attempted: {progress.get('challenges_attempted', 0)}")
+        print(f"  Challenges Completed: {progress.get('challenges_completed', 0)}")
+        print(f"  Timed Out: {progress.get('challenges_timed_out', 0)}")
+        print(f"  Avg Process Score: {progress.get('avg_process_score', 0.0):.1f}")
+        print(f"  Personal Best: {progress.get('personal_best', 0.0):.1f}")
+        print("[!] Research Only. Not Investment Advice.")
+    except Exception as exc:
+        print(f"  [ERROR] {exc}")
+
+
+def cmd_replay_challenge_streak(args) -> None:
+    """Show challenge streaks. [!] Research Only."""
+    print("[!] Challenge Streaks — Research Only")
+    try:
+        from replay.challenge_streak import ReplayChallengeStreakTracker
+        tracker = ReplayChallengeStreakTracker()
+        streaks = tracker.get_all_streaks()
+        for k, v in streaks.items():
+            if k not in ("research_only", "no_real_orders"):
+                print(f"  {k}: {v}")
+        print("[!] Research Only. Not Investment Advice.")
+    except Exception as exc:
+        print(f"  [ERROR] {exc}")
+
+
+def cmd_replay_challenge_badges(args) -> None:
+    """Show challenge badges. Training Only. [!] Research Only."""
+    print("[!] Challenge Badges — Training Encouragement Only | Not Investment Ability")
+    try:
+        eng = _get_challenge_engine()
+        summary = eng.summary()
+        badges = summary.get("badges", {})
+        print(f"  Total Badges: {badges.get('total_badges', 0)}")
+        print(f"  Badges: {badges.get('badges', [])}")
+        print(f"  Training Only: {badges.get('training_encouragement_only', True)}")
+        print(f"  Investment Ability: {badges.get('investment_ability', False)}")
+        print("[!] Badges do NOT represent investment or profit ability. Not Investment Advice.")
+    except Exception as exc:
+        print(f"  [ERROR] {exc}")
+
+
+def cmd_replay_challenge_leaderboard(args) -> None:
+    """Personal local leaderboard. No public/network. [!] Research Only."""
+    difficulty = getattr(args, "difficulty", None)
+    print("[!] Challenge Leaderboard — LOCAL PERSONAL ONLY | No Public | No Network")
+    try:
+        from replay.challenge_leaderboard import ReplayChallengeLeaderboard
+        lb = ReplayChallengeLeaderboard()
+        ranked = lb.ranked_list(difficulty=difficulty, top_n=10)
+        summary = lb.summary()
+        print(f"  Local entries: {summary.get('total_entries', 0)}")
+        print(f"  Best score: {summary.get('best_score', 0.0):.1f}")
+        print(f"  Public Leaderboard: {summary.get('public_leaderboard_enabled')}")
+        print(f"  Network Submission: {summary.get('network_submission_enabled')}")
+        for r in ranked:
+            print(f"  #{r.get('rank')}: attempt={r.get('attempt_id')} score={r.get('total_score'):.1f} elapsed={r.get('elapsed_seconds'):.0f}s")
+        print("[!] Local only. No network submission. Not Investment Advice.")
+    except Exception as exc:
+        print(f"  [ERROR] {exc}")
+
+
+def cmd_replay_challenge_compare(args) -> None:
+    """Compare two attempts. [!] Research Only."""
+    attempt_a = getattr(args, "attempt_a", "") or ""
+    attempt_b = getattr(args, "attempt_b", "") or ""
+    print(f"[!] Challenge Compare: {attempt_a} vs {attempt_b} — Research Only")
+    try:
+        from replay.challenge_comparator import ReplayChallengeComparator
+        comp = ReplayChallengeComparator()
+        result = comp.compare({"attempt_id": attempt_a}, {"attempt_id": attempt_b})
+        for k, v in result.items():
+            print(f"  {k}: {v}")
+        print("[!] Research Only. Not Investment Advice.")
+    except Exception as exc:
+        print(f"  [ERROR] {exc}")
+
+
+def cmd_replay_challenge_summary(args) -> None:
+    """Global challenge summary. [!] Research Only."""
+    print("[!] Challenge Summary — Research Only | No Real Orders")
+    try:
+        eng = _get_challenge_engine()
+        summary = eng.summary()
+        print(f"  Engine: {summary.get('engine')}")
+        print(f"  Version: {summary.get('version')}")
+        print(f"  Challenges in Library: {summary.get('challenges_in_library')}")
+        print(f"  Total Attempts: {summary.get('total_attempts')}")
+        safety = summary.get("safety", {})
+        print(f"  Research Only: {safety.get('research_only')}")
+        print(f"  No Real Orders: {safety.get('no_real_orders')}")
+        print(f"  Public Leaderboard: {safety.get('public_leaderboard_enabled')}")
+        print("[!] Research Only. Not Investment Advice.")
+    except Exception as exc:
+        print(f"  [ERROR] {exc}")
+
+
+def cmd_replay_challenge_type_summary(args) -> None:
+    """Summary by challenge type. [!] Research Only."""
+    challenge_type = getattr(args, "type", "") or ""
+    print(f"[!] Challenge Type Summary: {challenge_type} — Research Only")
+    try:
+        from replay.challenge_summary import ReplayChallengeSummaryBuilder
+        builder = ReplayChallengeSummaryBuilder()
+        summary = builder.type_summary(challenge_type, [])
+        for k, v in summary.items():
+            print(f"  {k}: {v}")
+    except Exception as exc:
+        print(f"  [ERROR] {exc}")
+
+
+def cmd_replay_challenge_difficulty_summary(args) -> None:
+    """Summary by difficulty. [!] Research Only."""
+    difficulty = getattr(args, "difficulty", "") or ""
+    print(f"[!] Challenge Difficulty Summary: {difficulty} — Research Only")
+    try:
+        from replay.challenge_summary import ReplayChallengeSummaryBuilder
+        builder = ReplayChallengeSummaryBuilder()
+        summary = builder.difficulty_summary(difficulty, [])
+        for k, v in summary.items():
+            print(f"  {k}: {v}")
+    except Exception as exc:
+        print(f"  [ERROR] {exc}")
+
+
+def cmd_replay_challenge_report(args) -> None:
+    """Generate attempt report. [!] Research Only."""
+    attempt_id = getattr(args, "attempt_id", "") or ""
+    print(f"[!] Challenge Report: {attempt_id} — Research Only")
+    try:
+        from replay.challenge_report import ReplayChallengeReportGenerator
+        gen = ReplayChallengeReportGenerator(repo_root=BASE_DIR)
+        path = gen.generate_attempt_report(attempt_id, {"attempt_id": attempt_id})
+        print(f"  Report: {path}")
+        print("[!] Research Only. Not Investment Advice.")
+    except Exception as exc:
+        print(f"  [ERROR] {exc}")
+
+
+def cmd_replay_challenge_summary_report(args) -> None:
+    """Generate summary report. [!] Research Only."""
+    print("[!] Challenge Summary Report — Research Only")
+    try:
+        from replay.challenge_report import ReplayChallengeReportGenerator
+        gen = ReplayChallengeReportGenerator(repo_root=BASE_DIR)
+        path = gen.generate_summary_report({})
+        print(f"  Report: {path}")
+    except Exception as exc:
+        print(f"  [ERROR] {exc}")
+
+
+def cmd_replay_challenge_progress_report(args) -> None:
+    """Generate progress report. [!] Research Only."""
+    print("[!] Challenge Progress Report — Research Only")
+    try:
+        from replay.challenge_report import ReplayChallengeReportGenerator
+        gen = ReplayChallengeReportGenerator(repo_root=BASE_DIR)
+        path = gen.generate_progress_report({})
+        print(f"  Report: {path}")
+    except Exception as exc:
+        print(f"  [ERROR] {exc}")
+
+
+def cmd_replay_challenge_batch_preview(args) -> None:
+    """Preview batch challenge generation (dry-run). [!] Research Only."""
+    sessions = getattr(args, "sessions", []) or []
+    print(f"[!] Challenge Batch Preview: {len(sessions)} sessions — DRY-RUN | Research Only")
+    try:
+        from replay.challenge_batch import ReplayChallengeBatchRunner
+        runner = ReplayChallengeBatchRunner()
+        result = runner.generate_preview(sessions)
+        print(f"  Status: {result.get('status')}")
+        print(f"  Dry Run: {result.get('dry_run')}")
+        print(f"  Items: {result.get('total')}")
+        print(f"  Message: {result.get('message')}")
+    except Exception as exc:
+        print(f"  [ERROR] {exc}")
+
+
+def cmd_replay_challenge_batch_run(args) -> None:
+    """Run batch challenge generation. BLOCKED without --execute --allow-write. [!] Research Only."""
+    sessions = getattr(args, "sessions", []) or []
+    execute = getattr(args, "execute", False)
+    allow_write = getattr(args, "allow_write", False)
+    print(f"[!] Challenge Batch Run: {len(sessions)} sessions — Research Only")
+    if execute and not allow_write:
+        print("  [BLOCKED] batch-run requires both --execute AND --allow-write")
+        print("[!] Research Only. Not Investment Advice.")
+        return
+    try:
+        from replay.challenge_batch import ReplayChallengeBatchRunner
+        runner = ReplayChallengeBatchRunner()
+        result = runner.run_batch(sessions, execute=execute, allow_write=allow_write)
+        print(f"  Status: {result.get('status')}")
+        print(f"  Auto Start Challenge: {result.get('auto_start_challenge', False)}")
+        print(f"  Auto Submit Decision: {result.get('auto_submit_decision', False)}")
+        print(f"  Auto Reveal: {result.get('auto_reveal', False)}")
+        print(f"  Total: {result.get('total')}")
+        if result.get("status") not in ("PREVIEW", "BLOCKED"):
+            print(f"  Completed: {result.get('completed')} / {result.get('total')}")
+            print(f"  Total Elapsed: {result.get('total_elapsed', 0.0):.2f}s")
+        print("[!] Research Only. Not Investment Advice.")
+    except Exception as exc:
+        print(f"  [ERROR] {exc}")
 
 
 # ---------------------------------------------------------------------------
@@ -25709,6 +26359,40 @@ def main() -> None:
         "replay-review-queue-report":         cmd_replay_review_queue_report,
         "replay-review-batch-preview":        cmd_replay_review_batch_preview,
         "replay-review-batch-run":            cmd_replay_review_batch_run,
+        # v1.2.7 Replay Challenge Mode
+        "replay-challenge-health":            cmd_replay_challenge_health,
+        "replay-challenge-list":              cmd_replay_challenge_list,
+        "replay-challenge-search":            cmd_replay_challenge_search,
+        "replay-challenge-show":              cmd_replay_challenge_show,
+        "replay-challenge-templates":         cmd_replay_challenge_templates,
+        "replay-challenge-create":            cmd_replay_challenge_create,
+        "replay-challenge-generate":          cmd_replay_challenge_generate,
+        "replay-challenge-preview":           cmd_replay_challenge_preview,
+        "replay-challenge-start":             cmd_replay_challenge_start,
+        "replay-challenge-attempt":           cmd_replay_challenge_attempt,
+        "replay-challenge-action":            cmd_replay_challenge_action,
+        "replay-challenge-hint":              cmd_replay_challenge_hint,
+        "replay-challenge-pause":             cmd_replay_challenge_pause,
+        "replay-challenge-resume":            cmd_replay_challenge_resume,
+        "replay-challenge-submit":            cmd_replay_challenge_submit,
+        "replay-challenge-cancel":            cmd_replay_challenge_cancel,
+        "replay-challenge-result":            cmd_replay_challenge_result,
+        "replay-challenge-review":            cmd_replay_challenge_review,
+        "replay-challenge-reveal-outcome":    cmd_replay_challenge_reveal_outcome,
+        "replay-challenge-retry":             cmd_replay_challenge_retry,
+        "replay-challenge-progress":          cmd_replay_challenge_progress,
+        "replay-challenge-streak":            cmd_replay_challenge_streak,
+        "replay-challenge-badges":            cmd_replay_challenge_badges,
+        "replay-challenge-leaderboard":       cmd_replay_challenge_leaderboard,
+        "replay-challenge-compare":           cmd_replay_challenge_compare,
+        "replay-challenge-summary":           cmd_replay_challenge_summary,
+        "replay-challenge-type-summary":      cmd_replay_challenge_type_summary,
+        "replay-challenge-difficulty-summary": cmd_replay_challenge_difficulty_summary,
+        "replay-challenge-report":            cmd_replay_challenge_report,
+        "replay-challenge-summary-report":    cmd_replay_challenge_summary_report,
+        "replay-challenge-progress-report":   cmd_replay_challenge_progress_report,
+        "replay-challenge-batch-preview":     cmd_replay_challenge_batch_preview,
+        "replay-challenge-batch-run":         cmd_replay_challenge_batch_run,
         # v1.1.9 Data Governance Stable Rollup
         "governance-rollup-health":          cmd_governance_rollup_health,
         "governance-rollup-run":             cmd_governance_rollup_run,

@@ -1,0 +1,2 @@
+{"challenge_id": "CHG-STORE001", "title": "Store Test", "challenge_type": "FREE_DECISION", "research_only": true, "no_real_orders": true, "_stored_at": "2026-06-18T00:00:00+00:00"}
+{"attempt_id": "ATT-STORE001", "challenge_id": "CHG-STORE001", "status": "COMPLETED", "research_only": true, "no_real_orders": true, "_stored_at": "2026-06-18T00:01:00+00:00"}

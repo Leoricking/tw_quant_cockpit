@@ -519,4 +519,48 @@ replay-review-batch-preview, replay-review-batch-run
 - `docs/replay_review_queue_and_progress.md`
 
 ---
+
+## v1.2.7 — Replay Challenge Mode
+
+**Challenge Training Only. No Real Orders. Not Investment Advice.**
+
+### Features
+
+- Structured scored challenge scenarios wrapping existing replay infrastructure
+- 12 built-in challenge templates (BEGINNER through EXPERT)
+- 5 difficulty levels; all difficulty levels keep Future Firewall active
+- Process-weighted scoring: 35% Process Quality + 15% Discipline + 15% Risk Planning + 10% Info + 10% Strategy + 10% MTF + 5% Timing
+- Outcome weight capped at 20%; process weight always >= outcome weight
+- Hidden data guard: 20 forbidden fields blocked from active payload
+- Deterministic seed: same seed + source_id + data_version = same challenge
+- Outcome reveal requires both --reveal AND --confirm-review; no auto-reveal
+- All mistakes SUGGESTED only — never auto-Confirmed
+- Timeout marks status only — never executes decision
+- Local personal leaderboard only; no public leaderboard; no network submission
+- Answer Key stored separately from active payload
+- 57 health checks (30 component + 27 safety invariant checks)
+- 9 new governance alerts (P0/P1)
+- 33 new CLI commands (replay-challenge-*)
+- Batch guard: requires --execute AND --allow-write; preview by default
+- Missing modules show UNAVAILABLE; no crash
+
+### Safety Invariants
+
+- `REPLAY_CHALLENGE_MODE_AVAILABLE = True`
+- `PUBLIC_LEADERBOARD_ENABLED = False`
+- `NETWORK_SCORE_SUBMISSION_ENABLED = False`
+- `AUTO_CHALLENGE_DECISION_ENABLED = False`
+- `AUTO_CHALLENGE_OUTCOME_REVEAL_ENABLED = False`
+- `AUTO_CHALLENGE_MISTAKE_CONFIRMATION_ENABLED = False`
+- Future firewall active at all difficulty levels
+- Answer Key stored separately (ACTIVE_AND_ANSWER_KEY_SEPARATED = True)
+- Timeout never executes decision (TIMEOUT_EXECUTES_DECISION = False)
+
+### Documentation
+
+- `docs/replay_challenge_mode_v1.2.7.md`
+- `docs/replay_challenge_hidden_data_rules.md`
+- `docs/replay_challenge_scoring.md`
+
+---
 [!] Research Only. No Real Orders. Not Investment Advice.

@@ -1,0 +1,1 @@
+{"challenge_score_id": "CSC-OUTP001", "process_score": 75.0, "outcome_score": 60.0, "total_score": 72.0, "classification": "GOOD_PROCESS_BAD_OUTCOME", "process_weight": 0.80, "outcome_weight": 0.20, "research_only": true, "no_real_orders": true}

@@ -1,0 +1,1 @@
+{"challenge_id": "CHG-INTER001", "title": "Intermediate Pullback", "challenge_type": "TIMED_DECISION", "difficulty": "INTERMEDIATE", "hidden_outcome": true, "process_weight": 0.80, "outcome_weight": 0.20, "hint_limit": 2, "time_limit": 600, "research_only": true, "no_real_orders": true}

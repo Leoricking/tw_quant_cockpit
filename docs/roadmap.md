@@ -1265,7 +1265,7 @@ The following are explicitly out of scope for all future versions:
 
 ---
 
-## v1.2.6 — Replay Review Dashboard (Current)
+## v1.2.6 — Replay Review Dashboard
 
 - Review queue with 10 item types and 4 priority levels (P0-P3)
 - Review progress with 8 required steps + 4 optional steps
@@ -1280,4 +1280,24 @@ The following are explicitly out of scope for all future versions:
 
 ---
 
-*TW Quant Cockpit v1.2.6 — Research Only — Not Investment Advice*
+## v1.2.7 — Replay Challenge Mode (Current)
+
+- Structured scored challenge scenarios wrapping existing replay infrastructure
+- 12 built-in challenge templates across 5 difficulty levels (BEGINNER to EXPERT)
+- All difficulty levels keep Future Firewall active
+- Process-weighted scoring: 35% Process Quality + 15% Discipline + 15% Risk Planning + 10% Info + 10% Strategy + 10% MTF + 5% Timing
+- Outcome weight capped at 20%; process weight always >= outcome weight
+- Outcome reveal requires both --reveal AND --confirm-review; no auto-reveal
+- All mistakes SUGGESTED only — never auto-Confirmed
+- Timeout marks status only — never executes decision
+- Local personal leaderboard only; no public leaderboard; no network submission
+- Answer Key stored separately from active payload
+- Deterministic seed: same seed + source_id + data_version = same challenge
+- 57 health checks (30 component + 27 safety invariant checks)
+- 9 new governance alerts (P0/P1)
+- 33 new CLI commands (replay-challenge-*)
+- Batch guard: requires --execute AND --allow-write; preview by default
+
+---
+
+*TW Quant Cockpit v1.2.7 — Research Only — Not Investment Advice*

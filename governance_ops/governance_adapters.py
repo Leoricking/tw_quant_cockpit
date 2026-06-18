@@ -766,3 +766,91 @@ class ReplayReviewDashboardGovernanceAdapter(_BaseGovernanceAdapter):
             "Batch operations default to preview mode. Execute requires --execute --allow-write.",
             "Score-to-trade is BLOCKED. Research only.",
         ]
+
+
+class ReplayChallengeGovernanceAdapter(_BaseGovernanceAdapter):
+    """
+    Adapter for Replay Challenge Mode governance dashboard fields.
+    v1.2.7 — Challenge Training Only. No Real Orders. No Auto-Decision.
+    No Auto-Reveal. No Auto-Confirm. No Public Leaderboard.
+    """
+
+    MODULE_NAME = "REPLAY_CHALLENGE_MODE"
+
+    def available(self) -> bool:
+        try:
+            from replay.challenge_health import ReplayChallengeHealthCheck  # noqa: F401
+            return True
+        except ImportError:
+            return False
+
+    def health(self) -> "GovernanceModuleStatus":
+        checks_pass = 0
+        checks_warn = 0
+        checks_fail = 0
+        try:
+            from replay.challenge_health import ReplayChallengeHealthCheck
+            hc = ReplayChallengeHealthCheck()
+            results = hc.run()
+            for _name, (status, _msg) in results.items():
+                if status == "PASS":
+                    checks_pass += 1
+                elif status == "FAIL":
+                    checks_fail += 1
+                else:
+                    checks_warn += 1
+        except Exception:
+            checks_warn += 1
+        overall = "PASS" if checks_fail == 0 and checks_warn == 0 else ("WARN" if checks_fail == 0 else "FAIL")
+        return GovernanceModuleStatus(
+            module_name=self.MODULE_NAME,
+            available=True,
+            health_status=overall,
+            pass_count=checks_pass,
+            warn_count=checks_warn,
+            fail_count=checks_fail,
+        )
+
+    def dashboard_fields(self) -> dict:
+        """Return Replay Challenge Mode governance fields. [!] Challenge Training Only. No Real Orders."""
+        return {
+            "module": self.MODULE_NAME,
+            "version": "v1.2.7",
+            "challenge_definitions_available": True,
+            "challenge_attempts_available": True,
+            "completed_challenges_available": True,
+            "timed_out_challenges_available": True,
+            "pending_reviews_available": True,
+            "hidden_data_violations_tracked": True,
+            "answer_key_access_attempts_tracked": True,
+            "challenge_batch_failures_tracked": True,
+            "future_firewall_active": True,
+            "outcome_hidden_by_default": True,
+            "answer_key_separated": True,
+            "no_auto_decision": True,
+            "no_auto_reveal": True,
+            "no_auto_confirm": True,
+            "no_score_to_trade": True,
+            "public_leaderboard_enabled": False,
+            "network_submission_enabled": False,
+            "local_leaderboard_only": True,
+            "batch_default_preview": True,
+            "process_weight_above_outcome": True,
+            "all_mistakes_suggested_only": True,
+            "research_only": True,
+            "no_real_orders": True,
+        }
+
+    def limitations(self) -> list:
+        return [
+            "Replay Challenge Mode is Challenge Training Only. Not Investment Advice.",
+            "Future data hidden during active challenge (all difficulty levels).",
+            "Outcome hidden until explicit --reveal AND --confirm-review.",
+            "Answer Key stored separately from active payload.",
+            "All mistakes SUGGESTED only — never auto-Confirmed.",
+            "Timeout only marks status — never executes decision.",
+            "No public leaderboard. No network submission. Local personal only.",
+            "Batch operations default to preview. Execute requires --execute --allow-write.",
+            "Score-to-trade is BLOCKED. Challenge training only.",
+            "Process weight always >= Outcome weight (default: process 80%, outcome max 20%).",
+        ]

@@ -314,6 +314,29 @@ _REPORT_PATTERNS = {
         "reports/replay_review_queue_*.md",
         "data/replay_review/queue.jsonl",
     ],
+    # v1.2.7 Replay Challenge Mode
+    "replay_challenge_attempt_report": [
+        "reports/replay_challenge_attempt_*.md",
+        "data/replay_challenges/attempts.jsonl",
+        "data/replay_challenges/actions.jsonl",
+    ],
+    "replay_challenge_progress_report": [
+        "reports/replay_challenge_progress_*.md",
+        "data/replay_challenges/progress.jsonl",
+        "data/replay_challenges/streaks.jsonl",
+        "data/replay_challenges/badges.jsonl",
+    ],
+    "replay_challenge_summary_report": [
+        "reports/replay_challenge_summary_*.md",
+        "data/replay_challenges/*",
+    ],
+    "replay_challenge_leaderboard_report": [
+        "reports/replay_challenge_leaderboard_*.md",
+        "data/replay_challenges/leaderboard.jsonl",
+    ],
+    "replay_challenge_health_report": [
+        "reports/replay_challenge_health_*.md",
+    ],
     # v0.9.0.1 Crash Reversal & Risk Discipline Strategy Pack
     REPORT_CRASH_REVERSAL: [
         "reports/crash_reversal_strategy_report*.md",
