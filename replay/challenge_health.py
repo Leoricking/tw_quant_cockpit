@@ -616,7 +616,8 @@ class ReplayChallengeHealthCheck:
                 PUBLIC_LEADERBOARD_ENABLED, NETWORK_SCORE_SUBMISSION_ENABLED,
                 AUTO_CHALLENGE_DECISION_ENABLED, AUTO_CHALLENGE_OUTCOME_REVEAL_ENABLED,
             )
-            assert VERSION >= "1.2.7", f"Expected >= 1.2.7, got {VERSION}"
+            from release.version_compat import version_at_least
+            assert version_at_least(VERSION, "1.2.7"), f"Expected >= 1.2.7, got {VERSION}"
             assert REPLAY_CHALLENGE_MODE_AVAILABLE is True
             assert PUBLIC_LEADERBOARD_ENABLED is False
             assert NETWORK_SCORE_SUBMISSION_ENABLED is False

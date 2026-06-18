@@ -384,7 +384,8 @@ class ReplayReviewDashboardHealthCheck:
                 AUTO_MISTAKE_CONFIRMATION_ENABLED, AUTO_SCORE_TO_TRADE_ENABLED,
                 REPLAY_TRADE_EXECUTION_ENABLED, BROKER_EXECUTION_ENABLED,
             )
-            assert VERSION == "1.2.6", f"Expected 1.2.6, got {VERSION}"
+            from release.version_compat import version_at_least
+            assert version_at_least(VERSION, "1.2.6"), f"Expected >= 1.2.6, got {VERSION}"
             assert REPLAY_REVIEW_DASHBOARD_AVAILABLE is True
             assert AUTO_REVIEW_COMPLETE_ENABLED is False
             assert AUTO_OUTCOME_REVEAL_ENABLED is False
@@ -392,7 +393,7 @@ class ReplayReviewDashboardHealthCheck:
             assert AUTO_SCORE_TO_TRADE_ENABLED is False
             assert REPLAY_TRADE_EXECUTION_ENABLED is False
             assert BROKER_EXECUTION_ENABLED is False
-            return ("PASS", f"VersionInfo: {VERSION}, all auto flags=False, broker=False")
+            return ("PASS", f"Version: {VERSION}, review dashboard available, safety flags valid")
         except Exception as exc:
             return ("FAIL", f"VersionInfo error: {exc}")
 

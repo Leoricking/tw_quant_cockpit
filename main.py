@@ -22088,9 +22088,16 @@ def cmd_replay_challenge_health(args) -> None:
         hc = ReplayChallengeHealthCheck()
         results = hc.run()
         hc.print_results(results)
+        fail_count  = sum(1 for s, _ in results.values() if s == "FAIL")
+        block_count = sum(1 for s, _ in results.values() if s == "BLOCKED")
+        if fail_count > 0 or block_count > 0:
+            raise SystemExit(1)
+    except SystemExit:
+        raise
     except Exception as exc:
         print(f"  [FAIL] Health check error: {exc}")
         import traceback; traceback.print_exc()
+        raise SystemExit(1)
 
 
 def cmd_replay_challenge_list(args) -> None:
@@ -22659,9 +22666,16 @@ def cmd_replay_registry_health(args) -> None:
         hc = ReplayRegistryHealthCheck()
         results = hc.run()
         hc.print_results(results)
+        fail_count  = sum(1 for s, _ in results.values() if s == "FAIL")
+        block_count = sum(1 for s, _ in results.values() if s == "BLOCKED")
+        if fail_count > 0 or block_count > 0:
+            raise SystemExit(1)
+    except SystemExit:
+        raise
     except Exception as exc:
         print(f"  [FAIL] Health check error: {exc}")
         import traceback; traceback.print_exc()
+        raise SystemExit(1)
 
 
 def cmd_replay_dataset_list(args) -> None:
@@ -23310,10 +23324,17 @@ def cmd_replay_scoring_health(args) -> None:
         hc = ReplayScoringHealthCheck()
         results = hc.run()
         hc.print_results(results)
+        fail_count  = sum(1 for s, _ in results.values() if s == "FAIL")
+        block_count = sum(1 for s, _ in results.values() if s == "BLOCKED")
+        if fail_count > 0 or block_count > 0:
+            raise SystemExit(1)
+    except SystemExit:
+        raise
     except Exception as exc:
         print(f"  [FAIL] Scoring health check error: {exc}")
         import traceback
         traceback.print_exc()
+        raise SystemExit(1)
 
 
 def cmd_replay_score_process(args) -> None:
@@ -23861,19 +23882,29 @@ def cmd_replay_strategy_health(args) -> None:
     print("  Strategy Knowledge Replay Health Check v1.2.4")
     print("  [!] Research Only | No Real Orders | No Auto Decision | No Auto Execution")
     print("=" * 65)
+    _strategy_fail = False
     try:
         from replay.strategy_replay_health import StrategyKnowledgeReplayHealthCheck
         hc = StrategyKnowledgeReplayHealthCheck()
         results = hc.run_all()
         hc.print_results(results)
+        fail_count  = sum(1 for v in results.values() if (v.get("status") if isinstance(v, dict) else (v[0] if isinstance(v, (list, tuple)) else v)) == "FAIL")
+        block_count = sum(1 for v in results.values() if (v.get("status") if isinstance(v, dict) else (v[0] if isinstance(v, (list, tuple)) else v)) == "BLOCKED")
+        if fail_count > 0 or block_count > 0:
+            _strategy_fail = True
+    except SystemExit:
+        raise
     except Exception as exc:
         print(f"  [FAIL] Strategy health check error: {exc}")
         import traceback
         traceback.print_exc()
+        _strategy_fail = True
     timer.finish("COMPLETED")
     print()
     timer.print_summary()
     print("[!] Research Only. Not Investment Advice.")
+    if _strategy_fail:
+        raise SystemExit(1)
 
 
 def cmd_replay_strategy_current(args) -> None:
@@ -24422,10 +24453,17 @@ def cmd_replay_health(args) -> None:
         hc = ReplayTrainingHealthCheck()
         results = hc.run()
         hc.print_results(results)
+        fail_count  = sum(1 for s, _ in results.values() if s == "FAIL")
+        block_count = sum(1 for s, _ in results.values() if s == "BLOCKED")
+        if fail_count > 0 or block_count > 0:
+            raise SystemExit(1)
+    except SystemExit:
+        raise
     except Exception as exc:
         print(f"  [FAIL] Health check error: {exc}")
         import traceback
         traceback.print_exc()
+        raise SystemExit(1)
 
 
 def cmd_replay_create(args) -> None:
@@ -24890,10 +24928,15 @@ def cmd_replay_scenario_health(args) -> None:
         overall = "FAIL" if any_fail else "PASS"
         print(f"  Overall: {overall} | {len(results)} checks")
         print(f"  [!] Research Only | No Real Orders | Scenario templates NEVER contain future answers")
+        if any_fail:
+            raise SystemExit(1)
+    except SystemExit:
+        raise
     except Exception as exc:
         print(f"  [FAIL] Health check error: {exc}")
         import traceback
         traceback.print_exc()
+        raise SystemExit(1)
 
 
 def cmd_replay_scenarios(args) -> None:
@@ -25366,14 +25409,22 @@ def cmd_replay_journal_health(args) -> None:
         status = result.get("status", "UNKNOWN")
         print(f"  Overall: {status}")
         for check in result.get("checks", []):
-            c_name = check.get("name", "?")
+            c_name   = check.get("name", "?")
             c_status = check.get("status", "?")
             c_detail = check.get("detail", "")
             print(f"  [{c_status}] {c_name}: {c_detail}")
+        if status not in ("PASS", "WARN"):
+            raise SystemExit(1)
+        fail_checks = [c for c in result.get("checks", []) if c.get("status") in ("FAIL", "BLOCKED")]
+        if fail_checks:
+            raise SystemExit(1)
+    except SystemExit:
+        raise
     except Exception as exc:
         print(f"  [FAIL] Health check error: {exc}")
         import traceback
         traceback.print_exc()
+        raise SystemExit(1)
 
 
 def cmd_replay_journal_templates(args) -> None:
@@ -25892,11 +25943,18 @@ def cmd_replay_timeframe_health(args) -> None:
     """Run multi-timeframe replay health checks. [!] Research Only."""
     try:
         from replay.timeframe_health import run_health_check
-        run_health_check()
+        checks = run_health_check()
+        if checks:
+            fail_count = sum(1 for c in checks if c.get("status") in ("FAIL", "BLOCKED"))
+            if fail_count > 0:
+                raise SystemExit(1)
+    except SystemExit:
+        raise
     except Exception as exc:
         print(f"[!] Multi-Timeframe Replay Health Check — Research Only | No Real Orders")
         print(f"  [ERROR] {exc}")
         import traceback; traceback.print_exc()
+        raise SystemExit(1)
 
 
 def cmd_replay_timeframes(args) -> None:
@@ -26278,17 +26336,23 @@ def cmd_replay_review_health(args) -> None:
         checker = ReplayReviewDashboardHealthCheck()
         results = checker.run()
         print("[!] Replay Review Health Check — Research Only | No Real Orders")
-        pass_count = sum(1 for s, _ in results.values() if s == "PASS")
-        fail_count = sum(1 for s, _ in results.values() if s == "FAIL")
-        warn_count = sum(1 for s, _ in results.values() if s not in ("PASS", "FAIL"))
+        pass_count  = sum(1 for s, _ in results.values() if s == "PASS")
+        fail_count  = sum(1 for s, _ in results.values() if s == "FAIL")
+        block_count = sum(1 for s, _ in results.values() if s == "BLOCKED")
+        warn_count  = sum(1 for s, _ in results.values() if s not in ("PASS", "FAIL", "BLOCKED"))
         for name, (status, msg) in results.items():
             print(f"  [{status:4}] {name}: {msg}")
-        print(f"  Total: {len(results)}  PASS: {pass_count}  FAIL: {fail_count}  WARN/SKIP: {warn_count}")
+        print(f"  Total: {len(results)}  PASS: {pass_count}  FAIL: {fail_count}  BLOCKED: {block_count}  WARN/SKIP: {warn_count}")
         print("[!] Research Only. Not Investment Advice.")
+        if fail_count > 0 or block_count > 0:
+            raise SystemExit(1)
+    except SystemExit:
+        raise
     except Exception as exc:
         print(f"[!] Replay Review Health Check — Research Only | No Real Orders")
         print(f"  [ERROR] {exc}")
         import traceback; traceback.print_exc()
+        raise SystemExit(1)
 
 
 def cmd_replay_review_dashboard(args) -> None:

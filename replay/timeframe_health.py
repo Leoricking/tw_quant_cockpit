@@ -540,13 +540,14 @@ class MultiTimeframeReplayHealthCheck:
                 AUTO_TIMEFRAME_STRATEGY_EXECUTION_ENABLED,
                 REAL_ORDERS_ENABLED, BROKER_EXECUTION_ENABLED,
             )
-            assert VERSION == "1.2.5", f"Expected 1.2.5, got {VERSION}"
+            from release.version_compat import version_at_least
+            assert version_at_least(VERSION, "1.2.5"), f"Expected >= 1.2.5, got {VERSION}"
             assert MULTI_TIMEFRAME_REPLAY_AVAILABLE is True
             assert AUTO_MULTI_TIMEFRAME_DECISION_ENABLED is False
             assert AUTO_TIMEFRAME_STRATEGY_EXECUTION_ENABLED is False
             assert REAL_ORDERS_ENABLED is False
             assert BROKER_EXECUTION_ENABLED is False
-            return ("PASS", f"Version info: {VERSION}, MTF available, all auto flags False")
+            return ("PASS", f"Version: {VERSION}, multi-timeframe replay available, safety flags valid")
         except Exception as e:
             return ("FAIL", f"VersionInfo error: {e}")
 
