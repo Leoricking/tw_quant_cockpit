@@ -1,0 +1,21 @@
+{
+  "_fixture_type": "TEST_FIXTURE",
+  "data_mode": "DEMO_ONLY",
+  "note": "NOT_REAL_DATA",
+  "description": "Coverage record for a symbol with MISSING_DATA status",
+  "symbol": "DEMO_2330",
+  "market": "TWSE",
+  "universe_id": "tw_core",
+  "tier": "CORE",
+  "profile": "research",
+  "coverage_status": "MISSING",
+  "quality_status": "BLOCKED",
+  "quality_score": null,
+  "missing_fields": ["close", "volume", "ohlcv_daily"],
+  "stale_fields": [],
+  "invalid_fields": [],
+  "provider_id": null,
+  "report_id": "fixture-coverage-missing-001",
+  "no_real_orders": true,
+  "production_trading_blocked": true
+}

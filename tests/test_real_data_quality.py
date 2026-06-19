@@ -747,11 +747,12 @@ class TestVersionInfo:
 
     def test_release_name(self):
         from release import version_info
-        # v1.3.2 changed release name to Real Data Provider Adapter Foundation
+        # v1.3.3 changed release name to Coverage Repair Workflow
         assert version_info.RELEASE_NAME in (
             "Real Data Quality Foundation",
             "Universe Expansion Foundation",
             "Real Data Provider Adapter Foundation",
+            "Coverage Repair Workflow",
         ), f"Unexpected release name: {version_info.RELEASE_NAME}"
 
     def test_release_track(self):

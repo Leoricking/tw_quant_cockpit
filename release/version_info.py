@@ -71,11 +71,18 @@ logger = logging.getLogger(__name__)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 # ---------------------------------------------------------------------------
+# v1.3.3 module-level constants (Coverage Repair Workflow)
+# ---------------------------------------------------------------------------
+VERSION                             = "1.3.3"
+RELEASE_NAME                        = "Coverage Repair Workflow"
+BASE_RELEASE                        = "1.3.2 Real Data Provider Adapter Foundation"
+
+# ---------------------------------------------------------------------------
 # v1.3.2 module-level constants (Real Data Provider Adapter Foundation)
 # ---------------------------------------------------------------------------
-VERSION                             = "1.3.2"
-RELEASE_NAME                        = "Real Data Provider Adapter Foundation"
-BASE_RELEASE                        = "1.3.1 Universe Expansion Foundation"
+# VERSION                           = "1.3.2"  # superseded by v1.3.3
+# RELEASE_NAME                      = "Real Data Provider Adapter Foundation"
+# BASE_RELEASE                      = "1.3.1 Universe Expansion Foundation"
 BASE_RELEASE_NAME                   = "Universe Expansion Foundation"
 MAINTENANCE_RELEASE                 = False
 RELEASE_STAGE                       = "STABLE"
@@ -383,6 +390,14 @@ REAL_DATA_PROVIDER_AUTO_DOWNLOAD_ENABLED            = False  # ALWAYS FALSE
 REAL_DATA_PROVIDER_CREDENTIAL_STORAGE_ENABLED       = False  # ALWAYS FALSE
 REAL_DATA_PROVIDER_ORDER_SUBMISSION_ENABLED         = False  # ALWAYS FALSE
 REAL_DATA_PROVIDER_MOCK_FALLBACK_ENABLED            = False  # ALWAYS FALSE
+# v1.3.3 Coverage Repair Workflow flags
+COVERAGE_REPAIR_WORKFLOW_AVAILABLE          = True
+COVERAGE_REPAIR_QUEUE_AVAILABLE             = True
+COVERAGE_REPAIR_PLANNER_AVAILABLE           = True
+COVERAGE_REPAIR_RETRY_AVAILABLE             = True
+COVERAGE_REPAIR_AUTO_EXECUTION_ENABLED      = False
+COVERAGE_REPAIR_DESTRUCTIVE_ACTIONS_ENABLED = False
+COVERAGE_REPAIR_MOCK_FALLBACK_ENABLED       = False
 
 
 class VersionInfo:
@@ -750,6 +765,14 @@ def print_version_info() -> None:
     print(f"  Broker Execution Enabled: {BROKER_EXECUTION_ENABLED}")
     print(f"  Production Trading BLOCKED: {PRODUCTION_TRADING_BLOCKED}")
     print(f"  Mock Fallback Enabled: {MOCK_FALLBACK_ENABLED}")
+    # v1.3.3 Coverage Repair Workflow flags
+    print(f"  Coverage Repair Workflow Available: {COVERAGE_REPAIR_WORKFLOW_AVAILABLE}")
+    print(f"  Coverage Repair Queue Available: {COVERAGE_REPAIR_QUEUE_AVAILABLE}")
+    print(f"  Coverage Repair Planner Available: {COVERAGE_REPAIR_PLANNER_AVAILABLE}")
+    print(f"  Coverage Repair Retry Available: {COVERAGE_REPAIR_RETRY_AVAILABLE}")
+    print(f"  Coverage Repair Auto Execution Enabled: {COVERAGE_REPAIR_AUTO_EXECUTION_ENABLED}")
+    print(f"  Coverage Repair Destructive Actions Enabled: {COVERAGE_REPAIR_DESTRUCTIVE_ACTIONS_ENABLED}")
+    print(f"  Coverage Repair Mock Fallback Enabled: {COVERAGE_REPAIR_MOCK_FALLBACK_ENABLED}")
     print("=" * 60)
 
 

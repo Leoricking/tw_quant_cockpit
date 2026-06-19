@@ -5878,10 +5878,25 @@ def cmd_version_info(args: argparse.Namespace) -> None:
         print(f"{'Provider Credential Storage Enabled:':<40} {prov_cred}")
         print(f"{'Provider Mock Fallback Enabled:':<40} {prov_mock_fb}")
         print(f"{'Provider Order Submission Enabled:':<40} {prov_order}")
+        # v1.3.3 flags in try block (after provider flags)
+        cr_wf_a = getattr(_vi116, "COVERAGE_REPAIR_WORKFLOW_AVAILABLE", False)
+        cr_q_a  = getattr(_vi116, "COVERAGE_REPAIR_QUEUE_AVAILABLE", False)
+        cr_pl_a = getattr(_vi116, "COVERAGE_REPAIR_PLANNER_AVAILABLE", False)
+        cr_rt_a = getattr(_vi116, "COVERAGE_REPAIR_RETRY_AVAILABLE", False)
+        cr_ae   = getattr(_vi116, "COVERAGE_REPAIR_AUTO_EXECUTION_ENABLED", True)
+        cr_da   = getattr(_vi116, "COVERAGE_REPAIR_DESTRUCTIVE_ACTIONS_ENABLED", True)
+        cr_mf   = getattr(_vi116, "COVERAGE_REPAIR_MOCK_FALLBACK_ENABLED", True)
+        print(f"{'Coverage Repair Workflow Available:':<40} {cr_wf_a}")
+        print(f"{'Coverage Repair Queue Available:':<40} {cr_q_a}")
+        print(f"{'Coverage Repair Planner Available:':<40} {cr_pl_a}")
+        print(f"{'Coverage Repair Retry Available:':<40} {cr_rt_a}")
+        print(f"{'Coverage Repair Auto Execution Enabled:':<40} {cr_ae}")
+        print(f"{'Coverage Repair Destructive Actions Enabled:':<40} {cr_da}")
+        print(f"{'Coverage Repair Mock Fallback Enabled:':<40} {cr_mf}")
     except Exception as exc:
-        print(f"  Version:                              1.3.2")
-        print(f"  Release:                              Real Data Provider Adapter Foundation")
-        print(f"  Base Release:                         1.3.1 Universe Expansion Foundation")
+        print(f"  Version:                              1.3.3")
+        print(f"  Release:                              Coverage Repair Workflow")
+        print(f"  Base Release:                         1.3.2 Real Data Provider Adapter Foundation")
         print(f"  Replay Stable Baseline:               1.2.9")
         print(f"  Universe Registry Available:          True")
         print(f"  Universe Real API Connected:          False")
@@ -5894,6 +5909,13 @@ def cmd_version_info(args: argparse.Namespace) -> None:
         print(f"  Provider Mock Fallback Enabled:       False")
         print(f"  Provider Order Submission Enabled:    False")
         print(f"  Trade Execution Enabled:              False")
+        print(f"  Coverage Repair Workflow Available:   True")
+        print(f"  Coverage Repair Queue Available:      True")
+        print(f"  Coverage Repair Planner Available:    True")
+        print(f"  Coverage Repair Retry Available:      True")
+        print(f"  Coverage Repair Auto Execution Enabled: False")
+        print(f"  Coverage Repair Destructive Actions Enabled: False")
+        print(f"  Coverage Repair Mock Fallback Enabled: False")
         print(f"  (version_info import error: {exc})")
     print("=" * 60)
     print("RESEARCH ONLY \u2014 Not Investment Advice \u2014 No Real Orders")
@@ -22300,6 +22322,53 @@ def _build_parser() -> argparse.ArgumentParser:
     )
     p_pprov.add_argument("--request-id", dest="request_id", default=None, help="Request ID")
 
+    # --- v1.3.3 Coverage Repair Workflow (new commands only — existing ones defined above) ---
+    subparsers.add_parser(
+        "coverage-repair-list",
+        help="[v1.3.3] List all coverage repair tasks. Research Only.",
+    )
+
+    p_crs = subparsers.add_parser(
+        "coverage-repair-show",
+        help="[v1.3.3] Show a specific coverage repair task. Research Only.",
+    )
+    p_crs.add_argument("--task-id", dest="task_id", required=True, help="Task ID")
+
+    subparsers.add_parser(
+        "coverage-repair-summary",
+        help="[v1.3.3] Show coverage repair queue summary. Research Only.",
+    )
+
+    p_crrev = subparsers.add_parser(
+        "coverage-repair-revalidate",
+        help="[v1.3.3] Revalidate quality for a task. Research Only.",
+    )
+    p_crrev.add_argument("--task-id", dest="task_id", required=True, help="Task ID")
+
+    p_crres = subparsers.add_parser(
+        "coverage-repair-resolve",
+        help="[v1.3.3] Mark a task as resolved. Research Only.",
+    )
+    p_crres.add_argument("--task-id", dest="task_id", required=True, help="Task ID")
+
+    p_crign = subparsers.add_parser(
+        "coverage-repair-ignore",
+        help="[v1.3.3] Mark a task as ignored. Research Only.",
+    )
+    p_crign.add_argument("--task-id", dest="task_id", required=True, help="Task ID")
+
+    p_crreop = subparsers.add_parser(
+        "coverage-repair-reopen",
+        help="[v1.3.3] Reopen a cancelled/resolved/ignored task. Research Only.",
+    )
+    p_crreop.add_argument("--task-id", dest="task_id", required=True, help="Task ID")
+
+    p_crhist = subparsers.add_parser(
+        "coverage-repair-history",
+        help="[v1.3.3] Show history events for a task. Research Only.",
+    )
+    p_crhist.add_argument("--task-id", dest="task_id", default=None, help="Task ID (optional)")
+
     return parser
 
 
@@ -24280,6 +24349,461 @@ def cmd_provider_provenance_v132(args) -> None:
         print(f"  Request ID: {request_id}")
         print("  [INFO] Provenance records are stored in-memory per session.")
     print("[!] Research Only. Not Investment Advice.")
+
+
+# ---------------------------------------------------------------------------
+# v1.3.3 Coverage Repair Workflow commands
+# ---------------------------------------------------------------------------
+
+def _cr_safety_header(version: str = "1.3.3") -> None:
+    print("=" * 70)
+    print(f"  TW Quant Cockpit v{version} \u2014 Coverage Repair Workflow")
+    print("  [!] Research Only | No Real Orders | Broker Execution DISABLED")
+    print("  [!] dry_run=True default | Destructive Repair DISABLED")
+    print("  [!] Production Trading BLOCKED | Not Investment Advice")
+    print("=" * 70)
+
+
+def _cr_safety_footer() -> None:
+    print("-" * 70)
+    print(f"  Application Version              : 1.3.3")
+    print(f"  No Real Orders                   : True")
+    print(f"  Broker Execution Disabled        : True")
+    print(f"  Production Trading BLOCKED       : True")
+    print(f"  Auto Execution Enabled           : False")
+    print(f"  Destructive Actions Enabled      : False")
+    print(f"  Mock Fallback Enabled            : False")
+    print("[!] Research Only. Not Investment Advice.")
+
+
+def _cr_print_task(task) -> None:
+    from coverage_repair.models_v133 import CoverageRepairTask
+    print(f"  Task ID              : {task.task_id}")
+    print(f"  Symbol               : {task.symbol}")
+    print(f"  Market               : {task.market}")
+    print(f"  Universe             : {task.universe_id}")
+    print(f"  Tier                 : {task.universe_tier}")
+    print(f"  Profile              : {task.profile}")
+    print(f"  Issue Type           : {task.issue_type}")
+    print(f"  Priority             : {task.priority} (score={task.priority_score:.1f})")
+    print(f"  Status               : {task.status}")
+    print(f"  Provider             : {task.provider_id or '(none)'}")
+    print(f"  Suggested Actions    : {', '.join(task.suggested_actions) or '(none)'}")
+    print(f"  Selected Action      : {task.selected_action}")
+    print(f"  Retryable            : {task.retryable}")
+    print(f"  Attempt Count        : {task.attempt_count}/{task.max_attempts}")
+    print(f"  Quality Status       : {task.quality_status or '(none)'}")
+    print(f"  Coverage Status      : {task.coverage_status or '(none)'}")
+    print(f"  Blocking Reason      : {task.blocking_reason or '(none)'}")
+    print(f"  No Real Orders       : {task.no_real_orders}")
+    print(f"  Production Blocked   : {task.production_trading_blocked}")
+
+
+def cmd_coverage_repair_list(args) -> None:
+    """[v1.3.3] List all coverage repair tasks. [!] Research Only."""
+    _cr_safety_header()
+    try:
+        from coverage_repair.queue import CoverageRepairQueue
+        from coverage_repair.query import CoverageRepairQueryService
+        q = CoverageRepairQueue()
+        svc = CoverageRepairQueryService(queue=q)
+        tasks = svc.list_recent(limit=50)
+        print(f"  Total tasks in queue: {len(tasks)}")
+        if not tasks:
+            print("  (queue is empty)")
+        for t in tasks[:30]:
+            print(f"  [{t.priority:<8}] [{t.status:<20}] {t.symbol or '?':>6} / {t.profile or '?':<16} {t.issue_type}")
+        if len(tasks) > 30:
+            print(f"  ... ({len(tasks) - 30} more)")
+    except Exception as exc:
+        print(f"  [ERROR] coverage-repair-list: {exc}")
+    _cr_safety_footer()
+
+
+def cmd_coverage_repair_show(args) -> None:
+    """[v1.3.3] Show a specific coverage repair task. [!] Research Only."""
+    task_id = getattr(args, "task_id", None)
+    _cr_safety_header()
+    if not task_id:
+        print("  [ERROR] --task-id is required")
+        _cr_safety_footer()
+        raise SystemExit(1)
+    try:
+        from coverage_repair.queue import CoverageRepairQueue
+        q = CoverageRepairQueue()
+        task = q.get_task(task_id)
+        if task is None:
+            # Try store
+            from coverage_repair.store import CoverageRepairStore
+            store = CoverageRepairStore()
+            task = store.load_task(task_id)
+        if task is None:
+            print(f"  [WARN] Task {task_id} not found.")
+        else:
+            _cr_print_task(task)
+    except Exception as exc:
+        print(f"  [ERROR] coverage-repair-show: {exc}")
+    _cr_safety_footer()
+
+
+def cmd_coverage_repair_summary(args) -> None:
+    """[v1.3.3] Show coverage repair queue summary. [!] Research Only."""
+    _cr_safety_header()
+    try:
+        from coverage_repair.queue import CoverageRepairQueue
+        from coverage_repair.query import CoverageRepairQueryService
+        q = CoverageRepairQueue()
+        svc = CoverageRepairQueryService(queue=q)
+        summary = svc.summarize()
+        print(f"  Total Tasks          : {summary.get('total', 0)}")
+        print(f"  Open                 : {summary.get('open', 0)}")
+        print(f"  Blocked              : {summary.get('blocked', 0)}")
+        print(f"  Conflict Review      : {summary.get('conflict_review', 0)}")
+        print(f"  Waiting Source       : {summary.get('waiting_source', 0)}")
+        print(f"  Waiting Auth         : {summary.get('waiting_auth', 0)}")
+        print(f"  Resolved             : {summary.get('resolved', 0)}")
+        print(f"  Failed               : {summary.get('failed', 0)}")
+        print("")
+        for priority, count in (summary.get("by_priority") or {}).items():
+            print(f"  Priority {priority:<8}    : {count}")
+    except Exception as exc:
+        print(f"  [ERROR] coverage-repair-summary: {exc}")
+    _cr_safety_footer()
+
+
+def cmd_coverage_repair_scan(args) -> None:
+    """[v1.3.3] Scan for coverage issues and build repair tasks. [!] Research Only."""
+    tier = getattr(args, "tier", None)
+    symbol = getattr(args, "symbol", None)
+    profile = getattr(args, "profile", None)
+    _cr_safety_header()
+    print(f"  Tier     : {tier or '(all)'}")
+    print(f"  Symbol   : {symbol or '(all)'}")
+    print(f"  Profile  : {profile or '(all)'}")
+    print("-" * 70)
+    try:
+        from coverage_repair.issue_mapper import CoverageRepairIssueMapper
+        mapper = CoverageRepairIssueMapper()
+        tasks_built = 0
+        # Attempt to get coverage records from universe
+        try:
+            from universe.universe_coverage import UniverseCoverageAnalyzer
+            analyzer = UniverseCoverageAnalyzer()
+            records = analyzer.get_all_records() if hasattr(analyzer, "get_all_records") else []
+            for rec in records:
+                rec_d = rec.to_dict() if hasattr(rec, "to_dict") else (rec if isinstance(rec, dict) else {})
+                if tier and rec_d.get("tier") != tier:
+                    continue
+                if symbol and rec_d.get("symbol") != symbol:
+                    continue
+                tasks = mapper.from_coverage_record(rec_d)
+                tasks_built += len(tasks)
+        except Exception:
+            pass
+        print(f"  Tasks built from scan: {tasks_built}")
+        print(f"  [INFO] Scan does not auto-write tasks. Use coverage-repair-plan to plan repairs.")
+        print(f"  [INFO] dry_run=True default. No data modified.")
+    except Exception as exc:
+        print(f"  [ERROR] coverage-repair-scan: {exc}")
+    _cr_safety_footer()
+
+
+def cmd_coverage_repair_plan(args) -> None:
+    """[v1.3.3] Build a repair plan for a task or symbol. [!] Research Only."""
+    task_id = getattr(args, "task_id", None)
+    symbol = getattr(args, "symbol", None)
+    _cr_safety_header()
+    print(f"  Task ID  : {task_id or '(none)'}")
+    print(f"  Symbol   : {symbol or '(none)'}")
+    print("-" * 70)
+    try:
+        from coverage_repair.planner import CoverageRepairPlanner
+        from coverage_repair.models_v133 import CoverageRepairTask, RepairIssueType
+        planner = CoverageRepairPlanner()
+
+        if task_id:
+            from coverage_repair.queue import CoverageRepairQueue
+            q = CoverageRepairQueue()
+            task = q.get_task(task_id)
+            if task is None:
+                from coverage_repair.store import CoverageRepairStore
+                task = CoverageRepairStore().load_task(task_id)
+        elif symbol:
+            # Build a demo task for the symbol
+            task = CoverageRepairTask(
+                task_id="(preview)",
+                symbol=symbol,
+                issue_type=RepairIssueType.MISSING_DATA,
+                profile="research",
+            )
+        else:
+            print("  [ERROR] --task-id or --symbol is required")
+            _cr_safety_footer()
+            raise SystemExit(1)
+
+        if task is None:
+            print(f"  [WARN] Task not found: {task_id}")
+            _cr_safety_footer()
+            return
+
+        plan = planner.build_plan(task)
+        print(planner.summarize_plan(plan))
+        is_valid, errors = planner.validate_plan(plan)
+        print(f"  Plan Valid           : {is_valid}")
+        if errors:
+            for e in errors:
+                print(f"  [WARN] {e}")
+        print(f"  Dry Run              : True")
+        print(f"  Destructive          : False")
+        print(f"  No Real Orders       : True")
+        print(f"  Broker Execution     : Disabled")
+        print(f"  Production Trading   : BLOCKED")
+    except SystemExit:
+        raise
+    except Exception as exc:
+        print(f"  [ERROR] coverage-repair-plan: {exc}")
+    _cr_safety_footer()
+
+
+def cmd_coverage_repair_run(args) -> None:
+    """[v1.3.3] Run a repair plan (dry-run default). [!] Research Only. No Real Orders."""
+    task_id = getattr(args, "task_id", None)
+    dry_run = getattr(args, "dry_run", True)
+    execute = getattr(args, "execute", False)
+    _cr_safety_header()
+    print(f"  Task ID  : {task_id or '(none)'}")
+    print(f"  Dry Run  : {not execute}")
+    print(f"  Execute  : {execute}")
+    print("-" * 70)
+    if not task_id:
+        print("  [ERROR] --task-id is required")
+        _cr_safety_footer()
+        raise SystemExit(1)
+    try:
+        from coverage_repair.queue import CoverageRepairQueue
+        from coverage_repair.planner import CoverageRepairPlanner
+        from coverage_repair.executor import CoverageRepairExecutor
+        q = CoverageRepairQueue()
+        task = q.get_task(task_id)
+        if task is None:
+            from coverage_repair.store import CoverageRepairStore
+            task = CoverageRepairStore().load_task(task_id)
+        if task is None:
+            print(f"  [WARN] Task {task_id} not found.")
+            _cr_safety_footer()
+            return
+        planner = CoverageRepairPlanner()
+        plan = planner.build_plan(task)
+        executor = CoverageRepairExecutor()
+        result = executor.execute(plan)
+        print(f"  Execution ID         : {result.execution_id}")
+        print(f"  Status               : {result.status}")
+        print(f"  Action               : {result.action}")
+        print(f"  Resolved             : {result.resolved}")
+        print(f"  Partial              : {result.partial}")
+        print(f"  Records Received     : {result.records_received}")
+        print(f"  Quality Before       : {result.quality_status_before or '(none)'}")
+        print(f"  Quality After        : {result.quality_status_after or '(none)'}")
+        print(f"  Coverage Before      : {result.coverage_status_before or '(none)'}")
+        print(f"  Coverage After       : {result.coverage_status_after or '(none)'}")
+        print(f"  Dry Run              : True")
+        print(f"  No Real Orders       : True")
+        print(f"  Broker Execution     : Disabled")
+        print(f"  Production Trading   : BLOCKED")
+        if result.errors:
+            for e in result.errors:
+                print(f"  [ERROR] {e}")
+        if result.warnings:
+            for w in result.warnings:
+                print(f"  [WARN] {w}")
+    except Exception as exc:
+        print(f"  [ERROR] coverage-repair-run: {exc}")
+    _cr_safety_footer()
+
+
+def cmd_coverage_repair_retry(args) -> None:
+    """[v1.3.3] Retry a retryable coverage repair task. [!] Research Only."""
+    task_id = getattr(args, "task_id", None)
+    _cr_safety_header()
+    if not task_id:
+        print("  [ERROR] --task-id is required")
+        _cr_safety_footer()
+        raise SystemExit(1)
+    try:
+        from coverage_repair.queue import CoverageRepairQueue
+        from coverage_repair.executor import CoverageRepairExecutor
+        q = CoverageRepairQueue()
+        task = q.get_task(task_id)
+        if task is None:
+            from coverage_repair.store import CoverageRepairStore
+            task = CoverageRepairStore().load_task(task_id)
+        if task is None:
+            print(f"  [WARN] Task {task_id} not found.")
+            _cr_safety_footer()
+            return
+        executor = CoverageRepairExecutor()
+        result = executor.retry_task(task)
+        print(f"  Retry Status         : {result.status}")
+        print(f"  Attempt Count        : {task.attempt_count}/{task.max_attempts}")
+        print(f"  Resolved             : {result.resolved}")
+        print(f"  No Real Orders       : True")
+        print(f"  Production Trading   : BLOCKED")
+        if result.errors:
+            for e in result.errors:
+                print(f"  [ERROR] {e}")
+    except Exception as exc:
+        print(f"  [ERROR] coverage-repair-retry: {exc}")
+    _cr_safety_footer()
+
+
+def cmd_coverage_repair_revalidate(args) -> None:
+    """[v1.3.3] Revalidate quality for a task. [!] Research Only."""
+    task_id = getattr(args, "task_id", None)
+    _cr_safety_header()
+    if not task_id:
+        print("  [ERROR] --task-id is required")
+        _cr_safety_footer()
+        raise SystemExit(1)
+    try:
+        from coverage_repair.queue import CoverageRepairQueue
+        from coverage_repair.executor import CoverageRepairExecutor
+        q = CoverageRepairQueue()
+        task = q.get_task(task_id)
+        if task is None:
+            from coverage_repair.store import CoverageRepairStore
+            task = CoverageRepairStore().load_task(task_id)
+        if task is None:
+            print(f"  [WARN] Task {task_id} not found.")
+            _cr_safety_footer()
+            return
+        executor = CoverageRepairExecutor()
+        result = executor.revalidate_quality(task)
+        print(f"  Revalidate Status    : {result.status}")
+        print(f"  Quality After        : {result.quality_status_after or '(none)'}")
+        print(f"  No Real Orders       : True")
+        print(f"  Production Trading   : BLOCKED")
+        if result.errors:
+            for e in result.errors:
+                print(f"  [ERROR] {e}")
+    except Exception as exc:
+        print(f"  [ERROR] coverage-repair-revalidate: {exc}")
+    _cr_safety_footer()
+
+
+def cmd_coverage_repair_resolve(args) -> None:
+    """[v1.3.3] Mark a task as resolved. [!] Research Only."""
+    task_id = getattr(args, "task_id", None)
+    _cr_safety_header()
+    if not task_id:
+        print("  [ERROR] --task-id is required")
+        _cr_safety_footer()
+        raise SystemExit(1)
+    try:
+        from coverage_repair.queue import CoverageRepairQueue
+        q = CoverageRepairQueue()
+        ok = q.mark_resolved(task_id, reason="marked resolved via CLI")
+        if ok:
+            print(f"  Task {task_id} marked RESOLVED.")
+        else:
+            print(f"  [WARN] Could not mark task resolved. Check task_id and status.")
+        print(f"  No Real Orders       : True")
+        print(f"  Production Trading   : BLOCKED")
+    except Exception as exc:
+        print(f"  [ERROR] coverage-repair-resolve: {exc}")
+    _cr_safety_footer()
+
+
+def cmd_coverage_repair_ignore(args) -> None:
+    """[v1.3.3] Mark a task as ignored. [!] Research Only."""
+    task_id = getattr(args, "task_id", None)
+    _cr_safety_header()
+    if not task_id:
+        print("  [ERROR] --task-id is required")
+        _cr_safety_footer()
+        raise SystemExit(1)
+    try:
+        from coverage_repair.queue import CoverageRepairQueue
+        q = CoverageRepairQueue()
+        ok = q.mark_ignored(task_id, reason="marked ignored via CLI")
+        if ok:
+            print(f"  Task {task_id} marked IGNORED.")
+        else:
+            print(f"  [WARN] Could not mark task ignored. Check task_id and status.")
+        print(f"  No Real Orders       : True")
+    except Exception as exc:
+        print(f"  [ERROR] coverage-repair-ignore: {exc}")
+    _cr_safety_footer()
+
+
+def cmd_coverage_repair_reopen(args) -> None:
+    """[v1.3.3] Reopen a cancelled/resolved/ignored task. [!] Research Only."""
+    task_id = getattr(args, "task_id", None)
+    _cr_safety_header()
+    if not task_id:
+        print("  [ERROR] --task-id is required")
+        _cr_safety_footer()
+        raise SystemExit(1)
+    try:
+        from coverage_repair.queue import CoverageRepairQueue
+        q = CoverageRepairQueue()
+        ok = q.reopen_task(task_id, reason="reopened via CLI")
+        if ok:
+            print(f"  Task {task_id} reopened.")
+        else:
+            print(f"  [WARN] Could not reopen task. Check task_id and status.")
+        print(f"  No Real Orders       : True")
+    except Exception as exc:
+        print(f"  [ERROR] coverage-repair-reopen: {exc}")
+    _cr_safety_footer()
+
+
+def cmd_coverage_repair_history(args) -> None:
+    """[v1.3.3] Show history events for a task. [!] Research Only."""
+    task_id = getattr(args, "task_id", None)
+    _cr_safety_header()
+    try:
+        from coverage_repair.queue import CoverageRepairQueue
+        q = CoverageRepairQueue()
+        history = [h for h in q._history if not task_id or h.get("task_id") == task_id]
+        print(f"  History events: {len(history)}")
+        for h in history[-20:]:
+            print(f"  [{h.get('at','')}] {h.get('event','')} | {h.get('task_id','')} | "
+                  f"{h.get('old_status','')} -> {h.get('status','')} | {h.get('reason','')}")
+        print(f"  No Real Orders       : True")
+    except Exception as exc:
+        print(f"  [ERROR] coverage-repair-history: {exc}")
+    _cr_safety_footer()
+
+
+def cmd_coverage_repair_health(args) -> None:
+    """[v1.3.3] Run Coverage Repair Workflow health check. [!] Research Only."""
+    _cr_safety_header()
+    try:
+        from coverage_repair.health import CoverageRepairHealthV133
+        hc = CoverageRepairHealthV133()
+        results = hc.run()
+        fail_count = 0
+        for check_name, (status, detail) in results.items():
+            icon = "PASS" if status == "PASS" else "FAIL"
+            print(f"  [{icon}] {check_name:<50} {detail}")
+            if status == "FAIL":
+                fail_count += 1
+        summary = hc.get_health_summary()
+        overall = "PASS" if summary.get("all_pass") else "FAIL"
+        print("-" * 70)
+        print(f"  Overall              : {overall}")
+        print(f"  Passed               : {summary.get('passed', 0)}/{summary.get('total_checks', 0)}")
+        print(f"  No Real Orders       : True")
+        print(f"  Broker Execution     : Disabled")
+        print(f"  Production Trading   : BLOCKED")
+        print("[!] Research Only. Not Investment Advice.")
+        if fail_count > 0:
+            raise SystemExit(1)
+    except SystemExit:
+        raise
+    except Exception as exc:
+        print(f"  [FAIL] Coverage repair health check error: {exc}")
+        raise SystemExit(1)
 
 
 # ---------------------------------------------------------------------------
@@ -28825,6 +29349,20 @@ def main() -> None:
         "provider-cache-status":       cmd_provider_cache_status_v132,
         "provider-cache-clear":        cmd_provider_cache_clear_v132,
         "provider-provenance":         cmd_provider_provenance_v132,
+        # v1.3.3 Coverage Repair Workflow (new commands; existing ones override above entries)
+        "coverage-repair-list":        cmd_coverage_repair_list,
+        "coverage-repair-show":        cmd_coverage_repair_show,
+        "coverage-repair-summary":     cmd_coverage_repair_summary,
+        "coverage-repair-scan":        cmd_coverage_repair_scan,    # overrides v1.1.2
+        "coverage-repair-plan":        cmd_coverage_repair_plan,    # overrides v1.1.2
+        "coverage-repair-run":         cmd_coverage_repair_run,     # overrides v1.1.2
+        "coverage-repair-retry":       cmd_coverage_repair_retry,   # overrides v1.1.2
+        "coverage-repair-revalidate":  cmd_coverage_repair_revalidate,
+        "coverage-repair-resolve":     cmd_coverage_repair_resolve,
+        "coverage-repair-ignore":      cmd_coverage_repair_ignore,
+        "coverage-repair-reopen":      cmd_coverage_repair_reopen,
+        "coverage-repair-history":     cmd_coverage_repair_history,
+        "coverage-repair-health":      cmd_coverage_repair_health,  # overrides v1.1.2
     }
 
     if args.command is None:

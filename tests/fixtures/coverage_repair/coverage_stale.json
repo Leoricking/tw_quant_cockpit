@@ -1,0 +1,21 @@
+{
+  "_fixture_type": "TEST_FIXTURE",
+  "data_mode": "DEMO_ONLY",
+  "note": "NOT_REAL_DATA",
+  "description": "Coverage record for a symbol with STALE_DATA status",
+  "symbol": "DEMO_2454",
+  "market": "TWSE",
+  "universe_id": "tw_core",
+  "tier": "CORE",
+  "profile": "research",
+  "coverage_status": "STALE",
+  "quality_status": "STALE",
+  "quality_score": 45.0,
+  "missing_fields": [],
+  "stale_fields": ["close", "volume"],
+  "invalid_fields": [],
+  "provider_id": "local_file",
+  "report_id": "fixture-coverage-stale-001",
+  "no_real_orders": true,
+  "production_trading_blocked": true
+}

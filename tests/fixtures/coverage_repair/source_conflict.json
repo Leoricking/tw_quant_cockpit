@@ -1,0 +1,22 @@
+{
+  "_fixture_type": "TEST_FIXTURE",
+  "data_mode": "DEMO_ONLY",
+  "note": "NOT_REAL_DATA",
+  "description": "Coverage record with SOURCE_CONFLICT status",
+  "symbol": "DEMO_2308",
+  "market": "TWSE",
+  "universe_id": "tw_core",
+  "tier": "CORE",
+  "profile": "precise_price",
+  "coverage_status": "SOURCE_CONFLICT",
+  "quality_status": "CONFLICT",
+  "quality_score": null,
+  "missing_fields": [],
+  "stale_fields": [],
+  "invalid_fields": [],
+  "inconsistent_fields": ["close", "volume"],
+  "provider_id": "local_file",
+  "report_id": "fixture-source-conflict-001",
+  "no_real_orders": true,
+  "production_trading_blocked": true
+}

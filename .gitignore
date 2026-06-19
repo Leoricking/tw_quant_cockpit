@@ -61,6 +61,11 @@ data/coverage_repair_results/
 data/repair_reports/
 reports/coverage_repair_report_*.md
 
+# v1.3.3 Coverage Repair Workflow runtime data (generated artifacts, gitignored)
+data/coverage_repair/
+data/repair_queue/
+reports/coverage_repair_*.md
+
 # Fixture files ARE committed (exception)
 !tests/fixtures/import_onboarding/*.csv
 !tests/fixtures/coverage_repair/*.csv

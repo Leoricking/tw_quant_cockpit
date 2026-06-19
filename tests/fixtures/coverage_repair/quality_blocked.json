@@ -1,0 +1,18 @@
+{
+  "_fixture_type": "TEST_FIXTURE",
+  "data_mode": "DEMO_ONLY",
+  "note": "NOT_REAL_DATA",
+  "description": "Quality report for a symbol with BLOCKED status",
+  "symbol": "DEMO_2412",
+  "profile": "precise_price",
+  "overall_status": "BLOCKED",
+  "status": "BLOCKED",
+  "score": 0,
+  "issues": [
+    {"type": "BLOCKED_DATA", "field": "close", "code": "B001", "detail": "Price data blocked"},
+    {"type": "MISSING_DATA", "field": "volume", "code": "M001", "detail": "Volume missing"}
+  ],
+  "report_id": "fixture-quality-blocked-001",
+  "no_real_orders": true,
+  "production_trading_blocked": true
+}
