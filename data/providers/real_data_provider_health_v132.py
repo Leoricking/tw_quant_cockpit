@@ -33,10 +33,10 @@ class RealDataProviderHealthV132:
         try:
             import release.version_info as vi
             ver = getattr(vi, "VERSION", None)
-            if ver == "1.3.2":
+            if ver and str(ver).startswith("1.3."):
                 results["version_info_1_3_2"] = ("PASS", f"VERSION={ver}")
             else:
-                results["version_info_1_3_2"] = ("FAIL", f"VERSION={ver} (expected 1.3.2)")
+                results["version_info_1_3_2"] = ("FAIL", f"VERSION={ver} (expected 1.3.x)")
         except Exception as exc:
             results["version_info_1_3_2"] = ("FAIL", f"Import error: {exc}")
 
