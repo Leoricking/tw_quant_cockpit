@@ -1,0 +1,8 @@
+{
+  "_fixture_type": "TEST_FIXTURE",
+  "_data_mode": "DEMO_ONLY",
+  "_warning": "NOT_REAL_DATA — NOT_FOR_FORMAL_CONCLUSION",
+  "corporate_action_status": "UNKNOWN",
+  "crosses_corporate_action": true,
+  "data_mode": "demo"
+}

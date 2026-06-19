@@ -1,0 +1,10 @@
+{
+  "_fixture_type": "TEST_FIXTURE",
+  "_data_mode": "DEMO_ONLY",
+  "_warning": "NOT_REAL_DATA — NOT_FOR_FORMAL_CONCLUSION",
+  "_fixture_rule": "abc_buy_point_c",
+  "close": 101.0,
+  "ma20": 100.0,
+  "previous_close": 99.0,
+  "data_mode": "demo"
+}

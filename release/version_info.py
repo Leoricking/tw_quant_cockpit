@@ -73,9 +73,9 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # ---------------------------------------------------------------------------
 # v1.3.3 module-level constants (Coverage Repair Workflow)
 # ---------------------------------------------------------------------------
-VERSION                             = "1.3.4"
-RELEASE_NAME                        = "Data Freshness Monitor"
-BASE_RELEASE                        = "1.3.3 Coverage Repair Workflow"
+VERSION                             = "1.4.0"
+RELEASE_NAME                        = "Strategy Knowledge Empirical Backtest"
+BASE_RELEASE                        = "1.3.4 Data Freshness Monitor"
 
 # ---------------------------------------------------------------------------
 # v1.3.2 module-level constants (Real Data Provider Adapter Foundation)
@@ -407,6 +407,19 @@ FRESHNESS_ALERTS_AVAILABLE             = True
 FRESHNESS_AUTO_REFRESH_ENABLED         = False
 FRESHNESS_AUTO_REPAIR_ENABLED          = False
 FRESHNESS_MOCK_FALLBACK_ENABLED        = False
+# v1.4.0 Strategy Knowledge Empirical Backtest flags
+STRATEGY_KNOWLEDGE_EMPIRICAL_BACKTEST_AVAILABLE = True
+STRATEGY_RULE_REGISTRY_AVAILABLE        = True
+LOOKAHEAD_BIAS_GUARD_AVAILABLE          = True
+WALK_FORWARD_VALIDATION_AVAILABLE       = True
+OUT_OF_SAMPLE_VALIDATION_AVAILABLE      = True
+TRANSACTION_COST_MODEL_AVAILABLE        = True
+SLIPPAGE_MODEL_AVAILABLE                = True
+CORPORATE_ACTION_GUARD_AVAILABLE        = True
+BACKTEST_REAL_DATA_REQUIRED             = True
+BACKTEST_MOCK_FORMAL_CONCLUSION_ALLOWED = False
+BACKTEST_AUTO_OPTIMIZATION_ENABLED      = False
+BACKTEST_AUTO_TRADING_ENABLED           = False
 
 
 class VersionInfo:
@@ -791,6 +804,19 @@ def print_version_info() -> None:
     print(f"  Freshness Auto Refresh Enabled:        {FRESHNESS_AUTO_REFRESH_ENABLED}")
     print(f"  Freshness Auto Repair Enabled:         {FRESHNESS_AUTO_REPAIR_ENABLED}")
     print(f"  Freshness Mock Fallback Enabled:       {FRESHNESS_MOCK_FALLBACK_ENABLED}")
+    # v1.4.0 Strategy Knowledge Empirical Backtest flags
+    print(f"  Strategy Knowledge Empirical Backtest Available: {STRATEGY_KNOWLEDGE_EMPIRICAL_BACKTEST_AVAILABLE}")
+    print(f"  Strategy Rule Registry Available: {STRATEGY_RULE_REGISTRY_AVAILABLE}")
+    print(f"  Lookahead Bias Guard Available: {LOOKAHEAD_BIAS_GUARD_AVAILABLE}")
+    print(f"  Walk Forward Validation Available: {WALK_FORWARD_VALIDATION_AVAILABLE}")
+    print(f"  Out Of Sample Validation Available: {OUT_OF_SAMPLE_VALIDATION_AVAILABLE}")
+    print(f"  Transaction Cost Model Available: {TRANSACTION_COST_MODEL_AVAILABLE}")
+    print(f"  Slippage Model Available: {SLIPPAGE_MODEL_AVAILABLE}")
+    print(f"  Corporate Action Guard Available: {CORPORATE_ACTION_GUARD_AVAILABLE}")
+    print(f"  Backtest Real Data Required: {BACKTEST_REAL_DATA_REQUIRED}")
+    print(f"  Mock Formal Conclusion Allowed: {BACKTEST_MOCK_FORMAL_CONCLUSION_ALLOWED}")
+    print(f"  Backtest Auto Optimization Enabled: {BACKTEST_AUTO_OPTIMIZATION_ENABLED}")
+    print(f"  Backtest Auto Trading Enabled: {BACKTEST_AUTO_TRADING_ENABLED}")
     print("=" * 60)
 
 

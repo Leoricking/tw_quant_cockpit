@@ -1,0 +1,10 @@
+{
+  "_fixture_type": "TEST_FIXTURE",
+  "_data_mode": "DEMO_ONLY",
+  "_warning": "NOT_REAL_DATA — NOT_FOR_FORMAL_CONCLUSION",
+  "corporate_action_status": "ADJUSTED",
+  "data_mode": "demo",
+  "bar_count": 5,
+  "close_prices": [100.0, 101.0, 102.0, 101.5, 103.0],
+  "source": "TEST_FIXTURE"
+}

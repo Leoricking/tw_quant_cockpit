@@ -563,3 +563,14 @@ reports/universe_quality_scan_*.md
 # v1.3.1 Universe fixtures ARE committed (exception)
 !tests/fixtures/universe/*.csv
 !tests/fixtures/universe/*.json
+
+# v1.4.0 Strategy Knowledge Empirical Backtest (runtime outputs — never commit)
+data/empirical_backtest/
+data/backtest_runs/
+data/backtest_results/
+data/walk_forward/
+reports/strategy_empirical_backtest_*.md
+
+# v1.4.0 Empirical Backtest fixtures ARE committed (exception)
+!tests/fixtures/empirical_backtest/*.json
+!tests/fixtures/empirical_backtest/*.jsonl

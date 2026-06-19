@@ -22446,6 +22446,11 @@ def _build_parser() -> argparse.ArgumentParser:
     )
     p_fcr.add_argument("--alert-id", dest="alert_id", default=None, help="Alert ID (optional)")
 
+    # v1.4.0 Strategy Knowledge Empirical Backtest arguments
+    parser.add_argument("--rule-id", dest="rule_id", default=None)
+    parser.add_argument("--backtest-id", dest="backtest_id", nargs="*", default=None)
+    parser.add_argument("--execute", dest="execute", action="store_true", default=False)
+
     return parser
 
 
@@ -28918,6 +28923,226 @@ def cmd_replay_review_batch_run(args) -> None:
         print(f"  [ERROR] {exc}")
 
 
+# ---------------------------------------------------------------------------
+# v1.4.0 Strategy Knowledge Empirical Backtest CLI handlers
+# ---------------------------------------------------------------------------
+
+def cmd_strategy_rule_list(args):
+    print("[!] Research Only. No Real Orders.")
+    try:
+        from empirical_backtest.rule_registry_v140 import StrategyKnowledgeRuleRegistry
+        reg = StrategyKnowledgeRuleRegistry()
+        rules = reg.list()
+        print(f"Strategy Rules ({len(rules)} total):")
+        for r in rules:
+            status = "BACKTESTABLE" if r.backtestable else "MANUAL_ONLY/NOT_BACKTESTABLE"
+            print(f"  [{r.category}] {r.rule_id}: {r.rule_name} [{status}]")
+    except Exception as exc:
+        print(f"[ERROR] {exc}")
+
+def cmd_strategy_rule_show(args):
+    print("[!] Research Only. No Real Orders.")
+    rule_id = getattr(args, 'rule_id', None)
+    try:
+        from empirical_backtest.rule_registry_v140 import StrategyKnowledgeRuleRegistry
+        reg = StrategyKnowledgeRuleRegistry()
+        rule = reg.get(rule_id)
+        if rule is None:
+            print(f"[ERROR] Rule not found: {rule_id}")
+            return
+        print(f"Rule ID:          {rule.rule_id}")
+        print(f"Name:             {rule.rule_name}")
+        print(f"Version:          {rule.rule_version}")
+        print(f"Category:         {rule.category}")
+        print(f"Backtestable:     {rule.backtestable}")
+        print(f"Required Datasets:{rule.required_datasets}")
+        print(f"Min History Bars: {rule.minimum_history_bars}")
+        print(f"Entry Conditions: {rule.entry_conditions}")
+        print(f"Exit Conditions:  {rule.exit_conditions}")
+        print(f"Tags:             {rule.tags}")
+    except Exception as exc:
+        print(f"[ERROR] {exc}")
+
+def cmd_strategy_rule_health(args):
+    print("[!] Research Only. No Real Orders.")
+    try:
+        from empirical_backtest.health_v140 import StrategyEmpiricalBacktestHealthCheck
+        hc = StrategyEmpiricalBacktestHealthCheck()
+        summary = hc.get_health_summary()
+        status = "PASS" if summary["all_pass"] else "FAIL"
+        print(f"Strategy Rule Health: {status} ({summary['passed']}/{summary['total_checks']})")
+        for name, info in summary["checks"].items():
+            mark = "PASS" if info["status"] == "PASS" else "FAIL"
+            print(f"  [{mark}] {name}: {info['detail']}")
+    except Exception as exc:
+        print(f"[ERROR] {exc}")
+
+def cmd_empirical_backtest_plan(args):
+    print("[!] Research Only. No Real Orders.")
+    rule_id = getattr(args, 'rule_id', None)
+    symbol = getattr(args, 'symbol', None)
+    universe = getattr(args, 'universe', None)
+    print(f"Empirical Backtest Plan (DRY RUN)")
+    print(f"  Rule ID:   {rule_id}")
+    print(f"  Symbol:    {symbol or 'N/A'}")
+    print(f"  Universe:  {universe or 'N/A'}")
+    print(f"  Mode:      DRY_RUN (no execution)")
+    print(f"  No Real Orders | Broker Execution Disabled | Production Trading BLOCKED")
+
+def cmd_empirical_backtest_run(args):
+    print("[!] Research Only. No Real Orders.")
+    dry_run = not getattr(args, 'execute', False)
+    rule_id = getattr(args, 'rule_id', None)
+    symbol = getattr(args, 'symbol', None)
+    print(f"Empirical Backtest Run ({'DRY_RUN' if dry_run else 'EXECUTE — DEMO_ONLY fixture mode'})")
+    print(f"  Rule ID: {rule_id}, Symbol: {symbol}")
+    if not dry_run:
+        print(f"  [DEMO_ONLY] Running with fixture data — NOT REAL DATA — NOT FORMAL CONCLUSION")
+        try:
+            from empirical_backtest.rule_registry_v140 import StrategyKnowledgeRuleRegistry
+            from empirical_backtest.backtest_engine_v140 import StrategyKnowledgeBacktestEngine
+            from empirical_backtest.models_v140 import BacktestConfiguration
+            reg = StrategyKnowledgeRuleRegistry()
+            engine = StrategyKnowledgeBacktestEngine(reg)
+            config = BacktestConfiguration(
+                backtest_id="demo_run_001", strategy_snapshot_id="snap_demo",
+                universe_id="demo", symbols=[symbol or "2330"],
+                market="TWSE", start_date="2023-01-01", end_date="2023-12-31",
+                data_mode="demo", dry_run=True,
+            )
+            demo_data = {"2330": {"data_mode": "demo", "bar_count": 0, "close_prices": []}}
+            result = engine.run(config, demo_data)
+            print(f"  Status: {result.status}")
+            print(f"  [DEMO_ONLY] No formal conclusion allowed.")
+        except Exception as exc:
+            print(f"  [DEMO_ONLY] {exc}")
+    print(f"  No Real Orders | Broker Execution Disabled | Production Trading BLOCKED")
+
+def cmd_empirical_backtest_show(args):
+    print("[!] Research Only. No Real Orders.")
+    backtest_id = getattr(args, 'backtest_id', None)
+    if isinstance(backtest_id, list):
+        backtest_id = backtest_id[0] if backtest_id else None
+    try:
+        from empirical_backtest.store_v140 import EmpiricalBacktestStore, EmpiricalBacktestQueryService
+        store = EmpiricalBacktestStore()
+        qs = EmpiricalBacktestQueryService(store)
+        result = qs.get_result(backtest_id)
+        if result is None:
+            print(f"No backtest result found for ID: {backtest_id}")
+        else:
+            print(f"Backtest ID: {result.get('backtest_id')}")
+            print(f"Status:      {result.get('status')}")
+            print(f"Trade Count: {result.get('trade_count')}")
+    except Exception as exc:
+        print(f"[ERROR] {exc}")
+
+def cmd_empirical_backtest_list(args):
+    print("[!] Research Only. No Real Orders.")
+    try:
+        from empirical_backtest.store_v140 import EmpiricalBacktestStore, EmpiricalBacktestQueryService
+        store = EmpiricalBacktestStore()
+        qs = EmpiricalBacktestQueryService(store)
+        runs = qs.list_runs()
+        print(f"Empirical Backtest Runs ({len(runs)} total):")
+        for r in runs[:20]:
+            print(f"  {r}")
+    except Exception as exc:
+        print(f"[ERROR] {exc}")
+
+def cmd_empirical_backtest_compare(args):
+    print("[!] Research Only. No Real Orders.")
+    backtest_ids = getattr(args, 'backtest_id', [])
+    print(f"Comparing backtests: {backtest_ids}")
+    print("  [INFO] No results available yet — run empirical-backtest-run first.")
+
+def cmd_empirical_backtest_walk_forward(args):
+    print("[!] Research Only. No Real Orders.")
+    rule_id = getattr(args, 'rule_id', None)
+    print(f"Walk-Forward Validation — Rule: {rule_id}")
+    print(f"  Mode: DRY_RUN — no execution performed")
+    print(f"  No Real Orders | Broker Execution Disabled | Production Trading BLOCKED")
+
+def cmd_empirical_backtest_metrics(args):
+    print("[!] Research Only. No Real Orders.")
+    backtest_id = getattr(args, 'backtest_id', None)
+    if isinstance(backtest_id, list):
+        backtest_id = backtest_id[0] if backtest_id else None
+    try:
+        from empirical_backtest.store_v140 import EmpiricalBacktestStore, EmpiricalBacktestQueryService
+        store = EmpiricalBacktestStore()
+        qs = EmpiricalBacktestQueryService(store)
+        result = qs.get_result(backtest_id)
+        if result is None:
+            print(f"No metrics found for ID: {backtest_id}")
+        else:
+            metrics = result.get("metrics", {})
+            print(f"Metrics for {backtest_id}:")
+            for k, v in metrics.items():
+                print(f"  {k}: {v}")
+    except Exception as exc:
+        print(f"[ERROR] {exc}")
+
+def cmd_empirical_backtest_blocked(args):
+    print("[!] Research Only. No Real Orders.")
+    try:
+        from empirical_backtest.store_v140 import EmpiricalBacktestStore, EmpiricalBacktestQueryService
+        store = EmpiricalBacktestStore()
+        qs = EmpiricalBacktestQueryService(store)
+        blocked = qs.list_blocked()
+        print(f"Blocked Backtests ({len(blocked)}):")
+        for b in blocked[:20]:
+            print(f"  {b}")
+    except Exception as exc:
+        print(f"[ERROR] {exc}")
+
+def cmd_empirical_backtest_create_repair(args):
+    print("[!] Research Only. No Real Orders.")
+    backtest_id = getattr(args, 'backtest_id', None)
+    if isinstance(backtest_id, list):
+        backtest_id = backtest_id[0] if backtest_id else None
+    print(f"Create Repair Tasks for blocked backtest: {backtest_id}")
+    print(f"  [INFO] create_repair_tasks=False by default — no repair tasks created.")
+    print(f"  Use --execute to create repair candidates in CoverageRepairQueue.")
+
+def cmd_empirical_backtest_report(args):
+    print("[!] Research Only. No Real Orders.")
+    backtest_id = getattr(args, 'backtest_id', None)
+    if isinstance(backtest_id, list):
+        backtest_id = backtest_id[0] if backtest_id else None
+    try:
+        from empirical_backtest.store_v140 import EmpiricalBacktestStore, EmpiricalBacktestQueryService
+        from empirical_backtest.models_v140 import BacktestResult
+        from empirical_backtest.report_v140 import EmpiricalBacktestReport
+        store = EmpiricalBacktestStore()
+        qs = EmpiricalBacktestQueryService(store)
+        result_dict = qs.get_result(backtest_id)
+        if result_dict is None:
+            print(f"No result found for ID: {backtest_id}")
+            return
+        rpt = EmpiricalBacktestReport()
+        result_obj = BacktestResult(**{k: v for k, v in result_dict.items() if k in BacktestResult.__dataclass_fields__})
+        print(rpt.generate_text(result_obj))
+    except Exception as exc:
+        print(f"[INFO] {exc}")
+        print("[!] Research Only. No Real Orders. Broker Execution Disabled. Production Trading BLOCKED.")
+
+def cmd_empirical_backtest_health(args):
+    print("[!] Research Only. No Real Orders.")
+    try:
+        from empirical_backtest.health_v140 import StrategyEmpiricalBacktestHealthCheck
+        hc = StrategyEmpiricalBacktestHealthCheck()
+        summary = hc.get_health_summary()
+        status = "PASS" if summary["all_pass"] else "FAIL"
+        print(f"Empirical Backtest Health: {status} ({summary['passed']}/{summary['total_checks']})")
+        for name, info in summary["checks"].items():
+            mark = "PASS" if info["status"] == "PASS" else "FAIL"
+            print(f"  [{mark}] {name}: {info['detail']}")
+        print(f"Safety Flags: {summary.get('safety_flags', {})}")
+    except Exception as exc:
+        print(f"[ERROR] {exc}")
+
+
 def main() -> None:
     """Main entrypoint."""
     import pandas as pd  # imported here to avoid shadowing at module level
@@ -29790,6 +30015,21 @@ def main() -> None:
         "provider-sla-status":         cmd_provider_sla_status,
         "provider-sla-show":           cmd_provider_sla_show,
         "freshness-create-repair":     cmd_freshness_create_repair,
+        # v1.4.0 Strategy Knowledge Empirical Backtest
+        "strategy-rule-list":              cmd_strategy_rule_list,
+        "strategy-rule-show":              cmd_strategy_rule_show,
+        "strategy-rule-health":            cmd_strategy_rule_health,
+        "empirical-backtest-plan":         cmd_empirical_backtest_plan,
+        "empirical-backtest-run":          cmd_empirical_backtest_run,
+        "empirical-backtest-show":         cmd_empirical_backtest_show,
+        "empirical-backtest-list":         cmd_empirical_backtest_list,
+        "empirical-backtest-compare":      cmd_empirical_backtest_compare,
+        "empirical-backtest-walk-forward": cmd_empirical_backtest_walk_forward,
+        "empirical-backtest-metrics":      cmd_empirical_backtest_metrics,
+        "empirical-backtest-blocked":      cmd_empirical_backtest_blocked,
+        "empirical-backtest-create-repair":cmd_empirical_backtest_create_repair,
+        "empirical-backtest-report":       cmd_empirical_backtest_report,
+        "empirical-backtest-health":       cmd_empirical_backtest_health,
     }
 
     if args.command is None:

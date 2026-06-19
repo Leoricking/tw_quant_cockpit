@@ -1,0 +1,11 @@
+{
+  "_fixture_type": "TEST_FIXTURE",
+  "_data_mode": "DEMO_ONLY",
+  "_warning": "NOT_REAL_DATA — NOT_FOR_FORMAL_CONCLUSION",
+  "n_folds": 3,
+  "train_bars": 60,
+  "test_bars": 20,
+  "start_date": "2022-01-01",
+  "end_date": "2023-12-31",
+  "data_mode": "demo"
+}

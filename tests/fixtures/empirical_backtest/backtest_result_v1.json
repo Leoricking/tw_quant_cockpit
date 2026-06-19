@@ -1,0 +1,12 @@
+{
+  "_fixture_type": "TEST_FIXTURE",
+  "_data_mode": "DEMO_ONLY",
+  "_warning": "NOT_REAL_DATA — NOT_FOR_FORMAL_CONCLUSION",
+  "schema_version": "1.4.0",
+  "backtest_id": "fixture_result_001",
+  "status": "DEMO_ONLY",
+  "trade_count": 0,
+  "data_mode": "demo",
+  "metrics": {},
+  "blocked_reasons": ["DEMO_ONLY_DATA"]
+}
