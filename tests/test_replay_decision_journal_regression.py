@@ -1020,15 +1020,19 @@ class TestFixtureIntegrity(unittest.TestCase):
 # 24. Version info
 # ---------------------------------------------------------------------------
 class TestVersionInfo(unittest.TestCase):
-    """Version is 1.2.2, release name correct."""
+    """Decision Journal milestone feature flags (introduced in v1.2.2)."""
 
     def test_version(self):
+        """VERSION >= 1.2.2 (Decision Journal was introduced in 1.2.2)."""
         from release.version_info import VERSION
-        self.assertEqual(VERSION, "1.2.2")
+        major, minor, patch = (int(x) for x in VERSION.split("."))
+        self.assertGreaterEqual((major, minor, patch), (1, 2, 2),
+                                f"VERSION {VERSION} predates Decision Journal 1.2.2")
 
     def test_release_name(self):
-        from release.version_info import RELEASE_NAME
-        self.assertIn("Decision Journal", RELEASE_NAME)
+        """Decision Journal feature flag must be available."""
+        from release.version_info import DECISION_JOURNAL_AVAILABLE
+        self.assertTrue(DECISION_JOURNAL_AVAILABLE)
 
     def test_decision_journal_flags(self):
         import release.version_info as vi

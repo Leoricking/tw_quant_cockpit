@@ -437,7 +437,11 @@ class TestBatchSessionBuilder(unittest.TestCase):
         d = _fixture("batch_over_limit.json")
         from replay.batch_session_builder import ReplayBatchSessionBuilder
         b = ReplayBatchSessionBuilder()
-        result = b.preview_batch(d["scenario_id"], d["symbols"], max_sessions=d["max_sessions"])
+        # date_ranges required for correct count: 8 symbols * 7 ranges = 56 > 50
+        date_ranges = [tuple(r) for r in d.get("date_ranges", [])]
+        result = b.preview_batch(d["scenario_id"], d["symbols"],
+                                 date_ranges=date_ranges,
+                                 max_sessions=d["max_sessions"])
         # 56 > 50, should be blocked
         self.assertTrue(result.get("blocked"))
 

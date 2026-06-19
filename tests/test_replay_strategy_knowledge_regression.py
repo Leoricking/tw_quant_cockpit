@@ -355,7 +355,7 @@ class TestTimerFunctionality(unittest.TestCase):
         from replay.replay_timing import ReplayOperationTimer
         timer = ReplayOperationTimer()
         timer.start("format_test")
-        time.sleep(0.01)
+        time.sleep(0.05)
         display = timer.elapsed_display()
         timer.finish("COMPLETED")
         # Format should be HH:MM:SS
@@ -366,7 +366,7 @@ class TestTimerFunctionality(unittest.TestCase):
         from replay.replay_timing import ReplayOperationTimer
         timer = ReplayOperationTimer()
         timer.start("cancel_test")
-        time.sleep(0.01)
+        time.sleep(0.05)
         timer.finish("CANCELLED")
         summary = timer.summary()
         self.assertGreater(summary.elapsed_seconds, 0,
@@ -379,7 +379,7 @@ class TestTimerFunctionality(unittest.TestCase):
         from replay.replay_timing import ReplayOperationTimer
         timer = ReplayOperationTimer()
         timer.start("fail_test")
-        time.sleep(0.01)
+        time.sleep(0.05)
         timer.finish("FAILED")
         summary = timer.summary()
         self.assertGreater(summary.elapsed_seconds, 0)
@@ -404,8 +404,11 @@ class TestVersionInfo(unittest.TestCase):
     """Version info shows 1.2.4."""
 
     def test_version_is_124(self):
+        """VERSION >= 1.2.4 (Strategy Knowledge Replay was introduced in 1.2.4)."""
         from release.version_info import VERSION
-        self.assertEqual(VERSION, "1.2.4")
+        major, minor, patch = (int(x) for x in VERSION.split("."))
+        self.assertGreaterEqual((major, minor, patch), (1, 2, 4),
+                                f"VERSION {VERSION} predates Strategy Knowledge 1.2.4")
 
     def test_strategy_flags_disabled(self):
         from release.version_info import (

@@ -675,18 +675,24 @@ class TestReport:
 # ===========================================================================
 
 class TestGUIPanel:
-    def test_gui_panel_no_crash_without_pyside6(self):
+    """
+    GUI panel tests use the session-scoped qapp fixture from conftest.py
+    to ensure a QApplication exists before QWidget construction.
+    QT_QPA_PLATFORM=offscreen is set in conftest.py (test env only).
+    """
+
+    def test_gui_panel_no_crash_without_pyside6(self, qapp):
         """GUI panel must not crash when PySide6 is not available."""
         panel = RealDataQualityPanel()
         assert panel.NO_REAL_ORDERS is True
         assert panel.MOCK_FALLBACK_ENABLED is False
 
-    def test_gui_panel_safety_constants(self):
+    def test_gui_panel_safety_constants(self, qapp):
         panel = RealDataQualityPanel()
         assert panel.NO_REAL_ORDERS is True
         assert panel.MOCK_FALLBACK_ENABLED is False
 
-    def test_gui_panel_update_blocked_no_crash(self):
+    def test_gui_panel_update_blocked_no_crash(self, qapp):
         """update_report with BLOCKED status must not crash."""
         panel = RealDataQualityPanel()
         blocked_dict = {
@@ -702,15 +708,15 @@ class TestGUIPanel:
         }
         panel.update_report(blocked_dict)  # Must not raise
 
-    def test_gui_panel_set_blocked_no_crash(self):
+    def test_gui_panel_set_blocked_no_crash(self, qapp):
         panel = RealDataQualityPanel()
         panel.set_blocked(["reason 1", "reason 2"])  # Must not raise
 
-    def test_gui_panel_set_unavailable_no_crash(self):
+    def test_gui_panel_set_unavailable_no_crash(self, qapp):
         panel = RealDataQualityPanel()
         panel.set_unavailable()  # Must not raise
 
-    def test_gui_panel_update_bad_input_no_crash(self):
+    def test_gui_panel_update_bad_input_no_crash(self, qapp):
         panel = RealDataQualityPanel()
         panel.update_report(None)  # Must not raise
         panel.update_report({})    # Must not raise
@@ -791,7 +797,7 @@ class TestRegressionCompatibility:
 # ===========================================================================
 
 class TestCLISmoke:
-    def test_cmd_data_quality_unavailable_exits_1(self):
+    def test_cmd_data_quality_unavailable_exits_1(self, capsys):
         """data-quality with no real source should exit 1 (UNAVAILABLE/BLOCKED)."""
         import argparse
         args = argparse.Namespace(symbol="2330", profile="default", json=False, all=False)
@@ -801,7 +807,7 @@ class TestCLISmoke:
             cmd_data_quality(args)
         assert exc_info.value.code == 1
 
-    def test_cmd_data_quality_no_symbol_exits_2(self):
+    def test_cmd_data_quality_no_symbol_exits_2(self, capsys):
         """data-quality with no symbol and no --all should exit 2."""
         import argparse
         args = argparse.Namespace(symbol=None, profile="default", json=False, all=False)

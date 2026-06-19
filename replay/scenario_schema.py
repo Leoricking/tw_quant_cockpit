@@ -74,9 +74,11 @@ class ReplayScenarioTemplate:
     updated_at: str = field(default_factory=_now_utc)
     research_only: bool = True
     no_real_orders: bool = True
+    # Extra fields from raw dict preserved for validation (e.g. forbidden field detection)
+    _extra_fields: Dict[str, Any] = field(default_factory=dict, repr=False)
 
     def to_dict(self) -> Dict[str, Any]:
-        return {
+        d = {
             "scenario_id": self.scenario_id,
             "scenario_name": self.scenario_name,
             "description": self.description,
@@ -110,9 +112,27 @@ class ReplayScenarioTemplate:
             "research_only": True,
             "no_real_orders": True,
         }
+        # Include extra fields so validators can detect forbidden fields
+        if self._extra_fields:
+            d.update(self._extra_fields)
+        return d
+
+    # Known field names used by from_dict for detecting extra/unknown fields
+    _KNOWN_FIELDS = {
+        "scenario_id", "scenario_name", "description", "category", "difficulty",
+        "objectives", "instructions", "rules", "symbol_selector", "symbols",
+        "date_selector", "start_date", "end_date", "duration_days",
+        "initial_visible_history_days", "required_datasets", "optional_datasets",
+        "strict_future_firewall", "include_quality_gate", "include_strategy_knowledge",
+        "include_chips", "include_fundamental", "default_playback_speed",
+        "allowed_actions", "tags", "source", "version", "archived",
+        "created_at", "updated_at", "research_only", "no_real_orders",
+    }
 
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> "ReplayScenarioTemplate":
+        # Capture any fields not in the known schema for validation purposes
+        extra = {k: v for k, v in d.items() if k not in cls._KNOWN_FIELDS}
         return cls(
             scenario_id=d.get("scenario_id", ""),
             scenario_name=d.get("scenario_name", ""),
@@ -146,6 +166,7 @@ class ReplayScenarioTemplate:
             updated_at=d.get("updated_at", _now_utc()),
             research_only=True,
             no_real_orders=True,
+            _extra_fields=extra,
         )
 
 

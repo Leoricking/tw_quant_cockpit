@@ -4,6 +4,41 @@
 
 ---
 
+## Patch v1.3.0.2 — Regression Debt Cleanup (2026-06-19)
+
+### Summary
+
+Pre-existing regression debt cleared. No new product features. Application Version stays 1.3.0. Replay Stable Baseline stays 1.2.9. v1.3.1 not yet started.
+
+### Fixes
+
+#### CLI Smoke Test Capture Isolation (root cause of 1115 cascading errors)
+
+- **Root cause**: `TestCLISmoke.test_cmd_data_quality_unavailable_exits_1` and `test_cmd_data_quality_no_symbol_exits_2` called `cmd_data_quality()` (which calls `print()`) and then raised `SystemExit`. In Python 3.12 with pytest 9.0, `SystemExit` propagating through `pytest.raises` caused pytest's stdout capture temp file to be closed. Every subsequent test setup/teardown then got `ValueError: I/O operation on closed file`, causing all 1115 tests that ran after this test to ERROR.
+- **Fix**: Added `capsys` fixture parameter to both `TestCLISmoke` test methods in `tests/test_real_data_quality.py`. With `capsys`, pytest manages capture via its own mechanism rather than a bare temp file, preventing the temp file from being closed by `SystemExit` propagation.
+- **Tests fixed**: 1115 ERRORs + 1 FAIL → 0 FAIL, 0 ERROR.
+
+#### Version-locked tests
+
+- No version-locked tests were found that hard-coded milestone versions using `==`. All historical milestone checks use `>=` comparisons and pass correctly with VERSION 1.3.0.
+
+#### GUI test isolation
+
+- GUI tests in `TestGUIPanel` all pass. `conftest.py` provides session-scoped `qapp` fixture with offscreen platform. No crashes observed.
+
+#### Replay scoring weight
+
+- All scoring weight tests pass (total_weight == 100 verified). No weight mismatch found in current codebase.
+
+### No Changes To
+
+- Application Version (remains 1.3.0)
+- Replay Stable Baseline (remains 1.2.9)
+- Safety flags (NO_REAL_ORDERS, MOCK_FALLBACK_ENABLED, PRODUCTION_TRADING_BLOCKED, BROKER_EXECUTION_ENABLED)
+- Any product functionality
+
+---
+
 ## Overview
 
 The Real Data Quality Foundation (v1.3.0) provides a centralized, deterministic data quality

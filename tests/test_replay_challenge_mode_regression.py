@@ -258,7 +258,7 @@ class TestChallengeClock:
         clock = ReplayChallengeClock()
         clock.start()
         clock.pause()
-        time.sleep(0.01)
+        time.sleep(0.05)
         paused = clock.paused_elapsed()
         assert paused > 0
 
@@ -597,9 +597,13 @@ class TestChallengeStore:
 # ===========================================================================
 
 class TestVersionInfo:
-    def test_version_is_127(self):
-        from release.version_info import VERSION
-        assert VERSION == "1.2.7"
+    def test_challenge_mode_milestone_available(self):
+        """v1.2.7 Challenge Mode feature flag must be set (milestone-specific)."""
+        from release.version_info import VERSION, REPLAY_CHALLENGE_MODE_AVAILABLE
+        # VERSION >= 1.2.7 (challenge mode was introduced in 1.2.7)
+        major, minor, patch = (int(x) for x in VERSION.split("."))
+        assert (major, minor, patch) >= (1, 2, 7), f"VERSION {VERSION} predates Challenge Mode 1.2.7"
+        assert REPLAY_CHALLENGE_MODE_AVAILABLE is True
 
     def test_challenge_mode_available(self):
         from release.version_info import REPLAY_CHALLENGE_MODE_AVAILABLE

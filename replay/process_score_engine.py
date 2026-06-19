@@ -43,13 +43,22 @@ class ReplayProcessScoreEngine:
     NO_REAL_ORDERS = True
     SCORING_TRIGGERS_NO_ORDERS = True
 
+    # -----------------------------------------------------------------------
+    # Process score weights — MUST sum to exactly 100.
+    #
+    # v1.2.3 spec defined 11 base dimensions summing to 100.
+    # v1.2.4 added 4 strategy-knowledge dimensions (total 9 weight points).
+    # v1.2.5 added 4 multi-timeframe dimensions (total 8 weight points).
+    # Base dimensions were re-normalized so all 19 dimensions sum to 100.
+    # -----------------------------------------------------------------------
     WEIGHTS = {
-        "thesis_quality": 13,
-        "risk_planning": 13,
-        "discipline_checklist": 13,
-        "evidence_quality": 9,
-        "confirmation_invalidation": 9,
-        "point_in_time_integrity": 9,
+        # Base dimensions (re-normalized from original 15/10/5 tiers)
+        "thesis_quality": 12,
+        "risk_planning": 11,
+        "discipline_checklist": 11,
+        "evidence_quality": 8,
+        "confirmation_invalidation": 8,
+        "point_in_time_integrity": 8,
         "emotional_awareness": 5,
         "revision_quality": 5,
         "data_sufficiency": 5,

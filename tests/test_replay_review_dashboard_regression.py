@@ -284,8 +284,11 @@ class TestReplayReviewVersionInfo(unittest.TestCase):
     """Test version info flags for v1.2.6."""
 
     def test_version_is_1_2_6(self):
+        """VERSION >= 1.2.6 (Review Dashboard was introduced in 1.2.6)."""
         from release.version_info import VERSION
-        self.assertEqual(VERSION, "1.2.6")
+        major, minor, patch = (int(x) for x in VERSION.split("."))
+        self.assertGreaterEqual((major, minor, patch), (1, 2, 6),
+                                f"VERSION {VERSION} predates Review Dashboard 1.2.6")
 
     def test_all_auto_flags_false(self):
         from release.version_info import (
