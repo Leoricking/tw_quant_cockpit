@@ -5855,15 +5855,44 @@ def cmd_version_info(args: argparse.Namespace) -> None:
         print(f"{'Universe Real API Connected:':<40} {uni_api}")
         print(f"{'Universe Auto Download Enabled:':<40} {uni_dl}")
         print(f"{'Mock Fallback Enabled:':<40} {mf_en}")
+        # v1.3.2 Real Data Provider Adapter Foundation
+        prov_avail    = getattr(_vi116, "REAL_DATA_PROVIDER_ADAPTER_AVAILABLE", False)
+        prov_reg      = getattr(_vi116, "REAL_DATA_PROVIDER_REGISTRY_AVAILABLE", False)
+        prov_cap_mat  = getattr(_vi116, "REAL_DATA_PROVIDER_CAPABILITY_MATRIX_AVAILABLE", False)
+        prov_cache    = getattr(_vi116, "REAL_DATA_PROVIDER_CACHE_AVAILABLE", False)
+        prov_retry    = getattr(_vi116, "REAL_DATA_PROVIDER_RETRY_AVAILABLE", False)
+        prov_svc      = getattr(_vi116, "REAL_DATA_PROVIDER_SERVICE_AVAILABLE", False)
+        prov_live     = getattr(_vi116, "REAL_DATA_PROVIDER_LIVE_CONNECTION_AVAILABLE", True)
+        prov_dl       = getattr(_vi116, "REAL_DATA_PROVIDER_AUTO_DOWNLOAD_ENABLED", True)
+        prov_cred     = getattr(_vi116, "REAL_DATA_PROVIDER_CREDENTIAL_STORAGE_ENABLED", True)
+        prov_mock_fb  = getattr(_vi116, "REAL_DATA_PROVIDER_MOCK_FALLBACK_ENABLED", True)
+        prov_order    = getattr(_vi116, "REAL_DATA_PROVIDER_ORDER_SUBMISSION_ENABLED", True)
+        print(f"{'Provider Adapter Available:':<40} {prov_avail}")
+        print(f"{'Provider Registry Available:':<40} {prov_reg}")
+        print(f"{'Provider Capability Matrix Available:':<40} {prov_cap_mat}")
+        print(f"{'Provider Cache Available:':<40} {prov_cache}")
+        print(f"{'Provider Retry Available:':<40} {prov_retry}")
+        print(f"{'Provider Service Available:':<40} {prov_svc}")
+        print(f"{'Provider Live Connection Available:':<40} {prov_live}")
+        print(f"{'Provider Auto Download Enabled:':<40} {prov_dl}")
+        print(f"{'Provider Credential Storage Enabled:':<40} {prov_cred}")
+        print(f"{'Provider Mock Fallback Enabled:':<40} {prov_mock_fb}")
+        print(f"{'Provider Order Submission Enabled:':<40} {prov_order}")
     except Exception as exc:
-        print(f"  Version:                              1.3.1")
-        print(f"  Release:                              Universe Expansion Foundation")
-        print(f"  Base Release:                         1.3.0 Real Data Quality Foundation")
+        print(f"  Version:                              1.3.2")
+        print(f"  Release:                              Real Data Provider Adapter Foundation")
+        print(f"  Base Release:                         1.3.1 Universe Expansion Foundation")
         print(f"  Replay Stable Baseline:               1.2.9")
         print(f"  Universe Registry Available:          True")
         print(f"  Universe Real API Connected:          False")
         print(f"  Universe Auto Download Enabled:       False")
         print(f"  Mock Fallback Enabled:                False")
+        print(f"  Provider Adapter Available:           True")
+        print(f"  Provider Live Connection Available:   False")
+        print(f"  Provider Auto Download Enabled:       False")
+        print(f"  Provider Credential Storage Enabled:  False")
+        print(f"  Provider Mock Fallback Enabled:       False")
+        print(f"  Provider Order Submission Enabled:    False")
         print(f"  Trade Execution Enabled:              False")
         print(f"  (version_info import error: {exc})")
     print("=" * 60)
@@ -22213,6 +22242,64 @@ def _build_parser() -> argparse.ArgumentParser:
         help="[v1.3.1] Universe Expansion Foundation health check. Research Only.",
     )
 
+    # --- v1.3.2 Real Data Provider Adapter Foundation ---
+    subparsers.add_parser(
+        "provider-list",
+        help="[v1.3.2] List all registered data providers. Research Only. No Real Orders.",
+    )
+
+    p_ps132 = subparsers.add_parser(
+        "provider-show",
+        help="[v1.3.2] Show details for a single provider. Research Only.",
+    )
+    p_ps132.add_argument("--provider", required=True, help="Provider ID, e.g. local_file")
+
+    subparsers.add_parser(
+        "provider-capabilities",
+        help="[v1.3.2] Show provider capability matrix. Research Only.",
+    )
+
+    subparsers.add_parser(
+        "provider-status-v132",
+        help="[v1.3.2] Show provider availability status. Research Only.",
+    )
+
+    subparsers.add_parser(
+        "provider-health-v132",
+        help="[v1.3.2] Run Real Data Provider health checks. Research Only.",
+    )
+
+    p_pr = subparsers.add_parser(
+        "provider-request",
+        help="[v1.3.2] Execute a read-only provider request. Research Only. No Real Orders.",
+    )
+    p_pr.add_argument("--provider", default=None, help="Provider ID (optional; auto-resolved if omitted)")
+    p_pr.add_argument("--capability", default="daily-ohlcv",
+                      help="Capability: daily-ohlcv, institutional, margin, monthly-revenue (default: daily-ohlcv)")
+    p_pr.add_argument("--symbol", default=None, help="Symbol, e.g. 2330")
+    p_pr.add_argument("--start-date", dest="start_date", default="", help="Start date YYYY-MM-DD")
+    p_pr.add_argument("--end-date", dest="end_date", default="", help="End date YYYY-MM-DD")
+    p_pr.add_argument("--force-refresh", dest="force_refresh", action="store_true", default=False,
+                      help="Bypass cache")
+
+    subparsers.add_parser(
+        "provider-cache-status",
+        help="[v1.3.2] Show provider cache status. Research Only.",
+    )
+
+    p_pcc = subparsers.add_parser(
+        "provider-cache-clear",
+        help="[v1.3.2] Clear provider cache entries. Research Only.",
+    )
+    p_pcc.add_argument("--expired-only", dest="expired_only", action="store_true", default=True,
+                       help="Clear only expired entries (default)")
+
+    p_pprov = subparsers.add_parser(
+        "provider-provenance",
+        help="[v1.3.2] Show provenance for a provider request. Research Only.",
+    )
+    p_pprov.add_argument("--request-id", dest="request_id", default=None, help="Request ID")
+
     return parser
 
 
@@ -23899,6 +23986,300 @@ def cmd_universe_health_v131(args) -> None:
     except Exception as exc:
         print(f"  [ERROR] universe-health-v131 failed: {exc}")
         raise SystemExit(1)
+
+
+# ---------------------------------------------------------------------------
+# v1.3.2 Real Data Provider Adapter Foundation commands
+# ---------------------------------------------------------------------------
+
+def cmd_provider_list_v132(args) -> None:
+    """[v1.3.2] List all registered providers. [!] Research Only. No Real Orders."""
+    print("=" * 70)
+    print("  TW Quant Cockpit v1.3.2 \u2014 Provider List")
+    print("  [!] Research Only | No Real Orders | Broker Execution DISABLED")
+    print("  [!] Data Provider is NOT Broker | Real Mode Never Falls Back To Mock")
+    print("=" * 70)
+    try:
+        from data.providers.real_data_provider_registry_v132 import RealDataProviderRegistryV132
+        from data.providers.local_file_provider_adapter import LocalFileProviderAdapter
+        from data.providers.local_repository_provider_adapter import LocalRepositoryProviderAdapter
+        reg = RealDataProviderRegistryV132()
+        reg.register(LocalFileProviderAdapter())
+        reg.register(LocalRepositoryProviderAdapter())
+        providers = reg.list()
+        if not providers:
+            print("  No providers registered.")
+        else:
+            print(f"  {'Provider':<25} {'Type':<20} {'Enabled':<8} {'Status':<15} {'Auth':<6} {'Capabilities'}")
+            print("  " + "-" * 100)
+            for m in providers:
+                caps = ", ".join(m.capabilities[:3]) + ("..." if len(m.capabilities) > 3 else "")
+                print(f"  {m.provider_id:<25} {m.provider_type:<20} {str(m.enabled):<8} {m.metadata.get('status', 'UNKNOWN'):<15} {str(m.requires_auth):<6} {caps}")
+        print("[!] Research Only. Not Investment Advice.")
+    except Exception as exc:
+        print(f"  [ERROR] provider-list failed: {exc}")
+
+
+def cmd_provider_show_v132(args) -> None:
+    """[v1.3.2] Show details for a single provider. [!] Research Only."""
+    provider_id = getattr(args, "provider", None) or getattr(args, "provider_id", None)
+    if not provider_id:
+        print("  [ERROR] --provider is required")
+        raise SystemExit(2)
+    print("=" * 70)
+    print(f"  TW Quant Cockpit v1.3.2 \u2014 Provider: {provider_id}")
+    print("  [!] Research Only | No Real Orders | Not Investment Advice")
+    print("=" * 70)
+    try:
+        from data.providers.real_data_provider_registry_v132 import RealDataProviderRegistryV132
+        from data.providers.local_file_provider_adapter import LocalFileProviderAdapter
+        from data.providers.local_repository_provider_adapter import LocalRepositoryProviderAdapter
+        reg = RealDataProviderRegistryV132()
+        reg.register(LocalFileProviderAdapter())
+        reg.register(LocalRepositoryProviderAdapter())
+        adapter = reg.get(provider_id)
+        if not adapter:
+            print(f"  [UNAVAILABLE] Provider '{provider_id}' not found in registry.")
+            raise SystemExit(2)
+        meta = adapter.get_metadata()
+        status = adapter.get_status()
+        print(f"  Provider ID       : {meta.provider_id}")
+        print(f"  Provider Name     : {meta.provider_name}")
+        print(f"  Provider Type     : {meta.provider_type}")
+        print(f"  Description       : {meta.description}")
+        print(f"  Enabled           : {meta.enabled}")
+        print(f"  Status            : {status}")
+        print(f"  Auth Required     : {meta.requires_auth}")
+        print(f"  Supports Batch    : {meta.supports_batch}")
+        print(f"  Supports Historical: {meta.supports_historical}")
+        print(f"  Supports Intraday : {meta.supports_intraday}")
+        print(f"  Markets           : {', '.join(meta.markets) or 'N/A'}")
+        print(f"  Capabilities      : {', '.join(meta.capabilities) or 'None'}")
+        print(f"  Data Mode         : {meta.data_mode}")
+        print(f"  No Real Orders    : True")
+        print(f"  Broker Execution Disabled: True")
+        print(f"  Production Trading BLOCKED: True")
+        print("[!] Research Only. Not Investment Advice.")
+    except SystemExit:
+        raise
+    except Exception as exc:
+        print(f"  [ERROR] provider-show failed: {exc}")
+
+
+def cmd_provider_capabilities_v132(args) -> None:
+    """[v1.3.2] Show provider capability matrix. [!] Research Only."""
+    print("=" * 70)
+    print("  TW Quant Cockpit v1.3.2 \u2014 Provider Capability Matrix")
+    print("  [!] Research Only | No Real Orders | Not Investment Advice")
+    print("=" * 70)
+    try:
+        from data.providers.real_data_provider_registry_v132 import RealDataProviderRegistryV132
+        from data.providers.real_data_provider_capability_matrix import ProviderCapabilityMatrix
+        from data.providers.local_file_provider_adapter import LocalFileProviderAdapter
+        from data.providers.local_repository_provider_adapter import LocalRepositoryProviderAdapter
+        reg = RealDataProviderRegistryV132()
+        reg.register(LocalFileProviderAdapter())
+        reg.register(LocalRepositoryProviderAdapter())
+        matrix = ProviderCapabilityMatrix(reg)
+        print(matrix.format_text())
+        print("[!] Research Only. Not Investment Advice.")
+    except Exception as exc:
+        print(f"  [ERROR] provider-capabilities failed: {exc}")
+
+
+def cmd_provider_status_v132(args) -> None:
+    """[v1.3.2] Show provider availability status. [!] Research Only."""
+    print("=" * 70)
+    print("  TW Quant Cockpit v1.3.2 \u2014 Provider Status")
+    print("  [!] Research Only | No Real Orders | Not Investment Advice")
+    print("=" * 70)
+    try:
+        from data.providers.real_data_provider_registry_v132 import RealDataProviderRegistryV132
+        from data.providers.local_file_provider_adapter import LocalFileProviderAdapter
+        from data.providers.local_repository_provider_adapter import LocalRepositoryProviderAdapter
+        reg = RealDataProviderRegistryV132()
+        reg.register(LocalFileProviderAdapter())
+        reg.register(LocalRepositoryProviderAdapter())
+        summary = reg.health_summary()
+        print(f"  Total Providers   : {summary.get('total', 0)}")
+        print(f"  Available         : {summary.get('AVAILABLE', 0)}")
+        print(f"  Degraded          : {summary.get('DEGRADED', 0)}")
+        print(f"  Unavailable       : {summary.get('UNAVAILABLE', 0)}")
+        print(f"  Disabled          : {summary.get('DISABLED', 0)}")
+        print(f"  Auth Required     : {summary.get('AUTH_REQUIRED', 0)}")
+        print(f"  Application Version: 1.3.2")
+        print(f"  No Real Orders    : True")
+        print(f"  Broker Execution Disabled: True")
+        print(f"  Production Trading BLOCKED: True")
+        print("[!] Research Only. Not Investment Advice.")
+    except Exception as exc:
+        print(f"  [ERROR] provider-status-v132 failed: {exc}")
+
+
+def cmd_provider_health_v132(args) -> None:
+    """[v1.3.2] Run provider health checks. [!] Research Only."""
+    print("=" * 70)
+    print("  TW Quant Cockpit v1.3.2 \u2014 Provider Health Check")
+    print("  [!] Research Only | No Real Orders | Broker Execution DISABLED")
+    print("=" * 70)
+    try:
+        from data.providers.real_data_provider_health_v132 import RealDataProviderHealthV132
+        hc = RealDataProviderHealthV132()
+        results = hc.run()
+        fail_count = 0
+        for check_name, (status, detail) in results.items():
+            icon = "PASS" if status == "PASS" else "FAIL"
+            print(f"  [{icon}] {check_name:<50} {detail}")
+            if status == "FAIL":
+                fail_count += 1
+        summary = hc.get_health_summary()
+        overall = "PASS" if summary.get("all_pass") else "FAIL"
+        print("-" * 70)
+        print(f"  Overall  : {overall}")
+        print(f"  Passed   : {summary.get('passed', 0)}/{summary.get('total_checks', 0)}")
+        print(f"  No Real Orders            : True")
+        print(f"  Broker Execution Disabled : True")
+        print(f"  Production Trading BLOCKED: True")
+        print("[!] Research Only. Not Investment Advice.")
+        if fail_count > 0:
+            raise SystemExit(1)
+    except SystemExit:
+        raise
+    except Exception as exc:
+        print(f"  [FAIL] Provider health check error: {exc}")
+        raise SystemExit(1)
+
+
+def cmd_provider_request_v132(args) -> None:
+    """[v1.3.2] Execute a read-only provider request. [!] Research Only. No Real Orders."""
+    capability = getattr(args, "capability", "daily-ohlcv") or "daily-ohlcv"
+    symbol = getattr(args, "symbol", None)
+    provider_id = getattr(args, "provider", None)
+    start_date = getattr(args, "start_date", "") or ""
+    end_date = getattr(args, "end_date", "") or ""
+    force_refresh = getattr(args, "force_refresh", False) or False
+
+    # Normalize capability name
+    cap_map = {
+        "daily-ohlcv": "DAILY_OHLCV",
+        "daily_ohlcv": "DAILY_OHLCV",
+        "DAILY_OHLCV": "DAILY_OHLCV",
+        "intraday-ohlcv": "INTRADAY_OHLCV",
+        "institutional": "INSTITUTIONAL",
+        "margin": "MARGIN",
+        "monthly-revenue": "MONTHLY_REVENUE",
+    }
+    cap = cap_map.get(capability, capability.upper().replace("-", "_"))
+
+    print("=" * 70)
+    print(f"  TW Quant Cockpit v1.3.2 \u2014 Provider Request")
+    print("  [!] Research Only | No Real Orders | No Broker | Read-Only")
+    print("=" * 70)
+    print(f"  Application Version : 1.3.2")
+    print(f"  Provider            : {provider_id or '(auto-resolve)'}")
+    print(f"  Capability          : {cap}")
+    print(f"  Symbol              : {symbol or '(none)'}")
+    print(f"  Start Date          : {start_date or '(none)'}")
+    print(f"  End Date            : {end_date or '(none)'}")
+    print(f"  Force Refresh       : {force_refresh}")
+    print(f"  No Real Orders      : True")
+    print(f"  Broker Execution Disabled: True")
+    print(f"  Production Trading BLOCKED: True")
+    print("-" * 70)
+
+    try:
+        from data.providers.real_data_provider_registry_v132 import RealDataProviderRegistryV132
+        from data.providers.real_data_provider_service import RealDataProviderService
+        from data.providers.real_data_provider_models import ProviderRequest, ProviderType
+        from data.providers.local_file_provider_adapter import LocalFileProviderAdapter
+        from data.providers.local_repository_provider_adapter import LocalRepositoryProviderAdapter
+
+        reg = RealDataProviderRegistryV132()
+        reg.register(LocalFileProviderAdapter())
+        reg.register(LocalRepositoryProviderAdapter())
+        svc = RealDataProviderService(reg)
+
+        req = ProviderRequest(
+            provider_id=provider_id or "",
+            capability=cap,
+            symbols=[symbol] if symbol else [],
+            start_date=start_date,
+            end_date=end_date,
+            force_refresh=force_refresh,
+        )
+        resp = svc.request(req)
+        print(f"  Provider ID         : {resp.provider_id or '(none)'}")
+        print(f"  Status              : {resp.status}")
+        print(f"  Data Mode           : {resp.data_mode}")
+        print(f"  Record Count        : {resp.record_count}")
+        print(f"  Fetched At          : {resp.fetched_at}")
+        print(f"  Cache Status        : {resp.cache_status}")
+        print(f"  Quality Status      : PASS" if resp.record_count > 0 and not resp.errors else "  Quality Status      : UNAVAILABLE")
+        if resp.warnings:
+            for w in resp.warnings:
+                print(f"  [WARN] {w}")
+        if resp.errors:
+            for e in resp.errors:
+                print(f"  [ERROR] {e}")
+        print("[!] Research Only. Not Investment Advice.")
+    except Exception as exc:
+        print(f"  [ERROR] provider-request failed: {exc}")
+        raise SystemExit(1)
+
+
+def cmd_provider_cache_status_v132(args) -> None:
+    """[v1.3.2] Show provider cache status. [!] Research Only."""
+    print("=" * 70)
+    print("  TW Quant Cockpit v1.3.2 \u2014 Provider Cache Status")
+    print("  [!] Research Only | No Real Orders | Not Investment Advice")
+    print("=" * 70)
+    try:
+        from data.providers.real_data_provider_cache import InMemoryProviderCache
+        cache = InMemoryProviderCache()
+        stats = cache.stats()
+        meta = cache.get_metadata()
+        print(f"  Cache Entries     : {stats.get('total_entries', 0)}")
+        print(f"  Fresh Entries     : {stats.get('fresh_entries', 0)}")
+        print(f"  Stale Entries     : {stats.get('stale_entries', 0)}")
+        print(f"  Runtime Cache     : Memory (not committed to git)")
+        print(f"  Credentials Cached: False (never)")
+        print(f"  Schema Version    : {meta.get('schema_version', '1.3.2')}")
+        print("[!] Research Only. Not Investment Advice.")
+    except Exception as exc:
+        print(f"  [ERROR] provider-cache-status failed: {exc}")
+
+
+def cmd_provider_cache_clear_v132(args) -> None:
+    """[v1.3.2] Clear expired provider cache entries. [!] Research Only."""
+    expired_only = getattr(args, "expired_only", True)
+    print("=" * 70)
+    print("  TW Quant Cockpit v1.3.2 \u2014 Provider Cache Clear")
+    print(f"  [!] Research Only | Expired Only: {expired_only}")
+    print("=" * 70)
+    try:
+        from data.providers.real_data_provider_cache import InMemoryProviderCache
+        cache = InMemoryProviderCache()
+        cleared = cache.clear_expired()
+        print(f"  Cleared: {cleared} expired entries")
+        print("[!] Research Only. Not Investment Advice.")
+    except Exception as exc:
+        print(f"  [ERROR] provider-cache-clear failed: {exc}")
+
+
+def cmd_provider_provenance_v132(args) -> None:
+    """[v1.3.2] Show provenance for a request ID. [!] Research Only."""
+    request_id = getattr(args, "request_id", None)
+    print("=" * 70)
+    print("  TW Quant Cockpit v1.3.2 \u2014 Provider Provenance")
+    print("  [!] Research Only | No Real Orders | Not Investment Advice")
+    print("=" * 70)
+    if not request_id:
+        print("  [INFO] --request-id is required for specific provenance lookup.")
+        print("  [INFO] Provenance is tracked per-request in the provider service.")
+    else:
+        print(f"  Request ID: {request_id}")
+        print("  [INFO] Provenance records are stored in-memory per session.")
+    print("[!] Research Only. Not Investment Advice.")
 
 
 # ---------------------------------------------------------------------------
@@ -28434,6 +28815,16 @@ def main() -> None:
         "version":                     cmd_alias_version,
         "gui":                         cmd_alias_gui,
         "dashboard":                   cmd_alias_dashboard,
+        # v1.3.2 Real Data Provider Adapter Foundation
+        "provider-list":               cmd_provider_list_v132,
+        "provider-show":               cmd_provider_show_v132,
+        "provider-capabilities":       cmd_provider_capabilities_v132,
+        "provider-status-v132":        cmd_provider_status_v132,
+        "provider-health-v132":        cmd_provider_health_v132,
+        "provider-request":            cmd_provider_request_v132,
+        "provider-cache-status":       cmd_provider_cache_status_v132,
+        "provider-cache-clear":        cmd_provider_cache_clear_v132,
+        "provider-provenance":         cmd_provider_provenance_v132,
     }
 
     if args.command is None:

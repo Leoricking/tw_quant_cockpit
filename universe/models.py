@@ -342,6 +342,14 @@ class UniverseCoverageRecord:
     checked_at: str = field(default_factory=_now_iso)
     metadata: Dict = field(default_factory=dict)
 
+    # v1.3.2 Provider Adapter integration (safe defaults — None = unknown)
+    provider_id: Optional[str] = None
+    provider_status: Optional[str] = None
+    provider_capabilities: List[str] = field(default_factory=list)
+    last_provider_success_at: Optional[str] = None
+    last_provider_failure_at: Optional[str] = None
+    provider_warnings: List[str] = field(default_factory=list)
+
     def to_dict(self) -> dict:
         return {
             "symbol": self.symbol,
@@ -370,6 +378,13 @@ class UniverseCoverageRecord:
             "warnings": self.warnings,
             "checked_at": self.checked_at,
             "metadata": self.metadata,
+            # v1.3.2 provider fields
+            "provider_id": self.provider_id,
+            "provider_status": self.provider_status,
+            "provider_capabilities": list(self.provider_capabilities),
+            "last_provider_success_at": self.last_provider_success_at,
+            "last_provider_failure_at": self.last_provider_failure_at,
+            "provider_warnings": list(self.provider_warnings),
         }
 
     @classmethod
@@ -401,6 +416,13 @@ class UniverseCoverageRecord:
             warnings=list(d.get("warnings", [])),
             checked_at=str(d.get("checked_at", _now_iso())),
             metadata=dict(d.get("metadata", {})),
+            # v1.3.2 provider fields (safe defaults preserve backward compat)
+            provider_id=d.get("provider_id"),
+            provider_status=d.get("provider_status"),
+            provider_capabilities=list(d.get("provider_capabilities", [])),
+            last_provider_success_at=d.get("last_provider_success_at"),
+            last_provider_failure_at=d.get("last_provider_failure_at"),
+            provider_warnings=list(d.get("provider_warnings", [])),
         )
 
 

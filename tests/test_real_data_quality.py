@@ -730,8 +730,8 @@ class TestGUIPanel:
 class TestVersionInfo:
     def test_version_130(self):
         from release import version_info
-        # v1.3.1 bumped from 1.3.0; accept any 1.3.x release
-        assert version_info.VERSION in ("1.3.0", "1.3.1"), f"Expected 1.3.x, got {version_info.VERSION}"
+        # v1.3.2 bumped from 1.3.1; accept any 1.3.x release
+        assert version_info.VERSION.startswith("1.3."), f"Expected 1.3.x, got {version_info.VERSION}"
 
     def test_real_no_mock_fallback(self):
         from release import version_info
@@ -747,10 +747,11 @@ class TestVersionInfo:
 
     def test_release_name(self):
         from release import version_info
-        # v1.3.1 changed release name to Universe Expansion Foundation (1.3.0 is now base)
+        # v1.3.2 changed release name to Real Data Provider Adapter Foundation
         assert version_info.RELEASE_NAME in (
             "Real Data Quality Foundation",
             "Universe Expansion Foundation",
+            "Real Data Provider Adapter Foundation",
         ), f"Unexpected release name: {version_info.RELEASE_NAME}"
 
     def test_release_track(self):

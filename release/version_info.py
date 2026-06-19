@@ -71,12 +71,12 @@ logger = logging.getLogger(__name__)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 # ---------------------------------------------------------------------------
-# v1.3.1 module-level constants (Universe Expansion Foundation)
+# v1.3.2 module-level constants (Real Data Provider Adapter Foundation)
 # ---------------------------------------------------------------------------
-VERSION                             = "1.3.1"
-RELEASE_NAME                        = "Universe Expansion Foundation"
-BASE_RELEASE                        = "1.3.0 Real Data Quality Foundation"
-BASE_RELEASE_NAME                   = "Real Data Quality Foundation"
+VERSION                             = "1.3.2"
+RELEASE_NAME                        = "Real Data Provider Adapter Foundation"
+BASE_RELEASE                        = "1.3.1 Universe Expansion Foundation"
+BASE_RELEASE_NAME                   = "Universe Expansion Foundation"
 MAINTENANCE_RELEASE                 = False
 RELEASE_STAGE                       = "STABLE"
 RELEASE_TRACK                       = "real_data_quality"
@@ -364,6 +364,25 @@ UNIVERSE_BATCH_QUALITY_SCAN_AVAILABLE       = True
 UNIVERSE_REAL_API_CONNECTED                 = False  # ALWAYS FALSE
 UNIVERSE_AUTO_DOWNLOAD_ENABLED              = False  # ALWAYS FALSE
 REAL_ORDERS_ENABLED                         = False  # noqa: F811  ALWAYS FALSE
+# v1.3.2 Real Data Provider Adapter Foundation flags
+REAL_DATA_PROVIDER_ADAPTER_FOUNDATION               = True
+REAL_DATA_PROVIDER_ADAPTER_AVAILABLE                = True   # spec alias
+REAL_DATA_PROVIDER_REGISTRY_V132_AVAILABLE          = True
+REAL_DATA_PROVIDER_REGISTRY_AVAILABLE               = True   # spec alias
+REAL_DATA_PROVIDER_CAPABILITY_MATRIX                = True
+REAL_DATA_PROVIDER_CAPABILITY_MATRIX_AVAILABLE      = True   # spec alias
+REAL_DATA_PROVIDER_CACHE_AVAILABLE                  = True
+REAL_DATA_PROVIDER_RETRY_AVAILABLE                  = True
+REAL_DATA_PROVIDER_SERVICE_AVAILABLE                = True
+REAL_DATA_PROVIDER_PROVENANCE_V132                  = True
+REAL_DATA_PROVIDER_MERGER_AVAILABLE                 = True
+LOCAL_FILE_PROVIDER_ADAPTER_AVAILABLE               = True
+LOCAL_REPO_PROVIDER_ADAPTER_AVAILABLE               = True
+REAL_DATA_PROVIDER_LIVE_CONNECTION_AVAILABLE        = False  # ALWAYS FALSE
+REAL_DATA_PROVIDER_AUTO_DOWNLOAD_ENABLED            = False  # ALWAYS FALSE
+REAL_DATA_PROVIDER_CREDENTIAL_STORAGE_ENABLED       = False  # ALWAYS FALSE
+REAL_DATA_PROVIDER_ORDER_SUBMISSION_ENABLED         = False  # ALWAYS FALSE
+REAL_DATA_PROVIDER_MOCK_FALLBACK_ENABLED            = False  # ALWAYS FALSE
 
 
 class VersionInfo:
@@ -717,6 +736,19 @@ def print_version_info() -> None:
     print(f"  Universe Batch Quality Scan Available: {UNIVERSE_BATCH_QUALITY_SCAN_AVAILABLE}")
     print(f"  Universe Real API Connected: {UNIVERSE_REAL_API_CONNECTED}")
     print(f"  Universe Auto Download Enabled: {UNIVERSE_AUTO_DOWNLOAD_ENABLED}")
+    print(f"  Mock Fallback Enabled: {MOCK_FALLBACK_ENABLED}")
+    # v1.3.2 Real Data Provider Adapter Foundation flags
+    print(f"  Provider Adapter Available: {REAL_DATA_PROVIDER_ADAPTER_AVAILABLE}")
+    print(f"  Provider Registry Available: {REAL_DATA_PROVIDER_REGISTRY_AVAILABLE}")
+    print(f"  Provider Capability Matrix Available: {REAL_DATA_PROVIDER_CAPABILITY_MATRIX_AVAILABLE}")
+    print(f"  Provider Cache Available: {REAL_DATA_PROVIDER_CACHE_AVAILABLE}")
+    print(f"  Provider Retry Available: {REAL_DATA_PROVIDER_RETRY_AVAILABLE}")
+    print(f"  Provider Live Connection Available: {REAL_DATA_PROVIDER_LIVE_CONNECTION_AVAILABLE}")
+    print(f"  Provider Auto Download Enabled: {REAL_DATA_PROVIDER_AUTO_DOWNLOAD_ENABLED}")
+    print(f"  Provider Credential Storage Enabled: {REAL_DATA_PROVIDER_CREDENTIAL_STORAGE_ENABLED}")
+    print(f"  No Real Orders: {NO_REAL_ORDERS}")
+    print(f"  Broker Execution Enabled: {BROKER_EXECUTION_ENABLED}")
+    print(f"  Production Trading BLOCKED: {PRODUCTION_TRADING_BLOCKED}")
     print(f"  Mock Fallback Enabled: {MOCK_FALLBACK_ENABLED}")
     print("=" * 60)
 

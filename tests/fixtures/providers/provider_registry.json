@@ -1,0 +1,14 @@
+{
+  "_fixture_type": "TEST_FIXTURE",
+  "_demo_only": true,
+  "_not_real_data": true,
+  "providers": [
+    {
+      "provider_id": "test_local_file",
+      "provider_type": "LOCAL_FILE",
+      "enabled": false,
+      "status": "DISABLED",
+      "capabilities": ["DAILY_OHLCV"]
+    }
+  ]
+}

@@ -180,6 +180,16 @@ except Exception as _umgr_exc:
     _UNIVERSE_MANAGER_AVAILABLE = False
 
 # ---------------------------------------------------------------------------
+# v1.3.2 Real Data Provider Panel import (guarded)
+# ---------------------------------------------------------------------------
+try:
+    from gui.real_data_provider_panel import RealDataProviderPanel
+    _REAL_DATA_PROVIDER_PANEL_AVAILABLE = True
+except Exception as _rdpp_exc:
+    logger.warning("RealDataProviderPanel unavailable: %s", _rdpp_exc)
+    _REAL_DATA_PROVIDER_PANEL_AVAILABLE = False
+
+# ---------------------------------------------------------------------------
 # v0.3.26 Hardened Backtest panel import (guarded)
 # ---------------------------------------------------------------------------
 try:
@@ -1447,6 +1457,7 @@ class CockpitWindow(QMainWindow if _PYSIDE6_AVAILABLE else object):
         self._usability_qa_panel = None
         self._provider_reliability_panel = None
         self._universe_manager_panel = None
+        self._real_data_provider_panel = None
         self._hardened_backtest_panel = None
 
         self._init_backends()
@@ -1647,6 +1658,17 @@ class CockpitWindow(QMainWindow if _PYSIDE6_AVAILABLE else object):
             mid_tabs.addTab(self._universe_manager_panel, "Universe Manager")
         else:
             self._universe_manager_panel = None
+
+        # v1.3.2 Real Data Provider Panel tab
+        if _REAL_DATA_PROVIDER_PANEL_AVAILABLE:
+            try:
+                self._real_data_provider_panel = RealDataProviderPanel()
+                mid_tabs.addTab(self._real_data_provider_panel, "Real Data Providers")
+            except Exception as _rdp_tab_exc:
+                logger.warning("RealDataProviderPanel tab init failed: %s", _rdp_tab_exc)
+                self._real_data_provider_panel = None
+        else:
+            self._real_data_provider_panel = None
 
         # v0.3.26 Hardened Backtest tab
         if _HARDENED_BACKTEST_AVAILABLE:

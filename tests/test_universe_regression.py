@@ -5,6 +5,7 @@ tests/test_universe_regression.py — Regression tests for v1.3.1 Universe Expan
 """
 from __future__ import annotations
 
+import os
 import pytest
 
 
@@ -67,7 +68,7 @@ class TestUniverseDefinitions:
 class TestUniverseImport:
     """10 import tests."""
 
-    FIXTURE_DIR = "C:/Users/Rossi/Documents/Claude/tw_quant_cockpit/tests/fixtures/universe"
+    FIXTURE_DIR = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "tests", "fixtures", "universe")
 
     def test_csv_preview(self):
         from universe.importer_v131 import UniverseImporter
@@ -172,7 +173,8 @@ class TestSafetyInvariants:
 
     def test_version_131(self):
         from release.version_info import VERSION
-        assert VERSION == "1.3.1"
+        # v1.3.2 — accept any 1.3.x version (universe functionality preserved)
+        assert VERSION.startswith("1.3."), f"Expected 1.3.x, got {VERSION}"
 
     def test_replay_stable_baseline_129(self):
         from release.version_info import REPLAY_STABLE_BASELINE

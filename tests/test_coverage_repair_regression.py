@@ -266,8 +266,8 @@ def test_onboarding_v111_intact():
 
 def test_version_info_112():
     from release.version_info import VERSION, RELEASE_NAME, COVERAGE_REPAIR_RELEASE, COVERAGE_REPAIR_AVAILABLE
-    # Application version is now 1.3.1 (bumped from 1.3.0); v1.1.2 Coverage Repair functionality must still be present
-    assert VERSION in ("1.3.0", "1.3.1"), f"Expected 1.3.x, got {VERSION}"
+    # Application version is now 1.3.2 (bumped from 1.3.1); v1.1.2 Coverage Repair functionality must still be present
+    assert VERSION.startswith("1.3."), f"Expected 1.3.x, got {VERSION}"
     assert COVERAGE_REPAIR_RELEASE is True, "COVERAGE_REPAIR_RELEASE flag must be True"
     assert COVERAGE_REPAIR_AVAILABLE is True, "COVERAGE_REPAIR_AVAILABLE flag must be True"
 

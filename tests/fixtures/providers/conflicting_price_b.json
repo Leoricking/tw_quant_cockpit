@@ -1,0 +1,9 @@
+{
+  "_fixture_type": "TEST_FIXTURE",
+  "_demo_only": true,
+  "_not_real_data": true,
+  "source": "provider_b",
+  "symbol": "2330",
+  "date": "2026-06-18",
+  "close": 845.0
+}
