@@ -5893,10 +5893,25 @@ def cmd_version_info(args: argparse.Namespace) -> None:
         print(f"{'Coverage Repair Auto Execution Enabled:':<40} {cr_ae}")
         print(f"{'Coverage Repair Destructive Actions Enabled:':<40} {cr_da}")
         print(f"{'Coverage Repair Mock Fallback Enabled:':<40} {cr_mf}")
+        # v1.3.4 Data Freshness Monitor
+        dfm_avail = getattr(_vi116, "DATA_FRESHNESS_MONITOR_AVAILABLE", False)
+        cal_aware  = getattr(_vi116, "TRADING_CALENDAR_AWARE_FRESHNESS", False)
+        sla_avail  = getattr(_vi116, "PROVIDER_SLA_MONITOR_AVAILABLE", False)
+        alert_avail = getattr(_vi116, "FRESHNESS_ALERTS_AVAILABLE", False)
+        fresh_auto_ref = getattr(_vi116, "FRESHNESS_AUTO_REFRESH_ENABLED", True)
+        fresh_auto_rep = getattr(_vi116, "FRESHNESS_AUTO_REPAIR_ENABLED", True)
+        fresh_mock_fb  = getattr(_vi116, "FRESHNESS_MOCK_FALLBACK_ENABLED", True)
+        print(f"{'Data Freshness Monitor Available:':<40} {dfm_avail}")
+        print(f"{'Trading Calendar Aware Freshness:':<40} {cal_aware}")
+        print(f"{'Provider SLA Monitor Available:':<40} {sla_avail}")
+        print(f"{'Freshness Alerts Available:':<40} {alert_avail}")
+        print(f"{'Freshness Auto Refresh Enabled:':<40} {fresh_auto_ref}")
+        print(f"{'Freshness Auto Repair Enabled:':<40} {fresh_auto_rep}")
+        print(f"{'Freshness Mock Fallback Enabled:':<40} {fresh_mock_fb}")
     except Exception as exc:
-        print(f"  Version:                              1.3.3")
-        print(f"  Release:                              Coverage Repair Workflow")
-        print(f"  Base Release:                         1.3.2 Real Data Provider Adapter Foundation")
+        print(f"  Version:                              1.3.4")
+        print(f"  Release:                              Data Freshness Monitor")
+        print(f"  Base Release:                         1.3.3 Coverage Repair Workflow")
         print(f"  Replay Stable Baseline:               1.2.9")
         print(f"  Universe Registry Available:          True")
         print(f"  Universe Real API Connected:          False")
@@ -5916,6 +5931,13 @@ def cmd_version_info(args: argparse.Namespace) -> None:
         print(f"  Coverage Repair Auto Execution Enabled: False")
         print(f"  Coverage Repair Destructive Actions Enabled: False")
         print(f"  Coverage Repair Mock Fallback Enabled: False")
+        print(f"  Data Freshness Monitor Available:     True")
+        print(f"  Trading Calendar Aware Freshness:     True")
+        print(f"  Provider SLA Monitor Available:       True")
+        print(f"  Freshness Alerts Available:           True")
+        print(f"  Freshness Auto Refresh Enabled:       False")
+        print(f"  Freshness Auto Repair Enabled:        False")
+        print(f"  Freshness Mock Fallback Enabled:      False")
         print(f"  (version_info import error: {exc})")
     print("=" * 60)
     print("RESEARCH ONLY \u2014 Not Investment Advice \u2014 No Real Orders")
@@ -19444,15 +19466,20 @@ def _build_parser() -> argparse.ArgumentParser:
     p_crr.add_argument("--output-dir", dest="output_dir", default="data/repair_reports")
     p_crr.add_argument("--report-dir", dest="report_dir", default="reports")
 
-    # --- v1.1.3 Data Freshness Monitor ---
+    # --- v1.1.3 Data Freshness Monitor (updated with v1.3.4 args) ---
     p_fscan = subparsers.add_parser(
         "freshness-scan",
-        help="[v1.1.3] Scan data freshness by tier or stock. [!] Research Only.",
+        help="[v1.1.3/v1.3.4] Scan data freshness by tier or stock. [!] Research Only.",
     )
-    p_fscan.add_argument("--tier",    default=None, help="Tier: core10/research30/expanded50/broad100")
-    p_fscan.add_argument("--stock",   default=None, help="Single stock symbol")
-    p_fscan.add_argument("--symbols", default=None, help="Comma-separated symbols")
-    p_fscan.add_argument("--mode",    default="real", help="real or mock (default: real)")
+    p_fscan.add_argument("--tier",     default=None, help="Tier: core10/research30/expanded50/broad100")
+    p_fscan.add_argument("--stock",    default=None, help="Single stock symbol")
+    p_fscan.add_argument("--symbols",  default=None, help="Comma-separated symbols")
+    p_fscan.add_argument("--mode",     default="real", help="real or mock (default: real)")
+    # v1.3.4 additional args
+    p_fscan.add_argument("--symbol",   default=None, help="Symbol, e.g. 2330")
+    p_fscan.add_argument("--universe", default=None, help="Universe ID, e.g. core")
+    p_fscan.add_argument("--provider", default=None, help="Provider ID")
+    p_fscan.add_argument("--dataset",  default=None, help="Dataset type, e.g. DAILY_OHLCV")
 
     p_fsum = subparsers.add_parser(
         "freshness-summary",
@@ -22369,6 +22396,56 @@ def _build_parser() -> argparse.ArgumentParser:
     )
     p_crhist.add_argument("--task-id", dest="task_id", default=None, help="Task ID (optional)")
 
+    # --- v1.3.4 Data Freshness Monitor commands (new commands only; existing override above) ---
+    # Note: freshness-health, freshness-scan, freshness-summary, freshness-alerts
+    #       already registered above (v1.1.3) — only register new commands here.
+
+    subparsers.add_parser(
+        "freshness-status",
+        help="[v1.3.4] Show overall data freshness status. Research Only.",
+    )
+
+    p_fshow = subparsers.add_parser(
+        "freshness-show",
+        help="[v1.3.4] Show freshness details for a symbol. Research Only.",
+    )
+    p_fshow.add_argument("--symbol", default=None, help="Symbol, e.g. 2330")
+
+    p_fashow = subparsers.add_parser(
+        "freshness-alert-show",
+        help="[v1.3.4] Show a specific freshness alert. Research Only.",
+    )
+    p_fashow.add_argument("--alert-id", dest="alert_id", required=True, help="Alert ID")
+
+    p_faack = subparsers.add_parser(
+        "freshness-alert-ack",
+        help="[v1.3.4] Acknowledge a freshness alert. Research Only.",
+    )
+    p_faack.add_argument("--alert-id", dest="alert_id", required=True, help="Alert ID")
+
+    p_fares = subparsers.add_parser(
+        "freshness-alert-resolve",
+        help="[v1.3.4] Resolve a freshness alert. Research Only.",
+    )
+    p_fares.add_argument("--alert-id", dest="alert_id", required=True, help="Alert ID")
+
+    subparsers.add_parser(
+        "provider-sla-status",
+        help="[v1.3.4] Show provider SLA status. Research Only.",
+    )
+
+    p_psla = subparsers.add_parser(
+        "provider-sla-show",
+        help="[v1.3.4] Show SLA details for a provider. Research Only.",
+    )
+    p_psla.add_argument("--provider", default=None, help="Provider ID")
+
+    p_fcr = subparsers.add_parser(
+        "freshness-create-repair",
+        help="[v1.3.4] Preview repair candidates for stale data. Research Only. No Auto Execution.",
+    )
+    p_fcr.add_argument("--alert-id", dest="alert_id", default=None, help="Alert ID (optional)")
+
     return parser
 
 
@@ -24803,6 +24880,343 @@ def cmd_coverage_repair_health(args) -> None:
         raise
     except Exception as exc:
         print(f"  [FAIL] Coverage repair health check error: {exc}")
+        raise SystemExit(1)
+
+
+
+# ---------------------------------------------------------------------------
+# v1.3.4 Data Freshness Monitor commands
+# ---------------------------------------------------------------------------
+
+def _dfm_safety_header() -> None:
+    print("=" * 70)
+    print("  Data Freshness Monitor v1.3.4")
+    print("  [!] Research Only | No Real Orders | Auto Refresh DISABLED")
+    print("  [!] Auto Repair DISABLED | Mock Fallback DISABLED | Not Investment Advice")
+    print("=" * 70)
+
+
+def _get_dfm_evaluator():
+    from data_freshness.evaluator_v134 import DataFreshnessEvaluator
+    from data_freshness.policy_v134 import DataFreshnessPolicyRegistry
+    from data_freshness.trading_calendar import TradingCalendar
+    reg = DataFreshnessPolicyRegistry()
+    cal = TradingCalendar()
+    return DataFreshnessEvaluator(policy_registry=reg, calendar=cal)
+
+
+def _get_dfm_scanner():
+    from data_freshness.scanner_v134 import DataFreshnessScanner
+    from data_freshness.policy_v134 import DataFreshnessPolicyRegistry
+    from data_freshness.trading_calendar import TradingCalendar
+    reg = DataFreshnessPolicyRegistry()
+    cal = TradingCalendar()
+    return DataFreshnessScanner(policy_registry=reg, calendar=cal)
+
+
+def cmd_freshness_health(args) -> None:
+    """[v1.3.4] Run Data Freshness Monitor health check. [!] Research Only."""
+    _dfm_safety_header()
+    try:
+        from data_freshness.health_v134 import DataFreshnessHealthCheckV134
+        hc = DataFreshnessHealthCheckV134()
+        results = hc.run()
+        fail_count = 0
+        warn_count = 0
+        for check_name, (status, detail) in results.items():
+            icon = {"PASS": "PASS", "FAIL": "FAIL", "WARN": "WARN"}.get(status, "????")
+            print(f"  [{icon}] {check_name:<52} {detail}")
+            if status == "FAIL":
+                fail_count += 1
+            elif status == "WARN":
+                warn_count += 1
+        summary = hc.get_health_summary()
+        overall = "PASS" if summary.get("all_pass") else "FAIL"
+        print("-" * 70)
+        print(f"  Overall              : {overall}")
+        print(f"  Passed               : {summary.get('passed', 0)}/{summary.get('total_checks', 0)}")
+        print(f"  Warnings             : {warn_count}")
+        print(f"  No Real Orders       : True")
+        print(f"  Auto Refresh         : Disabled")
+        print(f"  Auto Repair          : Disabled")
+        print(f"  Mock Fallback        : Disabled")
+        print(f"  Broker Execution     : Disabled")
+        print(f"  Production Trading   : BLOCKED")
+        print("[!] Research Only. Not Investment Advice.")
+        if fail_count > 0:
+            raise SystemExit(1)
+    except SystemExit:
+        raise
+    except Exception as exc:
+        print(f"  [FAIL] Freshness health check error: {exc}")
+        import traceback; traceback.print_exc()
+        raise SystemExit(1)
+
+
+def cmd_freshness_status(args) -> None:
+    """[v1.3.4] Show overall data freshness status. [!] Research Only."""
+    _dfm_safety_header()
+    try:
+        from data_freshness.scanner_v134 import DataFreshnessScanner
+        scanner = _get_dfm_scanner()
+        symbols = ["2330", "2317", "2454", "2303", "2412"]
+        all_recs = []
+        for sym in symbols:
+            recs = scanner.scan_symbol(sym)
+            all_recs.extend(recs)
+        summary = scanner.summarize(all_recs)
+        print(f"  Symbols scanned    : {summary.symbols_scanned}")
+        print(f"  Datasets scanned   : {summary.datasets_scanned}")
+        print(f"  Fresh              : {summary.fresh_count}")
+        print(f"  Near-Stale         : {summary.near_stale_count}")
+        print(f"  Stale              : {summary.stale_count}")
+        print(f"  Critically Stale   : {summary.critically_stale_count}")
+        print(f"  Never Received     : {summary.never_received_count}")
+        print(f"  Blocked (analysis) : {summary.blocked_count}")
+        print(f"  Precise Price Blocked : {summary.precise_price_blocked_count}")
+        print(f"  Backtest Blocked   : {summary.backtest_blocked_count}")
+        print(f"  ABC Blocked        : {summary.abc_blocked_count}")
+        print("[!] Research Only. Not Investment Advice.")
+    except Exception as exc:
+        print(f"  [FAIL] freshness-status error: {exc}")
+        raise SystemExit(1)
+
+
+def cmd_freshness_show(args) -> None:
+    """[v1.3.4] Show freshness details for a symbol. [!] Research Only."""
+    _dfm_safety_header()
+    symbol = getattr(args, "symbol", None) or "2330"
+    try:
+        scanner = _get_dfm_scanner()
+        records = scanner.scan_symbol(symbol)
+        print(f"  Symbol: {symbol}")
+        for rec in records:
+            status_icon = "[OK]" if rec.freshness_status in ("FRESH", "NEAR_STALE", "MARKET_CLOSED_VALID", "NON_TRADING_DAY_VALID") else "[!!]"
+            age_h = f"{rec.age_seconds/3600:.1f}h" if rec.age_seconds is not None else "N/A"
+            print(f"  {status_icon} {rec.dataset_type:<30} {rec.freshness_status:<22} age={age_h}")
+            if rec.reasons:
+                for r in rec.reasons:
+                    print(f"       {r}")
+        print("[!] Research Only. Not Investment Advice.")
+    except Exception as exc:
+        print(f"  [FAIL] freshness-show error: {exc}")
+        raise SystemExit(1)
+
+
+def cmd_freshness_scan(args) -> None:
+    """[v1.3.4] Scan freshness for symbol/tier/universe/provider/dataset. [!] Research Only."""
+    _dfm_safety_header()
+    symbol  = getattr(args, "symbol", None)
+    tier    = getattr(args, "tier", None)
+    universe = getattr(args, "universe", None)
+    provider = getattr(args, "provider", None)
+    dataset = getattr(args, "dataset", None)
+
+    try:
+        scanner = _get_dfm_scanner()
+        all_recs = []
+
+        if symbol:
+            ds = [dataset] if dataset else None
+            all_recs = scanner.scan_symbol(symbol, datasets=ds)
+        elif tier:
+            res = scanner.scan_tier(tier)
+            for recs in res.values():
+                all_recs.extend(recs)
+        elif universe:
+            res = scanner.scan_universe(universe_id=universe)
+            for recs in res.values():
+                all_recs.extend(recs)
+        elif provider:
+            all_recs = scanner.scan_provider(provider)
+        elif dataset:
+            all_recs = scanner.scan_dataset_type(dataset)
+        else:
+            # default scan
+            res = scanner.scan_symbols(["2330", "2317", "2454"])
+            for recs in res.values():
+                all_recs.extend(recs)
+
+        summary = scanner.summarize(all_recs)
+        print(f"  Scanned  : {summary.datasets_scanned} dataset records ({summary.symbols_scanned} symbols)")
+        print(f"  Fresh    : {summary.fresh_count}")
+        print(f"  Stale    : {summary.stale_count}")
+        print(f"  Critical : {summary.critically_stale_count}")
+        print(f"  Blocked  : {summary.blocked_count}")
+
+        from data_freshness.models_v134 import FreshnessStatus
+        for rec in all_recs:
+            if rec.freshness_status not in (FreshnessStatus.FRESH,):
+                age_h = f"{rec.age_seconds/3600:.1f}h" if rec.age_seconds is not None else "N/A"
+                print(f"  {rec.symbol:<8} {rec.dataset_type:<28} {rec.freshness_status:<22} age={age_h}")
+        print("[!] Research Only. Not Investment Advice.")
+    except Exception as exc:
+        print(f"  [FAIL] freshness-scan error: {exc}")
+        raise SystemExit(1)
+
+
+def cmd_freshness_summary(args) -> None:
+    """[v1.3.4] Show freshness summary. [!] Research Only."""
+    _dfm_safety_header()
+    try:
+        scanner = _get_dfm_scanner()
+        symbols = ["2330", "2317", "2454", "2303", "2412"]
+        all_recs = []
+        for sym in symbols:
+            all_recs.extend(scanner.scan_symbol(sym))
+        summary = scanner.summarize(all_recs)
+        print(f"  Generated at       : {summary.generated_at}")
+        print(f"  Symbols scanned    : {summary.symbols_scanned}")
+        print(f"  Datasets scanned   : {summary.datasets_scanned}")
+        print(f"  Fresh              : {summary.fresh_count}")
+        print(f"  Near-Stale         : {summary.near_stale_count}")
+        print(f"  Stale              : {summary.stale_count}")
+        print(f"  Critically Stale   : {summary.critically_stale_count}")
+        print(f"  Never Received     : {summary.never_received_count}")
+        print(f"  Provider Delayed   : {summary.provider_delayed_count}")
+        print(f"  Blocked            : {summary.blocked_count}")
+        print(f"  Precise Price Blocked : {summary.precise_price_blocked_count}")
+        print(f"  Backtest Blocked   : {summary.backtest_blocked_count}")
+        print(f"  ABC Blocked        : {summary.abc_blocked_count}")
+        print(f"  Active Alerts      : {summary.active_alerts}")
+        print(f"  Repair Candidates  : {summary.repair_candidates}")
+        print("[!] Research Only. Not Investment Advice.")
+    except Exception as exc:
+        print(f"  [FAIL] freshness-summary error: {exc}")
+        raise SystemExit(1)
+
+
+def cmd_freshness_alerts(args) -> None:
+    """[v1.3.4] Show active freshness alerts. [!] Research Only."""
+    _dfm_safety_header()
+    try:
+        from data_freshness.alert_engine_v134 import FreshnessAlertEngine
+        from data_freshness.models_v134 import FreshnessStatus
+        scanner = _get_dfm_scanner()
+        engine = FreshnessAlertEngine()
+        symbols = ["2330", "2317", "2454", "2303", "2412"]
+        for sym in symbols:
+            for rec in scanner.scan_symbol(sym):
+                if rec.freshness_status not in (FreshnessStatus.FRESH, FreshnessStatus.NEAR_STALE,
+                                                  FreshnessStatus.MARKET_CLOSED_VALID,
+                                                  FreshnessStatus.NON_TRADING_DAY_VALID):
+                    alert = engine.build_alert(rec)
+                    engine.add_alert(alert)
+        active = engine.list_active()
+        summary = engine.summarize()
+        print(f"  Active Alerts  : {summary['active_alerts']}")
+        print(f"  Critical Alerts: {summary['critical_alerts']}")
+        print(f"  Total Alerts   : {summary['total_alerts']}")
+        print(f"  Blocking Alerts: {summary['blocking_alerts']}")
+        if active:
+            print("")
+            print("  Active Alerts:")
+            for alert in active[:10]:
+                print(f"    [{alert.severity}] {alert.title}")
+                print(f"      dedup_key={alert.dedup_key[:60]}")
+        print("[!] Research Only. Alerts never trigger trade actions.")
+    except Exception as exc:
+        print(f"  [FAIL] freshness-alerts error: {exc}")
+        raise SystemExit(1)
+
+
+def cmd_freshness_alert_show(args) -> None:
+    """[v1.3.4] Show a specific freshness alert. [!] Research Only."""
+    _dfm_safety_header()
+    alert_id = getattr(args, "alert_id", None)
+    print(f"  Alert ID: {alert_id}")
+    print("  (Alert detail requires persistent store. Use freshness-alerts for current state.)")
+    print("[!] Research Only. Not Investment Advice.")
+
+
+def cmd_freshness_alert_ack(args) -> None:
+    """[v1.3.4] Acknowledge a freshness alert. [!] Research Only."""
+    _dfm_safety_header()
+    alert_id = getattr(args, "alert_id", None)
+    print(f"  Acknowledge alert: {alert_id}")
+    print("  (Acknowledgement requires persistent store. Use snapshot_store_v134 for persistence.)")
+    print("[!] Research Only. Not Investment Advice.")
+
+
+def cmd_freshness_alert_resolve(args) -> None:
+    """[v1.3.4] Resolve a freshness alert. [!] Research Only."""
+    _dfm_safety_header()
+    alert_id = getattr(args, "alert_id", None)
+    print(f"  Resolve alert: {alert_id}")
+    print("  (Resolution requires persistent store. Use snapshot_store_v134 for persistence.)")
+    print("[!] Research Only. Not Investment Advice.")
+
+
+def cmd_provider_sla_status(args) -> None:
+    """[v1.3.4] Show provider SLA status. [!] Research Only."""
+    _dfm_safety_header()
+    try:
+        from data_freshness.sla_monitor_v134 import ProviderSLAMonitor
+        monitor = ProviderSLAMonitor()
+        # Show default/empty state — would be populated from real provider calls
+        summary = monitor.summarize()
+        print(f"  Provider SLA Monitor v1.3.4")
+        print(f"  Total SLA Records  : {summary['total']}")
+        print(f"  Healthy            : {summary['healthy']}")
+        print(f"  Delayed            : {summary['delayed']}")
+        print(f"  Breached           : {summary['breached']}")
+        print(f"  Auto Refresh       : {summary['auto_refresh_enabled']}")
+        print(f"  Auto Repair        : {summary['auto_repair_enabled']}")
+        print(f"  No Real Orders     : {summary['no_real_orders']}")
+        print("[!] HTTP 200 but stale source data -> DELAYED (not HEALTHY).")
+        print("[!] Cache hit != provider healthy.")
+        print("[!] Research Only. Not Investment Advice.")
+    except Exception as exc:
+        print(f"  [FAIL] provider-sla-status error: {exc}")
+        raise SystemExit(1)
+
+
+def cmd_provider_sla_show(args) -> None:
+    """[v1.3.4] Show SLA details for a specific provider. [!] Research Only."""
+    _dfm_safety_header()
+    provider = getattr(args, "provider", None) or "(unknown)"
+    print(f"  Provider SLA: {provider}")
+    try:
+        from data_freshness.sla_monitor_v134 import ProviderSLAMonitor
+        monitor = ProviderSLAMonitor()
+        rec = monitor.get_sla(provider, "DAILY_OHLCV")
+        if rec is None:
+            print(f"  No SLA record found for provider={provider}")
+        else:
+            print(f"  Status          : {rec.status}")
+            print(f"  Breached        : {rec.breached}")
+            print(f"  Failures        : {rec.consecutive_failures}")
+            print(f"  Availability    : {rec.availability_ratio:.2%}")
+        print("[!] Research Only. Not Investment Advice.")
+    except Exception as exc:
+        print(f"  [FAIL] provider-sla-show error: {exc}")
+        raise SystemExit(1)
+
+
+def cmd_freshness_create_repair(args) -> None:
+    """[v1.3.4] Create repair task for a stale alert. [!] Research Only. No Auto Execution."""
+    _dfm_safety_header()
+    alert_id = getattr(args, "alert_id", None)
+    print(f"  Alert ID: {alert_id}")
+    print("  [!] No auto execution. Repair task preview only.")
+    try:
+        from data_freshness.repair_integration_v134 import FreshnessRepairIntegration
+        from data_freshness.models_v134 import FreshnessStatus
+        scanner = _get_dfm_scanner()
+        integrator = FreshnessRepairIntegration()
+        # Get records and show repair candidates
+        symbols = ["2330", "2317", "2454"]
+        all_recs = []
+        for sym in symbols:
+            all_recs.extend(scanner.scan_symbol(sym))
+        candidates = integrator.summarize_repair_candidates(all_recs)
+        print(f"  Repair Candidates: {len(candidates)}")
+        for c in candidates[:5]:
+            print(f"    {c['symbol']}/{c['dataset_type']} -> {c['repair_issue_type']} [{c['priority']}]")
+        print("[!] create_task=False by default. No repair auto-executed.")
+        print("[!] Research Only. Not Investment Advice.")
+    except Exception as exc:
+        print(f"  [FAIL] freshness-create-repair error: {exc}")
         raise SystemExit(1)
 
 
@@ -29363,6 +29777,19 @@ def main() -> None:
         "coverage-repair-reopen":      cmd_coverage_repair_reopen,
         "coverage-repair-history":     cmd_coverage_repair_history,
         "coverage-repair-health":      cmd_coverage_repair_health,  # overrides v1.1.2
+        # v1.3.4 Data Freshness Monitor
+        "freshness-health":            cmd_freshness_health,
+        "freshness-status":            cmd_freshness_status,
+        "freshness-show":              cmd_freshness_show,
+        "freshness-scan":              cmd_freshness_scan,
+        "freshness-summary":           cmd_freshness_summary,
+        "freshness-alerts":            cmd_freshness_alerts,
+        "freshness-alert-show":        cmd_freshness_alert_show,
+        "freshness-alert-ack":         cmd_freshness_alert_ack,
+        "freshness-alert-resolve":     cmd_freshness_alert_resolve,
+        "provider-sla-status":         cmd_provider_sla_status,
+        "provider-sla-show":           cmd_provider_sla_show,
+        "freshness-create-repair":     cmd_freshness_create_repair,
     }
 
     if args.command is None:

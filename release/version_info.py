@@ -73,9 +73,9 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # ---------------------------------------------------------------------------
 # v1.3.3 module-level constants (Coverage Repair Workflow)
 # ---------------------------------------------------------------------------
-VERSION                             = "1.3.3"
-RELEASE_NAME                        = "Coverage Repair Workflow"
-BASE_RELEASE                        = "1.3.2 Real Data Provider Adapter Foundation"
+VERSION                             = "1.3.4"
+RELEASE_NAME                        = "Data Freshness Monitor"
+BASE_RELEASE                        = "1.3.3 Coverage Repair Workflow"
 
 # ---------------------------------------------------------------------------
 # v1.3.2 module-level constants (Real Data Provider Adapter Foundation)
@@ -398,6 +398,15 @@ COVERAGE_REPAIR_RETRY_AVAILABLE             = True
 COVERAGE_REPAIR_AUTO_EXECUTION_ENABLED      = False
 COVERAGE_REPAIR_DESTRUCTIVE_ACTIONS_ENABLED = False
 COVERAGE_REPAIR_MOCK_FALLBACK_ENABLED       = False
+# v1.3.4 Data Freshness Monitor flags
+DATA_FRESHNESS_MONITOR_AVAILABLE       = True   # noqa: F811 (overrides v1.1.3 alias)
+DATA_FRESHNESS_POLICY_AVAILABLE        = True
+TRADING_CALENDAR_AWARE_FRESHNESS       = True
+PROVIDER_SLA_MONITOR_AVAILABLE         = True
+FRESHNESS_ALERTS_AVAILABLE             = True
+FRESHNESS_AUTO_REFRESH_ENABLED         = False
+FRESHNESS_AUTO_REPAIR_ENABLED          = False
+FRESHNESS_MOCK_FALLBACK_ENABLED        = False
 
 
 class VersionInfo:
@@ -773,6 +782,15 @@ def print_version_info() -> None:
     print(f"  Coverage Repair Auto Execution Enabled: {COVERAGE_REPAIR_AUTO_EXECUTION_ENABLED}")
     print(f"  Coverage Repair Destructive Actions Enabled: {COVERAGE_REPAIR_DESTRUCTIVE_ACTIONS_ENABLED}")
     print(f"  Coverage Repair Mock Fallback Enabled: {COVERAGE_REPAIR_MOCK_FALLBACK_ENABLED}")
+    # v1.3.4 Data Freshness Monitor flags
+    print(f"  Data Freshness Monitor Available:      {DATA_FRESHNESS_MONITOR_AVAILABLE}")
+    print(f"  Data Freshness Policy Available:       {DATA_FRESHNESS_POLICY_AVAILABLE}")
+    print(f"  Trading Calendar Aware Freshness:      {TRADING_CALENDAR_AWARE_FRESHNESS}")
+    print(f"  Provider SLA Monitor Available:        {PROVIDER_SLA_MONITOR_AVAILABLE}")
+    print(f"  Freshness Alerts Available:            {FRESHNESS_ALERTS_AVAILABLE}")
+    print(f"  Freshness Auto Refresh Enabled:        {FRESHNESS_AUTO_REFRESH_ENABLED}")
+    print(f"  Freshness Auto Repair Enabled:         {FRESHNESS_AUTO_REPAIR_ENABLED}")
+    print(f"  Freshness Mock Fallback Enabled:       {FRESHNESS_MOCK_FALLBACK_ENABLED}")
     print("=" * 60)
 
 

@@ -1,0 +1,17 @@
+{
+  "_fixture_type": "TEST_FIXTURE",
+  "data_mode": "DEMO_ONLY",
+  "note": "NOT_REAL_DATA",
+  "schema_version": "1.3.4",
+  "symbol": "2330",
+  "dataset_type": "DAILY_OHLCV",
+  "market": "TWSE",
+  "provider_id": "fixture_provider",
+  "source_timestamp": "2024-01-15T06:00:00+00:00",
+  "observed_timestamp": "2024-01-15T06:00:00+00:00",
+  "fetched_at": "2024-01-15T07:00:00+00:00",
+  "freshness_status": "FRESH",
+  "severity": "INFO",
+  "policy_id": "default_daily_ohlcv",
+  "reasons": ["Fixture: fresh daily OHLCV data. NOT_REAL_DATA."]
+}

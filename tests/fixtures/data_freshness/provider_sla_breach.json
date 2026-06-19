@@ -1,0 +1,15 @@
+{
+  "_fixture_type": "TEST_FIXTURE",
+  "data_mode": "DEMO_ONLY",
+  "note": "NOT_REAL_DATA",
+  "schema_version": "1.3.4",
+  "provider_id": "fixture_breach_provider",
+  "capability": "DAILY_OHLCV",
+  "market": "TWSE",
+  "status": "BREACHED",
+  "severity": "CRITICAL",
+  "breached": true,
+  "consecutive_failures": 5,
+  "availability_ratio": 0.4,
+  "breach_reasons": ["consecutive_failures >= 3", "fixture test data. NOT_REAL_DATA."]
+}

@@ -393,6 +393,10 @@ reports/data_universe_expansion_report_*.md
 data/freshness_reports/
 reports/data_freshness_report_*.md
 reports/freshness_monitor_report_*.md
+# v1.3.4 Data Freshness Monitor (runtime outputs — never commit)
+data/freshness/
+data/freshness_alerts/
+reports/data_freshness_*.md
 
 # v1.1.4 Coverage Quality Gates (runtime outputs — never commit)
 data/quality_gate_reports/

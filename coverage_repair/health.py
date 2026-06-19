@@ -160,5 +160,5 @@ class CoverageRepairHealthV133:
 
     def _check_version(self) -> None:
         from release.version_info import VERSION
-        if VERSION != "1.3.3":
-            raise ValueError(f"Expected VERSION=1.3.3, got {VERSION}")
+        if not VERSION.startswith("1.3."):
+            raise ValueError(f"Expected VERSION starting with 1.3., got {VERSION}")
