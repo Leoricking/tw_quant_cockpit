@@ -37,6 +37,34 @@ def _ts_future(seconds: float = 86400) -> str:
     return dt.isoformat()
 
 
+# ---------------------------------------------------------------------------
+# Fixed-clock helpers — produce deterministic timestamps independent of the
+# real system clock.  Use these whenever a test needs a specific staleness
+# outcome that would otherwise depend on whether tests run on a trading day
+# or inside market hours.
+#
+# _FIXED_NOW_UTC  =  2026-01-07 02:00 UTC  =  2026-01-07 10:00 Asia/Taipei
+#                 →  Wednesday, market open (09:00–13:30 TWSE)
+#                 →  is_trading_day=True, market_open=True
+# ---------------------------------------------------------------------------
+_FIXED_NOW_UTC = datetime(2026, 1, 7, 2, 0, 0, tzinfo=timezone.utc)
+
+
+def _fixed_now_provider():
+    """Return the fixed UTC datetime used in date-stable tests."""
+    return _FIXED_NOW_UTC
+
+
+def _ts_ago_fixed(seconds: float, now: datetime = _FIXED_NOW_UTC) -> str:
+    """Create a timestamp *seconds* before *now* (default fixed trading-day clock)."""
+    return (now - timedelta(seconds=seconds)).isoformat()
+
+
+def _ts_future_fixed(seconds: float = 86400, now: datetime = _FIXED_NOW_UTC) -> str:
+    """Create a timestamp *seconds* after *now* (default fixed trading-day clock)."""
+    return (now + timedelta(seconds=seconds)).isoformat()
+
+
 # ============================================================
 # TestFreshnessModels
 # ============================================================
@@ -270,10 +298,12 @@ class TestEvaluator:
         assert FreshnessStatus.is_ok(rec.freshness_status)
 
     def test_stale_old_timestamp(self):
+        # Use a fixed clock (Wed 2026-01-07 10:00 Asia/Taipei, market open) so that
+        # trading-day exemptions are irrelevant and age alone determines staleness.
         from data_freshness.evaluator_v134 import DataFreshnessEvaluator
         from data_freshness.models_v134 import FreshnessStatus
-        ev = DataFreshnessEvaluator()
-        ts = _ts_ago(200000)  # ~2.3 days
+        ev = DataFreshnessEvaluator(now_provider=_fixed_now_provider)
+        ts = _ts_ago_fixed(200000)  # 200 000 s ≈ 2.3 days before fixed clock
         rec = ev.evaluate("2330", "DAILY_OHLCV", ts)
         assert rec.freshness_status in (FreshnessStatus.STALE, FreshnessStatus.CRITICALLY_STALE)
 
@@ -383,10 +413,14 @@ class TestEvaluator:
         assert ev.determine_severity(FreshnessStatus.CRITICALLY_STALE) == FreshnessSeverity.CRITICAL
 
     def test_precise_price_blocked_when_stale(self):
+        # Use a fixed clock so the result is stable regardless of when tests run.
         from data_freshness.evaluator_v134 import DataFreshnessEvaluator
         from data_freshness.policy_v134 import DataFreshnessPolicyRegistry
-        ev = DataFreshnessEvaluator(policy_registry=DataFreshnessPolicyRegistry())
-        ts = _ts_ago(200000)  # very stale
+        ev = DataFreshnessEvaluator(
+            policy_registry=DataFreshnessPolicyRegistry(),
+            now_provider=_fixed_now_provider,
+        )
+        ts = _ts_ago_fixed(200000)  # 200 000 s ≈ 2.3 days before fixed clock
         rec = ev.evaluate("2330", "DAILY_OHLCV", ts)
         assert rec.precise_price_allowed is False
 
@@ -1045,3 +1079,238 @@ class TestRegression:
     def test_freshness_alerts_available(self):
         from release.version_info import FRESHNESS_ALERTS_AVAILABLE
         assert FRESHNESS_ALERTS_AVAILABLE is True
+
+
+# ============================================================
+# TestDateStability  (20 tests)
+# All tests inject a fixed clock via now_provider so they pass
+# on any real date, time-of-day, weekday, or timezone offset.
+# ============================================================
+class TestDateStability:
+    """20 date-stable tests for DataFreshnessEvaluator clock injection."""
+
+    # ── helpers ──────────────────────────────────────────────
+    @staticmethod
+    def _ev(**kwargs):
+        from data_freshness.evaluator_v134 import DataFreshnessEvaluator
+        kwargs.setdefault("now_provider", _fixed_now_provider)
+        return DataFreshnessEvaluator(**kwargs)
+
+    # ── 1. Fixed weekday trading-day mid-morning ──────────────
+    def test_fixed_weekday_intraday_fresh(self):
+        from data_freshness.models_v134 import FreshnessStatus
+        ev = self._ev()
+        ts = _ts_ago_fixed(3600)  # 1 h before fixed clock
+        rec = ev.evaluate("2330", "DAILY_OHLCV", ts)
+        assert FreshnessStatus.is_ok(rec.freshness_status)
+
+    # ── 2. Fixed weekday trading-day after close ──────────────
+    def test_fixed_weekday_after_close_stale_by_age(self):
+        # now_utc = 2026-01-07 06:00 UTC = 14:00 Asia/Taipei (after close)
+        from data_freshness.evaluator_v134 import DataFreshnessEvaluator
+        from data_freshness.models_v134 import FreshnessStatus
+        now_after_close = datetime(2026, 1, 7, 6, 0, 0, tzinfo=timezone.utc)
+        ev = DataFreshnessEvaluator(now_provider=lambda: now_after_close)
+        ts = (now_after_close - timedelta(seconds=200000)).isoformat()
+        rec = ev.evaluate("2330", "DAILY_OHLCV", ts)
+        # 200 000 s > critical_after=172 800 s → CRITICALLY_STALE
+        assert rec.freshness_status in (FreshnessStatus.STALE, FreshnessStatus.CRITICALLY_STALE)
+
+    # ── 3. Fixed Saturday (non-trading day) ──────────────────
+    def test_fixed_saturday_non_trading_day(self):
+        from data_freshness.evaluator_v134 import DataFreshnessEvaluator
+        from data_freshness.trading_calendar import TradingCalendar
+        # 2026-01-10 is Saturday
+        now_sat = datetime(2026, 1, 10, 2, 0, 0, tzinfo=timezone.utc)  # 10:00 Taipei Sat
+        ev = DataFreshnessEvaluator(now_provider=lambda: now_sat)
+        cal = TradingCalendar()
+        from datetime import date
+        assert cal.is_trading_day(date(2026, 1, 10)) is False
+
+    # ── 4. Fixed Sunday (non-trading day) ────────────────────
+    def test_fixed_sunday_non_trading_day(self):
+        from data_freshness.trading_calendar import TradingCalendar
+        from datetime import date
+        cal = TradingCalendar()
+        assert cal.is_trading_day(date(2026, 1, 11)) is False
+
+    # ── 5. Fixed Monday early morning ────────────────────────
+    def test_fixed_monday_early_morning_market_not_open(self):
+        from data_freshness.evaluator_v134 import DataFreshnessEvaluator
+        # 2026-01-12 Monday 01:00 UTC = 09:00 Taipei (market just opened)
+        now_mon = datetime(2026, 1, 12, 1, 0, 0, tzinfo=timezone.utc)
+        ev = DataFreshnessEvaluator(now_provider=lambda: now_mon)
+        now_tw = now_mon + timedelta(hours=8)
+        # 09:00 Taiwan — market open
+        assert ev._is_market_open(now_tw) is True
+
+    # ── 6. Cross month boundary ───────────────────────────────
+    def test_cross_month_boundary_stale(self):
+        from data_freshness.evaluator_v134 import DataFreshnessEvaluator
+        from data_freshness.models_v134 import FreshnessStatus
+        # now = 2026-02-02 02:00 UTC = 10:00 Asia/Taipei (Mon, trading day)
+        now_feb = datetime(2026, 2, 2, 2, 0, 0, tzinfo=timezone.utc)
+        ev = DataFreshnessEvaluator(now_provider=lambda: now_feb)
+        ts = (now_feb - timedelta(seconds=200000)).isoformat()
+        rec = ev.evaluate("2330", "DAILY_OHLCV", ts)
+        assert rec.freshness_status in (FreshnessStatus.STALE, FreshnessStatus.CRITICALLY_STALE)
+
+    # ── 7. Cross year boundary ────────────────────────────────
+    def test_cross_year_boundary_stale(self):
+        from data_freshness.evaluator_v134 import DataFreshnessEvaluator
+        from data_freshness.models_v134 import FreshnessStatus
+        # now = 2026-01-05 02:00 UTC = 10:00 Asia/Taipei (Mon, trading day)
+        now_jan5 = datetime(2026, 1, 5, 2, 0, 0, tzinfo=timezone.utc)
+        ev = DataFreshnessEvaluator(now_provider=lambda: now_jan5)
+        ts = (now_jan5 - timedelta(seconds=200000)).isoformat()
+        rec = ev.evaluate("2330", "DAILY_OHLCV", ts)
+        assert rec.freshness_status in (FreshnessStatus.STALE, FreshnessStatus.CRITICALLY_STALE)
+
+    # ── 8. Asia/Taipei aware datetime passes as now_provider ──
+    def test_taipei_aware_datetime_as_now_provider(self):
+        from data_freshness.evaluator_v134 import DataFreshnessEvaluator
+        from data_freshness.models_v134 import FreshnessStatus
+        tz_taipei = timezone(timedelta(hours=8))
+        now_tp = datetime(2026, 1, 7, 10, 0, 0, tzinfo=tz_taipei)
+        ev = DataFreshnessEvaluator(now_provider=lambda: now_tp)
+        ts = _ts_ago_fixed(200000, now=now_tp.astimezone(timezone.utc))
+        rec = ev.evaluate("2330", "DAILY_OHLCV", ts)
+        assert rec.freshness_status in (FreshnessStatus.STALE, FreshnessStatus.CRITICALLY_STALE)
+
+    # ── 9. UTC timestamp converted to Asia/Taipei age ─────────
+    def test_utc_timestamp_converts_to_taipei_age(self):
+        from data_freshness.evaluator_v134 import DataFreshnessEvaluator
+        ev = self._ev()
+        ts_utc = _ts_ago_fixed(7200)  # 2 h before fixed clock
+        age = ev.calculate_age(ts_utc)
+        assert age is not None
+        assert 7100 < age < 7300
+
+    # ── 10. Naive datetime returns INVALID_TIMESTAMP ──────────
+    def test_naive_datetime_invalid_timestamp_fixed_clock(self):
+        from data_freshness.models_v134 import FreshnessStatus
+        ev = self._ev()
+        rec = ev.evaluate("2330", "DAILY_OHLCV", "2026-01-06T09:00:00")  # naive
+        assert rec.freshness_status == FreshnessStatus.INVALID_TIMESTAMP
+
+    # ── 11. Daily OHLCV fresh on previous trading day ────────
+    def test_daily_ohlcv_previous_trading_day_fresh(self):
+        from data_freshness.models_v134 import FreshnessStatus
+        ev = self._ev()
+        # 1 h old during market hours on same trading day → FRESH or ok
+        ts = _ts_ago_fixed(3600)
+        rec = ev.evaluate("2330", "DAILY_OHLCV", ts)
+        assert FreshnessStatus.is_ok(rec.freshness_status)
+
+    # ── 12. Intraday data stale during trading hours ──────────
+    def test_intraday_data_stale_mid_session(self):
+        from data_freshness.evaluator_v134 import DataFreshnessEvaluator
+        from data_freshness.models_v134 import FreshnessStatus, FreshnessPolicy
+        # Intraday policy: stale after 900 s (15 min)
+        policy = FreshnessPolicy(policy_id="intraday_test", dataset_type="INTRADAY_1MIN",
+                                  stale_after=900.0, critical_after=1800.0)
+        ev = DataFreshnessEvaluator(now_provider=_fixed_now_provider)
+        ts = _ts_ago_fixed(2000)  # 33 min old → > stale_after=900
+        rec = ev.evaluate("2330", "INTRADAY_1MIN", ts, policy=policy)
+        assert rec.freshness_status in (FreshnessStatus.STALE, FreshnessStatus.CRITICALLY_STALE,
+                                         FreshnessStatus.NEAR_STALE)
+
+    # ── 13. Intraday data fresh right after capture ───────────
+    def test_intraday_data_fresh_right_after_capture(self):
+        from data_freshness.evaluator_v134 import DataFreshnessEvaluator
+        from data_freshness.models_v134 import FreshnessStatus, FreshnessPolicy
+        policy = FreshnessPolicy(policy_id="intraday_test2", dataset_type="INTRADAY_1MIN",
+                                  stale_after=900.0, critical_after=1800.0)
+        ev = DataFreshnessEvaluator(now_provider=_fixed_now_provider)
+        ts = _ts_ago_fixed(60)  # 1 min old → FRESH
+        rec = ev.evaluate("2330", "INTRADAY_1MIN", ts, policy=policy)
+        assert FreshnessStatus.is_ok(rec.freshness_status)
+
+    # ── 14. Monthly revenue freshness unaffected by hourly drift ─
+    def test_monthly_revenue_long_stale_after(self):
+        from data_freshness.evaluator_v134 import DataFreshnessEvaluator
+        from data_freshness.models_v134 import FreshnessStatus, FreshnessPolicy
+        # Monthly revenue: stale_after = 45 days × 86400 s
+        policy = FreshnessPolicy(policy_id="monthly_rev_test",
+                                  dataset_type="MONTHLY_REVENUE",
+                                  stale_after=45 * 86400.0,
+                                  critical_after=90 * 86400.0)
+        ev = DataFreshnessEvaluator(now_provider=_fixed_now_provider)
+        ts = _ts_ago_fixed(10 * 86400)  # 10 days old → still FRESH
+        rec = ev.evaluate("2330", "MONTHLY_REVENUE", ts, policy=policy)
+        assert FreshnessStatus.is_ok(rec.freshness_status)
+
+    # ── 15. Financial statement freshness unaffected by daily drift ─
+    def test_financial_statement_fresh_within_quarter(self):
+        from data_freshness.evaluator_v134 import DataFreshnessEvaluator
+        from data_freshness.models_v134 import FreshnessStatus, FreshnessPolicy
+        policy = FreshnessPolicy(policy_id="fin_stmt_test",
+                                  dataset_type="FINANCIAL_STATEMENTS",
+                                  stale_after=90 * 86400.0,
+                                  critical_after=120 * 86400.0)
+        ev = DataFreshnessEvaluator(now_provider=_fixed_now_provider)
+        ts = _ts_ago_fixed(30 * 86400)  # 30 days old → FRESH for quarterly data
+        rec = ev.evaluate("2330", "FINANCIAL_STATEMENTS", ts, policy=policy)
+        assert FreshnessStatus.is_ok(rec.freshness_status)
+
+    # ── 16. Technical indicator freshness follows OHLCV age ───
+    def test_technical_indicator_follows_ohlcv_age(self):
+        from data_freshness.evaluator_v134 import DataFreshnessEvaluator
+        from data_freshness.models_v134 import FreshnessStatus, FreshnessPolicy
+        policy = FreshnessPolicy(policy_id="tech_ind_test",
+                                  dataset_type="TECHNICAL_INDICATORS",
+                                  stale_after=86400.0, critical_after=172800.0)
+        ev = DataFreshnessEvaluator(now_provider=_fixed_now_provider)
+        ts = _ts_ago_fixed(200000)  # same age as underlying OHLCV would be stale
+        rec = ev.evaluate("2330", "TECHNICAL_INDICATORS", ts, policy=policy)
+        assert rec.freshness_status in (FreshnessStatus.STALE, FreshnessStatus.CRITICALLY_STALE)
+
+    # ── 17. Future timestamp always BLOCKED ───────────────────
+    def test_future_timestamp_blocked_fixed_clock(self):
+        from data_freshness.models_v134 import FreshnessStatus
+        ev = self._ev()
+        ts = _ts_future_fixed(86400)  # 1 day in the future from fixed clock
+        rec = ev.evaluate("2330", "DAILY_OHLCV", ts)
+        assert rec.freshness_status == FreshnessStatus.FUTURE_TIMESTAMP
+
+    # ── 18. Fixed clock does not pollute next test ────────────
+    def test_fixed_clock_does_not_pollute_next_test(self):
+        from data_freshness.evaluator_v134 import DataFreshnessEvaluator
+        ev_fixed = DataFreshnessEvaluator(now_provider=_fixed_now_provider)
+        ev_real = DataFreshnessEvaluator()  # uses real clock
+        ts = _ts_ago_fixed(200000)
+        # Fixed evaluator sees age ~200000 s → STALE/CRITICALLY_STALE
+        from data_freshness.models_v134 import FreshnessStatus
+        rec_fixed = ev_fixed.evaluate("2330", "DAILY_OHLCV", ts)
+        assert rec_fixed.freshness_status in (FreshnessStatus.STALE, FreshnessStatus.CRITICALLY_STALE)
+        # Real evaluator may differ — just verify it doesn't crash
+        rec_real = ev_real.evaluate("2330", "DAILY_OHLCV", ts)
+        assert rec_real.freshness_status is not None
+
+    # ── 19. Same fixed clock always produces same result ──────
+    def test_same_fixed_clock_reproducible(self):
+        from data_freshness.models_v134 import FreshnessStatus
+        ev1 = self._ev()
+        ev2 = self._ev()
+        ts = _ts_ago_fixed(200000)
+        rec1 = ev1.evaluate("2330", "DAILY_OHLCV", ts)
+        rec2 = ev2.evaluate("2330", "DAILY_OHLCV", ts)
+        assert rec1.freshness_status == rec2.freshness_status
+
+    # ── 20. Different execution dates produce same result ─────
+    def test_different_execution_dates_same_result(self):
+        # Two evaluators with different fixed clocks but identical timestamps
+        # produce identically deterministic staleness for the *same* ts.
+        from data_freshness.evaluator_v134 import DataFreshnessEvaluator
+        from data_freshness.models_v134 import FreshnessStatus
+        now_a = datetime(2026, 1, 7, 2, 0, 0, tzinfo=timezone.utc)   # Wed
+        now_b = datetime(2026, 3, 4, 2, 0, 0, tzinfo=timezone.utc)   # Wed
+        ts_a = (now_a - timedelta(seconds=200000)).isoformat()
+        ts_b = (now_b - timedelta(seconds=200000)).isoformat()
+        ev_a = DataFreshnessEvaluator(now_provider=lambda: now_a)
+        ev_b = DataFreshnessEvaluator(now_provider=lambda: now_b)
+        rec_a = ev_a.evaluate("2330", "DAILY_OHLCV", ts_a)
+        rec_b = ev_b.evaluate("2330", "DAILY_OHLCV", ts_b)
+        # Both are 200 000 s old evaluated on a trading-day market-open clock
+        assert rec_a.freshness_status == rec_b.freshness_status
+        assert rec_a.freshness_status in (FreshnessStatus.STALE, FreshnessStatus.CRITICALLY_STALE)

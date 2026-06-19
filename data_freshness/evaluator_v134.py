@@ -12,7 +12,7 @@ from __future__ import annotations
 import logging
 import uuid
 from datetime import datetime, timezone, timedelta
-from typing import Any, Dict, List, Optional, Tuple
+from typing import Any, Callable, Dict, List, Optional, Tuple
 
 from data_freshness.models_v134 import (
     FreshnessRecord, FreshnessPolicy, FreshnessSeverity, FreshnessStatus,
@@ -63,9 +63,20 @@ class DataFreshnessEvaluator:
         self,
         policy_registry=None,
         calendar=None,
+        now_provider: Optional[Callable[[], datetime]] = None,
     ) -> None:
         self._policy_registry = policy_registry
         self._calendar = calendar
+        self._now_provider = now_provider
+
+    def _now_utc(self) -> datetime:
+        """Return current UTC time. Uses injected now_provider in tests; real clock in production."""
+        if self._now_provider is not None:
+            dt = self._now_provider()
+            if dt.tzinfo is None:
+                return dt.replace(tzinfo=timezone.utc)
+            return dt.astimezone(timezone.utc)
+        return _now_utc()
 
     def _get_policy(self, dataset_type: str, policy: Optional[FreshnessPolicy]) -> FreshnessPolicy:
         if policy is not None:
@@ -91,7 +102,7 @@ class DataFreshnessEvaluator:
         dt = _parse_iso(ts_str)
         if dt is None:
             return None
-        now = _now_utc()
+        now = self._now_utc()
         delta = now - dt
         return delta.total_seconds()
 
@@ -101,7 +112,7 @@ class DataFreshnessEvaluator:
         if dt is None:
             return None
         ts_date = dt.astimezone(timezone(timedelta(hours=8))).date()
-        today = datetime.now(timezone(timedelta(hours=8))).date()
+        today = self._now_utc().astimezone(timezone(timedelta(hours=8))).date()
         return float(calendar.trading_days_between(ts_date, today))
 
     def expected_latest_timestamp(
@@ -109,7 +120,7 @@ class DataFreshnessEvaluator:
     ) -> Optional[str]:
         """Return expected latest timestamp string for the dataset_type."""
         try:
-            now = as_of or _now_utc()
+            now = as_of or self._now_utc()
             ltd = calendar.expected_latest_trading_day(now)
             # Return end-of-day UTC for trading-sensitive types
             from datetime import date
@@ -142,7 +153,7 @@ class DataFreshnessEvaluator:
 
         # Non-trading day valid: if policy allows and day is non-trading
         try:
-            now_tw = _now_utc() + timedelta(hours=8)
+            now_tw = self._now_utc() + timedelta(hours=8)
             today = now_tw.date()
             is_trading = calendar.is_trading_day(today)
             if not is_trading:
@@ -276,7 +287,7 @@ class DataFreshnessEvaluator:
         blocked_profiles = self.determine_blocking_profiles(status, dataset_type, resolved_policy)
 
         # Compute market/trading context
-        now_tw = _now_utc() + timedelta(hours=8)
+        now_tw = self._now_utc() + timedelta(hours=8)
         today = now_tw.date()
         try:
             is_trading = cal.is_trading_day(today)
