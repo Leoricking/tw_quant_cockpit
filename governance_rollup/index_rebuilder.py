@@ -207,6 +207,13 @@ class GovernanceIndexRebuilder:
         NEVER modifies history files.
         Duplicates are recorded in warnings, NOT silently discarded.
         """
+        if module_name not in self._MODULE_PATHS:
+            return {
+                "module_name": module_name,
+                "status": "UNSUPPORTED",
+                "allow_write": allow_write,
+            }
+
         if not allow_write:
             preview = self.preview_rebuild(module_name)
             preview["status"] = "DRY_RUN_ONLY"

@@ -153,12 +153,21 @@ class ReplayStableHealthCheck:
     def _check_version_info(self) -> Tuple[str, str]:
         try:
             from release.version_info import (
-                VERSION, REPLAY_TRAINING_LINE_COMPLETE, STABLE_ROLLUP,
-                NO_REAL_ORDERS, REAL_ORDERS_ENABLED, BROKER_EXECUTION_ENABLED,
-                PRODUCTION_TRADING_BLOCKED,
+                VERSION, REPLAY_STABLE_BASELINE, REPLAY_TRAINING_LINE_COMPLETE,
+                STABLE_ROLLUP, NO_REAL_ORDERS, REAL_ORDERS_ENABLED,
+                BROKER_EXECUTION_ENABLED, PRODUCTION_TRADING_BLOCKED,
             )
-            if VERSION != "1.2.9":
-                return ("FAIL", f"VERSION={VERSION}, expected 1.2.9")
+            # Replay stable baseline must be frozen at 1.2.9
+            if REPLAY_STABLE_BASELINE != "1.2.9":
+                return ("FAIL", f"REPLAY_STABLE_BASELINE={REPLAY_STABLE_BASELINE}, expected 1.2.9")
+            # Application VERSION must be >= 1.2.9 (semantic; 1.3.0 is compatible)
+            def _ver(v: str):
+                try:
+                    return tuple(int(x) for x in v.lstrip("v").split(".")[:3])
+                except Exception:
+                    return (0, 0, 0)
+            if _ver(VERSION) < _ver("1.2.9"):
+                return ("FAIL", f"VERSION={VERSION} is below minimum 1.2.9")
             if not REPLAY_TRAINING_LINE_COMPLETE:
                 return ("FAIL", "REPLAY_TRAINING_LINE_COMPLETE is not True")
             if not STABLE_ROLLUP:
@@ -171,7 +180,7 @@ class ReplayStableHealthCheck:
                 return ("FAIL", f"BROKER_EXECUTION_ENABLED={BROKER_EXECUTION_ENABLED}")
             if PRODUCTION_TRADING_BLOCKED is not True:
                 return ("FAIL", f"PRODUCTION_TRADING_BLOCKED={PRODUCTION_TRADING_BLOCKED}")
-            return ("PASS", f"version_info: v{VERSION}, all safety flags OK")
+            return ("PASS", f"version_info: v{VERSION} (baseline {REPLAY_STABLE_BASELINE}), all safety flags OK")
         except Exception as exc:
             return ("FAIL", f"version_info check error: {exc}")
 

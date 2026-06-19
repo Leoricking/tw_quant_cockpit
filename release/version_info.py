@@ -315,6 +315,7 @@ AUTO_REGISTRY_CONFLICT_RESOLUTION_ENABLED  = False
 AUTO_TRADING_ENABLED                       = False
 REPLAY_TRADE_EXECUTION_ENABLED             = False  # noqa: F811
 # v1.2.9 Replay Training Stable Rollup flags
+REPLAY_STABLE_BASELINE                      = "1.2.9"   # frozen Replay Training v1.2 line
 REPLAY_STABLE_HEALTH_AVAILABLE              = True
 REPLAY_STABLE_MANIFEST_AVAILABLE            = True
 REPLAY_CAPABILITY_MATRIX_AVAILABLE          = True

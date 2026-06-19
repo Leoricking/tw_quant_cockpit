@@ -49,6 +49,9 @@ class GovernanceHealthAggregator:
     - No Real Orders BLOCKED = expected safety block
     """
 
+    RESEARCH_ONLY = True
+    NO_REAL_ORDERS = True
+
     HEALTH_COMMANDS = [
         ("universe-health",            "universe"),
         ("import-onboarding-health",   "data_onboarding"),

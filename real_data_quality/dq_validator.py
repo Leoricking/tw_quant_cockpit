@@ -804,10 +804,23 @@ def _is_nan_or_inf(val) -> bool:
 
 
 def _parse_date_flexible(date_str: str) -> datetime:
-    """Try multiple common date formats."""
-    for fmt in ("%Y-%m-%dT%H:%M:%S%z", "%Y-%m-%dT%H:%M:%S", "%Y-%m-%d"):
+    """Try multiple common date formats.
+
+    A date-only string (YYYY-MM-DD) represents the trading day, not midnight.
+    Market data for a given day is available at end-of-trading-day, so we
+    treat date-only strings as 23:59:59 of that day to avoid false stale
+    flags when the data is checked early the next calendar day.
+    """
+    stripped = date_str.strip()
+    # Detect date-only format: exactly 10 chars matching YYYY-MM-DD
+    import re as _re
+    if _re.match(r'^\d{4}-\d{2}-\d{2}$', stripped):
+        dt = datetime.strptime(stripped, "%Y-%m-%d")
+        # Interpret as end-of-trading-day to avoid false stale detection
+        return dt.replace(hour=23, minute=59, second=59)
+    for fmt in ("%Y-%m-%dT%H:%M:%S%z", "%Y-%m-%dT%H:%M:%S"):
         try:
-            return datetime.strptime(date_str.strip()[:19], fmt[:len(fmt)])
+            return datetime.strptime(stripped[:19], fmt[:len(fmt)])
         except ValueError:
             continue
     # Last try: fromisoformat

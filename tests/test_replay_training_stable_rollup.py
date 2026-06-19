@@ -23,8 +23,12 @@ class TestVersionInfo:
     """v1.2.9 version_info constants."""
 
     def test_version_is_129(self):
-        from release.version_info import VERSION
-        assert VERSION == "1.2.9", f"Expected 1.2.9, got {VERSION}"
+        # Global VERSION is the application version (now 1.3.0+).
+        # Replay Training stable baseline is frozen at 1.2.9; check that constant.
+        from release.version_info import REPLAY_STABLE_BASELINE
+        assert REPLAY_STABLE_BASELINE == "1.2.9", (
+            f"Expected REPLAY_STABLE_BASELINE=1.2.9, got {REPLAY_STABLE_BASELINE}"
+        )
 
     def test_replay_training_line_complete(self):
         from release.version_info import REPLAY_TRAINING_LINE_COMPLETE
