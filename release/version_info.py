@@ -1,5 +1,5 @@
 """
-release/version_info.py — Centralized version info for TW Quant Cockpit v1.3.0.
+release/version_info.py — Centralized version info for TW Quant Cockpit v1.3.1.
 [!] Research Only. No Real Orders. Production Trading: BLOCKED.
 [!] VALIDATED does not enable trading. Broker Execution Disabled.
 [!] Replay Challenge Mode. Challenge Training Only. Simulation Only.
@@ -58,6 +58,10 @@ release/version_info.py — Centralized version info for TW Quant Cockpit v1.3.0
 [!] BLOCKED status: no precise prices, no formal buy recommendations. Research Only.
 [!] UNAVAILABLE: returns REAL DATA UNAVAILABLE. No mock fallback. Not Investment Advice.
 [!] Data quality score 0-100. CRITICAL issue caps score at 49. Not Investment Advice.
+[!] Universe Expansion Foundation. Registry only. No Auto Download. No Real API Connected.
+[!] Universe Ready does NOT enable trading. Universe Registered != data complete.
+[!] Universe Covered != can generate precise prices. No mock fallback on scan failure.
+[!] No auto-generation of fake OHLCV. No auto-backtest. No auto-trading suggestions.
 """
 from __future__ import annotations
 import logging
@@ -67,12 +71,12 @@ logger = logging.getLogger(__name__)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 # ---------------------------------------------------------------------------
-# v1.3.0 module-level constants (Real Data Quality Foundation)
+# v1.3.1 module-level constants (Universe Expansion Foundation)
 # ---------------------------------------------------------------------------
-VERSION                             = "1.3.0"
-RELEASE_NAME                        = "Real Data Quality Foundation"
-BASE_RELEASE                        = "1.2.9 Replay Training Stable Rollup"
-BASE_RELEASE_NAME                   = "Data Governance Stable Rollup"
+VERSION                             = "1.3.1"
+RELEASE_NAME                        = "Universe Expansion Foundation"
+BASE_RELEASE                        = "1.3.0 Real Data Quality Foundation"
+BASE_RELEASE_NAME                   = "Real Data Quality Foundation"
 MAINTENANCE_RELEASE                 = False
 RELEASE_STAGE                       = "STABLE"
 RELEASE_TRACK                       = "real_data_quality"
@@ -353,6 +357,13 @@ MOCK_DEMO_ONLY_LABEL_ENFORCED               = True
 REAL_DATA_QUALITY_CLI_ENABLED               = True
 REAL_DATA_QUALITY_GUI_PANEL                 = True
 REAL_DATA_QUALITY_HEALTH                    = True
+# v1.3.1 Universe Expansion Foundation flags
+UNIVERSE_REGISTRY_AVAILABLE                 = True
+UNIVERSE_COVERAGE_AVAILABLE                 = True
+UNIVERSE_BATCH_QUALITY_SCAN_AVAILABLE       = True
+UNIVERSE_REAL_API_CONNECTED                 = False  # ALWAYS FALSE
+UNIVERSE_AUTO_DOWNLOAD_ENABLED              = False  # ALWAYS FALSE
+REAL_ORDERS_ENABLED                         = False  # noqa: F811  ALWAYS FALSE
 
 
 class VersionInfo:
@@ -700,6 +711,13 @@ def print_version_info() -> None:
     print(f"  No Real Orders: {NO_REAL_ORDERS}")
     print(f"  Broker Execution Enabled: {BROKER_EXECUTION_ENABLED}")
     print(f"  Production Trading BLOCKED: {PRODUCTION_TRADING_BLOCKED}")
+    # v1.3.1 Universe Expansion Foundation flags
+    print(f"  Universe Registry Available: {UNIVERSE_REGISTRY_AVAILABLE}")
+    print(f"  Universe Coverage Available: {UNIVERSE_COVERAGE_AVAILABLE}")
+    print(f"  Universe Batch Quality Scan Available: {UNIVERSE_BATCH_QUALITY_SCAN_AVAILABLE}")
+    print(f"  Universe Real API Connected: {UNIVERSE_REAL_API_CONNECTED}")
+    print(f"  Universe Auto Download Enabled: {UNIVERSE_AUTO_DOWNLOAD_ENABLED}")
+    print(f"  Mock Fallback Enabled: {MOCK_FALLBACK_ENABLED}")
     print("=" * 60)
 
 

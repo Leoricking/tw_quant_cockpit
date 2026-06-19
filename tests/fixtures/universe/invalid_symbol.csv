@@ -1,0 +1,4 @@
+symbol,name,market,exchange,industry,security_type,listing_status,listing_date,tier,enabled
+,missing_symbol_test,TWSE,,Test,COMMON_STOCK,LISTED,,core,1
+AAPL,Apple Foreign,UNKNOWN,,Tech,COMMON_STOCK,LISTED,,extended,1
+台積電,chinese_name_as_symbol,TWSE,,Foundry,COMMON_STOCK,LISTED,,core,1

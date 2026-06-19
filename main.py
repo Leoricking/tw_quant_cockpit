@@ -5839,12 +5839,31 @@ def cmd_version_info(args: argparse.Namespace) -> None:
         print(f"{'Auto Strategy Decision Enabled:':<40} {asde}")
         print(f"{'Auto Strategy Execution Enabled:':<40} {asee}")
         print(f"{'Auto Strategy Weight Change Enabled:':<40} {aswce}")
+        # v1.2.9 Replay Training Stable Rollup
+        replay_stable_baseline = getattr(_vi116, "REPLAY_STABLE_BASELINE", "1.2.9")
+        print(f"{'Replay Stable Baseline:':<40} {replay_stable_baseline}")
+        # v1.3.1 Universe Expansion Foundation
+        uni_reg   = getattr(_vi116, "UNIVERSE_REGISTRY_AVAILABLE", False)
+        uni_cov   = getattr(_vi116, "UNIVERSE_COVERAGE_AVAILABLE", False)
+        uni_scan  = getattr(_vi116, "UNIVERSE_BATCH_QUALITY_SCAN_AVAILABLE", False)
+        uni_api   = getattr(_vi116, "UNIVERSE_REAL_API_CONNECTED", True)
+        uni_dl    = getattr(_vi116, "UNIVERSE_AUTO_DOWNLOAD_ENABLED", True)
+        mf_en     = getattr(_vi116, "MOCK_FALLBACK_ENABLED", True)
+        print(f"{'Universe Registry Available:':<40} {uni_reg}")
+        print(f"{'Universe Coverage Available:':<40} {uni_cov}")
+        print(f"{'Universe Batch Quality Scan Available:':<40} {uni_scan}")
+        print(f"{'Universe Real API Connected:':<40} {uni_api}")
+        print(f"{'Universe Auto Download Enabled:':<40} {uni_dl}")
+        print(f"{'Mock Fallback Enabled:':<40} {mf_en}")
     except Exception as exc:
-        print(f"  Version:                              1.1.9")
-        print(f"  Release:                              Data Governance Stable Rollup")
-        print(f"  Base Release:                         1.1.8 Research Run Registry")
-        print(f"  Data Governance Stable Rollup Available: True")
-        print(f"  Auto Store Repair Enabled:            False")
+        print(f"  Version:                              1.3.1")
+        print(f"  Release:                              Universe Expansion Foundation")
+        print(f"  Base Release:                         1.3.0 Real Data Quality Foundation")
+        print(f"  Replay Stable Baseline:               1.2.9")
+        print(f"  Universe Registry Available:          True")
+        print(f"  Universe Real API Connected:          False")
+        print(f"  Universe Auto Download Enabled:       False")
+        print(f"  Mock Fallback Enabled:                False")
         print(f"  Trade Execution Enabled:              False")
         print(f"  (version_info import error: {exc})")
     print("=" * 60)
@@ -22133,6 +22152,67 @@ def _build_parser() -> argparse.ArgumentParser:
         help="[v1.3.0] Real Data Quality system health check. Research Only.",
     )
 
+    # --- v1.3.1 Universe Expansion Foundation ---
+    p_ul131 = subparsers.add_parser(
+        "universe-list-v131",
+        help="[v1.3.1] List universe symbols. Research Only. No Real Orders.",
+    )
+    p_ul131.add_argument("--tier", default=None, help="Universe/tier filter (core/research/extended/watchlist/excluded)")
+    p_ul131.add_argument("--market", default=None, help="Market filter (TWSE/TPEx)")
+
+    p_us131 = subparsers.add_parser(
+        "universe-show-v131",
+        help="[v1.3.1] Show symbol details. Research Only. No Real Orders.",
+    )
+    p_us131.add_argument("--symbol", required=True, help="Symbol code, e.g. 2330")
+
+    p_uss131 = subparsers.add_parser(
+        "universe-summary-v131",
+        help="[v1.3.1] Show universe summary. Research Only. No Real Orders.",
+    )
+    p_uss131.add_argument("--profile", default="default",
+                          choices=["default", "stock_screening", "precise_price", "backtest",
+                                   "abc_buy_point", "stock-screening", "precise-price",
+                                   "abc-buy-point"],
+                          help="Coverage profile")
+
+    p_uc131 = subparsers.add_parser(
+        "universe-coverage-v131",
+        help="[v1.3.1] Show universe coverage. Research Only. No Real Orders.",
+    )
+    p_uc131.add_argument("--profile", default="default",
+                         choices=["default", "stock_screening", "precise_price", "backtest",
+                                  "abc_buy_point", "stock-screening", "precise-price",
+                                  "abc-buy-point"],
+                         help="Coverage profile")
+
+    p_uqs = subparsers.add_parser(
+        "universe-quality-scan",
+        help="[v1.3.1] Run quality scan. Research Only. No Real Orders. No Auto Download.",
+    )
+    p_uqs.add_argument("--tier", default=None, help="Universe tier to scan")
+    p_uqs.add_argument("--symbol", default=None, help="Single symbol to scan")
+    p_uqs.add_argument("--profile", default="default",
+                       choices=["default", "stock_screening", "precise_price", "backtest",
+                                "abc_buy_point", "stock-screening", "precise-price",
+                                "abc-buy-point"],
+                       help="Coverage profile (default: default)")
+
+    p_ui = subparsers.add_parser(
+        "universe-import",
+        help="[v1.3.1] Import universe metadata from CSV/JSON. Dry-run by default. Research Only.",
+    )
+    p_ui.add_argument("--path", required=True, help="Path to import file (.csv or .json)")
+    p_ui.add_argument("--dry-run", dest="dry_run", action="store_true", default=True,
+                      help="Dry-run only (default; no changes made)")
+    p_ui.add_argument("--execute", action="store_true", default=False,
+                      help="Execute import (stores to temp dir only; requires explicit flag)")
+
+    subparsers.add_parser(
+        "universe-health-v131",
+        help="[v1.3.1] Universe Expansion Foundation health check. Research Only.",
+    )
+
     return parser
 
 
@@ -23466,6 +23546,358 @@ def cmd_real_data_quality_health(args) -> None:
         raise
     except Exception as exc:
         print(f"  [FAIL] Health check error: {exc}")
+        raise SystemExit(1)
+
+
+# ---------------------------------------------------------------------------
+# v1.3.1 Universe Expansion Foundation commands
+# ---------------------------------------------------------------------------
+
+def cmd_universe_list_v131(args) -> None:
+    """
+    [v1.3.1] List universe symbols. [!] Research Only. No Real Orders.
+    Universe Ready does NOT enable trading.
+    """
+    tier_filter = getattr(args, "tier", None)
+    market_filter = getattr(args, "market", None)
+    profile = getattr(args, "profile", None)
+    print("=" * 70)
+    print("  TW Quant Cockpit v1.3.1 \u2014 Universe List")
+    print("  [!] Research Only | No Real Orders | Universe Ready != Trading Enabled")
+    print("  [!] No Real API Connected | No Auto Download | Not Investment Advice")
+    print("=" * 70)
+    try:
+        from universe.definitions_v131 import get_all_builtin_universes
+        universes = get_all_builtin_universes()
+        if tier_filter:
+            uni = universes.get(tier_filter.lower())
+            if uni is None:
+                print(f"  [ERROR] Unknown tier/universe: {tier_filter}")
+                print(f"  Available: {', '.join(universes.keys())}")
+                raise SystemExit(2)
+            syms = uni.symbols
+            print(f"  Universe : {uni.name}")
+            print(f"  Source   : {uni.source}")
+            print(f"  Symbols  : {len(syms)}")
+            for s in syms:
+                print(f"    {s}")
+        else:
+            for uid, uni in universes.items():
+                print(f"  {uid:<12} {uni.name:<40} {len(uni.symbols)} symbols")
+        print("[!] Research Only. Not Investment Advice.")
+    except SystemExit:
+        raise
+    except Exception as exc:
+        print(f"  [ERROR] universe-list failed: {exc}")
+
+
+def cmd_universe_show_v131(args) -> None:
+    """
+    [v1.3.1] Show details for a single symbol. [!] Research Only. No Real Orders.
+    """
+    symbol = getattr(args, "symbol", None)
+    if not symbol:
+        print("  [ERROR] --symbol is required")
+        raise SystemExit(2)
+    print("=" * 70)
+    print(f"  TW Quant Cockpit v1.3.1 \u2014 Universe Symbol: {symbol}")
+    print("  [!] Research Only | No Real Orders | Not Investment Advice")
+    print("=" * 70)
+    try:
+        from universe.symbol_normalizer import SymbolNormalizer
+        from universe.definitions_v131 import get_all_builtin_universes
+        norm = SymbolNormalizer()
+        result = norm.normalize(symbol)
+        print(f"  Symbol          : {symbol}")
+        print(f"  Normalized      : {result.normalized_symbol}")
+        print(f"  Detected Market : {result.detected_market}")
+        print(f"  Is Valid        : {result.is_valid}")
+        if result.warning:
+            print(f"  Warning         : {result.warning}")
+        # Check which universes contain this symbol
+        universes = get_all_builtin_universes()
+        memberships = []
+        for uid, uni in universes.items():
+            if result.normalized_symbol in uni.symbols or symbol in uni.symbols:
+                memberships.append(uid)
+        if memberships:
+            print(f"  Universe Members: {', '.join(memberships)}")
+        else:
+            print(f"  Universe Members: None (UNREGISTERED in built-in seed)")
+        print(f"  Application Version: 1.3.1")
+        print(f"  No Real Orders: True")
+        print(f"  Broker Execution Disabled: True")
+        print(f"  Production Trading BLOCKED: True")
+        print("[!] Research Only. Universe Ready != Trading Enabled. Not Investment Advice.")
+    except SystemExit:
+        raise
+    except Exception as exc:
+        print(f"  [ERROR] universe-show failed: {exc}")
+
+
+def cmd_universe_summary_v131(args) -> None:
+    """
+    [v1.3.1] Show universe summary. [!] Research Only. No Real Orders.
+    """
+    profile = getattr(args, "profile", None) or "default"
+    print("=" * 70)
+    print("  TW Quant Cockpit v1.3.1 \u2014 Universe Summary")
+    print("  [!] Research Only | No Real Orders | Universe Ready != Trading Enabled")
+    print("=" * 70)
+    try:
+        from universe.definitions_v131 import get_all_builtin_universes
+        universes = get_all_builtin_universes()
+        print(f"  Application Version  : 1.3.1")
+        print(f"  Profile              : {profile}")
+        print(f"  Data Mode            : UNAVAILABLE (no real data connected)")
+        for uid, uni in universes.items():
+            print(f"  Universe: {uid:<12} Symbols: {len(uni.symbols):<5} Source: {uni.source}")
+        print(f"  No Real Orders       : True")
+        print(f"  Broker Execution     : Disabled")
+        print(f"  Production Trading   : BLOCKED")
+        print(f"  Universe Real API    : Not Connected")
+        print(f"  Auto Download        : Disabled")
+        print("[!] Research Only. Not Investment Advice.")
+    except Exception as exc:
+        print(f"  [ERROR] universe-summary-v131 failed: {exc}")
+
+
+def cmd_universe_coverage_v131(args) -> None:
+    """
+    [v1.3.1] Show universe coverage for a profile. [!] Research Only. No Real Orders.
+    """
+    profile = getattr(args, "profile", None) or "default"
+    print("=" * 70)
+    print("  TW Quant Cockpit v1.3.1 \u2014 Universe Coverage")
+    print("  [!] Research Only | No Real Orders | Coverage != Precise Price Allowed")
+    print("=" * 70)
+    try:
+        from universe.definitions_v131 import get_core_universe
+        core = get_core_universe()
+        print(f"  Application Version : 1.3.1")
+        print(f"  Profile             : {profile}")
+        print(f"  Universe            : {core.name}")
+        print(f"  Symbols             : {len(core.symbols)}")
+        print(f"  Ready               : 0 (no real data connected)")
+        print(f"  Partial             : 0")
+        print(f"  Missing             : 0")
+        print(f"  Stale               : 0")
+        print(f"  Blocked             : 0")
+        print(f"  Unavailable         : {len(core.symbols)}")
+        print(f"  Demo Only           : 0")
+        print(f"  Excluded            : 0")
+        print(f"  Latest Scan         : N/A")
+        print(f"  No Real Orders      : True")
+        print(f"  Broker Execution    : Disabled")
+        print(f"  Production Trading  : BLOCKED")
+        print("[!] Research Only. Coverage != can generate precise prices. Not Investment Advice.")
+    except Exception as exc:
+        print(f"  [ERROR] universe-coverage-v131 failed: {exc}")
+
+
+def cmd_universe_quality_scan_v131(args) -> None:
+    """
+    [v1.3.1] Run quality scan for a tier or symbol. [!] Research Only. No Real Orders.
+    """
+    tier = getattr(args, "tier", None)
+    symbol = getattr(args, "symbol", None)
+    profile = getattr(args, "profile", None) or "default"
+    print("=" * 70)
+    print("  TW Quant Cockpit v1.3.1 \u2014 Universe Quality Scan")
+    print("  [!] Research Only | No Real Orders | Scan != Formal Analysis")
+    print("  [!] No Auto Download | No Mock Fallback | Not Investment Advice")
+    print("=" * 70)
+    try:
+        from universe.scanner import UniverseQualityScanner
+        scanner = UniverseQualityScanner()
+        if symbol:
+            record = scanner.scan_symbol(symbol, profile=profile)
+            print(f"  Symbol          : {record.symbol}")
+            print(f"  Profile         : {profile}")
+            print(f"  Coverage Status : {record.quality_status}")
+            print(f"  Registry Status : {record.registry_status}")
+            print(f"  Data Mode       : {record.data_mode}")
+            print(f"  Precise Price   : {record.precise_price_allowed}")
+            print(f"  Backtest        : {record.backtest_allowed}")
+            print(f"  A/B/C           : {record.abc_buy_point_allowed}")
+            if record.blocking_reasons:
+                print(f"  Blocking Reasons: {'; '.join(record.blocking_reasons)}")
+            if record.warnings:
+                print(f"  Warnings        : {'; '.join(record.warnings)}")
+            status = record.quality_status
+            if status in ("BLOCKED", "UNAVAILABLE"):
+                raise SystemExit(1)
+        elif tier:
+            results = scanner.scan_tier(tier, profile=profile)
+            summary = scanner.summarize(results, profile=profile)
+            print(f"  Tier            : {tier}")
+            print(f"  Profile         : {profile}")
+            print(f"  Total Symbols   : {summary.total_symbols}")
+            print(f"  Ready           : {summary.ready_count}")
+            print(f"  Partial         : {summary.partial_count}")
+            print(f"  Missing         : {summary.missing_count}")
+            print(f"  Stale           : {summary.stale_count}")
+            print(f"  Blocked         : {summary.blocked_count}")
+            print(f"  Unavailable     : {summary.unavailable_count}")
+            print(f"  Demo Only       : {summary.demo_only_count}")
+        else:
+            print("  [ERROR] --tier or --symbol required")
+            raise SystemExit(2)
+        print("[!] Research Only. No Real Orders. Not Investment Advice.")
+    except SystemExit:
+        raise
+    except Exception as exc:
+        print(f"  [ERROR] universe-quality-scan failed: {exc}")
+
+
+def cmd_universe_import_v131(args) -> None:
+    """
+    [v1.3.1] Import universe metadata from file. [!] Research Only. No Real Orders.
+    [!] Default: dry-run. No destructive replace. No network.
+    """
+    path = getattr(args, "path", None)
+    dry_run = getattr(args, "dry_run", True)
+    execute = getattr(args, "execute", False)
+    if not path:
+        print("  [ERROR] --path is required")
+        raise SystemExit(2)
+    # Determine format from extension
+    fmt = "csv"
+    if path.lower().endswith(".json"):
+        fmt = "json"
+    print("=" * 70)
+    print("  TW Quant Cockpit v1.3.1 \u2014 Universe Import")
+    print("  [!] Research Only | No Real Orders | DRY-RUN by default")
+    print("  [!] No Network | No Auto Download | Not Investment Advice")
+    print("=" * 70)
+    try:
+        from universe.importer_v131 import UniverseImporter
+        importer = UniverseImporter()
+        if not execute:
+            # Dry-run (default)
+            result = importer.dry_run(path, fmt)
+            print(f"  Mode         : DRY-RUN (use --execute to apply)")
+            print(f"  Path         : {path}")
+            print(f"  Format       : {fmt}")
+            print(f"  Would Add    : {len(result.would_add)} symbols")
+            print(f"  Would Skip   : {len(result.would_skip)}")
+            if result.would_block:
+                print(f"  BLOCKED      : {len(result.would_block)}")
+                for b in result.would_block:
+                    print(f"    - {b.get('symbol', '?')}: {b.get('reason', '')}")
+            if result.duplicate_detected:
+                print(f"  Duplicates   : {', '.join(result.duplicate_detected)}")
+            print(f"  Status       : {'OK' if result.ok else 'ERROR'}")
+            if result.would_block:
+                raise SystemExit(1)
+        else:
+            # Execute (requires explicit --execute flag)
+            import tempfile
+            import os
+            tmp_dir = tempfile.mkdtemp(prefix="tw_universe_import_")
+            from universe.registry_v131 import UniverseRegistryV131
+            reg = UniverseRegistryV131(storage_dir=tmp_dir)
+            result = importer.execute(path, fmt, reg)
+            print(f"  Mode         : EXECUTE (temp storage: {tmp_dir})")
+            print(f"  Path         : {path}")
+            print(f"  Format       : {fmt}")
+            print(f"  Added        : {len(result.added)} symbols")
+            print(f"  Skipped      : {len(result.skipped)}")
+            if result.blocked:
+                print(f"  BLOCKED      : {len(result.blocked)}")
+            if result.errors:
+                print(f"  Errors       : {len(result.errors)}")
+            print(f"  Status       : {'OK' if result.ok else 'ERROR'}")
+            print(f"  Note         : {result.note}")
+        print("[!] Research Only. Not Investment Advice.")
+    except SystemExit:
+        raise
+    except Exception as exc:
+        print(f"  [ERROR] universe-import failed: {exc}")
+
+
+def cmd_universe_health_v131(args) -> None:
+    """
+    [v1.3.1] Universe health check. [!] Research Only. No Real Orders.
+    """
+    print("=" * 70)
+    print("  TW Quant Cockpit v1.3.1 \u2014 Universe Health Check")
+    print("  [!] Research Only | No Real Orders | Universe Ready != Trading Enabled")
+    print("=" * 70)
+    try:
+        import universe
+        checks = {
+            "universe_package_import":     ("PASS", "universe package importable"),
+            "universe_registry_available": ("PASS" if universe.UNIVERSE_REGISTRY_AVAILABLE else "FAIL", str(universe.UNIVERSE_REGISTRY_AVAILABLE)),
+            "universe_coverage_available": ("PASS" if universe.UNIVERSE_COVERAGE_AVAILABLE else "FAIL", str(universe.UNIVERSE_COVERAGE_AVAILABLE)),
+            "universe_real_api_not_connected": ("PASS" if not universe.UNIVERSE_REAL_API_CONNECTED else "FAIL", f"Real API Connected={universe.UNIVERSE_REAL_API_CONNECTED}"),
+            "universe_auto_download_disabled": ("PASS" if not universe.UNIVERSE_AUTO_DOWNLOAD_ENABLED else "FAIL", f"Auto Download={universe.UNIVERSE_AUTO_DOWNLOAD_ENABLED}"),
+            "mock_fallback_disabled":      ("PASS" if not universe.MOCK_DATA_FORMAL_CONCLUSION_ALLOWED else "FAIL", f"Mock Formal Allowed={universe.MOCK_DATA_FORMAL_CONCLUSION_ALLOWED}"),
+            "no_real_orders":              ("PASS" if universe.NO_REAL_ORDERS else "FAIL", str(universe.NO_REAL_ORDERS)),
+            "production_trading_blocked":  ("PASS" if universe.PRODUCTION_TRADING_BLOCKED else "FAIL", str(universe.PRODUCTION_TRADING_BLOCKED)),
+        }
+        # Check v1.3.1 models
+        try:
+            from universe.models import UniverseMarket, SecurityType, CoverageStatus, UniverseSymbol, UniverseCoverageRecord
+            checks["universe_models_v131"] = ("PASS", "models.py importable")
+        except Exception as exc:
+            checks["universe_models_v131"] = ("FAIL", str(exc))
+        # Check normalizer
+        try:
+            from universe.symbol_normalizer import SymbolNormalizer
+            checks["symbol_normalizer"] = ("PASS", "normalizer importable")
+        except Exception as exc:
+            checks["symbol_normalizer"] = ("FAIL", str(exc))
+        # Check definitions
+        try:
+            from universe.definitions_v131 import get_core_universe
+            u = get_core_universe()
+            checks["universe_definitions_v131"] = ("PASS", f"core has {len(u.symbols)} symbols")
+        except Exception as exc:
+            checks["universe_definitions_v131"] = ("FAIL", str(exc))
+        # Check registry
+        try:
+            from universe.registry_v131 import UniverseRegistryV131
+            checks["universe_registry_v131"] = ("PASS", "registry_v131 importable")
+        except Exception as exc:
+            checks["universe_registry_v131"] = ("FAIL", str(exc))
+        # Check importer
+        try:
+            from universe.importer_v131 import UniverseImporter
+            checks["universe_importer_v131"] = ("PASS", "importer_v131 importable")
+        except Exception as exc:
+            checks["universe_importer_v131"] = ("FAIL", str(exc))
+        # Check scanner
+        try:
+            from universe.scanner import UniverseQualityScanner
+            checks["universe_scanner"] = ("PASS", "scanner importable")
+        except Exception as exc:
+            checks["universe_scanner"] = ("FAIL", str(exc))
+
+        pass_count = sum(1 for (s, _) in checks.values() if s == "PASS")
+        fail_count = sum(1 for (s, _) in checks.values() if s == "FAIL")
+        total = len(checks)
+        for name, (status, detail) in checks.items():
+            icon = "PASS" if status == "PASS" else "FAIL"
+            print(f"  [{icon}] {name:<45} {detail}")
+        print("-" * 70)
+        print(f"  PASS: {pass_count}/{total}  FAIL: {fail_count}/{total}")
+        overall = "PASS" if fail_count == 0 else "FAIL"
+        print(f"  Overall: {overall}")
+        print(f"  Universe Registry Available    : {universe.UNIVERSE_REGISTRY_AVAILABLE}")
+        print(f"  Universe Real API Connected    : {universe.UNIVERSE_REAL_API_CONNECTED}")
+        print(f"  Universe Auto Download Enabled : {universe.UNIVERSE_AUTO_DOWNLOAD_ENABLED}")
+        print(f"  Mock Fallback Enabled          : False")
+        print(f"  No Real Orders                 : True")
+        print(f"  Broker Execution Disabled      : True")
+        print(f"  Production Trading BLOCKED     : True")
+        print("[!] Research Only. Not Investment Advice.")
+        if fail_count > 0:
+            raise SystemExit(1)
+    except SystemExit:
+        raise
+    except Exception as exc:
+        print(f"  [ERROR] universe-health-v131 failed: {exc}")
         raise SystemExit(1)
 
 
@@ -27695,6 +28127,14 @@ def main() -> None:
         # v1.3.0 Real Data Quality Foundation
         "data-quality":                              cmd_data_quality,
         "real-data-quality-health":                  cmd_real_data_quality_health,
+        # v1.3.1 Universe Expansion Foundation
+        "universe-list-v131":          cmd_universe_list_v131,
+        "universe-show-v131":          cmd_universe_show_v131,
+        "universe-summary-v131":       cmd_universe_summary_v131,
+        "universe-coverage-v131":      cmd_universe_coverage_v131,
+        "universe-quality-scan":       cmd_universe_quality_scan_v131,
+        "universe-import":             cmd_universe_import_v131,
+        "universe-health-v131":        cmd_universe_health_v131,
         # v1.2.9 Replay Training Stable Rollup
         "replay-stable-health":                      cmd_replay_stable_health,
         "replay-stable-summary":                     cmd_replay_stable_summary,

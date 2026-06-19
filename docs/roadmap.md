@@ -99,6 +99,32 @@
 | v1.2.7 | Replay Challenge Mode | Done |
 | v1.2.8 | Replay Dataset & Session Registry | Done |
 | v1.2.9 | Replay Training Stable Rollup | Done — **Replay Training v1.2 Line Complete** |
+| v1.3.0 | Real Data Quality Foundation | Done |
+| v1.3.1 | Universe Expansion Foundation | Done |
+
+---
+
+### v1.3.1 — Universe Expansion Foundation ✅
+
+- **Version:** 1.3.1 — Universe Expansion Foundation
+- **Type:** Symbol registry, normalizer, built-in universe definitions (BUILT_IN_SEED — NOT REAL_MARKET_MASTER), coverage analyzer, batch quality scanner, importer (CSV/JSON dry-run default), new CLI commands, updated health checks, test fixtures and regression tests.
+- **Changes:** universe/models.py (UniverseMarket, SecurityType, ListingStatus, UniverseTier, CoverageStatus, UniverseSymbol, UniverseMembership, UniverseDefinition, UniverseCoverageRecord, UniverseSummary), universe/symbol_normalizer.py (SymbolNormalizer, NormalizedSymbolResult), universe/registry_v131.py (UniverseRegistryV131 — JSON-backed, conflict detection), universe/definitions_v131.py (BUILT_IN_SEED core 14, research, extended, watchlist, excluded), universe/importer_v131.py (UniverseImporter — dry-run default), universe/coverage_analyzer_v131.py (UniverseCoverageAnalyzerV131 — integrates v1.3.0 gate), universe/scanner.py (UniverseQualityScanner — batch scan, max limit, cancellation), main.py (7 new v1.3.1 CLI commands), release/version_info.py (UNIVERSE_REGISTRY_AVAILABLE, UNIVERSE_COVERAGE_AVAILABLE, UNIVERSE_BATCH_QUALITY_SCAN_AVAILABLE, UNIVERSE_REAL_API_CONNECTED=False, UNIVERSE_AUTO_DOWNLOAD_ENABLED=False), tests (test_universe_registry.py, test_universe_normalizer.py, test_universe_coverage.py, test_universe_cli.py, test_universe_gui.py, test_universe_regression.py — 96 new tests), tests/fixtures/universe/ (5 CSV/JSON fixtures), .gitignore (universe runtime excluded, fixtures committed), docs/universe_expansion_v1.3.1.md, docs/roadmap.md.
+- **Safety:** UNIVERSE_REGISTRY_AVAILABLE=True; UNIVERSE_REAL_API_CONNECTED=False; UNIVERSE_AUTO_DOWNLOAD_ENABLED=False; MOCK_FALLBACK_ENABLED=False; NO_REAL_ORDERS=True; BROKER_EXECUTION_ENABLED=False; PRODUCTION_TRADING_BLOCKED=True; Universe Ready != Trading Enabled; Universe Registered != data complete; Universe Covered != can generate precise prices; No auto-generation of fake OHLCV; No auto-backtest; No auto-trading suggestions; Fixtures labeled TEST_FIXTURE NOT REAL_MARKET_MASTER; Not Investment Advice.
+- **Replay Stable Baseline:** 1.2.9 (unchanged)
+
+**Next:**
+- v1.3.2: Real Data Provider Adapter Foundation
+- v1.3.3: Coverage Repair Workflow
+- v1.3.4: Data Freshness Monitor
+- v1.4.0: Strategy Knowledge Empirical Backtest
+
+---
+
+### v1.3.0 — Real Data Quality Foundation ✅
+
+- **Version:** 1.3.0 — Real Data Quality Foundation
+- **Type:** DataMode, DataQualityStatus, DataQualityReport, DataCompletenessGate, DataQualityScorer, DataQualityValidator, health checks, CLI commands, GUI panel, regression tests.
+- **Safety:** MOCK_FALLBACK_ENABLED=False (always); Real mode never substitutes mock data; BLOCKED: no precise prices; UNAVAILABLE: no mock fallback; Quality score 0-100; CRITICAL issue caps score at 49; Not Investment Advice.
 
 ---
 

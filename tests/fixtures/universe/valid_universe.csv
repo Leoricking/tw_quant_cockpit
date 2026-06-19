@@ -1,0 +1,6 @@
+symbol,name,market,exchange,industry,security_type,listing_status,listing_date,tier,enabled,tags
+2330,台積電,TWSE,,Foundry,COMMON_STOCK,LISTED,1994-09-05,core,1,semiconductor
+2308,台達電,TWSE,,Power/Thermal,COMMON_STOCK,LISTED,1989-10-23,core,1,power
+2345,智邦,TWSE,,Networking,COMMON_STOCK,LISTED,1998-01-28,core,1,networking
+2454,聯發科,TWSE,,IC Design,COMMON_STOCK,LISTED,2001-07-23,core,1,semiconductor
+6669,緯穎,TWSE,,Server/ODM,COMMON_STOCK,LISTED,2019-08-05,core,1,server

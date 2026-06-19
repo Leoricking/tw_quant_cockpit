@@ -1,0 +1,3 @@
+symbol,name,market,exchange,industry,security_type,listing_status,listing_date,tier,enabled
+2330,台積電 TWSE copy,TWSE,,Foundry,COMMON_STOCK,LISTED,,core,1
+2330,台積電 TPEx copy,TPEx,,Foundry,COMMON_STOCK,LISTED,,core,1

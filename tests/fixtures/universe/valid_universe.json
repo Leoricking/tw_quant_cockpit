@@ -1,0 +1,10 @@
+{
+  "_note": "TEST_FIXTURE — NOT REAL_MARKET_MASTER. Research Only. No Real Orders.",
+  "symbols": [
+    {"symbol": "2330", "name": "台積電", "market": "TWSE", "industry": "Foundry", "security_type": "COMMON_STOCK", "listing_status": "LISTED", "tier": "core", "enabled": "1"},
+    {"symbol": "2308", "name": "台達電", "market": "TWSE", "industry": "Power/Thermal", "security_type": "COMMON_STOCK", "listing_status": "LISTED", "tier": "core", "enabled": "1"},
+    {"symbol": "2345", "name": "智邦", "market": "TWSE", "industry": "Networking", "security_type": "COMMON_STOCK", "listing_status": "LISTED", "tier": "core", "enabled": "1"},
+    {"symbol": "2454", "name": "聯發科", "market": "TWSE", "industry": "IC Design", "security_type": "COMMON_STOCK", "listing_status": "LISTED", "tier": "core", "enabled": "1"},
+    {"symbol": "6669", "name": "緯穎", "market": "TWSE", "industry": "Server/ODM", "security_type": "COMMON_STOCK", "listing_status": "LISTED", "tier": "core", "enabled": "1"}
+  ]
+}

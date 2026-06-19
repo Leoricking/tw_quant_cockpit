@@ -1,0 +1,5 @@
+symbol,name,market,exchange,industry,security_type,listing_status,listing_date,tier,enabled
+2330,台積電 first,TWSE,,Foundry,COMMON_STOCK,LISTED,,core,1
+2330,台積電 duplicate,TWSE,,Foundry,COMMON_STOCK,LISTED,,core,1
+2308,台達電,TWSE,,Power,COMMON_STOCK,LISTED,,core,1
+2308,台達電 duplicate,TWSE,,Power,COMMON_STOCK,LISTED,,research,1

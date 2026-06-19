@@ -1,9 +1,11 @@
 """
-universe/ — Data Universe Expansion package (v1.1.0).
+universe/ — Data Universe Expansion package (v1.3.1).
 
 [!] Research Only. No Real Orders. Production Trading: BLOCKED.
 [!] VALIDATED does not enable trading. Broker Execution Disabled.
 [!] Real Data Coverage Required. Mock Data Formal Conclusion: DISABLED.
+[!] Universe Ready does NOT enable trading. Universe Registered != data complete.
+[!] Universe Real API Connected = False. Universe Auto Download = False.
 [!] Not Investment Advice.
 """
 
@@ -19,3 +21,9 @@ DATA_UNIVERSE_EXPANSION_RELEASE     = True
 UNIVERSE_TIERS_AVAILABLE            = True
 REAL_DATA_COVERAGE_REQUIRED         = True
 MOCK_DATA_FORMAL_CONCLUSION_ALLOWED = False
+# v1.3.1 Universe Expansion Foundation
+UNIVERSE_REGISTRY_AVAILABLE         = True
+UNIVERSE_COVERAGE_AVAILABLE         = True
+UNIVERSE_BATCH_QUALITY_SCAN_AVAILABLE = True
+UNIVERSE_REAL_API_CONNECTED         = False
+UNIVERSE_AUTO_DOWNLOAD_ENABLED      = False

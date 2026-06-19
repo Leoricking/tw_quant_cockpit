@@ -542,3 +542,15 @@ run_v128_post_release_check_fixed.bat
 # v1.2.9 Stable Rollup fixtures ARE committed (exception)
 !tests/fixtures/replay_stable/*.json
 !tests/fixtures/replay_stable/*.jsonl
+
+# v1.3.1 Universe Expansion Foundation (ignore runtime registry / import files)
+data/universe_registry_runtime/
+data/universe_import_runtime/
+universe_registry_runtime/
+reports/universe_expansion_*.md
+reports/universe_coverage_scan_*.md
+reports/universe_quality_scan_*.md
+
+# v1.3.1 Universe fixtures ARE committed (exception)
+!tests/fixtures/universe/*.csv
+!tests/fixtures/universe/*.json
