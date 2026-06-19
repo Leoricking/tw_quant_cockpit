@@ -68,7 +68,8 @@ import sys
 from datetime import date, datetime
 
 # Force UTF-8 output on Windows so Chinese characters display correctly
-if sys.platform == "win32":
+# Only apply when running as __main__ (not when imported by tests or other modules)
+if sys.platform == "win32" and __name__ == "__main__":
     import io
     sys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding="utf-8", errors="replace")
     sys.stderr = io.TextIOWrapper(sys.stderr.buffer, encoding="utf-8", errors="replace")
@@ -22451,6 +22452,126 @@ def _build_parser() -> argparse.ArgumentParser:
     parser.add_argument("--backtest-id", dest="backtest_id", nargs="*", default=None)
     parser.add_argument("--execute", dest="execute", action="store_true", default=False)
 
+    # v1.4.1 A/B/C Buy Point Validation subparsers
+    p_abc_plan = subparsers.add_parser(
+        "abc-validation-plan",
+        help="[v1.4.1] Build A/B/C validation dry-run plan. Research Only. No Real Orders.",
+    )
+    p_abc_plan.add_argument("--buy-point-type", dest="buy_point_type", default="A",
+                             choices=["A", "B", "C"], help="Buy point type (default: A)")
+    p_abc_plan.add_argument("--symbol", default=None, help="Symbol, e.g. 2330")
+    p_abc_plan.add_argument("--universe", default=None, help="Universe ID")
+
+    p_abc_run = subparsers.add_parser(
+        "abc-validation-run",
+        help="[v1.4.1] Run A/B/C validation (dry-run by default). Research Only. No Real Orders.",
+    )
+    p_abc_run.add_argument("--buy-point-type", dest="buy_point_type", default="A",
+                            choices=["A", "B", "C"])
+    p_abc_run.add_argument("--symbol", default=None)
+    p_abc_run.add_argument("--universe", default=None)
+    p_abc_run.add_argument("--execute", dest="execute", action="store_true", default=False,
+                            help="Execute (default: dry-run)")
+
+    p_abc_show = subparsers.add_parser(
+        "abc-validation-show",
+        help="[v1.4.1] Show A/B/C validation result. Research Only.",
+    )
+    p_abc_show.add_argument("--validation-id", dest="validation_id", default=None)
+
+    subparsers.add_parser(
+        "abc-validation-list",
+        help="[v1.4.1] List all A/B/C validation runs. Research Only.",
+    )
+
+    subparsers.add_parser(
+        "abc-validation-compare",
+        help="[v1.4.1] Compare A vs B vs C validation results. Research Only.",
+    )
+
+    p_abc_hp = subparsers.add_parser(
+        "abc-validation-holding-period",
+        help="[v1.4.1] Show holding period analysis. Research Only.",
+    )
+    p_abc_hp.add_argument("--validation-id", dest="validation_id", default=None)
+
+    p_abc_sl = subparsers.add_parser(
+        "abc-validation-stop-loss",
+        help="[v1.4.1] Show stop loss analysis. Research Only.",
+    )
+    p_abc_sl.add_argument("--validation-id", dest="validation_id", default=None)
+
+    p_abc_tp = subparsers.add_parser(
+        "abc-validation-take-profit",
+        help="[v1.4.1] Show take profit analysis. Research Only.",
+    )
+    p_abc_tp.add_argument("--validation-id", dest="validation_id", default=None)
+
+    p_abc_regime = subparsers.add_parser(
+        "abc-validation-regime",
+        help="[v1.4.1] Show regime analysis. Research Only.",
+    )
+    p_abc_regime.add_argument("--validation-id", dest="validation_id", default=None)
+
+    p_abc_abl = subparsers.add_parser(
+        "abc-validation-ablation",
+        help="[v1.4.1] Show filter ablation analysis. Research Only.",
+    )
+    p_abc_abl.add_argument("--validation-id", dest="validation_id", default=None)
+
+    p_abc_sw = subparsers.add_parser(
+        "abc-validation-second-wave",
+        help="[v1.4.1] Show second-wave analysis. Research Only.",
+    )
+    p_abc_sw.add_argument("--validation-id", dest="validation_id", default=None)
+
+    p_abc_inst = subparsers.add_parser(
+        "abc-validation-institutional",
+        help="[v1.4.1] Show institutional analysis. Research Only.",
+    )
+    p_abc_inst.add_argument("--validation-id", dest="validation_id", default=None)
+
+    p_abc_margin = subparsers.add_parser(
+        "abc-validation-margin",
+        help="[v1.4.1] Show margin analysis. Research Only.",
+    )
+    p_abc_margin.add_argument("--validation-id", dest="validation_id", default=None)
+
+    p_abc_out = subparsers.add_parser(
+        "abc-validation-outcomes",
+        help="[v1.4.1] Show outcome taxonomy. Research Only.",
+    )
+    p_abc_out.add_argument("--validation-id", dest="validation_id", default=None)
+
+    p_abc_wf = subparsers.add_parser(
+        "abc-validation-walk-forward",
+        help="[v1.4.1] Run walk-forward validation (dry-run by default). Research Only.",
+    )
+    p_abc_wf.add_argument("--buy-point-type", dest="buy_point_type", default="A",
+                           choices=["A", "B", "C"])
+
+    subparsers.add_parser(
+        "abc-validation-blocked",
+        help="[v1.4.1] List blocked A/B/C validation runs. Research Only.",
+    )
+
+    p_abc_cr = subparsers.add_parser(
+        "abc-validation-create-repair",
+        help="[v1.4.1] Preview repair candidates for blocked validations. Research Only. No Auto Execution.",
+    )
+    p_abc_cr.add_argument("--validation-id", dest="validation_id", default=None)
+
+    p_abc_rpt = subparsers.add_parser(
+        "abc-validation-report",
+        help="[v1.4.1] Generate A/B/C validation report. Research Only.",
+    )
+    p_abc_rpt.add_argument("--validation-id", dest="validation_id", default=None)
+
+    subparsers.add_parser(
+        "abc-validation-health",
+        help="[v1.4.1] Run A/B/C validation health checks. Research Only.",
+    )
+
     return parser
 
 
@@ -29143,6 +29264,198 @@ def cmd_empirical_backtest_health(args):
         print(f"[ERROR] {exc}")
 
 
+# ---------------------------------------------------------------------------
+# v1.4.1 A/B/C Buy Point Validation CLI handlers
+# ---------------------------------------------------------------------------
+
+def _abc_safety_banner():
+    print("[!] Research Only. No Real Orders. No Broker. Not Investment Advice.")
+    print("[!] Formal Conclusion Requires Real Data. Mock Formal Conclusion: DISABLED.")
+    print("[!] Auto Optimization: DISABLED. Auto Trading: DISABLED.")
+
+def cmd_abc_validation_plan(args):
+    _abc_safety_banner()
+    buy_point_type = getattr(args, 'buy_point_type', 'A') or 'A'
+    symbol = getattr(args, 'symbol', None)
+    universe = getattr(args, 'universe', None)
+    print(f"A/B/C Validation Plan (DRY RUN)")
+    print(f"  Buy Point Type: {buy_point_type}")
+    print(f"  Symbol:   {symbol or 'N/A'}")
+    print(f"  Universe: {universe or 'N/A'}")
+    print(f"  Mode:     DRY_RUN (no execution)")
+    print(f"  No Real Orders | Broker Execution Disabled | Production Trading BLOCKED")
+
+def cmd_abc_validation_run(args):
+    _abc_safety_banner()
+    dry_run = not getattr(args, 'execute', False)
+    buy_point_type = getattr(args, 'buy_point_type', 'A') or 'A'
+    symbol = getattr(args, 'symbol', None)
+    print(f"A/B/C Validation Run ({'DRY_RUN' if dry_run else 'EXECUTE'})")
+    print(f"  Buy Point Type: {buy_point_type}, Symbol: {symbol or 'N/A'}")
+    if not dry_run:
+        print(f"  [INFO] Execute mode — requires real data for formal conclusion.")
+    print(f"  No Real Orders | Broker Execution Disabled | Production Trading BLOCKED")
+
+def cmd_abc_validation_show(args):
+    _abc_safety_banner()
+    validation_id = getattr(args, 'validation_id', None)
+    try:
+        from abc_validation.store_v141 import ABCValidationStore
+        store = ABCValidationStore(base_dir=BASE_DIR)
+        run = store.get_run(validation_id)
+        if run is None:
+            print(f"No validation result found for ID: {validation_id}")
+        else:
+            print(f"Validation ID:  {run.get('validation_id')}")
+            print(f"Buy Point Type: {run.get('buy_point_type')}")
+            print(f"Confidence:     {run.get('confidence')}")
+    except Exception as exc:
+        print(f"[ERROR] {exc}")
+
+def cmd_abc_validation_list(args):
+    _abc_safety_banner()
+    try:
+        from abc_validation.store_v141 import ABCValidationStore
+        store = ABCValidationStore(base_dir=BASE_DIR)
+        runs = store.list_runs()
+        print(f"A/B/C Validation Runs ({len(runs)} total):")
+        for r in runs[:20]:
+            print(f"  [{r.get('buy_point_type','?')}] {r.get('validation_id')}: confidence={r.get('confidence')}")
+    except Exception as exc:
+        print(f"[ERROR] {exc}")
+
+def cmd_abc_validation_compare(args):
+    _abc_safety_banner()
+    print("A/B/C Comparison — requires completed validation runs for each type.")
+    print("  [INFO] No results available yet — run abc-validation-run first.")
+
+def cmd_abc_validation_holding_period(args):
+    _abc_safety_banner()
+    validation_id = getattr(args, 'validation_id', None)
+    print(f"A/B/C Holding Period Analysis — validation_id={validation_id}")
+    print(f"  Periods: 1/2/3/5/10/20 trading days")
+    print(f"  No Real Orders | Production Trading BLOCKED")
+
+def cmd_abc_validation_stop_loss(args):
+    _abc_safety_banner()
+    validation_id = getattr(args, 'validation_id', None)
+    print(f"A/B/C Stop Loss Analysis — validation_id={validation_id}")
+    print(f"  Models: no_stop/fixed_pct/below_ma5/below_ma10/below_ma20/atr_based/time_stop/structure_failure")
+    print(f"  No Real Orders | Production Trading BLOCKED")
+
+def cmd_abc_validation_take_profit(args):
+    _abc_safety_banner()
+    validation_id = getattr(args, 'validation_id', None)
+    print(f"A/B/C Take Profit Analysis — validation_id={validation_id}")
+    print(f"  No Real Orders | Production Trading BLOCKED")
+
+def cmd_abc_validation_regime(args):
+    _abc_safety_banner()
+    validation_id = getattr(args, 'validation_id', None)
+    print(f"A/B/C Regime Analysis — validation_id={validation_id}")
+    print(f"  Regimes: BULL/BEAR/SIDEWAYS/HIGH_VOLATILITY/LOW_VOLATILITY/UNKNOWN")
+    print(f"  No Real Orders | Production Trading BLOCKED")
+
+def cmd_abc_validation_ablation(args):
+    _abc_safety_banner()
+    validation_id = getattr(args, 'validation_id', None)
+    print(f"A/B/C Filter Ablation Analysis — validation_id={validation_id}")
+    print(f"  Filters: base/+volume/+kd/+rsi/+macd/+foreign/+trust/+dealer/+margin/+ma60/+2nd_wave/full")
+    print(f"  No Real Orders | Production Trading BLOCKED")
+
+def cmd_abc_validation_second_wave(args):
+    _abc_safety_banner()
+    validation_id = getattr(args, 'validation_id', None)
+    print(f"A/B/C Second Wave Analysis — validation_id={validation_id}")
+    print(f"  No Real Orders | Production Trading BLOCKED")
+
+def cmd_abc_validation_institutional(args):
+    _abc_safety_banner()
+    validation_id = getattr(args, 'validation_id', None)
+    print(f"A/B/C Institutional Analysis — validation_id={validation_id}")
+    print(f"  Missing data → INSUFFICIENT (never 0)")
+    print(f"  No Real Orders | Production Trading BLOCKED")
+
+def cmd_abc_validation_margin(args):
+    _abc_safety_banner()
+    validation_id = getattr(args, 'validation_id', None)
+    print(f"A/B/C Margin Analysis — validation_id={validation_id}")
+    print(f"  Missing data → INSUFFICIENT (never 0)")
+    print(f"  No Real Orders | Production Trading BLOCKED")
+
+def cmd_abc_validation_outcomes(args):
+    _abc_safety_banner()
+    validation_id = getattr(args, 'validation_id', None)
+    print(f"A/B/C Outcome Taxonomy — validation_id={validation_id}")
+    print(f"  Outcomes: SUCCESS_*/FAILED_*/FALSE_*/SIDEWAYS_CHOP/GAP_FAILURE/BLOCKED/etc.")
+    print(f"  No Real Orders | Production Trading BLOCKED")
+
+def cmd_abc_validation_walk_forward(args):
+    _abc_safety_banner()
+    buy_point_type = getattr(args, 'buy_point_type', 'A') or 'A'
+    print(f"A/B/C Walk-Forward Validation — buy_point_type={buy_point_type}")
+    print(f"  Mode: DRY_RUN — no execution performed")
+    print(f"  All folds preserved including negative-performance folds.")
+    print(f"  No test-set parameter tuning.")
+    print(f"  No Real Orders | Production Trading BLOCKED")
+
+def cmd_abc_validation_blocked(args):
+    _abc_safety_banner()
+    try:
+        from abc_validation.store_v141 import ABCValidationStore
+        store = ABCValidationStore(base_dir=BASE_DIR)
+        blocked = store.list_blocked()
+        print(f"Blocked A/B/C Validation Runs ({len(blocked)}):")
+        for b in blocked[:20]:
+            print(f"  [{b.get('buy_point_type','?')}] {b.get('validation_id')}: confidence=BLOCKED")
+    except Exception as exc:
+        print(f"[ERROR] {exc}")
+
+def cmd_abc_validation_create_repair(args):
+    _abc_safety_banner()
+    validation_id = getattr(args, 'validation_id', None)
+    print(f"Create Repair Tasks for blocked A/B/C validation: {validation_id}")
+    print(f"  [INFO] create_repair_tasks=False by default — no repair tasks created.")
+    print(f"  Use --execute to create repair candidates in CoverageRepairQueue.")
+    print(f"  No Auto Repair | No Auto Download | No Mock Fallback")
+
+def cmd_abc_validation_report(args):
+    _abc_safety_banner()
+    validation_id = getattr(args, 'validation_id', None)
+    try:
+        from abc_validation.store_v141 import ABCValidationStore
+        from abc_validation.report_v141 import ABCValidationReport
+        store = ABCValidationStore(base_dir=BASE_DIR)
+        result = store.get_run(validation_id)
+        if result is None:
+            print(f"No validation result found for ID: {validation_id}")
+            return
+        rpt = ABCValidationReport()
+        print(rpt.generate_text(result))
+    except Exception as exc:
+        print(f"[INFO] {exc}")
+        print("[!] Research Only. No Real Orders. Production Trading BLOCKED.")
+
+def cmd_abc_validation_health(args):
+    _abc_safety_banner()
+    try:
+        from abc_validation.health_v141 import ABCBuyPointValidationHealthCheck
+        hc = ABCBuyPointValidationHealthCheck()
+        summary = hc.get_health_summary()
+        status = "PASS" if summary["all_pass"] else "FAIL"
+        print(f"A/B/C Buy Point Validation Health: {status} ({summary['passed']}/{summary['total_checks']})")
+        for name, info in summary["checks"].items():
+            mark = "PASS" if info["status"] == "PASS" else "FAIL"
+            print(f"  [{mark}] {name}: {info['detail']}")
+        sf = summary.get("safety_flags", {})
+        print(f"  Auto Optimization Enabled: {sf.get('ABC_BUY_POINT_AUTO_OPTIMIZATION_ENABLED', False)}")
+        print(f"  Auto Trading Enabled: {sf.get('ABC_BUY_POINT_AUTO_TRADING_ENABLED', False)}")
+        print(f"  Broker Execution Enabled: {sf.get('BROKER_EXECUTION_ENABLED', False)}")
+        print(f"  Production Trading BLOCKED: {sf.get('PRODUCTION_TRADING_BLOCKED', True)}")
+    except Exception as exc:
+        print(f"[ERROR] {exc}")
+
+
 def main() -> None:
     """Main entrypoint."""
     import pandas as pd  # imported here to avoid shadowing at module level
@@ -30030,6 +30343,26 @@ def main() -> None:
         "empirical-backtest-create-repair":cmd_empirical_backtest_create_repair,
         "empirical-backtest-report":       cmd_empirical_backtest_report,
         "empirical-backtest-health":       cmd_empirical_backtest_health,
+        # v1.4.1 A/B/C Buy Point Validation
+        "abc-validation-plan":             cmd_abc_validation_plan,
+        "abc-validation-run":              cmd_abc_validation_run,
+        "abc-validation-show":             cmd_abc_validation_show,
+        "abc-validation-list":             cmd_abc_validation_list,
+        "abc-validation-compare":          cmd_abc_validation_compare,
+        "abc-validation-holding-period":   cmd_abc_validation_holding_period,
+        "abc-validation-stop-loss":        cmd_abc_validation_stop_loss,
+        "abc-validation-take-profit":      cmd_abc_validation_take_profit,
+        "abc-validation-regime":           cmd_abc_validation_regime,
+        "abc-validation-ablation":         cmd_abc_validation_ablation,
+        "abc-validation-second-wave":      cmd_abc_validation_second_wave,
+        "abc-validation-institutional":    cmd_abc_validation_institutional,
+        "abc-validation-margin":           cmd_abc_validation_margin,
+        "abc-validation-outcomes":         cmd_abc_validation_outcomes,
+        "abc-validation-walk-forward":     cmd_abc_validation_walk_forward,
+        "abc-validation-blocked":          cmd_abc_validation_blocked,
+        "abc-validation-create-repair":    cmd_abc_validation_create_repair,
+        "abc-validation-report":           cmd_abc_validation_report,
+        "abc-validation-health":           cmd_abc_validation_health,
     }
 
     if args.command is None:

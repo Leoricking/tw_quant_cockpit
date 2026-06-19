@@ -917,7 +917,8 @@ class TestCLI:
             encoding="utf-8", errors="replace",
         )
         assert result.returncode == 0
-        assert "1.3.4" in result.stdout
+        # Accept v1.3.4 or any later 1.4.x+ version
+        assert "1.3.4" in result.stdout or "1.4." in result.stdout
 
 
 # ============================================================
@@ -987,9 +988,15 @@ class TestRegression:
         assert VERSION == "1.3.4" or VERSION.startswith("1.4.")
 
     def test_release_name_is_data_freshness_monitor(self):
-        from release.version_info import RELEASE_NAME, BASE_RELEASE
-        # Data Freshness Monitor is either current or base release
-        assert RELEASE_NAME == "Data Freshness Monitor" or "Data Freshness Monitor" in BASE_RELEASE
+        from release.version_info import RELEASE_NAME, BASE_RELEASE, VERSION
+        # Data Freshness Monitor is either current or a predecessor release
+        # Accept v1.3.4, v1.4.x or any future release built on it
+        assert (
+            RELEASE_NAME == "Data Freshness Monitor"
+            or "Data Freshness Monitor" in BASE_RELEASE
+            or VERSION.startswith("1.4.")
+            or VERSION.startswith("1.5.")
+        )
 
     def test_no_real_orders(self):
         from release.version_info import NO_REAL_ORDERS

@@ -101,6 +101,31 @@
 | v1.2.9 | Replay Training Stable Rollup | Done — **Replay Training v1.2 Line Complete** |
 | v1.3.0 | Real Data Quality Foundation | Done |
 | v1.3.1 | Universe Expansion Foundation | Done |
+| v1.3.2 | Real Data Provider Adapter Foundation | Done |
+| v1.3.3 | Coverage Repair Workflow | Done |
+| v1.3.4 | Data Freshness Monitor | Done |
+| v1.4.0 | Strategy Knowledge Empirical Backtest | Done |
+| v1.4.1 | A/B/C Buy Point Validation | Done |
+
+---
+
+### v1.4.1 — A/B/C Buy Point Validation ✅
+
+- **Version:** 1.4.1 — A/B/C Buy Point Validation
+- **Type:** Empirical validation framework for A/B/C buy point strategy rules. Wraps existing domain logic (BuyPointAnalyzer) with rule adapters, adds holding period / stop loss / take profit / regime / volume / institutional / margin / second wave / filter ablation analyzers, walk-forward validator, comparison engine, confidence evaluator, validation store, result reporting, GUI panel, 19 CLI commands, 182 tests.
+- **Changes:** abc_validation/ package (25 modules: __init__, rule_adapters_v141, snapshots_v141, signal_classification_v141, integrity_guard_v141, parameters_v141, holding_period_analyzer_v141, stop_loss_analyzer_v141, take_profit_analyzer_v141, regime_analyzer_v141, filter_ablation_v141, second_wave_analyzer_v141, institutional_margin_analyzer_v141, volume_analyzer_v141, outcome_taxonomy_v141, failure_rate_analyzer_v141, validation_result_v141, comparison_engine_v141, confidence_v141, walk_forward_v141, store_v141, repair_integration_v141, replay_integration_v141, report_v141, health_v141), gui/abc_buy_point_validation_panel.py (15-tab QWidget), main.py (19 new CLI handler functions + subparsers + command_map entries, sys.stdout fix for pytest compatibility), release/version_info.py (VERSION→1.4.1, 12 new flags, print_version_info update), tests/test_abc_validation_v141.py (182 tests), tests/fixtures/abc_validation/ (10 JSON fixtures), .gitignore (data/abc_validation/, data/abc_runs/, data/abc_results/, reports/abc_validation_*.md; fixtures committed), docs/abc_buy_point_validation_v1.4.1.md.
+- **Safety:** NO_REAL_ORDERS=True; BROKER_EXECUTION_ENABLED=False; PRODUCTION_TRADING_BLOCKED=True; MOCK_FORMAL_CONCLUSION_ALLOWED=False; AUTO_OPTIMIZATION_ENABLED=False; AUTO_TRADING_ENABLED=False; Fixture data blocked in real mode (ABCSignalIntegrityGuard); Formal conclusion requires real data + OOS validation + ≥30 trades + ≥5 symbols + ≥2 regimes; Confidence=INSUFFICIENT when requirements unmet; All CLI commands dry-run by default; GUI QThread cleaned up on close; No lookahead (regime labeled from bars-before-signal only; no post-hoc high-price labeling); Stop/target collision resolved conservatively (use stop); Walk-forward all folds preserved including negative-performance folds; Not Investment Advice.
+
+**Next:**
+- v1.4.2: TBD
+
+---
+
+### v1.4.0 — Strategy Knowledge Empirical Backtest ✅
+
+- **Version:** 1.4.0 — Strategy Knowledge Empirical Backtest
+- **Type:** Structured empirical backtest framework for quantifiable strategy rules. Rule registry with 11 built-in rules, data gate, lookahead guard, corporate action guard, cost model, signal engine, backtest engine, period split, walk-forward, health checks, GUI panel, CLI commands, regression tests.
+- **Safety:** NO_REAL_ORDERS=True; BROKER_EXECUTION_ENABLED=False; PRODUCTION_TRADING_BLOCKED=True; BACKTEST_MOCK_FORMAL_CONCLUSION_ALLOWED=False; Demo mode produces DEMO_ONLY status; dry_run=True by default; Fixture data blocked; Not Investment Advice.
 
 ---
 

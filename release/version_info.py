@@ -73,9 +73,9 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # ---------------------------------------------------------------------------
 # v1.3.3 module-level constants (Coverage Repair Workflow)
 # ---------------------------------------------------------------------------
-VERSION                             = "1.4.0"
-RELEASE_NAME                        = "Strategy Knowledge Empirical Backtest"
-BASE_RELEASE                        = "1.3.4 Data Freshness Monitor"
+VERSION                             = "1.4.1"
+RELEASE_NAME                        = "A/B/C Buy Point Validation"
+BASE_RELEASE                        = "1.4.0 Strategy Knowledge Empirical Backtest"
 
 # ---------------------------------------------------------------------------
 # v1.3.2 module-level constants (Real Data Provider Adapter Foundation)
@@ -420,6 +420,19 @@ BACKTEST_REAL_DATA_REQUIRED             = True
 BACKTEST_MOCK_FORMAL_CONCLUSION_ALLOWED = False
 BACKTEST_AUTO_OPTIMIZATION_ENABLED      = False
 BACKTEST_AUTO_TRADING_ENABLED           = False
+# v1.4.1 A/B/C Buy Point Validation flags
+ABC_BUY_POINT_VALIDATION_AVAILABLE          = True
+ABC_BUY_POINT_A_AVAILABLE                   = True
+ABC_BUY_POINT_B_AVAILABLE                   = True
+ABC_BUY_POINT_C_AVAILABLE                   = True
+ABC_BUY_POINT_REGIME_VALIDATION_AVAILABLE   = True
+ABC_BUY_POINT_FILTER_ABLATION_AVAILABLE     = True
+ABC_BUY_POINT_HOLDING_PERIOD_ANALYSIS_AVAILABLE = True
+ABC_BUY_POINT_STOP_LOSS_ANALYSIS_AVAILABLE  = True
+ABC_BUY_POINT_FORMAL_CONCLUSION_REQUIRES_REAL_DATA = True
+ABC_BUY_POINT_MOCK_FORMAL_CONCLUSION_ALLOWED = False
+ABC_BUY_POINT_AUTO_OPTIMIZATION_ENABLED     = False
+ABC_BUY_POINT_AUTO_TRADING_ENABLED          = False
 
 
 class VersionInfo:
@@ -817,6 +830,22 @@ def print_version_info() -> None:
     print(f"  Mock Formal Conclusion Allowed: {BACKTEST_MOCK_FORMAL_CONCLUSION_ALLOWED}")
     print(f"  Backtest Auto Optimization Enabled: {BACKTEST_AUTO_OPTIMIZATION_ENABLED}")
     print(f"  Backtest Auto Trading Enabled: {BACKTEST_AUTO_TRADING_ENABLED}")
+    # v1.4.1 A/B/C Buy Point Validation flags
+    print(f"  A/B/C Validation Available: {ABC_BUY_POINT_VALIDATION_AVAILABLE}")
+    print(f"  A Buy Point Available: {ABC_BUY_POINT_A_AVAILABLE}")
+    print(f"  B Buy Point Available: {ABC_BUY_POINT_B_AVAILABLE}")
+    print(f"  C Buy Point Available: {ABC_BUY_POINT_C_AVAILABLE}")
+    print(f"  Regime Validation Available: {ABC_BUY_POINT_REGIME_VALIDATION_AVAILABLE}")
+    print(f"  Filter Ablation Available: {ABC_BUY_POINT_FILTER_ABLATION_AVAILABLE}")
+    print(f"  Holding Period Analysis Available: {ABC_BUY_POINT_HOLDING_PERIOD_ANALYSIS_AVAILABLE}")
+    print(f"  Stop Loss Analysis Available: {ABC_BUY_POINT_STOP_LOSS_ANALYSIS_AVAILABLE}")
+    print(f"  Formal Conclusion Requires Real Data: {ABC_BUY_POINT_FORMAL_CONCLUSION_REQUIRES_REAL_DATA}")
+    print(f"  Mock Formal Conclusion Allowed: {ABC_BUY_POINT_MOCK_FORMAL_CONCLUSION_ALLOWED}")
+    print(f"  Auto Optimization Enabled: {ABC_BUY_POINT_AUTO_OPTIMIZATION_ENABLED}")
+    print(f"  Auto Trading Enabled: {ABC_BUY_POINT_AUTO_TRADING_ENABLED}")
+    print(f"  No Real Orders: {NO_REAL_ORDERS}")
+    print(f"  Broker Execution Enabled: {BROKER_EXECUTION_ENABLED}")
+    print(f"  Production Trading BLOCKED: {PRODUCTION_TRADING_BLOCKED}")
     print("=" * 60)
 
 

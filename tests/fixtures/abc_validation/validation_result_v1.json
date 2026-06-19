@@ -1,0 +1,63 @@
+{
+  "_fixture_meta": {
+    "TEST_FIXTURE": true,
+    "DEMO_ONLY": true,
+    "NOT_REAL_DATA": true,
+    "NOT_FOR_FORMAL_CONCLUSION": true
+  },
+  "validation_id": "fix_val_result_v1_001",
+  "buy_point_type": "A",
+  "rule_snapshot_id": "snap_a_demo_001",
+  "configuration": {
+    "data_mode": "demo",
+    "cost_model": "FIXED_BPS",
+    "slippage_model": "CONSERVATIVE_FIXED",
+    "execution_model": "NEXT_OPEN",
+    "benchmark": "MARKET_INDEX"
+  },
+  "universe": "demo_universe",
+  "symbols_requested": ["2330", "2454", "2382"],
+  "symbols_tested": ["2330", "2454"],
+  "symbols_blocked": ["2382"],
+  "date_range": {"start": "2023-01-01", "end": "2023-12-31"},
+  "signal_count": 5,
+  "trade_count": 4,
+  "no_fill_count": 1,
+  "outcome_distribution": {
+    "SUCCESS_TREND_CONTINUATION": 2,
+    "FAILED_SUPPORT_BREAK": 1,
+    "NO_FOLLOW_THROUGH": 1
+  },
+  "holding_period_results": {},
+  "stop_loss_results": {},
+  "take_profit_results": {},
+  "regime_results": {},
+  "ablation_results": {},
+  "second_wave_results": {},
+  "institutional_results": {},
+  "margin_results": {},
+  "volume_results": {},
+  "benchmark_results": {},
+  "quality_summary": {
+    "fixture_data_used": true,
+    "lookahead_violations": 0,
+    "corporate_action_issues": 0,
+    "has_oos_validation": false
+  },
+  "confidence": "INSUFFICIENT",
+  "formal_conclusion_allowed": false,
+  "limitations": [
+    "Demo/fixture data only — not suitable for formal conclusion",
+    "Insufficient symbols tested (2 < 5 required)",
+    "No OOS or walk-forward validation"
+  ],
+  "warnings": [
+    "FIXTURE_DATA: all results are demo-only — NOT REAL DATA"
+  ],
+  "no_real_orders": true,
+  "broker_execution_enabled": false,
+  "production_trading_blocked": true,
+  "mock_formal_conclusion_allowed": false,
+  "reproducibility_hash": "demo_hash_abc001",
+  "created_at": "2023-12-31T00:00:00Z"
+}

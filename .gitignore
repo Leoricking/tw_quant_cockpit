@@ -574,3 +574,12 @@ reports/strategy_empirical_backtest_*.md
 # v1.4.0 Empirical Backtest fixtures ARE committed (exception)
 !tests/fixtures/empirical_backtest/*.json
 !tests/fixtures/empirical_backtest/*.jsonl
+
+# v1.4.1 A/B/C Buy Point Validation (runtime outputs — never commit)
+data/abc_validation/
+data/abc_runs/
+data/abc_results/
+reports/abc_validation_*.md
+
+# v1.4.1 ABC Validation fixtures ARE committed (exception)
+!tests/fixtures/abc_validation/*.json

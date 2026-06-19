@@ -4,7 +4,7 @@
 >
 > **[!] v1: Real order execution is strictly prohibited. For research, simulation, and decision support only. Not investment advice.**
 
-**Current version: v1.2.9 — Replay Training Stable Rollup** (base: v1.2.8 Replay Dataset & Session Registry) — **v1.2 Replay Training Line Complete**
+**Current version: v1.4.1 — A/B/C Buy Point Validation** (base: v1.4.0 Strategy Knowledge Empirical Backtest)
 
 ---
 
@@ -29,9 +29,17 @@ TW Quant Cockpit is a **Research Trading Cockpit** for Taiwan equity markets. It
 
 ---
 
-## Current Version: v1.2.9 — Replay Training Stable Rollup
+## Current Version: v1.4.1 — A/B/C Buy Point Validation
 
-This is TW Quant Cockpit **v1.2.9 — Replay Training Stable Rollup**, based on **v1.2.8 Replay Dataset & Session Registry**. The complete Replay Training v1.2 line (v1.2.0–v1.2.8) is frozen and validated. `STABLE_ROLLUP = True`. `REPLAY_TRAINING_LINE_COMPLETE = True`. `LONG_TERM_MAINTENANCE_READY = True`.
+This is TW Quant Cockpit **v1.4.1 — A/B/C Buy Point Validation**, based on **v1.4.0 Strategy Knowledge Empirical Backtest**.
+
+New in v1.4.1: abc_validation/ package (25 modules: rule_adapters, snapshots, signal_classification, integrity_guard, parameters, holding_period_analyzer, stop_loss_analyzer, take_profit_analyzer, regime_analyzer, filter_ablation, second_wave_analyzer, institutional_margin_analyzer, volume_analyzer, outcome_taxonomy, failure_rate_analyzer, validation_result, comparison_engine, confidence, walk_forward, store, repair_integration, replay_integration, report, health), gui/abc_buy_point_validation_panel.py (15-tab QWidget + QThread worker), 19 new CLI commands (abc-validation-health/plan/run/list/show/compare/holding-period/stop-loss/take-profit/regime/ablation/second-wave/institutional/volume/confidence/walk-forward/report/snapshot/summary), release/version_info.py (VERSION→1.4.1, 12 new flags), tests/test_abc_validation_v141.py (182 tests, all passing), tests/fixtures/abc_validation/ (10 JSON fixtures), docs/abc_buy_point_validation_v1.4.1.md. NO_REAL_ORDERS=True. BROKER_EXECUTION_ENABLED=False. PRODUCTION_TRADING_BLOCKED=True. MOCK_FORMAL_CONCLUSION_ALLOWED=False. Fixture data blocked in real mode. Formal conclusion requires real data + OOS + ≥30 trades + ≥5 symbols. Not Investment Advice.
+
+## v1.4.0 — Strategy Knowledge Empirical Backtest
+
+New in v1.4.0: empirical_backtest/ package (rule_registry, data_gate, lookahead_guard, corporate_action_guard, cost_model, signal_engine, backtest_engine, period_split, walk_forward, health), 11 built-in strategy rules (ABC buy points A/B/C, second wave, volume breakout, MA alignment, institutional filter, margin risk, fundamental turnaround, Sakata quantifiable, high win rate framework v1), GUI panel, CLI commands, regression tests. dry_run=True default. Demo mode produces DEMO_ONLY (not formal). Not Investment Advice.
+
+## v1.2.9 — Replay Training Stable Rollup
 
 New in v1.2.9: 16 new `replay/stable_*.py` modules (stable_schema, stable_manifest, stable_capability_matrix, stable_contracts, stable_compatibility, stable_store_audit, stable_runtime_isolation, stable_cli_audit, stable_gui_audit, stable_report_audit, stable_safety_audit, stable_regression_audit, stable_release_gate, stable_summary, stable_report, stable_health), 8 new GUI panels (replay_stable_rollup_panel + adapter, replay_stable_capability_panel, replay_stable_health_panel, replay_stable_contract_panel, replay_stable_compatibility_panel, replay_stable_audit_panel, replay_stable_report_panel), reports/replay_training_stable_rollup_report.py, 14 new CLI commands (replay-stable-health/summary/manifest/capabilities/contracts/compatibility/store-audit/runtime-audit/cli-audit/gui-audit/report-audit/safety-audit/regression-audit/report), 44+ health check points, 16 cross-module contracts, 9-version backward compat check (v1.2.0–v1.2.8), 10 store audits, regression suite (replay_stable, 17 test cases), 8 test classes in test_replay_training_stable_rollup.py, 5 fixtures in tests/fixtures/replay_stable/, 4 new docs. No new trading functionality. All safety flags unchanged. No broker. No auto-decision. No auto-execution. Not Investment Advice.
 

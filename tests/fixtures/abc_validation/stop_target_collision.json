@@ -1,0 +1,22 @@
+{
+  "_fixture_meta": {
+    "TEST_FIXTURE": true,
+    "DEMO_ONLY": true,
+    "NOT_REAL_DATA": true,
+    "NOT_FOR_FORMAL_CONCLUSION": true
+  },
+  "signal_id": "fix_stop_target_collision_001",
+  "buy_point_type": "A",
+  "symbol": "2330",
+  "signal_date": "2023-11-10",
+  "decision_date": "2023-11-10",
+  "execution_date": "2023-11-13",
+  "entry_price": 550.0,
+  "stop_loss_price": 547.0,
+  "target_price": 548.0,
+  "regime": "SIDEWAYS",
+  "fixture_data": true,
+  "formal_conclusion_allowed": false,
+  "note": "Stop 547 and target 548 are nearly identical — collision scenario",
+  "expected_resolution": "conservative_use_stop"
+}
