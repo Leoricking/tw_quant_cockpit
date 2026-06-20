@@ -654,3 +654,18 @@ reports/data_gov_tw_report_*.md
 !tests/fixtures/data_gov_tw_provider/*.xml
 !tests/fixtures/data_gov_tw_provider/*.csv
 !tests/fixtures/data_gov_tw_provider/*.zip
+
+# v1.4.4 FinMind Adapter (fetched data, cache, runtime artifacts — never commit)
+data/finmind/
+data/provider_cache/finmind/
+data/provider_runs/finmind/
+data/provider_raw/finmind/
+data/providers/finmind/cache/
+data/providers/finmind/.cache/
+data/providers/finmind/*.cache
+data/providers/finmind/responses/
+reports/finmind_adapter_*.md
+
+# v1.4.4 FinMind Adapter fixtures ARE committed (exception)
+!tests/fixtures/finmind_adapter/*.json
+!tests/fixtures/finmind_adapter/*.html

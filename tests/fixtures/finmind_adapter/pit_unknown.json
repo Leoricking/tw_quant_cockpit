@@ -1,0 +1,9 @@
+{
+  "_fixture_meta": {"type": "TEST_FIXTURE", "note": "NOT_REAL_DATA", "no_token": true},
+  "_description": "Simulates UNKNOWN PIT class — dataset not in registry, formal conclusion blocked",
+  "dataset": "UnknownDataset",
+  "pit_class": "UNKNOWN",
+  "records": [
+    {"date": "2024-01-02", "stock_id": "2330", "value": 100.0}
+  ]
+}

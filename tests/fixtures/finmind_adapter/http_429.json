@@ -1,0 +1,6 @@
+{
+  "_fixture_meta": {"type": "TEST_FIXTURE", "note": "NOT_REAL_DATA", "no_token": true, "http_status": 429},
+  "_description": "Simulates HTTP 429 rate limit response",
+  "headers": {"Retry-After": "60"},
+  "body": "Too Many Requests"
+}

@@ -1,0 +1,10 @@
+{
+  "_fixture_meta": {"type": "TEST_FIXTURE", "note": "NOT_REAL_DATA", "no_token": true},
+  "status": 200,
+  "msg": "success",
+  "data": [
+    {"date": "2024-01-02", "stock_id": "2330", "name": "外資及陸資(不含外資自營商)", "buy": 5000000, "sell": 3000000},
+    {"date": "2024-01-02", "stock_id": "2330", "name": "投信", "buy": 200000, "sell": 100000},
+    {"date": "2024-01-02", "stock_id": "2330", "name": "自營商", "buy": 50000, "sell": 80000}
+  ]
+}

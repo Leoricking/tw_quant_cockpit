@@ -1,0 +1,5 @@
+{
+  "_fixture_meta": {"type": "TEST_FIXTURE", "note": "NOT_REAL_DATA", "no_token": true},
+  "_description": "This file contains a representation of malformed JSON for testing. The actual malformed string is in the _malformed_body field.",
+  "_malformed_body": "{status: 200, msg: 'unclosed bracket"
+}

@@ -1,0 +1,11 @@
+{
+  "_fixture_meta": {"type": "TEST_FIXTURE", "note": "NOT_REAL_DATA", "no_token": true},
+  "_description": "Simulates quota status response",
+  "quota_limit": 300,
+  "quota_used": 150,
+  "quota_remaining": 150,
+  "quota_reset_at": "2024-01-02T01:00:00+00:00",
+  "quota_source": "DEFAULT_ESTIMATE",
+  "plan_unknown": true,
+  "status": "AVAILABLE"
+}

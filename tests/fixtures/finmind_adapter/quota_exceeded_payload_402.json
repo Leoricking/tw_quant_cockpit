@@ -1,0 +1,6 @@
+{
+  "_fixture_meta": {"type": "TEST_FIXTURE", "note": "NOT_REAL_DATA", "no_token": true},
+  "status": 402,
+  "msg": "You have reached the request limit, please upgrade your plan",
+  "data": []
+}

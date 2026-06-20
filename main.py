@@ -30754,6 +30754,361 @@ def cmd_data_gov_tw_provider_report(args=None):
     print(DataGovTwProviderReport().render())
 
 
+# =============================================================================
+# v1.4.4 FinMind Adapter handlers
+# [!] Research Only. No Real Orders. Not Investment Advice.
+# [!] SECONDARY_AGGREGATOR. Cannot override primary source.
+# =============================================================================
+
+def cmd_finmind_health(args=None):
+    from data.providers.finmind.health_v144 import FinMindAdapterHealthCheck
+    summary = FinMindAdapterHealthCheck().get_health_summary()
+    print("=" * 60)
+    print("  FinMind Adapter Health v1.4.4")
+    print("=" * 60)
+    print(f"  Official: {summary.get('official', False)}")
+    print(f"  Authoritative Level: {summary.get('authoritative_level', 'SECONDARY_AGGREGATOR')}")
+    print(f"  No Real Orders: {summary.get('no_real_orders', True)}")
+    print(f"  Passed: {summary.get('passed', 0)}/{summary.get('total', 0)}")
+    print(f"  Failed: {summary.get('failed', 0)}")
+    for name, info in summary.get("checks", {}).items():
+        status = info.get("status", "?")
+        detail = info.get("detail", "")
+        print(f"  [{status:4}] {name}: {detail}")
+    print("=" * 60)
+    overall = "PASS" if summary.get("failed", 1) == 0 else "FAIL"
+    print(f"  Overall: {overall}")
+    print("=" * 60)
+
+
+def cmd_finmind_capabilities(args=None):
+    from data.providers.finmind.capabilities_v144 import get_capabilities
+    caps = get_capabilities()
+    print("=" * 60)
+    print("  FinMind Capabilities")
+    print("=" * 60)
+    print(f"  Authoritative Level: SECONDARY_AGGREGATOR")
+    print(f"  Can Override Primary: False")
+    for cap in caps:
+        print(f"  [{cap.get('status', '?'):6}] {cap.get('name', '?')}: {cap.get('description', '')[:60]}")
+    print(f"  Total: {len(caps)}")
+    print("  [!] Research Only. No Real Orders.")
+    print("=" * 60)
+
+
+def cmd_finmind_datasets(args=None):
+    from data.providers.finmind.datasets_v144 import FinMindDatasetAllowlist
+    al = FinMindDatasetAllowlist()
+    summary = al.summary()
+    entries = al.get_all()
+    print("=" * 60)
+    print("  FinMind Dataset Registry")
+    print("=" * 60)
+    print(f"  Total: {summary.get('total', 0)}")
+    print(f"  Supported: {summary.get('supported', 0)}")
+    print(f"  Wildcard Allowed: {summary.get('wildcard_allowlist_enabled', False)}")
+    print(f"  Auto-Approve: {summary.get('auto_approve_enabled', False)}")
+    print(f"  Auto-Discovery: {summary.get('auto_discovery_enabled', False)}")
+    print("-" * 60)
+    for e in entries:
+        enabled = e.get("enabled", False)
+        approved = e.get("approved", False)
+        status = e.get("status", "UNKNOWN")
+        print(f"  [{status:12}] {e.get('dataset', '?')}: enabled={enabled}, approved={approved}")
+    print("  [!] Research Only. SECONDARY_AGGREGATOR.")
+    print("=" * 60)
+
+
+def cmd_finmind_dataset(args=None):
+    dataset = getattr(args, "dataset", None) if hasattr(args, "__dict__") else None
+    from data.providers.finmind.datasets_v144 import FinMindDatasetAllowlist
+    al = FinMindDatasetAllowlist()
+    print("=" * 60)
+    print("  FinMind Dataset Info")
+    print("=" * 60)
+    if not dataset:
+        print("  --dataset required. [!] Research Only.")
+    else:
+        entry = al.get_entry(dataset)
+        if entry:
+            for k, v in entry.items():
+                if k != "metadata":
+                    print(f"  {k}: {v}")
+        else:
+            print(f"  Dataset {dataset!r} not in allowlist. [!] Research Only.")
+    print("=" * 60)
+
+
+def cmd_finmind_schema(args=None):
+    dataset = getattr(args, "dataset", None) if hasattr(args, "__dict__") else None
+    from data.providers.finmind.schema_registry_v144 import FinMindSchemaRegistry
+    reg = FinMindSchemaRegistry()
+    print("=" * 60)
+    print(f"  FinMind Schema (dataset={dataset!r})")
+    print("=" * 60)
+    if dataset:
+        schema = reg.get_schema(dataset)
+        if schema:
+            print(f"  Schema ID: {schema.get('schema_id')}")
+            print(f"  Version: {schema.get('schema_version')}")
+            print(f"  Hash: {schema.get('schema_hash')}")
+            print(f"  Required fields: {schema.get('required_fields')}")
+        else:
+            print(f"  No schema found for {dataset!r}")
+    else:
+        schemas = reg.list_schemas()
+        for s in schemas:
+            h = reg.get_schema_hash(s)
+            print(f"  {s}: hash={h}")
+    print("  [!] Research Only. Schema drift detection available.")
+    print("=" * 60)
+
+
+def cmd_finmind_schema_drift(args=None):
+    dataset = getattr(args, "dataset", None) if hasattr(args, "__dict__") else None
+    from data.providers.finmind.schema_drift_v144 import FinMindSchemaDriftDetector
+    detector = FinMindSchemaDriftDetector()
+    print("=" * 60)
+    print(f"  FinMind Schema Drift (dataset={dataset!r})")
+    print("=" * 60)
+    if dataset:
+        result = detector.detect_drift(dataset, [])
+        for k, v in result.items():
+            print(f"  {k}: {v}")
+    else:
+        print("  --dataset required for drift detection. [!] Research Only.")
+    print("=" * 60)
+
+
+def cmd_finmind_quota(args=None):
+    from data.providers.finmind.quota_v144 import FinMindQuotaManager
+    qm = FinMindQuotaManager()
+    state = qm.get_status()
+    print("=" * 60)
+    print("  FinMind Quota Status")
+    print("=" * 60)
+    print(f"  Status: {state.status.value}")
+    print(f"  Quota Limit: {state.quota_limit}")
+    print(f"  Quota Used: {state.quota_used}")
+    print(f"  Quota Remaining: {state.quota_remaining}")
+    print(f"  Plan Unknown: {state.plan_unknown}")
+    print(f"  Quota Source: {state.quota_source}")
+    print(f"  Last Quota Error: {state.last_quota_error}")
+    print("  [!] EXHAUSTED → no retry, no token rotation, no mock fallback.")
+    print("  [!] Research Only. No Real Orders.")
+    print("=" * 60)
+
+
+def cmd_finmind_auth_status(args=None):
+    from data.providers.finmind.auth_v144 import FinMindAuthManager
+    auth = FinMindAuthManager()
+    summary = auth.get_auth_summary()
+    print("=" * 60)
+    print("  FinMind Auth Status")
+    print("=" * 60)
+    print(f"  Token Present: {summary.get('token_present', False)}")
+    print(f"  Token Source: {summary.get('token_source', 'N/A')}")
+    print(f"  Token Fingerprint: {summary.get('token_fingerprint', 'N/A')}")
+    print(f"  Anonymous Mode: {summary.get('anonymous_mode', True)}")
+    print(f"  Authenticated Mode: {summary.get('authenticated_mode', False)}")
+    print(f"  Token Optional: {summary.get('token_optional', True)}")
+    print(f"  Token Storage Secure: {summary.get('token_storage_secure', True)}")
+    print("  [!] Set FINMIND_API_TOKEN env var for authenticated mode.")
+    print("  [!] Never log or expose the full token.")
+    print("  [!] Research Only. No Real Orders.")
+    print("=" * 60)
+
+
+def cmd_finmind_plan(args=None):
+    dataset = getattr(args, "dataset", None) if hasattr(args, "__dict__") else None
+    data_id = getattr(args, "data_id", None) if hasattr(args, "__dict__") else None
+    start_date = getattr(args, "start_date", None) if hasattr(args, "__dict__") else None
+    end_date = getattr(args, "end_date", None) if hasattr(args, "__dict__") else None
+    print("=" * 60)
+    print("  FinMind Fetch Plan (DRY-RUN)")
+    print("=" * 60)
+    print(f"  Dataset: {dataset or 'N/A'}")
+    print(f"  Data ID: {data_id or 'N/A'}")
+    print(f"  Start Date: {start_date or 'N/A'}")
+    print(f"  End Date: {end_date or 'N/A'}")
+    if dataset:
+        from data.providers.finmind.datasets_v144 import FinMindDatasetAllowlist
+        al = FinMindDatasetAllowlist()
+        allowed = al.is_allowed(dataset)
+        print(f"  Allowlist: {'ALLOWED' if allowed else 'BLOCKED'}")
+        entry = al.get_entry(dataset)
+        if entry:
+            print(f"  Formal Use Policy: {entry.get('formal_use_policy', 'UNKNOWN')}")
+    print("  [DRY-RUN] No data fetched. Pass --execute (via finmind-fetch) to proceed.")
+    print("  [!] FINMIND_AUTO_DOWNLOAD_ENABLED=False. Manual execute required.")
+    print("  [!] Research Only. SECONDARY_AGGREGATOR.")
+    print("=" * 60)
+
+
+def cmd_finmind_fetch(args=None):
+    dataset = getattr(args, "dataset", None) if hasattr(args, "__dict__") else None
+    data_id = getattr(args, "data_id", None) if hasattr(args, "__dict__") else None
+    start_date = getattr(args, "start_date", None) if hasattr(args, "__dict__") else None
+    end_date = getattr(args, "end_date", None) if hasattr(args, "__dict__") else None
+    execute = getattr(args, "execute", False) if hasattr(args, "__dict__") else False
+    print("=" * 60)
+    print("  FinMind Fetch")
+    print("=" * 60)
+    print(f"  Dataset: {dataset or 'N/A'}")
+    print(f"  Data ID: {data_id or 'N/A'}")
+    if not execute:
+        print("  [DRY-RUN] No data written. Pass --execute to fetch. [!] Research Only.")
+        print("  [!] FINMIND_AUTO_DOWNLOAD_ENABLED=False. Manual execute required.")
+        print("  [!] No silent fallback. No mock fallback.")
+    else:
+        print("  [!] Execute mode requires network. Only allowlisted datasets fetched.")
+        print("  [!] SECONDARY_AGGREGATOR. Cannot override primary source.")
+        print("  [!] Research Only. No Real Orders.")
+    print("=" * 60)
+
+
+def cmd_finmind_price(args=None):
+    symbol = getattr(args, "symbol", None) if hasattr(args, "__dict__") else None
+    start_date = getattr(args, "start_date", None) if hasattr(args, "__dict__") else None
+    end_date = getattr(args, "end_date", None) if hasattr(args, "__dict__") else None
+    print("=" * 60)
+    print(f"  FinMind Price Data (symbol={symbol!r})")
+    print("=" * 60)
+    print(f"  Dataset: TaiwanStockPrice")
+    print(f"  Symbol: {symbol or 'N/A'}")
+    print(f"  Start Date: {start_date or 'N/A'}")
+    print(f"  End Date: {end_date or 'N/A'}")
+    print("  [!] TWSE is the primary source. FinMind = SECONDARY_AGGREGATOR.")
+    print("  [!] Network required for real fetch. Offline: dry-run only.")
+    print("  [!] Research Only. No Real Orders.")
+    print("=" * 60)
+
+
+def cmd_finmind_institutional(args=None):
+    symbol = getattr(args, "symbol", None) if hasattr(args, "__dict__") else None
+    start_date = getattr(args, "start_date", None) if hasattr(args, "__dict__") else None
+    end_date = getattr(args, "end_date", None) if hasattr(args, "__dict__") else None
+    print("=" * 60)
+    print(f"  FinMind Institutional Flows (symbol={symbol!r})")
+    print("=" * 60)
+    print(f"  Dataset: TaiwanStockInstitutionalInvestorsBuySell")
+    print(f"  Symbol: {symbol or 'N/A'}")
+    print("  [!] TWSE is the primary source. FinMind = SECONDARY_AGGREGATOR.")
+    print("  [!] Narrow format. foreign_net/trust_net/dealer_net. No wide/narrow mix.")
+    print("  [!] Research Only. No Real Orders.")
+    print("=" * 60)
+
+
+def cmd_finmind_margin(args=None):
+    symbol = getattr(args, "symbol", None) if hasattr(args, "__dict__") else None
+    start_date = getattr(args, "start_date", None) if hasattr(args, "__dict__") else None
+    end_date = getattr(args, "end_date", None) if hasattr(args, "__dict__") else None
+    print("=" * 60)
+    print(f"  FinMind Margin Data (symbol={symbol!r})")
+    print("=" * 60)
+    print(f"  Dataset: TaiwanStockMarginPurchaseShortSale")
+    print(f"  Symbol: {symbol or 'N/A'}")
+    print("  [!] margin_balance/short_balance. No margin/short mix.")
+    print("  [!] SECONDARY_AGGREGATOR. Research Only. No Real Orders.")
+    print("=" * 60)
+
+
+def cmd_finmind_compare_primary(args=None):
+    dataset = getattr(args, "dataset", None) if hasattr(args, "__dict__") else None
+    symbol = getattr(args, "symbol", None) if hasattr(args, "__dict__") else None
+    print("=" * 60)
+    print(f"  FinMind vs Primary Comparison (dataset={dataset!r}, symbol={symbol!r})")
+    print("=" * 60)
+    print("  Primary always wins on conflict. FinMind preserved as secondary evidence.")
+    print("  No auto-repair. Conflicts logged.")
+    print("  [!] Network required for real fetch.")
+    print("  [!] Research Only. SECONDARY_AGGREGATOR.")
+    print("=" * 60)
+
+
+def cmd_finmind_conflicts(args=None):
+    print("=" * 60)
+    print("  FinMind Conflict Report")
+    print("=" * 60)
+    print("  Conflicts are recorded when compare_with_primary() is called.")
+    print("  Primary always wins. FinMind is secondary evidence only.")
+    print("  No auto-repair. Manual investigation required.")
+    print("  [!] Research Only. No Real Orders.")
+    print("=" * 60)
+
+
+def cmd_finmind_coverage(args=None):
+    from data.providers.finmind.datasets_v144 import FinMindDatasetAllowlist
+    al = FinMindDatasetAllowlist()
+    supported = al.get_supported()
+    print("=" * 60)
+    print("  FinMind Coverage Summary")
+    print("=" * 60)
+    for ds in supported:
+        print(f"  {ds.get('dataset', '?')}: market={ds.get('supported_market', '?')}, primary={ds.get('primary_authority', '?')}")
+    print(f"  Total supported datasets: {len(supported)}")
+    print("  [!] SECONDARY_AGGREGATOR. Research Only.")
+    print("=" * 60)
+
+
+def cmd_finmind_lineage(args=None):
+    from data.providers.finmind.provider_v144 import FinMindAdapterV144
+    p = FinMindAdapterV144()
+    lineage = p.get_provider_lineage()
+    print("=" * 60)
+    print("  FinMind Data Lineage")
+    print("=" * 60)
+    for k, v in lineage.items():
+        print(f"  {k}: {v}")
+    print("  [!] Research Only. SECONDARY_AGGREGATOR.")
+    print("=" * 60)
+
+
+def cmd_finmind_cache_status(args=None):
+    print("=" * 60)
+    print("  FinMind Cache Status")
+    print("=" * 60)
+    print("  Real/mock cache isolated. Keys include token_mode (not actual token).")
+    print("  Stale cache does not masquerade as fresh.")
+    print("  [!] FINMIND_AUTO_DOWNLOAD_ENABLED=False. No auto-fetch.")
+    print("  [!] No mock fallback. Cache miss → fetch attempt if network available.")
+    print("  [!] Research Only. No Real Orders.")
+    print("=" * 60)
+
+
+def cmd_finmind_adapter_report(args=None):
+    from reports.finmind_adapter_report import FinMindAdapterReport
+    print(FinMindAdapterReport().render())
+
+
+def cmd_finmind_pit_status(args=None):
+    """[v1.4.4] FinMind point-in-time status for a dataset. Research Only."""
+    print("=" * 60)
+    print("[v1.4.4] FinMind Point-in-Time Status")
+    print("[!] Research Only. No Real Orders. Not Investment Advice.")
+    print("[!] SECONDARY_AGGREGATOR. DATE_ONLY for all daily datasets.")
+    print("=" * 60)
+    dataset = getattr(args, "dataset", None) if args else None
+    try:
+        from data.providers.finmind.point_in_time_v144 import FinMindPointInTime
+        pit = FinMindPointInTime()
+        if dataset:
+            summary = pit.get_pit_summary(dataset)
+            print(f"  Dataset:   {summary.get('dataset', dataset)}")
+            print(f"  PIT Class: {summary.get('pit_class', 'UNKNOWN')}")
+            print(f"  Formal Allowed: {summary.get('formal_allowed', False)}")
+            print(f"  Note: {summary.get('note', '')}")
+        else:
+            for ds in ["TaiwanStockPrice", "TaiwanStockInstitutionalInvestorsBuySell",
+                       "TaiwanStockMarginPurchaseShortSale", "TaiwanStockMonthRevenue",
+                       "TaiwanStockFinancialStatements"]:
+                s = pit.get_pit_summary(ds)
+                print(f"  {ds}: {s.get('pit_class', 'UNKNOWN')}")
+    except Exception as exc:
+        print(f"  [!] PIT status unavailable: {exc}")
+    print("=" * 60)
+
+
 def _argv_from_namespace(args):
     """Convert argparse Namespace to legacy argv list for pre-registry handlers."""
     if args is None:
@@ -31785,6 +32140,27 @@ def main() -> None:
         "data-gov-tw-lineage":           cmd_data_gov_tw_lineage,
         "data-gov-tw-cache-status":      cmd_data_gov_tw_cache_status,
         "data-gov-tw-provider-report":   cmd_data_gov_tw_provider_report,
+        # v1.4.4 FinMind Adapter
+        "finmind-health":            cmd_finmind_health,
+        "finmind-capabilities":      cmd_finmind_capabilities,
+        "finmind-datasets":          cmd_finmind_datasets,
+        "finmind-dataset":           cmd_finmind_dataset,
+        "finmind-schema":            cmd_finmind_schema,
+        "finmind-schema-drift":      cmd_finmind_schema_drift,
+        "finmind-quota":             cmd_finmind_quota,
+        "finmind-auth-status":       cmd_finmind_auth_status,
+        "finmind-plan":              cmd_finmind_plan,
+        "finmind-fetch":             cmd_finmind_fetch,
+        "finmind-price":             cmd_finmind_price,
+        "finmind-institutional":     cmd_finmind_institutional,
+        "finmind-margin":            cmd_finmind_margin,
+        "finmind-compare-primary":   cmd_finmind_compare_primary,
+        "finmind-conflicts":         cmd_finmind_conflicts,
+        "finmind-coverage":          cmd_finmind_coverage,
+        "finmind-lineage":           cmd_finmind_lineage,
+        "finmind-cache-status":      cmd_finmind_cache_status,
+        "finmind-adapter-report":    cmd_finmind_adapter_report,
+        "finmind-pit-status":        cmd_finmind_pit_status,
     }
 
     if args.command is None:

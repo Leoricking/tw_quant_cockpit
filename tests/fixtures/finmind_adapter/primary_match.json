@@ -1,0 +1,10 @@
+{
+  "_fixture_meta": {"type": "TEST_FIXTURE", "note": "NOT_REAL_DATA", "no_token": true},
+  "_description": "Simulates FinMind data matching primary source exactly",
+  "primary": [
+    {"trade_date": "2024-01-02", "symbol": "2330", "close": 598.0, "open": 594.0, "high": 600.0, "low": 592.0}
+  ],
+  "finmind": [
+    {"trade_date": "2024-01-02", "symbol": "2330", "close": 598.0, "open": 594.0, "max": 600.0, "min": 592.0}
+  ]
+}

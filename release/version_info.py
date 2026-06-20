@@ -73,9 +73,9 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # ---------------------------------------------------------------------------
 # v1.3.3 module-level constants (Coverage Repair Workflow)
 # ---------------------------------------------------------------------------
-VERSION                             = "1.4.3.2"
-RELEASE_NAME                        = "Provider Health Consistency Hotfix"
-BASE_RELEASE                        = "1.4.3.1 Provider CLI Registration Hotfix"
+VERSION                             = "1.4.4"
+RELEASE_NAME                        = "FinMind Adapter Hardening"
+BASE_RELEASE                        = "1.4.3.2 Provider Health Consistency Hotfix"
 
 # ---------------------------------------------------------------------------
 # v1.3.2 module-level constants (Real Data Provider Adapter Foundation)
@@ -556,6 +556,27 @@ DATA_GOV_TW_CAN_OVERRIDE_PRIMARY_PROVIDER      = False  # ALWAYS FALSE
 DATA_GOV_TW_WILDCARD_ALLOWLIST_ENABLED         = False  # ALWAYS FALSE
 DATA_GOV_TW_ALLOW_ALL_MODE_ENABLED             = False  # ALWAYS FALSE
 DATA_GOV_TW_FORMAL_USE_ALLOWED_DEFAULT         = False  # ALWAYS FALSE
+
+# v1.4.4 FinMind Adapter Hardening flags
+FINMIND_ADAPTER_AVAILABLE               = True
+FINMIND_ADAPTER_HARDENED                = True
+FINMIND_API_V4_AVAILABLE                = True
+FINMIND_SECONDARY_AGGREGATOR            = True
+FINMIND_CAN_OVERRIDE_PRIMARY_PROVIDER   = False
+FINMIND_SILENT_FALLBACK_ENABLED         = False
+FINMIND_MOCK_FALLBACK_ENABLED           = False
+FINMIND_AUTO_DOWNLOAD_ENABLED           = False
+FINMIND_AUTO_DISCOVERY_ENABLED          = False
+FINMIND_TOKEN_OPTIONAL                  = True
+FINMIND_TOKEN_STORAGE_SECURE            = True
+FINMIND_QUOTA_TRACKING_AVAILABLE        = True
+FINMIND_RATE_LIMIT_HANDLING_AVAILABLE   = True
+FINMIND_SCHEMA_DRIFT_DETECTION_AVAILABLE = True
+FINMIND_DATASET_ALLOWLIST_REQUIRED      = True
+FINMIND_POINT_IN_TIME_GUARD_AVAILABLE   = True
+FINMIND_SOURCE_CONFLICT_DETECTION_AVAILABLE = True
+FINMIND_REALTIME_FORMAL_USE_ALLOWED     = False
+FINMIND_BROKER_EXECUTION_AVAILABLE      = False
 
 
 class VersionInfo:
@@ -1085,6 +1106,26 @@ def print_version_info() -> None:
     print(f"  data.gov.tw Wildcard Allowlist Enabled: {DATA_GOV_TW_WILDCARD_ALLOWLIST_ENABLED}")
     print(f"  data.gov.tw Allow All Mode Enabled: {DATA_GOV_TW_ALLOW_ALL_MODE_ENABLED}")
     print(f"  data.gov.tw Formal Use Allowed Default: {DATA_GOV_TW_FORMAL_USE_ALLOWED_DEFAULT}")
+    # v1.4.4 FinMind Adapter Hardening flags
+    print(f"  FinMind Adapter Available: {FINMIND_ADAPTER_AVAILABLE}")
+    print(f"  FinMind Adapter Hardened: {FINMIND_ADAPTER_HARDENED}")
+    print(f"  FinMind API v4 Available: {FINMIND_API_V4_AVAILABLE}")
+    print(f"  FinMind Secondary Aggregator: {FINMIND_SECONDARY_AGGREGATOR}")
+    print(f"  FinMind Can Override Primary Provider: {FINMIND_CAN_OVERRIDE_PRIMARY_PROVIDER}")
+    print(f"  FinMind Silent Fallback Enabled: {FINMIND_SILENT_FALLBACK_ENABLED}")
+    print(f"  FinMind Mock Fallback Enabled: {FINMIND_MOCK_FALLBACK_ENABLED}")
+    print(f"  FinMind Auto Download Enabled: {FINMIND_AUTO_DOWNLOAD_ENABLED}")
+    print(f"  FinMind Auto Discovery Enabled: {FINMIND_AUTO_DISCOVERY_ENABLED}")
+    print(f"  FinMind Token Optional: {FINMIND_TOKEN_OPTIONAL}")
+    print(f"  FinMind Token Storage Secure: {FINMIND_TOKEN_STORAGE_SECURE}")
+    print(f"  FinMind Quota Tracking Available: {FINMIND_QUOTA_TRACKING_AVAILABLE}")
+    print(f"  FinMind Rate Limit Handling Available: {FINMIND_RATE_LIMIT_HANDLING_AVAILABLE}")
+    print(f"  FinMind Schema Drift Detection Available: {FINMIND_SCHEMA_DRIFT_DETECTION_AVAILABLE}")
+    print(f"  FinMind Dataset Allowlist Required: {FINMIND_DATASET_ALLOWLIST_REQUIRED}")
+    print(f"  FinMind Point-in-Time Guard Available: {FINMIND_POINT_IN_TIME_GUARD_AVAILABLE}")
+    print(f"  FinMind Source Conflict Detection Available: {FINMIND_SOURCE_CONFLICT_DETECTION_AVAILABLE}")
+    print(f"  FinMind Realtime Formal Use Allowed: {FINMIND_REALTIME_FORMAL_USE_ALLOWED}")
+    print(f"  FinMind Broker Execution Available: {FINMIND_BROKER_EXECUTION_AVAILABLE}")
     print("=" * 60)
 
 

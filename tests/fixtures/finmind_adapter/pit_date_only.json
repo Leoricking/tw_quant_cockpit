@@ -1,0 +1,9 @@
+{
+  "_fixture_meta": {"type": "TEST_FIXTURE", "note": "NOT_REAL_DATA", "no_token": true},
+  "_description": "Simulates DATE_ONLY PIT class — daily data with no intraday timestamp",
+  "dataset": "TaiwanStockPrice",
+  "pit_class": "DATE_ONLY",
+  "records": [
+    {"date": "2024-01-02", "stock_id": "2330", "close": 598.0, "available_from": "2024-01-02"}
+  ]
+}

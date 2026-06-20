@@ -1,0 +1,8 @@
+{
+  "_fixture_meta": {"type": "TEST_FIXTURE", "note": "NOT_REAL_DATA", "no_token": true},
+  "status": 200,
+  "msg": "success",
+  "data": [
+    {"date": "2024-01-02", "stock_id": "2330", "MarginPurchaseTodayBalance": 15000, "MarginPurchaseBuy": 500, "MarginPurchaseSell": 300, "MarginPurchaseCashRepayment": 100, "ShortSaleTodayBalance": 3000, "ShortSaleBuy": 200, "ShortSaleSell": 150, "ShortSaleStockRepayment": 50}
+  ]
+}

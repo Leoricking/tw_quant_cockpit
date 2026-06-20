@@ -1525,6 +1525,77 @@ _DATA_GOV_TW_COMMANDS: _List[CommandSpec] = [
                 help="[v1.4.3] data.gov.tw provider report. Research Only.", group="data_gov_tw", introduced_in="1.4.3"),
 ]
 
+# ---------------------------------------------------------------------------
+# v1.4.4 FinMind commands
+# ---------------------------------------------------------------------------
+_FINMIND_COMMANDS: _List[CommandSpec] = [
+    CommandSpec(name="finmind-health", handler_name="cmd_finmind_health",
+                help="[v1.4.4] FinMind adapter health. Research Only.", group="finmind", introduced_in="1.4.4"),
+    CommandSpec(name="finmind-capabilities", handler_name="cmd_finmind_capabilities",
+                help="[v1.4.4] FinMind capabilities. Research Only.", group="finmind", introduced_in="1.4.4"),
+    CommandSpec(name="finmind-datasets", handler_name="cmd_finmind_datasets",
+                help="[v1.4.4] FinMind dataset registry. Research Only.", group="finmind", introduced_in="1.4.4"),
+    CommandSpec(name="finmind-dataset", handler_name="cmd_finmind_dataset",
+                help="[v1.4.4] FinMind dataset info. Research Only.", group="finmind", introduced_in="1.4.4",
+                args=[CommandArg(flags=["--dataset"], kwargs={"default": None})]),
+    CommandSpec(name="finmind-schema", handler_name="cmd_finmind_schema",
+                help="[v1.4.4] FinMind schema. Research Only.", group="finmind", introduced_in="1.4.4",
+                args=[CommandArg(flags=["--dataset"], kwargs={"default": None})]),
+    CommandSpec(name="finmind-schema-drift", handler_name="cmd_finmind_schema_drift",
+                help="[v1.4.4] FinMind schema drift. Research Only.", group="finmind", introduced_in="1.4.4",
+                args=[CommandArg(flags=["--dataset"], kwargs={"default": None})]),
+    CommandSpec(name="finmind-quota", handler_name="cmd_finmind_quota",
+                help="[v1.4.4] FinMind quota status. Research Only.", group="finmind", introduced_in="1.4.4"),
+    CommandSpec(name="finmind-auth-status", handler_name="cmd_finmind_auth_status",
+                help="[v1.4.4] FinMind auth status. Research Only.", group="finmind", introduced_in="1.4.4"),
+    CommandSpec(name="finmind-plan", handler_name="cmd_finmind_plan",
+                help="[v1.4.4] FinMind fetch plan (dry-run). Research Only.", group="finmind", introduced_in="1.4.4",
+                args=[CommandArg(flags=["--dataset"], kwargs={"default": None}),
+                      CommandArg(flags=["--data-id"], kwargs={"dest": "data_id", "default": None}),
+                      CommandArg(flags=["--start-date"], kwargs={"dest": "start_date", "default": None}),
+                      CommandArg(flags=["--end-date"], kwargs={"dest": "end_date", "default": None})]),
+    CommandSpec(name="finmind-fetch", handler_name="cmd_finmind_fetch",
+                help="[v1.4.4] FinMind fetch dataset. Research Only.", group="finmind", introduced_in="1.4.4",
+                args=[CommandArg(flags=["--dataset"], kwargs={"default": None}),
+                      CommandArg(flags=["--data-id"], kwargs={"dest": "data_id", "default": None}),
+                      CommandArg(flags=["--start-date"], kwargs={"dest": "start_date", "default": None}),
+                      CommandArg(flags=["--end-date"], kwargs={"dest": "end_date", "default": None}),
+                      CommandArg(flags=["--execute"], kwargs={"action": "store_true", "default": False})]),
+    CommandSpec(name="finmind-price", handler_name="cmd_finmind_price",
+                help="[v1.4.4] FinMind price data. Research Only.", group="finmind", introduced_in="1.4.4",
+                args=[CommandArg(flags=["--symbol"], kwargs={"default": None}),
+                      CommandArg(flags=["--start-date"], kwargs={"dest": "start_date", "default": None}),
+                      CommandArg(flags=["--end-date"], kwargs={"dest": "end_date", "default": None})]),
+    CommandSpec(name="finmind-institutional", handler_name="cmd_finmind_institutional",
+                help="[v1.4.4] FinMind institutional flows. Research Only.", group="finmind", introduced_in="1.4.4",
+                args=[CommandArg(flags=["--symbol"], kwargs={"default": None}),
+                      CommandArg(flags=["--start-date"], kwargs={"dest": "start_date", "default": None}),
+                      CommandArg(flags=["--end-date"], kwargs={"dest": "end_date", "default": None})]),
+    CommandSpec(name="finmind-margin", handler_name="cmd_finmind_margin",
+                help="[v1.4.4] FinMind margin data. Research Only.", group="finmind", introduced_in="1.4.4",
+                args=[CommandArg(flags=["--symbol"], kwargs={"default": None}),
+                      CommandArg(flags=["--start-date"], kwargs={"dest": "start_date", "default": None}),
+                      CommandArg(flags=["--end-date"], kwargs={"dest": "end_date", "default": None})]),
+    CommandSpec(name="finmind-compare-primary", handler_name="cmd_finmind_compare_primary",
+                help="[v1.4.4] FinMind vs primary comparison. Research Only.", group="finmind", introduced_in="1.4.4",
+                args=[CommandArg(flags=["--dataset"], kwargs={"default": None}),
+                      CommandArg(flags=["--symbol"], kwargs={"default": None})]),
+    CommandSpec(name="finmind-conflicts", handler_name="cmd_finmind_conflicts",
+                help="[v1.4.4] FinMind conflict report. Research Only.", group="finmind", introduced_in="1.4.4"),
+    CommandSpec(name="finmind-coverage", handler_name="cmd_finmind_coverage",
+                help="[v1.4.4] FinMind coverage summary. Research Only.", group="finmind", introduced_in="1.4.4"),
+    CommandSpec(name="finmind-lineage", handler_name="cmd_finmind_lineage",
+                help="[v1.4.4] FinMind data lineage. Research Only.", group="finmind", introduced_in="1.4.4"),
+    CommandSpec(name="finmind-cache-status", handler_name="cmd_finmind_cache_status",
+                help="[v1.4.4] FinMind cache status. Research Only.", group="finmind", introduced_in="1.4.4"),
+    CommandSpec(name="finmind-adapter-report", handler_name="cmd_finmind_adapter_report",
+                help="[v1.4.4] FinMind adapter report. Research Only.", group="finmind", introduced_in="1.4.4"),
+    CommandSpec(name="finmind-pit-status", handler_name="cmd_finmind_pit_status",
+                help="[v1.4.4] FinMind point-in-time status for a dataset. Research Only.", group="finmind",
+                introduced_in="1.4.4",
+                args=[CommandArg(flags=["--dataset"], kwargs={"default": None})]),
+]
+
 # Combined list of all provider commands
 PROVIDER_COMMANDS: _List[CommandSpec] = (
     _RESEARCH_FOUNDATION_COMMANDS
@@ -1532,6 +1603,7 @@ PROVIDER_COMMANDS: _List[CommandSpec] = (
     + _TPEX_COMMANDS
     + _MOPS_COMMANDS
     + _DATA_GOV_TW_COMMANDS
+    + _FINMIND_COMMANDS
 )
 
 

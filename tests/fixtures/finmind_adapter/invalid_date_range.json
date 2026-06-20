@@ -1,0 +1,6 @@
+{
+  "_fixture_meta": {"type": "TEST_FIXTURE", "note": "NOT_REAL_DATA", "no_token": true},
+  "status": 400,
+  "msg": "invalid date range: start_date must be before end_date",
+  "data": []
+}

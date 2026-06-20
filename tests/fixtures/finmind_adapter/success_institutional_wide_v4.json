@@ -1,0 +1,8 @@
+{
+  "_fixture_meta": {"type": "TEST_FIXTURE", "note": "NOT_REAL_DATA", "no_token": true},
+  "status": 200,
+  "msg": "success",
+  "data": [
+    {"date": "2024-01-02", "stock_id": "2330", "Foreign_Investor_Buy": 5000000, "Foreign_Investor_Sell": 3000000, "Investment_Trust_Buy": 200000, "Investment_Trust_Sell": 100000, "Dealer_Buy": 50000, "Dealer_Sell": 80000}
+  ]
+}
