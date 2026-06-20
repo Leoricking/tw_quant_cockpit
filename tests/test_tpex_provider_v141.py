@@ -1296,8 +1296,8 @@ class TestRegression:
 
     def test_151_base_release_contains_140(self):
         from release.version_info import BASE_RELEASE
-        # v1.4.2: BASE_RELEASE updated to "1.4.1 TPEx Provider"; accept 1.4.0 or 1.4.1 as base
-        assert "1.4.0" in BASE_RELEASE or "1.4.1" in BASE_RELEASE
+        # Accept 1.4.0 (TWSE), 1.4.1 (TPEx), or 1.4.2 (MOPS) as base depending on current version
+        assert "1.4.0" in BASE_RELEASE or "1.4.1" in BASE_RELEASE or "1.4.2" in BASE_RELEASE
 
     def test_152_replay_stable_baseline(self):
         from release.version_info import REPLAY_STABLE_BASELINE

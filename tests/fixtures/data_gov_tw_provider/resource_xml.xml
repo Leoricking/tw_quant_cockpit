@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- TEST_FIXTURE DEMO_ONLY NOT_REAL_DATA NOT_FOR_FORMAL_CONCLUSION -->
+<dataset id="gov_tw_macro_001">
+  <record>
+    <period>2024-01</period>
+    <indicator>景氣對策信號</indicator>
+    <value>45</value>
+    <unit>分</unit>
+  </record>
+  <record>
+    <period>2024-02</period>
+    <indicator>景氣對策信號</indicator>
+    <value>38</value>
+    <unit>分</unit>
+  </record>
+</dataset>

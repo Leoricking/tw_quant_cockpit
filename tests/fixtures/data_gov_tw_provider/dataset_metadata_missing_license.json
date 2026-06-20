@@ -1,0 +1,14 @@
+{
+  "_fixture_warning": "TEST_FIXTURE DEMO_ONLY NOT_REAL_DATA NOT_FOR_FORMAL_CONCLUSION",
+  "dataset_id": "gov_tw_no_license_001",
+  "title": "無授權資訊測試資料集",
+  "description": "Test fixture: dataset missing license",
+  "category": "misc",
+  "provider_agency": "Test Agency",
+  "agency_code": "TST",
+  "update_frequency": "MONTHLY",
+  "license_name": null,
+  "license_url": null,
+  "status": "REVIEW_REQUIRED",
+  "official": true
+}

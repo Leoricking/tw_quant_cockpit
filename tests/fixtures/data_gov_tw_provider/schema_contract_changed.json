@@ -1,0 +1,15 @@
+{
+  "_fixture_warning": "TEST_FIXTURE DEMO_ONLY NOT_REAL_DATA NOT_FOR_FORMAL_CONCLUSION",
+  "schema_id": "schema_macro_001",
+  "dataset_id": "gov_tw_macro_001",
+  "version": "2.0",
+  "expected_format": "CSV",
+  "required_fields": ["period", "indicator", "value", "new_required_field"],
+  "optional_fields": ["unit"],
+  "field_types": {"period": "string", "value": "numeric"},
+  "aliases": {},
+  "primary_key": ["period", "indicator"],
+  "contract_hash": "changed_hash_999",
+  "created_at": "2024-01-01T00:00:00Z",
+  "updated_at": "2024-12-01T00:00:00Z"
+}

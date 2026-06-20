@@ -633,3 +633,24 @@ reports/mops_report_*.md
 # v1.4.2 MOPS Provider fixtures ARE committed (exception)
 !tests/fixtures/mops_provider/*.json
 !tests/fixtures/mops_provider/*.html
+
+# v1.4.3 data.gov.tw Provider (fetched public data, cache, runtime artifacts — never commit)
+data/data_gov_tw/
+data/provider_cache/data_gov_tw/
+data/provider_runs/data_gov_tw/
+data/provider_raw/data_gov_tw/
+data/data_gov_tw_downloads/
+data/data_gov_tw_extract/
+data/providers/data_gov_tw/cache/
+data/providers/data_gov_tw/.cache/
+data/providers/data_gov_tw/*.cache
+data/providers/data_gov_tw/responses/
+reports/data_gov_tw_provider_report_*.md
+reports/data_gov_tw_report_*.md
+
+# v1.4.3 data.gov.tw Provider fixtures ARE committed (exception)
+!tests/fixtures/data_gov_tw_provider/*.json
+!tests/fixtures/data_gov_tw_provider/*.html
+!tests/fixtures/data_gov_tw_provider/*.xml
+!tests/fixtures/data_gov_tw_provider/*.csv
+!tests/fixtures/data_gov_tw_provider/*.zip

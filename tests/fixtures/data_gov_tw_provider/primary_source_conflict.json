@@ -1,0 +1,12 @@
+{
+  "_fixture_warning": "TEST_FIXTURE DEMO_ONLY NOT_REAL_DATA NOT_FOR_FORMAL_CONCLUSION",
+  "conflict_example": {
+    "field": "company_name",
+    "twse_value": "台積電股份有限公司",
+    "data_gov_tw_value": "台積電",
+    "resolution": "SOURCE_CONFLICT",
+    "winner": "TWSE",
+    "data_gov_tw_marked": "SECONDARY",
+    "create_repair_candidate": true
+  }
+}

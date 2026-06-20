@@ -1,0 +1,7 @@
+{
+  "_fixture_warning": "TEST_FIXTURE DEMO_ONLY NOT_REAL_DATA NOT_FOR_FORMAL_CONCLUSION",
+  "license_name": "自定授權條款（未知）",
+  "license_url": null,
+  "expected_status": "REVIEW_REQUIRED",
+  "expected_formal_use_allowed": false
+}

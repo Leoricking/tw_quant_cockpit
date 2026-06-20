@@ -1,0 +1,9 @@
+{
+  "_fixture_warning": "TEST_FIXTURE DEMO_ONLY NOT_REAL_DATA NOT_FOR_FORMAL_CONCLUSION",
+  "_note": "This JSON describes an oversized ZIP scenario. No actual large ZIP is committed.",
+  "scenario": "zip_oversize",
+  "simulated_uncompressed_bytes": 600000000,
+  "limit_bytes": 524288000,
+  "expected_result": "BLOCKED",
+  "reason": "ZIP bomb protection: total uncompressed size exceeds limit"
+}

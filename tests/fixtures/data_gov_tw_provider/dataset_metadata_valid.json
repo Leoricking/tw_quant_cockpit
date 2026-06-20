@@ -1,0 +1,23 @@
+{
+  "_fixture_warning": "TEST_FIXTURE DEMO_ONLY NOT_REAL_DATA NOT_FOR_FORMAL_CONCLUSION",
+  "dataset_id": "gov_tw_macro_001",
+  "title": "景氣指標統計（測試）",
+  "description": "Test fixture for metadata validation",
+  "category": "macro",
+  "research_domain": "macro_economy",
+  "provider_agency": "國家發展委員會",
+  "agency_code": "NDC",
+  "update_frequency": "MONTHLY",
+  "license_name": "政府資料開放授權條款-第1版",
+  "license_url": "https://data.gov.tw/license",
+  "status": "APPROVED",
+  "official": true,
+  "allowlisted": true,
+  "approved": true,
+  "authoritative_level": "SECONDARY_OFFICIAL",
+  "language": "zh-TW",
+  "published_at": "2024-01-01",
+  "metadata_updated_at": "2024-06-01",
+  "contact_name": "TestContact",
+  "contact_email": "test@example.gov.tw"
+}

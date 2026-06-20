@@ -1,0 +1,18 @@
+{
+  "_fixture_warning": "TEST_FIXTURE DEMO_ONLY NOT_REAL_DATA NOT_FOR_FORMAL_CONCLUSION",
+  "schema_id": "schema_macro_001",
+  "dataset_id": "gov_tw_macro_001",
+  "version": "1.0",
+  "expected_format": "CSV",
+  "required_fields": ["period", "indicator", "value"],
+  "optional_fields": ["unit", "geography"],
+  "field_types": {"period": "string", "value": "numeric", "unit": "string"},
+  "aliases": {"期間": "period", "指標": "indicator", "數值": "value"},
+  "primary_key": ["period", "indicator"],
+  "date_fields": ["period"],
+  "unit_fields": {"value": "unit"},
+  "missing_value_tokens": ["-", "N/A", "", "NA"],
+  "contract_hash": "abc123def456",
+  "created_at": "2024-01-01T00:00:00Z",
+  "updated_at": "2024-06-01T00:00:00Z"
+}

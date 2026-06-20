@@ -1,0 +1,14 @@
+{
+  "_fixture_warning": "TEST_FIXTURE DEMO_ONLY NOT_REAL_DATA NOT_FOR_FORMAL_CONCLUSION",
+  "revision_id": "rev_schema_001",
+  "dataset_id": "gov_tw_macro_001",
+  "detected_at": "2024-07-01T10:00:00+00:00",
+  "old_content_hash": "schema_hash_v1",
+  "new_content_hash": "schema_hash_v2",
+  "metadata_changed": false,
+  "schema_changed": true,
+  "license_changed": false,
+  "changed_fields": ["schema_contract"],
+  "severity": "WARNING",
+  "review_required": true
+}

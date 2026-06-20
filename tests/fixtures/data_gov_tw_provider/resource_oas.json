@@ -1,0 +1,32 @@
+{
+  "_fixture_warning": "TEST_FIXTURE DEMO_ONLY NOT_REAL_DATA NOT_FOR_FORMAL_CONCLUSION",
+  "openapi": "3.0.0",
+  "info": {
+    "title": "Test Government API",
+    "version": "1.0.0",
+    "description": "Test fixture OAS spec"
+  },
+  "servers": [{"url": "https://api.example.gov.tw/v1"}],
+  "paths": {
+    "/indicators": {
+      "get": {
+        "operationId": "getIndicators",
+        "summary": "Get economic indicators",
+        "parameters": [
+          {"name": "page", "in": "query", "required": false, "schema": {"type": "integer"}},
+          {"name": "size", "in": "query", "required": false, "schema": {"type": "integer"}}
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {"type": "array", "items": {"type": "object"}}
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

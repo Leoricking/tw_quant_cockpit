@@ -1,0 +1,6 @@
+<?xml version="1.0"?>
+<!-- TEST_FIXTURE DEMO_ONLY NOT_REAL_DATA NOT_FOR_FORMAL_CONCLUSION -->
+<root>
+  <unclosed_tag>
+  <item>value</item>
+  <!-- missing closing root tag

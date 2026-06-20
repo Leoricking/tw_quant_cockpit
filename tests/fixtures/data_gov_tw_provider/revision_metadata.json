@@ -1,0 +1,14 @@
+{
+  "_fixture_warning": "TEST_FIXTURE DEMO_ONLY NOT_REAL_DATA NOT_FOR_FORMAL_CONCLUSION",
+  "revision_id": "rev_test_001",
+  "dataset_id": "gov_tw_macro_001",
+  "detected_at": "2024-06-01T10:00:00+00:00",
+  "old_content_hash": "hash_old_001",
+  "new_content_hash": "hash_new_002",
+  "metadata_changed": true,
+  "schema_changed": false,
+  "license_changed": false,
+  "changed_fields": ["update_frequency"],
+  "severity": "WARNING",
+  "review_required": false
+}

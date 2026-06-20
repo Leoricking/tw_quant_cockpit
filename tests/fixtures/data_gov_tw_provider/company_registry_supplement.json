@@ -1,0 +1,15 @@
+{
+  "_fixture_warning": "TEST_FIXTURE DEMO_ONLY NOT_REAL_DATA NOT_FOR_FORMAL_CONCLUSION",
+  "supplement_records": [
+    {
+      "tax_id": "00000000",
+      "company_name": "測試股份有限公司",
+      "registration_status": "ACTIVE",
+      "county": "台北市",
+      "industry_code": "2600",
+      "source": "data.gov.tw",
+      "authoritative_level": "SUPPLEMENTARY",
+      "note": "DEMO_ONLY — do not use for identity resolution"
+    }
+  ]
+}

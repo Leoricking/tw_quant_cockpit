@@ -1,0 +1,11 @@
+{
+  "_fixture_warning": "TEST_FIXTURE DEMO_ONLY NOT_REAL_DATA NOT_FOR_FORMAL_CONCLUSION",
+  "dataset_id": "gov_tw_macro_001",
+  "records": [
+    {"period": "2024-01", "indicator": "景氣對策信號", "value": "45", "unit": "分"},
+    {"period": "2024-02", "indicator": "景氣對策信號", "value": "38", "unit": "分"},
+    {"period": "2024-03", "indicator": "景氣對策信號", "value": "42", "unit": "分"}
+  ],
+  "total": 3,
+  "page": 1
+}

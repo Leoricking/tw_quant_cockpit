@@ -1,0 +1,25 @@
+{
+  "_fixture_warning": "TEST_FIXTURE DEMO_ONLY NOT_REAL_DATA NOT_FOR_FORMAL_CONCLUSION",
+  "observations": [
+    {
+      "domain": "macro_economy",
+      "indicator_code": "NDC_LEADING_INDEX",
+      "indicator_name": "景氣領先指標（測試）",
+      "observation_date": "2024-03-31",
+      "reporting_period": "2024-03",
+      "value": 98.5,
+      "unit": "points",
+      "geography": "TW",
+      "published_at": "2024-04-15",
+      "available_from": "2024-04-15",
+      "dataset_id": "gov_tw_macro_001",
+      "resource_id": "res_001",
+      "provider_agency": "國家發展委員會",
+      "authoritative_level": "SECONDARY_OFFICIAL",
+      "quality_status": "PASS",
+      "freshness_status": "FRESH",
+      "formal_use_allowed": true,
+      "provenance": {"platform": "data.gov.tw", "fixture": true}
+    }
+  ]
+}

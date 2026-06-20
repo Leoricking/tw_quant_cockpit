@@ -1,0 +1,7 @@
+{
+  "_fixture_warning": "TEST_FIXTURE DEMO_ONLY NOT_REAL_DATA NOT_FOR_FORMAL_CONCLUSION",
+  "license_name": "政府資料開放授權條款-第1版",
+  "license_url": "https://data.gov.tw/license",
+  "expected_status": "APPROVED",
+  "expected_formal_use_allowed": true
+}

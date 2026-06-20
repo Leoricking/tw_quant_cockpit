@@ -73,9 +73,9 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # ---------------------------------------------------------------------------
 # v1.3.3 module-level constants (Coverage Repair Workflow)
 # ---------------------------------------------------------------------------
-VERSION                             = "1.4.2"
-RELEASE_NAME                        = "MOPS Provider"
-BASE_RELEASE                        = "1.4.1 TPEx Provider"
+VERSION                             = "1.4.3"
+RELEASE_NAME                        = "data.gov.tw Provider"
+BASE_RELEASE                        = "1.4.2 MOPS Provider"
 
 # ---------------------------------------------------------------------------
 # v1.3.2 module-level constants (Real Data Provider Adapter Foundation)
@@ -460,7 +460,7 @@ PUBLIC_DATA_PROVIDER_INTEGRATION_STARTED   = True   # was False
 TWSE_PROVIDER_AVAILABLE                    = True
 TPEX_PROVIDER_AVAILABLE                    = True
 MOPS_PROVIDER_AVAILABLE                    = True
-DATA_GOV_TW_PROVIDER_AVAILABLE             = False
+DATA_GOV_TW_PROVIDER_AVAILABLE             = True
 FORUM_INTELLIGENCE_AVAILABLE               = False
 AUTO_OPTIMIZATION_ENABLED                  = False
 
@@ -524,6 +524,38 @@ MOPS_REALTIME_AVAILABLE                    = False  # ALWAYS FALSE
 MOPS_BROKER_EXECUTION_AVAILABLE            = False  # ALWAYS FALSE
 MOPS_AUTO_DOWNLOAD_ENABLED                 = False  # ALWAYS FALSE
 MOPS_MOCK_FALLBACK_ENABLED                 = False  # ALWAYS FALSE
+
+# v1.4.3 data.gov.tw Provider flags
+DATA_GOV_TW_PROVIDER_OFFICIAL_SOURCE_ONLY      = True
+DATA_GOV_TW_ALLOWLIST_REQUIRED                 = True
+DATA_GOV_TW_ALLOWLIST_SYSTEM_AVAILABLE         = True
+DATA_GOV_TW_LICENSE_VALIDATOR_AVAILABLE        = True
+DATA_GOV_TW_SCHEMA_CONTRACT_AVAILABLE          = True
+DATA_GOV_TW_JSON_ADAPTER_AVAILABLE             = True
+DATA_GOV_TW_CSV_ADAPTER_AVAILABLE              = True
+DATA_GOV_TW_XML_ADAPTER_AVAILABLE              = True
+DATA_GOV_TW_ZIP_ADAPTER_AVAILABLE              = True
+DATA_GOV_TW_OAS_ADAPTER_AVAILABLE              = True
+DATA_GOV_TW_REVISION_TRACKING_AVAILABLE        = True
+DATA_GOV_TW_LINEAGE_AVAILABLE                  = True
+DATA_GOV_TW_FRESHNESS_POLICY_AVAILABLE         = True
+DATA_GOV_TW_CACHE_POLICY_AVAILABLE             = True
+DATA_GOV_TW_STORE_AVAILABLE                    = True
+DATA_GOV_TW_QUERY_SERVICE_AVAILABLE            = True
+DATA_GOV_TW_CATALOG_SERVICE_AVAILABLE          = True
+DATA_GOV_TW_POINT_IN_TIME_AVAILABLE            = True
+DATA_GOV_TW_GOVERNMENT_OBSERVATION_MODEL       = True
+DATA_GOV_TW_ZIP_BOMB_PROTECTION_AVAILABLE      = True
+DATA_GOV_TW_PATH_TRAVERSAL_PROTECTION_AVAILABLE = True
+DATA_GOV_TW_REALTIME_AVAILABLE                 = False  # ALWAYS FALSE
+DATA_GOV_TW_BROKER_EXECUTION_AVAILABLE         = False  # ALWAYS FALSE
+DATA_GOV_TW_AUTO_DOWNLOAD_ENABLED              = False  # ALWAYS FALSE
+DATA_GOV_TW_AUTO_DISCOVERY_ENABLED             = False  # ALWAYS FALSE
+DATA_GOV_TW_MOCK_FALLBACK_ENABLED              = False  # ALWAYS FALSE
+DATA_GOV_TW_CAN_OVERRIDE_PRIMARY_PROVIDER      = False  # ALWAYS FALSE
+DATA_GOV_TW_WILDCARD_ALLOWLIST_ENABLED         = False  # ALWAYS FALSE
+DATA_GOV_TW_ALLOW_ALL_MODE_ENABLED             = False  # ALWAYS FALSE
+DATA_GOV_TW_FORMAL_USE_ALLOWED_DEFAULT         = False  # ALWAYS FALSE
 
 
 class VersionInfo:
@@ -1021,6 +1053,38 @@ def print_version_info() -> None:
     print(f"  MOPS Real-time Available: {MOPS_REALTIME_AVAILABLE}")
     print(f"  MOPS Auto Download Enabled: {MOPS_AUTO_DOWNLOAD_ENABLED}")
     print(f"  MOPS Mock Fallback Enabled: {MOPS_MOCK_FALLBACK_ENABLED}")
+    # v1.4.3 data.gov.tw Provider flags
+    print(f"  data.gov.tw Provider Available: {DATA_GOV_TW_PROVIDER_AVAILABLE}")
+    print(f"  data.gov.tw Official Source Only: {DATA_GOV_TW_PROVIDER_OFFICIAL_SOURCE_ONLY}")
+    print(f"  data.gov.tw Allowlist Required: {DATA_GOV_TW_ALLOWLIST_REQUIRED}")
+    print(f"  data.gov.tw Allowlist System Available: {DATA_GOV_TW_ALLOWLIST_SYSTEM_AVAILABLE}")
+    print(f"  data.gov.tw License Validator Available: {DATA_GOV_TW_LICENSE_VALIDATOR_AVAILABLE}")
+    print(f"  data.gov.tw Schema Contract Available: {DATA_GOV_TW_SCHEMA_CONTRACT_AVAILABLE}")
+    print(f"  data.gov.tw JSON Adapter Available: {DATA_GOV_TW_JSON_ADAPTER_AVAILABLE}")
+    print(f"  data.gov.tw CSV Adapter Available: {DATA_GOV_TW_CSV_ADAPTER_AVAILABLE}")
+    print(f"  data.gov.tw XML Adapter Available: {DATA_GOV_TW_XML_ADAPTER_AVAILABLE}")
+    print(f"  data.gov.tw ZIP Adapter Available: {DATA_GOV_TW_ZIP_ADAPTER_AVAILABLE}")
+    print(f"  data.gov.tw OAS Adapter Available: {DATA_GOV_TW_OAS_ADAPTER_AVAILABLE}")
+    print(f"  data.gov.tw Revision Tracking Available: {DATA_GOV_TW_REVISION_TRACKING_AVAILABLE}")
+    print(f"  data.gov.tw Lineage Available: {DATA_GOV_TW_LINEAGE_AVAILABLE}")
+    print(f"  data.gov.tw Freshness Policy Available: {DATA_GOV_TW_FRESHNESS_POLICY_AVAILABLE}")
+    print(f"  data.gov.tw Cache Policy Available: {DATA_GOV_TW_CACHE_POLICY_AVAILABLE}")
+    print(f"  data.gov.tw Store Available: {DATA_GOV_TW_STORE_AVAILABLE}")
+    print(f"  data.gov.tw Query Service Available: {DATA_GOV_TW_QUERY_SERVICE_AVAILABLE}")
+    print(f"  data.gov.tw Catalog Service Available: {DATA_GOV_TW_CATALOG_SERVICE_AVAILABLE}")
+    print(f"  data.gov.tw Point-In-Time Available: {DATA_GOV_TW_POINT_IN_TIME_AVAILABLE}")
+    print(f"  data.gov.tw Government Observation Model: {DATA_GOV_TW_GOVERNMENT_OBSERVATION_MODEL}")
+    print(f"  data.gov.tw ZIP Bomb Protection: {DATA_GOV_TW_ZIP_BOMB_PROTECTION_AVAILABLE}")
+    print(f"  data.gov.tw Path Traversal Protection: {DATA_GOV_TW_PATH_TRAVERSAL_PROTECTION_AVAILABLE}")
+    print(f"  data.gov.tw Real-time Available: {DATA_GOV_TW_REALTIME_AVAILABLE}")
+    print(f"  data.gov.tw Broker Execution Available: {DATA_GOV_TW_BROKER_EXECUTION_AVAILABLE}")
+    print(f"  data.gov.tw Auto Download Enabled: {DATA_GOV_TW_AUTO_DOWNLOAD_ENABLED}")
+    print(f"  data.gov.tw Auto Discovery Enabled: {DATA_GOV_TW_AUTO_DISCOVERY_ENABLED}")
+    print(f"  data.gov.tw Mock Fallback Enabled: {DATA_GOV_TW_MOCK_FALLBACK_ENABLED}")
+    print(f"  data.gov.tw Can Override Primary Provider: {DATA_GOV_TW_CAN_OVERRIDE_PRIMARY_PROVIDER}")
+    print(f"  data.gov.tw Wildcard Allowlist Enabled: {DATA_GOV_TW_WILDCARD_ALLOWLIST_ENABLED}")
+    print(f"  data.gov.tw Allow All Mode Enabled: {DATA_GOV_TW_ALLOW_ALL_MODE_ENABLED}")
+    print(f"  data.gov.tw Formal Use Allowed Default: {DATA_GOV_TW_FORMAL_USE_ALLOWED_DEFAULT}")
     print("=" * 60)
 
 

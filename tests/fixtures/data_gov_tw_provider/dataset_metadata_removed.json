@@ -1,0 +1,13 @@
+{
+  "_fixture_warning": "TEST_FIXTURE DEMO_ONLY NOT_REAL_DATA NOT_FOR_FORMAL_CONCLUSION",
+  "dataset_id": "gov_tw_removed_001",
+  "title": "已下架測試資料集",
+  "description": "Test fixture: removed dataset",
+  "category": "misc",
+  "provider_agency": "Test Agency",
+  "agency_code": "TST",
+  "update_frequency": "UNKNOWN",
+  "license_name": null,
+  "status": "REMOVED",
+  "official": true
+}
