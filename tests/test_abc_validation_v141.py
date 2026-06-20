@@ -1200,6 +1200,7 @@ def test_release_name_141():
         "MOPS Provider",
         "data.gov.tw Provider",
         "Provider CLI Registration Hotfix",
+        "Provider Health Consistency Hotfix",
         "FinMind Adapter Hardening",
         "Source Lineage & Rate Limit",
         "Provider Quality Gates",

@@ -381,6 +381,98 @@ def validate_capability_dependencies() -> dict:
     }
 
 
+_VALID_TRANSITIONS: dict = {
+    PLANNED:      {AVAILABLE, STABLE, EXPERIMENTAL, DISABLED, BLOCKED},
+    AVAILABLE:    {STABLE, EXPERIMENTAL, DISABLED, BLOCKED, DEPRECATED},
+    EXPERIMENTAL: {AVAILABLE, STABLE, DISABLED, BLOCKED, DEPRECATED},
+    STABLE:       {DEPRECATED, DISABLED, BLOCKED},
+    DEPRECATED:   {DISABLED, BLOCKED},
+    DISABLED:     {BLOCKED},
+    BLOCKED:      set(),
+}
+
+# Foundation capabilities (defined at v1.3.9) that must stay STABLE
+_FOUNDATION_CAPS = {
+    "real_data_quality",
+    "universe_expansion",
+    "provider_adapter_foundation",
+    "coverage_repair",
+    "data_freshness",
+    "empirical_backtest",
+    "abc_validation",
+    "strategy_robustness",
+    "canonical_version_alignment",
+}
+
+# Provider capabilities (v1.4.x) that may progress from PLANNED→STABLE
+_PROVIDER_CAPS_V14 = {
+    "twse_provider",
+    "tpex_provider",
+    "mops_provider",
+    "data_gov_tw_provider",
+}
+
+
+def validate_capability_transition(old_status: str, new_status: str) -> None:
+    """
+    Raise ValueError if the transition from old_status to new_status is invalid.
+    STABLE→PLANNED is always invalid. PLANNED→STABLE is valid.
+    """
+    if old_status == new_status:
+        return  # no-op transition is always fine
+    allowed = _VALID_TRANSITIONS.get(old_status)
+    if allowed is None:
+        raise ValueError(f"Unknown status: {old_status!r}")
+    if new_status not in allowed:
+        raise ValueError(
+            f"Invalid capability lifecycle transition: {old_status!r} → {new_status!r}. "
+            f"Allowed from {old_status!r}: {sorted(allowed)}"
+        )
+
+
+def validate_foundation_capabilities() -> dict:
+    """
+    Check that all v1.3.x foundation capabilities are still STABLE.
+    Returns {"valid": bool, "errors": list[str]}.
+    """
+    errors: list[str] = []
+    for cap_id in _FOUNDATION_CAPS:
+        cap = _CAP_INDEX.get(cap_id)
+        if cap is None:
+            errors.append(f"Foundation capability {cap_id!r} not found in registry")
+            continue
+        if cap.get("status") != STABLE:
+            errors.append(
+                f"Foundation capability {cap_id!r} must be STABLE, "
+                f"got {cap.get('status')!r}"
+            )
+        if not cap.get("available", False):
+            errors.append(f"Foundation capability {cap_id!r} must be available")
+    return {"valid": len(errors) == 0, "errors": errors}
+
+
+def validate_provider_capability_progression() -> dict:
+    """
+    Check that v1.4.x provider capabilities have a valid lifecycle status.
+    PLANNED→STABLE is a valid progression.
+    Returns {"valid": bool, "errors": list[str], "progressions": dict}.
+    """
+    errors: list[str] = []
+    progressions: dict = {}
+    for cap_id in _PROVIDER_CAPS_V14:
+        cap = _CAP_INDEX.get(cap_id)
+        if cap is None:
+            errors.append(f"Provider capability {cap_id!r} not found in registry")
+            continue
+        status = cap.get("status", "UNKNOWN")
+        progressions[cap_id] = status
+        if status not in (PLANNED, AVAILABLE, STABLE, EXPERIMENTAL, DISABLED):
+            errors.append(
+                f"Provider capability {cap_id!r} has unexpected status {status!r}"
+            )
+    return {"valid": len(errors) == 0, "errors": errors, "progressions": progressions}
+
+
 def build_capability_summary() -> dict:
     """Return a JSON-safe summary of all capabilities."""
     available = list_available_capabilities()

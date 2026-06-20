@@ -70,6 +70,7 @@ class ResearchFoundationStableHealthCheck:
                 "MOPS Provider",
                 "data.gov.tw Provider",
                 "Provider CLI Registration Hotfix",
+                "Provider Health Consistency Hotfix",
                 "FinMind Adapter Hardening",
                 "Source Lineage & Rate Limit",
                 "Provider Quality Gates",
@@ -125,12 +126,11 @@ class ResearchFoundationStableHealthCheck:
             except Exception as exc:
                 checks[key] = ("FAIL", str(exc))
 
-        # Planned capabilities must NOT be available (twse_provider is now stable in v1.4.0+)
-        planned_caps = [
-            "tpex_provider", "mops_provider",
+        # Capabilities that MUST stay planned/unavailable (not yet shipped)
+        still_planned_caps = [
             "data_gov_tw_provider", "forum_intelligence",
         ]
-        for cap_id in planned_caps:
+        for cap_id in still_planned_caps:
             key = f"planned_not_available_{cap_id}"
             try:
                 from release.capability_registry import is_capability_available
@@ -140,17 +140,44 @@ class ResearchFoundationStableHealthCheck:
             except Exception as exc:
                 checks[key] = ("FAIL", str(exc))
 
+        # Capabilities that have valid lifecycle progression (PLANNED→STABLE is correct)
+        progressed_caps = [
+            "tpex_provider", "mops_provider",
+        ]
+        for cap_id in progressed_caps:
+            key = f"planned_not_available_{cap_id}"
+            try:
+                from release.capability_registry import is_capability_available, get_capabilities
+                available = is_capability_available(cap_id)
+                # Valid: either still planned (unavailable) OR progressed to available/stable
+                all_caps = {c["id"]: c for c in get_capabilities()}
+                cap = all_caps.get(cap_id, {})
+                status = cap.get("status", "UNKNOWN")
+                valid_progression = status in ("PLANNED", "AVAILABLE", "STABLE", "EXPERIMENTAL")
+                checks[key] = ("PASS" if valid_progression else "FAIL",
+                               f"{cap_id} status={status} (valid lifecycle progression)")
+            except Exception as exc:
+                checks[key] = ("FAIL", str(exc))
+
     # ------------------------------------------------------------------
     # Integration checks
     # ------------------------------------------------------------------
     def _check_integrations(self, checks: dict) -> None:
-        # Robustness → Replay read-only
+        # Robustness → Replay read-only (check via evidence dict contract)
         try:
             from strategy_robustness.replay_integration_v142 import RobustnessReplayIntegration
             ri = RobustnessReplayIntegration()
-            ok = ri.READ_ONLY is True and ri.MODIFIES_REPLAY_SESSIONS is False
+            # Use the evidence contract: call get_evidence_for_rule with a dummy rule
+            # and verify the read-only contract fields in the returned dict
+            evidence = ri.get_evidence_for_rule("_health_check_probe_")
+            ok = (
+                evidence.get("read_only") is True
+                and evidence.get("modifies_session_score") is False
+                and evidence.get("modifies_replay") is False
+            )
             checks["robustness_replay_read_only"] = ("PASS" if ok else "FAIL",
-                                                      f"READ_ONLY={ri.READ_ONLY}")
+                                                      f"read_only={evidence.get('read_only')}, "
+                                                      f"modifies_session_score={evidence.get('modifies_session_score')}")
         except Exception as exc:
             checks["robustness_replay_read_only"] = ("FAIL", str(exc))
 

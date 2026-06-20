@@ -182,6 +182,23 @@ class DataGovTwDataset:
     warnings: List[str] = field(default_factory=list)
     metadata: Dict[str, Any] = field(default_factory=dict)
 
+    @property
+    def formal_use_allowed(self) -> bool:
+        """
+        Derived: True only if official, allowlisted/approved, enabled, and not removed/blocked.
+        Default is False. Old payloads without these fields also default to False.
+        [!] DATA_GOV_TW_FORMAL_USE_ALLOWED_DEFAULT = False. Not Investment Advice.
+        """
+        blocked_statuses = {DatasetStatus.REMOVED.value, DatasetStatus.BLOCKED.value,
+                            DatasetStatus.DISABLED.value, DatasetStatus.DEPRECATED.value}
+        if self.status in blocked_statuses:
+            return False
+        return (
+            self.official is True
+            and (self.allowlisted is True or self.approved is True)
+            and self.approved is True
+        )
+
     def to_dict(self) -> Dict[str, Any]:
         return {
             "dataset_id": self.dataset_id,
@@ -209,6 +226,7 @@ class DataGovTwDataset:
             "official": self.official,
             "allowlisted": self.allowlisted,
             "approved": self.approved,
+            "formal_use_allowed": self.formal_use_allowed,
             "authoritative_level": self.authoritative_level,
             "metadata_source": self.metadata_source,
             "fetched_at": self.fetched_at,

@@ -39,6 +39,7 @@ def run_checklist() -> list[dict]:
             "MOPS Provider",
             "data.gov.tw Provider",
             "Provider CLI Registration Hotfix",
+            "Provider Health Consistency Hotfix",
             "FinMind Adapter Hardening",
             "Source Lineage & Rate Limit",
             "Provider Quality Gates",
@@ -156,12 +157,15 @@ def run_checklist() -> list[dict]:
 
     # 17. Runtime hygiene
     def _check_hygiene():
+        from release.text_file_reader import read_text_with_encoding_fallback
         p = os.path.join(
             os.path.dirname(os.path.dirname(os.path.abspath(__file__))),
             ".gitignore"
         )
-        with open(p) as f:
-            content = f.read()
+        try:
+            content, _enc, _fb, _warns = read_text_with_encoding_fallback(p)
+        except (ValueError, OSError):
+            return False
         return "data/research_foundation/" in content
     items.append(_item(17, "hygiene", ".gitignore includes data/research_foundation/", _check_hygiene))
 

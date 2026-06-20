@@ -52,6 +52,7 @@ class ResearchFoundationReleaseGate:
                 "MOPS Provider",
                 "data.gov.tw Provider",
                 "Provider CLI Registration Hotfix",
+                "Provider Health Consistency Hotfix",
                 "FinMind Adapter Hardening",
                 "Source Lineage & Rate Limit",
                 "Provider Quality Gates",
@@ -206,15 +207,52 @@ class ResearchFoundationReleaseGate:
             return _make_gate("safety_gate", "FAIL", str(exc), True, [], "Fix safety flags")
 
     def _regression_gate(self) -> dict:
-        # We cannot run pytest inside the gate itself; report as PASS with note
-        return _make_gate(
-            "regression_gate", "PASS",
-            "Regression must be verified externally (pytest 0 failed / 0 errors)", False,
-            ["Run full pytest suite before release"], "Run: pytest tests/"
-        )
+        # Run the health check and propagate blocking failures to the gate.
+        try:
+            from release.research_foundation_health_v139 import ResearchFoundationStableHealthCheck
+            hc = ResearchFoundationStableHealthCheck()
+            summary = hc.get_health_summary()
+            failed = summary.get("failed", 0)
+            checks_detail = summary.get("checks", {})
+            # Safety-related checks that block the gate if they fail
+            safety_keys = [
+                "safety_no_real_orders",
+                "safety_broker_execution_enabled",
+                "safety_production_trading_blocked",
+            ]
+            safety_failures = [k for k in safety_keys
+                               if checks_detail.get(k, {}).get("status") == "FAIL"]
+            if safety_failures:
+                return _make_gate(
+                    "regression_gate", "FAIL",
+                    f"Health safety checks FAILED: {safety_failures}", True,
+                    [], f"Fix safety checks: {safety_failures}"
+                )
+            if failed > 0:
+                failing_checks = [k for k, v in checks_detail.items()
+                                  if v.get("status") == "FAIL"]
+                return _make_gate(
+                    "regression_gate", "FAIL",
+                    f"Health check has {failed} failure(s): {failing_checks}", True,
+                    [], f"Fix health check failures before release: {failing_checks}"
+                )
+            return _make_gate(
+                "regression_gate", "PASS",
+                f"Health check passed ({summary.get('total_checks', 0)} checks, "
+                f"{summary.get('passed', 0)} passed). "
+                "Full pytest suite must also be verified externally.", False,
+                ["Run full pytest suite before release"], "Run: pytest tests/"
+            )
+        except Exception as exc:
+            return _make_gate(
+                "regression_gate", "FAIL",
+                f"Could not run health check: {exc}", True,
+                [], "Fix health check import"
+            )
 
     def _runtime_hygiene_gate(self) -> dict:
         import os
+        from release.text_file_reader import read_text_with_encoding_fallback
         gitignore_path = os.path.join(
             os.path.dirname(os.path.dirname(os.path.abspath(__file__))),
             ".gitignore"
@@ -222,10 +260,12 @@ class ResearchFoundationReleaseGate:
         ok = os.path.exists(gitignore_path)
         warnings = []
         if ok:
-            with open(gitignore_path, "r", encoding="utf-8") as f:
-                content = f.read()
-            if "data/research_foundation/" not in content:
-                warnings.append("data/research_foundation/ not in .gitignore")
+            try:
+                content, _enc, _fallback, _warns = read_text_with_encoding_fallback(gitignore_path)
+                if "data/research_foundation/" not in content:
+                    warnings.append("data/research_foundation/ not in .gitignore")
+            except ValueError as exc:
+                warnings.append(f".gitignore unreadable: {exc}")
         return _make_gate(
             "runtime_hygiene_gate", "PASS" if (ok and not warnings) else "WARN",
             f"gitignore_exists={ok}", False, warnings,

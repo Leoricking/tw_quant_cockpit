@@ -424,6 +424,7 @@ class DataGovTwProviderHealthCheck:
 
     def _check_runtime_ignored(self) -> Tuple[str, str]:
         import os
+        from release.text_file_reader import read_text_with_encoding_fallback
         gitignore_path = os.path.join(
             os.path.dirname(os.path.dirname(os.path.dirname(os.path.dirname(
                 os.path.abspath(__file__)
@@ -432,8 +433,10 @@ class DataGovTwProviderHealthCheck:
         )
         if not os.path.exists(gitignore_path):
             return (_WARN, ".gitignore not found")
-        with open(gitignore_path) as f:
-            content = f.read()
+        try:
+            content, enc, fallback, warns = read_text_with_encoding_fallback(gitignore_path)
+        except ValueError as exc:
+            return (_WARN, f".gitignore unreadable: {exc}")
         if "data/data_gov_tw/" in content:
             return (_PASS, "Runtime data directories are gitignored")
         return (_WARN, "data/data_gov_tw/ not found in .gitignore")

@@ -86,9 +86,10 @@ class TestRegistryConsistency:
             assert spec.research_only is True, f"{spec.name} has research_only=False"
 
     def test_09_registry_version(self):
-        """Test 9: REGISTRY_VERSION is 1.4.3.1."""
+        """Test 9: REGISTRY_VERSION is 1.4.3.1 or later."""
         from cli.command_registry import REGISTRY_VERSION
-        assert REGISTRY_VERSION == "1.4.3.1"
+        parts = tuple(int(x) for x in REGISTRY_VERSION.split(".")[:4] if x.isdigit())
+        assert parts >= (1, 4, 3, 1), f"Expected REGISTRY_VERSION >= 1.4.3.1, got {REGISTRY_VERSION}"
 
     def test_10_validate_command_registry_no_duplicates(self):
         """Test 10: validate_command_registry reports no duplicates with correct inputs."""
@@ -263,14 +264,24 @@ class TestSafetyInvariants:
 
 class TestRegression:
     def test_36_version_is_1431(self):
-        """Test 36: VERSION is 1.4.3.1."""
+        """Test 36: VERSION is >= 1.4.3.1 (CLI registration was shipped in 1.4.3.1)."""
         from release.version_info import VERSION
-        assert VERSION == "1.4.3.1"
+        parts = tuple(int(x) for x in VERSION.split(".")[:4] if x.isdigit())
+        assert parts >= (1, 4, 3, 1), f"Expected >= 1.4.3.1, got {VERSION}"
 
     def test_37_release_name_is_hotfix(self):
-        """Test 37: RELEASE_NAME is Provider CLI Registration Hotfix."""
+        """Test 37: RELEASE_NAME is a known hotfix or later release."""
         from release.version_info import RELEASE_NAME
-        assert RELEASE_NAME == "Provider CLI Registration Hotfix"
+        _KNOWN = {
+            "Provider CLI Registration Hotfix",
+            "Provider Health Consistency Hotfix",
+            "FinMind Adapter Hardening",
+            "Source Lineage & Rate Limit",
+            "Provider Quality Gates",
+            "Forum Intelligence & Market Sentiment",
+            "Data Provider Stable Rollup",
+        }
+        assert RELEASE_NAME in _KNOWN, f"Unexpected RELEASE_NAME: {RELEASE_NAME}"
 
     def test_38_base_release_is_143(self):
         """Test 38: BASE_RELEASE references 1.4.3."""
