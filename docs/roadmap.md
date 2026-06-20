@@ -106,6 +106,7 @@
 | v1.3.4 | Data Freshness Monitor | Done |
 | v1.4.0 | Strategy Knowledge Empirical Backtest | Done |
 | v1.4.1 | A/B/C Buy Point Validation | Done |
+| v1.4.2 | Strategy Robustness & Regime Validation | Done |
 
 ---
 
@@ -116,8 +117,28 @@
 - **Changes:** abc_validation/ package (25 modules: __init__, rule_adapters_v141, snapshots_v141, signal_classification_v141, integrity_guard_v141, parameters_v141, holding_period_analyzer_v141, stop_loss_analyzer_v141, take_profit_analyzer_v141, regime_analyzer_v141, filter_ablation_v141, second_wave_analyzer_v141, institutional_margin_analyzer_v141, volume_analyzer_v141, outcome_taxonomy_v141, failure_rate_analyzer_v141, validation_result_v141, comparison_engine_v141, confidence_v141, walk_forward_v141, store_v141, repair_integration_v141, replay_integration_v141, report_v141, health_v141), gui/abc_buy_point_validation_panel.py (15-tab QWidget), main.py (19 new CLI handler functions + subparsers + command_map entries, sys.stdout fix for pytest compatibility), release/version_info.py (VERSION→1.4.1, 12 new flags, print_version_info update), tests/test_abc_validation_v141.py (182 tests), tests/fixtures/abc_validation/ (10 JSON fixtures), .gitignore (data/abc_validation/, data/abc_runs/, data/abc_results/, reports/abc_validation_*.md; fixtures committed), docs/abc_buy_point_validation_v1.4.1.md.
 - **Safety:** NO_REAL_ORDERS=True; BROKER_EXECUTION_ENABLED=False; PRODUCTION_TRADING_BLOCKED=True; MOCK_FORMAL_CONCLUSION_ALLOWED=False; AUTO_OPTIMIZATION_ENABLED=False; AUTO_TRADING_ENABLED=False; Fixture data blocked in real mode (ABCSignalIntegrityGuard); Formal conclusion requires real data + OOS validation + ≥30 trades + ≥5 symbols + ≥2 regimes; Confidence=INSUFFICIENT when requirements unmet; All CLI commands dry-run by default; GUI QThread cleaned up on close; No lookahead (regime labeled from bars-before-signal only; no post-hoc high-price labeling); Stop/target collision resolved conservatively (use stop); Walk-forward all folds preserved including negative-performance folds; Not Investment Advice.
 
+---
+
+### v1.4.2 — Strategy Robustness & Regime Validation ✅
+
+- **Version:** 1.4.2 — Strategy Robustness & Regime Validation
+- **Type:** Multi-dimensional robustness validation framework for strategy rules and A/B/C buy points. Consumes existing backtest and ABC validation results to answer whether strategies are genuinely robust or only work in narrow conditions.
+- **Changes:** strategy_robustness/ package (23 modules: models_v142, time_robustness_v142, cross_sectional_v142, industry_robustness_v142, regime_robustness_v142, parameter_sensitivity_v142, cost_stress_v142, trade_concentration_v142, bootstrap_v142, monte_carlo_v142, rolling_stability_v142, decay_detector_v142, stress_scenarios_v142, failure_modes_v142, score_v142, comparison_v142, store_v142, query_v142, repair_integration_v142, replay_integration_v142, report_v142, health_v142, __init__), gui/strategy_robustness_panel.py (16-tab QWidget), main.py (robustness CLI commands + v1.4.2 version-info flags), release/version_info.py (VERSION→1.4.2, 13 new flags), tests/test_strategy_robustness_v142.py (168 tests), tests/fixtures/strategy_robustness/ (10 JSON fixtures), .gitignore (data/strategy_robustness/ and related paths), docs/strategy_robustness_regime_validation_v1.4.2.md.
+- **Safety:** NO_REAL_ORDERS=True; BROKER_EXECUTION_ENABLED=False; PRODUCTION_TRADING_BLOCKED=True; ROBUSTNESS_MOCK_FORMAL_CONCLUSION_ALLOWED=False; ROBUSTNESS_AUTO_OPTIMIZATION_ENABLED=False; ROBUSTNESS_AUTO_TRADING_ENABLED=False; Fixture data blocked in real mode; Formal conclusion requires real data + data quality pass + freshness pass + sufficient symbols/trades/OOS; Robustness results NEVER converted to trading recommendations; Replay integration read-only; Not Investment Advice.
+
 **Next:**
-- v1.4.2: TBD
+- v1.4.3: Forum Intelligence & Market Sentiment
+- v1.5.0: Stock Screening & Precise Price Validation
+- v1.5.1: GUI Decision Cockpit Integration
+
+---
+
+### v1.4.1 — A/B/C Buy Point Validation ✅
+
+- **Version:** 1.4.1 — A/B/C Buy Point Validation
+- **Type:** Empirical validation framework for A/B/C buy point strategy rules. Wraps existing domain logic (BuyPointAnalyzer) with rule adapters, adds holding period / stop loss / take profit / regime / volume / institutional / margin / second wave / filter ablation analyzers, walk-forward validator, comparison engine, confidence evaluator, validation store, result reporting, GUI panel, 19 CLI commands, 182 tests.
+- **Changes:** abc_validation/ package (25 modules: __init__, rule_adapters_v141, snapshots_v141, signal_classification_v141, integrity_guard_v141, parameters_v141, holding_period_analyzer_v141, stop_loss_analyzer_v141, take_profit_analyzer_v141, regime_analyzer_v141, filter_ablation_v141, second_wave_analyzer_v141, institutional_margin_analyzer_v141, volume_analyzer_v141, outcome_taxonomy_v141, failure_rate_analyzer_v141, validation_result_v141, comparison_engine_v141, confidence_v141, walk_forward_v141, store_v141, repair_integration_v141, replay_integration_v141, report_v141, health_v141), gui/abc_buy_point_validation_panel.py (15-tab QWidget), main.py (19 new CLI handler functions + subparsers + command_map entries, sys.stdout fix for pytest compatibility), release/version_info.py (VERSION→1.4.1, 12 new flags, print_version_info update), tests/test_abc_validation_v141.py (182 tests), tests/fixtures/abc_validation/ (10 JSON fixtures), .gitignore (data/abc_validation/, data/abc_runs/, data/abc_results/, reports/abc_validation_*.md; fixtures committed), docs/abc_buy_point_validation_v1.4.1.md.
+- **Safety:** NO_REAL_ORDERS=True; BROKER_EXECUTION_ENABLED=False; PRODUCTION_TRADING_BLOCKED=True; MOCK_FORMAL_CONCLUSION_ALLOWED=False; AUTO_OPTIMIZATION_ENABLED=False; AUTO_TRADING_ENABLED=False; Fixture data blocked in real mode (ABCSignalIntegrityGuard); Formal conclusion requires real data + OOS validation + ≥30 trades + ≥5 symbols + ≥2 regimes; Confidence=INSUFFICIENT when requirements unmet; All CLI commands dry-run by default; GUI QThread cleaned up on close; No lookahead (regime labeled from bars-before-signal only; no post-hoc high-price labeling); Stop/target collision resolved conservatively (use stop); Walk-forward all folds preserved including negative-performance folds; Not Investment Advice.
 
 ---
 

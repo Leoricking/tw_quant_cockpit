@@ -583,3 +583,18 @@ reports/abc_validation_*.md
 
 # v1.4.1 ABC Validation fixtures ARE committed (exception)
 !tests/fixtures/abc_validation/*.json
+
+# v1.4.2 Strategy Robustness & Regime Validation (runtime outputs — never commit)
+data/strategy_robustness/
+data/robustness_runs/
+data/robustness_results/
+data/parameter_sensitivity_results/
+data/cost_stress_results/
+data/bootstrap_results/
+data/monte_carlo_results/
+data/decay_results/
+data/comparison_results/
+reports/strategy_robustness_*.md
+
+# v1.4.2 Strategy Robustness fixtures ARE committed (exception)
+!tests/fixtures/strategy_robustness/*.json
