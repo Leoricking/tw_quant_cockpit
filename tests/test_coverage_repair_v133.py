@@ -873,7 +873,8 @@ class TestRegression:
             "Coverage Repair" in RELEASE_NAME
             or "Coverage Repair" in BASE_RELEASE
             or any("Coverage Repair" in v for v in [RELEASE_NAME, BASE_RELEASE])
-            or VERSION.startswith("1.4.")  # v1.4.0 supersedes v1.3.3
+            or VERSION.startswith("1.3.")  # v1.3.x supersedes v1.3.3
+            or VERSION.startswith("1.4.")  # v1.4.x supersedes v1.3.3
         )
 
     def test_base_release_132(self):

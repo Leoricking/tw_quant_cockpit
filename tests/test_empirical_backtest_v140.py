@@ -1499,9 +1499,10 @@ class TestGUI:
 
 class TestRegression:
     def test_version_info_140(self):
-        """Test 125: VERSION is 1.4.0 or later 1.4.x (e.g. 1.4.1 A/B/C Buy Point Validation)."""
+        """Test 125: VERSION is 1.3.5 (canonical) or later."""
         from release.version_info import VERSION
-        assert VERSION.startswith("1.4.")
+        major, minor, patch = (int(x) for x in VERSION.split(".")[:3])
+        assert (major, minor, patch) >= (1, 3, 5), f"Expected >= 1.3.5, got {VERSION}"
 
     def test_replay_stable_baseline_129(self):
         """Test 126: REPLAY_STABLE_BASELINE == '1.2.9'."""

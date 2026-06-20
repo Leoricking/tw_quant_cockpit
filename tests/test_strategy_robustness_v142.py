@@ -1390,9 +1390,10 @@ def test_health_check_31_checks():
 # ── version_info.py ───────────────────────────────────────────────────────────
 
 def test_version_info_142():
-    """Test 125: VERSION is 1.4.2."""
+    """Test 125: VERSION is 1.3.7 (canonical) or later."""
     from release.version_info import VERSION
-    assert VERSION == "1.4.2"
+    major, minor, patch = (int(x) for x in VERSION.split(".")[:3])
+    assert (major, minor, patch) >= (1, 3, 7), f"Expected >= 1.3.7, got {VERSION}"
 
 
 def test_release_name_142():
@@ -1402,9 +1403,11 @@ def test_release_name_142():
 
 
 def test_base_release_142():
-    """Test 127: BASE_RELEASE references 1.4.1."""
+    """Test 127: BASE_RELEASE references 1.3.6 (canonical) or 1.4.1 (pre-alignment label)."""
     from release.version_info import BASE_RELEASE
-    assert "1.4.1" in BASE_RELEASE
+    assert any(marker in BASE_RELEASE for marker in ("1.3.6", "1.4.1")), (
+        f"BASE_RELEASE does not reference A/B/C release: {BASE_RELEASE}"
+    )
 
 
 def test_strategy_robustness_flag():

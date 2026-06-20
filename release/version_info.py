@@ -73,9 +73,9 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # ---------------------------------------------------------------------------
 # v1.3.3 module-level constants (Coverage Repair Workflow)
 # ---------------------------------------------------------------------------
-VERSION                             = "1.4.2"
+VERSION                             = "1.3.7"
 RELEASE_NAME                        = "Strategy Robustness & Regime Validation"
-BASE_RELEASE                        = "1.4.1 A/B/C Buy Point Validation"
+BASE_RELEASE                        = "1.3.6 A/B/C Buy Point Validation"
 
 # ---------------------------------------------------------------------------
 # v1.3.2 module-level constants (Real Data Provider Adapter Foundation)
