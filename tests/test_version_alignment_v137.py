@@ -23,20 +23,28 @@ def test_current_version_is_137():
 
 
 def test_current_release_name():
-    """Test 2: Release name is a known release (v1.4.0+ adds TWSE Provider)."""
+    """Test 2: Release name is a known release (v1.4.0+ adds public data provider releases)."""
     from release.version_info import RELEASE_NAME
     known_names = {
         "Strategy Robustness & Regime Validation",
         "Research Foundation Stable Rollup",
         "TWSE Provider",
+        "TPEx Provider",
+        "MOPS Provider",
+        "data.gov.tw Provider",
+        "FinMind Adapter Hardening",
+        "Source Lineage & Rate Limit",
+        "Provider Quality Gates",
+        "Forum Intelligence & Market Sentiment",
+        "Data Provider Stable Rollup",
     }
     assert RELEASE_NAME in known_names, f"Unexpected RELEASE_NAME: {RELEASE_NAME}"
 
 
 def test_current_base_release():
-    """Test 3: Base release is a known base (v1.4.0 base references v1.3.9)."""
+    """Test 3: Base release is a known base (v1.4.1 base references v1.4.0)."""
     from release.version_info import BASE_RELEASE
-    assert any(m in BASE_RELEASE for m in ("1.3.6", "1.3.7", "1.3.9", "1.4.1")), (
+    assert any(m in BASE_RELEASE for m in ("1.3.6", "1.3.7", "1.3.9", "1.4.0", "1.4.1")), (
         f"Unexpected BASE_RELEASE: {BASE_RELEASE}"
     )
 

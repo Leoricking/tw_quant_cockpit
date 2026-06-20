@@ -1,0 +1,19 @@
+[
+  {
+    "_meta": {"TEST_FIXTURE": true, "DEMO_ONLY": true, "NOT_REAL_DATA": true, "NOT_FOR_FORMAL_CONCLUSION": true},
+    "SecuritiesCompanyCode": "5274",
+    "PEratio": "25.30",
+    "DividendYield": "2.15%",
+    "PBratio": "8.50",
+    "MarketCap": "85000000000"
+  },
+  {
+    "_meta": {"TEST_FIXTURE": true, "DEMO_ONLY": true, "NOT_REAL_DATA": true, "NOT_FOR_FORMAL_CONCLUSION": true},
+    "SecuritiesCompanyCode": "6415",
+    "PEratio": "--",
+    "DividendYield": "--",
+    "PBratio": "3.20",
+    "MarketCap": "45000000000",
+    "_note": "'--' -> None (never 0). Negative PE also valid."
+  }
+]

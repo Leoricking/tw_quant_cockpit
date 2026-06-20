@@ -39,12 +39,20 @@ class TestVersionInfo:
             "Research Foundation Stable Rollup",
             "TWSE Provider",
             "Strategy Robustness & Regime Validation",
+            "TPEx Provider",
+            "MOPS Provider",
+            "data.gov.tw Provider",
+            "FinMind Adapter Hardening",
+            "Source Lineage & Rate Limit",
+            "Provider Quality Gates",
+            "Forum Intelligence & Market Sentiment",
+            "Data Provider Stable Rollup",
         }
         assert RELEASE_NAME in _KNOWN, f"Unexpected RELEASE_NAME: {RELEASE_NAME}"
 
     def test_base_release_contains_137(self):
         from release.version_info import BASE_RELEASE
-        assert any(m in BASE_RELEASE for m in ("1.3.7", "1.3.9", "1.4.1")), (
+        assert any(m in BASE_RELEASE for m in ("1.3.7", "1.3.9", "1.4.0", "1.4.1")), (
             f"BASE_RELEASE does not reference a known base: {BASE_RELEASE}"
         )
 
@@ -115,7 +123,7 @@ class TestCapabilityRegistry:
     def test_planned_capabilities_count(self):
         from release.capability_registry import list_planned_capabilities
         planned = list_planned_capabilities()
-        assert len(planned) >= 7
+        assert len(planned) >= 6
 
     def test_real_data_quality_available(self):
         from release.capability_registry import is_capability_available
@@ -663,7 +671,7 @@ class TestFixtures:
 
     def test_capability_registry_fixture_planned_count(self):
         fixture = _load_fixture("capability_registry_snapshot.json")
-        assert fixture["expected_planned_count"] >= 7
+        assert fixture["expected_planned_count"] >= 6
 
     def test_version_alignment_fixture_maps_140(self):
         fixture = _load_fixture("version_alignment_snapshot.json")

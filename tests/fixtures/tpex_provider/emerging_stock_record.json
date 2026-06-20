@@ -1,0 +1,12 @@
+[
+  {
+    "_meta": {"TEST_FIXTURE": true, "DEMO_ONLY": true, "NOT_REAL_DATA": true, "NOT_FOR_FORMAL_CONCLUSION": true},
+    "SecuritiesCompanyCode": "6789",
+    "CompanyName": "興櫃測試股",
+    "Industry": "電子",
+    "SecurityType": "EMERGING_STOCK",
+    "Board": "EMERGING",
+    "ListingDate": "1120601",
+    "_note": "Emerging stock (興櫃) — must NOT be in common stock universe. universe_eligible=False."
+  }
+]

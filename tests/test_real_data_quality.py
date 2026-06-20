@@ -759,6 +759,14 @@ class TestVersionInfo:
             "Strategy Robustness & Regime Validation",
             "Research Foundation Stable Rollup",
             "TWSE Provider",
+            "TPEx Provider",
+            "MOPS Provider",
+            "data.gov.tw Provider",
+            "FinMind Adapter Hardening",
+            "Source Lineage & Rate Limit",
+            "Provider Quality Gates",
+            "Forum Intelligence & Market Sentiment",
+            "Data Provider Stable Rollup",
         ), f"Unexpected release name: {version_info.RELEASE_NAME}"
 
     def test_release_track(self):

@@ -1189,13 +1189,21 @@ def test_version_info_141():
     assert (major, minor, patch) >= (1, 3, 6), f"Expected >= 1.3.6, got {VERSION}"
 
 def test_release_name_141():
-    """Test 142: RELEASE_NAME is a known release (v1.4.0+ adds TWSE Provider)."""
+    """Test 142: RELEASE_NAME is a known release (v1.4.x adds public data provider releases)."""
     from release.version_info import RELEASE_NAME
     _KNOWN = (
         "A/B/C Buy Point Validation",
         "Strategy Robustness & Regime Validation",
         "Research Foundation Stable Rollup",
         "TWSE Provider",
+        "TPEx Provider",
+        "MOPS Provider",
+        "data.gov.tw Provider",
+        "FinMind Adapter Hardening",
+        "Source Lineage & Rate Limit",
+        "Provider Quality Gates",
+        "Forum Intelligence & Market Sentiment",
+        "Data Provider Stable Rollup",
     )
     assert RELEASE_NAME in _KNOWN, f"Unexpected release name: {RELEASE_NAME}"
 

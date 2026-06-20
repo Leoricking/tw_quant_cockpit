@@ -4,9 +4,9 @@
   "NOT_REAL_DATA": true,
   "NOT_FOR_FORMAL_CONCLUSION": true,
   "fixture_id": "capability_registry_snapshot",
-  "description": "Snapshot of expected capability registry state for v1.3.9+ (updated for v1.4.0 — twse_provider now stable)",
-  "expected_stable_count": 10,
-  "expected_planned_count": 7,
+  "description": "Snapshot of expected capability registry state for v1.3.9+ (updated for v1.4.2 — tpex_provider now stable)",
+  "expected_stable_count": 11,
+  "expected_planned_count": 6,
   "expected_total": 17,
   "stable_capability_ids": [
     "real_data_quality",
@@ -18,10 +18,10 @@
     "abc_validation",
     "strategy_robustness",
     "canonical_version_alignment",
-    "twse_provider"
+    "twse_provider",
+    "tpex_provider"
   ],
   "planned_capability_ids": [
-    "tpex_provider",
     "mops_provider",
     "data_gov_tw_provider",
     "finmind_adapter_hardening",

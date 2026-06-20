@@ -1,0 +1,38 @@
+[
+  {
+    "_meta": {"TEST_FIXTURE": true, "DEMO_ONLY": true, "NOT_REAL_DATA": true, "NOT_FOR_FORMAL_CONCLUSION": true},
+    "SecuritiesCompanyCode": "5274",
+    "CompanyName": "信驊",
+    "Industry": "電子",
+    "SecurityType": "COMMON_STOCK",
+    "Board": "MAINBOARD",
+    "ListingDate": "1130101"
+  },
+  {
+    "_meta": {"TEST_FIXTURE": true, "DEMO_ONLY": true, "NOT_REAL_DATA": true, "NOT_FOR_FORMAL_CONCLUSION": true},
+    "SecuritiesCompanyCode": "00795B",
+    "CompanyName": "富邦美債20年",
+    "Industry": "ETF",
+    "SecurityType": "ETF",
+    "Board": "MAINBOARD",
+    "ListingDate": "1070101"
+  },
+  {
+    "_meta": {"TEST_FIXTURE": true, "DEMO_ONLY": true, "NOT_REAL_DATA": true, "NOT_FOR_FORMAL_CONCLUSION": true},
+    "SecuritiesCompanyCode": "12345W",
+    "CompanyName": "測試認購權證",
+    "Industry": "",
+    "SecurityType": "WARRANT",
+    "Board": "MAINBOARD",
+    "ListingDate": "1130601"
+  },
+  {
+    "_meta": {"TEST_FIXTURE": true, "DEMO_ONLY": true, "NOT_REAL_DATA": true, "NOT_FOR_FORMAL_CONCLUSION": true},
+    "SecuritiesCompanyCode": "6789",
+    "CompanyName": "興櫃測試股",
+    "Industry": "電子",
+    "SecurityType": "EMERGING_STOCK",
+    "Board": "EMERGING",
+    "ListingDate": "1120601"
+  }
+]

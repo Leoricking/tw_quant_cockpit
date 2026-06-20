@@ -1,0 +1,6 @@
+{
+  "_meta": {"TEST_FIXTURE": true, "DEMO_ONLY": true, "NOT_REAL_DATA": true, "NOT_FOR_FORMAL_CONCLUSION": true},
+  "symbol": "2330.TW",
+  "claimed_market": "TPEx",
+  "_note": "Symbol '2330.TW' (TWSE) claims to be TPEx — must be detected as MARKET_CONFLICT"
+}

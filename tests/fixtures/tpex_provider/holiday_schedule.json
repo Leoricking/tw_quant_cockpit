@@ -1,0 +1,11 @@
+{
+  "_meta": {"TEST_FIXTURE": true, "DEMO_ONLY": true, "NOT_REAL_DATA": true, "NOT_FOR_FORMAL_CONCLUSION": true},
+  "market": "TPEx",
+  "note": "TPEx shares the same national holiday schedule as TWSE",
+  "holidays": [
+    {"date": "2024-01-01", "name": "元旦", "is_trading_day": false},
+    {"date": "2024-02-09", "name": "春節", "is_trading_day": false},
+    {"date": "2024-02-28", "name": "和平紀念日", "is_trading_day": false},
+    {"date": "2024-10-10", "name": "國慶日", "is_trading_day": false}
+  ]
+}

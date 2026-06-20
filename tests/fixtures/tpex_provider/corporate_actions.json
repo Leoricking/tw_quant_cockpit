@@ -1,0 +1,20 @@
+[
+  {
+    "_meta": {"TEST_FIXTURE": true, "DEMO_ONLY": true, "NOT_REAL_DATA": true, "NOT_FOR_FORMAL_CONCLUSION": true},
+    "SecuritiesCompanyCode": "5274",
+    "event_type": "EX_DIVIDEND",
+    "announcement_date": "2024-06-01",
+    "effective_date": "2024-06-20",
+    "details": "除息基準日",
+    "status": "ANNOUNCED"
+  },
+  {
+    "_meta": {"TEST_FIXTURE": true, "DEMO_ONLY": true, "NOT_REAL_DATA": true, "NOT_FOR_FORMAL_CONCLUSION": true},
+    "SecuritiesCompanyCode": "6415",
+    "event_type": "SUSPENSION",
+    "announcement_date": "2024-05-15",
+    "effective_date": "2024-05-20",
+    "details": "停止交易",
+    "status": "ANNOUNCED"
+  }
+]

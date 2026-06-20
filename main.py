@@ -30086,6 +30086,179 @@ def cmd_twse_provider_report(args=None):
     print(report.render_text())
 
 
+# ---------------------------------------------------------------------------
+# v1.4.1 — TPEx Provider Commands
+# ---------------------------------------------------------------------------
+
+def cmd_tpex_health(args=None):
+    from data.providers.tpex.health_v141 import TPExProviderHealthCheck
+    summary = TPExProviderHealthCheck().get_health_summary()
+    print("=" * 60)
+    print("  TPEx Provider Health v1.4.1")
+    print("=" * 60)
+    print(f"  Market: {summary.get('market', 'TPEx')}")
+    print(f"  Board Scope: {summary.get('board_scope', 'MAINBOARD')}")
+    print(f"  Official Source: {summary.get('official_source', True)}")
+    print(f"  Passed: {summary.get('passed', 0)}/{summary.get('total_checks', 0)}")
+    for name, info in summary.get("checks", {}).items():
+        status = info.get("status", "?")
+        detail = info.get("detail", "")
+        print(f"  [{status:4}] {name}: {detail}")
+    print("=" * 60)
+
+
+def cmd_tpex_endpoints(args=None):
+    from data.providers.tpex.endpoints_v141 import TPExEndpointRegistry
+    reg = TPExEndpointRegistry()
+    print("=" * 60)
+    print("  TPEx Endpoint Registry")
+    print("=" * 60)
+    for ep in reg.list_all():
+        status = "ENABLED" if ep.enabled else "DISABLED"
+        print(f"  [{status}] {ep.endpoint_id}: {ep.official_name}")
+    print("=" * 60)
+
+
+def cmd_tpex_capabilities(args=None):
+    from data.providers.tpex.capabilities_v141 import TPExCapabilityMatrix
+    summary = TPExCapabilityMatrix().build_summary()
+    print("=" * 60)
+    print("  TPEx Capability Matrix")
+    print("=" * 60)
+    for cap, info in summary.get("capabilities", {}).items():
+        print(f"  {cap}: {info.get('status', 'UNKNOWN')}")
+    print("=" * 60)
+
+
+def cmd_tpex_security(args=None):
+    symbol = None
+    if args:
+        for i, a in enumerate(args):
+            if a == "--symbol" and i + 1 < len(args):
+                symbol = args[i + 1]
+    from data.providers.tpex.query_v141 import TPExQueryService
+    qs = TPExQueryService()
+    if symbol:
+        sec = qs.get_security(symbol)
+        if sec:
+            print(f"  Symbol: {sec.symbol}, Name: {sec.name}, Board: {sec.board}, Type: {sec.security_type}")
+        else:
+            print(f"  No data for symbol={symbol} (offline mode)")
+    else:
+        secs = qs.list_securities()
+        print(f"  {len(secs)} TPEx securities")
+
+
+def cmd_tpex_security_list(args=None):
+    from data.providers.tpex.query_v141 import TPExQueryService
+    qs = TPExQueryService()
+    secs = qs.list_securities()
+    print(f"  TPEx Securities: {len(secs)}")
+
+
+def cmd_tpex_daily(args=None):
+    symbol = None
+    if args:
+        for i, a in enumerate(args):
+            if a == "--symbol" and i + 1 < len(args):
+                symbol = args[i + 1]
+    from data.providers.tpex.query_v141 import TPExQueryService
+    qs = TPExQueryService()
+    if symbol:
+        bar = qs.get_latest_bar(symbol)
+        if bar:
+            print(f"  {bar.symbol} {bar.trade_date}: O={bar.open} H={bar.high} L={bar.low} C={bar.close} V={bar.volume}")
+        else:
+            print(f"  No data for symbol={symbol} (offline mode). [!] Research Only.")
+    else:
+        print("  --symbol required. [!] No Real Orders. Research Only.")
+
+
+def cmd_tpex_market_summary(args=None):
+    print("  TPEx Market Summary: offline mode. [!] Research Only. Not Real-Time.")
+
+
+def cmd_tpex_institutional(args=None):
+    symbol = None
+    if args:
+        for i, a in enumerate(args):
+            if a == "--symbol" and i + 1 < len(args):
+                symbol = args[i + 1]
+    print(f"  TPEx Institutional for {symbol or 'N/A'}: offline mode. [!] Research Only.")
+
+
+def cmd_tpex_margin(args=None):
+    symbol = None
+    if args:
+        for i, a in enumerate(args):
+            if a == "--symbol" and i + 1 < len(args):
+                symbol = args[i + 1]
+    print(f"  TPEx Margin for {symbol or 'N/A'}: offline mode. [!] Research Only.")
+
+
+def cmd_tpex_index(args=None):
+    idx = "TPEX"
+    if args:
+        for i, a in enumerate(args):
+            if a == "--index" and i + 1 < len(args):
+                idx = args[i + 1]
+    print(f"  TPEx Index {idx}: offline mode. [!] Not TAIEX. Research Only.")
+
+
+def cmd_tpex_calendar(args=None):
+    from data.providers.tpex.trading_calendar_v141 import TPExTradingCalendar
+    cal = TPExTradingCalendar()
+    print(f"  TPEx Calendar: source={cal.calendar_source()}, approximate={cal.approximate()}")
+    print("  [!] Research Only. Not Real-Time.")
+
+
+def cmd_tpex_suspensions(args=None):
+    print("  TPEx Suspensions: offline mode. [!] Research Only.")
+
+
+def cmd_tpex_corporate_actions(args=None):
+    symbol = None
+    if args:
+        for i, a in enumerate(args):
+            if a == "--symbol" and i + 1 < len(args):
+                symbol = args[i + 1]
+    print(f"  TPEx Corporate Actions for {symbol or 'N/A'}: offline mode.")
+
+
+def cmd_tpex_valuation(args=None):
+    symbol = None
+    if args:
+        for i, a in enumerate(args):
+            if a == "--symbol" and i + 1 < len(args):
+                symbol = args[i + 1]
+    print(f"  TPEx Valuation for {symbol or 'N/A'}: offline mode. [!] Not Investment Advice.")
+
+
+def cmd_tpex_coverage(args=None):
+    from data.providers.tpex.query_v141 import TPExQueryService
+    qs = TPExQueryService()
+    summary = qs.summarize_coverage()
+    print(f"  TPEx Coverage: {summary}")
+
+
+def cmd_tpex_lineage(args=None):
+    symbol = None
+    if args:
+        for i, a in enumerate(args):
+            if a == "--symbol" and i + 1 < len(args):
+                symbol = args[i + 1]
+    print(f"  TPEx Lineage for {symbol or 'ALL'}: offline. [!] No credentials stored.")
+
+
+def cmd_tpex_cache_status(args=None):
+    print("  TPEx Cache Status: offline. [!] TWSE/TPEx cache isolated. [!] Real/mock isolated.")
+
+
+def cmd_tpex_provider_report(args=None):
+    from reports.tpex_provider_report import TPExProviderReport
+    print(TPExProviderReport().render_text())
+
+
 def main() -> None:
     """Main entrypoint."""
     import pandas as pd  # imported here to avoid shadowing at module level
@@ -31040,6 +31213,26 @@ def main() -> None:
         "twse-lineage":                  lambda args=None: cmd_twse_lineage(args),
         "twse-cache-status":             cmd_twse_cache_status,
         "twse-provider-report":          cmd_twse_provider_report,
+        "tpex-health":                   cmd_tpex_health,
+        "tpex-endpoints":                cmd_tpex_endpoints,
+        "tpex-capabilities":             cmd_tpex_capabilities,
+        "tpex-security":                 lambda args=None: cmd_tpex_security(args),
+        "tpex-security-list":            cmd_tpex_security_list,
+        "tpex-fetch-security-master":    lambda args=None: print("  [DRY-RUN] TPEx security master fetch. [!] Research Only."),
+        "tpex-daily":                    lambda args=None: cmd_tpex_daily(args),
+        "tpex-fetch-daily":              lambda args=None: print("  [DRY-RUN] TPEx daily OHLCV fetch. [!] Research Only."),
+        "tpex-market-summary":           cmd_tpex_market_summary,
+        "tpex-institutional":            lambda args=None: cmd_tpex_institutional(args),
+        "tpex-margin":                   lambda args=None: cmd_tpex_margin(args),
+        "tpex-index":                    lambda args=None: cmd_tpex_index(args),
+        "tpex-calendar":                 cmd_tpex_calendar,
+        "tpex-suspensions":              cmd_tpex_suspensions,
+        "tpex-corporate-actions":        lambda args=None: cmd_tpex_corporate_actions(args),
+        "tpex-valuation":                lambda args=None: cmd_tpex_valuation(args),
+        "tpex-coverage":                 cmd_tpex_coverage,
+        "tpex-lineage":                  lambda args=None: cmd_tpex_lineage(args),
+        "tpex-cache-status":             cmd_tpex_cache_status,
+        "tpex-provider-report":          cmd_tpex_provider_report,
     }
 
     if args.command is None:

@@ -1,0 +1,26 @@
+[
+  {
+    "_meta": {"TEST_FIXTURE": true, "DEMO_ONLY": true, "NOT_REAL_DATA": true, "NOT_FOR_FORMAL_CONCLUSION": true},
+    "IndexCode": "TPEX",
+    "IndexName": "TPEx Composite Index",
+    "Date": "1130102",
+    "Open": "223.80",
+    "High": "226.10",
+    "Low": "222.50",
+    "Close": "225.50",
+    "Change": "+1.70",
+    "ChangePercent": "+0.76%"
+  },
+  {
+    "_meta": {"TEST_FIXTURE": true, "DEMO_ONLY": true, "NOT_REAL_DATA": true, "NOT_FOR_FORMAL_CONCLUSION": true},
+    "IndexCode": "TPEX",
+    "IndexName": "TPEx Composite Index",
+    "Date": "1130103",
+    "Open": "225.20",
+    "High": "227.00",
+    "Low": "224.00",
+    "Close": "226.30",
+    "Change": "+0.80",
+    "ChangePercent": "+0.35%"
+  }
+]

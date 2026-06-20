@@ -73,9 +73,9 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # ---------------------------------------------------------------------------
 # v1.3.3 module-level constants (Coverage Repair Workflow)
 # ---------------------------------------------------------------------------
-VERSION                             = "1.4.0"
-RELEASE_NAME                        = "TWSE Provider"
-BASE_RELEASE                        = "1.3.9 Research Foundation Stable Rollup"
+VERSION                             = "1.4.1"
+RELEASE_NAME                        = "TPEx Provider"
+BASE_RELEASE                        = "1.4.0 TWSE Provider"
 
 # ---------------------------------------------------------------------------
 # v1.3.2 module-level constants (Real Data Provider Adapter Foundation)
@@ -458,7 +458,7 @@ STRATEGY_ROBUSTNESS_AVAILABLE              = True
 CANONICAL_VERSION_ALIGNMENT_AVAILABLE      = True
 PUBLIC_DATA_PROVIDER_INTEGRATION_STARTED   = True   # was False
 TWSE_PROVIDER_AVAILABLE                    = True
-TPEX_PROVIDER_AVAILABLE                    = False
+TPEX_PROVIDER_AVAILABLE                    = True
 MOPS_PROVIDER_AVAILABLE                    = False
 DATA_GOV_TW_PROVIDER_AVAILABLE             = False
 FORUM_INTELLIGENCE_AVAILABLE               = False
@@ -480,6 +480,25 @@ TWSE_REALTIME_AVAILABLE                    = False  # ALWAYS FALSE
 TWSE_BROKER_EXECUTION_AVAILABLE            = False  # ALWAYS FALSE
 TWSE_AUTO_DOWNLOAD_ENABLED                 = False  # ALWAYS FALSE
 TWSE_MOCK_FALLBACK_ENABLED                 = False  # ALWAYS FALSE
+
+# v1.4.1 TPEx Provider flags
+TPEX_PROVIDER_OFFICIAL_SOURCE_ONLY         = True
+TPEX_PROVIDER_OPENAPI_AVAILABLE            = True
+TPEX_PROVIDER_HISTORICAL_REPORT_AVAILABLE  = True
+TPEX_SECURITY_MASTER_AVAILABLE             = True
+TPEX_DAILY_OHLCV_AVAILABLE                 = True
+TPEX_MARKET_SUMMARY_AVAILABLE              = True
+TPEX_INSTITUTIONAL_AVAILABLE               = True
+TPEX_MARGIN_AVAILABLE                      = True
+TPEX_INDEX_AVAILABLE                       = True
+TPEX_TRADING_CALENDAR_AVAILABLE            = True
+TPEX_SUSPENSION_RESUMPTION_AVAILABLE       = True
+TPEX_CORPORATE_ACTION_PREVIEW_AVAILABLE    = True
+TPEX_VALUATION_AVAILABLE                   = True
+TPEX_REALTIME_AVAILABLE                    = False  # ALWAYS FALSE
+TPEX_BROKER_EXECUTION_AVAILABLE            = False  # ALWAYS FALSE
+TPEX_AUTO_DOWNLOAD_ENABLED                 = False  # ALWAYS FALSE
+TPEX_MOCK_FALLBACK_ENABLED                 = False  # ALWAYS FALSE
 
 
 class VersionInfo:
@@ -939,6 +958,21 @@ def print_version_info() -> None:
     print(f"  TWSE Real-time Available: {TWSE_REALTIME_AVAILABLE}")
     print(f"  Auto Download Enabled: {TWSE_AUTO_DOWNLOAD_ENABLED}")
     print(f"  TWSE Mock Fallback Enabled: {TWSE_MOCK_FALLBACK_ENABLED}")
+    # v1.4.1 TPEx Provider flags
+    print(f"  TPEx Provider Available: {TPEX_PROVIDER_AVAILABLE}")
+    print(f"  TPEx Official Source Only: {TPEX_PROVIDER_OFFICIAL_SOURCE_ONLY}")
+    print(f"  TPEx OpenAPI Available: {TPEX_PROVIDER_OPENAPI_AVAILABLE}")
+    print(f"  TPEx Historical Report Available: {TPEX_PROVIDER_HISTORICAL_REPORT_AVAILABLE}")
+    print(f"  TPEx Daily OHLCV Available: {TPEX_DAILY_OHLCV_AVAILABLE}")
+    print(f"  TPEx Institutional Available: {TPEX_INSTITUTIONAL_AVAILABLE}")
+    print(f"  TPEx Margin Available: {TPEX_MARGIN_AVAILABLE}")
+    print(f"  TPEx Index Available: {TPEX_INDEX_AVAILABLE}")
+    print(f"  TPEx Trading Calendar Available: {TPEX_TRADING_CALENDAR_AVAILABLE}")
+    print(f"  TPEx Suspension/Resumption Available: {TPEX_SUSPENSION_RESUMPTION_AVAILABLE}")
+    print(f"  TPEx Valuation Available: {TPEX_VALUATION_AVAILABLE}")
+    print(f"  TPEx Real-time Available: {TPEX_REALTIME_AVAILABLE}")
+    print(f"  TPEx Auto Download Enabled: {TPEX_AUTO_DOWNLOAD_ENABLED}")
+    print(f"  TPEx Mock Fallback Enabled: {TPEX_MOCK_FALLBACK_ENABLED}")
     print("=" * 60)
 
 

@@ -1,0 +1,20 @@
+[
+  {
+    "_meta": {"TEST_FIXTURE": true, "DEMO_ONLY": true, "NOT_REAL_DATA": true, "NOT_FOR_FORMAL_CONCLUSION": true},
+    "SecuritiesCompanyCode": "5274",
+    "ForeignInvestorBuy": "50000",
+    "ForeignInvestorSell": "30000",
+    "ForeignInvestorNet": "20000",
+    "InvestmentTrustBuy": "10000",
+    "InvestmentTrustSell": "5000",
+    "InvestmentTrustNet": "5000",
+    "DealerProprietaryBuy": "2000",
+    "DealerProprietarySell": "1000",
+    "DealerProprietaryNet": "1000",
+    "DealerHedgeBuy": "500",
+    "DealerHedgeSell": "800",
+    "DealerHedgeNet": "-300",
+    "DealerTotalNet": "700",
+    "TotalNet": "25700"
+  }
+]

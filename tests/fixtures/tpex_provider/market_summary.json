@@ -1,0 +1,14 @@
+[
+  {
+    "_meta": {"TEST_FIXTURE": true, "DEMO_ONLY": true, "NOT_REAL_DATA": true, "NOT_FOR_FORMAL_CONCLUSION": true},
+    "Date": "1130102",
+    "TradingValue": "150000000000",
+    "TradingVolume": "2000000000",
+    "Transaction": "500000",
+    "Index": "225.50",
+    "Change": "+1.20",
+    "Advancing": "450",
+    "Declining": "250",
+    "Unchanged": "100"
+  }
+]

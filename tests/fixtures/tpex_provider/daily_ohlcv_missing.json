@@ -1,0 +1,14 @@
+[
+  {
+    "_meta": {"TEST_FIXTURE": true, "DEMO_ONLY": true, "NOT_REAL_DATA": true, "NOT_FOR_FORMAL_CONCLUSION": true},
+    "SecuritiesCompanyCode": "5274",
+    "Open": "--",
+    "High": "--",
+    "Low": "--",
+    "Close": "--",
+    "Volume": "--",
+    "Turnover": "--",
+    "Transaction": "--",
+    "Change": "--"
+  }
+]

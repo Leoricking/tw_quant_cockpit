@@ -1,0 +1,27 @@
+[
+  {
+    "_meta": {"TEST_FIXTURE": true, "DEMO_ONLY": true, "NOT_REAL_DATA": true, "NOT_FOR_FORMAL_CONCLUSION": true},
+    "SecuritiesCompanyCode": "5274",
+    "Open": "1250.00",
+    "High": "1280.00",
+    "Low": "1240.00",
+    "Close": "1265.00",
+    "Volume": "5000",
+    "Turnover": "6325000",
+    "Transaction": "120",
+    "Change": "+15.00",
+    "ChangePercent": "+1.20%"
+  },
+  {
+    "_meta": {"TEST_FIXTURE": true, "DEMO_ONLY": true, "NOT_REAL_DATA": true, "NOT_FOR_FORMAL_CONCLUSION": true},
+    "SecuritiesCompanyCode": "6415",
+    "開盤價": "2100.00",
+    "最高價": "2150.00",
+    "最低價": "2090.00",
+    "收盤價": "2130.00",
+    "成交股數": "3000",
+    "成交金額": "6390000",
+    "成交筆數": "85",
+    "漲跌": "+30.00"
+  }
+]

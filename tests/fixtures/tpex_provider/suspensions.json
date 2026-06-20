@@ -1,0 +1,13 @@
+[
+  {
+    "_meta": {"TEST_FIXTURE": true, "DEMO_ONLY": true, "NOT_REAL_DATA": true, "NOT_FOR_FORMAL_CONCLUSION": true},
+    "SecuritiesCompanyCode": "5555",
+    "CompanyName": "測試暫停股",
+    "AnnouncementDate": "2024-06-01",
+    "EffectiveDate": "2024-06-03",
+    "ResumeDate": null,
+    "Action": "SUSPEND",
+    "Reason": "未依規定申報財務報告",
+    "Status": "SUSPENDED"
+  }
+]

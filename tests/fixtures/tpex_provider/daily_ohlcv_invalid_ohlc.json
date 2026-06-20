@@ -1,0 +1,13 @@
+[
+  {
+    "_meta": {"TEST_FIXTURE": true, "DEMO_ONLY": true, "NOT_REAL_DATA": true, "NOT_FOR_FORMAL_CONCLUSION": true, "INVALID_DATA": true},
+    "SecuritiesCompanyCode": "5274",
+    "Open": "100.00",
+    "High": "90.00",
+    "Low": "110.00",
+    "Close": "95.00",
+    "Volume": "1000",
+    "Change": "-5.00",
+    "_note": "High 90 < Low 110 — intentionally invalid for testing rejection"
+  }
+]

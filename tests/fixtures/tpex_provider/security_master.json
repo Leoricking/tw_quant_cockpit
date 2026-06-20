@@ -1,0 +1,22 @@
+[
+  {
+    "_meta": {"TEST_FIXTURE": true, "DEMO_ONLY": true, "NOT_REAL_DATA": true, "NOT_FOR_FORMAL_CONCLUSION": true},
+    "SecuritiesCompanyCode": "5274",
+    "CompanyName": "信驊",
+    "Industry": "電子",
+    "SecurityType": "COMMON_STOCK",
+    "Board": "MAINBOARD",
+    "ListingDate": "1130101",
+    "ISIN": "TW0005274003"
+  },
+  {
+    "_meta": {"TEST_FIXTURE": true, "DEMO_ONLY": true, "NOT_REAL_DATA": true, "NOT_FOR_FORMAL_CONCLUSION": true},
+    "SecuritiesCompanyCode": "6415",
+    "CompanyName": "矽力-KY",
+    "Industry": "電子",
+    "SecurityType": "COMMON_STOCK",
+    "Board": "MAINBOARD",
+    "ListingDate": "1020301",
+    "ISIN": "KYG8085W1014"
+  }
+]

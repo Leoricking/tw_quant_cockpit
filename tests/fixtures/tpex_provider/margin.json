@@ -1,0 +1,18 @@
+[
+  {
+    "_meta": {"TEST_FIXTURE": true, "DEMO_ONLY": true, "NOT_REAL_DATA": true, "NOT_FOR_FORMAL_CONCLUSION": true},
+    "SecuritiesCompanyCode": "5274",
+    "MarginBuy": "1500",
+    "MarginSell": "800",
+    "CashRedemption": "100",
+    "MarginPreviousBalance": "12000",
+    "MarginBalance": "12600",
+    "MarginLimit": "50000",
+    "ShortSell": "200",
+    "ShortCover": "150",
+    "StockRedemption": "0",
+    "ShortPreviousBalance": "800",
+    "ShortBalance": "850",
+    "ShortLimit": "5000"
+  }
+]
