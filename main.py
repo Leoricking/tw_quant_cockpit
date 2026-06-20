@@ -29925,6 +29925,50 @@ def cmd_research_foundation_summary(args=None):
     print(f"  Recommended Action: {action}")
 
 
+def cmd_cli_registration_health(args=None):
+    """CLI registration consistency health check (v1.4.3.1)."""
+    from cli.command_registry import get_formal_command_names, PROVIDER_COMMANDS
+    # Build parser to discover registered subcommands
+    parser = _build_parser()
+    parser_commands = set()
+    for action in parser._actions:
+        if hasattr(action, '_name_parser_map'):
+            parser_commands = set(action._name_parser_map.keys())
+            break
+    formal = get_formal_command_names()
+    # Commands in parser are assumed to have handlers (lambda or named)
+    # Check consistency: all formal commands should be in parser
+    missing_from_parser = formal - parser_commands
+    extra_in_parser = parser_commands - formal  # non-formal are ok (legacy)
+    # Check for duplicates in registry
+    seen = set()
+    duplicates = set()
+    for spec in PROVIDER_COMMANDS:
+        if spec.name in seen:
+            duplicates.add(spec.name)
+        seen.add(spec.name)
+    is_consistent = len(missing_from_parser) == 0 and len(duplicates) == 0
+    formal_count = len(formal)
+    parser_count = len(formal & parser_commands)
+    print("=" * 60)
+    print("  CLI Registration Health v1.4.3.1")
+    print("=" * 60)
+    print(f"  Formal commands: {formal_count}")
+    print(f"  Parser registered: {parser_count}")
+    print(f"  Consistent: {is_consistent}")
+    if missing_from_parser:
+        print(f"  [FAIL] Missing from parser: {sorted(missing_from_parser)}")
+    else:
+        print("  [PASS] all_formal_in_parser: all formal commands registered")
+    if duplicates:
+        print(f"  [FAIL] duplicate_commands: {sorted(duplicates)}")
+    else:
+        print("  [PASS] duplicate_commands: 0")
+    overall = "PASS" if is_consistent else "FAIL"
+    print(f"  Overall: {overall}")
+    print("=" * 60)
+
+
 # ---------------------------------------------------------------------------
 # v1.4.0 — TWSE Provider Commands
 # ---------------------------------------------------------------------------
@@ -32063,6 +32107,7 @@ def main() -> None:
         "research-foundation-stable-check": cmd_research_foundation_stable_check,
         "research-foundation-release-gate": cmd_research_foundation_release_gate,
         "research-foundation-summary":      cmd_research_foundation_summary,
+        "cli-registration-health":          cmd_cli_registration_health,
         # v1.4.0 TWSE Provider
         "twse-health":                   cmd_twse_health,
         "twse-endpoints":                cmd_twse_endpoints,

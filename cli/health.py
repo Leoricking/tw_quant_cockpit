@@ -19,6 +19,8 @@ PROVIDER_HEALTH_COMMANDS = {
     "tpex-health",
     "mops-health",
     "data-gov-tw-health",
+    "finmind-health",
+    "cli-registration-health",
 }
 
 PROVIDER_PREFIXES = {
@@ -27,6 +29,7 @@ PROVIDER_PREFIXES = {
     "tpex-",
     "mops-",
     "data-gov-tw-",
+    "finmind-",
 }
 
 

@@ -1302,6 +1302,13 @@ _RESEARCH_FOUNDATION_COMMANDS: _List[CommandSpec] = [
         group="research_foundation",
         introduced_in="1.3.9",
     ),
+    CommandSpec(
+        name="cli-registration-health",
+        handler_name="cmd_cli_registration_health",
+        help="[v1.4.3.1] CLI registration consistency health. Research Only.",
+        group="research_foundation",
+        introduced_in="1.4.3.1",
+    ),
 ]
 
 # ---------------------------------------------------------------------------
