@@ -1331,7 +1331,7 @@ class TestVersionInfo:
     def test_181_base_release_141(self):
         from release.version_info import BASE_RELEASE
         # Accept 1.4.1 (TPEx) or 1.4.2 (MOPS) as base depending on current version
-        assert "1.4.1" in BASE_RELEASE or "1.4.2" in BASE_RELEASE
+        assert any(m in BASE_RELEASE for m in ("1.4.1", "1.4.2", "1.4.3"))
 
     def test_182_mops_provider_available_true(self):
         from release.version_info import MOPS_PROVIDER_AVAILABLE

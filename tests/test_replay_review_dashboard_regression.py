@@ -286,7 +286,7 @@ class TestReplayReviewVersionInfo(unittest.TestCase):
     def test_version_is_1_2_6(self):
         """VERSION >= 1.2.6 (Review Dashboard was introduced in 1.2.6)."""
         from release.version_info import VERSION
-        major, minor, patch = (int(x) for x in VERSION.split("."))
+        major, minor, patch = (int(x) for x in VERSION.split(".")[:3])
         self.assertGreaterEqual((major, minor, patch), (1, 2, 6),
                                 f"VERSION {VERSION} predates Review Dashboard 1.2.6")
 

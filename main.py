@@ -22736,6 +22736,10 @@ def _build_parser() -> argparse.ArgumentParser:
         help="[v1.4.2] Run strategy robustness health checks. Research Only.",
     )
 
+    # v1.3.9–v1.4.3 provider command registration via central registry
+    from cli.command_registry import register_all_commands as _register_provider_cmds
+    _register_provider_cmds(subparsers)
+
     return parser
 
 
@@ -30457,6 +30461,318 @@ def cmd_mops_provider_report(args=None):
     print(MOPSProviderReport().render_text())
 
 
+# ---------------------------------------------------------------------------
+# v1.4.3 — data.gov.tw Provider Commands
+# ---------------------------------------------------------------------------
+
+def cmd_data_gov_tw_health(args=None):
+    from data.providers.data_gov_tw.health_v143 import DataGovTwProviderHealthCheck
+    summary = DataGovTwProviderHealthCheck().get_health_summary()
+    print("=" * 60)
+    print("  data.gov.tw Provider Health v1.4.3")
+    print("=" * 60)
+    print(f"  Official Source: {summary.get('official_source', True)}")
+    print(f"  No Real Orders: {summary.get('no_real_orders', True)}")
+    print(f"  Passed: {summary.get('passed', 0)}/{summary.get('total', 0)}")
+    print(f"  Failed: {summary.get('failed', 0)}")
+    for name, info in summary.get("checks", {}).items():
+        status = info.get("status", "?")
+        detail = info.get("detail", "")
+        print(f"  [{status:4}] {name}: {detail}")
+    print("=" * 60)
+    overall = "PASS" if summary.get("failed", 1) == 0 else "FAIL"
+    print(f"  Overall: {overall}")
+    print("=" * 60)
+
+
+def cmd_data_gov_tw_capabilities(args=None):
+    from data.providers.data_gov_tw.capabilities_v143 import DataGovTwCapabilityMatrix
+    summary = DataGovTwCapabilityMatrix().build_summary()
+    print("=" * 60)
+    print("  data.gov.tw Capability Matrix")
+    print("=" * 60)
+    print(f"  Provider: {summary.get('provider', 'data_gov_tw_official')}")
+    print(f"  Official Source: {summary.get('official_source', True)}")
+    print(f"  Realtime Available: {summary.get('realtime_available', False)}")
+    print(f"  Can Override Primary: {summary.get('can_override_primary_provider', False)}")
+    print(f"  Supported: {summary.get('supported_count', 0)}")
+    for cap, info in summary.get("capabilities", {}).items():
+        print(f"  {cap}: {info.get('status', 'UNKNOWN')}")
+    print("=" * 60)
+
+
+def cmd_data_gov_tw_catalog(args=None):
+    from data.providers.data_gov_tw.allowlist_v143 import DataGovTwAllowlist
+    al = DataGovTwAllowlist()
+    entries = al.list_all()
+    print("=" * 60)
+    print("  data.gov.tw Dataset Catalog (allowlist-based, offline)")
+    print("=" * 60)
+    if not entries:
+        print("  No datasets in allowlist. [!] Catalog refresh requires network. Research Only.")
+    for e in entries:
+        status = (e.get("metadata") or {}).get("status", "UNKNOWN")
+        approved = e.get("approved", False)
+        print(f"  [{status:8}] {e.get('dataset_id', '?')}: {e.get('title', '?')} (approved={approved})")
+    print(f"  Total: {len(entries)}")
+    print("=" * 60)
+
+
+def cmd_data_gov_tw_search(args=None):
+    keyword = getattr(args, "keyword", None) if hasattr(args, "__dict__") else None
+    from data.providers.data_gov_tw.allowlist_v143 import DataGovTwAllowlist
+    al = DataGovTwAllowlist()
+    entries = al.list_all()
+    if keyword:
+        kw = keyword.lower()
+        entries = [e for e in entries if kw in (e.get("title") or "").lower() or kw in (e.get("dataset_id") or "").lower()]
+    print("=" * 60)
+    print(f"  data.gov.tw Search: keyword={keyword!r} (offline allowlist only)")
+    print("=" * 60)
+    for e in entries:
+        print(f"  {e.get('dataset_id', '?')}: {e.get('title', '?')}")
+    print(f"  Results: {len(entries)}. [!] Offline search only. Research Only.")
+    print("=" * 60)
+
+
+def cmd_data_gov_tw_dataset(args=None):
+    dataset_id = getattr(args, "dataset_id", None) if hasattr(args, "__dict__") else None
+    from data.providers.data_gov_tw.allowlist_v143 import DataGovTwAllowlist
+    al = DataGovTwAllowlist()
+    print("=" * 60)
+    print("  data.gov.tw Dataset Info")
+    print("=" * 60)
+    if not dataset_id:
+        print("  --dataset-id required. [!] Research Only.")
+    else:
+        entry = al.get_entry(dataset_id)
+        if entry:
+            for k, v in entry.items():
+                if k != "metadata":
+                    print(f"  {k}: {v}")
+        else:
+            print(f"  Dataset {dataset_id!r} not in allowlist. [!] Research Only.")
+    print("=" * 60)
+
+
+def cmd_data_gov_tw_resources(args=None):
+    dataset_id = getattr(args, "dataset_id", None) if hasattr(args, "__dict__") else None
+    from data.providers.data_gov_tw.endpoints_v143 import DataGovTwEndpointRegistry
+    reg = DataGovTwEndpointRegistry()
+    print("=" * 60)
+    print(f"  data.gov.tw Endpoint Registry (dataset_id={dataset_id!r})")
+    print("=" * 60)
+    for ep in reg.list_all():
+        status = "ENABLED" if ep.enabled else "DISABLED"
+        print(f"  [{status}] {ep.endpoint_id}: {ep.official_name}")
+    print("=" * 60)
+
+
+def cmd_data_gov_tw_allowlist(args=None):
+    from data.providers.data_gov_tw.allowlist_v143 import DataGovTwAllowlist
+    al = DataGovTwAllowlist()
+    summary = al.summary()
+    print("=" * 60)
+    print("  data.gov.tw Dataset Allowlist")
+    print("=" * 60)
+    print(f"  Total: {summary.get('total', 0)}")
+    print(f"  Approved: {summary.get('approved', 0)}")
+    print(f"  Planned: {summary.get('planned', 0)}")
+    print(f"  Wildcard Allowed: {summary.get('wildcard_allowed', False)}")
+    print(f"  Allow All Mode: {summary.get('allow_all_mode', False)}")
+    print("-" * 60)
+    for e in al.list_all():
+        status = (e.get("metadata") or {}).get("status", "UNKNOWN")
+        print(f"  [{status:8}] {e.get('dataset_id', '?')}: approved={e.get('approved', False)}, enabled={e.get('enabled', False)}")
+    print("=" * 60)
+
+
+def cmd_data_gov_tw_allowlist_check(args=None):
+    dataset_id = getattr(args, "dataset_id", None) if hasattr(args, "__dict__") else None
+    from data.providers.data_gov_tw.allowlist_v143 import DataGovTwAllowlist
+    al = DataGovTwAllowlist()
+    print("=" * 60)
+    print("  data.gov.tw Allowlist Check")
+    print("=" * 60)
+    if not dataset_id:
+        print("  --dataset-id required. [!] Research Only.")
+    else:
+        result = al.check_allowlist_result(dataset_id)
+        for k, v in result.items():
+            print(f"  {k}: {v}")
+    print("=" * 60)
+
+
+def cmd_data_gov_tw_license(args=None):
+    dataset_id = getattr(args, "dataset_id", None) if hasattr(args, "__dict__") else None
+    from data.providers.data_gov_tw.license_v143 import DataGovTwLicenseValidator
+    from data.providers.data_gov_tw.allowlist_v143 import DataGovTwAllowlist
+    validator = DataGovTwLicenseValidator()
+    print("=" * 60)
+    print("  data.gov.tw License Validation")
+    print("=" * 60)
+    if dataset_id:
+        al = DataGovTwAllowlist()
+        entry = al.get_entry(dataset_id)
+        license_name = entry.get("license_name") if entry else None
+        result = validator.validate(license_name)
+        print(f"  Dataset: {dataset_id}")
+        print(f"  License: {license_name}")
+        for k, v in result.items():
+            print(f"  {k}: {v}")
+    else:
+        result = validator.validate(None)
+        print(f"  No dataset_id. Default validation: formal_use_allowed={result.get('formal_use_allowed', False)}")
+        print("  --dataset-id recommended. [!] Research Only.")
+    print("=" * 60)
+
+
+def cmd_data_gov_tw_schema(args=None):
+    dataset_id = getattr(args, "dataset_id", None) if hasattr(args, "__dict__") else None
+    from data.providers.data_gov_tw.schema_contract_v143 import DataGovTwSchemaContractValidator
+    v = DataGovTwSchemaContractValidator()
+    print("=" * 60)
+    print("  data.gov.tw Schema Contract Status")
+    print("=" * 60)
+    print(f"  Dataset: {dataset_id or 'N/A'}")
+    print(f"  Validator: {type(v).__name__}")
+    print("  Schema contract validation available. [!] SCHEMA_CHANGED blocks formal ingest.")
+    print("  [!] Research Only. No Real Orders.")
+    print("=" * 60)
+
+
+def cmd_data_gov_tw_revisions(args=None):
+    dataset_id = getattr(args, "dataset_id", None) if hasattr(args, "__dict__") else None
+    print("=" * 60)
+    print(f"  data.gov.tw Revisions (dataset_id={dataset_id!r}, offline mode)")
+    print("=" * 60)
+    print("  Revision tracking: immutable INSERT OR IGNORE. Schema/license/metadata changes logged.")
+    print("  [!] No live data without network. Research Only.")
+    print("=" * 60)
+
+
+def cmd_data_gov_tw_fetch(args=None):
+    dataset_id = getattr(args, "dataset_id", None) if hasattr(args, "__dict__") else None
+    execute = getattr(args, "execute", False) if hasattr(args, "__dict__") else False
+    print("=" * 60)
+    print("  data.gov.tw Fetch")
+    print("=" * 60)
+    print(f"  Dataset: {dataset_id or 'N/A'}")
+    if not execute:
+        print("  [DRY-RUN] No data written. Pass --execute to fetch. [!] Research Only.")
+        print("  [!] DATA_GOV_TW_AUTO_DOWNLOAD_ENABLED=False. Manual execute required.")
+        print("  [!] Mock fallback disabled. Rate limit → RATE_LIMITED (no fallback).")
+    else:
+        print("  [!] Execute mode requires network. Offline: fetch would proceed with allowlist check.")
+        print("  [!] Only approved + enabled datasets may be fetched. Research Only.")
+    print("=" * 60)
+
+
+def cmd_data_gov_tw_records(args=None):
+    dataset_id = getattr(args, "dataset_id", None) if hasattr(args, "__dict__") else None
+    from data.providers.data_gov_tw.store_v143 import DataGovTwStore
+    store = DataGovTwStore()
+    coverage = store.summarize_coverage()
+    store.close()
+    print("=" * 60)
+    print(f"  data.gov.tw Records (dataset_id={dataset_id!r})")
+    print("=" * 60)
+    for table, count in coverage.items():
+        print(f"  {table}: {count}")
+    print("  [!] Research Only. formal_use_allowed=False by default.")
+    print("=" * 60)
+
+
+def cmd_data_gov_tw_as_of(args=None):
+    dataset_id = getattr(args, "dataset_id", None) if hasattr(args, "__dict__") else None
+    as_of = getattr(args, "as_of", None) if hasattr(args, "__dict__") else None
+    print("=" * 60)
+    print(f"  data.gov.tw Point-in-Time Query")
+    print("=" * 60)
+    print(f"  Dataset: {dataset_id or 'N/A'}")
+    print(f"  As-of: {as_of or 'N/A'}")
+    print("  Point-in-time query: available_from gating applied.")
+    print("  [!] Future records gated by available_from. Research Only.")
+    print("=" * 60)
+
+
+def cmd_data_gov_tw_observations(args=None):
+    domain = getattr(args, "domain", None) if hasattr(args, "__dict__") else None
+    from data.providers.data_gov_tw.store_v143 import DataGovTwStore
+    store = DataGovTwStore()
+    coverage = store.summarize_coverage()
+    store.close()
+    print("=" * 60)
+    print(f"  data.gov.tw Government Observations (domain={domain!r})")
+    print("=" * 60)
+    print(f"  government_observations: {coverage.get('government_observations', 0)}")
+    print("  [!] formal_use_allowed=False by default. Research Only.")
+    print("=" * 60)
+
+
+def cmd_data_gov_tw_coverage(args=None):
+    from data.providers.data_gov_tw.store_v143 import DataGovTwStore
+    store = DataGovTwStore()
+    coverage = store.summarize_coverage()
+    store.close()
+    print("=" * 60)
+    print("  data.gov.tw Coverage Summary")
+    print("=" * 60)
+    for table, count in coverage.items():
+        print(f"  {table}: {count}")
+    print("  [!] Research Only. No Real Orders.")
+    print("=" * 60)
+
+
+def cmd_data_gov_tw_lineage(args=None):
+    dataset_id = getattr(args, "dataset_id", None) if hasattr(args, "__dict__") else None
+    from data.providers.data_gov_tw.lineage_v143 import DataGovTwLineageService
+    svc = DataGovTwLineageService()
+    print("=" * 60)
+    print(f"  data.gov.tw Lineage (dataset_id={dataset_id!r})")
+    print("=" * 60)
+    print(f"  Platform: data.gov.tw")
+    print(f"  Lineage Service: {type(svc).__name__}")
+    print("  Required fields: platform, provider_agency, authoritative_level, resource_id.")
+    print("  [!] Research Only. No Real Orders.")
+    print("=" * 60)
+
+
+def cmd_data_gov_tw_cache_status(args=None):
+    print("=" * 60)
+    print("  data.gov.tw Cache Status")
+    print("=" * 60)
+    print("  Real/mock cache isolated. Real cache keyed by SHA256(url+params+mode).")
+    print("  [!] DATA_GOV_TW_AUTO_DOWNLOAD_ENABLED=False. No auto-fetch.")
+    print("  [!] Mock fallback disabled. Cache miss → fetch attempt (rate limit possible).")
+    print("  [!] Research Only. No Real Orders.")
+    print("=" * 60)
+
+
+def cmd_data_gov_tw_provider_report(args=None):
+    from reports.data_gov_tw_provider_report import DataGovTwProviderReport
+    print(DataGovTwProviderReport().render())
+
+
+def _argv_from_namespace(args):
+    """Convert argparse Namespace to legacy argv list for pre-registry handlers."""
+    if args is None:
+        return None
+    if not hasattr(args, "__dict__"):
+        return args
+    _SKIP = {"command", "log_level", "rule_id", "backtest_id", "execute"}
+    result = []
+    for k, v in vars(args).items():
+        if k in _SKIP or v is None or v is False:
+            continue
+        flag = "--" + k.replace("_", "-")
+        if v is True:
+            result.append(flag)
+        else:
+            result.extend([flag, str(v)])
+    return result or None
+
+
 def main() -> None:
     """Main entrypoint."""
     import pandas as pd  # imported here to avoid shadowing at module level
@@ -31396,59 +31712,79 @@ def main() -> None:
         "twse-health":                   cmd_twse_health,
         "twse-endpoints":                cmd_twse_endpoints,
         "twse-capabilities":             cmd_twse_capabilities,
-        "twse-security":                 lambda args=None: cmd_twse_security(args),
+        "twse-security":                 lambda args=None: cmd_twse_security(_argv_from_namespace(args)),
         "twse-security-list":            cmd_twse_security_list,
         "twse-fetch-security-master":    lambda args=None: print("  [DRY-RUN] Security master fetch. [!] Research Only."),
-        "twse-daily":                    lambda args=None: cmd_twse_daily(args),
+        "twse-daily":                    lambda args=None: cmd_twse_daily(_argv_from_namespace(args)),
         "twse-fetch-daily":              lambda args=None: print("  [DRY-RUN] Daily OHLCV fetch. [!] Research Only."),
         "twse-market-summary":           cmd_twse_market_summary,
-        "twse-institutional":            lambda args=None: cmd_twse_institutional(args),
-        "twse-margin":                   lambda args=None: cmd_twse_margin(args),
-        "twse-index":                    lambda args=None: cmd_twse_index(args),
+        "twse-institutional":            lambda args=None: cmd_twse_institutional(_argv_from_namespace(args)),
+        "twse-margin":                   lambda args=None: cmd_twse_margin(_argv_from_namespace(args)),
+        "twse-index":                    lambda args=None: cmd_twse_index(_argv_from_namespace(args)),
         "twse-calendar":                 cmd_twse_calendar,
-        "twse-corporate-actions":        lambda args=None: cmd_twse_corporate_actions(args),
+        "twse-corporate-actions":        lambda args=None: cmd_twse_corporate_actions(_argv_from_namespace(args)),
         "twse-coverage":                 cmd_twse_coverage,
-        "twse-lineage":                  lambda args=None: cmd_twse_lineage(args),
+        "twse-lineage":                  lambda args=None: cmd_twse_lineage(_argv_from_namespace(args)),
         "twse-cache-status":             cmd_twse_cache_status,
         "twse-provider-report":          cmd_twse_provider_report,
         "tpex-health":                   cmd_tpex_health,
         "tpex-endpoints":                cmd_tpex_endpoints,
         "tpex-capabilities":             cmd_tpex_capabilities,
-        "tpex-security":                 lambda args=None: cmd_tpex_security(args),
+        "tpex-security":                 lambda args=None: cmd_tpex_security(_argv_from_namespace(args)),
         "tpex-security-list":            cmd_tpex_security_list,
         "tpex-fetch-security-master":    lambda args=None: print("  [DRY-RUN] TPEx security master fetch. [!] Research Only."),
-        "tpex-daily":                    lambda args=None: cmd_tpex_daily(args),
+        "tpex-daily":                    lambda args=None: cmd_tpex_daily(_argv_from_namespace(args)),
         "tpex-fetch-daily":              lambda args=None: print("  [DRY-RUN] TPEx daily OHLCV fetch. [!] Research Only."),
         "tpex-market-summary":           cmd_tpex_market_summary,
-        "tpex-institutional":            lambda args=None: cmd_tpex_institutional(args),
-        "tpex-margin":                   lambda args=None: cmd_tpex_margin(args),
-        "tpex-index":                    lambda args=None: cmd_tpex_index(args),
+        "tpex-institutional":            lambda args=None: cmd_tpex_institutional(_argv_from_namespace(args)),
+        "tpex-margin":                   lambda args=None: cmd_tpex_margin(_argv_from_namespace(args)),
+        "tpex-index":                    lambda args=None: cmd_tpex_index(_argv_from_namespace(args)),
         "tpex-calendar":                 cmd_tpex_calendar,
         "tpex-suspensions":              cmd_tpex_suspensions,
-        "tpex-corporate-actions":        lambda args=None: cmd_tpex_corporate_actions(args),
-        "tpex-valuation":                lambda args=None: cmd_tpex_valuation(args),
+        "tpex-corporate-actions":        lambda args=None: cmd_tpex_corporate_actions(_argv_from_namespace(args)),
+        "tpex-valuation":                lambda args=None: cmd_tpex_valuation(_argv_from_namespace(args)),
         "tpex-coverage":                 cmd_tpex_coverage,
-        "tpex-lineage":                  lambda args=None: cmd_tpex_lineage(args),
+        "tpex-lineage":                  lambda args=None: cmd_tpex_lineage(_argv_from_namespace(args)),
         "tpex-cache-status":             cmd_tpex_cache_status,
         "tpex-provider-report":          cmd_tpex_provider_report,
         # v1.4.2 MOPS Provider
         "mops-health":                   cmd_mops_health,
         "mops-endpoints":                cmd_mops_endpoints,
         "mops-capabilities":             cmd_mops_capabilities,
-        "mops-company-profile":          lambda args=None: cmd_mops_company_profile(args),
-        "mops-revenue":                  lambda args=None: cmd_mops_revenue(args),
-        "mops-balance-sheet":            lambda args=None: cmd_mops_balance_sheet(args),
-        "mops-income-statement":         lambda args=None: cmd_mops_income_statement(args),
-        "mops-cash-flow":                lambda args=None: cmd_mops_cash_flow(args),
-        "mops-material-info":            lambda args=None: cmd_mops_material_info(args),
-        "mops-investor-conference":      lambda args=None: cmd_mops_investor_conference(args),
-        "mops-xbrl-index":               lambda args=None: cmd_mops_xbrl_index(args),
-        "mops-revision-lineage":         lambda args=None: cmd_mops_revision_lineage(args),
-        "mops-point-in-time":            lambda args=None: cmd_mops_point_in_time(args),
-        "mops-derived-metrics":          lambda args=None: cmd_mops_derived_metrics(args),
+        "mops-company-profile":          lambda args=None: cmd_mops_company_profile(_argv_from_namespace(args)),
+        "mops-revenue":                  lambda args=None: cmd_mops_revenue(_argv_from_namespace(args)),
+        "mops-balance-sheet":            lambda args=None: cmd_mops_balance_sheet(_argv_from_namespace(args)),
+        "mops-income-statement":         lambda args=None: cmd_mops_income_statement(_argv_from_namespace(args)),
+        "mops-cash-flow":                lambda args=None: cmd_mops_cash_flow(_argv_from_namespace(args)),
+        "mops-material-info":            lambda args=None: cmd_mops_material_info(_argv_from_namespace(args)),
+        "mops-investor-conference":      lambda args=None: cmd_mops_investor_conference(_argv_from_namespace(args)),
+        "mops-xbrl-index":               lambda args=None: cmd_mops_xbrl_index(_argv_from_namespace(args)),
+        "mops-revision-lineage":         lambda args=None: cmd_mops_revision_lineage(_argv_from_namespace(args)),
+        "mops-point-in-time":            lambda args=None: cmd_mops_point_in_time(_argv_from_namespace(args)),
+        "mops-derived-metrics":          lambda args=None: cmd_mops_derived_metrics(_argv_from_namespace(args)),
         "mops-coverage":                 cmd_mops_coverage,
         "mops-cache-status":             cmd_mops_cache_status,
         "mops-provider-report":          cmd_mops_provider_report,
+        # v1.4.3 data.gov.tw Provider
+        "data-gov-tw-health":            cmd_data_gov_tw_health,
+        "data-gov-tw-capabilities":      cmd_data_gov_tw_capabilities,
+        "data-gov-tw-catalog":           cmd_data_gov_tw_catalog,
+        "data-gov-tw-search":            cmd_data_gov_tw_search,
+        "data-gov-tw-dataset":           cmd_data_gov_tw_dataset,
+        "data-gov-tw-resources":         cmd_data_gov_tw_resources,
+        "data-gov-tw-allowlist":         cmd_data_gov_tw_allowlist,
+        "data-gov-tw-allowlist-check":   cmd_data_gov_tw_allowlist_check,
+        "data-gov-tw-license":           cmd_data_gov_tw_license,
+        "data-gov-tw-schema":            cmd_data_gov_tw_schema,
+        "data-gov-tw-revisions":         cmd_data_gov_tw_revisions,
+        "data-gov-tw-fetch":             cmd_data_gov_tw_fetch,
+        "data-gov-tw-records":           cmd_data_gov_tw_records,
+        "data-gov-tw-as-of":             cmd_data_gov_tw_as_of,
+        "data-gov-tw-observations":      cmd_data_gov_tw_observations,
+        "data-gov-tw-coverage":          cmd_data_gov_tw_coverage,
+        "data-gov-tw-lineage":           cmd_data_gov_tw_lineage,
+        "data-gov-tw-cache-status":      cmd_data_gov_tw_cache_status,
+        "data-gov-tw-provider-report":   cmd_data_gov_tw_provider_report,
     }
 
     if args.command is None:

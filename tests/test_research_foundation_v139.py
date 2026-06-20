@@ -42,6 +42,7 @@ class TestVersionInfo:
             "TPEx Provider",
             "MOPS Provider",
             "data.gov.tw Provider",
+            "Provider CLI Registration Hotfix",
             "FinMind Adapter Hardening",
             "Source Lineage & Rate Limit",
             "Provider Quality Gates",
@@ -52,7 +53,7 @@ class TestVersionInfo:
 
     def test_base_release_contains_137(self):
         from release.version_info import BASE_RELEASE
-        assert any(m in BASE_RELEASE for m in ("1.3.7", "1.3.9", "1.4.0", "1.4.1", "1.4.2")), (
+        assert any(m in BASE_RELEASE for m in ("1.3.7", "1.3.9", "1.4.0", "1.4.1", "1.4.2", "1.4.3")), (
             f"BASE_RELEASE does not reference a known base: {BASE_RELEASE}"
         )
 

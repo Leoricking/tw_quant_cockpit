@@ -38,6 +38,7 @@ def run_checklist() -> list[dict]:
             "TPEx Provider",
             "MOPS Provider",
             "data.gov.tw Provider",
+            "Provider CLI Registration Hotfix",
             "FinMind Adapter Hardening",
             "Source Lineage & Rate Limit",
             "Provider Quality Gates",
@@ -47,7 +48,7 @@ def run_checklist() -> list[dict]:
         parts = tuple(int(x) for x in VERSION.split(".")[:3])
         return (parts >= (1, 3, 9)
                 and RELEASE_NAME in _KNOWN_NAMES
-                and any(m in BASE_RELEASE for m in ("1.3.7", "1.3.9", "1.4.0", "1.4.1", "1.4.2")))
+                and any(m in BASE_RELEASE for m in ("1.3.7", "1.3.9", "1.4.0", "1.4.1", "1.4.2", "1.4.3")))
     items.append(_item(1, "version", "Version metadata correct (>= 1.3.9)", _check_version))
 
     # 2. Capability registry

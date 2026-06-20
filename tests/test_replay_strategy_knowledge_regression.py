@@ -406,7 +406,7 @@ class TestVersionInfo(unittest.TestCase):
     def test_version_is_124(self):
         """VERSION >= 1.2.4 (Strategy Knowledge Replay was introduced in 1.2.4)."""
         from release.version_info import VERSION
-        major, minor, patch = (int(x) for x in VERSION.split("."))
+        major, minor, patch = (int(x) for x in VERSION.split(".")[:3])
         self.assertGreaterEqual((major, minor, patch), (1, 2, 4),
                                 f"VERSION {VERSION} predates Strategy Knowledge 1.2.4")
 

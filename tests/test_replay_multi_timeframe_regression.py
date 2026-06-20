@@ -430,7 +430,7 @@ class TestVersionInfo:
     def test_version_is_125(self):
         """VERSION >= 1.2.5 (Multi-Timeframe Replay was introduced in 1.2.5)."""
         from release.version_info import VERSION
-        major, minor, patch = (int(x) for x in VERSION.split("."))
+        major, minor, patch = (int(x) for x in VERSION.split(".")[:3])
         assert (major, minor, patch) >= (1, 2, 5), f"VERSION {VERSION} predates MTF 1.2.5"
 
     def test_mtf_flags_set(self):

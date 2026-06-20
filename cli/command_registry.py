@@ -1230,3 +1230,388 @@ class CLICommandRegistry:
             len(self._commands),
             len({c.category for c in self._commands.values()}),
         )
+
+
+# =============================================================================
+# v1.4.3.1 Provider Command Registry
+# Central registry for v1.3.9–v1.4.3 provider commands.
+# Eliminates divergence between _build_parser() registration and command_map dispatch.
+# [!] Research Only. No Real Orders. Not Investment Advice.
+# =============================================================================
+
+import argparse as _argparse
+from dataclasses import dataclass as _dataclass, field as _field
+from typing import Any as _Any, Callable as _Callable, Dict as _Dict, List as _List, Optional as _Optional, Set as _Set
+
+NO_REAL_ORDERS = True
+BROKER_EXECUTION_ENABLED = False
+PRODUCTION_TRADING_BLOCKED = True
+REGISTRY_VERSION = "1.4.3.1"
+
+
+@_dataclass
+class CommandArg:
+    flags: _List[str]
+    kwargs: _Dict[str, _Any] = _field(default_factory=dict)
+
+
+@_dataclass
+class CommandSpec:
+    name: str
+    handler_name: str   # name of cmd_* function in main.py
+    help: str
+    group: str
+    introduced_in: str
+    research_only: bool = True
+    hidden: bool = False
+    aliases: _List[str] = _field(default_factory=list)
+    args: _List[CommandArg] = _field(default_factory=list)
+    capability: str = ""
+    safety_classification: str = "RESEARCH_ONLY"
+
+
+# ---------------------------------------------------------------------------
+# v1.3.9 Research Foundation commands
+# ---------------------------------------------------------------------------
+_RESEARCH_FOUNDATION_COMMANDS: _List[CommandSpec] = [
+    CommandSpec(
+        name="research-foundation-health",
+        handler_name="cmd_research_foundation_health",
+        help="[v1.3.9] Research Foundation health check. Research Only.",
+        group="research_foundation",
+        introduced_in="1.3.9",
+    ),
+    CommandSpec(
+        name="research-foundation-stable-check",
+        handler_name="cmd_research_foundation_stable_check",
+        help="[v1.3.9] Research Foundation stable checklist. Research Only.",
+        group="research_foundation",
+        introduced_in="1.3.9",
+    ),
+    CommandSpec(
+        name="research-foundation-release-gate",
+        handler_name="cmd_research_foundation_release_gate",
+        help="[v1.3.9] Research Foundation release gate. Research Only.",
+        group="research_foundation",
+        introduced_in="1.3.9",
+    ),
+    CommandSpec(
+        name="research-foundation-summary",
+        handler_name="cmd_research_foundation_summary",
+        help="[v1.3.9] Research Foundation summary. Research Only.",
+        group="research_foundation",
+        introduced_in="1.3.9",
+    ),
+]
+
+# ---------------------------------------------------------------------------
+# v1.4.0 TWSE commands
+# ---------------------------------------------------------------------------
+_TWSE_COMMANDS: _List[CommandSpec] = [
+    CommandSpec(name="twse-health", handler_name="cmd_twse_health",
+                help="[v1.4.0] TWSE provider health. Research Only.", group="twse", introduced_in="1.4.0"),
+    CommandSpec(name="twse-endpoints", handler_name="cmd_twse_endpoints",
+                help="[v1.4.0] TWSE endpoint registry. Research Only.", group="twse", introduced_in="1.4.0"),
+    CommandSpec(name="twse-capabilities", handler_name="cmd_twse_capabilities",
+                help="[v1.4.0] TWSE capability matrix. Research Only.", group="twse", introduced_in="1.4.0"),
+    CommandSpec(name="twse-security", handler_name="cmd_twse_security",
+                help="[v1.4.0] TWSE security info. Research Only.", group="twse", introduced_in="1.4.0",
+                args=[CommandArg(flags=["--symbol"], kwargs={"default": None})]),
+    CommandSpec(name="twse-security-list", handler_name="cmd_twse_security_list",
+                help="[v1.4.0] TWSE security list. Research Only.", group="twse", introduced_in="1.4.0"),
+    CommandSpec(name="twse-fetch-security-master", handler_name="cmd_twse_fetch_security_master",
+                help="[v1.4.0] TWSE fetch security master. Research Only.", group="twse", introduced_in="1.4.0"),
+    CommandSpec(name="twse-daily", handler_name="cmd_twse_daily",
+                help="[v1.4.0] TWSE daily OHLCV. Research Only.", group="twse", introduced_in="1.4.0",
+                args=[CommandArg(flags=["--symbol"], kwargs={"default": None})]),
+    CommandSpec(name="twse-fetch-daily", handler_name="cmd_twse_fetch_daily",
+                help="[v1.4.0] TWSE fetch daily OHLCV. Research Only.", group="twse", introduced_in="1.4.0"),
+    CommandSpec(name="twse-market-summary", handler_name="cmd_twse_market_summary",
+                help="[v1.4.0] TWSE market summary. Research Only.", group="twse", introduced_in="1.4.0"),
+    CommandSpec(name="twse-institutional", handler_name="cmd_twse_institutional",
+                help="[v1.4.0] TWSE institutional flows. Research Only.", group="twse", introduced_in="1.4.0",
+                args=[CommandArg(flags=["--symbol"], kwargs={"default": None})]),
+    CommandSpec(name="twse-margin", handler_name="cmd_twse_margin",
+                help="[v1.4.0] TWSE margin trading. Research Only.", group="twse", introduced_in="1.4.0",
+                args=[CommandArg(flags=["--symbol"], kwargs={"default": None})]),
+    CommandSpec(name="twse-index", handler_name="cmd_twse_index",
+                help="[v1.4.0] TWSE index data. Research Only.", group="twse", introduced_in="1.4.0",
+                args=[CommandArg(flags=["--index-id"], kwargs={"dest": "index_id", "default": None})]),
+    CommandSpec(name="twse-calendar", handler_name="cmd_twse_calendar",
+                help="[v1.4.0] TWSE trading calendar. Research Only.", group="twse", introduced_in="1.4.0"),
+    CommandSpec(name="twse-corporate-actions", handler_name="cmd_twse_corporate_actions",
+                help="[v1.4.0] TWSE corporate actions. Research Only.", group="twse", introduced_in="1.4.0",
+                args=[CommandArg(flags=["--symbol"], kwargs={"default": None})]),
+    CommandSpec(name="twse-coverage", handler_name="cmd_twse_coverage",
+                help="[v1.4.0] TWSE coverage summary. Research Only.", group="twse", introduced_in="1.4.0"),
+    CommandSpec(name="twse-lineage", handler_name="cmd_twse_lineage",
+                help="[v1.4.0] TWSE data lineage. Research Only.", group="twse", introduced_in="1.4.0",
+                args=[CommandArg(flags=["--symbol"], kwargs={"default": None})]),
+    CommandSpec(name="twse-cache-status", handler_name="cmd_twse_cache_status",
+                help="[v1.4.0] TWSE cache status. Research Only.", group="twse", introduced_in="1.4.0"),
+    CommandSpec(name="twse-provider-report", handler_name="cmd_twse_provider_report",
+                help="[v1.4.0] TWSE provider report. Research Only.", group="twse", introduced_in="1.4.0"),
+]
+
+# ---------------------------------------------------------------------------
+# v1.4.1 TPEx commands
+# ---------------------------------------------------------------------------
+_TPEX_COMMANDS: _List[CommandSpec] = [
+    CommandSpec(name="tpex-health", handler_name="cmd_tpex_health",
+                help="[v1.4.1] TPEx provider health. Research Only.", group="tpex", introduced_in="1.4.1"),
+    CommandSpec(name="tpex-endpoints", handler_name="cmd_tpex_endpoints",
+                help="[v1.4.1] TPEx endpoint registry. Research Only.", group="tpex", introduced_in="1.4.1"),
+    CommandSpec(name="tpex-capabilities", handler_name="cmd_tpex_capabilities",
+                help="[v1.4.1] TPEx capability matrix. Research Only.", group="tpex", introduced_in="1.4.1"),
+    CommandSpec(name="tpex-security", handler_name="cmd_tpex_security",
+                help="[v1.4.1] TPEx security info. Research Only.", group="tpex", introduced_in="1.4.1",
+                args=[CommandArg(flags=["--symbol"], kwargs={"default": None})]),
+    CommandSpec(name="tpex-security-list", handler_name="cmd_tpex_security_list",
+                help="[v1.4.1] TPEx security list. Research Only.", group="tpex", introduced_in="1.4.1"),
+    CommandSpec(name="tpex-fetch-security-master", handler_name="cmd_tpex_fetch_security_master",
+                help="[v1.4.1] TPEx fetch security master. Research Only.", group="tpex", introduced_in="1.4.1"),
+    CommandSpec(name="tpex-daily", handler_name="cmd_tpex_daily",
+                help="[v1.4.1] TPEx daily OHLCV. Research Only.", group="tpex", introduced_in="1.4.1",
+                args=[CommandArg(flags=["--symbol"], kwargs={"default": None})]),
+    CommandSpec(name="tpex-fetch-daily", handler_name="cmd_tpex_fetch_daily",
+                help="[v1.4.1] TPEx fetch daily OHLCV. Research Only.", group="tpex", introduced_in="1.4.1"),
+    CommandSpec(name="tpex-market-summary", handler_name="cmd_tpex_market_summary",
+                help="[v1.4.1] TPEx market summary. Research Only.", group="tpex", introduced_in="1.4.1"),
+    CommandSpec(name="tpex-institutional", handler_name="cmd_tpex_institutional",
+                help="[v1.4.1] TPEx institutional flows. Research Only.", group="tpex", introduced_in="1.4.1",
+                args=[CommandArg(flags=["--symbol"], kwargs={"default": None})]),
+    CommandSpec(name="tpex-margin", handler_name="cmd_tpex_margin",
+                help="[v1.4.1] TPEx margin trading. Research Only.", group="tpex", introduced_in="1.4.1",
+                args=[CommandArg(flags=["--symbol"], kwargs={"default": None})]),
+    CommandSpec(name="tpex-index", handler_name="cmd_tpex_index",
+                help="[v1.4.1] TPEx index data. Research Only.", group="tpex", introduced_in="1.4.1",
+                args=[CommandArg(flags=["--index-id"], kwargs={"dest": "index_id", "default": None})]),
+    CommandSpec(name="tpex-calendar", handler_name="cmd_tpex_calendar",
+                help="[v1.4.1] TPEx trading calendar. Research Only.", group="tpex", introduced_in="1.4.1"),
+    CommandSpec(name="tpex-suspensions", handler_name="cmd_tpex_suspensions",
+                help="[v1.4.1] TPEx suspensions. Research Only.", group="tpex", introduced_in="1.4.1"),
+    CommandSpec(name="tpex-corporate-actions", handler_name="cmd_tpex_corporate_actions",
+                help="[v1.4.1] TPEx corporate actions. Research Only.", group="tpex", introduced_in="1.4.1",
+                args=[CommandArg(flags=["--symbol"], kwargs={"default": None})]),
+    CommandSpec(name="tpex-valuation", handler_name="cmd_tpex_valuation",
+                help="[v1.4.1] TPEx valuation ratios. Research Only.", group="tpex", introduced_in="1.4.1",
+                args=[CommandArg(flags=["--symbol"], kwargs={"default": None})]),
+    CommandSpec(name="tpex-coverage", handler_name="cmd_tpex_coverage",
+                help="[v1.4.1] TPEx coverage summary. Research Only.", group="tpex", introduced_in="1.4.1"),
+    CommandSpec(name="tpex-lineage", handler_name="cmd_tpex_lineage",
+                help="[v1.4.1] TPEx data lineage. Research Only.", group="tpex", introduced_in="1.4.1",
+                args=[CommandArg(flags=["--symbol"], kwargs={"default": None})]),
+    CommandSpec(name="tpex-cache-status", handler_name="cmd_tpex_cache_status",
+                help="[v1.4.1] TPEx cache status. Research Only.", group="tpex", introduced_in="1.4.1"),
+    CommandSpec(name="tpex-provider-report", handler_name="cmd_tpex_provider_report",
+                help="[v1.4.1] TPEx provider report. Research Only.", group="tpex", introduced_in="1.4.1"),
+]
+
+# ---------------------------------------------------------------------------
+# v1.4.2 MOPS commands
+# ---------------------------------------------------------------------------
+_MOPS_COMMANDS: _List[CommandSpec] = [
+    CommandSpec(name="mops-health", handler_name="cmd_mops_health",
+                help="[v1.4.2] MOPS provider health. Research Only.", group="mops", introduced_in="1.4.2"),
+    CommandSpec(name="mops-endpoints", handler_name="cmd_mops_endpoints",
+                help="[v1.4.2] MOPS endpoint registry. Research Only.", group="mops", introduced_in="1.4.2"),
+    CommandSpec(name="mops-capabilities", handler_name="cmd_mops_capabilities",
+                help="[v1.4.2] MOPS capability matrix. Research Only.", group="mops", introduced_in="1.4.2"),
+    CommandSpec(name="mops-company-profile", handler_name="cmd_mops_company_profile",
+                help="[v1.4.2] MOPS company profile. Research Only.", group="mops", introduced_in="1.4.2",
+                args=[CommandArg(flags=["--symbol"], kwargs={"default": None})]),
+    CommandSpec(name="mops-revenue", handler_name="cmd_mops_revenue",
+                help="[v1.4.2] MOPS monthly revenue. Research Only.", group="mops", introduced_in="1.4.2",
+                args=[CommandArg(flags=["--symbol"], kwargs={"default": None}),
+                      CommandArg(flags=["--year-month"], kwargs={"dest": "year_month", "default": None})]),
+    CommandSpec(name="mops-balance-sheet", handler_name="cmd_mops_balance_sheet",
+                help="[v1.4.2] MOPS balance sheet. Research Only.", group="mops", introduced_in="1.4.2",
+                args=[CommandArg(flags=["--symbol"], kwargs={"default": None}),
+                      CommandArg(flags=["--year"], kwargs={"default": None}),
+                      CommandArg(flags=["--quarter"], kwargs={"default": None})]),
+    CommandSpec(name="mops-income-statement", handler_name="cmd_mops_income_statement",
+                help="[v1.4.2] MOPS income statement. Research Only.", group="mops", introduced_in="1.4.2",
+                args=[CommandArg(flags=["--symbol"], kwargs={"default": None}),
+                      CommandArg(flags=["--year"], kwargs={"default": None}),
+                      CommandArg(flags=["--quarter"], kwargs={"default": None})]),
+    CommandSpec(name="mops-cash-flow", handler_name="cmd_mops_cash_flow",
+                help="[v1.4.2] MOPS cash flow. Research Only.", group="mops", introduced_in="1.4.2",
+                args=[CommandArg(flags=["--symbol"], kwargs={"default": None}),
+                      CommandArg(flags=["--year"], kwargs={"default": None}),
+                      CommandArg(flags=["--quarter"], kwargs={"default": None})]),
+    CommandSpec(name="mops-material-info", handler_name="cmd_mops_material_info",
+                help="[v1.4.2] MOPS material information. Research Only.", group="mops", introduced_in="1.4.2",
+                args=[CommandArg(flags=["--symbol"], kwargs={"default": None})]),
+    CommandSpec(name="mops-investor-conference", handler_name="cmd_mops_investor_conference",
+                help="[v1.4.2] MOPS investor conference. Research Only.", group="mops", introduced_in="1.4.2",
+                args=[CommandArg(flags=["--symbol"], kwargs={"default": None})]),
+    CommandSpec(name="mops-xbrl-index", handler_name="cmd_mops_xbrl_index",
+                help="[v1.4.2] MOPS XBRL index. Research Only.", group="mops", introduced_in="1.4.2",
+                args=[CommandArg(flags=["--symbol"], kwargs={"default": None}),
+                      CommandArg(flags=["--year"], kwargs={"default": None})]),
+    CommandSpec(name="mops-revision-lineage", handler_name="cmd_mops_revision_lineage",
+                help="[v1.4.2] MOPS revision lineage. Research Only.", group="mops", introduced_in="1.4.2",
+                args=[CommandArg(flags=["--symbol"], kwargs={"default": None})]),
+    CommandSpec(name="mops-point-in-time", handler_name="cmd_mops_point_in_time",
+                help="[v1.4.2] MOPS point-in-time query. Research Only.", group="mops", introduced_in="1.4.2",
+                args=[CommandArg(flags=["--symbol"], kwargs={"default": None}),
+                      CommandArg(flags=["--as-of"], kwargs={"dest": "as_of", "default": None})]),
+    CommandSpec(name="mops-derived-metrics", handler_name="cmd_mops_derived_metrics",
+                help="[v1.4.2] MOPS derived metrics. Research Only.", group="mops", introduced_in="1.4.2",
+                args=[CommandArg(flags=["--symbol"], kwargs={"default": None})]),
+    CommandSpec(name="mops-coverage", handler_name="cmd_mops_coverage",
+                help="[v1.4.2] MOPS coverage summary. Research Only.", group="mops", introduced_in="1.4.2"),
+    CommandSpec(name="mops-cache-status", handler_name="cmd_mops_cache_status",
+                help="[v1.4.2] MOPS cache status. Research Only.", group="mops", introduced_in="1.4.2"),
+    CommandSpec(name="mops-provider-report", handler_name="cmd_mops_provider_report",
+                help="[v1.4.2] MOPS provider report. Research Only.", group="mops", introduced_in="1.4.2"),
+]
+
+# ---------------------------------------------------------------------------
+# v1.4.3 data.gov.tw commands
+# ---------------------------------------------------------------------------
+_DATA_GOV_TW_COMMANDS: _List[CommandSpec] = [
+    CommandSpec(name="data-gov-tw-health", handler_name="cmd_data_gov_tw_health",
+                help="[v1.4.3] data.gov.tw provider health. Research Only.", group="data_gov_tw", introduced_in="1.4.3"),
+    CommandSpec(name="data-gov-tw-capabilities", handler_name="cmd_data_gov_tw_capabilities",
+                help="[v1.4.3] data.gov.tw capability matrix. Research Only.", group="data_gov_tw", introduced_in="1.4.3"),
+    CommandSpec(name="data-gov-tw-catalog", handler_name="cmd_data_gov_tw_catalog",
+                help="[v1.4.3] data.gov.tw dataset catalog. Research Only.", group="data_gov_tw", introduced_in="1.4.3"),
+    CommandSpec(name="data-gov-tw-search", handler_name="cmd_data_gov_tw_search",
+                help="[v1.4.3] data.gov.tw search datasets. Research Only.", group="data_gov_tw", introduced_in="1.4.3",
+                args=[CommandArg(flags=["--keyword"], kwargs={"default": None})]),
+    CommandSpec(name="data-gov-tw-dataset", handler_name="cmd_data_gov_tw_dataset",
+                help="[v1.4.3] data.gov.tw dataset info. Research Only.", group="data_gov_tw", introduced_in="1.4.3",
+                args=[CommandArg(flags=["--dataset-id"], kwargs={"dest": "dataset_id", "default": None})]),
+    CommandSpec(name="data-gov-tw-resources", handler_name="cmd_data_gov_tw_resources",
+                help="[v1.4.3] data.gov.tw dataset resources. Research Only.", group="data_gov_tw", introduced_in="1.4.3",
+                args=[CommandArg(flags=["--dataset-id"], kwargs={"dest": "dataset_id", "default": None})]),
+    CommandSpec(name="data-gov-tw-allowlist", handler_name="cmd_data_gov_tw_allowlist",
+                help="[v1.4.3] data.gov.tw allowlist. Research Only.", group="data_gov_tw", introduced_in="1.4.3"),
+    CommandSpec(name="data-gov-tw-allowlist-check", handler_name="cmd_data_gov_tw_allowlist_check",
+                help="[v1.4.3] data.gov.tw allowlist check. Research Only.", group="data_gov_tw", introduced_in="1.4.3",
+                args=[CommandArg(flags=["--dataset-id"], kwargs={"dest": "dataset_id", "default": None})]),
+    CommandSpec(name="data-gov-tw-license", handler_name="cmd_data_gov_tw_license",
+                help="[v1.4.3] data.gov.tw license validation. Research Only.", group="data_gov_tw", introduced_in="1.4.3",
+                args=[CommandArg(flags=["--dataset-id"], kwargs={"dest": "dataset_id", "default": None})]),
+    CommandSpec(name="data-gov-tw-schema", handler_name="cmd_data_gov_tw_schema",
+                help="[v1.4.3] data.gov.tw schema contract. Research Only.", group="data_gov_tw", introduced_in="1.4.3",
+                args=[CommandArg(flags=["--dataset-id"], kwargs={"dest": "dataset_id", "default": None})]),
+    CommandSpec(name="data-gov-tw-revisions", handler_name="cmd_data_gov_tw_revisions",
+                help="[v1.4.3] data.gov.tw revision tracking. Research Only.", group="data_gov_tw", introduced_in="1.4.3",
+                args=[CommandArg(flags=["--dataset-id"], kwargs={"dest": "dataset_id", "default": None})]),
+    CommandSpec(name="data-gov-tw-fetch", handler_name="cmd_data_gov_tw_fetch",
+                help="[v1.4.3] data.gov.tw fetch dataset. Research Only.", group="data_gov_tw", introduced_in="1.4.3",
+                args=[CommandArg(flags=["--dataset-id"], kwargs={"dest": "dataset_id", "default": None}),
+                      CommandArg(flags=["--execute"], kwargs={"action": "store_true", "default": False})]),
+    CommandSpec(name="data-gov-tw-records", handler_name="cmd_data_gov_tw_records",
+                help="[v1.4.3] data.gov.tw stored records. Research Only.", group="data_gov_tw", introduced_in="1.4.3",
+                args=[CommandArg(flags=["--dataset-id"], kwargs={"dest": "dataset_id", "default": None})]),
+    CommandSpec(name="data-gov-tw-as-of", handler_name="cmd_data_gov_tw_as_of",
+                help="[v1.4.3] data.gov.tw point-in-time query. Research Only.", group="data_gov_tw", introduced_in="1.4.3",
+                args=[CommandArg(flags=["--dataset-id"], kwargs={"dest": "dataset_id", "default": None}),
+                      CommandArg(flags=["--as-of"], kwargs={"dest": "as_of", "default": None})]),
+    CommandSpec(name="data-gov-tw-observations", handler_name="cmd_data_gov_tw_observations",
+                help="[v1.4.3] data.gov.tw government observations. Research Only.", group="data_gov_tw", introduced_in="1.4.3",
+                args=[CommandArg(flags=["--domain"], kwargs={"default": None})]),
+    CommandSpec(name="data-gov-tw-coverage", handler_name="cmd_data_gov_tw_coverage",
+                help="[v1.4.3] data.gov.tw coverage summary. Research Only.", group="data_gov_tw", introduced_in="1.4.3"),
+    CommandSpec(name="data-gov-tw-lineage", handler_name="cmd_data_gov_tw_lineage",
+                help="[v1.4.3] data.gov.tw data lineage. Research Only.", group="data_gov_tw", introduced_in="1.4.3",
+                args=[CommandArg(flags=["--dataset-id"], kwargs={"dest": "dataset_id", "default": None})]),
+    CommandSpec(name="data-gov-tw-cache-status", handler_name="cmd_data_gov_tw_cache_status",
+                help="[v1.4.3] data.gov.tw cache status. Research Only.", group="data_gov_tw", introduced_in="1.4.3"),
+    CommandSpec(name="data-gov-tw-provider-report", handler_name="cmd_data_gov_tw_provider_report",
+                help="[v1.4.3] data.gov.tw provider report. Research Only.", group="data_gov_tw", introduced_in="1.4.3"),
+]
+
+# Combined list of all provider commands
+PROVIDER_COMMANDS: _List[CommandSpec] = (
+    _RESEARCH_FOUNDATION_COMMANDS
+    + _TWSE_COMMANDS
+    + _TPEX_COMMANDS
+    + _MOPS_COMMANDS
+    + _DATA_GOV_TW_COMMANDS
+)
+
+
+def get_all_commands() -> _List[CommandSpec]:
+    """Return all provider commands."""
+    return list(PROVIDER_COMMANDS)
+
+
+def get_command(name: str) -> _Optional[CommandSpec]:
+    """Return a CommandSpec by exact name, or None."""
+    for spec in PROVIDER_COMMANDS:
+        if spec.name == name:
+            return spec
+    return None
+
+
+def get_commands_by_group(group: str) -> _List[CommandSpec]:
+    """Return all commands in the given group."""
+    return [s for s in PROVIDER_COMMANDS if s.group == group]
+
+
+def get_formal_command_names() -> _Set[str]:
+    """Return the set of all formal command names."""
+    return {s.name for s in PROVIDER_COMMANDS}
+
+
+def register_all_commands(subparsers) -> None:
+    """Register all provider commands in argparse subparsers. Call from _build_parser()."""
+    for spec in PROVIDER_COMMANDS:
+        p = subparsers.add_parser(spec.name, help=spec.help)
+        for arg in spec.args:
+            p.add_argument(*arg.flags, **arg.kwargs)
+
+
+def build_command_map(handlers: _Dict[str, _Any]) -> _Dict[str, _Any]:
+    """Build command_map from handler lookup. handlers: {handler_name: callable}"""
+    result = {}
+    for spec in PROVIDER_COMMANDS:
+        handler = handlers.get(spec.handler_name)
+        if handler is not None:
+            result[spec.name] = handler
+    return result
+
+
+def validate_command_registry(parser_commands: _Set[str], handler_map: _Dict[str, _Any]) -> _Dict[str, _Any]:
+    """Validate consistency between parser and handlers."""
+    formal = get_formal_command_names()
+    registered_and_dispatched = formal & parser_commands & set(handler_map.keys())
+    registered_without_handler = (formal & parser_commands) - set(handler_map.keys())
+    handler_without_registration = (formal & set(handler_map.keys())) - parser_commands
+
+    seen: _Set[str] = set()
+    duplicates: _Set[str] = set()
+    for s in PROVIDER_COMMANDS:
+        if s.name in seen:
+            duplicates.add(s.name)
+        seen.add(s.name)
+
+    errors = []
+    if registered_without_handler:
+        errors.append(f"Registered but no handler: {sorted(registered_without_handler)}")
+    if handler_without_registration:
+        errors.append(f"Handler but not registered: {sorted(handler_without_registration)}")
+    if duplicates:
+        errors.append(f"Duplicate commands: {sorted(duplicates)}")
+
+    return {
+        "REGISTERED_AND_DISPATCHED": sorted(registered_and_dispatched),
+        "REGISTERED_WITHOUT_HANDLER": sorted(registered_without_handler),
+        "HANDLER_WITHOUT_REGISTRATION": sorted(handler_without_registration),
+        "DUPLICATE_REGISTRATION": sorted(duplicates),
+        "DUPLICATE_ALIAS": [],
+        "formal_count": len(formal),
+        "parser_count": len(parser_commands & formal),
+        "handler_count": len(set(handler_map.keys()) & formal),
+        "errors": errors,
+        "is_consistent": len(errors) == 0,
+    }
+
+
+def list_cli_commands(group: _Optional[str] = None) -> _List[_Dict[str, str]]:
+    cmds = PROVIDER_COMMANDS if group is None else get_commands_by_group(group)
+    return [{"name": c.name, "group": c.group, "introduced_in": c.introduced_in, "help": c.help} for c in cmds]

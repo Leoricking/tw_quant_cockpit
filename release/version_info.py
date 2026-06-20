@@ -73,9 +73,9 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # ---------------------------------------------------------------------------
 # v1.3.3 module-level constants (Coverage Repair Workflow)
 # ---------------------------------------------------------------------------
-VERSION                             = "1.4.3"
-RELEASE_NAME                        = "data.gov.tw Provider"
-BASE_RELEASE                        = "1.4.2 MOPS Provider"
+VERSION                             = "1.4.3.1"
+RELEASE_NAME                        = "Provider CLI Registration Hotfix"
+BASE_RELEASE                        = "1.4.3 data.gov.tw Provider"
 
 # ---------------------------------------------------------------------------
 # v1.3.2 module-level constants (Real Data Provider Adapter Foundation)

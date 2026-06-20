@@ -69,6 +69,7 @@ class ResearchFoundationStableHealthCheck:
                 "TPEx Provider",
                 "MOPS Provider",
                 "data.gov.tw Provider",
+                "Provider CLI Registration Hotfix",
                 "FinMind Adapter Hardening",
                 "Source Lineage & Rate Limit",
                 "Provider Quality Gates",
@@ -82,7 +83,7 @@ class ResearchFoundationStableHealthCheck:
 
         try:
             from release.version_info import BASE_RELEASE
-            ok = any(marker in BASE_RELEASE for marker in ("1.3.7", "1.3.9", "1.4.0", "1.4.1", "1.4.2"))
+            ok = any(marker in BASE_RELEASE for marker in ("1.3.7", "1.3.9", "1.4.0", "1.4.1", "1.4.2", "1.4.3"))
             checks["base_release_correct"] = ("PASS" if ok else "FAIL", f"BASE_RELEASE={BASE_RELEASE}")
         except Exception as exc:
             checks["base_release_correct"] = ("FAIL", str(exc))

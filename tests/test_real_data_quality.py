@@ -762,6 +762,7 @@ class TestVersionInfo:
             "TPEx Provider",
             "MOPS Provider",
             "data.gov.tw Provider",
+            "Provider CLI Registration Hotfix",
             "FinMind Adapter Hardening",
             "Source Lineage & Rate Limit",
             "Provider Quality Gates",

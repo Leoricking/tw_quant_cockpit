@@ -1025,7 +1025,7 @@ class TestVersionInfo(unittest.TestCase):
     def test_version(self):
         """VERSION >= 1.2.2 (Decision Journal was introduced in 1.2.2)."""
         from release.version_info import VERSION
-        major, minor, patch = (int(x) for x in VERSION.split("."))
+        major, minor, patch = (int(x) for x in VERSION.split(".")[:3])
         self.assertGreaterEqual((major, minor, patch), (1, 2, 2),
                                 f"VERSION {VERSION} predates Decision Journal 1.2.2")
 

@@ -601,7 +601,7 @@ class TestVersionInfo:
         """v1.2.7 Challenge Mode feature flag must be set (milestone-specific)."""
         from release.version_info import VERSION, REPLAY_CHALLENGE_MODE_AVAILABLE
         # VERSION >= 1.2.7 (challenge mode was introduced in 1.2.7)
-        major, minor, patch = (int(x) for x in VERSION.split("."))
+        major, minor, patch = (int(x) for x in VERSION.split(".")[:3])
         assert (major, minor, patch) >= (1, 2, 7), f"VERSION {VERSION} predates Challenge Mode 1.2.7"
         assert REPLAY_CHALLENGE_MODE_AVAILABLE is True
 
