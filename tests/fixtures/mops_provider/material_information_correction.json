@@ -1,0 +1,25 @@
+{
+  "TEST_FIXTURE": true,
+  "DEMO_ONLY": true,
+  "NOT_REAL_DATA": true,
+  "NOT_FOR_FORMAL_CONCLUSION": true,
+  "disclosures": [
+    {
+      "symbol": "2330",
+      "disclosure_id": "DISC_002",
+      "disclosure_type": "MAJOR_CONTRACT",
+      "title": "更正：Demo major contract announcement (Correction)",
+      "announcement_date": "2024-01-12",
+      "effective_date": null,
+      "content_summary": "Correction of DISC_001: revised contract value.",
+      "is_correction": true,
+      "correction_of_id": "DISC_001",
+      "source_timestamp": null,
+      "fetched_at": "2024-01-13T00:00:00+00:00",
+      "provider_id": "mops_official",
+      "provenance": null,
+      "warnings": [],
+      "metadata": {}
+    }
+  ]
+}

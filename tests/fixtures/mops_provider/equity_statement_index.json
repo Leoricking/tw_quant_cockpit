@@ -1,0 +1,17 @@
+{
+  "TEST_FIXTURE": true,
+  "DEMO_ONLY": true,
+  "NOT_REAL_DATA": true,
+  "NOT_FOR_FORMAL_CONCLUSION": true,
+  "entries": [
+    {
+      "symbol": "2330",
+      "fiscal_year": 2023,
+      "fiscal_period": "Q4",
+      "filing_date": "2024-03-15",
+      "document_url": null,
+      "fetched_at": "2024-03-16T00:00:00+00:00",
+      "provider_id": "mops_official"
+    }
+  ]
+}

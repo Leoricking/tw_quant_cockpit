@@ -123,7 +123,8 @@ class TestCapabilityRegistry:
     def test_planned_capabilities_count(self):
         from release.capability_registry import list_planned_capabilities
         planned = list_planned_capabilities()
-        assert len(planned) >= 6
+        # v1.4.2: mops_provider graduated to stable, so planned count is now 5 minimum
+        assert len(planned) >= 5
 
     def test_real_data_quality_available(self):
         from release.capability_registry import is_capability_available
@@ -671,7 +672,8 @@ class TestFixtures:
 
     def test_capability_registry_fixture_planned_count(self):
         fixture = _load_fixture("capability_registry_snapshot.json")
-        assert fixture["expected_planned_count"] >= 6
+        # v1.4.2: mops_provider graduated to stable; planned count is now 5 minimum
+        assert fixture["expected_planned_count"] >= 5
 
     def test_version_alignment_fixture_maps_140(self):
         fixture = _load_fixture("version_alignment_snapshot.json")

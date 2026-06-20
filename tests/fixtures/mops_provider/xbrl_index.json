@@ -1,0 +1,25 @@
+{
+  "TEST_FIXTURE": true,
+  "DEMO_ONLY": true,
+  "NOT_REAL_DATA": true,
+  "NOT_FOR_FORMAL_CONCLUSION": true,
+  "documents": [
+    {
+      "symbol": "2330",
+      "fiscal_year": 2023,
+      "fiscal_period": "Q4",
+      "taxonomy": "general_industry",
+      "xbrl_url": null,
+      "filing_date": "2024-03-15",
+      "report_type": "CONSOLIDATED",
+      "document_size_bytes": null,
+      "is_inline_xbrl": false,
+      "source_timestamp": null,
+      "fetched_at": "2024-03-16T00:00:00+00:00",
+      "provider_id": "mops_official",
+      "provenance": null,
+      "warnings": [],
+      "metadata": {}
+    }
+  ]
+}

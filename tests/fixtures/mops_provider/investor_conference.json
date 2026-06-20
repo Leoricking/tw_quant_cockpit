@@ -1,0 +1,25 @@
+{
+  "TEST_FIXTURE": true,
+  "DEMO_ONLY": true,
+  "NOT_REAL_DATA": true,
+  "NOT_FOR_FORMAL_CONCLUSION": true,
+  "conferences": [
+    {
+      "symbol": "2330",
+      "conference_id": "CONF_001",
+      "conference_date": "2024-04-15",
+      "conference_time": "14:00",
+      "location": "Demo Auditorium, Hsinchu",
+      "contact_person": "Demo IR Manager",
+      "contact_phone": "03-000-0001",
+      "webcast_url": null,
+      "announcement_date": "2024-04-01",
+      "source_timestamp": null,
+      "fetched_at": "2024-04-02T00:00:00+00:00",
+      "provider_id": "mops_official",
+      "provenance": null,
+      "warnings": [],
+      "metadata": {}
+    }
+  ]
+}

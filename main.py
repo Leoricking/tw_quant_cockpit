@@ -30259,6 +30259,204 @@ def cmd_tpex_provider_report(args=None):
     print(TPExProviderReport().render_text())
 
 
+# ---------------------------------------------------------------------------
+# v1.4.2 — MOPS Provider Commands
+# ---------------------------------------------------------------------------
+
+def cmd_mops_health(args=None):
+    from data.providers.mops.health_v142 import MOPSProviderHealthCheck
+    summary = MOPSProviderHealthCheck().get_health_summary()
+    print("=" * 60)
+    print("  MOPS Provider Health v1.4.2")
+    print("=" * 60)
+    print(f"  Market: {summary.get('market', 'MOPS')}")
+    print(f"  Data Domain: {summary.get('data_domain', 'financial_disclosure')}")
+    print(f"  Official Source: {summary.get('official_source', True)}")
+    print(f"  Passed: {summary.get('passed', 0)}/{summary.get('total_checks', 0)}")
+    for name, info in summary.get("checks", {}).items():
+        status = info.get("status", "?")
+        detail = info.get("detail", "")
+        print(f"  [{status:4}] {name}: {detail}")
+    print("=" * 60)
+
+
+def cmd_mops_endpoints(args=None):
+    from data.providers.mops.endpoints_v142 import MOPSEndpointRegistry
+    reg = MOPSEndpointRegistry()
+    print("=" * 60)
+    print("  MOPS Endpoint Registry")
+    print("=" * 60)
+    for ep in reg.list_all():
+        status = "ENABLED" if ep.enabled else "DISABLED"
+        method = getattr(ep, "method", "POST")
+        print(f"  [{status}] {ep.endpoint_id} [{method}]: {ep.official_name}")
+    print("=" * 60)
+
+
+def cmd_mops_capabilities(args=None):
+    from data.providers.mops.capabilities_v142 import MOPSCapabilityMatrix
+    summary = MOPSCapabilityMatrix().build_summary()
+    print("=" * 60)
+    print("  MOPS Capability Matrix")
+    print("=" * 60)
+    for cap, info in summary.get("capabilities", {}).items():
+        print(f"  {cap}: {info.get('status', 'UNKNOWN')}")
+    print("=" * 60)
+
+
+def cmd_mops_company_profile(args=None):
+    symbol = None
+    if args:
+        for i, a in enumerate(args):
+            if a == "--symbol" and i + 1 < len(args):
+                symbol = args[i + 1]
+    from data.providers.mops.query_v142 import MOPSQueryService
+    qs = MOPSQueryService()
+    if symbol:
+        prof = qs.get_company_profile(symbol)
+        if prof:
+            print(f"  Symbol: {prof.symbol}, Name: {prof.company_name}, Market: {prof.market}")
+        else:
+            print(f"  No profile for symbol={symbol} (offline mode). [!] Research Only.")
+    else:
+        print("  --symbol required. [!] Research Only.")
+
+
+def cmd_mops_revenue(args=None):
+    symbol = None
+    year_month = None
+    if args:
+        for i, a in enumerate(args):
+            if a == "--symbol" and i + 1 < len(args):
+                symbol = args[i + 1]
+            if a == "--year-month" and i + 1 < len(args):
+                year_month = args[i + 1]
+    from data.providers.mops.query_v142 import MOPSQueryService
+    qs = MOPSQueryService()
+    if symbol and year_month:
+        rev = qs.get_monthly_revenue(symbol, year_month)
+        if rev:
+            print(f"  {rev.symbol} {rev.year_month}: revenue={rev.revenue}, is_revision={rev.is_revision}")
+        else:
+            print(f"  No revenue for {symbol} {year_month} (offline). [!] Research Only.")
+    else:
+        print("  --symbol and --year-month required. [!] Research Only.")
+
+
+def cmd_mops_balance_sheet(args=None):
+    symbol = None
+    if args:
+        for i, a in enumerate(args):
+            if a == "--symbol" and i + 1 < len(args):
+                symbol = args[i + 1]
+    from data.providers.mops.query_v142 import MOPSQueryService
+    qs = MOPSQueryService()
+    if symbol:
+        bs = qs.get_balance_sheet(symbol)
+        if bs:
+            print(f"  {bs.symbol}: assets={bs.total_assets}, balanced={bs.is_balanced}")
+        else:
+            print(f"  No balance sheet for {symbol} (offline). [!] Research Only.")
+    else:
+        print("  --symbol required. [!] Research Only.")
+
+
+def cmd_mops_income_statement(args=None):
+    symbol = None
+    if args:
+        for i, a in enumerate(args):
+            if a == "--symbol" and i + 1 < len(args):
+                symbol = args[i + 1]
+    print(f"  MOPS Income Statement for {symbol or 'N/A'}: offline mode. [!] Research Only.")
+
+
+def cmd_mops_cash_flow(args=None):
+    symbol = None
+    if args:
+        for i, a in enumerate(args):
+            if a == "--symbol" and i + 1 < len(args):
+                symbol = args[i + 1]
+    print(f"  MOPS Cash Flow for {symbol or 'N/A'}: offline mode. [!] Research Only.")
+
+
+def cmd_mops_material_info(args=None):
+    symbol = None
+    if args:
+        for i, a in enumerate(args):
+            if a == "--symbol" and i + 1 < len(args):
+                symbol = args[i + 1]
+    print(f"  MOPS Material Info for {symbol or 'N/A'}: offline mode. [!] Research Only.")
+
+
+def cmd_mops_investor_conference(args=None):
+    symbol = None
+    if args:
+        for i, a in enumerate(args):
+            if a == "--symbol" and i + 1 < len(args):
+                symbol = args[i + 1]
+    print(f"  MOPS Investor Conference for {symbol or 'N/A'}: offline mode. [!] Research Only.")
+
+
+def cmd_mops_xbrl_index(args=None):
+    symbol = None
+    if args:
+        for i, a in enumerate(args):
+            if a == "--symbol" and i + 1 < len(args):
+                symbol = args[i + 1]
+    print(f"  MOPS XBRL Index for {symbol or 'N/A'}: offline mode. [!] Research Only.")
+
+
+def cmd_mops_revision_lineage(args=None):
+    symbol = None
+    if args:
+        for i, a in enumerate(args):
+            if a == "--symbol" and i + 1 < len(args):
+                symbol = args[i + 1]
+    print(f"  MOPS Revision Lineage for {symbol or 'ALL'}: offline. [!] Research Only.")
+
+
+def cmd_mops_point_in_time(args=None):
+    symbol = None
+    period = None
+    if args:
+        for i, a in enumerate(args):
+            if a == "--symbol" and i + 1 < len(args):
+                symbol = args[i + 1]
+            if a == "--period" and i + 1 < len(args):
+                period = args[i + 1]
+    print(f"  MOPS Point-in-Time for {symbol or 'N/A'} period={period or 'N/A'}: offline. [!] Research Only.")
+
+
+def cmd_mops_derived_metrics(args=None):
+    symbol = None
+    if args:
+        for i, a in enumerate(args):
+            if a == "--symbol" and i + 1 < len(args):
+                symbol = args[i + 1]
+    print(f"  MOPS Derived Metrics for {symbol or 'N/A'}: offline mode. [!] Not Investment Advice.")
+
+
+def cmd_mops_coverage(args=None):
+    from data.providers.mops.store_v142 import MOPSStore
+    store = MOPSStore()
+    counts = store.count_all()
+    print("=" * 60)
+    print("  MOPS Data Coverage")
+    print("=" * 60)
+    for dtype, count in counts.items():
+        print(f"  {dtype}: {count}")
+    print("=" * 60)
+
+
+def cmd_mops_cache_status(args=None):
+    print("  MOPS Cache Status: offline. [!] Real/mock cache isolated. [!] No Auto Download.")
+
+
+def cmd_mops_provider_report(args=None):
+    from reports.mops_provider_report import MOPSProviderReport
+    print(MOPSProviderReport().render_text())
+
+
 def main() -> None:
     """Main entrypoint."""
     import pandas as pd  # imported here to avoid shadowing at module level
@@ -31233,6 +31431,24 @@ def main() -> None:
         "tpex-lineage":                  lambda args=None: cmd_tpex_lineage(args),
         "tpex-cache-status":             cmd_tpex_cache_status,
         "tpex-provider-report":          cmd_tpex_provider_report,
+        # v1.4.2 MOPS Provider
+        "mops-health":                   cmd_mops_health,
+        "mops-endpoints":                cmd_mops_endpoints,
+        "mops-capabilities":             cmd_mops_capabilities,
+        "mops-company-profile":          lambda args=None: cmd_mops_company_profile(args),
+        "mops-revenue":                  lambda args=None: cmd_mops_revenue(args),
+        "mops-balance-sheet":            lambda args=None: cmd_mops_balance_sheet(args),
+        "mops-income-statement":         lambda args=None: cmd_mops_income_statement(args),
+        "mops-cash-flow":                lambda args=None: cmd_mops_cash_flow(args),
+        "mops-material-info":            lambda args=None: cmd_mops_material_info(args),
+        "mops-investor-conference":      lambda args=None: cmd_mops_investor_conference(args),
+        "mops-xbrl-index":               lambda args=None: cmd_mops_xbrl_index(args),
+        "mops-revision-lineage":         lambda args=None: cmd_mops_revision_lineage(args),
+        "mops-point-in-time":            lambda args=None: cmd_mops_point_in_time(args),
+        "mops-derived-metrics":          lambda args=None: cmd_mops_derived_metrics(args),
+        "mops-coverage":                 cmd_mops_coverage,
+        "mops-cache-status":             cmd_mops_cache_status,
+        "mops-provider-report":          cmd_mops_provider_report,
     }
 
     if args.command is None:

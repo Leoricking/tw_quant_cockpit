@@ -1,0 +1,25 @@
+{
+  "TEST_FIXTURE": true,
+  "DEMO_ONLY": true,
+  "NOT_REAL_DATA": true,
+  "NOT_FOR_FORMAL_CONCLUSION": true,
+  "disclosures": [
+    {
+      "symbol": "2330",
+      "disclosure_id": "DISC_001",
+      "disclosure_type": "MAJOR_CONTRACT",
+      "title": "Demo major contract announcement",
+      "announcement_date": "2024-01-10",
+      "effective_date": null,
+      "content_summary": "Demo contract with major customer for advanced node production.",
+      "is_correction": false,
+      "correction_of_id": null,
+      "source_timestamp": null,
+      "fetched_at": "2024-01-11T00:00:00+00:00",
+      "provider_id": "mops_official",
+      "provenance": null,
+      "warnings": [],
+      "metadata": {}
+    }
+  ]
+}

@@ -73,9 +73,9 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # ---------------------------------------------------------------------------
 # v1.3.3 module-level constants (Coverage Repair Workflow)
 # ---------------------------------------------------------------------------
-VERSION                             = "1.4.1"
-RELEASE_NAME                        = "TPEx Provider"
-BASE_RELEASE                        = "1.4.0 TWSE Provider"
+VERSION                             = "1.4.2"
+RELEASE_NAME                        = "MOPS Provider"
+BASE_RELEASE                        = "1.4.1 TPEx Provider"
 
 # ---------------------------------------------------------------------------
 # v1.3.2 module-level constants (Real Data Provider Adapter Foundation)
@@ -459,7 +459,7 @@ CANONICAL_VERSION_ALIGNMENT_AVAILABLE      = True
 PUBLIC_DATA_PROVIDER_INTEGRATION_STARTED   = True   # was False
 TWSE_PROVIDER_AVAILABLE                    = True
 TPEX_PROVIDER_AVAILABLE                    = True
-MOPS_PROVIDER_AVAILABLE                    = False
+MOPS_PROVIDER_AVAILABLE                    = True
 DATA_GOV_TW_PROVIDER_AVAILABLE             = False
 FORUM_INTELLIGENCE_AVAILABLE               = False
 AUTO_OPTIMIZATION_ENABLED                  = False
@@ -499,6 +499,31 @@ TPEX_REALTIME_AVAILABLE                    = False  # ALWAYS FALSE
 TPEX_BROKER_EXECUTION_AVAILABLE            = False  # ALWAYS FALSE
 TPEX_AUTO_DOWNLOAD_ENABLED                 = False  # ALWAYS FALSE
 TPEX_MOCK_FALLBACK_ENABLED                 = False  # ALWAYS FALSE
+
+# v1.4.2 MOPS Provider flags
+MOPS_PROVIDER_OFFICIAL_SOURCE_ONLY         = True
+MOPS_PROVIDER_FINANCIAL_DISCLOSURE         = True
+MOPS_COMPANY_PROFILE_AVAILABLE             = True
+MOPS_MONTHLY_REVENUE_AVAILABLE             = True
+MOPS_FINANCIAL_REPORT_FILING_AVAILABLE     = True
+MOPS_BALANCE_SHEET_AVAILABLE               = True
+MOPS_INCOME_STATEMENT_AVAILABLE            = True
+MOPS_CASH_FLOW_STATEMENT_AVAILABLE         = True
+MOPS_EQUITY_STATEMENT_AVAILABLE            = True
+MOPS_MATERIAL_INFORMATION_AVAILABLE        = True
+MOPS_INVESTOR_CONFERENCE_AVAILABLE         = True
+MOPS_XBRL_DOCUMENT_AVAILABLE               = True
+MOPS_REVISION_LINEAGE_AVAILABLE            = True
+MOPS_POINT_IN_TIME_AVAILABLE               = True
+MOPS_DERIVED_METRICS_AVAILABLE             = True
+MOPS_CACHE_POLICY_AVAILABLE                = True
+MOPS_QUERY_SERVICE_AVAILABLE               = True
+MOPS_STORE_AVAILABLE                       = True
+MOPS_FINANCIAL_STATEMENTS_AVAILABLE        = True
+MOPS_REALTIME_AVAILABLE                    = False  # ALWAYS FALSE
+MOPS_BROKER_EXECUTION_AVAILABLE            = False  # ALWAYS FALSE
+MOPS_AUTO_DOWNLOAD_ENABLED                 = False  # ALWAYS FALSE
+MOPS_MOCK_FALLBACK_ENABLED                 = False  # ALWAYS FALSE
 
 
 class VersionInfo:
@@ -973,6 +998,29 @@ def print_version_info() -> None:
     print(f"  TPEx Real-time Available: {TPEX_REALTIME_AVAILABLE}")
     print(f"  TPEx Auto Download Enabled: {TPEX_AUTO_DOWNLOAD_ENABLED}")
     print(f"  TPEx Mock Fallback Enabled: {TPEX_MOCK_FALLBACK_ENABLED}")
+    # v1.4.2 MOPS Provider flags
+    print(f"  MOPS Provider Available: {MOPS_PROVIDER_AVAILABLE}")
+    print(f"  MOPS Official Source Only: {MOPS_PROVIDER_OFFICIAL_SOURCE_ONLY}")
+    print(f"  MOPS Financial Disclosure: {MOPS_PROVIDER_FINANCIAL_DISCLOSURE}")
+    print(f"  MOPS Company Profile Available: {MOPS_COMPANY_PROFILE_AVAILABLE}")
+    print(f"  MOPS Monthly Revenue Available: {MOPS_MONTHLY_REVENUE_AVAILABLE}")
+    print(f"  MOPS Financial Report Filing Available: {MOPS_FINANCIAL_REPORT_FILING_AVAILABLE}")
+    print(f"  MOPS Balance Sheet Available: {MOPS_BALANCE_SHEET_AVAILABLE}")
+    print(f"  MOPS Income Statement Available: {MOPS_INCOME_STATEMENT_AVAILABLE}")
+    print(f"  MOPS Cash Flow Statement Available: {MOPS_CASH_FLOW_STATEMENT_AVAILABLE}")
+    print(f"  MOPS Equity Statement Available: {MOPS_EQUITY_STATEMENT_AVAILABLE}")
+    print(f"  MOPS Material Information Available: {MOPS_MATERIAL_INFORMATION_AVAILABLE}")
+    print(f"  MOPS Investor Conference Available: {MOPS_INVESTOR_CONFERENCE_AVAILABLE}")
+    print(f"  MOPS XBRL Document Available: {MOPS_XBRL_DOCUMENT_AVAILABLE}")
+    print(f"  MOPS Revision Lineage Available: {MOPS_REVISION_LINEAGE_AVAILABLE}")
+    print(f"  MOPS Point In Time Available: {MOPS_POINT_IN_TIME_AVAILABLE}")
+    print(f"  MOPS Derived Metrics Available: {MOPS_DERIVED_METRICS_AVAILABLE}")
+    print(f"  MOPS Cache Policy Available: {MOPS_CACHE_POLICY_AVAILABLE}")
+    print(f"  MOPS Query Service Available: {MOPS_QUERY_SERVICE_AVAILABLE}")
+    print(f"  MOPS Store Available: {MOPS_STORE_AVAILABLE}")
+    print(f"  MOPS Real-time Available: {MOPS_REALTIME_AVAILABLE}")
+    print(f"  MOPS Auto Download Enabled: {MOPS_AUTO_DOWNLOAD_ENABLED}")
+    print(f"  MOPS Mock Fallback Enabled: {MOPS_MOCK_FALLBACK_ENABLED}")
     print("=" * 60)
 
 

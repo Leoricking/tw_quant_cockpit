@@ -1,0 +1,11 @@
+{
+  "TEST_FIXTURE": true,
+  "DEMO_ONLY": true,
+  "NOT_REAL_DATA": true,
+  "NOT_FOR_FORMAL_CONCLUSION": true,
+  "taxonomy": "general_industry",
+  "description": "XBRL taxonomy for general industry companies",
+  "version": "2023-01",
+  "applicable_to": ["TWSE", "TPEx"],
+  "excludes": ["banking", "insurance", "securities"]
+}

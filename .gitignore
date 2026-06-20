@@ -615,3 +615,21 @@ reports/research_foundation_*.md
 
 # v1.3.9 Research Foundation fixtures ARE committed (exception)
 !tests/fixtures/research_foundation/*.json
+
+# v1.4.2 MOPS Provider (fetched public data, cache, runtime artifacts — never commit)
+data/mops/
+data/provider_cache/mops/
+data/provider_runs/mops/
+data/provider_raw/mops/
+data/mops_documents/
+data/mops_xbrl/
+data/providers/mops/cache/
+data/providers/mops/.cache/
+data/providers/mops/*.cache
+data/providers/mops/responses/
+reports/mops_provider_report_*.md
+reports/mops_report_*.md
+
+# v1.4.2 MOPS Provider fixtures ARE committed (exception)
+!tests/fixtures/mops_provider/*.json
+!tests/fixtures/mops_provider/*.html

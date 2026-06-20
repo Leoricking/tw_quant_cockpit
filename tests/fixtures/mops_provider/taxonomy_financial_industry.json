@@ -1,0 +1,11 @@
+{
+  "TEST_FIXTURE": true,
+  "DEMO_ONLY": true,
+  "NOT_REAL_DATA": true,
+  "NOT_FOR_FORMAL_CONCLUSION": true,
+  "taxonomy": "financial_industry",
+  "description": "XBRL taxonomy for financial industry companies (banks, insurance, securities)",
+  "version": "2023-01",
+  "applicable_to": ["banking", "insurance", "securities"],
+  "industry_codes": ["M", "N", "K", "I", "J"]
+}
