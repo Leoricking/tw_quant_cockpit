@@ -598,3 +598,10 @@ reports/strategy_robustness_*.md
 
 # v1.4.2 Strategy Robustness fixtures ARE committed (exception)
 !tests/fixtures/strategy_robustness/*.json
+
+# v1.3.9 Research Foundation Stable Rollup (runtime outputs — never commit)
+data/research_foundation/
+reports/research_foundation_*.md
+
+# v1.3.9 Research Foundation fixtures ARE committed (exception)
+!tests/fixtures/research_foundation/*.json

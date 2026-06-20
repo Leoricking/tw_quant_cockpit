@@ -164,3 +164,62 @@ def load_snapshot_gracefully(data: dict) -> dict:
     Returns enriched payload (does not modify input).
     """
     return enrich_payload(data)
+
+
+def canonicalize_version(version_str: str) -> str:
+    """
+    Return the canonical aligned version. For current stable releases
+    (not in _CANONICAL_MAP), returns the version unchanged.
+    Malformed or unknown versions are returned unchanged without crashing.
+    """
+    if not isinstance(version_str, str):
+        return str(version_str)
+    return _CANONICAL_MAP.get(version_str, version_str)
+
+
+def get_original_internal_version(canonical: str) -> str:
+    """
+    Reverse lookup: given a canonical version, return the original internal
+    version label if one exists.  Returns canonical unchanged if no mapping.
+    """
+    reverse = {v: k for k, v in _CANONICAL_MAP.items()}
+    return reverse.get(canonical, canonical)
+
+
+def is_known_release_lineage(version_str: str) -> bool:
+    """
+    Return True if this version is a known part of the v1.3.x or v1.4.x
+    release lineage (including old internal labels).
+    """
+    if not isinstance(version_str, str):
+        return False
+    known = set(_RELEASE_NAMES.keys()) | set(_CANONICAL_MAP.keys()) | {"1.3.6.1", "1.3.9"}
+    return version_str in known
+
+
+def validate_version_metadata(payload: dict) -> dict:
+    """
+    Validate version metadata in a payload.
+    Returns {"valid": bool, "warnings": list[str], "status": "OK"|"WARN"|"BLOCKED"}.
+    Does NOT modify payload.
+    """
+    warnings: list[str] = []
+    app_ver = payload.get("application_version", "")
+    release_name = payload.get("release_name", "")
+
+    if app_ver and not is_known_release_lineage(str(app_ver)):
+        warnings.append(f"Unknown application_version: {app_ver!r}")
+
+    if release_name and app_ver:
+        expected_name = _RELEASE_NAMES.get(str(app_ver)) or _RELEASE_NAMES.get(
+            _CANONICAL_MAP.get(str(app_ver), ""), None
+        )
+        if expected_name and release_name != expected_name:
+            warnings.append(
+                f"Conflicting metadata: application_version={app_ver!r} "
+                f"but release_name={release_name!r} (expected {expected_name!r})"
+            )
+
+    if warnings:
+        return {"valid": True, "warnings": warnings, "status": "WARN"}
+    return {"valid": True, "warnings": [], "status": "OK"}

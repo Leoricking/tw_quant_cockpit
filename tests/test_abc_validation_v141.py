@@ -1189,19 +1189,20 @@ def test_version_info_141():
     assert (major, minor, patch) >= (1, 3, 6), f"Expected >= 1.3.6, got {VERSION}"
 
 def test_release_name_141():
-    """Test 142: RELEASE_NAME is A/B/C Buy Point Validation or a successor release."""
+    """Test 142: RELEASE_NAME is a known v1.3.x release (including v1.3.9 stable rollup)."""
     from release.version_info import RELEASE_NAME
     _KNOWN = (
         "A/B/C Buy Point Validation",
         "Strategy Robustness & Regime Validation",
+        "Research Foundation Stable Rollup",
     )
     assert RELEASE_NAME in _KNOWN, f"Unexpected release name: {RELEASE_NAME}"
 
 def test_base_release_141():
-    """Test 143: BASE_RELEASE references the Empirical Backtest release (1.3.5/1.4.0) or later."""
+    """Test 143: BASE_RELEASE references the A/B/C or Robustness release or later."""
     from release.version_info import BASE_RELEASE
-    assert any(marker in BASE_RELEASE for marker in ("1.3.5", "1.3.6", "1.4.0", "1.4.1")), (
-        f"BASE_RELEASE does not reference empirical/A/B/C release: {BASE_RELEASE}"
+    assert any(marker in BASE_RELEASE for marker in ("1.3.5", "1.3.6", "1.3.7", "1.4.0", "1.4.1")), (
+        f"BASE_RELEASE does not reference empirical/A/B/C/Robustness release: {BASE_RELEASE}"
     )
 
 def test_abc_validation_available_flag():

@@ -1,0 +1,22 @@
+{
+  "TEST_FIXTURE": true,
+  "DEMO_ONLY": true,
+  "NOT_REAL_DATA": true,
+  "NOT_FOR_FORMAL_CONCLUSION": true,
+  "fixture_id": "checklist_expected",
+  "description": "Expected checklist structure for research foundation stable checklist v1.3.9",
+  "expected_total_items": 20,
+  "categories": [
+    "version",
+    "capability",
+    "alignment",
+    "compatibility",
+    "cli",
+    "gui",
+    "docs",
+    "hygiene",
+    "safety",
+    "regression",
+    "git"
+  ]
+}

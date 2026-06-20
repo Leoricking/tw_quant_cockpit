@@ -1,0 +1,23 @@
+{
+  "TEST_FIXTURE": true,
+  "DEMO_ONLY": true,
+  "NOT_REAL_DATA": true,
+  "NOT_FOR_FORMAL_CONCLUSION": true,
+  "fixture_id": "health_check_expected",
+  "description": "Expected health check structure for ResearchFoundationStableHealthCheck v1.3.9",
+  "expected_core_checks": [
+    "version_is_139",
+    "release_name_correct",
+    "base_release_correct",
+    "replay_baseline_correct",
+    "canonical_mapping_valid"
+  ],
+  "expected_safety_flags": {
+    "NO_REAL_ORDERS": true,
+    "BROKER_EXECUTION_ENABLED": false,
+    "PRODUCTION_TRADING_BLOCKED": true,
+    "MOCK_FALLBACK_ENABLED": false,
+    "AUTO_OPTIMIZATION_ENABLED": false,
+    "AUTO_TRADING_ENABLED": false
+  }
+}

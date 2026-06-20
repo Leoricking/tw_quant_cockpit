@@ -747,7 +747,7 @@ class TestVersionInfo:
 
     def test_release_name(self):
         from release import version_info
-        # v1.4.2 adds Strategy Robustness & Regime Validation
+        # v1.3.9 adds Research Foundation Stable Rollup
         assert version_info.RELEASE_NAME in (
             "Real Data Quality Foundation",
             "Universe Expansion Foundation",
@@ -757,6 +757,7 @@ class TestVersionInfo:
             "Strategy Knowledge Empirical Backtest",
             "A/B/C Buy Point Validation",
             "Strategy Robustness & Regime Validation",
+            "Research Foundation Stable Rollup",
         ), f"Unexpected release name: {version_info.RELEASE_NAME}"
 
     def test_release_track(self):

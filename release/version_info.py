@@ -73,9 +73,9 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # ---------------------------------------------------------------------------
 # v1.3.3 module-level constants (Coverage Repair Workflow)
 # ---------------------------------------------------------------------------
-VERSION                             = "1.3.7"
-RELEASE_NAME                        = "Strategy Robustness & Regime Validation"
-BASE_RELEASE                        = "1.3.6 A/B/C Buy Point Validation"
+VERSION                             = "1.3.9"
+RELEASE_NAME                        = "Research Foundation Stable Rollup"
+BASE_RELEASE                        = "1.3.7 Strategy Robustness & Regime Validation"
 
 # ---------------------------------------------------------------------------
 # v1.3.2 module-level constants (Real Data Provider Adapter Foundation)
@@ -447,6 +447,22 @@ ROBUSTNESS_FORMAL_CONCLUSION_REQUIRES_REAL_DATA = True
 ROBUSTNESS_MOCK_FORMAL_CONCLUSION_ALLOWED      = False
 ROBUSTNESS_AUTO_OPTIMIZATION_ENABLED          = False
 ROBUSTNESS_AUTO_TRADING_ENABLED               = False
+
+# v1.3.9 Research Foundation Stable Rollup flags
+RESEARCH_FOUNDATION_STABLE                 = True
+RESEARCH_FOUNDATION_STABLE_ROLLUP_AVAILABLE = True
+REAL_DATA_QUALITY_AVAILABLE                = True
+UNIVERSE_EXPANSION_AVAILABLE               = True
+EMPIRICAL_BACKTEST_AVAILABLE               = True
+STRATEGY_ROBUSTNESS_AVAILABLE              = True
+CANONICAL_VERSION_ALIGNMENT_AVAILABLE      = True
+PUBLIC_DATA_PROVIDER_INTEGRATION_STARTED   = False
+TWSE_PROVIDER_AVAILABLE                    = False
+TPEX_PROVIDER_AVAILABLE                    = False
+MOPS_PROVIDER_AVAILABLE                    = False
+DATA_GOV_TW_PROVIDER_AVAILABLE             = False
+FORUM_INTELLIGENCE_AVAILABLE               = False
+AUTO_OPTIMIZATION_ENABLED                  = False
 
 
 class VersionInfo:
@@ -874,6 +890,25 @@ def print_version_info() -> None:
     print(f"  Robustness Mock Formal Conclusion Allowed: {ROBUSTNESS_MOCK_FORMAL_CONCLUSION_ALLOWED}")
     print(f"  Robustness Auto Optimization Enabled: {ROBUSTNESS_AUTO_OPTIMIZATION_ENABLED}")
     print(f"  Robustness Auto Trading Enabled: {ROBUSTNESS_AUTO_TRADING_ENABLED}")
+    # v1.3.9 Research Foundation Stable Rollup flags
+    print(f"  Research Foundation Stable: {RESEARCH_FOUNDATION_STABLE}")
+    print(f"  Research Foundation Stable Rollup Available: {RESEARCH_FOUNDATION_STABLE_ROLLUP_AVAILABLE}")
+    print(f"  Real Data Quality Available: {REAL_DATA_QUALITY_AVAILABLE}")
+    print(f"  Universe Expansion Available: {UNIVERSE_EXPANSION_AVAILABLE}")
+    print(f"  Empirical Backtest Available: {EMPIRICAL_BACKTEST_AVAILABLE}")
+    print(f"  A/B/C Buy Point Validation Available: {ABC_BUY_POINT_VALIDATION_AVAILABLE}")
+    print(f"  Strategy Robustness Available: {STRATEGY_ROBUSTNESS_AVAILABLE}")
+    print(f"  Canonical Version Alignment Available: {CANONICAL_VERSION_ALIGNMENT_AVAILABLE}")
+    print(f"  Public Data Provider Integration Started: {PUBLIC_DATA_PROVIDER_INTEGRATION_STARTED}")
+    print(f"  TWSE Provider Available: {TWSE_PROVIDER_AVAILABLE}")
+    print(f"  TPEx Provider Available: {TPEX_PROVIDER_AVAILABLE}")
+    print(f"  MOPS Provider Available: {MOPS_PROVIDER_AVAILABLE}")
+    print(f"  data.gov.tw Provider Available: {DATA_GOV_TW_PROVIDER_AVAILABLE}")
+    print(f"  Forum Intelligence Available: {FORUM_INTELLIGENCE_AVAILABLE}")
+    print(f"  Replay Stable Baseline: {REPLAY_STABLE_BASELINE}")
+    print(f"  Mock Fallback Enabled: {MOCK_FALLBACK_ENABLED}")
+    print(f"  Auto Optimization Enabled: {AUTO_OPTIMIZATION_ENABLED}")
+    print(f"  Auto Trading Enabled: {AUTO_TRADING_ENABLED}")
     print("=" * 60)
 
 

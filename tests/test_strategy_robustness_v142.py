@@ -1397,16 +1397,20 @@ def test_version_info_142():
 
 
 def test_release_name_142():
-    """Test 126: RELEASE_NAME is Strategy Robustness & Regime Validation."""
+    """Test 126: RELEASE_NAME is Strategy Robustness or a successor stable rollup."""
     from release.version_info import RELEASE_NAME
-    assert RELEASE_NAME == "Strategy Robustness & Regime Validation"
+    _KNOWN = (
+        "Strategy Robustness & Regime Validation",
+        "Research Foundation Stable Rollup",
+    )
+    assert RELEASE_NAME in _KNOWN, f"Unexpected RELEASE_NAME: {RELEASE_NAME}"
 
 
 def test_base_release_142():
-    """Test 127: BASE_RELEASE references 1.3.6 (canonical) or 1.4.1 (pre-alignment label)."""
+    """Test 127: BASE_RELEASE references A/B/C, Robustness, or later stable rollup release."""
     from release.version_info import BASE_RELEASE
-    assert any(marker in BASE_RELEASE for marker in ("1.3.6", "1.4.1")), (
-        f"BASE_RELEASE does not reference A/B/C release: {BASE_RELEASE}"
+    assert any(marker in BASE_RELEASE for marker in ("1.3.6", "1.3.7", "1.4.1")), (
+        f"BASE_RELEASE does not reference A/B/C or Robustness release: {BASE_RELEASE}"
     )
 
 

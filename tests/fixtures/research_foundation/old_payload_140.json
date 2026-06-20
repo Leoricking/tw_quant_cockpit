@@ -1,0 +1,12 @@
+{
+  "TEST_FIXTURE": true,
+  "DEMO_ONLY": true,
+  "NOT_REAL_DATA": true,
+  "NOT_FOR_FORMAL_CONCLUSION": true,
+  "fixture_id": "old_payload_140",
+  "description": "Old payload with internal version label 1.4.0 (canonical: 1.3.5)",
+  "application_version": "1.4.0",
+  "schema_version": "1.4.0",
+  "data": "FIXTURE_ONLY",
+  "expected_canonical": "1.3.5"
+}

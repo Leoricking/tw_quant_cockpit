@@ -108,7 +108,7 @@
 | v1.3.6 | A/B/C Buy Point Validation | Done |
 | v1.3.6.1 | Freshness Date Stability Hotfix | Done (hotfix) |
 | v1.3.7 | Strategy Robustness & Regime Validation | Done |
-| v1.3.9 | Research Foundation Stable Rollup | Planned |
+| v1.3.9 | Research Foundation Stable Rollup | Done (STABLE) |
 | v1.4.0 | TWSE Provider | Planned |
 | v1.4.1 | TPEx Provider | Planned |
 | v1.4.2 | MOPS Provider | Planned |
@@ -118,6 +118,18 @@
 | v1.4.6 | Provider Quality Gates | Planned |
 | v1.4.7 | Forum Intelligence & Market Sentiment | Planned |
 | v1.4.9 | Data Provider Stable Rollup | Planned |
+
+---
+
+### v1.3.9 — Research Foundation Stable Rollup ✅
+
+- **Version:** 1.3.9 — Research Foundation Stable Rollup
+- **Type:** Stable rollup freezing the v1.3.x Research Data & Strategy Validation Foundation line (v1.3.0–v1.3.7). Canonical version alignment, central capability registry, and release gate infrastructure for the next v1.4.x Public Data Provider Integration phase.
+- **Changes:** release/capability_registry.py (17 capabilities, dependency validation), release/version_alignment.py (canonicalize_version, get_original_internal_version, is_known_release_lineage, validate_version_metadata), release/research_foundation_health_v139.py (unified health check, 40+ checks), release/research_foundation_release_gate_v139.py (10-gate release gate), release/research_foundation_stable_checklist_v139.py (20-item checklist), reports/research_foundation_stable_rollup_report.py, gui/research_foundation_summary_panel.py, main.py (4 new CLI commands), release/version_info.py (VERSION→1.3.9, 14 new flags), empirical_backtest/health_v140.py + abc_validation/health_v141.py + strategy_robustness/health_v142.py (capability-based version checks), tests/test_research_foundation_v139.py (90 tests), tests/fixtures/research_foundation/ (9 JSON fixtures), .gitignore (data/research_foundation/), docs/research_foundation_stable_rollup_v1.3.9.md.
+- **Safety:** NO_REAL_ORDERS=True; BROKER_EXECUTION_ENABLED=False; PRODUCTION_TRADING_BLOCKED=True; MOCK_FALLBACK_ENABLED=False; AUTO_OPTIMIZATION_ENABLED=False; AUTO_TRADING_ENABLED=False; TWSE/TPEx/MOPS/data.gov.tw providers PLANNED (not yet active); Forum intelligence PLANNED (not yet active); Public data provider integration not started; Not Investment Advice.
+
+**Next:**
+- v1.4.0: TWSE Provider (Public Data Provider Integration begins)
 
 ---
 

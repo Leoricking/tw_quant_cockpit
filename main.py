@@ -29846,6 +29846,81 @@ def cmd_robustness_health(args):
         print(f"[ERROR] {exc}")
 
 
+def cmd_research_foundation_health(args=None):
+    """Run Research Foundation Stable Rollup health check."""
+    from release.research_foundation_health_v139 import ResearchFoundationStableHealthCheck
+    summary = ResearchFoundationStableHealthCheck().get_health_summary()
+    print("=" * 60)
+    print("  Research Foundation Stable Health v1.3.9")
+    print("=" * 60)
+    print(f"  Overall: {'PASS' if summary['all_pass'] else 'FAIL'}")
+    print(f"  Passed:  {summary['passed']}/{summary['total_checks']}")
+    print(f"  Failed:  {summary['failed']}")
+    print("-" * 60)
+    for name, info in summary.get("checks", {}).items():
+        status = info.get("status", "?")
+        detail = info.get("detail", "")
+        print(f"  [{status:4}] {name}: {detail}")
+    print("=" * 60)
+
+
+def cmd_research_foundation_stable_check(args=None):
+    """Run Research Foundation stable rollup checklist."""
+    from release.research_foundation_stable_checklist_v139 import get_checklist_summary
+    summary = get_checklist_summary()
+    print("=" * 60)
+    print("  Research Foundation Stable Checklist v1.3.9")
+    print("=" * 60)
+    print(f"  Passed: {summary['passed']}/{summary['total']}  |  All Pass: {summary['all_pass']}")
+    print("-" * 60)
+    for item in summary.get("items", []):
+        status = item.get("status", "?")
+        desc = item.get("description", "")
+        detail = item.get("detail", "")
+        suffix = f" — {detail}" if detail else ""
+        print(f"  [{status:4}] {item['number']:2}. {desc}{suffix}")
+    print("=" * 60)
+
+
+def cmd_research_foundation_release_gate(args=None):
+    """Run Research Foundation release gate."""
+    from release.research_foundation_release_gate_v139 import ResearchFoundationReleaseGate
+    summary = ResearchFoundationReleaseGate().get_gate_summary()
+    print("=" * 60)
+    print("  Research Foundation Release Gate v1.3.9")
+    print("=" * 60)
+    print(f"  Overall: {summary['overall']}")
+    print(f"  Gates Passed: {summary['passed']}/{summary['total_gates']}")
+    print(f"  Blocking Failures: {summary['blocking_failures']}")
+    print(f"  Warnings: {summary['warnings']}")
+    print("-" * 60)
+    for gate in summary.get("gates", []):
+        status = gate.get("status", "?")
+        name = gate.get("gate_name", "?")
+        evidence = gate.get("evidence", "")
+        print(f"  [{status:4}] {name}: {evidence}")
+    print("=" * 60)
+
+
+def cmd_research_foundation_summary(args=None):
+    """Show Research Foundation Stable Rollup summary."""
+    from reports.research_foundation_stable_rollup_report import ResearchFoundationStableRollupReport
+    report = ResearchFoundationStableRollupReport()
+    print(report.render_text())
+    data = report.generate()
+    readiness = data.get("final_readiness", {})
+    action = readiness.get("recommended_action", "KEEP_OBSERVING")
+    valid_actions = {
+        "READY_FOR_PUBLIC_PROVIDER_INTEGRATION",
+        "FIX_BLOCKING_ISSUES",
+        "REVIEW_WARNINGS",
+        "KEEP_OBSERVING",
+    }
+    if action not in valid_actions:
+        action = "KEEP_OBSERVING"
+    print(f"  Recommended Action: {action}")
+
+
 def main() -> None:
     """Main entrypoint."""
     import pandas as pd  # imported here to avoid shadowing at module level
@@ -30776,6 +30851,11 @@ def main() -> None:
         "robustness-create-repair":    cmd_robustness_create_repair,
         "robustness-report":           cmd_robustness_report,
         "robustness-health":           cmd_robustness_health,
+        # v1.3.9 Research Foundation Stable Rollup
+        "research-foundation-health":       cmd_research_foundation_health,
+        "research-foundation-stable-check": cmd_research_foundation_stable_check,
+        "research-foundation-release-gate": cmd_research_foundation_release_gate,
+        "research-foundation-summary":      cmd_research_foundation_summary,
     }
 
     if args.command is None:

@@ -32,8 +32,12 @@ class StrategyRobustnessHealthCheck:
         # 1. version_info_1_4_2
         try:
             from release.version_info import VERSION
-            ok = VERSION.startswith("1.3.") or VERSION.startswith("1.4.") or VERSION.startswith("1.5.")
-            checks["version_info_1_4_2"] = ("PASS" if ok else "FAIL", f"VERSION={VERSION}")
+            from release.capability_registry import is_capability_available
+            from release.version_alignment import is_version_at_least
+            cap_ok = is_capability_available("strategy_robustness")
+            ver_ok = is_version_at_least(VERSION, "1.3.7")
+            ok = cap_ok and ver_ok
+            checks["version_info_1_4_2"] = ("PASS" if ok else "FAIL", f"VERSION={VERSION}, capability=strategy_robustness available={cap_ok}")
         except Exception as exc:
             checks["version_info_1_4_2"] = ("FAIL", str(exc))
 
