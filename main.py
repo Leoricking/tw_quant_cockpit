@@ -29921,6 +29921,171 @@ def cmd_research_foundation_summary(args=None):
     print(f"  Recommended Action: {action}")
 
 
+# ---------------------------------------------------------------------------
+# v1.4.0 — TWSE Provider Commands
+# ---------------------------------------------------------------------------
+
+def cmd_twse_health(args=None):
+    from data.providers.twse.health_v140 import TWSEProviderHealthCheck
+    summary = TWSEProviderHealthCheck().get_health_summary()
+    print("=" * 60)
+    print("  TWSE Provider Health v1.4.0")
+    print("=" * 60)
+    print(f"  Official Source: {summary.get('official_source', True)}")
+    print(f"  Passed: {summary.get('passed', 0)}/{summary.get('total_checks', 0)}")
+    print(f"  Failed: {summary.get('failed', 0)}")
+    for name, info in summary.get("checks", {}).items():
+        status = info.get("status", "?")
+        detail = info.get("detail", "")
+        print(f"  [{status:4}] {name}: {detail}")
+    print("=" * 60)
+
+
+def cmd_twse_endpoints(args=None):
+    from data.providers.twse.endpoints_v140 import TWSEEndpointRegistry
+    reg = TWSEEndpointRegistry()
+    print("=" * 60)
+    print("  TWSE Endpoint Registry")
+    print("=" * 60)
+    for ep in reg.list_all():
+        status = "ENABLED" if ep.enabled else "DISABLED"
+        print(f"  [{status}] {ep.endpoint_id}: {ep.official_name}")
+    print("=" * 60)
+
+
+def cmd_twse_capabilities(args=None):
+    from data.providers.twse.capabilities_v140 import TWSECapabilityMatrix
+    matrix = TWSECapabilityMatrix()
+    summary = matrix.build_summary()
+    print("=" * 60)
+    print("  TWSE Capability Matrix")
+    print("=" * 60)
+    for cap, info in summary.get("capabilities", {}).items():
+        print(f"  {cap}: {info.get('status', 'UNKNOWN')}")
+    print("=" * 60)
+
+
+def cmd_twse_security(args=None):
+    symbol = None
+    if args:
+        for i, a in enumerate(args):
+            if a == "--symbol" and i + 1 < len(args):
+                symbol = args[i + 1]
+    from data.providers.twse.query_v140 import TWSEQueryService
+    qs = TWSEQueryService()
+    if symbol:
+        sec = qs.get_security(symbol)
+        if sec:
+            print(f"  Symbol: {sec.symbol}, Name: {sec.name}, Type: {sec.security_type}")
+        else:
+            print(f"  No data for symbol={symbol} (offline fixture mode)")
+    else:
+        secs = qs.list_securities()
+        print(f"  {len(secs)} securities")
+
+
+def cmd_twse_security_list(args=None):
+    from data.providers.twse.query_v140 import TWSEQueryService
+    qs = TWSEQueryService()
+    secs = qs.list_securities()
+    print(f"  TWSE Securities: {len(secs)}")
+
+
+def cmd_twse_daily(args=None):
+    symbol = None
+    if args:
+        for i, a in enumerate(args):
+            if a == "--symbol" and i + 1 < len(args):
+                symbol = args[i + 1]
+    from data.providers.twse.query_v140 import TWSEQueryService
+    qs = TWSEQueryService()
+    if symbol:
+        bar = qs.get_latest_bar(symbol)
+        if bar:
+            print(f"  {bar.symbol} {bar.trade_date}: O={bar.open} H={bar.high} L={bar.low} C={bar.close} V={bar.volume}")
+        else:
+            print(f"  No data for symbol={symbol} (offline mode)")
+    else:
+        print("  --symbol required. [!] No Real Orders. Research Only.")
+
+
+def cmd_twse_market_summary(args=None):
+    from data.providers.twse.query_v140 import TWSEQueryService
+    qs = TWSEQueryService()
+    print("  TWSE Market Summary: offline mode (no live data). [!] Research Only.")
+
+
+def cmd_twse_institutional(args=None):
+    symbol = None
+    if args:
+        for i, a in enumerate(args):
+            if a == "--symbol" and i + 1 < len(args):
+                symbol = args[i + 1]
+    print(f"  TWSE Institutional for {symbol or 'N/A'}: offline mode. [!] Research Only.")
+
+
+def cmd_twse_margin(args=None):
+    symbol = None
+    if args:
+        for i, a in enumerate(args):
+            if a == "--symbol" and i + 1 < len(args):
+                symbol = args[i + 1]
+    print(f"  TWSE Margin for {symbol or 'N/A'}: offline mode. [!] Research Only.")
+
+
+def cmd_twse_index(args=None):
+    idx = "TAIEX"
+    if args:
+        for i, a in enumerate(args):
+            if a == "--index" and i + 1 < len(args):
+                idx = args[i + 1]
+    from data.providers.twse.query_v140 import TWSEQueryService
+    qs = TWSEQueryService()
+    print(f"  TWSE Index {idx}: offline mode. [!] Research Only.")
+
+
+def cmd_twse_calendar(args=None):
+    from data.providers.twse.trading_calendar_v140 import TWSETradingCalendar
+    cal = TWSETradingCalendar()
+    print(f"  TWSE Trading Calendar source: {cal.calendar_source()}, approximate: {cal.approximate()}")
+    print("  [!] Research Only. Not Real-Time.")
+
+
+def cmd_twse_corporate_actions(args=None):
+    symbol = None
+    if args:
+        for i, a in enumerate(args):
+            if a == "--symbol" and i + 1 < len(args):
+                symbol = args[i + 1]
+    print(f"  TWSE Corporate Actions for {symbol or 'N/A'}: offline mode. [!] Research Only.")
+
+
+def cmd_twse_coverage(args=None):
+    from data.providers.twse.query_v140 import TWSEQueryService
+    qs = TWSEQueryService()
+    summary = qs.summarize_coverage()
+    print(f"  TWSE Coverage: {summary}")
+
+
+def cmd_twse_lineage(args=None):
+    symbol = None
+    if args:
+        for i, a in enumerate(args):
+            if a == "--symbol" and i + 1 < len(args):
+                symbol = args[i + 1]
+    print(f"  TWSE Lineage for {symbol or 'ALL'}: offline mode. [!] No credentials stored.")
+
+
+def cmd_twse_cache_status(args=None):
+    print("  TWSE Cache Status: offline mode. [!] Mock and Real cache isolated.")
+
+
+def cmd_twse_provider_report(args=None):
+    from reports.twse_provider_report import TWSEProviderReport
+    report = TWSEProviderReport()
+    print(report.render_text())
+
+
 def main() -> None:
     """Main entrypoint."""
     import pandas as pd  # imported here to avoid shadowing at module level
@@ -30856,6 +31021,25 @@ def main() -> None:
         "research-foundation-stable-check": cmd_research_foundation_stable_check,
         "research-foundation-release-gate": cmd_research_foundation_release_gate,
         "research-foundation-summary":      cmd_research_foundation_summary,
+        # v1.4.0 TWSE Provider
+        "twse-health":                   cmd_twse_health,
+        "twse-endpoints":                cmd_twse_endpoints,
+        "twse-capabilities":             cmd_twse_capabilities,
+        "twse-security":                 lambda args=None: cmd_twse_security(args),
+        "twse-security-list":            cmd_twse_security_list,
+        "twse-fetch-security-master":    lambda args=None: print("  [DRY-RUN] Security master fetch. [!] Research Only."),
+        "twse-daily":                    lambda args=None: cmd_twse_daily(args),
+        "twse-fetch-daily":              lambda args=None: print("  [DRY-RUN] Daily OHLCV fetch. [!] Research Only."),
+        "twse-market-summary":           cmd_twse_market_summary,
+        "twse-institutional":            lambda args=None: cmd_twse_institutional(args),
+        "twse-margin":                   lambda args=None: cmd_twse_margin(args),
+        "twse-index":                    lambda args=None: cmd_twse_index(args),
+        "twse-calendar":                 cmd_twse_calendar,
+        "twse-corporate-actions":        lambda args=None: cmd_twse_corporate_actions(args),
+        "twse-coverage":                 cmd_twse_coverage,
+        "twse-lineage":                  lambda args=None: cmd_twse_lineage(args),
+        "twse-cache-status":             cmd_twse_cache_status,
+        "twse-provider-report":          cmd_twse_provider_report,
     }
 
     if args.command is None:

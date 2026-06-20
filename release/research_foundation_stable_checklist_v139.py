@@ -31,8 +31,16 @@ def run_checklist() -> list[dict]:
     # 1. Version metadata
     def _check_version():
         from release.version_info import VERSION, RELEASE_NAME, BASE_RELEASE
-        return VERSION == "1.3.9" and "Research Foundation" in RELEASE_NAME and "1.3.7" in BASE_RELEASE
-    items.append(_item(1, "version", "Version metadata correct (1.3.9)", _check_version))
+        _KNOWN_NAMES = {
+            "Research Foundation Stable Rollup",
+            "TWSE Provider",
+            "Strategy Robustness & Regime Validation",
+        }
+        parts = tuple(int(x) for x in VERSION.split(".")[:3])
+        return (parts >= (1, 3, 9)
+                and RELEASE_NAME in _KNOWN_NAMES
+                and any(m in BASE_RELEASE for m in ("1.3.7", "1.3.9", "1.4.1")))
+    items.append(_item(1, "version", "Version metadata correct (>= 1.3.9)", _check_version))
 
     # 2. Capability registry
     def _check_registry():

@@ -54,21 +54,27 @@ class ResearchFoundationStableHealthCheck:
     def _check_version(self, checks: dict) -> None:
         try:
             from release.version_info import VERSION
-            ok = VERSION == "1.3.9"
+            parts = tuple(int(x) for x in VERSION.split(".")[:3])
+            ok = parts >= (1, 3, 9)
             checks["version_is_139"] = ("PASS" if ok else "FAIL", f"VERSION={VERSION}")
         except Exception as exc:
             checks["version_is_139"] = ("FAIL", str(exc))
 
         try:
             from release.version_info import RELEASE_NAME
-            ok = RELEASE_NAME == "Research Foundation Stable Rollup"
+            _KNOWN_NAMES = {
+                "Research Foundation Stable Rollup",
+                "TWSE Provider",
+                "Strategy Robustness & Regime Validation",
+            }
+            ok = RELEASE_NAME in _KNOWN_NAMES
             checks["release_name_correct"] = ("PASS" if ok else "FAIL", f"RELEASE_NAME={RELEASE_NAME}")
         except Exception as exc:
             checks["release_name_correct"] = ("FAIL", str(exc))
 
         try:
             from release.version_info import BASE_RELEASE
-            ok = "1.3.7" in BASE_RELEASE
+            ok = any(marker in BASE_RELEASE for marker in ("1.3.7", "1.3.9", "1.4.1"))
             checks["base_release_correct"] = ("PASS" if ok else "FAIL", f"BASE_RELEASE={BASE_RELEASE}")
         except Exception as exc:
             checks["base_release_correct"] = ("FAIL", str(exc))
@@ -110,9 +116,9 @@ class ResearchFoundationStableHealthCheck:
             except Exception as exc:
                 checks[key] = ("FAIL", str(exc))
 
-        # Planned capabilities must NOT be available
+        # Planned capabilities must NOT be available (twse_provider is now stable in v1.4.0+)
         planned_caps = [
-            "twse_provider", "tpex_provider", "mops_provider",
+            "tpex_provider", "mops_provider",
             "data_gov_tw_provider", "forum_intelligence",
         ]
         for cap_id in planned_caps:

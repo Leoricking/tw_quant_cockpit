@@ -23,20 +23,22 @@ def test_current_version_is_137():
 
 
 def test_current_release_name():
-    """Test 2: Release name is a known v1.3.x release (v1.3.9 stable rollup updates name)."""
+    """Test 2: Release name is a known release (v1.4.0+ adds TWSE Provider)."""
     from release.version_info import RELEASE_NAME
     known_names = {
         "Strategy Robustness & Regime Validation",
         "Research Foundation Stable Rollup",
+        "TWSE Provider",
     }
     assert RELEASE_NAME in known_names, f"Unexpected RELEASE_NAME: {RELEASE_NAME}"
 
 
 def test_current_base_release():
-    """Test 3: Base release is a known v1.3.x base (v1.3.9 stable rollup updates base)."""
+    """Test 3: Base release is a known base (v1.4.0 base references v1.3.9)."""
     from release.version_info import BASE_RELEASE
-    # v1.3.9 base release references v1.3.7
-    assert "1.3.6" in BASE_RELEASE or "1.3.7" in BASE_RELEASE, f"Unexpected BASE_RELEASE: {BASE_RELEASE}"
+    assert any(m in BASE_RELEASE for m in ("1.3.6", "1.3.7", "1.3.9", "1.4.1")), (
+        f"Unexpected BASE_RELEASE: {BASE_RELEASE}"
+    )
 
 
 def test_replay_stable_baseline():

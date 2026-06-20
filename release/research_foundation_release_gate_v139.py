@@ -44,16 +44,22 @@ class ResearchFoundationReleaseGate:
     def _version_gate(self) -> dict:
         try:
             from release.version_info import VERSION, RELEASE_NAME, BASE_RELEASE, REPLAY_STABLE_BASELINE
+            _KNOWN_NAMES = {
+                "Research Foundation Stable Rollup",
+                "TWSE Provider",
+                "Strategy Robustness & Regime Validation",
+            }
+            parts = tuple(int(x) for x in VERSION.split(".")[:3])
             ok = (
-                VERSION == "1.3.9"
-                and RELEASE_NAME == "Research Foundation Stable Rollup"
-                and "1.3.7" in BASE_RELEASE
+                parts >= (1, 3, 9)
+                and RELEASE_NAME in _KNOWN_NAMES
+                and any(m in BASE_RELEASE for m in ("1.3.7", "1.3.9", "1.4.1"))
                 and REPLAY_STABLE_BASELINE == "1.2.9"
             )
             return _make_gate(
                 "version_gate", "PASS" if ok else "FAIL",
                 f"VERSION={VERSION}, RELEASE_NAME={RELEASE_NAME}",
-                not ok, [], "" if ok else "Update VERSION to 1.3.9"
+                not ok, [], "" if ok else "Update VERSION to >= 1.3.9"
             )
         except Exception as exc:
             return _make_gate("version_gate", "FAIL", str(exc), True, [], "Fix version_info import")

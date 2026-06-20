@@ -96,6 +96,16 @@ data/intraday_cache/
 data/api_cache/
 data_cache/api/
 
+# v1.4.0 TWSE Provider — fetched public data, cache, and runtime artifacts (not committed)
+data/twse/
+data/provider_cache/twse/
+data/providers/twse/cache/
+data/providers/twse/.cache/
+data/providers/twse/*.cache
+data/providers/twse/responses/
+reports/twse_provider_report_*.md
+reports/twse_report_*.md
+
 # Intraday data (user imports, not committed — only README is tracked)
 data/import/intraday/
 !data/import/intraday/README.md

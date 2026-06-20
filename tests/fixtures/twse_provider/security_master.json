@@ -1,0 +1,4 @@
+[
+  {"Code": "2330", "Name": "台積電", "IndustryCode": "24", "IndustryName": "半導體業", "ListingDate": "19940905", "ISIN": "TW0002330008", "CFICode": "ESVUFN", "Note": "", "TEST_FIXTURE": true, "DEMO_ONLY": true, "NOT_REAL_DATA": true, "NOT_FOR_FORMAL_CONCLUSION": true},
+  {"Code": "0050", "Name": "元大台灣50", "IndustryCode": "31", "IndustryName": "ETF", "ListingDate": "20030625", "ISIN": "TW0000050004", "CFICode": "EUXXXX", "Note": "", "TEST_FIXTURE": true, "DEMO_ONLY": true, "NOT_REAL_DATA": true, "NOT_FOR_FORMAL_CONCLUSION": true}
+]

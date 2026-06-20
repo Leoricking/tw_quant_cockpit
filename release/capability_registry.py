@@ -175,22 +175,22 @@ _CAPABILITIES: list[dict[str, Any]] = [
         "health_check": "release.version_alignment",
         "metadata": {},
     },
-    # v1.4.x PLANNED — Public Data Provider Integration
+    # v1.4.x Public Data Provider Integration
     {
         "id": "twse_provider",
         "display_name": "TWSE Provider",
         "feature_version": "v1.4.0",
         "introduced_in": "1.4.0",
         "canonical_version": "1.4.0",
-        "status": PLANNED,
-        "available": False,
-        "stable": False,
+        "status": STABLE,
+        "available": True,
+        "stable": True,
         "research_only": True,
         "requires_real_data": True,
         "allows_mock_formal_conclusion": False,
         "allows_auto_trading": False,
         "dependencies": ["provider_adapter_foundation"],
-        "health_check": None,
+        "health_check": "data.providers.twse.health_v140",
         "metadata": {"roadmap_phase": "v1.4.x Public Data Provider Integration"},
     },
     {

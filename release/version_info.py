@@ -73,9 +73,9 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # ---------------------------------------------------------------------------
 # v1.3.3 module-level constants (Coverage Repair Workflow)
 # ---------------------------------------------------------------------------
-VERSION                             = "1.3.9"
-RELEASE_NAME                        = "Research Foundation Stable Rollup"
-BASE_RELEASE                        = "1.3.7 Strategy Robustness & Regime Validation"
+VERSION                             = "1.4.0"
+RELEASE_NAME                        = "TWSE Provider"
+BASE_RELEASE                        = "1.3.9 Research Foundation Stable Rollup"
 
 # ---------------------------------------------------------------------------
 # v1.3.2 module-level constants (Real Data Provider Adapter Foundation)
@@ -456,13 +456,30 @@ UNIVERSE_EXPANSION_AVAILABLE               = True
 EMPIRICAL_BACKTEST_AVAILABLE               = True
 STRATEGY_ROBUSTNESS_AVAILABLE              = True
 CANONICAL_VERSION_ALIGNMENT_AVAILABLE      = True
-PUBLIC_DATA_PROVIDER_INTEGRATION_STARTED   = False
-TWSE_PROVIDER_AVAILABLE                    = False
+PUBLIC_DATA_PROVIDER_INTEGRATION_STARTED   = True   # was False
+TWSE_PROVIDER_AVAILABLE                    = True
 TPEX_PROVIDER_AVAILABLE                    = False
 MOPS_PROVIDER_AVAILABLE                    = False
 DATA_GOV_TW_PROVIDER_AVAILABLE             = False
 FORUM_INTELLIGENCE_AVAILABLE               = False
 AUTO_OPTIMIZATION_ENABLED                  = False
+
+# v1.4.0 TWSE Provider flags
+TWSE_PROVIDER_OFFICIAL_SOURCE_ONLY         = True
+TWSE_PROVIDER_OPENAPI_AVAILABLE            = True
+TWSE_PROVIDER_HISTORICAL_REPORT_AVAILABLE  = True
+TWSE_SECURITY_MASTER_AVAILABLE             = True
+TWSE_DAILY_OHLCV_AVAILABLE                 = True
+TWSE_MARKET_SUMMARY_AVAILABLE              = True
+TWSE_INSTITUTIONAL_AVAILABLE               = True
+TWSE_MARGIN_AVAILABLE                      = True
+TWSE_INDEX_AVAILABLE                       = True
+TWSE_TRADING_CALENDAR_AVAILABLE            = True
+TWSE_CORPORATE_ACTION_PREVIEW_AVAILABLE    = True
+TWSE_REALTIME_AVAILABLE                    = False  # ALWAYS FALSE
+TWSE_BROKER_EXECUTION_AVAILABLE            = False  # ALWAYS FALSE
+TWSE_AUTO_DOWNLOAD_ENABLED                 = False  # ALWAYS FALSE
+TWSE_MOCK_FALLBACK_ENABLED                 = False  # ALWAYS FALSE
 
 
 class VersionInfo:
@@ -909,6 +926,19 @@ def print_version_info() -> None:
     print(f"  Mock Fallback Enabled: {MOCK_FALLBACK_ENABLED}")
     print(f"  Auto Optimization Enabled: {AUTO_OPTIMIZATION_ENABLED}")
     print(f"  Auto Trading Enabled: {AUTO_TRADING_ENABLED}")
+    # v1.4.0 TWSE Provider flags
+    print(f"  TWSE Provider Available: {TWSE_PROVIDER_AVAILABLE}")
+    print(f"  Official Source Only: {TWSE_PROVIDER_OFFICIAL_SOURCE_ONLY}")
+    print(f"  TWSE OpenAPI Available: {TWSE_PROVIDER_OPENAPI_AVAILABLE}")
+    print(f"  TWSE Historical Report Available: {TWSE_PROVIDER_HISTORICAL_REPORT_AVAILABLE}")
+    print(f"  TWSE Daily OHLCV Available: {TWSE_DAILY_OHLCV_AVAILABLE}")
+    print(f"  TWSE Institutional Available: {TWSE_INSTITUTIONAL_AVAILABLE}")
+    print(f"  TWSE Margin Available: {TWSE_MARGIN_AVAILABLE}")
+    print(f"  TWSE Index Available: {TWSE_INDEX_AVAILABLE}")
+    print(f"  TWSE Trading Calendar Available: {TWSE_TRADING_CALENDAR_AVAILABLE}")
+    print(f"  TWSE Real-time Available: {TWSE_REALTIME_AVAILABLE}")
+    print(f"  Auto Download Enabled: {TWSE_AUTO_DOWNLOAD_ENABLED}")
+    print(f"  TWSE Mock Fallback Enabled: {TWSE_MOCK_FALLBACK_ENABLED}")
     print("=" * 60)
 
 

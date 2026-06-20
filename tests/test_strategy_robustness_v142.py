@@ -1402,14 +1402,15 @@ def test_release_name_142():
     _KNOWN = (
         "Strategy Robustness & Regime Validation",
         "Research Foundation Stable Rollup",
+        "TWSE Provider",
     )
     assert RELEASE_NAME in _KNOWN, f"Unexpected RELEASE_NAME: {RELEASE_NAME}"
 
 
 def test_base_release_142():
-    """Test 127: BASE_RELEASE references A/B/C, Robustness, or later stable rollup release."""
+    """Test 127: BASE_RELEASE references A/B/C, Robustness, TWSE Provider, or later release."""
     from release.version_info import BASE_RELEASE
-    assert any(marker in BASE_RELEASE for marker in ("1.3.6", "1.3.7", "1.4.1")), (
+    assert any(marker in BASE_RELEASE for marker in ("1.3.6", "1.3.7", "1.3.9", "1.4.1")), (
         f"BASE_RELEASE does not reference A/B/C or Robustness release: {BASE_RELEASE}"
     )
 

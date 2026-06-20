@@ -758,6 +758,7 @@ class TestVersionInfo:
             "A/B/C Buy Point Validation",
             "Strategy Robustness & Regime Validation",
             "Research Foundation Stable Rollup",
+            "TWSE Provider",
         ), f"Unexpected release name: {version_info.RELEASE_NAME}"
 
     def test_release_track(self):
