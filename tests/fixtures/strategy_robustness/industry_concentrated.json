@@ -1,0 +1,33 @@
+{
+  "_fixture_meta": {
+    "TEST_FIXTURE": true,
+    "DEMO_ONLY": true,
+    "NOT_REAL_DATA": true,
+    "NOT_FOR_FORMAL_CONCLUSION": true
+  },
+  "robustness_id": "test_industry_concentrated_001",
+  "rule_id": "test_rule_industry_conc",
+  "universe": "core",
+  "start_date": "2022-01-01",
+  "end_date": "2024-12-31",
+  "status": "FRAGILE",
+  "overall_score": 40.0,
+  "robustness_status": "FRAGILE",
+  "formal_conclusion_allowed": false,
+  "trade_count": 35,
+  "symbol_count": 8,
+  "industry_robustness": {
+    "status": "FRAGILE",
+    "industries_total": 2,
+    "no_industry_count": 0,
+    "industry_stats": {
+      "Semiconductors": {"symbols": ["2330", "2454"], "trades": 28, "expectancy": 0.015, "win_rate": 0.65, "benchmark_excess": 0.3},
+      "Finance": {"symbols": ["2882"], "trades": 7, "expectancy": -0.005, "win_rate": 0.35, "benchmark_excess": -0.03}
+    },
+    "checks": {
+      "single_industry_concentration": {"best_share": 0.9, "threshold": 0.6, "pass": false},
+      "cross_industry_reproducibility": {"profitable_industries": 1, "total_industries": 2, "ratio": 0.5, "pass": true}
+    },
+    "warnings": ["SEMICONDUCTOR_DOMINANT"]
+  }
+}

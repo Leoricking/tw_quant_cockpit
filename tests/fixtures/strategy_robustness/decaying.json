@@ -1,0 +1,39 @@
+{
+  "_fixture_meta": {
+    "TEST_FIXTURE": true,
+    "DEMO_ONLY": true,
+    "NOT_REAL_DATA": true,
+    "NOT_FOR_FORMAL_CONCLUSION": true
+  },
+  "robustness_id": "test_decaying_001",
+  "rule_id": "test_rule_decaying",
+  "universe": "core",
+  "start_date": "2020-01-01",
+  "end_date": "2024-12-31",
+  "status": "DECAYING",
+  "overall_score": 35.0,
+  "robustness_status": "DECAYING",
+  "formal_conclusion_allowed": false,
+  "trade_count": 60,
+  "symbol_count": 15,
+  "decay": {
+    "decay_status": "SIGNIFICANT_DECAY",
+    "trade_count": 60,
+    "early_period": {"expectancy": 0.018, "win_rate": 0.65, "count": 30},
+    "recent_period": {"expectancy": -0.005, "win_rate": 0.38, "count": 30},
+    "metrics": {
+      "expectancy_decline": -0.023,
+      "win_rate_decline": -0.27,
+      "drawdown_increase": 0.045,
+      "profit_factor_decline": -0.8
+    },
+    "evidence": [
+      "EXPECTANCY_DECLINE: -0.0230",
+      "WIN_RATE_DECLINE: -0.2700",
+      "DRAWDOWN_INCREASE: 0.0450",
+      "PROFIT_FACTOR_DECLINE: -0.8000"
+    ],
+    "decay_signals": 4,
+    "warnings": ["DECAY_DETECTED_SIGNIFICANT_DECAY"]
+  }
+}

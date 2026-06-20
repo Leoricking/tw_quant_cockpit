@@ -1,0 +1,35 @@
+{
+  "_fixture_meta": {
+    "TEST_FIXTURE": true,
+    "DEMO_ONLY": true,
+    "NOT_REAL_DATA": true,
+    "NOT_FOR_FORMAL_CONCLUSION": true
+  },
+  "robustness_id": "test_time_fragile_001",
+  "rule_id": "test_rule_time_fragile",
+  "universe": "core",
+  "start_date": "2021-01-01",
+  "end_date": "2024-12-31",
+  "status": "FRAGILE",
+  "overall_score": 42.0,
+  "robustness_status": "FRAGILE",
+  "formal_conclusion_allowed": false,
+  "trade_count": 40,
+  "symbol_count": 10,
+  "time_robustness": {
+    "status": "FRAGILE",
+    "trade_count": 40,
+    "yearly": {
+      "2021": {"trades": 10, "net_return": 0.25, "expectancy": 0.025, "win_rate": 0.7},
+      "2022": {"trades": 10, "net_return": -0.08, "expectancy": -0.008, "win_rate": 0.3},
+      "2023": {"trades": 10, "net_return": -0.05, "expectancy": -0.005, "win_rate": 0.35},
+      "2024": {"trades": 10, "net_return": -0.03, "expectancy": -0.003, "win_rate": 0.4}
+    },
+    "checks": {
+      "positive_year_ratio": {"value": 0.25, "threshold": 0.6, "pass": false},
+      "recent_decay": {"value": -0.03, "threshold": -0.02, "pass": false},
+      "early_vs_late": {"pass": false, "reversal": true}
+    },
+    "warnings": ["PERFORMANCE_REVERSAL"]
+  }
+}

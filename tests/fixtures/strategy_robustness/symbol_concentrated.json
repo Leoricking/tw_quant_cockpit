@@ -1,0 +1,32 @@
+{
+  "_fixture_meta": {
+    "TEST_FIXTURE": true,
+    "DEMO_ONLY": true,
+    "NOT_REAL_DATA": true,
+    "NOT_FOR_FORMAL_CONCLUSION": true
+  },
+  "robustness_id": "test_symbol_concentrated_001",
+  "rule_id": "test_rule_symbol_conc",
+  "universe": "core",
+  "start_date": "2022-01-01",
+  "end_date": "2024-12-31",
+  "status": "FRAGILE",
+  "overall_score": 38.0,
+  "robustness_status": "FRAGILE",
+  "formal_conclusion_allowed": false,
+  "trade_count": 30,
+  "symbol_count": 5,
+  "cross_sectional": {
+    "status": "FRAGILE",
+    "symbols_total": 5,
+    "symbols_profitable": 2,
+    "symbols_unprofitable": 3,
+    "profitable_symbol_ratio": 0.4,
+    "top_contributor_share": 0.75,
+    "checks": {
+      "single_symbol_concentration": {"top_contributor_share": 0.75, "threshold": 0.5, "pass": false},
+      "profitable_symbol_ratio": {"value": 0.4, "threshold": 0.5, "pass": false}
+    },
+    "warnings": ["SINGLE_SYMBOL_DOMINANT"]
+  }
+}

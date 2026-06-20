@@ -73,9 +73,9 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # ---------------------------------------------------------------------------
 # v1.3.3 module-level constants (Coverage Repair Workflow)
 # ---------------------------------------------------------------------------
-VERSION                             = "1.4.1"
-RELEASE_NAME                        = "A/B/C Buy Point Validation"
-BASE_RELEASE                        = "1.4.0 Strategy Knowledge Empirical Backtest"
+VERSION                             = "1.4.2"
+RELEASE_NAME                        = "Strategy Robustness & Regime Validation"
+BASE_RELEASE                        = "1.4.1 A/B/C Buy Point Validation"
 
 # ---------------------------------------------------------------------------
 # v1.3.2 module-level constants (Real Data Provider Adapter Foundation)
@@ -433,6 +433,20 @@ ABC_BUY_POINT_FORMAL_CONCLUSION_REQUIRES_REAL_DATA = True
 ABC_BUY_POINT_MOCK_FORMAL_CONCLUSION_ALLOWED = False
 ABC_BUY_POINT_AUTO_OPTIMIZATION_ENABLED     = False
 ABC_BUY_POINT_AUTO_TRADING_ENABLED          = False
+# v1.4.2 Strategy Robustness & Regime Validation flags
+STRATEGY_ROBUSTNESS_VALIDATION_AVAILABLE       = True
+REGIME_ROBUSTNESS_VALIDATION_AVAILABLE         = True
+PARAMETER_SENSITIVITY_ANALYSIS_AVAILABLE       = True
+COST_STRESS_TEST_AVAILABLE                     = True
+BOOTSTRAP_CONFIDENCE_AVAILABLE                 = True
+MONTE_CARLO_TRADE_ORDER_AVAILABLE              = True
+CROSS_SECTIONAL_ROBUSTNESS_AVAILABLE           = True
+INDUSTRY_ROBUSTNESS_AVAILABLE                  = True
+STRATEGY_DECAY_DETECTION_AVAILABLE             = True
+ROBUSTNESS_FORMAL_CONCLUSION_REQUIRES_REAL_DATA = True
+ROBUSTNESS_MOCK_FORMAL_CONCLUSION_ALLOWED      = False
+ROBUSTNESS_AUTO_OPTIMIZATION_ENABLED          = False
+ROBUSTNESS_AUTO_TRADING_ENABLED               = False
 
 
 class VersionInfo:
@@ -846,6 +860,20 @@ def print_version_info() -> None:
     print(f"  No Real Orders: {NO_REAL_ORDERS}")
     print(f"  Broker Execution Enabled: {BROKER_EXECUTION_ENABLED}")
     print(f"  Production Trading BLOCKED: {PRODUCTION_TRADING_BLOCKED}")
+    # v1.4.2 Strategy Robustness & Regime Validation flags
+    print(f"  Strategy Robustness Validation Available: {STRATEGY_ROBUSTNESS_VALIDATION_AVAILABLE}")
+    print(f"  Regime Robustness Validation Available: {REGIME_ROBUSTNESS_VALIDATION_AVAILABLE}")
+    print(f"  Parameter Sensitivity Analysis Available: {PARAMETER_SENSITIVITY_ANALYSIS_AVAILABLE}")
+    print(f"  Cost Stress Test Available: {COST_STRESS_TEST_AVAILABLE}")
+    print(f"  Bootstrap Confidence Available: {BOOTSTRAP_CONFIDENCE_AVAILABLE}")
+    print(f"  Monte Carlo Trade Order Available: {MONTE_CARLO_TRADE_ORDER_AVAILABLE}")
+    print(f"  Cross Sectional Robustness Available: {CROSS_SECTIONAL_ROBUSTNESS_AVAILABLE}")
+    print(f"  Industry Robustness Available: {INDUSTRY_ROBUSTNESS_AVAILABLE}")
+    print(f"  Strategy Decay Detection Available: {STRATEGY_DECAY_DETECTION_AVAILABLE}")
+    print(f"  Robustness Formal Conclusion Requires Real Data: {ROBUSTNESS_FORMAL_CONCLUSION_REQUIRES_REAL_DATA}")
+    print(f"  Robustness Mock Formal Conclusion Allowed: {ROBUSTNESS_MOCK_FORMAL_CONCLUSION_ALLOWED}")
+    print(f"  Robustness Auto Optimization Enabled: {ROBUSTNESS_AUTO_OPTIMIZATION_ENABLED}")
+    print(f"  Robustness Auto Trading Enabled: {ROBUSTNESS_AUTO_TRADING_ENABLED}")
     print("=" * 60)
 
 

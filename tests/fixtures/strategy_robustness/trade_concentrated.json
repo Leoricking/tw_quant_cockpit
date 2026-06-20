@@ -1,0 +1,35 @@
+{
+  "_fixture_meta": {
+    "TEST_FIXTURE": true,
+    "DEMO_ONLY": true,
+    "NOT_REAL_DATA": true,
+    "NOT_FOR_FORMAL_CONCLUSION": true
+  },
+  "robustness_id": "test_trade_concentrated_001",
+  "rule_id": "test_rule_trade_conc",
+  "universe": "core",
+  "start_date": "2022-01-01",
+  "end_date": "2024-12-31",
+  "status": "CONCENTRATED",
+  "overall_score": 32.0,
+  "robustness_status": "FRAGILE",
+  "formal_conclusion_allowed": false,
+  "trade_count": 30,
+  "symbol_count": 8,
+  "trade_concentration": {
+    "status": "CONCENTRATED",
+    "trade_count": 30,
+    "top_1pct_contribution": 0.50,
+    "top_5pct_contribution": 0.75,
+    "hhi": 0.28,
+    "stress_tests": {
+      "remove_best_1": {"strategy_survives": false, "original_net": 0.08, "remaining_net": -0.02},
+      "remove_best_5": {"strategy_survives": false, "original_net": 0.08, "remaining_net": -0.10}
+    },
+    "checks": {
+      "top_1pct_concentration": {"value": 0.50, "pass": false},
+      "strategy_survives_minus_1": {"strategy_survives": false, "pass": false}
+    },
+    "warnings": ["TOP_1PCT_DOMINANT", "STRATEGY_FAILS_MINUS_BEST_TRADE"]
+  }
+}

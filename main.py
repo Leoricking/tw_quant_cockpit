@@ -5909,6 +5909,36 @@ def cmd_version_info(args: argparse.Namespace) -> None:
         print(f"{'Freshness Auto Refresh Enabled:':<40} {fresh_auto_ref}")
         print(f"{'Freshness Auto Repair Enabled:':<40} {fresh_auto_rep}")
         print(f"{'Freshness Mock Fallback Enabled:':<40} {fresh_mock_fb}")
+        # v1.4.2 Strategy Robustness & Regime Validation flags
+        sr_avail   = getattr(_vi116, "STRATEGY_ROBUSTNESS_VALIDATION_AVAILABLE", False)
+        rr_avail2  = getattr(_vi116, "REGIME_ROBUSTNESS_VALIDATION_AVAILABLE", False)
+        ps_avail   = getattr(_vi116, "PARAMETER_SENSITIVITY_ANALYSIS_AVAILABLE", False)
+        cs_avail   = getattr(_vi116, "COST_STRESS_TEST_AVAILABLE", False)
+        bs_avail   = getattr(_vi116, "BOOTSTRAP_CONFIDENCE_AVAILABLE", False)
+        mc_avail   = getattr(_vi116, "MONTE_CARLO_TRADE_ORDER_AVAILABLE", False)
+        csr_avail  = getattr(_vi116, "CROSS_SECTIONAL_ROBUSTNESS_AVAILABLE", False)
+        ir_avail   = getattr(_vi116, "INDUSTRY_ROBUSTNESS_AVAILABLE", False)
+        dd_avail   = getattr(_vi116, "STRATEGY_DECAY_DETECTION_AVAILABLE", False)
+        rb_fml_rd  = getattr(_vi116, "ROBUSTNESS_FORMAL_CONCLUSION_REQUIRES_REAL_DATA", True)
+        rb_mock_fc = getattr(_vi116, "ROBUSTNESS_MOCK_FORMAL_CONCLUSION_ALLOWED", False)
+        rb_auto_op = getattr(_vi116, "ROBUSTNESS_AUTO_OPTIMIZATION_ENABLED", False)
+        rb_auto_tr = getattr(_vi116, "ROBUSTNESS_AUTO_TRADING_ENABLED", False)
+        print(f"{'Strategy Robustness Validation Available:':<40} {sr_avail}")
+        print(f"{'Regime Robustness Validation Available:':<40} {rr_avail2}")
+        print(f"{'Parameter Sensitivity Analysis Available:':<40} {ps_avail}")
+        print(f"{'Cost Stress Test Available:':<40} {cs_avail}")
+        print(f"{'Bootstrap Confidence Available:':<40} {bs_avail}")
+        print(f"{'Monte Carlo Trade Order Available:':<40} {mc_avail}")
+        print(f"{'Cross Sectional Robustness Available:':<40} {csr_avail}")
+        print(f"{'Industry Robustness Available:':<40} {ir_avail}")
+        print(f"{'Strategy Decay Detection Available:':<40} {dd_avail}")
+        print(f"{'Formal Conclusion Requires Real Data:':<40} {rb_fml_rd}")
+        print(f"{'Mock Formal Conclusion Allowed:':<40} {rb_mock_fc}")
+        print(f"{'Auto Optimization Enabled:':<40} {rb_auto_op}")
+        print(f"{'Auto Trading Enabled:':<40} {rb_auto_tr}")
+        print(f"{'No Real Orders:':<40} True")
+        print(f"{'Broker Execution Enabled:':<40} False")
+        print(f"{'Production Trading BLOCKED:':<40} True")
     except Exception as exc:
         print(f"  Version:                              1.3.4")
         print(f"  Release:                              Data Freshness Monitor")
@@ -22572,6 +22602,140 @@ def _build_parser() -> argparse.ArgumentParser:
         help="[v1.4.1] Run A/B/C validation health checks. Research Only.",
     )
 
+    # v1.4.2 Strategy Robustness & Regime Validation subparsers
+    p_rob_plan = subparsers.add_parser(
+        "robustness-plan",
+        help="[v1.4.2] Build strategy robustness dry-run plan. Research Only. No Real Orders.",
+    )
+    p_rob_plan.add_argument("--rule-id", dest="rule_id", default=None, help="Rule ID")
+    p_rob_plan.add_argument("--universe", default="core", help="Universe ID")
+
+    p_rob_run = subparsers.add_parser(
+        "robustness-run",
+        help="[v1.4.2] Run strategy robustness analysis (dry-run by default). Research Only.",
+    )
+    p_rob_run.add_argument("--rule-id", dest="rule_id", default=None)
+    p_rob_run.add_argument("--universe", default="core")
+    p_rob_run.add_argument("--execute", dest="execute", action="store_true", default=False,
+                           help="Execute (default: dry-run)")
+
+    p_rob_show = subparsers.add_parser(
+        "robustness-show",
+        help="[v1.4.2] Show robustness result. Research Only.",
+    )
+    p_rob_show.add_argument("--robustness-id", dest="robustness_id", default=None)
+
+    subparsers.add_parser(
+        "robustness-list",
+        help="[v1.4.2] List all robustness runs. Research Only.",
+    )
+
+    p_rob_time = subparsers.add_parser(
+        "robustness-time",
+        help="[v1.4.2] Show time robustness analysis. Research Only.",
+    )
+    p_rob_time.add_argument("--robustness-id", dest="robustness_id", default=None)
+
+    p_rob_sym = subparsers.add_parser(
+        "robustness-symbols",
+        help="[v1.4.2] Show cross-sectional symbol robustness. Research Only.",
+    )
+    p_rob_sym.add_argument("--robustness-id", dest="robustness_id", default=None)
+
+    p_rob_ind = subparsers.add_parser(
+        "robustness-industries",
+        help="[v1.4.2] Show industry robustness. Research Only.",
+    )
+    p_rob_ind.add_argument("--robustness-id", dest="robustness_id", default=None)
+
+    p_rob_reg = subparsers.add_parser(
+        "robustness-regimes",
+        help="[v1.4.2] Show regime robustness. Research Only.",
+    )
+    p_rob_reg.add_argument("--robustness-id", dest="robustness_id", default=None)
+
+    p_rob_par = subparsers.add_parser(
+        "robustness-parameters",
+        help="[v1.4.2] Show parameter sensitivity. Research Only.",
+    )
+    p_rob_par.add_argument("--robustness-id", dest="robustness_id", default=None)
+
+    p_rob_cost = subparsers.add_parser(
+        "robustness-costs",
+        help="[v1.4.2] Show cost stress test. Research Only.",
+    )
+    p_rob_cost.add_argument("--robustness-id", dest="robustness_id", default=None)
+
+    p_rob_slip = subparsers.add_parser(
+        "robustness-slippage",
+        help="[v1.4.2] Show slippage stress test. Research Only.",
+    )
+    p_rob_slip.add_argument("--robustness-id", dest="robustness_id", default=None)
+
+    p_rob_conc = subparsers.add_parser(
+        "robustness-concentration",
+        help="[v1.4.2] Show trade concentration analysis. Research Only.",
+    )
+    p_rob_conc.add_argument("--robustness-id", dest="robustness_id", default=None)
+
+    p_rob_boot = subparsers.add_parser(
+        "robustness-bootstrap",
+        help="[v1.4.2] Show bootstrap confidence intervals. Research Only.",
+    )
+    p_rob_boot.add_argument("--robustness-id", dest="robustness_id", default=None)
+
+    p_rob_mc = subparsers.add_parser(
+        "robustness-monte-carlo",
+        help="[v1.4.2] Show Monte Carlo trade order simulation. Research Only.",
+    )
+    p_rob_mc.add_argument("--robustness-id", dest="robustness_id", default=None)
+
+    p_rob_dec = subparsers.add_parser(
+        "robustness-decay",
+        help="[v1.4.2] Show strategy decay detection. Research Only.",
+    )
+    p_rob_dec.add_argument("--robustness-id", dest="robustness_id", default=None)
+
+    p_rob_str = subparsers.add_parser(
+        "robustness-stress",
+        help="[v1.4.2] Run stress scenarios. Research Only.",
+    )
+    p_rob_str.add_argument("--robustness-id", dest="robustness_id", default=None)
+    p_rob_str.add_argument("--scenario", default=None)
+
+    p_rob_fm = subparsers.add_parser(
+        "robustness-failure-modes",
+        help="[v1.4.2] Show failure mode classification. Research Only.",
+    )
+    p_rob_fm.add_argument("--robustness-id", dest="robustness_id", default=None)
+
+    subparsers.add_parser(
+        "robustness-compare",
+        help="[v1.4.2] Compare multiple robustness results. Research Only.",
+    )
+
+    subparsers.add_parser(
+        "abc-robustness-compare",
+        help="[v1.4.2] Compare A/B/C robustness results. Research Only.",
+    )
+
+    p_rob_cr = subparsers.add_parser(
+        "robustness-create-repair",
+        help="[v1.4.2] Preview repair candidates for blocked robustness. Research Only. No Auto Execution.",
+    )
+    p_rob_cr.add_argument("--robustness-id", dest="robustness_id", default=None)
+
+    p_rob_rpt = subparsers.add_parser(
+        "robustness-report",
+        help="[v1.4.2] Generate robustness report. Research Only.",
+    )
+    p_rob_rpt.add_argument("--robustness-id", dest="robustness_id", default=None)
+
+    subparsers.add_parser(
+        "robustness-health",
+        help="[v1.4.2] Run strategy robustness health checks. Research Only.",
+    )
+
     return parser
 
 
@@ -29456,6 +29620,232 @@ def cmd_abc_validation_health(args):
         print(f"[ERROR] {exc}")
 
 
+def _robustness_safety_banner():
+    print("[!] Research Only. No Real Orders. No Broker. Not Investment Advice.")
+    print("[!] Formal Conclusion Requires Real Data. Mock Formal Conclusion: DISABLED.")
+    print("[!] Auto Optimization: DISABLED. Auto Trading: DISABLED.")
+
+
+def cmd_robustness_plan(args):
+    _robustness_safety_banner()
+    rule_id = getattr(args, 'rule_id', None)
+    universe = getattr(args, 'universe', 'core')
+    print(f"Strategy Robustness Plan (DRY RUN)")
+    print(f"  Rule ID:  {rule_id or 'N/A'}")
+    print(f"  Universe: {universe}")
+    print(f"  Mode:     DRY_RUN (no execution)")
+    print(f"  No Real Orders | Broker Execution Disabled | Production Trading BLOCKED")
+
+
+def cmd_robustness_run(args):
+    _robustness_safety_banner()
+    dry_run = not getattr(args, 'execute', False)
+    rule_id = getattr(args, 'rule_id', None)
+    print(f"Strategy Robustness Run ({'DRY_RUN' if dry_run else 'EXECUTE'})")
+    print(f"  Rule ID: {rule_id or 'N/A'}")
+    if not dry_run:
+        print(f"  [INFO] Execute mode — requires real data for formal conclusion.")
+    print(f"  No Real Orders | Broker Execution Disabled | Production Trading BLOCKED")
+
+
+def cmd_robustness_show(args):
+    _robustness_safety_banner()
+    robustness_id = getattr(args, 'robustness_id', None)
+    try:
+        from strategy_robustness.store_v142 import StrategyRobustnessStore
+        store = StrategyRobustnessStore(base_dir=BASE_DIR)
+        result = store.get_run(robustness_id)
+        if result is None:
+            print(f"No robustness result found for ID: {robustness_id}")
+        else:
+            print(f"Robustness ID:  {result.get('robustness_id')}")
+            print(f"Rule ID:        {result.get('rule_id')}")
+            print(f"Score:          {result.get('overall_score')}")
+            print(f"Status:         {result.get('robustness_status')}")
+    except Exception as exc:
+        print(f"[ERROR] {exc}")
+
+
+def cmd_robustness_list(args):
+    _robustness_safety_banner()
+    try:
+        from strategy_robustness.store_v142 import StrategyRobustnessStore
+        store = StrategyRobustnessStore(base_dir=BASE_DIR)
+        runs = store.list_runs()
+        print(f"Strategy Robustness Runs ({len(runs)} total):")
+        for r in runs[:20]:
+            print(f"  [{r.get('robustness_status','?')}] {r.get('robustness_id')}: score={r.get('overall_score')}")
+    except Exception as exc:
+        print(f"[ERROR] {exc}")
+
+
+def cmd_robustness_time(args):
+    _robustness_safety_banner()
+    robustness_id = getattr(args, 'robustness_id', None)
+    print(f"Strategy Time Robustness — robustness_id={robustness_id}")
+    print(f"  Periods: yearly/half-year/quarterly/rolling/early-vs-late")
+    print(f"  No Real Orders | Production Trading BLOCKED")
+
+
+def cmd_robustness_symbols(args):
+    _robustness_safety_banner()
+    robustness_id = getattr(args, 'robustness_id', None)
+    print(f"Cross-Sectional Symbol Robustness — robustness_id={robustness_id}")
+    print(f"  No Real Orders | Production Trading BLOCKED")
+
+
+def cmd_robustness_industries(args):
+    _robustness_safety_banner()
+    robustness_id = getattr(args, 'robustness_id', None)
+    print(f"Industry Robustness — robustness_id={robustness_id}")
+    print(f"  Missing industry → INSUFFICIENT_DATA (never guessed)")
+    print(f"  No Real Orders | Production Trading BLOCKED")
+
+
+def cmd_robustness_regimes(args):
+    _robustness_safety_banner()
+    robustness_id = getattr(args, 'robustness_id', None)
+    print(f"Regime Robustness — robustness_id={robustness_id}")
+    print(f"  Regimes: BULL/BEAR/SIDEWAYS/HIGH_VOLATILITY/LOW_VOLATILITY/UNKNOWN")
+    print(f"  No Real Orders | Production Trading BLOCKED")
+
+
+def cmd_robustness_parameters(args):
+    _robustness_safety_banner()
+    robustness_id = getattr(args, 'robustness_id', None)
+    print(f"Parameter Sensitivity — robustness_id={robustness_id}")
+    print(f"  Neighborhood: ±5%/±10% around baseline parameters")
+    print(f"  No Real Orders | Production Trading BLOCKED")
+
+
+def cmd_robustness_costs(args):
+    _robustness_safety_banner()
+    robustness_id = getattr(args, 'robustness_id', None)
+    print(f"Cost Stress Test — robustness_id={robustness_id}")
+    print(f"  Multipliers: 1.0x/1.25x/1.5x/2.0x")
+    print(f"  No Real Orders | Production Trading BLOCKED")
+
+
+def cmd_robustness_slippage(args):
+    _robustness_safety_banner()
+    robustness_id = getattr(args, 'robustness_id', None)
+    print(f"Slippage Stress Test — robustness_id={robustness_id}")
+    print(f"  Slippage: 0/0.02%/0.05%/0.1%/0.2%")
+    print(f"  No Real Orders | Production Trading BLOCKED")
+
+
+def cmd_robustness_concentration(args):
+    _robustness_safety_banner()
+    robustness_id = getattr(args, 'robustness_id', None)
+    print(f"Trade Concentration — robustness_id={robustness_id}")
+    print(f"  Metrics: top-1/3/5/10pct, HHI, remove-best-1/3/5")
+    print(f"  No Real Orders | Production Trading BLOCKED")
+
+
+def cmd_robustness_bootstrap(args):
+    _robustness_safety_banner()
+    robustness_id = getattr(args, 'robustness_id', None)
+    print(f"Bootstrap Confidence Intervals — robustness_id={robustness_id}")
+    print(f"  Metrics: expectancy/win_rate/profit_factor/mean_return/median_return/max_drawdown")
+    print(f"  Note: Trade dependence limitation applies.")
+    print(f"  No Real Orders | Production Trading BLOCKED")
+
+
+def cmd_robustness_monte_carlo(args):
+    _robustness_safety_banner()
+    robustness_id = getattr(args, 'robustness_id', None)
+    print(f"Monte Carlo Trade Order — robustness_id={robustness_id}")
+    print(f"  Randomly shuffles trade order N times (default 1000)")
+    print(f"  No Real Orders | Production Trading BLOCKED")
+
+
+def cmd_robustness_decay(args):
+    _robustness_safety_banner()
+    robustness_id = getattr(args, 'robustness_id', None)
+    print(f"Strategy Decay Detection — robustness_id={robustness_id}")
+    print(f"  Compares: early/recent, train/validation, first/second half")
+    print(f"  No Real Orders | Production Trading BLOCKED")
+
+
+def cmd_robustness_stress(args):
+    _robustness_safety_banner()
+    robustness_id = getattr(args, 'robustness_id', None)
+    scenario = getattr(args, 'scenario', None)
+    print(f"Stress Scenarios — robustness_id={robustness_id}, scenario={scenario or 'ALL'}")
+    print(f"  Scenarios: HIGH_COST/HIGH_SLIPPAGE/LOW_LIQUIDITY/REMOVE_TOP_TRADES/etc.")
+    print(f"  No Real Orders | Production Trading BLOCKED")
+
+
+def cmd_robustness_failure_modes(args):
+    _robustness_safety_banner()
+    robustness_id = getattr(args, 'robustness_id', None)
+    print(f"Failure Mode Classification — robustness_id={robustness_id}")
+    print(f"  Modes: OVERFIT/REGIME_DEPENDENT/PARAMETER_CLIFF/COST_EROSION/etc.")
+    print(f"  No Real Orders | Production Trading BLOCKED")
+
+
+def cmd_robustness_compare(args):
+    _robustness_safety_banner()
+    print("Strategy Robustness Comparison — requires completed robustness runs.")
+    print("  [INFO] Same universe/date/costs required for direct ranking.")
+    print("  [INFO] Different conditions → NOT_DIRECTLY_RANKABLE")
+
+
+def cmd_abc_robustness_compare(args):
+    _robustness_safety_banner()
+    print("A/B/C Robustness Comparison — compares A vs B vs C robustness results.")
+    print("  [INFO] Same universe/date/costs required for direct ranking.")
+    print("  [INFO] Different conditions → NOT_DIRECTLY_RANKABLE")
+
+
+def cmd_robustness_create_repair(args):
+    _robustness_safety_banner()
+    robustness_id = getattr(args, 'robustness_id', None)
+    print(f"Create Repair Tasks for blocked robustness: {robustness_id}")
+    print(f"  [INFO] create_repair_tasks=False by default — no repair tasks created.")
+    print(f"  Use --execute to create repair candidates in CoverageRepairQueue.")
+    print(f"  No Auto Repair | No Auto Download | No Mock Fallback")
+
+
+def cmd_robustness_report(args):
+    _robustness_safety_banner()
+    robustness_id = getattr(args, 'robustness_id', None)
+    try:
+        from strategy_robustness.store_v142 import StrategyRobustnessStore
+        from strategy_robustness.report_v142 import StrategyRobustnessReport
+        store = StrategyRobustnessStore(base_dir=BASE_DIR)
+        result = store.get_run(robustness_id)
+        if result is None:
+            print(f"No robustness result found for ID: {robustness_id}")
+            return
+        rpt = StrategyRobustnessReport()
+        report = rpt.generate(result)
+        print(rpt.format_text(report))
+    except Exception as exc:
+        print(f"[INFO] {exc}")
+        print("[!] Research Only. No Real Orders. Production Trading BLOCKED.")
+
+
+def cmd_robustness_health(args):
+    _robustness_safety_banner()
+    try:
+        from strategy_robustness.health_v142 import StrategyRobustnessHealthCheck
+        hc = StrategyRobustnessHealthCheck()
+        summary = hc.get_health_summary()
+        status = "PASS" if summary["all_pass"] else "FAIL"
+        print(f"Strategy Robustness Health: {status} ({summary['passed']}/{summary['total_checks']})")
+        for name, info in summary["checks"].items():
+            mark = "PASS" if info["status"] == "PASS" else "FAIL"
+            print(f"  [{mark}] {name}: {info['detail']}")
+        sf = summary.get("safety_flags", {})
+        print(f"  Auto Optimization Enabled: {sf.get('auto_optimization_enabled', False)}")
+        print(f"  Auto Trading Enabled: {sf.get('auto_trading_enabled', False)}")
+        print(f"  Broker Execution Enabled: {sf.get('broker_execution_enabled', False)}")
+        print(f"  Production Trading BLOCKED: {sf.get('production_trading_blocked', True)}")
+    except Exception as exc:
+        print(f"[ERROR] {exc}")
+
+
 def main() -> None:
     """Main entrypoint."""
     import pandas as pd  # imported here to avoid shadowing at module level
@@ -30363,6 +30753,29 @@ def main() -> None:
         "abc-validation-create-repair":    cmd_abc_validation_create_repair,
         "abc-validation-report":           cmd_abc_validation_report,
         "abc-validation-health":           cmd_abc_validation_health,
+        # v1.4.2 Strategy Robustness & Regime Validation
+        "robustness-plan":             cmd_robustness_plan,
+        "robustness-run":              cmd_robustness_run,
+        "robustness-show":             cmd_robustness_show,
+        "robustness-list":             cmd_robustness_list,
+        "robustness-time":             cmd_robustness_time,
+        "robustness-symbols":          cmd_robustness_symbols,
+        "robustness-industries":       cmd_robustness_industries,
+        "robustness-regimes":          cmd_robustness_regimes,
+        "robustness-parameters":       cmd_robustness_parameters,
+        "robustness-costs":            cmd_robustness_costs,
+        "robustness-slippage":         cmd_robustness_slippage,
+        "robustness-concentration":    cmd_robustness_concentration,
+        "robustness-bootstrap":        cmd_robustness_bootstrap,
+        "robustness-monte-carlo":      cmd_robustness_monte_carlo,
+        "robustness-decay":            cmd_robustness_decay,
+        "robustness-stress":           cmd_robustness_stress,
+        "robustness-failure-modes":    cmd_robustness_failure_modes,
+        "robustness-compare":          cmd_robustness_compare,
+        "abc-robustness-compare":      cmd_abc_robustness_compare,
+        "robustness-create-repair":    cmd_robustness_create_repair,
+        "robustness-report":           cmd_robustness_report,
+        "robustness-health":           cmd_robustness_health,
     }
 
     if args.command is None:

@@ -1,0 +1,34 @@
+{
+  "_fixture_meta": {
+    "TEST_FIXTURE": true,
+    "DEMO_ONLY": true,
+    "NOT_REAL_DATA": true,
+    "NOT_FOR_FORMAL_CONCLUSION": true
+  },
+  "robustness_id": "test_cost_sensitive_001",
+  "rule_id": "test_rule_cost_sens",
+  "universe": "core",
+  "start_date": "2022-01-01",
+  "end_date": "2024-12-31",
+  "status": "COST_SENSITIVE",
+  "overall_score": 38.0,
+  "robustness_status": "FRAGILE",
+  "formal_conclusion_allowed": false,
+  "trade_count": 35,
+  "symbol_count": 8,
+  "cost_stress": {
+    "status": "COST_SENSITIVE",
+    "multiplier_results": {
+      "x1.00": {"net_return": 0.05, "expectancy": 0.0014, "multiplier": 1.0, "robustness_status": "BASELINE"},
+      "x1.25": {"net_return": 0.01, "expectancy": 0.0003, "multiplier": 1.25, "robustness_status": "PASS"},
+      "x1.50": {"net_return": -0.02, "expectancy": -0.0006, "multiplier": 1.5, "robustness_status": "FAIL"},
+      "x2.00": {"net_return": -0.07, "expectancy": -0.002, "multiplier": 2.0, "robustness_status": "FAIL"}
+    },
+    "cost_sensitivity_slope": -0.12,
+    "checks": {
+      "survives_1_5x_cost": {"net_return_at_1_5x": -0.02, "pass": false},
+      "survives_2x_cost": {"net_return_at_2x": -0.07, "pass": false}
+    },
+    "warnings": ["STRATEGY_FAILS_AT_2X_COST", "HIGH_COST_SENSITIVITY"]
+  }
+}

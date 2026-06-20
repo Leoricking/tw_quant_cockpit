@@ -1,0 +1,35 @@
+{
+  "_fixture_meta": {
+    "TEST_FIXTURE": true,
+    "DEMO_ONLY": true,
+    "NOT_REAL_DATA": true,
+    "NOT_FOR_FORMAL_CONCLUSION": true
+  },
+  "robustness_id": "test_regime_dependent_001",
+  "rule_id": "test_rule_regime_dep",
+  "universe": "core",
+  "start_date": "2021-01-01",
+  "end_date": "2024-12-31",
+  "status": "REGIME_DEPENDENT",
+  "overall_score": 45.0,
+  "robustness_status": "REGIME_DEPENDENT",
+  "formal_conclusion_allowed": false,
+  "trade_count": 50,
+  "symbol_count": 12,
+  "regime_robustness": {
+    "status": "REGIME_DEPENDENT",
+    "regimes_found": ["BULL", "BEAR", "SIDEWAYS"],
+    "regime_dependency_score": 0.72,
+    "regime_stats": {
+      "BULL": {"trades": 35, "expectancy": 0.025, "win_rate": 0.70, "confidence": "HIGH"},
+      "BEAR": {"trades": 10, "expectancy": -0.018, "win_rate": 0.25, "confidence": "LOW"},
+      "SIDEWAYS": {"trades": 5, "expectancy": -0.003, "win_rate": 0.4, "confidence": "INSUFFICIENT"}
+    },
+    "checks": {
+      "regime_dependency": {"score": 0.72, "threshold": 0.6, "pass": false},
+      "bull_only": {"bull_expectancy": 0.025, "bear_expectancy": -0.018, "pass": false},
+      "bear_failure": {"bear_expectancy": -0.018, "pass": false}
+    },
+    "warnings": ["HIGH_REGIME_DEPENDENCY", "BEAR_FAILURE"]
+  }
+}

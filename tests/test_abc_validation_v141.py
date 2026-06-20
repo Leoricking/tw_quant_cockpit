@@ -1183,19 +1183,27 @@ def test_health_check_no_mock_fallback():
 # ── version_info.py ───────────────────────────────────────────────────────────
 
 def test_version_info_141():
-    """Test 141: VERSION is 1.4.1."""
+    """Test 141: VERSION is 1.4.1 or later."""
     from release.version_info import VERSION
-    assert VERSION == "1.4.1"
+    major, minor, patch = (int(x) for x in VERSION.split(".")[:3])
+    assert (major, minor, patch) >= (1, 4, 1), f"Expected >= 1.4.1, got {VERSION}"
 
 def test_release_name_141():
-    """Test 142: RELEASE_NAME is A/B/C Buy Point Validation."""
+    """Test 142: RELEASE_NAME is A/B/C Buy Point Validation or a successor release."""
     from release.version_info import RELEASE_NAME
-    assert RELEASE_NAME == "A/B/C Buy Point Validation"
+    _KNOWN = (
+        "A/B/C Buy Point Validation",
+        "Strategy Robustness & Regime Validation",
+    )
+    assert RELEASE_NAME in _KNOWN, f"Unexpected release name: {RELEASE_NAME}"
 
 def test_base_release_141():
-    """Test 143: BASE_RELEASE references 1.4.0."""
+    """Test 143: BASE_RELEASE references 1.4.0 or later."""
     from release.version_info import BASE_RELEASE
-    assert "1.4.0" in BASE_RELEASE
+    # Accept "1.4.0" directly or via successor chains (e.g. "1.4.1 A/B/C ...")
+    assert any(marker in BASE_RELEASE for marker in ("1.4.0", "1.4.1")), (
+        f"BASE_RELEASE does not reference 1.4.0 or 1.4.1: {BASE_RELEASE}"
+    )
 
 def test_abc_validation_available_flag():
     """Test 144: ABC_BUY_POINT_VALIDATION_AVAILABLE is True."""

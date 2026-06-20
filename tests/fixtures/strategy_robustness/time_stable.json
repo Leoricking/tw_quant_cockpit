@@ -1,0 +1,35 @@
+{
+  "_fixture_meta": {
+    "TEST_FIXTURE": true,
+    "DEMO_ONLY": true,
+    "NOT_REAL_DATA": true,
+    "NOT_FOR_FORMAL_CONCLUSION": true
+  },
+  "robustness_id": "test_time_stable_001",
+  "rule_id": "test_rule_time_stable",
+  "universe": "core",
+  "start_date": "2021-01-01",
+  "end_date": "2024-12-31",
+  "status": "PASS",
+  "overall_score": 82.0,
+  "robustness_status": "ROBUST",
+  "formal_conclusion_allowed": false,
+  "trade_count": 60,
+  "symbol_count": 15,
+  "time_robustness": {
+    "status": "PASS",
+    "trade_count": 60,
+    "yearly": {
+      "2021": {"trades": 15, "net_return": 0.12, "expectancy": 0.008, "win_rate": 0.6},
+      "2022": {"trades": 15, "net_return": 0.10, "expectancy": 0.007, "win_rate": 0.55},
+      "2023": {"trades": 15, "net_return": 0.11, "expectancy": 0.0073, "win_rate": 0.58},
+      "2024": {"trades": 15, "net_return": 0.09, "expectancy": 0.006, "win_rate": 0.55}
+    },
+    "checks": {
+      "positive_year_ratio": {"value": 1.0, "threshold": 0.6, "pass": true},
+      "recent_decay": {"value": 0.001, "threshold": -0.02, "pass": true},
+      "early_vs_late": {"pass": true}
+    },
+    "warnings": []
+  }
+}
