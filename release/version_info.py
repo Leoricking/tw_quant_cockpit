@@ -73,12 +73,13 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # ---------------------------------------------------------------------------
 # v1.3.3 module-level constants (Coverage Repair Workflow)
 # ---------------------------------------------------------------------------
-VERSION                             = "1.4.9"
-RELEASE_NAME                        = "Provider Stable Rollup"
-BASE_RELEASE                        = "1.4.8.1 Provider Integration Test Integrity Hotfix"
+VERSION                             = "1.5.0"
+RELEASE_NAME                        = "Portfolio Research Foundation"
+BASE_RELEASE                        = "1.4.9 Provider Stable Rollup"
 PROVIDER_FEATURE_BASELINE           = "1.4.8 Provider Integration Hardening"
 REPLAY_STABLE_BASELINE              = "1.2.9"
 PROVIDER_STABLE_BASELINE            = "1.4.9"
+PORTFOLIO_RESEARCH_BASELINE         = "1.5.0"
 
 # ---------------------------------------------------------------------------
 # v1.3.2 module-level constants (Real Data Provider Adapter Foundation)

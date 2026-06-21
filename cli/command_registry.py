@@ -2179,6 +2179,61 @@ _PROVIDER_STABLE_ROLLUP_COMMANDS: _List[CommandSpec] = [
                 group="provider_stable_rollup", introduced_in="1.4.9"),
 ]
 
+# v1.5.0 Portfolio Research Foundation commands
+_PORTFOLIO_COMMANDS: _List[CommandSpec] = [
+    CommandSpec(name="portfolio-health", handler_name="cmd_portfolio_health",
+                help="[v1.5.0] Portfolio Research Foundation health check. Research Only.",
+                group="portfolio_research_foundation", introduced_in="1.5.0"),
+    CommandSpec(name="portfolio-create", handler_name="cmd_portfolio_create",
+                help="[v1.5.0] Create a research portfolio (demo fixture). Research Only.",
+                group="portfolio_research_foundation", introduced_in="1.5.0"),
+    CommandSpec(name="portfolio-add-txn", handler_name="cmd_portfolio_add_txn",
+                help="[v1.5.0] Add a research transaction (demo fixture). Research Only.",
+                group="portfolio_research_foundation", introduced_in="1.5.0"),
+    CommandSpec(name="portfolio-positions", handler_name="cmd_portfolio_positions",
+                help="[v1.5.0] Show positions as-of date (demo fixture). Research Only.",
+                group="portfolio_research_foundation", introduced_in="1.5.0"),
+    CommandSpec(name="portfolio-cash", handler_name="cmd_portfolio_cash",
+                help="[v1.5.0] Show cash balances as-of date (demo fixture). Research Only.",
+                group="portfolio_research_foundation", introduced_in="1.5.0"),
+    CommandSpec(name="portfolio-valuation", handler_name="cmd_portfolio_valuation",
+                help="[v1.5.0] Show portfolio valuation (demo fixture). Research Only.",
+                group="portfolio_research_foundation", introduced_in="1.5.0"),
+    CommandSpec(name="portfolio-pnl", handler_name="cmd_portfolio_pnl",
+                help="[v1.5.0] Show PnL summary (demo fixture). Research Only.",
+                group="portfolio_research_foundation", introduced_in="1.5.0"),
+    CommandSpec(name="portfolio-exposure", handler_name="cmd_portfolio_exposure",
+                help="[v1.5.0] Show portfolio exposure (demo fixture). Research Only.",
+                group="portfolio_research_foundation", introduced_in="1.5.0"),
+    CommandSpec(name="portfolio-concentration", handler_name="cmd_portfolio_concentration",
+                help="[v1.5.0] Show concentration analysis (demo fixture). Research Only.",
+                group="portfolio_research_foundation", introduced_in="1.5.0"),
+    CommandSpec(name="portfolio-turnover", handler_name="cmd_portfolio_turnover",
+                help="[v1.5.0] Show turnover metrics (demo fixture). Research Only.",
+                group="portfolio_research_foundation", introduced_in="1.5.0"),
+    CommandSpec(name="portfolio-returns", handler_name="cmd_portfolio_returns",
+                help="[v1.5.0] Show return calculations (demo fixture). Research Only.",
+                group="portfolio_research_foundation", introduced_in="1.5.0"),
+    CommandSpec(name="portfolio-benchmark", handler_name="cmd_portfolio_benchmark",
+                help="[v1.5.0] Show benchmark comparison (demo fixture). Research Only.",
+                group="portfolio_research_foundation", introduced_in="1.5.0"),
+    CommandSpec(name="portfolio-snapshot", handler_name="cmd_portfolio_snapshot",
+                help="[v1.5.0] Take a portfolio snapshot (demo fixture). Research Only.",
+                group="portfolio_research_foundation", introduced_in="1.5.0"),
+    CommandSpec(name="portfolio-eligibility", handler_name="cmd_portfolio_eligibility",
+                help="[v1.5.0] Run data eligibility gate (demo fixture). Research Only.",
+                group="portfolio_research_foundation", introduced_in="1.5.0"),
+    CommandSpec(name="portfolio-what-if", handler_name="cmd_portfolio_what_if",
+                help="[v1.5.0] Run hypothetical what-if analysis (demo fixture). Research Only.",
+                group="portfolio_research_foundation", introduced_in="1.5.0"),
+    CommandSpec(name="portfolio-lineage", handler_name="cmd_portfolio_lineage",
+                help="[v1.5.0] Show portfolio lineage chain (demo fixture). Research Only.",
+                group="portfolio_research_foundation", introduced_in="1.5.0"),
+    CommandSpec(name="portfolio-report", handler_name="cmd_portfolio_report",
+                help="[v1.5.0] Generate full portfolio research report (demo fixture). Research Only.",
+                group="portfolio_research_foundation", introduced_in="1.5.0"),
+]
+
 # Combined list of all provider commands
 PROVIDER_COMMANDS: _List[CommandSpec] = (
     _RESEARCH_FOUNDATION_COMMANDS
@@ -2192,6 +2247,7 @@ PROVIDER_COMMANDS: _List[CommandSpec] = (
     + _FORUM_INTELLIGENCE_COMMANDS
     + _PROVIDER_INTEGRATION_HARDENING_COMMANDS
     + _PROVIDER_STABLE_ROLLUP_COMMANDS
+    + _PORTFOLIO_COMMANDS
 )
 
 

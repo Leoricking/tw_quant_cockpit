@@ -966,7 +966,7 @@ class TestRegression:
 
     def test_148_base_release_147(self):
         from release.version_info import BASE_RELEASE
-        assert "1.4.8" in BASE_RELEASE, f"Expected BASE_RELEASE to reference 1.4.8, got {BASE_RELEASE}"
+        assert "1.4.8" in BASE_RELEASE or "1.4.9" in BASE_RELEASE, f"Expected BASE_RELEASE to reference 1.4.8 or 1.4.9, got {BASE_RELEASE}"
 
     def test_149_replay_baseline_129(self):
         from release.version_info import REPLAY_STABLE_BASELINE

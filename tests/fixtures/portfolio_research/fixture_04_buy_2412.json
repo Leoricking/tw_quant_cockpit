@@ -1,0 +1,16 @@
+{
+  "transaction_id": "TXN-003",
+  "portfolio_id": "PORT-TEST-001",
+  "transaction_type": "RESEARCH_BUY",
+  "symbol": "2412.TW",
+  "effective_at": "2025-01-20T00:00:00+00:00",
+  "available_from": "2025-01-20T00:00:00+00:00",
+  "quantity": "200",
+  "price_twd": "120",
+  "gross_amount_twd": "24000",
+  "fee_twd": "50",
+  "net_amount_twd": "24050",
+  "research_only": true,
+  "_NOT_BROKER_EXECUTION": true,
+  "_NOT_REAL_ORDER": true
+}

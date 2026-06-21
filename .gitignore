@@ -737,3 +737,7 @@ collection_output/
 
 # v1.4.8 Provider Integration Hardening fixtures ARE committed (exception)
 !tests/fixtures/provider_integration_hardening/*.json
+
+# Portfolio Research Foundation v1.5.0
+portfolio_research_report_*.json
+portfolio_snapshots_*.json

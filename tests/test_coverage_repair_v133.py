@@ -863,8 +863,8 @@ class TestRegression:
 
     def test_version_is_133(self):
         from release.version_info import VERSION
-        # v1.3.3+ — accept any 1.3.x or 1.4.x release
-        assert VERSION.startswith("1.3.") or VERSION.startswith("1.4.")
+        # v1.3.3+ — accept any 1.3.x, 1.4.x, or 1.5.x release
+        assert VERSION.startswith("1.3.") or VERSION.startswith("1.4.") or VERSION.startswith("1.5.")
 
     def test_release_name(self):
         from release.version_info import RELEASE_NAME, BASE_RELEASE, VERSION
@@ -875,6 +875,7 @@ class TestRegression:
             or any("Coverage Repair" in v for v in [RELEASE_NAME, BASE_RELEASE])
             or VERSION.startswith("1.3.")  # v1.3.x supersedes v1.3.3
             or VERSION.startswith("1.4.")  # v1.4.x supersedes v1.3.3
+            or VERSION.startswith("1.5.")  # v1.5.x supersedes v1.3.3
         )
 
     def test_base_release_132(self):

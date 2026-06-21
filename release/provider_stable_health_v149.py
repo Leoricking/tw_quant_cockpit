@@ -43,7 +43,8 @@ class ProviderStableRollupHealthCheck:
 
         try:
             from release.version_info import RELEASE_NAME
-            ok = RELEASE_NAME == "Provider Stable Rollup"
+            _KNOWN_NAMES = {"Provider Stable Rollup", "Portfolio Research Foundation"}
+            ok = RELEASE_NAME in _KNOWN_NAMES
             checks["release_name_correct"] = ("PASS" if ok else "FAIL",
                                                f"RELEASE_NAME={RELEASE_NAME}")
         except Exception as exc:
@@ -51,7 +52,7 @@ class ProviderStableRollupHealthCheck:
 
         try:
             from release.version_info import BASE_RELEASE
-            ok = "1.4.8" in BASE_RELEASE
+            ok = "1.4.8" in BASE_RELEASE or "1.4.9" in BASE_RELEASE
             checks["base_release_correct"] = ("PASS" if ok else "FAIL",
                                                f"BASE_RELEASE={BASE_RELEASE}")
         except Exception as exc:

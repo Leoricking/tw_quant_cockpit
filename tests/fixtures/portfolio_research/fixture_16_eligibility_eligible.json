@@ -1,0 +1,26 @@
+{
+  "portfolio_def": {
+    "portfolio_id": "PORT-TEST-001",
+    "name": "Test Portfolio",
+    "research_only": true,
+    "broker_linked": false,
+    "real_order_enabled": false,
+    "position_sizing_available": false,
+    "auto_rebalance_enabled": false,
+    "cost_basis_method": "WEIGHTED_AVERAGE"
+  },
+  "positions": [
+    {"symbol": "2330.TW", "quantity": "100", "asset_type": "COMMON_STOCK"}
+  ],
+  "cash_twd": "500000",
+  "valuation": {
+    "valuation_status": "VALID",
+    "missing_symbols": []
+  },
+  "transactions": [
+    {"transaction_id": "TXN-001"},
+    {"transaction_id": "TXN-002"}
+  ],
+  "ledger_flags": {"decimal_safe": true},
+  "pit_report": {"consistent": true}
+}

@@ -1,0 +1,21 @@
+{
+  "portfolio_id": "PORT-TEST-001",
+  "as_of": "2025-06-01",
+  "positions": [
+    {
+      "symbol": "2330.TW",
+      "quantity": "50",
+      "average_cost_twd": "550.20",
+      "asset_type": "COMMON_STOCK"
+    },
+    {
+      "symbol": "2412.TW",
+      "quantity": "200",
+      "average_cost_twd": "120.25",
+      "asset_type": "COMMON_STOCK"
+    }
+  ],
+  "cash_balances": [
+    {"currency": "TWD", "amount": "920863"}
+  ]
+}

@@ -1,0 +1,9 @@
+{
+  "snapshot_id": "SNAP-ABCDEF1234567890",
+  "valuation_id": "VAL-001",
+  "price_source": "TWSE",
+  "provider_id": "twse-provider",
+  "source_id": "twse-daily-2025-06-01",
+  "authority_tier": "PRIMARY",
+  "research_only": true
+}

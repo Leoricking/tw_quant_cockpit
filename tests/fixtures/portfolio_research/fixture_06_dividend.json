@@ -1,0 +1,12 @@
+{
+  "transaction_id": "TXN-005",
+  "portfolio_id": "PORT-TEST-001",
+  "transaction_type": "DIVIDEND",
+  "symbol": "2330.TW",
+  "effective_at": "2025-07-01T00:00:00+00:00",
+  "available_from": "2025-07-01T00:00:00+00:00",
+  "amount_twd": "500",
+  "research_only": true,
+  "_NOT_BROKER_EXECUTION": true,
+  "_NOT_REAL_ORDER": true
+}

@@ -1,0 +1,14 @@
+{
+  "2330.TW": {
+    "price_twd": "598",
+    "authority": "FINMIND",
+    "available_from": "2025-06-01T00:00:00+00:00",
+    "source": "finmind-api"
+  },
+  "2412.TW": {
+    "price_twd": "129",
+    "authority": "FINMIND",
+    "available_from": "2025-06-01T00:00:00+00:00",
+    "source": "finmind-api"
+  }
+}

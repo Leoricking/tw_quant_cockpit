@@ -51,11 +51,12 @@ class ProviderStableReleaseGate:
         try:
             from release.version_info import (VERSION, RELEASE_NAME, BASE_RELEASE,
                                                REPLAY_STABLE_BASELINE, PROVIDER_STABLE_BASELINE)
+            _KNOWN_NAMES = {"Provider Stable Rollup", "Portfolio Research Foundation"}
             parts = tuple(int(x) for x in VERSION.split(".")[:3])
             ok = (
                 parts >= (1, 4, 9)
-                and RELEASE_NAME == "Provider Stable Rollup"
-                and "1.4.8" in BASE_RELEASE
+                and RELEASE_NAME in _KNOWN_NAMES
+                and ("1.4.8" in BASE_RELEASE or "1.4.9" in BASE_RELEASE)
                 and REPLAY_STABLE_BASELINE == "1.2.9"
                 and PROVIDER_STABLE_BASELINE == "1.4.9"
             )

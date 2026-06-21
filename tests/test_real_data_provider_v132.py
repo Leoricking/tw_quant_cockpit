@@ -902,8 +902,8 @@ class TestRegressionV132:
 
     def test_version_info_1_3_2(self):
         import release.version_info as vi
-        # v1.4.0 supersedes v1.3.x; accept any 1.3.x or 1.4.x
-        assert vi.VERSION.startswith("1.3.") or vi.VERSION.startswith("1.4.")
+        # v1.4.0 supersedes v1.3.x; accept any 1.3.x, 1.4.x, or 1.5.x
+        assert vi.VERSION.startswith("1.3.") or vi.VERSION.startswith("1.4.") or vi.VERSION.startswith("1.5.")
 
     def test_replay_stable_baseline_preserved(self):
         import release.version_info as vi

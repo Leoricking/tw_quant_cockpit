@@ -1,0 +1,14 @@
+{
+  "portfolio_def": {
+    "portfolio_id": "PORT-TEST-001",
+    "research_only": false,
+    "broker_linked": false,
+    "real_order_enabled": false,
+    "position_sizing_available": false,
+    "auto_rebalance_enabled": false,
+    "cost_basis_method": "WEIGHTED_AVERAGE"
+  },
+  "positions": [],
+  "ledger_flags": {"decimal_safe": true},
+  "pit_report": {"consistent": true}
+}

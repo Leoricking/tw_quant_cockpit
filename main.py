@@ -32543,6 +32543,136 @@ def cmd_provider_stable_report(args=None):
     print(md)
 
 
+# ---------------------------------------------------------------------------
+# v1.5.0 Portfolio Research Foundation handlers
+# ---------------------------------------------------------------------------
+
+def cmd_portfolio_health(args=None):
+    """[v1.5.0] Portfolio Research Foundation health check."""
+    from portfolio.health_v150 import PortfolioResearchFoundationHealthCheck
+    result = PortfolioResearchFoundationHealthCheck().run()
+    print(f"Portfolio Research Foundation Health Check v{result['version']}")
+    print(f"Status: {result['status']}  Passed: {result['passed']}/{result['total']}")
+    if result['failed'] > 0:
+        for c in result['checks']:
+            if not c['passed']:
+                print(f"  FAIL: {c['name']} — {c['detail']}")
+    print("[!] Research Only. No Real Orders. Not Investment Advice.")
+    return 0 if result['status'] == 'PASS' else 1
+
+
+def cmd_portfolio_create(args=None):
+    """[v1.5.0] Create a research portfolio (demo fixture)."""
+    print("[!] Research Only. No Real Orders. Not Investment Advice.")
+    print("portfolio-create: demo fixture — research portfolio created (no broker, no real orders)")
+    return 0
+
+
+def cmd_portfolio_add_txn(args=None):
+    """[v1.5.0] Add a research transaction (demo fixture)."""
+    print("[!] Research Only. No Real Orders. Not Investment Advice.")
+    print("portfolio-add-txn: demo fixture — research transaction added (no broker, no real orders)")
+    return 0
+
+
+def cmd_portfolio_positions(args=None):
+    """[v1.5.0] Show positions as-of date (demo fixture)."""
+    print("[!] Research Only. No Real Orders. Not Investment Advice.")
+    print("portfolio-positions: demo fixture — positions as-of date (no broker, no real orders)")
+    return 0
+
+
+def cmd_portfolio_cash(args=None):
+    """[v1.5.0] Show cash balances as-of date (demo fixture)."""
+    print("[!] Research Only. No Real Orders. Not Investment Advice.")
+    print("portfolio-cash: demo fixture — cash balances as-of date (no broker, no real orders)")
+    return 0
+
+
+def cmd_portfolio_valuation(args=None):
+    """[v1.5.0] Show portfolio valuation (demo fixture)."""
+    print("[!] Research Only. No Real Orders. Not Investment Advice.")
+    print("portfolio-valuation: demo fixture — portfolio valuation (no broker, no real orders)")
+    return 0
+
+
+def cmd_portfolio_pnl(args=None):
+    """[v1.5.0] Show PnL summary (demo fixture)."""
+    print("[!] Research Only. No Real Orders. Not Investment Advice.")
+    print("portfolio-pnl: demo fixture — PnL summary (no broker, no real orders)")
+    return 0
+
+
+def cmd_portfolio_exposure(args=None):
+    """[v1.5.0] Show portfolio exposure (demo fixture)."""
+    print("[!] Research Only. No Real Orders. Not Investment Advice.")
+    print("portfolio-exposure: demo fixture — portfolio exposure (no broker, no real orders)")
+    return 0
+
+
+def cmd_portfolio_concentration(args=None):
+    """[v1.5.0] Show concentration analysis (demo fixture)."""
+    print("[!] Research Only. No Real Orders. Not Investment Advice.")
+    print("portfolio-concentration: demo fixture — concentration analysis (no broker, no real orders)")
+    return 0
+
+
+def cmd_portfolio_turnover(args=None):
+    """[v1.5.0] Show turnover metrics (demo fixture)."""
+    print("[!] Research Only. No Real Orders. Not Investment Advice.")
+    print("portfolio-turnover: demo fixture — turnover metrics (no broker, no real orders)")
+    return 0
+
+
+def cmd_portfolio_returns(args=None):
+    """[v1.5.0] Show return calculations (demo fixture)."""
+    print("[!] Research Only. No Real Orders. Not Investment Advice.")
+    print("portfolio-returns: demo fixture — return calculations (no broker, no real orders)")
+    return 0
+
+
+def cmd_portfolio_benchmark(args=None):
+    """[v1.5.0] Show benchmark comparison (demo fixture)."""
+    print("[!] Research Only. No Real Orders. Not Investment Advice.")
+    print("portfolio-benchmark: demo fixture — benchmark comparison (no broker, no real orders)")
+    return 0
+
+
+def cmd_portfolio_snapshot(args=None):
+    """[v1.5.0] Take a portfolio snapshot (demo fixture)."""
+    print("[!] Research Only. No Real Orders. Not Investment Advice.")
+    print("portfolio-snapshot: demo fixture — portfolio snapshot taken (no broker, no real orders)")
+    return 0
+
+
+def cmd_portfolio_eligibility(args=None):
+    """[v1.5.0] Run data eligibility gate (demo fixture)."""
+    print("[!] Research Only. No Real Orders. Not Investment Advice.")
+    print("portfolio-eligibility: demo fixture — data eligibility gate (no broker, no real orders)")
+    return 0
+
+
+def cmd_portfolio_what_if(args=None):
+    """[v1.5.0] Run hypothetical what-if analysis (demo fixture)."""
+    print("[!] Research Only. No Real Orders. Not Investment Advice.")
+    print("portfolio-what-if: demo fixture — hypothetical what-if analysis (no broker, no real orders)")
+    return 0
+
+
+def cmd_portfolio_lineage(args=None):
+    """[v1.5.0] Show portfolio lineage chain (demo fixture)."""
+    print("[!] Research Only. No Real Orders. Not Investment Advice.")
+    print("portfolio-lineage: demo fixture — portfolio lineage chain (no broker, no real orders)")
+    return 0
+
+
+def cmd_portfolio_report(args=None):
+    """[v1.5.0] Generate full portfolio research report (demo fixture)."""
+    print("[!] Research Only. No Real Orders. Not Investment Advice.")
+    print("portfolio-report: demo fixture — full portfolio research report (no broker, no real orders)")
+    return 0
+
+
 def main() -> None:
     """Main entrypoint."""
     import pandas as pd  # imported here to avoid shadowing at module level
@@ -33679,6 +33809,24 @@ def main() -> None:
         "provider-stable-release-gate":  cmd_provider_stable_release_gate,
         "provider-stable-check":         cmd_provider_stable_check,
         "provider-stable-report":        cmd_provider_stable_report,
+        # v1.5.0 Portfolio Research Foundation
+        "portfolio-health":       cmd_portfolio_health,
+        "portfolio-create":       cmd_portfolio_create,
+        "portfolio-add-txn":      cmd_portfolio_add_txn,
+        "portfolio-positions":    cmd_portfolio_positions,
+        "portfolio-cash":         cmd_portfolio_cash,
+        "portfolio-valuation":    cmd_portfolio_valuation,
+        "portfolio-pnl":          cmd_portfolio_pnl,
+        "portfolio-exposure":     cmd_portfolio_exposure,
+        "portfolio-concentration": cmd_portfolio_concentration,
+        "portfolio-turnover":     cmd_portfolio_turnover,
+        "portfolio-returns":      cmd_portfolio_returns,
+        "portfolio-benchmark":    cmd_portfolio_benchmark,
+        "portfolio-snapshot":     cmd_portfolio_snapshot,
+        "portfolio-eligibility":  cmd_portfolio_eligibility,
+        "portfolio-what-if":      cmd_portfolio_what_if,
+        "portfolio-lineage":      cmd_portfolio_lineage,
+        "portfolio-report":       cmd_portfolio_report,
     }
 
     if args.command is None:

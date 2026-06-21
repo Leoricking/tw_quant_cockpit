@@ -1,0 +1,11 @@
+{
+  "portfolio_id": "PORT-INVALID-001",
+  "name": "Invalid Portfolio",
+  "research_only": true,
+  "broker_linked": true,
+  "real_order_enabled": false,
+  "position_sizing_available": false,
+  "auto_rebalance_enabled": false,
+  "cost_basis_method": "WEIGHTED_AVERAGE",
+  "schema_version": "1.5.0"
+}

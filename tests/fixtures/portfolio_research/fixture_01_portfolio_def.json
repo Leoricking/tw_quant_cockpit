@@ -1,0 +1,13 @@
+{
+  "portfolio_id": "PORT-TEST-001",
+  "name": "Test Research Portfolio",
+  "research_only": true,
+  "broker_linked": false,
+  "real_order_enabled": false,
+  "position_sizing_available": false,
+  "auto_rebalance_enabled": false,
+  "cost_basis_method": "WEIGHTED_AVERAGE",
+  "base_currency": "TWD",
+  "created_at": "2025-01-01T00:00:00+00:00",
+  "schema_version": "1.5.0"
+}

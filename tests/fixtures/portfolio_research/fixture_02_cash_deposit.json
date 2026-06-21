@@ -1,0 +1,13 @@
+{
+  "transaction_id": "TXN-001",
+  "portfolio_id": "PORT-TEST-001",
+  "transaction_type": "CASH_DEPOSIT",
+  "effective_at": "2025-01-01T00:00:00+00:00",
+  "available_from": "2025-01-01T00:00:00+00:00",
+  "amount_twd": "1000000",
+  "net_amount": "1000000",
+  "currency": "TWD",
+  "research_only": true,
+  "_NOT_BROKER_EXECUTION": true,
+  "_NOT_REAL_ORDER": true
+}

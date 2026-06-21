@@ -1,0 +1,9 @@
+{
+  "symbol": "2330.TW",
+  "lots": [
+    {"quantity": "100", "cost_per_share_twd": "550", "acquired_at": "2025-01-15"},
+    {"quantity": "50", "cost_per_share_twd": "560", "acquired_at": "2025-02-15"}
+  ],
+  "total_quantity": "150",
+  "method": "FIFO"
+}

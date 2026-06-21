@@ -1,0 +1,18 @@
+{
+  "transactions": [
+    {
+      "transaction_type": "RESEARCH_BUY",
+      "gross_amount_twd": "55000"
+    },
+    {
+      "transaction_type": "RESEARCH_BUY",
+      "gross_amount_twd": "24000"
+    },
+    {
+      "transaction_type": "RESEARCH_SELL",
+      "gross_amount_twd": "29000"
+    }
+  ],
+  "beginning_value": "900000",
+  "ending_value": "1050000"
+}

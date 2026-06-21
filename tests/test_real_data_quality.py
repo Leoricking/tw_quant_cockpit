@@ -730,8 +730,8 @@ class TestGUIPanel:
 class TestVersionInfo:
     def test_version_130(self):
         from release import version_info
-        # v1.4.0 supersedes v1.3.x; accept 1.3.x or 1.4.x
-        assert version_info.VERSION.startswith("1.3.") or version_info.VERSION.startswith("1.4."), f"Expected 1.3.x or 1.4.x, got {version_info.VERSION}"
+        # v1.4.0 supersedes v1.3.x; accept 1.3.x, 1.4.x, or 1.5.x
+        assert version_info.VERSION.startswith("1.3.") or version_info.VERSION.startswith("1.4.") or version_info.VERSION.startswith("1.5."), f"Expected 1.3.x, 1.4.x, or 1.5.x, got {version_info.VERSION}"
 
     def test_real_no_mock_fallback(self):
         from release import version_info
@@ -773,6 +773,7 @@ class TestVersionInfo:
             "Provider Integration Hardening",
             "Provider Integration Test Integrity Hotfix",
             "Provider Stable Rollup",
+            "Portfolio Research Foundation",
         ), f"Unexpected release name: {version_info.RELEASE_NAME}"
 
     def test_release_track(self):

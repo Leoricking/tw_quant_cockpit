@@ -1,0 +1,20 @@
+{
+  "2330.TW": {
+    "market": "TWSE",
+    "asset_type": "COMMON_STOCK",
+    "industry": "Semiconductors",
+    "themes": ["tech", "export"]
+  },
+  "2412.TW": {
+    "market": "TWSE",
+    "asset_type": "COMMON_STOCK",
+    "industry": "Telecommunications",
+    "themes": ["domestic", "dividend"]
+  },
+  "0050.TW": {
+    "market": "TWSE",
+    "asset_type": "ETF",
+    "industry": "Diversified",
+    "themes": ["index", "domestic"]
+  }
+}

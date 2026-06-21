@@ -1,0 +1,15 @@
+{
+  "transactions": [
+    {
+      "transaction_id": "TXN-FUTURE",
+      "portfolio_id": "PORT-TEST-001",
+      "transaction_type": "RESEARCH_BUY",
+      "symbol": "2330.TW",
+      "effective_at": "2026-01-01T00:00:00+00:00",
+      "available_from": "2026-01-01T00:00:00+00:00",
+      "quantity": "100",
+      "price_twd": "600"
+    }
+  ],
+  "as_of": "2025-06-01T00:00:00+00:00"
+}

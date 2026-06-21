@@ -1,0 +1,14 @@
+{
+  "2330.TW": {
+    "price_twd": "600",
+    "authority": "TWSE",
+    "available_from": "2025-06-01T00:00:00+00:00",
+    "source": "twse-daily"
+  },
+  "2412.TW": {
+    "price_twd": "130",
+    "authority": "TPEX",
+    "available_from": "2025-06-01T00:00:00+00:00",
+    "source": "tpex-daily"
+  }
+}

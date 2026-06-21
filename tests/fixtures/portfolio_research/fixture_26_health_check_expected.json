@@ -1,0 +1,7 @@
+{
+  "status": "PASS",
+  "version": "1.5.0",
+  "release_name": "Portfolio Research Foundation",
+  "expected_min_passed": 30,
+  "research_only": true
+}
