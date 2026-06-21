@@ -1,0 +1,13 @@
+{
+  "_meta": {"TEST_FIXTURE": true, "DEMO_ONLY": true, "NOT_REAL_DATA": true, "NOT_FOR_FORMAL_CONCLUSION": true},
+  "total": 6,
+  "primary_official_count": 4,
+  "secondary_aggregator_count": 1,
+  "supplementary_count": 1,
+  "finmind_can_override_primary": true,
+  "ptt_standalone_formal": false,
+  "ptt_can_generate_buy_sell": false,
+  "valid": false,
+  "expected_result": "FAIL",
+  "violation": "finmind_override"
+}

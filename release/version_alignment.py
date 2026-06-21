@@ -59,7 +59,9 @@ _RELEASE_NAMES: dict[str, str] = {
     "1.4.5": "Source Lineage & Rate Limit",
     "1.4.6": "Provider Quality Gates",
     "1.4.7": "Forum Intelligence & Market Sentiment",
-    "1.4.9": "Data Provider Stable Rollup",
+    "1.4.8": "Provider Integration Hardening",
+    "1.4.8.1": "Provider Integration Test Integrity Hotfix",
+    "1.4.9": "Provider Stable Rollup",
 }
 
 

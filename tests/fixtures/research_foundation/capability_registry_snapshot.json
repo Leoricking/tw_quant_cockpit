@@ -4,9 +4,9 @@
   "NOT_REAL_DATA": true,
   "NOT_FOR_FORMAL_CONCLUSION": true,
   "fixture_id": "capability_registry_snapshot",
-  "description": "Snapshot of expected capability registry state for v1.3.9+ (updated for v1.4.7 — forum_intelligence now stable)",
-  "expected_stable_count": 18,
-  "expected_planned_count": 1,
+  "description": "Snapshot of expected capability registry state for v1.3.9+ (updated for v1.4.9 — provider_stable_rollup now stable)",
+  "expected_stable_count": 19,
+  "expected_planned_count": 0,
   "expected_total": 19,
   "stable_capability_ids": [
     "real_data_quality",
@@ -26,9 +26,8 @@
     "provider_lineage_rate_limit",
     "provider_quality_gates",
     "forum_intelligence",
-    "market_sentiment"
-  ],
-  "planned_capability_ids": [
+    "market_sentiment",
     "provider_stable_rollup"
-  ]
+  ],
+  "planned_capability_ids": []
 }

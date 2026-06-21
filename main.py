@@ -32386,6 +32386,163 @@ def cmd_provider_integration_report(args=None):
     print(md)
 
 
+# ---------------------------------------------------------------------------
+# v1.4.9 Provider Stable Rollup commands
+# ---------------------------------------------------------------------------
+
+def _print_stable_summary(title: str, summary: dict) -> None:
+    print("=" * 60)
+    print(f"  {title}")
+    print("=" * 60)
+    for item in summary.get("items", []):
+        status = item[1] if len(item) > 1 else "?"
+        detail = item[2] if len(item) > 2 else ""
+        print(f"  [{status}] {item[0]}: {detail}")
+    for k in ("total", "passed", "failed", "valid"):
+        if k in summary:
+            print(f"  {k.capitalize()}: {summary[k]}")
+    print("=" * 60)
+
+
+def cmd_provider_stable_health(args=None):
+    """[v1.4.9] Provider Stable Rollup health check."""
+    from release.provider_stable_health_v149 import ProviderStableRollupHealthCheck
+    checks = ProviderStableRollupHealthCheck().run()
+    print("=" * 60)
+    print("  Provider Stable Rollup Health v1.4.9")
+    print("=" * 60)
+    for k, v in checks.items():
+        print(f"  [{v[0]}] {k}: {v[1]}")
+    passed = sum(1 for v in checks.values() if v[0] == "PASS")
+    print(f"  Overall: {'PASS' if passed == len(checks) else 'FAIL'}")
+    print("=" * 60)
+
+
+def cmd_provider_stable_manifest(args=None):
+    """[v1.4.9] Show stable capability manifest."""
+    from data.stable.capability_manifest_v149 import StableCapabilityManifest
+    summary = StableCapabilityManifest().get_summary()
+    _print_stable_summary("Stable Capability Manifest v1.4.9", summary)
+
+
+def cmd_provider_stable_registry(args=None):
+    """[v1.4.9] Show stable provider registry."""
+    from data.stable.provider_registry_v149 import StableProviderRegistry
+    summary = StableProviderRegistry().get_summary()
+    _print_stable_summary("Stable Provider Registry v1.4.9", summary)
+
+
+def cmd_provider_stable_contracts(args=None):
+    """[v1.4.9] Show compatibility contracts."""
+    from data.stable.compatibility_contract_v149 import CompatibilityContractRegistry
+    summary = CompatibilityContractRegistry().get_summary()
+    _print_stable_summary("Compatibility Contract Registry v1.4.9", summary)
+
+
+def cmd_provider_stable_compatibility(args=None):
+    """[v1.4.9] Validate compatibility contracts."""
+    from data.stable.compatibility_contract_v149 import CompatibilityContractRegistry
+    result = CompatibilityContractRegistry().validate()
+    print("=" * 60)
+    print("  Compatibility Contract Validation v1.4.9")
+    print("=" * 60)
+    print(f"  Contracts: {result['total_contracts']}")
+    print(f"  Breaking changes allowed: {result['breaking_changes_allowed']}")
+    print(f"  Valid: {result['valid']}")
+    print("=" * 60)
+
+
+def cmd_provider_stable_schema(args=None):
+    """[v1.4.9] Show schema version registry."""
+    from data.stable.schema_version_registry_v149 import SchemaVersionRegistry
+    summary = SchemaVersionRegistry().get_summary()
+    _print_stable_summary("Schema Version Registry v1.4.9", summary)
+
+
+def cmd_provider_stable_policy(args=None):
+    """[v1.4.9] Show policy version registry."""
+    from data.stable.policy_version_registry_v149 import PolicyVersionRegistry
+    summary = PolicyVersionRegistry().get_summary()
+    _print_stable_summary("Policy Version Registry v1.4.9", summary)
+
+
+def cmd_provider_stable_baseline(args=None):
+    """[v1.4.9] Show stable baseline snapshot."""
+    from data.stable.baseline_snapshot_v149 import StableBaselineSnapshot
+    summary = StableBaselineSnapshot().get_summary()
+    _print_stable_summary("Stable Baseline Snapshot v1.4.9", summary)
+
+
+def cmd_provider_stable_test_manifest(args=None):
+    """[v1.4.9] Validate provider test manifest."""
+    from data.stable.test_manifest_v149 import ProviderTestManifest
+    summary = ProviderTestManifest().get_summary()
+    _print_stable_summary("Provider Test Manifest v1.4.9", summary)
+
+
+def cmd_provider_stable_collection(args=None):
+    """[v1.4.9] Verify stable collection integrity."""
+    from data.stable.collection_integrity_v149 import StableCollectionIntegrityCheck
+    summary = StableCollectionIntegrityCheck().get_summary()
+    _print_stable_summary("Stable Collection Integrity v1.4.9", summary)
+
+
+def cmd_provider_stable_health_baseline(args=None):
+    """[v1.4.9] Run stable health baseline verification."""
+    from data.stable.health_baseline_v149 import StableHealthBaseline
+    summary = StableHealthBaseline().get_summary()
+    _print_stable_summary("Stable Health Baseline v1.4.9", summary)
+
+
+def cmd_provider_stable_profiles(args=None):
+    """[v1.4.9] Show provider stable profiles."""
+    from data.stable.provider_stable_profiles_v149 import ProviderStableProfileRegistry
+    summary = ProviderStableProfileRegistry().get_summary()
+    _print_stable_summary("Provider Stable Profiles v1.4.9", summary)
+
+
+def cmd_provider_stable_release_gate(args=None):
+    """[v1.4.9] Run stable release gate."""
+    from release.provider_stable_release_gate_v149 import ProviderStableReleaseGate
+    gates = ProviderStableReleaseGate().run()
+    print("=" * 60)
+    print("  Provider Stable Release Gate v1.4.9")
+    print("=" * 60)
+    for g in gates:
+        print(f"  [{g['status']}] {g['gate_name']}: {g['evidence']}")
+    passed = sum(1 for g in gates if g["status"] == "PASS")
+    blocking = sum(1 for g in gates if g["status"] == "FAIL" and g["blocking"])
+    print(f"  Total: {len(gates)}  PASS: {passed}  FAIL: {len(gates)-passed}  "
+          f"Blocking: {blocking}")
+    print("=" * 60)
+
+
+def cmd_provider_stable_check(args=None):
+    """[v1.4.9] Quick stable rollup status check."""
+    from release.provider_stable_health_v149 import ProviderStableRollupHealthCheck
+    from release.provider_stable_release_gate_v149 import ProviderStableReleaseGate
+    checks = ProviderStableRollupHealthCheck().run()
+    gates  = ProviderStableReleaseGate().run()
+    h_pass = sum(1 for v in checks.values() if v[0] == "PASS")
+    g_pass = sum(1 for g in gates if g["status"] == "PASS")
+    print("=" * 60)
+    print("  Provider Stable Rollup Quick Check v1.4.9")
+    print("=" * 60)
+    print(f"  Health checks: {h_pass}/{len(checks)} PASS")
+    print(f"  Release gates: {g_pass}/{len(gates)} PASS")
+    overall = h_pass == len(checks) and g_pass == len(gates)
+    print(f"  Overall: {'PASS' if overall else 'FAIL'}")
+    print("=" * 60)
+
+
+def cmd_provider_stable_report(args=None):
+    """[v1.4.9] Generate Provider Stable Rollup report."""
+    from reports.provider_stable_rollup_report import ProviderStableRollupReport
+    report = ProviderStableRollupReport()
+    md = report.render_markdown()
+    print(md)
+
+
 def main() -> None:
     """Main entrypoint."""
     import pandas as pd  # imported here to avoid shadowing at module level
@@ -33506,6 +33663,22 @@ def main() -> None:
         "provider-integration-memory":      cmd_provider_integration_memory,
         "provider-integration-collection":  cmd_provider_integration_collection,
         "provider-integration-report":      cmd_provider_integration_report,
+        # v1.4.9 Provider Stable Rollup
+        "provider-stable-health":        cmd_provider_stable_health,
+        "provider-stable-manifest":      cmd_provider_stable_manifest,
+        "provider-stable-registry":      cmd_provider_stable_registry,
+        "provider-stable-contracts":     cmd_provider_stable_contracts,
+        "provider-stable-compatibility": cmd_provider_stable_compatibility,
+        "provider-stable-schema":        cmd_provider_stable_schema,
+        "provider-stable-policy":        cmd_provider_stable_policy,
+        "provider-stable-baseline":      cmd_provider_stable_baseline,
+        "provider-stable-test-manifest": cmd_provider_stable_test_manifest,
+        "provider-stable-collection":    cmd_provider_stable_collection,
+        "provider-stable-health-baseline": cmd_provider_stable_health_baseline,
+        "provider-stable-profiles":      cmd_provider_stable_profiles,
+        "provider-stable-release-gate":  cmd_provider_stable_release_gate,
+        "provider-stable-check":         cmd_provider_stable_check,
+        "provider-stable-report":        cmd_provider_stable_report,
     }
 
     if args.command is None:

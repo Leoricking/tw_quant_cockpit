@@ -1313,6 +1313,113 @@ class CLICommandRegistry:
                 report_support=True,
                 safety_level="REPORT_ONLY",
             ),
+            # v1.4.9 Provider Stable Rollup
+            CLICommand(
+                name="provider-stable-health", category="provider",
+                purpose="Provider Stable Rollup health check",
+                description="Run all v1.4.9 Provider Stable Rollup health checks.",
+                example_commands=["python main.py provider-stable-health"],
+                safety_level="SAFE_READ_ONLY",
+            ),
+            CLICommand(
+                name="provider-stable-manifest", category="provider",
+                purpose="Show stable capability manifest",
+                description="Display the v1.4.9 stable capability manifest (20 capabilities).",
+                example_commands=["python main.py provider-stable-manifest"],
+                safety_level="SAFE_READ_ONLY",
+            ),
+            CLICommand(
+                name="provider-stable-registry", category="provider",
+                purpose="Show stable provider registry",
+                description="Display the v1.4.9 stable provider registry (6 providers).",
+                example_commands=["python main.py provider-stable-registry"],
+                safety_level="SAFE_READ_ONLY",
+            ),
+            CLICommand(
+                name="provider-stable-contracts", category="provider",
+                purpose="Show compatibility contracts",
+                description="Display all v1.4.9 compatibility contracts.",
+                example_commands=["python main.py provider-stable-contracts"],
+                safety_level="SAFE_READ_ONLY",
+            ),
+            CLICommand(
+                name="provider-stable-compatibility", category="provider",
+                purpose="Compatibility contract validation",
+                description="Validate all v1.4.9 compatibility contracts.",
+                example_commands=["python main.py provider-stable-compatibility"],
+                safety_level="SAFE_READ_ONLY",
+            ),
+            CLICommand(
+                name="provider-stable-schema", category="provider",
+                purpose="Show schema version registry",
+                description="Display the v1.4.9 schema version registry.",
+                example_commands=["python main.py provider-stable-schema"],
+                safety_level="SAFE_READ_ONLY",
+            ),
+            CLICommand(
+                name="provider-stable-policy", category="provider",
+                purpose="Show policy version registry",
+                description="Display the v1.4.9 policy version registry.",
+                example_commands=["python main.py provider-stable-policy"],
+                safety_level="SAFE_READ_ONLY",
+            ),
+            CLICommand(
+                name="provider-stable-baseline", category="provider",
+                purpose="Show stable baseline snapshot",
+                description="Display the v1.4.9 stable baseline snapshot.",
+                example_commands=["python main.py provider-stable-baseline"],
+                safety_level="SAFE_READ_ONLY",
+            ),
+            CLICommand(
+                name="provider-stable-test-manifest", category="provider",
+                purpose="Show test manifest",
+                description="Display the v1.4.9 provider test manifest.",
+                example_commands=["python main.py provider-stable-test-manifest"],
+                safety_level="SAFE_READ_ONLY",
+            ),
+            CLICommand(
+                name="provider-stable-collection", category="provider",
+                purpose="Collection integrity check",
+                description="Validate pytest collection meets v1.4.9 baseline minimum.",
+                example_commands=["python main.py provider-stable-collection"],
+                safety_level="SAFE_READ_ONLY",
+            ),
+            CLICommand(
+                name="provider-stable-health-baseline", category="provider",
+                purpose="Show health baseline",
+                description="Display the v1.4.9 health baseline.",
+                example_commands=["python main.py provider-stable-health-baseline"],
+                safety_level="SAFE_READ_ONLY",
+            ),
+            CLICommand(
+                name="provider-stable-profiles", category="provider",
+                purpose="Show provider stable profiles",
+                description="Display all six v1.4.9 provider stable profiles.",
+                example_commands=["python main.py provider-stable-profiles"],
+                safety_level="SAFE_READ_ONLY",
+            ),
+            CLICommand(
+                name="provider-stable-release-gate", category="provider",
+                purpose="Run stable release gate",
+                description="Run the v1.4.9 Provider Stable Rollup release gate.",
+                example_commands=["python main.py provider-stable-release-gate"],
+                safety_level="SAFE_READ_ONLY",
+            ),
+            CLICommand(
+                name="provider-stable-check", category="provider",
+                purpose="Full provider stable check",
+                description="Run full v1.4.9 provider stable check (all subsystems).",
+                example_commands=["python main.py provider-stable-check"],
+                safety_level="SAFE_READ_ONLY",
+            ),
+            CLICommand(
+                name="provider-stable-report", category="provider",
+                purpose="Generate Provider Stable Rollup report",
+                description="Generate full v1.4.9 Provider Stable Rollup markdown report.",
+                example_commands=["python main.py provider-stable-report"],
+                report_support=True,
+                safety_level="REPORT_ONLY",
+            ),
         ]:
             self.register(entry)
 
@@ -2023,6 +2130,55 @@ _PROVIDER_INTEGRATION_HARDENING_COMMANDS: _List[CommandSpec] = [
                 group="provider_integration_hardening", introduced_in="1.4.8"),
 ]
 
+# v1.4.9 Provider Stable Rollup commands
+_PROVIDER_STABLE_ROLLUP_COMMANDS: _List[CommandSpec] = [
+    CommandSpec(name="provider-stable-health", handler_name="cmd_provider_stable_health",
+                help="[v1.4.9] Provider Stable Rollup health check. Research Only.",
+                group="provider_stable_rollup", introduced_in="1.4.9"),
+    CommandSpec(name="provider-stable-manifest", handler_name="cmd_provider_stable_manifest",
+                help="[v1.4.9] Show stable capability manifest. Research Only.",
+                group="provider_stable_rollup", introduced_in="1.4.9"),
+    CommandSpec(name="provider-stable-registry", handler_name="cmd_provider_stable_registry",
+                help="[v1.4.9] Show stable provider registry. Research Only.",
+                group="provider_stable_rollup", introduced_in="1.4.9"),
+    CommandSpec(name="provider-stable-contracts", handler_name="cmd_provider_stable_contracts",
+                help="[v1.4.9] Show compatibility contracts. Research Only.",
+                group="provider_stable_rollup", introduced_in="1.4.9"),
+    CommandSpec(name="provider-stable-compatibility", handler_name="cmd_provider_stable_compatibility",
+                help="[v1.4.9] Compatibility contract validation. Research Only.",
+                group="provider_stable_rollup", introduced_in="1.4.9"),
+    CommandSpec(name="provider-stable-schema", handler_name="cmd_provider_stable_schema",
+                help="[v1.4.9] Show schema version registry. Research Only.",
+                group="provider_stable_rollup", introduced_in="1.4.9"),
+    CommandSpec(name="provider-stable-policy", handler_name="cmd_provider_stable_policy",
+                help="[v1.4.9] Show policy version registry. Research Only.",
+                group="provider_stable_rollup", introduced_in="1.4.9"),
+    CommandSpec(name="provider-stable-baseline", handler_name="cmd_provider_stable_baseline",
+                help="[v1.4.9] Show stable baseline snapshot. Research Only.",
+                group="provider_stable_rollup", introduced_in="1.4.9"),
+    CommandSpec(name="provider-stable-test-manifest", handler_name="cmd_provider_stable_test_manifest",
+                help="[v1.4.9] Show test manifest. Research Only.",
+                group="provider_stable_rollup", introduced_in="1.4.9"),
+    CommandSpec(name="provider-stable-collection", handler_name="cmd_provider_stable_collection",
+                help="[v1.4.9] Collection integrity check. Research Only.",
+                group="provider_stable_rollup", introduced_in="1.4.9"),
+    CommandSpec(name="provider-stable-health-baseline", handler_name="cmd_provider_stable_health_baseline",
+                help="[v1.4.9] Show health baseline. Research Only.",
+                group="provider_stable_rollup", introduced_in="1.4.9"),
+    CommandSpec(name="provider-stable-profiles", handler_name="cmd_provider_stable_profiles",
+                help="[v1.4.9] Show provider stable profiles. Research Only.",
+                group="provider_stable_rollup", introduced_in="1.4.9"),
+    CommandSpec(name="provider-stable-release-gate", handler_name="cmd_provider_stable_release_gate",
+                help="[v1.4.9] Run stable release gate. Research Only.",
+                group="provider_stable_rollup", introduced_in="1.4.9"),
+    CommandSpec(name="provider-stable-check", handler_name="cmd_provider_stable_check",
+                help="[v1.4.9] Full provider stable check. Research Only.",
+                group="provider_stable_rollup", introduced_in="1.4.9"),
+    CommandSpec(name="provider-stable-report", handler_name="cmd_provider_stable_report",
+                help="[v1.4.9] Generate Provider Stable Rollup report. Research Only.",
+                group="provider_stable_rollup", introduced_in="1.4.9"),
+]
+
 # Combined list of all provider commands
 PROVIDER_COMMANDS: _List[CommandSpec] = (
     _RESEARCH_FOUNDATION_COMMANDS
@@ -2035,6 +2191,7 @@ PROVIDER_COMMANDS: _List[CommandSpec] = (
     + _PROVIDER_QUALITY_GATES_COMMANDS
     + _FORUM_INTELLIGENCE_COMMANDS
     + _PROVIDER_INTEGRATION_HARDENING_COMMANDS
+    + _PROVIDER_STABLE_ROLLUP_COMMANDS
 )
 
 

@@ -960,7 +960,9 @@ class TestGUI:
 class TestRegression:
     def test_147_version_148(self):
         from release.version_info import VERSION
-        assert VERSION.startswith("1.4.8"), f"Expected 1.4.8.x, got {VERSION}"
+        # v1.4.8 feature baseline; accepts v1.4.9+ as a valid successor
+        parts = tuple(int(x) for x in VERSION.split(".")[:3])
+        assert parts >= (1, 4, 8), f"Expected >= 1.4.8, got {VERSION}"
 
     def test_148_base_release_147(self):
         from release.version_info import BASE_RELEASE

@@ -1,0 +1,9 @@
+{
+  "_meta": {"TEST_FIXTURE": true, "DEMO_ONLY": true, "NOT_REAL_DATA": true, "NOT_FOR_FORMAL_CONCLUSION": true},
+  "total": 6,
+  "drift_detected": [],
+  "missing_pit": [],
+  "breaking_changes": [],
+  "valid": true,
+  "expected_result": "PASS"
+}

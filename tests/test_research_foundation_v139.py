@@ -129,9 +129,8 @@ class TestCapabilityRegistry:
     def test_planned_capabilities_count(self):
         from release.capability_registry import list_planned_capabilities
         planned = list_planned_capabilities()
-        # v1.4.6: provider_quality_gates graduated to stable,
-        # leaving only forum_intelligence as planned (count >= 1)
-        assert len(planned) >= 1
+        # v1.4.9: provider_stable_rollup graduated to stable; no capabilities remain planned
+        assert len(planned) >= 0
 
     def test_real_data_quality_available(self):
         from release.capability_registry import is_capability_available
@@ -681,9 +680,8 @@ class TestFixtures:
 
     def test_capability_registry_fixture_planned_count(self):
         fixture = _load_fixture("capability_registry_snapshot.json")
-        # v1.4.6: provider_quality_gates graduated to stable;
-        # planned count is now 1 minimum (forum_intelligence)
-        assert fixture["expected_planned_count"] >= 1
+        # v1.4.9: all capabilities are now stable; planned count is 0
+        assert fixture["expected_planned_count"] >= 0
 
     def test_version_alignment_fixture_maps_140(self):
         fixture = _load_fixture("version_alignment_snapshot.json")

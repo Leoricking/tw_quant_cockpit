@@ -1,0 +1,10 @@
+{
+  "_meta": {"TEST_FIXTURE": true, "DEMO_ONLY": true, "NOT_REAL_DATA": true, "NOT_FOR_FORMAL_CONCLUSION": true},
+  "base_commit_short": "d025d21",
+  "full_collection_baseline": 3597,
+  "full_fail_baseline": 0,
+  "full_skip_baseline": 0,
+  "cli_parser_count_baseline": 181,
+  "health_checks_total": 14,
+  "expected_result": "PASS"
+}

@@ -1,0 +1,9 @@
+{
+  "_meta": {"TEST_FIXTURE": true, "DEMO_ONLY": true, "NOT_REAL_DATA": true, "NOT_FOR_FORMAL_CONCLUSION": true},
+  "manifest_version": "1.4.9",
+  "total_capabilities": 20,
+  "stable_count": 20,
+  "non_stable": [],
+  "valid": true,
+  "expected_result": "PASS"
+}

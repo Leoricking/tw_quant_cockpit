@@ -1,0 +1,11 @@
+{
+  "_meta": {"TEST_FIXTURE": true, "DEMO_ONLY": true, "NOT_REAL_DATA": true, "NOT_FOR_FORMAL_CONCLUSION": true},
+  "total": 6,
+  "non_stable": [],
+  "override_violations": [],
+  "ptt_buy_sell_ok": true,
+  "finmind_override_ok": true,
+  "ptt_standalone_ok": true,
+  "valid": true,
+  "expected_result": "PASS"
+}

@@ -1,0 +1,10 @@
+{
+  "_meta": {"TEST_FIXTURE": true, "DEMO_ONLY": true, "NOT_REAL_DATA": true, "NOT_FOR_FORMAL_CONCLUSION": true},
+  "total_gates": 15,
+  "passed": 14,
+  "failed": 1,
+  "blocking_failures": 1,
+  "all_gates_passed": false,
+  "failed_gate": "version_gate",
+  "expected_result": "FAIL"
+}
