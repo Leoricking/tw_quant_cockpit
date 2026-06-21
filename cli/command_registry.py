@@ -1197,6 +1197,126 @@ class CLICommandRegistry:
             self.register(entry)
 
         # ----------------------------------------------------------------
+        # provider integration hardening (v1.4.8)
+        # ----------------------------------------------------------------
+        for entry in [
+            CLICommand(
+                name="provider-integration-health", category="provider",
+                purpose="Provider Integration Hardening health check",
+                description="Run all v1.4.8 cross-provider integration health checks offline.",
+                example_commands=["python main.py provider-integration-health"],
+                safety_level="SAFE_READ_ONLY",
+            ),
+            CLICommand(
+                name="provider-integration-contracts", category="provider",
+                purpose="Validate all six provider contracts",
+                description="Validate contracts for all six official providers.",
+                example_commands=["python main.py provider-integration-contracts"],
+                safety_level="SAFE_READ_ONLY",
+            ),
+            CLICommand(
+                name="provider-integration-e2e", category="provider",
+                purpose="Run offline cross-provider E2E scenarios",
+                description="Run offline E2E scenarios A-H for cross-provider data chains.",
+                example_commands=["python main.py provider-integration-e2e --scenario A"],
+                safety_level="SAFE_READ_ONLY",
+            ),
+            CLICommand(
+                name="provider-integration-pit", category="provider",
+                purpose="Cross-provider PIT hardening check",
+                description="Validate point-in-time policies across all providers.",
+                example_commands=["python main.py provider-integration-pit"],
+                safety_level="SAFE_READ_ONLY",
+            ),
+            CLICommand(
+                name="provider-integration-lineage", category="provider",
+                purpose="Cross-provider lineage hardening check",
+                description="Validate lineage completeness across all providers.",
+                example_commands=["python main.py provider-integration-lineage"],
+                safety_level="SAFE_READ_ONLY",
+            ),
+            CLICommand(
+                name="provider-integration-conflicts", category="provider",
+                purpose="Cross-provider conflict hardening check",
+                description="Validate conflict resolution rules across providers.",
+                example_commands=["python main.py provider-integration-conflicts"],
+                safety_level="SAFE_READ_ONLY",
+            ),
+            CLICommand(
+                name="provider-integration-migrations", category="provider",
+                purpose="Storage migration hardening check",
+                description="Validate all storage migrations are additive and idempotent.",
+                example_commands=["python main.py provider-integration-migrations"],
+                safety_level="SAFE_READ_ONLY",
+            ),
+            CLICommand(
+                name="provider-integration-recovery", category="provider",
+                purpose="Recovery services summary",
+                description="Show partial failure, lock, rate-limit and corruption recovery status.",
+                example_commands=["python main.py provider-integration-recovery"],
+                safety_level="SAFE_READ_ONLY",
+            ),
+            CLICommand(
+                name="provider-integration-locks", category="provider",
+                purpose="Lock recovery hardening check",
+                description="Validate cross-process lock recovery behaviour.",
+                example_commands=["python main.py provider-integration-locks"],
+                safety_level="SAFE_READ_ONLY",
+            ),
+            CLICommand(
+                name="provider-integration-rate-limit", category="provider",
+                purpose="Rate-limit recovery hardening check",
+                description="Validate rate-limit recovery: 429 handling, cooldown preservation.",
+                example_commands=["python main.py provider-integration-rate-limit"],
+                safety_level="SAFE_READ_ONLY",
+            ),
+            CLICommand(
+                name="provider-integration-runtime", category="provider",
+                purpose="Runtime corruption recovery check",
+                description="Validate fail-closed behaviour for all runtime corruption scenarios.",
+                example_commands=["python main.py provider-integration-runtime"],
+                safety_level="SAFE_READ_ONLY",
+            ),
+            CLICommand(
+                name="provider-integration-cli-gui", category="provider",
+                purpose="CLI/GUI consistency check",
+                description="Validate CLI and GUI expose identical capabilities and status.",
+                example_commands=["python main.py provider-integration-cli-gui"],
+                safety_level="SAFE_READ_ONLY",
+            ),
+            CLICommand(
+                name="provider-integration-performance", category="provider",
+                purpose="Performance budget check",
+                description="Validate conservative performance budgets for key operations.",
+                example_commands=["python main.py provider-integration-performance"],
+                safety_level="SAFE_READ_ONLY",
+            ),
+            CLICommand(
+                name="provider-integration-memory", category="provider",
+                purpose="Memory budget check",
+                description="Validate memory budgets; streaming/pagination enforced.",
+                example_commands=["python main.py provider-integration-memory"],
+                safety_level="SAFE_READ_ONLY",
+            ),
+            CLICommand(
+                name="provider-integration-collection", category="provider",
+                purpose="Collection integrity check",
+                description="Validate pytest collection meets baseline minimum.",
+                example_commands=["python main.py provider-integration-collection"],
+                safety_level="SAFE_READ_ONLY",
+            ),
+            CLICommand(
+                name="provider-integration-report", category="provider",
+                purpose="Generate Provider Integration Hardening report",
+                description="Generate full v1.4.8 Provider Integration Hardening markdown report.",
+                example_commands=["python main.py provider-integration-report"],
+                report_support=True,
+                safety_level="REPORT_ONLY",
+            ),
+        ]:
+            self.register(entry)
+
+        # ----------------------------------------------------------------
         # gui
         # ----------------------------------------------------------------
         for entry in [
@@ -1851,6 +1971,58 @@ _FORUM_INTELLIGENCE_COMMANDS: _List[CommandSpec] = [
                       CommandArg(flags=["--dimension"], kwargs={"default": "market"})]),
 ]
 
+_PROVIDER_INTEGRATION_HARDENING_COMMANDS: _List[CommandSpec] = [
+    CommandSpec(name="provider-integration-health", handler_name="cmd_provider_integration_health",
+                help="[v1.4.8] Provider Integration Hardening health check. Research Only.",
+                group="provider_integration_hardening", introduced_in="1.4.8"),
+    CommandSpec(name="provider-integration-contracts", handler_name="cmd_provider_integration_contracts",
+                help="[v1.4.8] Validate all six provider contracts. Research Only.",
+                group="provider_integration_hardening", introduced_in="1.4.8"),
+    CommandSpec(name="provider-integration-e2e", handler_name="cmd_provider_integration_e2e",
+                help="[v1.4.8] Run offline cross-provider E2E scenarios. Research Only.",
+                group="provider_integration_hardening", introduced_in="1.4.8",
+                args=[CommandArg(flags=["--scenario"], kwargs={"default": None})]),
+    CommandSpec(name="provider-integration-pit", handler_name="cmd_provider_integration_pit",
+                help="[v1.4.8] Cross-provider PIT hardening check. Research Only.",
+                group="provider_integration_hardening", introduced_in="1.4.8"),
+    CommandSpec(name="provider-integration-lineage", handler_name="cmd_provider_integration_lineage",
+                help="[v1.4.8] Cross-provider lineage hardening check. Research Only.",
+                group="provider_integration_hardening", introduced_in="1.4.8"),
+    CommandSpec(name="provider-integration-conflicts", handler_name="cmd_provider_integration_conflicts",
+                help="[v1.4.8] Cross-provider conflict hardening check. Research Only.",
+                group="provider_integration_hardening", introduced_in="1.4.8"),
+    CommandSpec(name="provider-integration-migrations", handler_name="cmd_provider_integration_migrations",
+                help="[v1.4.8] Storage migration hardening check. Research Only.",
+                group="provider_integration_hardening", introduced_in="1.4.8"),
+    CommandSpec(name="provider-integration-recovery", handler_name="cmd_provider_integration_recovery",
+                help="[v1.4.8] Recovery services summary. Research Only.",
+                group="provider_integration_hardening", introduced_in="1.4.8"),
+    CommandSpec(name="provider-integration-locks", handler_name="cmd_provider_integration_locks",
+                help="[v1.4.8] Lock recovery hardening check. Research Only.",
+                group="provider_integration_hardening", introduced_in="1.4.8"),
+    CommandSpec(name="provider-integration-rate-limit", handler_name="cmd_provider_integration_rate_limit",
+                help="[v1.4.8] Rate-limit recovery hardening check. Research Only.",
+                group="provider_integration_hardening", introduced_in="1.4.8"),
+    CommandSpec(name="provider-integration-runtime", handler_name="cmd_provider_integration_runtime",
+                help="[v1.4.8] Runtime corruption recovery check. Research Only.",
+                group="provider_integration_hardening", introduced_in="1.4.8"),
+    CommandSpec(name="provider-integration-cli-gui", handler_name="cmd_provider_integration_cli_gui",
+                help="[v1.4.8] CLI/GUI consistency check. Research Only.",
+                group="provider_integration_hardening", introduced_in="1.4.8"),
+    CommandSpec(name="provider-integration-performance", handler_name="cmd_provider_integration_performance",
+                help="[v1.4.8] Performance budget check. Research Only.",
+                group="provider_integration_hardening", introduced_in="1.4.8"),
+    CommandSpec(name="provider-integration-memory", handler_name="cmd_provider_integration_memory",
+                help="[v1.4.8] Memory budget check. Research Only.",
+                group="provider_integration_hardening", introduced_in="1.4.8"),
+    CommandSpec(name="provider-integration-collection", handler_name="cmd_provider_integration_collection",
+                help="[v1.4.8] Collection integrity check. Research Only.",
+                group="provider_integration_hardening", introduced_in="1.4.8"),
+    CommandSpec(name="provider-integration-report", handler_name="cmd_provider_integration_report",
+                help="[v1.4.8] Generate Provider Integration Hardening report. Research Only.",
+                group="provider_integration_hardening", introduced_in="1.4.8"),
+]
+
 # Combined list of all provider commands
 PROVIDER_COMMANDS: _List[CommandSpec] = (
     _RESEARCH_FOUNDATION_COMMANDS
@@ -1862,6 +2034,7 @@ PROVIDER_COMMANDS: _List[CommandSpec] = (
     + _SOURCE_GOVERNANCE_COMMANDS
     + _PROVIDER_QUALITY_GATES_COMMANDS
     + _FORUM_INTELLIGENCE_COMMANDS
+    + _PROVIDER_INTEGRATION_HARDENING_COMMANDS
 )
 
 

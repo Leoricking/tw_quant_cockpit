@@ -1,0 +1,13 @@
+{
+  "_meta": {"TEST_FIXTURE": true, "DEMO_ONLY": true, "NOT_REAL_DATA": true, "NOT_FOR_FORMAL_CONCLUSION": true},
+  "scenario_id": "A",
+  "name": "Listed stock full research chain",
+  "symbol": "2330",
+  "market": "TWSE",
+  "providers": ["twse_official", "mops_official", "data_gov_tw_official", "finmind", "ptt_stock_public"],
+  "pit_valid": true,
+  "lineage_valid": true,
+  "conflict_valid": true,
+  "authority_hierarchy_preserved": true,
+  "forum_does_not_affect_official": true
+}

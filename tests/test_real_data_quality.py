@@ -770,6 +770,8 @@ class TestVersionInfo:
             "Forum Intelligence & Market Sentiment",
             "Data Provider Stable Rollup",
             "Full-Suite Collection Integrity Hotfix",
+            "Provider Integration Hardening",
+            "Provider Stable Rollup",
         ), f"Unexpected release name: {version_info.RELEASE_NAME}"
 
     def test_release_track(self):

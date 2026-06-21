@@ -77,6 +77,8 @@ class ResearchFoundationStableHealthCheck:
                 "Forum Intelligence & Market Sentiment",
                 "Data Provider Stable Rollup",
                 "Full-Suite Collection Integrity Hotfix",
+                "Provider Integration Hardening",
+                "Provider Stable Rollup",
             }
             ok = RELEASE_NAME in _KNOWN_NAMES
             checks["release_name_correct"] = ("PASS" if ok else "FAIL", f"RELEASE_NAME={RELEASE_NAME}")
@@ -85,7 +87,7 @@ class ResearchFoundationStableHealthCheck:
 
         try:
             from release.version_info import BASE_RELEASE
-            ok = any(marker in BASE_RELEASE for marker in ("1.3.7", "1.3.9", "1.4.0", "1.4.1", "1.4.2", "1.4.3", "1.4.4", "1.4.5", "1.4.6"))
+            ok = any(marker in BASE_RELEASE for marker in ("1.3.7", "1.3.9", "1.4.0", "1.4.1", "1.4.2", "1.4.3", "1.4.4", "1.4.5", "1.4.6", "1.4.7", "1.4.8"))
             checks["base_release_correct"] = ("PASS" if ok else "FAIL", f"BASE_RELEASE={BASE_RELEASE}")
         except Exception as exc:
             checks["base_release_correct"] = ("FAIL", str(exc))

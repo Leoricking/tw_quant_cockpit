@@ -1,0 +1,14 @@
+{
+  "_meta": {"TEST_FIXTURE": true, "DEMO_ONLY": true, "NOT_REAL_DATA": true, "NOT_FOR_FORMAL_CONCLUSION": true},
+  "scenario": "partial_provider_outage",
+  "unavailable": ["data_gov_tw_official"],
+  "quota_exhausted": ["finmind"],
+  "rate_limited": ["ptt_stock_public"],
+  "available": ["twse_official", "tpex_official", "mops_official"],
+  "mock_fallback_used": false,
+  "silent_fallback_used": false,
+  "result_status": "PARTIAL",
+  "official_data_preserved": true,
+  "fake_values_injected": false,
+  "report_shows_limitations": true
+}

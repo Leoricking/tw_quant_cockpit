@@ -1,0 +1,9 @@
+{
+  "_meta": {"TEST_FIXTURE": true, "DEMO_ONLY": true, "NOT_REAL_DATA": true, "NOT_FOR_FORMAL_CONCLUSION": true},
+  "collected": 3597,
+  "minimum": 3426,
+  "native_crash": false,
+  "hidden_deselection": false,
+  "partial_suite": false,
+  "expected_result": "PASS"
+}

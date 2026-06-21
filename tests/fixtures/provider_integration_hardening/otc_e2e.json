@@ -1,0 +1,12 @@
+{
+  "_meta": {"TEST_FIXTURE": true, "DEMO_ONLY": true, "NOT_REAL_DATA": true, "NOT_FOR_FORMAL_CONCLUSION": true},
+  "scenario_id": "B",
+  "name": "OTC stock full research chain",
+  "symbol": "6415",
+  "market": "TPEx",
+  "providers": ["tpex_official", "mops_official", "data_gov_tw_official", "finmind", "ptt_stock_public"],
+  "pit_valid": true,
+  "lineage_valid": true,
+  "conflict_valid": true,
+  "authority_hierarchy_preserved": true
+}

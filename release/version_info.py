@@ -73,9 +73,10 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # ---------------------------------------------------------------------------
 # v1.3.3 module-level constants (Coverage Repair Workflow)
 # ---------------------------------------------------------------------------
-VERSION                             = "1.4.7"
-RELEASE_NAME                        = "Forum Intelligence & Market Sentiment"
-BASE_RELEASE                        = "1.4.6.1 Full-Suite Collection Integrity Hotfix"
+VERSION                             = "1.4.8"
+RELEASE_NAME                        = "Provider Integration Hardening"
+BASE_RELEASE                        = "1.4.7 Forum Intelligence & Market Sentiment"
+REPLAY_STABLE_BASELINE              = "1.2.9"
 
 # ---------------------------------------------------------------------------
 # v1.3.2 module-level constants (Real Data Provider Adapter Foundation)
@@ -490,6 +491,28 @@ FORUM_CAN_GENERATE_BUY_SELL                 = False  # ALWAYS FALSE
 FORUM_CAN_OVERRIDE_OFFICIAL_SOURCE          = False  # ALWAYS FALSE
 FORUM_FORMAL_CONCLUSION_STANDALONE_ALLOWED  = False  # ALWAYS FALSE
 FORUM_AUTO_TRADING_ENABLED                  = False  # ALWAYS FALSE
+
+# v1.4.8 Provider Integration Hardening flags
+PROVIDER_INTEGRATION_HARDENING_AVAILABLE        = True
+CROSS_PROVIDER_E2E_AVAILABLE                    = True
+PROVIDER_CONTRACT_VALIDATION_AVAILABLE          = True
+STORAGE_MIGRATION_HARDENING_AVAILABLE           = True
+PARTIAL_FAILURE_RECOVERY_AVAILABLE              = True
+LONG_RUNNING_STABILITY_AVAILABLE                = True
+HEADLESS_GUI_STABILITY_AVAILABLE                = True
+COLLECTION_INTEGRITY_ENFORCED                   = True
+RUNTIME_CORRUPTION_RECOVERY_AVAILABLE           = True
+LOCK_RECOVERY_AVAILABLE                         = True
+RATE_LIMIT_RECOVERY_AVAILABLE                   = True
+CLI_GUI_CONSISTENCY_AVAILABLE                   = True
+CROSS_PROVIDER_CONFLICT_E2E_AVAILABLE           = True
+CROSS_PROVIDER_PIT_E2E_AVAILABLE                = True
+CROSS_PROVIDER_LINEAGE_E2E_AVAILABLE            = True
+PROVIDER_PERFORMANCE_BUDGET_AVAILABLE           = True
+PROVIDER_MEMORY_BUDGET_AVAILABLE                = True
+PROVIDER_INTEGRATION_AUTO_FALLBACK_ENABLED      = False  # ALWAYS FALSE
+PROVIDER_INTEGRATION_AUTO_OVERRIDE_ENABLED      = False  # ALWAYS FALSE
+PROVIDER_INTEGRATION_AUTO_REPAIR_ENABLED        = False  # ALWAYS FALSE
 
 # v1.4.0 TWSE Provider flags
 TWSE_PROVIDER_OFFICIAL_SOURCE_ONLY         = True

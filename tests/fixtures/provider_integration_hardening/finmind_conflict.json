@@ -1,0 +1,13 @@
+{
+  "_meta": {"TEST_FIXTURE": true, "DEMO_ONLY": true, "NOT_REAL_DATA": true, "NOT_FOR_FORMAL_CONCLUSION": true},
+  "conflict_type": "VALUE_CONFLICT",
+  "primary_provider": "twse_official",
+  "secondary_provider": "finmind",
+  "field": "close_price",
+  "primary_value": 595.0,
+  "secondary_value": 594.8,
+  "resolution": "primary_wins",
+  "secondary_evidence_preserved": true,
+  "formal_use_primary_only": true,
+  "conflict_lineage_created": true
+}

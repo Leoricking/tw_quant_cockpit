@@ -1,0 +1,9 @@
+{
+  "_meta": {"TEST_FIXTURE": true, "DEMO_ONLY": true, "NOT_REAL_DATA": true, "NOT_FOR_FORMAL_CONCLUSION": true},
+  "lock_id": "fetch_run_lock_002",
+  "owner_pid": 99999,
+  "pid_alive": false,
+  "lease_valid": false,
+  "expected_action": "recover",
+  "recovery_audited": true
+}

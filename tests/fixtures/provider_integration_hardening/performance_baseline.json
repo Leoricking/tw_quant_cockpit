@@ -1,0 +1,15 @@
+{
+  "_meta": {"TEST_FIXTURE": true, "DEMO_ONLY": true, "NOT_REAL_DATA": true, "NOT_FOR_FORMAL_CONCLUSION": true},
+  "baselines": {
+    "provider_registry_load":       {"threshold_ms": 2000, "environment": "offline"},
+    "cli_startup":                  {"threshold_ms": 3000, "environment": "offline"},
+    "health_aggregate":             {"threshold_ms": 5000, "environment": "offline"},
+    "source_lineage_query":         {"threshold_ms": 1000, "environment": "offline"},
+    "quality_profile_query":        {"threshold_ms": 1000, "environment": "offline"},
+    "forum_search":                 {"threshold_ms": 2000, "environment": "offline"},
+    "stable_report_generation":     {"threshold_ms": 10000, "environment": "offline"},
+    "normalization_1000_records":   {"threshold_ms": 5000, "environment": "offline"},
+    "lineage_10000_records_query":  {"threshold_ms": 10000, "environment": "offline"},
+    "forum_1000_comments":          {"threshold_ms": 5000, "environment": "offline"}
+  }
+}

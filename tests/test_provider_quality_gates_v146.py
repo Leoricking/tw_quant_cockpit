@@ -1576,6 +1576,8 @@ class TestVersionInfo(unittest.TestCase):
             "Provider Quality Gates",
             "Full-Suite Collection Integrity Hotfix",
             "Forum Intelligence & Market Sentiment",
+            "Provider Integration Hardening",
+            "Provider Stable Rollup",
         )
         self.assertTrue(
             any(name in RELEASE_NAME for name in _KNOWN),

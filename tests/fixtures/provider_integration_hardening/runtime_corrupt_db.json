@@ -1,0 +1,9 @@
+{
+  "_meta": {"TEST_FIXTURE": true, "DEMO_ONLY": true, "NOT_REAL_DATA": true, "NOT_FOR_FORMAL_CONCLUSION": true},
+  "corruption_type": "corrupt_sqlite",
+  "expected_result": "BLOCKED",
+  "auto_delete": false,
+  "original_preserved": true,
+  "fake_success": false,
+  "recovery_plan_available": true
+}

@@ -715,3 +715,25 @@ reports/forum_intelligence_*.md
 # v1.4.7 Forum Intelligence fixtures ARE committed (exception)
 !tests/fixtures/forum_intelligence/*.json
 !tests/fixtures/forum_intelligence/*.html
+
+# v1.4.8 Provider Integration Hardening (runtime data — never commit)
+data/provider_integration/
+data/integration_runs/
+data/migration_runtime/
+data/recovery_runtime/
+data/integration_locks/
+data/integration_cache/
+data/corrupt_db_copies/
+data/temp_recovery/
+data/integration_hardening.db
+
+# v1.4.8 Provider Integration Hardening report outputs (generated artifacts)
+reports/provider_integration_hardening_*.md
+
+# v1.4.8 performance and memory profiles (generated artifacts)
+performance_output/
+memory_profile_output/
+collection_output/
+
+# v1.4.8 Provider Integration Hardening fixtures ARE committed (exception)
+!tests/fixtures/provider_integration_hardening/*.json

@@ -1,0 +1,13 @@
+{
+  "_meta": {"TEST_FIXTURE": true, "DEMO_ONLY": true, "NOT_REAL_DATA": true, "NOT_FOR_FORMAL_CONCLUSION": true},
+  "provider": "mops_official",
+  "revision_type": "REVISION_CONFLICT",
+  "symbol": "2330",
+  "period": "2024Q1",
+  "old_value": 183500000000,
+  "new_value": 184200000000,
+  "old_version_lineage_preserved": true,
+  "new_version_created": true,
+  "as_of_uses_correct_version": true,
+  "future_leakage": false
+}

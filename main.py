@@ -5939,6 +5939,27 @@ def cmd_version_info(args: argparse.Namespace) -> None:
         print(f"{'No Real Orders:':<40} True")
         print(f"{'Broker Execution Enabled:':<40} False")
         print(f"{'Production Trading BLOCKED:':<40} True")
+        # v1.4.8 Provider Integration Hardening flags
+        import release.version_info as _vi148
+        pih_avail  = getattr(_vi148, "PROVIDER_INTEGRATION_HARDENING_AVAILABLE", False)
+        cpe2e      = getattr(_vi148, "CROSS_PROVIDER_E2E_AVAILABLE", False)
+        smh_avail  = getattr(_vi148, "STORAGE_MIGRATION_HARDENING_AVAILABLE", False)
+        pfr_avail  = getattr(_vi148, "PARTIAL_FAILURE_RECOVERY_AVAILABLE", False)
+        lrs_avail  = getattr(_vi148, "LONG_RUNNING_STABILITY_AVAILABLE", False)
+        hgs_avail  = getattr(_vi148, "HEADLESS_GUI_STABILITY_AVAILABLE", False)
+        ci_enforc  = getattr(_vi148, "COLLECTION_INTEGRITY_ENFORCED", False)
+        pif_en     = getattr(_vi148, "PROVIDER_INTEGRATION_AUTO_FALLBACK_ENABLED", True)
+        pio_en     = getattr(_vi148, "PROVIDER_INTEGRATION_AUTO_OVERRIDE_ENABLED", True)
+        pir_en     = getattr(_vi148, "PROVIDER_INTEGRATION_AUTO_REPAIR_ENABLED", True)
+        print(f"{'Cross-provider E2E Available:':<40} {cpe2e}")
+        print(f"{'Storage Migration Hardening Available:':<40} {smh_avail}")
+        print(f"{'Partial Failure Recovery Available:':<40} {pfr_avail}")
+        print(f"{'Long-running Stability Available:':<40} {lrs_avail}")
+        print(f"{'Headless GUI Stability Available:':<40} {hgs_avail}")
+        print(f"{'Collection Integrity Enforced:':<40} {ci_enforc}")
+        print(f"{'Auto Fallback Enabled:':<40} {pif_en}")
+        print(f"{'Auto Override Enabled:':<40} {pio_en}")
+        print(f"{'Auto Repair Enabled:':<40} {pir_en}")
     except Exception as exc:
         print(f"  Version:                              1.3.4")
         print(f"  Release:                              Data Freshness Monitor")
@@ -32141,6 +32162,230 @@ def _argv_from_namespace(args):
     return result or None
 
 
+
+# ---------------------------------------------------------------------------
+# v1.4.8 Provider Integration Hardening handlers
+# ---------------------------------------------------------------------------
+
+def _print_integration_summary(title: str, summary: dict) -> None:
+    print("=" * 60)
+    print(f"  TW Quant Cockpit — {title}")
+    print("  [!] Research Only. No Real Orders. Production Trading: BLOCKED.")
+    print("=" * 60)
+    print(f"  Version: {summary.get('version', '1.4.8')}")
+    print(f"  Total:   {summary.get('total', 0)}")
+    print(f"  PASS:    {summary.get('passed', 0)}")
+    print(f"  FAIL:    {summary.get('failed', 0)}")
+    if "warned" in summary:
+        print(f"  WARN:    {summary.get('warned', 0)}")
+    print()
+    for name, info in summary.get("checks", {}).items():
+        status = info.get("status", "?")
+        detail = info.get("detail", "")
+        marker = "[PASS]" if status == "PASS" else "[FAIL]" if status == "FAIL" else "[WARN]"
+        print(f"  {marker} {name}: {detail}")
+    print("=" * 60)
+    if summary.get("failed", 0) > 0:
+        import sys
+        sys.exit(1)
+
+
+def cmd_provider_integration_health(args=None):
+    """[v1.4.8] Provider Integration Hardening health check."""
+    from data.integration.health_v148 import ProviderIntegrationHardeningHealthCheck
+    summary = ProviderIntegrationHardeningHealthCheck().get_health_summary()
+    _print_integration_summary("Provider Integration Hardening Health v1.4.8", summary)
+
+
+def cmd_provider_integration_contracts(args=None):
+    """[v1.4.8] Validate all six provider contracts."""
+    from data.integration.provider_contract_v148 import ProviderContractValidator
+    summary = ProviderContractValidator().get_summary()
+    print("=" * 60)
+    print("  Provider Integration Contracts v1.4.8")
+    print("  [!] Research Only. No authority drift allowed.")
+    print("=" * 60)
+    for p in summary.get("providers", []):
+        marker = "[PASS]" if p["status"] == "PASS" else "[FAIL]"
+        print(f"  {marker} {p['provider_id']} authority={p['authority']}: {p['status']}")
+        for err in p.get("errors", []):
+            print(f"         ERROR: {err}")
+    print(f"  Total: {summary['total']}  PASS: {summary['passed']}  FAIL: {summary['failed']}")
+    print("=" * 60)
+    if summary.get("failed", 0) > 0:
+        import sys
+        sys.exit(1)
+
+
+def cmd_provider_integration_e2e(args=None):
+    """[v1.4.8] Run offline cross-provider E2E scenarios."""
+    scenario = getattr(args, "scenario", None)
+    from data.integration.cross_provider_e2e_v148 import CrossProviderE2EValidator
+    validator = CrossProviderE2EValidator()
+    if scenario:
+        result = validator.run_scenario(scenario)
+        results = [result]
+    else:
+        results = validator.run_all()
+    print("=" * 60)
+    print("  Cross-Provider E2E Scenarios v1.4.8")
+    print("=" * 60)
+    for r in results:
+        marker = "[PASS]" if r.status == "PASS" else "[FAIL]"
+        print(f"  {marker} Scenario {r.scenario_id}: {r.name} — {r.detail}")
+    print("=" * 60)
+    if any(r.status != "PASS" for r in results):
+        import sys
+        sys.exit(1)
+
+
+def cmd_provider_integration_pit(args=None):
+    """[v1.4.8] Cross-provider PIT hardening check."""
+    from data.integration.cross_provider_pit_v148 import CrossProviderPITValidator
+    summary = CrossProviderPITValidator().get_summary()
+    _print_integration_summary("Cross-Provider PIT Hardening v1.4.8", summary)
+
+
+def cmd_provider_integration_lineage(args=None):
+    """[v1.4.8] Cross-provider lineage hardening check."""
+    from data.integration.cross_provider_lineage_v148 import CrossProviderLineageValidator
+    summary = CrossProviderLineageValidator().get_summary()
+    _print_integration_summary("Cross-Provider Lineage Hardening v1.4.8", summary)
+
+
+def cmd_provider_integration_conflicts(args=None):
+    """[v1.4.8] Cross-provider conflict hardening check."""
+    from data.integration.cross_provider_conflict_v148 import CrossProviderConflictValidator
+    summary = CrossProviderConflictValidator().get_summary()
+    _print_integration_summary("Cross-Provider Conflict Hardening v1.4.8", summary)
+
+
+def cmd_provider_integration_migrations(args=None):
+    """[v1.4.8] Storage migration hardening check."""
+    from data.integration.storage_migration_v148 import StorageMigrationHardeningService
+    summary = StorageMigrationHardeningService().get_summary()
+    print("=" * 60)
+    print("  Storage Migration Hardening v1.4.8")
+    print("=" * 60)
+    for m in summary.get("migrations", []):
+        marker = "[PASS]" if m["status"] == "PASS" else "[FAIL]"
+        print(f"  {marker} {m['migration_id']} {m['from_version']}→{m['to_version']} additive={m['additive']} idempotent={m['idempotent']}")
+    print(f"  Total: {summary['total']}  PASS: {summary['passed']}  FAIL: {summary['failed']}")
+    print("=" * 60)
+    if summary.get("failed", 0) > 0:
+        import sys
+        sys.exit(1)
+
+
+def cmd_provider_integration_recovery(args=None):
+    """[v1.4.8] Recovery services summary."""
+    from data.integration.query_v148 import IntegrationQueryService
+    status = IntegrationQueryService().query_recovery_status()
+    print("=" * 60)
+    print("  Provider Integration Recovery v1.4.8")
+    print("=" * 60)
+    for section, data in status.items():
+        passed = data.get("passed", 0)
+        failed = data.get("failed", 0)
+        marker = "[PASS]" if failed == 0 else "[FAIL]"
+        print(f"  {marker} {section}: passed={passed} failed={failed}")
+    print("=" * 60)
+    any_failed = any(v.get("failed", 0) > 0 for v in status.values())
+    if any_failed:
+        import sys
+        sys.exit(1)
+
+
+def cmd_provider_integration_locks(args=None):
+    """[v1.4.8] Lock recovery hardening check."""
+    from data.integration.lock_recovery_v148 import LockRecoveryService
+    summary = LockRecoveryService().get_summary()
+    _print_integration_summary("Lock Recovery Hardening v1.4.8", summary)
+
+
+def cmd_provider_integration_rate_limit(args=None):
+    """[v1.4.8] Rate-limit recovery hardening check."""
+    from data.integration.rate_limit_recovery_v148 import RateLimitRecoveryService
+    summary = RateLimitRecoveryService().get_summary()
+    _print_integration_summary("Rate-Limit Recovery Hardening v1.4.8", summary)
+
+
+def cmd_provider_integration_runtime(args=None):
+    """[v1.4.8] Runtime corruption recovery check."""
+    from data.integration.runtime_recovery_v148 import RuntimeCorruptionRecoveryService
+    summary = RuntimeCorruptionRecoveryService().get_summary()
+    _print_integration_summary("Runtime Corruption Recovery v1.4.8", summary)
+
+
+def cmd_provider_integration_cli_gui(args=None):
+    """[v1.4.8] CLI/GUI consistency check."""
+    from data.integration.cli_gui_consistency_v148 import CliGuiConsistencyValidator
+    summary = CliGuiConsistencyValidator().get_summary()
+    _print_integration_summary("CLI/GUI Consistency v1.4.8", summary)
+
+
+def cmd_provider_integration_performance(args=None):
+    """[v1.4.8] Performance budget check."""
+    from data.integration.performance_budget_v148 import PerformanceBudgetService
+    summary = PerformanceBudgetService().get_summary()
+    print("=" * 60)
+    print("  Provider Integration Performance Budget v1.4.8")
+    print("=" * 60)
+    for op in summary.get("operations", []):
+        marker = "[PASS]" if op["status"] == "PASS" else "[FAIL]"
+        print(f"  {marker} {op['operation']} threshold={op['threshold_ms']}ms: {op['status']}")
+    print(f"  Total: {summary['total']}  PASS: {summary['passed']}  FAIL: {summary['failed']}")
+    print("=" * 60)
+    if summary.get("failed", 0) > 0:
+        import sys
+        sys.exit(1)
+
+
+def cmd_provider_integration_memory(args=None):
+    """[v1.4.8] Memory budget check."""
+    from data.integration.memory_budget_v148 import MemoryBudgetService
+    summary = MemoryBudgetService().get_summary()
+    print("=" * 60)
+    print("  Provider Integration Memory Budget v1.4.8")
+    print("=" * 60)
+    for op in summary.get("operations", []):
+        marker = "[PASS]" if op["status"] == "PASS" else "[FAIL]"
+        threshold = op.get("threshold_mb")
+        thresh_str = f" threshold={threshold}MB" if threshold else ""
+        print(f"  {marker} {op['operation']}{thresh_str}: {op['detail']}")
+    print(f"  Total: {summary['total']}  PASS: {summary['passed']}  FAIL: {summary['failed']}")
+    print("=" * 60)
+    if summary.get("failed", 0) > 0:
+        import sys
+        sys.exit(1)
+
+
+def cmd_provider_integration_collection(args=None):
+    """[v1.4.8] Collection integrity check."""
+    from data.integration.collection_integrity_v148 import ProviderIntegrationCollectionIntegrityCheck
+    summary = ProviderIntegrationCollectionIntegrityCheck().get_summary()
+    print("=" * 60)
+    print("  Provider Integration Collection Integrity v1.4.8")
+    print(f"  Baseline minimum: {summary.get('baseline', 3426)}")
+    print("=" * 60)
+    for name, info in summary.get("checks", {}).items():
+        marker = "[PASS]" if info["status"] == "PASS" else "[FAIL]"
+        print(f"  {marker} {name}: {info['detail']}")
+    print(f"  Total: {summary['total_checks']}  PASS: {summary['passed']}  FAIL: {summary['failed']}")
+    print("=" * 60)
+    if summary.get("failed", 0) > 0:
+        import sys
+        sys.exit(1)
+
+
+def cmd_provider_integration_report(args=None):
+    """[v1.4.8] Generate Provider Integration Hardening report."""
+    from reports.provider_integration_hardening_report import ProviderIntegrationHardeningReport
+    report = ProviderIntegrationHardeningReport()
+    md = report.render_markdown()
+    print(md)
+
+
 def main() -> None:
     """Main entrypoint."""
     import pandas as pd  # imported here to avoid shadowing at module level
@@ -33244,6 +33489,23 @@ def main() -> None:
         "forum-coverage":            cmd_forum_coverage,
         "forum-report":              cmd_forum_report,
         "forum-market-snapshot":     cmd_forum_market_snapshot,
+        # v1.4.8 Provider Integration Hardening
+        "provider-integration-health":      cmd_provider_integration_health,
+        "provider-integration-contracts":   cmd_provider_integration_contracts,
+        "provider-integration-e2e":         cmd_provider_integration_e2e,
+        "provider-integration-pit":         cmd_provider_integration_pit,
+        "provider-integration-lineage":     cmd_provider_integration_lineage,
+        "provider-integration-conflicts":   cmd_provider_integration_conflicts,
+        "provider-integration-migrations":  cmd_provider_integration_migrations,
+        "provider-integration-recovery":    cmd_provider_integration_recovery,
+        "provider-integration-locks":       cmd_provider_integration_locks,
+        "provider-integration-rate-limit":  cmd_provider_integration_rate_limit,
+        "provider-integration-runtime":     cmd_provider_integration_runtime,
+        "provider-integration-cli-gui":     cmd_provider_integration_cli_gui,
+        "provider-integration-performance": cmd_provider_integration_performance,
+        "provider-integration-memory":      cmd_provider_integration_memory,
+        "provider-integration-collection":  cmd_provider_integration_collection,
+        "provider-integration-report":      cmd_provider_integration_report,
     }
 
     if args.command is None:

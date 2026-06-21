@@ -1,0 +1,10 @@
+{
+  "_meta": {"TEST_FIXTURE": true, "DEMO_ONLY": true, "NOT_REAL_DATA": true, "NOT_FOR_FORMAL_CONCLUSION": true},
+  "capability": "provider_integration_health",
+  "cli_status": "PASS",
+  "gui_status": "PASS",
+  "mismatch": false,
+  "authority_cli": "PRIMARY",
+  "authority_gui": "PRIMARY",
+  "safety_flags_match": true
+}

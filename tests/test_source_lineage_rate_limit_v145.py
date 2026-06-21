@@ -1591,6 +1591,8 @@ class TestRegression:
             "Forum Intelligence & Market Sentiment",
             "Data Provider Stable Rollup",
             "Full-Suite Collection Integrity Hotfix",
+            "Provider Integration Hardening",
+            "Provider Stable Rollup",
         )
         assert any(name in RELEASE_NAME for name in _KNOWN_NAMES), (
             f"Unexpected RELEASE_NAME for v1.4.5+ release: {RELEASE_NAME}"

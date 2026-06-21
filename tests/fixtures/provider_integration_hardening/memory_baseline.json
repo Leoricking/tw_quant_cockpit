@@ -1,0 +1,14 @@
+{
+  "_meta": {"TEST_FIXTURE": true, "DEMO_ONLY": true, "NOT_REAL_DATA": true, "NOT_FOR_FORMAL_CONCLUSION": true},
+  "baselines": {
+    "large_provider_response_bounded": {"threshold_mb": 50},
+    "large_forum_article_batch_bounded": {"threshold_mb": 100},
+    "lineage_query_bounded": {"threshold_mb": 50},
+    "report_generation_bounded": {"threshold_mb": 200},
+    "gui_table_model_bounded": {"threshold_mb": 100},
+    "repeated_panel_refresh_bounded": {"threshold_mb": 150}
+  },
+  "streaming_required": true,
+  "pagination_required": true,
+  "unbounded_cache_allowed": false
+}

@@ -1,0 +1,10 @@
+{
+  "_meta": {"TEST_FIXTURE": true, "DEMO_ONLY": true, "NOT_REAL_DATA": true, "NOT_FOR_FORMAL_CONCLUSION": true},
+  "provider_id": "finmind",
+  "http_status": 429,
+  "retry_after_seconds": 60,
+  "cooldown_preserved_across_restart": true,
+  "token_rotation_used": false,
+  "proxy_rotation_used": false,
+  "expected_behaviour": "wait_cooldown"
+}

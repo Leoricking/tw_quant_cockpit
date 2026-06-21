@@ -1,0 +1,11 @@
+{
+  "_meta": {"TEST_FIXTURE": true, "DEMO_ONLY": true, "NOT_REAL_DATA": true, "NOT_FOR_FORMAL_CONCLUSION": true},
+  "providers": [
+    {"provider_id": "twse_official",        "authority": "PRIMARY",       "contract_valid": true, "safety_flags_ok": true},
+    {"provider_id": "tpex_official",        "authority": "PRIMARY",       "contract_valid": true, "safety_flags_ok": true},
+    {"provider_id": "mops_official",        "authority": "PRIMARY",       "contract_valid": true, "safety_flags_ok": true},
+    {"provider_id": "data_gov_tw_official", "authority": "PRIMARY",       "contract_valid": true, "safety_flags_ok": true},
+    {"provider_id": "finmind",              "authority": "SECONDARY",     "contract_valid": true, "safety_flags_ok": true},
+    {"provider_id": "ptt_stock_public",     "authority": "SUPPLEMENTARY", "contract_valid": true, "safety_flags_ok": true}
+  ]
+}

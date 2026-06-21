@@ -1,0 +1,7 @@
+{
+  "_meta": {"TEST_FIXTURE": true, "DEMO_ONLY": true, "NOT_REAL_DATA": true, "NOT_FOR_FORMAL_CONCLUSION": true},
+  "migration_id": "m_bad_destructive",
+  "destructive": true,
+  "expected_result": "REJECTED",
+  "rejection_reason": "destructive migrations not allowed"
+}

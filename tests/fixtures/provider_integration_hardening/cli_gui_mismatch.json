@@ -1,0 +1,8 @@
+{
+  "_meta": {"TEST_FIXTURE": true, "DEMO_ONLY": true, "NOT_REAL_DATA": true, "NOT_FOR_FORMAL_CONCLUSION": true},
+  "capability": "provider_quality_health",
+  "cli_status": "PASS",
+  "gui_status": "FAIL",
+  "mismatch": true,
+  "expected_action": "DETECTED_AND_REPORTED"
+}

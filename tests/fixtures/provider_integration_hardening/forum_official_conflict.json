@@ -1,0 +1,12 @@
+{
+  "_meta": {"TEST_FIXTURE": true, "DEMO_ONLY": true, "NOT_REAL_DATA": true, "NOT_FOR_FORMAL_CONCLUSION": true},
+  "conflict_type": "FORUM_CLAIM_CONFLICT",
+  "official_provider": "twse_official",
+  "forum_provider": "ptt_stock_public",
+  "official_fact": {"field": "close_price", "value": 595.0},
+  "forum_claim": {"claim": "price will drop 10%", "is_opinion": true},
+  "resolution": "official_fact_unchanged",
+  "forum_claim_is_warning_only": true,
+  "forum_can_override_official": false,
+  "risk_warning_output": true
+}

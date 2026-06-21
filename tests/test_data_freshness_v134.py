@@ -874,7 +874,7 @@ class TestCLI:
     def test_freshness_health_runs(self):
         import subprocess, sys
         result = subprocess.run(
-            [sys.executable, "D:/code/Claude/tw_quant_cockpit/main.py", "freshness-health"],
+            [sys.executable, "C:/Users/Rossi/Documents/Claude/tw_quant_cockpit/main.py", "freshness-health"],
             capture_output=True, text=True, timeout=60
         )
         # Should not crash — may FAIL checks but should complete
@@ -883,7 +883,7 @@ class TestCLI:
     def test_freshness_status_runs(self):
         import subprocess, sys
         result = subprocess.run(
-            [sys.executable, "D:/code/Claude/tw_quant_cockpit/main.py", "freshness-status"],
+            [sys.executable, "C:/Users/Rossi/Documents/Claude/tw_quant_cockpit/main.py", "freshness-status"],
             capture_output=True, text=True, timeout=60,
             encoding="utf-8", errors="replace",
         )
@@ -892,7 +892,7 @@ class TestCLI:
     def test_freshness_show_runs(self):
         import subprocess, sys
         result = subprocess.run(
-            [sys.executable, "D:/code/Claude/tw_quant_cockpit/main.py", "freshness-show", "--symbol", "2330"],
+            [sys.executable, "C:/Users/Rossi/Documents/Claude/tw_quant_cockpit/main.py", "freshness-show", "--symbol", "2330"],
             capture_output=True, text=True, timeout=60,
             encoding="utf-8", errors="replace",
         )
@@ -901,7 +901,7 @@ class TestCLI:
     def test_freshness_scan_symbol(self):
         import subprocess, sys
         result = subprocess.run(
-            [sys.executable, "D:/code/Claude/tw_quant_cockpit/main.py", "freshness-scan", "--symbol", "2330"],
+            [sys.executable, "C:/Users/Rossi/Documents/Claude/tw_quant_cockpit/main.py", "freshness-scan", "--symbol", "2330"],
             capture_output=True, text=True, timeout=60,
             encoding="utf-8", errors="replace",
         )
@@ -910,7 +910,7 @@ class TestCLI:
     def test_freshness_summary_runs(self):
         import subprocess, sys
         result = subprocess.run(
-            [sys.executable, "D:/code/Claude/tw_quant_cockpit/main.py", "freshness-summary"],
+            [sys.executable, "C:/Users/Rossi/Documents/Claude/tw_quant_cockpit/main.py", "freshness-summary"],
             capture_output=True, text=True, timeout=60,
             encoding="utf-8", errors="replace",
         )
@@ -919,7 +919,7 @@ class TestCLI:
     def test_freshness_alerts_runs(self):
         import subprocess, sys
         result = subprocess.run(
-            [sys.executable, "D:/code/Claude/tw_quant_cockpit/main.py", "freshness-alerts"],
+            [sys.executable, "C:/Users/Rossi/Documents/Claude/tw_quant_cockpit/main.py", "freshness-alerts"],
             capture_output=True, text=True, timeout=60,
             encoding="utf-8", errors="replace",
         )
@@ -928,7 +928,7 @@ class TestCLI:
     def test_provider_sla_status_runs(self):
         import subprocess, sys
         result = subprocess.run(
-            [sys.executable, "D:/code/Claude/tw_quant_cockpit/main.py", "provider-sla-status"],
+            [sys.executable, "C:/Users/Rossi/Documents/Claude/tw_quant_cockpit/main.py", "provider-sla-status"],
             capture_output=True, text=True, timeout=60,
             encoding="utf-8", errors="replace",
         )
@@ -937,7 +937,7 @@ class TestCLI:
     def test_freshness_create_repair_runs(self):
         import subprocess, sys
         result = subprocess.run(
-            [sys.executable, "D:/code/Claude/tw_quant_cockpit/main.py", "freshness-create-repair"],
+            [sys.executable, "C:/Users/Rossi/Documents/Claude/tw_quant_cockpit/main.py", "freshness-create-repair"],
             capture_output=True, text=True, timeout=60,
             encoding="utf-8", errors="replace",
         )
@@ -946,7 +946,7 @@ class TestCLI:
     def test_version_info_shows_134(self):
         import subprocess, sys
         result = subprocess.run(
-            [sys.executable, "D:/code/Claude/tw_quant_cockpit/main.py", "version-info"],
+            [sys.executable, "C:/Users/Rossi/Documents/Claude/tw_quant_cockpit/main.py", "version-info"],
             capture_output=True, text=True, timeout=60,
             encoding="utf-8", errors="replace",
         )
