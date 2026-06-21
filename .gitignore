@@ -2,6 +2,8 @@ __pycache__/
 *.pyc
 *.pyo
 *.pyd
+pytest_output.txt
+pytest_output_*.txt
 
 # Real .env files (contain tokens — never commit)
 .env
