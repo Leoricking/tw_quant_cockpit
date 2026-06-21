@@ -54,7 +54,7 @@ class TestVersionInfo:
 
     def test_base_release_contains_137(self):
         from release.version_info import BASE_RELEASE
-        assert any(m in BASE_RELEASE for m in ("1.3.7", "1.3.9", "1.4.0", "1.4.1", "1.4.2", "1.4.3")), (
+        assert any(m in BASE_RELEASE for m in ("1.3.7", "1.3.9", "1.4.0", "1.4.1", "1.4.2", "1.4.3", "1.4.4")), (
             f"BASE_RELEASE does not reference a known base: {BASE_RELEASE}"
         )
 
@@ -125,9 +125,9 @@ class TestCapabilityRegistry:
     def test_planned_capabilities_count(self):
         from release.capability_registry import list_planned_capabilities
         planned = list_planned_capabilities()
-        # v1.4.4: data_gov_tw_provider and finmind_adapter_hardening graduated to stable,
-        # so planned count is now 3 minimum
-        assert len(planned) >= 3
+        # v1.4.5: provider_lineage_rate_limit graduated to stable,
+        # leaving provider_quality_gates and forum_intelligence as planned (count >= 2)
+        assert len(planned) >= 2
 
     def test_real_data_quality_available(self):
         from release.capability_registry import is_capability_available
@@ -675,9 +675,9 @@ class TestFixtures:
 
     def test_capability_registry_fixture_planned_count(self):
         fixture = _load_fixture("capability_registry_snapshot.json")
-        # v1.4.4: data_gov_tw_provider and finmind_adapter_hardening graduated to stable;
-        # planned count is now 3 minimum
-        assert fixture["expected_planned_count"] >= 3
+        # v1.4.5: provider_lineage_rate_limit graduated to stable;
+        # planned count is now 2 minimum (provider_quality_gates, forum_intelligence)
+        assert fixture["expected_planned_count"] >= 2
 
     def test_version_alignment_fixture_maps_140(self):
         fixture = _load_fixture("version_alignment_snapshot.json")

@@ -1300,17 +1300,27 @@ def test_147_gui_section_lineage():
 
 def test_148_version_is_144():
     from release.version_info import VERSION
-    assert VERSION == "1.4.4"
+    from release.version_alignment import is_version_at_least
+    # v1.4.5+ supersedes v1.4.4; accept >= 1.4.4
+    assert is_version_at_least(VERSION, "1.4.4"), f"Expected >= 1.4.4, got {VERSION}"
 
 
 def test_149_release_name():
     from release.version_info import RELEASE_NAME
-    assert RELEASE_NAME == "FinMind Adapter Hardening"
+    known_names = {
+        "FinMind Adapter Hardening",
+        "Source Lineage & Rate Limit",
+        "Provider Quality Gates",
+    }
+    assert RELEASE_NAME in known_names, f"Unexpected RELEASE_NAME: {RELEASE_NAME}"
 
 
 def test_150_base_release_references_hotfix():
     from release.version_info import BASE_RELEASE
-    assert "1.4.3" in BASE_RELEASE
+    # 1.4.3 (hotfix era) or 1.4.4 (FinMind Adapter) is valid base
+    assert any(m in BASE_RELEASE for m in ("1.4.3", "1.4.4")), (
+        f"BASE_RELEASE does not reference expected predecessor: {BASE_RELEASE}"
+    )
 
 
 def test_151_finmind_flags_in_version_info():

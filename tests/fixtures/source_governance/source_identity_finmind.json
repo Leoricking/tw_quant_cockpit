@@ -1,0 +1,21 @@
+{
+  "_note": "TEST FIXTURE — NOT REAL DATA. No tokens. No credentials.",
+  "_fixture_version": "1.4.5",
+  "source_id": "finmind_v144",
+  "provider_id": "finmind",
+  "provider_name": "FinMind",
+  "source_type": "secondary_aggregator",
+  "authority_level": "SECONDARY_AGGREGATOR",
+  "official": false,
+  "aggregator": true,
+  "market": "TW",
+  "domain": "multi_domain",
+  "agency": "FinMind",
+  "host": "api.finmindtrade.com",
+  "endpoint_family": "v4",
+  "dataset": "taiwan_stock_price",
+  "active": true,
+  "introduced_in": "1.4.4",
+  "deprecated_at": null,
+  "metadata": {"fixture": true}
+}

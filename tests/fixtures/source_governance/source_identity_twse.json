@@ -1,0 +1,21 @@
+{
+  "_note": "TEST FIXTURE — NOT REAL DATA. No tokens. No credentials.",
+  "_fixture_version": "1.4.5",
+  "source_id": "twse_official_v140",
+  "provider_id": "twse_official",
+  "provider_name": "Taiwan Stock Exchange (TWSE)",
+  "source_type": "official_exchange",
+  "authority_level": "PRIMARY_OFFICIAL",
+  "official": true,
+  "aggregator": false,
+  "market": "TW",
+  "domain": "equity",
+  "agency": "TWSE",
+  "host": "www.twse.com.tw",
+  "endpoint_family": "daily",
+  "dataset": "daily_ohlcv",
+  "active": true,
+  "introduced_in": "1.4.0",
+  "deprecated_at": null,
+  "metadata": {"fixture": true}
+}

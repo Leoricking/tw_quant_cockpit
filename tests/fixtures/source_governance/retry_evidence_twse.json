@@ -1,0 +1,23 @@
+{
+  "_note": "TEST FIXTURE — NOT REAL DATA. Retry evidence for TWSE transient failure — no real data.",
+  "_fixture_type": "TEST_FIXTURE",
+  "_demo_only": true,
+  "_not_real_data": true,
+  "_fixture_version": "1.4.5",
+  "evidence_id": "fixture-retry-twse-001",
+  "provider_id": "twse_official",
+  "host": "openapi.twse.com.tw",
+  "endpoint": "/v1/exchangeReport/STOCK_DAY",
+  "fetch_run_id": "fixture-run-retry-001",
+  "http_status_code": 503,
+  "attempt_number": 1,
+  "max_attempts": 3,
+  "backoff_strategy": "exponential",
+  "base_delay_ms": 1000,
+  "computed_delay_ms": 1000,
+  "retry_after_header": null,
+  "retry_at": "2024-01-02T17:00:01+00:00",
+  "give_up": false,
+  "notes": "Transient 503 — retrying with exponential backoff. TEST FIXTURE ONLY.",
+  "metadata": {"fixture": true}
+}

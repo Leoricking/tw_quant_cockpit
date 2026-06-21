@@ -284,9 +284,11 @@ class TestRegression:
         assert RELEASE_NAME in _KNOWN, f"Unexpected RELEASE_NAME: {RELEASE_NAME}"
 
     def test_38_base_release_is_143(self):
-        """Test 38: BASE_RELEASE references 1.4.3."""
+        """Test 38: BASE_RELEASE references 1.4.3 or later."""
         from release.version_info import BASE_RELEASE
-        assert "1.4.3" in BASE_RELEASE
+        assert any(m in BASE_RELEASE for m in ("1.4.3", "1.4.4")), (
+            f"BASE_RELEASE does not reference expected predecessor: {BASE_RELEASE}"
+        )
 
     def test_39_register_all_commands_callable(self):
         """Test 39: register_all_commands is callable."""

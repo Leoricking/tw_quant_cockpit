@@ -1,0 +1,18 @@
+{
+  "_note": "TEST FIXTURE — NOT REAL DATA. Conservative rate limit policy — not verified against TWSE docs.",
+  "_fixture_type": "TEST_FIXTURE",
+  "_demo_only": true,
+  "_not_real_data": true,
+  "_fixture_version": "1.4.5",
+  "host": "openapi.twse.com.tw",
+  "min_interval_ms": 2000,
+  "max_requests_per_minute": 30,
+  "max_requests_per_hour": null,
+  "max_requests_per_day": null,
+  "burst_limit": 3,
+  "cooldown_ms": 5000,
+  "confidence": "LOW",
+  "source": "conservative_estimate",
+  "notes": "Conservative defaults — actual limits not published. TEST FIXTURE ONLY.",
+  "metadata": {"fixture": true}
+}

@@ -1,0 +1,20 @@
+{
+  "_note": "TEST FIXTURE — NOT REAL DATA. Provenance gate BLOCKED result for MOCK authority in real mode.",
+  "_fixture_type": "TEST_FIXTURE",
+  "_demo_only": true,
+  "_not_real_data": true,
+  "_fixture_version": "1.4.5",
+  "gate_result": "BLOCKED",
+  "lineage_id": "fixture-lin-mock-001",
+  "provider_id": "mock",
+  "authority_level": "MOCK",
+  "mode": "real",
+  "source_content_hash_present": true,
+  "parser_version_present": true,
+  "cache_hit": false,
+  "source_lineage_present": true,
+  "reasons": ["MOCK authority blocked in real mode"],
+  "evaluated_at": "2024-01-02T17:01:30+00:00",
+  "notes": "MOCK and TEST_FIXTURE authorities are always BLOCKED in real mode. TEST FIXTURE ONLY.",
+  "metadata": {"fixture": true}
+}

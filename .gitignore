@@ -669,3 +669,19 @@ reports/finmind_adapter_*.md
 # v1.4.4 FinMind Adapter fixtures ARE committed (exception)
 !tests/fixtures/finmind_adapter/*.json
 !tests/fixtures/finmind_adapter/*.html
+
+# v1.4.5 Source Lineage & Rate Limit (runtime governance data — never commit)
+data/source_governance/
+data/request_ledger/
+data/fetch_run_audit/
+data/rate_limit/
+data/quota_evidence/
+data/cache_lineage/
+data/conflict_lineage/
+data/governance.db
+
+# v1.4.5 Source Lineage & Rate Limit report outputs (generated artifacts)
+reports/source_lineage_rate_limit_*.md
+
+# v1.4.5 Source Governance fixtures ARE committed (exception)
+!tests/fixtures/source_governance/*.json

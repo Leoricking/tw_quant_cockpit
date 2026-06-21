@@ -584,13 +584,16 @@ class TestVersion:
         known_names = {
             "Provider Health Consistency Hotfix",
             "FinMind Adapter Hardening",
+            "Source Lineage & Rate Limit",
+            "Provider Quality Gates",
         }
         assert RELEASE_NAME in known_names, f"Unexpected RELEASE_NAME: {RELEASE_NAME}"
 
     def test_63_base_release_is_1431(self):
         """Test 63: BASE_RELEASE references 1.4.3.1 or later hotfix/release."""
         from release.version_info import BASE_RELEASE
-        assert any(m in BASE_RELEASE for m in ("1.4.3.1", "1.4.3.2")), \
+        # Accept 1.4.3.1, 1.4.3.2 (hotfix era) or 1.4.4 (FinMind) or 1.4.5+ successor
+        assert any(m in BASE_RELEASE for m in ("1.4.3.1", "1.4.3.2", "1.4.4", "1.4.5")), \
             f"BASE_RELEASE does not reference expected predecessor: {BASE_RELEASE}"
 
     def test_64_replay_baseline_unchanged(self):

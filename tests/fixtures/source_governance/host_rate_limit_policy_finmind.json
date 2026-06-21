@@ -1,0 +1,18 @@
+{
+  "_note": "TEST FIXTURE — NOT REAL DATA. Conservative rate limit policy — not verified against FinMind docs.",
+  "_fixture_type": "TEST_FIXTURE",
+  "_demo_only": true,
+  "_not_real_data": true,
+  "_fixture_version": "1.4.5",
+  "host": "api.finmindtrade.com",
+  "min_interval_ms": 6000,
+  "max_requests_per_minute": 10,
+  "max_requests_per_hour": null,
+  "max_requests_per_day": null,
+  "burst_limit": 1,
+  "cooldown_ms": 30000,
+  "confidence": "LOW",
+  "source": "conservative_estimate",
+  "notes": "FinMind enforces HTTP 402 on quota exceeded. TEST FIXTURE ONLY.",
+  "metadata": {"fixture": true}
+}

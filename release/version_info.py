@@ -73,9 +73,9 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # ---------------------------------------------------------------------------
 # v1.3.3 module-level constants (Coverage Repair Workflow)
 # ---------------------------------------------------------------------------
-VERSION                             = "1.4.4"
-RELEASE_NAME                        = "FinMind Adapter Hardening"
-BASE_RELEASE                        = "1.4.3.2 Provider Health Consistency Hotfix"
+VERSION                             = "1.4.5"
+RELEASE_NAME                        = "Source Lineage & Rate Limit"
+BASE_RELEASE                        = "1.4.4 FinMind Adapter Hardening"
 
 # ---------------------------------------------------------------------------
 # v1.3.2 module-level constants (Real Data Provider Adapter Foundation)
@@ -577,6 +577,30 @@ FINMIND_POINT_IN_TIME_GUARD_AVAILABLE   = True
 FINMIND_SOURCE_CONFLICT_DETECTION_AVAILABLE = True
 FINMIND_REALTIME_FORMAL_USE_ALLOWED     = False
 FINMIND_BROKER_EXECUTION_AVAILABLE      = False
+
+# v1.4.5 Source Lineage & Rate Limit flags
+SOURCE_LINEAGE_AVAILABLE                    = True
+CENTRAL_LINEAGE_REGISTRY_AVAILABLE          = True
+REQUEST_LEDGER_AVAILABLE                    = True
+FETCH_RUN_AUDIT_AVAILABLE                   = True
+CACHE_LINEAGE_AVAILABLE                     = True
+CONFLICT_LINEAGE_AVAILABLE                  = True
+PROVENANCE_COMPLETENESS_GATE_AVAILABLE      = True
+SOURCE_AUTHORITY_HIERARCHY_AVAILABLE        = True
+CENTRAL_RATE_LIMIT_MANAGER_AVAILABLE        = True
+HOST_LEVEL_RATE_LIMIT_AVAILABLE             = True
+PROVIDER_REQUEST_BUDGET_AVAILABLE           = True
+ENDPOINT_REQUEST_POLICY_AVAILABLE           = True
+QUOTA_EVIDENCE_AVAILABLE                    = True
+RETRY_AFTER_HANDLING_AVAILABLE              = True
+BACKOFF_AUDIT_AVAILABLE                     = True
+CROSS_PROCESS_LEDGER_AVAILABLE              = True
+RATE_LIMIT_DASHBOARD_AVAILABLE              = True
+RATE_LIMIT_AUTO_BYPASS_ENABLED              = False  # ALWAYS FALSE
+TOKEN_ROTATION_ENABLED                      = False  # ALWAYS FALSE
+PROXY_ROTATION_ENABLED                      = False  # ALWAYS FALSE
+MULTI_ACCOUNT_LIMIT_BYPASS_ENABLED          = False  # ALWAYS FALSE
+PRIMARY_SOURCE_OVERRIDE_ENABLED             = False  # ALWAYS FALSE
 
 
 class VersionInfo:
@@ -1126,6 +1150,29 @@ def print_version_info() -> None:
     print(f"  FinMind Source Conflict Detection Available: {FINMIND_SOURCE_CONFLICT_DETECTION_AVAILABLE}")
     print(f"  FinMind Realtime Formal Use Allowed: {FINMIND_REALTIME_FORMAL_USE_ALLOWED}")
     print(f"  FinMind Broker Execution Available: {FINMIND_BROKER_EXECUTION_AVAILABLE}")
+    # v1.4.5 Source Lineage & Rate Limit flags
+    print(f"  Source Lineage Available: {SOURCE_LINEAGE_AVAILABLE}")
+    print(f"  Central Lineage Registry Available: {CENTRAL_LINEAGE_REGISTRY_AVAILABLE}")
+    print(f"  Request Ledger Available: {REQUEST_LEDGER_AVAILABLE}")
+    print(f"  Fetch Run Audit Available: {FETCH_RUN_AUDIT_AVAILABLE}")
+    print(f"  Cache Lineage Available: {CACHE_LINEAGE_AVAILABLE}")
+    print(f"  Conflict Lineage Available: {CONFLICT_LINEAGE_AVAILABLE}")
+    print(f"  Provenance Completeness Gate Available: {PROVENANCE_COMPLETENESS_GATE_AVAILABLE}")
+    print(f"  Source Authority Hierarchy Available: {SOURCE_AUTHORITY_HIERARCHY_AVAILABLE}")
+    print(f"  Central Rate Limit Manager Available: {CENTRAL_RATE_LIMIT_MANAGER_AVAILABLE}")
+    print(f"  Host Level Rate Limit Available: {HOST_LEVEL_RATE_LIMIT_AVAILABLE}")
+    print(f"  Provider Request Budget Available: {PROVIDER_REQUEST_BUDGET_AVAILABLE}")
+    print(f"  Endpoint Request Policy Available: {ENDPOINT_REQUEST_POLICY_AVAILABLE}")
+    print(f"  Quota Evidence Available: {QUOTA_EVIDENCE_AVAILABLE}")
+    print(f"  Retry After Handling Available: {RETRY_AFTER_HANDLING_AVAILABLE}")
+    print(f"  Backoff Audit Available: {BACKOFF_AUDIT_AVAILABLE}")
+    print(f"  Cross Process Ledger Available: {CROSS_PROCESS_LEDGER_AVAILABLE}")
+    print(f"  Rate Limit Dashboard Available: {RATE_LIMIT_DASHBOARD_AVAILABLE}")
+    print(f"  Rate Limit Auto Bypass Enabled: {RATE_LIMIT_AUTO_BYPASS_ENABLED}")
+    print(f"  Token Rotation Enabled: {TOKEN_ROTATION_ENABLED}")
+    print(f"  Proxy Rotation Enabled: {PROXY_ROTATION_ENABLED}")
+    print(f"  Multi Account Limit Bypass Enabled: {MULTI_ACCOUNT_LIMIT_BYPASS_ENABLED}")
+    print(f"  Primary Source Override Enabled: {PRIMARY_SOURCE_OVERRIDE_ENABLED}")
     print("=" * 60)
 
 

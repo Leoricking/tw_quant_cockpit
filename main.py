@@ -31153,6 +31153,285 @@ def cmd_finmind_pit_status(args=None):
     print("=" * 60)
 
 
+# =============================================================================
+# v1.4.5 Source Lineage & Rate Limit Governance handlers
+# [!] Research Only. No Real Orders. Not Investment Advice.
+# [!] No trading controls. No rate bypass controls. No token display.
+# =============================================================================
+
+def cmd_source_governance_health(args=None):
+    from data.governance.health_v145 import SourceGovernanceHealthCheck
+    summary = SourceGovernanceHealthCheck().get_health_summary()
+    print("=" * 60)
+    print("  Source Governance Health v1.4.5")
+    print("  [!] Research Only. No Real Orders. Not Investment Advice.")
+    print("=" * 60)
+    print(f"  Passed: {summary.get('passed', 0)}/{summary.get('total', 0)}")
+    print(f"  Failed: {summary.get('failed', 0)}")
+    print(f"  Warned: {summary.get('warned', 0)}")
+    for name, info in summary.get("checks", {}).items():
+        status = info.get("status", "?")
+        detail = info.get("detail", "")
+        print(f"  [{status:4}] {name}: {detail}")
+    print("=" * 60)
+
+
+def cmd_source_lineage_sources(args=None):
+    from data.governance.lineage_registry_v145 import SourceLineageRegistry
+    reg = SourceLineageRegistry()
+    sources = reg.list_sources()
+    print("=" * 60)
+    print("  Source Lineage: Source Identities")
+    print("  [!] Research Only. No Real Orders.")
+    print("=" * 60)
+    if not sources:
+        print("  No sources registered (in-memory registry is empty at startup).")
+    for s in sources:
+        print(f"  {s.get('source_id')}: {s.get('authority_level')} ({s.get('provider_id')})")
+    print("=" * 60)
+
+
+def cmd_source_lineage_show(args=None):
+    lineage_id = getattr(args, "lineage_id", None) if args else None
+    print("=" * 60)
+    print("  Source Lineage: Show Record")
+    print("  [!] Research Only. No Real Orders.")
+    print("=" * 60)
+    if not lineage_id:
+        print("  Usage: source-lineage-show --lineage-id <ID>")
+    else:
+        print(f"  lineage_id: {lineage_id}")
+        print("  (in-memory registry: no records at startup)")
+    print("=" * 60)
+
+
+def cmd_source_lineage_trace(args=None):
+    lineage_id = getattr(args, "lineage_id", None) if args else None
+    print("=" * 60)
+    print("  Source Lineage: Trace to Root")
+    print("  [!] Research Only. No Real Orders.")
+    print("=" * 60)
+    if not lineage_id:
+        print("  Usage: source-lineage-trace --lineage-id <ID>")
+    else:
+        print(f"  lineage_id: {lineage_id}")
+        print("  Chain: (in-memory registry: no records at startup)")
+    print("=" * 60)
+
+
+def cmd_source_lineage_record(args=None):
+    provider = getattr(args, "provider", None) if args else None
+    record_key = getattr(args, "record_key", None) if args else None
+    print("=" * 60)
+    print("  Source Lineage: Get Record Lineage")
+    print("  [!] Research Only. No Real Orders.")
+    print("=" * 60)
+    if not provider or not record_key:
+        print("  Usage: source-lineage-record --provider <ID> --record-key <KEY>")
+    else:
+        print(f"  provider: {provider}, record_key: {record_key}")
+        print("  (in-memory registry: no records at startup)")
+    print("=" * 60)
+
+
+def cmd_source_lineage_incomplete(args=None):
+    print("=" * 60)
+    print("  Source Lineage: Incomplete Records")
+    print("  [!] Research Only. No Real Orders.")
+    print("=" * 60)
+    print("  No incomplete lineage records (in-memory registry is empty at startup).")
+    print("=" * 60)
+
+
+def cmd_request_ledger_list(args=None):
+    print("=" * 60)
+    print("  Request Ledger: List")
+    print("  [!] Research Only. No Real Orders.")
+    print("  [!] No token stored. Auth headers redacted.")
+    print("=" * 60)
+    print("  No requests in ledger (in-memory ledger is empty at startup).")
+    print("=" * 60)
+
+
+def cmd_request_ledger_show(args=None):
+    request_id = getattr(args, "request_id", None) if args else None
+    print("=" * 60)
+    print("  Request Ledger: Show Request")
+    print("  [!] Research Only. No Real Orders.")
+    print("=" * 60)
+    if not request_id:
+        print("  Usage: request-ledger-show --request-id <ID>")
+    else:
+        print(f"  request_id: {request_id} (not found in empty startup ledger)")
+    print("=" * 60)
+
+
+def cmd_fetch_run_list(args=None):
+    print("=" * 60)
+    print("  Fetch Run Audit: List")
+    print("  [!] Research Only. No Real Orders.")
+    print("=" * 60)
+    print("  No fetch runs (in-memory audit is empty at startup).")
+    print("=" * 60)
+
+
+def cmd_fetch_run_show(args=None):
+    fetch_run_id = getattr(args, "fetch_run_id", None) if args else None
+    print("=" * 60)
+    print("  Fetch Run Audit: Show Run")
+    print("  [!] Research Only. No Real Orders.")
+    print("=" * 60)
+    if not fetch_run_id:
+        print("  Usage: fetch-run-show --fetch-run-id <ID>")
+    else:
+        print(f"  fetch_run_id: {fetch_run_id} (not found in empty startup audit)")
+    print("=" * 60)
+
+
+def cmd_rate_limit_status(args=None):
+    from data.governance.host_policy_v145 import HostPolicyRegistry
+    reg = HostPolicyRegistry()
+    print("=" * 60)
+    print("  Rate Limit Status v1.4.5")
+    print("  [!] Research Only. No Real Orders. No Rate Bypass.")
+    print("  [!] RATE_LIMIT_AUTO_BYPASS_ENABLED=False")
+    print("=" * 60)
+    for p in reg.list_all():
+        print(f"  Host: {p['host']} | min_interval: {p['minimum_interval_ms']}ms "
+              f"| rpm: {p.get('requests_per_minute', 'N/A')} | confidence: {p['confidence']}")
+    print("=" * 60)
+
+
+def cmd_rate_limit_host(args=None):
+    host = getattr(args, "host", None) if args else None
+    print("=" * 60)
+    print("  Rate Limit: Host State")
+    print("  [!] Research Only. No Real Orders.")
+    print("=" * 60)
+    if not host:
+        print("  Usage: rate-limit-host --host <HOSTNAME>")
+    else:
+        from data.governance.rate_limit_manager_v145 import CentralRateLimitManager
+        mgr = CentralRateLimitManager()
+        state = mgr.get_host_state(host)
+        for k, v in state.items():
+            print(f"  {k}: {v}")
+    print("=" * 60)
+
+
+def cmd_rate_limit_provider(args=None):
+    provider = getattr(args, "provider", None) if args else None
+    print("=" * 60)
+    print("  Rate Limit: Provider State")
+    print("  [!] Research Only. No Real Orders.")
+    print("=" * 60)
+    if not provider:
+        print("  Usage: rate-limit-provider --provider <PROVIDER_ID>")
+    else:
+        from data.governance.rate_limit_manager_v145 import CentralRateLimitManager
+        mgr = CentralRateLimitManager()
+        state = mgr.get_provider_state(provider)
+        for k, v in state.items():
+            print(f"  {k}: {v}")
+    print("=" * 60)
+
+
+def cmd_rate_limit_endpoint(args=None):
+    provider = getattr(args, "provider", None) if args else None
+    endpoint_family = getattr(args, "endpoint_family", None) if args else None
+    print("=" * 60)
+    print("  Rate Limit: Endpoint Policy")
+    print("  [!] Research Only. No Real Orders.")
+    print("=" * 60)
+    if not provider or not endpoint_family:
+        print("  Usage: rate-limit-endpoint --provider <ID> --endpoint-family <FAMILY>")
+    else:
+        from data.governance.endpoint_policy_v145 import EndpointPolicyRegistry
+        reg = EndpointPolicyRegistry()
+        result = reg.is_allowed(provider, endpoint_family, "")
+        print(f"  provider: {provider}, endpoint_family: {endpoint_family}")
+        print(f"  allowed: {result['allowed']}, reason: {result['reason']}")
+    print("=" * 60)
+
+
+def cmd_request_budget_status(args=None):
+    from data.governance.provider_budget_v145 import ProviderBudgetRegistry
+    reg = ProviderBudgetRegistry()
+    print("=" * 60)
+    print("  Request Budget Status v1.4.5")
+    print("  [!] Research Only. No Real Orders.")
+    print("=" * 60)
+    for pid in ["twse", "tpex", "mops", "data_gov_tw", "finmind"]:
+        budget = reg.get_budget(pid)
+        check = reg.check_budget(pid, 1)
+        print(f"  {pid}: session_limit={budget.session_limit}, "
+              f"status={check['status']}, remaining={check.get('remaining', '?')}")
+    print("=" * 60)
+
+
+def cmd_quota_evidence_list(args=None):
+    print("=" * 60)
+    print("  Quota Evidence: List")
+    print("  [!] Research Only. No Real Orders.")
+    print("  [!] No auth headers stored. Allowlisted headers only.")
+    print("=" * 60)
+    print("  No quota evidence (in-memory service is empty at startup).")
+    print("=" * 60)
+
+
+def cmd_retry_evidence_list(args=None):
+    print("=" * 60)
+    print("  Retry Evidence: List")
+    print("  [!] Research Only. No Real Orders.")
+    print("=" * 60)
+    print("  No retry evidence (in-memory service is empty at startup).")
+    print("=" * 60)
+
+
+def cmd_cache_lineage_show(args=None):
+    cache_entry_id = getattr(args, "cache_entry_id", None) if args else None
+    print("=" * 60)
+    print("  Cache Lineage: Show")
+    print("  [!] Research Only. No Real Orders.")
+    print("=" * 60)
+    if not cache_entry_id:
+        print("  Usage: cache-lineage-show --cache-entry-id <ID>")
+    else:
+        from data.governance.cache_lineage_v145 import CacheLineageService
+        svc = CacheLineageService()
+        result = svc.trace_to_source(cache_entry_id)
+        print(f"  cache_entry_id: {cache_entry_id}, found: {result['found']}")
+    print("=" * 60)
+
+
+def cmd_conflict_lineage_list(args=None):
+    print("=" * 60)
+    print("  Conflict Lineage: List")
+    print("  [!] Research Only. No Real Orders.")
+    print("  [!] Primary always wins. No auto-repair.")
+    print("=" * 60)
+    print("  No conflict lineage (in-memory service is empty at startup).")
+    print("=" * 60)
+
+
+def cmd_conflict_lineage_show(args=None):
+    conflict_id = getattr(args, "conflict_id", None) if args else None
+    print("=" * 60)
+    print("  Conflict Lineage: Show")
+    print("  [!] Research Only. No Real Orders.")
+    print("=" * 60)
+    if not conflict_id:
+        print("  Usage: conflict-lineage-show --conflict-id <ID>")
+    else:
+        print(f"  conflict_id: {conflict_id} (not found in empty startup service)")
+    print("=" * 60)
+
+
+def cmd_source_governance_report(args=None):
+    from reports.source_lineage_rate_limit_report import SourceLineageRateLimitReport
+    print(SourceLineageRateLimitReport().render())
+
+
 def _argv_from_namespace(args):
     """Convert argparse Namespace to legacy argv list for pre-registry handlers."""
     if args is None:
@@ -32206,6 +32485,28 @@ def main() -> None:
         "finmind-cache-status":      cmd_finmind_cache_status,
         "finmind-adapter-report":    cmd_finmind_adapter_report,
         "finmind-pit-status":        cmd_finmind_pit_status,
+        # v1.4.5 Source Lineage & Rate Limit Governance
+        "source-governance-health":    cmd_source_governance_health,
+        "source-lineage-sources":      cmd_source_lineage_sources,
+        "source-lineage-show":         cmd_source_lineage_show,
+        "source-lineage-trace":        cmd_source_lineage_trace,
+        "source-lineage-record":       cmd_source_lineage_record,
+        "source-lineage-incomplete":   cmd_source_lineage_incomplete,
+        "request-ledger-list":         cmd_request_ledger_list,
+        "request-ledger-show":         cmd_request_ledger_show,
+        "fetch-run-list":              cmd_fetch_run_list,
+        "fetch-run-show":              cmd_fetch_run_show,
+        "rate-limit-status":           cmd_rate_limit_status,
+        "rate-limit-host":             lambda args=None: cmd_rate_limit_host(_argv_from_namespace(args)),
+        "rate-limit-provider":         lambda args=None: cmd_rate_limit_provider(_argv_from_namespace(args)),
+        "rate-limit-endpoint":         lambda args=None: cmd_rate_limit_endpoint(_argv_from_namespace(args)),
+        "request-budget-status":       cmd_request_budget_status,
+        "quota-evidence-list":         cmd_quota_evidence_list,
+        "retry-evidence-list":         cmd_retry_evidence_list,
+        "cache-lineage-show":          lambda args=None: cmd_cache_lineage_show(_argv_from_namespace(args)),
+        "conflict-lineage-list":       cmd_conflict_lineage_list,
+        "conflict-lineage-show":       lambda args=None: cmd_conflict_lineage_show(_argv_from_namespace(args)),
+        "source-governance-report":    cmd_source_governance_report,
     }
 
     if args.command is None:

@@ -1603,6 +1603,66 @@ _FINMIND_COMMANDS: _List[CommandSpec] = [
                 args=[CommandArg(flags=["--dataset"], kwargs={"default": None})]),
 ]
 
+# ---------------------------------------------------------------------------
+# v1.4.5 Source Governance commands
+# ---------------------------------------------------------------------------
+_SOURCE_GOVERNANCE_COMMANDS: _List[CommandSpec] = [
+    CommandSpec(name="source-governance-health", handler_name="cmd_source_governance_health",
+                help="[v1.4.5] Source governance health. Research Only.", group="source_governance", introduced_in="1.4.5"),
+    CommandSpec(name="source-lineage-sources", handler_name="cmd_source_lineage_sources",
+                help="[v1.4.5] List source identities. Research Only.", group="source_governance", introduced_in="1.4.5"),
+    CommandSpec(name="source-lineage-show", handler_name="cmd_source_lineage_show",
+                help="[v1.4.5] Show lineage record. Research Only.", group="source_governance", introduced_in="1.4.5",
+                args=[CommandArg(flags=["--lineage-id"], kwargs={"dest": "lineage_id", "default": None})]),
+    CommandSpec(name="source-lineage-trace", handler_name="cmd_source_lineage_trace",
+                help="[v1.4.5] Trace lineage to root. Research Only.", group="source_governance", introduced_in="1.4.5",
+                args=[CommandArg(flags=["--lineage-id"], kwargs={"dest": "lineage_id", "default": None})]),
+    CommandSpec(name="source-lineage-record", handler_name="cmd_source_lineage_record",
+                help="[v1.4.5] Get record lineage. Research Only.", group="source_governance", introduced_in="1.4.5",
+                args=[CommandArg(flags=["--provider"], kwargs={"default": None}),
+                      CommandArg(flags=["--record-key"], kwargs={"dest": "record_key", "default": None})]),
+    CommandSpec(name="source-lineage-incomplete", handler_name="cmd_source_lineage_incomplete",
+                help="[v1.4.5] List incomplete lineage. Research Only.", group="source_governance", introduced_in="1.4.5"),
+    CommandSpec(name="request-ledger-list", handler_name="cmd_request_ledger_list",
+                help="[v1.4.5] List request ledger. Research Only.", group="source_governance", introduced_in="1.4.5"),
+    CommandSpec(name="request-ledger-show", handler_name="cmd_request_ledger_show",
+                help="[v1.4.5] Show request. Research Only.", group="source_governance", introduced_in="1.4.5",
+                args=[CommandArg(flags=["--request-id"], kwargs={"dest": "request_id", "default": None})]),
+    CommandSpec(name="fetch-run-list", handler_name="cmd_fetch_run_list",
+                help="[v1.4.5] List fetch runs. Research Only.", group="source_governance", introduced_in="1.4.5"),
+    CommandSpec(name="fetch-run-show", handler_name="cmd_fetch_run_show",
+                help="[v1.4.5] Show fetch run. Research Only.", group="source_governance", introduced_in="1.4.5",
+                args=[CommandArg(flags=["--fetch-run-id"], kwargs={"dest": "fetch_run_id", "default": None})]),
+    CommandSpec(name="rate-limit-status", handler_name="cmd_rate_limit_status",
+                help="[v1.4.5] Rate limit status. Research Only.", group="source_governance", introduced_in="1.4.5"),
+    CommandSpec(name="rate-limit-host", handler_name="cmd_rate_limit_host",
+                help="[v1.4.5] Host rate limit state. Research Only.", group="source_governance", introduced_in="1.4.5",
+                args=[CommandArg(flags=["--host"], kwargs={"default": None})]),
+    CommandSpec(name="rate-limit-provider", handler_name="cmd_rate_limit_provider",
+                help="[v1.4.5] Provider rate limit state. Research Only.", group="source_governance", introduced_in="1.4.5",
+                args=[CommandArg(flags=["--provider"], kwargs={"default": None})]),
+    CommandSpec(name="rate-limit-endpoint", handler_name="cmd_rate_limit_endpoint",
+                help="[v1.4.5] Endpoint rate policy. Research Only.", group="source_governance", introduced_in="1.4.5",
+                args=[CommandArg(flags=["--provider"], kwargs={"default": None}),
+                      CommandArg(flags=["--endpoint-family"], kwargs={"dest": "endpoint_family", "default": None})]),
+    CommandSpec(name="request-budget-status", handler_name="cmd_request_budget_status",
+                help="[v1.4.5] Request budget status. Research Only.", group="source_governance", introduced_in="1.4.5"),
+    CommandSpec(name="quota-evidence-list", handler_name="cmd_quota_evidence_list",
+                help="[v1.4.5] List quota evidence. Research Only.", group="source_governance", introduced_in="1.4.5"),
+    CommandSpec(name="retry-evidence-list", handler_name="cmd_retry_evidence_list",
+                help="[v1.4.5] List retry evidence. Research Only.", group="source_governance", introduced_in="1.4.5"),
+    CommandSpec(name="cache-lineage-show", handler_name="cmd_cache_lineage_show",
+                help="[v1.4.5] Show cache lineage. Research Only.", group="source_governance", introduced_in="1.4.5",
+                args=[CommandArg(flags=["--cache-entry-id"], kwargs={"dest": "cache_entry_id", "default": None})]),
+    CommandSpec(name="conflict-lineage-list", handler_name="cmd_conflict_lineage_list",
+                help="[v1.4.5] List conflict lineage. Research Only.", group="source_governance", introduced_in="1.4.5"),
+    CommandSpec(name="conflict-lineage-show", handler_name="cmd_conflict_lineage_show",
+                help="[v1.4.5] Show conflict. Research Only.", group="source_governance", introduced_in="1.4.5",
+                args=[CommandArg(flags=["--conflict-id"], kwargs={"dest": "conflict_id", "default": None})]),
+    CommandSpec(name="source-governance-report", handler_name="cmd_source_governance_report",
+                help="[v1.4.5] Source governance report. Research Only.", group="source_governance", introduced_in="1.4.5"),
+]
+
 # Combined list of all provider commands
 PROVIDER_COMMANDS: _List[CommandSpec] = (
     _RESEARCH_FOUNDATION_COMMANDS
@@ -1611,6 +1671,7 @@ PROVIDER_COMMANDS: _List[CommandSpec] = (
     + _MOPS_COMMANDS
     + _DATA_GOV_TW_COMMANDS
     + _FINMIND_COMMANDS
+    + _SOURCE_GOVERNANCE_COMMANDS
 )
 
 

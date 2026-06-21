@@ -1,0 +1,21 @@
+{
+  "_note": "TEST FIXTURE — NOT REAL DATA. Cache lineage record linking cache entry to TWSE source.",
+  "_fixture_type": "TEST_FIXTURE",
+  "_demo_only": true,
+  "_not_real_data": true,
+  "_fixture_version": "1.4.5",
+  "cache_entry_id": "fixture-cache-twse-001",
+  "source_lineage_id": "fixture-lin-twse-001",
+  "provider_id": "twse_official",
+  "source_id": "twse_official_v140",
+  "authority_level": "PRIMARY_OFFICIAL",
+  "dataset": "daily_ohlcv",
+  "record_key": "2330/2024-01-02",
+  "source_content_hash": "fixture_hash_source_001",
+  "cached_at": "2024-01-02T17:05:00+00:00",
+  "expires_at": "2024-01-03T17:05:00+00:00",
+  "cache_hit_count": 0,
+  "lineage_complete": true,
+  "notes": "Cache entry with full source lineage. TEST FIXTURE ONLY.",
+  "metadata": {"fixture": true}
+}
