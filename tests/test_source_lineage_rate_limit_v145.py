@@ -1568,23 +1568,33 @@ class TestRegression:
         assert RATE_LIMIT_AUTO_BYPASS_ENABLED is False
 
     def test_safety_no_token_rotation(self):
-        from data.governance import __init__ as pkg
+        import data.governance as pkg
         assert pkg.TOKEN_ROTATION_ENABLED is False
 
     def test_safety_no_proxy_rotation(self):
-        from data.governance import __init__ as pkg
+        import data.governance as pkg
         assert pkg.PROXY_ROTATION_ENABLED is False
 
     def test_governance_package_safety_flags(self):
-        from data.governance import __init__ as pkg
+        import data.governance as pkg
         assert pkg.NO_REAL_ORDERS is True
         assert pkg.BROKER_EXECUTION_ENABLED is False
         assert pkg.PRODUCTION_TRADING_BLOCKED is True
 
     def test_version_145(self):
         from release.version_info import VERSION, RELEASE_NAME
-        assert VERSION == "1.4.5"
-        assert "Source Lineage" in RELEASE_NAME
+        # v1.4.5 source lineage feature; accept any successor release
+        assert VERSION >= "1.4.5", f"Expected v1.4.5 or later, got {VERSION}"
+        _KNOWN_NAMES = (
+            "Source Lineage & Rate Limit",
+            "Provider Quality Gates",
+            "Forum Intelligence & Market Sentiment",
+            "Data Provider Stable Rollup",
+            "Full-Suite Collection Integrity Hotfix",
+        )
+        assert any(name in RELEASE_NAME for name in _KNOWN_NAMES), (
+            f"Unexpected RELEASE_NAME for v1.4.5+ release: {RELEASE_NAME}"
+        )
 
     def test_version_145_flags(self):
         from release.version_info import (

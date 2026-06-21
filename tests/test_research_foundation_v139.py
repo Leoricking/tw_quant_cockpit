@@ -49,12 +49,13 @@ class TestVersionInfo:
             "Provider Quality Gates",
             "Forum Intelligence & Market Sentiment",
             "Data Provider Stable Rollup",
+            "Full-Suite Collection Integrity Hotfix",
         }
         assert RELEASE_NAME in _KNOWN, f"Unexpected RELEASE_NAME: {RELEASE_NAME}"
 
     def test_base_release_contains_137(self):
         from release.version_info import BASE_RELEASE
-        assert any(m in BASE_RELEASE for m in ("1.3.7", "1.3.9", "1.4.0", "1.4.1", "1.4.2", "1.4.3", "1.4.4", "1.4.5")), (
+        assert any(m in BASE_RELEASE for m in ("1.3.7", "1.3.9", "1.4.0", "1.4.1", "1.4.2", "1.4.3", "1.4.4", "1.4.5", "1.4.6")), (
             f"BASE_RELEASE does not reference a known base: {BASE_RELEASE}"
         )
 

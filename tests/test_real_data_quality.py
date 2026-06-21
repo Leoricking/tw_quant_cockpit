@@ -769,6 +769,7 @@ class TestVersionInfo:
             "Provider Quality Gates",
             "Forum Intelligence & Market Sentiment",
             "Data Provider Stable Rollup",
+            "Full-Suite Collection Integrity Hotfix",
         ), f"Unexpected release name: {version_info.RELEASE_NAME}"
 
     def test_release_track(self):

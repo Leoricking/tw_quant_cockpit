@@ -72,6 +72,7 @@ class ResearchFoundationReleaseGate:
                 "Provider Quality Gates",
                 "Forum Intelligence & Market Sentiment",
                 "Data Provider Stable Rollup",
+                "Full-Suite Collection Integrity Hotfix",
             }
             parts = tuple(int(x) for x in VERSION.split(".")[:3])
             ok = (

@@ -280,13 +280,14 @@ class TestRegression:
             "Provider Quality Gates",
             "Forum Intelligence & Market Sentiment",
             "Data Provider Stable Rollup",
+            "Full-Suite Collection Integrity Hotfix",
         }
         assert RELEASE_NAME in _KNOWN, f"Unexpected RELEASE_NAME: {RELEASE_NAME}"
 
     def test_38_base_release_is_143(self):
         """Test 38: BASE_RELEASE references 1.4.3 or later."""
         from release.version_info import BASE_RELEASE
-        assert any(m in BASE_RELEASE for m in ("1.4.3", "1.4.4", "1.4.5")), (
+        assert any(m in BASE_RELEASE for m in ("1.4.3", "1.4.4", "1.4.5", "1.4.6")), (
             f"BASE_RELEASE does not reference expected predecessor: {BASE_RELEASE}"
         )
 

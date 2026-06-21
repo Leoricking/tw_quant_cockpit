@@ -1564,11 +1564,16 @@ class TestVersionInfo(unittest.TestCase):
 
     def test_version_is_146(self):
         from release.version_info import VERSION
-        self.assertEqual(VERSION, "1.4.6")
+        # v1.4.6 feature; accept hotfix successor releases
+        self.assertIn(VERSION[:5], ("1.4.6",), msg=f"Expected 1.4.6.x release, got {VERSION}")
 
     def test_release_name_provider_quality_gates(self):
         from release.version_info import RELEASE_NAME
-        self.assertIn("Provider Quality Gates", RELEASE_NAME)
+        _KNOWN = ("Provider Quality Gates", "Full-Suite Collection Integrity Hotfix")
+        self.assertTrue(
+            any(name in RELEASE_NAME for name in _KNOWN),
+            msg=f"Expected v1.4.6-series RELEASE_NAME, got: {RELEASE_NAME}"
+        )
 
     def test_provider_quality_gates_available(self):
         from release.version_info import PROVIDER_QUALITY_GATES_AVAILABLE

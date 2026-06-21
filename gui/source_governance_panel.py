@@ -75,9 +75,12 @@ class SourceGovernancePanel:
     def _build_widget(self):
         try:
             from PyQt5.QtWidgets import (
-                QWidget, QVBoxLayout, QLabel, QGroupBox, QScrollArea
+                QWidget, QVBoxLayout, QLabel, QGroupBox, QScrollArea, QApplication
             )
             from PyQt5.QtGui import QFont
+
+            if QApplication.instance() is None:
+                return
 
             scroll = QScrollArea()
             container = QWidget()

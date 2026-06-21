@@ -1413,6 +1413,7 @@ def test_release_name_142():
         "Provider Quality Gates",
         "Forum Intelligence & Market Sentiment",
         "Data Provider Stable Rollup",
+        "Full-Suite Collection Integrity Hotfix",
     )
     assert RELEASE_NAME in _KNOWN, f"Unexpected RELEASE_NAME: {RELEASE_NAME}"
 
@@ -1420,7 +1421,7 @@ def test_release_name_142():
 def test_base_release_142():
     """Test 127: BASE_RELEASE references Robustness era or later release."""
     from release.version_info import BASE_RELEASE
-    assert any(marker in BASE_RELEASE for marker in ("1.3.6", "1.3.7", "1.3.9", "1.4.0", "1.4.1", "1.4.2", "1.4.3", "1.4.4")), (
+    assert any(marker in BASE_RELEASE for marker in ("1.3.6", "1.3.7", "1.3.9", "1.4.0", "1.4.1", "1.4.2", "1.4.3", "1.4.4", "1.4.5", "1.4.6")), (
         f"BASE_RELEASE does not reference a valid predecessor release: {BASE_RELEASE}"
     )
 

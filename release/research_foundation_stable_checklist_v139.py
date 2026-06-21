@@ -45,11 +45,12 @@ def run_checklist() -> list[dict]:
             "Provider Quality Gates",
             "Forum Intelligence & Market Sentiment",
             "Data Provider Stable Rollup",
+            "Full-Suite Collection Integrity Hotfix",
         }
         parts = tuple(int(x) for x in VERSION.split(".")[:3])
         return (parts >= (1, 3, 9)
                 and RELEASE_NAME in _KNOWN_NAMES
-                and any(m in BASE_RELEASE for m in ("1.3.7", "1.3.9", "1.4.0", "1.4.1", "1.4.2", "1.4.3", "1.4.4", "1.4.5")))
+                and any(m in BASE_RELEASE for m in ("1.3.7", "1.3.9", "1.4.0", "1.4.1", "1.4.2", "1.4.3", "1.4.4", "1.4.5", "1.4.6")))
     items.append(_item(1, "version", "Version metadata correct (>= 1.3.9)", _check_version))
 
     # 2. Capability registry

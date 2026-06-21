@@ -73,9 +73,9 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # ---------------------------------------------------------------------------
 # v1.3.3 module-level constants (Coverage Repair Workflow)
 # ---------------------------------------------------------------------------
-VERSION                             = "1.4.6"
-RELEASE_NAME                        = "Provider Quality Gates"
-BASE_RELEASE                        = "1.4.5 Source Lineage & Rate Limit"
+VERSION                             = "1.4.6.1"
+RELEASE_NAME                        = "Full-Suite Collection Integrity Hotfix"
+BASE_RELEASE                        = "1.4.6 Provider Quality Gates"
 
 # ---------------------------------------------------------------------------
 # v1.3.2 module-level constants (Real Data Provider Adapter Foundation)
