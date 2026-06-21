@@ -1,0 +1,11 @@
+{
+  "_fixture_type": "forum_quality_pass",
+  "_demo_only": true,
+  "_not_real_data": true,
+  "_not_for_formal_conclusion": true,
+  "quality_status": "PASS",
+  "has_timestamp": true,
+  "privacy_leak": false,
+  "formal_standalone": false,
+  "authority": "SUPPLEMENTARY"
+}

@@ -1,0 +1,11 @@
+{
+  "_fixture_type": "forum_sentiment_bearish",
+  "_demo_only": true,
+  "_not_real_data": true,
+  "_not_for_formal_conclusion": true,
+  "polarity": "BEARISH",
+  "stance": "SHORT",
+  "confidence": 0.65,
+  "sarcasm_risk": "LOW",
+  "formal_standalone": false
+}

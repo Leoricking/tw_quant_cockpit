@@ -1,0 +1,12 @@
+{
+  "_fixture_type": "forum_pit_article_versions",
+  "_demo_only": true,
+  "_not_real_data": true,
+  "_not_for_formal_conclusion": true,
+  "article_id": "demo_pit_art_001",
+  "first_seen_at": "2024-01-01T10:00:00Z",
+  "versions": [
+    {"version_seq": 1, "captured_at": "2024-01-01T10:00:00Z", "change_type": "INITIAL"},
+    {"version_seq": 2, "captured_at": "2024-01-01T12:00:00Z", "change_type": "EDIT"}
+  ]
+}

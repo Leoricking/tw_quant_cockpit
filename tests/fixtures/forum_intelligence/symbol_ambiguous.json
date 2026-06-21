@@ -1,0 +1,9 @@
+{
+  "_fixture_type": "forum_symbol_ambiguous",
+  "_demo_only": true,
+  "_not_real_data": true,
+  "_not_for_formal_conclusion": true,
+  "mentions": [
+    {"article_id": "demo_sym_amb_001", "symbol": "DEMO", "match_confidence": "AMBIGUOUS", "context": "不明確示範文字"}
+  ]
+}

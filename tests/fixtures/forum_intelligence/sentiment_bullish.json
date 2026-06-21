@@ -1,0 +1,11 @@
+{
+  "_fixture_type": "forum_sentiment_bullish",
+  "_demo_only": true,
+  "_not_real_data": true,
+  "_not_for_formal_conclusion": true,
+  "polarity": "BULLISH",
+  "stance": "LONG",
+  "confidence": 0.7,
+  "sarcasm_risk": "LOW",
+  "formal_standalone": false
+}

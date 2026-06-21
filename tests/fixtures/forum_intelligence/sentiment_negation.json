@@ -1,0 +1,1 @@
+{"_fixture_type": "forum_sentiment_negation", "_demo_only": true, "_not_real_data": true, "_not_for_formal_conclusion": true, "text": "不看好 不看多", "polarity": "BEARISH", "negation_detected": true, "formal_standalone": false}

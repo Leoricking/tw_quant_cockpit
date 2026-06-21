@@ -4,7 +4,7 @@
   "NOT_REAL_DATA": true,
   "NOT_FOR_FORMAL_CONCLUSION": true,
   "fixture_id": "safety_flags_snapshot",
-  "description": "Expected safety flag values for v1.3.9+ (updated for v1.4.3 — data_gov_tw_provider now available)",
+  "description": "Expected safety flag values for v1.3.9+ (updated for v1.4.7 — forum_intelligence now available)",
   "expected_flags": {
     "NO_REAL_ORDERS": true,
     "BROKER_EXECUTION_ENABLED": false,
@@ -16,6 +16,6 @@
     "TPEX_PROVIDER_AVAILABLE": true,
     "MOPS_PROVIDER_AVAILABLE": true,
     "DATA_GOV_TW_PROVIDER_AVAILABLE": true,
-    "FORUM_INTELLIGENCE_AVAILABLE": false
+    "FORUM_INTELLIGENCE_AVAILABLE": true
   }
 }

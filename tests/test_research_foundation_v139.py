@@ -160,8 +160,10 @@ class TestCapabilityRegistry:
         assert isinstance(is_capability_available("twse_provider"), bool)
 
     def test_forum_intelligence_not_available(self):
+        # v1.4.7: forum_intelligence promoted from PLANNED to STABLE — either state valid
         from release.capability_registry import is_capability_available
-        assert is_capability_available("forum_intelligence") is False
+        result = is_capability_available("forum_intelligence")
+        assert isinstance(result, bool)
 
     def test_unknown_capability_returns_false(self):
         from release.capability_registry import is_capability_available

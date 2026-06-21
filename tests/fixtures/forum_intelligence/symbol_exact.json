@@ -1,0 +1,9 @@
+{
+  "_fixture_type": "forum_symbol_exact",
+  "_demo_only": true,
+  "_not_real_data": true,
+  "_not_for_formal_conclusion": true,
+  "mentions": [
+    {"article_id": "demo_sym_001", "symbol": "2330", "match_confidence": "EXACT", "context": "2330 台積電"}
+  ]
+}

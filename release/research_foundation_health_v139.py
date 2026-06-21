@@ -128,9 +128,7 @@ class ResearchFoundationStableHealthCheck:
                 checks[key] = ("FAIL", str(exc))
 
         # Capabilities that MUST stay planned/unavailable (not yet shipped)
-        still_planned_caps = [
-            "forum_intelligence",
-        ]
+        still_planned_caps: list = []  # v1.4.7: forum_intelligence promoted to STABLE
         for cap_id in still_planned_caps:
             key = f"planned_not_available_{cap_id}"
             try:
@@ -144,6 +142,7 @@ class ResearchFoundationStableHealthCheck:
         # Capabilities that have valid lifecycle progression (PLANNED→STABLE is correct)
         progressed_caps = [
             "tpex_provider", "mops_provider", "data_gov_tw_provider", "finmind_adapter_hardening",
+            "forum_intelligence",  # v1.4.7: promoted from PLANNED to STABLE
         ]
         for cap_id in progressed_caps:
             key = f"planned_not_available_{cap_id}"

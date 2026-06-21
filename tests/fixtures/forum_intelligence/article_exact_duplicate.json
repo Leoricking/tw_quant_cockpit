@@ -1,0 +1,24 @@
+{
+  "_fixture_type": "forum_article_exact_duplicate",
+  "_demo_only": true,
+  "_not_real_data": true,
+  "_not_for_formal_conclusion": true,
+  "articles": [
+    {
+      "article_id": "demo_art_dup_001",
+      "source_id": "ptt_stock",
+      "title": "[標的] 示範重複文章A",
+      "body_hash": "demo_hash_exact_001",
+      "duplicate_status": "EXACT_DUPLICATE",
+      "canonical_url": "https://www.ptt.cc/bbs/Stock/M.DEMO001.html"
+    },
+    {
+      "article_id": "demo_art_dup_002",
+      "source_id": "ptt_stock",
+      "title": "[標的] 示範重複文章A",
+      "body_hash": "demo_hash_exact_001",
+      "duplicate_status": "EXACT_DUPLICATE",
+      "canonical_url": "https://www.ptt.cc/bbs/Stock/M.DEMO002.html"
+    }
+  ]
+}

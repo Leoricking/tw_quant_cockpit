@@ -53,6 +53,13 @@ class ResearchFoundationReleaseGate:
         gates.append(self._quarantine_policy_gate())
         gates.append(self._quality_audit_gate())
         gates.append(self._no_hidden_blocking_failure_gate())
+        # v1.4.7 Forum Intelligence gates
+        gates.append(self._forum_source_allowlist_gate())
+        gates.append(self._forum_privacy_gate())
+        gates.append(self._forum_pit_gate())
+        gates.append(self._forum_no_official_override_gate())
+        gates.append(self._forum_no_standalone_conclusion_gate())
+        gates.append(self._forum_safety_gate())
         return gates
 
     def _version_gate(self) -> dict:
@@ -78,7 +85,7 @@ class ResearchFoundationReleaseGate:
             ok = (
                 parts >= (1, 3, 9)
                 and RELEASE_NAME in _KNOWN_NAMES
-                and any(m in BASE_RELEASE for m in ("1.3.7", "1.3.9", "1.4.0", "1.4.1", "1.4.2", "1.4.3", "1.4.4", "1.4.5", "1.4.6"))
+                and any(m in BASE_RELEASE for m in ("1.3.7", "1.3.9", "1.4.0", "1.4.1", "1.4.2", "1.4.3", "1.4.4", "1.4.5", "1.4.6", "1.4.6.1"))
                 and REPLAY_STABLE_BASELINE == "1.2.9"
             )
             return _make_gate(
@@ -536,6 +543,132 @@ class ResearchFoundationReleaseGate:
         except Exception as exc:
             return _make_gate("NO_HIDDEN_BLOCKING_FAILURE", "FAIL", str(exc), True, [],
                               "Fix decision_engine_v146")
+
+    # ------------------------------------------------------------------
+    # v1.4.7 Forum Intelligence gates
+    # ------------------------------------------------------------------
+
+    def _forum_source_allowlist_gate(self) -> dict:
+        try:
+            from data.providers.forum.source_registry_v147 import ForumSourceRegistry
+            reg = ForumSourceRegistry()
+            ptt = reg.get_source("ptt_stock")
+            ok = ptt is not None and ptt.allowlisted is True and ptt.is_private is False
+            return _make_gate(
+                "FORUM_SOURCE_ALLOWLIST_VALID",
+                "PASS" if ok else "FAIL",
+                f"ptt_stock allowlisted={ptt.allowlisted if ptt else None}, is_private={ptt.is_private if ptt else None}",
+                not ok, [],
+                "" if ok else "PTT source not in allowlist or is_private=True"
+            )
+        except Exception as exc:
+            return _make_gate("FORUM_SOURCE_ALLOWLIST_VALID", "FAIL", str(exc), True, [],
+                              "Fix source_registry_v147")
+
+    def _forum_privacy_gate(self) -> dict:
+        try:
+            from data.providers.forum.privacy_v147 import ForumPrivacyRedactor
+            r = ForumPrivacyRedactor()
+            text = "IP: 192.168.1.1"
+            result = r.redact_text(text)
+            ok = "192.168.1.1" not in result
+            ok = ok and not hasattr(r, "infer_real_identity")
+            return _make_gate(
+                "FORUM_PRIVACY_GATE_VALID",
+                "PASS" if ok else "FAIL",
+                f"IP redacted, no identity inference",
+                not ok, [],
+                "" if ok else "ForumPrivacyRedactor must redact full IPs"
+            )
+        except Exception as exc:
+            return _make_gate("FORUM_PRIVACY_GATE_VALID", "FAIL", str(exc), True, [],
+                              "Fix privacy_v147")
+
+    def _forum_pit_gate(self) -> dict:
+        try:
+            from data.providers.forum.point_in_time_v147 import ForumPointInTimeService, FORUM_FUTURE_LEAKAGE_ENABLED
+            ok = FORUM_FUTURE_LEAKAGE_ENABLED is False
+            pit = ForumPointInTimeService()
+            ok = ok and callable(getattr(pit, "get_article_as_of", None))
+            ok = ok and callable(getattr(pit, "get_comments_as_of", None))
+            ok = ok and callable(getattr(pit, "get_deletion_state_as_of", None))
+            return _make_gate(
+                "FORUM_PIT_GATE_VALID",
+                "PASS" if ok else "FAIL",
+                f"FORUM_FUTURE_LEAKAGE_ENABLED={FORUM_FUTURE_LEAKAGE_ENABLED}, PIT methods available",
+                not ok, [],
+                "" if ok else "Fix point_in_time_v147"
+            )
+        except Exception as exc:
+            return _make_gate("FORUM_PIT_GATE_VALID", "FAIL", str(exc), True, [],
+                              "Fix point_in_time_v147")
+
+    def _forum_no_official_override_gate(self) -> dict:
+        try:
+            from data.providers.forum import FORUM_CAN_OVERRIDE_OFFICIAL_SOURCE
+            ok = FORUM_CAN_OVERRIDE_OFFICIAL_SOURCE is False
+            return _make_gate(
+                "FORUM_NO_OFFICIAL_OVERRIDE",
+                "PASS" if ok else "FAIL",
+                f"FORUM_CAN_OVERRIDE_OFFICIAL_SOURCE={FORUM_CAN_OVERRIDE_OFFICIAL_SOURCE}",
+                not ok, [],
+                "" if ok else "FORUM_CAN_OVERRIDE_OFFICIAL_SOURCE must be False"
+            )
+        except Exception as exc:
+            return _make_gate("FORUM_NO_OFFICIAL_OVERRIDE", "FAIL", str(exc), True, [],
+                              "Fix forum __init__.py")
+
+    def _forum_no_standalone_conclusion_gate(self) -> dict:
+        try:
+            from data.providers.forum import FORUM_FORMAL_CONCLUSION_STANDALONE_ALLOWED
+            ok = FORUM_FORMAL_CONCLUSION_STANDALONE_ALLOWED is False
+            return _make_gate(
+                "FORUM_NO_STANDALONE_CONCLUSION",
+                "PASS" if ok else "FAIL",
+                f"FORUM_FORMAL_CONCLUSION_STANDALONE_ALLOWED={FORUM_FORMAL_CONCLUSION_STANDALONE_ALLOWED}",
+                not ok, [],
+                "" if ok else "FORUM_FORMAL_CONCLUSION_STANDALONE_ALLOWED must be False"
+            )
+        except Exception as exc:
+            return _make_gate("FORUM_NO_STANDALONE_CONCLUSION", "FAIL", str(exc), True, [],
+                              "Fix forum __init__.py")
+
+    def _forum_safety_gate(self) -> dict:
+        try:
+            from data.providers.forum import (
+                FORUM_CAN_GENERATE_BUY_SELL,
+                FORUM_PRIVATE_BOARD_ACCESS_ENABLED,
+                FORUM_LOGIN_BYPASS_ENABLED,
+                FORUM_CAPTCHA_BYPASS_ENABLED,
+                FORUM_PROXY_ROTATION_ENABLED,
+                FORUM_AUTO_POSTING_ENABLED,
+                FORUM_AUTHOR_IDENTITY_INFERENCE_ENABLED,
+                NO_REAL_ORDERS,
+                BROKER_EXECUTION_ENABLED,
+                PRODUCTION_TRADING_BLOCKED,
+            )
+            ok = (
+                FORUM_CAN_GENERATE_BUY_SELL is False
+                and FORUM_PRIVATE_BOARD_ACCESS_ENABLED is False
+                and FORUM_LOGIN_BYPASS_ENABLED is False
+                and FORUM_CAPTCHA_BYPASS_ENABLED is False
+                and FORUM_PROXY_ROTATION_ENABLED is False
+                and FORUM_AUTO_POSTING_ENABLED is False
+                and FORUM_AUTHOR_IDENTITY_INFERENCE_ENABLED is False
+                and NO_REAL_ORDERS is True
+                and BROKER_EXECUTION_ENABLED is False
+                and PRODUCTION_TRADING_BLOCKED is True
+            )
+            return _make_gate(
+                "FORUM_SAFETY_GATE_VALID",
+                "PASS" if ok else "FAIL",
+                "All forum safety flags validated",
+                not ok, [],
+                "" if ok else "Fix forum safety flags"
+            )
+        except Exception as exc:
+            return _make_gate("FORUM_SAFETY_GATE_VALID", "FAIL", str(exc), True, [],
+                              "Fix forum safety flags")
 
     def get_gate_summary(self) -> dict:
         gates = self.run()

@@ -1312,6 +1312,7 @@ def test_149_release_name():
         "Source Lineage & Rate Limit",
         "Provider Quality Gates",
         "Full-Suite Collection Integrity Hotfix",
+        "Forum Intelligence & Market Sentiment",
     }
     assert RELEASE_NAME in known_names, f"Unexpected RELEASE_NAME: {RELEASE_NAME}"
 

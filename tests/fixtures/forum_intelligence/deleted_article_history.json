@@ -1,0 +1,13 @@
+{
+  "_fixture_type": "forum_deleted_article_history",
+  "_demo_only": true,
+  "_not_real_data": true,
+  "_not_for_formal_conclusion": true,
+  "article_id": "demo_del_art_001",
+  "is_deleted": true,
+  "deletion_type": "DELETED_BY_AUTHOR",
+  "deletion_events": [
+    {"detected_at": "2024-01-06T10:00:00Z", "deletion_type": "DELETED_BY_AUTHOR"}
+  ],
+  "lineage_preserved": true
+}

@@ -1,0 +1,22 @@
+{
+  "_fixture_type": "forum_article_near_duplicate",
+  "_demo_only": true,
+  "_not_real_data": true,
+  "_not_for_formal_conclusion": true,
+  "articles": [
+    {
+      "article_id": "demo_near_001",
+      "body_hash": "demo_hash_near_001",
+      "normalized_hash": "demo_normalized_hash_001",
+      "duplicate_status": "NEAR_DUPLICATE",
+      "similarity_score": 0.92
+    },
+    {
+      "article_id": "demo_near_002",
+      "body_hash": "demo_hash_near_002",
+      "normalized_hash": "demo_normalized_hash_001",
+      "duplicate_status": "NEAR_DUPLICATE",
+      "similarity_score": 0.92
+    }
+  ]
+}

@@ -1,0 +1,1 @@
+{"_fixture_type": "forum_coordination_high", "_demo_only": true, "_not_real_data": true, "_not_for_formal_conclusion": true, "risk_level": "HIGH", "risk_signals": ["repeated_text", "same_url_burst", "synchronized_posts"], "criminal_label": null, "legal_accusation": null}

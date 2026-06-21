@@ -1,0 +1,9 @@
+{
+  "_fixture_type": "forum_topic_ai_server",
+  "_demo_only": true,
+  "_not_real_data": true,
+  "_not_for_formal_conclusion": true,
+  "topic": "AI_SERVER",
+  "evidence_terms": ["AI伺服器", "示範AI詞彙"],
+  "model_version": "demo_topic_v1"
+}

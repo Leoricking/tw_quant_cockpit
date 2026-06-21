@@ -1,0 +1,12 @@
+{
+  "_fixture_type": "forum_pit_future_comment",
+  "_demo_only": true,
+  "_not_real_data": true,
+  "_not_for_formal_conclusion": true,
+  "article_id": "demo_pit_art_002",
+  "as_of": "2024-01-05T00:00:00Z",
+  "comments": [
+    {"first_seen_at": "2024-01-04T12:00:00Z", "visible": true},
+    {"first_seen_at": "2024-01-10T08:00:00Z", "visible": false, "reason": "future_comment_blocked"}
+  ]
+}

@@ -1,0 +1,11 @@
+{
+  "_fixture_type": "forum_quality_blocked",
+  "_demo_only": true,
+  "_not_real_data": true,
+  "_not_for_formal_conclusion": true,
+  "quality_status": "BLOCKED",
+  "has_timestamp": false,
+  "blocked_reason": "missing_timestamp",
+  "formal_standalone": false,
+  "authority": "SUPPLEMENTARY"
+}

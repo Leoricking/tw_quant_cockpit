@@ -701,3 +701,17 @@ reports/provider_quality_gates_*.md
 
 # v1.4.6 Provider Quality Gates fixtures ARE committed (exception)
 !tests/fixtures/provider_quality_gates/*.json
+
+# v1.4.7 Forum Intelligence & Market Sentiment (runtime data — never commit)
+data/forum/
+data/forum_cache/
+data/forum_raw/
+data/forum_runs/
+data/forum_intelligence.db
+
+# v1.4.7 Forum Intelligence report outputs (generated artifacts)
+reports/forum_intelligence_*.md
+
+# v1.4.7 Forum Intelligence fixtures ARE committed (exception)
+!tests/fixtures/forum_intelligence/*.json
+!tests/fixtures/forum_intelligence/*.html

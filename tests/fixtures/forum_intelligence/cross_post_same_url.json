@@ -1,0 +1,10 @@
+{
+  "_fixture_type": "forum_cross_post_same_url",
+  "_demo_only": true,
+  "_not_real_data": true,
+  "_not_for_formal_conclusion": true,
+  "articles": [
+    {"article_id": "demo_cp_001", "canonical_url": "https://example-demo.com/article/001", "duplicate_status": "CROSS_POST"},
+    {"article_id": "demo_cp_002", "canonical_url": "https://example-demo.com/article/001", "duplicate_status": "CROSS_POST"}
+  ]
+}

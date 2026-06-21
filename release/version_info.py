@@ -73,9 +73,9 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # ---------------------------------------------------------------------------
 # v1.3.3 module-level constants (Coverage Repair Workflow)
 # ---------------------------------------------------------------------------
-VERSION                             = "1.4.6.1"
-RELEASE_NAME                        = "Full-Suite Collection Integrity Hotfix"
-BASE_RELEASE                        = "1.4.6 Provider Quality Gates"
+VERSION                             = "1.4.7"
+RELEASE_NAME                        = "Forum Intelligence & Market Sentiment"
+BASE_RELEASE                        = "1.4.6.1 Full-Suite Collection Integrity Hotfix"
 
 # ---------------------------------------------------------------------------
 # v1.3.2 module-level constants (Real Data Provider Adapter Foundation)
@@ -461,8 +461,35 @@ TWSE_PROVIDER_AVAILABLE                    = True
 TPEX_PROVIDER_AVAILABLE                    = True
 MOPS_PROVIDER_AVAILABLE                    = True
 DATA_GOV_TW_PROVIDER_AVAILABLE             = True
-FORUM_INTELLIGENCE_AVAILABLE               = False
+FORUM_INTELLIGENCE_AVAILABLE               = True
 AUTO_OPTIMIZATION_ENABLED                  = False
+
+# v1.4.7 Forum Intelligence & Market Sentiment flags
+MARKET_SENTIMENT_AVAILABLE                  = True
+PTT_STOCK_ADAPTER_AVAILABLE                 = True
+PUBLIC_FORUM_ONLY                           = True
+FORUM_SOURCE_ALLOWLIST_REQUIRED             = True
+FORUM_ROBOTS_POLICY_REQUIRED               = True
+FORUM_RATE_LIMIT_REQUIRED                   = True
+FORUM_POINT_IN_TIME_AVAILABLE               = True
+FORUM_EDIT_HISTORY_AVAILABLE                = True
+FORUM_DELETION_STATUS_AVAILABLE             = True
+FORUM_DEDUPLICATION_AVAILABLE               = True
+FORUM_SYMBOL_LINKING_AVAILABLE              = True
+FORUM_TOPIC_MODEL_AVAILABLE                 = True
+FORUM_SENTIMENT_MODEL_AVAILABLE             = True
+FORUM_MANIPULATION_RISK_AVAILABLE           = True
+FORUM_COORDINATION_RISK_AVAILABLE           = True
+FORUM_AUTHOR_IDENTITY_INFERENCE_ENABLED     = False  # ALWAYS FALSE
+FORUM_PRIVATE_BOARD_ACCESS_ENABLED          = False  # ALWAYS FALSE
+FORUM_LOGIN_BYPASS_ENABLED                  = False  # ALWAYS FALSE
+FORUM_CAPTCHA_BYPASS_ENABLED                = False  # ALWAYS FALSE
+FORUM_PROXY_ROTATION_ENABLED                = False  # ALWAYS FALSE
+FORUM_AUTO_POSTING_ENABLED                  = False  # ALWAYS FALSE
+FORUM_CAN_GENERATE_BUY_SELL                 = False  # ALWAYS FALSE
+FORUM_CAN_OVERRIDE_OFFICIAL_SOURCE          = False  # ALWAYS FALSE
+FORUM_FORMAL_CONCLUSION_STANDALONE_ALLOWED  = False  # ALWAYS FALSE
+FORUM_AUTO_TRADING_ENABLED                  = False  # ALWAYS FALSE
 
 # v1.4.0 TWSE Provider flags
 TWSE_PROVIDER_OFFICIAL_SOURCE_ONLY         = True
@@ -1234,6 +1261,32 @@ def print_version_info() -> None:
     print(f"  Silent Provider Fallback Enabled: {SILENT_PROVIDER_FALLBACK_ENABLED}")
     print(f"  Auto Quarantine Release Enabled: {AUTO_QUARANTINE_RELEASE_ENABLED}")
     print(f"  Auto Rate Limit Bypass Enabled: {AUTO_RATE_LIMIT_BYPASS_ENABLED}")
+    # v1.4.7 Forum Intelligence & Market Sentiment flags
+    print(f"  Forum Intelligence Available: {FORUM_INTELLIGENCE_AVAILABLE}")
+    print(f"  Market Sentiment Available: {MARKET_SENTIMENT_AVAILABLE}")
+    print(f"  PTT Stock Adapter Available: {PTT_STOCK_ADAPTER_AVAILABLE}")
+    print(f"  Public Forum Only: {PUBLIC_FORUM_ONLY}")
+    print(f"  Forum Source Allowlist Required: {FORUM_SOURCE_ALLOWLIST_REQUIRED}")
+    print(f"  Forum Rate Limit Required: {FORUM_RATE_LIMIT_REQUIRED}")
+    print(f"  Forum Point-In-Time Available: {FORUM_POINT_IN_TIME_AVAILABLE}")
+    print(f"  Forum Edit History Available: {FORUM_EDIT_HISTORY_AVAILABLE}")
+    print(f"  Forum Deletion Status Available: {FORUM_DELETION_STATUS_AVAILABLE}")
+    print(f"  Forum Deduplication Available: {FORUM_DEDUPLICATION_AVAILABLE}")
+    print(f"  Forum Symbol Linking Available: {FORUM_SYMBOL_LINKING_AVAILABLE}")
+    print(f"  Forum Topic Model Available: {FORUM_TOPIC_MODEL_AVAILABLE}")
+    print(f"  Forum Sentiment Model Available: {FORUM_SENTIMENT_MODEL_AVAILABLE}")
+    print(f"  Forum Manipulation Risk Available: {FORUM_MANIPULATION_RISK_AVAILABLE}")
+    print(f"  Forum Coordination Risk Available: {FORUM_COORDINATION_RISK_AVAILABLE}")
+    print(f"  Forum Author Identity Inference Enabled: {FORUM_AUTHOR_IDENTITY_INFERENCE_ENABLED}")
+    print(f"  Forum Private Board Access Enabled: {FORUM_PRIVATE_BOARD_ACCESS_ENABLED}")
+    print(f"  Forum Login Bypass Enabled: {FORUM_LOGIN_BYPASS_ENABLED}")
+    print(f"  Forum CAPTCHA Bypass Enabled: {FORUM_CAPTCHA_BYPASS_ENABLED}")
+    print(f"  Forum Proxy Rotation Enabled: {FORUM_PROXY_ROTATION_ENABLED}")
+    print(f"  Forum Auto Posting Enabled: {FORUM_AUTO_POSTING_ENABLED}")
+    print(f"  Forum Can Generate Buy/Sell: {FORUM_CAN_GENERATE_BUY_SELL}")
+    print(f"  Forum Can Override Official Source: {FORUM_CAN_OVERRIDE_OFFICIAL_SOURCE}")
+    print(f"  Forum Formal Conclusion Standalone Allowed: {FORUM_FORMAL_CONCLUSION_STANDALONE_ALLOWED}")
+    print(f"  Forum Auto Trading Enabled: {FORUM_AUTO_TRADING_ENABLED}")
     print("=" * 60)
 
 

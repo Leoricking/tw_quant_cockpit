@@ -31733,6 +31733,395 @@ def cmd_provider_quality_gate_detail(args=None):
             print(f"    {g.gate_id}")
 
 
+# ---------------------------------------------------------------------------
+# v1.4.7 Forum Intelligence & Market Sentiment handlers
+# ---------------------------------------------------------------------------
+
+def cmd_forum_health(args=None):
+    """[v1.4.7] Forum Intelligence health check. SUPPLEMENTARY authority only."""
+    from data.providers.forum.health_v147 import ForumIntelligenceHealthCheck
+    summary = ForumIntelligenceHealthCheck().get_health_summary()
+    print("=" * 60)
+    print("  TW Quant Cockpit — Forum Intelligence Health v1.4.7")
+    print("  [!] Research Only. Forum = SUPPLEMENTARY authority.")
+    print("=" * 60)
+    print(f"  Version: {summary.get('version', '1.4.7')}")
+    print(f"  Total:   {summary.get('total', 0)}")
+    print(f"  PASS:    {summary.get('passed', 0)}")
+    print(f"  FAIL:    {summary.get('failed', 0)}")
+    print(f"  WARN:    {summary.get('warned', 0)}")
+    print()
+    for name, info in summary.get("checks", {}).items():
+        status = info.get("status", "?")
+        detail = info.get("detail", "")
+        marker = "[PASS]" if status == "PASS" else "[FAIL]" if status == "FAIL" else "[WARN]"
+        print(f"  {marker} {name}: {detail}")
+    print("=" * 60)
+    if summary.get("failed", 0) > 0:
+        import sys
+        sys.exit(1)
+
+
+def cmd_forum_sources(args=None):
+    """[v1.4.7] List registered forum sources."""
+    from data.providers.forum.source_registry_v147 import ForumSourceRegistry
+    reg = ForumSourceRegistry()
+    sources = reg.list_sources()
+    print("=" * 60)
+    print("  Forum Sources (SUPPLEMENTARY authority only)")
+    print("=" * 60)
+    for s in sources:
+        sid = getattr(s, "source_id", "?")
+        name = getattr(s, "display_name", "?")
+        auth = getattr(s, "authority_level", "?")
+        print(f"  [{sid}] {name} authority={auth}")
+    print(f"  Total: {len(sources)}")
+    print("=" * 60)
+
+
+def cmd_forum_source(args=None):
+    """[v1.4.7] Show forum source detail."""
+    source_id = getattr(args, "source_id", None) or ""
+    from data.providers.forum.source_registry_v147 import ForumSourceRegistry
+    reg = ForumSourceRegistry()
+    if source_id:
+        s = reg.get_source(source_id)
+        if s:
+            print("=" * 60)
+            print(f"  Forum Source: {source_id}")
+            print("=" * 60)
+            for k, v in vars(s).items():
+                print(f"  {k}: {v}")
+        else:
+            print(f"  Source '{source_id}' not found.")
+    else:
+        print("  Use --source-id to specify a source.")
+
+
+def cmd_ptt_stock_health(args=None):
+    """[v1.4.7] PTT Stock board provider health."""
+    from data.providers.forum.ptt.provider_v147 import PTTStockProvider
+    prov = PTTStockProvider(dry_run=True)
+    result = prov.health_check()
+    print("=" * 60)
+    print("  PTT Stock Board Provider Health v1.4.7")
+    print("  [!] Research Only. Public board. SUPPLEMENTARY authority.")
+    print("=" * 60)
+    print(f"  Healthy: {result.get('healthy', False)}")
+    print(f"  Authority: {result.get('authority', 'SUPPLEMENTARY')}")
+    print(f"  dry_run: {result.get('dry_run', True)}")
+    print(f"  Requires Login: {result.get('requires_login', False)}")
+    for k, v in result.get("checks", {}).items():
+        print(f"  [{v}] {k}")
+    print("=" * 60)
+
+
+def cmd_ptt_stock_plan(args=None):
+    """[v1.4.7] PTT Stock fetch plan (dry-run, read-only)."""
+    pages = getattr(args, "pages", 2)
+    from data.providers.forum.ptt.provider_v147 import PTTStockProvider
+    prov = PTTStockProvider(dry_run=True)
+    plan = prov.plan(pages=pages)
+    print("=" * 60)
+    print("  PTT Stock Fetch Plan (DRY-RUN)")
+    print("  [!] Research Only. No real HTTP. SUPPLEMENTARY.")
+    print("=" * 60)
+    print(f"  Pages planned: {plan.get('pages', pages)}")
+    print(f"  Board: {plan.get('board', 'Stock')}")
+    print(f"  dry_run: {plan.get('dry_run', True)}")
+    print(f"  formal_standalone: {plan.get('formal_standalone', False)}")
+    print("=" * 60)
+
+
+def cmd_ptt_stock_fetch(args=None):
+    """[v1.4.7] PTT Stock fetch (dry-run by default)."""
+    pages = getattr(args, "pages", 1)
+    dry_run = getattr(args, "dry_run", True)
+    print("=" * 60)
+    print("  PTT Stock Fetch")
+    print("  [!] Research Only. SUPPLEMENTARY authority. No real orders.")
+    print("=" * 60)
+    print(f"  dry_run: {dry_run}")
+    print(f"  pages: {pages}")
+    print(f"  [DRY-RUN] No HTTP requests made. Forum = SUPPLEMENTARY.")
+    print("=" * 60)
+
+
+def cmd_ptt_stock_article(args=None):
+    """[v1.4.7] Show PTT article detail (dry-run, read-only)."""
+    article_id = getattr(args, "article_id", None) or ""
+    print("=" * 60)
+    print("  PTT Article Detail (DRY-RUN)")
+    print("  [!] Research Only. SUPPLEMENTARY. No real orders.")
+    print("=" * 60)
+    if article_id:
+        print(f"  Article ID: {article_id}")
+        print(f"  [DRY-RUN] No HTTP. Use forum-article --article-id for stored data.")
+    else:
+        print("  Use --article-id to specify an article.")
+    print("=" * 60)
+
+
+def cmd_forum_article(args=None):
+    """[v1.4.7] Show forum article from store."""
+    article_id = getattr(args, "article_id", None) or ""
+    print("=" * 60)
+    print("  Forum Article (Store)")
+    print("  [!] Research Only. SUPPLEMENTARY authority.")
+    print("=" * 60)
+    if article_id:
+        print(f"  Article ID: {article_id}")
+        print(f"  [INFO] Stored article lookup requires populated ForumStore.")
+        print(f"  [INFO] Forum data = SUPPLEMENTARY. Not for standalone formal use.")
+    else:
+        print("  Use --article-id to specify an article.")
+    print("=" * 60)
+
+
+def cmd_forum_article_as_of(args=None):
+    """[v1.4.7] Show forum article point-in-time state."""
+    article_id = getattr(args, "article_id", None) or ""
+    as_of = getattr(args, "as_of", None) or ""
+    print("=" * 60)
+    print("  Forum Article Point-In-Time")
+    print("  [!] Research Only. SUPPLEMENTARY. PIT-safe (no future leakage).")
+    print("=" * 60)
+    if article_id and as_of:
+        print(f"  Article ID: {article_id}")
+        print(f"  As-of: {as_of}")
+        print(f"  [INFO] PIT service blocks future-dated comments automatically.")
+        print(f"  [INFO] formal_standalone=False always.")
+    else:
+        print("  Use --article-id and --as-of (ISO8601).")
+    print("=" * 60)
+
+
+def cmd_forum_search(args=None):
+    """[v1.4.7] Search forum articles."""
+    query = getattr(args, "query", None) or ""
+    symbol = getattr(args, "symbol", None) or ""
+    print("=" * 60)
+    print("  Forum Article Search")
+    print("  [!] Research Only. SUPPLEMENTARY authority.")
+    print("=" * 60)
+    print(f"  query: {query or '(none)'}")
+    print(f"  symbol: {symbol or '(none)'}")
+    print(f"  [INFO] Results = SUPPLEMENTARY. Not for standalone formal conclusions.")
+    print("=" * 60)
+
+
+def cmd_forum_symbol(args=None):
+    """[v1.4.7] Forum mentions for a symbol."""
+    symbol = getattr(args, "symbol", None) or ""
+    print("=" * 60)
+    print("  Forum Symbol Mentions")
+    print("  [!] Research Only. SUPPLEMENTARY. Not a BUY/SELL signal.")
+    print("=" * 60)
+    if symbol:
+        print(f"  Symbol: {symbol}")
+        print(f"  [INFO] Mention count is engagement only, NOT a trading signal.")
+        print(f"  [INFO] SUPPLEMENTARY authority — cannot override official data.")
+    else:
+        print("  Use --symbol to specify a ticker.")
+    print("=" * 60)
+
+
+def cmd_forum_topics(args=None):
+    """[v1.4.7] Forum topic signals summary."""
+    symbol = getattr(args, "symbol", None) or ""
+    print("=" * 60)
+    print("  Forum Topic Signals")
+    print("  [!] Research Only. SUPPLEMENTARY authority.")
+    print("=" * 60)
+    print(f"  symbol: {symbol or '(all)'}")
+    print(f"  [INFO] Topic signals are supplementary context only.")
+    print(f"  [INFO] formal_standalone=False always.")
+    print("=" * 60)
+
+
+def cmd_forum_sentiment(args=None):
+    """[v1.4.7] Forum sentiment for a symbol."""
+    symbol = getattr(args, "symbol", None) or ""
+    window = getattr(args, "window", "1d")
+    print("=" * 60)
+    print("  Forum Sentiment Signal")
+    print("  [!] Research Only. SUPPLEMENTARY. Not BUY/SELL.")
+    print("=" * 60)
+    if symbol:
+        print(f"  Symbol: {symbol}")
+        print(f"  Window: {window}")
+        print(f"  [INFO] PUSH/BOO = engagement metrics ONLY, NOT bullish/bearish signals.")
+        print(f"  [INFO] formal_standalone=False always.")
+    else:
+        print("  Use --symbol to specify a ticker.")
+    print("=" * 60)
+
+
+def cmd_forum_market_sentiment(args=None):
+    """[v1.4.7] Forum market-wide sentiment snapshot."""
+    window = getattr(args, "window", "1d")
+    print("=" * 60)
+    print("  Forum Market Sentiment")
+    print("  [!] Research Only. SUPPLEMENTARY. Not a market forecast.")
+    print("=" * 60)
+    print(f"  Window: {window}")
+    print(f"  [INFO] Market sentiment = SUPPLEMENTARY context only.")
+    print(f"  [INFO] Cannot override TWSE/TPEX official data.")
+    print(f"  [INFO] formal_standalone=False always.")
+    print("=" * 60)
+
+
+def cmd_forum_engagement(args=None):
+    """[v1.4.7] Forum engagement signals for an article."""
+    article_id = getattr(args, "article_id", None) or ""
+    print("=" * 60)
+    print("  Forum Engagement Signals")
+    print("  [!] Research Only. SUPPLEMENTARY authority.")
+    print("=" * 60)
+    if article_id:
+        print(f"  Article ID: {article_id}")
+        print(f"  [INFO] PUSH/BOO counts are engagement metrics only.")
+        print(f"  [INFO] NOT bullish/bearish shortcuts.")
+    else:
+        print("  Use --article-id to specify an article.")
+    print("=" * 60)
+
+
+def cmd_forum_credibility(args=None):
+    """[v1.4.7] Forum credibility signals for an article."""
+    article_id = getattr(args, "article_id", None) or ""
+    print("=" * 60)
+    print("  Forum Credibility Signals")
+    print("  [!] Research Only. SUPPLEMENTARY authority.")
+    print("=" * 60)
+    if article_id:
+        print(f"  Article ID: {article_id}")
+        print(f"  [INFO] Credibility is relative to forum context only.")
+        print(f"  [INFO] formal_standalone=False always.")
+    else:
+        print("  Use --article-id to specify an article.")
+    print("=" * 60)
+
+
+def cmd_forum_coordination_risk(args=None):
+    """[v1.4.7] Forum coordination risk for a cluster."""
+    cluster_id = getattr(args, "cluster_id", None) or ""
+    print("=" * 60)
+    print("  Forum Coordination Risk")
+    print("  [!] Research Only. Classification only. No legal/criminal labels.")
+    print("=" * 60)
+    if cluster_id:
+        print(f"  Cluster ID: {cluster_id}")
+        print(f"  [INFO] Coordination risk = classification only.")
+        print(f"  [INFO] criminal_label=None always. legal_accusation=None always.")
+    else:
+        print("  Use --cluster-id to specify a coordination cluster.")
+    print("=" * 60)
+
+
+def cmd_forum_manipulation_risk(args=None):
+    """[v1.4.7] Forum manipulation risk for an article."""
+    article_id = getattr(args, "article_id", None) or ""
+    print("=" * 60)
+    print("  Forum Manipulation Risk")
+    print("  [!] Research Only. Classification only. No legal/criminal labels.")
+    print("=" * 60)
+    if article_id:
+        print(f"  Article ID: {article_id}")
+        print(f"  [INFO] Manipulation risk = classification only.")
+        print(f"  [INFO] criminal_label=None always. legal_accusation=None always.")
+    else:
+        print("  Use --article-id to specify an article.")
+    print("=" * 60)
+
+
+def cmd_forum_deleted(args=None):
+    """[v1.4.7] List deleted forum articles."""
+    source_id = getattr(args, "source_id", None) or ""
+    print("=" * 60)
+    print("  Deleted Forum Articles")
+    print("  [!] Research Only. SUPPLEMENTARY authority.")
+    print("=" * 60)
+    print(f"  source_id: {source_id or '(all)'}")
+    print(f"  [INFO] Deletion events are preserved for lineage (append-only log).")
+    print("=" * 60)
+
+
+def cmd_forum_edited(args=None):
+    """[v1.4.7] List edited forum articles."""
+    source_id = getattr(args, "source_id", None) or ""
+    print("=" * 60)
+    print("  Edited Forum Articles")
+    print("  [!] Research Only. SUPPLEMENTARY authority.")
+    print("=" * 60)
+    print(f"  source_id: {source_id or '(all)'}")
+    print(f"  [INFO] Edit events are preserved for lineage (append-only log).")
+    print("=" * 60)
+
+
+def cmd_forum_duplicates(args=None):
+    """[v1.4.7] List forum duplicate clusters."""
+    article_id = getattr(args, "article_id", None) or ""
+    print("=" * 60)
+    print("  Forum Duplicate Clusters")
+    print("  [!] Research Only. SUPPLEMENTARY authority.")
+    print("=" * 60)
+    print(f"  article_id: {article_id or '(all clusters)'}")
+    print(f"  [INFO] Duplicate detection: exact + near + cross-post.")
+    print("=" * 60)
+
+
+def cmd_forum_lineage(args=None):
+    """[v1.4.7] Forum data lineage for an article."""
+    article_id = getattr(args, "article_id", None) or ""
+    print("=" * 60)
+    print("  Forum Data Lineage")
+    print("  [!] Research Only. SUPPLEMENTARY authority.")
+    print("=" * 60)
+    if article_id:
+        print(f"  Article ID: {article_id}")
+        print(f"  [INFO] Lineage bridged to v1.4.5 Source Lineage system.")
+    else:
+        print("  Use --article-id to specify an article.")
+    print("=" * 60)
+
+
+def cmd_forum_coverage(args=None):
+    """[v1.4.7] Forum data coverage summary."""
+    print("=" * 60)
+    print("  Forum Data Coverage")
+    print("  [!] Research Only. SUPPLEMENTARY authority.")
+    print("=" * 60)
+    print("  Sources: PTT Stock board (public, SUPPLEMENTARY)")
+    print("  Boards:  Stock (public access only)")
+    print("  [INFO] Private boards: NOT accessible (not in allowlist).")
+    print("  [INFO] formal_standalone=False for all forum data.")
+    print("=" * 60)
+
+
+def cmd_forum_report(args=None):
+    """[v1.4.7] Generate Forum Intelligence report."""
+    symbol = getattr(args, "symbol", None) or ""
+    from reports.forum_intelligence_report import ForumIntelligenceReport
+    report = ForumIntelligenceReport()
+    print(report.format_text(symbol=symbol or None))
+
+
+def cmd_forum_market_snapshot(args=None):
+    """[v1.4.7] Forum market sentiment snapshot detail."""
+    window = getattr(args, "window", "1d")
+    dimension = getattr(args, "dimension", "market")
+    print("=" * 60)
+    print("  Forum Market Sentiment Snapshot")
+    print("  [!] Research Only. SUPPLEMENTARY. Not a market forecast.")
+    print("=" * 60)
+    print(f"  Window:    {window}")
+    print(f"  Dimension: {dimension}")
+    print(f"  [INFO] formal_standalone=False always.")
+    print(f"  [INFO] Cannot override TWSE/TPEX/MOPS official sources.")
+    print("=" * 60)
+
+
 def _argv_from_namespace(args):
     """Convert argparse Namespace to legacy argv list for pre-registry handlers."""
     if args is None:
@@ -32829,6 +33218,32 @@ def main() -> None:
         "provider-quality-safety":             cmd_provider_quality_safety,
         "provider-quality-report":             cmd_provider_quality_report,
         "provider-quality-gate-detail":        cmd_provider_quality_gate_detail,
+        # v1.4.7 Forum Intelligence & Market Sentiment
+        "forum-health":              cmd_forum_health,
+        "forum-sources":             cmd_forum_sources,
+        "forum-source":              cmd_forum_source,
+        "ptt-stock-health":          cmd_ptt_stock_health,
+        "ptt-stock-plan":            cmd_ptt_stock_plan,
+        "ptt-stock-fetch":           cmd_ptt_stock_fetch,
+        "ptt-stock-article":         cmd_ptt_stock_article,
+        "forum-article":             cmd_forum_article,
+        "forum-article-as-of":       cmd_forum_article_as_of,
+        "forum-search":              cmd_forum_search,
+        "forum-symbol":              cmd_forum_symbol,
+        "forum-topics":              cmd_forum_topics,
+        "forum-sentiment":           cmd_forum_sentiment,
+        "forum-market-sentiment":    cmd_forum_market_sentiment,
+        "forum-engagement":          cmd_forum_engagement,
+        "forum-credibility":         cmd_forum_credibility,
+        "forum-coordination-risk":   cmd_forum_coordination_risk,
+        "forum-manipulation-risk":   cmd_forum_manipulation_risk,
+        "forum-deleted":             cmd_forum_deleted,
+        "forum-edited":              cmd_forum_edited,
+        "forum-duplicates":          cmd_forum_duplicates,
+        "forum-lineage":             cmd_forum_lineage,
+        "forum-coverage":            cmd_forum_coverage,
+        "forum-report":              cmd_forum_report,
+        "forum-market-snapshot":     cmd_forum_market_snapshot,
     }
 
     if args.command is None:
