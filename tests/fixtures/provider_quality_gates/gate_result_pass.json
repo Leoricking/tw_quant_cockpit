@@ -1,0 +1,12 @@
+{
+  "_fixture_type": "TEST_FIXTURE",
+  "_demo_only": true,
+  "_not_real_data": true,
+  "_not_for_formal_conclusion": true,
+  "gate_id": "freshness_gate",
+  "status": "PASS",
+  "severity": "INFO",
+  "message": "Data is fresh within acceptable window",
+  "blocking": false,
+  "score_contribution": 15
+}

@@ -1,0 +1,14 @@
+{
+  "_fixture_type": "TEST_FIXTURE",
+  "_demo_only": true,
+  "_not_real_data": true,
+  "_not_for_formal_conclusion": true,
+  "safety_check": "invariant_violated",
+  "NO_REAL_ORDERS": true,
+  "BROKER_EXECUTION_ENABLED": false,
+  "PRODUCTION_TRADING_BLOCKED": true,
+  "QUALITY_SCORE_CAN_OVERRIDE_BLOCKING_FAILURE": true,
+  "violation": "QUALITY_SCORE_CAN_OVERRIDE_BLOCKING_FAILURE must always be False",
+  "gate_result": "BLOCKED",
+  "note": "Any safety invariant violation is an immediate BLOCK"
+}

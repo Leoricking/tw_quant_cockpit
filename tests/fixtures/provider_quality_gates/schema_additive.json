@@ -1,0 +1,11 @@
+{
+  "_fixture_type": "TEST_FIXTURE",
+  "_demo_only": true,
+  "_not_real_data": true,
+  "_not_for_formal_conclusion": true,
+  "provider_id": "finmind",
+  "dataset_id": "finmind_daily_prices",
+  "drift_status": "ADDITIVE",
+  "gate_result": "WARN",
+  "note": "ADDITIVE change is a warning only — not blocking"
+}

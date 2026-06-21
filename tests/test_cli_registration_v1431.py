@@ -286,7 +286,7 @@ class TestRegression:
     def test_38_base_release_is_143(self):
         """Test 38: BASE_RELEASE references 1.4.3 or later."""
         from release.version_info import BASE_RELEASE
-        assert any(m in BASE_RELEASE for m in ("1.4.3", "1.4.4")), (
+        assert any(m in BASE_RELEASE for m in ("1.4.3", "1.4.4", "1.4.5")), (
             f"BASE_RELEASE does not reference expected predecessor: {BASE_RELEASE}"
         )
 

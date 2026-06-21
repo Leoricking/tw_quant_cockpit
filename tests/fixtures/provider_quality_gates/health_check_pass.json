@@ -1,0 +1,13 @@
+{
+  "_fixture_type": "TEST_FIXTURE",
+  "_demo_only": true,
+  "_not_real_data": true,
+  "_not_for_formal_conclusion": true,
+  "check_name": "provider_quality_gates_health",
+  "total": 50,
+  "passed": 50,
+  "failed": 0,
+  "warned": 0,
+  "overall_status": "PASS",
+  "version": "1.4.6"
+}

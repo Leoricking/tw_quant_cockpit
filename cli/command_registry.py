@@ -1663,6 +1663,87 @@ _SOURCE_GOVERNANCE_COMMANDS: _List[CommandSpec] = [
                 help="[v1.4.5] Source governance report. Research Only.", group="source_governance", introduced_in="1.4.5"),
 ]
 
+# ---------------------------------------------------------------------------
+# v1.4.6 Provider Quality Gates commands
+# ---------------------------------------------------------------------------
+_PROVIDER_QUALITY_GATES_COMMANDS: _List[CommandSpec] = [
+    CommandSpec(name="provider-quality-health", handler_name="cmd_provider_quality_health",
+                help="[v1.4.6] Provider quality gates health check. Research Only.",
+                group="provider_quality_gates", introduced_in="1.4.6"),
+    CommandSpec(name="provider-quality-gates", handler_name="cmd_provider_quality_gates",
+                help="[v1.4.6] Show provider quality gate registry. Research Only.",
+                group="provider_quality_gates", introduced_in="1.4.6"),
+    CommandSpec(name="provider-quality-evaluate-provider", handler_name="cmd_provider_quality_evaluate_provider",
+                help="[v1.4.6] Evaluate quality gates for a provider. Research Only.",
+                group="provider_quality_gates", introduced_in="1.4.6",
+                args=[CommandArg(flags=["--provider"], kwargs={"default": None})]),
+    CommandSpec(name="provider-quality-evaluate-dataset", handler_name="cmd_provider_quality_evaluate_dataset",
+                help="[v1.4.6] Evaluate quality gates for a dataset. Research Only.",
+                group="provider_quality_gates", introduced_in="1.4.6",
+                args=[CommandArg(flags=["--provider"], kwargs={"default": None}),
+                      CommandArg(flags=["--dataset"], kwargs={"default": None})]),
+    CommandSpec(name="provider-quality-evaluate-endpoint", handler_name="cmd_provider_quality_evaluate_endpoint",
+                help="[v1.4.6] Evaluate quality gates for an endpoint. Research Only.",
+                group="provider_quality_gates", introduced_in="1.4.6",
+                args=[CommandArg(flags=["--endpoint"], kwargs={"default": None})]),
+    CommandSpec(name="provider-quality-evaluate-fetch-run", handler_name="cmd_provider_quality_evaluate_fetch_run",
+                help="[v1.4.6] Evaluate quality gates for a fetch run. Research Only.",
+                group="provider_quality_gates", introduced_in="1.4.6",
+                args=[CommandArg(flags=["--fetch-run-id"], kwargs={"dest": "fetch_run_id", "default": None})]),
+    CommandSpec(name="provider-quality-profiles", handler_name="cmd_provider_quality_profiles",
+                help="[v1.4.6] List all provider quality profiles. Research Only.",
+                group="provider_quality_gates", introduced_in="1.4.6"),
+    CommandSpec(name="provider-quality-datasets", handler_name="cmd_provider_quality_datasets",
+                help="[v1.4.6] List dataset quality profiles. Research Only.",
+                group="provider_quality_gates", introduced_in="1.4.6"),
+    CommandSpec(name="provider-quality-quarantine-list", handler_name="cmd_provider_quality_quarantine_list",
+                help="[v1.4.6] List quarantined providers. Research Only.",
+                group="provider_quality_gates", introduced_in="1.4.6"),
+    CommandSpec(name="provider-quality-blocked-list", handler_name="cmd_provider_quality_blocked_list",
+                help="[v1.4.6] List blocked providers. Research Only.",
+                group="provider_quality_gates", introduced_in="1.4.6"),
+    CommandSpec(name="provider-quality-decision", handler_name="cmd_provider_quality_decision",
+                help="[v1.4.6] Show quality decision details. Research Only.",
+                group="provider_quality_gates", introduced_in="1.4.6",
+                args=[CommandArg(flags=["--decision-id"], kwargs={"dest": "decision_id", "default": None})]),
+    CommandSpec(name="provider-quality-explain", handler_name="cmd_provider_quality_explain",
+                help="[v1.4.6] Explain a quality decision. Research Only.",
+                group="provider_quality_gates", introduced_in="1.4.6",
+                args=[CommandArg(flags=["--decision-id"], kwargs={"dest": "decision_id", "default": None})]),
+    CommandSpec(name="provider-quality-audit", handler_name="cmd_provider_quality_audit",
+                help="[v1.4.6] View quality decision audit trail. Research Only.",
+                group="provider_quality_gates", introduced_in="1.4.6",
+                args=[CommandArg(flags=["--provider"], kwargs={"default": None})]),
+    CommandSpec(name="provider-quality-score", handler_name="cmd_provider_quality_score",
+                help="[v1.4.6] Show quality score for a provider. Research Only.",
+                group="provider_quality_gates", introduced_in="1.4.6",
+                args=[CommandArg(flags=["--provider"], kwargs={"default": None})]),
+    CommandSpec(name="provider-quality-policy", handler_name="cmd_provider_quality_policy",
+                help="[v1.4.6] Show quality policy for a provider. Research Only.",
+                group="provider_quality_gates", introduced_in="1.4.6",
+                args=[CommandArg(flags=["--provider"], kwargs={"default": None})]),
+    CommandSpec(name="provider-quality-formal-research", handler_name="cmd_provider_quality_formal_research",
+                help="[v1.4.6] Check formal research eligibility. Research Only.",
+                group="provider_quality_gates", introduced_in="1.4.6",
+                args=[CommandArg(flags=["--provider"], kwargs={"default": None}),
+                      CommandArg(flags=["--dataset"], kwargs={"default": None})]),
+    CommandSpec(name="provider-quality-backtest", handler_name="cmd_provider_quality_backtest",
+                help="[v1.4.6] Check backtest input eligibility. Research Only.",
+                group="provider_quality_gates", introduced_in="1.4.6",
+                args=[CommandArg(flags=["--provider"], kwargs={"default": None}),
+                      CommandArg(flags=["--dataset"], kwargs={"default": None})]),
+    CommandSpec(name="provider-quality-safety", handler_name="cmd_provider_quality_safety",
+                help="[v1.4.6] Run safety gate check. Research Only.",
+                group="provider_quality_gates", introduced_in="1.4.6"),
+    CommandSpec(name="provider-quality-report", handler_name="cmd_provider_quality_report",
+                help="[v1.4.6] Generate provider quality gates report. Research Only.",
+                group="provider_quality_gates", introduced_in="1.4.6"),
+    CommandSpec(name="provider-quality-gate-detail", handler_name="cmd_provider_quality_gate_detail",
+                help="[v1.4.6] Show quality gate definition detail. Research Only.",
+                group="provider_quality_gates", introduced_in="1.4.6",
+                args=[CommandArg(flags=["--gate-id"], kwargs={"dest": "gate_id", "default": None})]),
+]
+
 # Combined list of all provider commands
 PROVIDER_COMMANDS: _List[CommandSpec] = (
     _RESEARCH_FOUNDATION_COMMANDS
@@ -1672,6 +1753,7 @@ PROVIDER_COMMANDS: _List[CommandSpec] = (
     + _DATA_GOV_TW_COMMANDS
     + _FINMIND_COMMANDS
     + _SOURCE_GOVERNANCE_COMMANDS
+    + _PROVIDER_QUALITY_GATES_COMMANDS
 )
 
 

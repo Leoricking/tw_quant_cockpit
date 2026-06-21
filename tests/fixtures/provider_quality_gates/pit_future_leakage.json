@@ -1,0 +1,14 @@
+{
+  "_fixture_type": "TEST_FIXTURE",
+  "_demo_only": true,
+  "_not_real_data": true,
+  "_not_for_formal_conclusion": true,
+  "provider_id": "finmind",
+  "dataset_id": "finmind_financials",
+  "pit_available": false,
+  "revision_frozen": false,
+  "future_leakage": true,
+  "lookahead_leakage": false,
+  "gate_result": "BLOCKED",
+  "note": "future_leakage is a hard BLOCK — no override possible"
+}

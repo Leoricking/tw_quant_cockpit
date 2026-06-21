@@ -1,0 +1,15 @@
+{
+  "_fixture_type": "TEST_FIXTURE",
+  "_demo_only": true,
+  "_not_real_data": true,
+  "_not_for_formal_conclusion": true,
+  "safety_check": "all_invariants_valid",
+  "NO_REAL_ORDERS": true,
+  "BROKER_EXECUTION_ENABLED": false,
+  "PRODUCTION_TRADING_BLOCKED": true,
+  "QUALITY_SCORE_CAN_OVERRIDE_BLOCKING_FAILURE": false,
+  "AUTO_PROVIDER_PROMOTION_ENABLED": false,
+  "AUTO_QUARANTINE_RELEASE_ENABLED": false,
+  "MOCK_FALLBACK_ENABLED": false,
+  "gate_result": "PASS"
+}

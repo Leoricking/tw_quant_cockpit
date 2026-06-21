@@ -1,0 +1,13 @@
+{
+  "_fixture_type": "TEST_FIXTURE",
+  "_demo_only": true,
+  "_not_real_data": true,
+  "_not_for_formal_conclusion": true,
+  "check_name": "provider_quality_gates_health",
+  "total": 50,
+  "passed": 44,
+  "failed": 3,
+  "warned": 3,
+  "overall_status": "FAIL",
+  "failed_checks": ["safety_gate_import", "score_weights_sum", "policy_version_mismatch"]
+}

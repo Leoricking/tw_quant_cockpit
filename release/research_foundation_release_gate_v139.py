@@ -39,6 +39,20 @@ class ResearchFoundationReleaseGate:
         gates.append(self._safety_gate())
         gates.append(self._regression_gate())
         gates.append(self._runtime_hygiene_gate())
+        # v1.4.6 Provider Quality Gates
+        gates.append(self._provider_quality_gate_registry_gate())
+        gates.append(self._provider_onboarding_gates_gate())
+        gates.append(self._dataset_admission_gates_gate())
+        gates.append(self._formal_research_gate_gate())
+        gates.append(self._backtest_input_gate_gate())
+        gates.append(self._provenance_gate_gate())
+        gates.append(self._pit_gate_gate())
+        gates.append(self._schema_drift_gate_gate())
+        gates.append(self._authority_gate_gate())
+        gates.append(self._conflict_gate_gate())
+        gates.append(self._quarantine_policy_gate())
+        gates.append(self._quality_audit_gate())
+        gates.append(self._no_hidden_blocking_failure_gate())
         return gates
 
     def _version_gate(self) -> dict:
@@ -63,7 +77,7 @@ class ResearchFoundationReleaseGate:
             ok = (
                 parts >= (1, 3, 9)
                 and RELEASE_NAME in _KNOWN_NAMES
-                and any(m in BASE_RELEASE for m in ("1.3.7", "1.3.9", "1.4.0", "1.4.1", "1.4.2", "1.4.3", "1.4.4", "1.4.5"))
+                and any(m in BASE_RELEASE for m in ("1.3.7", "1.3.9", "1.4.0", "1.4.1", "1.4.2", "1.4.3", "1.4.4", "1.4.5", "1.4.6"))
                 and REPLAY_STABLE_BASELINE == "1.2.9"
             )
             return _make_gate(
@@ -271,6 +285,256 @@ class ResearchFoundationReleaseGate:
             f"gitignore_exists={ok}", False, warnings,
             "" if not warnings else "Add runtime paths to .gitignore"
         )
+
+    # ------------------------------------------------------------------
+    # v1.4.6 Provider Quality Gates
+    # ------------------------------------------------------------------
+
+    def _provider_quality_gate_registry_gate(self) -> dict:
+        try:
+            from data.governance.quality.gate_registry_v146 import QualityGateRegistry
+            reg = QualityGateRegistry()
+            result = reg.validate_registry()
+            ok = result["valid"] and result["gate_count"] >= 15
+            return _make_gate(
+                "PROVIDER_QUALITY_GATE_REGISTRY_VALID",
+                "PASS" if ok else "FAIL",
+                f"gates={result['gate_count']}, valid={result['valid']}, errors={result['errors']}",
+                not ok, result.get("warnings", []),
+                "" if ok else f"Fix gate registry: {result['errors']}"
+            )
+        except Exception as exc:
+            return _make_gate("PROVIDER_QUALITY_GATE_REGISTRY_VALID", "FAIL", str(exc), True, [],
+                              "Fix gate_registry_v146 import")
+
+    def _provider_onboarding_gates_gate(self) -> dict:
+        try:
+            from data.governance.quality.provider_gate_v146 import ProviderOperationalGate
+            gate = ProviderOperationalGate()
+            profile = gate.evaluate("twse")
+            ok = profile.quality_state in ("ACTIVE", "DEGRADED")
+            return _make_gate(
+                "PROVIDER_ONBOARDING_GATES_PASS",
+                "PASS" if ok else "FAIL",
+                f"twse quality_state={profile.quality_state}",
+                not ok, [],
+                "" if ok else "Fix provider_gate_v146"
+            )
+        except Exception as exc:
+            return _make_gate("PROVIDER_ONBOARDING_GATES_PASS", "FAIL", str(exc), True, [],
+                              "Fix provider_gate_v146")
+
+    def _dataset_admission_gates_gate(self) -> dict:
+        try:
+            from data.governance.quality.dataset_gate_v146 import DatasetAdmissionGate
+            gate = DatasetAdmissionGate()
+            profile = gate.evaluate("daily_ohlcv", "twse", {"schema_valid": True})
+            ok = profile.admitted
+            return _make_gate(
+                "DATASET_ADMISSION_GATES_VALID",
+                "PASS" if ok else "FAIL",
+                f"twse:daily_ohlcv admitted={profile.admitted}",
+                not ok, [],
+                "" if ok else "Fix dataset_gate_v146"
+            )
+        except Exception as exc:
+            return _make_gate("DATASET_ADMISSION_GATES_VALID", "FAIL", str(exc), True, [],
+                              "Fix dataset_gate_v146")
+
+    def _formal_research_gate_gate(self) -> dict:
+        try:
+            from data.governance.quality.formal_research_gate_v146 import FormalResearchEligibilityGate
+            gate = FormalResearchEligibilityGate()
+            result = gate.evaluate("twse", "daily_ohlcv", {
+                "authority_level": "PRIMARY_OFFICIAL",
+                "provenance_complete": True,
+                "pit_compliant": True,
+                "schema_valid": True,
+                "no_unresolved_conflicts": True,
+                "dataset_admitted": True,
+                "real_data": True,
+            })
+            ok = result.eligible
+            return _make_gate(
+                "FORMAL_RESEARCH_GATE_VALID",
+                "PASS" if ok else "FAIL",
+                f"eligible={result.eligible}, blocking={result.blocking_failures}",
+                not ok, result.warnings,
+                "" if ok else f"Fix formal_research_gate: {result.blocking_failures}"
+            )
+        except Exception as exc:
+            return _make_gate("FORMAL_RESEARCH_GATE_VALID", "FAIL", str(exc), True, [],
+                              "Fix formal_research_gate_v146")
+
+    def _backtest_input_gate_gate(self) -> dict:
+        try:
+            from data.governance.quality.backtest_gate_v146 import BacktestInputEligibilityGate
+            gate = BacktestInputEligibilityGate()
+            result = gate.evaluate("twse", "daily_ohlcv", {
+                "pit_available": True, "lookahead_leakage": False, "future_leakage": False,
+                "revision_frozen": True, "authority_level": "PRIMARY_OFFICIAL",
+            })
+            ok = result.eligible
+            return _make_gate(
+                "BACKTEST_INPUT_GATE_VALID",
+                "PASS" if ok else "FAIL",
+                f"eligible={result.eligible}",
+                not ok, result.warnings,
+                "" if ok else f"Fix backtest_gate: {result.blocking_failures}"
+            )
+        except Exception as exc:
+            return _make_gate("BACKTEST_INPUT_GATE_VALID", "FAIL", str(exc), True, [],
+                              "Fix backtest_gate_v146")
+
+    def _provenance_gate_gate(self) -> dict:
+        try:
+            from data.governance.quality.provenance_gate_v146 import ProvenanceGate
+            gate = ProvenanceGate()
+            result = gate.evaluate("test_record", {})
+            # Should fail gracefully (no lineage provided)
+            ok = result.gate_id == "provenance_completeness"
+            return _make_gate(
+                "PROVENANCE_GATE_VALID",
+                "PASS" if ok else "FAIL",
+                f"ProvenanceGate wraps v1.4.5, gate_id={result.gate_id}",
+                not ok, [],
+                "" if ok else "Fix provenance_gate_v146"
+            )
+        except Exception as exc:
+            return _make_gate("PROVENANCE_GATE_VALID", "FAIL", str(exc), True, [],
+                              "Fix provenance_gate_v146")
+
+    def _pit_gate_gate(self) -> dict:
+        try:
+            from data.governance.quality.pit_gate_v146 import PointInTimeGate
+            gate = PointInTimeGate()
+            result = gate.evaluate("test", {"future_leakage": True})
+            ok = result.status == "BLOCKED"
+            return _make_gate(
+                "PIT_GATE_VALID",
+                "PASS" if ok else "FAIL",
+                f"future_leakage→BLOCKED={ok}",
+                not ok, [],
+                "" if ok else "Fix pit_gate_v146"
+            )
+        except Exception as exc:
+            return _make_gate("PIT_GATE_VALID", "FAIL", str(exc), True, [],
+                              "Fix pit_gate_v146")
+
+    def _schema_drift_gate_gate(self) -> dict:
+        try:
+            from data.governance.quality.schema_gate_v146 import SchemaDriftGate
+            from data.governance.models_v145 import SchemaDriftStatus
+            gate = SchemaDriftGate()
+            r1 = gate.evaluate("t", {"schema_drift_status": SchemaDriftStatus.BREAKING_MISSING_FIELD.value})
+            r2 = gate.evaluate("t", {"schema_drift_status": SchemaDriftStatus.NO_CHANGE.value})
+            ok = r1.status == "BLOCKED" and r2.status == "PASS"
+            return _make_gate(
+                "SCHEMA_DRIFT_GATE_VALID",
+                "PASS" if ok else "FAIL",
+                f"BREAKING→BLOCKED={r1.status=='BLOCKED'}, NO_CHANGE→PASS={r2.status=='PASS'}",
+                not ok, [],
+                "" if ok else "Fix schema_gate_v146"
+            )
+        except Exception as exc:
+            return _make_gate("SCHEMA_DRIFT_GATE_VALID", "FAIL", str(exc), True, [],
+                              "Fix schema_gate_v146")
+
+    def _authority_gate_gate(self) -> dict:
+        try:
+            from data.governance.quality.authority_gate_v146 import AuthorityGate
+            gate = AuthorityGate()
+            r = gate.evaluate("mock", {"provider_id": "mock", "formal_use": True})
+            ok = r.status in ("BLOCKED", "FAIL")
+            return _make_gate(
+                "AUTHORITY_GATE_VALID",
+                "PASS" if ok else "FAIL",
+                f"MOCK formal_use→BLOCKED={ok}",
+                not ok, [],
+                "" if ok else "Fix authority_gate_v146"
+            )
+        except Exception as exc:
+            return _make_gate("AUTHORITY_GATE_VALID", "FAIL", str(exc), True, [],
+                              "Fix authority_gate_v146")
+
+    def _conflict_gate_gate(self) -> dict:
+        try:
+            from data.governance.quality.conflict_gate_v146 import ConflictGate
+            gate = ConflictGate()
+            r = gate.evaluate("test", {})
+            ok = r.status == "PASS"
+            return _make_gate(
+                "CONFLICT_GATE_VALID",
+                "PASS" if ok else "FAIL",
+                f"no conflicts → PASS={ok}",
+                not ok, [],
+                "" if ok else "Fix conflict_gate_v146"
+            )
+        except Exception as exc:
+            return _make_gate("CONFLICT_GATE_VALID", "FAIL", str(exc), True, [],
+                              "Fix conflict_gate_v146")
+
+    def _quarantine_policy_gate(self) -> dict:
+        try:
+            from data.governance.quality.quarantine_v146 import ProviderQuarantineManager
+            mgr = ProviderQuarantineManager()
+            rec = mgr.quarantine("test_p", "test reason", "test_gate")
+            ok = rec.auto_release_allowed is False
+            readiness = mgr.evaluate_release_readiness("test_p")
+            ok = ok and readiness["auto_release_allowed"] is False
+            return _make_gate(
+                "QUARANTINE_POLICY_VALID",
+                "PASS" if ok else "FAIL",
+                f"auto_release_allowed=False confirmed",
+                not ok, [],
+                "" if ok else "Fix quarantine_v146: auto_release must be False"
+            )
+        except Exception as exc:
+            return _make_gate("QUARANTINE_POLICY_VALID", "FAIL", str(exc), True, [],
+                              "Fix quarantine_v146")
+
+    def _quality_audit_gate(self) -> dict:
+        try:
+            from data.governance.quality.audit_v146 import QualityDecisionAuditService
+            svc = QualityDecisionAuditService()
+            summary = svc.summary()
+            ok = summary.get("append_only") is True and summary.get("no_credentials_stored") is True
+            return _make_gate(
+                "QUALITY_AUDIT_VALID",
+                "PASS" if ok else "FAIL",
+                f"append_only={summary.get('append_only')}, no_credentials={summary.get('no_credentials_stored')}",
+                not ok, [],
+                "" if ok else "Fix audit_v146"
+            )
+        except Exception as exc:
+            return _make_gate("QUALITY_AUDIT_VALID", "FAIL", str(exc), True, [],
+                              "Fix audit_v146")
+
+    def _no_hidden_blocking_failure_gate(self) -> dict:
+        try:
+            from data.governance.quality import QUALITY_SCORE_CAN_OVERRIDE_BLOCKING_FAILURE
+            from data.governance.quality.decision_engine_v146 import QualityDecisionEngine
+            from data.governance.quality.models_v146 import GateStatus, QualityGateResult, QualityScope
+            ok = QUALITY_SCORE_CAN_OVERRIDE_BLOCKING_FAILURE is False
+            # Verify engine enforces this
+            eng = QualityDecisionEngine()
+            blocking = QualityGateResult(
+                gate_id="g", gate_name="g", scope=QualityScope.PROVIDER.value,
+                subject_id="p", status=GateStatus.BLOCKED.value,
+                passed=False, blocking=True, evidence="test",
+            )
+            decision = eng.decide(QualityScope.PROVIDER.value, "p", [blocking], quality_score=100.0)
+            ok = ok and not decision.formal_research_allowed and not decision.score_overrode_blocking
+            return _make_gate(
+                "NO_HIDDEN_BLOCKING_FAILURE",
+                "PASS" if ok else "FAIL",
+                f"score_can_override=False, engine enforces blocking",
+                not ok, [],
+                "" if ok else "Score override is hidden — fix decision_engine_v146"
+            )
+        except Exception as exc:
+            return _make_gate("NO_HIDDEN_BLOCKING_FAILURE", "FAIL", str(exc), True, [],
+                              "Fix decision_engine_v146")
 
     def get_gate_summary(self) -> dict:
         gates = self.run()

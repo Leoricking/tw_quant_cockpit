@@ -1,0 +1,14 @@
+{
+  "_fixture_type": "TEST_FIXTURE",
+  "_demo_only": true,
+  "_not_real_data": true,
+  "_not_for_formal_conclusion": true,
+  "dataset_id": "tpex_daily_prices",
+  "provider_id": "tpex_official",
+  "admitted": true,
+  "formal_research_allowed": true,
+  "backtest_allowed": true,
+  "blocking_failures": [],
+  "coverage_pct": 0.97,
+  "freshness_status": "FRESH"
+}

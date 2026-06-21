@@ -685,3 +685,17 @@ reports/source_lineage_rate_limit_*.md
 
 # v1.4.5 Source Governance fixtures ARE committed (exception)
 !tests/fixtures/source_governance/*.json
+
+# v1.4.6 Provider Quality Gates (runtime quality data — never commit)
+data/quality_gates/
+data/quality_decisions/
+data/quarantine_records/
+data/quality_audit/
+data/quality.db
+data/quality_gate_store.db
+
+# v1.4.6 Provider Quality Gates report outputs (generated artifacts)
+reports/provider_quality_gates_*.md
+
+# v1.4.6 Provider Quality Gates fixtures ARE committed (exception)
+!tests/fixtures/provider_quality_gates/*.json

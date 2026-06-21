@@ -1,0 +1,20 @@
+{
+  "_fixture_type": "TEST_FIXTURE",
+  "_demo_only": true,
+  "_not_real_data": true,
+  "_not_for_formal_conclusion": true,
+  "provider_id": "twse_official",
+  "total_score": 92,
+  "can_override_blocking": false,
+  "components": {
+    "data_quality": 20,
+    "freshness": 14,
+    "coverage": 14,
+    "provenance": 14,
+    "pit": 10,
+    "schema": 9,
+    "authority_conflict": 9,
+    "operational": 5
+  },
+  "note": "High score does NOT override blocking failures"
+}

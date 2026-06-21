@@ -1,0 +1,12 @@
+{
+  "_fixture_type": "TEST_FIXTURE",
+  "_demo_only": true,
+  "_not_real_data": true,
+  "_not_for_formal_conclusion": true,
+  "gate_id": "pit_gate",
+  "status": "BLOCKED",
+  "severity": "CRITICAL",
+  "message": "Future leakage detected — point-in-time integrity violated",
+  "blocking": true,
+  "score_contribution": 0
+}

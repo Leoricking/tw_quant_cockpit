@@ -1,0 +1,16 @@
+{
+  "_fixture_type": "TEST_FIXTURE",
+  "_demo_only": true,
+  "_not_real_data": true,
+  "_not_for_formal_conclusion": true,
+  "decision_id": "dec_block_001",
+  "provider_id": "unknown_provider_xyz",
+  "result": "BLOCK",
+  "score": 0,
+  "score_overrode_blocking": false,
+  "blocking_failures": ["provider_not_registered", "authority_unknown"],
+  "formal_research_allowed": false,
+  "backtest_allowed": false,
+  "report_allowed": false,
+  "rationale": "Blocking failures present. Score cannot override."
+}

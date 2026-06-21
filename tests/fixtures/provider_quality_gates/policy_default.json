@@ -1,0 +1,14 @@
+{
+  "_fixture_type": "TEST_FIXTURE",
+  "_demo_only": true,
+  "_not_real_data": true,
+  "_not_for_formal_conclusion": true,
+  "policy_version": "1.4.6",
+  "min_score_for_formal_research": 60,
+  "min_score_for_backtest": 75,
+  "require_authority_authoritative_for_primary": true,
+  "allow_secondary_for_cross_validation": true,
+  "mock_fallback_enabled": false,
+  "auto_provider_promotion_enabled": false,
+  "auto_quarantine_release_enabled": false
+}

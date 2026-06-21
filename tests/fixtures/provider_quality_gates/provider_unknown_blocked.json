@@ -1,0 +1,13 @@
+{
+  "_fixture_type": "TEST_FIXTURE",
+  "_demo_only": true,
+  "_not_real_data": true,
+  "_not_for_formal_conclusion": true,
+  "provider_id": "unknown_provider_xyz",
+  "quality_state": "BLOCKED",
+  "authority_level": "UNKNOWN",
+  "formal_research_allowed": false,
+  "backtest_allowed": false,
+  "score": 0,
+  "blocking_failures": ["provider_not_registered"]
+}

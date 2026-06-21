@@ -405,10 +405,10 @@ class TestEncoding:
 class TestReleaseGate:
 
     def test_43_release_gate_runs(self):
-        """Test 43: ResearchFoundationReleaseGate.run() returns list of 10 gates."""
+        """Test 43: ResearchFoundationReleaseGate.run() returns list of gates (10+ as of v1.4.6)."""
         from release.research_foundation_release_gate_v139 import ResearchFoundationReleaseGate
         gates = ResearchFoundationReleaseGate().run()
-        assert len(gates) == 10
+        assert len(gates) >= 10
 
     def test_44_release_gate_overall_pass(self):
         """Test 44: Overall gate result is PASS."""
@@ -471,15 +471,15 @@ class TestReleaseGate:
             )
 
     def test_51_release_gate_all_10_gates_defined(self):
-        """Test 51: All 10 expected gate names present."""
+        """Test 51: All 10 core gate names present (v1.4.6 added more)."""
         from release.research_foundation_release_gate_v139 import ResearchFoundationReleaseGate
         gates = {g["gate_name"] for g in ResearchFoundationReleaseGate().run()}
-        expected = {
+        expected_core = {
             "version_gate", "capability_gate", "compatibility_gate", "storage_gate",
             "cli_gate", "gui_gate", "docs_gate", "safety_gate",
             "regression_gate", "runtime_hygiene_gate",
         }
-        assert expected == gates
+        assert expected_core.issubset(gates), f"Missing core gates: {expected_core - gates}"
 
     def test_52_gate_summary_structure(self):
         """Test 52: get_gate_summary returns expected keys."""

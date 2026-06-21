@@ -4,7 +4,7 @@
   "NOT_REAL_DATA": true,
   "NOT_FOR_FORMAL_CONCLUSION": true,
   "fixture_id": "release_gate_expected",
-  "description": "Expected release gate structure for ResearchFoundationReleaseGate v1.3.9",
+  "description": "Expected release gate structure for ResearchFoundationReleaseGate v1.3.9+ (updated v1.4.6 to 23 gates)",
   "expected_gate_names": [
     "version_gate",
     "capability_gate",
@@ -17,7 +17,7 @@
     "regression_gate",
     "runtime_hygiene_gate"
   ],
-  "expected_total_gates": 10,
+  "expected_total_gates": 23,
   "blocking_gates": [
     "version_gate",
     "capability_gate",

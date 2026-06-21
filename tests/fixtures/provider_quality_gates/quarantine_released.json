@@ -1,0 +1,15 @@
+{
+  "_fixture_type": "TEST_FIXTURE",
+  "_demo_only": true,
+  "_not_real_data": true,
+  "_not_for_formal_conclusion": true,
+  "record_id": "qr_002",
+  "provider_id": "finmind",
+  "quarantined_at": "2026-01-10T08:00:00Z",
+  "reason": "Temporary rate limit exhaustion",
+  "auto_release_allowed": false,
+  "released": true,
+  "released_at": "2026-01-12T09:00:00Z",
+  "released_by": "operator_manual",
+  "note": "Released after manual human review confirmed resolution"
+}

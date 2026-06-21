@@ -1,0 +1,14 @@
+{
+  "_fixture_type": "TEST_FIXTURE",
+  "_demo_only": true,
+  "_not_real_data": true,
+  "_not_for_formal_conclusion": true,
+  "provider_id": "finmind",
+  "dataset_id": "finmind_daily_prices",
+  "coverage_pct": 0.82,
+  "threshold_normal": 0.95,
+  "threshold_backtest": 0.98,
+  "gate_result": "FAIL",
+  "backtest_gate_result": "FAIL",
+  "note": "Below both thresholds"
+}

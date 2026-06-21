@@ -1,0 +1,12 @@
+{
+  "_fixture_type": "TEST_FIXTURE",
+  "_demo_only": true,
+  "_not_real_data": true,
+  "_not_for_formal_conclusion": true,
+  "gate_id": "coverage_gate",
+  "status": "WARN",
+  "severity": "WARNING",
+  "message": "Coverage below optimal threshold but above minimum",
+  "blocking": false,
+  "score_contribution": 8
+}

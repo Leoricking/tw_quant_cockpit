@@ -1,0 +1,13 @@
+{
+  "_fixture_type": "TEST_FIXTURE",
+  "_demo_only": true,
+  "_not_real_data": true,
+  "_not_for_formal_conclusion": true,
+  "provider_id": "twse_official",
+  "quality_state": "ACTIVE",
+  "authority_level": "AUTHORITATIVE",
+  "formal_research_allowed": true,
+  "backtest_allowed": true,
+  "score": 92,
+  "blocking_failures": []
+}

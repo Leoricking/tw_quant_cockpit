@@ -1318,7 +1318,7 @@ def test_149_release_name():
 def test_150_base_release_references_hotfix():
     from release.version_info import BASE_RELEASE
     # 1.4.3 (hotfix era) or 1.4.4 (FinMind Adapter) is valid base
-    assert any(m in BASE_RELEASE for m in ("1.4.3", "1.4.4")), (
+    assert any(m in BASE_RELEASE for m in ("1.4.3", "1.4.4", "1.4.5")), (
         f"BASE_RELEASE does not reference expected predecessor: {BASE_RELEASE}"
     )
 

@@ -1,0 +1,16 @@
+{
+  "_fixture_type": "TEST_FIXTURE",
+  "_demo_only": true,
+  "_not_real_data": true,
+  "_not_for_formal_conclusion": true,
+  "decision_id": "dec_warn_001",
+  "provider_id": "finmind",
+  "result": "ALLOW_WITH_WARNING",
+  "score": 71,
+  "score_overrode_blocking": false,
+  "blocking_failures": [],
+  "formal_research_allowed": true,
+  "backtest_allowed": true,
+  "report_allowed": true,
+  "rationale": "Coverage slightly below optimal. Formal use allowed with warning."
+}

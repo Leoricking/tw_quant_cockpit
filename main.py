@@ -31432,6 +31432,307 @@ def cmd_source_governance_report(args=None):
     print(SourceLineageRateLimitReport().render())
 
 
+# ---------------------------------------------------------------------------
+# v1.4.6 Provider Quality Gates command handlers
+# ---------------------------------------------------------------------------
+
+def cmd_provider_quality_health(args=None):
+    """[v1.4.6] Provider quality gates health check."""
+    from data.governance.quality.health_v146 import ProviderQualityGatesHealthCheck
+    hc = ProviderQualityGatesHealthCheck()
+    summary = hc.get_health_summary()
+    print("=" * 60)
+    print("  TW Quant Cockpit — Provider Quality Gates Health v1.4.6")
+    print(f"  [!] Research Only. No Real Orders. Not Investment Advice.")
+    print("=" * 60)
+    print(f"  Version:  {summary['version']}")
+    print(f"  Total:    {summary['total']}")
+    print(f"  PASS:     {summary['passed']}")
+    print(f"  FAIL:     {summary['failed']}")
+    print(f"  WARN:     {summary['warned']}")
+    print()
+    for name, info in summary["checks"].items():
+        status = info["status"]
+        detail = info["detail"]
+        marker = "[PASS]" if status == "PASS" else "[FAIL]" if status == "FAIL" else "[WARN]"
+        print(f"  {marker} {name}: {detail}")
+    print("=" * 60)
+    if summary["failed"] > 0:
+        import sys
+        sys.exit(1)
+
+
+def cmd_provider_quality_gates(args=None):
+    """[v1.4.6] Show provider quality gate registry."""
+    from data.governance.quality.gate_registry_v146 import QualityGateRegistry
+    reg = QualityGateRegistry()
+    gates = reg.list_gates()
+    print("=" * 60)
+    print("  Provider Quality Gate Registry v1.4.6")
+    print(f"  [!] Research Only. No Real Orders.")
+    print("=" * 60)
+    print(f"  Total gates: {len(gates)}")
+    print(f"  Policy version: {reg.get_policy_version()}")
+    print()
+    for g in gates:
+        mandatory = "MANDATORY" if g.mandatory else "OPTIONAL"
+        blocking = "BLOCKING" if g.blocking else "NON-BLOCKING"
+        print(f"  [{mandatory}][{blocking}] {g.gate_id}: {g.gate_name} (scope={g.scope})")
+    print("=" * 60)
+
+
+def cmd_provider_quality_evaluate_provider(args=None):
+    """[v1.4.6] Evaluate quality gates for a provider."""
+    from data.governance.quality.provider_gate_v146 import ProviderOperationalGate
+    provider_id = getattr(args, "provider", None) or "twse_official"
+    gate = ProviderOperationalGate()
+    profile = gate.evaluate(provider_id)
+    print("=" * 60)
+    print(f"  Provider Quality Profile: {provider_id}")
+    print(f"  [!] Research Only. No Real Orders.")
+    print("=" * 60)
+    print(f"  Quality State:         {profile.quality_state}")
+    print(f"  Authority Level:       {profile.authority_level}")
+    print(f"  Formal Research:       {profile.formal_research_allowed}")
+    print(f"  Backtest Allowed:      {profile.backtest_allowed}")
+    print(f"  Report Allowed:        {profile.report_allowed}")
+    print(f"  Ingestion Allowed:     {profile.ingestion_allowed}")
+    print(f"  Blocking Failures:     {profile.blocking_failures}")
+    print(f"  Warnings:              {profile.warnings}")
+    print("=" * 60)
+
+
+def cmd_provider_quality_evaluate_dataset(args=None):
+    """[v1.4.6] Evaluate quality gates for a dataset."""
+    from data.governance.quality.dataset_gate_v146 import DatasetAdmissionGate
+    provider_id = getattr(args, "provider", None) or "twse"
+    dataset_id = getattr(args, "dataset", None) or "daily_ohlcv"
+    gate = DatasetAdmissionGate()
+    profile = gate.evaluate(dataset_id, provider_id, {"schema_valid": True})
+    print("=" * 60)
+    print(f"  Dataset Quality Profile: {provider_id}:{dataset_id}")
+    print(f"  [!] Research Only. No Real Orders.")
+    print("=" * 60)
+    print(f"  Quality State:    {profile.quality_state}")
+    print(f"  Admitted:         {profile.admitted}")
+    print(f"  Allowlisted:      {profile.allowlisted}")
+    print(f"  Schema Valid:     {profile.schema_valid}")
+    print(f"  Formal Use:       {profile.formal_use_allowed}")
+    print(f"  Blocking:         {profile.blocking_failures}")
+    print("=" * 60)
+
+
+def cmd_provider_quality_evaluate_endpoint(args=None):
+    """[v1.4.6] Evaluate quality gates for an endpoint."""
+    from data.governance.quality.endpoint_gate_v146 import EndpointReadinessGate
+    endpoint_id = getattr(args, "endpoint", None) or "twse:daily"
+    gate = EndpointReadinessGate()
+    result = gate.evaluate(endpoint_id)
+    print(f"  Endpoint: {endpoint_id}")
+    print(f"  Ready: {result['ready']}")
+    print(f"  Blocking: {result['blocking_failures']}")
+
+
+def cmd_provider_quality_evaluate_fetch_run(args=None):
+    """[v1.4.6] Evaluate quality gates for a fetch run."""
+    from data.governance.quality.batch_gate_v146 import BatchIngestionGate
+    fetch_run_id = getattr(args, "fetch_run_id", None) or "test_run_001"
+    gate = BatchIngestionGate()
+    result = gate.evaluate(fetch_run_id)
+    print(f"  Fetch Run: {fetch_run_id}")
+    print(f"  Eligible: {result['eligible']}")
+    print(f"  Blocking: {result['blocking_failures']}")
+
+
+def cmd_provider_quality_profiles(args=None):
+    """[v1.4.6] List all provider quality profiles."""
+    from data.governance.quality.provider_gate_v146 import ProviderOperationalGate
+    gate = ProviderOperationalGate()
+    known_providers = ["twse_official", "tpex_official", "mops_official", "data_gov_tw", "finmind"]
+    print("=" * 60)
+    print("  Provider Quality Profiles v1.4.6")
+    print(f"  [!] Research Only. No Real Orders.")
+    print("=" * 60)
+    for p in known_providers:
+        profile = gate.evaluate(p)
+        print(f"  {p}: {profile.quality_state} | auth={profile.authority_level} | "
+              f"research={profile.formal_research_allowed}")
+    print("=" * 60)
+
+
+def cmd_provider_quality_datasets(args=None):
+    """[v1.4.6] List dataset quality profiles."""
+    from data.governance.quality.dataset_gate_v146 import DatasetAdmissionGate, _DATASET_ALLOWLIST
+    gate = DatasetAdmissionGate()
+    print("=" * 60)
+    print("  Dataset Quality Profiles v1.4.6")
+    print(f"  [!] Research Only. No Real Orders.")
+    print("=" * 60)
+    for key in sorted(_DATASET_ALLOWLIST)[:10]:
+        parts = key.split(":", 1)
+        provider, dataset = (parts[0], parts[1]) if len(parts) == 2 else (key, key)
+        profile = gate.evaluate(dataset, provider, {"schema_valid": True})
+        print(f"  {key}: {profile.quality_state} | admitted={profile.admitted}")
+    print("=" * 60)
+
+
+def cmd_provider_quality_quarantine_list(args=None):
+    """[v1.4.6] List quarantined providers."""
+    from data.governance.quality.quarantine_v146 import ProviderQuarantineManager
+    mgr = ProviderQuarantineManager()
+    records = mgr.list_quarantined()
+    print("=" * 60)
+    print("  Quarantine List v1.4.6")
+    print(f"  [!] auto_release_allowed = False always.")
+    print("=" * 60)
+    if not records:
+        print("  No providers currently quarantined.")
+    for r in records:
+        print(f"  {r.provider_id}: {r.quality_state} | triggered={r.triggered_by_gate}")
+    print("=" * 60)
+
+
+def cmd_provider_quality_blocked_list(args=None):
+    """[v1.4.6] List blocked providers."""
+    from data.governance.quality.quarantine_v146 import ProviderQuarantineManager
+    mgr = ProviderQuarantineManager()
+    records = [r for r in mgr.list_quarantined() if r.quality_state == "BLOCKED"]
+    print("=" * 60)
+    print("  Blocked Providers v1.4.6")
+    print("=" * 60)
+    if not records:
+        print("  No providers currently blocked.")
+    for r in records:
+        print(f"  {r.provider_id}: BLOCKED | {r.reason}")
+    print("=" * 60)
+
+
+def cmd_provider_quality_decision(args=None):
+    """[v1.4.6] Show quality decision details."""
+    decision_id = getattr(args, "decision_id", None) or ""
+    print(f"  [v1.4.6] Quality decision '{decision_id}' — use query service for details.")
+    print(f"  [!] Research Only. No Real Orders.")
+
+
+def cmd_provider_quality_explain(args=None):
+    """[v1.4.6] Explain a quality decision."""
+    decision_id = getattr(args, "decision_id", None) or ""
+    from data.governance.quality.query_v146 import ProviderQualityQueryService
+    svc = ProviderQualityQueryService()
+    result = svc.explain_decision(decision_id)
+    import json as _json
+    print(f"  [v1.4.6] Decision Explanation:")
+    print(f"  [!] Score cannot override blocking failures.")
+    for k, v in result.items():
+        print(f"  {k}: {v}")
+
+
+def cmd_provider_quality_audit(args=None):
+    """[v1.4.6] View quality decision audit trail."""
+    provider_id = getattr(args, "provider", None) or ""
+    from data.governance.quality.audit_v146 import QualityDecisionAuditService
+    svc = QualityDecisionAuditService()
+    records = svc.get_by_provider(provider_id) if provider_id else svc.list_all()
+    print(f"  [v1.4.6] Quality Audit: {len(records)} records for provider '{provider_id}'")
+    print(f"  [!] Append-only. No credentials stored.")
+
+
+def cmd_provider_quality_score(args=None):
+    """[v1.4.6] Show quality score for a provider."""
+    provider_id = getattr(args, "provider", None) or "twse_official"
+    from data.governance.quality.score_v146 import QualityScoreEngine
+    eng = QualityScoreEngine()
+    score = eng.compute(provider_id, provider_id, [], blocking_failures=[])
+    print(f"  [v1.4.6] Quality Score for '{provider_id}': {score.score:.1f}/100")
+    print(f"  [!] Score CANNOT override blocking failures.")
+    print(f"  can_override_blocking: {score.can_override_blocking}")
+
+
+def cmd_provider_quality_policy(args=None):
+    """[v1.4.6] Show quality policy for a provider."""
+    provider_id = getattr(args, "provider", None) or "twse_official"
+    from data.governance.quality.policy_v146 import QualityPolicyManager
+    mgr = QualityPolicyManager()
+    policy = mgr.get_policy(provider_id)
+    print(f"  [v1.4.6] Quality Policy for '{provider_id}':")
+    for k, v in policy.items():
+        print(f"  {k}: {v}")
+
+
+def cmd_provider_quality_formal_research(args=None):
+    """[v1.4.6] Check formal research eligibility."""
+    provider_id = getattr(args, "provider", None) or "twse"
+    dataset_id = getattr(args, "dataset", None) or "daily_ohlcv"
+    from data.governance.quality.formal_research_gate_v146 import FormalResearchEligibilityGate
+    gate = FormalResearchEligibilityGate()
+    result = gate.evaluate(provider_id, dataset_id, {
+        "authority_level": "PRIMARY_OFFICIAL",
+        "provenance_complete": True, "pit_compliant": True,
+        "schema_valid": True, "no_unresolved_conflicts": True,
+        "dataset_admitted": True, "real_data": True,
+    })
+    print(f"  [v1.4.6] Formal Research: {provider_id}:{dataset_id}")
+    print(f"  Eligible: {result.eligible}")
+    print(f"  Blocking: {result.blocking_failures}")
+
+
+def cmd_provider_quality_backtest(args=None):
+    """[v1.4.6] Check backtest input eligibility."""
+    provider_id = getattr(args, "provider", None) or "twse"
+    dataset_id = getattr(args, "dataset", None) or "daily_ohlcv"
+    from data.governance.quality.backtest_gate_v146 import BacktestInputEligibilityGate
+    gate = BacktestInputEligibilityGate()
+    result = gate.evaluate(provider_id, dataset_id, {
+        "pit_available": True, "lookahead_leakage": False, "future_leakage": False,
+        "revision_frozen": True, "authority_level": "PRIMARY_OFFICIAL",
+    })
+    print(f"  [v1.4.6] Backtest Eligibility: {provider_id}:{dataset_id}")
+    print(f"  Eligible: {result.eligible}")
+    print(f"  [!] Future leakage → BLOCK. No auto-patch.")
+    print(f"  Blocking: {result.blocking_failures}")
+
+
+def cmd_provider_quality_safety(args=None):
+    """[v1.4.6] Run safety gate check."""
+    from data.governance.quality.safety_gate_v146 import SafetyGate
+    gate = SafetyGate()
+    result = gate.evaluate("system_self_test")
+    print(f"  [v1.4.6] Safety Gate: {result.status}")
+    print(f"  Evidence: {result.evidence}")
+    print(f"  [!] No broker. No orders. No rate bypass.")
+
+
+def cmd_provider_quality_report(args=None):
+    """[v1.4.6] Generate provider quality gates report."""
+    from reports.provider_quality_gates_report import ProviderQualityGatesReport
+    print(ProviderQualityGatesReport().render())
+
+
+def cmd_provider_quality_gate_detail(args=None):
+    """[v1.4.6] Show quality gate definition detail."""
+    gate_id = getattr(args, "gate_id", None) or ""
+    from data.governance.quality.gate_registry_v146 import QualityGateRegistry
+    reg = QualityGateRegistry()
+    if gate_id:
+        gate = reg.get_gate(gate_id)
+        if gate:
+            print(f"  Gate: {gate.gate_id}")
+            print(f"  Name: {gate.gate_name}")
+            print(f"  Scope: {gate.scope}")
+            print(f"  Category: {gate.category}")
+            print(f"  Mandatory: {gate.mandatory}")
+            print(f"  Blocking: {gate.blocking}")
+            print(f"  Severity: {gate.severity}")
+            print(f"  Policy: {gate.policy_version}")
+        else:
+            print(f"  Gate '{gate_id}' not found.")
+    else:
+        print(f"  Use --gate-id to specify a gate.")
+        print(f"  Available gates:")
+        for g in reg.list_gates()[:10]:
+            print(f"    {g.gate_id}")
+
+
 def _argv_from_namespace(args):
     """Convert argparse Namespace to legacy argv list for pre-registry handlers."""
     if args is None:
@@ -32507,6 +32808,27 @@ def main() -> None:
         "conflict-lineage-list":       cmd_conflict_lineage_list,
         "conflict-lineage-show":       lambda args=None: cmd_conflict_lineage_show(_argv_from_namespace(args)),
         "source-governance-report":    cmd_source_governance_report,
+        # v1.4.6 Provider Quality Gates
+        "provider-quality-health":             cmd_provider_quality_health,
+        "provider-quality-gates":              cmd_provider_quality_gates,
+        "provider-quality-evaluate-provider":  cmd_provider_quality_evaluate_provider,
+        "provider-quality-evaluate-dataset":   cmd_provider_quality_evaluate_dataset,
+        "provider-quality-evaluate-endpoint":  cmd_provider_quality_evaluate_endpoint,
+        "provider-quality-evaluate-fetch-run": cmd_provider_quality_evaluate_fetch_run,
+        "provider-quality-profiles":           cmd_provider_quality_profiles,
+        "provider-quality-datasets":           cmd_provider_quality_datasets,
+        "provider-quality-quarantine-list":    cmd_provider_quality_quarantine_list,
+        "provider-quality-blocked-list":       cmd_provider_quality_blocked_list,
+        "provider-quality-decision":           cmd_provider_quality_decision,
+        "provider-quality-explain":            cmd_provider_quality_explain,
+        "provider-quality-audit":              cmd_provider_quality_audit,
+        "provider-quality-score":              cmd_provider_quality_score,
+        "provider-quality-policy":             cmd_provider_quality_policy,
+        "provider-quality-formal-research":    cmd_provider_quality_formal_research,
+        "provider-quality-backtest":           cmd_provider_quality_backtest,
+        "provider-quality-safety":             cmd_provider_quality_safety,
+        "provider-quality-report":             cmd_provider_quality_report,
+        "provider-quality-gate-detail":        cmd_provider_quality_gate_detail,
     }
 
     if args.command is None:

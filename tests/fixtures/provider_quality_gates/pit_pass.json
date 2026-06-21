@@ -1,0 +1,14 @@
+{
+  "_fixture_type": "TEST_FIXTURE",
+  "_demo_only": true,
+  "_not_real_data": true,
+  "_not_for_formal_conclusion": true,
+  "provider_id": "twse_official",
+  "dataset_id": "twse_daily_prices",
+  "pit_available": true,
+  "revision_frozen": true,
+  "future_leakage": false,
+  "lookahead_leakage": false,
+  "gate_result": "PASS",
+  "note": "No leakage. PIT integrity maintained."
+}

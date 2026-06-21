@@ -1,0 +1,12 @@
+{
+  "_fixture_type": "TEST_FIXTURE",
+  "_demo_only": true,
+  "_not_real_data": true,
+  "_not_for_formal_conclusion": true,
+  "conflict_type": "WITHIN_TOLERANCE",
+  "source_a": "twse_official",
+  "source_b": "tpex_official",
+  "field": "close_price",
+  "gate_result": "WARN",
+  "note": "WITHIN_TOLERANCE is a warning — not blocking"
+}

@@ -1297,7 +1297,7 @@ class TestRegression:
     def test_151_base_release_contains_140(self):
         from release.version_info import BASE_RELEASE
         # Accept 1.4.0 (TWSE), 1.4.1 (TPEx), 1.4.2 (MOPS), or 1.4.3 as base
-        assert any(m in BASE_RELEASE for m in ("1.4.0", "1.4.1", "1.4.2", "1.4.3", "1.4.4"))
+        assert any(m in BASE_RELEASE for m in ("1.4.0", "1.4.1", "1.4.2", "1.4.3", "1.4.4", "1.4.5"))
 
     def test_152_replay_stable_baseline(self):
         from release.version_info import REPLAY_STABLE_BASELINE

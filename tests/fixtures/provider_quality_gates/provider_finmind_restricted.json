@@ -1,0 +1,13 @@
+{
+  "_fixture_type": "TEST_FIXTURE",
+  "_demo_only": true,
+  "_not_real_data": true,
+  "_not_for_formal_conclusion": true,
+  "provider_id": "finmind",
+  "quality_state": "RESTRICTED",
+  "authority_level": "SECONDARY",
+  "formal_research_allowed": false,
+  "backtest_allowed": false,
+  "score": 42,
+  "blocking_failures": ["rate_limit_policy_unknown"]
+}

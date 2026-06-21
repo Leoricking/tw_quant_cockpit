@@ -1,0 +1,13 @@
+{
+  "_fixture_type": "TEST_FIXTURE",
+  "_demo_only": true,
+  "_not_real_data": true,
+  "_not_for_formal_conclusion": true,
+  "conflict_type": "VALUE_CONFLICT",
+  "resolved": false,
+  "source_a": "twse_official",
+  "source_b": "finmind",
+  "field": "volume",
+  "gate_result": "BLOCKED",
+  "note": "Unresolved VALUE_CONFLICT is BLOCKED for formal use"
+}

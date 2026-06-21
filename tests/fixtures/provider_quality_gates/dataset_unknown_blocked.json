@@ -1,0 +1,14 @@
+{
+  "_fixture_type": "TEST_FIXTURE",
+  "_demo_only": true,
+  "_not_real_data": true,
+  "_not_for_formal_conclusion": true,
+  "dataset_id": "unknown_dataset_xyz",
+  "provider_id": "unknown_provider_xyz",
+  "admitted": false,
+  "formal_research_allowed": false,
+  "backtest_allowed": false,
+  "blocking_failures": ["dataset_not_in_allowlist"],
+  "coverage_pct": 0.0,
+  "freshness_status": "UNKNOWN"
+}

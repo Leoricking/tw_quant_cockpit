@@ -1,0 +1,14 @@
+{
+  "_fixture_type": "TEST_FIXTURE",
+  "_demo_only": true,
+  "_not_real_data": true,
+  "_not_for_formal_conclusion": true,
+  "provider_id": "twse_official",
+  "dataset_id": "twse_daily_prices",
+  "coverage_pct": 0.97,
+  "threshold_normal": 0.95,
+  "threshold_backtest": 0.98,
+  "gate_result": "PASS",
+  "backtest_gate_result": "WARN",
+  "note": "Backtest uses stricter threshold (0.98)"
+}

@@ -1,0 +1,14 @@
+{
+  "_fixture_type": "TEST_FIXTURE",
+  "_demo_only": true,
+  "_not_real_data": true,
+  "_not_for_formal_conclusion": true,
+  "provider_id": "unknown_provider_xyz",
+  "dataset_id": "unknown_dataset",
+  "freshness_status": "UNKNOWN",
+  "last_updated": null,
+  "quota_exhausted": false,
+  "rate_limited": false,
+  "gate_result": "FAIL",
+  "note": "UNKNOWN freshness is NOT PASS — must be FAIL"
+}

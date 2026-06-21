@@ -4,9 +4,9 @@
   "NOT_REAL_DATA": true,
   "NOT_FOR_FORMAL_CONCLUSION": true,
   "fixture_id": "capability_registry_snapshot",
-  "description": "Snapshot of expected capability registry state for v1.3.9+ (updated for v1.4.5 — provider_lineage_rate_limit now stable)",
-  "expected_stable_count": 15,
-  "expected_planned_count": 2,
+  "description": "Snapshot of expected capability registry state for v1.3.9+ (updated for v1.4.6 — provider_quality_gates now stable)",
+  "expected_stable_count": 16,
+  "expected_planned_count": 1,
   "expected_total": 17,
   "stable_capability_ids": [
     "real_data_quality",
@@ -23,10 +23,10 @@
     "mops_provider",
     "data_gov_tw_provider",
     "finmind_adapter_hardening",
-    "provider_lineage_rate_limit"
+    "provider_lineage_rate_limit",
+    "provider_quality_gates"
   ],
   "planned_capability_ids": [
-    "provider_quality_gates",
     "forum_intelligence"
   ]
 }

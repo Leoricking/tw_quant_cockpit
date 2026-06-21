@@ -1,0 +1,16 @@
+{
+  "_fixture_type": "TEST_FIXTURE",
+  "_demo_only": true,
+  "_not_real_data": true,
+  "_not_for_formal_conclusion": true,
+  "provider_id": "finmind",
+  "dataset_id": "finmind_daily_prices",
+  "freshness_status": "QUOTA_EXHAUSTED",
+  "last_updated": "2026-01-20T06:00:00Z",
+  "max_staleness_hours": 24,
+  "actual_age_hours": 8,
+  "quota_exhausted": true,
+  "rate_limited": false,
+  "gate_result": "WARN",
+  "note": "quota_exhausted is a warning only — NOT stale, does NOT block"
+}

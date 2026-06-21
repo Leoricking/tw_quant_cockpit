@@ -1,0 +1,13 @@
+{
+  "_fixture_type": "TEST_FIXTURE",
+  "_demo_only": true,
+  "_not_real_data": true,
+  "_not_for_formal_conclusion": true,
+  "provider_id": "twse_official",
+  "quality_state": "BLOCKED",
+  "authority_level": "AUTHORITATIVE",
+  "formal_research_allowed": false,
+  "backtest_allowed": false,
+  "score": 10,
+  "blocking_failures": ["safety_invariant_violation", "schema_breaking_change"]
+}

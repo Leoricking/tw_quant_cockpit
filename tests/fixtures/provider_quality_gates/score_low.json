@@ -1,0 +1,20 @@
+{
+  "_fixture_type": "TEST_FIXTURE",
+  "_demo_only": true,
+  "_not_real_data": true,
+  "_not_for_formal_conclusion": true,
+  "provider_id": "unknown_provider_xyz",
+  "total_score": 12,
+  "can_override_blocking": false,
+  "components": {
+    "data_quality": 5,
+    "freshness": 2,
+    "coverage": 2,
+    "provenance": 1,
+    "pit": 1,
+    "schema": 1,
+    "authority_conflict": 0,
+    "operational": 0
+  },
+  "note": "Low score. Blocking failures independently block formal use."
+}

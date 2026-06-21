@@ -1,0 +1,15 @@
+{
+  "_fixture_type": "TEST_FIXTURE",
+  "_demo_only": true,
+  "_not_real_data": true,
+  "_not_for_formal_conclusion": true,
+  "record_id": "qr_001",
+  "provider_id": "finmind",
+  "quarantined_at": "2026-01-15T10:00:00Z",
+  "reason": "Repeated schema drift detected",
+  "auto_release_allowed": false,
+  "released": false,
+  "released_at": null,
+  "released_by": null,
+  "note": "Manual human review required before any release"
+}

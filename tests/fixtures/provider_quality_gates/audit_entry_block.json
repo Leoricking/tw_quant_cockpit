@@ -1,0 +1,15 @@
+{
+  "_fixture_type": "TEST_FIXTURE",
+  "_demo_only": true,
+  "_not_real_data": true,
+  "_not_for_formal_conclusion": true,
+  "audit_id": "aud_002",
+  "decision_id": "dec_block_001",
+  "provider_id": "unknown_provider_xyz",
+  "action": "BLOCK",
+  "timestamp": "2026-01-20T14:31:00Z",
+  "evidence_hash": "sha256:fedcba0987654321",
+  "immutable": true,
+  "no_credentials_stored": true,
+  "append_only": true
+}

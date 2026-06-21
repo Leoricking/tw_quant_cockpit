@@ -73,9 +73,9 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # ---------------------------------------------------------------------------
 # v1.3.3 module-level constants (Coverage Repair Workflow)
 # ---------------------------------------------------------------------------
-VERSION                             = "1.4.5"
-RELEASE_NAME                        = "Source Lineage & Rate Limit"
-BASE_RELEASE                        = "1.4.4 FinMind Adapter Hardening"
+VERSION                             = "1.4.6"
+RELEASE_NAME                        = "Provider Quality Gates"
+BASE_RELEASE                        = "1.4.5 Source Lineage & Rate Limit"
 
 # ---------------------------------------------------------------------------
 # v1.3.2 module-level constants (Real Data Provider Adapter Foundation)
@@ -601,6 +601,37 @@ TOKEN_ROTATION_ENABLED                      = False  # ALWAYS FALSE
 PROXY_ROTATION_ENABLED                      = False  # ALWAYS FALSE
 MULTI_ACCOUNT_LIMIT_BYPASS_ENABLED          = False  # ALWAYS FALSE
 PRIMARY_SOURCE_OVERRIDE_ENABLED             = False  # ALWAYS FALSE
+
+# v1.4.6 Provider Quality Gates flags
+PROVIDER_QUALITY_GATES_AVAILABLE                = True
+CENTRAL_QUALITY_DECISION_ENGINE_AVAILABLE       = True
+PROVIDER_ONBOARDING_GATE_AVAILABLE              = True
+DATASET_ADMISSION_GATE_AVAILABLE                = True
+ENDPOINT_READINESS_GATE_AVAILABLE               = True
+BATCH_INGESTION_GATE_AVAILABLE                  = True
+FORMAL_RESEARCH_GATE_AVAILABLE                  = True
+BACKTEST_INPUT_GATE_AVAILABLE                   = True
+REPORT_ELIGIBILITY_GATE_AVAILABLE               = True
+DATA_QUALITY_GATE_AVAILABLE                     = True
+FRESHNESS_GATE_AVAILABLE                        = True
+COVERAGE_GATE_AVAILABLE                         = True
+PROVENANCE_GATE_AVAILABLE                       = True
+POINT_IN_TIME_GATE_AVAILABLE                    = True
+SCHEMA_DRIFT_GATE_AVAILABLE                     = True
+AUTHORITY_GATE_AVAILABLE                        = True
+CONFLICT_GATE_AVAILABLE                         = True
+RATE_LIMIT_READINESS_GATE_AVAILABLE             = True
+QUOTA_READINESS_GATE_AVAILABLE                  = True
+SAFETY_GATE_AVAILABLE                           = True
+PROVIDER_QUARANTINE_AVAILABLE                   = True
+QUALITY_DECISION_AUDIT_AVAILABLE                = True
+QUALITY_SCORE_AVAILABLE                         = True
+QUALITY_SCORE_CAN_OVERRIDE_BLOCKING_FAILURE     = False  # ALWAYS FALSE
+AUTO_PROVIDER_PROMOTION_ENABLED                 = False  # ALWAYS FALSE
+AUTO_PRIMARY_OVERRIDE_ENABLED                   = False  # ALWAYS FALSE
+SILENT_PROVIDER_FALLBACK_ENABLED                = False  # ALWAYS FALSE
+AUTO_QUARANTINE_RELEASE_ENABLED                 = False  # ALWAYS FALSE
+AUTO_RATE_LIMIT_BYPASS_ENABLED                  = False  # ALWAYS FALSE
 
 
 class VersionInfo:
@@ -1173,6 +1204,36 @@ def print_version_info() -> None:
     print(f"  Proxy Rotation Enabled: {PROXY_ROTATION_ENABLED}")
     print(f"  Multi Account Limit Bypass Enabled: {MULTI_ACCOUNT_LIMIT_BYPASS_ENABLED}")
     print(f"  Primary Source Override Enabled: {PRIMARY_SOURCE_OVERRIDE_ENABLED}")
+    # v1.4.6 Provider Quality Gates flags
+    print(f"  Provider Quality Gates Available: {PROVIDER_QUALITY_GATES_AVAILABLE}")
+    print(f"  Central Quality Decision Engine Available: {CENTRAL_QUALITY_DECISION_ENGINE_AVAILABLE}")
+    print(f"  Provider Onboarding Gate Available: {PROVIDER_ONBOARDING_GATE_AVAILABLE}")
+    print(f"  Dataset Admission Gate Available: {DATASET_ADMISSION_GATE_AVAILABLE}")
+    print(f"  Endpoint Readiness Gate Available: {ENDPOINT_READINESS_GATE_AVAILABLE}")
+    print(f"  Batch Ingestion Gate Available: {BATCH_INGESTION_GATE_AVAILABLE}")
+    print(f"  Formal Research Gate Available: {FORMAL_RESEARCH_GATE_AVAILABLE}")
+    print(f"  Backtest Input Gate Available: {BACKTEST_INPUT_GATE_AVAILABLE}")
+    print(f"  Report Eligibility Gate Available: {REPORT_ELIGIBILITY_GATE_AVAILABLE}")
+    print(f"  Data Quality Gate Available: {DATA_QUALITY_GATE_AVAILABLE}")
+    print(f"  Freshness Gate Available: {FRESHNESS_GATE_AVAILABLE}")
+    print(f"  Coverage Gate Available: {COVERAGE_GATE_AVAILABLE}")
+    print(f"  Provenance Gate Available: {PROVENANCE_GATE_AVAILABLE}")
+    print(f"  Point-In-Time Gate Available: {POINT_IN_TIME_GATE_AVAILABLE}")
+    print(f"  Schema Drift Gate Available: {SCHEMA_DRIFT_GATE_AVAILABLE}")
+    print(f"  Authority Gate Available: {AUTHORITY_GATE_AVAILABLE}")
+    print(f"  Conflict Gate Available: {CONFLICT_GATE_AVAILABLE}")
+    print(f"  Rate Limit Readiness Gate Available: {RATE_LIMIT_READINESS_GATE_AVAILABLE}")
+    print(f"  Quota Readiness Gate Available: {QUOTA_READINESS_GATE_AVAILABLE}")
+    print(f"  Safety Gate Available: {SAFETY_GATE_AVAILABLE}")
+    print(f"  Provider Quarantine Available: {PROVIDER_QUARANTINE_AVAILABLE}")
+    print(f"  Quality Decision Audit Available: {QUALITY_DECISION_AUDIT_AVAILABLE}")
+    print(f"  Quality Score Available: {QUALITY_SCORE_AVAILABLE}")
+    print(f"  Quality Score Can Override Blocking Failure: {QUALITY_SCORE_CAN_OVERRIDE_BLOCKING_FAILURE}")
+    print(f"  Auto Provider Promotion Enabled: {AUTO_PROVIDER_PROMOTION_ENABLED}")
+    print(f"  Auto Primary Override Enabled: {AUTO_PRIMARY_OVERRIDE_ENABLED}")
+    print(f"  Silent Provider Fallback Enabled: {SILENT_PROVIDER_FALLBACK_ENABLED}")
+    print(f"  Auto Quarantine Release Enabled: {AUTO_QUARANTINE_RELEASE_ENABLED}")
+    print(f"  Auto Rate Limit Bypass Enabled: {AUTO_RATE_LIMIT_BYPASS_ENABLED}")
     print("=" * 60)
 
 
