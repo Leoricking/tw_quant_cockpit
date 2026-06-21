@@ -73,9 +73,9 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # ---------------------------------------------------------------------------
 # v1.3.3 module-level constants (Coverage Repair Workflow)
 # ---------------------------------------------------------------------------
-VERSION                             = "1.4.8"
-RELEASE_NAME                        = "Provider Integration Hardening"
-BASE_RELEASE                        = "1.4.7 Forum Intelligence & Market Sentiment"
+VERSION                             = "1.4.8.1"
+RELEASE_NAME                        = "Provider Integration Test Integrity Hotfix"
+BASE_RELEASE                        = "1.4.8 Provider Integration Hardening"
 REPLAY_STABLE_BASELINE              = "1.2.9"
 
 # ---------------------------------------------------------------------------

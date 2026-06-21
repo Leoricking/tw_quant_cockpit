@@ -771,6 +771,7 @@ class TestVersionInfo:
             "Data Provider Stable Rollup",
             "Full-Suite Collection Integrity Hotfix",
             "Provider Integration Hardening",
+            "Provider Integration Test Integrity Hotfix",
             "Provider Stable Rollup",
         ), f"Unexpected release name: {version_info.RELEASE_NAME}"
 

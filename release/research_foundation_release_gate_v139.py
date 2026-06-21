@@ -81,6 +81,7 @@ class ResearchFoundationReleaseGate:
                 "Data Provider Stable Rollup",
                 "Full-Suite Collection Integrity Hotfix",
                 "Provider Integration Hardening",
+                "Provider Integration Test Integrity Hotfix",
                 "Provider Stable Rollup",
             }
             parts = tuple(int(x) for x in VERSION.split(".")[:3])

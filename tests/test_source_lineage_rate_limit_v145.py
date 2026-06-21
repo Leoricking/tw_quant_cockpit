@@ -1592,6 +1592,7 @@ class TestRegression:
             "Data Provider Stable Rollup",
             "Full-Suite Collection Integrity Hotfix",
             "Provider Integration Hardening",
+            "Provider Integration Test Integrity Hotfix",
             "Provider Stable Rollup",
         )
         assert any(name in RELEASE_NAME for name in _KNOWN_NAMES), (

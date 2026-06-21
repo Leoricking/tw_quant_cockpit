@@ -1577,6 +1577,7 @@ class TestVersionInfo(unittest.TestCase):
             "Full-Suite Collection Integrity Hotfix",
             "Forum Intelligence & Market Sentiment",
             "Provider Integration Hardening",
+            "Provider Integration Test Integrity Hotfix",
             "Provider Stable Rollup",
         )
         self.assertTrue(

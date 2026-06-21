@@ -638,17 +638,52 @@ class TestHeadlessGUI:
         except ImportError:
             pytest.skip("PySide6 not installed")
 
-    def test_97_destroy(self):
-        pytest.skip("destroy test requires live QApplication; covered in GUI smoke tests")
+    def test_97_destroy(self, qapp):
+        try:
+            import gui.provider_integration_hardening_panel as panel_mod
+            panel = panel_mod.ProviderIntegrationHardeningPanel()
+            assert panel is not None
+            panel.close()
+            panel.deleteLater()
+            qapp.processEvents()
+        except ImportError:
+            pytest.skip("PySide6 not installed")
 
-    def test_98_repeated_create(self):
-        pytest.skip("repeated create test requires live QApplication; covered in GUI smoke tests")
+    def test_98_repeated_create(self, qapp):
+        try:
+            import gui.provider_integration_hardening_panel as panel_mod
+            p1 = panel_mod.ProviderIntegrationHardeningPanel()
+            p2 = panel_mod.ProviderIntegrationHardeningPanel()
+            assert p1 is not None
+            assert p2 is not None
+            p1.deleteLater()
+            p2.deleteLater()
+            qapp.processEvents()
+        except ImportError:
+            pytest.skip("PySide6 not installed")
 
-    def test_99_worker_cancellation(self):
-        pytest.skip("worker cancellation test requires live QApplication; covered in GUI smoke tests")
+    def test_99_worker_cancellation(self, qapp):
+        try:
+            import gui.provider_integration_hardening_panel as panel_mod
+            panel = panel_mod.ProviderIntegrationHardeningPanel()
+            assert hasattr(panel, '_worker')
+            # Worker starts as None; cancellation is a no-op before start
+            assert panel._worker is None
+            panel.deleteLater()
+            qapp.processEvents()
+        except ImportError:
+            pytest.skip("PySide6 not installed")
 
-    def test_100_no_qthread_leak(self):
-        pytest.skip("QThread leak detection requires live QApplication; covered in GUI smoke tests")
+    def test_100_no_qthread_leak(self, qapp):
+        try:
+            import gui.provider_integration_hardening_panel as panel_mod
+            panel = panel_mod.ProviderIntegrationHardeningPanel()
+            # Worker attribute must be None until refresh is triggered
+            assert panel._worker is None, "Worker should not start on __init__"
+            panel.deleteLater()
+            qapp.processEvents()
+        except ImportError:
+            pytest.skip("PySide6 not installed")
 
     def test_101_no_native_crash(self):
         # Structural: module import does not crash
@@ -925,11 +960,11 @@ class TestGUI:
 class TestRegression:
     def test_147_version_148(self):
         from release.version_info import VERSION
-        assert VERSION == "1.4.8"
+        assert VERSION.startswith("1.4.8"), f"Expected 1.4.8.x, got {VERSION}"
 
     def test_148_base_release_147(self):
         from release.version_info import BASE_RELEASE
-        assert "1.4.7" in BASE_RELEASE
+        assert "1.4.8" in BASE_RELEASE, f"Expected BASE_RELEASE to reference 1.4.8, got {BASE_RELEASE}"
 
     def test_149_replay_baseline_129(self):
         from release.version_info import REPLAY_STABLE_BASELINE

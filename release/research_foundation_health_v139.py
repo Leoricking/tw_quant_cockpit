@@ -78,6 +78,7 @@ class ResearchFoundationStableHealthCheck:
                 "Data Provider Stable Rollup",
                 "Full-Suite Collection Integrity Hotfix",
                 "Provider Integration Hardening",
+                "Provider Integration Test Integrity Hotfix",
                 "Provider Stable Rollup",
             }
             ok = RELEASE_NAME in _KNOWN_NAMES

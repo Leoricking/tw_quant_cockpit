@@ -282,6 +282,7 @@ class TestRegression:
             "Data Provider Stable Rollup",
             "Full-Suite Collection Integrity Hotfix",
             "Provider Integration Hardening",
+            "Provider Integration Test Integrity Hotfix",
             "Provider Stable Rollup",
         }
         assert RELEASE_NAME in _KNOWN, f"Unexpected RELEASE_NAME: {RELEASE_NAME}"

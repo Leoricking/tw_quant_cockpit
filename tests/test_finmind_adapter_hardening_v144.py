@@ -1314,6 +1314,7 @@ def test_149_release_name():
         "Full-Suite Collection Integrity Hotfix",
         "Forum Intelligence & Market Sentiment",
         "Provider Integration Hardening",
+        "Provider Integration Test Integrity Hotfix",
         "Provider Stable Rollup",
     }
     assert RELEASE_NAME in known_names, f"Unexpected RELEASE_NAME: {RELEASE_NAME}"

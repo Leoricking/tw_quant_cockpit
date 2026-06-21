@@ -41,6 +41,7 @@ def test_current_release_name():
         "Data Provider Stable Rollup",
         "Full-Suite Collection Integrity Hotfix",
     "Provider Integration Hardening",
+    "Provider Integration Test Integrity Hotfix",
     "Provider Stable Rollup",
     }
     assert RELEASE_NAME in known_names, f"Unexpected RELEASE_NAME: {RELEASE_NAME}"
