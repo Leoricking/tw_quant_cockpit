@@ -55,6 +55,7 @@ class TestVersionInfo:
             "Provider Stable Rollup",
             "Portfolio Research Foundation",
             "Portfolio Research Foundation Integrity Hotfix",
+            "Portfolio Research CLI Completeness Hotfix",
         }
         assert RELEASE_NAME in _KNOWN, f"Unexpected RELEASE_NAME: {RELEASE_NAME}"
 

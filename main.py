@@ -32673,6 +32673,82 @@ def cmd_portfolio_report(args=None):
     return 0
 
 
+# ---------------------------------------------------------------------------
+# v1.5.0.2 Portfolio Research CLI Completeness handlers
+# ---------------------------------------------------------------------------
+
+def cmd_portfolio_list(args=None):
+    """[v1.5.0] List all portfolios (read-only, research only)."""
+    print("[!] Research Only. No Real Orders. Not Investment Advice.")
+    try:
+        from portfolio.store_v150 import PortfolioStore
+        store = PortfolioStore(use_temp_db=True)
+        portfolios = store.list_portfolios()
+        if not portfolios:
+            print("No portfolios found. (empty store — demo/fixture only)")
+            return 0
+        print(f"{'ID':<25} {'Name':<30} {'Status':<12} {'Currency':<10} {'ResearchOnly'}")
+        print("-" * 90)
+        for p in portfolios:
+            print(f"{p.get('portfolio_id',''):<25} {p.get('name',''):<30} {p.get('status',''):<12} {p.get('base_currency',''):<10} {p.get('research_only', True)}")
+        return 0
+    except Exception as exc:
+        print(f"[WARN] portfolio-list: {exc}")
+        return 1
+
+
+def cmd_portfolio_show(args=None):
+    """[v1.5.0] Show portfolio definition (read-only, research only)."""
+    print("[!] Research Only. No Real Orders. Not Investment Advice.")
+    portfolio_id = getattr(args, "portfolio_id", None) or "demo_portfolio"
+    try:
+        from portfolio.store_v150 import PortfolioStore
+        store = PortfolioStore(use_temp_db=True)
+        p = store.get_portfolio(portfolio_id)
+        if p is None:
+            print(f"Portfolio '{portfolio_id}' NOT_FOUND")
+            print("(no demo fallback — use portfolio-create to add a portfolio)")
+            return 1
+        # Display key fields
+        fields = ["portfolio_id", "name", "status", "base_currency", "benchmark",
+                  "cost_basis_method", "research_only", "broker_linked", "real_order_enabled"]
+        for f in fields:
+            if f in p:
+                print(f"  {f}: {p[f]}")
+        return 0
+    except Exception as exc:
+        print(f"[WARN] portfolio-show: {exc}")
+        return 1
+
+
+def cmd_portfolio_ledger(args=None):
+    """[v1.5.0] Show append-only portfolio transactions (read-only, research only)."""
+    print("[!] Research Only. No Real Orders. Not Investment Advice.")
+    portfolio_id = getattr(args, "portfolio_id", None) or "demo_portfolio"
+    as_of = getattr(args, "as_of", None)
+    try:
+        from portfolio.store_v150 import PortfolioStore
+        store = PortfolioStore(use_temp_db=True)
+        txns = store.get_transactions(portfolio_id)
+        if as_of:
+            txns = [t for t in txns if t.get("effective_time", "") <= as_of]
+        if not txns:
+            print(f"No transactions found for '{portfolio_id}'.")
+            print("(append-only ledger — empty is valid)")
+            return 0
+        print(f"{'TxnID':<20} {'EffectiveTime':<22} {'Type':<18} {'Symbol':<12} {'Qty':>8} {'Price':>10}")
+        print("-" * 95)
+        for t in txns:
+            print(f"{t.get('transaction_id',''):<20} {str(t.get('effective_time','')):<22} "
+                  f"{t.get('transaction_type',''):<18} {t.get('symbol',''):<12} "
+                  f"{str(t.get('quantity',''))[:8]:>8} {str(t.get('price_twd',''))[:10]:>10}")
+        print(f"\n[INFO] Ledger is append-only. research_only=True. No orders generated.")
+        return 0
+    except Exception as exc:
+        print(f"[WARN] portfolio-ledger: {exc}")
+        return 1
+
+
 def main() -> None:
     """Main entrypoint."""
     import pandas as pd  # imported here to avoid shadowing at module level
@@ -33813,9 +33889,12 @@ def main() -> None:
         "portfolio-health":       cmd_portfolio_health,
         "portfolio-create":       cmd_portfolio_create,
         "portfolio-add-txn":      cmd_portfolio_add_txn,
+        "portfolio-ledger":       cmd_portfolio_ledger,
+        "portfolio-list":         cmd_portfolio_list,
         "portfolio-positions":    cmd_portfolio_positions,
         "portfolio-cash":         cmd_portfolio_cash,
         "portfolio-valuation":    cmd_portfolio_valuation,
+        "portfolio-value":        cmd_portfolio_valuation,  # alias, same handler
         "portfolio-pnl":          cmd_portfolio_pnl,
         "portfolio-exposure":     cmd_portfolio_exposure,
         "portfolio-concentration": cmd_portfolio_concentration,
@@ -33827,6 +33906,7 @@ def main() -> None:
         "portfolio-what-if":      cmd_portfolio_what_if,
         "portfolio-lineage":      cmd_portfolio_lineage,
         "portfolio-report":       cmd_portfolio_report,
+        "portfolio-show":         cmd_portfolio_show,
     }
 
     if args.command is None:

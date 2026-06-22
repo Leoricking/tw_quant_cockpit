@@ -1581,6 +1581,7 @@ class TestVersionInfo(unittest.TestCase):
             "Provider Stable Rollup",
             "Portfolio Research Foundation",
             "Portfolio Research Foundation Integrity Hotfix",
+            "Portfolio Research CLI Completeness Hotfix",
         )
         self.assertTrue(
             any(name in RELEASE_NAME for name in _KNOWN),

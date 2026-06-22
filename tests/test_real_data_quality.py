@@ -778,6 +778,7 @@ class TestVersionInfo:
             "Provider Stable Rollup",
             "Portfolio Research Foundation",
             "Portfolio Research Foundation Integrity Hotfix",
+            "Portfolio Research CLI Completeness Hotfix",
         ), f"Unexpected release name: {version_info.RELEASE_NAME}"
 
     def test_release_track(self):

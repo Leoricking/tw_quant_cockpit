@@ -73,9 +73,9 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # ---------------------------------------------------------------------------
 # v1.3.3 module-level constants (Coverage Repair Workflow)
 # ---------------------------------------------------------------------------
-VERSION                             = "1.5.0.1"
-RELEASE_NAME                        = "Portfolio Research Foundation Integrity Hotfix"
-BASE_RELEASE                        = "1.5.0 Portfolio Research Foundation"
+VERSION                             = "1.5.0.2"
+RELEASE_NAME                        = "Portfolio Research CLI Completeness Hotfix"
+BASE_RELEASE                        = "1.5.0.1 Portfolio Research Foundation Integrity Hotfix"
 PROVIDER_FEATURE_BASELINE           = "1.4.8 Provider Integration Hardening"
 REPLAY_STABLE_BASELINE              = "1.2.9"
 PROVIDER_STABLE_BASELINE            = "1.4.9"

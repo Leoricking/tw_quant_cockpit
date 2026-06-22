@@ -1318,6 +1318,7 @@ def test_149_release_name():
         "Provider Stable Rollup",
         "Portfolio Research Foundation",
         "Portfolio Research Foundation Integrity Hotfix",
+        "Portfolio Research CLI Completeness Hotfix",
     }
     assert RELEASE_NAME in known_names, f"Unexpected RELEASE_NAME: {RELEASE_NAME}"
 

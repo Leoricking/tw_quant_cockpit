@@ -36,7 +36,7 @@ class TestVersionInfo:
 
     def test_2_release_name(self):
         from release.version_info import RELEASE_NAME
-        assert RELEASE_NAME in ("Provider Stable Rollup", "Portfolio Research Foundation", "Portfolio Research Foundation Integrity Hotfix")
+        assert RELEASE_NAME in ("Provider Stable Rollup", "Portfolio Research Foundation", "Portfolio Research Foundation Integrity Hotfix", "Portfolio Research CLI Completeness Hotfix")
 
     def test_3_base_release_contains_148(self):
         from release.version_info import BASE_RELEASE
@@ -705,7 +705,7 @@ class TestStableReport:
     def test_121_report_metadata_version(self):
         from reports.provider_stable_rollup_report import ProviderStableRollupReport
         result = ProviderStableRollupReport().generate()
-        assert result["metadata"]["version"] in ("1.4.9", "1.5.0", "1.5.0.1")
+        assert result["metadata"]["version"] in ("1.4.9", "1.5.0", "1.5.0.1", "1.5.0.2")
 
     def test_122_report_final_readiness(self):
         from reports.provider_stable_rollup_report import ProviderStableRollupReport

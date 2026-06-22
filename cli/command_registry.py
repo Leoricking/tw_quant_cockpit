@@ -2232,6 +2232,25 @@ _PORTFOLIO_COMMANDS: _List[CommandSpec] = [
     CommandSpec(name="portfolio-report", handler_name="cmd_portfolio_report",
                 help="[v1.5.0] Generate full portfolio research report (demo fixture). Research Only.",
                 group="portfolio_research_foundation", introduced_in="1.5.0"),
+    # v1.5.0.2 Portfolio Research CLI Completeness
+    CommandSpec(name="portfolio-list", handler_name="cmd_portfolio_list",
+                help="[v1.5.0.2] List all portfolios (read-only, research only). Research Only.",
+                group="portfolio_research_foundation", introduced_in="1.5.0.2"),
+    CommandSpec(name="portfolio-show", handler_name="cmd_portfolio_show",
+                help="[v1.5.0.2] Show portfolio definition (read-only, research only). Research Only.",
+                group="portfolio_research_foundation", introduced_in="1.5.0.2",
+                args=[CommandArg(flags=["--portfolio-id"], kwargs={"default": "demo_portfolio",
+                                                                    "help": "Portfolio ID to show"})]),
+    CommandSpec(name="portfolio-ledger", handler_name="cmd_portfolio_ledger",
+                help="[v1.5.0.2] Show append-only portfolio transactions (read-only). Research Only.",
+                group="portfolio_research_foundation", introduced_in="1.5.0.2",
+                args=[CommandArg(flags=["--portfolio-id"], kwargs={"default": "demo_portfolio",
+                                                                    "help": "Portfolio ID"}),
+                      CommandArg(flags=["--as-of"], kwargs={"default": None,
+                                                             "help": "Filter transactions up to YYYY-MM-DD"})]),
+    CommandSpec(name="portfolio-value", handler_name="cmd_portfolio_valuation",
+                help="[v1.5.0.2] Alias for portfolio-valuation (read-only, research only). Research Only.",
+                group="portfolio_research_foundation", introduced_in="1.5.0.2"),
 ]
 
 # Combined list of all provider commands

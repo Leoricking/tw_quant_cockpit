@@ -1596,6 +1596,7 @@ class TestRegression:
             "Provider Stable Rollup",
             "Portfolio Research Foundation",
             "Portfolio Research Foundation Integrity Hotfix",
+            "Portfolio Research CLI Completeness Hotfix",
         )
         assert any(name in RELEASE_NAME for name in _KNOWN_NAMES), (
             f"Unexpected RELEASE_NAME for v1.4.5+ release: {RELEASE_NAME}"

@@ -52,7 +52,8 @@ class ProviderStableReleaseGate:
             from release.version_info import (VERSION, RELEASE_NAME, BASE_RELEASE,
                                                REPLAY_STABLE_BASELINE, PROVIDER_STABLE_BASELINE)
             _KNOWN_NAMES = {"Provider Stable Rollup", "Portfolio Research Foundation",
-                            "Portfolio Research Foundation Integrity Hotfix"}
+                            "Portfolio Research Foundation Integrity Hotfix",
+                            "Portfolio Research CLI Completeness Hotfix"}
             parts = tuple(int(x) for x in VERSION.split(".")[:3])
             ok = (
                 parts >= (1, 4, 9)

@@ -64,6 +64,7 @@ _RELEASE_NAMES: dict[str, str] = {
     "1.4.9": "Provider Stable Rollup",
     "1.5.0": "Portfolio Research Foundation",
     "1.5.0.1": "Portfolio Research Foundation Integrity Hotfix",
+    "1.5.0.2": "Portfolio Research CLI Completeness Hotfix",
     "1.5.1": "Position Sizing",
     "1.5.2": "Correlation & Exposure",
     "1.5.3": "Drawdown & Risk Controls",
