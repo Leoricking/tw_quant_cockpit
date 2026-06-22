@@ -370,11 +370,14 @@ class TestValidatorCoreRules:
 
     def test_recent_date_not_stale(self):
         """Recent date (within 3 trading days) should not be falsely stale."""
+        from datetime import datetime, timedelta
         data = _good_data()
-        data["date"] = "2026-06-18"  # Recent date (today context: 2026-06-19)
+        # Use a date 1 hour ago (dynamically computed) so this test remains valid over time
+        recent_date = (datetime.utcnow() - timedelta(hours=1)).strftime("%Y-%m-%d")
+        data["date"] = recent_date
         report = self.v.validate(data)
         stale_issues = [i for i in report.issues if "stale" in i.code.lower()]
-        # Should not be flagged as stale for a date just 1 day old
+        # Should not be flagged as stale for a date just 1 hour old
         assert len(stale_issues) == 0, f"Recent date should not be stale: {stale_issues}"
 
     # ------ Cross-source price conflict ------
@@ -774,6 +777,7 @@ class TestVersionInfo:
             "Provider Integration Test Integrity Hotfix",
             "Provider Stable Rollup",
             "Portfolio Research Foundation",
+            "Portfolio Research Foundation Integrity Hotfix",
         ), f"Unexpected release name: {version_info.RELEASE_NAME}"
 
     def test_release_track(self):

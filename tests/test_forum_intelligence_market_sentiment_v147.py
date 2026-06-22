@@ -1322,7 +1322,7 @@ class TestForumRegression:
 
     def test_2_base_release_146x(self):
         from release.version_info import BASE_RELEASE
-        assert any(m in BASE_RELEASE for m in ("1.4.6", "1.4.7", "1.4.8", "1.4.9"))
+        assert any(m in BASE_RELEASE for m in ("1.4.6", "1.4.7", "1.4.8", "1.4.9", "1.5.0"))
 
     def test_3_replay_baseline_129(self):
         from release.version_info import REPLAY_STABLE_BASELINE

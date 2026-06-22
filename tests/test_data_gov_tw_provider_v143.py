@@ -1347,7 +1347,7 @@ class TestRegression:
 
     def test_base_release_142(self):
         from release.version_info import BASE_RELEASE
-        assert any(m in BASE_RELEASE for m in ("1.4.2", "1.4.3", "1.4.4", "1.4.5", "1.4.6", "1.4.7", "1.4.8", "1.4.9"))
+        assert any(m in BASE_RELEASE for m in ("1.4.2", "1.4.3", "1.4.4", "1.4.5", "1.4.6", "1.4.7", "1.4.8", "1.4.9", "1.5.0"))
 
     def test_replay_baseline_129(self):
         from release.version_info import REPLAY_STABLE_BASELINE

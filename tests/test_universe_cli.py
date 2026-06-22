@@ -37,8 +37,8 @@ class TestUniverseCLI:
     def test_version_info_shows_131(self):
         rc, out, err = run_cmd("version-info")
         assert rc == 0
-        # v1.3.1 or later — accept any 1.3.x or 1.4.x version
-        assert "1.3." in out or "1.4." in out
+        # v1.3.1 or later — accept any 1.3.x, 1.4.x, or 1.5.x version
+        assert "1.3." in out or "1.4." in out or "1.5." in out
 
     def test_universe_health_runs(self):
         rc, out, err = run_cmd("universe-health")
