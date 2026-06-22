@@ -705,7 +705,7 @@ class TestStableReport:
     def test_121_report_metadata_version(self):
         from reports.provider_stable_rollup_report import ProviderStableRollupReport
         result = ProviderStableRollupReport().generate()
-        assert result["metadata"]["version"] in ("1.4.9", "1.5.0", "1.5.0.1", "1.5.0.2", "1.5.1")
+        assert result["metadata"]["version"] in ("1.4.9", "1.5.0", "1.5.0.1", "1.5.0.2", "1.5.1", "1.5.2")
 
     def test_122_report_final_readiness(self):
         from reports.provider_stable_rollup_report import ProviderStableRollupReport

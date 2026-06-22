@@ -1,0 +1,21 @@
+{
+  "_fixture_labels": ["TEST_FIXTURE", "DEMO_ONLY", "NOT_REAL_PORTFOLIO", "NOT_REAL_MARKET_DATA", "NOT_FOR_EXECUTION", "NOT_FOR_INVESTMENT_DECISION"],
+  "_version": "1.5.2",
+  "description": "Correlation spike stress test — all off-diagonal entries boosted by 0.20, clipped to [-1,1]",
+  "scenario": "CORRELATION_SPIKE",
+  "spike_amount": 0.20,
+  "original_matrix": [
+    [1.0, 0.55, 0.40],
+    [0.55, 1.0, 0.38],
+    [0.40, 0.38, 1.0]
+  ],
+  "expected_stressed_matrix": [
+    [1.0, 0.75, 0.60],
+    [0.75, 1.0, 0.58],
+    [0.60, 0.58, 1.0]
+  ],
+  "original_matrix_unchanged": true,
+  "assumptions": ["HYPOTHETICAL_STRESS_SCENARIO", "NOT_A_PREDICTION", "RESEARCH_ONLY"],
+  "expected_outcome": "new_matrix_created_original_unchanged",
+  "research_only": true
+}

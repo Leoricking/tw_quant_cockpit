@@ -1,0 +1,23 @@
+{
+  "_fixture_labels": ["TEST_FIXTURE", "DEMO_ONLY", "NOT_REAL_PORTFOLIO", "NOT_REAL_MARKET_DATA", "NOT_FOR_EXECUTION", "NOT_FOR_INVESTMENT_DECISION"],
+  "_version": "1.5.2",
+  "description": "Correlation matrix with multiple high-correlation pairs exceeding 0.75 threshold",
+  "symbols": ["2330", "2317", "2454", "3711"],
+  "method": "PEARSON",
+  "matrix": [
+    [1.0, 0.88, 0.82, 0.35],
+    [0.88, 1.0, 0.79, 0.30],
+    [0.82, 0.79, 1.0, 0.28],
+    [0.35, 0.30, 0.28, 1.0]
+  ],
+  "high_correlation_threshold": 0.75,
+  "high_correlation_pairs": [
+    {"symbol_a": "2330", "symbol_b": "2317", "correlation": 0.88},
+    {"symbol_a": "2330", "symbol_b": "2454", "correlation": 0.82},
+    {"symbol_a": "2317", "symbol_b": "2454", "correlation": 0.79}
+  ],
+  "status": "VALID",
+  "observation_count": 90,
+  "expected_outcome": "high_pairs_detected",
+  "research_only": true
+}

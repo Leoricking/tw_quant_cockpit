@@ -1,0 +1,19 @@
+{
+  "_fixture_labels": ["TEST_FIXTURE", "DEMO_ONLY", "NOT_REAL_PORTFOLIO", "NOT_REAL_MARKET_DATA", "NOT_FOR_EXECUTION", "NOT_FOR_INVESTMENT_DECISION"],
+  "_version": "1.5.2",
+  "description": "Rolling 60-day correlation between 2330 and 2317 over 180 trading days",
+  "symbol_a": "2330",
+  "symbol_b": "2317",
+  "window": 60,
+  "as_of": "2026-06-22",
+  "return_method": "SIMPLE",
+  "expected_point_count": 120,
+  "sample_points": [
+    {"as_of": "2026-04-01", "correlation": 0.72, "observation_count": 60},
+    {"as_of": "2026-05-01", "correlation": 0.78, "observation_count": 60},
+    {"as_of": "2026-06-01", "correlation": 0.85, "observation_count": 60}
+  ],
+  "rising_correlation_warning_possible": true,
+  "expected_outcome": "rolling_points_no_future_leakage",
+  "research_only": true
+}

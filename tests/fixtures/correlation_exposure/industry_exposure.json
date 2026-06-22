@@ -1,0 +1,20 @@
+{
+  "_fixture_labels": ["TEST_FIXTURE", "DEMO_ONLY", "NOT_REAL_PORTFOLIO", "NOT_REAL_MARKET_DATA", "NOT_FOR_EXECUTION", "NOT_FOR_INVESTMENT_DECISION"],
+  "_version": "1.5.2",
+  "description": "Industry exposure breakdown for 4-symbol portfolio",
+  "weights": {"2330": 0.35, "2317": 0.25, "2454": 0.25, "2882": 0.15},
+  "classifications": {
+    "2330": {"industry": "Semiconductor", "available_from": "2026-01-01", "effective_from": "2026-01-01", "source": "TSE", "lineage_ids": ["CLS_001"]},
+    "2317": {"industry": "Electronics Manufacturing", "available_from": "2026-01-01", "effective_from": "2026-01-01", "source": "TSE", "lineage_ids": ["CLS_002"]},
+    "2454": {"industry": "Semiconductor", "available_from": "2026-01-01", "effective_from": "2026-01-01", "source": "TSE", "lineage_ids": ["CLS_003"]},
+    "2882": {"industry": "Financial", "available_from": "2026-01-01", "effective_from": "2026-01-01", "source": "TSE", "lineage_ids": ["CLS_004"]}
+  },
+  "as_of": "2026-06-22",
+  "expected_buckets": [
+    {"key": "Semiconductor", "gross_weight": 0.60},
+    {"key": "Electronics Manufacturing", "gross_weight": 0.25},
+    {"key": "Financial", "gross_weight": 0.15}
+  ],
+  "expected_outcome": "industry_buckets_sorted_by_weight",
+  "research_only": true
+}

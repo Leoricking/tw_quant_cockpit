@@ -1,0 +1,12 @@
+{
+  "_fixture_labels": ["TEST_FIXTURE", "DEMO_ONLY", "NOT_REAL_PORTFOLIO", "NOT_REAL_MARKET_DATA", "NOT_FOR_EXECUTION", "NOT_FOR_INVESTMENT_DECISION"],
+  "_version": "1.5.2",
+  "description": "One symbol has constant price — zero std dev, correlation undefined",
+  "symbols": ["2330", "CONST"],
+  "as_of": "2026-06-22",
+  "symbol_2330_prices": "linearly_increasing",
+  "symbol_CONST_prices": "constant_100",
+  "expected_outcome": "invalid_pair_CONSTANT_SERIES",
+  "expected_status": "PARTIAL",
+  "research_only": true
+}

@@ -1,0 +1,20 @@
+{
+  "_fixture_labels": ["TEST_FIXTURE", "DEMO_ONLY", "NOT_REAL_PORTFOLIO", "NOT_REAL_MARKET_DATA", "NOT_FOR_EXECUTION", "NOT_FOR_INVESTMENT_DECISION"],
+  "_version": "1.5.2",
+  "description": "Asset class exposure — COMMON_STOCK, ETF, CASH. ETF never treated as common stock.",
+  "weights": {"2330": 0.40, "2317": 0.25, "0050": 0.25, "CASH": 0.10},
+  "asset_types": {
+    "2330": "COMMON_STOCK",
+    "2317": "COMMON_STOCK",
+    "0050": "ETF",
+    "CASH": "CASH"
+  },
+  "expected_buckets": [
+    {"key": "COMMON_STOCK", "gross_weight": 0.65},
+    {"key": "ETF", "gross_weight": 0.25},
+    {"key": "CASH", "gross_weight": 0.10}
+  ],
+  "etf_not_classified_as_common_stock": true,
+  "expected_outcome": "asset_buckets_etf_separate",
+  "research_only": true
+}

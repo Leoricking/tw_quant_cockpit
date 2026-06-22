@@ -1,0 +1,23 @@
+{
+  "_fixture_labels": ["TEST_FIXTURE", "DEMO_ONLY", "NOT_REAL_PORTFOLIO", "NOT_REAL_MARKET_DATA", "NOT_FOR_EXECUTION", "NOT_FOR_INVESTMENT_DECISION"],
+  "_version": "1.5.2",
+  "description": "Industry classification available_from is after as_of — PIT violation",
+  "as_of": "2026-06-22",
+  "classifications": {
+    "2330": {
+      "industry": "Semiconductor",
+      "effective_from": "2026-07-01",
+      "available_from": "2026-07-05",
+      "source": "TSE",
+      "lineage_ids": ["CLS_FUTURE"]
+    }
+  },
+  "expected_result": {
+    "valid": false,
+    "status": "PIT_VIOLATION",
+    "violations_contain": "2330"
+  },
+  "fetched_at_is_not_available_from": true,
+  "expected_outcome": "pit_violation_future_classification",
+  "research_only": true
+}

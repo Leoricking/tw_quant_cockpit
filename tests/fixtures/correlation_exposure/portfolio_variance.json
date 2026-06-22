@@ -1,0 +1,14 @@
+{
+  "_fixture_labels": ["TEST_FIXTURE", "DEMO_ONLY", "NOT_REAL_PORTFOLIO", "NOT_REAL_MARKET_DATA", "NOT_FOR_EXECUTION", "NOT_FOR_INVESTMENT_DECISION"],
+  "_version": "1.5.2",
+  "description": "Portfolio variance calculation for equal-weighted 3-symbol portfolio",
+  "portfolio_id": "PORT_DEMO_001",
+  "as_of": "2026-06-22",
+  "weights": {"2330": 0.4, "2317": 0.35, "2454": 0.25},
+  "annualization_factor": 252,
+  "expected_daily_variance_approx": 0.00025,
+  "expected_annualized_volatility_range": [0.22, 0.32],
+  "calculation_status": "VALID",
+  "expected_outcome": "variance_positive_volatility_computed",
+  "research_only": true
+}

@@ -1,0 +1,18 @@
+{
+  "_fixture_labels": ["TEST_FIXTURE", "DEMO_ONLY", "NOT_REAL_PORTFOLIO", "NOT_REAL_MARKET_DATA", "NOT_FOR_EXECUTION", "NOT_FOR_INVESTMENT_DECISION"],
+  "_version": "1.5.2",
+  "description": "ETF holdings available_from is after as_of — STALE status must be returned",
+  "portfolio_weights": {"0050": 0.20, "2330": 0.80},
+  "etf_holdings": {
+    "0050": {"2330": 0.25, "6505": 0.75}
+  },
+  "holdings_as_of": {"0050": "2026-12-31"},
+  "holdings_available_from": {"0050": "2027-01-15"},
+  "as_of": "2026-06-22",
+  "expected_result": {
+    "etf_symbol": "0050",
+    "status": "STALE"
+  },
+  "expected_outcome": "stale_holdings_not_used",
+  "research_only": true
+}

@@ -1,0 +1,22 @@
+{
+  "_fixture_labels": ["TEST_FIXTURE", "DEMO_ONLY", "NOT_REAL_PORTFOLIO", "NOT_REAL_MARKET_DATA", "NOT_FOR_EXECUTION", "NOT_FOR_INVESTMENT_DECISION"],
+  "_version": "1.5.2",
+  "description": "Market exposure breakdown — LISTED, OTC, ETF, CASH segments",
+  "weights": {"2330": 0.35, "2317": 0.20, "6005": 0.15, "0050": 0.20, "CASH": 0.10},
+  "market_data": {
+    "2330": "LISTED",
+    "2317": "LISTED",
+    "6005": "OTC",
+    "0050": "ETF",
+    "CASH": "CASH"
+  },
+  "expected_buckets": [
+    {"key": "LISTED", "gross_weight": 0.55},
+    {"key": "ETF", "gross_weight": 0.20},
+    {"key": "OTC", "gross_weight": 0.15},
+    {"key": "CASH", "gross_weight": 0.10}
+  ],
+  "no_duplicate_counting": true,
+  "expected_outcome": "four_market_buckets_no_overlap",
+  "research_only": true
+}

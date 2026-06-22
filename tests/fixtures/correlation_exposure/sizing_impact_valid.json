@@ -1,0 +1,26 @@
+{
+  "_fixture_labels": ["TEST_FIXTURE", "DEMO_ONLY", "NOT_REAL_PORTFOLIO", "NOT_REAL_MARKET_DATA", "NOT_FOR_EXECUTION", "NOT_FOR_INVESTMENT_DECISION"],
+  "_version": "1.5.2",
+  "description": "Hypothetical sizing impact — adding 2330 increases semiconductor exposure and portfolio volatility",
+  "portfolio_id": "PORT_DEMO_001",
+  "proposal_id": "PROP_DEMO_001",
+  "symbol": "2330",
+  "hypothetical_quantity": 2000,
+  "entry_price": 850.0,
+  "portfolio_snapshot": {
+    "snapshot_id": "SNAP_DEMO_001",
+    "portfolio_value": 1000000.0,
+    "broker_linked": false
+  },
+  "before_portfolio_volatility": 0.185,
+  "after_portfolio_volatility": 0.196,
+  "expected_result": {
+    "hypothetical_weight": 0.17,
+    "volatility_delta_approx": 0.011,
+    "research_only": true,
+    "order_created": false,
+    "ledger_persisted": false
+  },
+  "expected_outcome": "impact_computed_research_only_enforced",
+  "research_only": true
+}

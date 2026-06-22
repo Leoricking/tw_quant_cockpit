@@ -33243,6 +33243,438 @@ def cmd_position_sizing_report(args=None):
     return 0
 
 
+# ---------------------------------------------------------------------------
+# v1.5.2 Correlation & Exposure CLI handlers
+# ---------------------------------------------------------------------------
+
+def cmd_correlation_exposure_health(args=None):
+    """[v1.5.2] Correlation & Exposure health check (research only)."""
+    print("[!] Research Only. No Real Orders. Not Investment Advice.")
+    from portfolio.correlation.health_v152 import CorrelationExposureHealthCheck
+    result = CorrelationExposureHealthCheck().run()
+    print(f"Correlation & Exposure Health Check v{result['version']}")
+    print(f"Status: {result['overall']}  Passed: {result['passed']}/{result['total']}")
+    print("[!] Research Only. No Real Orders. Not Investment Advice.")
+    return 0 if result['overall'] == 'PASS' else 1
+
+
+def cmd_correlation_exposure_eligibility(args=None):
+    """[v1.5.2] Evaluate correlation analysis eligibility (research only)."""
+    print("[!] Research Only. No Real Orders. Not Investment Advice.")
+    from portfolio.correlation.eligibility_v152 import CorrelationExposureEligibilityGate
+    portfolio_id = getattr(args, 'portfolio_id', 'demo_portfolio') or 'demo_portfolio'
+    as_of = getattr(args, 'as_of', '2026-06-22') or '2026-06-22'
+    from portfolio.correlation.models_v152 import CorrelationAnalysisRequest
+    req = CorrelationAnalysisRequest(
+        request_id="CLI_ELIG_001", portfolio_id=portfolio_id, snapshot_id="SNAP_DEMO",
+        as_of=as_of, available_from=as_of, symbols=["2330", "2308", "2317"],
+        weights={"2330": 0.5, "2308": 0.3, "2317": 0.2})
+    gate = CorrelationExposureEligibilityGate()
+    result = gate.evaluate(req, {"research_only": True, "broker_linked": False}, {})
+    print(f"Eligibility: {result.get('eligibility_status', 'UNKNOWN')}")
+    print(f"Correlation allowed: {result.get('correlation_allowed', False)}")
+    print(f"Warnings: {result.get('warnings', [])}")
+    print(f"Blockers: {result.get('blockers', [])}")
+    print("(demo fixture — RESEARCH_ONLY, DESCRIPTIVE_ANALYTICS_ONLY)")
+    return 0
+
+
+def cmd_correlation_matrix(args=None):
+    """[v1.5.2] Calculate correlation matrix (research only)."""
+    print("[!] Research Only. No Real Orders. Not Investment Advice.")
+    from portfolio.correlation.return_alignment_v152 import ReturnAlignmentService
+    from portfolio.correlation.correlation_matrix_v152 import CorrelationMatrixService
+    prices = {
+        "2330": {"2026-01-02": 1000.0, "2026-01-03": 1010.0, "2026-01-06": 1005.0,
+                 "2026-01-07": 1020.0, "2026-01-08": 1015.0, "2026-01-09": 1025.0,
+                 "2026-01-10": 1030.0, "2026-01-13": 1035.0, "2026-01-14": 1028.0,
+                 "2026-01-15": 1040.0},
+        "2308": {"2026-01-02": 100.0, "2026-01-03": 102.0, "2026-01-06": 101.0,
+                 "2026-01-07": 103.0, "2026-01-08": 102.5, "2026-01-09": 104.0,
+                 "2026-01-10": 103.5, "2026-01-13": 105.0, "2026-01-14": 104.0,
+                 "2026-01-15": 106.0},
+    }
+    as_of = getattr(args, 'as_of', '2026-06-22') or '2026-06-22'
+    aligned = ReturnAlignmentService().align(prices, as_of="2026-01-15", minimum_observations=5)
+    result = CorrelationMatrixService().calculate_pearson(aligned, min_obs=5)
+    print(f"Symbols: {result.symbols}")
+    print(f"Status: {result.status.value if hasattr(result.status,'value') else result.status}")
+    print(f"High-correlation pairs: {result.high_correlation_pairs}")
+    print(f"Method: {result.method.value if hasattr(result.method,'value') else result.method}")
+    print("(demo fixture — RESEARCH_ONLY, DESCRIPTIVE_ANALYTICS_ONLY, NOT_AN_ORDER)")
+    return 0
+
+
+def cmd_covariance_matrix(args=None):
+    """[v1.5.2] Calculate covariance matrix (research only)."""
+    print("[!] Research Only. No Real Orders. Not Investment Advice.")
+    from portfolio.correlation.return_alignment_v152 import ReturnAlignmentService
+    from portfolio.correlation.covariance_matrix_v152 import CovarianceMatrixService
+    prices = {
+        "2330": {"2026-01-02": 1000.0, "2026-01-03": 1010.0, "2026-01-06": 1005.0,
+                 "2026-01-07": 1020.0, "2026-01-08": 1015.0, "2026-01-09": 1025.0,
+                 "2026-01-10": 1030.0, "2026-01-13": 1035.0, "2026-01-14": 1028.0,
+                 "2026-01-15": 1040.0},
+        "2308": {"2026-01-02": 100.0, "2026-01-03": 102.0, "2026-01-06": 101.0,
+                 "2026-01-07": 103.0, "2026-01-08": 102.5, "2026-01-09": 104.0,
+                 "2026-01-10": 103.5, "2026-01-13": 105.0, "2026-01-14": 104.0,
+                 "2026-01-15": 106.0},
+    }
+    aligned = ReturnAlignmentService().align(prices, as_of="2026-01-15", minimum_observations=5)
+    result = CovarianceMatrixService().calculate(aligned)
+    print(f"Symbols: {result.symbols}")
+    print(f"Annualization factor: {result.annualization_factor}")
+    print(f"Status: {result.status.value if hasattr(result.status,'value') else result.status}")
+    print(f"Observation count: {result.observation_count}")
+    print("(demo fixture — RESEARCH_ONLY, DESCRIPTIVE_ANALYTICS_ONLY, NOT_AN_ORDER)")
+    return 0
+
+
+def cmd_rolling_correlation(args=None):
+    """[v1.5.2] Calculate rolling correlation between two symbols (research only)."""
+    print("[!] Research Only. No Real Orders. Not Investment Advice.")
+    from portfolio.correlation.rolling_correlation_v152 import RollingCorrelationService
+    symbol_a = getattr(args, 'symbol_a', '2330') or '2330'
+    symbol_b = getattr(args, 'symbol_b', '2308') or '2308'
+    window = getattr(args, 'window', 60) or 60
+    prices = {
+        symbol_a: {f"2026-{m:02d}-{d:02d}": 1000.0 + i * 2
+                   for i, (m, d) in enumerate(
+                       [(1, 2), (1, 3), (1, 6), (1, 7), (1, 8), (1, 9), (1, 10)])},
+        symbol_b: {f"2026-{m:02d}-{d:02d}": 100.0 + i * 0.5
+                   for i, (m, d) in enumerate(
+                       [(1, 2), (1, 3), (1, 6), (1, 7), (1, 8), (1, 9), (1, 10)])},
+    }
+    points = RollingCorrelationService().calculate(prices, symbol_a, symbol_b, window=window,
+                                                    as_of="2026-06-22")
+    print(f"Symbol A: {symbol_a}  Symbol B: {symbol_b}  Window: {window}")
+    print(f"Data points (demo with short series): {len(points)}")
+    print("(demo fixture — RESEARCH_ONLY, DESCRIPTIVE_ANALYTICS_ONLY, NOT_AN_ORDER)")
+    return 0
+
+
+def cmd_portfolio_variance(args=None):
+    """[v1.5.2] Calculate portfolio variance (research only)."""
+    print("[!] Research Only. No Real Orders. Not Investment Advice.")
+    from portfolio.correlation.return_alignment_v152 import ReturnAlignmentService
+    from portfolio.correlation.covariance_matrix_v152 import CovarianceMatrixService
+    from portfolio.correlation.portfolio_variance_v152 import PortfolioVarianceCalculator
+    prices = {
+        "2330": {f"2026-01-{d:02d}": 1000.0 + i * 3 for i, d in enumerate(range(2, 17))},
+        "2308": {f"2026-01-{d:02d}": 100.0 + i * 0.5 for i, d in enumerate(range(2, 17))},
+    }
+    aligned = ReturnAlignmentService().align(prices, as_of="2026-01-16", minimum_observations=5)
+    cov = CovarianceMatrixService().calculate(aligned)
+    weights = {"2330": 0.6, "2308": 0.4}
+    result = PortfolioVarianceCalculator().calculate("demo_portfolio", "2026-06-22", weights, cov)
+    print(f"Portfolio: demo_portfolio")
+    print(f"Daily Volatility: {result.daily_volatility:.6f}")
+    print(f"Annualized Volatility: {result.annualized_volatility:.6f}")
+    print(f"Status: {result.calculation_status}")
+    print("(demo fixture — RESEARCH_ONLY, DESCRIPTIVE_ANALYTICS_ONLY, NOT_AN_ORDER)")
+    return 0
+
+
+def cmd_risk_contribution(args=None):
+    """[v1.5.2] Calculate risk contributions (research only)."""
+    print("[!] Research Only. No Real Orders. Not Investment Advice.")
+    from portfolio.correlation.return_alignment_v152 import ReturnAlignmentService
+    from portfolio.correlation.covariance_matrix_v152 import CovarianceMatrixService
+    from portfolio.correlation.portfolio_variance_v152 import PortfolioVarianceCalculator
+    from portfolio.correlation.risk_contribution_v152 import RiskContributionCalculator
+    prices = {
+        "2330": {f"2026-01-{d:02d}": 1000.0 + i * 3 for i, d in enumerate(range(2, 17))},
+        "2308": {f"2026-01-{d:02d}": 100.0 + i * 0.5 for i, d in enumerate(range(2, 17))},
+    }
+    aligned = ReturnAlignmentService().align(prices, as_of="2026-01-16", minimum_observations=5)
+    cov = CovarianceMatrixService().calculate(aligned)
+    weights = {"2330": 0.6, "2308": 0.4}
+    var_result = PortfolioVarianceCalculator().calculate("demo_portfolio", "2026-06-22", weights, cov)
+    contributions = RiskContributionCalculator().calculate(weights, cov, var_result)
+    for rc in contributions:
+        print(f"  {rc.symbol}: pct={rc.percentage_contribution:.4f} crc={rc.component_contribution:.8f}")
+    print("(demo fixture — RESEARCH_ONLY, NOT_AN_ORDER)")
+    return 0
+
+
+def cmd_portfolio_beta(args=None):
+    """[v1.5.2] Calculate portfolio beta vs benchmark (research only)."""
+    print("[!] Research Only. No Real Orders. Not Investment Advice.")
+    from portfolio.correlation.beta_v152 import BetaCalculator
+    benchmark = getattr(args, 'benchmark', '0050') or '0050'
+    asset_returns = [0.01, -0.005, 0.008, 0.012, -0.003, 0.006, 0.009, -0.002, 0.011, 0.004]
+    bench_returns = [0.008, -0.004, 0.007, 0.010, -0.002, 0.005, 0.008, -0.001, 0.009, 0.003]
+    dates = [f"2026-01-{d:02d}" for d in range(2, 12)]
+    result = BetaCalculator().calculate_asset_beta(
+        "2330", benchmark, {"2330": asset_returns}, bench_returns, dates, "2026-06-22", minimum_observations=5)
+    print(f"Symbol: 2330  Benchmark: {benchmark}")
+    print(f"Beta: {result.beta:.4f}  Alpha: {result.alpha:.6f}")
+    print(f"Status: {result.status}")
+    print("(demo fixture — RESEARCH_ONLY, DESCRIPTIVE_ANALYTICS_ONLY, NOT_A_PREDICTION)")
+    return 0
+
+
+def cmd_correlation_clusters(args=None):
+    """[v1.5.2] Build correlation clusters (research only)."""
+    print("[!] Research Only. No Real Orders. Not Investment Advice.")
+    from portfolio.correlation.return_alignment_v152 import ReturnAlignmentService
+    from portfolio.correlation.correlation_matrix_v152 import CorrelationMatrixService
+    from portfolio.correlation.cluster_v152 import CorrelationClusterBuilder
+    prices = {
+        "2330": {f"2026-01-{d:02d}": 1000.0 + i * 3 for i, d in enumerate(range(2, 17))},
+        "2308": {f"2026-01-{d:02d}": 100.0 + i * 0.8 for i, d in enumerate(range(2, 17))},
+        "2317": {f"2026-01-{d:02d}": 50.0 + i * 0.2 for i, d in enumerate(range(2, 17))},
+    }
+    aligned = ReturnAlignmentService().align(prices, as_of="2026-01-16", minimum_observations=5)
+    matrix = CorrelationMatrixService().calculate_pearson(aligned, min_obs=5)
+    weights = {"2330": 0.5, "2308": 0.3, "2317": 0.2}
+    clusters = CorrelationClusterBuilder().build_threshold_graph(matrix, cluster_threshold=0.7, weights=weights)
+    print(f"Clusters found: {len(clusters)}")
+    for c in clusters:
+        print(f"  Cluster {c.cluster_id}: {c.symbols} weight={c.portfolio_weight:.2f} avg_corr={c.average_internal_correlation:.4f}")
+    print("(demo fixture — RESEARCH_ONLY, NOT_AN_OPTIMIZATION, NOT_AN_ORDER)")
+    return 0
+
+
+def cmd_industry_exposure(args=None):
+    """[v1.5.2] Calculate industry exposure (research only)."""
+    print("[!] Research Only. No Real Orders. Not Investment Advice.")
+    from portfolio.correlation.industry_exposure_v152 import IndustryExposureCalculator
+    weights = {"2330": 0.5, "2308": 0.3, "2317": 0.2}
+    classifications = {
+        "2330": {"industry": "Semiconductors", "effective_from": "2026-01-01",
+                 "available_from": "2026-01-01", "source": "TWSE", "lineage_ids": ["LIN_001"]},
+        "2308": {"industry": "Electronic Components", "effective_from": "2026-01-01",
+                 "available_from": "2026-01-01", "source": "TWSE", "lineage_ids": ["LIN_002"]},
+        "2317": {"industry": "UNKNOWN"},
+    }
+    buckets = IndustryExposureCalculator().calculate(weights, classifications, as_of="2026-06-22")
+    for b in buckets:
+        print(f"  {b.key}: {b.gross_weight:.2%}  status={b.status}")
+    print("(demo fixture — RESEARCH_ONLY, DESCRIPTIVE_ANALYTICS_ONLY)")
+    return 0
+
+
+def cmd_theme_exposure(args=None):
+    """[v1.5.2] Calculate theme exposure (research only)."""
+    print("[!] Research Only. No Real Orders. Not Investment Advice.")
+    from portfolio.correlation.theme_exposure_v152 import ThemeExposureCalculator
+    weights = {"2330": 0.5, "2308": 0.3, "2317": 0.2}
+    theme_data = {
+        "2330": [{"theme": "AI Server", "weight_in_theme": 1.0, "effective_from": "2026-01-01",
+                  "available_from": "2026-01-01", "source": "RESEARCH"},
+                 {"theme": "CoWoS", "weight_in_theme": 0.8, "effective_from": "2026-01-01",
+                  "available_from": "2026-01-01", "source": "RESEARCH"}],
+        "2308": [{"theme": "AI Server", "weight_in_theme": 0.5, "effective_from": "2026-01-01",
+                  "available_from": "2026-01-01", "source": "RESEARCH"}],
+    }
+    buckets = ThemeExposureCalculator().calculate(weights, theme_data)
+    for b in buckets:
+        print(f"  {b.key}: {b.overlapping_weight:.2%}  {b.status}")
+    print("(OVERLAPPING_EXPOSURE, NOT_MUTUALLY_EXCLUSIVE — demo fixture — RESEARCH_ONLY)")
+    return 0
+
+
+def cmd_market_exposure(args=None):
+    """[v1.5.2] Calculate market segment exposure (research only)."""
+    print("[!] Research Only. No Real Orders. Not Investment Advice.")
+    from portfolio.correlation.market_exposure_v152 import MarketExposureCalculator
+    weights = {"2330": 0.5, "2308": 0.3, "0050": 0.2}
+    market_data = {"2330": "LISTED", "2308": "LISTED", "0050": "ETF"}
+    buckets = MarketExposureCalculator().calculate(weights, market_data)
+    for b in buckets:
+        print(f"  {b.key}: {b.gross_weight:.2%}")
+    print("(demo fixture — RESEARCH_ONLY, DESCRIPTIVE_ANALYTICS_ONLY)")
+    return 0
+
+
+def cmd_asset_exposure(args=None):
+    """[v1.5.2] Calculate asset class exposure (research only)."""
+    print("[!] Research Only. No Real Orders. Not Investment Advice.")
+    from portfolio.correlation.asset_exposure_v152 import AssetExposureCalculator
+    weights = {"2330": 0.5, "2308": 0.3, "0050": 0.2}
+    asset_types = {"2330": "COMMON_STOCK", "2308": "COMMON_STOCK", "0050": "ETF"}
+    buckets = AssetExposureCalculator().calculate(weights, asset_types)
+    for b in buckets:
+        print(f"  {b.key}: {b.gross_weight:.2%}")
+    print("(demo fixture — RESEARCH_ONLY, DESCRIPTIVE_ANALYTICS_ONLY)")
+    return 0
+
+
+def cmd_etf_overlap(args=None):
+    """[v1.5.2] Analyze ETF holding overlap (research only)."""
+    print("[!] Research Only. No Real Orders. Not Investment Advice.")
+    from portfolio.correlation.etf_overlap_v152 import ETFOverlapAnalyzer
+    portfolio_weights = {"2330": 0.5, "2308": 0.3, "0050": 0.2}
+    etf_holdings = {"0050": {"2330": 0.30, "2308": 0.05, "2454": 0.10, "OTHER": 0.55}}
+    holdings_as_of = {"0050": "2026-03-31"}
+    holdings_available_from = {"0050": "2026-04-15"}
+    results = ETFOverlapAnalyzer().analyze(
+        portfolio_weights, etf_holdings, holdings_as_of, holdings_available_from, "2026-06-22")
+    for r in results:
+        print(f"  ETF: {r.etf_symbol}  Direct: {r.direct_weight:.2%}  Indirect: {r.indirect_weight:.4%}")
+        print(f"  Overlap constituents: {r.overlapping_constituents}  Status: {r.status}")
+    print("(demo fixture — RESEARCH_ONLY, DESCRIPTIVE_ANALYTICS_ONLY)")
+    return 0
+
+
+def cmd_hidden_concentration(args=None):
+    """[v1.5.2] Detect hidden concentration (research only)."""
+    print("[!] Research Only. No Real Orders. Not Investment Advice.")
+    from portfolio.correlation.hidden_concentration_v152 import HiddenConcentrationDetector
+    from portfolio.correlation.models_v152 import CorrelationCluster, ClusterMethod
+    clusters = [
+        CorrelationCluster(cluster_id="C1", symbols=["2330", "2308"],
+                           method=ClusterMethod.THRESHOLD_GRAPH, threshold=0.75,
+                           average_internal_correlation=0.82, maximum_internal_correlation=0.82,
+                           portfolio_weight=0.8),
+    ]
+    weights = {"2330": 0.5, "2308": 0.3, "2317": 0.2}
+    result = HiddenConcentrationDetector().detect(clusters, [], [], [], [], weights)
+    print(f"Apparent positions: {result.apparent_position_count}")
+    print(f"Effective independent bets: {result.effective_independent_bets:.2f}")
+    print(f"Largest cluster weight: {result.largest_cluster_weight:.2%}")
+    print(f"Concentration level: {result.hidden_concentration_level.value if hasattr(result.hidden_concentration_level,'value') else result.hidden_concentration_level}")
+    print(f"Warnings: {result.warnings}")
+    print("(demo fixture — RESEARCH_ONLY, NOT_AN_OPTIMIZATION)")
+    return 0
+
+
+def cmd_sizing_exposure_impact(args=None):
+    """[v1.5.2] Evaluate sizing proposal exposure impact (research only)."""
+    print("[!] Research Only. No Real Orders. Not Investment Advice.")
+    from portfolio.correlation.sizing_impact_v152 import SizingExposureImpactAnalyzer
+    proposal_id = getattr(args, 'proposal_id', 'demo_proposal') or 'demo_proposal'
+    result = SizingExposureImpactAnalyzer().analyze(
+        portfolio_id="demo_portfolio", proposal_id=proposal_id, symbol="2330",
+        hypothetical_quantity=1000, entry_price=1000.0,
+        portfolio_snapshot={"portfolio_value": 1000000.0},
+        before_portfolio_volatility=0.15, after_portfolio_volatility=0.16,
+        before_clusters=[], after_clusters=[],
+        before_industry_exposure={}, after_industry_exposure={},
+        before_theme_exposure={}, after_theme_exposure={})
+    print(f"Proposal: {result.proposal_id}")
+    print(f"Before volatility: {result.before_portfolio_volatility:.4f}")
+    print(f"After volatility: {result.after_portfolio_volatility:.4f}")
+    print(f"Volatility delta: {result.volatility_delta:.4f}")
+    print(f"Research only: {result.research_only}  Order created: {result.order_created}")
+    print("(HYPOTHETICAL_ONLY, NO_LEDGER_WRITE, NO_ORDER_CREATED, NO_BROKER_CALL)")
+    return 0
+
+
+def cmd_correlation_stress(args=None):
+    """[v1.5.2] Run correlation stress scenario (research only)."""
+    print("[!] Research Only. No Real Orders. Not Investment Advice.")
+    import json
+    from portfolio.correlation.return_alignment_v152 import ReturnAlignmentService
+    from portfolio.correlation.correlation_matrix_v152 import CorrelationMatrixService
+    from portfolio.correlation.stress_v152 import CorrelationStressAnalyzer
+    scenario_path = getattr(args, 'scenario', None)
+    spike_amount = 0.2
+    if scenario_path:
+        try:
+            with open(scenario_path) as f:
+                scenario_data = json.load(f)
+            spike_amount = scenario_data.get("spike_amount", 0.2)
+        except Exception:
+            pass
+    prices = {
+        "2330": {f"2026-01-{d:02d}": 1000.0 + i * 3 for i, d in enumerate(range(2, 17))},
+        "2308": {f"2026-01-{d:02d}": 100.0 + i * 0.8 for i, d in enumerate(range(2, 17))},
+    }
+    aligned = ReturnAlignmentService().align(prices, as_of="2026-01-16", minimum_observations=5)
+    matrix = CorrelationMatrixService().calculate_pearson(aligned, min_obs=5)
+    stressed = CorrelationStressAnalyzer().run_correlation_spike(matrix, spike_amount=spike_amount)
+    print(f"Scenario: CORRELATION_SPIKE  Spike: {spike_amount}")
+    print(f"Baseline status: {matrix.status.value if hasattr(matrix.status,'value') else matrix.status}")
+    print(f"Stressed status: {stressed.status.value if hasattr(stressed.status,'value') else stressed.status}")
+    print("Assumptions: off-diagonal correlations raised by spike_amount, clipped to [-1,1]")
+    print("NOT_A_PREDICTION — original matrix unchanged")
+    print("(demo fixture — RESEARCH_ONLY, DESCRIPTIVE_ANALYTICS_ONLY)")
+    return 0
+
+
+def cmd_correlation_exposure_explain(args=None):
+    """[v1.5.2] Explain correlation & exposure analysis (research only)."""
+    print("[!] Research Only. No Real Orders. Not Investment Advice.")
+    from portfolio.correlation.explain_v152 import CorrelationExposureExplainer
+    from portfolio.correlation.models_v152 import CorrelationExposureAnalysis, CorrelationAnalysisRequest
+    req = CorrelationAnalysisRequest(
+        request_id="CLI_EXP_001", portfolio_id="demo_portfolio", snapshot_id="SNAP_DEMO",
+        as_of="2026-06-22", available_from="2026-06-22",
+        symbols=["2330", "2308", "2317"], weights={"2330": 0.5, "2308": 0.3, "2317": 0.2})
+    from portfolio.correlation.models_v152 import (
+        AlignedReturnSeries, CorrelationMatrixResult, CovarianceMatrixResult,
+        PortfolioVarianceResult)
+    from portfolio.correlation.enums_v152 import CorrelationMethod, AlignmentMethod
+    syms = ["2330", "2308", "2317"]
+    aligned = AlignedReturnSeries(
+        symbols=syms, dates=[], returns_by_symbol={s: [] for s in syms},
+        observation_count=0, start_date="2026-01-01", end_date="2026-06-22")
+    corr_matrix = CorrelationMatrixResult(
+        matrix_id="MAT_DEMO", symbols=syms,
+        matrix=[[1.0, 0.5, 0.3], [0.5, 1.0, 0.4], [0.3, 0.4, 1.0]],
+        observation_counts={s: 0 for s in syms},
+        method=CorrelationMethod.PEARSON, alignment_method=AlignmentMethod.INNER_JOIN,
+        lookback_days=60, start_date="2026-01-01", end_date="2026-06-22", minimum_observations=20)
+    cov_matrix = CovarianceMatrixResult(symbols=syms, matrix=[[0.0]*3]*3)
+    port_var = PortfolioVarianceResult(portfolio_id="demo_portfolio", as_of="2026-06-22",
+                                       weights={"2330": 0.5, "2308": 0.3, "2317": 0.2})
+    analysis = CorrelationExposureAnalysis(
+        analysis_id="ANA_DEMO", request=req,
+        aligned_returns=aligned, correlation_matrix=corr_matrix,
+        covariance_matrix=cov_matrix, portfolio_variance=port_var)
+    explanation = CorrelationExposureExplainer().explain(analysis, {})
+    print(f"Symbols: {explanation.get('symbols', [])}")
+    print(f"Return method: {explanation.get('return_method', 'SIMPLE')}")
+    print(f"Safety: {explanation.get('safety_text', '')}")
+    print(f"Limitations: {explanation.get('limitations', [])}")
+    print("(demo fixture — RESEARCH_ONLY, DESCRIPTIVE_ANALYTICS_ONLY)")
+    return 0
+
+
+def cmd_correlation_exposure_show(args=None):
+    """[v1.5.2] Show a saved correlation analysis."""
+    print("[!] Research Only. No Real Orders. Not Investment Advice.")
+    analysis_id = getattr(args, 'analysis_id', None)
+    print(f"Analysis '{analysis_id}' NOT_FOUND (empty store — demo/fixture only)")
+    return 1
+
+
+def cmd_correlation_exposure_list(args=None):
+    """[v1.5.2] List saved correlation analyses."""
+    print("[!] Research Only. No Real Orders. Not Investment Advice.")
+    print("No analyses found. (empty store — demo/fixture only)")
+    return 0
+
+
+def cmd_correlation_exposure_lineage(args=None):
+    """[v1.5.2] Show lineage of a correlation analysis."""
+    print("[!] Research Only. No Real Orders. Not Investment Advice.")
+    analysis_id = getattr(args, 'analysis_id', None)
+    print(f"Analysis: {analysis_id}")
+    print("Lineage IDs: []")
+    print("Found: False")
+    return 0
+
+
+def cmd_correlation_exposure_report(args=None):
+    """[v1.5.2] Generate correlation & exposure research report."""
+    print("[!] Research Only. No Real Orders. Not Investment Advice.")
+    from reports.correlation_exposure_report import CorrelationExposureReport
+    portfolio_id = getattr(args, 'portfolio_id', 'demo_portfolio') or 'demo_portfolio'
+    as_of = getattr(args, 'as_of', '2026-06-22') or '2026-06-22'
+    report = CorrelationExposureReport()
+    r = report.generate(portfolio_id=portfolio_id, as_of=as_of)
+    print(f"Correlation & Exposure Research Report v{r.get('report_version', '1.5.2')}")
+    print(f"Research Only: {r.get('research_only', True)}")
+    sections = r.get('sections', [])
+    section_names = [s.get('section', s.get('name', '')) for s in sections] if isinstance(sections, list) else list(sections.keys())
+    print(f"Sections: {section_names}")
+    print("(demo fixture — RESEARCH_ONLY, NOT_AN_ORDER, NO_LEDGER_WRITE)")
+    return 0
+
+
 def main() -> None:
     """Main entrypoint."""
     import pandas as pd  # imported here to avoid shadowing at module level
@@ -34419,6 +34851,29 @@ def main() -> None:
         "position-sizing-list":             cmd_position_sizing_list,
         "position-sizing-lineage":          cmd_position_sizing_lineage,
         "position-sizing-report":           cmd_position_sizing_report,
+        # v1.5.2 Correlation & Exposure
+        "correlation-exposure-health":      cmd_correlation_exposure_health,
+        "correlation-exposure-eligibility": cmd_correlation_exposure_eligibility,
+        "correlation-matrix":               cmd_correlation_matrix,
+        "covariance-matrix":                cmd_covariance_matrix,
+        "rolling-correlation":              cmd_rolling_correlation,
+        "portfolio-variance":               cmd_portfolio_variance,
+        "risk-contribution":                cmd_risk_contribution,
+        "portfolio-beta":                   cmd_portfolio_beta,
+        "correlation-clusters":             cmd_correlation_clusters,
+        "industry-exposure":                cmd_industry_exposure,
+        "theme-exposure":                   cmd_theme_exposure,
+        "market-exposure":                  cmd_market_exposure,
+        "asset-exposure":                   cmd_asset_exposure,
+        "etf-overlap":                      cmd_etf_overlap,
+        "hidden-concentration":             cmd_hidden_concentration,
+        "sizing-exposure-impact":           cmd_sizing_exposure_impact,
+        "correlation-stress":               cmd_correlation_stress,
+        "correlation-exposure-explain":     cmd_correlation_exposure_explain,
+        "correlation-exposure-show":        cmd_correlation_exposure_show,
+        "correlation-exposure-list":        cmd_correlation_exposure_list,
+        "correlation-exposure-lineage":     cmd_correlation_exposure_lineage,
+        "correlation-exposure-report":      cmd_correlation_exposure_report,
     }
 
     if args.command is None:

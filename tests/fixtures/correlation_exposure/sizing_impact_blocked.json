@@ -1,0 +1,15 @@
+{
+  "_fixture_labels": ["TEST_FIXTURE", "DEMO_ONLY", "NOT_REAL_PORTFOLIO", "NOT_REAL_MARKET_DATA", "NOT_FOR_EXECUTION", "NOT_FOR_INVESTMENT_DECISION"],
+  "_version": "1.5.2",
+  "description": "Sizing impact analysis blocked because portfolio snapshot has broker_linked=true",
+  "portfolio_id": "PORT_DEMO_BLOCKED",
+  "proposal_id": "PROP_DEMO_BLOCKED",
+  "symbol": "2330",
+  "portfolio_snapshot": {
+    "snapshot_id": "SNAP_BLOCKED",
+    "portfolio_value": 1000000.0,
+    "broker_linked": true
+  },
+  "expected_outcome": "eligibility_BLOCKED_broker_linked_true",
+  "research_only": true
+}

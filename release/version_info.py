@@ -73,14 +73,15 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # ---------------------------------------------------------------------------
 # v1.3.3 module-level constants (Coverage Repair Workflow)
 # ---------------------------------------------------------------------------
-VERSION                             = "1.5.1"
-RELEASE_NAME                        = "Position Sizing"
-BASE_RELEASE                        = "1.5.0.2 Portfolio Research CLI Completeness Hotfix"
+VERSION                             = "1.5.2"
+RELEASE_NAME                        = "Correlation & Exposure"
+BASE_RELEASE                        = "1.5.1 Position Sizing"
 PROVIDER_FEATURE_BASELINE           = "1.4.8 Provider Integration Hardening"
 REPLAY_STABLE_BASELINE              = "1.2.9"
 PROVIDER_STABLE_BASELINE            = "1.4.9"
 PORTFOLIO_RESEARCH_BASELINE         = "1.5.0"
 POSITION_SIZING_BASELINE            = "1.5.1"
+CORRELATION_EXPOSURE_BASELINE       = "1.5.2"
 
 # ---------------------------------------------------------------------------
 # v1.3.2 module-level constants (Real Data Provider Adapter Foundation)
@@ -703,7 +704,58 @@ LOT_SIZE_NORMALIZATION_AVAILABLE                = True
 POSITION_SIZING_EXPLAINABILITY_AVAILABLE        = True
 POSITION_SIZING_ELIGIBILITY_GATE_AVAILABLE      = True
 POSITION_SIZING_WHAT_IF_AVAILABLE               = True
-CORRELATION_AWARE_SIZING_AVAILABLE              = False   # PLANNED v1.5.2
+CORRELATION_AWARE_SIZING_AVAILABLE              = True    # v1.5.2 STABLE
+# v1.5.2 Correlation & Exposure capability flags
+CORRELATION_EXPOSURE_AVAILABLE                  = True
+CORRELATION_EXPOSURE_RESEARCH_ONLY              = True
+CORRELATION_POSITION_DIAGNOSTICS_AVAILABLE      = True
+ROLLING_CORRELATION_AVAILABLE                   = True
+COVARIANCE_ANALYTICS_AVAILABLE                  = True
+PORTFOLIO_VARIANCE_DECOMPOSITION_AVAILABLE      = True
+RISK_CONTRIBUTION_AVAILABLE                     = True
+BETA_EXPOSURE_AVAILABLE                         = True
+CLUSTER_ANALYSIS_AVAILABLE                      = True
+INDUSTRY_EXPOSURE_AVAILABLE                     = True
+THEME_EXPOSURE_AVAILABLE                        = True
+MARKET_EXPOSURE_AVAILABLE                       = True
+ASSET_CLASS_EXPOSURE_AVAILABLE                  = True
+ETF_HOLDING_OVERLAP_AVAILABLE                   = True
+HIDDEN_CONCENTRATION_AVAILABLE                  = True
+SIZING_EXPOSURE_IMPACT_AVAILABLE                = True
+CORRELATION_STRESS_SCENARIO_AVAILABLE           = True
+CORRELATION_EXPOSURE_EXPLAINABILITY_AVAILABLE   = True
+RETURN_ALIGNMENT_AVAILABLE                      = True
+PAIRWISE_CORRELATION_AVAILABLE                  = True
+COVARIANCE_MATRIX_AVAILABLE                     = True
+CORRELATION_MATRIX_AVAILABLE                    = True
+PORTFOLIO_VARIANCE_AVAILABLE                    = True
+MARGINAL_RISK_CONTRIBUTION_AVAILABLE            = True
+COMPONENT_RISK_CONTRIBUTION_AVAILABLE           = True
+BETA_ANALYSIS_AVAILABLE                         = True
+BENCHMARK_SENSITIVITY_AVAILABLE                 = True
+CORRELATION_CLUSTERING_AVAILABLE                = True
+CORRELATION_REGIME_COMPARISON_AVAILABLE         = True
+INDUSTRY_OVERLAP_AVAILABLE                      = True
+THEME_OVERLAP_AVAILABLE                         = True
+ETF_COMPONENT_OVERLAP_AVAILABLE                 = True
+SIZING_PROPOSAL_EXPOSURE_IMPACT_AVAILABLE       = True
+CORRELATION_STRESS_AVAILABLE                    = True
+CORRELATION_EXPOSURE_ELIGIBILITY_AVAILABLE      = True
+CORRELATION_EXPOSURE_PIT_AVAILABLE              = True
+CORRELATION_EXPOSURE_LINEAGE_AVAILABLE          = True
+# Permanently blocked
+EFFICIENT_FRONTIER_AVAILABLE                    = False
+BLACK_LITTERMAN_AVAILABLE                       = False
+RISK_PARITY_AUTO_ALLOCATION_AVAILABLE           = False
+CORRELATION_AUTO_REBALANCE_ENABLED              = False
+CORRELATION_AUTO_REDUCTION_ENABLED              = False
+CORRELATION_ORDER_CREATION_ENABLED              = False
+CORRELATION_ORDER_EXECUTION_ENABLED             = False
+CORRELATION_BROKER_ENABLED                      = False
+CORRELATION_LIVE_ACCOUNT_SYNC_ENABLED           = False
+CORRELATION_HEDGING_EXECUTION_ENABLED           = False
+CORRELATION_WEIGHT_OPTIMIZATION_AVAILABLE       = False
+CORRELATION_ORDER_GENERATION_ENABLED            = False
 PORTFOLIO_OPTIMIZATION_AVAILABLE                = False   # PLANNED
 POSITION_SIZING_ORDER_CREATION_ENABLED          = False   # ALWAYS FALSE
 POSITION_SIZING_ORDER_EXECUTION_ENABLED         = False   # ALWAYS FALSE

@@ -1,0 +1,16 @@
+{
+  "_fixture_labels": ["TEST_FIXTURE", "DEMO_ONLY", "NOT_REAL_PORTFOLIO", "NOT_REAL_MARKET_DATA", "NOT_FOR_EXECUTION", "NOT_FOR_INVESTMENT_DECISION"],
+  "_version": "1.5.2",
+  "description": "Lineage missing snapshot_hash and price_lineage — orphan result errors expected",
+  "analysis_id": "CEA_LINEAGE_MISSING_001",
+  "portfolio_id": "PORT_DEMO_001",
+  "snapshot_hash": "",
+  "price_lineage": {},
+  "expected_lineage_errors": [
+    "LINEAGE_ERROR: snapshot_hash is missing",
+    "LINEAGE_ERROR: price_lineage is empty — matrix has no price lineage"
+  ],
+  "lineage_valid": false,
+  "expected_outcome": "orphan_result_errors_raised",
+  "research_only": true
+}

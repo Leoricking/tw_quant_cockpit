@@ -1,0 +1,23 @@
+{
+  "_fixture_labels": ["TEST_FIXTURE", "DEMO_ONLY", "NOT_REAL_PORTFOLIO", "NOT_REAL_MARKET_DATA", "NOT_FOR_EXECUTION", "NOT_FOR_INVESTMENT_DECISION"],
+  "_version": "1.5.2",
+  "description": "Themes overlap — total theme weight exceeds 100%. OVERLAPPING_EXPOSURE label required.",
+  "weights": {"2330": 0.5, "2317": 0.3, "6505": 0.2},
+  "theme_data": {
+    "2330": [
+      {"theme": "AI", "weight_in_theme": 1.0, "source": "internal", "effective_from": "2026-01-01", "available_from": "2026-01-01"},
+      {"theme": "Semiconductor", "weight_in_theme": 1.0, "source": "internal", "effective_from": "2026-01-01", "available_from": "2026-01-01"}
+    ],
+    "2317": [
+      {"theme": "AI", "weight_in_theme": 0.5, "source": "internal", "effective_from": "2026-01-01", "available_from": "2026-01-01"},
+      {"theme": "Supply_Chain", "weight_in_theme": 0.5, "source": "forum", "effective_from": "2026-01-01", "available_from": "2026-01-01"}
+    ],
+    "6505": [
+      {"theme": "Energy", "weight_in_theme": 1.0, "source": "internal", "effective_from": "2026-01-01", "available_from": "2026-01-01"}
+    ]
+  },
+  "expected_labels": ["OVERLAPPING_EXPOSURE", "NOT_MUTUALLY_EXCLUSIVE"],
+  "forum_sourced_status": "SUPPLEMENTARY_ONLY",
+  "expected_outcome": "overlapping_themes_total_exceeds_100pct",
+  "research_only": true
+}

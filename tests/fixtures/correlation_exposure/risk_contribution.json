@@ -1,0 +1,15 @@
+{
+  "_fixture_labels": ["TEST_FIXTURE", "DEMO_ONLY", "NOT_REAL_PORTFOLIO", "NOT_REAL_MARKET_DATA", "NOT_FOR_EXECUTION", "NOT_FOR_INVESTMENT_DECISION"],
+  "_version": "1.5.2",
+  "description": "Risk contribution decomposition for 3-symbol portfolio",
+  "portfolio_id": "PORT_DEMO_001",
+  "as_of": "2026-06-22",
+  "weights": {"2330": 0.4, "2317": 0.35, "2454": 0.25},
+  "expected_risk_contributions": [
+    {"symbol": "2330", "weight": 0.4, "pct_contribution_approx": 0.45},
+    {"symbol": "2317", "weight": 0.35, "pct_contribution_approx": 0.35},
+    {"symbol": "2454", "weight": 0.25, "pct_contribution_approx": 0.20}
+  ],
+  "expected_outcome": "component_contributions_sum_to_portfolio_variance",
+  "research_only": true
+}

@@ -1,0 +1,16 @@
+{
+  "_fixture_labels": ["TEST_FIXTURE", "DEMO_ONLY", "NOT_REAL_PORTFOLIO", "NOT_REAL_MARKET_DATA", "NOT_FOR_EXECUTION", "NOT_FOR_INVESTMENT_DECISION"],
+  "_version": "1.5.2",
+  "description": "Return series where one symbol is missing some dates — inner join reduces observations",
+  "symbols": ["2330", "2317"],
+  "as_of": "2026-06-22",
+  "alignment_method": "INNER_JOIN",
+  "return_method": "SIMPLE",
+  "minimum_observations": 60,
+  "symbol_2330_date_count": 90,
+  "symbol_2317_date_count": 65,
+  "expected_observation_count_after_inner_join": 65,
+  "missing_by_symbol": {"2330": 0, "2317": 25},
+  "expected_outcome": "partial_alignment_inner_join",
+  "research_only": true
+}

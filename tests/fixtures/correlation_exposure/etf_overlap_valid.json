@@ -1,0 +1,33 @@
+{
+  "_fixture_labels": ["TEST_FIXTURE", "DEMO_ONLY", "NOT_REAL_PORTFOLIO", "NOT_REAL_MARKET_DATA", "NOT_FOR_EXECUTION", "NOT_FOR_INVESTMENT_DECISION"],
+  "_version": "1.5.2",
+  "description": "ETF 0050 held in portfolio along with its direct constituents — overlap detected",
+  "portfolio_weights": {
+    "0050": 0.20,
+    "2330": 0.30,
+    "2317": 0.20,
+    "2454": 0.20,
+    "2882": 0.10
+  },
+  "etf_holdings": {
+    "0050": {
+      "2330": 0.25,
+      "2317": 0.10,
+      "2454": 0.08,
+      "2882": 0.05,
+      "6505": 0.52
+    }
+  },
+  "holdings_as_of": {"0050": "2026-03-31"},
+  "holdings_available_from": {"0050": "2026-04-01"},
+  "as_of": "2026-06-22",
+  "expected_result": {
+    "etf_symbol": "0050",
+    "overlapping_constituents": ["2317", "2330", "2454", "2882"],
+    "direct_weight": 0.20,
+    "indirect_weight_approx": 0.096,
+    "status": "VALID"
+  },
+  "expected_outcome": "overlap_detected_direct_plus_indirect",
+  "research_only": true
+}

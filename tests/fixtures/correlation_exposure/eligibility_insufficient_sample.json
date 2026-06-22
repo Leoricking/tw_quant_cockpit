@@ -1,0 +1,27 @@
+{
+  "_fixture_labels": ["TEST_FIXTURE", "DEMO_ONLY", "NOT_REAL_PORTFOLIO", "NOT_REAL_MARKET_DATA", "NOT_FOR_EXECUTION", "NOT_FOR_INVESTMENT_DECISION"],
+  "_version": "1.5.2",
+  "description": "Eligibility check — insufficient price data raises warning",
+  "request": {
+    "request_id": "REQ_ELIG_INSUF",
+    "portfolio_id": "PORT_DEMO_001",
+    "snapshot_id": "SNAP_002",
+    "as_of": "2026-06-22",
+    "available_from": "2026-06-01",
+    "symbols": ["2330", "2317"],
+    "weights": {"2330": 0.5, "2317": 0.5},
+    "minimum_observations": 60,
+    "source_lineage_ids": ["LID_002"]
+  },
+  "portfolio_snapshot": {
+    "broker_linked": false
+  },
+  "price_data_date_count": 15,
+  "expected_result": {
+    "eligibility_status": "PARTIAL",
+    "correlation_allowed": false,
+    "warnings_contain": "OBSERVATION_COUNT_LOW"
+  },
+  "expected_outcome": "partial_eligibility_low_observations",
+  "research_only": true
+}

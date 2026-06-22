@@ -1,0 +1,18 @@
+{
+  "_fixture_labels": ["TEST_FIXTURE", "DEMO_ONLY", "NOT_REAL_PORTFOLIO", "NOT_REAL_MARKET_DATA", "NOT_FOR_EXECUTION", "NOT_FOR_INVESTMENT_DECISION"],
+  "_version": "1.5.2",
+  "description": "Correlation matrix with negative correlations — hedge assets",
+  "symbols": ["2330", "GOLD_PROXY", "BOND_PROXY"],
+  "method": "PEARSON",
+  "matrix": [
+    [1.0, -0.55, -0.42],
+    [-0.55, 1.0, 0.30],
+    [-0.42, 0.30, 1.0]
+  ],
+  "high_correlation_threshold": 0.75,
+  "high_correlation_pairs": [],
+  "status": "VALID",
+  "observation_count": 90,
+  "expected_outcome": "negative_correlations_preserved",
+  "research_only": true
+}

@@ -1,0 +1,30 @@
+{
+  "_fixture_labels": ["TEST_FIXTURE", "DEMO_ONLY", "NOT_REAL_PORTFOLIO", "NOT_REAL_MARKET_DATA", "NOT_FOR_EXECUTION", "NOT_FOR_INVESTMENT_DECISION"],
+  "_version": "1.5.2",
+  "description": "Complete lineage record with all required fields populated",
+  "analysis_id": "CEA_LINEAGE_DEMO_001",
+  "portfolio_id": "PORT_DEMO_001",
+  "snapshot_id": "SNAP_DEMO_001",
+  "snapshot_hash": "abc123def456",
+  "as_of": "2026-06-22",
+  "available_from": "2026-01-01",
+  "calculation_version": "1.5.2",
+  "price_lineage": {
+    "source": "TSE_CLOSING_PRICES",
+    "fetched_at": "2026-06-22T18:00:00",
+    "available_from": "2026-06-22",
+    "lineage_id": "PRICE_LID_001"
+  },
+  "benchmark_lineage": {
+    "source": "TWII_INDEX",
+    "lineage_id": "BENCH_LID_001"
+  },
+  "classification_lineage": {
+    "source": "TSE_CLASSIFICATION",
+    "lineage_id": "CLS_LID_001"
+  },
+  "lineage_valid": true,
+  "lineage_errors": [],
+  "expected_outcome": "complete_lineage_no_orphans",
+  "research_only": true
+}

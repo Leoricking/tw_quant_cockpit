@@ -1,0 +1,10 @@
+{
+  "_fixture_labels": ["TEST_FIXTURE", "DEMO_ONLY", "NOT_REAL_PORTFOLIO", "NOT_REAL_MARKET_DATA", "NOT_FOR_EXECUTION", "NOT_FOR_INVESTMENT_DECISION"],
+  "_version": "1.5.2",
+  "description": "Price data contains dates beyond as_of — PIT violation, must be BLOCKED",
+  "symbols": ["2330", "2317"],
+  "as_of": "2026-06-22",
+  "price_dates_include_future": ["2026-06-23", "2026-06-24"],
+  "expected_outcome": "status_BLOCKED_future_data_excluded",
+  "research_only": true
+}

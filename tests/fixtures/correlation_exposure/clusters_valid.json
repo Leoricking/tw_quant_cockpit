@@ -1,0 +1,25 @@
+{
+  "_fixture_labels": ["TEST_FIXTURE", "DEMO_ONLY", "NOT_REAL_PORTFOLIO", "NOT_REAL_MARKET_DATA", "NOT_FOR_EXECUTION", "NOT_FOR_INVESTMENT_DECISION"],
+  "_version": "1.5.2",
+  "description": "Threshold-graph clustering producing 2 clusters from 4 symbols",
+  "symbols": ["2330", "2317", "2454", "0050"],
+  "weights": {"2330": 0.30, "2317": 0.25, "2454": 0.25, "0050": 0.20},
+  "cluster_threshold": 0.75,
+  "method": "THRESHOLD_GRAPH",
+  "expected_clusters": [
+    {
+      "cluster_id": "CLU_001",
+      "symbols": ["2317", "2330", "2454"],
+      "portfolio_weight": 0.80,
+      "avg_internal_correlation": 0.83
+    },
+    {
+      "cluster_id": "CLU_002",
+      "symbols": ["0050"],
+      "portfolio_weight": 0.20,
+      "avg_internal_correlation": 1.0
+    }
+  ],
+  "expected_outcome": "two_clusters_sorted_by_weight",
+  "research_only": true
+}

@@ -1,0 +1,27 @@
+{
+  "_fixture_labels": ["TEST_FIXTURE", "DEMO_ONLY", "NOT_REAL_PORTFOLIO", "NOT_REAL_MARKET_DATA", "NOT_FOR_EXECUTION", "NOT_FOR_INVESTMENT_DECISION"],
+  "_version": "1.5.2",
+  "description": "Portfolio with largest cluster weight 0.80 — HIGH concentration level",
+  "weights": {"2330": 0.35, "2317": 0.25, "2454": 0.20, "2882": 0.20},
+  "clusters": [
+    {
+      "cluster_id": "CLU_001",
+      "symbols": ["2330", "2317", "2454"],
+      "portfolio_weight": 0.80,
+      "average_internal_correlation": 0.85
+    },
+    {
+      "cluster_id": "CLU_002",
+      "symbols": ["2882"],
+      "portfolio_weight": 0.20,
+      "average_internal_correlation": 1.0
+    }
+  ],
+  "expected_result": {
+    "largest_cluster_weight": 0.80,
+    "hidden_concentration_level": "HIGH",
+    "effective_independent_bets_approx": 1.56
+  },
+  "expected_outcome": "concentration_HIGH_detected",
+  "research_only": true
+}

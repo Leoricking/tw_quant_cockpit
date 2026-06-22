@@ -1,0 +1,11 @@
+{
+  "_fixture_labels": ["TEST_FIXTURE", "DEMO_ONLY", "NOT_REAL_PORTFOLIO", "NOT_REAL_MARKET_DATA", "NOT_FOR_EXECUTION", "NOT_FOR_INVESTMENT_DECISION"],
+  "_version": "1.5.2",
+  "description": "Beta calculation fails because benchmark returns are constant — zero variance",
+  "symbol": "2330",
+  "benchmark": "FLAT_BENCH",
+  "benchmark_returns_type": "constant_0.0",
+  "benchmark_variance": 0.0,
+  "expected_outcome": "status_BLOCKED_BENCHMARK_VARIANCE_ZERO",
+  "research_only": true
+}

@@ -1,0 +1,14 @@
+{
+  "_fixture_labels": ["TEST_FIXTURE", "DEMO_ONLY", "NOT_REAL_PORTFOLIO", "NOT_REAL_MARKET_DATA", "NOT_FOR_EXECUTION", "NOT_FOR_INVESTMENT_DECISION"],
+  "_version": "1.5.2",
+  "description": "Portfolio with symbol lacking industry classification — must create UNKNOWN bucket",
+  "weights": {"2330": 0.5, "NEWSTOCK": 0.3, "UNCLASSIFIED": 0.2},
+  "classifications": {
+    "2330": {"industry": "Semiconductor", "available_from": "2026-01-01", "effective_from": "2026-01-01", "source": "TSE", "lineage_ids": []}
+  },
+  "as_of": "2026-06-22",
+  "expected_buckets_include_unknown": true,
+  "unknown_bucket_gross_weight": 0.5,
+  "expected_outcome": "UNKNOWN_bucket_not_redistributed",
+  "research_only": true
+}

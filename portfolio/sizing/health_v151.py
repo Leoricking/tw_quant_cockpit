@@ -210,7 +210,8 @@ class PositionSizingHealthCheck:
         # --- Version check ---
         try:
             from release.version_info import VERSION
-            add("version_1_5_1", VERSION == "1.5.1")
+            parts = tuple(int(x) for x in VERSION.split(".")[:3])
+            add("version_1_5_1", parts >= (1, 5, 1))
         except Exception as e:
             add("version_check", False, str(e))
 
