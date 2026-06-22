@@ -85,6 +85,7 @@ class ResearchFoundationStableHealthCheck:
                 "Portfolio Research CLI Completeness Hotfix",
                 "Position Sizing",
                 "Correlation & Exposure",
+                "Correlation & Exposure Integrity Hotfix",
                 "Drawdown & Risk Controls",
                 "Portfolio Walk-forward Backtest",
                 "Portfolio Stable Rollup",
@@ -96,7 +97,7 @@ class ResearchFoundationStableHealthCheck:
 
         try:
             from release.version_info import BASE_RELEASE
-            ok = any(marker in BASE_RELEASE for marker in ("1.3.7", "1.3.9", "1.4.0", "1.4.1", "1.4.2", "1.4.3", "1.4.4", "1.4.5", "1.4.6", "1.4.7", "1.4.8", "1.4.9", "1.5.0", "1.5.0.2", "1.5.1"))
+            ok = any(marker in BASE_RELEASE for marker in ("1.3.7", "1.3.9", "1.4.0", "1.4.1", "1.4.2", "1.4.3", "1.4.4", "1.4.5", "1.4.6", "1.4.7", "1.4.8", "1.4.9", "1.5.0", "1.5.0.2", "1.5.1", "1.5.2"))
             checks["base_release_correct"] = ("PASS" if ok else "FAIL", f"BASE_RELEASE={BASE_RELEASE}")
         except Exception as exc:
             checks["base_release_correct"] = ("FAIL", str(exc))

@@ -73,15 +73,22 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # ---------------------------------------------------------------------------
 # v1.3.3 module-level constants (Coverage Repair Workflow)
 # ---------------------------------------------------------------------------
-VERSION                             = "1.5.2"
-RELEASE_NAME                        = "Correlation & Exposure"
-BASE_RELEASE                        = "1.5.1 Position Sizing"
+VERSION                             = "1.5.2.1"
+RELEASE_NAME                        = "Correlation & Exposure Integrity Hotfix"
+BASE_RELEASE                        = "1.5.2 Correlation & Exposure"
 PROVIDER_FEATURE_BASELINE           = "1.4.8 Provider Integration Hardening"
 REPLAY_STABLE_BASELINE              = "1.2.9"
 PROVIDER_STABLE_BASELINE            = "1.4.9"
 PORTFOLIO_RESEARCH_BASELINE         = "1.5.0"
 POSITION_SIZING_BASELINE            = "1.5.1"
 CORRELATION_EXPOSURE_BASELINE       = "1.5.2"
+# v1.5.x feature stage registry — for version-info display and verification
+CORRELATION_EXPOSURE_STAGE          = "STABLE"   # v1.5.2
+DRAWDOWN_RISK_CONTROLS_AVAILABLE    = False
+DRAWDOWN_RISK_CONTROLS_STAGE        = "PLANNED"  # v1.5.3
+WEIGHT_OPTIMIZATION_ENABLED         = False      # permanently blocked
+ORDER_CREATION_ENABLED              = False      # permanently blocked
+AUTO_REBALANCE_ENABLED              = False      # permanently blocked
 
 # ---------------------------------------------------------------------------
 # v1.3.2 module-level constants (Real Data Provider Adapter Foundation)

@@ -1422,6 +1422,7 @@ def test_release_name_142():
     "Portfolio Research CLI Completeness Hotfix",
     "Position Sizing",
     "Correlation & Exposure",
+    "Correlation & Exposure Integrity Hotfix",
     "Drawdown & Risk Controls",
     "Portfolio Walk-forward Backtest",
     "Portfolio Stable Rollup",
@@ -1432,7 +1433,7 @@ def test_release_name_142():
 def test_base_release_142():
     """Test 127: BASE_RELEASE references Robustness era or later release."""
     from release.version_info import BASE_RELEASE
-    assert any(marker in BASE_RELEASE for marker in ("1.3.6", "1.3.7", "1.3.9", "1.4.0", "1.4.1", "1.4.2", "1.4.3", "1.4.4", "1.4.5", "1.4.6", "1.4.7", "1.4.8", "1.4.9", "1.5.0", "1.5.1")), (
+    assert any(marker in BASE_RELEASE for marker in ("1.3.6", "1.3.7", "1.3.9", "1.4.0", "1.4.1", "1.4.2", "1.4.3", "1.4.4", "1.4.5", "1.4.6", "1.4.7", "1.4.8", "1.4.9", "1.5.0", "1.5.1", "1.5.2")), (
         f"BASE_RELEASE does not reference a valid predecessor release: {BASE_RELEASE}"
     )
 

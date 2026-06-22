@@ -55,13 +55,14 @@ class ProviderStableReleaseGate:
                             "Portfolio Research Foundation Integrity Hotfix",
                             "Portfolio Research CLI Completeness Hotfix",
                             "Position Sizing", "Correlation & Exposure",
+                            "Correlation & Exposure Integrity Hotfix",
                             "Drawdown & Risk Controls", "Portfolio Walk-forward Backtest",
                             "Portfolio Stable Rollup"}
             parts = tuple(int(x) for x in VERSION.split(".")[:3])
             ok = (
                 parts >= (1, 4, 9)
                 and RELEASE_NAME in _KNOWN_NAMES
-                and any(m in BASE_RELEASE for m in ("1.4.8", "1.4.9", "1.5.0", "1.5.0.1", "1.5.0.2", "1.5.1"))
+                and any(m in BASE_RELEASE for m in ("1.4.8", "1.4.9", "1.5.0", "1.5.0.1", "1.5.0.2", "1.5.1", "1.5.2"))
                 and REPLAY_STABLE_BASELINE == "1.2.9"
                 and PROVIDER_STABLE_BASELINE == "1.4.9"
             )

@@ -48,6 +48,7 @@ def test_current_release_name():
     "Portfolio Research CLI Completeness Hotfix",
     "Position Sizing",
     "Correlation & Exposure",
+    "Correlation & Exposure Integrity Hotfix",
     "Drawdown & Risk Controls",
     "Portfolio Walk-forward Backtest",
     "Portfolio Stable Rollup",
@@ -58,7 +59,7 @@ def test_current_release_name():
 def test_current_base_release():
     """Test 3: Base release is a known base (v1.4.1 base references v1.4.0)."""
     from release.version_info import BASE_RELEASE
-    assert any(m in BASE_RELEASE for m in ("1.3.6", "1.3.7", "1.3.9", "1.4.0", "1.4.1", "1.4.2", "1.4.3", "1.4.4", "1.4.5", "1.4.6", "1.4.7", "1.4.8", "1.4.9", "1.5.0", "1.5.1")), (
+    assert any(m in BASE_RELEASE for m in ("1.3.6", "1.3.7", "1.3.9", "1.4.0", "1.4.1", "1.4.2", "1.4.3", "1.4.4", "1.4.5", "1.4.6", "1.4.7", "1.4.8", "1.4.9", "1.5.0", "1.5.1", "1.5.2")), (
         f"Unexpected BASE_RELEASE: {BASE_RELEASE}"
     )
 

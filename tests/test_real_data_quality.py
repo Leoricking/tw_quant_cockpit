@@ -781,6 +781,7 @@ class TestVersionInfo:
             "Portfolio Research CLI Completeness Hotfix",
             "Position Sizing",
             "Correlation & Exposure",
+            "Correlation & Exposure Integrity Hotfix",
             "Drawdown & Risk Controls",
             "Portfolio Walk-forward Backtest",
             "Portfolio Stable Rollup",
