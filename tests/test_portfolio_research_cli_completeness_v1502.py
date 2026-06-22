@@ -372,21 +372,29 @@ class TestSafetyAndVersion:
         assert PRODUCTION_TRADING_BLOCKED is True
 
     def test_version_is_1502(self):
-        """Test 41: release/version_info.py VERSION starts with '1.5.0.2'."""
+        """Test 41: release/version_info.py VERSION is in 1.5.x line."""
         from release.version_info import VERSION
-        assert VERSION.startswith("1.5.0.2"), f"Expected 1.5.0.2, got {VERSION}"
+        assert VERSION.startswith("1.5."), f"Expected 1.5.x, got {VERSION}"
 
     def test_release_name_is_cli_completeness(self):
-        """Test 42: RELEASE_NAME is 'Portfolio Research CLI Completeness Hotfix'."""
+        """Test 42: RELEASE_NAME is a known 1.5.x release name."""
         from release.version_info import RELEASE_NAME
-        assert RELEASE_NAME == "Portfolio Research CLI Completeness Hotfix", (
-            f"Unexpected RELEASE_NAME: {RELEASE_NAME}"
-        )
+        valid_names = {
+            "Portfolio Research CLI Completeness Hotfix",
+            "Position Sizing",
+            "Correlation & Exposure",
+            "Drawdown & Risk Controls",
+            "Portfolio Walk-forward Backtest",
+            "Portfolio Stable Rollup",
+        }
+        assert RELEASE_NAME in valid_names, f"Unexpected RELEASE_NAME: {RELEASE_NAME}"
 
-    def test_base_release_contains_1501(self):
-        """Test 43: BASE_RELEASE references 1.5.0.1."""
+    def test_base_release_contains_1501_or_1502(self):
+        """Test 43: BASE_RELEASE references 1.5.0.1 or 1.5.0.2."""
         from release.version_info import BASE_RELEASE
-        assert "1.5.0.1" in BASE_RELEASE, f"BASE_RELEASE: {BASE_RELEASE}"
+        assert "1.5.0.1" in BASE_RELEASE or "1.5.0.2" in BASE_RELEASE, (
+            f"BASE_RELEASE: {BASE_RELEASE}"
+        )
 
     def test_store_research_only(self):
         """Test 44: PortfolioStore.RESEARCH_ONLY is True."""
@@ -424,10 +432,9 @@ class TestSafetyAndVersion:
         assert name is not None, "1.5.0.2 not found in version_alignment"
 
     def test_version_alignment_1502_name(self):
-        """Test 49: version_alignment entry for 1.5.0.2 matches RELEASE_NAME."""
+        """Test 49: version_alignment entry for 1.5.0.2 is the historical CLI Completeness name."""
         from release.version_alignment import release_name_for_version
-        from release.version_info import RELEASE_NAME
-        assert release_name_for_version("1.5.0.2") == RELEASE_NAME
+        assert release_name_for_version("1.5.0.2") == "Portfolio Research CLI Completeness Hotfix"
 
     def test_portfolio_ledger_spec_has_portfolio_id_arg(self):
         """Test 50: portfolio-ledger CommandSpec has --portfolio-id argument."""

@@ -56,12 +56,17 @@ class TestVersionInfo:
             "Portfolio Research Foundation",
             "Portfolio Research Foundation Integrity Hotfix",
             "Portfolio Research CLI Completeness Hotfix",
+            "Position Sizing",
+            "Correlation & Exposure",
+            "Drawdown & Risk Controls",
+            "Portfolio Walk-forward Backtest",
+            "Portfolio Stable Rollup",
         }
         assert RELEASE_NAME in _KNOWN, f"Unexpected RELEASE_NAME: {RELEASE_NAME}"
 
     def test_base_release_contains_137(self):
         from release.version_info import BASE_RELEASE
-        assert any(m in BASE_RELEASE for m in ("1.3.7", "1.3.9", "1.4.0", "1.4.1", "1.4.2", "1.4.3", "1.4.4", "1.4.5", "1.4.6", "1.4.7", "1.4.8", "1.4.9", "1.5.0")), (
+        assert any(m in BASE_RELEASE for m in ("1.3.7", "1.3.9", "1.4.0", "1.4.1", "1.4.2", "1.4.3", "1.4.4", "1.4.5", "1.4.6", "1.4.7", "1.4.8", "1.4.9", "1.5.0", "1.5.1")), (
             f"BASE_RELEASE does not reference a known base: {BASE_RELEASE}"
         )
 

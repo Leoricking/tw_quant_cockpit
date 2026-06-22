@@ -73,13 +73,14 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # ---------------------------------------------------------------------------
 # v1.3.3 module-level constants (Coverage Repair Workflow)
 # ---------------------------------------------------------------------------
-VERSION                             = "1.5.0.2"
-RELEASE_NAME                        = "Portfolio Research CLI Completeness Hotfix"
-BASE_RELEASE                        = "1.5.0.1 Portfolio Research Foundation Integrity Hotfix"
+VERSION                             = "1.5.1"
+RELEASE_NAME                        = "Position Sizing"
+BASE_RELEASE                        = "1.5.0.2 Portfolio Research CLI Completeness Hotfix"
 PROVIDER_FEATURE_BASELINE           = "1.4.8 Provider Integration Hardening"
 REPLAY_STABLE_BASELINE              = "1.2.9"
 PROVIDER_STABLE_BASELINE            = "1.4.9"
 PORTFOLIO_RESEARCH_BASELINE         = "1.5.0"
+POSITION_SIZING_BASELINE            = "1.5.1"
 
 # ---------------------------------------------------------------------------
 # v1.3.2 module-level constants (Real Data Provider Adapter Foundation)
@@ -685,6 +686,36 @@ AUTO_PRIMARY_OVERRIDE_ENABLED                   = False  # ALWAYS FALSE
 SILENT_PROVIDER_FALLBACK_ENABLED                = False  # ALWAYS FALSE
 AUTO_QUARANTINE_RELEASE_ENABLED                 = False  # ALWAYS FALSE
 AUTO_RATE_LIMIT_BYPASS_ENABLED                  = False  # ALWAYS FALSE
+
+# v1.5.1 Position Sizing capability flags
+POSITION_SIZING_AVAILABLE                       = True
+FIXED_FRACTIONAL_SIZING_AVAILABLE               = True
+STOP_DISTANCE_SIZING_AVAILABLE                  = True
+ATR_SIZING_AVAILABLE                            = True
+VOLATILITY_TARGET_SIZING_AVAILABLE              = True
+CASH_LIMIT_SIZING_AVAILABLE                     = True
+PORTFOLIO_WEIGHT_CAP_AVAILABLE                  = True
+SINGLE_NAME_CAP_AVAILABLE                       = True
+INDUSTRY_CAP_AVAILABLE                          = True
+THEME_CAP_AVAILABLE                             = True
+LIQUIDITY_CAP_AVAILABLE                         = True
+LOT_SIZE_NORMALIZATION_AVAILABLE                = True
+POSITION_SIZING_EXPLAINABILITY_AVAILABLE        = True
+POSITION_SIZING_ELIGIBILITY_GATE_AVAILABLE      = True
+POSITION_SIZING_WHAT_IF_AVAILABLE               = True
+CORRELATION_AWARE_SIZING_AVAILABLE              = False   # PLANNED v1.5.2
+PORTFOLIO_OPTIMIZATION_AVAILABLE                = False   # PLANNED
+POSITION_SIZING_ORDER_CREATION_ENABLED          = False   # ALWAYS FALSE
+POSITION_SIZING_ORDER_EXECUTION_ENABLED         = False   # ALWAYS FALSE
+POSITION_SIZING_BROKER_ENABLED                  = False   # ALWAYS FALSE
+POSITION_SIZING_AUTO_REBALANCE_ENABLED          = False   # ALWAYS FALSE
+POSITION_SIZING_AUTO_APPLY_ENABLED              = False   # ALWAYS FALSE
+POSITION_SIZING_LIVE_ACCOUNT_SYNC_ENABLED       = False   # ALWAYS FALSE
+POSITION_SIZING_MARGIN_ENABLED                  = False   # ALWAYS FALSE
+POSITION_SIZING_SHORT_SELL_ENABLED              = False   # ALWAYS FALSE
+POSITION_SIZING_LEVERAGE_ENABLED                = False   # ALWAYS FALSE
+POSITION_SIZING_KELLY_FULL_ENABLED              = False   # ALWAYS FALSE
+POSITION_SIZING_RESEARCH_ONLY                   = True
 
 
 class VersionInfo:

@@ -596,6 +596,11 @@ class TestVersion:
             "Portfolio Research Foundation",
             "Portfolio Research Foundation Integrity Hotfix",
             "Portfolio Research CLI Completeness Hotfix",
+            "Position Sizing",
+            "Correlation & Exposure",
+            "Drawdown & Risk Controls",
+            "Portfolio Walk-forward Backtest",
+            "Portfolio Stable Rollup",
         }
         assert RELEASE_NAME in known_names, f"Unexpected RELEASE_NAME: {RELEASE_NAME}"
 
@@ -603,7 +608,7 @@ class TestVersion:
         """Test 63: BASE_RELEASE references 1.4.3.1 or later hotfix/release."""
         from release.version_info import BASE_RELEASE
         # Accept 1.4.3.1, 1.4.3.2 (hotfix era) or 1.4.4 (FinMind) or 1.4.5+ successor
-        assert any(m in BASE_RELEASE for m in ("1.4.3.1", "1.4.3.2", "1.4.4", "1.4.5", "1.4.6", "1.4.7", "1.4.8", "1.4.9", "1.5.0")), \
+        assert any(m in BASE_RELEASE for m in ("1.4.3.1", "1.4.3.2", "1.4.4", "1.4.5", "1.4.6", "1.4.7", "1.4.8", "1.4.9", "1.5.0", "1.5.1")), \
             f"BASE_RELEASE does not reference expected predecessor: {BASE_RELEASE}"
 
     def test_64_replay_baseline_unchanged(self):

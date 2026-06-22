@@ -1,0 +1,25 @@
+{
+  "_fixture_labels": ["TEST_FIXTURE", "DEMO_ONLY", "NOT_REAL_PORTFOLIO", "NOT_REAL_ORDER", "NOT_FOR_EXECUTION", "NOT_FOR_INVESTMENT_DECISION"],
+  "description": "Missing volatility → blocked or INSUFFICIENT_DATA",
+  "request": {
+    "request_id": "FX_VOL_MISSING_001",
+    "portfolio_id": "demo_portfolio",
+    "account_id": "DEMO",
+    "symbol": "2330",
+    "market": "TWSE",
+    "asset_type": "COMMON_STOCK",
+    "as_of": "2026-06-22",
+    "available_from": "2026-06-22",
+    "method": "VOLATILITY_TARGET",
+    "portfolio_value": "1000000",
+    "available_cash": "200000",
+    "planned_entry_price": "500",
+    "volatility": null,
+    "lot_size": 1000,
+    "source_lineage_ids": ["LID_FX_VOL_002"]
+  },
+  "expected": {
+    "blocked": true,
+    "blocker_reason_contains": "MISSING_VOLATILITY"
+  }
+}

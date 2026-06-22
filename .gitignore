@@ -741,3 +741,11 @@ collection_output/
 # Portfolio Research Foundation v1.5.0
 portfolio_research_report_*.json
 portfolio_snapshots_*.json
+
+# v1.5.1 Position Sizing runtime data (generated artifacts — never commit)
+data/position_sizing/
+data/position_sizing_runtime/
+data/sizing_proposals/
+reports/position_sizing_*.md
+# Position sizing test fixtures ARE committed (exception)
+!tests/fixtures/position_sizing/*.json

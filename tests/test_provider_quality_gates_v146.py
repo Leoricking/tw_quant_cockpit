@@ -1582,6 +1582,11 @@ class TestVersionInfo(unittest.TestCase):
             "Portfolio Research Foundation",
             "Portfolio Research Foundation Integrity Hotfix",
             "Portfolio Research CLI Completeness Hotfix",
+            "Position Sizing",
+            "Correlation & Exposure",
+            "Drawdown & Risk Controls",
+            "Portfolio Walk-forward Backtest",
+            "Portfolio Stable Rollup",
         )
         self.assertTrue(
             any(name in RELEASE_NAME for name in _KNOWN),

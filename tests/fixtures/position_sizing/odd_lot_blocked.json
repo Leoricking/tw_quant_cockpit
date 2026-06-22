@@ -1,0 +1,27 @@
+{
+  "_fixture_labels": ["TEST_FIXTURE", "DEMO_ONLY", "NOT_REAL_PORTFOLIO", "NOT_REAL_ORDER", "NOT_FOR_EXECUTION", "NOT_FOR_INVESTMENT_DECISION"],
+  "description": "Odd lot not allowed — quantity rounded down to nearest lot",
+  "request": {
+    "request_id": "FX_ODD_BLOCKED_001",
+    "portfolio_id": "demo_portfolio",
+    "account_id": "DEMO",
+    "symbol": "2330",
+    "market": "TWSE",
+    "asset_type": "COMMON_STOCK",
+    "as_of": "2026-06-22",
+    "available_from": "2026-06-22",
+    "method": "FIXED_FRACTIONAL",
+    "portfolio_value": "100000",
+    "available_cash": "50000",
+    "planned_entry_price": "1000",
+    "stop_price": "950",
+    "risk_budget_percent": "0.01",
+    "lot_size": 1000,
+    "allow_odd_lot": false,
+    "source_lineage_ids": ["LID_FX_ODD_002"]
+  },
+  "expected": {
+    "allow_odd_lot": false,
+    "normalized_quantity_multiple_of_lot": true
+  }
+}

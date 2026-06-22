@@ -1,0 +1,21 @@
+{
+  "_fixture_type": "TEST_FIXTURE",
+  "_demo_only": true,
+  "_research_only": true,
+  "_version": "1.5.1",
+  "request_id": "REQ_FF_ZERO_STOP",
+  "portfolio_id": "PORT_DEMO",
+  "account_id": "ACC_DEMO",
+  "symbol": "2330",
+  "market": "TWSE",
+  "asset_type": "COMMON_STOCK",
+  "as_of": "2026-06-22",
+  "available_from": "2026-06-22",
+  "method": "FIXED_FRACTIONAL",
+  "portfolio_value": "1000000",
+  "planned_entry_price": "1000",
+  "stop_price": "1000",
+  "lot_size": 1000,
+  "source_lineage_ids": ["LID_ZERO_STOP"],
+  "expected_outcome": "BLOCKED_INVALID_STOP_DIRECTION"
+}

@@ -1,0 +1,27 @@
+{
+  "_fixture_labels": ["TEST_FIXTURE", "DEMO_ONLY", "NOT_REAL_PORTFOLIO", "NOT_REAL_ORDER", "NOT_FOR_EXECUTION", "NOT_FOR_INVESTMENT_DECISION"],
+  "description": "Minimum order value check — quantity returns 0 if value below minimum",
+  "request": {
+    "request_id": "FX_MINVAL_001",
+    "portfolio_id": "demo_portfolio",
+    "account_id": "DEMO",
+    "symbol": "2330",
+    "market": "TWSE",
+    "asset_type": "COMMON_STOCK",
+    "as_of": "2026-06-22",
+    "available_from": "2026-06-22",
+    "method": "FIXED_FRACTIONAL",
+    "portfolio_value": "50000",
+    "available_cash": "5000",
+    "planned_entry_price": "100",
+    "stop_price": "95",
+    "risk_budget_percent": "0.001",
+    "minimum_order_value": "10000",
+    "lot_size": 1000,
+    "source_lineage_ids": ["LID_FX_MINVAL_001"]
+  },
+  "expected": {
+    "minimum_order_value": "10000",
+    "constraint_type": "MINIMUM_ORDER_VALUE"
+  }
+}

@@ -32749,6 +32749,500 @@ def cmd_portfolio_ledger(args=None):
         return 1
 
 
+# ---------------------------------------------------------------------------
+# v1.5.1 Position Sizing handlers (research-only, no broker, no order)
+# ---------------------------------------------------------------------------
+
+def cmd_position_sizing_health(args=None):
+    """[v1.5.1] Position Sizing health check. Research Only."""
+    from portfolio.sizing.health_v151 import PositionSizingHealthCheck
+    result = PositionSizingHealthCheck().run()
+    print(f"Position Sizing Health Check v{result['version']}")
+    print(f"Status: {result['overall']}  Passed: {result['passed']}/{result['total']}")
+    if result['failed'] > 0:
+        for c in result['checks']:
+            if not c['passed']:
+                print(f"  FAIL: {c['name']} — {c['detail']}")
+    print("[!] Research Only. No Real Orders. Not Investment Advice.")
+    return 0 if result['overall'] == 'PASS' else 1
+
+
+def cmd_position_sizing_policies(args=None):
+    """[v1.5.1] List sizing policies (research only)."""
+    print("[!] Research Only. No Real Orders. Not Investment Advice.")
+    from portfolio.sizing.query_v151 import PositionSizingQueryService
+    svc = PositionSizingQueryService()
+    policies = svc.list_sizing_policies()
+    if not policies:
+        print("No sizing policies found. (empty store — demo/fixture only)")
+    else:
+        for p in policies:
+            policy_id = p.get("policy_id", "") if isinstance(p, dict) else getattr(p, "policy_id", "")
+            name = p.get("name", "") if isinstance(p, dict) else getattr(p, "name", "")
+            print(f"  {policy_id}: {name}")
+    return 0
+
+
+def cmd_position_sizing_policy_show(args=None):
+    """[v1.5.1] Show a sizing policy (research only)."""
+    print("[!] Research Only. No Real Orders. Not Investment Advice.")
+    policy_id = getattr(args, "policy_id", None) or "POL_DEFAULT"
+    from portfolio.sizing.query_v151 import PositionSizingQueryService
+    svc = PositionSizingQueryService()
+    p = svc.get_sizing_policy(policy_id)
+    if p is None:
+        print(f"Policy '{policy_id}' NOT_FOUND (empty store — demo/fixture only)")
+        return 0
+    for k, v in (p.items() if isinstance(p, dict) else vars(p).items()):
+        print(f"  {k}: {v}")
+    return 0
+
+
+def cmd_position_sizing_eligibility(args=None):
+    """[v1.5.1] Evaluate position sizing eligibility (research only)."""
+    print("[!] Research Only. No Real Orders. Not Investment Advice.")
+    from decimal import Decimal
+    from portfolio.sizing.models_v151 import PositionSizingRequest, PositionSizingPolicy
+    from portfolio.sizing.eligibility_v151 import PositionSizingEligibilityGate
+    portfolio_id = getattr(args, "portfolio_id", None) or "demo_portfolio"
+    symbol = getattr(args, "symbol", None) or "2330"
+    as_of = getattr(args, "as_of", None) or "2026-06-22"
+    req = PositionSizingRequest(
+        request_id="CLI_ELIG_001",
+        portfolio_id=portfolio_id,
+        account_id="DEMO",
+        symbol=symbol,
+        market="TWSE",
+        asset_type="COMMON_STOCK",
+        as_of=as_of,
+        available_from=as_of,
+        method="FIXED_FRACTIONAL",
+        portfolio_value=Decimal("1000000"),
+        available_cash=Decimal("200000"),
+        planned_entry_price=Decimal("500"),
+        stop_price=Decimal("475"),
+        source_lineage_ids=["CLI_DEMO_LID"],
+    )
+    policy = PositionSizingPolicy(policy_id="POL_CLI_DEFAULT", name="CLI Default")
+    result = PositionSizingEligibilityGate().evaluate(req, policy)
+    print(f"Eligibility: {result.eligibility_status}")
+    print(f"Sizing allowed: {result.sizing_allowed}")
+    print(f"Methods allowed: {result.methods_allowed}")
+    if result.warnings:
+        for w in result.warnings:
+            print(f"  [WARN] {w}")
+    if result.blockers:
+        for b in result.blockers:
+            print(f"  [BLOCK] {b}")
+    print("(demo fixture — no real portfolio data)")
+    return 0
+
+
+def cmd_position_sizing_fixed_fractional(args=None):
+    """[v1.5.1] Fixed fractional sizing (research only)."""
+    print("[!] Research Only. No Real Orders. Not Investment Advice.")
+    from decimal import Decimal
+    from portfolio.sizing.models_v151 import PositionSizingRequest, PositionSizingPolicy
+    from portfolio.sizing.fixed_fractional_v151 import FixedFractionalSizer
+    portfolio_id = getattr(args, "portfolio_id", None) or "demo_portfolio"
+    symbol = getattr(args, "symbol", None) or "2330"
+    as_of = getattr(args, "as_of", None) or "2026-06-22"
+    req = PositionSizingRequest(
+        request_id="CLI_FF_001",
+        portfolio_id=portfolio_id,
+        account_id="DEMO",
+        symbol=symbol,
+        market="TWSE",
+        asset_type="COMMON_STOCK",
+        as_of=as_of,
+        available_from=as_of,
+        method="FIXED_FRACTIONAL",
+        portfolio_value=Decimal("1000000"),
+        available_cash=Decimal("200000"),
+        planned_entry_price=Decimal("1000"),
+        stop_price=Decimal("950"),
+        source_lineage_ids=["CLI_DEMO_LID"],
+    )
+    policy = PositionSizingPolicy(policy_id="POL_CLI_DEFAULT", name="CLI Default")
+    r = FixedFractionalSizer().calculate(req, policy)
+    if r["blocked"]:
+        print(f"BLOCKED: {r['blocker_reason']}")
+    else:
+        print(f"Raw Quantity: {r['raw_quantity']}")
+        print(f"Risk Amount: {r.get('risk_amount', 'N/A')}")
+        print(f"Stop Distance: {r.get('stop_distance', 'N/A')}")
+    print("(demo fixture — RESEARCH_ONLY, NOT_AN_ORDER, NOT_EXECUTABLE)")
+    return 0
+
+
+def cmd_position_sizing_stop_distance(args=None):
+    """[v1.5.1] Stop-distance sizing (research only)."""
+    print("[!] Research Only. No Real Orders. Not Investment Advice.")
+    from decimal import Decimal
+    from portfolio.sizing.models_v151 import PositionSizingRequest, PositionSizingPolicy
+    from portfolio.sizing.stop_distance_v151 import StopDistanceSizer
+    portfolio_id = getattr(args, "portfolio_id", None) or "demo_portfolio"
+    symbol = getattr(args, "symbol", None) or "2330"
+    entry_price = Decimal(str(getattr(args, "entry_price", None) or "1000"))
+    stop_price = Decimal(str(getattr(args, "stop_price", None) or "950"))
+    as_of = getattr(args, "as_of", None) or "2026-06-22"
+    req = PositionSizingRequest(
+        request_id="CLI_SD_001",
+        portfolio_id=portfolio_id,
+        account_id="DEMO",
+        symbol=symbol,
+        market="TWSE",
+        asset_type="COMMON_STOCK",
+        as_of=as_of,
+        available_from=as_of,
+        method="STOP_DISTANCE",
+        portfolio_value=Decimal("1000000"),
+        available_cash=Decimal("200000"),
+        planned_entry_price=entry_price,
+        stop_price=stop_price,
+        source_lineage_ids=["CLI_DEMO_LID"],
+    )
+    policy = PositionSizingPolicy(policy_id="POL_CLI_DEFAULT", name="CLI Default")
+    r = StopDistanceSizer().calculate(req, policy)
+    if r["blocked"]:
+        print(f"BLOCKED: {r['blocker_reason']}")
+    else:
+        print(f"Raw Quantity: {r['raw_quantity']}")
+        print(f"Risk Per Share: {r.get('risk_per_share', 'N/A')}")
+    print("(demo fixture — RESEARCH_ONLY, NOT_AN_ORDER, NOT_EXECUTABLE)")
+    return 0
+
+
+def cmd_position_sizing_atr(args=None):
+    """[v1.5.1] ATR-based sizing (research only)."""
+    print("[!] Research Only. No Real Orders. Not Investment Advice.")
+    from decimal import Decimal
+    from portfolio.sizing.models_v151 import PositionSizingRequest, PositionSizingPolicy
+    from portfolio.sizing.atr_sizing_v151 import ATRSizer
+    portfolio_id = getattr(args, "portfolio_id", None) or "demo_portfolio"
+    symbol = getattr(args, "symbol", None) or "2330"
+    atr_val = Decimal(str(getattr(args, "atr", None) or "25"))
+    atr_mult = Decimal(str(getattr(args, "atr_multiplier", None) or "2"))
+    as_of = getattr(args, "as_of", None) or "2026-06-22"
+    req = PositionSizingRequest(
+        request_id="CLI_ATR_001",
+        portfolio_id=portfolio_id,
+        account_id="DEMO",
+        symbol=symbol,
+        market="TWSE",
+        asset_type="COMMON_STOCK",
+        as_of=as_of,
+        available_from=as_of,
+        method="ATR_BASED",
+        portfolio_value=Decimal("1000000"),
+        available_cash=Decimal("200000"),
+        planned_entry_price=Decimal("500"),
+        atr=atr_val,
+        source_lineage_ids=["CLI_DEMO_LID"],
+    )
+    policy = PositionSizingPolicy(policy_id="POL_CLI_DEFAULT", name="CLI Default")
+    r = ATRSizer(atr_multiplier=atr_mult).calculate(req, policy)
+    if r["blocked"]:
+        print(f"BLOCKED: {r['blocker_reason']}")
+    else:
+        print(f"Raw Quantity: {r['raw_quantity']}")
+        print(f"ATR Stop Distance: {r.get('stop_distance', 'N/A')}")
+    print("(demo fixture — RESEARCH_ONLY, NOT_AN_ORDER, NOT_EXECUTABLE)")
+    return 0
+
+
+def cmd_position_sizing_volatility(args=None):
+    """[v1.5.1] Volatility target sizing (research only)."""
+    print("[!] Research Only. No Real Orders. Not Investment Advice.")
+    from decimal import Decimal
+    from portfolio.sizing.models_v151 import PositionSizingRequest, PositionSizingPolicy
+    from portfolio.sizing.volatility_target_v151 import VolatilityTargetSizer
+    portfolio_id = getattr(args, "portfolio_id", None) or "demo_portfolio"
+    symbol = getattr(args, "symbol", None) or "2330"
+    vol = Decimal(str(getattr(args, "volatility", None) or "0.25"))
+    as_of = getattr(args, "as_of", None) or "2026-06-22"
+    req = PositionSizingRequest(
+        request_id="CLI_VOL_001",
+        portfolio_id=portfolio_id,
+        account_id="DEMO",
+        symbol=symbol,
+        market="TWSE",
+        asset_type="COMMON_STOCK",
+        as_of=as_of,
+        available_from=as_of,
+        method="VOLATILITY_TARGET",
+        portfolio_value=Decimal("1000000"),
+        available_cash=Decimal("200000"),
+        planned_entry_price=Decimal("500"),
+        volatility=vol,
+        source_lineage_ids=["CLI_DEMO_LID"],
+    )
+    policy = PositionSizingPolicy(policy_id="POL_CLI_DEFAULT", name="CLI Default")
+    r = VolatilityTargetSizer().calculate(req, policy)
+    if r["blocked"]:
+        print(f"BLOCKED: {r['blocker_reason']}")
+    else:
+        print(f"Raw Quantity: {r['raw_quantity']}")
+    print("(demo fixture — RESEARCH_ONLY, NOT_AN_ORDER, NOT_EXECUTABLE)")
+    return 0
+
+
+def cmd_position_sizing_target_weight(args=None):
+    """[v1.5.1] Target-weight sizing (research only)."""
+    print("[!] Research Only. No Real Orders. Not Investment Advice.")
+    from decimal import Decimal
+    from portfolio.sizing.models_v151 import PositionSizingRequest, PositionSizingPolicy
+    from portfolio.sizing.query_v151 import PositionSizingQueryService
+    portfolio_id = getattr(args, "portfolio_id", None) or "demo_portfolio"
+    symbol = getattr(args, "symbol", None) or "2330"
+    target_weight = Decimal(str(getattr(args, "target_weight", None) or "0.10"))
+    as_of = getattr(args, "as_of", None) or "2026-06-22"
+    req = PositionSizingRequest(
+        request_id="CLI_TW_001",
+        portfolio_id=portfolio_id,
+        account_id="DEMO",
+        symbol=symbol,
+        market="TWSE",
+        asset_type="COMMON_STOCK",
+        as_of=as_of,
+        available_from=as_of,
+        method="FIXED_PORTFOLIO_WEIGHT",
+        portfolio_value=Decimal("1000000"),
+        available_cash=Decimal("200000"),
+        planned_entry_price=Decimal("500"),
+        target_weight=target_weight,
+        source_lineage_ids=["CLI_DEMO_LID"],
+    )
+    policy = PositionSizingPolicy(policy_id="POL_CLI_DEFAULT", name="CLI Default")
+    svc = PositionSizingQueryService()
+    r = svc.size_by_target_weight(req, policy)
+    if r["blocked"]:
+        print(f"BLOCKED: {r['blocker_reason']}")
+    else:
+        print(f"Raw Quantity: {r['raw_quantity']}")
+        print(f"Target Weight: {r.get('target_weight', 'N/A')}")
+    print("(demo fixture — RESEARCH_ONLY, NOT_AN_ORDER, NOT_EXECUTABLE)")
+    return 0
+
+
+def cmd_position_sizing_cash_limit(args=None):
+    """[v1.5.1] Cash-limited sizing (research only)."""
+    print("[!] Research Only. No Real Orders. Not Investment Advice.")
+    from decimal import Decimal
+    from portfolio.sizing.models_v151 import PositionSizingRequest, PositionSizingPolicy
+    from portfolio.sizing.query_v151 import PositionSizingQueryService
+    portfolio_id = getattr(args, "portfolio_id", None) or "demo_portfolio"
+    symbol = getattr(args, "symbol", None) or "2330"
+    as_of = getattr(args, "as_of", None) or "2026-06-22"
+    req = PositionSizingRequest(
+        request_id="CLI_CASH_001",
+        portfolio_id=portfolio_id,
+        account_id="DEMO",
+        symbol=symbol,
+        market="TWSE",
+        asset_type="COMMON_STOCK",
+        as_of=as_of,
+        available_from=as_of,
+        method="CASH_LIMITED",
+        portfolio_value=Decimal("1000000"),
+        available_cash=Decimal("200000"),
+        planned_entry_price=Decimal("500"),
+        source_lineage_ids=["CLI_DEMO_LID"],
+    )
+    policy = PositionSizingPolicy(policy_id="POL_CLI_DEFAULT", name="CLI Default")
+    svc = PositionSizingQueryService()
+    r = svc.size_by_cash_limit(req, policy)
+    if r["blocked"]:
+        print(f"BLOCKED: {r['blocker_reason']}")
+    else:
+        print(f"Raw Quantity: {r['raw_quantity']}")
+        print(f"Spendable Cash: {r.get('spendable_cash', 'N/A')}")
+    print("(demo fixture — RESEARCH_ONLY, NOT_AN_ORDER, NOT_EXECUTABLE)")
+    return 0
+
+
+def cmd_position_sizing_constraints(args=None):
+    """[v1.5.1] Apply and show sizing constraints (research only)."""
+    print("[!] Research Only. No Real Orders. Not Investment Advice.")
+    from decimal import Decimal
+    from portfolio.sizing.models_v151 import PositionSizingRequest, PositionSizingPolicy
+    from portfolio.sizing.constraint_engine_v151 import PositionSizingConstraintEngine
+    portfolio_id = getattr(args, "portfolio_id", None) or "demo_portfolio"
+    symbol = getattr(args, "symbol", None) or "2330"
+    as_of = getattr(args, "as_of", None) or "2026-06-22"
+    req = PositionSizingRequest(
+        request_id="CLI_CONS_001",
+        portfolio_id=portfolio_id,
+        account_id="DEMO",
+        symbol=symbol,
+        market="TWSE",
+        asset_type="COMMON_STOCK",
+        as_of=as_of,
+        available_from=as_of,
+        method="FIXED_FRACTIONAL",
+        portfolio_value=Decimal("1000000"),
+        available_cash=Decimal("200000"),
+        planned_entry_price=Decimal("1000"),
+        stop_price=Decimal("950"),
+        source_lineage_ids=["CLI_DEMO_LID"],
+    )
+    policy = PositionSizingPolicy(policy_id="POL_CLI_DEFAULT", name="CLI Default")
+    final_qty, constraints, binding = PositionSizingConstraintEngine().apply_all(
+        req, Decimal("200"), policy
+    )
+    print(f"Input quantity: 200  Final quantity: {final_qty}")
+    print(f"Constraints applied: {len(constraints)}")
+    print(f"Binding constraint: {binding}")
+    for c in constraints:
+        ctype = c.constraint_type if hasattr(c, "constraint_type") else c.get("constraint_type", "")
+        sev = c.severity if hasattr(c, "severity") else c.get("severity", "")
+        print(f"  [{sev}] {ctype}")
+    print("(demo fixture — RESEARCH_ONLY, NOT_AN_ORDER)")
+    return 0
+
+
+def cmd_position_sizing_explain(args=None):
+    """[v1.5.1] Explain a sizing proposal (research only)."""
+    print("[!] Research Only. No Real Orders. Not Investment Advice.")
+    from decimal import Decimal
+    from portfolio.sizing.models_v151 import PositionSizingRequest, PositionSizingPolicy
+    from portfolio.sizing.query_v151 import PositionSizingQueryService
+    proposal_id = getattr(args, "proposal_id", None)
+    req = PositionSizingRequest(
+        request_id="CLI_EXP_001",
+        portfolio_id="demo_portfolio",
+        account_id="DEMO",
+        symbol="2330",
+        market="TWSE",
+        asset_type="COMMON_STOCK",
+        as_of="2026-06-22",
+        available_from="2026-06-22",
+        method="FIXED_FRACTIONAL",
+        portfolio_value=Decimal("1000000"),
+        available_cash=Decimal("200000"),
+        planned_entry_price=Decimal("1000"),
+        stop_price=Decimal("950"),
+        source_lineage_ids=["CLI_DEMO_LID"],
+    )
+    policy = PositionSizingPolicy(policy_id="POL_CLI_DEFAULT", name="CLI Default")
+    svc = PositionSizingQueryService()
+    proposal = svc.build_sizing_proposal(req, policy)
+    explanation = svc.explain_sizing_proposal(proposal)
+    print(f"Method: {explanation.get('method', 'N/A')}")
+    print(f"Final quantity: {explanation.get('final_quantity', 'N/A')}")
+    steps = explanation.get("steps", [])
+    for step in steps:
+        print(f"  {step}")
+    print("(demo fixture — RESEARCH_ONLY, NOT_AN_ORDER)")
+    return 0
+
+
+def cmd_position_sizing_what_if(args=None):
+    """[v1.5.1] Hypothetical what-if sizing scenario (research only)."""
+    print("[!] Research Only. No Real Orders. Not Investment Advice.")
+    import json
+    from decimal import Decimal
+    from portfolio.sizing.models_v151 import PositionSizingRequest, PositionSizingPolicy
+    from portfolio.sizing.what_if_v151 import SizingWhatIfEngine
+    scenario_path = getattr(args, "scenario", None)
+    overrides = {}
+    if scenario_path:
+        try:
+            with open(scenario_path, encoding="utf-8") as f:
+                data = json.load(f)
+            overrides = data.get("scenario_overrides", {})
+        except Exception as exc:
+            print(f"[WARN] Could not load scenario: {exc}")
+    req = PositionSizingRequest(
+        request_id="CLI_WHATIF_001",
+        portfolio_id="demo_portfolio",
+        account_id="DEMO",
+        symbol="2330",
+        market="TWSE",
+        asset_type="COMMON_STOCK",
+        as_of="2026-06-22",
+        available_from="2026-06-22",
+        method="FIXED_FRACTIONAL",
+        portfolio_value=Decimal("1000000"),
+        available_cash=Decimal("200000"),
+        planned_entry_price=Decimal("1000"),
+        stop_price=Decimal("950"),
+        source_lineage_ids=["CLI_DEMO_LID"],
+    )
+    policy = PositionSizingPolicy(policy_id="POL_CLI_DEFAULT", name="CLI Default")
+    if not overrides:
+        overrides = {"stop_price": "940"}
+    result = SizingWhatIfEngine().run(req, overrides, policy)
+    print(f"Baseline quantity: {result.baseline_proposal.proposed_final_quantity}")
+    print(f"Scenario quantity: {result.scenario_proposal.proposed_final_quantity}")
+    print(f"Delta quantity: {result.delta_quantity}")
+    print(f"Labels: {result.labels}")
+    print("(HYPOTHETICAL_ONLY — demo fixture — NOT_AN_ORDER, NO_LEDGER_WRITE)")
+    return 0
+
+
+def cmd_position_sizing_show(args=None):
+    """[v1.5.1] Show a saved sizing proposal (research only)."""
+    print("[!] Research Only. No Real Orders. Not Investment Advice.")
+    proposal_id = getattr(args, "proposal_id", None)
+    from portfolio.sizing.query_v151 import PositionSizingQueryService
+    svc = PositionSizingQueryService()
+    if proposal_id:
+        p = svc.get_sizing_proposal(proposal_id)
+        if p is None:
+            print(f"Proposal '{proposal_id}' NOT_FOUND (empty store — demo/fixture only)")
+        else:
+            for k, v in (p.items() if isinstance(p, dict) else vars(p).items()):
+                print(f"  {k}: {v}")
+    else:
+        print("No proposal_id provided. (demo/fixture only)")
+    return 0
+
+
+def cmd_position_sizing_list(args=None):
+    """[v1.5.1] List saved sizing proposals (research only)."""
+    print("[!] Research Only. No Real Orders. Not Investment Advice.")
+    portfolio_id = getattr(args, "portfolio_id", None)
+    from portfolio.sizing.query_v151 import PositionSizingQueryService
+    svc = PositionSizingQueryService()
+    proposals = svc.list_sizing_proposals(portfolio_id)
+    if not proposals:
+        print("No proposals found. (empty store — demo/fixture only)")
+    else:
+        for p in proposals:
+            pid = p.get("proposal_id", "") if isinstance(p, dict) else getattr(p, "proposal_id", "")
+            sym = p.get("symbol", "") if isinstance(p, dict) else getattr(p, "symbol", "")
+            status = p.get("sizing_status", "") if isinstance(p, dict) else getattr(p, "sizing_status", "")
+            print(f"  {pid}: {sym} [{status}]")
+    return 0
+
+
+def cmd_position_sizing_lineage(args=None):
+    """[v1.5.1] Show lineage of a sizing proposal (research only)."""
+    print("[!] Research Only. No Real Orders. Not Investment Advice.")
+    proposal_id = getattr(args, "proposal_id", None)
+    from portfolio.sizing.query_v151 import PositionSizingQueryService
+    svc = PositionSizingQueryService()
+    lineage = svc.get_sizing_lineage(proposal_id or "")
+    print(f"Proposal: {lineage.get('proposal_id', 'N/A')}")
+    print(f"Lineage IDs: {lineage.get('lineage_ids', [])}")
+    print(f"Found: {lineage.get('found', False)}")
+    return 0
+
+
+def cmd_position_sizing_report(args=None):
+    """[v1.5.1] Generate position sizing research report (research only)."""
+    print("[!] Research Only. No Real Orders. Not Investment Advice.")
+    from reports.position_sizing_report import PositionSizingReport
+    report = PositionSizingReport()
+    r = report.generate(portfolio_id="demo_portfolio", symbol="2330", as_of="2026-06-22")
+    print(f"Position Sizing Research Report v{r.get('report_version', '1.5.1')}")
+    print(f"Research Only: {r.get('safety', {}).get('research_only', True)}")
+    print(f"Sections: {list(r.keys())}")
+    print("(demo fixture — RESEARCH_ONLY, NOT_AN_ORDER, NO_LEDGER_WRITE)")
+    return 0
+
+
 def main() -> None:
     """Main entrypoint."""
     import pandas as pd  # imported here to avoid shadowing at module level
@@ -33907,6 +34401,24 @@ def main() -> None:
         "portfolio-lineage":      cmd_portfolio_lineage,
         "portfolio-report":       cmd_portfolio_report,
         "portfolio-show":         cmd_portfolio_show,
+        # v1.5.1 Position Sizing
+        "position-sizing-health":           cmd_position_sizing_health,
+        "position-sizing-policies":         cmd_position_sizing_policies,
+        "position-sizing-policy-show":      cmd_position_sizing_policy_show,
+        "position-sizing-eligibility":      cmd_position_sizing_eligibility,
+        "position-sizing-fixed-fractional": cmd_position_sizing_fixed_fractional,
+        "position-sizing-stop-distance":    cmd_position_sizing_stop_distance,
+        "position-sizing-atr":              cmd_position_sizing_atr,
+        "position-sizing-volatility":       cmd_position_sizing_volatility,
+        "position-sizing-target-weight":    cmd_position_sizing_target_weight,
+        "position-sizing-cash-limit":       cmd_position_sizing_cash_limit,
+        "position-sizing-constraints":      cmd_position_sizing_constraints,
+        "position-sizing-explain":          cmd_position_sizing_explain,
+        "position-sizing-what-if":          cmd_position_sizing_what_if,
+        "position-sizing-show":             cmd_position_sizing_show,
+        "position-sizing-list":             cmd_position_sizing_list,
+        "position-sizing-lineage":          cmd_position_sizing_lineage,
+        "position-sizing-report":           cmd_position_sizing_report,
     }
 
     if args.command is None:
