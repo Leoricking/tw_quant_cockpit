@@ -1,0 +1,20 @@
+{
+  "_fixture_labels": ["TEST_FIXTURE", "DEMO_ONLY", "NOT_REAL_PORTFOLIO", "NOT_REAL_MARKET_DATA", "NOT_FOR_EXECUTION"],
+  "_version": "1.5.3",
+  "description": "All eligibility conditions met — full analysis allowed",
+  "request": {
+    "request_id": "REQ_ELIG_001",
+    "portfolio_id": "demo_portfolio",
+    "as_of": "2026-06-21",
+    "available_from": "2025-01-01",
+    "lookback_days": 252
+  },
+  "portfolio_context": {"broker_linked": false, "auto_apply_enabled": false},
+  "equity_curve_points": 252,
+  "expected_result": {
+    "eligibility_status": "ELIGIBLE",
+    "risk_controls_allowed": true,
+    "blockers": []
+  },
+  "research_only": true
+}

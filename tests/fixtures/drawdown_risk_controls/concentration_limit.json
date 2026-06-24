@@ -1,0 +1,15 @@
+{
+  "_fixture_type": "TEST_FIXTURE",
+  "_labels": ["DEMO_ONLY", "NOT_REAL_PORTFOLIO", "NOT_REAL_RISK_ACTION", "NOT_REAL_ORDER", "NOT_FOR_EXECUTION", "NOT_FOR_INVESTMENT_DECISION"],
+  "_version": "1.5.3",
+  "description": "Concentration limit check — PASS state",
+  "portfolio_id": "demo_portfolio",
+  "as_of": "2026-06-21",
+  "weights": {"2330": 0.25, "2308": 0.30, "2317": 0.20, "Cash": 0.25},
+  "single_name_cap": 0.30,
+  "warn_threshold": 0.20,
+  "breach_threshold": 0.30,
+  "expected_status": "PASS",
+  "research_only": true,
+  "executable": false
+}

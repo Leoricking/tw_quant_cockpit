@@ -749,3 +749,12 @@ data/sizing_proposals/
 reports/position_sizing_*.md
 # Position sizing test fixtures ARE committed (exception)
 !tests/fixtures/position_sizing/*.json
+
+# v1.5.3 Drawdown & Risk Controls runtime data (generated artifacts — never commit)
+data/drawdown_risk_controls/
+data/risk_controls_runtime/
+data/drawdown_runtime/
+data/risk_evaluations/
+reports/drawdown_risk_*.md
+# Drawdown risk controls test fixtures ARE committed (exception)
+!tests/fixtures/drawdown_risk_controls/*.json

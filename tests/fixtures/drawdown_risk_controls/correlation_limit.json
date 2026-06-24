@@ -1,0 +1,14 @@
+{
+  "_fixture_type": "TEST_FIXTURE",
+  "_labels": ["DEMO_ONLY", "NOT_REAL_PORTFOLIO", "NOT_REAL_RISK_ACTION", "NOT_REAL_ORDER", "NOT_FOR_EXECUTION", "NOT_FOR_INVESTMENT_DECISION"],
+  "_version": "1.5.3",
+  "description": "Correlation limit check — WARN state",
+  "portfolio_id": "demo_portfolio",
+  "as_of": "2026-06-21",
+  "high_corr_pair_fraction": 0.25,
+  "warn_threshold": 0.20,
+  "breach_threshold": 0.40,
+  "expected_status": "WARN",
+  "research_only": true,
+  "executable": false
+}

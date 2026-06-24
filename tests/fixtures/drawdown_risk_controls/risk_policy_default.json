@@ -1,0 +1,16 @@
+{
+  "_fixture_type": "TEST_FIXTURE",
+  "_labels": ["DEMO_ONLY", "NOT_REAL_PORTFOLIO", "NOT_REAL_RISK_ACTION", "NOT_REAL_ORDER", "NOT_FOR_EXECUTION", "NOT_FOR_INVESTMENT_DECISION"],
+  "_version": "1.5.3",
+  "description": "Default risk control policy set",
+  "policy_id": "POL_DEFAULT_001",
+  "control_type": "VOLATILITY_LIMIT",
+  "name": "Default Volatility Limit",
+  "warn_threshold": 0.20,
+  "breach_threshold": 0.30,
+  "enabled": true,
+  "research_only": true,
+  "executable": false,
+  "order_created": false,
+  "auto_applied": false
+}

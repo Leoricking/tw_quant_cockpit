@@ -1,0 +1,18 @@
+{
+  "_fixture_type": "TEST_FIXTURE",
+  "_labels": ["DEMO_ONLY", "NOT_REAL_PORTFOLIO", "NOT_REAL_RISK_ACTION", "NOT_REAL_ORDER", "NOT_FOR_EXECUTION", "NOT_FOR_INVESTMENT_DECISION"],
+  "_version": "1.5.3",
+  "description": "Portfolio currently in unrecovered drawdown (open episode)",
+  "portfolio_id": "demo_portfolio",
+  "as_of": "2026-06-21",
+  "daily_values": {
+    "2025-01-02": 1000000.0,
+    "2025-01-03": 1020000.0,
+    "2025-01-06": 980000.0,
+    "2025-01-07": 960000.0,
+    "2025-01-08": 950000.0
+  },
+  "expected_status": "IN_DRAWDOWN",
+  "expected_open_episode": true,
+  "research_only": true
+}

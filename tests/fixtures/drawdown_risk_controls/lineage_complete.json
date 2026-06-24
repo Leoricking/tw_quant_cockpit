@@ -1,0 +1,14 @@
+{
+  "_fixture_type": "TEST_FIXTURE",
+  "_labels": ["DEMO_ONLY", "NOT_REAL_PORTFOLIO", "NOT_REAL_RISK_ACTION", "NOT_REAL_ORDER", "NOT_FOR_EXECUTION", "NOT_FOR_INVESTMENT_DECISION"],
+  "_version": "1.5.3",
+  "description": "Complete lineage record for a risk control evaluation",
+  "evaluation_id": "EVAL_DEMO_001",
+  "portfolio_id": "demo_portfolio",
+  "as_of": "2026-06-21",
+  "source_lineage_ids": ["LIN_001", "LIN_002", "LIN_003"],
+  "policy_lineage_ids": ["POL_VOL_001", "POL_DLY_001"],
+  "created_at": "2026-06-21T10:00:00",
+  "lineage_complete": true,
+  "research_only": true
+}

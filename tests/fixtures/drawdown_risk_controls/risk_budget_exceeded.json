@@ -1,0 +1,12 @@
+{
+  "_fixture_type": "TEST_FIXTURE",
+  "_labels": ["DEMO_ONLY", "NOT_REAL_PORTFOLIO", "NOT_REAL_RISK_ACTION", "NOT_REAL_ORDER", "NOT_FOR_EXECUTION", "NOT_FOR_INVESTMENT_DECISION"],
+  "_version": "1.5.3",
+  "description": "Risk budget exceeded scenario — breach state",
+  "portfolio_id": "demo_portfolio",
+  "as_of": "2026-06-21",
+  "total_budget_pct": 0.10,
+  "used_budget_pct": 0.13,
+  "status": "BREACH",
+  "research_only": true
+}

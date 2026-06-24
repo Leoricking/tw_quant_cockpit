@@ -1,0 +1,17 @@
+{
+  "_fixture_labels": ["TEST_FIXTURE", "DEMO_ONLY"],
+  "_version": "1.5.3",
+  "description": "Closed drawdown episode with recovery",
+  "portfolio_id": "demo_portfolio",
+  "as_of": "2026-06-21",
+  "start_date": "2025-03-01",
+  "trough_date": "2025-03-15",
+  "end_date": "2025-04-01",
+  "max_drawdown_pct": -0.08,
+  "expected_result": {
+    "episode_status": "CLOSED",
+    "recovery_days_positive": true,
+    "research_only": true
+  },
+  "research_only": true
+}

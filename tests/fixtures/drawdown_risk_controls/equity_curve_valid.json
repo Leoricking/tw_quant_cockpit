@@ -1,0 +1,16 @@
+{
+  "_fixture_labels": ["TEST_FIXTURE", "DEMO_ONLY", "NOT_REAL_PORTFOLIO"],
+  "_version": "1.5.3",
+  "description": "Valid equity curve for demo portfolio",
+  "portfolio_id": "demo_portfolio",
+  "as_of": "2026-06-21",
+  "daily_values": {
+    "2025-01-02": 1000000.0,
+    "2025-01-03": 1003000.0,
+    "2025-01-06": 1001000.0,
+    "2025-01-07": 1008000.0,
+    "2025-01-08": 1005000.0
+  },
+  "expected_point_count": 5,
+  "research_only": true
+}

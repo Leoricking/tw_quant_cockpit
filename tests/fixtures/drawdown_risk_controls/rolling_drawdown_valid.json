@@ -1,0 +1,14 @@
+{
+  "_fixture_labels": ["TEST_FIXTURE", "DEMO_ONLY"],
+  "_version": "1.5.3",
+  "description": "Rolling drawdown calculation with window=60",
+  "portfolio_id": "demo_portfolio",
+  "as_of": "2026-06-21",
+  "window": 60,
+  "expected_result": {
+    "result_non_empty": true,
+    "all_dates_le_as_of": true,
+    "all_dd_non_positive": true
+  },
+  "research_only": true
+}

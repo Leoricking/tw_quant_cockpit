@@ -1,0 +1,21 @@
+{
+  "_fixture_type": "TEST_FIXTURE",
+  "_labels": ["DEMO_ONLY", "NOT_REAL_PORTFOLIO", "NOT_REAL_RISK_ACTION", "NOT_REAL_ORDER", "NOT_FOR_EXECUTION", "NOT_FOR_INVESTMENT_DECISION"],
+  "_version": "1.5.3",
+  "description": "Sizing impact blocked — would breach concentration limit",
+  "proposal_id": "demo_proposal_blocked",
+  "portfolio_id": "demo_portfolio",
+  "symbol": "2330",
+  "before_drawdown_pct": -0.05,
+  "after_drawdown_pct": -0.08,
+  "before_volatility": 0.18,
+  "after_volatility": 0.32,
+  "control_breaches_added": ["VOLATILITY_LIMIT", "CONCENTRATION_LIMIT"],
+  "control_breaches_removed": [],
+  "risk_budget_consumed_pct": 0.90,
+  "binding_constraint": "VOLATILITY_LIMIT",
+  "status": "BLOCKED",
+  "research_only": true,
+  "executable": false,
+  "order_created": false
+}

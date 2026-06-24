@@ -1,0 +1,16 @@
+{
+  "_fixture_labels": ["TEST_FIXTURE", "DEMO_ONLY"],
+  "_version": "1.5.3",
+  "description": "Drawdown attribution by position",
+  "portfolio_id": "demo_portfolio",
+  "as_of": "2026-06-21",
+  "weights": {"2330": 0.40, "2308": 0.30, "2317": 0.20, "Cash": 0.10},
+  "pnl_by_symbol": {"2330": -20000.0, "2308": -10000.0, "2317": 5000.0, "Cash": 0.0},
+  "portfolio_value": 1000000.0,
+  "expected_result": {
+    "attributions_count": 4,
+    "all_research_only": true,
+    "sorted_by_contribution": true
+  },
+  "research_only": true
+}

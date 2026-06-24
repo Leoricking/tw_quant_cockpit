@@ -33695,6 +33695,429 @@ def cmd_correlation_exposure_report(args=None):
     return 0
 
 
+# ---------------------------------------------------------------------------
+# v1.5.3 Drawdown & Risk Controls commands
+# ---------------------------------------------------------------------------
+
+def cmd_drawdown_risk_health(args=None):
+    """[v1.5.3] Drawdown & Risk Controls health check (research only)."""
+    print("[!] Research Only. No Real Orders. Not Investment Advice.")
+    from portfolio.risk_controls.health_v153 import DrawdownRiskControlsHealthCheck
+    result = DrawdownRiskControlsHealthCheck().run()
+    checks = result.get("checks", {})
+    total = len(checks)
+    passed = sum(1 for v in checks.values() if isinstance(v, dict) and v.get("status") == "PASS")
+    failed = [k for k, v in checks.items() if isinstance(v, dict) and v.get("status") == "FAIL"]
+    overall = "PASS" if not failed else "FAIL"
+    print(f"Drawdown & Risk Controls Health Check v1.5.3")
+    print(f"Status: {overall}  Passed: {passed}/{total}")
+    if failed:
+        print(f"FAILED checks: {failed}")
+    print("[!] Research Only. No Real Orders. Not Investment Advice.")
+    return 0 if not failed else 1
+
+
+def cmd_risk_control_policies(args=None):
+    """[v1.5.3] List all risk control policies (research only)."""
+    print("[!] Research Only. No Real Orders. Not Investment Advice.")
+    from portfolio.risk_controls.query_v153 import DrawdownRiskControlsQueryService
+    policies = DrawdownRiskControlsQueryService().get_policies()
+    print(f"Risk Control Policies ({len(policies)} total):")
+    for p in policies:
+        print(f"  [{p['policy_id']}] {p['name']} | type={p['control_type']} "
+              f"| warn={p['warn_threshold']} breach={p['breach_threshold']}")
+    print("(demo fixture — RESEARCH_ONLY, NOT_AN_ORDER)")
+    return 0
+
+
+def cmd_risk_control_policy_show(args=None):
+    """[v1.5.3] Show a specific risk control policy (research only)."""
+    print("[!] Research Only. No Real Orders. Not Investment Advice.")
+    from portfolio.risk_controls.query_v153 import DrawdownRiskControlsQueryService
+    policy_id = getattr(args, 'policy_id', None)
+    policies = DrawdownRiskControlsQueryService().get_policies()
+    if policy_id:
+        matched = [p for p in policies if p['policy_id'] == policy_id]
+        if matched:
+            p = matched[0]
+            print(f"Policy: {p['policy_id']}  Name: {p['name']}")
+            print(f"Type: {p['control_type']}  Warn: {p['warn_threshold']}  Breach: {p['breach_threshold']}")
+            print(f"Research Only: {p['research_only']}  Executable: {p['executable']}")
+        else:
+            print(f"Policy {policy_id!r} not found in demo set.")
+    else:
+        print(f"Available policies: {[p['policy_id'] for p in policies]}")
+    print("(demo fixture — RESEARCH_ONLY, NOT_AN_ORDER)")
+    return 0
+
+
+def cmd_drawdown_eligibility(args=None):
+    """[v1.5.3] Evaluate drawdown analysis eligibility (research only)."""
+    print("[!] Research Only. No Real Orders. Not Investment Advice.")
+    from portfolio.risk_controls.eligibility_v153 import DrawdownRiskControlsEligibilityGate
+    from portfolio.risk_controls.models_v153 import DrawdownAnalysisRequest
+    portfolio_id = getattr(args, 'portfolio_id', 'demo_portfolio') or 'demo_portfolio'
+    as_of = getattr(args, 'as_of', '2026-06-21') or '2026-06-21'
+    req = DrawdownAnalysisRequest(
+        request_id="CLI_ELIG_001", portfolio_id=portfolio_id,
+        as_of=as_of, available_from="2025-01-01",
+        source_lineage_ids=["LIN_DEMO_001"],
+    )
+    result = DrawdownRiskControlsEligibilityGate().evaluate(req, {}, equity_curve_points=252)
+    print(f"Portfolio: {portfolio_id}  As-of: {as_of}")
+    print(f"Eligibility: {result['eligibility_status']}")
+    print(f"Risk Controls Allowed: {result['risk_controls_allowed']}")
+    print(f"Warnings: {result['warnings']}")
+    print(f"Blockers: {result['blockers']}")
+    print("(demo fixture — RESEARCH_ONLY, NOT_AN_ORDER)")
+    return 0
+
+
+def cmd_portfolio_equity_curve(args=None):
+    """[v1.5.3] Build portfolio equity curve (research only)."""
+    print("[!] Research Only. No Real Orders. Not Investment Advice.")
+    from portfolio.risk_controls.equity_curve_v153 import PortfolioEquityCurveBuilder
+    portfolio_id = getattr(args, 'portfolio_id', 'demo_portfolio') or 'demo_portfolio'
+    as_of = getattr(args, 'as_of', '2026-06-21') or '2026-06-21'
+    curve = PortfolioEquityCurveBuilder().build_demo(portfolio_id, as_of)
+    print(f"Portfolio: {portfolio_id}  As-of: {as_of}")
+    print(f"Equity curve points: {len(curve)}")
+    if curve:
+        print(f"First: {curve[0].date}={curve[0].portfolio_value:,.0f}  "
+              f"Last: {curve[-1].date}={curve[-1].portfolio_value:,.0f}")
+    print("(demo fixture — RESEARCH_ONLY, NOT_AN_ORDER)")
+    return 0
+
+
+def cmd_portfolio_underwater(args=None):
+    """[v1.5.3] Calculate underwater (drawdown) curve (research only)."""
+    print("[!] Research Only. No Real Orders. Not Investment Advice.")
+    from portfolio.risk_controls.equity_curve_v153 import PortfolioEquityCurveBuilder
+    from portfolio.risk_controls.underwater_v153 import UnderwaterCurveCalculator
+    portfolio_id = getattr(args, 'portfolio_id', 'demo_portfolio') or 'demo_portfolio'
+    as_of = getattr(args, 'as_of', '2026-06-21') or '2026-06-21'
+    curve = PortfolioEquityCurveBuilder().build_demo(portfolio_id, as_of)
+    uw = UnderwaterCurveCalculator().calculate(curve)
+    max_dd = min((p.drawdown_pct for p in uw), default=0.0)
+    print(f"Portfolio: {portfolio_id}  As-of: {as_of}")
+    print(f"Underwater curve points: {len(uw)}")
+    print(f"Maximum drawdown (all-time): {max_dd:.2%}")
+    print("(demo fixture — RESEARCH_ONLY, NOT_AN_ORDER)")
+    return 0
+
+
+def cmd_portfolio_drawdown(args=None):
+    """[v1.5.3] Calculate max drawdown summary (research only)."""
+    print("[!] Research Only. No Real Orders. Not Investment Advice.")
+    from portfolio.risk_controls.equity_curve_v153 import PortfolioEquityCurveBuilder
+    from portfolio.risk_controls.underwater_v153 import UnderwaterCurveCalculator
+    from portfolio.risk_controls.drawdown_v153 import MaxDrawdownCalculator
+    portfolio_id = getattr(args, 'portfolio_id', 'demo_portfolio') or 'demo_portfolio'
+    as_of = getattr(args, 'as_of', '2026-06-21') or '2026-06-21'
+    curve = PortfolioEquityCurveBuilder().build_demo(portfolio_id, as_of)
+    uw = UnderwaterCurveCalculator().calculate(curve)
+    summary = MaxDrawdownCalculator().calculate(portfolio_id, as_of, uw)
+    print(f"Portfolio: {portfolio_id}  As-of: {as_of}")
+    print(f"Max Drawdown: {summary.max_drawdown_pct:.2%}")
+    print(f"Current Drawdown: {summary.current_drawdown_pct:.2%}")
+    print(f"Status: {summary.current_drawdown_status.value}")
+    print(f"High Water Mark: {summary.high_water_mark:,.0f} on {summary.high_water_mark_date}")
+    print(f"Research Only: {summary.research_only}  Labels: {summary.labels}")
+    print("(demo fixture — RESEARCH_ONLY, NOT_AN_ORDER)")
+    return 0
+
+
+def cmd_drawdown_episodes(args=None):
+    """[v1.5.3] Detect drawdown episodes (research only)."""
+    print("[!] Research Only. No Real Orders. Not Investment Advice.")
+    from portfolio.risk_controls.equity_curve_v153 import PortfolioEquityCurveBuilder
+    from portfolio.risk_controls.underwater_v153 import UnderwaterCurveCalculator
+    from portfolio.risk_controls.drawdown_episode_v153 import DrawdownEpisodeDetector
+    portfolio_id = getattr(args, 'portfolio_id', 'demo_portfolio') or 'demo_portfolio'
+    as_of = getattr(args, 'as_of', '2026-06-21') or '2026-06-21'
+    curve = PortfolioEquityCurveBuilder().build_demo(portfolio_id, as_of)
+    uw = UnderwaterCurveCalculator().calculate(curve)
+    episodes = DrawdownEpisodeDetector().detect(uw)
+    print(f"Portfolio: {portfolio_id}  As-of: {as_of}")
+    print(f"Drawdown episodes detected: {len(episodes)}")
+    for ep in episodes[:5]:
+        print(f"  [{ep.episode_id}] {ep.start_date} - {ep.trough_date} "
+              f"max_dd={ep.max_drawdown_pct:.2%} status={ep.status.value}")
+    print("(demo fixture — RESEARCH_ONLY, NOT_AN_ORDER)")
+    return 0
+
+
+def cmd_rolling_drawdown(args=None):
+    """[v1.5.3] Calculate rolling max drawdown (research only)."""
+    print("[!] Research Only. No Real Orders. Not Investment Advice.")
+    from portfolio.risk_controls.equity_curve_v153 import PortfolioEquityCurveBuilder
+    from portfolio.risk_controls.underwater_v153 import UnderwaterCurveCalculator
+    from portfolio.risk_controls.drawdown_v153 import MaxDrawdownCalculator
+    portfolio_id = getattr(args, 'portfolio_id', 'demo_portfolio') or 'demo_portfolio'
+    window = getattr(args, 'window', 60) or 60
+    as_of = getattr(args, 'as_of', '2026-06-21') or '2026-06-21'
+    curve = PortfolioEquityCurveBuilder().build_demo(portfolio_id, as_of)
+    uw = UnderwaterCurveCalculator().calculate(curve)
+    results = MaxDrawdownCalculator().calculate_rolling(uw, window=window, as_of=as_of)
+    print(f"Portfolio: {portfolio_id}  Window: {window}  As-of: {as_of}")
+    print(f"Rolling drawdown points: {len(results)}")
+    if results:
+        last = results[-1]
+        print(f"Most recent: {last['date']} rolling_max_dd={last['rolling_max_drawdown_pct']:.2%}")
+    print("(demo fixture — RESEARCH_ONLY, NOT_AN_ORDER)")
+    return 0
+
+
+def cmd_drawdown_attribution(args=None):
+    """[v1.5.3] Calculate drawdown attribution (research only)."""
+    print("[!] Research Only. No Real Orders. Not Investment Advice.")
+    from portfolio.risk_controls.query_v153 import DrawdownRiskControlsQueryService
+    portfolio_id = getattr(args, 'portfolio_id', 'demo_portfolio') or 'demo_portfolio'
+    as_of = getattr(args, 'as_of', '2026-06-21') or '2026-06-21'
+    result = DrawdownRiskControlsQueryService().calculate_attribution(portfolio_id, as_of)
+    print(f"Portfolio: {portfolio_id}  As-of: {as_of}")
+    print(f"Attribution by position: {len(result['by_position'])} items")
+    print(f"Attribution by industry: {len(result['by_industry'])} items")
+    print("(demo fixture — RESEARCH_ONLY, NOT_AN_ORDER, NO_LEDGER_WRITE)")
+    return 0
+
+
+def cmd_portfolio_risk_budget(args=None):
+    """[v1.5.3] Show portfolio risk budget status (research only)."""
+    print("[!] Research Only. No Real Orders. Not Investment Advice.")
+    from portfolio.risk_controls.risk_budget_v153 import PortfolioRiskBudgetEngine
+    portfolio_id = getattr(args, 'portfolio_id', 'demo_portfolio') or 'demo_portfolio'
+    as_of = getattr(args, 'as_of', '2026-06-21') or '2026-06-21'
+    result = PortfolioRiskBudgetEngine().evaluate(
+        portfolio_id, as_of, current_drawdown_pct=-0.05, annualized_volatility=0.18
+    )
+    print(f"Portfolio: {portfolio_id}  As-of: {as_of}")
+    print(f"Drawdown Budget Consumed: {result['drawdown_budget_consumed']:.1%}")
+    print(f"Volatility Budget Consumed: {result['volatility_budget_consumed']:.1%}")
+    print(f"Warnings: {result['warnings']}")
+    print(f"Research Only: {result['research_only']}  Executable: {result['executable']}")
+    print("(demo fixture — RESEARCH_ONLY, NOT_AN_ORDER)")
+    return 0
+
+
+def cmd_portfolio_loss_limits(args=None):
+    """[v1.5.3] Show portfolio loss limits status (research only)."""
+    print("[!] Research Only. No Real Orders. Not Investment Advice.")
+    from portfolio.risk_controls.loss_limit_v153 import LossLimitChecker
+    portfolio_id = getattr(args, 'portfolio_id', 'demo_portfolio') or 'demo_portfolio'
+    as_of = getattr(args, 'as_of', '2026-06-21') or '2026-06-21'
+    checker = LossLimitChecker()
+    daily = checker.check_daily("CHK_DLY_CLI", "POL_DLY_001", -0.008)
+    weekly = checker.check_weekly("CHK_WKL_CLI", "POL_WKL_001", -0.022)
+    monthly = checker.check_monthly("CHK_MTH_CLI", "POL_MTH_001", -0.035)
+    print(f"Portfolio: {portfolio_id}  As-of: {as_of}")
+    print(f"Daily Loss: {daily.status.value}  Weekly Loss: {weekly.status.value}  Monthly Loss: {monthly.status.value}")
+    print(f"Research Only: {daily.research_only}  Executable: {daily.executable}")
+    print("(demo fixture — RESEARCH_ONLY, NOT_AN_ORDER)")
+    return 0
+
+
+def cmd_portfolio_volatility_limit(args=None):
+    """[v1.5.3] Check portfolio volatility limit (research only)."""
+    print("[!] Research Only. No Real Orders. Not Investment Advice.")
+    from portfolio.risk_controls.volatility_limit_v153 import VolatilityLimitChecker
+    portfolio_id = getattr(args, 'portfolio_id', 'demo_portfolio') or 'demo_portfolio'
+    as_of = getattr(args, 'as_of', '2026-06-21') or '2026-06-21'
+    c = VolatilityLimitChecker().check("CHK_VOL_CLI", "POL_VOL_001", 0.18)
+    print(f"Portfolio: {portfolio_id}  As-of: {as_of}")
+    print(f"Annualized Volatility: 18.0%  Status: {c.status.value}")
+    print(f"Warn Threshold: {c.warn_threshold:.0%}  Breach Threshold: {c.breach_threshold:.0%}")
+    print(f"Research Only: {c.research_only}  Executable: {c.executable}")
+    print("(demo fixture — RESEARCH_ONLY, NOT_AN_ORDER)")
+    return 0
+
+
+def cmd_portfolio_concentration_limits(args=None):
+    """[v1.5.3] Check portfolio concentration limits (research only)."""
+    print("[!] Research Only. No Real Orders. Not Investment Advice.")
+    from portfolio.risk_controls.concentration_limit_v153 import ConcentrationLimitChecker
+    portfolio_id = getattr(args, 'portfolio_id', 'demo_portfolio') or 'demo_portfolio'
+    as_of = getattr(args, 'as_of', '2026-06-21') or '2026-06-21'
+    weights = {"2330": 0.25, "2308": 0.20, "2317": 0.15, "Cash": 0.40}
+    c = ConcentrationLimitChecker().check_single_name("CHK_CON_CLI", "POL_CON_001", weights)
+    print(f"Portfolio: {portfolio_id}  As-of: {as_of}")
+    print(f"Max Single Name Weight: {max(weights.values()):.0%}  Status: {c.status.value}")
+    print(f"Research Only: {c.research_only}  Executable: {c.executable}")
+    print("(demo fixture — RESEARCH_ONLY, NOT_AN_ORDER)")
+    return 0
+
+
+def cmd_portfolio_correlation_limits(args=None):
+    """[v1.5.3] Check portfolio correlation limits (research only)."""
+    print("[!] Research Only. No Real Orders. Not Investment Advice.")
+    from portfolio.risk_controls.correlation_limit_v153 import CorrelationLimitChecker
+    portfolio_id = getattr(args, 'portfolio_id', 'demo_portfolio') or 'demo_portfolio'
+    as_of = getattr(args, 'as_of', '2026-06-21') or '2026-06-21'
+    c = CorrelationLimitChecker().check_max_pairwise(
+        "CHK_COR_CLI", "POL_COR_001", high_correlation_pair_count=1, total_pairs=3
+    )
+    print(f"Portfolio: {portfolio_id}  As-of: {as_of}")
+    print(f"High-Corr Pair Fraction: {1/3:.0%}  Status: {c.status.value}")
+    print(f"Research Only: {c.research_only}  Executable: {c.executable}")
+    print("(demo fixture — RESEARCH_ONLY, NOT_AN_ORDER)")
+    return 0
+
+
+def cmd_portfolio_liquidity_limit(args=None):
+    """[v1.5.3] Check portfolio liquidity limit (research only)."""
+    print("[!] Research Only. No Real Orders. Not Investment Advice.")
+    from portfolio.risk_controls.liquidity_limit_v153 import LiquidityLimitChecker
+    portfolio_id = getattr(args, 'portfolio_id', 'demo_portfolio') or 'demo_portfolio'
+    as_of = getattr(args, 'as_of', '2026-06-21') or '2026-06-21'
+    c = LiquidityLimitChecker().check_illiquid_fraction("CHK_LIQ_CLI", "POL_LIQ_001", 0.05)
+    print(f"Portfolio: {portfolio_id}  As-of: {as_of}")
+    print(f"Illiquid Weight: 5%  Status: {c.status.value}")
+    print(f"Research Only: {c.research_only}  Executable: {c.executable}")
+    print("(demo fixture — RESEARCH_ONLY, NOT_AN_ORDER)")
+    return 0
+
+
+def cmd_portfolio_cash_reserve(args=None):
+    """[v1.5.3] Check portfolio cash reserve (research only)."""
+    print("[!] Research Only. No Real Orders. Not Investment Advice.")
+    from portfolio.risk_controls.cash_reserve_limit_v153 import CashReserveLimitChecker
+    portfolio_id = getattr(args, 'portfolio_id', 'demo_portfolio') or 'demo_portfolio'
+    as_of = getattr(args, 'as_of', '2026-06-21') or '2026-06-21'
+    c = CashReserveLimitChecker().check("CHK_CSH_CLI", "POL_CSH_001", cash_weight=0.40)
+    print(f"Portfolio: {portfolio_id}  As-of: {as_of}")
+    print(f"Cash Weight: 40%  Status: {c.status.value}")
+    print(f"Research Only: {c.research_only}  Executable: {c.executable}")
+    print("(demo fixture — RESEARCH_ONLY, NOT_AN_ORDER)")
+    return 0
+
+
+def cmd_risk_control_evaluate(args=None):
+    """[v1.5.3] Run full risk controls evaluation (research only)."""
+    print("[!] Research Only. No Real Orders. Not Investment Advice.")
+    from portfolio.risk_controls.constraint_engine_v153 import RiskControlConstraintEngine
+    portfolio_id = getattr(args, 'portfolio_id', 'demo_portfolio') or 'demo_portfolio'
+    as_of = getattr(args, 'as_of', '2026-06-21') or '2026-06-21'
+    ev = RiskControlConstraintEngine().build_demo_evaluation(portfolio_id, as_of)
+    print(f"Portfolio: {portfolio_id}  As-of: {as_of}")
+    print(f"Evaluation ID: {ev.evaluation_id}")
+    print(f"Overall Status: {ev.overall_status.value}")
+    print(f"Checks: {len(ev.checks)} | PASS={ev.pass_count} WARN={ev.warn_count} BREACH={ev.breach_count}")
+    print(f"Research Only: {ev.research_only}  Executable: {ev.executable}")
+    print("(demo fixture — RESEARCH_ONLY, NOT_AN_ORDER, NO_LEDGER_WRITE)")
+    return 0
+
+
+def cmd_sizing_risk_impact(args=None):
+    """[v1.5.3] Analyze sizing proposal risk impact (research only)."""
+    print("[!] Research Only. No Real Orders. Not Investment Advice.")
+    from portfolio.risk_controls.sizing_impact_v153 import SizingRiskImpactAnalyzer
+    proposal_id = getattr(args, 'proposal_id', 'demo_proposal') or 'demo_proposal'
+    result = SizingRiskImpactAnalyzer().build_demo(proposal_id)
+    print(f"Proposal: {proposal_id}")
+    print(f"Before Drawdown: {result.before_drawdown_pct:.2%}  After: {result.after_drawdown_pct:.2%}")
+    print(f"Before Vol: {result.before_volatility:.2%}  After: {result.after_volatility:.2%}")
+    print(f"Breaches Added: {result.control_breaches_added}")
+    print(f"Binding Constraint: {result.binding_constraint}")
+    print(f"Research Only: {result.research_only}  Executable: {result.executable}")
+    print("(demo fixture — RESEARCH_ONLY, NOT_AN_ORDER, NO_LEDGER_WRITE)")
+    return 0
+
+
+def cmd_drawdown_stress(args=None):
+    """[v1.5.3] Run drawdown stress scenario (research only)."""
+    print("[!] Research Only. No Real Orders. Not Investment Advice.")
+    from portfolio.risk_controls.stress_v153 import DrawdownStressAnalyzer
+    scenario_path = getattr(args, 'scenario', None)
+    if scenario_path:
+        import json
+        try:
+            with open(scenario_path, "r", encoding="utf-8") as f:
+                fixture = json.load(f)
+            result = DrawdownStressAnalyzer().run_from_fixture(fixture)
+        except Exception as e:
+            print(f"Could not load scenario: {e}")
+            return 1
+    else:
+        from portfolio.risk_controls.enums_v153 import StressScenarioType
+        result = DrawdownStressAnalyzer().run("demo_portfolio", 1_000_000.0, StressScenarioType.COMBINED)
+    print(f"Scenario: {result.scenario_id}  Type: {result.scenario_type.value}")
+    print(f"Projected Drawdown: {result.projected_drawdown_pct:.2%}")
+    print(f"Projected Loss: {result.projected_loss:,.0f}")
+    print(f"Controls Breached: {result.risk_controls_breached}")
+    print(f"Research Only: {result.research_only}  Executable: {result.executable}")
+    print("(demo fixture — RESEARCH_ONLY, NOT_AN_ORDER)")
+    return 0
+
+
+def cmd_risk_control_explain(args=None):
+    """[v1.5.3] Explain risk control evaluation (research only)."""
+    print("[!] Research Only. No Real Orders. Not Investment Advice.")
+    from portfolio.risk_controls.constraint_engine_v153 import RiskControlConstraintEngine
+    from portfolio.risk_controls.explain_v153 import DrawdownRiskControlsExplainer
+    portfolio_id = getattr(args, 'portfolio_id', 'demo_portfolio') or 'demo_portfolio'
+    as_of = getattr(args, 'as_of', '2026-06-21') or '2026-06-21'
+    ev = RiskControlConstraintEngine().build_demo_evaluation(portfolio_id, as_of)
+    explanation = DrawdownRiskControlsExplainer().explain(ev)
+    print(f"Portfolio: {portfolio_id}  As-of: {as_of}")
+    print(f"Overall Status: {explanation['overall_status']}")
+    print(f"Breach Count: {explanation['breach_count']}  Warn: {explanation['warn_count']}")
+    print(f"Safety Text: {explanation['safety_text'][:80]}...")
+    print(f"Labels: {explanation['labels']}")
+    print("(demo fixture — RESEARCH_ONLY, NOT_AN_ORDER, NO_LEDGER_WRITE)")
+    return 0
+
+
+def cmd_risk_control_show(args=None):
+    """[v1.5.3] Show a saved risk control evaluation (research only)."""
+    print("[!] Research Only. No Real Orders. Not Investment Advice.")
+    evaluation_id = getattr(args, 'evaluation_id', None)
+    print(f"Evaluation ID: {evaluation_id!r}")
+    print("Store is empty (no persisted evaluations in demo mode).")
+    print("Reason: NOT_FOUND — no evaluation persisted in demo store.")
+    print("(demo fixture — RESEARCH_ONLY, NOT_AN_ORDER)")
+    return 0
+
+
+def cmd_risk_control_list(args=None):
+    """[v1.5.3] List saved risk control evaluations (research only)."""
+    print("[!] Research Only. No Real Orders. Not Investment Advice.")
+    print("Saved evaluations: 0 (demo store is empty — ephemeral mode).")
+    print("Reason: INSUFFICIENT_DATA — no evaluations persisted in demo store.")
+    print("(demo fixture — RESEARCH_ONLY, NOT_AN_ORDER)")
+    return 0
+
+
+def cmd_risk_control_lineage(args=None):
+    """[v1.5.3] Show lineage of a risk control evaluation (research only)."""
+    print("[!] Research Only. No Real Orders. Not Investment Advice.")
+    evaluation_id = getattr(args, 'evaluation_id', None)
+    if evaluation_id is None:
+        print("Reason: NOT_FOUND — provide --evaluation-id to look up lineage.")
+    else:
+        print(f"Lineage for evaluation: {evaluation_id}")
+        print("Store is empty in demo mode — no lineage persisted.")
+    print("(demo fixture — RESEARCH_ONLY, NOT_AN_ORDER)")
+    return 0
+
+
+def cmd_drawdown_risk_report(args=None):
+    """[v1.5.3] Generate drawdown & risk controls research report (research only)."""
+    print("[!] Research Only. No Real Orders. Not Investment Advice.")
+    from reports.drawdown_risk_controls_report import DrawdownRiskControlsReport
+    portfolio_id = getattr(args, 'portfolio_id', 'demo_portfolio') or 'demo_portfolio'
+    as_of = getattr(args, 'as_of', '2026-06-21') or '2026-06-21'
+    report = DrawdownRiskControlsReport()
+    r = report.generate(portfolio_id=portfolio_id, as_of=as_of)
+    print(f"Drawdown & Risk Controls Report v{r.get('report_version', '1.5.3')}")
+    print(f"Portfolio: {portfolio_id}  As-of: {as_of}")
+    print(f"Research Only: {r.get('research_only', True)}  Executable: {r.get('executable', False)}")
+    sections = r.get('sections', [])
+    section_names = [s.get('section', s.get('name', '')) for s in sections] if isinstance(sections, list) else list(sections.keys())
+    print(f"Sections: {section_names}")
+    print("(demo fixture — RESEARCH_ONLY, NOT_AN_ORDER, NO_LEDGER_WRITE)")
+    return 0
+
+
 def main() -> None:
     """Main entrypoint."""
     import pandas as pd  # imported here to avoid shadowing at module level
@@ -34894,6 +35317,32 @@ def main() -> None:
         "correlation-exposure-list":        cmd_correlation_exposure_list,
         "correlation-exposure-lineage":     cmd_correlation_exposure_lineage,
         "correlation-exposure-report":      cmd_correlation_exposure_report,
+        # v1.5.3 Drawdown & Risk Controls
+        "drawdown-risk-health":             cmd_drawdown_risk_health,
+        "risk-control-policies":            cmd_risk_control_policies,
+        "risk-control-policy-show":         cmd_risk_control_policy_show,
+        "drawdown-eligibility":             cmd_drawdown_eligibility,
+        "portfolio-equity-curve":           cmd_portfolio_equity_curve,
+        "portfolio-underwater":             cmd_portfolio_underwater,
+        "portfolio-drawdown":               cmd_portfolio_drawdown,
+        "drawdown-episodes":                cmd_drawdown_episodes,
+        "rolling-drawdown":                 cmd_rolling_drawdown,
+        "drawdown-attribution":             cmd_drawdown_attribution,
+        "portfolio-risk-budget":            cmd_portfolio_risk_budget,
+        "portfolio-loss-limits":            cmd_portfolio_loss_limits,
+        "portfolio-volatility-limit":       cmd_portfolio_volatility_limit,
+        "portfolio-concentration-limits":   cmd_portfolio_concentration_limits,
+        "portfolio-correlation-limits":     cmd_portfolio_correlation_limits,
+        "portfolio-liquidity-limit":        cmd_portfolio_liquidity_limit,
+        "portfolio-cash-reserve":           cmd_portfolio_cash_reserve,
+        "risk-control-evaluate":            cmd_risk_control_evaluate,
+        "sizing-risk-impact":               cmd_sizing_risk_impact,
+        "drawdown-stress":                  cmd_drawdown_stress,
+        "risk-control-explain":             cmd_risk_control_explain,
+        "risk-control-show":                cmd_risk_control_show,
+        "risk-control-list":                cmd_risk_control_list,
+        "risk-control-lineage":             cmd_risk_control_lineage,
+        "drawdown-risk-report":             cmd_drawdown_risk_report,
     }
 
     if args.command is None:

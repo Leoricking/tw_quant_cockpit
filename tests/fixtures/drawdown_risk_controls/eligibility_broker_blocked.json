@@ -1,0 +1,13 @@
+{
+  "_fixture_labels": ["TEST_FIXTURE", "DEMO_ONLY", "NOT_FOR_EXECUTION"],
+  "_version": "1.5.3",
+  "description": "Broker-linked portfolio — risk controls blocked",
+  "portfolio_context": {"broker_linked": true, "auto_apply_enabled": false},
+  "equity_curve_points": 252,
+  "expected_result": {
+    "eligibility_status": "INELIGIBLE",
+    "risk_controls_allowed": false,
+    "blockers": ["BROKER_LINKED_TRUE — risk controls are research-only"]
+  },
+  "research_only": true
+}

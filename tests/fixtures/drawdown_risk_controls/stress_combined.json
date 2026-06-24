@@ -1,0 +1,15 @@
+{
+  "_fixture_type": "TEST_FIXTURE",
+  "_labels": ["DEMO_ONLY", "NOT_REAL_PORTFOLIO", "NOT_REAL_RISK_ACTION", "NOT_REAL_ORDER", "NOT_FOR_EXECUTION", "NOT_FOR_INVESTMENT_DECISION"],
+  "_version": "1.5.3",
+  "description": "Combined stress scenario — market shock + correlation spike + liquidity shock",
+  "scenario_id": "STRESS_COMB_001",
+  "scenario_type": "COMBINED",
+  "portfolio_id": "demo_portfolio",
+  "portfolio_value": 1000000.0,
+  "shock_magnitude": 0.30,
+  "description_text": "Combined: 20% market decline + correlation spike + liquidity crisis",
+  "research_only": true,
+  "executable": false,
+  "order_created": false
+}

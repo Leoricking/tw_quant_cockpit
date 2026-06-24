@@ -1,0 +1,15 @@
+{
+  "_fixture_type": "TEST_FIXTURE",
+  "_labels": ["DEMO_ONLY", "NOT_REAL_PORTFOLIO", "NOT_REAL_RISK_ACTION", "NOT_REAL_ORDER", "NOT_FOR_EXECUTION", "NOT_FOR_INVESTMENT_DECISION"],
+  "_version": "1.5.3",
+  "description": "Market shock stress scenario",
+  "scenario_id": "STRESS_MKT_001",
+  "scenario_type": "BEAR_MARKET",
+  "portfolio_id": "demo_portfolio",
+  "portfolio_value": 1000000.0,
+  "shock_magnitude": 0.20,
+  "description_text": "20% market-wide decline scenario",
+  "research_only": true,
+  "executable": false,
+  "order_created": false
+}

@@ -1,0 +1,14 @@
+{
+  "_fixture_type": "TEST_FIXTURE",
+  "_labels": ["DEMO_ONLY", "NOT_REAL_PORTFOLIO", "NOT_REAL_RISK_ACTION", "NOT_REAL_ORDER", "NOT_FOR_EXECUTION", "NOT_FOR_INVESTMENT_DECISION"],
+  "_version": "1.5.3",
+  "description": "Incomplete lineage — missing source lineage IDs",
+  "evaluation_id": "EVAL_DEMO_002",
+  "portfolio_id": "demo_portfolio",
+  "as_of": "2026-06-21",
+  "source_lineage_ids": [],
+  "policy_lineage_ids": ["POL_VOL_001"],
+  "created_at": "2026-06-21T10:00:00",
+  "lineage_complete": false,
+  "research_only": true
+}

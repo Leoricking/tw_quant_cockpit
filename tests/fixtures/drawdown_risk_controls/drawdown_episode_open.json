@@ -1,0 +1,12 @@
+{
+  "_fixture_labels": ["TEST_FIXTURE", "DEMO_ONLY"],
+  "_version": "1.5.3",
+  "description": "Portfolio currently in an open drawdown episode",
+  "portfolio_id": "demo_portfolio",
+  "as_of": "2026-06-21",
+  "expected_result": {
+    "has_open_episode": true,
+    "research_only": true
+  },
+  "research_only": true
+}

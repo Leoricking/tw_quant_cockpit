@@ -1,0 +1,21 @@
+{
+  "_fixture_type": "TEST_FIXTURE",
+  "_labels": ["DEMO_ONLY", "NOT_REAL_PORTFOLIO", "NOT_REAL_RISK_ACTION", "NOT_REAL_ORDER", "NOT_FOR_EXECUTION", "NOT_FOR_INVESTMENT_DECISION"],
+  "_version": "1.5.3",
+  "description": "Valid sizing impact result — no new breaches",
+  "proposal_id": "demo_proposal",
+  "portfolio_id": "demo_portfolio",
+  "symbol": "2330",
+  "before_drawdown_pct": -0.05,
+  "after_drawdown_pct": -0.06,
+  "before_volatility": 0.18,
+  "after_volatility": 0.19,
+  "control_breaches_added": [],
+  "control_breaches_removed": [],
+  "risk_budget_consumed_pct": 0.30,
+  "binding_constraint": "",
+  "status": "VALID",
+  "research_only": true,
+  "executable": false,
+  "order_created": false
+}

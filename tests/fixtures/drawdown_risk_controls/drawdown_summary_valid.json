@@ -1,0 +1,13 @@
+{
+  "_fixture_labels": ["TEST_FIXTURE", "DEMO_ONLY"],
+  "_version": "1.5.3",
+  "description": "Valid drawdown summary for demo portfolio",
+  "portfolio_id": "demo_portfolio",
+  "as_of": "2026-06-21",
+  "expected_result": {
+    "max_drawdown_pct_negative": true,
+    "research_only": true,
+    "high_water_mark_positive": true
+  },
+  "research_only": true
+}

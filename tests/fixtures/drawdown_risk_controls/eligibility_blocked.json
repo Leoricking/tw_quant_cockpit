@@ -1,0 +1,15 @@
+{
+  "_fixture_type": "TEST_FIXTURE",
+  "_labels": ["DEMO_ONLY", "NOT_REAL_PORTFOLIO", "NOT_REAL_RISK_ACTION", "NOT_REAL_ORDER", "NOT_FOR_EXECUTION", "NOT_FOR_INVESTMENT_DECISION"],
+  "_version": "1.5.3",
+  "description": "Drawdown eligibility blocked — insufficient history",
+  "portfolio_id": "demo_portfolio",
+  "as_of": "2026-06-21",
+  "available_from": "2026-06-15",
+  "trading_days_available": 5,
+  "minimum_required_days": 20,
+  "expected_eligibility_status": "BLOCKED",
+  "expected_drawdown_allowed": false,
+  "research_only": true,
+  "executable": false
+}

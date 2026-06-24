@@ -1,0 +1,13 @@
+{
+  "_fixture_labels": ["TEST_FIXTURE", "DEMO_ONLY", "NOT_FOR_EXECUTION"],
+  "_version": "1.5.3",
+  "description": "Equity curve with future date — should be blocked by PIT validator",
+  "portfolio_id": "demo_portfolio",
+  "as_of": "2026-06-21",
+  "daily_values": {
+    "2025-01-02": 1000000.0,
+    "2027-01-01": 1100000.0
+  },
+  "expected_result": {"pit_valid": false},
+  "research_only": true
+}

@@ -1,0 +1,17 @@
+{
+  "_fixture_type": "TEST_FIXTURE",
+  "_labels": ["DEMO_ONLY", "NOT_REAL_PORTFOLIO", "NOT_REAL_RISK_ACTION", "NOT_REAL_ORDER", "NOT_FOR_EXECUTION", "NOT_FOR_INVESTMENT_DECISION"],
+  "_version": "1.5.3",
+  "description": "Equity curve with two equal peaks — edge case for HWM logic",
+  "portfolio_id": "demo_portfolio",
+  "as_of": "2026-06-21",
+  "daily_values": {
+    "2025-01-02": 1000000.0,
+    "2025-01-03": 1020000.0,
+    "2025-01-06": 990000.0,
+    "2025-01-07": 1020000.0,
+    "2025-01-08": 1010000.0
+  },
+  "expected_high_water_mark": 1020000.0,
+  "research_only": true
+}

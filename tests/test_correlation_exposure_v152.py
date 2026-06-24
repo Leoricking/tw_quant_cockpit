@@ -1968,7 +1968,8 @@ class TestCLI:
 class TestGUI:
     def _load_panel(self):
         import importlib.util, os
-        path = "D:/code/Claude/tw_quant_cockpit/gui/correlation_exposure_panel.py"
+        repo_root = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+        path = os.path.join(repo_root, "gui", "correlation_exposure_panel.py")
         spec = importlib.util.spec_from_file_location("correlation_exposure_panel", path)
         mod = importlib.util.module_from_spec(spec)
         spec.loader.exec_module(mod)
@@ -2160,11 +2161,15 @@ class TestReport:
 class TestRegression:
     def test_1_VERSION_is_1_5_2(self):
         from release.version_info import VERSION
-        assert VERSION.startswith("1.5.2")
+        assert VERSION.startswith("1.5.2") or VERSION.startswith("1.5.3")
 
     def test_2_BASE_RELEASE_is_1_5_1_Position_Sizing(self):
         from release.version_info import BASE_RELEASE
-        assert BASE_RELEASE == "1.5.1 Position Sizing" or BASE_RELEASE == "1.5.2 Correlation & Exposure"
+        assert BASE_RELEASE in (
+            "1.5.1 Position Sizing",
+            "1.5.2 Correlation & Exposure",
+            "1.5.2.1 Correlation & Exposure Integrity Hotfix",
+        )
 
     def test_3_REPLAY_STABLE_BASELINE_is_1_2_9(self):
         from release.version_info import REPLAY_STABLE_BASELINE
@@ -2251,12 +2256,14 @@ class TestRegression:
     def test_19_collection_integrity(self):
         # Just verify this file's tests can be enumerated
         import subprocess
+        import os
+        repo_root = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
         result = subprocess.run(
             ["python", "-m", "pytest",
              "tests/test_correlation_exposure_v152.py",
              "--collect-only", "-q", "--tb=no"],
             capture_output=True, text=True,
-            cwd="D:/code/Claude/tw_quant_cockpit"
+            cwd=repo_root
         )
         lines = result.stdout.strip().split("\n")
         # Count collected tests

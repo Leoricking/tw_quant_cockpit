@@ -73,9 +73,10 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # ---------------------------------------------------------------------------
 # v1.3.3 module-level constants (Coverage Repair Workflow)
 # ---------------------------------------------------------------------------
-VERSION                             = "1.5.2.1"
-RELEASE_NAME                        = "Correlation & Exposure Integrity Hotfix"
-BASE_RELEASE                        = "1.5.2 Correlation & Exposure"
+VERSION                             = "1.5.3"
+RELEASE_NAME                        = "Drawdown & Risk Controls"
+BASE_RELEASE                        = "1.5.2.1 Correlation & Exposure Integrity Hotfix"
+DRAWDOWN_RISK_CONTROLS_BASELINE     = "1.5.3"
 PROVIDER_FEATURE_BASELINE           = "1.4.8 Provider Integration Hardening"
 REPLAY_STABLE_BASELINE              = "1.2.9"
 PROVIDER_STABLE_BASELINE            = "1.4.9"
@@ -84,8 +85,8 @@ POSITION_SIZING_BASELINE            = "1.5.1"
 CORRELATION_EXPOSURE_BASELINE       = "1.5.2"
 # v1.5.x feature stage registry — for version-info display and verification
 CORRELATION_EXPOSURE_STAGE          = "STABLE"   # v1.5.2
-DRAWDOWN_RISK_CONTROLS_AVAILABLE    = False
-DRAWDOWN_RISK_CONTROLS_STAGE        = "PLANNED"  # v1.5.3
+DRAWDOWN_RISK_CONTROLS_AVAILABLE    = True
+DRAWDOWN_RISK_CONTROLS_STAGE        = "STABLE"   # v1.5.3
 WEIGHT_OPTIMIZATION_ENABLED         = False      # permanently blocked
 ORDER_CREATION_ENABLED              = False      # permanently blocked
 AUTO_REBALANCE_ENABLED              = False      # permanently blocked
@@ -750,6 +751,41 @@ CORRELATION_STRESS_AVAILABLE                    = True
 CORRELATION_EXPOSURE_ELIGIBILITY_AVAILABLE      = True
 CORRELATION_EXPOSURE_PIT_AVAILABLE              = True
 CORRELATION_EXPOSURE_LINEAGE_AVAILABLE          = True
+# v1.5.3 Drawdown & Risk Controls capability flags
+UNDERWATER_CURVE_AVAILABLE                      = True
+MAX_DRAWDOWN_AVAILABLE                          = True
+ROLLING_MAX_DRAWDOWN_AVAILABLE                  = True
+DRAWDOWN_EPISODE_DETECTION_AVAILABLE            = True
+DRAWDOWN_DURATION_ANALYSIS_AVAILABLE            = True
+DRAWDOWN_RECOVERY_ANALYSIS_AVAILABLE            = True
+DRAWDOWN_ATTRIBUTION_AVAILABLE                  = True
+RISK_BUDGET_AVAILABLE                           = True
+LOSS_LIMIT_AVAILABLE                            = True
+VOLATILITY_LIMIT_AVAILABLE                      = True
+CONCENTRATION_LIMIT_AVAILABLE                   = True
+CORRELATION_LIMIT_AVAILABLE                     = True
+LIQUIDITY_LIMIT_AVAILABLE                       = True
+CASH_RESERVE_LIMIT_AVAILABLE                    = True
+RISK_CONSTRAINT_ENGINE_AVAILABLE                = True
+SIZING_RISK_IMPACT_AVAILABLE                    = True
+DRAWDOWN_STRESS_AVAILABLE                       = True
+DRAWDOWN_ELIGIBILITY_AVAILABLE                  = True
+DRAWDOWN_PIT_AVAILABLE                          = True
+DRAWDOWN_LINEAGE_AVAILABLE                      = True
+DRAWDOWN_EXPLAINABILITY_AVAILABLE               = True
+DRAWDOWN_RISK_CONTROLS_RESEARCH_ONLY            = True
+# Risk controls permanently blocked
+RISK_CONTROL_AUTO_APPLY_ENABLED                 = False
+RISK_CONTROL_AUTO_REDUCE_ENABLED                = False
+RISK_CONTROL_AUTO_STOP_ENABLED                  = False
+RISK_CONTROL_AUTO_REBALANCE_ENABLED             = False
+RISK_CONTROL_ORDER_GENERATION_ENABLED           = False
+RISK_CONTROL_BROKER_ENABLED                     = False
+RISK_CONTROL_ORDER_EXECUTION_ENABLED            = False
+RISK_CONTROL_HEDGING_EXECUTION_ENABLED          = False
+RISK_CONTROL_LEDGER_WRITE_ENABLED               = False
+RISK_CONTROL_LIVE_ACCOUNT_SYNC_ENABLED          = False
+
 # Permanently blocked
 EFFICIENT_FRONTIER_AVAILABLE                    = False
 BLACK_LITTERMAN_AVAILABLE                       = False

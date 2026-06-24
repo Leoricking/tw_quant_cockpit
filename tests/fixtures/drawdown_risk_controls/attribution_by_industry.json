@@ -1,0 +1,11 @@
+{
+  "_fixture_labels": ["TEST_FIXTURE", "DEMO_ONLY"],
+  "_version": "1.5.3",
+  "description": "Drawdown attribution by industry",
+  "industry_map": {"2330": "Semiconductor", "2308": "Electronics", "2317": "Electronics", "Cash": "CASH"},
+  "expected_result": {
+    "attributions_count_ge": 2,
+    "all_research_only": true
+  },
+  "research_only": true
+}
