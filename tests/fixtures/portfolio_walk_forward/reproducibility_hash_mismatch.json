@@ -1,0 +1,20 @@
+{
+  "TEST_FIXTURE": true,
+  "DEMO_ONLY": true,
+  "HISTORICAL_SIMULATION_ONLY": true,
+  "NOT_REAL_PORTFOLIO": true,
+  "NOT_REAL_ORDER": true,
+  "NOT_FOR_EXECUTION": true,
+  "NOT_FOR_INVESTMENT_DECISION": true,
+  "run_id": "run_mismatch_001",
+  "config_hash": "abc123demo001",
+  "_run_config_hash": "DIFFERENT_HASH_XYZ",
+  "is_reproducible": false,
+  "hash_mismatches": [
+    {"field": "config_hash", "manifest": "abc123demo001", "run": "DIFFERENT_HASH_XYZ"}
+  ],
+  "violations": ["Hash mismatches detected: 1 field(s)"],
+  "status": "BLOCKED",
+  "_note": "Config hash mismatch — run BLOCKED. Mutation detected.",
+  "research_only": true
+}

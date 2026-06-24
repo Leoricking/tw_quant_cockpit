@@ -1,0 +1,23 @@
+{
+  "TEST_FIXTURE": true,
+  "DEMO_ONLY": true,
+  "HISTORICAL_SIMULATION_ONLY": true,
+  "NOT_REAL_PORTFOLIO": true,
+  "NOT_REAL_ORDER": true,
+  "NOT_FOR_EXECUTION": true,
+  "NOT_FOR_INVESTMENT_DECISION": true,
+  "windows": [
+    {"window_id": "wf_0001", "sequence": 1, "training_start": "2020-01-02", "training_end": "2020-12-31", "purge_start": "2020-12-31", "purge_end": "2020-12-31", "validation_start": "2021-01-04", "validation_end": "2021-04-05", "embargo_end": "2021-04-05", "window_type": "ROLLING", "status": "VALID"},
+    {"window_id": "wf_0002", "sequence": 2, "training_start": "2020-01-23", "training_end": "2021-01-21", "purge_start": "2021-01-21", "purge_end": "2021-01-21", "validation_start": "2021-01-22", "validation_end": "2021-04-22", "embargo_end": "2021-04-22", "window_type": "ROLLING", "status": "VALID"},
+    {"window_id": "wf_0003", "sequence": 3, "training_start": "2020-02-13", "training_end": "2021-02-11", "purge_start": "2021-02-11", "purge_end": "2021-02-11", "validation_start": "2021-02-12", "validation_end": "2021-05-13", "embargo_end": "2021-05-13", "window_type": "ROLLING", "status": "VALID"},
+    {"window_id": "wf_0004", "sequence": 4, "training_start": "2020-03-05", "training_end": "2021-03-04", "purge_start": "2021-03-04", "purge_end": "2021-03-04", "validation_start": "2021-03-05", "validation_end": "2021-06-03", "embargo_end": "2021-06-03", "window_type": "ROLLING", "status": "VALID"},
+    {"window_id": "wf_0005", "sequence": 5, "training_start": "2020-03-26", "training_end": "2021-03-25", "purge_start": "2021-03-25", "purge_end": "2021-03-25", "validation_start": "2021-03-26", "validation_end": "2021-06-24", "embargo_end": "2021-06-24", "window_type": "ROLLING", "status": "VALID"},
+    {"window_id": "wf_0006", "sequence": 6, "training_start": "2020-04-16", "training_end": "2021-04-15", "purge_start": "2021-04-15", "purge_end": "2021-04-15", "validation_start": "2021-04-16", "validation_end": "2021-07-15", "embargo_end": "2021-07-15", "window_type": "ROLLING", "status": "VALID"},
+    {"window_id": "wf_0007", "sequence": 7, "training_start": "2020-05-07", "training_end": "2021-05-06", "purge_start": "2021-05-06", "purge_end": "2021-05-06", "validation_start": "2021-05-07", "validation_end": "2021-08-05", "embargo_end": "2021-08-05", "window_type": "ROLLING", "status": "VALID"},
+    {"window_id": "wf_0008", "sequence": 8, "training_start": "2020-05-28", "training_end": "2021-05-27", "purge_start": "2021-05-27", "purge_end": "2021-05-27", "validation_start": "2021-05-28", "validation_end": "2021-08-26", "embargo_end": "2021-08-26", "window_type": "ROLLING", "status": "VALID"},
+    {"window_id": "wf_0009", "sequence": 9, "training_start": "2020-06-18", "training_end": "2021-06-17", "purge_start": "2021-06-17", "purge_end": "2021-06-17", "validation_start": "2021-06-18", "validation_end": "2021-09-16", "embargo_end": "2021-09-16", "window_type": "ROLLING", "status": "VALID"},
+    {"window_id": "wf_0010", "sequence": 10, "training_start": "2020-07-09", "training_end": "2021-07-08", "purge_start": "2021-07-08", "purge_end": "2021-07-08", "validation_start": "2021-07-09", "validation_end": "2021-10-07", "embargo_end": "2021-10-07", "window_type": "ROLLING", "status": "VALID"},
+    {"window_id": "wf_0011", "sequence": 11, "training_start": "2020-07-30", "training_end": "2021-07-29", "purge_start": "2021-07-29", "purge_end": "2021-07-29", "validation_start": "2021-07-30", "validation_end": "2021-10-28", "embargo_end": "2021-10-28", "window_type": "ROLLING", "status": "VALID"},
+    {"window_id": "wf_0012", "sequence": 12, "training_start": "2020-08-20", "training_end": "2021-08-19", "purge_start": "2021-08-19", "purge_end": "2021-08-19", "validation_start": "2021-08-20", "validation_end": "2021-11-18", "embargo_end": "2021-11-18", "window_type": "ROLLING", "status": "VALID"}
+  ]
+}

@@ -1,0 +1,21 @@
+{
+  "TEST_FIXTURE": true,
+  "DEMO_ONLY": true,
+  "HISTORICAL_SIMULATION_ONLY": true,
+  "NOT_REAL_PORTFOLIO": true,
+  "NOT_REAL_ORDER": true,
+  "NOT_FOR_EXECUTION": true,
+  "NOT_FOR_INVESTMENT_DECISION": true,
+  "run_id": "run_orphan_001",
+  "config_hash": null,
+  "window_hashes": {},
+  "decision_hashes": {},
+  "transaction_hashes": {"txn_orphan": "th_orphan"},
+  "blockers": ["Orphan transactions (no parent window): ['txn_orphan']"],
+  "orphan_windows": [],
+  "orphan_decisions": [],
+  "orphan_transactions": ["txn_orphan"],
+  "is_complete": false,
+  "_note": "Orphan transaction — no parent window reference",
+  "research_only": true
+}

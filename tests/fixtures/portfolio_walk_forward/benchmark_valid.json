@@ -1,0 +1,24 @@
+{
+  "TEST_FIXTURE": true,
+  "DEMO_ONLY": true,
+  "HISTORICAL_SIMULATION_ONLY": true,
+  "NOT_REAL_PORTFOLIO": true,
+  "NOT_REAL_ORDER": true,
+  "NOT_FOR_EXECUTION": true,
+  "NOT_FOR_INVESTMENT_DECISION": true,
+  "symbol": "^TWII",
+  "start_date": "2021-01-04",
+  "end_date": "2021-04-05",
+  "as_of": "2021-04-05",
+  "pit_adjusted": false,
+  "status": "VALID",
+  "fixture_mode": true,
+  "returns_by_date": {
+    "2021-01-04": 10000.0,
+    "2021-01-05": 10025.0,
+    "2021-01-06": 10012.0,
+    "2021-01-07": 10041.0,
+    "2021-01-08": 10068.0
+  },
+  "research_only": true
+}

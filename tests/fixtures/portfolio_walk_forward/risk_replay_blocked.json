@@ -1,0 +1,17 @@
+{
+  "TEST_FIXTURE": true,
+  "DEMO_ONLY": true,
+  "HISTORICAL_SIMULATION_ONLY": true,
+  "NOT_REAL_PORTFOLIO": true,
+  "NOT_REAL_ORDER": true,
+  "NOT_FOR_EXECUTION": true,
+  "NOT_FOR_INVESTMENT_DECISION": true,
+  "status": "BLOCKED",
+  "error": "decision_context is None",
+  "drawdown": null,
+  "budget": null,
+  "controls": [],
+  "recommended_actions": [],
+  "research_only": true,
+  "executable": false
+}

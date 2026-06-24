@@ -1,0 +1,32 @@
+{
+  "TEST_FIXTURE": true,
+  "DEMO_ONLY": true,
+  "HISTORICAL_SIMULATION_ONLY": true,
+  "NOT_REAL_PORTFOLIO": true,
+  "NOT_REAL_ORDER": true,
+  "NOT_FOR_EXECUTION": true,
+  "NOT_FOR_INVESTMENT_DECISION": true,
+  "run_allowed": true,
+  "window_generation_allowed": true,
+  "decision_replay_allowed": true,
+  "sizing_replay_allowed": true,
+  "correlation_replay_allowed": true,
+  "risk_control_replay_allowed": true,
+  "performance_analysis_allowed": true,
+  "formal_research_report_allowed": true,
+  "blocked_components": [],
+  "warnings": [],
+  "blockers": [],
+  "evidence": {
+    "research_only": true,
+    "auto_apply_enabled": false,
+    "training_length": 252,
+    "validation_length": 63,
+    "step_length": 21,
+    "purge_length": 0,
+    "embargo_length": 0,
+    "minimum_windows": 3
+  },
+  "eligibility_status": "ELIGIBLE",
+  "research_only": true
+}

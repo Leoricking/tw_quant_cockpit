@@ -1,0 +1,22 @@
+{
+  "TEST_FIXTURE": true,
+  "DEMO_ONLY": true,
+  "HISTORICAL_SIMULATION_ONLY": true,
+  "NOT_REAL_PORTFOLIO": true,
+  "NOT_REAL_ORDER": true,
+  "NOT_FOR_EXECUTION": true,
+  "NOT_FOR_INVESTMENT_DECISION": true,
+  "status": "VALID",
+  "drawdown": {"status": "NORMAL", "current_drawdown": -0.05, "pit_validated": true},
+  "budget": {"utilization": 0.42, "status": "OK"},
+  "controls": [
+    {"name": "DRAWDOWN_LIMIT", "status": "NORMAL", "research_only": true},
+    {"name": "RISK_BUDGET", "status": "OK", "research_only": true},
+    {"name": "VOLATILITY_LIMIT", "status": "OK", "research_only": true}
+  ],
+  "recommended_actions": [],
+  "research_only": true,
+  "executable": false,
+  "real_order_created": false,
+  "auto_sell_enabled": false
+}

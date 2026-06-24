@@ -1,0 +1,16 @@
+{
+  "TEST_FIXTURE": true,
+  "DEMO_ONLY": true,
+  "HISTORICAL_SIMULATION_ONLY": true,
+  "NOT_REAL_PORTFOLIO": true,
+  "NOT_REAL_ORDER": true,
+  "NOT_FOR_EXECUTION": true,
+  "NOT_FOR_INVESTMENT_DECISION": true,
+  "regimes": [
+    {"regime_type": "BULLISH", "window_count": 4, "mean_return": 0.142, "median_return": 0.138, "max_drawdown": -0.042, "mean_turnover": 0.28},
+    {"regime_type": "BEARISH", "window_count": 3, "mean_return": -0.031, "median_return": -0.028, "max_drawdown": -0.185, "mean_turnover": 0.42},
+    {"regime_type": "HIGH_VOLATILITY", "window_count": 2, "mean_return": 0.011, "median_return": 0.011, "max_drawdown": -0.098, "mean_turnover": 0.35},
+    {"regime_type": "SIDEWAYS", "window_count": 1, "mean_return": 0.008, "median_return": 0.008, "max_drawdown": -0.021, "mean_turnover": 0.15},
+    {"regime_type": "UNKNOWN", "window_count": 2, "mean_return": 0.076, "median_return": 0.076, "max_drawdown": -0.063, "mean_turnover": 0.30}
+  ]
+}

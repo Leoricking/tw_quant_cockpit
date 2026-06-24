@@ -97,7 +97,8 @@ class ResearchFoundationStableHealthCheck:
 
         try:
             from release.version_info import BASE_RELEASE
-            ok = any(marker in BASE_RELEASE for marker in ("1.3.7", "1.3.9", "1.4.0", "1.4.1", "1.4.2", "1.4.3", "1.4.4", "1.4.5", "1.4.6", "1.4.7", "1.4.8", "1.4.9", "1.5.0", "1.5.0.2", "1.5.1", "1.5.2"))
+            def _parse_ver(v): return tuple(int(x) for x in v.split()[0].split(".")[:3] if x.isdigit())
+            ok = _parse_ver(BASE_RELEASE) >= _parse_ver("1.3.7")
             checks["base_release_correct"] = ("PASS" if ok else "FAIL", f"BASE_RELEASE={BASE_RELEASE}")
         except Exception as exc:
             checks["base_release_correct"] = ("FAIL", str(exc))

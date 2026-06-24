@@ -1,0 +1,24 @@
+{
+  "TEST_FIXTURE": true,
+  "DEMO_ONLY": true,
+  "HISTORICAL_SIMULATION_ONLY": true,
+  "NOT_REAL_PORTFOLIO": true,
+  "NOT_REAL_ORDER": true,
+  "NOT_FOR_EXECUTION": true,
+  "NOT_FOR_INVESTMENT_DECISION": true,
+  "max_drawdown": -0.124,
+  "max_drawdown_date": "2021-02-15",
+  "current_drawdown": -0.02,
+  "peak_date": "2021-01-25",
+  "trough_date": "2021-02-15",
+  "recovery_date": "2021-03-10",
+  "underwater_series": {
+    "2021-01-04": 0.0,
+    "2021-01-25": 0.0,
+    "2021-02-15": -0.124,
+    "2021-03-10": 0.0,
+    "2021-04-05": -0.02
+  },
+  "status": "VALID",
+  "research_only": true
+}

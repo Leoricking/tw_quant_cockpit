@@ -1,0 +1,23 @@
+{
+  "TEST_FIXTURE": true,
+  "DEMO_ONLY": true,
+  "HISTORICAL_SIMULATION_ONLY": true,
+  "NOT_REAL_PORTFOLIO": true,
+  "NOT_REAL_ORDER": true,
+  "NOT_FOR_EXECUTION": true,
+  "NOT_FOR_INVESTMENT_DECISION": true,
+  "cumulative_return": 0.089,
+  "annualized_return": 0.097,
+  "twr": 0.089,
+  "benchmark_return": 0.071,
+  "excess_return": 0.018,
+  "volatility": 0.182,
+  "max_drawdown": -0.124,
+  "positive_periods": 8,
+  "total_periods": 12,
+  "cost_drag": -0.031,
+  "sharpe_like": null,
+  "sharpe_assumptions": null,
+  "status": "VALID",
+  "research_only": true
+}

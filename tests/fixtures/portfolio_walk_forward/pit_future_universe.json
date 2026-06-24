@@ -1,0 +1,16 @@
+{
+  "TEST_FIXTURE": true,
+  "DEMO_ONLY": true,
+  "HISTORICAL_SIMULATION_ONLY": true,
+  "NOT_REAL_PORTFOLIO": true,
+  "NOT_REAL_ORDER": true,
+  "NOT_FOR_EXECUTION": true,
+  "NOT_FOR_INVESTMENT_DECISION": true,
+  "is_valid": false,
+  "violations": ["classifications: available_from (2021-09-30) > as_of (2021-04-01) — future data violation"],
+  "evidence": {"future_data": true},
+  "data_type": "classifications",
+  "as_of": "2021-04-01",
+  "available_from": "2021-09-30",
+  "_note": "PIT violation: future universe classification used at decision time"
+}

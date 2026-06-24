@@ -1,0 +1,16 @@
+{
+  "TEST_FIXTURE": true,
+  "DEMO_ONLY": true,
+  "HISTORICAL_SIMULATION_ONLY": true,
+  "NOT_REAL_PORTFOLIO": true,
+  "NOT_REAL_ORDER": true,
+  "NOT_FOR_EXECUTION": true,
+  "NOT_FOR_INVESTMENT_DECISION": true,
+  "policy_id": "vol_participation_10pct",
+  "model_type": "VOLUME_PARTICIPATION",
+  "fixed_bps": null,
+  "participation_rate": 0.10,
+  "effective_from": "2020-01-01",
+  "version": "1.5.4",
+  "_note": "10% volume participation slippage. Missing ADV causes BLOCKED. Research only."
+}

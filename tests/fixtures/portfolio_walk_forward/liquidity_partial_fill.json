@@ -1,0 +1,21 @@
+{
+  "TEST_FIXTURE": true,
+  "DEMO_ONLY": true,
+  "HISTORICAL_SIMULATION_ONLY": true,
+  "NOT_REAL_PORTFOLIO": true,
+  "NOT_REAL_ORDER": true,
+  "NOT_FOR_EXECUTION": true,
+  "NOT_FOR_INVESTMENT_DECISION": true,
+  "symbol": "2330.TW",
+  "quantity_requested": 50000,
+  "max_research_quantity": 10000.0,
+  "liquidation_days": 5,
+  "partial_fill": true,
+  "partial_fill_qty": 10000.0,
+  "adv": 100000.0,
+  "participation_rate": 0.10,
+  "status": "PARTIAL",
+  "simulation_only": true,
+  "research_only": true,
+  "executable": false
+}

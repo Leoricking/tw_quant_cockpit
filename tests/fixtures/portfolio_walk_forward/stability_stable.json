@@ -1,0 +1,26 @@
+{
+  "TEST_FIXTURE": true,
+  "DEMO_ONLY": true,
+  "HISTORICAL_SIMULATION_ONLY": true,
+  "NOT_REAL_PORTFOLIO": true,
+  "NOT_REAL_ORDER": true,
+  "NOT_FOR_EXECUTION": true,
+  "NOT_FOR_INVESTMENT_DECISION": true,
+  "window_metric_name": "period_return",
+  "window_values": [0.08, 0.06, 0.09, 0.07, 0.05, 0.08, 0.10, 0.07, 0.09, 0.06],
+  "mean": 0.075,
+  "median": 0.075,
+  "standard_deviation": 0.015,
+  "positive_window_ratio": 1.0,
+  "worst_window": 0.05,
+  "best_window": 0.10,
+  "dispersion": 0.05,
+  "trend": "IMPROVING",
+  "status": "STABLE",
+  "metadata": {
+    "formula_version": "1.5.4",
+    "stability_score": 82.0,
+    "research_only": true,
+    "no_future_guarantee": true
+  }
+}

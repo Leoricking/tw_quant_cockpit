@@ -758,3 +758,12 @@ data/risk_evaluations/
 reports/drawdown_risk_*.md
 # Drawdown risk controls test fixtures ARE committed (exception)
 !tests/fixtures/drawdown_risk_controls/*.json
+
+# v1.5.4 Portfolio Walk-forward
+data/portfolio_walk_forward/
+data/walk_forward_runtime/
+data/simulation_ledgers/
+data/walk_forward_runs/
+reports/portfolio_walk_forward_*.md
+# Walk-forward fixtures ARE committed
+!tests/fixtures/portfolio_walk_forward/*.json

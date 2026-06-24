@@ -966,7 +966,8 @@ class TestRegression:
 
     def test_148_base_release_147(self):
         from release.version_info import BASE_RELEASE
-        assert any(m in BASE_RELEASE for m in ("1.4.8", "1.4.9", "1.5.0", "1.5.1", "1.5.2")), f"Expected BASE_RELEASE to reference 1.4.8+, got {BASE_RELEASE}"
+        def _parse_ver(v): return tuple(int(x) for x in v.split()[0].split(".")[:3] if x.isdigit())
+        assert _parse_ver(BASE_RELEASE) >= _parse_ver("1.4.8"), f"Expected BASE_RELEASE to reference 1.4.8+, got {BASE_RELEASE}"
 
     def test_149_replay_baseline_129(self):
         from release.version_info import REPLAY_STABLE_BASELINE

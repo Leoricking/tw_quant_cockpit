@@ -1,0 +1,16 @@
+{
+  "TEST_FIXTURE": true,
+  "DEMO_ONLY": true,
+  "HISTORICAL_SIMULATION_ONLY": true,
+  "NOT_REAL_PORTFOLIO": true,
+  "NOT_REAL_ORDER": true,
+  "NOT_FOR_EXECUTION": true,
+  "NOT_FOR_INVESTMENT_DECISION": true,
+  "policy_id": "fixed_5bps",
+  "model_type": "FIXED_BPS",
+  "fixed_bps": 5.0,
+  "participation_rate": null,
+  "effective_from": "2020-01-01",
+  "version": "1.5.4",
+  "_note": "Fixed 5 basis points slippage. Research only approximation."
+}

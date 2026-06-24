@@ -1,0 +1,19 @@
+{
+  "TEST_FIXTURE": true,
+  "DEMO_ONLY": true,
+  "HISTORICAL_SIMULATION_ONLY": true,
+  "NOT_REAL_PORTFOLIO": true,
+  "NOT_REAL_ORDER": true,
+  "NOT_FOR_EXECUTION": true,
+  "NOT_FOR_INVESTMENT_DECISION": true,
+  "status": "VALID",
+  "method": "ATR_STOP_DISTANCE",
+  "pit_validated": true,
+  "proposals": [
+    {"symbol": "2330.TW", "quantity": 1000, "risk_amount": 5000.0, "atr": 2.5, "stop_distance": 5.0, "price": 620.0, "research_only": true, "executable": false},
+    {"symbol": "2317.TW", "quantity": 2000, "risk_amount": 4000.0, "atr": 1.8, "stop_distance": 4.0, "price": 115.0, "research_only": true, "executable": false}
+  ],
+  "lineage": ["sizing_lineage_2021-04-01", "fixture_sizing_policy_v154"],
+  "research_only": true,
+  "executable": false
+}

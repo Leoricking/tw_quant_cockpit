@@ -2161,15 +2161,13 @@ class TestReport:
 class TestRegression:
     def test_1_VERSION_is_1_5_2(self):
         from release.version_info import VERSION
-        assert VERSION.startswith("1.5.2") or VERSION.startswith("1.5.3")
+        def _parse_ver(v): return tuple(int(x) for x in v.split()[0].split(".")[:3] if x.isdigit())
+        assert _parse_ver(VERSION) >= _parse_ver("1.5.2")
 
     def test_2_BASE_RELEASE_is_1_5_1_Position_Sizing(self):
         from release.version_info import BASE_RELEASE
-        assert BASE_RELEASE in (
-            "1.5.1 Position Sizing",
-            "1.5.2 Correlation & Exposure",
-            "1.5.2.1 Correlation & Exposure Integrity Hotfix",
-        )
+        def _parse_ver(v): return tuple(int(x) for x in v.split()[0].split(".")[:3] if x.isdigit())
+        assert _parse_ver(BASE_RELEASE) >= _parse_ver("1.5.1")
 
     def test_3_REPLAY_STABLE_BASELINE_is_1_2_9(self):
         from release.version_info import REPLAY_STABLE_BASELINE

@@ -1225,7 +1225,8 @@ def test_release_name_141():
 def test_base_release_141():
     """Test 143: BASE_RELEASE references the A/B/C, Robustness, or later release."""
     from release.version_info import BASE_RELEASE
-    assert any(marker in BASE_RELEASE for marker in ("1.3.5", "1.3.6", "1.3.7", "1.3.9", "1.4.0", "1.4.1", "1.4.2", "1.4.3", "1.4.4", "1.4.5", "1.4.6", "1.4.7", "1.4.8", "1.4.9", "1.5.0", "1.5.1", "1.5.2")), (
+    def _parse_ver(v): return tuple(int(x) for x in v.split()[0].split(".")[:3] if x.isdigit())
+    assert _parse_ver(BASE_RELEASE) >= _parse_ver("1.3.5"), (
         f"BASE_RELEASE does not reference empirical/A/B/C/Robustness release: {BASE_RELEASE}"
     )
 

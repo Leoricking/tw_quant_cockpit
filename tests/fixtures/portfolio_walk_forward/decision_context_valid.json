@@ -1,0 +1,22 @@
+{
+  "TEST_FIXTURE": true,
+  "DEMO_ONLY": true,
+  "HISTORICAL_SIMULATION_ONLY": true,
+  "NOT_REAL_PORTFOLIO": true,
+  "NOT_REAL_ORDER": true,
+  "NOT_FOR_EXECUTION": true,
+  "NOT_FOR_INVESTMENT_DECISION": true,
+  "decision_id": "dec_valid_001",
+  "portfolio_id": "demo_portfolio",
+  "as_of": "2021-04-01",
+  "available_from": "2021-04-01",
+  "portfolio_snapshot_id": "snap_demo_20210401",
+  "sizing_context": {"method": "ATR_STOP_DISTANCE", "pit_validated": true},
+  "correlation_context": {"method": "ROLLING_CORRELATION", "pit_validated": true},
+  "risk_control_context": {"drawdown_status": "NORMAL", "budget_ok": true},
+  "eligible_universe": ["2330.TW", "2317.TW", "2454.TW"],
+  "market_regime": "BULLISH",
+  "source_lineage_ids": ["lineage_001"],
+  "content_hash": "abc123demo",
+  "metadata": {"research_only": true, "pit_validated": true}
+}

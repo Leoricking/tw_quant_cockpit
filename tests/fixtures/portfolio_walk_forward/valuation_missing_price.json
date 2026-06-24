@@ -1,0 +1,21 @@
+{
+  "TEST_FIXTURE": true,
+  "DEMO_ONLY": true,
+  "HISTORICAL_SIMULATION_ONLY": true,
+  "NOT_REAL_PORTFOLIO": true,
+  "NOT_REAL_ORDER": true,
+  "NOT_FOR_EXECUTION": true,
+  "NOT_FOR_INVESTMENT_DECISION": true,
+  "portfolio_value": 215320.0,
+  "cash": 215320.0,
+  "positions": {
+    "2330.TW": null,
+    "2317.TW": null
+  },
+  "benchmark_value": null,
+  "missing_prices": ["2330.TW", "2317.TW"],
+  "partial": true,
+  "status": "PARTIAL",
+  "warning": "Missing prices for ['2330.TW', '2317.TW'] — positions excluded from total",
+  "research_only": true
+}

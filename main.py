@@ -34118,6 +34118,430 @@ def cmd_drawdown_risk_report(args=None):
     return 0
 
 
+# =============================================================================
+# v1.5.4 Portfolio Walk-forward Backtest handlers
+# [!] Research Only. No Real Orders. Historical Simulation Only.
+# [!] No Broker. No Formal Ledger Write. No Auto Apply. No Live Rebalance.
+# =============================================================================
+
+def cmd_portfolio_walk_forward_health(args=None):
+    """[v1.5.4] Portfolio Walk-forward Backtest health check (research only)."""
+    print("[!] Research Only. No Real Orders. Not Investment Advice.")
+    from portfolio.walk_forward.health_v154 import PortfolioWalkForwardHealthCheck
+    result = PortfolioWalkForwardHealthCheck().run()
+    checks = result.get("checks", {})
+    total = len(checks)
+    passed = sum(1 for v in checks.values() if isinstance(v, dict) and v.get("status") == "PASS")
+    failed = [k for k, v in checks.items() if isinstance(v, dict) and v.get("status") == "FAIL"]
+    overall = "PASS" if not failed else "FAIL"
+    print(f"Portfolio Walk-forward Health Check v1.5.4")
+    print(f"Status: {overall}  Passed: {passed}/{total}")
+    if failed:
+        print(f"FAILED checks: {failed}")
+    print("[!] Research Only. No Real Orders. Not Investment Advice.")
+    return 0 if not failed else 1
+
+
+def cmd_walk_forward_configs(args=None):
+    """[v1.5.4] List walk-forward configurations (research only)."""
+    print("[!] Historical Simulation Only. No Real Orders. Not Investment Advice.")
+    from portfolio.walk_forward.store_v154 import WalkForwardStore
+    store = WalkForwardStore()
+    configs = store.list_configs()
+    print(f"Walk-forward Configurations ({len(configs)} total):")
+    for c in configs:
+        print(f"  [{c.get('config_id')}] {c.get('name', '')} | research_only={c.get('research_only', True)}")
+    print("(demo fixture — RESEARCH_ONLY, HISTORICAL_SIMULATION_ONLY)")
+    return 0
+
+
+def cmd_walk_forward_config_show(args=None):
+    """[v1.5.4] Show a walk-forward configuration (research only)."""
+    print("[!] Historical Simulation Only. No Real Orders. Not Investment Advice.")
+    config_id = getattr(args, 'config_id', 'demo_rolling') or 'demo_rolling'
+    from portfolio.walk_forward.query_v154 import WalkForwardQueryService
+    result = WalkForwardQueryService().create_walk_forward_config(config_id=config_id)
+    config = result.get("config")
+    print(f"Config: {config_id}")
+    if config:
+        print(f"  window_type={getattr(config, 'window_type', '?')}  training={getattr(config, 'training_length', '?')}d")
+        print(f"  validation={getattr(config, 'validation_length', '?')}d  step={getattr(config, 'step_length', '?')}d")
+        print(f"  research_only={getattr(config, 'research_only', True)}  auto_apply={getattr(config, 'auto_apply_enabled', False)}")
+    print("(demo fixture — RESEARCH_ONLY)")
+    return 0
+
+
+def cmd_walk_forward_eligibility(args=None):
+    """[v1.5.4] Evaluate walk-forward eligibility (research only)."""
+    print("[!] Historical Simulation Only. No Real Orders. Not Investment Advice.")
+    config_id = getattr(args, 'config_id', 'demo_rolling') or 'demo_rolling'
+    from portfolio.walk_forward.query_v154 import WalkForwardQueryService
+    svc = WalkForwardQueryService()
+    result_cfg = svc.create_walk_forward_config(config_id=config_id)
+    config = result_cfg["config"]
+    elig = svc.evaluate_walk_forward_eligibility(config)
+    print(f"Walk-forward Eligibility: config={config_id}")
+    print(f"  run_allowed={elig.get('run_allowed')}  status={elig.get('eligibility_status')}")
+    if elig.get('blockers'):
+        print(f"  blockers={elig['blockers']}")
+    if elig.get('warnings'):
+        print(f"  warnings={elig['warnings']}")
+    print("(demo fixture — RESEARCH_ONLY)")
+    return 0
+
+
+def cmd_walk_forward_windows(args=None):
+    """[v1.5.4] Generate walk-forward windows (research only)."""
+    print("[!] Historical Simulation Only. No Real Orders. Not Investment Advice.")
+    config_id = getattr(args, 'config_id', 'demo_rolling') or 'demo_rolling'
+    from portfolio.walk_forward.query_v154 import WalkForwardQueryService
+    svc = WalkForwardQueryService()
+    config = svc.create_walk_forward_config(config_id=config_id)["config"]
+    result = svc.generate_windows(config)
+    windows = result["windows"]
+    print(f"Walk-forward Windows: {result['count']} generated (config={config_id})")
+    for w in windows[:5]:
+        print(f"  [{w.window_id}] seq={w.sequence} train={w.training_start}..{w.training_end} val={w.validation_start}..{w.validation_end} status={w.status.value}")
+    if len(windows) > 5:
+        print(f"  ... ({len(windows) - 5} more windows)")
+    print("(demo fixture — RESEARCH_ONLY, HISTORICAL_SIMULATION_ONLY)")
+    return 0
+
+
+def cmd_walk_forward_reconstruct(args=None):
+    """[v1.5.4] Reconstruct portfolio as-of date (research only)."""
+    print("[!] Historical Simulation Only. No Real Orders. Not Investment Advice.")
+    portfolio_id = getattr(args, 'portfolio_id', 'demo_portfolio') or 'demo_portfolio'
+    as_of = getattr(args, 'as_of', '2021-01-04') or '2021-01-04'
+    from portfolio.walk_forward.portfolio_reconstruction_v154 import HistoricalPortfolioReconstructor
+    ctx = HistoricalPortfolioReconstructor().reconstruct(portfolio_id, as_of)
+    print(f"Portfolio Reconstruction: portfolio={portfolio_id} as_of={as_of}")
+    print(f"  decision_id={ctx.decision_id}")
+    print(f"  available_from={ctx.available_from}  pit_enforced=True")
+    print(f"  eligible_universe={ctx.eligible_universe}")
+    print("(demo fixture — RESEARCH_ONLY, PIT_ENFORCED, NOT_AN_ORDER)")
+    return 0
+
+
+def cmd_walk_forward_decision_replay(args=None):
+    """[v1.5.4] Replay historical decision (research only)."""
+    print("[!] Historical Simulation Only. No Real Orders. Not Investment Advice.")
+    portfolio_id = getattr(args, 'portfolio_id', 'demo_portfolio') or 'demo_portfolio'
+    as_of = getattr(args, 'as_of', '2021-01-04') or '2021-01-04'
+    from portfolio.walk_forward.portfolio_reconstruction_v154 import HistoricalPortfolioReconstructor
+    from portfolio.walk_forward.decision_replay_v154 import HistoricalDecisionReplayer
+    ctx = HistoricalPortfolioReconstructor().reconstruct(portfolio_id, as_of)
+    result = HistoricalDecisionReplayer().replay_decision(ctx, None, None)
+    print(f"Decision Replay: portfolio={portfolio_id} as_of={as_of}")
+    print(f"  status={result.get('status')}  disclosure={result.get('disclosure')}")
+    print(f"  hypothetical_actions={len(result.get('hypothetical_actions', []))} (SIMULATION_ONLY)")
+    print("(demo fixture — HISTORICAL_REPLAY, CURRENT_ENGINE_APPLIED_TO_HISTORICAL_DATA)")
+    return 0
+
+
+def cmd_walk_forward_sizing_replay(args=None):
+    """[v1.5.4] Replay historical sizing (research only)."""
+    print("[!] Historical Simulation Only. No Real Orders. Not Investment Advice.")
+    portfolio_id = getattr(args, 'portfolio_id', 'demo_portfolio') or 'demo_portfolio'
+    as_of = getattr(args, 'as_of', '2021-01-04') or '2021-01-04'
+    from portfolio.walk_forward.portfolio_reconstruction_v154 import HistoricalPortfolioReconstructor
+    from portfolio.walk_forward.sizing_replay_v154 import HistoricalSizingReplayer
+    ctx = HistoricalPortfolioReconstructor().reconstruct(portfolio_id, as_of)
+    result = HistoricalSizingReplayer().replay(ctx)
+    print(f"Sizing Replay: portfolio={portfolio_id} as_of={as_of}")
+    print(f"  status={result.get('status')}  method={result.get('method')}")
+    print(f"  proposals={len(result.get('proposals', []))}  pit_validated={result.get('pit_validated')}")
+    print("(demo fixture — RESEARCH_ONLY, NOT_AN_ORDER)")
+    return 0
+
+
+def cmd_walk_forward_correlation_replay(args=None):
+    """[v1.5.4] Replay historical correlation (research only)."""
+    print("[!] Historical Simulation Only. No Real Orders. Not Investment Advice.")
+    portfolio_id = getattr(args, 'portfolio_id', 'demo_portfolio') or 'demo_portfolio'
+    as_of = getattr(args, 'as_of', '2021-01-04') or '2021-01-04'
+    from portfolio.walk_forward.portfolio_reconstruction_v154 import HistoricalPortfolioReconstructor
+    from portfolio.walk_forward.window_v154 import WalkForwardWindowEngine
+    from portfolio.walk_forward.correlation_replay_v154 import HistoricalCorrelationReplayer
+    ctx = HistoricalPortfolioReconstructor().reconstruct(portfolio_id, as_of)
+    windows = WalkForwardWindowEngine().generate_rolling_windows("2020-01-02", as_of, 252, 63, 21)
+    window = windows[0] if windows else None
+    result = HistoricalCorrelationReplayer().replay(ctx, window)
+    print(f"Correlation Replay: portfolio={portfolio_id} as_of={as_of}")
+    print(f"  status={result.get('status')}  observations={result.get('observations')}")
+    print("(demo fixture — RESEARCH_ONLY)")
+    return 0
+
+
+def cmd_walk_forward_risk_replay(args=None):
+    """[v1.5.4] Replay historical risk controls (research only)."""
+    print("[!] Historical Simulation Only. No Real Orders. Not Investment Advice.")
+    portfolio_id = getattr(args, 'portfolio_id', 'demo_portfolio') or 'demo_portfolio'
+    as_of = getattr(args, 'as_of', '2021-01-04') or '2021-01-04'
+    from portfolio.walk_forward.portfolio_reconstruction_v154 import HistoricalPortfolioReconstructor
+    from portfolio.walk_forward.risk_control_replay_v154 import HistoricalRiskControlReplayer
+    ctx = HistoricalPortfolioReconstructor().reconstruct(portfolio_id, as_of)
+    result = HistoricalRiskControlReplayer().replay(ctx)
+    print(f"Risk Control Replay: portfolio={portfolio_id} as_of={as_of}")
+    print(f"  status={result.get('status')}  auto_sell={result.get('auto_sell_enabled')}")
+    print(f"  recommended_actions={result.get('recommended_actions')} (SIMULATION_ONLY)")
+    print("(demo fixture — RESEARCH_ONLY, NO_REAL_ORDERS)")
+    return 0
+
+
+def cmd_walk_forward_transactions(args=None):
+    """[v1.5.4] List simulated walk-forward transactions (research only)."""
+    print("[!] Historical Simulation Only. No Real Orders. Not Investment Advice.")
+    run_id = getattr(args, 'run_id', 'demo_run') or 'demo_run'
+    print(f"Walk-forward Transactions: run={run_id}")
+    print("  [txn_001] HYPOTHETICAL_BUY 2330.TW 1000 @ 620.0 | fee=883.5 slip=310.0 (SIMULATION_ONLY)")
+    print("  [txn_002] HYPOTHETICAL_BUY 2317.TW 2000 @ 115.0 | fee=327.75 slip=115.0 (SIMULATION_ONLY)")
+    print("  [txn_003] HYPOTHETICAL_SELL 2330.TW 1000 @ 635.0 | fee=904.88 tax=1905.0 (SIMULATION_ONLY)")
+    print("(demo fixture — SIMULATION_ONLY, NOT_REAL_ORDER, executable=False)")
+    return 0
+
+
+def cmd_walk_forward_costs(args=None):
+    """[v1.5.4] Show cost model for walk-forward (research only)."""
+    print("[!] Historical Simulation Only. No Real Orders. Not Investment Advice.")
+    from portfolio.walk_forward.cost_model_v154 import CostModelEngine
+    from portfolio.walk_forward.models_v154 import CostPolicy
+    policy = CostPolicy(policy_id="twse_standard", buy_fee_rate=0.001425, sell_fee_rate=0.001425,
+                        tax_rate=0.003, minimum_fee=20.0, effective_from="2020-01-01", version="1.5.4")
+    eng = CostModelEngine()
+    buy_cost = eng.total_buy_cost(100000, policy)
+    sell_cost = eng.total_sell_cost(100000, policy)
+    print(f"Cost Model v1.5.4 (TWSE Standard)")
+    print(f"  Buy fee (100k): TWD {buy_cost['fee']:.2f}")
+    print(f"  Sell fee+tax (100k): TWD {sell_cost['total']:.2f}")
+    print(f"  Minimum fee: TWD {policy.minimum_fee}")
+    print("(demo fixture — RESEARCH_ONLY, cost assumptions disclosed)")
+    return 0
+
+
+def cmd_walk_forward_slippage(args=None):
+    """[v1.5.4] Show slippage model for walk-forward (research only)."""
+    print("[!] Historical Simulation Only. No Real Orders. Not Investment Advice.")
+    from portfolio.walk_forward.slippage_model_v154 import SlippageModelEngine
+    eng = SlippageModelEngine()
+    slip = eng.apply_fixed_bps(100000, 5.0)
+    print(f"Slippage Model v1.5.4 (FIXED_BPS)")
+    print(f"  Fixed BPS: 5.0 bps")
+    print(f"  Slippage on 100k: TWD {float(slip):.2f}")
+    print("(demo fixture — RESEARCH_ONLY, no negative slippage)")
+    return 0
+
+
+def cmd_walk_forward_liquidity(args=None):
+    """[v1.5.4] Check liquidity for walk-forward (research only)."""
+    print("[!] Historical Simulation Only. No Real Orders. Not Investment Advice.")
+    symbol = getattr(args, 'symbol', '2330.TW') or '2330.TW'
+    from portfolio.walk_forward.liquidity_model_v154 import LiquidityModelEngine
+    result = LiquidityModelEngine().check_liquidity(symbol, 1000, 50000, 0.10)
+    print(f"Liquidity Check: {symbol}")
+    print(f"  status={result.get('status')}  max_qty={result.get('max_research_quantity')}")
+    print(f"  partial_fill={result.get('partial_fill')}  simulation_only={result.get('simulation_only')}")
+    print("(demo fixture — SIMULATION_ONLY)")
+    return 0
+
+
+def cmd_walk_forward_valuation(args=None):
+    """[v1.5.4] Value simulated portfolio (research only)."""
+    print("[!] Historical Simulation Only. No Real Orders. Not Investment Advice.")
+    run_id = getattr(args, 'run_id', 'demo_run') or 'demo_run'
+    from portfolio.walk_forward.valuation_v154 import SimulationPortfolioValuator
+    result = SimulationPortfolioValuator().value(
+        {"2330.TW": 1000, "2317.TW": 2000}, 215320.0,
+        {"2021-04-05": {"2330.TW": 635.0, "2317.TW": 118.0}}, "2021-04-05"
+    )
+    print(f"Simulation Valuation: run={run_id}")
+    print(f"  portfolio_value={result.get('portfolio_value'):.0f}")
+    print(f"  cash={result.get('cash'):.0f}  status={result.get('status')}")
+    print(f"  missing_prices={result.get('missing_prices')}")
+    print("(demo fixture — RESEARCH_ONLY, missing_price=None not 0)")
+    return 0
+
+
+def cmd_walk_forward_returns(args=None):
+    """[v1.5.4] Calculate walk-forward returns (research only)."""
+    print("[!] Historical Simulation Only. No Real Orders. Not Investment Advice.")
+    run_id = getattr(args, 'run_id', 'demo_run') or 'demo_run'
+    from portfolio.walk_forward.returns_v154 import WalkForwardReturnsCalculator
+    vals = {"2021-01-04": 1005000, "2021-01-05": 1008000, "2021-01-06": 1012000,
+            "2021-01-07": 1009000, "2021-01-08": 1015000}
+    result = WalkForwardReturnsCalculator().calculate(vals, {}, 1000000)
+    print(f"Walk-forward Returns: run={run_id}")
+    print(f"  twr={result.get('twr'):.4f}  max_drawdown={result.get('max_drawdown'):.4f}")
+    print(f"  positive_periods={result.get('positive_periods')}/{result.get('total_periods')}")
+    print("(demo fixture — RESEARCH_ONLY, PAST_PERFORMANCE_NOT_FUTURE_GUARANTEE)")
+    return 0
+
+
+def cmd_walk_forward_turnover(args=None):
+    """[v1.5.4] Calculate walk-forward turnover (research only)."""
+    print("[!] Historical Simulation Only. No Real Orders. Not Investment Advice.")
+    run_id = getattr(args, 'run_id', 'demo_run') or 'demo_run'
+    print(f"Walk-forward Turnover: run={run_id}")
+    print(f"  total_buys=850000  total_sells=635000  turnover_rate=742500")
+    print("(demo fixture — RESEARCH_ONLY)")
+    return 0
+
+
+def cmd_walk_forward_benchmark(args=None):
+    """[v1.5.4] Show benchmark returns for walk-forward (research only)."""
+    print("[!] Historical Simulation Only. No Real Orders. Not Investment Advice.")
+    symbol = getattr(args, 'symbol', '^TWII') or '^TWII'
+    from portfolio.walk_forward.benchmark_v154 import BenchmarkEngine
+    result = BenchmarkEngine().get_benchmark_returns(symbol, "2021-01-04", "2021-04-05", "2021-04-05")
+    n = len(result.get("returns_by_date", {}))
+    print(f"Benchmark: {symbol}  status={result.get('status')}")
+    print(f"  fixture_data_points={n}  pit_adjusted={result.get('pit_adjusted')}")
+    print("(demo fixture — RESEARCH_ONLY, PIT_SAFE)")
+    return 0
+
+
+def cmd_walk_forward_drawdown(args=None):
+    """[v1.5.4] Calculate walk-forward drawdown (research only)."""
+    print("[!] Historical Simulation Only. No Real Orders. Not Investment Advice.")
+    run_id = getattr(args, 'run_id', 'demo_run') or 'demo_run'
+    from portfolio.walk_forward.drawdown_v154 import WalkForwardDrawdownCalculator
+    vals = {"2021-01-04": 1000000, "2021-01-25": 1050000, "2021-02-15": 920000, "2021-03-10": 1060000}
+    result = WalkForwardDrawdownCalculator().calculate(vals)
+    print(f"Walk-forward Drawdown: run={run_id}")
+    print(f"  max_drawdown={result.get('max_drawdown'):.4f}  peak={result.get('peak_date')}  trough={result.get('trough_date')}")
+    print("(demo fixture — RESEARCH_ONLY)")
+    return 0
+
+
+def cmd_walk_forward_stability(args=None):
+    """[v1.5.4] Analyze walk-forward stability (research only)."""
+    print("[!] Historical Simulation Only. No Real Orders. Not Investment Advice.")
+    run_id = getattr(args, 'run_id', 'demo_run') or 'demo_run'
+    from portfolio.walk_forward.stability_v154 import WalkForwardStabilityAnalyzer
+    result = WalkForwardStabilityAnalyzer().analyze([0.08, 0.06, 0.09, -0.02, 0.07, 0.05, 0.08, 0.10, 0.07, 0.09])
+    score = result.metadata.get("stability_score") if result.metadata else None
+    print(f"Walk-forward Stability: run={run_id}")
+    print(f"  status={result.status}  score={score}  positive_ratio={result.positive_window_ratio:.1%}")
+    print(f"  worst={result.worst_window:.4f}  best={result.best_window:.4f}")
+    print("(demo fixture — RESEARCH_ONLY, NO_FUTURE_GUARANTEE)")
+    return 0
+
+
+def cmd_walk_forward_parameter_sensitivity(args=None):
+    """[v1.5.4] Run parameter sensitivity analysis (research only)."""
+    print("[!] Historical Simulation Only. No Real Orders. Not Investment Advice.")
+    parameter = getattr(args, 'parameter', 'sizing_risk_pct') or 'sizing_risk_pct'
+    from portfolio.walk_forward.parameter_sensitivity_v154 import ParameterSensitivityAnalyzer
+    result = ParameterSensitivityAnalyzer().analyze(parameter, [0.005, 0.01, 0.02, 0.03])
+    print(f"Parameter Sensitivity: {parameter}")
+    print(f"  status={result.status}  cliff_effect={result.cliff_effect}")
+    print(f"  selection_applied={result.selection_applied}  (always False)")
+    print("(demo fixture — RESEARCH_ONLY, selection_applied=False)")
+    return 0
+
+
+def cmd_walk_forward_regimes(args=None):
+    """[v1.5.4] Segment walk-forward windows by regime (research only)."""
+    print("[!] Historical Simulation Only. No Real Orders. Not Investment Advice.")
+    run_id = getattr(args, 'run_id', 'demo_run') or 'demo_run'
+    print(f"Walk-forward Regimes: run={run_id}")
+    print("  BULLISH: 4 windows, mean_return=14.2%")
+    print("  BEARISH: 3 windows, mean_return=-3.1%")
+    print("  HIGH_VOLATILITY: 2 windows, mean_return=1.1%")
+    print("  UNKNOWN: 2 windows, mean_return=7.6%")
+    print("(demo fixture — RESEARCH_ONLY, regime classification per spec)")
+    return 0
+
+
+def cmd_walk_forward_run(args=None):
+    """[v1.5.4] Run full walk-forward backtest (research only)."""
+    print("[!] Historical Simulation Only. No Real Orders. Not Investment Advice.")
+    config_id = getattr(args, 'config_id', 'demo_rolling') or 'demo_rolling'
+    from portfolio.walk_forward.query_v154 import WalkForwardQueryService
+    svc = WalkForwardQueryService()
+    config = svc.create_walk_forward_config(config_id=config_id)["config"]
+    result = svc.run_walk_forward(config)
+    print(f"Walk-forward Run: config={config_id}  status={result.get('status')}")
+    print(f"  windows={result.get('windows')}  research_only=True")
+    print("(demo fixture — HISTORICAL_SIMULATION_ONLY, NOT_AN_ORDER, NO_BROKER)")
+    return 0
+
+
+def cmd_walk_forward_show(args=None):
+    """[v1.5.4] Show a walk-forward run result (research only)."""
+    print("[!] Historical Simulation Only. No Real Orders. Not Investment Advice.")
+    run_id = getattr(args, 'run_id', 'demo_run') or 'demo_run'
+    print(f"Walk-forward Run: {run_id}")
+    print(f"  in_sample_return=14.2%  out_of_sample_return=8.9%")
+    print(f"  benchmark=7.1%  max_drawdown=-12.4%  stability_score=68.0")
+    print("(demo fixture — RESEARCH_ONLY, HISTORICAL_SIMULATION_ONLY)")
+    return 0
+
+
+def cmd_walk_forward_list(args=None):
+    """[v1.5.4] List walk-forward runs (research only)."""
+    print("[!] Historical Simulation Only. No Real Orders. Not Investment Advice.")
+    from portfolio.walk_forward.store_v154 import WalkForwardStore
+    runs = WalkForwardStore().list_runs()
+    print(f"Walk-forward Runs ({len(runs)} total)")
+    if not runs:
+        print("  No runs saved. Use walk-forward-run to create one.")
+    print("(demo fixture — RESEARCH_ONLY)")
+    return 0
+
+
+def cmd_walk_forward_lineage(args=None):
+    """[v1.5.4] Show lineage for a walk-forward run (research only)."""
+    print("[!] Historical Simulation Only. No Real Orders. Not Investment Advice.")
+    run_id = getattr(args, 'run_id', 'demo_run') or 'demo_run'
+    from portfolio.walk_forward.lineage_v154 import WalkForwardLineageTracker
+    lineage = WalkForwardLineageTracker().build_lineage(run_id, None, [], [], [])
+    print(f"Walk-forward Lineage: run={run_id}")
+    print(f"  config_hash={lineage.get('config_hash')}  is_complete={lineage.get('is_complete')}")
+    print(f"  fixture_classification={lineage.get('fixture_classification')}")
+    print("(demo fixture — RESEARCH_ONLY)")
+    return 0
+
+
+def cmd_walk_forward_reproducibility(args=None):
+    """[v1.5.4] Show reproducibility manifest (research only)."""
+    print("[!] Historical Simulation Only. No Real Orders. Not Investment Advice.")
+    run_id = getattr(args, 'run_id', 'demo_run') or 'demo_run'
+    from portfolio.walk_forward.reproducibility_v154 import WalkForwardReproducibilityEngine
+    manifest = WalkForwardReproducibilityEngine().build_manifest(run_id, None, [], [])
+    print(f"Walk-forward Reproducibility: run={run_id}")
+    print(f"  config_hash={manifest.config_hash}  seed={manifest.seed}")
+    print(f"  timezone={manifest.timezone}  calendar_version={manifest.calendar_version}")
+    print("(demo fixture — RESEARCH_ONLY, fixed_seed=42)")
+    return 0
+
+
+def cmd_walk_forward_explain(args=None):
+    """[v1.5.4] Explain a walk-forward run (research only)."""
+    print("[!] Historical Simulation Only. No Real Orders. Not Investment Advice.")
+    run_id = getattr(args, 'run_id', 'demo_run') or 'demo_run'
+    from portfolio.walk_forward.explain_v154 import PortfolioWalkForwardExplainer
+    result = PortfolioWalkForwardExplainer().explain(None, None, [], {})
+    print(f"Walk-forward Explanation: run={run_id}")
+    print(f"  safety_text={result.get('safety_text')}")
+    print(f"  limitations={len(result.get('limitations', []))} items")
+    print("(demo fixture — RESEARCH_ONLY)")
+    return 0
+
+
+def cmd_portfolio_walk_forward_report(args=None):
+    """[v1.5.4] Generate portfolio walk-forward research report (research only)."""
+    print("[!] Historical Simulation Only. No Real Orders. Not Investment Advice.")
+    run_id = getattr(args, 'run_id', 'demo_run') or 'demo_run'
+    config_id = getattr(args, 'config_id', 'demo_rolling') or 'demo_rolling'
+    from reports.portfolio_walk_forward_report import PortfolioWalkForwardReport
+    report = PortfolioWalkForwardReport()
+    r = report.generate(run_id=run_id, config_id=config_id)
+    print(report.render_text(r))
+    print(f"RESEARCH_ONLY={r.get('RESEARCH_ONLY')}  HISTORICAL_SIMULATION_ONLY={r.get('HISTORICAL_SIMULATION_ONLY')}")
+    return 0
+
+
 def main() -> None:
     """Main entrypoint."""
     import pandas as pd  # imported here to avoid shadowing at module level
@@ -35343,6 +35767,36 @@ def main() -> None:
         "risk-control-list":                cmd_risk_control_list,
         "risk-control-lineage":             cmd_risk_control_lineage,
         "drawdown-risk-report":             cmd_drawdown_risk_report,
+        # v1.5.4 Portfolio Walk-forward Backtest
+        "portfolio-walk-forward-health":        cmd_portfolio_walk_forward_health,
+        "walk-forward-configs":                 cmd_walk_forward_configs,
+        "walk-forward-config-show":             cmd_walk_forward_config_show,
+        "walk-forward-eligibility":             cmd_walk_forward_eligibility,
+        "walk-forward-windows":                 cmd_walk_forward_windows,
+        "walk-forward-reconstruct":             cmd_walk_forward_reconstruct,
+        "walk-forward-decision-replay":         cmd_walk_forward_decision_replay,
+        "walk-forward-sizing-replay":           cmd_walk_forward_sizing_replay,
+        "walk-forward-correlation-replay":      cmd_walk_forward_correlation_replay,
+        "walk-forward-risk-replay":             cmd_walk_forward_risk_replay,
+        "walk-forward-transactions":            cmd_walk_forward_transactions,
+        "walk-forward-costs":                   cmd_walk_forward_costs,
+        "walk-forward-slippage":                cmd_walk_forward_slippage,
+        "walk-forward-liquidity":               cmd_walk_forward_liquidity,
+        "walk-forward-valuation":               cmd_walk_forward_valuation,
+        "walk-forward-returns":                 cmd_walk_forward_returns,
+        "walk-forward-turnover":                cmd_walk_forward_turnover,
+        "walk-forward-benchmark":               cmd_walk_forward_benchmark,
+        "walk-forward-drawdown":                cmd_walk_forward_drawdown,
+        "walk-forward-stability":               cmd_walk_forward_stability,
+        "walk-forward-parameter-sensitivity":   cmd_walk_forward_parameter_sensitivity,
+        "walk-forward-regimes":                 cmd_walk_forward_regimes,
+        "walk-forward-run":                     cmd_walk_forward_run,
+        "walk-forward-show":                    cmd_walk_forward_show,
+        "walk-forward-list":                    cmd_walk_forward_list,
+        "walk-forward-lineage":                 cmd_walk_forward_lineage,
+        "walk-forward-reproducibility":         cmd_walk_forward_reproducibility,
+        "walk-forward-explain":                 cmd_walk_forward_explain,
+        "portfolio-walk-forward-report":        cmd_portfolio_walk_forward_report,
     }
 
     if args.command is None:

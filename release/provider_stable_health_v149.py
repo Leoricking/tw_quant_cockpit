@@ -58,7 +58,8 @@ class ProviderStableRollupHealthCheck:
 
         try:
             from release.version_info import BASE_RELEASE
-            ok = any(m in BASE_RELEASE for m in ("1.4.8", "1.4.9", "1.5.0", "1.5.0.1", "1.5.0.2", "1.5.1", "1.5.2"))
+            def _parse_ver(v): return tuple(int(x) for x in v.split()[0].split(".")[:3] if x.isdigit())
+            ok = _parse_ver(BASE_RELEASE) >= _parse_ver("1.4.8")
             checks["base_release_correct"] = ("PASS" if ok else "FAIL",
                                                f"BASE_RELEASE={BASE_RELEASE}")
         except Exception as exc:

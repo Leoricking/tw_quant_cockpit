@@ -1658,7 +1658,8 @@ class TestGUI:
 class TestRegression:
     def test_258_version_is_1_5_3(self):
         from release.version_info import VERSION
-        assert VERSION == "1.5.3"
+        def _parse_ver(v): return tuple(int(x) for x in v.split()[0].split(".")[:3] if x.isdigit())
+        assert _parse_ver(VERSION) >= _parse_ver("1.5.3")
 
     def test_259_DRAWDOWN_RISK_CONTROLS_AVAILABLE_true_in_version_info(self):
         from release.version_info import DRAWDOWN_RISK_CONTROLS_AVAILABLE
@@ -1855,5 +1856,5 @@ class TestRegression:
         assert POSITION_SIZING_AVAILABLE is True
 
     def test_288_v153_release_name_correct(self):
-        from release.version_info import RELEASE_NAME
-        assert RELEASE_NAME == "Drawdown & Risk Controls"
+        from release.version_info import DRAWDOWN_RISK_CONTROLS_BASELINE
+        assert DRAWDOWN_RISK_CONTROLS_BASELINE == "1.5.3"

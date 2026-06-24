@@ -1,0 +1,18 @@
+{
+  "TEST_FIXTURE": true,
+  "DEMO_ONLY": true,
+  "HISTORICAL_SIMULATION_ONLY": true,
+  "NOT_REAL_PORTFOLIO": true,
+  "NOT_REAL_ORDER": true,
+  "NOT_FOR_EXECUTION": true,
+  "NOT_FOR_INVESTMENT_DECISION": true,
+  "total_buys": 850000.0,
+  "total_sells": 635000.0,
+  "turnover_rate": 742500.0,
+  "transaction_count": 11,
+  "by_window": {
+    "wf_0001": {"buys": 850000.0, "sells": 0.0},
+    "wf_0002": {"buys": 0.0, "sells": 635000.0}
+  },
+  "research_only": true
+}

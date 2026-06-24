@@ -40,7 +40,8 @@ class TestVersionInfo:
 
     def test_3_base_release_contains_148(self):
         from release.version_info import BASE_RELEASE
-        assert "1.4.8" in BASE_RELEASE or "1.4.9" in BASE_RELEASE or "1.5.0" in BASE_RELEASE or "1.5.1" in BASE_RELEASE or "1.5.2" in BASE_RELEASE
+        def _parse_ver(v): return tuple(int(x) for x in v.split()[0].split(".")[:3] if x.isdigit())
+        assert _parse_ver(BASE_RELEASE) >= _parse_ver("1.4.8")
 
     def test_4_provider_stable_baseline(self):
         from release.version_info import PROVIDER_STABLE_BASELINE
@@ -705,7 +706,8 @@ class TestStableReport:
     def test_121_report_metadata_version(self):
         from reports.provider_stable_rollup_report import ProviderStableRollupReport
         result = ProviderStableRollupReport().generate()
-        assert result["metadata"]["version"] in ("1.4.9", "1.5.0", "1.5.0.1", "1.5.0.2", "1.5.1", "1.5.2", "1.5.2.1", "1.5.3")
+        def _parse_ver(v): return tuple(int(x) for x in v.split()[0].split(".")[:3] if x.isdigit())
+        assert _parse_ver(result["metadata"]["version"]) >= _parse_ver("1.4.9")
 
     def test_122_report_final_readiness(self):
         from reports.provider_stable_rollup_report import ProviderStableRollupReport

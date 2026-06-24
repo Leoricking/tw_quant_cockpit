@@ -97,7 +97,7 @@ class ResearchFoundationReleaseGate:
             ok = (
                 parts >= (1, 3, 9)
                 and RELEASE_NAME in _KNOWN_NAMES
-                and any(m in BASE_RELEASE for m in ("1.3.7", "1.3.9", "1.4.0", "1.4.1", "1.4.2", "1.4.3", "1.4.4", "1.4.5", "1.4.6", "1.4.6.1", "1.4.7", "1.4.8", "1.4.9", "1.5.0", "1.5.1", "1.5.2"))
+                and (lambda v: tuple(int(x) for x in v.split()[0].split(".")[:3] if x.isdigit()))(BASE_RELEASE) >= (1, 3, 7)
                 and REPLAY_STABLE_BASELINE == "1.2.9"
             )
             return _make_gate(

@@ -1,0 +1,20 @@
+{
+  "TEST_FIXTURE": true,
+  "DEMO_ONLY": true,
+  "HISTORICAL_SIMULATION_ONLY": true,
+  "NOT_REAL_PORTFOLIO": true,
+  "NOT_REAL_ORDER": true,
+  "NOT_FOR_EXECUTION": true,
+  "NOT_FOR_INVESTMENT_DECISION": true,
+  "portfolio_value": 1085320.0,
+  "cash": 215320.0,
+  "positions": {
+    "2330.TW": 620000.0,
+    "2317.TW": 250000.0
+  },
+  "benchmark_value": 10850.0,
+  "missing_prices": [],
+  "partial": false,
+  "status": "VALID",
+  "research_only": true
+}

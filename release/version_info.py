@@ -73,9 +73,10 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # ---------------------------------------------------------------------------
 # v1.3.3 module-level constants (Coverage Repair Workflow)
 # ---------------------------------------------------------------------------
-VERSION                             = "1.5.3"
-RELEASE_NAME                        = "Drawdown & Risk Controls"
-BASE_RELEASE                        = "1.5.2.1 Correlation & Exposure Integrity Hotfix"
+VERSION                             = "1.5.4"
+RELEASE_NAME                        = "Portfolio Walk-forward Backtest"
+BASE_RELEASE                        = "1.5.3 Drawdown & Risk Controls"
+PORTFOLIO_WALK_FORWARD_BASELINE     = "1.5.4"
 DRAWDOWN_RISK_CONTROLS_BASELINE     = "1.5.3"
 PROVIDER_FEATURE_BASELINE           = "1.4.8 Provider Integration Hardening"
 REPLAY_STABLE_BASELINE              = "1.2.9"
@@ -87,6 +88,16 @@ CORRELATION_EXPOSURE_BASELINE       = "1.5.2"
 CORRELATION_EXPOSURE_STAGE          = "STABLE"   # v1.5.2
 DRAWDOWN_RISK_CONTROLS_AVAILABLE    = True
 DRAWDOWN_RISK_CONTROLS_STAGE        = "STABLE"   # v1.5.3
+# v1.5.4 Portfolio Walk-forward capability flags
+PORTFOLIO_WALK_FORWARD_AVAILABLE    = True
+PORTFOLIO_WALK_FORWARD_RESEARCH_ONLY = True
+PORTFOLIO_WALK_FORWARD_STAGE        = "STABLE"   # v1.5.4
+WALK_FORWARD_ORDER_CREATION_ENABLED = False      # permanently blocked
+WALK_FORWARD_ORDER_EXECUTION_ENABLED = False     # permanently blocked
+WALK_FORWARD_BROKER_ENABLED         = False      # permanently blocked
+WALK_FORWARD_FORMAL_LEDGER_WRITE_ENABLED = False # permanently blocked
+WALK_FORWARD_AUTO_APPLY_ENABLED     = False      # permanently blocked
+WALK_FORWARD_AUTO_REBALANCE_ENABLED = False      # permanently blocked
 WEIGHT_OPTIMIZATION_ENABLED         = False      # permanently blocked
 ORDER_CREATION_ENABLED              = False      # permanently blocked
 AUTO_REBALANCE_ENABLED              = False      # permanently blocked

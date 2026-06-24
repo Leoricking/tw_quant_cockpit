@@ -1,0 +1,28 @@
+{
+  "TEST_FIXTURE": true,
+  "DEMO_ONLY": true,
+  "HISTORICAL_SIMULATION_ONLY": true,
+  "NOT_REAL_PORTFOLIO": true,
+  "NOT_REAL_ORDER": true,
+  "NOT_FOR_EXECUTION": true,
+  "NOT_FOR_INVESTMENT_DECISION": true,
+  "parameter_name": "sizing_risk_pct",
+  "tested_values": [0.005, 0.01, 0.02, 0.03],
+  "results_by_value": {
+    "0.005": {"return": 0.042, "status": "VALID"},
+    "0.01": {"return": 0.076, "status": "VALID"},
+    "0.02": {"return": 0.089, "status": "VALID"},
+    "0.03": {"return": 0.027, "status": "VALID"}
+  },
+  "local_stability": 0.62,
+  "cliff_effect": false,
+  "selected_value": null,
+  "selection_applied": false,
+  "status": "VALID",
+  "metadata": {
+    "version": "1.5.4",
+    "cliff_threshold": 0.50,
+    "research_only": true,
+    "selection_applied": false
+  }
+}

@@ -393,7 +393,8 @@ class TestSafetyAndVersion:
     def test_base_release_contains_1501_or_1502(self):
         """Test 43: BASE_RELEASE references 1.5.0.1, 1.5.0.2, 1.5.1, or 1.5.2."""
         from release.version_info import BASE_RELEASE
-        assert "1.5.0.1" in BASE_RELEASE or "1.5.0.2" in BASE_RELEASE or "1.5.1" in BASE_RELEASE or "1.5.2" in BASE_RELEASE, (
+        def _parse_ver(v): return tuple(int(x) for x in v.split()[0].split(".")[:3] if x.isdigit())
+        assert _parse_ver(BASE_RELEASE) >= _parse_ver("1.5.0"), (
             f"BASE_RELEASE: {BASE_RELEASE}"
         )
 

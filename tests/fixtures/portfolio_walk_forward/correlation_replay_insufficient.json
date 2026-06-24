@@ -1,0 +1,17 @@
+{
+  "TEST_FIXTURE": true,
+  "DEMO_ONLY": true,
+  "HISTORICAL_SIMULATION_ONLY": true,
+  "NOT_REAL_PORTFOLIO": true,
+  "NOT_REAL_ORDER": true,
+  "NOT_FOR_EXECUTION": true,
+  "NOT_FOR_INVESTMENT_DECISION": true,
+  "status": "INSUFFICIENT_DATA",
+  "observations": 5,
+  "minimum_required": 20,
+  "matrix": null,
+  "clusters": null,
+  "beta": null,
+  "exposure": null,
+  "research_only": true
+}

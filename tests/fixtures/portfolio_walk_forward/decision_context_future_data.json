@@ -1,0 +1,17 @@
+{
+  "TEST_FIXTURE": true,
+  "DEMO_ONLY": true,
+  "HISTORICAL_SIMULATION_ONLY": true,
+  "NOT_REAL_PORTFOLIO": true,
+  "NOT_REAL_ORDER": true,
+  "NOT_FOR_EXECUTION": true,
+  "NOT_FOR_INVESTMENT_DECISION": true,
+  "decision_id": "dec_future_data_blocked",
+  "portfolio_id": "demo_portfolio",
+  "as_of": "2021-04-01",
+  "available_from": "2021-09-30",
+  "_status": "BLOCKED",
+  "_reason": "available_from (2021-09-30) > as_of (2021-04-01) — future data violation",
+  "_pit_violation": true,
+  "metadata": {"research_only": true, "future_data_blocked": true}
+}
