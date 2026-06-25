@@ -1,0 +1,7 @@
+{
+  "fixture_type": "TEST_FIXTURE",
+  "market_data_only": true,
+  "no_real_orders": true,
+  "is_duplicate": true,
+  "expected_quality_status": "BLOCKED"
+}

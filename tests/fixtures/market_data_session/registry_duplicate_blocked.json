@@ -1,0 +1,9 @@
+{
+  "fixture_type": "TEST_FIXTURE",
+  "market_data_only": true,
+  "no_real_orders": true,
+  "adapter_id": "dup_adapter",
+  "expected_blocked": true,
+  "duplicate_adapter_id_blocked": true,
+  "reason": "Duplicate adapter_id registration must be BLOCKED"
+}

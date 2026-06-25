@@ -1,0 +1,13 @@
+{
+  "fixture_type": "TEST_FIXTURE",
+  "market_data_only": true,
+  "no_real_orders": true,
+  "no_broker_api": true,
+  "production_trading_blocked": true,
+  "live_to_fixture_fallback_disabled": true,
+  "live_to_offline_fallback_disabled": true,
+  "unknown_source_as_live_disabled": true,
+  "silent_fixture_fallback_disabled": true,
+  "research_only": true,
+  "simulation_only": true
+}

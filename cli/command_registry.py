@@ -1473,7 +1473,7 @@ from typing import Any as _Any, Callable as _Callable, Dict as _Dict, List as _L
 NO_REAL_ORDERS = True
 BROKER_EXECUTION_ENABLED = False
 PRODUCTION_TRADING_BLOCKED = True
-REGISTRY_VERSION = "1.4.3.1"
+REGISTRY_VERSION = "1.6.1"
 
 
 @_dataclass
@@ -2951,6 +2951,128 @@ _LIVE_PAPER_TRADING_COMMANDS: _List[CommandSpec] = [
                 safety_classification="SIMULATION_ONLY"),
 ]
 
+# ---------------------------------------------------------------------------
+# v1.6.1 — Market Data Session Adapter commands (29 commands)
+# ---------------------------------------------------------------------------
+_MARKET_DATA_SESSION_COMMANDS: _List[CommandSpec] = [
+    CommandSpec(name="market-data-health", handler_name="cmd_market_data_health",
+                help="[v1.6.1] Market data session health check. Research only.",
+                group="market_data_session", introduced_in="1.6.1",
+                safety_classification="RESEARCH_ONLY"),
+    CommandSpec(name="market-data-session-create", handler_name="cmd_market_data_session_create",
+                help="[v1.6.1] Create a new market data session.",
+                group="market_data_session", introduced_in="1.6.1",
+                safety_classification="RESEARCH_ONLY"),
+    CommandSpec(name="market-data-session-start", handler_name="cmd_market_data_session_start",
+                help="[v1.6.1] Start a market data session.",
+                group="market_data_session", introduced_in="1.6.1",
+                safety_classification="RESEARCH_ONLY"),
+    CommandSpec(name="market-data-session-pause", handler_name="cmd_market_data_session_pause",
+                help="[v1.6.1] Pause a market data session.",
+                group="market_data_session", introduced_in="1.6.1",
+                safety_classification="RESEARCH_ONLY"),
+    CommandSpec(name="market-data-session-resume", handler_name="cmd_market_data_session_resume",
+                help="[v1.6.1] Resume a paused market data session.",
+                group="market_data_session", introduced_in="1.6.1",
+                safety_classification="RESEARCH_ONLY"),
+    CommandSpec(name="market-data-session-halt", handler_name="cmd_market_data_session_halt",
+                help="[v1.6.1] Halt a market data session.",
+                group="market_data_session", introduced_in="1.6.1",
+                safety_classification="RESEARCH_ONLY"),
+    CommandSpec(name="market-data-session-complete", handler_name="cmd_market_data_session_complete",
+                help="[v1.6.1] Complete a market data session.",
+                group="market_data_session", introduced_in="1.6.1",
+                safety_classification="RESEARCH_ONLY"),
+    CommandSpec(name="market-data-session-show", handler_name="cmd_market_data_session_show",
+                help="[v1.6.1] Show market data session status.",
+                group="market_data_session", introduced_in="1.6.1",
+                safety_classification="RESEARCH_ONLY"),
+    CommandSpec(name="market-data-session-list", handler_name="cmd_market_data_session_list",
+                help="[v1.6.1] List market data sessions.",
+                group="market_data_session", introduced_in="1.6.1",
+                safety_classification="RESEARCH_ONLY"),
+    CommandSpec(name="market-data-adapter-register", handler_name="cmd_market_data_adapter_register",
+                help="[v1.6.1] Register a market data adapter.",
+                group="market_data_session", introduced_in="1.6.1",
+                safety_classification="RESEARCH_ONLY"),
+    CommandSpec(name="market-data-adapter-list", handler_name="cmd_market_data_adapter_list",
+                help="[v1.6.1] List registered market data adapters.",
+                group="market_data_session", introduced_in="1.6.1",
+                safety_classification="RESEARCH_ONLY"),
+    CommandSpec(name="market-data-event-list", handler_name="cmd_market_data_event_list",
+                help="[v1.6.1] List market data events for a symbol.",
+                group="market_data_session", introduced_in="1.6.1",
+                safety_classification="RESEARCH_ONLY"),
+    CommandSpec(name="market-data-quote-show", handler_name="cmd_market_data_quote_show",
+                help="[v1.6.1] Show latest quote for a symbol.",
+                group="market_data_session", introduced_in="1.6.1",
+                safety_classification="RESEARCH_ONLY"),
+    CommandSpec(name="market-data-trade-show", handler_name="cmd_market_data_trade_show",
+                help="[v1.6.1] Show latest trade for a symbol.",
+                group="market_data_session", introduced_in="1.6.1",
+                safety_classification="RESEARCH_ONLY"),
+    CommandSpec(name="market-data-quality-show", handler_name="cmd_market_data_quality_show",
+                help="[v1.6.1] Show data quality summary.",
+                group="market_data_session", introduced_in="1.6.1",
+                safety_classification="RESEARCH_ONLY"),
+    CommandSpec(name="market-data-freshness-show", handler_name="cmd_market_data_freshness_show",
+                help="[v1.6.1] Show freshness status for symbols.",
+                group="market_data_session", introduced_in="1.6.1",
+                safety_classification="RESEARCH_ONLY"),
+    CommandSpec(name="market-data-sequence-show", handler_name="cmd_market_data_sequence_show",
+                help="[v1.6.1] Show sequence validation status.",
+                group="market_data_session", introduced_in="1.6.1",
+                safety_classification="RESEARCH_ONLY"),
+    CommandSpec(name="market-data-feed-health", handler_name="cmd_market_data_feed_health",
+                help="[v1.6.1] Show feed health status.",
+                group="market_data_session", introduced_in="1.6.1",
+                safety_classification="RESEARCH_ONLY"),
+    CommandSpec(name="market-data-anomaly-show", handler_name="cmd_market_data_anomaly_show",
+                help="[v1.6.1] Show detected anomalies.",
+                group="market_data_session", introduced_in="1.6.1",
+                safety_classification="RESEARCH_ONLY"),
+    CommandSpec(name="market-data-checkpoint-create", handler_name="cmd_market_data_checkpoint_create",
+                help="[v1.6.1] Create a session checkpoint.",
+                group="market_data_session", introduced_in="1.6.1",
+                safety_classification="RESEARCH_ONLY"),
+    CommandSpec(name="market-data-checkpoint-show", handler_name="cmd_market_data_checkpoint_show",
+                help="[v1.6.1] Show a session checkpoint.",
+                group="market_data_session", introduced_in="1.6.1",
+                safety_classification="RESEARCH_ONLY"),
+    CommandSpec(name="market-data-session-restore", handler_name="cmd_market_data_session_restore",
+                help="[v1.6.1] Restore session from checkpoint (resumes to PAUSED).",
+                group="market_data_session", introduced_in="1.6.1",
+                safety_classification="RESEARCH_ONLY"),
+    CommandSpec(name="market-data-lineage-show", handler_name="cmd_market_data_lineage_show",
+                help="[v1.6.1] Show event lineage for a session.",
+                group="market_data_session", introduced_in="1.6.1",
+                safety_classification="RESEARCH_ONLY"),
+    CommandSpec(name="market-data-reproducibility-verify", handler_name="cmd_market_data_reproducibility_verify",
+                help="[v1.6.1] Verify session reproducibility.",
+                group="market_data_session", introduced_in="1.6.1",
+                safety_classification="RESEARCH_ONLY"),
+    CommandSpec(name="market-data-explain", handler_name="cmd_market_data_explain",
+                help="[v1.6.1] Explain market data quality decisions.",
+                group="market_data_session", introduced_in="1.6.1",
+                safety_classification="RESEARCH_ONLY"),
+    CommandSpec(name="market-data-calendar-show", handler_name="cmd_market_data_calendar_show",
+                help="[v1.6.1] Show Taiwan market calendar session info.",
+                group="market_data_session", introduced_in="1.6.1",
+                safety_classification="RESEARCH_ONLY"),
+    CommandSpec(name="market-data-symbol-map", handler_name="cmd_market_data_symbol_map",
+                help="[v1.6.1] Show symbol mapping registry.",
+                group="market_data_session", introduced_in="1.6.1",
+                safety_classification="RESEARCH_ONLY"),
+    CommandSpec(name="market-data-session-report", handler_name="cmd_market_data_session_report",
+                help="[v1.6.1] Generate market data session research report.",
+                group="market_data_session", introduced_in="1.6.1",
+                safety_classification="RESEARCH_ONLY"),
+    CommandSpec(name="market-data-release-gate", handler_name="cmd_market_data_release_gate",
+                help="[v1.6.1] Run market data session release gate checks.",
+                group="market_data_session", introduced_in="1.6.1",
+                safety_classification="RESEARCH_ONLY"),
+]
+
 PROVIDER_COMMANDS: _List[CommandSpec] = (
     _RESEARCH_FOUNDATION_COMMANDS
     + _TWSE_COMMANDS
@@ -2970,6 +3092,7 @@ PROVIDER_COMMANDS: _List[CommandSpec] = (
     + _PORTFOLIO_WALK_FORWARD_COMMANDS
     + _PORTFOLIO_STABLE_ROLLUP_COMMANDS
     + _LIVE_PAPER_TRADING_COMMANDS
+    + _MARKET_DATA_SESSION_COMMANDS
 )
 
 

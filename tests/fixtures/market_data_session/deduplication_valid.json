@@ -1,0 +1,8 @@
+{
+  "fixture_type": "TEST_FIXTURE",
+  "market_data_only": true,
+  "no_real_orders": true,
+  "event_ids": ["eid1", "eid2", "eid1"],
+  "expected_duplicate_count": 1,
+  "expected_passed_count": 2
+}

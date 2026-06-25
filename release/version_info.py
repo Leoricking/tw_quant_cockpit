@@ -73,11 +73,14 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # ---------------------------------------------------------------------------
 # v1.3.3 module-level constants (Coverage Repair Workflow)
 # ---------------------------------------------------------------------------
-VERSION                             = "1.6.0"
-RELEASE_NAME                        = "Live Paper Trading Foundation"
-BASE_RELEASE                        = "1.5.9.2 Portfolio Stable Rollup Release Gate Hotfix"
+VERSION                             = "1.6.1"
+RELEASE_NAME                        = "Market Data Session Adapter"
+BASE_RELEASE                        = "1.6.0 Live Paper Trading Foundation"
 PORTFOLIO_STABLE_BASELINE           = "1.5.9"
 LIVE_PAPER_TRADING_BASELINE         = "1.6.0"
+MARKET_DATA_SESSION_BASELINE        = "1.6.1"
+MARKET_DATA_SESSION_AVAILABLE       = True
+MARKET_DATA_SESSION_RESEARCH_ONLY   = True
 LIVE_PAPER_TRADING_AVAILABLE        = True
 LIVE_PAPER_TRADING_STAGE            = "FOUNDATION"
 LIVE_PAPER_TRADING_RESEARCH_ONLY    = True

@@ -1,0 +1,13 @@
+{
+  "fixture_type": "TEST_FIXTURE",
+  "market_data_only": true,
+  "no_real_orders": true,
+  "adapter_id": "test_replay_adapter",
+  "source_class": "REPLAY",
+  "provider_name": "test_replay",
+  "symbols": ["2330"],
+  "reconnect_policy": "NO_RECONNECT",
+  "paper_session_as_of": "2024-03-01",
+  "expected_valid": true,
+  "expected_pit_enforced": true
+}

@@ -1,0 +1,9 @@
+{
+  "fixture_type": "TEST_FIXTURE",
+  "market_data_only": true,
+  "no_real_orders": true,
+  "adapter_id": "bad_adapter",
+  "source_class": "UNKNOWN",
+  "expected_blocked": true,
+  "expected_error": "UNKNOWN source class is not trusted"
+}

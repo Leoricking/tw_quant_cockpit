@@ -1,0 +1,13 @@
+{
+  "fixture_type": "TEST_FIXTURE",
+  "market_data_only": true,
+  "no_real_orders": true,
+  "adapter_id": "a1",
+  "symbol": "2330",
+  "events": [
+    {"event_id": "e1", "sequence_number": 1},
+    {"event_id": "e2", "sequence_number": 2},
+    {"event_id": "e3", "sequence_number": 3}
+  ],
+  "expected_statuses": ["IN_ORDER", "IN_ORDER", "IN_ORDER"]
+}

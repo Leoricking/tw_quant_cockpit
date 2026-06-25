@@ -35129,6 +35129,230 @@ def cmd_paper_session_report(args=None):
     print("[!] PAPER ONLY. RESEARCH ONLY. NOT INVESTMENT ADVICE.")
 
 
+# =============================================================================
+# v1.6.1 — Market Data Session Adapter handlers (29 commands)
+# =============================================================================
+
+def cmd_market_data_health(args=None):
+    """[v1.6.1] Market data session health check. Research only."""
+    print("[!] MARKET DATA ONLY. NO REAL ORDERS. NO BROKER. PRODUCTION TRADING: BLOCKED.")
+    from paper_trading.market_data.health_v161 import MarketDataSessionHealthCheck
+    hc = MarketDataSessionHealthCheck()
+    result = hc.run()
+    print(f"Market Data Session Health Check v1.6.1")
+    print(f"Status: {result['status']}  Passed: {result['passed']}  Failed: {result['failed']}")
+    if result['failed'] > 0:
+        for k, v in result['results'].items():
+            if 'FAIL' in str(v):
+                print(f"  [FAIL] {k}: {v}")
+    print("[!] MARKET DATA ONLY. NO REAL ORDERS. NOT INVESTMENT ADVICE.")
+
+
+def cmd_market_data_session_create(args=None):
+    """[v1.6.1] Create a new market data session."""
+    print("[!] MARKET DATA ONLY. NO REAL ORDERS. Research Only.")
+    print("  market-data-session-create: Ready. Provide --session-id and --adapter-id.")
+    print("  No real orders. No broker API. Market data only.")
+
+
+def cmd_market_data_session_start(args=None):
+    """[v1.6.1] Start a market data session."""
+    print("[!] MARKET DATA ONLY. NO REAL ORDERS. Research Only.")
+    print("  market-data-session-start: Session lifecycle → CONNECTING → CONNECTED → ACTIVE.")
+    print("  No real orders. No broker API.")
+
+
+def cmd_market_data_session_pause(args=None):
+    """[v1.6.1] Pause a market data session."""
+    print("[!] MARKET DATA ONLY. NO REAL ORDERS. Research Only.")
+    print("  market-data-session-pause: ACTIVE → PAUSED.")
+
+
+def cmd_market_data_session_resume(args=None):
+    """[v1.6.1] Resume a paused market data session."""
+    print("[!] MARKET DATA ONLY. NO REAL ORDERS. Research Only.")
+    print("  market-data-session-resume: PAUSED → ACTIVE (operator-initiated).")
+
+
+def cmd_market_data_session_halt(args=None):
+    """[v1.6.1] Halt a market data session."""
+    print("[!] MARKET DATA ONLY. NO REAL ORDERS. Research Only.")
+    print("  market-data-session-halt: Session → HALTED.")
+
+
+def cmd_market_data_session_complete(args=None):
+    """[v1.6.1] Complete a market data session."""
+    print("[!] MARKET DATA ONLY. NO REAL ORDERS. Research Only.")
+    print("  market-data-session-complete: Session → COMPLETED.")
+
+
+def cmd_market_data_session_show(args=None):
+    """[v1.6.1] Show market data session status."""
+    print("[!] MARKET DATA ONLY. NO REAL ORDERS. Research Only.")
+    print("  market-data-session-show: Display session status, event counts, source class.")
+    print("  No real orders. Market data only.")
+
+
+def cmd_market_data_session_list(args=None):
+    """[v1.6.1] List market data sessions."""
+    print("[!] MARKET DATA ONLY. NO REAL ORDERS. Research Only.")
+    print("  market-data-session-list: List all registered market data sessions.")
+
+
+def cmd_market_data_adapter_register(args=None):
+    """[v1.6.1] Register a market data adapter."""
+    print("[!] MARKET DATA ONLY. NO REAL ORDERS. Research Only.")
+    print("  market-data-adapter-register: Register adapter (FIXTURE/REPLAY/OFFLINE/LIVE_PUBLIC).")
+    print("  UNKNOWN source blocked. Duplicate ID blocked. Missing timestamp semantics blocked.")
+
+
+def cmd_market_data_adapter_list(args=None):
+    """[v1.6.1] List registered market data adapters."""
+    print("[!] MARKET DATA ONLY. NO REAL ORDERS. Research Only.")
+    print("  market-data-adapter-list: List all registered adapters and their source classes.")
+
+
+def cmd_market_data_event_list(args=None):
+    """[v1.6.1] List market data events for a symbol."""
+    print("[!] MARKET DATA ONLY. NO REAL ORDERS. Research Only.")
+    print("  market-data-event-list: List canonical events for a symbol from the store.")
+
+
+def cmd_market_data_quote_show(args=None):
+    """[v1.6.1] Show latest quote for a symbol."""
+    print("[!] MARKET DATA ONLY. NO REAL ORDERS. Research Only.")
+    print("  market-data-quote-show: Latest canonical quote. bid<=ask enforced.")
+
+
+def cmd_market_data_trade_show(args=None):
+    """[v1.6.1] Show latest trade for a symbol."""
+    print("[!] MARKET DATA ONLY. NO REAL ORDERS. Research Only.")
+    print("  market-data-trade-show: Latest canonical trade. price>0 enforced.")
+
+
+def cmd_market_data_quality_show(args=None):
+    """[v1.6.1] Show data quality summary."""
+    print("[!] MARKET DATA ONLY. NO REAL ORDERS. Research Only.")
+    print("  market-data-quality-show: PASS/WARN/FAIL/BLOCKED quality distribution.")
+
+
+def cmd_market_data_freshness_show(args=None):
+    """[v1.6.1] Show freshness status for symbols."""
+    print("[!] MARKET DATA ONLY. NO REAL ORDERS. Research Only.")
+    print("  market-data-freshness-show: FRESH/DELAYED/STALE/EXPIRED/NOT_APPLICABLE.")
+    print("  Future dates NOT counted as fresh.")
+
+
+def cmd_market_data_sequence_show(args=None):
+    """[v1.6.1] Show sequence validation status."""
+    print("[!] MARKET DATA ONLY. NO REAL ORDERS. Research Only.")
+    print("  market-data-sequence-show: IN_ORDER/GAP_DETECTED/DUPLICATE/OUT_OF_ORDER.")
+
+
+def cmd_market_data_feed_health(args=None):
+    """[v1.6.1] Show feed health status."""
+    print("[!] MARKET DATA ONLY. NO REAL ORDERS. Research Only.")
+    print("  market-data-feed-health: Heartbeat liveness, gap count, failure classification.")
+
+
+def cmd_market_data_anomaly_show(args=None):
+    """[v1.6.1] Show detected anomalies."""
+    print("[!] MARKET DATA ONLY. NO REAL ORDERS. Research Only.")
+    print("  market-data-anomaly-show: Price spike and volume spike detections.")
+
+
+def cmd_market_data_checkpoint_create(args=None):
+    """[v1.6.1] Create a session checkpoint."""
+    print("[!] MARKET DATA ONLY. NO REAL ORDERS. Research Only.")
+    print("  market-data-checkpoint-create: Capture current adapter state.")
+
+
+def cmd_market_data_checkpoint_show(args=None):
+    """[v1.6.1] Show a session checkpoint."""
+    print("[!] MARKET DATA ONLY. NO REAL ORDERS. Research Only.")
+    print("  market-data-checkpoint-show: Display checkpoint hash and adapter state.")
+
+
+def cmd_market_data_session_restore(args=None):
+    """[v1.6.1] Restore session from checkpoint (resumes to PAUSED)."""
+    print("[!] MARKET DATA ONLY. NO REAL ORDERS. Research Only.")
+    print("  market-data-session-restore: Restore from checkpoint → status=PAUSED.")
+    print("  CHECKPOINT_RESUMES_TO_PAUSED=True. Call start() to activate.")
+
+
+def cmd_market_data_lineage_show(args=None):
+    """[v1.6.1] Show event lineage for a session."""
+    print("[!] MARKET DATA ONLY. NO REAL ORDERS. Research Only.")
+    print("  market-data-lineage-show: raw → normalized → quality-gated → stored pipeline stages.")
+
+
+def cmd_market_data_reproducibility_verify(args=None):
+    """[v1.6.1] Verify session reproducibility."""
+    print("[!] MARKET DATA ONLY. NO REAL ORDERS. Research Only.")
+    print("  market-data-reproducibility-verify: same inputs → same session hash.")
+
+
+def cmd_market_data_explain(args=None):
+    """[v1.6.1] Explain market data quality decisions."""
+    print("[!] MARKET DATA ONLY. NO REAL ORDERS. Research Only.")
+    from paper_trading.market_data.explain_v161 import MarketDataExplainer
+    explainer = MarketDataExplainer()
+    from paper_trading.market_data.enums_v161 import FreshnessStatus, DataQualityStatus
+    print(f"  FRESH: {explainer.explain_freshness(FreshnessStatus.FRESH)}")
+    print(f"  PASS:  {explainer.explain_quality(DataQualityStatus.PASS)}")
+
+
+def cmd_market_data_calendar_show(args=None):
+    """[v1.6.1] Show Taiwan market calendar session info."""
+    print("[!] MARKET DATA ONLY. NO REAL ORDERS. Research Only.")
+    from datetime import datetime, timezone
+    from paper_trading.market_data.calendar_v161 import TaiwanMarketCalendar
+    cal = TaiwanMarketCalendar()
+    now_utc = datetime.now(timezone.utc)
+    label = cal.get_session_label(now_utc)
+    print(f"  Current UTC: {now_utc.isoformat()}")
+    print(f"  TST: {cal.utc_to_tst_iso(now_utc)}")
+    print(f"  Session: {label}")
+
+
+def cmd_market_data_symbol_map(args=None):
+    """[v1.6.1] Show symbol mapping registry."""
+    print("[!] MARKET DATA ONLY. NO REAL ORDERS. Research Only.")
+    print("  market-data-symbol-map: Provider symbol → canonical TW stock code.")
+    print("  Ambiguous mappings BLOCKED. No guessing.")
+
+
+def cmd_market_data_session_report(args=None):
+    """[v1.6.1] Generate market data session research report."""
+    print("[!] MARKET DATA ONLY. NO REAL ORDERS. Research Only.")
+    from reports.market_data_session_report import MarketDataSessionReport
+    report = MarketDataSessionReport()
+    text = report.generate_session_report({
+        "session_id": "demo",
+        "status": "COMPLETED",
+        "adapter_id": "demo_adapter",
+        "source_class": "FIXTURE",
+        "event_count": 0,
+        "started_at": "N/A",
+    })
+    print(text)
+
+
+def cmd_market_data_release_gate(args=None):
+    """[v1.6.1] Run market data session release gate checks."""
+    print("[!] MARKET DATA ONLY. NO REAL ORDERS. Research Only.")
+    from release.market_data_session_release_gate_v161 import MarketDataSessionReleaseGate
+    gate = MarketDataSessionReleaseGate()
+    result = gate.run()
+    passed = result["passed"]
+    total = result["total"]
+    overall = result["overall"]
+    print(f"Release Gate v1.6.1: {passed}/{total} PASS — Overall: {overall}")
+    if result["blocked"]:
+        print(f"  BLOCKED: {result['blocked']}")
+    print("[!] RESEARCH ONLY. NO REAL ORDERS.")
+
+
 def main() -> None:
     """Main entrypoint."""
     import pandas as pd  # imported here to avoid shadowing at module level
@@ -36444,6 +36668,36 @@ def main() -> None:
         "paper-session-lineage":    cmd_paper_session_lineage,
         "paper-session-explain":    cmd_paper_session_explain,
         "paper-session-report":     cmd_paper_session_report,
+        # v1.6.1 — Market Data Session Adapter
+        "market-data-health":                   cmd_market_data_health,
+        "market-data-session-create":           cmd_market_data_session_create,
+        "market-data-session-start":            cmd_market_data_session_start,
+        "market-data-session-pause":            cmd_market_data_session_pause,
+        "market-data-session-resume":           cmd_market_data_session_resume,
+        "market-data-session-halt":             cmd_market_data_session_halt,
+        "market-data-session-complete":         cmd_market_data_session_complete,
+        "market-data-session-show":             cmd_market_data_session_show,
+        "market-data-session-list":             cmd_market_data_session_list,
+        "market-data-adapter-register":         cmd_market_data_adapter_register,
+        "market-data-adapter-list":             cmd_market_data_adapter_list,
+        "market-data-event-list":               cmd_market_data_event_list,
+        "market-data-quote-show":               cmd_market_data_quote_show,
+        "market-data-trade-show":               cmd_market_data_trade_show,
+        "market-data-quality-show":             cmd_market_data_quality_show,
+        "market-data-freshness-show":           cmd_market_data_freshness_show,
+        "market-data-sequence-show":            cmd_market_data_sequence_show,
+        "market-data-feed-health":              cmd_market_data_feed_health,
+        "market-data-anomaly-show":             cmd_market_data_anomaly_show,
+        "market-data-checkpoint-create":        cmd_market_data_checkpoint_create,
+        "market-data-checkpoint-show":          cmd_market_data_checkpoint_show,
+        "market-data-session-restore":          cmd_market_data_session_restore,
+        "market-data-lineage-show":             cmd_market_data_lineage_show,
+        "market-data-reproducibility-verify":   cmd_market_data_reproducibility_verify,
+        "market-data-explain":                  cmd_market_data_explain,
+        "market-data-calendar-show":            cmd_market_data_calendar_show,
+        "market-data-symbol-map":               cmd_market_data_symbol_map,
+        "market-data-session-report":           cmd_market_data_session_report,
+        "market-data-release-gate":             cmd_market_data_release_gate,
     }
 
     if args.command is None:

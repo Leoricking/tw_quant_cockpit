@@ -1,0 +1,8 @@
+{
+  "fixture_type": "TEST_FIXTURE",
+  "market_data_only": true,
+  "no_real_orders": true,
+  "provider_symbol": "TSM",
+  "canonical_symbol": "2330",
+  "expected_resolved": "2330"
+}

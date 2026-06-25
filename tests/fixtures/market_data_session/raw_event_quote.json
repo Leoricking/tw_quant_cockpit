@@ -1,0 +1,13 @@
+{
+  "fixture_type": "TEST_FIXTURE",
+  "market_data_only": true,
+  "no_real_orders": true,
+  "event_id": "ev_quote_001",
+  "adapter_id": "test_fixture_adapter",
+  "source_class": "FIXTURE",
+  "event_type": "QUOTE",
+  "symbol": "2330",
+  "timestamp_utc": "2024-01-02T09:00:00Z",
+  "payload": {"bid": "165.0", "ask": "165.5", "bid_size": 100, "ask_size": 200},
+  "expected_bid_lte_ask": true
+}

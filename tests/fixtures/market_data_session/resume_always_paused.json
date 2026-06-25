@@ -1,0 +1,10 @@
+{
+  "fixture_type": "TEST_FIXTURE",
+  "market_data_only": true,
+  "no_real_orders": true,
+  "session_id": "s1",
+  "checkpoint_id": "cp1",
+  "expected_new_status": "PAUSED",
+  "expected_auto_resume_to_running": false,
+  "resume_to_paused_not_running": true
+}

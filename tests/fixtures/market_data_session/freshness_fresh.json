@@ -1,0 +1,8 @@
+{
+  "fixture_type": "TEST_FIXTURE",
+  "market_data_only": true,
+  "no_real_orders": true,
+  "source_class": "LIVE_PUBLIC",
+  "age_seconds": 2,
+  "expected_freshness_status": "FRESH"
+}

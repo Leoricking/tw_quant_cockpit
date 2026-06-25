@@ -787,3 +787,12 @@ reports/live_paper_trading_*.md
 reports/paper_trading_report_*.md
 # Paper trading test fixtures ARE committed (exception)
 !tests/fixtures/live_paper_trading/*.json
+
+# v1.6.1 — Market Data Session runtime state (NOT committed)
+market_data_sessions/
+market_data_checkpoints/
+market_data_lineage/
+market_data_store/
+reports/market_data_session_*.md
+# Market data session test fixtures ARE committed (exception)
+!tests/fixtures/market_data_session/*.json

@@ -1,0 +1,13 @@
+{
+  "fixture_type": "TEST_FIXTURE",
+  "market_data_only": true,
+  "no_real_orders": true,
+  "event_id": "ev_bad_001",
+  "source_class": "FIXTURE",
+  "event_type": "QUOTE",
+  "symbol": "2330",
+  "timestamp_utc": "2024-01-02T09:00:00Z",
+  "payload": {"bid": "166.0", "ask": "165.0"},
+  "expected_blocked": true,
+  "expected_error": "bid_price > ask_price"
+}

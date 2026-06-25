@@ -1,0 +1,10 @@
+{
+  "fixture_type": "TEST_FIXTURE",
+  "market_data_only": true,
+  "no_real_orders": true,
+  "session_id": "s1",
+  "config": {"adapter_id": "a1", "symbols": ["2330"]},
+  "event_hashes": ["h1", "h2", "h3"],
+  "expected_deterministic": true,
+  "expected_same_session_hash": true
+}

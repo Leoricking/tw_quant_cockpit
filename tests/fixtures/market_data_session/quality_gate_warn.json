@@ -1,0 +1,8 @@
+{
+  "fixture_type": "TEST_FIXTURE",
+  "market_data_only": true,
+  "no_real_orders": true,
+  "freshness_status": "STALE",
+  "sequence_status": "IN_ORDER",
+  "expected_quality_status": "WARN"
+}

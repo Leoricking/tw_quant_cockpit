@@ -788,6 +788,7 @@ class TestVersionInfo:
             "Portfolio Stable Rollup Integrity Hotfix",
             "Portfolio Stable Rollup Release Gate Hotfix",
             "Live Paper Trading Foundation",
+            "Market Data Session Adapter",
         ), f"Unexpected release name: {version_info.RELEASE_NAME}"
 
     def test_release_track(self):

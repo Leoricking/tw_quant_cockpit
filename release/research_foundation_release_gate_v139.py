@@ -95,6 +95,7 @@ class ResearchFoundationReleaseGate:
                 "Portfolio Stable Rollup Integrity Hotfix",
                 "Portfolio Stable Rollup Release Gate Hotfix",
                 "Live Paper Trading Foundation",
+            "Market Data Session Adapter",
             }
             parts = tuple(int(x) for x in VERSION.split(".")[:3])
             ok = (

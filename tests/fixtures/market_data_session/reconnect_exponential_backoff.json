@@ -1,0 +1,12 @@
+{
+  "fixture_type": "TEST_FIXTURE",
+  "market_data_only": true,
+  "no_real_orders": true,
+  "policy": "BOUNDED_EXPONENTIAL_BACKOFF",
+  "base_interval_s": 5,
+  "max_interval_s": 120,
+  "max_attempts": 5,
+  "expected_should_reconnect": true,
+  "expected_intervals_increasing": true,
+  "injectable_clock_no_real_sleep": true
+}

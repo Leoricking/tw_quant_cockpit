@@ -1,0 +1,9 @@
+{
+  "fixture_type": "TEST_FIXTURE",
+  "market_data_only": true,
+  "no_real_orders": true,
+  "policy": "PAUSE_ON_FAILURE",
+  "from_source": "FIXTURE",
+  "expected_action": "PAUSE",
+  "expected_new_status": "PAUSED"
+}

@@ -1,0 +1,20 @@
+{
+  "fixture_type": "TEST_FIXTURE",
+  "market_data_only": true,
+  "no_real_orders": true,
+  "session_id": "e2e_session",
+  "adapter_id": "e2e_adapter",
+  "source_class": "FIXTURE",
+  "symbols": ["2330"],
+  "fixture_events": [
+    {
+      "event_id": "ev1",
+      "event_type": "TRADE",
+      "symbol": "2330",
+      "timestamp_utc": "2024-01-02T09:00:00Z",
+      "payload": {"price": "165.5", "volume": 100}
+    }
+  ],
+  "expected_start_success": true,
+  "expected_processed_count": 1
+}

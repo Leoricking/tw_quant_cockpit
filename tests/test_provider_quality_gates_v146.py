@@ -1588,6 +1588,7 @@ class TestVersionInfo(unittest.TestCase):
             "Portfolio Walk-forward Backtest",
             "Portfolio Stable Rollup",
             "Live Paper Trading Foundation",
+            "Market Data Session Adapter",
         )
         self.assertTrue(
             any(name in RELEASE_NAME for name in _KNOWN),

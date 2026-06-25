@@ -1,0 +1,13 @@
+{
+  "fixture_type": "TEST_FIXTURE",
+  "market_data_only": true,
+  "no_real_orders": true,
+  "session_id": "pit_session",
+  "paper_session_as_of": "2024-03-01",
+  "events": [
+    {"event_id": "e1", "available_from": "2024-01-01", "timestamp_utc": "2024-01-01T09:00:00Z", "expected_included": true},
+    {"event_id": "e2", "available_from": "2024-02-01", "timestamp_utc": "2024-02-01T09:00:00Z", "expected_included": true},
+    {"event_id": "e3", "available_from": "2024-04-01", "timestamp_utc": "2024-04-01T09:00:00Z", "expected_included": false}
+  ],
+  "note": "PIT enforcement: available_from <= paper_session_as_of"
+}

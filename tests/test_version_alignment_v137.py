@@ -55,6 +55,7 @@ def test_current_release_name():
     "Portfolio Stable Rollup Integrity Hotfix",
     "Portfolio Stable Rollup Release Gate Hotfix",
     "Live Paper Trading Foundation",
+            "Market Data Session Adapter",
     }
     assert RELEASE_NAME in known_names, f"Unexpected RELEASE_NAME: {RELEASE_NAME}"
 

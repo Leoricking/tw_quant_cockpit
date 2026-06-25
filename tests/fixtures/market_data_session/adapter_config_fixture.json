@@ -1,0 +1,12 @@
+{
+  "fixture_type": "TEST_FIXTURE",
+  "market_data_only": true,
+  "no_real_orders": true,
+  "adapter_id": "test_fixture_adapter",
+  "source_class": "FIXTURE",
+  "provider_name": "test",
+  "symbols": ["2330", "2317"],
+  "reconnect_policy": "NO_RECONNECT",
+  "failover_policy": "PAUSE_ON_FAILURE",
+  "expected_valid": true
+}

@@ -1,0 +1,9 @@
+{
+  "fixture_type": "TEST_FIXTURE",
+  "market_data_only": true,
+  "no_real_orders": true,
+  "source_class": "LIVE_PUBLIC",
+  "timestamp_utc": "2099-01-01T00:00:00Z",
+  "expected_freshness_status": "UNKNOWN",
+  "future_date_counts_as_fresh": false
+}

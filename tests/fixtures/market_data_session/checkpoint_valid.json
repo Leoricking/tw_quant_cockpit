@@ -1,0 +1,11 @@
+{
+  "fixture_type": "TEST_FIXTURE",
+  "market_data_only": true,
+  "no_real_orders": true,
+  "session_id": "s1",
+  "adapter_id": "a1",
+  "adapter_state": {"cursor": 42},
+  "sequence_number": 42,
+  "expected_checkpoint_hash_not_empty": true,
+  "expected_restore_status": "PAUSED"
+}

@@ -1,0 +1,14 @@
+{
+  "fixture_type": "TEST_FIXTURE",
+  "market_data_only": true,
+  "no_real_orders": true,
+  "event_id": "canon_t_001",
+  "source_class": "FIXTURE",
+  "symbol": "2330",
+  "timestamp_utc": "2024-01-02T09:00:05Z",
+  "price": "165.5",
+  "volume": 100,
+  "expected_research_only": true,
+  "expected_market_data_only": true,
+  "expected_no_real_order": true
+}

@@ -1,0 +1,10 @@
+{
+  "fixture_type": "TEST_FIXTURE",
+  "market_data_only": true,
+  "no_real_orders": true,
+  "from_source": "LIVE_PUBLIC",
+  "to_source": "FIXTURE",
+  "expected_blocked": true,
+  "live_to_fixture_fallback_disabled": true,
+  "reason": "LIVE to FIXTURE failover permanently disabled"
+}

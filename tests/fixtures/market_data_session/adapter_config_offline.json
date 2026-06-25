@@ -1,0 +1,11 @@
+{
+  "fixture_type": "TEST_FIXTURE",
+  "market_data_only": true,
+  "no_real_orders": true,
+  "adapter_id": "test_offline_adapter",
+  "source_class": "OFFLINE",
+  "provider_name": "test_offline",
+  "symbols": ["2330"],
+  "expected_valid": true,
+  "live_to_offline_fallover_disabled": true
+}

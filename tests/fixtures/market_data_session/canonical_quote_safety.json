@@ -1,0 +1,18 @@
+{
+  "fixture_type": "TEST_FIXTURE",
+  "market_data_only": true,
+  "no_real_orders": true,
+  "event_id": "canon_q_001",
+  "source_class": "FIXTURE",
+  "symbol": "2330",
+  "timestamp_utc": "2024-01-02T09:00:00Z",
+  "bid_price": "165.0",
+  "ask_price": "165.5",
+  "mid_price": "165.25",
+  "expected_research_only": true,
+  "expected_market_data_only": true,
+  "expected_no_broker_call": true,
+  "expected_no_real_order": true,
+  "expected_source_classified": true,
+  "expected_data_mode_disclosed": true
+}
