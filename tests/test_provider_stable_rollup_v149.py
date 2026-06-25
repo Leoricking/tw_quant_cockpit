@@ -36,7 +36,7 @@ class TestVersionInfo:
 
     def test_2_release_name(self):
         from release.version_info import RELEASE_NAME
-        assert RELEASE_NAME in ("Provider Stable Rollup", "Portfolio Research Foundation", "Portfolio Research Foundation Integrity Hotfix", "Portfolio Research CLI Completeness Hotfix", "Position Sizing", "Correlation & Exposure", "Correlation & Exposure Integrity Hotfix", "Drawdown & Risk Controls", "Portfolio Walk-forward Backtest", "Portfolio Stable Rollup", "Portfolio Stable Rollup Integrity Hotfix")
+        assert RELEASE_NAME in ("Provider Stable Rollup", "Portfolio Research Foundation", "Portfolio Research Foundation Integrity Hotfix", "Portfolio Research CLI Completeness Hotfix", "Position Sizing", "Correlation & Exposure", "Correlation & Exposure Integrity Hotfix", "Drawdown & Risk Controls", "Portfolio Walk-forward Backtest", "Portfolio Stable Rollup", "Portfolio Stable Rollup Integrity Hotfix", "Portfolio Stable Rollup Release Gate Hotfix")
 
     def test_3_base_release_contains_148(self):
         from release.version_info import BASE_RELEASE

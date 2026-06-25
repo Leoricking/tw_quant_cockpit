@@ -1128,8 +1128,9 @@ class TestCapabilityRegistryV150:
         assert meta.get("real_order_enabled") is False
 
     def test_position_sizing_planned(self):
+        # position_sizing shipped in v1.5.1 and is now STABLE/available
         from release.capability_registry import is_capability_available
-        assert is_capability_available("position_sizing") is False
+        assert is_capability_available("position_sizing") is True
 
 
 # ===========================================================================
@@ -1419,9 +1420,9 @@ class TestCapabilityRegistryExtendedV150:
         assert "portfolio_research_foundation" in available
 
     def test_list_planned_includes_position_sizing(self):
-        from release.capability_registry import list_planned_capabilities
-        planned = list_planned_capabilities()
-        assert "position_sizing" in planned
+        # position_sizing shipped in v1.5.1 and is now STABLE; no longer in planned list
+        from release.capability_registry import is_capability_available
+        assert is_capability_available("position_sizing") is True
 
     def test_dependency_validation_ok(self):
         from release.capability_registry import validate_capability_dependencies

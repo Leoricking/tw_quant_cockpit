@@ -354,12 +354,15 @@ class DrawdownRiskControlsReleaseGate:
         def _version():
             from release.version_info import (
                 VERSION, DRAWDOWN_RISK_CONTROLS_BASELINE,
-                DRAWDOWN_RISK_CONTROLS_AVAILABLE,
+                DRAWDOWN_RISK_CONTROLS_AVAILABLE, DRAWDOWN_RISK_CONTROLS_STAGE,
             )
-            assert VERSION == "1.5.3", f"Expected 1.5.3, got {VERSION}"
-            assert DRAWDOWN_RISK_CONTROLS_BASELINE == "1.5.3"
-            assert DRAWDOWN_RISK_CONTROLS_AVAILABLE is True
-            return True, f"version_info VERSION={VERSION}"
+            from portfolio.stable_rollup.compatibility_registry_v159 import CompatibilityRegistryV159
+            assert DRAWDOWN_RISK_CONTROLS_BASELINE == "1.5.3", f"Expected baseline 1.5.3, got {DRAWDOWN_RISK_CONTROLS_BASELINE}"
+            assert DRAWDOWN_RISK_CONTROLS_AVAILABLE is True, "DRAWDOWN_RISK_CONTROLS_AVAILABLE must be True"
+            assert DRAWDOWN_RISK_CONTROLS_STAGE == "STABLE", f"Expected STABLE, got {DRAWDOWN_RISK_CONTROLS_STAGE}"
+            compat = CompatibilityRegistryV159().is_compatible(VERSION)
+            assert compat["compatible"], f"VERSION {VERSION} not in compatible range: {compat['reason']}"
+            return True, f"baseline=1.5.3 stage=STABLE VERSION={VERSION} compat={compat['reason']}"
         check("VERSION_INFO_UPDATED", _version)
 
         # 27. CAPABILITY_REGISTRY_UPDATED

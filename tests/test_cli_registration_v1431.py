@@ -294,6 +294,7 @@ class TestRegression:
             "Portfolio Walk-forward Backtest",
             "Portfolio Stable Rollup",
             "Portfolio Stable Rollup Integrity Hotfix",
+            "Portfolio Stable Rollup Release Gate Hotfix",
         }
         assert RELEASE_NAME in _KNOWN, f"Unexpected RELEASE_NAME: {RELEASE_NAME}"
 

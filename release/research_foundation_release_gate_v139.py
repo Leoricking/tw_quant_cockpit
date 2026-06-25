@@ -93,6 +93,7 @@ class ResearchFoundationReleaseGate:
                 "Portfolio Walk-forward Backtest",
                 "Portfolio Stable Rollup",
                 "Portfolio Stable Rollup Integrity Hotfix",
+                "Portfolio Stable Rollup Release Gate Hotfix",
             }
             parts = tuple(int(x) for x in VERSION.split(".")[:3])
             ok = (
