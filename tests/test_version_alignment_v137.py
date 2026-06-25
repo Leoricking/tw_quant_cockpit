@@ -57,6 +57,7 @@ def test_current_release_name():
     "Live Paper Trading Foundation",
             "Market Data Session Adapter",
             "Market Data Session Warning Hygiene Hotfix",
+            "Paper Strategy Orchestration",
     }
     assert RELEASE_NAME in known_names, f"Unexpected RELEASE_NAME: {RELEASE_NAME}"
 

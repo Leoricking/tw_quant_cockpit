@@ -1590,6 +1590,7 @@ class TestVersionInfo(unittest.TestCase):
             "Live Paper Trading Foundation",
             "Market Data Session Adapter",
             "Market Data Session Warning Hygiene Hotfix",
+            "Paper Strategy Orchestration",
         )
         self.assertTrue(
             any(name in RELEASE_NAME for name in _KNOWN),

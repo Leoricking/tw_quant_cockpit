@@ -392,6 +392,7 @@ class TestSafetyAndVersion:
     "Live Paper Trading Foundation",
             "Market Data Session Adapter",
             "Market Data Session Warning Hygiene Hotfix",
+            "Paper Strategy Orchestration",
         }
         assert RELEASE_NAME in valid_names, f"Unexpected RELEASE_NAME: {RELEASE_NAME}"
 

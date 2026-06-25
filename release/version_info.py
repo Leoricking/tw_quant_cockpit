@@ -73,12 +73,13 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # ---------------------------------------------------------------------------
 # v1.3.3 module-level constants (Coverage Repair Workflow)
 # ---------------------------------------------------------------------------
-VERSION                             = "1.6.1.1"
-RELEASE_NAME                        = "Market Data Session Warning Hygiene Hotfix"
-BASE_RELEASE                        = "1.6.1 Market Data Session Adapter"
+VERSION                             = "1.6.2"
+RELEASE_NAME                        = "Paper Strategy Orchestration"
+BASE_RELEASE                        = "1.6.1.1 Market Data Session Warning Hygiene Hotfix"
 PORTFOLIO_STABLE_BASELINE           = "1.5.9"
 LIVE_PAPER_TRADING_BASELINE         = "1.6.0"
 MARKET_DATA_SESSION_BASELINE        = "1.6.1"
+PAPER_STRATEGY_ORCHESTRATION_BASELINE = "1.6.2"
 MARKET_DATA_SESSION_AVAILABLE       = True
 MARKET_DATA_SESSION_RESEARCH_ONLY   = True
 LIVE_PAPER_TRADING_AVAILABLE        = True
@@ -92,6 +93,18 @@ REAL_AUTO_REBALANCE_ENABLED         = False
 REAL_HEDGING_EXECUTION_ENABLED      = False
 MARGIN_ENABLED                      = False
 SHORT_SELLING_ENABLED               = False
+# v1.6.2 Paper Strategy Orchestration flags
+PAPER_STRATEGY_ORCHESTRATION_AVAILABLE  = True
+PAPER_STRATEGY_ORCHESTRATION_STAGE      = "FOUNDATION"
+PAPER_STRATEGY_RESEARCH_ONLY            = True
+PAPER_SIGNAL_EVALUATION_ENABLED         = True
+PAPER_DECISION_PIPELINE_ENABLED         = True
+PAPER_ORDER_PROPOSAL_ENABLED            = True
+PAPER_POLICY_APPROVAL_ENABLED           = True
+AUTO_PAPER_ONLY_ENABLED_BY_DEFAULT      = False
+REAL_STRATEGY_EXECUTION_ENABLED         = False
+REAL_AUTO_REBALANCE_ENABLED             = False
+AUTONOMOUS_PRODUCTION_STRATEGY_ENABLED  = False
 PORTFOLIO_STABLE_ROLLUP_AVAILABLE   = True
 PORTFOLIO_STABLE_ROLLUP_STAGE       = "STABLE"
 PORTFOLIO_RESEARCH_ONLY             = True

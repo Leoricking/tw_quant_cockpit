@@ -1,0 +1,18 @@
+{
+  "signal_id": "fixture-sig-004",
+  "strategy_id": "fixture-strategy-002",
+  "ticker": "1234.TW",
+  "signal_type": "BLOCK",
+  "strength": "STRONG",
+  "confidence": 1.0,
+  "raw_value": -1.0,
+  "normalized_value": -1.0,
+  "generated_at": "2026-01-15T08:45:00.000000Z",
+  "trigger_type": "MARKET_EVENT",
+  "metadata": {"reason": "suspended", "source": "test_fixture"},
+  "is_duplicate": false,
+  "dedup_key": "block1234wxyz9876",
+  "paper_only": true,
+  "research_only": true,
+  "not_a_real_order": true
+}

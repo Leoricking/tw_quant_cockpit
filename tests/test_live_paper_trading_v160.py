@@ -1267,8 +1267,9 @@ class TestVersionInfo:
 
     def test_release_name_paper_trading(self):
         _KNOWN = {"Live Paper Trading Foundation", "Market Data Session Adapter",
-                  "Market Data Session Warning Hygiene Hotfix"}
-        assert self.vi.RELEASE_NAME in _KNOWN or "Paper Trading" in self.vi.RELEASE_NAME, \
+                  "Market Data Session Warning Hygiene Hotfix",
+                  "Paper Strategy Orchestration"}
+        assert self.vi.RELEASE_NAME in _KNOWN or "Paper Trading" in self.vi.RELEASE_NAME or "Paper Strategy" in self.vi.RELEASE_NAME, \
             f"Unexpected RELEASE_NAME: {self.vi.RELEASE_NAME}"
 
     def test_live_paper_trading_available(self):

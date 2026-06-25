@@ -1,0 +1,18 @@
+{
+  "signal_id": "fixture-sig-002",
+  "strategy_id": "fixture-strategy-001",
+  "ticker": "2330.TW",
+  "signal_type": "EXIT_LONG",
+  "strength": "MODERATE",
+  "confidence": 0.70,
+  "raw_value": -0.65,
+  "normalized_value": null,
+  "generated_at": "2026-01-15T10:00:00.000000Z",
+  "trigger_type": "PRICE_ALERT",
+  "metadata": {"source": "test_fixture", "tag": "DEMO_ONLY"},
+  "is_duplicate": false,
+  "dedup_key": "exit1234abcd5678",
+  "paper_only": true,
+  "research_only": true,
+  "not_a_real_order": true
+}

@@ -1,0 +1,18 @@
+{
+  "signal_id": "fixture-sig-003",
+  "strategy_id": "fixture-strategy-001",
+  "ticker": "2454.TW",
+  "signal_type": "HOLD",
+  "strength": "NEUTRAL",
+  "confidence": 0.50,
+  "raw_value": 0.0,
+  "normalized_value": 0.0,
+  "generated_at": "2026-01-15T09:30:00.000000Z",
+  "trigger_type": "TIMER",
+  "metadata": {"source": "test_fixture"},
+  "is_duplicate": false,
+  "dedup_key": "hold5678abcd1234",
+  "paper_only": true,
+  "research_only": true,
+  "not_a_real_order": true
+}

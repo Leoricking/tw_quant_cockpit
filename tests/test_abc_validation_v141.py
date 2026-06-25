@@ -1224,6 +1224,7 @@ def test_release_name_141():
     "Live Paper Trading Foundation",
             "Market Data Session Adapter",
             "Market Data Session Warning Hygiene Hotfix",
+            "Paper Strategy Orchestration",
     )
     assert RELEASE_NAME in _KNOWN, f"Unexpected release name: {RELEASE_NAME}"
 

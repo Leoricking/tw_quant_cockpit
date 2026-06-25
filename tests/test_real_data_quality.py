@@ -790,6 +790,7 @@ class TestVersionInfo:
             "Live Paper Trading Foundation",
             "Market Data Session Adapter",
             "Market Data Session Warning Hygiene Hotfix",
+            "Paper Strategy Orchestration",
         ), f"Unexpected release name: {version_info.RELEASE_NAME}"
 
     def test_release_track(self):

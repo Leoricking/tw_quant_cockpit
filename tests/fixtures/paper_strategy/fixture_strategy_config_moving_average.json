@@ -1,0 +1,19 @@
+{
+  "strategy_name": "MovingAverageFixtureStrategy",
+  "strategy_version": "0.1.0",
+  "description": "TEST_FIXTURE: Moving average signal fixture. DEMO_ONLY. NOT_FOR_PRODUCTION.",
+  "author": "test_fixture",
+  "approval_mode": "AUTO_PAPER_ONLY",
+  "conflict_policy": "HIGHEST_STRENGTH",
+  "max_signals_per_minute": 10,
+  "cooldown_seconds": 60,
+  "max_open_proposals": 5,
+  "tags": ["TEST_FIXTURE", "DEMO_ONLY", "PAPER_ONLY", "NOT_FOR_PRODUCTION"],
+  "paper_only": true,
+  "research_only": true,
+  "simulation_only": true,
+  "not_a_real_order": true,
+  "no_broker_call": true,
+  "no_real_account": true,
+  "no_formal_portfolio_ledger_write": true
+}

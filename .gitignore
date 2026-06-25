@@ -796,3 +796,13 @@ market_data_store/
 reports/market_data_session_*.md
 # Market data session test fixtures ARE committed (exception)
 !tests/fixtures/market_data_session/*.json
+
+# v1.6.2 — Paper Strategy Orchestration runtime state (NOT committed)
+data/paper_strategy/
+data/paper_strategy/checkpoints/
+data/paper_strategy/journals/
+data/paper_strategy/store/
+data/paper_strategy/lineage/
+reports/paper_strategy_orchestration_*.md
+# Paper strategy test fixtures ARE committed (exception)
+!tests/fixtures/paper_strategy/*.json

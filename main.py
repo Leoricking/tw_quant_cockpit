@@ -35353,6 +35353,372 @@ def cmd_market_data_release_gate(args=None):
     print("[!] RESEARCH ONLY. NO REAL ORDERS.")
 
 
+# =============================================================================
+# v1.6.2 — Paper Strategy Orchestration handlers (34 commands)
+# [!] PAPER ONLY. RESEARCH ONLY. NO REAL ORDERS. NO BROKER. NOT INVESTMENT ADVICE.
+# =============================================================================
+
+_STRATEGY_SAFETY_BANNER = (
+    "[!] PAPER STRATEGY ONLY. RESEARCH ONLY. NO REAL ORDERS. "
+    "NO BROKER. NOT INVESTMENT ADVICE."
+)
+
+
+def cmd_paper_strategy_health(args=None):
+    """[v1.6.2] Paper strategy orchestration health check. Research only."""
+    print(_STRATEGY_SAFETY_BANNER)
+    from paper_trading.strategy.health_v162 import PaperStrategyOrchestrationHealthCheck
+    result = PaperStrategyOrchestrationHealthCheck().run()
+    status = result.get("status", "UNKNOWN")
+    passed = result.get("passed", 0)
+    total = result.get("total", 0)
+    failed = result.get("failed", 0)
+    print(f"Paper Strategy Orchestration Health Check v1.6.2")
+    print(f"Status: {status}  Passed: {passed}/{total}  Failed: {failed}")
+    if failed:
+        for c in result.get("checks", []):
+            if not c.get("passed", True):
+                print(f"  [FAIL] {c.get('check', '?')}: {c.get('detail', '')}")
+    print(_STRATEGY_SAFETY_BANNER)
+
+
+def cmd_paper_strategy_register(args=None):
+    """[v1.6.2] Register a paper strategy. Research only."""
+    print(_STRATEGY_SAFETY_BANNER)
+    print("  paper-strategy-register: Register strategy in the global paper strategy registry.")
+    print("  All registered strategies are PAPER_ONLY, RESEARCH_ONLY, NOT_FOR_PRODUCTION.")
+    print("  Provide --strategy-id and --strategy-class.")
+    print(_STRATEGY_SAFETY_BANNER)
+
+
+def cmd_paper_strategy_start(args=None):
+    """[v1.6.2] Start a paper strategy. Research only."""
+    print(_STRATEGY_SAFETY_BANNER)
+    print("  paper-strategy-start: Transitions strategy from READY → RUNNING.")
+    print("  Only PAPER strategies. No real order execution. No broker call.")
+    print(_STRATEGY_SAFETY_BANNER)
+
+
+def cmd_paper_strategy_pause(args=None):
+    """[v1.6.2] Pause a running paper strategy. Research only."""
+    print(_STRATEGY_SAFETY_BANNER)
+    print("  paper-strategy-pause: Transitions strategy from RUNNING → PAUSED.")
+    print("  Signals will not be processed while paused.")
+    print(_STRATEGY_SAFETY_BANNER)
+
+
+def cmd_paper_strategy_halt(args=None):
+    """[v1.6.2] Halt a paper strategy. Research only."""
+    print(_STRATEGY_SAFETY_BANNER)
+    print("  paper-strategy-halt: Transitions strategy → HALTED.")
+    print("  HALT stops signal processing. Does NOT create real orders.")
+    print("  NO BROKER CALL. NO REAL ORDER.")
+    print(_STRATEGY_SAFETY_BANNER)
+
+
+def cmd_paper_strategy_halt_all(args=None):
+    """[v1.6.2] Halt all running paper strategies. Research only."""
+    print(_STRATEGY_SAFETY_BANNER)
+    print("  paper-strategy-halt-all: Halts ALL RUNNING paper strategies.")
+    print("  Emergency stop for all active paper strategies.")
+    print("  NO BROKER CALL. NO REAL ORDER.")
+    print(_STRATEGY_SAFETY_BANNER)
+
+
+def cmd_paper_strategy_list(args=None):
+    """[v1.6.2] List all registered paper strategies. Research only."""
+    print(_STRATEGY_SAFETY_BANNER)
+    from paper_trading.strategy.strategy_registry_v162 import get_global_registry
+    registry = get_global_registry()
+    strategies = registry.list_all()
+    print(f"  Registered paper strategies: {len(strategies)}")
+    for sid in strategies:
+        s = registry.get(sid)
+        status = s.get("status", "?") if s else "?"
+        print(f"  [{status}] {sid}")
+    print(_STRATEGY_SAFETY_BANNER)
+
+
+def cmd_paper_strategy_status(args=None):
+    """[v1.6.2] Show status of a paper strategy. Research only."""
+    print(_STRATEGY_SAFETY_BANNER)
+    print("  paper-strategy-status: Show lifecycle status of a registered paper strategy.")
+    print("  Provide --strategy-id.")
+    print(_STRATEGY_SAFETY_BANNER)
+
+
+def cmd_paper_strategy_describe(args=None):
+    """[v1.6.2] Describe a paper strategy. Research only."""
+    print(_STRATEGY_SAFETY_BANNER)
+    print("  paper-strategy-describe: Show strategy description, config, and safety flags.")
+    print("  Provide --strategy-id.")
+    print(_STRATEGY_SAFETY_BANNER)
+
+
+def cmd_paper_signal_submit(args=None):
+    """[v1.6.2] Submit a paper signal to a strategy. Research only."""
+    print(_STRATEGY_SAFETY_BANNER)
+    print("  paper-signal-submit: Submit a research signal to the decision pipeline.")
+    print("  Signal types: ENTRY_LONG, EXIT_LONG, HOLD, REDUCE_RESEARCH, BLOCK, ALERT.")
+    print("  SHORT selling permanently forbidden. NO REAL ORDER will be created.")
+    print(_STRATEGY_SAFETY_BANNER)
+
+
+def cmd_paper_signal_list(args=None):
+    """[v1.6.2] List paper signals. Research only."""
+    print(_STRATEGY_SAFETY_BANNER)
+    print("  paper-signal-list: List signals received by the strategy orchestration layer.")
+    print("  All signals are PAPER_ONLY, RESEARCH_ONLY, NOT_A_REAL_ORDER.")
+    print(_STRATEGY_SAFETY_BANNER)
+
+
+def cmd_paper_signal_count(args=None):
+    """[v1.6.2] Count paper signals. Research only."""
+    print(_STRATEGY_SAFETY_BANNER)
+    from paper_trading.strategy.store_v162 import PaperStrategyStore
+    store = PaperStrategyStore()
+    count = store.signal_count()
+    print(f"  Paper signals in store: {count}")
+    print("  All signals: PAPER_ONLY, RESEARCH_ONLY, NOT_A_REAL_ORDER.")
+    print(_STRATEGY_SAFETY_BANNER)
+
+
+def cmd_paper_decision_list(args=None):
+    """[v1.6.2] List paper decisions. Research only."""
+    print(_STRATEGY_SAFETY_BANNER)
+    print("  paper-decision-list: List decision results from the 19-step pipeline.")
+    print("  All decisions: PAPER_ONLY, RESEARCH_ONLY, NOT_A_REAL_ORDER.")
+    print(_STRATEGY_SAFETY_BANNER)
+
+
+def cmd_paper_decision_outcome_distribution(args=None):
+    """[v1.6.2] Show paper decision outcome distribution. Research only."""
+    print(_STRATEGY_SAFETY_BANNER)
+    from paper_trading.strategy.store_v162 import PaperStrategyStore
+    from paper_trading.strategy.query_v162 import PaperStrategyQueryService
+    store = PaperStrategyStore()
+    svc = PaperStrategyQueryService(store)
+    dist = svc.outcome_distribution()
+    print("  Decision outcome distribution:")
+    for outcome, count in dist.items():
+        print(f"    {outcome}: {count}")
+    print(_STRATEGY_SAFETY_BANNER)
+
+
+def cmd_paper_proposal_list(args=None):
+    """[v1.6.2] List paper order proposals. Research only."""
+    print(_STRATEGY_SAFETY_BANNER)
+    print("  paper-proposal-list: List paper order proposals.")
+    print("  All proposals: NOT_A_REAL_ORDER, NO_BROKER_CALL, PAPER_ONLY.")
+    print(_STRATEGY_SAFETY_BANNER)
+
+
+def cmd_paper_proposal_approve(args=None):
+    """[v1.6.2] Approve a pending paper order proposal. Research only."""
+    print(_STRATEGY_SAFETY_BANNER)
+    print("  paper-proposal-approve: Manually approve a PENDING paper order proposal.")
+    print("  This is for MANUAL_REQUIRED approval mode.")
+    print("  NOT A REAL ORDER. NO BROKER. PAPER ONLY.")
+    print(_STRATEGY_SAFETY_BANNER)
+
+
+def cmd_paper_proposal_deny(args=None):
+    """[v1.6.2] Deny a pending paper order proposal. Research only."""
+    print(_STRATEGY_SAFETY_BANNER)
+    print("  paper-proposal-deny: Manually deny a PENDING paper order proposal.")
+    print("  Provide --proposal-id and --reason.")
+    print(_STRATEGY_SAFETY_BANNER)
+
+
+def cmd_paper_proposal_pending(args=None):
+    """[v1.6.2] List pending paper order proposals. Research only."""
+    print(_STRATEGY_SAFETY_BANNER)
+    print("  paper-proposal-pending: List proposals awaiting manual approval.")
+    print("  Default approval mode is MANUAL_REQUIRED.")
+    print(_STRATEGY_SAFETY_BANNER)
+
+
+def cmd_paper_lineage_ticker(args=None):
+    """[v1.6.2] Show strategy lineage for a ticker. Research only."""
+    print(_STRATEGY_SAFETY_BANNER)
+    print("  paper-lineage-ticker: Show signal→decision→proposal lineage chain for a ticker.")
+    print("  Provide --ticker (e.g. 2330.TW).")
+    print(_STRATEGY_SAFETY_BANNER)
+
+
+def cmd_paper_lineage_signal(args=None):
+    """[v1.6.2] Show strategy lineage for a signal. Research only."""
+    print(_STRATEGY_SAFETY_BANNER)
+    print("  paper-lineage-signal: Show lineage record for a specific signal.")
+    print("  Provide --signal-id.")
+    print(_STRATEGY_SAFETY_BANNER)
+
+
+def cmd_paper_checkpoint_save(args=None):
+    """[v1.6.2] Save a paper strategy checkpoint. Research only."""
+    print(_STRATEGY_SAFETY_BANNER)
+    print("  paper-checkpoint-save: Save current strategy state to a checkpoint file.")
+    print("  Provide --strategy-id.")
+    print("  Checkpoint dir: data/paper_strategy/checkpoints/")
+    print(_STRATEGY_SAFETY_BANNER)
+
+
+def cmd_paper_checkpoint_list(args=None):
+    """[v1.6.2] List paper strategy checkpoints. Research only."""
+    print(_STRATEGY_SAFETY_BANNER)
+    from paper_trading.strategy.checkpoint_v162 import CheckpointManager
+    mgr = CheckpointManager()
+    checkpoints = mgr.list_checkpoints()
+    print(f"  Paper strategy checkpoints: {len(checkpoints)}")
+    for cp in checkpoints[:10]:
+        print(f"  {cp}")
+    print(_STRATEGY_SAFETY_BANNER)
+
+
+def cmd_paper_checkpoint_restore(args=None):
+    """[v1.6.2] Restore a paper strategy from checkpoint. Research only."""
+    print(_STRATEGY_SAFETY_BANNER)
+    print("  paper-checkpoint-restore: Restore strategy state from a saved checkpoint.")
+    print("  Provide --strategy-id and --checkpoint-id.")
+    print("  Recovery mode: STATE_RESTORE (default).")
+    print(_STRATEGY_SAFETY_BANNER)
+
+
+def cmd_paper_replay_run(args=None):
+    """[v1.6.2] Run paper strategy replay. Research only."""
+    print(_STRATEGY_SAFETY_BANNER)
+    print("  paper-replay-run: Replay signals through the strategy decision pipeline.")
+    print("  All replayed signals use trigger_type=REPLAY.")
+    print("  NO REAL ORDERS during replay.")
+    print(_STRATEGY_SAFETY_BANNER)
+
+
+def cmd_paper_recovery_run(args=None):
+    """[v1.6.2] Run paper strategy recovery. Research only."""
+    print(_STRATEGY_SAFETY_BANNER)
+    print("  paper-recovery-run: Recover strategy from checkpoint or cold start.")
+    print("  Modes: STATE_RESTORE (default), FULL_REPLAY, COLD_START.")
+    print("  Provide --strategy-id.")
+    print(_STRATEGY_SAFETY_BANNER)
+
+
+def cmd_paper_strategy_report(args=None):
+    """[v1.6.2] Generate paper strategy orchestration report. Research only."""
+    print(_STRATEGY_SAFETY_BANNER)
+    from reports.paper_strategy_orchestration_report import PaperStrategyOrchestrationReport
+    report = PaperStrategyOrchestrationReport().generate()
+    print(f"  report: {report.get('title', 'Paper Strategy Orchestration Report')}")
+    sv = report.get("safety_verification", {})
+    print(f"  paper_only: {sv.get('paper_only', True)}")
+    print(f"  research_only: {sv.get('research_only', True)}")
+    print(f"  no_real_orders: {sv.get('no_real_orders', True)}")
+    print(_STRATEGY_SAFETY_BANNER)
+
+
+def cmd_paper_strategy_gate(args=None):
+    """[v1.6.2] Run paper strategy orchestration release gate. Research only."""
+    print(_STRATEGY_SAFETY_BANNER)
+    from release.paper_strategy_orchestration_release_gate_v162 import (
+        PaperStrategyOrchestrationReleaseGate,
+    )
+    gate = PaperStrategyOrchestrationReleaseGate()
+    result = gate.run_gate()
+    all_pass = result.get("all_pass", False)
+    blocked = result.get("blocked", [])
+    checks = result.get("checks", {})
+    passed = sum(1 for v in checks.values() if v)
+    total = len(checks)
+    print(f"Release Gate v1.6.2: {passed}/{total} PASS — all_pass={all_pass}")
+    if blocked:
+        for b in blocked:
+            print(f"  [BLOCKED] {b}")
+    print(_STRATEGY_SAFETY_BANNER)
+
+
+def cmd_paper_strategy_panel(args=None):
+    """[v1.6.2] Render paper strategy orchestration GUI panel. Research only."""
+    print(_STRATEGY_SAFETY_BANNER)
+    from gui.paper_strategy_orchestration_panel import PaperStrategyOrchestrationPanel
+    panel = PaperStrategyOrchestrationPanel()
+    result = panel.render()
+    print(result.get("safety_banner", ""))
+    summary = result.get("summary", {})
+    print(f"  version: {summary.get('version', '1.6.2')}")
+    print(f"  paper_only: {result.get('paper_only', True)}")
+    print(f"  not_investment_advice: {result.get('not_investment_advice', True)}")
+    print(_STRATEGY_SAFETY_BANNER)
+
+
+def cmd_paper_eligibility_check(args=None):
+    """[v1.6.2] Check eligibility for a ticker. Research only."""
+    print(_STRATEGY_SAFETY_BANNER)
+    from paper_trading.strategy.eligibility_adapter_v162 import EligibilityAdapter
+    adapter = EligibilityAdapter()
+    result = adapter.check("2330.TW", min_confidence=0.5)
+    print(f"  Eligibility check (2330.TW demo): {result.value}")
+    print("  Provide --ticker and --confidence to check real eligibility.")
+    print(_STRATEGY_SAFETY_BANNER)
+
+
+def cmd_paper_sizing_compute(args=None):
+    """[v1.6.2] Compute paper position sizing. Research only."""
+    print(_STRATEGY_SAFETY_BANNER)
+    from paper_trading.strategy.sizing_adapter_v162 import SizingAdapter
+    adapter = SizingAdapter()
+    size = adapter.compute_size("2330.TW", confidence=0.85)
+    print(f"  Sizing (2330.TW, confidence=0.85, demo): {size}")
+    print("  NOT A REAL ORDER. PAPER SIMULATION ONLY.")
+    print(_STRATEGY_SAFETY_BANNER)
+
+
+def cmd_paper_correlation_check(args=None):
+    """[v1.6.2] Check correlation exposure. Research only."""
+    print(_STRATEGY_SAFETY_BANNER)
+    from paper_trading.strategy.correlation_adapter_v162 import CorrelationAdapter
+    adapter = CorrelationAdapter()
+    breach = adapter.check_breach("2330.TW", proposed_weight=0.10)
+    print(f"  Correlation breach (2330.TW, weight=0.10, demo): {breach}")
+    print("  RESEARCH ONLY. NOT A REAL PORTFOLIO OPERATION.")
+    print(_STRATEGY_SAFETY_BANNER)
+
+
+def cmd_paper_strategy_risk_check(args=None):
+    """[v1.6.2] Check strategy risk adapter. Research only."""
+    print(_STRATEGY_SAFETY_BANNER)
+    from paper_trading.strategy.risk_adapter_v162 import RiskAdapter
+    adapter = RiskAdapter()
+    blocked = adapter.is_blocked()
+    print(f"  Strategy risk adapter blocked: {blocked}")
+    print("  RESEARCH ONLY. NO BROKER. NO REAL ORDER.")
+    print(_STRATEGY_SAFETY_BANNER)
+
+
+def cmd_paper_journal_tail(args=None):
+    """[v1.6.2] Tail paper strategy journal. Research only."""
+    print(_STRATEGY_SAFETY_BANNER)
+    from paper_trading.strategy.journal_v162 import StrategyJournal
+    journal = StrategyJournal()
+    tail = journal.tail(n=10)
+    print(f"  Strategy journal tail (last {len(tail)} entries):")
+    for entry in tail:
+        print(f"    [{entry.get('event_type', '?')}] {entry.get('strategy_id', '?')} "
+              f"@ {entry.get('timestamp', '?')}")
+    print(_STRATEGY_SAFETY_BANNER)
+
+
+def cmd_paper_journal_list(args=None):
+    """[v1.6.2] List paper strategy journal entries. Research only."""
+    print(_STRATEGY_SAFETY_BANNER)
+    from paper_trading.strategy.journal_v162 import StrategyJournal
+    journal = StrategyJournal()
+    count = journal.count()
+    summary = journal.summary()
+    print(f"  Strategy journal: {count} entries")
+    for k, v in summary.items():
+        print(f"    {k}: {v}")
+    print(_STRATEGY_SAFETY_BANNER)
+
+
 def main() -> None:
     """Main entrypoint."""
     import pandas as pd  # imported here to avoid shadowing at module level
@@ -36698,6 +37064,41 @@ def main() -> None:
         "market-data-symbol-map":               cmd_market_data_symbol_map,
         "market-data-session-report":           cmd_market_data_session_report,
         "market-data-release-gate":             cmd_market_data_release_gate,
+        # v1.6.2 — Paper Strategy Orchestration
+        "paper-strategy-health":                cmd_paper_strategy_health,
+        "paper-strategy-register":              cmd_paper_strategy_register,
+        "paper-strategy-start":                 cmd_paper_strategy_start,
+        "paper-strategy-pause":                 cmd_paper_strategy_pause,
+        "paper-strategy-halt":                  cmd_paper_strategy_halt,
+        "paper-strategy-halt-all":              cmd_paper_strategy_halt_all,
+        "paper-strategy-list":                  cmd_paper_strategy_list,
+        "paper-strategy-status":                cmd_paper_strategy_status,
+        "paper-strategy-describe":              cmd_paper_strategy_describe,
+        "paper-signal-submit":                  cmd_paper_signal_submit,
+        "paper-signal-list":                    cmd_paper_signal_list,
+        "paper-signal-count":                   cmd_paper_signal_count,
+        "paper-decision-list":                  cmd_paper_decision_list,
+        "paper-decision-outcome-distribution":  cmd_paper_decision_outcome_distribution,
+        "paper-proposal-list":                  cmd_paper_proposal_list,
+        "paper-proposal-approve":               cmd_paper_proposal_approve,
+        "paper-proposal-deny":                  cmd_paper_proposal_deny,
+        "paper-proposal-pending":               cmd_paper_proposal_pending,
+        "paper-lineage-ticker":                 cmd_paper_lineage_ticker,
+        "paper-lineage-signal":                 cmd_paper_lineage_signal,
+        "paper-checkpoint-save":                cmd_paper_checkpoint_save,
+        "paper-checkpoint-list":                cmd_paper_checkpoint_list,
+        "paper-checkpoint-restore":             cmd_paper_checkpoint_restore,
+        "paper-replay-run":                     cmd_paper_replay_run,
+        "paper-recovery-run":                   cmd_paper_recovery_run,
+        "paper-strategy-report":                cmd_paper_strategy_report,
+        "paper-strategy-gate":                  cmd_paper_strategy_gate,
+        "paper-strategy-panel":                 cmd_paper_strategy_panel,
+        "paper-eligibility-check":              cmd_paper_eligibility_check,
+        "paper-sizing-compute":                 cmd_paper_sizing_compute,
+        "paper-correlation-check":              cmd_paper_correlation_check,
+        "paper-strategy-risk-check":            cmd_paper_strategy_risk_check,
+        "paper-journal-tail":                   cmd_paper_journal_tail,
+        "paper-journal-list":                   cmd_paper_journal_list,
     }
 
     if args.command is None:
