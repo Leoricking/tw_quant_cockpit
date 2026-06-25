@@ -1,0 +1,8 @@
+{
+  "TEST_FIXTURE": true,
+  "DEMO_ONLY": true,
+  "capability_id": "portfolio_foundation",
+  "display_name": "Portfolio Research Foundation",
+  "stage": "STABLE",
+  "stable_version": "1.5.0"
+}

@@ -1,0 +1,7 @@
+{
+  "TEST_FIXTURE": true,
+  "DEMO_ONLY": true,
+  "available_from": "2025-01-01",
+  "as_of": "2020-01-01",
+  "expected_valid": false
+}

@@ -1,0 +1,8 @@
+{
+  "TEST_FIXTURE": true,
+  "DEMO_ONLY": true,
+  "contract_id": "portfolio_pit_contract_v159",
+  "contract_type": "PIT",
+  "version": "1.5.9",
+  "status": "VALID"
+}

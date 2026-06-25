@@ -1,0 +1,7 @@
+{
+  "TEST_FIXTURE": true,
+  "DEMO_ONLY": true,
+  "content_hash": "abc123",
+  "calculation_version": "1.5.9",
+  "source_lineage": "snapshot_123"
+}

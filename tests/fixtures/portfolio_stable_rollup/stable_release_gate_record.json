@@ -1,0 +1,7 @@
+{
+  "TEST_FIXTURE": true,
+  "DEMO_ONLY": true,
+  "gate_id": "portfolio_research_gate",
+  "expected_checks": 10,
+  "gate_passed": true
+}

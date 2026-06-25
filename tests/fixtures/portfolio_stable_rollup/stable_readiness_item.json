@@ -1,0 +1,8 @@
+{
+  "TEST_FIXTURE": true,
+  "DEMO_ONLY": true,
+  "domain": "Portfolio Research",
+  "capability": "Portfolio Research Foundation",
+  "stage": "STABLE",
+  "ready": true
+}

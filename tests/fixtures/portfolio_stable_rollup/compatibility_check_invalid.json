@@ -1,0 +1,6 @@
+{
+  "TEST_FIXTURE": true,
+  "DEMO_ONLY": true,
+  "version": "2.0.0",
+  "expected_compatible": false
+}

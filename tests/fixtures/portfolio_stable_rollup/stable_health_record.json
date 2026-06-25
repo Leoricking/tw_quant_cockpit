@@ -1,0 +1,7 @@
+{
+  "TEST_FIXTURE": true,
+  "DEMO_ONLY": true,
+  "health_id": "portfolio_health",
+  "command": "portfolio-health",
+  "expected_checks": 32
+}

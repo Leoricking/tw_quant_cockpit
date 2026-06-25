@@ -1,0 +1,10 @@
+{
+  "TEST_FIXTURE": true,
+  "DEMO_ONLY": true,
+  "version": "1.5.9",
+  "release": "Portfolio Stable Rollup",
+  "stable_capabilities": 6,
+  "blocking_debt": 0,
+  "status": "PASS",
+  "research_only": true
+}

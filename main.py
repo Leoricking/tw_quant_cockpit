@@ -34542,6 +34542,329 @@ def cmd_portfolio_walk_forward_report(args=None):
     return 0
 
 
+# ---------------------------------------------------------------------------
+# v1.5.9 Portfolio Stable Rollup handlers
+# ---------------------------------------------------------------------------
+
+def cmd_portfolio_stable_health(args=None):
+    """[v1.5.9] Portfolio Stable Rollup health check (research only)."""
+    print("[!] Research Only. No Real Orders. Not Investment Advice.")
+    from portfolio.stable_rollup.health_v159 import PortfolioStableRollupHealthCheck
+    result = PortfolioStableRollupHealthCheck().run()
+    checks = result.get("checks", {})
+    total = len(checks)
+    passed = sum(1 for v in checks.values() if isinstance(v, dict) and v.get("status") == "PASS")
+    failed = [k for k, v in checks.items() if isinstance(v, dict) and v.get("status") == "FAIL"]
+    overall = "PASS" if not failed else "FAIL"
+    print(f"Portfolio Stable Rollup Health Check v1.5.9")
+    print(f"Status: {overall}  Passed: {passed}/{total}")
+    if failed:
+        print(f"FAILED checks: {failed}")
+    print("[!] Research Only. No Real Orders. Not Investment Advice.")
+    return 0 if not failed else 1
+
+
+def cmd_portfolio_stable_capabilities(args=None):
+    """[v1.5.9] List stable portfolio capabilities (research only)."""
+    print("[!] Research Only. No Real Orders. Not Investment Advice.")
+    from portfolio.stable_rollup.query_v159 import StableRollupQueryService
+    caps = StableRollupQueryService().get_stable_capabilities()
+    print(f"Stable Capabilities ({len(caps)} total):")
+    for c in caps:
+        print(f"  [{c['capability_id']}] {c['display_name']} | stage={c['stage']} stable_version={c['stable_version']}")
+    print("(RESEARCH_ONLY)")
+    return 0
+
+
+def cmd_portfolio_stable_planned(args=None):
+    """[v1.5.9] List planned portfolio capabilities (research only)."""
+    print("[!] Research Only. No Real Orders. Not Investment Advice.")
+    from portfolio.stable_rollup.query_v159 import StableRollupQueryService
+    caps = StableRollupQueryService().get_planned_capabilities()
+    print(f"Planned Capabilities ({len(caps)} total):")
+    for c in caps:
+        print(f"  [{c['capability_id']}] {c['display_name']} | stage={c['stage']}")
+    print("(RESEARCH_ONLY)")
+    return 0
+
+
+def cmd_portfolio_stable_schemas(args=None):
+    """[v1.5.9] List stable portfolio schemas (research only)."""
+    print("[!] Research Only. No Real Orders. Not Investment Advice.")
+    from portfolio.stable_rollup.query_v159 import StableRollupQueryService
+    schemas = StableRollupQueryService().get_schema_registry()
+    print(f"Stable Schemas ({len(schemas)} total):")
+    for s in schemas[:10]:
+        print(f"  [{s['schema_id']}] v{s['version']} fp={s['fingerprint']}")
+    if len(schemas) > 10:
+        print(f"  ... ({len(schemas) - 10} more)")
+    print("(RESEARCH_ONLY)")
+    return 0
+
+
+def cmd_portfolio_stable_enums(args=None):
+    """[v1.5.9] List stable portfolio enums (research only)."""
+    print("[!] Research Only. No Real Orders. Not Investment Advice.")
+    from portfolio.stable_rollup.query_v159 import StableRollupQueryService
+    enums = StableRollupQueryService().get_enum_registry()
+    print(f"Stable Enums ({len(enums)} total):")
+    for e in enums:
+        print(f"  [{e['enum_name']}] values={len(e['values'])} fp={e['fingerprint']}")
+    print("(RESEARCH_ONLY)")
+    return 0
+
+
+def cmd_portfolio_stable_policies(args=None):
+    """[v1.5.9] List stable portfolio policies (research only)."""
+    print("[!] Research Only. No Real Orders. Not Investment Advice.")
+    from portfolio.stable_rollup.query_v159 import StableRollupQueryService
+    policies = StableRollupQueryService().get_policy_registry()
+    print(f"Stable Policies ({len(policies)} total):")
+    for p in policies:
+        print(f"  [{p['policy_id']}] type={p['type']} version={p['version']}")
+    print("(RESEARCH_ONLY)")
+    return 0
+
+
+def cmd_portfolio_stable_cli_registry(args=None):
+    """[v1.5.9] Show stable portfolio CLI registry (research only)."""
+    print("[!] Research Only. No Real Orders. Not Investment Advice.")
+    from portfolio.stable_rollup.query_v159 import StableRollupQueryService
+    cli = StableRollupQueryService().get_cli_registry()
+    print(f"CLI Registry: count={cli.get('count', 0)}")
+    val = cli.get("validation", {})
+    print(f"  valid={val.get('valid')}  issues={val.get('issues', [])}")
+    print("(RESEARCH_ONLY)")
+    return 0
+
+
+def cmd_portfolio_stable_health_registry(args=None):
+    """[v1.5.9] Show stable portfolio health registry (research only)."""
+    print("[!] Research Only. No Real Orders. Not Investment Advice.")
+    from portfolio.stable_rollup.query_v159 import StableRollupQueryService
+    health = StableRollupQueryService().get_health_registry()
+    print(f"Health Registry ({len(health)} checks):")
+    for h in health:
+        print(f"  [{h['health_id']}] command={h['command']} expected={h['expected_checks']}")
+    print("(RESEARCH_ONLY)")
+    return 0
+
+
+def cmd_portfolio_stable_release_gates(args=None):
+    """[v1.5.9] Show stable portfolio release gates (research only)."""
+    print("[!] Research Only. No Real Orders. Not Investment Advice.")
+    from portfolio.stable_rollup.query_v159 import StableRollupQueryService
+    gates = StableRollupQueryService().get_release_gate_registry()
+    print(f"Release Gates ({len(gates)} total):")
+    for g in gates:
+        print(f"  [{g['gate_id']}] expected={g['expected_checks']}")
+    print("(RESEARCH_ONLY)")
+    return 0
+
+
+def cmd_portfolio_stable_pit_contract(args=None):
+    """[v1.5.9] Show PIT contract (research only)."""
+    print("[!] Research Only. No Real Orders. Not Investment Advice.")
+    from portfolio.stable_rollup.query_v159 import StableRollupQueryService
+    c = StableRollupQueryService().get_pit_contract()
+    print(f"PIT Contract: {c['contract_id']} v{c['version']} status={c['status']}")
+    print(f"  Rules: {len(c['rules'])}")
+    print("(RESEARCH_ONLY)")
+    return 0
+
+
+def cmd_portfolio_stable_lineage_contract(args=None):
+    """[v1.5.9] Show lineage contract (research only)."""
+    print("[!] Research Only. No Real Orders. Not Investment Advice.")
+    from portfolio.stable_rollup.query_v159 import StableRollupQueryService
+    c = StableRollupQueryService().get_lineage_contract()
+    print(f"Lineage Contract: {c['contract_id']} v{c['version']} status={c['status']}")
+    print(f"  Rules: {len(c['rules'])}")
+    print("(RESEARCH_ONLY)")
+    return 0
+
+
+def cmd_portfolio_stable_safety_contract(args=None):
+    """[v1.5.9] Show safety contract (research only)."""
+    print("[!] Research Only. No Real Orders. Not Investment Advice.")
+    from portfolio.stable_rollup.query_v159 import StableRollupQueryService
+    c = StableRollupQueryService().get_safety_contract()
+    print(f"Safety Contract: {c['contract_id']} v{c['version']} status={c['status']}")
+    print(f"  Rules: {len(c['rules'])}")
+    print("(RESEARCH_ONLY)")
+    return 0
+
+
+def cmd_portfolio_stable_compatibility(args=None):
+    """[v1.5.9] Show compatibility registry (research only)."""
+    print("[!] Research Only. No Real Orders. Not Investment Advice.")
+    from portfolio.stable_rollup.query_v159 import StableRollupQueryService
+    reg = StableRollupQueryService().get_compatibility_registry()
+    print(f"Compatibility Registry: current={reg.get('current_version')}")
+    print(f"  supported_range={reg.get('supported_version_range')}")
+    print("(RESEARCH_ONLY)")
+    return 0
+
+
+def cmd_portfolio_stable_migrations(args=None):
+    """[v1.5.9] Show migration registry (research only)."""
+    print("[!] Research Only. No Real Orders. Not Investment Advice.")
+    from portfolio.stable_rollup.query_v159 import StableRollupQueryService
+    migrations = StableRollupQueryService().get_migration_registry()
+    print(f"Migration Registry ({len(migrations)} entries):")
+    for m in migrations:
+        print(f"  [{m['migration_id']}] {m['source']} → {m['target']}")
+    print("(RESEARCH_ONLY)")
+    return 0
+
+
+def cmd_portfolio_stable_manifest(args=None):
+    """[v1.5.9] Build and show stable manifest (research only)."""
+    print("[!] Research Only. No Real Orders. Not Investment Advice.")
+    from portfolio.stable_rollup.query_v159 import StableRollupQueryService
+    manifest = StableRollupQueryService().build_stable_manifest()
+    print(f"Stable Manifest v{manifest.version} — {manifest.release}")
+    print(f"  stable_capabilities={len(manifest.stable_capabilities)}")
+    print(f"  schemas={len(manifest.schema_fingerprints)}")
+    print(f"  enums={len(manifest.enum_fingerprints)}")
+    print(f"  cli_count={manifest.cli_count}")
+    print(f"  content_hash={manifest.content_hash}")
+    print(f"  research_only={manifest.research_only}")
+    print("(RESEARCH_ONLY)")
+    return 0
+
+
+def cmd_portfolio_stable_readiness(args=None):
+    """[v1.5.9] Show readiness matrix (research only)."""
+    print("[!] Research Only. No Real Orders. Not Investment Advice.")
+    from portfolio.stable_rollup.query_v159 import StableRollupQueryService
+    items = StableRollupQueryService().build_readiness_matrix()
+    ready = [i for i in items if i.get("ready")]
+    print(f"Readiness Matrix ({len(items)} total, {len(ready)} ready):")
+    for i in items:
+        status = "READY" if i.get("ready") else "NOT_READY"
+        print(f"  [{i['capability']}] stage={i['stage']} {status}")
+    print("(RESEARCH_ONLY)")
+    return 0
+
+
+def cmd_portfolio_stable_audit(args=None):
+    """[v1.5.9] Run integration audit (research only)."""
+    print("[!] Research Only. No Real Orders. Not Investment Advice.")
+    from portfolio.stable_rollup.integration_audit_v159 import IntegrationAuditV159
+    result = IntegrationAuditV159().run_all()
+    print(f"Integration Audit: overall={result['overall']}")
+    for k, v in result.get("checks", {}).items():
+        print(f"  [{k}] status={v.get('status')}")
+    print("(RESEARCH_ONLY)")
+    return 0 if result["overall"] == "PASS" else 1
+
+
+def cmd_portfolio_stable_debt(args=None):
+    """[v1.5.9] Scan stable debt (research only)."""
+    print("[!] Research Only. No Real Orders. Not Investment Advice.")
+    from portfolio.stable_rollup.debt_scanner_v159 import DebtScannerV159
+    result = DebtScannerV159().run_all()
+    print(f"Debt Scanner: blocking={result['blocking_count']} warning={result['warning_count']} info={result['informational_count']}")
+    print(f"  status={result['status']}  blocking_debt_zero={result['blocking_debt_zero']}")
+    print("(RESEARCH_ONLY)")
+    return 0 if result["blocking_debt_zero"] else 1
+
+
+def cmd_portfolio_stable_rollup(args=None):
+    """[v1.5.9] Run full portfolio stable rollup (research only)."""
+    print("[!] Research Only. No Real Orders. Not Investment Advice.")
+    from portfolio.stable_rollup.query_v159 import StableRollupQueryService
+    result = StableRollupQueryService().run_portfolio_stable_rollup()
+    print(f"Portfolio Stable Rollup v{result.version} — {result.release}")
+    print(f"  stable_capabilities={result.stable_capabilities}")
+    print(f"  planned_capabilities={result.planned_capabilities}")
+    print(f"  schemas={result.schemas_total}  enums={result.enums_total}  policies={result.policies_total}")
+    print(f"  cli_total={result.cli_total}  health_checks={result.health_checks}  release_gates={result.release_gates}")
+    print(f"  blocking_debt={result.blocking_debt}  status={result.status}")
+    print(f"  manifest_hash={result.manifest_hash}")
+    print("[!] Research Only. No Real Orders. Not Investment Advice.")
+    return 0 if result.status == "PASS" else 1
+
+
+def cmd_portfolio_stable_explain(args=None):
+    """[v1.5.9] Explain stable rollup (research only)."""
+    print("[!] Research Only. No Real Orders. Not Investment Advice.")
+    from portfolio.stable_rollup.query_v159 import StableRollupQueryService
+    explanation = StableRollupQueryService().explain_stable_rollup()
+    print(explanation.get("summary", ""))
+    print(f"  schemas={explanation['schemas']}  enums={explanation['enums']}  cli={explanation['cli_commands']}")
+    print(f"  blocking_debt={explanation['blocking_debt']}  status={explanation['status']}")
+    print(f"  safety={explanation['safety_text']}")
+    print("(RESEARCH_ONLY)")
+    return 0
+
+
+def cmd_portfolio_stable_gate(args=None):
+    """[v1.5.9] Run portfolio stable release gate (research only)."""
+    print("[!] Research Only. No Real Orders. Not Investment Advice.")
+    from release.portfolio_stable_release_gate_v159 import PortfolioStableReleaseGate
+    result = PortfolioStableReleaseGate().run()
+    print(f"Portfolio Stable Release Gate v{result['version']}")
+    print(f"  Status: {result['overall']}  gate_passed={result['gate_passed']}")
+    print(f"  Passed: {result['passed']}/{result['total']}")
+    if result.get("failed"):
+        print(f"  Failed: {result['failed']}")
+    print("[!] Research Only. No Real Orders. Not Investment Advice.")
+    return 0 if result["gate_passed"] else 1
+
+
+def cmd_portfolio_stable_report(args=None):
+    """[v1.5.9] Generate portfolio stable rollup report (research only)."""
+    print("[!] Research Only. No Real Orders. Not Investment Advice.")
+    from reports.portfolio_stable_rollup_report import PortfolioStableRollupReport
+    report = PortfolioStableRollupReport()
+    r = report.generate()
+    print(report.render_text(r))
+    print(f"RESEARCH_ONLY={r.get('RESEARCH_ONLY')}  NO_REAL_ORDERS={r.get('NO_REAL_ORDERS')}")
+    return 0
+
+
+def cmd_portfolio_stable_cli(args=None):
+    """[v1.5.9] Show stable portfolio CLI registry (research only)."""
+    return cmd_portfolio_stable_cli_registry(args)
+
+
+def cmd_portfolio_stable_reproducibility_contract(args=None):
+    """[v1.5.9] Show reproducibility contract (research only)."""
+    print("[!] Research Only. No Real Orders. Not Investment Advice.")
+    from portfolio.stable_rollup.query_v159 import StableRollupQueryService
+    c = StableRollupQueryService().get_reproducibility_contract()
+    print(f"Reproducibility Contract: {c['contract_id']} v{c['version']} status={c['status']}")
+    print(f"  Rules: {len(c['rules'])}")
+    print("(RESEARCH_ONLY)")
+    return 0
+
+
+def cmd_portfolio_stable_manifest_validate(args=None):
+    """[v1.5.9] Validate stable manifest (research only)."""
+    print("[!] Research Only. No Real Orders. Not Investment Advice.")
+    from portfolio.stable_rollup.query_v159 import StableRollupQueryService
+    result = StableRollupQueryService().validate_stable_manifest()
+    valid = result.get("valid", False)
+    print(f"Manifest Validation: valid={valid}")
+    issues = result.get("issues", [])
+    if issues:
+        print(f"  Issues: {issues}")
+    print("(RESEARCH_ONLY)")
+    return 0 if valid else 1
+
+
+def cmd_portfolio_stable_integration_audit(args=None):
+    """[v1.5.9] Run integration audit (research only)."""
+    return cmd_portfolio_stable_audit(args)
+
+
+def cmd_portfolio_stable_debt_scan(args=None):
+    """[v1.5.9] Scan stable debt (research only)."""
+    return cmd_portfolio_stable_debt(args)
+
+
 def main() -> None:
     """Main entrypoint."""
     import pandas as pd  # imported here to avoid shadowing at module level
@@ -35797,6 +36120,35 @@ def main() -> None:
         "walk-forward-reproducibility":         cmd_walk_forward_reproducibility,
         "walk-forward-explain":                 cmd_walk_forward_explain,
         "portfolio-walk-forward-report":        cmd_portfolio_walk_forward_report,
+        # v1.5.9 Portfolio Stable Rollup
+        "portfolio-stable-health":              cmd_portfolio_stable_health,
+        "portfolio-stable-capabilities":        cmd_portfolio_stable_capabilities,
+        "portfolio-stable-planned":             cmd_portfolio_stable_planned,
+        "portfolio-stable-schemas":             cmd_portfolio_stable_schemas,
+        "portfolio-stable-enums":               cmd_portfolio_stable_enums,
+        "portfolio-stable-policies":            cmd_portfolio_stable_policies,
+        "portfolio-stable-cli-registry":        cmd_portfolio_stable_cli_registry,
+        "portfolio-stable-health-registry":     cmd_portfolio_stable_health_registry,
+        "portfolio-stable-release-gates":       cmd_portfolio_stable_release_gates,
+        "portfolio-stable-pit-contract":        cmd_portfolio_stable_pit_contract,
+        "portfolio-stable-lineage-contract":    cmd_portfolio_stable_lineage_contract,
+        "portfolio-stable-safety-contract":     cmd_portfolio_stable_safety_contract,
+        "portfolio-stable-compatibility":       cmd_portfolio_stable_compatibility,
+        "portfolio-stable-migrations":          cmd_portfolio_stable_migrations,
+        "portfolio-stable-manifest":            cmd_portfolio_stable_manifest,
+        "portfolio-stable-readiness":           cmd_portfolio_stable_readiness,
+        "portfolio-stable-audit":               cmd_portfolio_stable_audit,
+        "portfolio-stable-debt":                cmd_portfolio_stable_debt,
+        "portfolio-stable-rollup":              cmd_portfolio_stable_rollup,
+        "portfolio-stable-explain":             cmd_portfolio_stable_explain,
+        "portfolio-stable-gate":                cmd_portfolio_stable_gate,
+        "portfolio-stable-report":              cmd_portfolio_stable_report,
+        # Spec-canonical names
+        "portfolio-stable-cli":                         cmd_portfolio_stable_cli,
+        "portfolio-stable-reproducibility-contract":    cmd_portfolio_stable_reproducibility_contract,
+        "portfolio-stable-manifest-validate":           cmd_portfolio_stable_manifest_validate,
+        "portfolio-stable-integration-audit":           cmd_portfolio_stable_integration_audit,
+        "portfolio-stable-debt-scan":                   cmd_portfolio_stable_debt_scan,
     }
 
     if args.command is None:

@@ -1,0 +1,8 @@
+{
+  "TEST_FIXTURE": true,
+  "DEMO_ONLY": true,
+  "calculation_version": null,
+  "expected_violations": [
+    "MISSING_CONTENT_HASH"
+  ]
+}

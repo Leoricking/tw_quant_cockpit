@@ -1,0 +1,8 @@
+{
+  "TEST_FIXTURE": true,
+  "DEMO_ONLY": true,
+  "migration_id": "1.5.4_to_1.5.9",
+  "source_version": "1.5.4",
+  "target_version": "1.5.9",
+  "data_migration_required": false
+}

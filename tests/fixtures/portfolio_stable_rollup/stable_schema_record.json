@@ -1,0 +1,11 @@
+{
+  "TEST_FIXTURE": true,
+  "DEMO_ONLY": true,
+  "schema_id": "PortfolioDefinition",
+  "schema_version": "1.5.0",
+  "required_fields": [
+    "portfolio_id",
+    "name",
+    "research_only"
+  ]
+}

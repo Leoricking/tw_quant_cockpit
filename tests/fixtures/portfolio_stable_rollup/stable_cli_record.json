@@ -1,0 +1,7 @@
+{
+  "TEST_FIXTURE": true,
+  "DEMO_ONLY": true,
+  "command": "portfolio-health",
+  "research_only": true,
+  "broker_related": false
+}

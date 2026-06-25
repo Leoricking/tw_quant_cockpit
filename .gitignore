@@ -767,3 +767,10 @@ data/walk_forward_runs/
 reports/portfolio_walk_forward_*.md
 # Walk-forward fixtures ARE committed
 !tests/fixtures/portfolio_walk_forward/*.json
+
+# v1.5.9 Portfolio Stable Rollup (freeze/stabilization — runtime artifacts — never commit)
+data/portfolio_stable_rollup/
+data/stable_rollup_runtime/
+reports/portfolio_stable_rollup_*.md
+# Stable rollup fixtures ARE committed (exception)
+!tests/fixtures/portfolio_stable_rollup/*.json

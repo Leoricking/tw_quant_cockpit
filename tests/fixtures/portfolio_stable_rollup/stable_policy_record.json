@@ -1,0 +1,8 @@
+{
+  "TEST_FIXTURE": true,
+  "DEMO_ONLY": true,
+  "policy_id": "sizing_policy_default",
+  "policy_type": "PositionSizingPolicy",
+  "version": "1.5.1",
+  "PIT_safe": true
+}

@@ -1,0 +1,10 @@
+{
+  "TEST_FIXTURE": true,
+  "DEMO_ONLY": true,
+  "enum_name": "TransactionType",
+  "values": [
+    "BUY",
+    "SELL"
+  ],
+  "introduced_version": "1.5.0"
+}
