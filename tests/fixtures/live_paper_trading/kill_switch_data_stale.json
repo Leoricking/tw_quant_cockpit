@@ -1,0 +1,1 @@
+{"fixture_type":"TEST_FIXTURE","paper_only":true,"not_real_order":true,"not_real_account":true,"not_for_execution":true,"not_for_investment_decision":true,"trigger":"DATA_FEED_STALE","last_event_age_seconds":400,"staleness_threshold_seconds":300,"expected_kill_switch_triggered":true,"expected_new_orders_blocked":true,"expected_auto_close":false}

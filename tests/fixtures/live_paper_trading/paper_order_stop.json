@@ -1,0 +1,1 @@
+{"fixture_type":"TEST_FIXTURE","paper_only":true,"not_real_order":true,"not_real_account":true,"not_for_execution":true,"not_for_investment_decision":true,"order_type":"STOP","side":"SELL","symbol":"2330","quantity":"1000","stop_price":"480","note":"STOP simulation only, no real broker stop order","research_only":true}

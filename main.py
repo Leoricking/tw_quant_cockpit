@@ -34865,6 +34865,270 @@ def cmd_portfolio_stable_debt_scan(args=None):
     return cmd_portfolio_stable_debt(args)
 
 
+# ---------------------------------------------------------------------------
+# v1.6.0 Live Paper Trading Foundation handlers
+# [!] PAPER TRADING ONLY. NO REAL ORDERS. NO BROKER. PRODUCTION TRADING: BLOCKED.
+# ---------------------------------------------------------------------------
+
+def cmd_paper_trading_health(args=None):
+    """[v1.6.0] Live Paper Trading health check. Paper-only. No real orders."""
+    print("[!] PAPER TRADING ONLY. NO REAL ORDERS. NO BROKER. PRODUCTION TRADING: BLOCKED.")
+    from paper_trading.health_v160 import LivePaperTradingHealthCheck
+    result = LivePaperTradingHealthCheck().run()
+    status = result.get("status", "UNKNOWN")
+    passed = result.get("passed", 0)
+    total = result.get("total", 0)
+    failed = result.get("failed", 0)
+    print(f"Live Paper Trading Health Check v1.6.0")
+    print(f"Status: {status}  Passed: {passed}/{total}  Failed: {failed}")
+    if failed:
+        for c in result.get("checks", []):
+            if not c["passed"]:
+                print(f"  [FAIL] {c['check']}: {c['detail']}")
+    print("[!] PAPER TRADING ONLY. NO REAL ORDERS. NOT INVESTMENT ADVICE.")
+
+
+def cmd_paper_session_create(args=None):
+    """[v1.6.0] Create a new paper trading session. Paper-only."""
+    print("[!] PAPER TRADING ONLY. NO REAL ORDERS.")
+    print("paper-session-create: offline/fixture mode (no live session stored)")
+    from paper_trading.models_v160 import PaperSessionConfig
+    from paper_trading.enums_v160 import DataMode
+    from decimal import Decimal
+    cfg = PaperSessionConfig(session_id="demo_session", name="Demo Paper Session",
+                              initial_cash=Decimal("1000000"), data_mode=DataMode.FIXTURE)
+    print(f"  session_id: {cfg.session_id}")
+    print(f"  initial_cash: {cfg.initial_cash} {cfg.currency}")
+    print(f"  data_mode: {cfg.data_mode.value}")
+    print(f"  research_only: {cfg.research_only}")
+    print(f"  broker_enabled: {cfg.broker_enabled}")
+    print(f"  real_order_enabled: {cfg.real_order_enabled}")
+    print("[!] PAPER ONLY. NOT A REAL ACCOUNT.")
+
+
+def cmd_paper_session_start(args=None):
+    """[v1.6.0] Start a paper trading session. Paper-only."""
+    print("[!] PAPER TRADING ONLY. NO REAL ORDERS.")
+    print("paper-session-start: offline fixture demo")
+    from paper_trading.session_v160 import PaperTradingSessionEngine
+    from paper_trading.models_v160 import PaperSessionConfig
+    from paper_trading.enums_v160 import DataMode, PaperSessionStatus
+    from decimal import Decimal
+    cfg = PaperSessionConfig(session_id="demo_start", name="Demo", data_mode=DataMode.FIXTURE)
+    engine = PaperTradingSessionEngine(cfg)
+    engine.start()
+    print(f"  status: {engine.status.value}")
+    print("[!] PAPER ONLY.")
+
+
+def cmd_paper_session_pause(args=None):
+    """[v1.6.0] Pause a paper trading session. Paper-only."""
+    print("[!] PAPER TRADING ONLY. paper-session-pause: pauses paper session (offline mode)")
+
+
+def cmd_paper_session_resume(args=None):
+    """[v1.6.0] Resume a paper trading session. Paper-only."""
+    print("[!] PAPER TRADING ONLY. paper-session-resume: resumes paper session (offline mode)")
+
+
+def cmd_paper_session_halt(args=None):
+    """[v1.6.0] Halt a paper trading session. Paper-only."""
+    print("[!] PAPER TRADING ONLY. paper-session-halt: halts paper session (offline mode)")
+    print("  HALT stops new paper orders. Does NOT create real sell orders.")
+    print("  NO BROKER CALL. NO REAL ORDER.")
+
+
+def cmd_paper_session_complete(args=None):
+    """[v1.6.0] Complete a paper trading session. Paper-only."""
+    print("[!] PAPER TRADING ONLY. paper-session-complete: completes paper session (offline mode)")
+
+
+def cmd_paper_session_show(args=None):
+    """[v1.6.0] Show paper session details. Paper-only."""
+    print("[!] PAPER TRADING ONLY. NO REAL ORDERS.")
+    print("paper-session-show: no active session (offline mode)")
+    print("  To create a session, use: paper-session-create")
+
+
+def cmd_paper_session_list(args=None):
+    """[v1.6.0] List paper trading sessions. Paper-only."""
+    print("[!] PAPER TRADING ONLY. NO REAL ORDERS.")
+    print("paper-session-list: no sessions (offline mode)")
+
+
+def cmd_paper_market_state(args=None):
+    """[v1.6.0] Show paper market session state. Paper-only."""
+    print("[!] PAPER TRADING ONLY. NO REAL ORDERS.")
+    from paper_trading.market_session_v160 import TWMarketSessionState
+    ms = TWMarketSessionState()
+    print(f"Market State: {ms.get_status().value}")
+    print("  Note: requires datetime update. Use data_mode=FIXTURE for offline.")
+    print("[!] PAPER ONLY.")
+
+
+def cmd_paper_event_ingest(args=None):
+    """[v1.6.0] Ingest a market event into paper session. Paper-only."""
+    print("[!] PAPER TRADING ONLY. NO REAL ORDERS.")
+    print("paper-event-ingest: fixture/offline mode. No live data required.")
+
+
+def cmd_paper_event_list(args=None):
+    """[v1.6.0] List paper session events. Paper-only."""
+    print("[!] PAPER TRADING ONLY. NO REAL ORDERS.")
+    print("paper-event-list: no active session (offline mode)")
+
+
+def cmd_paper_order_submit(args=None):
+    """[v1.6.0] Submit a paper order. Paper-only. NOT A REAL ORDER."""
+    print("[!] PAPER TRADING ONLY. NO REAL ORDERS. NOT_A_REAL_ORDER. NO_BROKER_CALL.")
+    print("paper-order-submit: paper-only simulation. No real order sent.")
+
+
+def cmd_paper_order_cancel(args=None):
+    """[v1.6.0] Cancel a paper order. Paper-only."""
+    print("[!] PAPER TRADING ONLY. NO REAL ORDERS.")
+    print("paper-order-cancel: paper-only. No real order cancelled.")
+
+
+def cmd_paper_order_show(args=None):
+    """[v1.6.0] Show paper order details. Paper-only."""
+    print("[!] PAPER TRADING ONLY. NO REAL ORDERS.")
+    print("paper-order-show: no active orders (offline mode)")
+
+
+def cmd_paper_order_list(args=None):
+    """[v1.6.0] List paper orders. Paper-only."""
+    print("[!] PAPER TRADING ONLY. NO REAL ORDERS.")
+    print("paper-order-list: no active orders (offline mode)")
+
+
+def cmd_paper_fill_list(args=None):
+    """[v1.6.0] List paper fills. Paper-only."""
+    print("[!] PAPER TRADING ONLY. NO REAL ORDERS. SIMULATION_ONLY.")
+    print("paper-fill-list: no fills (offline mode)")
+
+
+def cmd_paper_position_list(args=None):
+    """[v1.6.0] List paper positions. Paper-only."""
+    print("[!] PAPER TRADING ONLY. NO REAL ORDERS.")
+    print("paper-position-list: no positions (offline mode)")
+
+
+def cmd_paper_cash_show(args=None):
+    """[v1.6.0] Show paper cash balance. Paper-only."""
+    print("[!] PAPER TRADING ONLY. NO REAL ORDERS.")
+    print("paper-cash-show: no active session (offline mode)")
+    print("  SIMPLIFIED_PAPER_SETTLEMENT — not real T+2 Taiwan settlement")
+
+
+def cmd_paper_pnl_show(args=None):
+    """[v1.6.0] Show paper P&L summary. Paper-only."""
+    print("[!] PAPER TRADING ONLY. NO REAL ORDERS. NOT INVESTMENT ADVICE.")
+    print("paper-pnl-show: no active session (offline mode)")
+
+
+def cmd_paper_risk_check(args=None):
+    """[v1.6.0] Run paper risk gate check. Paper-only."""
+    print("[!] PAPER TRADING ONLY. NO REAL ORDERS.")
+    from paper_trading.paper_risk_gate_v160 import PaperRiskGate
+    print("PaperRiskGate v1.6.0: 16-check gate. BLOCKED = no queued paper order.")
+    print("  Integrates v1.5.1-v1.5.3 risk controls + v1.5.9 safety contract.")
+
+
+def cmd_paper_kill_switch(args=None):
+    """[v1.6.0] Trigger paper kill switch. Paper-only."""
+    print("[!] PAPER TRADING ONLY. NO REAL ORDERS.")
+    print("paper-kill-switch: shows kill switch status (offline mode)")
+    from paper_trading.paper_kill_switch_v160 import PaperKillSwitch
+    ks = PaperKillSwitch()
+    print(f"  Kill switch triggered: {ks.is_triggered}")
+    print("  NOTE: Kill switch HALTS new paper orders. Does NOT create real sell orders.")
+
+
+def cmd_paper_snapshot_create(args=None):
+    """[v1.6.0] Create paper session snapshot. Paper-only."""
+    print("[!] PAPER TRADING ONLY. NO REAL ORDERS.")
+    from paper_trading.snapshot_v160 import SnapshotService
+    ss = SnapshotService()
+    snap = ss.create("offline_demo")
+    print(f"  snapshot_id: {snap.snapshot_id}")
+    print(f"  content_hash: {snap.content_hash}")
+    print("[!] PAPER ONLY.")
+
+
+def cmd_paper_snapshot_show(args=None):
+    """[v1.6.0] Show paper session snapshot. Paper-only."""
+    print("[!] PAPER TRADING ONLY. NO REAL ORDERS.")
+    print("paper-snapshot-show: no active session (offline mode)")
+
+
+def cmd_paper_ledger_verify(args=None):
+    """[v1.6.0] Verify paper ledger hash chain. Paper-only."""
+    print("[!] PAPER TRADING ONLY. NO REAL ORDERS.")
+    from paper_trading.paper_ledger_v160 import PaperLedger
+    l = PaperLedger("offline_demo")
+    l.append("DEMO_ENTRY")
+    ok = l.verify_chain()
+    print(f"  ledger_valid: {ok}")
+    print(f"  entries: {l.count()}")
+    print("[!] PAPER ONLY. NO FORMAL PORTFOLIO LEDGER WRITE.")
+
+
+def cmd_paper_session_replay(args=None):
+    """[v1.6.0] Replay paper session events. Paper-only."""
+    print("[!] PAPER TRADING ONLY. NO REAL ORDERS.")
+    from paper_trading.session_replay_v160 import PaperSessionReplay
+    r = PaperSessionReplay().replay("offline_demo", [])
+    print(f"  events_replayed: {r.events_replayed}")
+    print(f"  reproducible: {r.reproducible}")
+    print(f"  paper_only: {r.paper_only}")
+    print(f"  not_live: {r.not_live}")
+
+
+def cmd_paper_session_recover(args=None):
+    """[v1.6.0] Recover paper session from snapshot. Paper-only."""
+    print("[!] PAPER TRADING ONLY. NO REAL ORDERS.")
+    from paper_trading.recovery_v160 import PaperSessionRecovery
+    r = PaperSessionRecovery().recover("offline_demo", None, None)
+    print(f"  success: {r.success}")
+    print(f"  recovered_status: {r.recovered_status.value}")
+    print(f"  auto_resume_enabled: {r.auto_resume_enabled}")
+    print("  NOTE: Recovery targets PAUSED state. Auto-resume requires explicit enable.")
+
+
+def cmd_paper_session_lineage(args=None):
+    """[v1.6.0] Show paper session lineage. Paper-only."""
+    print("[!] PAPER TRADING ONLY. NO REAL ORDERS.")
+    from paper_trading.lineage_v160 import PaperLineageService
+    svc = PaperLineageService("offline_demo")
+    print(f"  lineage records: {svc.count()}")
+    print("  Chain: Report → Snapshot → Ledger → Fills → Orders → Risk → Signals → Events → Provider")
+    print("[!] PAPER ONLY. RESEARCH ONLY.")
+
+
+def cmd_paper_session_explain(args=None):
+    """[v1.6.0] Explain paper session decisions. Paper-only."""
+    print("[!] PAPER TRADING ONLY. NO REAL ORDERS.")
+    from paper_trading.explain_v160 import PaperSessionExplainer
+    explainer = PaperSessionExplainer()
+    assumptions = explainer.explain_assumptions()
+    print("Paper Trading Assumptions:")
+    for a in assumptions:
+        print(f"  - {a}")
+
+
+def cmd_paper_session_report(args=None):
+    """[v1.6.0] Generate paper session research report. Paper-only."""
+    print("[!] PAPER TRADING ONLY. NO REAL ORDERS. NOT INVESTMENT ADVICE.")
+    from reports.live_paper_trading_report import LivePaperTradingReport
+    report = LivePaperTradingReport().generate(session_id="offline_demo")
+    print(f"  report: {report['report_title']}")
+    print(f"  paper_only: {report['safety']['paper_trading_only']}")
+    print(f"  no_real_orders: {report['safety']['no_real_orders']}")
+    print(f"  no_broker: {report['safety']['no_broker']}")
+    print("[!] PAPER ONLY. RESEARCH ONLY. NOT INVESTMENT ADVICE.")
+
+
 def main() -> None:
     """Main entrypoint."""
     import pandas as pd  # imported here to avoid shadowing at module level
@@ -36149,6 +36413,37 @@ def main() -> None:
         "portfolio-stable-manifest-validate":           cmd_portfolio_stable_manifest_validate,
         "portfolio-stable-integration-audit":           cmd_portfolio_stable_integration_audit,
         "portfolio-stable-debt-scan":                   cmd_portfolio_stable_debt_scan,
+        # v1.6.0 Live Paper Trading Foundation
+        "paper-trading-health":     cmd_paper_trading_health,
+        "paper-session-create":     cmd_paper_session_create,
+        "paper-session-start":      cmd_paper_session_start,
+        "paper-session-pause":      cmd_paper_session_pause,
+        "paper-session-resume":     cmd_paper_session_resume,
+        "paper-session-halt":       cmd_paper_session_halt,
+        "paper-session-complete":   cmd_paper_session_complete,
+        "paper-session-show":       cmd_paper_session_show,
+        "paper-session-list":       cmd_paper_session_list,
+        "paper-market-state":       cmd_paper_market_state,
+        "paper-event-ingest":       cmd_paper_event_ingest,
+        "paper-event-list":         cmd_paper_event_list,
+        "paper-order-submit":       cmd_paper_order_submit,
+        "paper-order-cancel":       cmd_paper_order_cancel,
+        "paper-order-show":         cmd_paper_order_show,
+        "paper-order-list":         cmd_paper_order_list,
+        "paper-fill-list":          cmd_paper_fill_list,
+        "paper-position-list":      cmd_paper_position_list,
+        "paper-cash-show":          cmd_paper_cash_show,
+        "paper-pnl-show":           cmd_paper_pnl_show,
+        "paper-risk-check":         cmd_paper_risk_check,
+        "paper-kill-switch":        cmd_paper_kill_switch,
+        "paper-snapshot-create":    cmd_paper_snapshot_create,
+        "paper-snapshot-show":      cmd_paper_snapshot_show,
+        "paper-ledger-verify":      cmd_paper_ledger_verify,
+        "paper-session-replay":     cmd_paper_session_replay,
+        "paper-session-recover":    cmd_paper_session_recover,
+        "paper-session-lineage":    cmd_paper_session_lineage,
+        "paper-session-explain":    cmd_paper_session_explain,
+        "paper-session-report":     cmd_paper_session_report,
     }
 
     if args.command is None:

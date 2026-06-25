@@ -1,0 +1,1 @@
+{"fixture_type":"TEST_FIXTURE","paper_only":true,"not_real_order":true,"not_real_account":true,"not_for_execution":true,"not_for_investment_decision":true,"session_id":"s1","data_mode":"FIXTURE","source_version":"1.6.0","slippage_model_version":"v1","risk_gate_version":"v1","expected_lineage_complete":true,"expected_formal_conclusion_blocked":true}

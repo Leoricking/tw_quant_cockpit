@@ -1,0 +1,1 @@
+{"fixture_type":"TEST_FIXTURE","paper_only":true,"not_real_order":true,"not_real_account":true,"not_for_execution":true,"not_for_investment_decision":true,"entries":[{"sequence":0,"event_type":"ORDER_QUEUED","cash_delta":"0"},{"sequence":1,"event_type":"FILL","cash_delta":"-500000","quantity_delta":"1000"}],"expected_valid":true}

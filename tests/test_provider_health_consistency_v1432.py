@@ -604,6 +604,7 @@ class TestVersion:
             "Portfolio Stable Rollup",
             "Portfolio Stable Rollup Integrity Hotfix",
             "Portfolio Stable Rollup Release Gate Hotfix",
+    "Live Paper Trading Foundation",
         }
         assert RELEASE_NAME in known_names, f"Unexpected RELEASE_NAME: {RELEASE_NAME}"
 

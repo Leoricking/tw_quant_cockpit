@@ -37,8 +37,9 @@ class TestVersionInfo:
 
     def test_release_name(self):
         from release.version_info import RELEASE_NAME
-        assert "Stable" in RELEASE_NAME or "Rollup" in RELEASE_NAME, \
-            f"Expected 'Stable Rollup' in RELEASE_NAME, got {RELEASE_NAME}"
+        _KNOWN = {"Stable", "Rollup", "Paper Trading", "Foundation"}
+        assert any(k in RELEASE_NAME for k in _KNOWN), \
+            f"Expected known RELEASE_NAME keyword, got {RELEASE_NAME}"
 
     def test_no_real_orders(self):
         from release.version_info import NO_REAL_ORDERS

@@ -245,10 +245,11 @@ class TestSafetyInvariants:
         assert BROKER_EXECUTION_ENABLED is False
 
     def test_34_all_commands_safety_classification_research_only(self):
-        """Test 34: All CommandSpec have safety_classification=RESEARCH_ONLY."""
+        """Test 34: All CommandSpec have safety_classification=RESEARCH_ONLY or SIMULATION_ONLY (paper trading)."""
         from cli.command_registry import PROVIDER_COMMANDS
+        _ALLOWED = {"RESEARCH_ONLY", "SIMULATION_ONLY"}
         for spec in PROVIDER_COMMANDS:
-            assert spec.safety_classification == "RESEARCH_ONLY", (
+            assert spec.safety_classification in _ALLOWED, (
                 f"{spec.name} has safety_classification={spec.safety_classification}"
             )
 
@@ -295,6 +296,7 @@ class TestRegression:
             "Portfolio Stable Rollup",
             "Portfolio Stable Rollup Integrity Hotfix",
             "Portfolio Stable Rollup Release Gate Hotfix",
+    "Live Paper Trading Foundation",
         }
         assert RELEASE_NAME in _KNOWN, f"Unexpected RELEASE_NAME: {RELEASE_NAME}"
 

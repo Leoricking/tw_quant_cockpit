@@ -73,10 +73,22 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # ---------------------------------------------------------------------------
 # v1.3.3 module-level constants (Coverage Repair Workflow)
 # ---------------------------------------------------------------------------
-VERSION                             = "1.5.9.2"
-RELEASE_NAME                        = "Portfolio Stable Rollup Release Gate Hotfix"
-BASE_RELEASE                        = "1.5.9.1 Portfolio Stable Rollup Integrity Hotfix"
+VERSION                             = "1.6.0"
+RELEASE_NAME                        = "Live Paper Trading Foundation"
+BASE_RELEASE                        = "1.5.9.2 Portfolio Stable Rollup Release Gate Hotfix"
 PORTFOLIO_STABLE_BASELINE           = "1.5.9"
+LIVE_PAPER_TRADING_BASELINE         = "1.6.0"
+LIVE_PAPER_TRADING_AVAILABLE        = True
+LIVE_PAPER_TRADING_STAGE            = "FOUNDATION"
+LIVE_PAPER_TRADING_RESEARCH_ONLY    = True
+PAPER_ORDER_CREATION_ENABLED        = True
+PAPER_ORDER_EXECUTION_ENABLED       = True
+PAPER_FILL_SIMULATION_ENABLED       = True
+PAPER_LEDGER_WRITE_ENABLED          = True
+REAL_AUTO_REBALANCE_ENABLED         = False
+REAL_HEDGING_EXECUTION_ENABLED      = False
+MARGIN_ENABLED                      = False
+SHORT_SELLING_ENABLED               = False
 PORTFOLIO_STABLE_ROLLUP_AVAILABLE   = True
 PORTFOLIO_STABLE_ROLLUP_STAGE       = "STABLE"
 PORTFOLIO_RESEARCH_ONLY             = True

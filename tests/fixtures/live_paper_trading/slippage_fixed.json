@@ -1,0 +1,1 @@
+{"fixture_type":"TEST_FIXTURE","paper_only":true,"not_real_order":true,"not_real_account":true,"not_for_execution":true,"not_for_investment_decision":true,"model":"FIXED_BPS","fixed_bps":"10","price":"500","side":"BUY","quantity":"1000","expected_slippage_bps":"10"}

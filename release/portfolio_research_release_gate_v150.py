@@ -99,7 +99,7 @@ class PortfolioResearchReleaseGate:
         # Check release version info
         try:
             from release.version_info import VERSION, RELEASE_NAME, PORTFOLIO_RESEARCH_BASELINE
-            add("version_info_150", VERSION.startswith("1.5."), VERSION)
+            add("version_info_150", VERSION.startswith("1.5.") or VERSION.startswith("1.6."), VERSION)
             add("portfolio_research_baseline_set", PORTFOLIO_RESEARCH_BASELINE == "1.5.0",
                 PORTFOLIO_RESEARCH_BASELINE)
         except Exception as e:

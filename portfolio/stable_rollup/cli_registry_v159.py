@@ -21,7 +21,7 @@ def build_cli_registry():
                     else "provider"
                 ),
                 research_only=True,
-                broker_related=any(b in cmd for b in ["broker", "execute", "submit", "live"]),
+                broker_related=not cmd.startswith("paper-") and any(b in cmd for b in ["broker", "execute", "submit", "live"]),
                 formal_ledger_write=False,
             ))
         return records

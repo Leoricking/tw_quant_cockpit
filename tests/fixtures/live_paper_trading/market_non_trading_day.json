@@ -1,0 +1,1 @@
+{"fixture_type":"TEST_FIXTURE","paper_only":true,"not_real_order":true,"not_real_account":true,"not_for_execution":true,"not_for_investment_decision":true,"datetime":"2024-03-02T10:00:00","timezone":"Asia/Taipei","expected_status":"NON_TRADING_DAY","is_trading_day":false,"can_simulate_fill":false}

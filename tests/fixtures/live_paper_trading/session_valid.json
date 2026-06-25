@@ -1,0 +1,19 @@
+{
+  "fixture_type": "TEST_FIXTURE",
+  "paper_only": true,
+  "not_real_order": true,
+  "not_real_account": true,
+  "not_for_execution": true,
+  "not_for_investment_decision": true,
+  "session_id": "test_session_001",
+  "name": "Test Session Valid",
+  "initial_cash": "1000000",
+  "currency": "TWD",
+  "data_mode": "FIXTURE",
+  "research_only": true,
+  "broker_enabled": false,
+  "real_order_enabled": false,
+  "formal_ledger_write_enabled": false,
+  "timezone": "Asia/Taipei",
+  "market": "TWSE"
+}

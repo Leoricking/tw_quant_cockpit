@@ -1221,6 +1221,7 @@ def test_release_name_141():
         "Portfolio Stable Rollup",
         "Portfolio Stable Rollup Integrity Hotfix",
         "Portfolio Stable Rollup Release Gate Hotfix",
+    "Live Paper Trading Foundation",
     )
     assert RELEASE_NAME in _KNOWN, f"Unexpected release name: {RELEASE_NAME}"
 

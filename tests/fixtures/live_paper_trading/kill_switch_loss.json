@@ -1,0 +1,1 @@
+{"fixture_type":"TEST_FIXTURE","paper_only":true,"not_real_order":true,"not_real_account":true,"not_for_execution":true,"not_for_investment_decision":true,"trigger":"MAX_LOSS_EXCEEDED","unrealized_pnl":"-60000","max_loss_limit":"-50000","expected_kill_switch_triggered":true,"expected_new_orders_blocked":true,"expected_auto_close":false}

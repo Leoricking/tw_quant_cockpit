@@ -1,0 +1,1 @@
+{"fixture_type":"TEST_FIXTURE","paper_only":true,"not_real_order":true,"not_real_account":true,"not_for_execution":true,"not_for_investment_decision":true,"order_type":"MARKET","side":"SELL","symbol":"2330","quantity":"5000","existing_position":"0","expected":"RISK_BLOCKED_INSUFFICIENT_POSITION"}

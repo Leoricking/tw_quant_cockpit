@@ -60,6 +60,7 @@ def run_checklist() -> list[dict]:
             "Portfolio Stable Rollup",
             "Portfolio Stable Rollup Integrity Hotfix",
             "Portfolio Stable Rollup Release Gate Hotfix",
+            "Live Paper Trading Foundation",
         }
         parts = tuple(int(x) for x in VERSION.split(".")[:3])
         return (parts >= (1, 3, 9)

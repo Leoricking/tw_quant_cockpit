@@ -1566,8 +1566,8 @@ class TestVersionInfo(unittest.TestCase):
         from release.version_info import VERSION
         # v1.4.6 feature; accept hotfix and successor releases
         self.assertTrue(
-            VERSION[:5] in ("1.4.6", "1.4.7") or VERSION.startswith("1.4.") or VERSION.startswith("1.5."),
-            msg=f"Expected 1.4.x or 1.5.x release, got {VERSION}"
+            VERSION[:5] in ("1.4.6", "1.4.7") or VERSION.startswith("1.4.") or VERSION.startswith("1.5.") or VERSION.startswith("1.6."),
+            msg=f"Expected 1.4.x-1.6.x release, got {VERSION}"
         )
 
     def test_release_name_provider_quality_gates(self):
@@ -1587,6 +1587,7 @@ class TestVersionInfo(unittest.TestCase):
             "Drawdown & Risk Controls",
             "Portfolio Walk-forward Backtest",
             "Portfolio Stable Rollup",
+            "Live Paper Trading Foundation",
         )
         self.assertTrue(
             any(name in RELEASE_NAME for name in _KNOWN),

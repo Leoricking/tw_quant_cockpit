@@ -774,3 +774,16 @@ data/stable_rollup_runtime/
 reports/portfolio_stable_rollup_*.md
 # Stable rollup fixtures ARE committed (exception)
 !tests/fixtures/portfolio_stable_rollup/*.json
+
+# v1.6.0 Live Paper Trading Foundation (paper-only runtime state — never commit)
+paper_trading_state/
+paper_sessions/
+paper_session_snapshots/
+paper_session_journals/
+paper_session_ledgers/
+paper_replay_data/
+paper_recovery_state/
+reports/live_paper_trading_*.md
+reports/paper_trading_report_*.md
+# Paper trading test fixtures ARE committed (exception)
+!tests/fixtures/live_paper_trading/*.json

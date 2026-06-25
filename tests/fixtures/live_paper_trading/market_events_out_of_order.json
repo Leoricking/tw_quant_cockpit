@@ -1,0 +1,1 @@
+{"fixture_type":"TEST_FIXTURE","paper_only":true,"not_real_order":true,"not_real_account":true,"not_for_execution":true,"not_for_investment_decision":true,"events":[{"event_id":"e2","sequence":1,"idempotency_key":"k2"},{"event_id":"e1","sequence":0,"idempotency_key":"k1"}],"expected":"OUT_OF_ORDER_ERROR"}
