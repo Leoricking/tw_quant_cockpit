@@ -158,7 +158,7 @@ class QualityGateStore:
     def upsert_provider_profile(self, profile_dict: Dict[str, Any]) -> None:
         assert self._conn is not None
         import datetime
-        evaluated_at = profile_dict.get("evaluated_at", datetime.datetime.utcnow().isoformat() + "Z")
+        evaluated_at = profile_dict.get("evaluated_at", datetime.datetime.now(datetime.timezone.utc).strftime('%Y-%m-%dT%H:%M:%S.%f') + 'Z')
         self._conn.execute(
             """
             INSERT OR REPLACE INTO provider_quality_profiles

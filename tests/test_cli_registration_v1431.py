@@ -298,6 +298,7 @@ class TestRegression:
             "Portfolio Stable Rollup Release Gate Hotfix",
     "Live Paper Trading Foundation",
             "Market Data Session Adapter",
+            "Market Data Session Warning Hygiene Hotfix",
         }
         assert RELEASE_NAME in _KNOWN, f"Unexpected RELEASE_NAME: {RELEASE_NAME}"
 

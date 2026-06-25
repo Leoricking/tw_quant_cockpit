@@ -10,7 +10,7 @@ import contextlib
 import logging
 import os
 import sqlite3
-from datetime import datetime
+from datetime import datetime, timezone
 from typing import Any, Dict, List, Optional
 
 logger = logging.getLogger(__name__)
@@ -517,7 +517,7 @@ class ForumStore:
         VALUES (?, ?, ?, 'RUNNING')
         """
         with self._conn() as conn:
-            cur = conn.execute(sql, (source_id, datetime.utcnow().isoformat() + "Z", int(dry_run)))
+            cur = conn.execute(sql, (source_id, datetime.now(timezone.utc).strftime('%Y-%m-%dT%H:%M:%S.%f') + 'Z', int(dry_run)))
             return cur.lastrowid
 
     def complete_fetch_run(self, run_id: int, articles_found: int,
@@ -530,7 +530,7 @@ class ForumStore:
         """
         with self._conn() as conn:
             conn.execute(sql, (
-                datetime.utcnow().isoformat() + "Z",
+                datetime.now(timezone.utc).strftime('%Y-%m-%dT%H:%M:%S.%f') + 'Z',
                 articles_found, pages_fetched, status, notes, run_id
             ))
 

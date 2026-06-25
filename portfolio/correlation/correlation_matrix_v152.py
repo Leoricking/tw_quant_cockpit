@@ -119,7 +119,7 @@ def _build_result(
         status = CorrelationStatus.PARTIAL
 
     content_hash = _compute_hash({"matrix": matrix, "symbols": symbols})
-    generated_at = datetime.datetime.utcnow().isoformat()
+    generated_at = datetime.datetime.now(datetime.timezone.utc).isoformat()
 
     import uuid
     matrix_id = f"CORR_{method.value}_{uuid.uuid4().hex[:8].upper()}"

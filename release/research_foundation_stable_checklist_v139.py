@@ -62,6 +62,7 @@ def run_checklist() -> list[dict]:
             "Portfolio Stable Rollup Release Gate Hotfix",
             "Live Paper Trading Foundation",
             "Market Data Session Adapter",
+            "Market Data Session Warning Hygiene Hotfix",
         }
         parts = tuple(int(x) for x in VERSION.split(".")[:3])
         return (parts >= (1, 3, 9)

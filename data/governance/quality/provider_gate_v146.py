@@ -46,7 +46,7 @@ class ProviderOperationalGate:
     def evaluate(self, provider_id: str,
                  context: Optional[Dict[str, Any]] = None) -> ProviderQualityProfile:
         ctx = context or {}
-        now = datetime.datetime.utcnow().isoformat() + "Z"
+        now = datetime.datetime.now(datetime.timezone.utc).strftime('%Y-%m-%dT%H:%M:%S.%f') + 'Z'
         results: List[QualityGateResult] = []
 
         # Gate 1: Registration
@@ -104,7 +104,7 @@ class ProviderOperationalGate:
             passed=(status == GateStatus.PASS.value),
             blocking=blocking, evidence=evidence,
             warnings=warnings or [],
-            evaluated_at=datetime.datetime.utcnow().isoformat() + "Z",
+            evaluated_at=datetime.datetime.now(datetime.timezone.utc).strftime('%Y-%m-%dT%H:%M:%S.%f') + 'Z',
             policy_version=self.POLICY_VERSION,
         )
 

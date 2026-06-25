@@ -7,7 +7,7 @@ data/providers/forum/aggregation_v147.py — MarketSentimentAggregator v1.4.7.
 from __future__ import annotations
 
 import logging
-from datetime import datetime, timedelta
+from datetime import datetime, timezone, timedelta
 from typing import Any, Dict, List, Optional
 
 logger = logging.getLogger(__name__)
@@ -69,7 +69,7 @@ class MarketSentimentAggregator:
             )
 
         # Compute time range
-        now_str = as_of or datetime.utcnow().isoformat() + "Z"
+        now_str = as_of or datetime.now(timezone.utc).strftime('%Y-%m-%dT%H:%M:%S.%f') + 'Z'
         cutoff = self._compute_cutoff(window, now_str)
 
         # Fetch sentiment signals in window
@@ -264,5 +264,5 @@ class MarketSentimentAggregator:
             "authority": "SUPPLEMENTARY",
             "blocked": True,
             "blocked_reason": reason,
-            "computed_at": datetime.utcnow().isoformat() + "Z",
+            "computed_at": datetime.now(timezone.utc).strftime('%Y-%m-%dT%H:%M:%S.%f') + 'Z',
         }

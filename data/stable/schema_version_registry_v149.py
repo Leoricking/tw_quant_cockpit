@@ -109,7 +109,7 @@ class SchemaVersionRegistry:
             "drift_detected": drift_detected,
             "missing_pit_fields": missing_pit,
             "valid": ok,
-            "checked_at": datetime.datetime.utcnow().isoformat() + "Z",
+            "checked_at": datetime.datetime.now(datetime.timezone.utc).strftime('%Y-%m-%dT%H:%M:%S.%f') + 'Z',
         }
 
     def get_summary(self) -> Dict[str, Any]:

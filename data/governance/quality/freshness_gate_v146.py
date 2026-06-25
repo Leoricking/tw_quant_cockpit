@@ -29,7 +29,7 @@ class FreshnessGate:
     def evaluate(self, subject_id: str,
                  context: Optional[Dict[str, Any]] = None) -> QualityGateResult:
         ctx = context or {}
-        now = datetime.datetime.utcnow().isoformat() + "Z"
+        now = datetime.datetime.now(datetime.timezone.utc).strftime('%Y-%m-%dT%H:%M:%S.%f') + 'Z'
 
         freshness_status = ctx.get("freshness_status", FreshnessStatus.UNKNOWN.value)
         quota_exhausted = ctx.get("quota_exhausted", False)

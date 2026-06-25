@@ -45,7 +45,7 @@ class QualityDecisionEngine:
         Make a quality decision based on gate results.
         Blocking failures always override score.
         """
-        now = datetime.datetime.utcnow().isoformat() + "Z"
+        now = datetime.datetime.now(datetime.timezone.utc).strftime('%Y-%m-%dT%H:%M:%S.%f') + 'Z'
         decision_id = str(uuid.uuid4())
 
         blocking_failures = [

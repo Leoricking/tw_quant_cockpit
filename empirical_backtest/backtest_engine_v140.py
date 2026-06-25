@@ -7,7 +7,7 @@ from __future__ import annotations
 import hashlib
 import json
 import uuid
-from datetime import datetime
+from datetime import datetime, timezone
 from typing import List, Optional, Dict
 
 from .models_v140 import (
@@ -42,7 +42,7 @@ class StrategyKnowledgeBacktestEngine:
 
     def run(self, config: BacktestConfiguration, data_map: dict) -> BacktestResult:
         """Run backtest: 15-step flow."""
-        started_at = datetime.utcnow().isoformat()
+        started_at = datetime.now(timezone.utc).isoformat()
 
         # Step 1: Validate configuration
         if not config.backtest_id or not config.strategy_snapshot_id:
@@ -52,7 +52,7 @@ class StrategyKnowledgeBacktestEngine:
                 status=BacktestStatus.FAILED,
                 blocked_reasons=["INVALID_CONFIGURATION"],
                 started_at=started_at,
-                finished_at=datetime.utcnow().isoformat(),
+                finished_at=datetime.now(timezone.utc).isoformat(),
             )
 
         symbols_requested = list(config.symbols)
@@ -155,7 +155,7 @@ class StrategyKnowledgeBacktestEngine:
             "has_survivorship_risk": any("SURVIVORSHIP" in w for w in warnings),
         }
 
-        finished_at = datetime.utcnow().isoformat()
+        finished_at = datetime.now(timezone.utc).isoformat()
 
         result = BacktestResult(
             backtest_id=config.backtest_id,

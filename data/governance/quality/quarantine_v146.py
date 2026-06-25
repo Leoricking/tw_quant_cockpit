@@ -37,7 +37,7 @@ class ProviderQuarantineManager:
                    blocking_failures: Optional[List[str]] = None,
                    evidence: str = "") -> QuarantineRecord:
         """Quarantine a provider. auto_release_allowed always False."""
-        now = datetime.datetime.utcnow().isoformat() + "Z"
+        now = datetime.datetime.now(datetime.timezone.utc).strftime('%Y-%m-%dT%H:%M:%S.%f') + 'Z'
         qid = str(uuid.uuid4())
         record = QuarantineRecord(
             quarantine_id=qid,
@@ -58,7 +58,7 @@ class ProviderQuarantineManager:
     def restrict(self, provider_id: str, reason: str,
                  triggered_by_gate: str) -> QuarantineRecord:
         """Restrict a provider (RESTRICTED state)."""
-        now = datetime.datetime.utcnow().isoformat() + "Z"
+        now = datetime.datetime.now(datetime.timezone.utc).strftime('%Y-%m-%dT%H:%M:%S.%f') + 'Z'
         qid = str(uuid.uuid4())
         record = QuarantineRecord(
             quarantine_id=qid,
@@ -78,7 +78,7 @@ class ProviderQuarantineManager:
               triggered_by_gate: str,
               blocking_failures: Optional[List[str]] = None) -> QuarantineRecord:
         """Block a provider (BLOCKED state)."""
-        now = datetime.datetime.utcnow().isoformat() + "Z"
+        now = datetime.datetime.now(datetime.timezone.utc).strftime('%Y-%m-%dT%H:%M:%S.%f') + 'Z'
         qid = str(uuid.uuid4())
         record = QuarantineRecord(
             quarantine_id=qid,
@@ -104,7 +104,7 @@ class ProviderQuarantineManager:
         record = self._records.get(provider_id)
         if record is None:
             return None
-        now = datetime.datetime.utcnow().isoformat() + "Z"
+        now = datetime.datetime.now(datetime.timezone.utc).strftime('%Y-%m-%dT%H:%M:%S.%f') + 'Z'
         # Create new record with released=True (append-only — old record preserved in history)
         new_record = QuarantineRecord(
             quarantine_id=record.quarantine_id,

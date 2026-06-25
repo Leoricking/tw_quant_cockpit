@@ -139,7 +139,7 @@ class PolicyVersionRegistry:
             "total_policies": total,
             "breaking_changes": drift,
             "valid": ok,
-            "checked_at": datetime.datetime.utcnow().isoformat() + "Z",
+            "checked_at": datetime.datetime.now(datetime.timezone.utc).strftime('%Y-%m-%dT%H:%M:%S.%f') + 'Z',
         }
 
     def get_summary(self) -> Dict[str, Any]:

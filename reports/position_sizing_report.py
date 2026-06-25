@@ -35,7 +35,7 @@ class PositionSizingReport:
         Generate a full position sizing report.
         Returns dict with all sections.
         """
-        generated_at = datetime.datetime.utcnow().isoformat()
+        generated_at = datetime.datetime.now(datetime.timezone.utc).isoformat()
 
         report = {
             "report_version": REPORT_VERSION,

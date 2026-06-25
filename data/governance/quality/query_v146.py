@@ -95,7 +95,7 @@ class ProviderQualityQueryService:
         restricted = [p for p in profiles if p.get("quality_state") == "RESTRICTED"]
 
         return {
-            "generated_at": datetime.datetime.utcnow().isoformat() + "Z",
+            "generated_at": datetime.datetime.now(datetime.timezone.utc).strftime('%Y-%m-%dT%H:%M:%S.%f') + 'Z',
             "policy_version": self.POLICY_VERSION,
             "no_real_orders": True,
             "research_only": True,

@@ -35,7 +35,7 @@ class DrawdownRiskControlsLineageTracker:
             "as_of":              as_of,
             "equity_curve_hash":  equity_curve_hash,
             "source_lineage":     source_lineage,
-            "generated_at":       datetime.datetime.utcnow().isoformat(),
+            "generated_at":       datetime.datetime.now(datetime.timezone.utc).isoformat(),
             "research_only":      True,
             "module_version":     MODULE_VERSION,
         }

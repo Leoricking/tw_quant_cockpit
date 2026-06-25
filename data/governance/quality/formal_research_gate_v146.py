@@ -30,7 +30,7 @@ class FormalResearchEligibilityGate:
     def evaluate(self, provider_id: str, dataset_id: str,
                  context: Optional[Dict[str, Any]] = None) -> FormalResearchEligibility:
         ctx = context or {}
-        now = datetime.datetime.utcnow().isoformat() + "Z"
+        now = datetime.datetime.now(datetime.timezone.utc).strftime('%Y-%m-%dT%H:%M:%S.%f') + 'Z'
 
         authority_level = ctx.get("authority_level", "UNKNOWN")
         provenance_complete = ctx.get("provenance_complete", False)

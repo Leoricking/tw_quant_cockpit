@@ -1266,7 +1266,8 @@ class TestVersionInfo:
         assert self.vi.VERSION >= "1.6.0", f"Expected >= 1.6.0, got {self.vi.VERSION}"
 
     def test_release_name_paper_trading(self):
-        _KNOWN = {"Live Paper Trading Foundation", "Market Data Session Adapter"}
+        _KNOWN = {"Live Paper Trading Foundation", "Market Data Session Adapter",
+                  "Market Data Session Warning Hygiene Hotfix"}
         assert self.vi.RELEASE_NAME in _KNOWN or "Paper Trading" in self.vi.RELEASE_NAME, \
             f"Unexpected RELEASE_NAME: {self.vi.RELEASE_NAME}"
 
@@ -1283,11 +1284,11 @@ class TestVersionInfo:
         assert self.vi.LIVE_PAPER_TRADING_BASELINE == "1.6.0"
 
     def test_base_release_references_v159_or_160(self):
-        assert "1.5.9" in self.vi.BASE_RELEASE or "1.6.0" in self.vi.BASE_RELEASE
+        assert "1.5.9" in self.vi.BASE_RELEASE or "1.6.0" in self.vi.BASE_RELEASE or "1.6.1" in self.vi.BASE_RELEASE
 
     def test_version_string_valid_format(self):
         parts = self.vi.VERSION.split(".")
-        assert len(parts) == 3
+        assert len(parts) in (3, 4), f"Expected 3 or 4 version parts, got {len(parts)}: {self.vi.VERSION}"
 
 
 # ===========================================================================

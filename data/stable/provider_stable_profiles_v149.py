@@ -184,7 +184,7 @@ class ProviderStableProfileRegistry:
             "ptt_constraints_enforced": ptt_ok,
             "finmind_constraints_enforced": finmind_ok,
             "valid": ok,
-            "checked_at": datetime.datetime.utcnow().isoformat() + "Z",
+            "checked_at": datetime.datetime.now(datetime.timezone.utc).strftime('%Y-%m-%dT%H:%M:%S.%f') + 'Z',
         }
 
     def get_summary(self) -> Dict[str, Any]:

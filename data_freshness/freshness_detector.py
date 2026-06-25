@@ -11,7 +11,7 @@ from __future__ import annotations
 import csv
 import logging
 import os
-from datetime import date, datetime, timedelta
+from datetime import date, datetime, timedelta, timezone
 from typing import Any, Dict, List, Optional
 from uuid import uuid4
 
@@ -131,7 +131,7 @@ class DataFreshnessDetector:
         self._history_cache: Dict[str, Dict[str, Optional[date]]] = {}
 
     def _now(self) -> datetime:
-        return self._as_of if self._as_of is not None else datetime.utcnow()
+        return self._as_of if self._as_of is not None else datetime.now(timezone.utc)
 
     def _data_dir(self) -> str:
         return os.path.join(self.repo_path, "data")

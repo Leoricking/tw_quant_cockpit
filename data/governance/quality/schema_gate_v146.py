@@ -37,7 +37,7 @@ class SchemaDriftGate:
     def evaluate(self, subject_id: str,
                  context: Optional[Dict[str, Any]] = None) -> QualityGateResult:
         ctx = context or {}
-        now = datetime.datetime.utcnow().isoformat() + "Z"
+        now = datetime.datetime.now(datetime.timezone.utc).strftime('%Y-%m-%dT%H:%M:%S.%f') + 'Z'
 
         drift_status = ctx.get("schema_drift_status", SchemaDriftStatus.UNKNOWN.value)
         gate_status = _DRIFT_TO_GATE.get(drift_status, GateStatus.FAIL.value)

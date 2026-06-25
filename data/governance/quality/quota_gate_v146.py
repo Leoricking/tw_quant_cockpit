@@ -27,7 +27,7 @@ class QuotaReadinessGate:
     def evaluate(self, subject_id: str,
                  context: Optional[Dict[str, Any]] = None) -> QualityGateResult:
         ctx = context or {}
-        now = datetime.datetime.utcnow().isoformat() + "Z"
+        now = datetime.datetime.now(datetime.timezone.utc).strftime('%Y-%m-%dT%H:%M:%S.%f') + 'Z'
 
         quota_known = ctx.get("quota_known", False)
         quota_sufficient = ctx.get("quota_sufficient", True)

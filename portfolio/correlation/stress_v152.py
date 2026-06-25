@@ -44,7 +44,7 @@ def _clone_matrix(result: CorrelationMatrixResult) -> CorrelationMatrixResult:
         high_correlation_pairs=list(result.high_correlation_pairs),
         invalid_pairs=list(result.invalid_pairs),
         status=result.status,
-        generated_at=datetime.datetime.utcnow().isoformat(),
+        generated_at=datetime.datetime.now(datetime.timezone.utc).isoformat(),
         source_lineage_ids=list(result.source_lineage_ids),
         metadata=dict(result.metadata),
     )

@@ -6,7 +6,7 @@ data_freshness/trading_calendar.py — Trading calendar for Taiwan stock market.
 from __future__ import annotations
 
 import logging
-from datetime import date, datetime, timedelta
+from datetime import date, datetime, timedelta, timezone
 from typing import List, Optional, Set
 
 logger = logging.getLogger(__name__)
@@ -75,7 +75,7 @@ class TradingCalendar:
         [!] approximate=True when no holiday calendar is loaded.
         """
         if now is None:
-            now = datetime.utcnow()
+            now = datetime.now(timezone.utc)
         # Convert UTC to Taiwan time (UTC+8)
         taiwan_now = now + timedelta(hours=MARKET_TZ_OFFSET_HOURS)
         today = taiwan_now.date()

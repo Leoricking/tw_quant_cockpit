@@ -56,6 +56,7 @@ def test_current_release_name():
     "Portfolio Stable Rollup Release Gate Hotfix",
     "Live Paper Trading Foundation",
             "Market Data Session Adapter",
+            "Market Data Session Warning Hygiene Hotfix",
     }
     assert RELEASE_NAME in known_names, f"Unexpected RELEASE_NAME: {RELEASE_NAME}"
 
@@ -422,7 +423,8 @@ def test_replay_score_unchanged():
 def test_no_broker_code_introduced():
     """Test 48: version_alignment module does not contain broker execution code."""
     import release.version_alignment as va
-    src = open(va.__file__, encoding="utf-8").read()
+    with open(va.__file__, encoding="utf-8") as _f:
+        src = _f.read()
     # Check that no broker execution functions are present
     # (comments like "No Real Orders" are expected and allowed)
     forbidden_patterns = ["broker_api", "execute_trade", "place_order", "submit_order",

@@ -78,7 +78,7 @@ class RiskControlConstraintEngine:
             breach_count=breach_count,
             warn_count=warn_count,
             pass_count=pass_count,
-            generated_at=datetime.datetime.utcnow().isoformat(),
+            generated_at=datetime.datetime.now(datetime.timezone.utc).isoformat(),
         )
 
     def build_demo_evaluation(

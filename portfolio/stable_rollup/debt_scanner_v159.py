@@ -42,7 +42,8 @@ class DebtScannerV159:
                 count += 1
                 fp = os.path.join(test_dir, fn)
                 try:
-                    text = open(fp, encoding="utf-8", errors="ignore").read()
+                    with open(fp, encoding="utf-8", errors="ignore") as _f:
+                        text = _f.read()
                     if "D:/code/Claude" in text or "D:\\code\\Claude" in text:
                         findings.append({"file": fn, "severity": "WARNING", "label": "HARDCODED_PATH"})
                 except Exception:
@@ -61,7 +62,8 @@ class DebtScannerV159:
                     continue
                 fp = os.path.join(test_dir, fn)
                 try:
-                    text = open(fp, encoding="utf-8", errors="ignore").read()
+                    with open(fp, encoding="utf-8", errors="ignore") as _f:
+                        text = _f.read()
                     if 'VERSION in (' in text and '"1.5.' in text:
                         matches = re.findall(r'VERSION in \([^)]+\)', text)
                         for m in matches:
@@ -93,7 +95,8 @@ class DebtScannerV159:
                         continue
                     fp = os.path.join(root, fn)
                     try:
-                        text = open(fp, encoding="utf-8", errors="ignore").read()
+                        with open(fp, encoding="utf-8", errors="ignore") as _f:
+                            text = _f.read()
                         # Strip comment lines and quoted strings before matching
                         clean_lines = []
                         for line in text.splitlines():

@@ -370,10 +370,10 @@ class TestValidatorCoreRules:
 
     def test_recent_date_not_stale(self):
         """Recent date (within 3 trading days) should not be falsely stale."""
-        from datetime import datetime, timedelta
+        from datetime import datetime, timezone, timedelta
         data = _good_data()
         # Use a date 1 hour ago (dynamically computed) so this test remains valid over time
-        recent_date = (datetime.utcnow() - timedelta(hours=1)).strftime("%Y-%m-%d")
+        recent_date = (datetime.now(timezone.utc) - timedelta(hours=1)).strftime("%Y-%m-%d")
         data["date"] = recent_date
         report = self.v.validate(data)
         stale_issues = [i for i in report.issues if "stale" in i.code.lower()]
@@ -789,6 +789,7 @@ class TestVersionInfo:
             "Portfolio Stable Rollup Release Gate Hotfix",
             "Live Paper Trading Foundation",
             "Market Data Session Adapter",
+            "Market Data Session Warning Hygiene Hotfix",
         ), f"Unexpected release name: {version_info.RELEASE_NAME}"
 
     def test_release_track(self):

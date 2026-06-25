@@ -84,7 +84,7 @@ class CorrelationExposureLineageTracker:
             "assumptions":            assumptions,
             "lineage_errors":         errors,
             "lineage_valid":          len(errors) == 0,
-            "generated_at":           datetime.datetime.utcnow().isoformat(),
+            "generated_at":           datetime.datetime.now(datetime.timezone.utc).isoformat(),
             "research_only":          True,
             "labels":                 analysis.labels,
         }

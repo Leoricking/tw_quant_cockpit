@@ -31,7 +31,7 @@ class BacktestInputEligibilityGate:
     def evaluate(self, provider_id: str, dataset_id: str,
                  context: Optional[Dict[str, Any]] = None) -> BacktestInputEligibility:
         ctx = context or {}
-        now = datetime.datetime.utcnow().isoformat() + "Z"
+        now = datetime.datetime.now(datetime.timezone.utc).strftime('%Y-%m-%dT%H:%M:%S.%f') + 'Z'
 
         pit_available = ctx.get("pit_available", False)
         lookahead_leakage = ctx.get("lookahead_leakage", False)

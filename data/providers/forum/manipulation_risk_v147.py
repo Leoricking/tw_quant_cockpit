@@ -7,7 +7,7 @@ data/providers/forum/manipulation_risk_v147.py — ForumManipulationRiskDetector
 from __future__ import annotations
 
 import logging
-from datetime import datetime
+from datetime import datetime, timezone
 from typing import Any, Dict, List, Optional
 
 logger = logging.getLogger(__name__)
@@ -88,7 +88,7 @@ class ForumManipulationRiskDetector:
             "article_id": article.get("article_id"),
             "risk_level": risk_level,
             "risk_signals": signals,
-            "assessed_at": datetime.utcnow().isoformat() + "Z",
+            "assessed_at": datetime.now(timezone.utc).strftime('%Y-%m-%dT%H:%M:%S.%f') + 'Z',
             "criminal_label": None,   # ALWAYS None
             "legal_accusation": None, # ALWAYS None
             "formal_standalone": False,

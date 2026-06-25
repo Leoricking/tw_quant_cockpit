@@ -140,7 +140,7 @@ class PositionSizingProposal:
         assert self.order_created is False, "order_created must be False"
         assert self.persisted_to_ledger is False, "persisted_to_ledger must be False"
         if not self.generated_at:
-            self.generated_at = datetime.datetime.utcnow().isoformat()
+            self.generated_at = datetime.datetime.now(datetime.timezone.utc).isoformat()
         if not self.content_hash:
             self.content_hash = self._compute_hash()
 

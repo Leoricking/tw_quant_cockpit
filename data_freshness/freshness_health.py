@@ -6,7 +6,7 @@ data_freshness/freshness_health.py — Health check suite for Data Freshness Mon
 from __future__ import annotations
 
 import logging
-from datetime import date, datetime, timedelta
+from datetime import date, datetime, timedelta, timezone
 from typing import Any, Dict, List, Optional
 
 logger = logging.getLogger(__name__)
@@ -270,7 +270,7 @@ class DataFreshnessHealthCheck:
 
             det = DataFreshnessDetector()
             # Use a date 10 years in the future
-            future = datetime.utcnow().date() + timedelta(days=3650)
+            future = datetime.now(timezone.utc).date() + timedelta(days=3650)
             is_future = det.detect_future_date(future)
             if not is_future:
                 return {
@@ -306,7 +306,7 @@ class DataFreshnessHealthCheck:
             from data_freshness.freshness_detector import DataFreshnessDetector
 
             det = DataFreshnessDetector()
-            today = datetime.utcnow().date()
+            today = datetime.now(timezone.utc).date()
             yesterday = today - timedelta(days=1)
 
             # Manually seed history cache so detect_date_regression can compare

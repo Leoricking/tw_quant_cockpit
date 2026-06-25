@@ -36,7 +36,7 @@ class CorrelationExposureReport:
         Returns dict with all sections.
         Never executable. No broker. No order. No ledger write.
         """
-        generated_at = datetime.datetime.utcnow().isoformat()
+        generated_at = datetime.datetime.now(datetime.timezone.utc).isoformat()
         lineage = lineage or {}
 
         return {

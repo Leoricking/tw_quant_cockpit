@@ -40,7 +40,7 @@ class ProviderQualityGatesReport:
         return "\n".join(lines)
 
     def _render_header(self) -> List[str]:
-        now = datetime.datetime.utcnow().isoformat() + "Z"
+        now = datetime.datetime.now(datetime.timezone.utc).strftime('%Y-%m-%dT%H:%M:%S.%f') + 'Z'
         return [
             "=" * 70,
             f"  TW Quant Cockpit — Provider Quality Gates Report v{self.VERSION}",

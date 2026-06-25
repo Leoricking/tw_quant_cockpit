@@ -93,7 +93,8 @@ class CliGuiConsistencyValidator:
             if spec is None:
                 return "PASS", "panel not yet importable (headless); dangerous actions absent"
             mod = importlib.util.module_from_spec(spec)
-            source = open(spec.origin).read().lower()
+            with open(spec.origin) as _f:
+                source = _f.read().lower()
             for action in _FORBIDDEN_GUI_ACTIONS:
                 if action in source and "forbidden" not in source:
                     pass  # just structural; actual check done in tests

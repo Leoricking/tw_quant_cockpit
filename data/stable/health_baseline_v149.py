@@ -140,5 +140,5 @@ class StableHealthBaseline:
             "items": items,
             "expected_health_commands": _EXPECTED_HEALTH_COMMANDS,
             "valid": total == passed,
-            "checked_at": datetime.datetime.utcnow().isoformat() + "Z",
+            "checked_at": datetime.datetime.now(datetime.timezone.utc).strftime('%Y-%m-%dT%H:%M:%S.%f') + 'Z',
         }

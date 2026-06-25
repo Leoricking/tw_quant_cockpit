@@ -439,7 +439,7 @@ class CorrelationExposureQueryService:
 
         # 11. Content hash
         analysis_id = f"CEA_{uuid.uuid4().hex[:12].upper()}"
-        generated_at = datetime.datetime.utcnow().isoformat()
+        generated_at = datetime.datetime.now(datetime.timezone.utc).isoformat()
         content_hash = hashlib.sha256(
             json.dumps({
                 "analysis_id": analysis_id,

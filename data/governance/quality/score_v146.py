@@ -66,7 +66,7 @@ class QualityScoreEngine:
         blocking_failures: Optional[List[str]] = None,
     ) -> QualityScore:
         """Compute quality score. Score does NOT override blocking failures."""
-        now = datetime.datetime.utcnow().isoformat() + "Z"
+        now = datetime.datetime.now(datetime.timezone.utc).strftime('%Y-%m-%dT%H:%M:%S.%f') + 'Z'
         blocking_failures = blocking_failures or []
         has_blocking = len(blocking_failures) > 0
 
