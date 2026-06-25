@@ -1219,6 +1219,7 @@ def test_release_name_141():
         "Drawdown & Risk Controls",
         "Portfolio Walk-forward Backtest",
         "Portfolio Stable Rollup",
+        "Portfolio Stable Rollup Integrity Hotfix",
     )
     assert RELEASE_NAME in _KNOWN, f"Unexpected release name: {RELEASE_NAME}"
 

@@ -57,7 +57,8 @@ class ProviderStableReleaseGate:
                             "Position Sizing", "Correlation & Exposure",
                             "Correlation & Exposure Integrity Hotfix",
                             "Drawdown & Risk Controls", "Portfolio Walk-forward Backtest",
-                            "Portfolio Stable Rollup"}
+                            "Portfolio Stable Rollup",
+                            "Portfolio Stable Rollup Integrity Hotfix"}
             parts = tuple(int(x) for x in VERSION.split(".")[:3])
             ok = (
                 parts >= (1, 4, 9)

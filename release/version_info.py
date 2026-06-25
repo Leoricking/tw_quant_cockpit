@@ -73,9 +73,9 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # ---------------------------------------------------------------------------
 # v1.3.3 module-level constants (Coverage Repair Workflow)
 # ---------------------------------------------------------------------------
-VERSION                             = "1.5.9"
-RELEASE_NAME                        = "Portfolio Stable Rollup"
-BASE_RELEASE                        = "1.5.4 Portfolio Walk-forward Backtest"
+VERSION                             = "1.5.9.1"
+RELEASE_NAME                        = "Portfolio Stable Rollup Integrity Hotfix"
+BASE_RELEASE                        = "1.5.9 Portfolio Stable Rollup"
 PORTFOLIO_STABLE_BASELINE           = "1.5.9"
 PORTFOLIO_STABLE_ROLLUP_AVAILABLE   = True
 PORTFOLIO_STABLE_ROLLUP_STAGE       = "STABLE"

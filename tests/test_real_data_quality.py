@@ -785,6 +785,7 @@ class TestVersionInfo:
             "Drawdown & Risk Controls",
             "Portfolio Walk-forward Backtest",
             "Portfolio Stable Rollup",
+            "Portfolio Stable Rollup Integrity Hotfix",
         ), f"Unexpected release name: {version_info.RELEASE_NAME}"
 
     def test_release_track(self):

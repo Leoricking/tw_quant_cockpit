@@ -387,6 +387,7 @@ class TestSafetyAndVersion:
             "Drawdown & Risk Controls",
             "Portfolio Walk-forward Backtest",
             "Portfolio Stable Rollup",
+            "Portfolio Stable Rollup Integrity Hotfix",
         }
         assert RELEASE_NAME in valid_names, f"Unexpected RELEASE_NAME: {RELEASE_NAME}"
 
