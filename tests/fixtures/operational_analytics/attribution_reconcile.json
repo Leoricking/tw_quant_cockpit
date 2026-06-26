@@ -1,0 +1,17 @@
+{
+  "TEST_FIXTURE": true,
+  "DEMO_ONLY": true,
+  "PAPER_ONLY": true,
+  "RESEARCH_ONLY": true,
+  "NOT_LIVE": true,
+  "NO_BROKER": true,
+  "NO_REAL_ACCOUNT": true,
+  "NO_REAL_ORDER": true,
+  "NOT_FOR_PRODUCTION": true,
+  "scenario": "attribution_reconcile",
+  "session_id": "sess-attr-001",
+  "gross_pnl": "1000.00",
+  "signal_attribution": "600.00",
+  "market_attribution": "400.00",
+  "residual": "0.00"
+}

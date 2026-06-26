@@ -1785,7 +1785,8 @@ class TestVersionInfo(unittest.TestCase):
                   "Session Operations & Observability",
                   "Session Operations Integrity Hotfix",
                   "CLI Registration Health Integrity Hotfix",
-            "CLI Handler Resolution Integrity Hotfix"}
+            "CLI Handler Resolution Integrity Hotfix",
+            "Operational Analytics & Review"}
         self.assertIn(RELEASE_NAME, _KNOWN, f"Unexpected RELEASE_NAME: {RELEASE_NAME}")
 
     def test_442_baseline(self):

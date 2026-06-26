@@ -1,0 +1,20 @@
+{
+  "TEST_FIXTURE": true,
+  "DEMO_ONLY": true,
+  "PAPER_ONLY": true,
+  "RESEARCH_ONLY": true,
+  "NOT_LIVE": true,
+  "NO_BROKER": true,
+  "NO_REAL_ACCOUNT": true,
+  "NO_REAL_ORDER": true,
+  "NOT_FOR_PRODUCTION": true,
+  "scenario": "halted_session",
+  "session_id": "sess-halted-001",
+  "session_type": "PAPER_TRADING",
+  "final_status": "HALTED",
+  "gross_pnl": "-50.00",
+  "net_pnl": "-90.00",
+  "downtime_ratio": "0.60",
+  "alerts_opened": 15,
+  "incidents_opened": 3
+}

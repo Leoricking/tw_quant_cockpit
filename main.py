@@ -35815,6 +35815,308 @@ def cmd_session_ops_runbook_show(args=None):
     print(_SESSION_OPS_BANNER)
 
 
+_OPS_ANALYTICS_BANNER = (
+    "[!] RESEARCH ONLY | PAPER SIMULATION ONLY | NO REAL ORDERS | NO BROKER | "
+    "NO AUTO STRATEGY CHANGES | NOT INVESTMENT ADVICE | PRODUCTION TRADING BLOCKED"
+)
+
+
+def cmd_ops_analytics_run(args=None):
+    """[v1.6.4] Run operational analytics for a session. Research only."""
+    print(_OPS_ANALYTICS_BANNER)
+    from paper_trading.analytics.session_analytics_v164 import SessionAnalyticsEngine
+    engine = SessionAnalyticsEngine()
+    print("SessionAnalyticsEngine ready — pass session_data to run(). Research only.")
+    print(_OPS_ANALYTICS_BANNER)
+
+
+def cmd_ops_analytics_show(args=None):
+    """[v1.6.4] Show analytics result. Research only."""
+    print(_OPS_ANALYTICS_BANNER)
+    from paper_trading.analytics.store_v164 import OperationalAnalyticsStore
+    store = OperationalAnalyticsStore()
+    results = store.list_analytics()
+    if not results:
+        print("NOT_FOUND: no analytics results in store (research mode — no live sessions)")
+    else:
+        for r in results:
+            print(f"  analytics_id: {r.analytics_id}  session_id: {r.session_id}  as_of: {r.as_of}")
+    print(_OPS_ANALYTICS_BANNER)
+
+
+def cmd_ops_analytics_list(args=None):
+    """[v1.6.4] List all analytics results. Research only."""
+    print(_OPS_ANALYTICS_BANNER)
+    from paper_trading.analytics.store_v164 import OperationalAnalyticsStore
+    store = OperationalAnalyticsStore()
+    results = store.list_analytics()
+    print(f"Operational Analytics Results: {len(results)} (research mode)")
+    print(_OPS_ANALYTICS_BANNER)
+
+
+def cmd_ops_analytics_summary(args=None):
+    """[v1.6.4] Show analytics session summary. Research only."""
+    print(_OPS_ANALYTICS_BANNER)
+    from paper_trading.analytics.session_summary_v164 import SessionSummaryBuilder
+    builder = SessionSummaryBuilder()
+    print("SessionSummaryBuilder ready — pass session_data to build(). Research only.")
+    print(_OPS_ANALYTICS_BANNER)
+
+
+def cmd_ops_analytics_metrics(args=None):
+    """[v1.6.4] Show analytics operational metrics. Research only."""
+    print(_OPS_ANALYTICS_BANNER)
+    from paper_trading.analytics.operational_metrics_v164 import OperationalMetricsComputer
+    comp = OperationalMetricsComputer()
+    print("OperationalMetricsComputer ready — pass session_data. Research only.")
+    print(_OPS_ANALYTICS_BANNER)
+
+
+def cmd_ops_analytics_attribution(args=None):
+    """[v1.6.4] Show PnL attribution analysis. Research only."""
+    print(_OPS_ANALYTICS_BANNER)
+    from paper_trading.analytics.strategy_attribution_v164 import StrategyAttributionComputer
+    comp = StrategyAttributionComputer()
+    print("StrategyAttributionComputer ready — pass session_data. Research only.")
+    print(_OPS_ANALYTICS_BANNER)
+
+
+def cmd_ops_analytics_signals(args=None):
+    """[v1.6.4] Show signal quality analytics. Post-event only. Research only."""
+    print(_OPS_ANALYTICS_BANNER)
+    from paper_trading.analytics.signal_quality_v164 import SignalQualityAnalyzer
+    analyzer = SignalQualityAnalyzer()
+    print("SignalQualityAnalyzer ready — POST_EVENT_ANALYSIS_ONLY=True. Research only.")
+    print(_OPS_ANALYTICS_BANNER)
+
+
+def cmd_ops_analytics_execution(args=None):
+    """[v1.6.4] Show execution quality analytics. Research only."""
+    print(_OPS_ANALYTICS_BANNER)
+    from paper_trading.analytics.execution_quality_v164 import ExecutionQualityAnalyzer
+    analyzer = ExecutionQualityAnalyzer()
+    print("ExecutionQualityAnalyzer ready — BROKER_EXECUTION_CAPABILITY_INCLUDED=False. Research only.")
+    print(_OPS_ANALYTICS_BANNER)
+
+
+def cmd_ops_analytics_incidents(args=None):
+    """[v1.6.4] Show incident impact analytics. Research only."""
+    print(_OPS_ANALYTICS_BANNER)
+    from paper_trading.analytics.incident_impact_v164 import IncidentImpactAnalyzer
+    analyzer = IncidentImpactAnalyzer()
+    print("IncidentImpactAnalyzer ready — CAUSAL_ASSERTION_WITHOUT_EVIDENCE_FORBIDDEN=True. Research only.")
+    print(_OPS_ANALYTICS_BANNER)
+
+
+def cmd_ops_analytics_anomalies(args=None):
+    """[v1.6.4] Show anomaly detection results. Research only."""
+    print(_OPS_ANALYTICS_BANNER)
+    from paper_trading.analytics.anomaly_detection_v164 import AnomalyDetector
+    detector = AnomalyDetector()
+    print("AnomalyDetector ready — ONLINE_LEARNING_ENABLED=False. Research only.")
+    print(_OPS_ANALYTICS_BANNER)
+
+
+def cmd_ops_analytics_scorecard(args=None):
+    """[v1.6.4] Show analytics scorecard. Research only."""
+    print(_OPS_ANALYTICS_BANNER)
+    from paper_trading.analytics.review_scorecard_v164 import ReviewScorecardBuilder
+    from paper_trading.analytics.enums_v164 import SCORECARD_WEIGHTS, SCORECARD_WEIGHT_VERSION
+    builder = ReviewScorecardBuilder()
+    print(f"ReviewScorecardBuilder ready — weights version {SCORECARD_WEIGHT_VERSION}")
+    total_weight = sum(SCORECARD_WEIGHTS.values())
+    print(f"  weights sum={total_weight} (must be 100)")
+    for dim, w in SCORECARD_WEIGHTS.items():
+        print(f"  {dim.value if hasattr(dim, 'value') else dim}: {w}")
+    print(_OPS_ANALYTICS_BANNER)
+
+
+def cmd_ops_review_create(args=None):
+    """[v1.6.4] Create a session review. Research only."""
+    print(_OPS_ANALYTICS_BANNER)
+    from paper_trading.analytics.review_workflow_v164 import ReviewWorkflow
+    workflow = ReviewWorkflow()
+    print("ReviewWorkflow ready — AUTO_COMPLETE_REVIEW=False. Research only.")
+    print(_OPS_ANALYTICS_BANNER)
+
+
+def cmd_ops_review_show(args=None):
+    """[v1.6.4] Show a session review. Research only."""
+    print(_OPS_ANALYTICS_BANNER)
+    from paper_trading.analytics.store_v164 import OperationalAnalyticsStore
+    store = OperationalAnalyticsStore()
+    reviews = store.list_reviews()
+    if not reviews:
+        print("NOT_FOUND: no reviews in store (research mode — no live reviews)")
+    else:
+        for r in reviews:
+            print(f"  review_id: {r.review_id}  status: {r.status}  session: {r.session_id}")
+    print(_OPS_ANALYTICS_BANNER)
+
+
+def cmd_ops_review_list(args=None):
+    """[v1.6.4] List all session reviews. Research only."""
+    print(_OPS_ANALYTICS_BANNER)
+    from paper_trading.analytics.store_v164 import OperationalAnalyticsStore
+    store = OperationalAnalyticsStore()
+    reviews = store.list_reviews()
+    print(f"Session Reviews: {len(reviews)} (research mode)")
+    print(_OPS_ANALYTICS_BANNER)
+
+
+def cmd_ops_review_start(args=None):
+    """[v1.6.4] Start a review (PENDING→IN_PROGRESS). Research only."""
+    print(_OPS_ANALYTICS_BANNER)
+    print("ops-review-start: use ReviewWorkflow.transition(review_id, IN_PROGRESS, actor, reason) in code")
+    print(_OPS_ANALYTICS_BANNER)
+
+
+def cmd_ops_review_complete(args=None):
+    """[v1.6.4] Complete a review (IN_PROGRESS→COMPLETED). Evidence required. Research only."""
+    print(_OPS_ANALYTICS_BANNER)
+    print("ops-review-complete: use ReviewWorkflow.transition(review_id, COMPLETED, actor, reason) in code")
+    print("Evidence refs required for COMPLETED transition. AUTO_COMPLETE_REVIEW=False.")
+    print(_OPS_ANALYTICS_BANNER)
+
+
+def cmd_ops_review_reopen(args=None):
+    """[v1.6.4] Reopen a completed review. Research only."""
+    print(_OPS_ANALYTICS_BANNER)
+    print("ops-review-reopen: use ReviewWorkflow.transition(review_id, REOPENED, actor, reason) in code")
+    print(_OPS_ANALYTICS_BANNER)
+
+
+def cmd_ops_review_root_cause(args=None):
+    """[v1.6.4] Run root cause analysis. Research only."""
+    print(_OPS_ANALYTICS_BANNER)
+    from paper_trading.analytics.root_cause_analysis_v164 import RootCauseAnalyzer
+    analyzer = RootCauseAnalyzer()
+    print("RootCauseAnalyzer ready — UNSUPPORTED_CAUSALITY_FORBIDDEN=True. Research only.")
+    print(_OPS_ANALYTICS_BANNER)
+
+
+def cmd_ops_review_mistakes(args=None):
+    """[v1.6.4] Show mistake taxonomy. Research only."""
+    print(_OPS_ANALYTICS_BANNER)
+    from paper_trading.analytics.mistake_taxonomy_v164 import MistakeTaxonomyClassifier, MISTAKE_DEFINITIONS
+    classifier = MistakeTaxonomyClassifier()
+    print(f"MistakeTaxonomyClassifier ready — {len(MISTAKE_DEFINITIONS)} categories. AUTO_CONFIRM_MISTAKES=False.")
+    print(_OPS_ANALYTICS_BANNER)
+
+
+def cmd_ops_review_lessons(args=None):
+    """[v1.6.4] Show lessons registry. Research only."""
+    print(_OPS_ANALYTICS_BANNER)
+    from paper_trading.analytics.lesson_registry_v164 import LessonRegistry
+    registry = LessonRegistry()
+    lessons = registry.list_all()
+    print(f"LessonRegistry: {len(lessons)} lessons. AUTO_APPLY_LESSONS=False. Research only.")
+    print(_OPS_ANALYTICS_BANNER)
+
+
+def cmd_ops_review_action_create(args=None):
+    """[v1.6.4] Create an action item. Research only."""
+    print(_OPS_ANALYTICS_BANNER)
+    print("ops-review-action-create: use ActionItemManager.create() in code. AUTO_DEPLOYMENT_ENABLED=False.")
+    print(_OPS_ANALYTICS_BANNER)
+
+
+def cmd_ops_review_action_list(args=None):
+    """[v1.6.4] List all action items. Research only."""
+    print(_OPS_ANALYTICS_BANNER)
+    from paper_trading.analytics.action_item_v164 import ActionItemManager
+    mgr = ActionItemManager()
+    items = mgr.list_all()
+    print(f"Action Items: {len(items)} (research mode). AUTO_COMPLETE_ENABLED=False.")
+    print(_OPS_ANALYTICS_BANNER)
+
+
+def cmd_ops_review_action_show(args=None):
+    """[v1.6.4] Show an action item. Research only."""
+    print(_OPS_ANALYTICS_BANNER)
+    from paper_trading.analytics.action_item_v164 import ActionItemManager
+    mgr = ActionItemManager()
+    items = mgr.list_all()
+    if not items:
+        print("NOT_FOUND: no action items in store (research mode)")
+    else:
+        for i in items:
+            print(f"  item_id: {i.action_item_id}  status: {i.status}  title: {i.title}")
+    print(_OPS_ANALYTICS_BANNER)
+
+
+def cmd_ops_review_action_accept(args=None):
+    """[v1.6.4] Accept an action item (OPEN→ACCEPTED). Research only."""
+    print(_OPS_ANALYTICS_BANNER)
+    print("ops-review-action-accept: use ActionItemManager.transition(item_id, ACCEPTED, actor, reason) in code")
+    print(_OPS_ANALYTICS_BANNER)
+
+
+def cmd_ops_review_action_reject(args=None):
+    """[v1.6.4] Reject an action item. Research only."""
+    print(_OPS_ANALYTICS_BANNER)
+    print("ops-review-action-reject: use ActionItemManager.transition(item_id, REJECTED, actor, reason) in code")
+    print(_OPS_ANALYTICS_BANNER)
+
+
+def cmd_ops_review_action_start(args=None):
+    """[v1.6.4] Start an action item (ACCEPTED→IN_PROGRESS). Research only."""
+    print(_OPS_ANALYTICS_BANNER)
+    print("ops-review-action-start: use ActionItemManager.transition(item_id, IN_PROGRESS, actor, reason) in code")
+    print(_OPS_ANALYTICS_BANNER)
+
+
+def cmd_ops_review_action_complete(args=None):
+    """[v1.6.4] Complete an action item. Research only."""
+    print(_OPS_ANALYTICS_BANNER)
+    print("ops-review-action-complete: use ActionItemManager.transition(item_id, COMPLETED, actor, reason) in code")
+    print("AUTO_COMPLETE_ENABLED=False. AUTO_DEPLOYMENT_ENABLED=False.")
+    print(_OPS_ANALYTICS_BANNER)
+
+
+def cmd_ops_review_report(args=None):
+    """[v1.6.4] Generate analytics report. Research only."""
+    print(_OPS_ANALYTICS_BANNER)
+    from paper_trading.analytics.report_v164 import AnalyticsReportGenerator, REPORT_SECTIONS
+    gen = AnalyticsReportGenerator()
+    print(f"AnalyticsReportGenerator ready — {len(REPORT_SECTIONS)} sections.")
+    print("  Formats: json, markdown, csv, html. INVESTMENT_ADVICE_ENABLED=False.")
+    print(_OPS_ANALYTICS_BANNER)
+
+
+def cmd_ops_analytics_health(args=None):
+    """[v1.6.4] Run operational analytics health check (49/49). Research only."""
+    print(_OPS_ANALYTICS_BANNER)
+    from paper_trading.analytics.health_v164 import OperationalAnalyticsReviewHealthCheck
+    result = OperationalAnalyticsReviewHealthCheck().run()
+    status = result.get("status", "UNKNOWN")
+    passed = result.get("passed", 0)
+    total = result.get("total", 0)
+    failed = result.get("failed", 0)
+    print(f"Operational Analytics & Review Health Check v1.6.4")
+    print(f"Status: {status}  Passed: {passed}/{total}  Failed: {failed}")
+    if failed:
+        for f in result.get("failures", []):
+            print(f"  FAIL: {f}")
+    print(_OPS_ANALYTICS_BANNER)
+
+
+def cmd_ops_analytics_release_gate(args=None):
+    """[v1.6.4] Run operational analytics release gate (40/40). Research only."""
+    print(_OPS_ANALYTICS_BANNER)
+    from release.operational_analytics_review_release_gate_v164 import (
+        OperationalAnalyticsReviewReleaseGateV164,
+    )
+    result = OperationalAnalyticsReviewReleaseGateV164().run()
+    status = result.get("status", "UNKNOWN")
+    passed = result.get("passed", 0)
+    total = result.get("total", 0)
+    failed = result.get("failed", 0)
+    print(f"Operational Analytics & Review Release Gate v1.6.4")
+    print(f"Status: {status}  Passed: {passed}/{total}  Failed: {failed}")
+    print(_OPS_ANALYTICS_BANNER)
+
+
 def cmd_paper_strategy_health(args=None):
     """[v1.6.2] Paper strategy orchestration health check. Research only."""
     print(_STRATEGY_SAFETY_BANNER)
@@ -37602,6 +37904,37 @@ def main() -> None:
         "session-ops-runbook-show":             cmd_session_ops_runbook_show,
         "session-ops-replay":                   cmd_session_ops_replay,
         "session-ops-lineage":                  cmd_session_ops_lineage,
+        # v1.6.4 Operational Analytics & Review
+        "ops-analytics-run":                    cmd_ops_analytics_run,
+        "ops-analytics-show":                   cmd_ops_analytics_show,
+        "ops-analytics-list":                   cmd_ops_analytics_list,
+        "ops-analytics-summary":                cmd_ops_analytics_summary,
+        "ops-analytics-metrics":                cmd_ops_analytics_metrics,
+        "ops-analytics-attribution":            cmd_ops_analytics_attribution,
+        "ops-analytics-signals":                cmd_ops_analytics_signals,
+        "ops-analytics-execution":              cmd_ops_analytics_execution,
+        "ops-analytics-incidents":              cmd_ops_analytics_incidents,
+        "ops-analytics-anomalies":              cmd_ops_analytics_anomalies,
+        "ops-analytics-scorecard":              cmd_ops_analytics_scorecard,
+        "ops-review-create":                    cmd_ops_review_create,
+        "ops-review-show":                      cmd_ops_review_show,
+        "ops-review-list":                      cmd_ops_review_list,
+        "ops-review-start":                     cmd_ops_review_start,
+        "ops-review-complete":                  cmd_ops_review_complete,
+        "ops-review-reopen":                    cmd_ops_review_reopen,
+        "ops-review-root-cause":                cmd_ops_review_root_cause,
+        "ops-review-mistakes":                  cmd_ops_review_mistakes,
+        "ops-review-lessons":                   cmd_ops_review_lessons,
+        "ops-review-action-create":             cmd_ops_review_action_create,
+        "ops-review-action-list":               cmd_ops_review_action_list,
+        "ops-review-action-show":               cmd_ops_review_action_show,
+        "ops-review-action-accept":             cmd_ops_review_action_accept,
+        "ops-review-action-reject":             cmd_ops_review_action_reject,
+        "ops-review-action-start":              cmd_ops_review_action_start,
+        "ops-review-action-complete":           cmd_ops_review_action_complete,
+        "ops-review-report":                    cmd_ops_review_report,
+        "ops-analytics-health":                 cmd_ops_analytics_health,
+        "ops-analytics-release-gate":           cmd_ops_analytics_release_gate,
     }
 
     if args.command is None:

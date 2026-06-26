@@ -1,0 +1,75 @@
+{
+  "TEST_FIXTURE": true,
+  "DEMO_ONLY": true,
+  "PAPER_ONLY": true,
+  "RESEARCH_ONLY": true,
+  "NOT_LIVE": true,
+  "NO_BROKER": true,
+  "NO_REAL_ACCOUNT": true,
+  "NO_REAL_ORDER": true,
+  "NOT_FOR_PRODUCTION": true,
+  "scenario": "alert_storm",
+  "session_id": "sess-alertstorm-001",
+  "alerts": [
+    {
+      "alert_id": "alrt-000",
+      "severity": "CRITICAL",
+      "status": "RESOLVED",
+      "ack_seconds": 45
+    },
+    {
+      "alert_id": "alrt-001",
+      "severity": "CRITICAL",
+      "status": "RESOLVED",
+      "ack_seconds": 45
+    },
+    {
+      "alert_id": "alrt-002",
+      "severity": "CRITICAL",
+      "status": "RESOLVED",
+      "ack_seconds": 45
+    },
+    {
+      "alert_id": "alrt-003",
+      "severity": "WARNING",
+      "status": "RESOLVED",
+      "ack_seconds": 45
+    },
+    {
+      "alert_id": "alrt-004",
+      "severity": "WARNING",
+      "status": "RESOLVED",
+      "ack_seconds": 45
+    },
+    {
+      "alert_id": "alrt-005",
+      "severity": "WARNING",
+      "status": "RESOLVED",
+      "ack_seconds": 45
+    },
+    {
+      "alert_id": "alrt-006",
+      "severity": "WARNING",
+      "status": "RESOLVED",
+      "ack_seconds": 45
+    },
+    {
+      "alert_id": "alrt-007",
+      "severity": "WARNING",
+      "status": "RESOLVED",
+      "ack_seconds": 45
+    },
+    {
+      "alert_id": "alrt-008",
+      "severity": "WARNING",
+      "status": "RESOLVED",
+      "ack_seconds": 45
+    },
+    {
+      "alert_id": "alrt-009",
+      "severity": "WARNING",
+      "status": "RESOLVED",
+      "ack_seconds": 45
+    }
+  ]
+}

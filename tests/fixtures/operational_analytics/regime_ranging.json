@@ -1,0 +1,19 @@
+{
+  "TEST_FIXTURE": true,
+  "DEMO_ONLY": true,
+  "PAPER_ONLY": true,
+  "RESEARCH_ONLY": true,
+  "NOT_LIVE": true,
+  "NO_BROKER": true,
+  "NO_REAL_ACCOUNT": true,
+  "NO_REAL_ORDER": true,
+  "NOT_FOR_PRODUCTION": true,
+  "scenario": "regime_ranging",
+  "session_id": "sess-regime-002",
+  "regime_events": [
+    {
+      "regime_label": "RANGING",
+      "duration_seconds": 3000
+    }
+  ]
+}

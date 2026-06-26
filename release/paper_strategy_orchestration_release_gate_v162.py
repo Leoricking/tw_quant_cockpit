@@ -52,7 +52,8 @@ _KNOWN_NAMES = {
     "Session Operations & Observability",
     "Session Operations Integrity Hotfix",
     "CLI Registration Health Integrity Hotfix",
-            "CLI Handler Resolution Integrity Hotfix",
+    "CLI Handler Resolution Integrity Hotfix",
+    "Operational Analytics & Review",
 }
 
 

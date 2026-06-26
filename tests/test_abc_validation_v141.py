@@ -1230,6 +1230,7 @@ def test_release_name_141():
             "Session Operations Integrity Hotfix",
             "CLI Registration Health Integrity Hotfix",
             "CLI Handler Resolution Integrity Hotfix",
+            "Operational Analytics & Review",
     )
     assert RELEASE_NAME in _KNOWN, f"Unexpected release name: {RELEASE_NAME}"
 

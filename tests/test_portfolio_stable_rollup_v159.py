@@ -38,7 +38,8 @@ class TestVersionInfo:
     def test_release_name(self):
         from release.version_info import RELEASE_NAME
         _KNOWN = {"Stable", "Rollup", "Paper Trading", "Foundation", "Market Data", "Adapter",
-                  "Strategy", "Orchestration", "Session", "Observability", "CLI", "Registration", "Hotfix", "Handler", "Resolution"}
+                  "Strategy", "Orchestration", "Session", "Observability", "CLI", "Registration", "Hotfix", "Handler", "Resolution",
+                  "Operational", "Analytics", "Review"}
         assert any(k in RELEASE_NAME for k in _KNOWN), \
             f"Expected known RELEASE_NAME keyword, got {RELEASE_NAME}"
 

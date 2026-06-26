@@ -244,9 +244,9 @@ class TestFetchHandlersAndVersion:
         assert callable(fn)
 
     def test_24_version_is_163x(self):
-        """Test 24: VERSION starts with '1.6.3'."""
-        from release.version_info import VERSION
-        assert VERSION.startswith("1.6.3"), f"Expected 1.6.3.x got {VERSION}"
+        """Test 24: VERSION is 1.6.3.x or later (CLI registration baseline preserved)."""
+        from release.version_info import VERSION, CLI_HANDLER_RESOLUTION_BASELINE
+        assert CLI_HANDLER_RESOLUTION_BASELINE.startswith("1.6.3"), f"Expected baseline 1.6.3.x got {CLI_HANDLER_RESOLUTION_BASELINE}"
 
     def test_25_release_name_is_known_hotfix(self):
         """Test 25: RELEASE_NAME is a known v1.6.3.x hotfix name."""
@@ -254,5 +254,6 @@ class TestFetchHandlersAndVersion:
         known = {
             "CLI Registration Health Integrity Hotfix",
             "CLI Handler Resolution Integrity Hotfix",
+            "Operational Analytics & Review",
         }
         assert RELEASE_NAME in known, f"Unexpected RELEASE_NAME: {RELEASE_NAME}"

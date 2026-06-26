@@ -796,6 +796,7 @@ class TestVersionInfo:
             "Session Operations Integrity Hotfix",
             "CLI Registration Health Integrity Hotfix",
             "CLI Handler Resolution Integrity Hotfix",
+            "Operational Analytics & Review",
         ), f"Unexpected release name: {version_info.RELEASE_NAME}"
 
     def test_release_track(self):

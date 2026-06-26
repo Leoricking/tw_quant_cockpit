@@ -1273,7 +1273,8 @@ class TestVersionInfo:
                   "Session Operations & Observability",
                   "Session Operations Integrity Hotfix",
                   "CLI Registration Health Integrity Hotfix",
-            "CLI Handler Resolution Integrity Hotfix"}
+            "CLI Handler Resolution Integrity Hotfix",
+            "Operational Analytics & Review"}
         assert self.vi.RELEASE_NAME in _KNOWN or "Paper Trading" in self.vi.RELEASE_NAME or "Paper Strategy" in self.vi.RELEASE_NAME or "Session Operations" in self.vi.RELEASE_NAME, \
             f"Unexpected RELEASE_NAME: {self.vi.RELEASE_NAME}"
 

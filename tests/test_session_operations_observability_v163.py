@@ -2524,7 +2524,14 @@ class TestVersionAlignment:
 
     def test_release_name(self):
         from release.version_info import RELEASE_NAME
-        assert any(k in RELEASE_NAME for k in ("Session Operations", "CLI Registration", "Hotfix"))
+        _KNOWN = {
+            "Session Operations & Observability",
+            "Session Operations Integrity Hotfix",
+            "CLI Registration Health Integrity Hotfix",
+            "CLI Handler Resolution Integrity Hotfix",
+            "Operational Analytics & Review",
+        }
+        assert RELEASE_NAME in _KNOWN, f"Unexpected RELEASE_NAME: {RELEASE_NAME}"
 
     def test_base_release(self):
         from release.version_info import BASE_RELEASE

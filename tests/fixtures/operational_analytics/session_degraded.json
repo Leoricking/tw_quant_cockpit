@@ -1,0 +1,20 @@
+{
+  "TEST_FIXTURE": true,
+  "DEMO_ONLY": true,
+  "PAPER_ONLY": true,
+  "RESEARCH_ONLY": true,
+  "NOT_LIVE": true,
+  "NO_BROKER": true,
+  "NO_REAL_ACCOUNT": true,
+  "NO_REAL_ORDER": true,
+  "NOT_FOR_PRODUCTION": true,
+  "scenario": "degraded_session",
+  "session_id": "sess-degraded-001",
+  "session_type": "COMPOSITE",
+  "final_status": "DEGRADED",
+  "gross_pnl": "200.00",
+  "net_pnl": "100.00",
+  "downtime_ratio": "0.25",
+  "alerts_opened": 8,
+  "incidents_opened": 2
+}

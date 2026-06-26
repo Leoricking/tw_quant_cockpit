@@ -73,14 +73,30 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # ---------------------------------------------------------------------------
 # v1.3.3 module-level constants (Coverage Repair Workflow)
 # ---------------------------------------------------------------------------
-VERSION                             = "1.6.3.3"
-RELEASE_NAME                        = "CLI Handler Resolution Integrity Hotfix"
-BASE_RELEASE                        = "1.6.3.2 CLI Registration Health Integrity Hotfix"
+VERSION                             = "1.6.4"
+RELEASE_NAME                        = "Operational Analytics & Review"
+BASE_RELEASE                        = "1.6.3.3 CLI Handler Resolution Integrity Hotfix"
 PORTFOLIO_STABLE_BASELINE           = "1.5.9"
 LIVE_PAPER_TRADING_BASELINE         = "1.6.0"
 MARKET_DATA_SESSION_BASELINE        = "1.6.1"
 PAPER_STRATEGY_ORCHESTRATION_BASELINE = "1.6.2"
 SESSION_OPERATIONS_OBSERVABILITY_BASELINE = "1.6.3"
+CLI_HANDLER_RESOLUTION_BASELINE     = "1.6.3.3"
+OPERATIONAL_ANALYTICS_BASELINE      = "1.6.4"
+# v1.6.4 Operational Analytics & Review flags
+OPERATIONAL_ANALYTICS_AVAILABLE         = True
+OPERATIONAL_ANALYTICS_RESEARCH_ONLY     = True
+OPERATIONAL_ANALYTICS_STAGE             = "FOUNDATION"
+OPERATIONAL_ANALYTICS_NO_REAL_ORDERS    = True
+OPERATIONAL_ANALYTICS_NO_BROKER         = True
+OPERATIONAL_ANALYTICS_AUTO_STRATEGY_CHANGE_ENABLED = False
+OPERATIONAL_ANALYTICS_AUTO_PARAMETER_CHANGE_ENABLED = False
+OPERATIONAL_ANALYTICS_AUTO_RISK_LIMIT_CHANGE_ENABLED = False
+OPERATIONAL_ANALYTICS_AUTO_DEPLOYMENT_ENABLED = False
+OPERATIONAL_ANALYTICS_AUTO_LIVE_ACTION_ENABLED = False
+OPERATIONAL_ANALYTICS_PRODUCTION_DB_ENABLED = False
+OPERATIONAL_ANALYTICS_PORTFOLIO_LEDGER_WRITE_ENABLED = False
+OPERATIONAL_ANALYTICS_INVESTMENT_ADVICE_ENABLED = False
 MARKET_DATA_SESSION_AVAILABLE       = True
 MARKET_DATA_SESSION_RESEARCH_ONLY   = True
 LIVE_PAPER_TRADING_AVAILABLE        = True
