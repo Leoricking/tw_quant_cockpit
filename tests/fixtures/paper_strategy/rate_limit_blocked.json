@@ -1,0 +1,15 @@
+{
+  "_markers": ["TEST_FIXTURE", "DEMO_ONLY", "PAPER_ONLY", "RESEARCH_ONLY", "NOT_REAL_ORDER", "NOT_REAL_ACCOUNT", "NOT_FOR_INVESTMENT_DECISION", "NOT_FOR_PRODUCTION"],
+  "fixture_type": "RATE_LIMIT_BLOCKED",
+  "strategy_id": "fixture-strategy-valid-001",
+  "max_signals_per_minute": 3,
+  "signals_sent_this_minute": 3,
+  "new_signal_attempt_at": "2026-01-15T09:00:45.000000Z",
+  "paper_only": true,
+  "research_only": true,
+  "not_a_real_order": true,
+  "no_broker_call": true,
+  "no_real_account": true,
+  "no_formal_portfolio_ledger_write": true,
+  "_expected_validation": "BLOCKED_RATE_LIMIT"
+}

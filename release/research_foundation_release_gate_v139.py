@@ -98,6 +98,7 @@ class ResearchFoundationReleaseGate:
             "Market Data Session Adapter",
             "Market Data Session Warning Hygiene Hotfix",
             "Paper Strategy Orchestration",
+            "Paper Strategy Orchestration Integrity Hotfix",
             }
             parts = tuple(int(x) for x in VERSION.split(".")[:3])
             ok = (

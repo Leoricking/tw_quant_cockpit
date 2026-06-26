@@ -1,0 +1,20 @@
+{
+  "_markers": ["TEST_FIXTURE", "DEMO_ONLY", "PAPER_ONLY", "RESEARCH_ONLY", "NOT_REAL_ORDER", "NOT_REAL_ACCOUNT", "NOT_FOR_INVESTMENT_DECISION", "NOT_FOR_PRODUCTION"],
+  "lineage_id": "fixture-lineage-complete-001",
+  "strategy_id": "fixture-strategy-valid-001",
+  "chain": [
+    {"step": 1, "type": "SIGNAL", "id": "fixture-sig-001", "at": "2026-01-15T09:00:00.000000Z"},
+    {"step": 2, "type": "DECISION", "id": "fixture-dec-valid-001", "at": "2026-01-15T09:00:01.000000Z"},
+    {"step": 3, "type": "PROPOSAL", "id": "fixture-proposal-valid-001", "at": "2026-01-15T09:00:02.000000Z"},
+    {"step": 4, "type": "APPROVAL", "id": "fixture-approval-auto-001", "at": "2026-01-15T09:00:03.000000Z"},
+    {"step": 5, "type": "EXECUTION", "id": "fixture-bridge-valid-001", "at": "2026-01-15T09:00:04.000000Z"}
+  ],
+  "chain_complete": true,
+  "paper_only": true,
+  "research_only": true,
+  "not_a_real_order": true,
+  "no_broker_call": true,
+  "no_real_account": true,
+  "no_formal_portfolio_ledger_write": true,
+  "_expected_validation": "LINEAGE_COMPLETE"
+}

@@ -1,0 +1,19 @@
+{
+  "_markers": ["TEST_FIXTURE", "DEMO_ONLY", "PAPER_ONLY", "RESEARCH_ONLY", "NOT_REAL_ORDER", "NOT_REAL_ACCOUNT", "NOT_FOR_INVESTMENT_DECISION", "NOT_FOR_PRODUCTION"],
+  "signal_id": "fixture-sig-dup-001",
+  "strategy_id": "fixture-strategy-valid-001",
+  "ticker": "2330.TW",
+  "signal_type": "ENTRY_LONG",
+  "strength": "STRONG",
+  "confidence": 0.85,
+  "raw_value": 0.92,
+  "normalized_value": 0.92,
+  "generated_at": "2026-01-15T09:00:00.000000Z",
+  "trigger_type": "SCHEDULE",
+  "is_duplicate": true,
+  "dedup_key": "dup-key-aabb1122",
+  "paper_only": true,
+  "research_only": true,
+  "not_a_real_order": true,
+  "_expected_validation": "DUPLICATE"
+}

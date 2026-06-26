@@ -1518,7 +1518,8 @@ class TestVersionInfo:
 
     def test_180_release_name(self):
         _KNOWN = {"Market Data Session Adapter", "Market Data Session Warning Hygiene Hotfix",
-                  "Paper Strategy Orchestration"}
+                  "Paper Strategy Orchestration",
+                  "Paper Strategy Orchestration Integrity Hotfix"}
         assert self.vi.RELEASE_NAME in _KNOWN or "Market Data Session" in self.vi.RELEASE_NAME or "Paper Strategy" in self.vi.RELEASE_NAME, f"Got {self.vi.RELEASE_NAME}"
 
     def test_181_market_data_session_baseline(self):
@@ -1531,7 +1532,12 @@ class TestVersionInfo:
         assert self.vi.NO_REAL_ORDERS is True
 
     def test_184_base_release(self):
-        assert "1.6.1" in self.vi.BASE_RELEASE, f"Expected base 1.6.1.x, got {self.vi.BASE_RELEASE}"
+        # Market Data Session baseline is captured in MARKET_DATA_SESSION_BASELINE
+        # BASE_RELEASE advances with each version; check the lineage constant instead
+        assert "1.6.1" in self.vi.MARKET_DATA_SESSION_BASELINE, (
+            f"Expected MARKET_DATA_SESSION_BASELINE to contain 1.6.1, "
+            f"got {self.vi.MARKET_DATA_SESSION_BASELINE}"
+        )
 
     def test_185_market_data_session_available(self):
         assert self.vi.MARKET_DATA_SESSION_AVAILABLE is True

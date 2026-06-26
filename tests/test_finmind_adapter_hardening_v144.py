@@ -1331,6 +1331,7 @@ def test_149_release_name():
             "Market Data Session Adapter",
             "Market Data Session Warning Hygiene Hotfix",
             "Paper Strategy Orchestration",
+            "Paper Strategy Orchestration Integrity Hotfix",
     }
     assert RELEASE_NAME in known_names, f"Unexpected RELEASE_NAME: {RELEASE_NAME}"
 

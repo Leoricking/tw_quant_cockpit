@@ -1,0 +1,19 @@
+{
+  "_markers": ["TEST_FIXTURE", "DEMO_ONLY", "PAPER_ONLY", "RESEARCH_ONLY", "NOT_REAL_ORDER", "NOT_REAL_ACCOUNT", "NOT_FOR_INVESTMENT_DECISION", "NOT_FOR_PRODUCTION"],
+  "signal_id": "fixture-sig-notimestamp-001",
+  "strategy_id": "fixture-strategy-valid-001",
+  "ticker": "2330.TW",
+  "signal_type": "ENTRY_LONG",
+  "strength": "MODERATE",
+  "confidence": 0.70,
+  "raw_value": 0.72,
+  "normalized_value": null,
+  "generated_at": null,
+  "trigger_type": "MANUAL",
+  "is_duplicate": false,
+  "dedup_key": null,
+  "paper_only": true,
+  "research_only": true,
+  "not_a_real_order": true,
+  "_expected_validation": "FAIL_MISSING_TIMESTAMP"
+}

@@ -1,0 +1,20 @@
+{
+  "_markers": ["TEST_FIXTURE", "DEMO_ONLY", "PAPER_ONLY", "RESEARCH_ONLY", "NOT_REAL_ORDER", "NOT_REAL_ACCOUNT", "NOT_FOR_INVESTMENT_DECISION", "NOT_FOR_PRODUCTION"],
+  "strategy_name": "ValidFixtureStrategy",
+  "strategy_id": "fixture-strategy-valid-001",
+  "strategy_version": "0.1.0",
+  "description": "TEST_FIXTURE: Valid strategy configuration. DEMO_ONLY. PAPER_ONLY. NOT_FOR_PRODUCTION.",
+  "author": "test_fixture",
+  "approval_mode": "AUTO_PAPER_ONLY",
+  "conflict_policy": "HIGHEST_STRENGTH",
+  "max_signals_per_minute": 10,
+  "cooldown_seconds": 60,
+  "max_open_proposals": 5,
+  "paper_only": true,
+  "research_only": true,
+  "simulation_only": true,
+  "not_a_real_order": true,
+  "no_broker_call": true,
+  "no_real_account": true,
+  "no_formal_portfolio_ledger_write": true
+}

@@ -1,0 +1,19 @@
+{
+  "_markers": ["TEST_FIXTURE", "DEMO_ONLY", "PAPER_ONLY", "RESEARCH_ONLY", "NOT_REAL_ORDER", "NOT_REAL_ACCOUNT", "NOT_FOR_INVESTMENT_DECISION", "NOT_FOR_PRODUCTION"],
+  "decision_id": "fixture-dec-datablock-001",
+  "signal_id": "fixture-sig-001",
+  "strategy_id": "fixture-strategy-valid-001",
+  "ticker": "2330.TW",
+  "decision": "BLOCKED",
+  "reason": "Data quality insufficient — stale price data",
+  "eligibility_passed": false,
+  "block_reason": "DATA_QUALITY",
+  "stale_data_age_seconds": 3600,
+  "paper_only": true,
+  "research_only": true,
+  "not_a_real_order": true,
+  "no_broker_call": true,
+  "no_real_account": true,
+  "no_formal_portfolio_ledger_write": true,
+  "_expected_validation": "BLOCKED_DATA"
+}

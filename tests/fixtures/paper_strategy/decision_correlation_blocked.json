@@ -1,0 +1,22 @@
+{
+  "_markers": ["TEST_FIXTURE", "DEMO_ONLY", "PAPER_ONLY", "RESEARCH_ONLY", "NOT_REAL_ORDER", "NOT_REAL_ACCOUNT", "NOT_FOR_INVESTMENT_DECISION", "NOT_FOR_PRODUCTION"],
+  "decision_id": "fixture-dec-corrblock-001",
+  "signal_id": "fixture-sig-001",
+  "strategy_id": "fixture-strategy-valid-001",
+  "ticker": "2330.TW",
+  "decision": "BLOCKED",
+  "reason": "Correlation with existing positions exceeds threshold",
+  "eligibility_passed": true,
+  "sizing_passed": true,
+  "correlation_passed": false,
+  "block_reason": "CORRELATION_LIMIT",
+  "correlation_score": 0.95,
+  "correlation_threshold": 0.80,
+  "paper_only": true,
+  "research_only": true,
+  "not_a_real_order": true,
+  "no_broker_call": true,
+  "no_real_account": true,
+  "no_formal_portfolio_ledger_write": true,
+  "_expected_validation": "BLOCKED_CORRELATION"
+}

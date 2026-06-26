@@ -1,0 +1,18 @@
+{
+  "_markers": ["TEST_FIXTURE", "DEMO_ONLY", "PAPER_ONLY", "RESEARCH_ONLY", "NOT_REAL_ORDER", "NOT_REAL_ACCOUNT", "NOT_FOR_INVESTMENT_DECISION", "NOT_FOR_PRODUCTION"],
+  "fixture_type": "COOLDOWN_BLOCKED",
+  "strategy_id": "fixture-strategy-valid-001",
+  "ticker": "2330.TW",
+  "cooldown_seconds": 60,
+  "last_signal_at": "2026-01-15T09:00:00.000000Z",
+  "new_signal_at": "2026-01-15T09:00:30.000000Z",
+  "elapsed_seconds": 30,
+  "cooldown_remaining_seconds": 30,
+  "paper_only": true,
+  "research_only": true,
+  "not_a_real_order": true,
+  "no_broker_call": true,
+  "no_real_account": true,
+  "no_formal_portfolio_ledger_write": true,
+  "_expected_validation": "BLOCKED_COOLDOWN"
+}

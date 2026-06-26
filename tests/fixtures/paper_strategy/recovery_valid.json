@@ -1,0 +1,18 @@
+{
+  "_markers": ["TEST_FIXTURE", "DEMO_ONLY", "PAPER_ONLY", "RESEARCH_ONLY", "NOT_REAL_ORDER", "NOT_REAL_ACCOUNT", "NOT_FOR_INVESTMENT_DECISION", "NOT_FOR_PRODUCTION"],
+  "recovery_id": "fixture-recovery-valid-001",
+  "strategy_id": "fixture-strategy-valid-001",
+  "checkpoint_id": "fixture-checkpoint-valid-001",
+  "recovery_mode": "FROM_CHECKPOINT",
+  "recovery_status": "COMPLETE",
+  "state_restored": true,
+  "signals_recovered": 5,
+  "proposals_recovered": 3,
+  "paper_only": true,
+  "research_only": true,
+  "not_a_real_order": true,
+  "no_broker_call": true,
+  "no_real_account": true,
+  "no_formal_portfolio_ledger_write": true,
+  "_expected_validation": "RECOVERY_COMPLETE"
+}

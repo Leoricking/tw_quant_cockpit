@@ -1,0 +1,18 @@
+{
+  "_markers": ["TEST_FIXTURE", "DEMO_ONLY", "PAPER_ONLY", "RESEARCH_ONLY", "NOT_REAL_ORDER", "NOT_REAL_ACCOUNT", "NOT_FOR_INVESTMENT_DECISION", "NOT_FOR_PRODUCTION"],
+  "reproducibility_id": "fixture-repro-valid-001",
+  "strategy_id": "fixture-strategy-valid-001",
+  "run_a_id": "run-2026-01-15-a",
+  "run_b_id": "run-2026-01-15-b",
+  "same_inputs": true,
+  "same_outputs": true,
+  "divergence_count": 0,
+  "deterministic": true,
+  "paper_only": true,
+  "research_only": true,
+  "not_a_real_order": true,
+  "no_broker_call": true,
+  "no_real_account": true,
+  "no_formal_portfolio_ledger_write": true,
+  "_expected_validation": "REPRODUCIBILITY_CONFIRMED"
+}

@@ -1,0 +1,21 @@
+{
+  "_markers": ["TEST_FIXTURE", "DEMO_ONLY", "PAPER_ONLY", "RESEARCH_ONLY", "NOT_REAL_ORDER", "NOT_REAL_ACCOUNT", "NOT_FOR_INVESTMENT_DECISION", "NOT_FOR_PRODUCTION"],
+  "decision_id": "fixture-dec-mktblock-001",
+  "signal_id": "fixture-sig-001",
+  "strategy_id": "fixture-strategy-valid-001",
+  "ticker": "2330.TW",
+  "decision": "BLOCKED",
+  "reason": "Market closed — trading session not active",
+  "eligibility_passed": false,
+  "sizing_passed": false,
+  "correlation_passed": false,
+  "risk_passed": false,
+  "block_reason": "MARKET_CLOSED",
+  "paper_only": true,
+  "research_only": true,
+  "not_a_real_order": true,
+  "no_broker_call": true,
+  "no_real_account": true,
+  "no_formal_portfolio_ledger_write": true,
+  "_expected_validation": "BLOCKED_MARKET"
+}

@@ -1,0 +1,19 @@
+{
+  "_markers": ["TEST_FIXTURE", "DEMO_ONLY", "PAPER_ONLY", "RESEARCH_ONLY", "NOT_REAL_ORDER", "NOT_REAL_ACCOUNT", "NOT_FOR_INVESTMENT_DECISION", "NOT_FOR_PRODUCTION"],
+  "proposal_id": "fixture-proposal-invalid-001",
+  "signal_id": null,
+  "strategy_id": "fixture-strategy-valid-001",
+  "ticker": "2330.TW",
+  "direction": "LONG",
+  "proposed_quantity": -50,
+  "proposed_price": -100.0,
+  "proposal_status": "INVALID",
+  "paper_only": true,
+  "research_only": true,
+  "not_a_real_order": true,
+  "no_broker_call": true,
+  "no_real_account": true,
+  "no_formal_portfolio_ledger_write": true,
+  "_description": "Proposal with invalid fields: null signal_id, negative quantity, negative price",
+  "_expected_validation": "PROPOSAL_INVALID"
+}

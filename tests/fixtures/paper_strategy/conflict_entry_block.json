@@ -1,0 +1,19 @@
+{
+  "_markers": ["TEST_FIXTURE", "DEMO_ONLY", "PAPER_ONLY", "RESEARCH_ONLY", "NOT_REAL_ORDER", "NOT_REAL_ACCOUNT", "NOT_FOR_INVESTMENT_DECISION", "NOT_FOR_PRODUCTION"],
+  "conflict_id": "fixture-conflict-entryblock-001",
+  "strategy_id": "fixture-strategy-valid-001",
+  "ticker": "2330.TW",
+  "conflict_type": "ENTRY_BLOCK",
+  "signal_a": {"signal_id": "fixture-sig-003", "signal_type": "ENTRY_LONG", "strength": "WEAK"},
+  "signal_b": {"signal_id": "fixture-sig-004", "signal_type": "ENTRY_LONG", "strength": "STRONG"},
+  "resolution": "HIGHEST_STRENGTH",
+  "winner": "fixture-sig-004",
+  "loser_action": "BLOCK",
+  "paper_only": true,
+  "research_only": true,
+  "not_a_real_order": true,
+  "no_broker_call": true,
+  "no_real_account": true,
+  "no_formal_portfolio_ledger_write": true,
+  "_expected_validation": "CONFLICT_ENTRY_BLOCKED"
+}

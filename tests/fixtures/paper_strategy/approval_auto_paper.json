@@ -1,0 +1,18 @@
+{
+  "_markers": ["TEST_FIXTURE", "DEMO_ONLY", "PAPER_ONLY", "RESEARCH_ONLY", "NOT_REAL_ORDER", "NOT_REAL_ACCOUNT", "NOT_FOR_INVESTMENT_DECISION", "NOT_FOR_PRODUCTION"],
+  "approval_id": "fixture-approval-auto-001",
+  "proposal_id": "fixture-proposal-003",
+  "strategy_id": "fixture-strategy-valid-001",
+  "approval_mode": "AUTO_PAPER_ONLY",
+  "approval_status": "APPROVED",
+  "auto_approved": true,
+  "requires_human_confirmation": false,
+  "paper_execution_only": true,
+  "paper_only": true,
+  "research_only": true,
+  "not_a_real_order": true,
+  "no_broker_call": true,
+  "no_real_account": true,
+  "no_formal_portfolio_ledger_write": true,
+  "_expected_validation": "APPROVAL_AUTO_PAPER"
+}

@@ -73,9 +73,9 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # ---------------------------------------------------------------------------
 # v1.3.3 module-level constants (Coverage Repair Workflow)
 # ---------------------------------------------------------------------------
-VERSION                             = "1.6.2"
-RELEASE_NAME                        = "Paper Strategy Orchestration"
-BASE_RELEASE                        = "1.6.1.1 Market Data Session Warning Hygiene Hotfix"
+VERSION                             = "1.6.2.1"
+RELEASE_NAME                        = "Paper Strategy Orchestration Integrity Hotfix"
+BASE_RELEASE                        = "1.6.2 Paper Strategy Orchestration"
 PORTFOLIO_STABLE_BASELINE           = "1.5.9"
 LIVE_PAPER_TRADING_BASELINE         = "1.6.0"
 MARKET_DATA_SESSION_BASELINE        = "1.6.1"
@@ -111,6 +111,8 @@ PORTFOLIO_RESEARCH_ONLY             = True
 REAL_ORDER_CREATION_ENABLED         = False
 REAL_ORDER_EXECUTION_ENABLED        = False
 BROKER_CONNECTION_ENABLED           = False
+LIVE_ACCOUNT_SYNC_ENABLED           = False  # v1.6.2.1: global safety alias
+REAL_PORTFOLIO_LEDGER_WRITE_ENABLED = False  # v1.6.2.1: global safety alias
 AUTO_APPLY_ENABLED                  = False
 AUTO_REBALANCE_ENABLED              = False
 PORTFOLIO_WALK_FORWARD_BASELINE     = "1.5.4"

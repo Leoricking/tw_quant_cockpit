@@ -63,7 +63,8 @@ class ProviderStableReleaseGate:
                             "Live Paper Trading Foundation",
                              "Market Data Session Adapter",
                              "Market Data Session Warning Hygiene Hotfix",
-                             "Paper Strategy Orchestration"}
+                             "Paper Strategy Orchestration",
+                             "Paper Strategy Orchestration Integrity Hotfix"}
             parts = tuple(int(x) for x in VERSION.split(".")[:3])
             ok = (
                 parts >= (1, 4, 9)

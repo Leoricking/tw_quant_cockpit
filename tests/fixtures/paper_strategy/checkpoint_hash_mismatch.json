@@ -1,0 +1,17 @@
+{
+  "_markers": ["TEST_FIXTURE", "DEMO_ONLY", "PAPER_ONLY", "RESEARCH_ONLY", "NOT_REAL_ORDER", "NOT_REAL_ACCOUNT", "NOT_FOR_INVESTMENT_DECISION", "NOT_FOR_PRODUCTION"],
+  "checkpoint_id": "fixture-checkpoint-hashmiss-001",
+  "strategy_id": "fixture-strategy-valid-001",
+  "checkpoint_at": "2026-01-15T09:30:00.000000Z",
+  "state_hash": "sha256:aabbccdd11223344aabbccdd11223344aabbccdd11223344aabbccdd11223344",
+  "recomputed_hash": "sha256:deadbeef00000000deadbeef00000000deadbeef00000000deadbeef00000000",
+  "hash_match": false,
+  "paper_only": true,
+  "research_only": true,
+  "not_a_real_order": true,
+  "no_broker_call": true,
+  "no_real_account": true,
+  "no_formal_portfolio_ledger_write": true,
+  "_description": "Checkpoint with state_hash != recomputed_hash — integrity check must fail",
+  "_expected_validation": "CHECKPOINT_HASH_MISMATCH"
+}
