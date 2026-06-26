@@ -100,6 +100,7 @@ class ResearchFoundationReleaseGate:
             "Paper Strategy Orchestration",
             "Paper Strategy Orchestration Integrity Hotfix",
             "Session Operations & Observability",
+            "Session Operations Integrity Hotfix",
             }
             parts = tuple(int(x) for x in VERSION.split(".")[:3])
             ok = (

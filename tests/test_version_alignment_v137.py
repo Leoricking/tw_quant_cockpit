@@ -60,6 +60,7 @@ def test_current_release_name():
             "Paper Strategy Orchestration",
             "Paper Strategy Orchestration Integrity Hotfix",
             "Session Operations & Observability",
+            "Session Operations Integrity Hotfix",
     }
     assert RELEASE_NAME in known_names, f"Unexpected RELEASE_NAME: {RELEASE_NAME}"
 

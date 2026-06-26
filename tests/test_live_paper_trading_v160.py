@@ -1270,7 +1270,8 @@ class TestVersionInfo:
                   "Market Data Session Warning Hygiene Hotfix",
                   "Paper Strategy Orchestration",
                   "Paper Strategy Orchestration Integrity Hotfix",
-                  "Session Operations & Observability"}
+                  "Session Operations & Observability",
+                  "Session Operations Integrity Hotfix"}
         assert self.vi.RELEASE_NAME in _KNOWN or "Paper Trading" in self.vi.RELEASE_NAME or "Paper Strategy" in self.vi.RELEASE_NAME or "Session Operations" in self.vi.RELEASE_NAME, \
             f"Unexpected RELEASE_NAME: {self.vi.RELEASE_NAME}"
 
@@ -1287,7 +1288,7 @@ class TestVersionInfo:
         assert self.vi.LIVE_PAPER_TRADING_BASELINE == "1.6.0"
 
     def test_base_release_references_v159_or_160(self):
-        assert "1.5.9" in self.vi.BASE_RELEASE or "1.6.0" in self.vi.BASE_RELEASE or "1.6.1" in self.vi.BASE_RELEASE or "1.6.2" in self.vi.BASE_RELEASE
+        assert any(v in self.vi.BASE_RELEASE for v in ("1.5.9", "1.6.0", "1.6.1", "1.6.2", "1.6.3"))
 
     def test_version_string_valid_format(self):
         parts = self.vi.VERSION.split(".")

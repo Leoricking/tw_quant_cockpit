@@ -50,6 +50,7 @@ _KNOWN_NAMES = {
     "Paper Strategy Orchestration",
     "Paper Strategy Orchestration Integrity Hotfix",
     "Session Operations & Observability",
+    "Session Operations Integrity Hotfix",
 }
 
 

@@ -1593,6 +1593,7 @@ class TestVersionInfo(unittest.TestCase):
             "Paper Strategy Orchestration",
             "Paper Strategy Orchestration Integrity Hotfix",
             "Session Operations & Observability",
+            "Session Operations Integrity Hotfix",
         )
         self.assertTrue(
             any(name in RELEASE_NAME for name in _KNOWN),

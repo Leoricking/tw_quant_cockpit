@@ -73,9 +73,9 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # ---------------------------------------------------------------------------
 # v1.3.3 module-level constants (Coverage Repair Workflow)
 # ---------------------------------------------------------------------------
-VERSION                             = "1.6.3"
-RELEASE_NAME                        = "Session Operations & Observability"
-BASE_RELEASE                        = "1.6.2.1 Paper Strategy Orchestration Integrity Hotfix"
+VERSION                             = "1.6.3.1"
+RELEASE_NAME                        = "Session Operations Integrity Hotfix"
+BASE_RELEASE                        = "1.6.3 Session Operations & Observability"
 PORTFOLIO_STABLE_BASELINE           = "1.5.9"
 LIVE_PAPER_TRADING_BASELINE         = "1.6.0"
 MARKET_DATA_SESSION_BASELINE        = "1.6.1"

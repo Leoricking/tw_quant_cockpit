@@ -793,6 +793,7 @@ class TestVersionInfo:
             "Paper Strategy Orchestration",
             "Paper Strategy Orchestration Integrity Hotfix",
             "Session Operations & Observability",
+            "Session Operations Integrity Hotfix",
         ), f"Unexpected release name: {version_info.RELEASE_NAME}"
 
     def test_release_track(self):

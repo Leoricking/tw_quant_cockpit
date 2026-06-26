@@ -1782,7 +1782,8 @@ class TestVersionInfo(unittest.TestCase):
     def test_441_release_name(self):
         from release.version_info import RELEASE_NAME
         _KNOWN = {"Paper Strategy Orchestration", "Paper Strategy Orchestration Integrity Hotfix",
-                  "Session Operations & Observability"}
+                  "Session Operations & Observability",
+                  "Session Operations Integrity Hotfix"}
         self.assertIn(RELEASE_NAME, _KNOWN, f"Unexpected RELEASE_NAME: {RELEASE_NAME}")
 
     def test_442_baseline(self):
@@ -1792,8 +1793,8 @@ class TestVersionInfo(unittest.TestCase):
     def test_443_base_release(self):
         from release.version_info import BASE_RELEASE
         self.assertTrue(
-            "1.6.1" in BASE_RELEASE or "1.6.2" in BASE_RELEASE,
-            f"Expected 1.6.1.x or 1.6.2 in BASE_RELEASE, got {BASE_RELEASE}"
+            any(v in BASE_RELEASE for v in ("1.6.1", "1.6.2", "1.6.3")),
+            f"Expected 1.6.x base in BASE_RELEASE, got {BASE_RELEASE}"
         )
 
     def test_444_safety_flags(self):
@@ -3546,7 +3547,8 @@ class TestHotfixVersionInfo(unittest.TestCase):
 
     def test_792_base_release_is_162(self):
         from release.version_info import BASE_RELEASE
-        self.assertIn("1.6.2", BASE_RELEASE)
+        self.assertTrue(any(v in BASE_RELEASE for v in ("1.6.2", "1.6.3")),
+                        f"Expected 1.6.2+ base, got {BASE_RELEASE}")
 
     def test_793_paper_strategy_orchestration_baseline(self):
         from release.version_info import PAPER_STRATEGY_ORCHESTRATION_BASELINE

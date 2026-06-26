@@ -2518,17 +2518,17 @@ class TestCLICommands:
 # §41 — Version alignment
 # ===========================================================================
 class TestVersionAlignment:
-    def test_version_163(self):
+    def test_version_16x(self):
         from release.version_info import VERSION
-        assert VERSION == "1.6.3"
+        assert VERSION.startswith("1.6")
 
     def test_release_name(self):
         from release.version_info import RELEASE_NAME
-        assert "Session Operations" in RELEASE_NAME or "Observability" in RELEASE_NAME
+        assert "Session Operations" in RELEASE_NAME
 
     def test_base_release(self):
         from release.version_info import BASE_RELEASE
-        assert "1.6.2" in BASE_RELEASE
+        assert "1.6.3" in BASE_RELEASE
 
     def test_session_ops_baseline(self):
         from release.version_info import SESSION_OPERATIONS_OBSERVABILITY_BASELINE
@@ -2536,3 +2536,297 @@ class TestVersionAlignment:
 
     def test_operations_module_version(self):
         assert VERSION == "1.6.3"
+
+
+# ===========================================================================
+# §42 — Dependency Graph (high-risk scenarios)
+# ===========================================================================
+class TestDependencyGraph:
+    def test_market_data_degraded_propagates(self):
+        status, reason = resolve_composite_status(
+            OperationalStatus.DEGRADED,
+            OperationalStatus.RUNNING,
+            OperationalStatus.RUNNING,
+        )
+        assert status == OperationalStatus.DEGRADED
+
+    def test_market_data_halted_propagates(self):
+        status, reason = resolve_composite_status(
+            OperationalStatus.HALTED,
+            OperationalStatus.RUNNING,
+            OperationalStatus.RUNNING,
+        )
+        assert status == OperationalStatus.HALTED
+
+    def test_paper_trading_halted_propagates(self):
+        status, reason = resolve_composite_status(
+            OperationalStatus.RUNNING,
+            OperationalStatus.HALTED,
+            OperationalStatus.RUNNING,
+        )
+        assert status == OperationalStatus.HALTED
+
+    def test_child_failed_composite_failed(self):
+        status, reason = resolve_composite_status(
+            OperationalStatus.RUNNING,
+            OperationalStatus.RUNNING,
+            OperationalStatus.FAILED,
+        )
+        assert status == OperationalStatus.FAILED
+
+    def test_safety_blocked_wins(self):
+        status, reason = resolve_composite_status(
+            OperationalStatus.RUNNING,
+            OperationalStatus.RUNNING,
+            OperationalStatus.RUNNING,
+            safety_blocked=True,
+        )
+        assert status == OperationalStatus.BLOCKED
+
+    def test_blocked_beats_failed(self):
+        status, reason = resolve_composite_status(
+            OperationalStatus.BLOCKED,
+            OperationalStatus.FAILED,
+            OperationalStatus.RUNNING,
+        )
+        assert status == OperationalStatus.BLOCKED
+
+    def test_all_running_composite_running(self):
+        status, reason = resolve_composite_status(
+            OperationalStatus.RUNNING,
+            OperationalStatus.RUNNING,
+            OperationalStatus.RUNNING,
+        )
+        assert status == OperationalStatus.RUNNING
+
+    def test_deterministic_same_inputs_same_result(self):
+        args = (OperationalStatus.DEGRADED, OperationalStatus.PAUSED, OperationalStatus.RUNNING)
+        s1, r1 = resolve_composite_status(*args)
+        s2, r2 = resolve_composite_status(*args)
+        assert s1 == s2
+        assert r1 == r2
+
+    def test_composite_reason_non_empty(self):
+        _, reason = resolve_composite_status(
+            OperationalStatus.HALTED,
+            OperationalStatus.RUNNING,
+            OperationalStatus.RUNNING,
+        )
+        assert reason is not None and len(reason) > 0
+
+
+# ===========================================================================
+# §43 — Metrics PIT & Advanced (high-risk scenarios)
+# ===========================================================================
+class TestMetricsPIT:
+    def _obs(self, value=1.0, name="md_latency", session_id="md_001", t=None):
+        ts = t or datetime(2026, 1, 1, 12, 0, 0, tzinfo=timezone.utc)
+        return SessionMetric(
+            metric_id=f"m_{name}_{value}_{id(ts)}_{hash(value)}",
+            metric_name=name,
+            session_id=session_id,
+            session_type=ManagedSessionType.MARKET_DATA,
+            value=float(value),
+            observed_at=ts,
+        )
+
+    def test_empty_window_is_unknown(self):
+        val, msg = aggregate([], AggregationType.AVG)
+        assert val is None
+
+    def test_p50_deterministic(self):
+        obs = [self._obs(v) for v in [1.0, 2.0, 3.0, 4.0, 5.0]]
+        v1, _ = aggregate(obs, AggregationType.P50)
+        v2, _ = aggregate(obs, AggregationType.P50)
+        assert v1 == v2
+
+    def test_p95_greater_than_p50(self):
+        obs = [self._obs(float(v)) for v in range(1, 101)]
+        p50, _ = aggregate(obs, AggregationType.P50)
+        p95, _ = aggregate(obs, AggregationType.P95)
+        assert p95 > p50
+
+    def test_future_metric_blocked(self):
+        future = datetime(2099, 12, 31, 0, 0, 0, tzinfo=timezone.utc)
+        collector = MetricsCollector(clock=lambda: datetime(2026, 1, 1, tzinfo=timezone.utc))
+        with pytest.raises((ValueError, CollectionError)):
+            collector.observe("md_latency", "md_001", ManagedSessionType.MARKET_DATA, 1.0,
+                              observed_at=future)
+
+    def test_naive_timestamp_blocked(self):
+        naive = datetime(2026, 1, 1, 12, 0, 0)  # no tzinfo
+        collector = MetricsCollector()
+        with pytest.raises((ValueError, CollectionError)):
+            collector.observe("md_latency", "md_001", ManagedSessionType.MARKET_DATA, 1.0,
+                              observed_at=naive)
+
+    def test_decimal_safe_aggregation(self):
+        obs = [self._obs(float(v) / 3) for v in range(1, 10)]
+        val, _ = aggregate(obs, AggregationType.AVG)
+        assert val is not None
+        assert math.isfinite(val)
+
+
+# ===========================================================================
+# §44 — Alert Advanced (high-risk scenarios)
+# ===========================================================================
+class TestAlertAdvanced:
+    def _rule(self):
+        reg = AlertRuleRegistry()
+        return reg.list_all()[0]
+
+    def test_dedup_same_key_not_duplicated(self):
+        engine = AlertEngine()
+        rule = self._rule()
+        action1, alert1 = engine.fire(rule, "md_001", "test message")
+        action2, alert2 = engine.fire(rule, "md_001", "test message")
+        open_alerts = engine.list_open()
+        assert sum(1 for a in open_alerts if a.rule_id == rule.rule_id) == 1
+
+    def test_forbidden_channel_blocked_email(self):
+        router = AlertRouter()
+        status, msg = router.configure_forbidden("EMAIL")
+        assert status == "BLOCKED"
+
+    def test_forbidden_channel_blocked_sms(self):
+        router = AlertRouter()
+        status, msg = router.configure_forbidden("SMS")
+        assert status == "BLOCKED"
+
+    def test_forbidden_channel_blocked_slack(self):
+        router = AlertRouter()
+        status, msg = router.configure_forbidden("SLACK")
+        assert status == "BLOCKED"
+
+    def test_forbidden_channel_blocked_pagerduty(self):
+        router = AlertRouter()
+        status, msg = router.configure_forbidden("PAGERDUTY")
+        assert status == "BLOCKED"
+
+    def test_forbidden_channel_blocked_webhook(self):
+        router = AlertRouter()
+        status, msg = router.configure_forbidden("WEBHOOK")
+        assert status == "BLOCKED"
+
+    def test_forbidden_channel_blocked_broker(self):
+        router = AlertRouter()
+        status, msg = router.configure_forbidden("BROKER_CHANNEL")
+        assert status == "BLOCKED"
+
+    def test_all_seven_forbidden_channels_blocked(self):
+        router = AlertRouter()
+        for ch in FORBIDDEN_ALERT_CHANNELS:
+            status, _ = router.configure_forbidden(ch)
+            assert status == "BLOCKED", f"Channel {ch} was not BLOCKED"
+
+    def test_resolve_then_reopen(self):
+        engine = AlertEngine()
+        rule = self._rule()
+        _, alert = engine.fire(rule, "md_001", "msg")
+        engine.resolve(alert.alert_id)
+        _, alert2 = engine.fire(rule, "md_002", "new session")
+        assert alert2 is not None
+
+
+# ===========================================================================
+# §45 — Incident & Timeline Advanced (high-risk scenarios)
+# ===========================================================================
+class TestIncidentAdvanced:
+    def test_invalid_transition_blocked(self):
+        from paper_trading.operations.enums_v163 import IncidentStatus, IncidentCategory
+        ok, msg = validate_incident_transition(IncidentStatus.CLOSED, IncidentStatus.OPEN)
+        assert ok is False
+
+    def test_closed_has_no_outgoing(self):
+        from paper_trading.operations.enums_v163 import IncidentStatus
+        from paper_trading.operations.enums_v163 import VALID_INCIDENT_TRANSITIONS
+        assert len(VALID_INCIDENT_TRANSITIONS.get(IncidentStatus.CLOSED, [])) == 0
+
+    def test_missing_affected_session_blocked(self):
+        ok, msg = validate_incident_has_affected_session([])
+        assert ok is False
+
+    def test_missing_alert_lineage_blocked(self):
+        ok, msg = validate_incident_has_alert_lineage([])
+        assert ok is False
+
+    def test_incident_open_to_investigating(self):
+        from paper_trading.operations.enums_v163 import IncidentStatus, IncidentCategory
+        mgr = IncidentManager()
+        _, inc = mgr.open("t", IncidentCategory.DATA_QUALITY, AlertSeverity.ERROR,
+                          ["md_001"], ["alt_001"])
+        status, msg = mgr.transition(inc.incident_id, IncidentStatus.INVESTIGATING, "investigating now")
+        assert status == "OK"
+
+    def test_timeline_future_timestamp_blocked(self):
+        ok, msg = validate_no_future_timestamp(
+            datetime(2099, 1, 1, tzinfo=timezone.utc),
+            datetime(2026, 1, 1, tzinfo=timezone.utc),
+        )
+        assert ok is False
+
+    def test_timeline_missing_actor_blocked(self):
+        timeline = IncidentTimeline()
+        ok, _ = timeline.append("operation_executed", "md_001", "", "no actor", datetime(2026, 1, 1, tzinfo=timezone.utc))
+        assert ok is False
+
+    def test_timeline_hash_chain_intact(self):
+        timeline = IncidentTimeline()
+        t1 = datetime(2026, 1, 1, 0, 0, tzinfo=timezone.utc)
+        t2 = datetime(2026, 1, 1, 0, 1, tzinfo=timezone.utc)
+        timeline.append("operation_executed", "md_001", "system", "init", t1)
+        timeline.append("alert_created", "md_001", "engine", "alert", t2)
+        ok, msg = timeline.verify_chain()
+        assert ok is True
+
+
+# ===========================================================================
+# §46 — Operation Policy Advanced (high-risk scenarios)
+# ===========================================================================
+class TestOperationPolicyAdvanced:
+    def test_pause_idempotent_already_paused(self):
+        policy = PausePolicy()
+        result = policy.execute("pt_001", OperationalStatus.PAUSED, "sup_001")
+        assert result.success is True
+        assert result.broker_called is False
+
+    def test_halt_auto_resume_always_false(self):
+        result = HaltPolicy().execute("pt_001", OperationalStatus.RUNNING, "safety_trigger")
+        assert result.auto_resume is False
+
+    def test_halt_broker_never_called(self):
+        result = HaltPolicy().execute("pt_001", OperationalStatus.RUNNING, "safety_trigger")
+        assert result.broker_called is False
+
+    def test_resume_blocked_by_kill_switch(self):
+        result = ResumePolicy().execute("pt_001", OperationalStatus.PAUSED, kill_switch_active=True)
+        assert result.success is False
+        assert result.status == "RESUME_BLOCKED"
+
+    def test_resume_wrong_status_blocked(self):
+        result = ResumePolicy().execute("pt_001", OperationalStatus.FAILED, kill_switch_active=False)
+        assert result.success is False
+
+    def test_recovery_checkpoint_mismatch_halts(self):
+        result = RecoveryPolicy().execute("pt_001", "inc_001", checkpoint_valid=False)
+        assert result.final_status == OperationalStatus.HALTED
+        assert result.success is False
+
+    def test_recovery_replay_mismatch_halts(self):
+        result = RecoveryPolicy().execute("pt_001", "inc_001", replay_ok=False)
+        assert result.final_status == OperationalStatus.HALTED
+
+    def test_recovery_remains_paused_not_running(self):
+        result = RecoveryPolicy().execute("pt_001", "inc_001")
+        assert result.auto_resumed is False
+        assert result.final_status != OperationalStatus.RUNNING
+
+    def test_recovery_session_id_mismatch_blocked(self):
+        result = RecoveryPolicy().execute("pt_001", "inc_001", session_ids_ok=False)
+        assert result.success is False
+
+    def test_checkpoint_restore_always_paused_invariant(self):
+        svc = CheckpointService()
+        restored = svc.restore_status()
+        assert restored == OperationalStatus.PAUSED
+        assert restored != OperationalStatus.RUNNING
