@@ -1,0 +1,7 @@
+{
+  "_markers": ["TEST_FIXTURE","DEMO_ONLY","PAPER_ONLY","RESEARCH_ONLY","NOT_LIVE","NO_BROKER","NO_REAL_ACCOUNT","NO_REAL_ORDER","NOT_FOR_PRODUCTION"],
+  "threshold_id":"thr_invalid","metric_name":"heartbeat_age",
+  "warning":100,"degraded":50,"critical":200,
+  "note":"Invalid ordering: warning > degraded. Must be BLOCKED.",
+  "expected_result":"BLOCKED"
+}

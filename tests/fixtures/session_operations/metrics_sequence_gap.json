@@ -1,0 +1,6 @@
+{
+  "_markers": ["TEST_FIXTURE","DEMO_ONLY","PAPER_ONLY","RESEARCH_ONLY","NOT_LIVE","NO_BROKER","NO_REAL_ACCOUNT","NO_REAL_ORDER","NOT_FOR_PRODUCTION"],
+  "session_id":"md_001","session_type":"MARKET_DATA",
+  "metrics":[{"metric_name":"sequence_gap_count","value":3,"unit":"count","health":"WARNING"}],
+  "expected_alert":"ar_seq_gap","sequence_gap_count":3
+}

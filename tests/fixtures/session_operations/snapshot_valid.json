@@ -1,0 +1,9 @@
+{
+  "_markers": ["TEST_FIXTURE","DEMO_ONLY","PAPER_ONLY","RESEARCH_ONLY","NOT_LIVE","NO_BROKER","NO_REAL_ACCOUNT","NO_REAL_ORDER","NOT_FOR_PRODUCTION"],
+  "snapshot_id":"snap_fixture_001","session_id":"pt_001","session_type":"PAPER_TRADING",
+  "status":"PAUSED","health":"HEALTHY",
+  "semantic_hash":"fixture_hash_abc123",
+  "research_only":true,"paper_only":true,
+  "excluded_from_hash":["generated_at","local_machine_path","runtime_uuid"],
+  "note":"Valid snapshot — semantic hash excludes non-deterministic fields"
+}

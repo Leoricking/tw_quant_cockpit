@@ -1,0 +1,11 @@
+{
+  "_markers": ["TEST_FIXTURE","DEMO_ONLY","PAPER_ONLY","RESEARCH_ONLY","NOT_LIVE","NO_BROKER","NO_REAL_ACCOUNT","NO_REAL_ORDER","NOT_FOR_PRODUCTION"],
+  "drill_id":"drill_fixture_002","scenario":"strategy_execution_failure",
+  "session_id":"sup_001","session_type":"PAPER_STRATEGY",
+  "paper_only":true,"research_only":true,
+  "expected_steps":["detect_failure","trigger_alert","halt_strategy_session","open_incident","run_runbook"],
+  "expected_auto_resume":false,
+  "expected_broker_called":false,
+  "expected_real_order_created":false,
+  "note":"Strategy failure drill — paper/research only; auto_resume=false"
+}

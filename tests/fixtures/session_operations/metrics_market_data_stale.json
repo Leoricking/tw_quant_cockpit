@@ -1,0 +1,9 @@
+{
+  "_markers": ["TEST_FIXTURE","DEMO_ONLY","PAPER_ONLY","RESEARCH_ONLY","NOT_LIVE","NO_BROKER","NO_REAL_ACCOUNT","NO_REAL_ORDER","NOT_FOR_PRODUCTION"],
+  "session_id":"md_001","session_type":"MARKET_DATA",
+  "metrics":[
+    {"metric_name":"freshness_age","value":350,"unit":"seconds","health":"CRITICAL"},
+    {"metric_name":"heartbeat_age","value":180,"unit":"seconds","health":"CRITICAL"}
+  ],
+  "scenario":"stale_data","expected_alert":"ar_md_stale"
+}

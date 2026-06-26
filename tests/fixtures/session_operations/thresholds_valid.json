@@ -1,0 +1,7 @@
+{
+  "_markers": ["TEST_FIXTURE","DEMO_ONLY","PAPER_ONLY","RESEARCH_ONLY","NOT_LIVE","NO_BROKER","NO_REAL_ACCOUNT","NO_REAL_ORDER","NOT_FOR_PRODUCTION"],
+  "threshold_id":"thr_test","metric_name":"heartbeat_age",
+  "warning":30,"degraded":60,"critical":120,"comparison":"gt",
+  "evaluation_window":60,"minimum_samples":1,"enabled":true,"version":"1.6.3",
+  "note":"Research-only fixture threshold. Not production standard."
+}

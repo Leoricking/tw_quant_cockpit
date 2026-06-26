@@ -1,0 +1,12 @@
+{
+  "_markers": ["TEST_FIXTURE","DEMO_ONLY","PAPER_ONLY","RESEARCH_ONLY","NOT_LIVE","NO_BROKER","NO_REAL_ACCOUNT","NO_REAL_ORDER","NOT_FOR_PRODUCTION"],
+  "lineage_id":"lin_fixture_001",
+  "records":[
+    {"entity_id":"md_001","entity_type":"MARKET_DATA","parent_id":null,"operation":"REGISTER"},
+    {"entity_id":"pt_001","entity_type":"PAPER_TRADING","parent_id":"md_001","operation":"REGISTER"},
+    {"entity_id":"sup_001","entity_type":"PAPER_STRATEGY","parent_id":"pt_001","operation":"REGISTER"}
+  ],
+  "orphan_count":0,
+  "completeness_verified":true,
+  "note":"Complete lineage chain — no orphans"
+}

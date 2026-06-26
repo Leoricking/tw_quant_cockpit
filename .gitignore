@@ -806,3 +806,16 @@ data/paper_strategy/lineage/
 reports/paper_strategy_orchestration_*.md
 # Paper strategy test fixtures ARE committed (exception)
 !tests/fixtures/paper_strategy/*.json
+
+# v1.6.3 — Session Operations & Observability runtime state (NOT committed)
+data/session_operations/
+data/session_operations/store/
+data/session_operations/audit/
+data/session_operations/lineage/
+data/session_operations/snapshots/
+data/session_operations/checkpoints/
+data/session_operations/replay/
+session_operations_store/
+reports/session_operations_observability_*.md
+# Session operations test fixtures ARE committed (exception)
+!tests/fixtures/session_operations/*.json

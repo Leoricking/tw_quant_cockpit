@@ -1,0 +1,6 @@
+{
+  "_markers": ["TEST_FIXTURE","DEMO_ONLY","PAPER_ONLY","RESEARCH_ONLY","NOT_LIVE","NO_BROKER","NO_REAL_ACCOUNT","NO_REAL_ORDER","NOT_FOR_PRODUCTION"],
+  "session_id":"pt_001","session_type":"PAPER_TRADING",
+  "metrics":[{"metric_name":"risk_block_count","value":25,"unit":"count","health":"WARNING"}],
+  "expected_alert":"ar_risk_spike"
+}

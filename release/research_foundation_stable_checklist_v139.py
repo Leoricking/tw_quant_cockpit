@@ -65,6 +65,7 @@ def run_checklist() -> list[dict]:
             "Market Data Session Warning Hygiene Hotfix",
             "Paper Strategy Orchestration",
             "Paper Strategy Orchestration Integrity Hotfix",
+            "Session Operations & Observability",
         }
         parts = tuple(int(x) for x in VERSION.split(".")[:3])
         return (parts >= (1, 3, 9)

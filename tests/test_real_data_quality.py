@@ -792,6 +792,7 @@ class TestVersionInfo:
             "Market Data Session Warning Hygiene Hotfix",
             "Paper Strategy Orchestration",
             "Paper Strategy Orchestration Integrity Hotfix",
+            "Session Operations & Observability",
         ), f"Unexpected release name: {version_info.RELEASE_NAME}"
 
     def test_release_track(self):

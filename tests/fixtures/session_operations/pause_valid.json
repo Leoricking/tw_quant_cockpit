@@ -1,0 +1,11 @@
+{
+  "_markers": ["TEST_FIXTURE","DEMO_ONLY","PAPER_ONLY","RESEARCH_ONLY","NOT_LIVE","NO_BROKER","NO_REAL_ACCOUNT","NO_REAL_ORDER","NOT_FOR_PRODUCTION"],
+  "session_id":"pt_001","session_type":"PAPER_TRADING",
+  "current_status":"RUNNING","requested_operation":"PAUSE",
+  "expected_result":"success",
+  "expected_final_status":"PAUSED",
+  "expected_broker_called":false,
+  "expected_ledger_write":false,
+  "expected_position_modified":false,
+  "note":"RUNNING→PAUSE valid; broker_called=false always"
+}

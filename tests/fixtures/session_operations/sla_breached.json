@@ -1,0 +1,6 @@
+{
+  "_markers": ["TEST_FIXTURE","DEMO_ONLY","PAPER_ONLY","RESEARCH_ONLY","NOT_LIVE","NO_BROKER","NO_REAL_ACCOUNT","NO_REAL_ORDER","NOT_FOR_PRODUCTION"],
+  "sla_id":"sla_heartbeat","metric":"heartbeat_age",
+  "test_age_seconds":200,"expected_status":"BREACHED",
+  "note":"200s > 120s breach threshold"
+}

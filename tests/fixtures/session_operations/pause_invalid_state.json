@@ -1,0 +1,8 @@
+{
+  "_markers": ["TEST_FIXTURE","DEMO_ONLY","PAPER_ONLY","RESEARCH_ONLY","NOT_LIVE","NO_BROKER","NO_REAL_ACCOUNT","NO_REAL_ORDER","NOT_FOR_PRODUCTION"],
+  "session_id":"pt_001","session_type":"PAPER_TRADING",
+  "current_status":"HALTED","requested_operation":"PAUSE",
+  "expected_result":"error",
+  "expected_error_type":"INVALID_STATE_FOR_PAUSE",
+  "note":"HALTED session cannot be paused"
+}

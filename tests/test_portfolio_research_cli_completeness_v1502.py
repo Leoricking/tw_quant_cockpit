@@ -394,6 +394,7 @@ class TestSafetyAndVersion:
             "Market Data Session Warning Hygiene Hotfix",
             "Paper Strategy Orchestration",
             "Paper Strategy Orchestration Integrity Hotfix",
+            "Session Operations & Observability",
         }
         assert RELEASE_NAME in valid_names, f"Unexpected RELEASE_NAME: {RELEASE_NAME}"
 

@@ -1592,6 +1592,7 @@ class TestVersionInfo(unittest.TestCase):
             "Market Data Session Warning Hygiene Hotfix",
             "Paper Strategy Orchestration",
             "Paper Strategy Orchestration Integrity Hotfix",
+            "Session Operations & Observability",
         )
         self.assertTrue(
             any(name in RELEASE_NAME for name in _KNOWN),

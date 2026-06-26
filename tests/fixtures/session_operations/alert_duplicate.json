@@ -1,0 +1,6 @@
+{
+  "_markers": ["TEST_FIXTURE","DEMO_ONLY","PAPER_ONLY","RESEARCH_ONLY","NOT_LIVE","NO_BROKER","NO_REAL_ACCOUNT","NO_REAL_ORDER","NOT_FOR_PRODUCTION"],
+  "rule_id":"ar_md_stale","session_id":"md_001",
+  "dedup_key":"md:stale:md_001","dedup_action":"deduped",
+  "note":"Same dedup_key — existing OPEN alert → action=deduped"
+}

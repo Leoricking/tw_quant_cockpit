@@ -1,0 +1,10 @@
+{
+  "_markers": ["TEST_FIXTURE","DEMO_ONLY","PAPER_ONLY","RESEARCH_ONLY","NOT_LIVE","NO_BROKER","NO_REAL_ACCOUNT","NO_REAL_ORDER","NOT_FOR_PRODUCTION"],
+  "incident_id":"inc_fixture_001",
+  "events":[
+    {"event_id":"ev_001","event_type":"OPENED","actor":"system","reason":"Detected","timestamp":"2026-01-01T00:05:00Z"},
+    {"event_id":"ev_002","event_type":"INVESTIGATING","actor":"operator","reason":"Investigating","timestamp":"2026-01-01T00:01:00Z"}
+  ],
+  "expected_append_result":false,
+  "note":"ev_002 timestamp 00:01 < ev_001 timestamp 00:05 → timestamp regression → append blocked"
+}

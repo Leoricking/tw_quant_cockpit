@@ -1,0 +1,6 @@
+{
+  "_markers": ["TEST_FIXTURE","DEMO_ONLY","PAPER_ONLY","RESEARCH_ONLY","NOT_LIVE","NO_BROKER","NO_REAL_ACCOUNT","NO_REAL_ORDER","NOT_FOR_PRODUCTION"],
+  "session_id":"ps_001","session_type":"PAPER_STRATEGY",
+  "metrics":[{"metric_name":"strategy_error_count","value":12,"unit":"count","health":"DEGRADED"}],
+  "expected_alert":"ar_strategy_errors"
+}

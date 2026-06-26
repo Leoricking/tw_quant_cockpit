@@ -1,0 +1,20 @@
+{
+  "_markers": [
+    "TEST_FIXTURE", "DEMO_ONLY", "PAPER_ONLY", "RESEARCH_ONLY",
+    "NOT_LIVE", "NO_BROKER", "NO_REAL_ACCOUNT", "NO_REAL_ORDER",
+    "NOT_FOR_PRODUCTION"
+  ],
+  "fixture_id": "checkpoint_valid",
+  "description": "Valid checkpoint with correct hash",
+  "supervisor_id": "sup_test_001",
+  "version": "1.6.3",
+  "managed_sessions": ["md_001", "pt_001", "sup_001"],
+  "operation_sequence": 42,
+  "event_bus_sequence": 17,
+  "journal_hash": "sha256:aabbcc",
+  "snapshot_hash": "sha256:ddeeff",
+  "expected_valid": true,
+  "restore_always_paused": true,
+  "NO_REAL_ORDERS": true,
+  "BROKER_EXECUTION_ENABLED": false
+}

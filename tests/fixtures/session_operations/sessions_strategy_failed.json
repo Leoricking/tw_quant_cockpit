@@ -1,0 +1,7 @@
+{
+  "_markers": ["TEST_FIXTURE","DEMO_ONLY","PAPER_ONLY","RESEARCH_ONLY","NOT_LIVE","NO_BROKER","NO_REAL_ACCOUNT","NO_REAL_ORDER","NOT_FOR_PRODUCTION"],
+  "market_data":    {"status":"RUNNING","health":"HEALTHY"},
+  "paper_trading":  {"status":"RUNNING","health":"HEALTHY"},
+  "paper_strategy": {"status":"FAILED","health":"CRITICAL"},
+  "composite_status":"FAILED","composite_health":"CRITICAL"
+}

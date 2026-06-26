@@ -1,0 +1,9 @@
+{
+  "_markers": ["TEST_FIXTURE","DEMO_ONLY","PAPER_ONLY","RESEARCH_ONLY","NOT_LIVE","NO_BROKER","NO_REAL_ACCOUNT","NO_REAL_ORDER","NOT_FOR_PRODUCTION"],
+  "artifact_id":"repr_fixture_001",
+  "semantic_hash":"fixture_semantic_hash_001",
+  "excluded_fields":["generated_at","local_machine_path","runtime_uuid"],
+  "included_fields":["session_id","session_type","status","health","metrics_summary"],
+  "reproducibility_verified":true,
+  "note":"Semantic hash excludes non-deterministic fields; reproducibility verified"
+}

@@ -1,0 +1,11 @@
+{
+  "_markers": ["TEST_FIXTURE","DEMO_ONLY","PAPER_ONLY","RESEARCH_ONLY","NOT_LIVE","NO_BROKER","NO_REAL_ACCOUNT","NO_REAL_ORDER","NOT_FOR_PRODUCTION"],
+  "incident_id":"inc_fixture_001",
+  "events":[
+    {"event_id":"ev_001","event_type":"OPENED","actor":"system","reason":"Safety violation detected","timestamp":"2026-01-01T00:00:00Z"},
+    {"event_id":"ev_002","event_type":"INVESTIGATING","actor":"operator","reason":"Investigating root cause","timestamp":"2026-01-01T00:01:00Z"},
+    {"event_id":"ev_003","event_type":"MITIGATED","actor":"operator","reason":"Mitigation applied","timestamp":"2026-01-01T00:05:00Z"}
+  ],
+  "expected_chain_valid":true,
+  "note":"Monotonically increasing timestamps — chain valid"
+}

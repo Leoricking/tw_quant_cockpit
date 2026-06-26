@@ -1,0 +1,7 @@
+{
+  "_markers": ["TEST_FIXTURE","DEMO_ONLY","PAPER_ONLY","RESEARCH_ONLY","NOT_LIVE","NO_BROKER","NO_REAL_ACCOUNT","NO_REAL_ORDER","NOT_FOR_PRODUCTION"],
+  "market_data":    {"session_id":"md_001","status":"RUNNING","health":"HEALTHY","version":"1.6.3"},
+  "paper_trading":  {"session_id":"pt_001","status":"RUNNING","health":"HEALTHY","version":"1.6.3"},
+  "paper_strategy": {"session_id":"ps_001","status":"RUNNING","health":"HEALTHY","version":"1.6.3"},
+  "composite_status":"RUNNING","composite_health":"HEALTHY"
+}

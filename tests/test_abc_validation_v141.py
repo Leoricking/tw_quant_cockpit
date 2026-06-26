@@ -1226,6 +1226,7 @@ def test_release_name_141():
             "Market Data Session Warning Hygiene Hotfix",
             "Paper Strategy Orchestration",
             "Paper Strategy Orchestration Integrity Hotfix",
+            "Session Operations & Observability",
     )
     assert RELEASE_NAME in _KNOWN, f"Unexpected release name: {RELEASE_NAME}"
 

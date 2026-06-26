@@ -1,0 +1,9 @@
+{
+  "_markers": ["TEST_FIXTURE","DEMO_ONLY","PAPER_ONLY","RESEARCH_ONLY","NOT_LIVE","NO_BROKER","NO_REAL_ACCOUNT","NO_REAL_ORDER","NOT_FOR_PRODUCTION"],
+  "session_id":"pt_001","session_type":"PAPER_TRADING",
+  "current_status":"PAUSED","requested_operation":"RESUME",
+  "kill_switch_active":true,
+  "expected_result":"RESUME_BLOCKED",
+  "expected_final_status":"PAUSED",
+  "note":"kill_switch_active=true → RESUME_BLOCKED always"
+}

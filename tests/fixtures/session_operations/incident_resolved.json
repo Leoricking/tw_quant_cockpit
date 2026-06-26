@@ -1,0 +1,8 @@
+{
+  "_markers": ["TEST_FIXTURE","DEMO_ONLY","PAPER_ONLY","RESEARCH_ONLY","NOT_LIVE","NO_BROKER","NO_REAL_ACCOUNT","NO_REAL_ORDER","NOT_FOR_PRODUCTION"],
+  "incident_id":"inc_fixture_002","category":"MARKET_DATA_FAILURE","severity":"ERROR",
+  "status":"RESOLVED","title":"Market Data Restored","summary":"Research drill scenario — resolved",
+  "affected_sessions":["md_001"],"alert_ids":["alt_fixture_001"],
+  "runbook_id":"rb_market_disconnect",
+  "note":"Terminal status RESOLVED — no further transitions allowed"
+}

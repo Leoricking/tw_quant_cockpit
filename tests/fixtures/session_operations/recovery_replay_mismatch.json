@@ -1,0 +1,10 @@
+{
+  "_markers": ["TEST_FIXTURE","DEMO_ONLY","PAPER_ONLY","RESEARCH_ONLY","NOT_LIVE","NO_BROKER","NO_REAL_ACCOUNT","NO_REAL_ORDER","NOT_FOR_PRODUCTION"],
+  "session_id":"pt_001","session_type":"PAPER_TRADING",
+  "current_status":"HALTED","requested_operation":"RECOVER",
+  "checkpoint_hash_valid":true,
+  "replay_determinism_valid":false,
+  "expected_result":"error",
+  "expected_final_status":"HALTED",
+  "note":"Replay determinism check failed → recovery aborted → session stays HALTED"
+}

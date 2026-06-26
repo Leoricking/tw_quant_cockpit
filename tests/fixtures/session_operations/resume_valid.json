@@ -1,0 +1,10 @@
+{
+  "_markers": ["TEST_FIXTURE","DEMO_ONLY","PAPER_ONLY","RESEARCH_ONLY","NOT_LIVE","NO_BROKER","NO_REAL_ACCOUNT","NO_REAL_ORDER","NOT_FOR_PRODUCTION"],
+  "session_id":"pt_001","session_type":"PAPER_TRADING",
+  "current_status":"PAUSED","requested_operation":"RESUME",
+  "kill_switch_active":false,
+  "expected_result":"RESUMED",
+  "expected_final_status":"RUNNING",
+  "expected_broker_called":false,
+  "note":"PAUSED→RESUME valid when kill_switch_active=false"
+}

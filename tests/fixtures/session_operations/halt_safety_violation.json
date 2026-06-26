@@ -1,0 +1,11 @@
+{
+  "_markers": ["TEST_FIXTURE","DEMO_ONLY","PAPER_ONLY","RESEARCH_ONLY","NOT_LIVE","NO_BROKER","NO_REAL_ACCOUNT","NO_REAL_ORDER","NOT_FOR_PRODUCTION"],
+  "session_id":"sup_001","session_type":"PAPER_STRATEGY",
+  "current_status":"RUNNING","halt_reason":"SAFETY_VIOLATION",
+  "expected_final_status":"HALTED",
+  "expected_auto_resume":false,
+  "expected_auto_resume_running":false,
+  "expected_broker_called":false,
+  "expected_real_order_created":false,
+  "note":"AUTO_RESUME_RUNNING=False always; safety violation halt auto_resume=false"
+}

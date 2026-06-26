@@ -1,0 +1,10 @@
+{
+  "_markers": ["TEST_FIXTURE","DEMO_ONLY","PAPER_ONLY","RESEARCH_ONLY","NOT_LIVE","NO_BROKER","NO_REAL_ACCOUNT","NO_REAL_ORDER","NOT_FOR_PRODUCTION"],
+  "session_id":"md_001","session_type":"MARKET_DATA",
+  "metrics":[
+    {"metric_name":"event_rate","value":12.5,"unit":"events/s","health":"HEALTHY"},
+    {"metric_name":"heartbeat_age","value":5.0,"unit":"seconds","health":"HEALTHY"},
+    {"metric_name":"freshness_age","value":8.0,"unit":"seconds","health":"HEALTHY"},
+    {"metric_name":"sequence_gap_count","value":0,"unit":"count","health":"HEALTHY"}
+  ]
+}

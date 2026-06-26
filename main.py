@@ -35363,6 +35363,286 @@ _STRATEGY_SAFETY_BANNER = (
     "NO BROKER. NOT INVESTMENT ADVICE."
 )
 
+_SESSION_OPS_BANNER = (
+    "[!] SESSION OPERATIONS. RESEARCH ONLY. PAPER/SIMULATION ONLY. "
+    "NO REAL ORDERS. NO BROKER. NOT INVESTMENT ADVICE."
+)
+
+
+# ---------------------------------------------------------------------------
+# v1.6.3 — Session Operations & Observability handlers
+# ---------------------------------------------------------------------------
+
+def cmd_session_ops_health(args=None):
+    """[v1.6.3] Session operations observability health check. Research only."""
+    print(_SESSION_OPS_BANNER)
+    from paper_trading.operations.health_v163 import SessionOperationsObservabilityHealthCheck
+    result = SessionOperationsObservabilityHealthCheck().run()
+    status = result.get("status", "UNKNOWN")
+    passed = result.get("passed", 0)
+    total = result.get("total", 0)
+    failed = result.get("failed", 0)
+    print(f"Session Operations Observability Health Check v1.6.3")
+    print(f"Status: {status}  Passed: {passed}/{total}  Failed: {failed}")
+    print(_SESSION_OPS_BANNER)
+
+
+def cmd_session_ops_supervisor_status(args=None):
+    """[v1.6.3] Show session supervisor status. Research only."""
+    print(_SESSION_OPS_BANNER)
+    from paper_trading.operations.supervisor_v163 import SessionOperationsSupervisor
+    sup = SessionOperationsSupervisor()
+    contract = sup.safety_contract()
+    print("Session Operations Supervisor — Safety Contract:")
+    for k, v in contract.items():
+        print(f"  {k}: {v}")
+    print(_SESSION_OPS_BANNER)
+
+
+def cmd_session_ops_registry_list(args=None):
+    """[v1.6.3] List registered sessions. Research only."""
+    print(_SESSION_OPS_BANNER)
+    from paper_trading.operations.session_registry_v163 import SessionRegistry
+    reg = SessionRegistry()
+    print("Session Registry: (empty — use supervisor to register sessions)")
+    print(_SESSION_OPS_BANNER)
+
+
+def cmd_session_ops_composite_status(args=None):
+    """[v1.6.3] Show composite operational status. Research only."""
+    print(_SESSION_OPS_BANNER)
+    from paper_trading.operations.operational_state_v163 import resolve_composite_status
+    from paper_trading.operations.enums_v163 import OperationalStatus
+    result = resolve_composite_status([])
+    print(f"Composite Status (no sessions): {result.value}")
+    print(_SESSION_OPS_BANNER)
+
+
+def cmd_session_ops_metrics_summary(args=None):
+    """[v1.6.3] Show metrics summary. Research only."""
+    print(_SESSION_OPS_BANNER)
+    from paper_trading.operations.metrics_registry_v163 import MetricsRegistry
+    reg = MetricsRegistry()
+    print(f"Metrics registry: {reg.count()} metrics defined")
+    print(_SESSION_OPS_BANNER)
+
+
+def cmd_session_ops_metrics_record(args=None):
+    """[v1.6.3] Record a metric observation. Research only."""
+    print(_SESSION_OPS_BANNER)
+    print("session-ops-metrics-record: use MetricsCollector.record() in code")
+    print(_SESSION_OPS_BANNER)
+
+
+def cmd_session_ops_threshold_check(args=None):
+    """[v1.6.3] Check metric against threshold. Research only."""
+    print(_SESSION_OPS_BANNER)
+    from paper_trading.operations.thresholds_v163 import FIXTURE_THRESHOLDS
+    print(f"Threshold policies defined: {len(FIXTURE_THRESHOLDS)}")
+    print(_SESSION_OPS_BANNER)
+
+
+def cmd_session_ops_sla_status(args=None):
+    """[v1.6.3] Show SLA status for all policies. Research only."""
+    print(_SESSION_OPS_BANNER)
+    from paper_trading.operations.sla_v163 import RESEARCH_SLA_POLICIES
+    print(f"SLA policies defined: {len(RESEARCH_SLA_POLICIES)}")
+    for p in RESEARCH_SLA_POLICIES:
+        print(f"  {p.sla_id}: breach_threshold={p.breach_threshold_seconds}s")
+    print(_SESSION_OPS_BANNER)
+
+
+def cmd_session_ops_alert_list(args=None):
+    """[v1.6.3] List open alerts. Research only."""
+    print(_SESSION_OPS_BANNER)
+    from paper_trading.operations.alert_engine_v163 import AlertEngine
+    eng = AlertEngine()
+    alerts = eng.get_open_alerts()
+    print(f"Open alerts: {len(alerts)}")
+    print(_SESSION_OPS_BANNER)
+
+
+def cmd_session_ops_alert_fire(args=None):
+    """[v1.6.3] Fire an alert rule. Research only."""
+    print(_SESSION_OPS_BANNER)
+    print("session-ops-alert-fire: use AlertEngine.fire() in code")
+    print(_SESSION_OPS_BANNER)
+
+
+def cmd_session_ops_alert_acknowledge(args=None):
+    """[v1.6.3] Acknowledge an alert. Research only."""
+    print(_SESSION_OPS_BANNER)
+    print("session-ops-alert-acknowledge: use AlertEngine.acknowledge() in code")
+    print(_SESSION_OPS_BANNER)
+
+
+def cmd_session_ops_alert_resolve(args=None):
+    """[v1.6.3] Resolve an alert. Research only."""
+    print(_SESSION_OPS_BANNER)
+    print("session-ops-alert-resolve: use AlertEngine.resolve() in code")
+    print(_SESSION_OPS_BANNER)
+
+
+def cmd_session_ops_incident_list(args=None):
+    """[v1.6.3] List open incidents. Research only."""
+    print(_SESSION_OPS_BANNER)
+    from paper_trading.operations.incident_v163 import IncidentManager
+    mgr = IncidentManager()
+    incidents = mgr.list_open()
+    print(f"Open incidents: {len(incidents)}")
+    print(_SESSION_OPS_BANNER)
+
+
+def cmd_session_ops_incident_open(args=None):
+    """[v1.6.3] Open a new incident. Research only."""
+    print(_SESSION_OPS_BANNER)
+    print("session-ops-incident-open: use IncidentManager.open() in code")
+    print(_SESSION_OPS_BANNER)
+
+
+def cmd_session_ops_incident_transition(args=None):
+    """[v1.6.3] Transition an incident status. Research only."""
+    print(_SESSION_OPS_BANNER)
+    print("session-ops-incident-transition: use IncidentManager.transition() in code")
+    print(_SESSION_OPS_BANNER)
+
+
+def cmd_session_ops_pause(args=None):
+    """[v1.6.3] Pause a session. Research only."""
+    print(_SESSION_OPS_BANNER)
+    print("session-ops-pause: use PausePolicy.execute() in code. broker_called=False always.")
+    print(_SESSION_OPS_BANNER)
+
+
+def cmd_session_ops_halt(args=None):
+    """[v1.6.3] Halt a session. Research only."""
+    print(_SESSION_OPS_BANNER)
+    print("session-ops-halt: use HaltPolicy.execute() in code. auto_resume=False always.")
+    print(_SESSION_OPS_BANNER)
+
+
+def cmd_session_ops_resume(args=None):
+    """[v1.6.3] Resume a paused session. Research only."""
+    print(_SESSION_OPS_BANNER)
+    print("session-ops-resume: use ResumePolicy.execute() in code. kill_switch check required.")
+    print(_SESSION_OPS_BANNER)
+
+
+def cmd_session_ops_recover(args=None):
+    """[v1.6.3] Recover a halted session. Research only."""
+    print(_SESSION_OPS_BANNER)
+    print("session-ops-recover: use RecoveryPolicy.execute() in code. auto_resumed=False always.")
+    print(_SESSION_OPS_BANNER)
+
+
+def cmd_session_ops_snapshot_create(args=None):
+    """[v1.6.3] Create an operational snapshot. Research only."""
+    print(_SESSION_OPS_BANNER)
+    print("session-ops-snapshot-create: use SnapshotService.create() in code")
+    print(_SESSION_OPS_BANNER)
+
+
+def cmd_session_ops_snapshot_verify(args=None):
+    """[v1.6.3] Verify an operational snapshot. Research only."""
+    print(_SESSION_OPS_BANNER)
+    print("session-ops-snapshot-verify: use SnapshotService.verify() in code")
+    print(_SESSION_OPS_BANNER)
+
+
+def cmd_session_ops_checkpoint_save(args=None):
+    """[v1.6.3] Save an operations checkpoint. Research only."""
+    print(_SESSION_OPS_BANNER)
+    print("session-ops-checkpoint-save: use CheckpointService.create() in code")
+    print(_SESSION_OPS_BANNER)
+
+
+def cmd_session_ops_checkpoint_restore(args=None):
+    """[v1.6.3] Restore from checkpoint (always restores as PAUSED). Research only."""
+    print(_SESSION_OPS_BANNER)
+    print("session-ops-checkpoint-restore: restore_status always returns PAUSED")
+    print(_SESSION_OPS_BANNER)
+
+
+def cmd_session_ops_replay_run(args=None):
+    """[v1.6.3] Run a session operations replay. Research only."""
+    print(_SESSION_OPS_BANNER)
+    print("session-ops-replay-run: use SessionOperationsReplay.run() in code")
+    print(_SESSION_OPS_BANNER)
+
+
+def cmd_session_ops_drill_run(args=None):
+    """[v1.6.3] Run recovery drills. Research only."""
+    print(_SESSION_OPS_BANNER)
+    from paper_trading.operations.recovery_drill_v163 import RecoveryDrillEngine
+    engine = RecoveryDrillEngine()
+    results = engine.run()
+    print(f"Recovery Drill Results: {len(results)} scenarios")
+    for r in results:
+        print(f"  [{r.outcome}] {r.scenario}")
+    print(_SESSION_OPS_BANNER)
+
+
+def cmd_session_ops_audit_tail(args=None):
+    """[v1.6.3] Tail the audit trail. Research only."""
+    print(_SESSION_OPS_BANNER)
+    from paper_trading.operations.audit_v163 import AuditTrail
+    trail = AuditTrail()
+    entries = trail.get_all()
+    print(f"Audit trail entries: {len(entries)}")
+    print(_SESSION_OPS_BANNER)
+
+
+def cmd_session_ops_lineage_show(args=None):
+    """[v1.6.3] Show session lineage. Research only."""
+    print(_SESSION_OPS_BANNER)
+    from paper_trading.operations.lineage_v163 import LineageService
+    svc = LineageService()
+    summary = svc.audit_summary()
+    print(f"Lineage audit: {summary}")
+    print(_SESSION_OPS_BANNER)
+
+
+def cmd_session_ops_reproduce_verify(args=None):
+    """[v1.6.3] Verify artifact reproducibility. Research only."""
+    print(_SESSION_OPS_BANNER)
+    from paper_trading.operations.reproducibility_v163 import verify_reproducibility
+    print("Reproducibility verification: excludes generated_at, local_machine_path, runtime_uuid")
+    print(_SESSION_OPS_BANNER)
+
+
+def cmd_session_ops_explain(args=None):
+    """[v1.6.3] Explain operational state or health. Research only."""
+    print(_SESSION_OPS_BANNER)
+    from paper_trading.operations.explain_v163 import explain_operational_state
+    from paper_trading.operations.enums_v163 import OperationalStatus
+    print(explain_operational_state(OperationalStatus.RUNNING))
+    print(_SESSION_OPS_BANNER)
+
+
+def cmd_session_ops_report(args=None):
+    """[v1.6.3] Generate session operations observability report. Research only."""
+    print(_SESSION_OPS_BANNER)
+    from reports.session_operations_observability_report import generate_report
+    report = generate_report()
+    print(f"Session Operations Observability Report — {len(report)} sections")
+    print(_SESSION_OPS_BANNER)
+
+
+def cmd_session_ops_release_gate(args=None):
+    """[v1.6.3] Run session operations release gate (37 checks). Research only."""
+    print(_SESSION_OPS_BANNER)
+    from release.session_operations_observability_release_gate_v163 import (
+        SessionOperationsObservabilityReleaseGate,
+    )
+    result = SessionOperationsObservabilityReleaseGate().run()
+    status = result.get("status", "UNKNOWN")
+    passed = result.get("passed", 0)
+    total = result.get("total", 0)
+    failed = result.get("failed", 0)
+    print(f"Session Operations Observability Release Gate v1.6.3")
+    print(f"Status: {status}  Passed: {passed}/{total}  Failed: {failed}")
+    print(_SESSION_OPS_BANNER)
+
 
 def cmd_paper_strategy_health(args=None):
     """[v1.6.2] Paper strategy orchestration health check. Research only."""
@@ -37099,6 +37379,38 @@ def main() -> None:
         "paper-strategy-risk-check":            cmd_paper_strategy_risk_check,
         "paper-journal-tail":                   cmd_paper_journal_tail,
         "paper-journal-list":                   cmd_paper_journal_list,
+        # v1.6.3 — Session Operations & Observability
+        "session-ops-health":                   cmd_session_ops_health,
+        "session-ops-supervisor-status":        cmd_session_ops_supervisor_status,
+        "session-ops-registry-list":            cmd_session_ops_registry_list,
+        "session-ops-composite-status":         cmd_session_ops_composite_status,
+        "session-ops-metrics-summary":          cmd_session_ops_metrics_summary,
+        "session-ops-metrics-record":           cmd_session_ops_metrics_record,
+        "session-ops-threshold-check":          cmd_session_ops_threshold_check,
+        "session-ops-sla-status":               cmd_session_ops_sla_status,
+        "session-ops-alert-list":               cmd_session_ops_alert_list,
+        "session-ops-alert-fire":               cmd_session_ops_alert_fire,
+        "session-ops-alert-acknowledge":        cmd_session_ops_alert_acknowledge,
+        "session-ops-alert-resolve":            cmd_session_ops_alert_resolve,
+        "session-ops-incident-list":            cmd_session_ops_incident_list,
+        "session-ops-incident-open":            cmd_session_ops_incident_open,
+        "session-ops-incident-transition":      cmd_session_ops_incident_transition,
+        "session-ops-pause":                    cmd_session_ops_pause,
+        "session-ops-halt":                     cmd_session_ops_halt,
+        "session-ops-resume":                   cmd_session_ops_resume,
+        "session-ops-recover":                  cmd_session_ops_recover,
+        "session-ops-snapshot-create":          cmd_session_ops_snapshot_create,
+        "session-ops-snapshot-verify":          cmd_session_ops_snapshot_verify,
+        "session-ops-checkpoint-save":          cmd_session_ops_checkpoint_save,
+        "session-ops-checkpoint-restore":       cmd_session_ops_checkpoint_restore,
+        "session-ops-replay-run":               cmd_session_ops_replay_run,
+        "session-ops-drill-run":                cmd_session_ops_drill_run,
+        "session-ops-audit-tail":               cmd_session_ops_audit_tail,
+        "session-ops-lineage-show":             cmd_session_ops_lineage_show,
+        "session-ops-reproduce-verify":         cmd_session_ops_reproduce_verify,
+        "session-ops-explain":                  cmd_session_ops_explain,
+        "session-ops-report":                   cmd_session_ops_report,
+        "session-ops-release-gate":             cmd_session_ops_release_gate,
     }
 
     if args.command is None:

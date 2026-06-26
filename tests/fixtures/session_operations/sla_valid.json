@@ -1,0 +1,6 @@
+{
+  "_markers": ["TEST_FIXTURE","DEMO_ONLY","PAPER_ONLY","RESEARCH_ONLY","NOT_LIVE","NO_BROKER","NO_REAL_ACCOUNT","NO_REAL_ORDER","NOT_FOR_PRODUCTION"],
+  "sla_id":"sla_heartbeat","name":"Heartbeat Freshness","metric":"heartbeat_age",
+  "warning_secs":30,"breach_secs":120,"version":"1.6.3","enabled":true,
+  "test_age_seconds":10,"expected_status":"PASS"
+}

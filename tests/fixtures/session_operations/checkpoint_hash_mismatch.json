@@ -1,0 +1,18 @@
+{
+  "_markers": [
+    "TEST_FIXTURE", "DEMO_ONLY", "PAPER_ONLY", "RESEARCH_ONLY",
+    "NOT_LIVE", "NO_BROKER", "NO_REAL_ACCOUNT", "NO_REAL_ORDER",
+    "NOT_FOR_PRODUCTION"
+  ],
+  "fixture_id": "checkpoint_hash_mismatch",
+  "description": "Checkpoint with tampered content_hash - verification must fail",
+  "supervisor_id": "sup_test_001",
+  "version": "1.6.3",
+  "managed_sessions": ["md_001", "pt_001"],
+  "content_hash": "sha256:tampered_invalid_hash",
+  "expected_valid": false,
+  "expected_error": "hash_mismatch",
+  "restore_always_paused": true,
+  "NO_REAL_ORDERS": true,
+  "BROKER_EXECUTION_ENABLED": false
+}

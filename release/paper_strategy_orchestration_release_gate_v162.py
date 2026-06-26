@@ -49,6 +49,7 @@ _KNOWN_NAMES = {
     "Market Data Session Warning Hygiene Hotfix",
     "Paper Strategy Orchestration",
     "Paper Strategy Orchestration Integrity Hotfix",
+    "Session Operations & Observability",
 }
 
 
@@ -480,7 +481,7 @@ class PaperStrategyOrchestrationReleaseGate:
             assert AUTONOMOUS_PRODUCTION_STRATEGY_ENABLED is False
             assert REAL_STRATEGY_EXECUTION_ENABLED is False
             from release.version_info import VERSION, RELEASE_NAME
-            assert VERSION.startswith("1.6.2"), f"Expected 1.6.2.x, got {VERSION}"
+            assert VERSION.startswith("1.6"), f"Expected 1.6.x, got {VERSION}"
             assert RELEASE_NAME in _KNOWN_NAMES, f"Unknown RELEASE_NAME: {RELEASE_NAME}"
         _try("NO_PRODUCTION_TRADING", _no_production)
 

@@ -1,0 +1,7 @@
+{
+  "_markers": ["TEST_FIXTURE","DEMO_ONLY","PAPER_ONLY","RESEARCH_ONLY","NOT_LIVE","NO_BROKER","NO_REAL_ACCOUNT","NO_REAL_ORDER","NOT_FOR_PRODUCTION"],
+  "alert_id":"alt_fixture_001","rule_id":"ar_md_stale","severity":"ERROR","status":"OPEN",
+  "session_id":"md_001","session_type":"MARKET_DATA","category":"","title":"Market Data Stale",
+  "message":"freshness_age exceeded threshold","dedup_key":"md:stale:md_001",
+  "research_only":true
+}

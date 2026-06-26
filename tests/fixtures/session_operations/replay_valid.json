@@ -1,0 +1,10 @@
+{
+  "_markers": ["TEST_FIXTURE","DEMO_ONLY","PAPER_ONLY","RESEARCH_ONLY","NOT_LIVE","NO_BROKER","NO_REAL_ACCOUNT","NO_REAL_ORDER","NOT_FOR_PRODUCTION"],
+  "replay_id":"replay_fixture_001","session_id":"pt_001",
+  "replay_markers":["REPLAY","RESEARCH_ONLY","NOT_LIVE"],
+  "inputs_hash":"fixture_inputs_hash_001",
+  "final_hash":"fixture_final_hash_001",
+  "determinism_verified":true,
+  "research_only":true,"paper_only":true,
+  "note":"Same inputs → same outputs; determinism verified"
+}

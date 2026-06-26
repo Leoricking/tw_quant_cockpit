@@ -1,0 +1,10 @@
+{
+  "_markers": ["TEST_FIXTURE","DEMO_ONLY","PAPER_ONLY","RESEARCH_ONLY","NOT_LIVE","NO_BROKER","NO_REAL_ACCOUNT","NO_REAL_ORDER","NOT_FOR_PRODUCTION"],
+  "runbook_id":"rb_safety_violation","category":"SAFETY_VIOLATION",
+  "title":"Safety Violation Response",
+  "steps":["Halt all sessions immediately","Open CRITICAL incident","Notify operator via CLI/report","Investigate safety flag","Require manual operator clearance before any resume"],
+  "prohibited_actions":["CALL_BROKER","CREATE_REAL_ORDER","WRITE_FORMAL_LEDGER","SEND_LIVE_ORDER","ACCESS_REAL_ACCOUNT","ENABLE_PRODUCTION_TRADING"],
+  "auto_resume_allowed":false,
+  "research_only":true,"paper_only":true,
+  "note":"Safety violation runbook — all auto-resume blocked"
+}

@@ -73,13 +73,14 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # ---------------------------------------------------------------------------
 # v1.3.3 module-level constants (Coverage Repair Workflow)
 # ---------------------------------------------------------------------------
-VERSION                             = "1.6.2.1"
-RELEASE_NAME                        = "Paper Strategy Orchestration Integrity Hotfix"
-BASE_RELEASE                        = "1.6.2 Paper Strategy Orchestration"
+VERSION                             = "1.6.3"
+RELEASE_NAME                        = "Session Operations & Observability"
+BASE_RELEASE                        = "1.6.2.1 Paper Strategy Orchestration Integrity Hotfix"
 PORTFOLIO_STABLE_BASELINE           = "1.5.9"
 LIVE_PAPER_TRADING_BASELINE         = "1.6.0"
 MARKET_DATA_SESSION_BASELINE        = "1.6.1"
 PAPER_STRATEGY_ORCHESTRATION_BASELINE = "1.6.2"
+SESSION_OPERATIONS_OBSERVABILITY_BASELINE = "1.6.3"
 MARKET_DATA_SESSION_AVAILABLE       = True
 MARKET_DATA_SESSION_RESEARCH_ONLY   = True
 LIVE_PAPER_TRADING_AVAILABLE        = True

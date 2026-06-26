@@ -1,0 +1,10 @@
+{
+  "_markers": ["TEST_FIXTURE","DEMO_ONLY","PAPER_ONLY","RESEARCH_ONLY","NOT_LIVE","NO_BROKER","NO_REAL_ACCOUNT","NO_REAL_ORDER","NOT_FOR_PRODUCTION"],
+  "drill_id":"drill_fixture_001","scenario":"market_data_disconnect",
+  "session_id":"md_001","session_type":"MARKET_DATA",
+  "paper_only":true,"research_only":true,
+  "expected_steps":["detect_disconnect","trigger_alert","open_incident","pause_dependent_sessions","run_runbook"],
+  "expected_broker_called":false,
+  "expected_real_order_created":false,
+  "note":"Market data disconnect drill — paper/research only"
+}
