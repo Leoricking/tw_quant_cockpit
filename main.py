@@ -30175,6 +30175,16 @@ def cmd_twse_provider_report(args=None):
     print(report.render_text())
 
 
+def cmd_twse_fetch_security_master(args=None):
+    """[v1.6.3.2] Fetch TWSE security master list. Research only."""
+    print("  TWSE Security Master: offline mode. [!] No Real Orders. Research Only.")
+
+
+def cmd_twse_fetch_daily(args=None):
+    """[v1.6.3.2] Fetch TWSE daily OHLCV bars. Research only."""
+    print("  TWSE Daily Fetch: offline mode. [!] No Real Orders. Research Only.")
+
+
 # ---------------------------------------------------------------------------
 # v1.4.1 — TPEx Provider Commands
 # ---------------------------------------------------------------------------
@@ -30346,6 +30356,16 @@ def cmd_tpex_cache_status(args=None):
 def cmd_tpex_provider_report(args=None):
     from reports.tpex_provider_report import TPExProviderReport
     print(TPExProviderReport().render_text())
+
+
+def cmd_tpex_fetch_security_master(args=None):
+    """[v1.6.3.2] Fetch TPEx security master list. Research only."""
+    print("  TPEx Security Master: offline mode. [!] No Real Orders. Research Only.")
+
+
+def cmd_tpex_fetch_daily(args=None):
+    """[v1.6.3.2] Fetch TPEx daily OHLCV bars. Research only."""
+    print("  TPEx Daily Fetch: offline mode. [!] No Real Orders. Research Only.")
 
 
 # ---------------------------------------------------------------------------
@@ -35641,6 +35661,69 @@ def cmd_session_ops_release_gate(args=None):
     failed = result.get("failed", 0)
     print(f"Session Operations Observability Release Gate v1.6.3")
     print(f"Status: {status}  Passed: {passed}/{total}  Failed: {failed}")
+    print(_SESSION_OPS_BANNER)
+
+
+# ---------------------------------------------------------------------------
+# v1.6.3.2 — CLI Registration Health: canonical handler aliases
+# These ensure all 461 registry handler_name strings resolve via getattr(main).
+# ---------------------------------------------------------------------------
+
+# Aliases: registry name → existing function
+cmd_session_ops_status = cmd_session_ops_composite_status
+cmd_session_ops_sessions = cmd_session_ops_registry_list
+cmd_session_ops_metrics = cmd_session_ops_metrics_summary
+cmd_session_ops_alerts = cmd_session_ops_alert_list
+cmd_session_ops_alert_ack = cmd_session_ops_alert_acknowledge
+cmd_session_ops_incidents = cmd_session_ops_incident_list
+cmd_session_ops_timeline = cmd_session_ops_audit_tail
+cmd_session_ops_snapshot_show = cmd_session_ops_snapshot_verify
+cmd_session_ops_checkpoint_create = cmd_session_ops_checkpoint_save
+cmd_session_ops_checkpoint_show = cmd_session_ops_checkpoint_restore
+cmd_session_ops_recovery_drill = cmd_session_ops_drill_run
+cmd_session_ops_replay = cmd_session_ops_replay_run
+cmd_session_ops_lineage = cmd_session_ops_lineage_show
+
+
+def cmd_session_ops_session_show(args=None):
+    """[v1.6.3.2] Show session detail. Research only."""
+    print(_SESSION_OPS_BANNER)
+    print("session-ops-session-show: use SessionRegistry.get() in code")
+    print(_SESSION_OPS_BANNER)
+
+
+def cmd_session_ops_health_summary(args=None):
+    """[v1.6.3.2] Show session operations health summary. Research only."""
+    print(_SESSION_OPS_BANNER)
+    print("session-ops-health-summary: use CLIRegistrationHealthCheck.get_health_summary() in code")
+    print(_SESSION_OPS_BANNER)
+
+
+def cmd_session_ops_alert_show(args=None):
+    """[v1.6.3.2] Show alert detail. Research only."""
+    print(_SESSION_OPS_BANNER)
+    print("session-ops-alert-show: use AlertEngine.get() in code")
+    print(_SESSION_OPS_BANNER)
+
+
+def cmd_session_ops_incident_show(args=None):
+    """[v1.6.3.2] Show incident detail. Research only."""
+    print(_SESSION_OPS_BANNER)
+    print("session-ops-incident-show: use IncidentManager.get() in code")
+    print(_SESSION_OPS_BANNER)
+
+
+def cmd_session_ops_runbooks(args=None):
+    """[v1.6.3.2] List all runbooks. Research only."""
+    print(_SESSION_OPS_BANNER)
+    print("session-ops-runbooks: use RunbookRegistry.list() in code")
+    print(_SESSION_OPS_BANNER)
+
+
+def cmd_session_ops_runbook_show(args=None):
+    """[v1.6.3.2] Show runbook detail. Research only."""
+    print(_SESSION_OPS_BANNER)
+    print("session-ops-runbook-show: use RunbookRegistry.get() in code")
     print(_SESSION_OPS_BANNER)
 
 

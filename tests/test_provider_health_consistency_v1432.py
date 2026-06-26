@@ -611,6 +611,7 @@ class TestVersion:
             "Paper Strategy Orchestration Integrity Hotfix",
             "Session Operations & Observability",
             "Session Operations Integrity Hotfix",
+            "CLI Registration Health Integrity Hotfix",
         }
         assert RELEASE_NAME in known_names, f"Unexpected RELEASE_NAME: {RELEASE_NAME}"
 

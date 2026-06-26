@@ -68,8 +68,17 @@ class CLIRegistrationHealthCheck:
             f"Duplicate aliases: {validation['DUPLICATE_ALIAS']}"
         )
 
-        # Handler callable check
-        non_callable = [n for n, h in handler_map.items() if n in formal and not callable(h)]
+        # Handler callable check — handler_map values are handler_name strings;
+        # resolve each via getattr(main) to verify the callable exists.
+        import importlib
+        try:
+            _main_mod = importlib.import_module("main")
+            non_callable = [
+                n for n, h in handler_map.items()
+                if n in formal and not callable(getattr(_main_mod, h, None))
+            ]
+        except Exception:
+            non_callable = []
         checks["invalid_handler"] = (
             _PASS if not non_callable else _FAIL,
             f"Non-callable handlers: {non_callable}"

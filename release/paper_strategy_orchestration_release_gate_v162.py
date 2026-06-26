@@ -51,6 +51,7 @@ _KNOWN_NAMES = {
     "Paper Strategy Orchestration Integrity Hotfix",
     "Session Operations & Observability",
     "Session Operations Integrity Hotfix",
+    "CLI Registration Health Integrity Hotfix",
 }
 
 

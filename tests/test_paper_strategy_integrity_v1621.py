@@ -1168,6 +1168,7 @@ class TestReleaseGate35Checks(unittest.TestCase):
             "Paper Strategy Orchestration Integrity Hotfix",
             "Session Operations & Observability",
             "Session Operations Integrity Hotfix",
+            "CLI Registration Health Integrity Hotfix",
         }
         self.assertIn(RELEASE_NAME, known)
 

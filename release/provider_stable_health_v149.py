@@ -58,7 +58,8 @@ class ProviderStableRollupHealthCheck:
                              "Paper Strategy Orchestration",
                              "Paper Strategy Orchestration Integrity Hotfix",
                              "Session Operations & Observability",
-                             "Session Operations Integrity Hotfix"}
+                             "Session Operations Integrity Hotfix",
+                             "CLI Registration Health Integrity Hotfix"}
             ok = RELEASE_NAME in _KNOWN_NAMES
             checks["release_name_correct"] = ("PASS" if ok else "FAIL",
                                                f"RELEASE_NAME={RELEASE_NAME}")

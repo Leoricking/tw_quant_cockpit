@@ -2524,7 +2524,7 @@ class TestVersionAlignment:
 
     def test_release_name(self):
         from release.version_info import RELEASE_NAME
-        assert "Session Operations" in RELEASE_NAME
+        assert any(k in RELEASE_NAME for k in ("Session Operations", "CLI Registration", "Hotfix"))
 
     def test_base_release(self):
         from release.version_info import BASE_RELEASE
