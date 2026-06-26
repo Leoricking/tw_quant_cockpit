@@ -304,6 +304,7 @@ class TestRegression:
             "Session Operations & Observability",
             "Session Operations Integrity Hotfix",
             "CLI Registration Health Integrity Hotfix",
+            "CLI Handler Resolution Integrity Hotfix",
         }
         assert RELEASE_NAME in _KNOWN, f"Unexpected RELEASE_NAME: {RELEASE_NAME}"
 

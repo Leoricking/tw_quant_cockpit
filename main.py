@@ -30176,13 +30176,13 @@ def cmd_twse_provider_report(args=None):
 
 
 def cmd_twse_fetch_security_master(args=None):
-    """[v1.6.3.2] Fetch TWSE security master list. Research only."""
-    print("  TWSE Security Master: offline mode. [!] No Real Orders. Research Only.")
+    """[v1.6.3.3] Fetch TWSE security master list. Delegates to TWSE query service. Research only."""
+    cmd_twse_security_list(args)
 
 
 def cmd_twse_fetch_daily(args=None):
-    """[v1.6.3.2] Fetch TWSE daily OHLCV bars. Research only."""
-    print("  TWSE Daily Fetch: offline mode. [!] No Real Orders. Research Only.")
+    """[v1.6.3.3] Fetch TWSE daily OHLCV bars. Delegates to TWSE query service. Research only."""
+    cmd_twse_daily(args)
 
 
 # ---------------------------------------------------------------------------
@@ -30359,13 +30359,13 @@ def cmd_tpex_provider_report(args=None):
 
 
 def cmd_tpex_fetch_security_master(args=None):
-    """[v1.6.3.2] Fetch TPEx security master list. Research only."""
-    print("  TPEx Security Master: offline mode. [!] No Real Orders. Research Only.")
+    """[v1.6.3.3] Fetch TPEx security master list. Delegates to TPEx query service. Research only."""
+    cmd_tpex_security_list(args)
 
 
 def cmd_tpex_fetch_daily(args=None):
-    """[v1.6.3.2] Fetch TPEx daily OHLCV bars. Research only."""
-    print("  TPEx Daily Fetch: offline mode. [!] No Real Orders. Research Only.")
+    """[v1.6.3.3] Fetch TPEx daily OHLCV bars. Delegates to TPEx query service. Research only."""
+    cmd_tpex_daily(args)
 
 
 # ---------------------------------------------------------------------------
@@ -35429,12 +35429,16 @@ def cmd_session_ops_registry_list(args=None):
 
 
 def cmd_session_ops_composite_status(args=None):
-    """[v1.6.3] Show composite operational status. Research only."""
+    """[v1.6.3.3] Show composite operational status. Research only."""
     print(_SESSION_OPS_BANNER)
     from paper_trading.operations.operational_state_v163 import resolve_composite_status
     from paper_trading.operations.enums_v163 import OperationalStatus
-    result = resolve_composite_status([])
-    print(f"Composite Status (no sessions): {result.value}")
+    status, reason = resolve_composite_status(
+        market_data=OperationalStatus.RUNNING,
+        paper_trading=OperationalStatus.RUNNING,
+        paper_strategy=OperationalStatus.RUNNING,
+    )
+    print(f"Composite Status: {status.value}  Reason: {reason}")
     print(_SESSION_OPS_BANNER)
 
 
@@ -35477,7 +35481,7 @@ def cmd_session_ops_alert_list(args=None):
     print(_SESSION_OPS_BANNER)
     from paper_trading.operations.alert_engine_v163 import AlertEngine
     eng = AlertEngine()
-    alerts = eng.get_open_alerts()
+    alerts = eng.list_open()
     print(f"Open alerts: {len(alerts)}")
     print(_SESSION_OPS_BANNER)
 
@@ -35591,14 +35595,16 @@ def cmd_session_ops_replay_run(args=None):
 
 
 def cmd_session_ops_drill_run(args=None):
-    """[v1.6.3] Run recovery drills. Research only."""
+    """[v1.6.3.3] Run recovery drills across all scenarios. Research only."""
     print(_SESSION_OPS_BANNER)
     from paper_trading.operations.recovery_drill_v163 import RecoveryDrillEngine
     engine = RecoveryDrillEngine()
-    results = engine.run()
-    print(f"Recovery Drill Results: {len(results)} scenarios")
-    for r in results:
-        print(f"  [{r.outcome}] {r.scenario}")
+    scenarios = engine.list_scenarios()
+    print(f"Recovery Drill Results: {len(scenarios)} scenarios")
+    for scenario in scenarios:
+        r = engine.run(scenario)
+        outcome = "PASS" if r.passed else "FAIL"
+        print(f"  [{outcome}] {r.scenario_name}: {r.actual_result}")
     print(_SESSION_OPS_BANNER)
 
 
@@ -35607,7 +35613,7 @@ def cmd_session_ops_audit_tail(args=None):
     print(_SESSION_OPS_BANNER)
     from paper_trading.operations.audit_v163 import AuditTrail
     trail = AuditTrail()
-    entries = trail.get_all()
+    entries = trail.all()
     print(f"Audit trail entries: {len(entries)}")
     print(_SESSION_OPS_BANNER)
 
@@ -35631,11 +35637,19 @@ def cmd_session_ops_reproduce_verify(args=None):
 
 
 def cmd_session_ops_explain(args=None):
-    """[v1.6.3] Explain operational state or health. Research only."""
+    """[v1.6.3.3] Explain operational state or health. Research only."""
     print(_SESSION_OPS_BANNER)
     from paper_trading.operations.explain_v163 import explain_operational_state
     from paper_trading.operations.enums_v163 import OperationalStatus
-    print(explain_operational_state(OperationalStatus.RUNNING))
+    result = explain_operational_state(
+        market_data=OperationalStatus.RUNNING,
+        paper_trading=OperationalStatus.RUNNING,
+        paper_strategy=OperationalStatus.RUNNING,
+        composite=OperationalStatus.RUNNING,
+        reason="Research-only operational state explanation. No live sessions.",
+    )
+    for k, v in result.items():
+        print(f"  {k}: {v}")
     print(_SESSION_OPS_BANNER)
 
 
@@ -35686,44 +35700,118 @@ cmd_session_ops_lineage = cmd_session_ops_lineage_show
 
 
 def cmd_session_ops_session_show(args=None):
-    """[v1.6.3.2] Show session detail. Research only."""
+    """[v1.6.3.3] Show session detail from Session Registry. Research only."""
     print(_SESSION_OPS_BANNER)
-    print("session-ops-session-show: use SessionRegistry.get() in code")
+    from paper_trading.operations.session_registry_v163 import SessionRegistry
+    reg = SessionRegistry()
+    sessions = reg.list_all()
+    if not sessions:
+        print("NOT_FOUND: no sessions in registry (research mode — no live sessions)")
+    else:
+        for s in sessions:
+            print(f"  session_id  : {s.managed_session_id}")
+            print(f"  type        : {s.session_type}")
+            print(f"  status      : {s.status}")
+            print(f"  health      : {s.health_status}")
+            print(f"  parent      : {s.parent_session_id}")
+            print(f"  children    : {s.child_session_ids}")
+            print(f"  last_event  : {s.last_event_at}")
     print(_SESSION_OPS_BANNER)
 
 
 def cmd_session_ops_health_summary(args=None):
-    """[v1.6.3.2] Show session operations health summary. Research only."""
+    """[v1.6.3.3] Show session operations health summary via Health Aggregator. Research only."""
     print(_SESSION_OPS_BANNER)
-    print("session-ops-health-summary: use CLIRegistrationHealthCheck.get_health_summary() in code")
+    from paper_trading.operations.health_aggregator_v163 import SessionOperationsHealthAggregator
+    result = SessionOperationsHealthAggregator().run()
+    overall = result.overall.value if hasattr(result.overall, "value") else str(result.overall)
+    print(f"  Session Operations Health Summary")
+    print(f"  overall         : {overall}")
+    print(f"  components      : {len(result.components)}")
+    for comp in result.components:
+        cstatus = comp.status.value if hasattr(comp.status, "value") else str(comp.status)
+        print(f"    [{cstatus}] {comp.component}: passed={comp.passed} failed={comp.failed}")
+    print(f"  failed_checks   : {result.failed_checks}")
+    print(f"  warnings        : {result.warnings}")
+    print(f"  blocking_checks : {result.blocking_checks}")
     print(_SESSION_OPS_BANNER)
 
 
 def cmd_session_ops_alert_show(args=None):
-    """[v1.6.3.2] Show alert detail. Research only."""
+    """[v1.6.3.3] Show alert detail from Alert Store. Research only."""
     print(_SESSION_OPS_BANNER)
-    print("session-ops-alert-show: use AlertEngine.get() in code")
+    from paper_trading.operations.alert_engine_v163 import AlertEngine
+    eng = AlertEngine()
+    alerts = eng.list_open()
+    if not alerts:
+        print("NOT_FOUND: no open alerts (research mode — no live alerts)")
+    else:
+        for a in alerts:
+            print(f"  alert_id   : {a.alert_id}")
+            print(f"  severity   : {a.severity}")
+            print(f"  status     : {a.status}")
+            print(f"  category   : {a.category}")
+            print(f"  session_id : {a.session_id}")
+            print(f"  opened_at  : {a.opened_at}")
+            print(f"  resolved_at: {a.resolved_at}")
+            print(f"  dedup_key  : {a.dedup_key}")
     print(_SESSION_OPS_BANNER)
 
 
 def cmd_session_ops_incident_show(args=None):
-    """[v1.6.3.2] Show incident detail. Research only."""
+    """[v1.6.3.3] Show incident detail from Incident Store. Research only."""
     print(_SESSION_OPS_BANNER)
-    print("session-ops-incident-show: use IncidentManager.get() in code")
+    from paper_trading.operations.incident_v163 import IncidentManager
+    mgr = IncidentManager()
+    incidents = mgr.list_open()
+    if not incidents:
+        print("NOT_FOUND: no open incidents (research mode — no live incidents)")
+    else:
+        for inc in incidents:
+            print(f"  incident_id      : {inc.incident_id}")
+            print(f"  status           : {inc.status}")
+            print(f"  severity         : {inc.severity}")
+            print(f"  category         : {inc.category}")
+            print(f"  affected_sessions: {inc.affected_sessions}")
+            print(f"  opened_at        : {inc.opened_at}")
+            print(f"  runbook_id       : {inc.runbook_id}")
     print(_SESSION_OPS_BANNER)
 
 
 def cmd_session_ops_runbooks(args=None):
-    """[v1.6.3.2] List all runbooks. Research only."""
+    """[v1.6.3.3] List all runbooks from Runbook Registry. Research only."""
     print(_SESSION_OPS_BANNER)
-    print("session-ops-runbooks: use RunbookRegistry.list() in code")
+    from paper_trading.operations.runbook_v163 import RunbookRegistry
+    reg = RunbookRegistry()
+    books = reg.list_all()
+    if not books:
+        print("NOT_FOUND: no runbooks registered")
+    else:
+        print(f"  Runbooks ({len(books)}):")
+        for b in books:
+            print(f"    {b.runbook_id} v{b.version}  trigger={b.trigger}  severity={b.severity}")
     print(_SESSION_OPS_BANNER)
 
 
 def cmd_session_ops_runbook_show(args=None):
-    """[v1.6.3.2] Show runbook detail. Research only."""
+    """[v1.6.3.3] Show runbook detail from Runbook Registry. Research only."""
     print(_SESSION_OPS_BANNER)
-    print("session-ops-runbook-show: use RunbookRegistry.get() in code")
+    from paper_trading.operations.runbook_v163 import RunbookRegistry
+    reg = RunbookRegistry()
+    books = reg.list_all()
+    if not books:
+        print("NOT_FOUND: no runbooks registered")
+        print(_SESSION_OPS_BANNER)
+        return
+    b = books[0]
+    print(f"  Runbook: {b.runbook_id} v{b.version}")
+    print(f"  trigger            : {b.trigger}")
+    print(f"  severity           : {b.severity}")
+    print(f"  prerequisites      : {b.prerequisites}")
+    print(f"  diagnosis_steps    : {b.diagnosis_steps}")
+    print(f"  safe_actions       : {b.safe_actions}")
+    print(f"  prohibited_actions : {b.prohibited_actions}")
+    print(f"  closure_criteria   : {b.closure_criteria}")
     print(_SESSION_OPS_BANNER)
 
 
@@ -37024,9 +37112,9 @@ def main() -> None:
         "twse-capabilities":             cmd_twse_capabilities,
         "twse-security":                 lambda args=None: cmd_twse_security(_argv_from_namespace(args)),
         "twse-security-list":            cmd_twse_security_list,
-        "twse-fetch-security-master":    lambda args=None: print("  [DRY-RUN] Security master fetch. [!] Research Only."),
+        "twse-fetch-security-master":    cmd_twse_fetch_security_master,
         "twse-daily":                    lambda args=None: cmd_twse_daily(_argv_from_namespace(args)),
-        "twse-fetch-daily":              lambda args=None: print("  [DRY-RUN] Daily OHLCV fetch. [!] Research Only."),
+        "twse-fetch-daily":              lambda args=None: cmd_twse_fetch_daily(_argv_from_namespace(args)),
         "twse-market-summary":           cmd_twse_market_summary,
         "twse-institutional":            lambda args=None: cmd_twse_institutional(_argv_from_namespace(args)),
         "twse-margin":                   lambda args=None: cmd_twse_margin(_argv_from_namespace(args)),
@@ -37042,9 +37130,9 @@ def main() -> None:
         "tpex-capabilities":             cmd_tpex_capabilities,
         "tpex-security":                 lambda args=None: cmd_tpex_security(_argv_from_namespace(args)),
         "tpex-security-list":            cmd_tpex_security_list,
-        "tpex-fetch-security-master":    lambda args=None: print("  [DRY-RUN] TPEx security master fetch. [!] Research Only."),
+        "tpex-fetch-security-master":    cmd_tpex_fetch_security_master,
         "tpex-daily":                    lambda args=None: cmd_tpex_daily(_argv_from_namespace(args)),
-        "tpex-fetch-daily":              lambda args=None: print("  [DRY-RUN] TPEx daily OHLCV fetch. [!] Research Only."),
+        "tpex-fetch-daily":              lambda args=None: cmd_tpex_fetch_daily(_argv_from_namespace(args)),
         "tpex-market-summary":           cmd_tpex_market_summary,
         "tpex-institutional":            lambda args=None: cmd_tpex_institutional(_argv_from_namespace(args)),
         "tpex-margin":                   lambda args=None: cmd_tpex_margin(_argv_from_namespace(args)),
@@ -37494,6 +37582,26 @@ def main() -> None:
         "session-ops-explain":                  cmd_session_ops_explain,
         "session-ops-report":                   cmd_session_ops_report,
         "session-ops-release-gate":             cmd_session_ops_release_gate,
+        # v1.6.3.3 — formal registry command names mapped to handlers
+        "session-ops-status":                   cmd_session_ops_status,
+        "session-ops-sessions":                 cmd_session_ops_sessions,
+        "session-ops-session-show":             cmd_session_ops_session_show,
+        "session-ops-metrics":                  cmd_session_ops_metrics,
+        "session-ops-health-summary":           cmd_session_ops_health_summary,
+        "session-ops-alerts":                   cmd_session_ops_alerts,
+        "session-ops-alert-show":               cmd_session_ops_alert_show,
+        "session-ops-alert-ack":                cmd_session_ops_alert_ack,
+        "session-ops-incidents":                cmd_session_ops_incidents,
+        "session-ops-incident-show":            cmd_session_ops_incident_show,
+        "session-ops-timeline":                 cmd_session_ops_timeline,
+        "session-ops-snapshot-show":            cmd_session_ops_snapshot_show,
+        "session-ops-checkpoint-create":        cmd_session_ops_checkpoint_create,
+        "session-ops-checkpoint-show":          cmd_session_ops_checkpoint_show,
+        "session-ops-recovery-drill":           cmd_session_ops_recovery_drill,
+        "session-ops-runbooks":                 cmd_session_ops_runbooks,
+        "session-ops-runbook-show":             cmd_session_ops_runbook_show,
+        "session-ops-replay":                   cmd_session_ops_replay,
+        "session-ops-lineage":                  cmd_session_ops_lineage,
     }
 
     if args.command is None:

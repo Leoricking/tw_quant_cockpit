@@ -73,9 +73,9 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # ---------------------------------------------------------------------------
 # v1.3.3 module-level constants (Coverage Repair Workflow)
 # ---------------------------------------------------------------------------
-VERSION                             = "1.6.3.2"
-RELEASE_NAME                        = "CLI Registration Health Integrity Hotfix"
-BASE_RELEASE                        = "1.6.3.1 Session Operations Integrity Hotfix"
+VERSION                             = "1.6.3.3"
+RELEASE_NAME                        = "CLI Handler Resolution Integrity Hotfix"
+BASE_RELEASE                        = "1.6.3.2 CLI Registration Health Integrity Hotfix"
 PORTFOLIO_STABLE_BASELINE           = "1.5.9"
 LIVE_PAPER_TRADING_BASELINE         = "1.6.0"
 MARKET_DATA_SESSION_BASELINE        = "1.6.1"

@@ -1169,6 +1169,7 @@ class TestReleaseGate35Checks(unittest.TestCase):
             "Session Operations & Observability",
             "Session Operations Integrity Hotfix",
             "CLI Registration Health Integrity Hotfix",
+            "CLI Handler Resolution Integrity Hotfix",
         }
         self.assertIn(RELEASE_NAME, known)
 
