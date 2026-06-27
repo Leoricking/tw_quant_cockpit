@@ -1,0 +1,18 @@
+{
+  "TEST_FIXTURE": true,
+  "DEMO_ONLY": true,
+  "PAPER_ONLY": true,
+  "RESEARCH_ONLY": true,
+  "NOT_LIVE": true,
+  "NO_BROKER": true,
+  "NO_REAL_ACCOUNT": true,
+  "NO_REAL_ORDER": true,
+  "NOT_FOR_PRODUCTION": true,
+  "FAILURE_INJECTION_ONLY": true,
+  "scenario_name": "incident_creation_failure_001",
+  "domain": "ALERT",
+  "failure_type": "INCIDENT_CREATION_FAILURE",
+  "severity": "HIGH",
+  "seed": 9003,
+  "cascading": false
+}

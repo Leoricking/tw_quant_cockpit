@@ -1612,6 +1612,7 @@ class TestRegression:
             "CLI Registration Health Integrity Hotfix",
             "CLI Handler Resolution Integrity Hotfix",
             "Operational Analytics & Review",
+            "Failure Injection & Recovery Validation",
         )
         assert any(name in RELEASE_NAME for name in _KNOWN_NAMES), (
             f"Unexpected RELEASE_NAME for v1.4.5+ release: {RELEASE_NAME}"

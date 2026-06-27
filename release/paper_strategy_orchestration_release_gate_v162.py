@@ -54,6 +54,7 @@ _KNOWN_NAMES = {
     "CLI Registration Health Integrity Hotfix",
     "CLI Handler Resolution Integrity Hotfix",
     "Operational Analytics & Review",
+    "Failure Injection & Recovery Validation",
 }
 
 

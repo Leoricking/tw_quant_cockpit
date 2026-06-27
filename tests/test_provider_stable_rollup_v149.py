@@ -38,7 +38,8 @@ class TestVersionInfo:
         from release.version_info import RELEASE_NAME
         assert RELEASE_NAME in ("Provider Stable Rollup", "Portfolio Research Foundation", "Portfolio Research Foundation Integrity Hotfix", "Portfolio Research CLI Completeness Hotfix", "Position Sizing", "Correlation & Exposure", "Correlation & Exposure Integrity Hotfix", "Drawdown & Risk Controls", "Portfolio Walk-forward Backtest", "Portfolio Stable Rollup", "Portfolio Stable Rollup Integrity Hotfix", "Portfolio Stable Rollup Release Gate Hotfix", "Live Paper Trading Foundation", "Market Data Session Adapter", "Market Data Session Warning Hygiene Hotfix", "Paper Strategy Orchestration", "Paper Strategy Orchestration Integrity Hotfix", "Session Operations & Observability", "Session Operations Integrity Hotfix", "CLI Registration Health Integrity Hotfix",
             "CLI Handler Resolution Integrity Hotfix",
-            "Operational Analytics & Review")
+            "Operational Analytics & Review",
+            "Failure Injection & Recovery Validation")
 
     def test_3_base_release_contains_148(self):
         from release.version_info import BASE_RELEASE

@@ -36117,6 +36117,432 @@ def cmd_ops_analytics_release_gate(args=None):
     print(_OPS_ANALYTICS_BANNER)
 
 
+# =============================================================================
+# v1.6.5 Failure Injection & Recovery Validation handlers
+# [!] Research Only. No Real Orders. No Real Failure Injection. Not Investment Advice.
+# [!] REAL_FAILURE_INJECTION_ENABLED = False. PRODUCTION_CHAOS_ENABLED = False.
+# =============================================================================
+
+_FAILURE_INJECTION_BANNER = (
+    "[!] Research Only. No Real Orders. No Real Failure Injection. Not Investment Advice.\n"
+    "[!] REAL_FAILURE_INJECTION_ENABLED=False | PRODUCTION_CHAOS_ENABLED=False\n"
+    "[!] Paper/Simulation only. No broker. No real account. No real network."
+)
+
+
+def cmd_failure_health(args=None):
+    """[v1.6.5] Failure injection & recovery health check. Research only."""
+    print(_FAILURE_INJECTION_BANNER)
+    from paper_trading.failure_validation.health_v165 import FailureInjectionRecoveryHealthCheck
+    summary = FailureInjectionRecoveryHealthCheck().get_health_summary()
+    total = summary.get("total", 0)
+    passed = summary.get("passed", 0)
+    failed = summary.get("failed", 0)
+    overall = summary.get("overall", "UNKNOWN")
+    print(f"Failure Injection & Recovery Health Check v1.6.5")
+    print(f"Overall: {overall}  Passed: {passed}/{total}  Failed: {failed}")
+    print(_FAILURE_INJECTION_BANNER)
+
+
+def cmd_failure_gate(args=None):
+    """[v1.6.5] Run failure injection release gate (45/45). Research only."""
+    print(_FAILURE_INJECTION_BANNER)
+    from release.failure_injection_recovery_release_gate_v165 import FailureInjectionRecoveryReleaseGateV165
+    result = FailureInjectionRecoveryReleaseGateV165().run()
+    total = result.get("total", 0)
+    passed = result.get("passed", 0)
+    failed = result.get("failed", 0)
+    gate_passed = result.get("gate_passed", False)
+    print(f"Failure Injection & Recovery Release Gate v1.6.5")
+    print(f"Gate: {'PASS' if gate_passed else 'FAIL'}  Passed: {passed}/{total}  Failed: {failed}")
+    print(_FAILURE_INJECTION_BANNER)
+
+
+def cmd_failure_scenarios(args=None):
+    """[v1.6.5] List all built-in failure scenarios. Research only."""
+    print(_FAILURE_INJECTION_BANNER)
+    from paper_trading.failure_validation.scenario_registry_v165 import BUILTIN_SCENARIOS
+    print(f"Built-in failure scenarios: {len(BUILTIN_SCENARIOS)}")
+    for s in BUILTIN_SCENARIOS[:10]:
+        print(f"  {s.name} [{s.domain.value}] [{s.failure_type.value}] [{s.severity.value}]")
+    if len(BUILTIN_SCENARIOS) > 10:
+        print(f"  ... and {len(BUILTIN_SCENARIOS) - 10} more")
+    print(_FAILURE_INJECTION_BANNER)
+
+
+def cmd_failure_scenario_show(args=None):
+    """[v1.6.5] Show details of a failure scenario. Research only."""
+    print(_FAILURE_INJECTION_BANNER)
+    from paper_trading.failure_validation.scenario_registry_v165 import BUILTIN_SCENARIOS
+    from paper_trading.failure_validation.explain_v165 import explain_scenario
+    name = getattr(args, "name", None) or "md_timeout_001"
+    scenario = next((s for s in BUILTIN_SCENARIOS if s.name == name), BUILTIN_SCENARIOS[0])
+    info = explain_scenario(scenario)
+    print(f"Scenario: {info['name']}  Domain: {info['domain']}  Type: {info['failure_type']}")
+    print(f"Severity: {info['severity']}  Reversible: {info['reversible']}  Bounded: {info['bounded']}")
+    print(f"All safety markers set: {info['all_safety_markers_set']}")
+    print(_FAILURE_INJECTION_BANNER)
+
+
+def cmd_failure_inject(args=None):
+    """[v1.6.5] Inject a failure scenario (paper/simulation only). Research only."""
+    print(_FAILURE_INJECTION_BANNER)
+    from paper_trading.failure_validation.injector_v165 import DeterministicFailureInjector
+    from paper_trading.failure_validation.models_v165 import FailureInjectionRequest
+    from paper_trading.failure_validation.scenario_registry_v165 import BUILTIN_SCENARIOS
+    scenario = BUILTIN_SCENARIOS[0]
+    request = FailureInjectionRequest(scenario=scenario)
+    injector = DeterministicFailureInjector()
+    result = injector.inject(request)
+    print(f"Injection result: {result.status.value}")
+    print(f"Detection: {result.detection_confirmed}  Alert: {result.alert_generated}  Contained: {result.containment_confirmed}")
+    print(_FAILURE_INJECTION_BANNER)
+
+
+def cmd_failure_inject_status(args=None):
+    """[v1.6.5] Status of active failure injections. Research only."""
+    print(_FAILURE_INJECTION_BANNER)
+    from paper_trading.failure_validation.injector_v165 import DeterministicFailureInjector
+    injector = DeterministicFailureInjector()
+    print(f"Active injections: {injector.active_count()}")
+    print(_FAILURE_INJECTION_BANNER)
+
+
+def cmd_failure_revert(args=None):
+    """[v1.6.5] Revert an active failure injection. Research only."""
+    print(_FAILURE_INJECTION_BANNER)
+    print("No active injection to revert (use failure-inject first).")
+    print(_FAILURE_INJECTION_BANNER)
+
+
+def cmd_failure_safety_check(args=None):
+    """[v1.6.5] Run safety precheck for a scenario. Research only."""
+    print(_FAILURE_INJECTION_BANNER)
+    from paper_trading.failure_validation.safety_precheck_v165 import run_safety_precheck
+    from paper_trading.failure_validation.models_v165 import FailureInjectionRequest, FailureScenario
+    from paper_trading.failure_validation.enums_v165 import FailureDomain, FailureType, FailureSeverity, ExpectedOutcome
+    scenario = FailureScenario(
+        domain=FailureDomain.MARKET_DATA, failure_type=FailureType.TIMEOUT,
+        severity=FailureSeverity.LOW, expected_outcomes=[ExpectedOutcome.DETECTED],
+    )
+    request = FailureInjectionRequest(scenario=scenario)
+    result = run_safety_precheck(request)
+    print(f"Safety precheck: {'PASS' if result.passed else 'BLOCKED_BY_SAFETY'}")
+    if not result.passed:
+        print(f"Violations: {result.violations[:3]}")
+    print(_FAILURE_INJECTION_BANNER)
+
+
+def cmd_failure_baseline(args=None):
+    """[v1.6.5] Capture baseline snapshot. Research only."""
+    print(_FAILURE_INJECTION_BANNER)
+    from paper_trading.failure_validation.baseline_snapshot_v165 import BaselineSnapshotManager, build_deterministic_state
+    mgr = BaselineSnapshotManager()
+    state = build_deterministic_state("market_data", seed=42)
+    snap = mgr.capture("market_data", state)
+    print(f"Baseline snapshot captured: {snap.snapshot_id[:8]}...  Hash: {snap.content_hash[:16]}...")
+    print(_FAILURE_INJECTION_BANNER)
+
+
+def cmd_failure_baseline_verify(args=None):
+    """[v1.6.5] Verify baseline snapshot integrity. Research only."""
+    print(_FAILURE_INJECTION_BANNER)
+    from paper_trading.failure_validation.baseline_snapshot_v165 import BaselineSnapshotManager, build_deterministic_state
+    mgr = BaselineSnapshotManager()
+    state = build_deterministic_state("market_data", seed=42)
+    snap = mgr.capture("market_data", state)
+    ok = snap.verify_integrity()
+    print(f"Baseline snapshot integrity: {'OK' if ok else 'FAILED'}")
+    print(_FAILURE_INJECTION_BANNER)
+
+
+def cmd_failure_cascading(args=None):
+    """[v1.6.5] Simulate cascading failure chain. Research only."""
+    print(_FAILURE_INJECTION_BANNER)
+    from paper_trading.failure_validation.scenario_registry_v165 import get_cascading_scenarios
+    from paper_trading.failure_validation.cascading_v165 import simulate_cascading_failure
+    scenarios = get_cascading_scenarios()
+    if not scenarios:
+        print("No cascading scenarios available.")
+        return
+    result = simulate_cascading_failure(scenarios[0])
+    print(f"Cascading scenario: {result['scenario_name']}")
+    print(f"Chain length: {result['chain_length']}  Final state: {result['final_state']}")
+    print(f"All contained: {result['all_contained']}")
+    print(_FAILURE_INJECTION_BANNER)
+
+
+def cmd_failure_detection(args=None):
+    """[v1.6.5] Show failure detection results. Research only."""
+    print(_FAILURE_INJECTION_BANNER)
+    from paper_trading.failure_validation.detection_v165 import FailureDetector
+    from paper_trading.failure_validation.enums_v165 import FailureType, FailureDomain
+    detector = FailureDetector()
+    result = detector.detect(FailureType.TIMEOUT, FailureDomain.MARKET_DATA)
+    print(f"Detection result: detected={result.detected}  reason={result.reason}")
+    print(_FAILURE_INJECTION_BANNER)
+
+
+def cmd_failure_alerts(args=None):
+    """[v1.6.5] List simulated failure alerts. Research only."""
+    print(_FAILURE_INJECTION_BANNER)
+    from paper_trading.failure_validation.alert_v165 import AlertRegistry
+    registry = AlertRegistry()
+    print(f"Simulated alerts: {registry.count()} (registry is session-scoped)")
+    print(_FAILURE_INJECTION_BANNER)
+
+
+def cmd_failure_incidents(args=None):
+    """[v1.6.5] List simulated failure incidents. Research only."""
+    print(_FAILURE_INJECTION_BANNER)
+    from paper_trading.failure_validation.incident_v165 import IncidentRegistry
+    registry = IncidentRegistry()
+    print(f"Simulated incidents: {registry.count()} (registry is session-scoped)")
+    print(_FAILURE_INJECTION_BANNER)
+
+
+def cmd_failure_containment(args=None):
+    """[v1.6.5] Containment status for injected failures. Research only."""
+    print(_FAILURE_INJECTION_BANNER)
+    from paper_trading.failure_validation.containment_v165 import simulate_containment
+    result = simulate_containment("test_scenario_001", detection_confirmed=True)
+    print(f"Containment: contained={result.contained}  state={result.state.value}")
+    print(_FAILURE_INJECTION_BANNER)
+
+
+def cmd_failure_circuit_breaker(args=None):
+    """[v1.6.5] Simulate circuit breaker trip. Research only."""
+    print(_FAILURE_INJECTION_BANNER)
+    from paper_trading.failure_validation.circuit_breaker_v165 import simulate_circuit_breaker_trip
+    result = simulate_circuit_breaker_trip()
+    print(f"Circuit breaker trip simulation:")
+    print(f"  After failures: {result['state_after_failures']}")
+    print(f"  After cooldown: {result['state_after_cooldown']}")
+    print(f"  After recovery: {result['state_after_recovery']}")
+    print(f"  Transitions: {len(result['transitions'])}")
+    print(_FAILURE_INJECTION_BANNER)
+
+
+def cmd_failure_retry(args=None):
+    """[v1.6.5] Simulate retry sequence with virtual clock. Research only."""
+    print(_FAILURE_INJECTION_BANNER)
+    from paper_trading.failure_validation.retry_validator_v165 import simulate_retry_sequence
+    record = simulate_retry_sequence(max_attempts=3, succeed_on_attempt=2)
+    print(f"Retry sequence: attempts={record.attempt_number}  succeeded={record.succeeded}  exhausted={record.exhausted}")
+    print(_FAILURE_INJECTION_BANNER)
+
+
+def cmd_failure_scorecard(args=None):
+    """[v1.6.5] Compute failure/recovery scorecard. Research only."""
+    print(_FAILURE_INJECTION_BANNER)
+    from paper_trading.failure_validation.injector_v165 import DeterministicFailureInjector
+    from paper_trading.failure_validation.models_v165 import FailureInjectionRequest
+    from paper_trading.failure_validation.scenario_registry_v165 import BUILTIN_SCENARIOS
+    from paper_trading.failure_validation.recovery_validator_v165 import RecoveryValidator
+    from paper_trading.failure_validation.scorecard_v165 import compute_scorecard
+    from paper_trading.failure_validation.enums_v165 import RecoveryState
+    from decimal import Decimal
+    scenario = BUILTIN_SCENARIOS[0]
+    result = DeterministicFailureInjector().inject(FailureInjectionRequest(scenario=scenario))
+    validator = RecoveryValidator()
+    plan = validator.build_recovery_plan(result, Decimal("2000"), Decimal("500"))
+    vr = validator.execute_validation(plan, result, RecoveryState.DEGRADED)
+    sc = compute_scorecard(result, vr)
+    print(f"Scorecard total: {sc.total_score}/100")
+    print(_FAILURE_INJECTION_BANNER)
+
+
+def cmd_failure_scorecard_summary(args=None):
+    """[v1.6.5] Scorecard summary for recent runs. Research only."""
+    print(_FAILURE_INJECTION_BANNER)
+    from paper_trading.failure_validation.store_v165 import FailureInjectionStore
+    store = FailureInjectionStore()
+    print(f"Scorecards in store: {store.scorecard_count()} (session-scoped)")
+    print(_FAILURE_INJECTION_BANNER)
+
+
+def cmd_failure_report(args=None):
+    """[v1.6.5] Generate failure injection report. Research only."""
+    print(_FAILURE_INJECTION_BANNER)
+    from paper_trading.failure_validation.report_v165 import FailureInjectionReport
+    report = FailureInjectionReport(run_id="cmd_001", scenario_name="md_timeout_001")
+    report.add_section("Overview", {"status": "PASS", "note": "Simulation only"})
+    summary = report.summary()
+    print(f"Report: {summary['run_id']}  Sections: {summary['sections']}")
+    print(_FAILURE_INJECTION_BANNER)
+
+
+def cmd_failure_lineage(args=None):
+    """[v1.6.5] Show lineage chain for a scenario. Research only."""
+    print(_FAILURE_INJECTION_BANNER)
+    from paper_trading.failure_validation.lineage_v165 import LineageTracker
+    tracker = LineageTracker()
+    tracker.record("sc_001", "res_001", "INJECTION", "Injected")
+    tracker.record("sc_001", "res_001", "RECOVERY", "Recovered")
+    print(f"Lineage entries: {tracker.count()}")
+    print(_FAILURE_INJECTION_BANNER)
+
+
+def cmd_failure_audit_tail(args=None):
+    """[v1.6.5] Tail the failure injection audit trail. Research only."""
+    print(_FAILURE_INJECTION_BANNER)
+    from paper_trading.failure_validation.audit_v165 import AuditTrail
+    trail = AuditTrail()
+    trail.record("INJECTION_REQUESTED", "sc_001")
+    trail.record("SAFETY_PRECHECK_PASSED", "sc_001")
+    tail = trail.tail(10)
+    print(f"Audit trail entries: {trail.count()}")
+    for entry in tail:
+        print(f"  {entry.event_type}  scenario={entry.scenario_id}")
+    print(_FAILURE_INJECTION_BANNER)
+
+
+def cmd_failure_store_summary(args=None):
+    """[v1.6.5] Failure injection store summary. Research only."""
+    print(_FAILURE_INJECTION_BANNER)
+    from paper_trading.failure_validation.store_v165 import FailureInjectionStore
+    store = FailureInjectionStore()
+    summary = store.summary()
+    for k, v in summary.items():
+        print(f"  {k}: {v}")
+    print(_FAILURE_INJECTION_BANNER)
+
+
+def cmd_failure_fixtures_validate(args=None):
+    """[v1.6.5] Validate all failure injection fixtures. Research only."""
+    print(_FAILURE_INJECTION_BANNER)
+    import os
+    from paper_trading.failure_validation.fixtures_validator_v165 import validate_fixture_directory
+    fixtures_dir = os.path.join(os.path.dirname(__file__), "tests", "fixtures", "failure_injection")
+    if not os.path.isdir(fixtures_dir):
+        print(f"Fixtures directory not found: {fixtures_dir}")
+        return
+    result = validate_fixture_directory(fixtures_dir)
+    print(f"Fixtures: {result['total']} total  {result['passed']} passed  {result['failed']} failed")
+    print(_FAILURE_INJECTION_BANNER)
+
+
+def cmd_recovery_plan(args=None):
+    """[v1.6.5] Build a simulated recovery plan. Research only."""
+    print(_FAILURE_INJECTION_BANNER)
+    from paper_trading.failure_validation.recovery_validator_v165 import RecoveryValidator
+    from paper_trading.failure_validation.models_v165 import FailureInjectionResult
+    from paper_trading.failure_validation.enums_v165 import InjectionStatus
+    from decimal import Decimal
+    result = FailureInjectionResult(
+        status=InjectionStatus.CONTAINED,
+        detection_confirmed=True, containment_confirmed=True, recovery_triggered=True,
+    )
+    plan = RecoveryValidator().build_recovery_plan(result, Decimal("2000"), Decimal("500"))
+    print(f"Recovery plan: {plan.plan_id[:8]}...  Steps: {len(plan.steps)}  Auto-exec: {plan.auto_execution_enabled}")
+    print(_FAILURE_INJECTION_BANNER)
+
+
+def cmd_recovery_run(args=None):
+    """[v1.6.5] Run recovery validation simulation. Research only."""
+    print(_FAILURE_INJECTION_BANNER)
+    from paper_trading.failure_validation.recovery_validator_v165 import RecoveryValidator
+    from paper_trading.failure_validation.models_v165 import FailureInjectionResult
+    from paper_trading.failure_validation.enums_v165 import InjectionStatus, RecoveryState
+    from decimal import Decimal
+    result = FailureInjectionResult(
+        status=InjectionStatus.CONTAINED,
+        detection_confirmed=True, containment_confirmed=True, recovery_triggered=True,
+    )
+    validator = RecoveryValidator()
+    plan = validator.build_recovery_plan(result, Decimal("2000"), Decimal("500"))
+    vr = validator.execute_validation(plan, result, RecoveryState.DEGRADED)
+    print(f"Recovery validation: final_state={vr.final_state.value}  transitions={len(vr.state_transitions)}")
+    print(f"  Verification: {vr.verification_passed}  Data reconciled: {vr.data_reconciled}")
+    print(_FAILURE_INJECTION_BANNER)
+
+
+def cmd_recovery_state(args=None):
+    """[v1.6.5] Show recovery state machine state. Research only."""
+    print(_FAILURE_INJECTION_BANNER)
+    from paper_trading.failure_validation.state_machine_v165 import RecoveryStateMachine
+    from paper_trading.failure_validation.enums_v165 import RecoveryState
+    sm = RecoveryStateMachine(RecoveryState.HEALTHY)
+    sm.transition(RecoveryState.DEGRADED)
+    sm.transition(RecoveryState.CONTAINED)
+    print(f"State machine: current={sm.state.value}  history={len(sm.history())} transitions")
+    print(_FAILURE_INJECTION_BANNER)
+
+
+def cmd_recovery_validate_transition(args=None):
+    """[v1.6.5] Validate a recovery state transition. Research only."""
+    print(_FAILURE_INJECTION_BANNER)
+    from paper_trading.failure_validation.recovery_validator_v165 import RecoveryValidator
+    from paper_trading.failure_validation.enums_v165 import RecoveryState
+    v = RecoveryValidator()
+    # Test both valid and invalid
+    ok, reason = v.validate_transition(RecoveryState.DEGRADED, RecoveryState.CONTAINED)
+    print(f"DEGRADED→CONTAINED: allowed={ok}  reason={reason}")
+    ok2, reason2 = v.validate_transition(RecoveryState.FAILED, RecoveryState.HEALTHY)
+    print(f"FAILED→HEALTHY: allowed={ok2}  reason={reason2}")
+    print(_FAILURE_INJECTION_BANNER)
+
+
+def cmd_recovery_rto_rpo(args=None):
+    """[v1.6.5] RTO/RPO measurement simulation. Research only."""
+    print(_FAILURE_INJECTION_BANNER)
+    from paper_trading.failure_validation.rto_rpo_v165 import simulate_rto_rpo
+    from decimal import Decimal
+    m = simulate_rto_rpo("test_scenario", Decimal("2000"), Decimal("500"))
+    print(f"RTO: {m.rto_actual_ms}ms [{m.rto_label}]  RPO: {m.rpo_actual_ms}ms [{m.rpo_label}]")
+    print(_FAILURE_INJECTION_BANNER)
+
+
+def cmd_recovery_data_reconcile(args=None):
+    """[v1.6.5] Data reconciliation after recovery. Research only."""
+    print(_FAILURE_INJECTION_BANNER)
+    from paper_trading.failure_validation.data_reconciliation_v165 import simulate_reconciliation
+    r = simulate_reconciliation("sc_001", {"v": 1}, {"v": 1})
+    print(f"Data reconciliation: reconciled={r.reconciled}  hash_match={r.hash_match}")
+    print(_FAILURE_INJECTION_BANNER)
+
+
+def cmd_recovery_replay(args=None):
+    """[v1.6.5] Replay verification after recovery. Research only."""
+    print(_FAILURE_INJECTION_BANNER)
+    from paper_trading.failure_validation.replay_v165 import simulate_replay
+    r = simulate_replay("sc_001", seed=42, original_events=5)
+    print(f"Replay: hash_match={r.match}  events={r.replay_events}")
+    print(_FAILURE_INJECTION_BANNER)
+
+
+def cmd_recovery_post_validate(args=None):
+    """[v1.6.5] Post-recovery validation. Research only."""
+    print(_FAILURE_INJECTION_BANNER)
+    from paper_trading.failure_validation.post_recovery_validation_v165 import run_post_recovery_validation
+    from paper_trading.failure_validation.enums_v165 import RecoveryState
+    r = run_post_recovery_validation("sc_001", RecoveryState.RECOVERED)
+    print(f"Post-recovery validation: all_passed={r.all_passed}")
+    print(f"  state={r.state_verified}  data={r.data_reconciled}  replay={r.replay_verified}")
+    print(_FAILURE_INJECTION_BANNER)
+
+
+def cmd_recovery_rollback(args=None):
+    """[v1.6.5] Simulate rollback during recovery failure. Research only."""
+    print(_FAILURE_INJECTION_BANNER)
+    from paper_trading.failure_validation.rollback_v165 import simulate_rollback
+    steps = [{"step": i, "action": f"rollback_step_{i}"} for i in range(1, 4)]
+    r = simulate_rollback("sc_001", "plan_001", steps)
+    print(f"Rollback: succeeded={r.rollback_succeeded}  final_state={r.final_state.value}")
+    print(_FAILURE_INJECTION_BANNER)
+
+
+def cmd_recovery_idempotency(args=None):
+    """[v1.6.5] Idempotency verification for recovery. Research only."""
+    print(_FAILURE_INJECTION_BANNER)
+    from paper_trading.failure_validation.idempotency_v165 import IdempotencyValidator
+    v = IdempotencyValidator()
+    v.check("key_001")
+    result = v.check("key_001")  # duplicate
+    print(f"Idempotency: duplicate_detected={result['duplicate']}  unique={v.unique_count()}  duplicates={v.duplicate_count()}")
+    print(_FAILURE_INJECTION_BANNER)
+
+
 def cmd_paper_strategy_health(args=None):
     """[v1.6.2] Paper strategy orchestration health check. Research only."""
     print(_STRATEGY_SAFETY_BANNER)
@@ -37935,6 +38361,41 @@ def main() -> None:
         "ops-review-report":                    cmd_ops_review_report,
         "ops-analytics-health":                 cmd_ops_analytics_health,
         "ops-analytics-release-gate":           cmd_ops_analytics_release_gate,
+        # v1.6.5 Failure Injection & Recovery Validation
+        "failure-health":                       cmd_failure_health,
+        "failure-gate":                         cmd_failure_gate,
+        "failure-scenarios":                    cmd_failure_scenarios,
+        "failure-scenario-show":                cmd_failure_scenario_show,
+        "failure-inject":                       cmd_failure_inject,
+        "failure-inject-status":                cmd_failure_inject_status,
+        "failure-revert":                       cmd_failure_revert,
+        "failure-safety-check":                 cmd_failure_safety_check,
+        "failure-baseline":                     cmd_failure_baseline,
+        "failure-baseline-verify":              cmd_failure_baseline_verify,
+        "failure-cascading":                    cmd_failure_cascading,
+        "failure-detection":                    cmd_failure_detection,
+        "failure-alerts":                       cmd_failure_alerts,
+        "failure-incidents":                    cmd_failure_incidents,
+        "failure-containment":                  cmd_failure_containment,
+        "failure-circuit-breaker":              cmd_failure_circuit_breaker,
+        "failure-retry":                        cmd_failure_retry,
+        "failure-scorecard":                    cmd_failure_scorecard,
+        "failure-scorecard-summary":            cmd_failure_scorecard_summary,
+        "failure-report":                       cmd_failure_report,
+        "failure-lineage":                      cmd_failure_lineage,
+        "failure-audit-tail":                   cmd_failure_audit_tail,
+        "failure-store-summary":                cmd_failure_store_summary,
+        "failure-fixtures-validate":            cmd_failure_fixtures_validate,
+        "recovery-plan":                        cmd_recovery_plan,
+        "recovery-run":                         cmd_recovery_run,
+        "recovery-state":                       cmd_recovery_state,
+        "recovery-validate-transition":         cmd_recovery_validate_transition,
+        "recovery-rto-rpo":                     cmd_recovery_rto_rpo,
+        "recovery-data-reconcile":              cmd_recovery_data_reconcile,
+        "recovery-replay":                      cmd_recovery_replay,
+        "recovery-post-validate":               cmd_recovery_post_validate,
+        "recovery-rollback":                    cmd_recovery_rollback,
+        "recovery-idempotency":                 cmd_recovery_idempotency,
     }
 
     if args.command is None:

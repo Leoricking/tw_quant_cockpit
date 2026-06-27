@@ -399,6 +399,7 @@ class TestSafetyAndVersion:
             "CLI Registration Health Integrity Hotfix",
             "CLI Handler Resolution Integrity Hotfix",
             "Operational Analytics & Review",
+            "Failure Injection & Recovery Validation",
         }
         assert RELEASE_NAME in valid_names, f"Unexpected RELEASE_NAME: {RELEASE_NAME}"
 

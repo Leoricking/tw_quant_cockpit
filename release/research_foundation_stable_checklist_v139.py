@@ -70,6 +70,7 @@ def run_checklist() -> list[dict]:
     "CLI Registration Health Integrity Hotfix",
             "CLI Handler Resolution Integrity Hotfix",
             "Operational Analytics & Review",
+            "Failure Injection & Recovery Validation",
         }
         parts = tuple(int(x) for x in VERSION.split(".")[:3])
         return (parts >= (1, 3, 9)

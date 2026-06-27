@@ -1,0 +1,18 @@
+{
+  "TEST_FIXTURE": true,
+  "DEMO_ONLY": true,
+  "PAPER_ONLY": true,
+  "RESEARCH_ONLY": true,
+  "NOT_LIVE": true,
+  "NO_BROKER": true,
+  "NO_REAL_ACCOUNT": true,
+  "NO_REAL_ORDER": true,
+  "NOT_FOR_PRODUCTION": true,
+  "FAILURE_INJECTION_ONLY": true,
+  "scenario_name": "cascading_event_storm_001",
+  "domain": "EVENT_STREAM",
+  "failure_type": "EVENT_STORM",
+  "severity": "HIGH",
+  "seed": 20004,
+  "cascading": true
+}

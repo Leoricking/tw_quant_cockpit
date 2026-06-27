@@ -464,6 +464,7 @@ class TestVersionAlignment:
         _KNOWN = {
             "CLI Handler Resolution Integrity Hotfix",
             "Operational Analytics & Review",
+            "Failure Injection & Recovery Validation",
         }
         assert RELEASE_NAME in _KNOWN, (
             f"Got: {RELEASE_NAME}"

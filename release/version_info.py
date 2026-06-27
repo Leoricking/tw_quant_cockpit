@@ -73,9 +73,9 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # ---------------------------------------------------------------------------
 # v1.3.3 module-level constants (Coverage Repair Workflow)
 # ---------------------------------------------------------------------------
-VERSION                             = "1.6.4"
-RELEASE_NAME                        = "Operational Analytics & Review"
-BASE_RELEASE                        = "1.6.3.3 CLI Handler Resolution Integrity Hotfix"
+VERSION                             = "1.6.5"
+RELEASE_NAME                        = "Failure Injection & Recovery Validation"
+BASE_RELEASE                        = "1.6.4 Operational Analytics & Review"
 PORTFOLIO_STABLE_BASELINE           = "1.5.9"
 LIVE_PAPER_TRADING_BASELINE         = "1.6.0"
 MARKET_DATA_SESSION_BASELINE        = "1.6.1"
@@ -83,6 +83,22 @@ PAPER_STRATEGY_ORCHESTRATION_BASELINE = "1.6.2"
 SESSION_OPERATIONS_OBSERVABILITY_BASELINE = "1.6.3"
 CLI_HANDLER_RESOLUTION_BASELINE     = "1.6.3.3"
 OPERATIONAL_ANALYTICS_BASELINE      = "1.6.4"
+FAILURE_INJECTION_RECOVERY_BASELINE = "1.6.5"
+# v1.6.5 Failure Injection & Recovery Validation safety flags
+FAILURE_INJECTION_AVAILABLE                 = True
+FAILURE_INJECTION_RESEARCH_ONLY             = True
+RECOVERY_VALIDATION_AVAILABLE               = True
+CHAOS_SIMULATION_AVAILABLE                  = True
+REAL_FAILURE_INJECTION_ENABLED              = False
+PRODUCTION_CHAOS_ENABLED                    = False
+PRODUCTION_RECOVERY_ENABLED                 = False
+AUTO_RECOVERY_EXECUTION_ENABLED             = False
+AUTO_FAILOVER_ENABLED                       = False
+AUTO_RESTART_ENABLED                        = False
+AUTO_RESUME_RUNNING                         = False
+BROKER_FAILURE_INJECTION_ENABLED            = False
+NETWORK_FAILURE_INJECTION_ENABLED           = False
+EXTERNAL_SYSTEM_MUTATION_ENABLED            = False
 # v1.6.4 Operational Analytics & Review flags
 OPERATIONAL_ANALYTICS_AVAILABLE         = True
 OPERATIONAL_ANALYTICS_RESEARCH_ONLY     = True

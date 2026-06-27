@@ -1,0 +1,18 @@
+{
+  "TEST_FIXTURE": true,
+  "DEMO_ONLY": true,
+  "PAPER_ONLY": true,
+  "RESEARCH_ONLY": true,
+  "NOT_LIVE": true,
+  "NO_BROKER": true,
+  "NO_REAL_ACCOUNT": true,
+  "NO_REAL_ORDER": true,
+  "NOT_FOR_PRODUCTION": true,
+  "FAILURE_INJECTION_ONLY": true,
+  "scenario_name": "report_missing_001",
+  "domain": "REPORT",
+  "failure_type": "MISSING_DATA",
+  "severity": "MEDIUM",
+  "seed": 14001,
+  "cascading": false
+}

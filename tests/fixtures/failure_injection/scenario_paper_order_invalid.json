@@ -1,0 +1,18 @@
+{
+  "TEST_FIXTURE": true,
+  "DEMO_ONLY": true,
+  "PAPER_ONLY": true,
+  "RESEARCH_ONLY": true,
+  "NOT_LIVE": true,
+  "NO_BROKER": true,
+  "NO_REAL_ACCOUNT": true,
+  "NO_REAL_ORDER": true,
+  "NOT_FOR_PRODUCTION": true,
+  "FAILURE_INJECTION_ONLY": true,
+  "scenario_name": "paper_order_invalid_001",
+  "domain": "PAPER_ORDER",
+  "failure_type": "INVALID_PAYLOAD",
+  "severity": "HIGH",
+  "seed": 4003,
+  "cascading": false
+}
