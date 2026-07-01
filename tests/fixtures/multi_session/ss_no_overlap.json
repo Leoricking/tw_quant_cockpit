@@ -8,16 +8,27 @@
   "sessions": [
     {
       "session_id": "s1",
-      "symbols": ["AAPL"],
+      "symbols": [
+        "AAPL"
+      ],
       "direction": "LONG"
     },
     {
       "session_id": "s2",
-      "symbols": ["MSFT"],
+      "symbols": [
+        "MSFT"
+      ],
       "direction": "LONG"
     }
   ],
   "expected_result": "success",
   "symbol_overlap": false,
-  "conflicts": []
+  "conflicts": [],
+  "test_fixture": true,
+  "demo_only": true,
+  "not_live": true,
+  "no_broker": true,
+  "no_real_account": true,
+  "not_for_production": true,
+  "multi_session_only": true
 }

@@ -19,7 +19,7 @@ class TestVersionIdentity:
 
     def test_version_format(self):
         parts = VERSION.split(".")
-        assert len(parts) == 3
+        assert len(parts) in (3, 4)
         assert all(p.isdigit() for p in parts)
 
     def test_version_info_165_flags(self):

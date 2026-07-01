@@ -11,7 +11,12 @@
     "created_at_tick": 50,
     "state_snapshot": {
       "capital": 95000,
-      "positions": [{ "symbol": "AAPL", "quantity": 100 }]
+      "positions": [
+        {
+          "symbol": "AAPL",
+          "quantity": 100
+        }
+      ]
     },
     "hash": "sha256:a3f1b2c4d5e6f7a8b9c0d1e2f3a4b5c6d7e8f9a0b1c2d3e4f5a6b7c8d9e0f1"
   },
@@ -20,5 +25,12 @@
     "hashes_match": true
   },
   "expected_result": "success",
-  "verify_result": "PASS"
+  "verify_result": "PASS",
+  "test_fixture": true,
+  "demo_only": true,
+  "not_live": true,
+  "no_broker": true,
+  "no_real_account": true,
+  "not_for_production": true,
+  "multi_session_only": true
 }

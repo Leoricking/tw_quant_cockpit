@@ -799,6 +799,7 @@ class TestVersionInfo:
             "Operational Analytics & Review",
             "Failure Injection & Recovery Validation",
             "Multi-session Coordination",
+            "Fixture Governance & Safety Marker Hotfix",
         ), f"Unexpected release name: {version_info.RELEASE_NAME}"
 
     def test_release_track(self):

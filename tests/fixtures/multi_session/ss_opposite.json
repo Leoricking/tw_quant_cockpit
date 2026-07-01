@@ -8,17 +8,28 @@
   "sessions": [
     {
       "session_id": "s1",
-      "symbols": ["AAPL"],
+      "symbols": [
+        "AAPL"
+      ],
       "direction": "LONG"
     },
     {
       "session_id": "s2",
-      "symbols": ["AAPL"],
+      "symbols": [
+        "AAPL"
+      ],
       "direction": "SHORT"
     }
   ],
   "expected_result": "conflict",
   "expected_conflict": "strategy_conflict",
   "conflict_symbol": "AAPL",
-  "severity": "ERROR"
+  "severity": "ERROR",
+  "test_fixture": true,
+  "demo_only": true,
+  "not_live": true,
+  "no_broker": true,
+  "no_real_account": true,
+  "not_for_production": true,
+  "multi_session_only": true
 }

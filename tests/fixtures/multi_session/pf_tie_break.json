@@ -20,5 +20,12 @@
   "tie_break_seed": 42,
   "expected_result": "success",
   "expected_order_deterministic": true,
-  "note": "With seed 42, tie-break produces a consistent, reproducible ordering"
+  "note": "With seed 42, tie-break produces a consistent, reproducible ordering",
+  "test_fixture": true,
+  "demo_only": true,
+  "not_live": true,
+  "no_broker": true,
+  "no_real_account": true,
+  "not_for_production": true,
+  "multi_session_only": true
 }

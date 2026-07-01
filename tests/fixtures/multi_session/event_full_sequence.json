@@ -5,7 +5,10 @@
   "version": "1.6.6",
   "test_id": "event_full_sequence",
   "description": "Full event sequence: 5 events with monotonic global sequences across 2 sessions",
-  "sessions": ["s1", "s2"],
+  "sessions": [
+    "s1",
+    "s2"
+  ],
   "events": [
     {
       "event_id": "e1",
@@ -45,5 +48,12 @@
   ],
   "expected_result": "success",
   "sequences_monotonic": true,
-  "total_events": 5
+  "total_events": 5,
+  "test_fixture": true,
+  "demo_only": true,
+  "not_live": true,
+  "no_broker": true,
+  "no_real_account": true,
+  "not_for_production": true,
+  "multi_session_only": true
 }

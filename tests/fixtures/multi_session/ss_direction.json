@@ -22,5 +22,12 @@
   "expected_result": "blocked",
   "expected_block": true,
   "block_reason": "direction_conflict",
-  "conflict_symbol": "TSLA"
+  "conflict_symbol": "TSLA",
+  "test_fixture": true,
+  "demo_only": true,
+  "not_live": true,
+  "no_broker": true,
+  "no_real_account": true,
+  "not_for_production": true,
+  "multi_session_only": true
 }

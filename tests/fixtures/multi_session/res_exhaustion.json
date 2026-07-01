@@ -26,9 +26,24 @@
   ],
   "total_requested": 5,
   "expected_grants": [
-    { "session_id": "s1", "granted": true, "quantity": 4 }
+    {
+      "session_id": "s1",
+      "granted": true,
+      "quantity": 4
+    }
   ],
   "expected_blocks": [
-    { "session_id": "s2", "blocked": true, "reason": "resource_exhausted" }
-  ]
+    {
+      "session_id": "s2",
+      "blocked": true,
+      "reason": "resource_exhausted"
+    }
+  ],
+  "test_fixture": true,
+  "demo_only": true,
+  "not_live": true,
+  "no_broker": true,
+  "no_real_account": true,
+  "not_for_production": true,
+  "multi_session_only": true
 }

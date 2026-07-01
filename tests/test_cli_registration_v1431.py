@@ -308,6 +308,7 @@ class TestRegression:
             "Operational Analytics & Review",
             "Failure Injection & Recovery Validation",
             "Multi-session Coordination",
+            "Fixture Governance & Safety Marker Hotfix",
         }
         assert RELEASE_NAME in _KNOWN, f"Unexpected RELEASE_NAME: {RELEASE_NAME}"
 

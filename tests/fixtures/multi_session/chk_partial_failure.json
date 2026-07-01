@@ -23,5 +23,12 @@
   "expected_result": "partial",
   "expected_conflict": "recovery_collision",
   "s1_recovered": true,
-  "s2_recovered": false
+  "s2_recovered": false,
+  "test_fixture": true,
+  "demo_only": true,
+  "not_live": true,
+  "no_broker": true,
+  "no_real_account": true,
+  "not_for_production": true,
+  "multi_session_only": true
 }

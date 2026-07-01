@@ -26,5 +26,12 @@
     "s1": 30000,
     "s2": 20000
   },
-  "budget_remaining_after": 0
+  "budget_remaining_after": 0,
+  "test_fixture": true,
+  "demo_only": true,
+  "not_live": true,
+  "no_broker": true,
+  "no_real_account": true,
+  "not_for_production": true,
+  "multi_session_only": true
 }

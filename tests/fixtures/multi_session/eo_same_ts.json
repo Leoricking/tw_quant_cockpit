@@ -21,6 +21,16 @@
   ],
   "expected_result": "success",
   "order_deterministic": true,
-  "expected_order": ["e1", "e2"],
-  "tie_break_by": "session_id_lexical"
+  "expected_order": [
+    "e1",
+    "e2"
+  ],
+  "tie_break_by": "session_id_lexical",
+  "test_fixture": true,
+  "demo_only": true,
+  "not_live": true,
+  "no_broker": true,
+  "no_real_account": true,
+  "not_for_production": true,
+  "multi_session_only": true
 }

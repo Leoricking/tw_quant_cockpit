@@ -38,8 +38,16 @@
       "utilization_fraction": 0.75
     },
     "conflicts": [
-      { "type": "symbol_overlap", "count": 1, "severity": "WARNING" },
-      { "type": "concentration_limit", "count": 1, "severity": "WARNING" }
+      {
+        "type": "symbol_overlap",
+        "count": 1,
+        "severity": "WARNING"
+      },
+      {
+        "type": "concentration_limit",
+        "count": 1,
+        "severity": "WARNING"
+      }
     ],
     "checkpoints": {
       "created": 3,
@@ -47,5 +55,12 @@
       "collisions": 0
     }
   },
-  "expected_result": "success"
+  "expected_result": "success",
+  "test_fixture": true,
+  "demo_only": true,
+  "not_live": true,
+  "no_broker": true,
+  "no_real_account": true,
+  "not_for_production": true,
+  "multi_session_only": true
 }

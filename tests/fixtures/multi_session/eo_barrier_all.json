@@ -8,14 +8,34 @@
   "barrier": {
     "barrier_id": "b1",
     "barrier_type": "ALL_OF",
-    "required_sessions": ["s1", "s2", "s3"]
+    "required_sessions": [
+      "s1",
+      "s2",
+      "s3"
+    ]
   },
   "arrivals": [
-    { "session_id": "s1", "tick": 10 },
-    { "session_id": "s2", "tick": 11 },
-    { "session_id": "s3", "tick": 12 }
+    {
+      "session_id": "s1",
+      "tick": 10
+    },
+    {
+      "session_id": "s2",
+      "tick": 11
+    },
+    {
+      "session_id": "s3",
+      "tick": 12
+    }
   ],
   "expected_result": "success",
   "barrier_released_at_tick": 12,
-  "all_sessions_arrived": true
+  "all_sessions_arrived": true,
+  "test_fixture": true,
+  "demo_only": true,
+  "not_live": true,
+  "no_broker": true,
+  "no_real_account": true,
+  "not_for_production": true,
+  "multi_session_only": true
 }

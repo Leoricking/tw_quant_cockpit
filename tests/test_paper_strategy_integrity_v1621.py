@@ -1173,6 +1173,7 @@ class TestReleaseGate35Checks(unittest.TestCase):
             "Operational Analytics & Review",
             "Failure Injection & Recovery Validation",
             "Multi-session Coordination",
+            "Fixture Governance & Safety Marker Hotfix",
         }
         self.assertIn(RELEASE_NAME, known)
 

@@ -28,5 +28,12 @@
     "s2": 20000
   },
   "s2_partial": true,
-  "s2_received_fraction": 0.5
+  "s2_received_fraction": 0.5,
+  "test_fixture": true,
+  "demo_only": true,
+  "not_live": true,
+  "no_broker": true,
+  "no_real_account": true,
+  "not_for_production": true,
+  "multi_session_only": true
 }

@@ -11,10 +11,18 @@
     "available": 0
   },
   "existing_grants": [
-    { "reservation_id": "r1", "session_id": "s1", "quantity": 2 }
+    {
+      "reservation_id": "r1",
+      "session_id": "s1",
+      "quantity": 2
+    }
   ],
   "waiting_sessions": [
-    { "session_id": "s2", "quantity": 1, "waiting_since_tick": 3 }
+    {
+      "session_id": "s2",
+      "quantity": 1,
+      "waiting_since_tick": 3
+    }
   ],
   "release_event": {
     "reservation_id": "r1",
@@ -26,5 +34,12 @@
     "session_id": "s2",
     "granted": true,
     "granted_at_tick": 10
-  }
+  },
+  "test_fixture": true,
+  "demo_only": true,
+  "not_live": true,
+  "no_broker": true,
+  "no_real_account": true,
+  "not_for_production": true,
+  "multi_session_only": true
 }

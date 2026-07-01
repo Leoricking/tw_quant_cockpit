@@ -12,5 +12,12 @@
     "registered_at_tick": 1
   },
   "expected_result": "conflict",
-  "expected_conflict": "missing_owner"
+  "expected_conflict": "missing_owner",
+  "test_fixture": true,
+  "demo_only": true,
+  "not_live": true,
+  "no_broker": true,
+  "no_real_account": true,
+  "not_for_production": true,
+  "multi_session_only": true
 }

@@ -14,5 +14,12 @@
   },
   "expected_result": "late_event_detected",
   "late_event_policy": "warn_and_discard",
-  "behind_watermark_by": 70
+  "behind_watermark_by": 70,
+  "test_fixture": true,
+  "demo_only": true,
+  "not_live": true,
+  "no_broker": true,
+  "no_real_account": true,
+  "not_for_production": true,
+  "multi_session_only": true
 }

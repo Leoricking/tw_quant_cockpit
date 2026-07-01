@@ -11,16 +11,44 @@
     "available": 1
   },
   "competing_sessions": [
-    { "session_id": "s1", "priority": "NORMAL", "request_tick": 1 },
-    { "session_id": "s2", "priority": "NORMAL", "request_tick": 2 },
-    { "session_id": "s3", "priority": "NORMAL", "request_tick": 3 }
+    {
+      "session_id": "s1",
+      "priority": "NORMAL",
+      "request_tick": 1
+    },
+    {
+      "session_id": "s2",
+      "priority": "NORMAL",
+      "request_tick": 2
+    },
+    {
+      "session_id": "s3",
+      "priority": "NORMAL",
+      "request_tick": 3
+    }
   ],
   "expected_winner": "s1",
   "expected_grants": [
-    { "session_id": "s1", "granted": true }
+    {
+      "session_id": "s1",
+      "granted": true
+    }
   ],
   "expected_blocks": [
-    { "session_id": "s2", "blocked": true },
-    { "session_id": "s3", "blocked": true }
-  ]
+    {
+      "session_id": "s2",
+      "blocked": true
+    },
+    {
+      "session_id": "s3",
+      "blocked": true
+    }
+  ],
+  "test_fixture": true,
+  "demo_only": true,
+  "not_live": true,
+  "no_broker": true,
+  "no_real_account": true,
+  "not_for_production": true,
+  "multi_session_only": true
 }

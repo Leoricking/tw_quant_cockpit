@@ -12,12 +12,28 @@
     "cancelled_at_tick": 25
   },
   "attempted_transitions": [
-    { "to_state": "RUNNING", "tick": 26 },
-    { "to_state": "READY", "tick": 27 },
-    { "to_state": "REGISTERED", "tick": 28 }
+    {
+      "to_state": "RUNNING",
+      "tick": 26
+    },
+    {
+      "to_state": "READY",
+      "tick": 27
+    },
+    {
+      "to_state": "REGISTERED",
+      "tick": 28
+    }
   ],
   "no_further_transitions": true,
   "expected_result": "blocked",
   "expected_block": true,
-  "block_reason": "terminal_state"
+  "block_reason": "terminal_state",
+  "test_fixture": true,
+  "demo_only": true,
+  "not_live": true,
+  "no_broker": true,
+  "no_real_account": true,
+  "not_for_production": true,
+  "multi_session_only": true
 }

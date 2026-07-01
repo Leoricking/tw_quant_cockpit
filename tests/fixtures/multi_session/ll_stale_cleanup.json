@@ -21,5 +21,12 @@
   "cleanup_tick": 100,
   "expected_result": "conflict",
   "expected_conflict": "stale_heartbeat",
-  "lock_cleaned_up": true
+  "lock_cleaned_up": true,
+  "test_fixture": true,
+  "demo_only": true,
+  "not_live": true,
+  "no_broker": true,
+  "no_real_account": true,
+  "not_for_production": true,
+  "multi_session_only": true
 }

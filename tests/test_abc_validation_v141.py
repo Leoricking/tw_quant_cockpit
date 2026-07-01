@@ -1233,6 +1233,7 @@ def test_release_name_141():
             "Operational Analytics & Review",
             "Failure Injection & Recovery Validation",
             "Multi-session Coordination",
+            "Fixture Governance & Safety Marker Hotfix",
     )
     assert RELEASE_NAME in _KNOWN, f"Unexpected release name: {RELEASE_NAME}"
 

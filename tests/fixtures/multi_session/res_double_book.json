@@ -28,5 +28,12 @@
   ],
   "expected_result": "conflict",
   "expected_conflict": "resource_double_booking",
-  "conflict_on_grant_index": 1
+  "conflict_on_grant_index": 1,
+  "test_fixture": true,
+  "demo_only": true,
+  "not_live": true,
+  "no_broker": true,
+  "no_real_account": true,
+  "not_for_production": true,
+  "multi_session_only": true
 }

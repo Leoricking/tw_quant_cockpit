@@ -12,7 +12,10 @@
       "type": "PAPER",
       "priority": "CRITICAL_RESEARCH",
       "strategy_id": "momentum_v1",
-      "symbols": ["AAPL", "MSFT"],
+      "symbols": [
+        "AAPL",
+        "MSFT"
+      ],
       "direction": "LONG",
       "capital_requested": 40000
     },
@@ -22,7 +25,10 @@
       "type": "PAPER",
       "priority": "NORMAL",
       "strategy_id": "mean_reversion_v1",
-      "symbols": ["TSLA", "NVDA"],
+      "symbols": [
+        "TSLA",
+        "NVDA"
+      ],
       "direction": "LONG",
       "capital_requested": 30000
     },
@@ -32,7 +38,10 @@
       "type": "PAPER",
       "priority": "LOW",
       "strategy_id": "pairs_v1",
-      "symbols": ["GOOG", "META"],
+      "symbols": [
+        "GOOG",
+        "META"
+      ],
       "direction": "LONG",
       "capital_requested": 20000
     }
@@ -56,9 +65,18 @@
       "tick": 2,
       "result": "all_granted",
       "grants": [
-        { "session_id": "s1", "quantity": 3 },
-        { "session_id": "s2", "quantity": 2 },
-        { "session_id": "s3", "quantity": 1 }
+        {
+          "session_id": "s1",
+          "quantity": 3
+        },
+        {
+          "session_id": "s2",
+          "quantity": 2
+        },
+        {
+          "session_id": "s3",
+          "quantity": 1
+        }
       ]
     },
     {
@@ -73,7 +91,10 @@
     },
     {
       "phase": "running",
-      "tick_range": [4, 100],
+      "tick_range": [
+        4,
+        100
+      ],
       "result": "all_running"
     },
     {
@@ -81,9 +102,18 @@
       "tick": 50,
       "result": "all_checkpointed",
       "checkpoints": [
-        { "session_id": "s1", "checkpoint_id": "ckpt_s1_50" },
-        { "session_id": "s2", "checkpoint_id": "ckpt_s2_50" },
-        { "session_id": "s3", "checkpoint_id": "ckpt_s3_50" }
+        {
+          "session_id": "s1",
+          "checkpoint_id": "ckpt_s1_50"
+        },
+        {
+          "session_id": "s2",
+          "checkpoint_id": "ckpt_s2_50"
+        },
+        {
+          "session_id": "s3",
+          "checkpoint_id": "ckpt_s3_50"
+        }
       ]
     },
     {
@@ -101,5 +131,12 @@
     "s3": "COMPLETED"
   },
   "total_events": 18,
-  "admission_rate": 1.0
+  "admission_rate": 1.0,
+  "test_fixture": true,
+  "demo_only": true,
+  "not_live": true,
+  "no_broker": true,
+  "no_real_account": true,
+  "not_for_production": true,
+  "multi_session_only": true
 }

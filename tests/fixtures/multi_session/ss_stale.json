@@ -16,5 +16,12 @@
   "signal_age": 100,
   "expected_result": "conflict",
   "expected_conflict": "stale_signal",
-  "signal_stale": true
+  "signal_stale": true,
+  "test_fixture": true,
+  "demo_only": true,
+  "not_live": true,
+  "no_broker": true,
+  "no_real_account": true,
+  "not_for_production": true,
+  "multi_session_only": true
 }

@@ -8,15 +8,34 @@
   "barrier": {
     "barrier_id": "b2",
     "barrier_type": "QUORUM",
-    "required_sessions": ["s1", "s2", "s3"],
+    "required_sessions": [
+      "s1",
+      "s2",
+      "s3"
+    ],
     "quorum_count": 2
   },
   "arrivals": [
-    { "session_id": "s1", "tick": 10 },
-    { "session_id": "s2", "tick": 11 }
+    {
+      "session_id": "s1",
+      "tick": 10
+    },
+    {
+      "session_id": "s2",
+      "tick": 11
+    }
   ],
   "expected_result": "success",
   "barrier_released_at_tick": 11,
   "quorum_reached": true,
-  "non_arrived_sessions": ["s3"]
+  "non_arrived_sessions": [
+    "s3"
+  ],
+  "test_fixture": true,
+  "demo_only": true,
+  "not_live": true,
+  "no_broker": true,
+  "no_real_account": true,
+  "not_for_production": true,
+  "multi_session_only": true
 }

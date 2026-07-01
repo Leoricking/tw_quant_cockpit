@@ -616,6 +616,7 @@ class TestVersion:
             "Operational Analytics & Review",
             "Failure Injection & Recovery Validation",
             "Multi-session Coordination",
+            "Fixture Governance & Safety Marker Hotfix",
         }
         assert RELEASE_NAME in known_names, f"Unexpected RELEASE_NAME: {RELEASE_NAME}"
 

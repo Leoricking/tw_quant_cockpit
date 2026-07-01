@@ -10,13 +10,31 @@
     "tick": 5
   },
   "partial_grants": [
-    { "reservation_id": "r1", "resource_type": "CPU_SLOT", "quantity": 2 },
-    { "reservation_id": "r2", "resource_type": "MEMORY_SLOT", "quantity": 1 }
+    {
+      "reservation_id": "r1",
+      "resource_type": "CPU_SLOT",
+      "quantity": 2
+    },
+    {
+      "reservation_id": "r2",
+      "resource_type": "MEMORY_SLOT",
+      "quantity": 1
+    }
   ],
   "failure_at_step": "capital_admission",
   "expected_result": "rollback",
   "rollback": {
-    "reservations_released": ["r1", "r2"],
+    "reservations_released": [
+      "r1",
+      "r2"
+    ],
     "resources_restored": true
-  }
+  },
+  "test_fixture": true,
+  "demo_only": true,
+  "not_live": true,
+  "no_broker": true,
+  "no_real_account": true,
+  "not_for_production": true,
+  "multi_session_only": true
 }

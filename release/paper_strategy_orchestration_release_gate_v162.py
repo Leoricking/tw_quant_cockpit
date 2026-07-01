@@ -56,6 +56,7 @@ _KNOWN_NAMES = {
     "Operational Analytics & Review",
     "Failure Injection & Recovery Validation",
     "Multi-session Coordination",
+            "Fixture Governance & Safety Marker Hotfix",
 }
 
 

@@ -17,7 +17,12 @@
     "created_at_tick": 50,
     "state_snapshot": {
       "capital": 95000,
-      "positions": [{ "symbol": "AAPL", "quantity": 100 }]
+      "positions": [
+        {
+          "symbol": "AAPL",
+          "quantity": 100
+        }
+      ]
     }
   },
   "recovery_plan": {
@@ -25,11 +30,30 @@
     "session_id": "s1",
     "from_checkpoint": "ckpt_1",
     "steps": [
-      { "step": 1, "action": "restore_state", "from": "ckpt_1" },
-      { "step": 2, "action": "replay_events", "from_tick": 50, "to_tick": 60 },
-      { "step": 3, "action": "verify_consistency" }
+      {
+        "step": 1,
+        "action": "restore_state",
+        "from": "ckpt_1"
+      },
+      {
+        "step": 2,
+        "action": "replay_events",
+        "from_tick": 50,
+        "to_tick": 60
+      },
+      {
+        "step": 3,
+        "action": "verify_consistency"
+      }
     ]
   },
   "expected_result": "success",
-  "recovery_state": "RECOVERING"
+  "recovery_state": "RECOVERING",
+  "test_fixture": true,
+  "demo_only": true,
+  "not_live": true,
+  "no_broker": true,
+  "no_real_account": true,
+  "not_for_production": true,
+  "multi_session_only": true
 }

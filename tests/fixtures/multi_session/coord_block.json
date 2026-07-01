@@ -11,7 +11,9 @@
       "owner": "owner_a",
       "type": "PAPER",
       "priority": "NORMAL",
-      "symbols": ["AAPL"],
+      "symbols": [
+        "AAPL"
+      ],
       "capital_requested": 50000
     },
     {
@@ -19,7 +21,9 @@
       "owner": "owner_b",
       "type": "PAPER",
       "priority": "NORMAL",
-      "symbols": ["MSFT"],
+      "symbols": [
+        "MSFT"
+      ],
       "capital_requested": 40000
     },
     {
@@ -27,7 +31,9 @@
       "owner": "owner_c",
       "type": "PAPER",
       "priority": "LOW",
-      "symbols": ["TSLA"],
+      "symbols": [
+        "TSLA"
+      ],
       "capital_requested": 20000
     }
   ],
@@ -36,13 +42,25 @@
     "available": 100000
   },
   "expected_result": "partial",
-  "expected_admitted": ["s1", "s2"],
-  "expected_blocked": ["s3"],
+  "expected_admitted": [
+    "s1",
+    "s2"
+  ],
+  "expected_blocked": [
+    "s3"
+  ],
   "conflicts": [
     {
       "type": "capital_overallocation",
       "session_id": "s3",
       "severity": "ERROR"
     }
-  ]
+  ],
+  "test_fixture": true,
+  "demo_only": true,
+  "not_live": true,
+  "no_broker": true,
+  "no_real_account": true,
+  "not_for_production": true,
+  "multi_session_only": true
 }

@@ -13,12 +13,32 @@
     "granted_at_tick": 1
   },
   "release_attempts": [
-    { "reservation_id": "r1", "tick": 5 },
-    { "reservation_id": "r1", "tick": 6 }
+    {
+      "reservation_id": "r1",
+      "tick": 5
+    },
+    {
+      "reservation_id": "r1",
+      "tick": 6
+    }
   ],
   "expected_result": "success",
   "expected_releases": [
-    { "tick": 5, "result": "released" },
-    { "tick": 6, "result": "already_released", "idempotent": true }
-  ]
+    {
+      "tick": 5,
+      "result": "released"
+    },
+    {
+      "tick": 6,
+      "result": "already_released",
+      "idempotent": true
+    }
+  ],
+  "test_fixture": true,
+  "demo_only": true,
+  "not_live": true,
+  "no_broker": true,
+  "no_real_account": true,
+  "not_for_production": true,
+  "multi_session_only": true
 }

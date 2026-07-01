@@ -22,6 +22,17 @@
       "arrival_tick": 3
     }
   ],
-  "expected_order": ["s2", "s1", "s3"],
-  "expected_result": "success"
+  "expected_order": [
+    "s2",
+    "s1",
+    "s3"
+  ],
+  "expected_result": "success",
+  "test_fixture": true,
+  "demo_only": true,
+  "not_live": true,
+  "no_broker": true,
+  "no_real_account": true,
+  "not_for_production": true,
+  "multi_session_only": true
 }

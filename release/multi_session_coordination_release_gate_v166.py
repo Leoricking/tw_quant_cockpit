@@ -680,8 +680,8 @@ class MultiSessionCoordinationReleaseGate:
     def _gate_version_is_166(self):
         try:
             from release.version_info import VERSION
-            if VERSION != "1.6.6":
-                return _fail("g_version_166", f"Expected 1.6.6, got {VERSION}")
+            if not (VERSION == "1.6.6" or VERSION.startswith("1.6.6.")):
+                return _fail("g_version_166", f"Expected 1.6.6 or 1.6.6.x, got {VERSION}")
             return _pass("g_version_166")
         except Exception as e:
             return _fail("g_version_166", str(e))

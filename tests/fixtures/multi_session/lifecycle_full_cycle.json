@@ -11,12 +11,35 @@
     "type": "PAPER"
   },
   "transitions": [
-    { "from_state": "CREATED",     "to_state": "REGISTERED", "tick": 1 },
-    { "from_state": "REGISTERED",  "to_state": "READY",       "tick": 2 },
-    { "from_state": "READY",       "to_state": "RUNNING",     "tick": 3 },
-    { "from_state": "RUNNING",     "to_state": "COMPLETED",   "tick": 20 }
+    {
+      "from_state": "CREATED",
+      "to_state": "REGISTERED",
+      "tick": 1
+    },
+    {
+      "from_state": "REGISTERED",
+      "to_state": "READY",
+      "tick": 2
+    },
+    {
+      "from_state": "READY",
+      "to_state": "RUNNING",
+      "tick": 3
+    },
+    {
+      "from_state": "RUNNING",
+      "to_state": "COMPLETED",
+      "tick": 20
+    }
   ],
   "expected_result": "success",
   "expected_final_state": "COMPLETED",
-  "all_transitions_valid": true
+  "all_transitions_valid": true,
+  "test_fixture": true,
+  "demo_only": true,
+  "not_live": true,
+  "no_broker": true,
+  "no_real_account": true,
+  "not_for_production": true,
+  "multi_session_only": true
 }

@@ -17,5 +17,12 @@
   "check_tick": 11,
   "expected_result": "expired",
   "expected_conflict": "lease_expired",
-  "lock_valid": false
+  "lock_valid": false,
+  "test_fixture": true,
+  "demo_only": true,
+  "not_live": true,
+  "no_broker": true,
+  "no_real_account": true,
+  "not_for_production": true,
+  "multi_session_only": true
 }

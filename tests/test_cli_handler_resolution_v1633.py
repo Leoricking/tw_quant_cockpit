@@ -466,6 +466,7 @@ class TestVersionAlignment:
             "Operational Analytics & Review",
             "Failure Injection & Recovery Validation",
             "Multi-session Coordination",
+            "Fixture Governance & Safety Marker Hotfix",
         }
         assert RELEASE_NAME in _KNOWN, (
             f"Got: {RELEASE_NAME}"

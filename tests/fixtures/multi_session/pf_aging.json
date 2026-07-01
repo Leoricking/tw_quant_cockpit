@@ -27,5 +27,12 @@
   "expected_result": "success",
   "expected_aging_applied": true,
   "s3_effective_priority_boost": 8,
-  "note": "s3 denied 8 rounds; aging bonus elevates effective priority above NORMAL"
+  "note": "s3 denied 8 rounds; aging bonus elevates effective priority above NORMAL",
+  "test_fixture": true,
+  "demo_only": true,
+  "not_live": true,
+  "no_broker": true,
+  "no_real_account": true,
+  "not_for_production": true,
+  "multi_session_only": true
 }

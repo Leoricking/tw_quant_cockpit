@@ -11,7 +11,9 @@
       "owner": "owner_a",
       "type": "PAPER",
       "priority": "NORMAL",
-      "symbols": ["AAPL"],
+      "symbols": [
+        "AAPL"
+      ],
       "direction": "LONG",
       "capital_requested": 30000
     },
@@ -20,7 +22,9 @@
       "owner": "owner_b",
       "type": "PAPER",
       "priority": "NORMAL",
-      "symbols": ["MSFT"],
+      "symbols": [
+        "MSFT"
+      ],
       "direction": "LONG",
       "capital_requested": 25000
     }
@@ -30,6 +34,16 @@
     "available": 100000
   },
   "expected_result": "success",
-  "expected_admitted": ["s1", "s2"],
-  "conflicts": []
+  "expected_admitted": [
+    "s1",
+    "s2"
+  ],
+  "conflicts": [],
+  "test_fixture": true,
+  "demo_only": true,
+  "not_live": true,
+  "no_broker": true,
+  "no_real_account": true,
+  "not_for_production": true,
+  "multi_session_only": true
 }

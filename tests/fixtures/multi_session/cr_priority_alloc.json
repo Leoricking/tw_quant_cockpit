@@ -27,5 +27,12 @@
     "s1": 70000,
     "s2": 30000
   },
-  "note": "CRITICAL_RESEARCH gets proportionally more from shared pool"
+  "note": "CRITICAL_RESEARCH gets proportionally more from shared pool",
+  "test_fixture": true,
+  "demo_only": true,
+  "not_live": true,
+  "no_broker": true,
+  "no_real_account": true,
+  "not_for_production": true,
+  "multi_session_only": true
 }

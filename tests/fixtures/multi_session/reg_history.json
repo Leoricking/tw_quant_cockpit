@@ -25,5 +25,12 @@
     "new_event": "MODIFIED"
   },
   "expected_result": "conflict",
-  "expected_conflict": "history_immutable"
+  "expected_conflict": "history_immutable",
+  "test_fixture": true,
+  "demo_only": true,
+  "not_live": true,
+  "no_broker": true,
+  "no_real_account": true,
+  "not_for_production": true,
+  "multi_session_only": true
 }

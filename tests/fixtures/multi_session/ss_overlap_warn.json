@@ -8,17 +8,32 @@
   "sessions": [
     {
       "session_id": "s1",
-      "symbols": ["AAPL", "MSFT"],
+      "symbols": [
+        "AAPL",
+        "MSFT"
+      ],
       "direction": "LONG"
     },
     {
       "session_id": "s2",
-      "symbols": ["AAPL", "GOOG"],
+      "symbols": [
+        "AAPL",
+        "GOOG"
+      ],
       "direction": "LONG"
     }
   ],
-  "overlapping_symbols": ["AAPL"],
+  "overlapping_symbols": [
+    "AAPL"
+  ],
   "expected_result": "conflict",
   "expected_conflict": "symbol_overlap",
-  "severity": "WARNING"
+  "severity": "WARNING",
+  "test_fixture": true,
+  "demo_only": true,
+  "not_live": true,
+  "no_broker": true,
+  "no_real_account": true,
+  "not_for_production": true,
+  "multi_session_only": true
 }

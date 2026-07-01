@@ -20,5 +20,12 @@
   ],
   "expected_result": "conflict",
   "expected_conflict": "checkpoint_conflict",
-  "conflict_on_attempt_index": 1
+  "conflict_on_attempt_index": 1,
+  "test_fixture": true,
+  "demo_only": true,
+  "not_live": true,
+  "no_broker": true,
+  "no_real_account": true,
+  "not_for_production": true,
+  "multi_session_only": true
 }
