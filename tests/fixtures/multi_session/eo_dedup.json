@@ -1,0 +1,25 @@
+{
+  "paper_only": true,
+  "research_only": true,
+  "no_real_orders": true,
+  "version": "1.6.6",
+  "test_id": "eo_dedup",
+  "description": "Duplicate event with same event_id is deduplicated and not processed twice",
+  "submissions": [
+    {
+      "event_id": "e1",
+      "session_id": "s1",
+      "timestamp": 100,
+      "submission_tick": 1
+    },
+    {
+      "event_id": "e1",
+      "session_id": "s1",
+      "timestamp": 100,
+      "submission_tick": 2
+    }
+  ],
+  "expected_result": "success",
+  "processed_count": 1,
+  "deduplicated_count": 1
+}

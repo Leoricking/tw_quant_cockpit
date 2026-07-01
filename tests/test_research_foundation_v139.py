@@ -75,6 +75,7 @@ class TestVersionInfo:
             "CLI Handler Resolution Integrity Hotfix",
             "Operational Analytics & Review",
             "Failure Injection & Recovery Validation",
+            "Multi-session Coordination",
         }
         assert RELEASE_NAME in _KNOWN, f"Unexpected RELEASE_NAME: {RELEASE_NAME}"
 

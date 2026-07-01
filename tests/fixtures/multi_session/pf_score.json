@@ -1,0 +1,35 @@
+{
+  "paper_only": true,
+  "research_only": true,
+  "no_real_orders": true,
+  "version": "1.6.6",
+  "test_id": "pf_score",
+  "description": "Fairness score computed correctly across 3 sessions",
+  "sessions": [
+    {
+      "session_id": "s1",
+      "grants": 5,
+      "denials": 1,
+      "priority": "NORMAL"
+    },
+    {
+      "session_id": "s2",
+      "grants": 4,
+      "denials": 2,
+      "priority": "NORMAL"
+    },
+    {
+      "session_id": "s3",
+      "grants": 3,
+      "denials": 3,
+      "priority": "NORMAL"
+    }
+  ],
+  "expected_result": "success",
+  "expected_scores": {
+    "s1": 0.833,
+    "s2": 0.667,
+    "s3": 0.5
+  },
+  "fairness_index": 0.944
+}

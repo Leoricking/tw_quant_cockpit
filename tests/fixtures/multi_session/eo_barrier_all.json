@@ -1,0 +1,21 @@
+{
+  "paper_only": true,
+  "research_only": true,
+  "no_real_orders": true,
+  "version": "1.6.6",
+  "test_id": "eo_barrier_all",
+  "description": "Cross-session ALL_OF barrier requires all 3 sessions to arrive before proceeding",
+  "barrier": {
+    "barrier_id": "b1",
+    "barrier_type": "ALL_OF",
+    "required_sessions": ["s1", "s2", "s3"]
+  },
+  "arrivals": [
+    { "session_id": "s1", "tick": 10 },
+    { "session_id": "s2", "tick": 11 },
+    { "session_id": "s3", "tick": 12 }
+  ],
+  "expected_result": "success",
+  "barrier_released_at_tick": 12,
+  "all_sessions_arrived": true
+}

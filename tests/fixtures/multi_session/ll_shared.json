@@ -1,0 +1,27 @@
+{
+  "paper_only": true,
+  "research_only": true,
+  "no_real_orders": true,
+  "version": "1.6.6",
+  "test_id": "ll_shared",
+  "description": "Shared lock allows multiple sessions to hold concurrently",
+  "lock_requests": [
+    {
+      "lock_id": "lock_aapl_s1",
+      "resource": "stock_AAPL",
+      "lock_type": "SHARED",
+      "owner": "s1",
+      "tick": 1
+    },
+    {
+      "lock_id": "lock_aapl_s2",
+      "resource": "stock_AAPL",
+      "lock_type": "SHARED",
+      "owner": "s2",
+      "tick": 2
+    }
+  ],
+  "expected_result": "success",
+  "expected_holders": ["s1", "s2"],
+  "concurrent_allowed": true
+}

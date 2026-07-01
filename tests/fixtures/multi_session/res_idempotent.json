@@ -1,0 +1,24 @@
+{
+  "paper_only": true,
+  "research_only": true,
+  "no_real_orders": true,
+  "version": "1.6.6",
+  "test_id": "res_idempotent",
+  "description": "Idempotent release: releasing same reservation twice is safe",
+  "reservation": {
+    "reservation_id": "r1",
+    "session_id": "s1",
+    "resource_type": "CPU_SLOT",
+    "quantity": 2,
+    "granted_at_tick": 1
+  },
+  "release_attempts": [
+    { "reservation_id": "r1", "tick": 5 },
+    { "reservation_id": "r1", "tick": 6 }
+  ],
+  "expected_result": "success",
+  "expected_releases": [
+    { "tick": 5, "result": "released" },
+    { "tick": 6, "result": "already_released", "idempotent": true }
+  ]
+}

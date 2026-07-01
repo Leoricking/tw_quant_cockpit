@@ -392,8 +392,8 @@ class FailureInjectionRecoveryHealthCheck:
                 VERSION,
             )
             if (not REAL_FAILURE_INJECTION_ENABLED and not PRODUCTION_CHAOS_ENABLED
-                    and FAILURE_INJECTION_RESEARCH_ONLY and VERSION == "1.6.5"):
-                return _pass("version_info safety flags correct for v1.6.5")
+                    and FAILURE_INJECTION_RESEARCH_ONLY and VERSION >= "1.6.5"):
+                return _pass("version_info safety flags correct for v1.6.5+")
             return _fail(
                 f"version_info flags incorrect: "
                 f"REAL_FAILURE_INJECTION_ENABLED={REAL_FAILURE_INJECTION_ENABLED}, "

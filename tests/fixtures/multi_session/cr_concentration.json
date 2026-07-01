@@ -1,0 +1,32 @@
+{
+  "paper_only": true,
+  "research_only": true,
+  "no_real_orders": true,
+  "version": "1.6.6",
+  "test_id": "cr_concentration",
+  "description": "Risk concentration warned when 3 sessions concentrated in same sector",
+  "sessions": [
+    {
+      "session_id": "s1",
+      "sector": "TECHNOLOGY",
+      "capital": 30000
+    },
+    {
+      "session_id": "s2",
+      "sector": "TECHNOLOGY",
+      "capital": 25000
+    },
+    {
+      "session_id": "s3",
+      "sector": "TECHNOLOGY",
+      "capital": 20000
+    }
+  ],
+  "total_capital": 100000,
+  "sector_capital": 75000,
+  "sector_fraction": 0.75,
+  "concentration_threshold": 0.5,
+  "expected_result": "warning",
+  "expected_conflict": "risk_concentration",
+  "severity": "WARNING"
+}

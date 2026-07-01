@@ -1,0 +1,32 @@
+{
+  "paper_only": true,
+  "research_only": true,
+  "no_real_orders": true,
+  "version": "1.6.6",
+  "test_id": "res_double_book",
+  "description": "Resource double booking detected when same resource granted twice",
+  "resource_pool": {
+    "resource_type": "CPU_SLOT",
+    "capacity": 4,
+    "available": 4
+  },
+  "grants": [
+    {
+      "reservation_id": "r1",
+      "session_id": "s1",
+      "resource_type": "CPU_SLOT",
+      "quantity": 4,
+      "tick": 1
+    },
+    {
+      "reservation_id": "r2",
+      "session_id": "s2",
+      "resource_type": "CPU_SLOT",
+      "quantity": 3,
+      "tick": 2
+    }
+  ],
+  "expected_result": "conflict",
+  "expected_conflict": "resource_double_booking",
+  "conflict_on_grant_index": 1
+}

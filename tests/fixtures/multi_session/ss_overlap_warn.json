@@ -1,0 +1,24 @@
+{
+  "paper_only": true,
+  "research_only": true,
+  "no_real_orders": true,
+  "version": "1.6.6",
+  "test_id": "ss_overlap_warn",
+  "description": "Symbol overlap warned when both s1 and s2 trade AAPL in same direction",
+  "sessions": [
+    {
+      "session_id": "s1",
+      "symbols": ["AAPL", "MSFT"],
+      "direction": "LONG"
+    },
+    {
+      "session_id": "s2",
+      "symbols": ["AAPL", "GOOG"],
+      "direction": "LONG"
+    }
+  ],
+  "overlapping_symbols": ["AAPL"],
+  "expected_result": "conflict",
+  "expected_conflict": "symbol_overlap",
+  "severity": "WARNING"
+}

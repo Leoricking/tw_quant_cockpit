@@ -1,0 +1,22 @@
+{
+  "paper_only": true,
+  "research_only": true,
+  "no_real_orders": true,
+  "version": "1.6.6",
+  "test_id": "lifecycle_full_cycle",
+  "description": "Full lifecycle: CREATED through COMPLETED with all intermediate states",
+  "session": {
+    "session_id": "s1",
+    "owner": "test_owner",
+    "type": "PAPER"
+  },
+  "transitions": [
+    { "from_state": "CREATED",     "to_state": "REGISTERED", "tick": 1 },
+    { "from_state": "REGISTERED",  "to_state": "READY",       "tick": 2 },
+    { "from_state": "READY",       "to_state": "RUNNING",     "tick": 3 },
+    { "from_state": "RUNNING",     "to_state": "COMPLETED",   "tick": 20 }
+  ],
+  "expected_result": "success",
+  "expected_final_state": "COMPLETED",
+  "all_transitions_valid": true
+}

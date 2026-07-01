@@ -125,17 +125,18 @@ class FailureInjectionRecoveryReleaseGateV165:
     def _check_version(self) -> Dict[str, str]:
         try:
             from release.version_info import VERSION
-            if VERSION == "1.6.5":
-                return _pass("VERSION=1.6.5")
-            return _fail(f"Expected 1.6.5, got {VERSION}")
+            if VERSION >= "1.6.5":
+                return _pass(f"VERSION={VERSION} >= 1.6.5")
+            return _fail(f"Expected >= 1.6.5, got {VERSION}")
         except Exception as e:
             return _fail(str(e))
 
     def _check_release_name(self) -> Dict[str, str]:
         try:
             from release.version_info import RELEASE_NAME
-            if RELEASE_NAME == "Failure Injection & Recovery Validation":
-                return _pass("RELEASE_NAME correct")
+            _known = {"Failure Injection & Recovery Validation", "Multi-session Coordination"}
+            if RELEASE_NAME in _known:
+                return _pass(f"RELEASE_NAME={RELEASE_NAME}")
             return _fail(f"Got: {RELEASE_NAME}")
         except Exception as e:
             return _fail(str(e))
@@ -143,9 +144,9 @@ class FailureInjectionRecoveryReleaseGateV165:
     def _check_base_release(self) -> Dict[str, str]:
         try:
             from release.version_info import BASE_RELEASE
-            if "1.6.4" in BASE_RELEASE:
+            if "1.6.4" in BASE_RELEASE or "1.6.5" in BASE_RELEASE:
                 return _pass(f"BASE_RELEASE: {BASE_RELEASE}")
-            return _fail(f"BASE_RELEASE should contain 1.6.4: {BASE_RELEASE}")
+            return _fail(f"BASE_RELEASE should contain 1.6.4 or 1.6.5: {BASE_RELEASE}")
         except Exception as e:
             return _fail(str(e))
 

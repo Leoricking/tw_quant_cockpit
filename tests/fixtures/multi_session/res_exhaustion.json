@@ -1,0 +1,34 @@
+{
+  "paper_only": true,
+  "research_only": true,
+  "no_real_orders": true,
+  "version": "1.6.6",
+  "test_id": "res_exhaustion",
+  "description": "Resource exhaustion: s1 granted, s2 blocked when capacity exceeded",
+  "resource_pool": {
+    "resource_type": "CPU_SLOT",
+    "capacity": 4,
+    "available": 4
+  },
+  "requests": [
+    {
+      "session_id": "s1",
+      "resource_type": "CPU_SLOT",
+      "quantity": 4,
+      "tick": 1
+    },
+    {
+      "session_id": "s2",
+      "resource_type": "CPU_SLOT",
+      "quantity": 1,
+      "tick": 2
+    }
+  ],
+  "total_requested": 5,
+  "expected_grants": [
+    { "session_id": "s1", "granted": true, "quantity": 4 }
+  ],
+  "expected_blocks": [
+    { "session_id": "s2", "blocked": true, "reason": "resource_exhausted" }
+  ]
+}

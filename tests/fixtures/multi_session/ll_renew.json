@@ -1,0 +1,29 @@
+{
+  "paper_only": true,
+  "research_only": true,
+  "no_real_orders": true,
+  "version": "1.6.6",
+  "test_id": "ll_renew",
+  "description": "Lease renewal extends lock TTL before expiry",
+  "lock": {
+    "lock_id": "lock_aapl",
+    "resource": "stock_AAPL",
+    "lock_type": "EXCLUSIVE",
+    "owner": "s1",
+    "acquired_at_tick": 1,
+    "old_ttl": 5,
+    "expires_at_tick": 6
+  },
+  "renewal": {
+    "lock_id": "lock_aapl",
+    "owner": "s1",
+    "new_ttl": 30,
+    "renewed_at_tick": 4
+  },
+  "expected_result": "success",
+  "expected_lock": {
+    "lock_id": "lock_aapl",
+    "ttl": 30,
+    "expires_at_tick": 34
+  }
+}

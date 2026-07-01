@@ -1,0 +1,22 @@
+{
+  "paper_only": true,
+  "research_only": true,
+  "no_real_orders": true,
+  "version": "1.6.6",
+  "test_id": "res_rollback",
+  "description": "Rollback releases all granted resources on admission failure",
+  "admission_attempt": {
+    "session_id": "s1",
+    "tick": 5
+  },
+  "partial_grants": [
+    { "reservation_id": "r1", "resource_type": "CPU_SLOT", "quantity": 2 },
+    { "reservation_id": "r2", "resource_type": "MEMORY_SLOT", "quantity": 1 }
+  ],
+  "failure_at_step": "capital_admission",
+  "expected_result": "rollback",
+  "rollback": {
+    "reservations_released": ["r1", "r2"],
+    "resources_restored": true
+  }
+}

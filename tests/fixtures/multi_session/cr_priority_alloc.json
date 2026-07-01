@@ -1,0 +1,31 @@
+{
+  "paper_only": true,
+  "research_only": true,
+  "no_real_orders": true,
+  "version": "1.6.6",
+  "test_id": "cr_priority_alloc",
+  "description": "Priority-based capital allocation gives more to higher priority sessions",
+  "capital_pool": {
+    "total_budget": 100000,
+    "available": 100000
+  },
+  "sessions": [
+    {
+      "session_id": "s1",
+      "priority": "CRITICAL_RESEARCH",
+      "capital_requested": 50000
+    },
+    {
+      "session_id": "s2",
+      "priority": "LOW",
+      "capital_requested": 50000
+    }
+  ],
+  "allocation_policy": "priority_weighted",
+  "expected_result": "success",
+  "expected_grants": {
+    "s1": 70000,
+    "s2": 30000
+  },
+  "note": "CRITICAL_RESEARCH gets proportionally more from shared pool"
+}

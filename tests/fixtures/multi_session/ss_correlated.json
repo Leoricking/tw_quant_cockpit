@@ -1,0 +1,31 @@
+{
+  "paper_only": true,
+  "research_only": true,
+  "no_real_orders": true,
+  "version": "1.6.6",
+  "test_id": "ss_correlated",
+  "description": "Correlated strategy cluster warned when 3 sessions all use momentum strategies",
+  "sessions": [
+    {
+      "session_id": "s1",
+      "strategy_type": "momentum",
+      "strategy_id": "momentum_v1"
+    },
+    {
+      "session_id": "s2",
+      "strategy_type": "momentum",
+      "strategy_id": "momentum_v2"
+    },
+    {
+      "session_id": "s3",
+      "strategy_type": "momentum",
+      "strategy_id": "momentum_v3"
+    }
+  ],
+  "cluster_type": "momentum",
+  "cluster_size": 3,
+  "cluster_threshold": 2,
+  "expected_result": "warning",
+  "expected_conflict": "correlated_strategy_cluster",
+  "severity": "WARNING"
+}

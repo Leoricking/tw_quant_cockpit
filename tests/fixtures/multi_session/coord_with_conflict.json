@@ -1,0 +1,41 @@
+{
+  "paper_only": true,
+  "research_only": true,
+  "no_real_orders": true,
+  "version": "1.6.6",
+  "test_id": "coord_with_conflict",
+  "description": "Coordination with symbol overlap conflict: both sessions warned but admitted",
+  "sessions": [
+    {
+      "session_id": "s1",
+      "owner": "owner_a",
+      "type": "PAPER",
+      "priority": "NORMAL",
+      "symbols": ["AAPL", "MSFT"],
+      "direction": "LONG",
+      "capital_requested": 30000
+    },
+    {
+      "session_id": "s2",
+      "owner": "owner_b",
+      "type": "PAPER",
+      "priority": "NORMAL",
+      "symbols": ["AAPL", "GOOG"],
+      "direction": "LONG",
+      "capital_requested": 25000
+    }
+  ],
+  "capital_pool": {
+    "total_budget": 100000,
+    "available": 100000
+  },
+  "expected_result": "success_with_warnings",
+  "expected_admitted": ["s1", "s2"],
+  "conflicts": [
+    {
+      "type": "symbol_overlap",
+      "symbols": ["AAPL"],
+      "severity": "WARNING"
+    }
+  ]
+}

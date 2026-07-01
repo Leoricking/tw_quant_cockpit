@@ -1,0 +1,35 @@
+{
+  "paper_only": true,
+  "research_only": true,
+  "no_real_orders": true,
+  "version": "1.6.6",
+  "test_id": "chk_recovery",
+  "description": "Recovery plan created and executed successfully from checkpoint",
+  "session": {
+    "session_id": "s1",
+    "owner": "test_owner",
+    "type": "PAPER",
+    "failed_at_tick": 60
+  },
+  "checkpoint": {
+    "checkpoint_id": "ckpt_1",
+    "session_id": "s1",
+    "created_at_tick": 50,
+    "state_snapshot": {
+      "capital": 95000,
+      "positions": [{ "symbol": "AAPL", "quantity": 100 }]
+    }
+  },
+  "recovery_plan": {
+    "plan_id": "plan_1",
+    "session_id": "s1",
+    "from_checkpoint": "ckpt_1",
+    "steps": [
+      { "step": 1, "action": "restore_state", "from": "ckpt_1" },
+      { "step": 2, "action": "replay_events", "from_tick": 50, "to_tick": 60 },
+      { "step": 3, "action": "verify_consistency" }
+    ]
+  },
+  "expected_result": "success",
+  "recovery_state": "RECOVERING"
+}

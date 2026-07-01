@@ -1,0 +1,28 @@
+{
+  "paper_only": true,
+  "research_only": true,
+  "no_real_orders": true,
+  "version": "1.6.6",
+  "test_id": "ll_ordering",
+  "description": "Consistent lock ordering prevents deadlock between sessions",
+  "lock_order": ["resource_A", "resource_B"],
+  "sessions": [
+    {
+      "session_id": "s1",
+      "acquires": [
+        { "resource": "resource_A", "tick": 1 },
+        { "resource": "resource_B", "tick": 2 }
+      ]
+    },
+    {
+      "session_id": "s2",
+      "acquires": [
+        { "resource": "resource_A", "tick": 3 },
+        { "resource": "resource_B", "tick": 4 }
+      ]
+    }
+  ],
+  "deadlock_possible": false,
+  "expected_result": "success",
+  "note": "Both sessions acquire locks in same canonical order, preventing deadlock"
+}

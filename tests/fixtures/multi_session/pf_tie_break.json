@@ -1,0 +1,24 @@
+{
+  "paper_only": true,
+  "research_only": true,
+  "no_real_orders": true,
+  "version": "1.6.6",
+  "test_id": "pf_tie_break",
+  "description": "Same priority sessions use deterministic tie-break via seed",
+  "sessions": [
+    {
+      "session_id": "s1",
+      "priority": "NORMAL",
+      "arrival_tick": 1
+    },
+    {
+      "session_id": "s2",
+      "priority": "NORMAL",
+      "arrival_tick": 1
+    }
+  ],
+  "tie_break_seed": 42,
+  "expected_result": "success",
+  "expected_order_deterministic": true,
+  "note": "With seed 42, tie-break produces a consistent, reproducible ordering"
+}

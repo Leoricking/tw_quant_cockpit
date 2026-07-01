@@ -36543,6 +36543,442 @@ def cmd_recovery_idempotency(args=None):
     print(_FAILURE_INJECTION_BANNER)
 
 
+_MULTI_SESSION_BANNER = "[!] Research Only. Paper Only. No Real Orders. No Broker. v1.6.6"
+
+
+def cmd_multi_session_health(args=None):
+    """[v1.6.6] Run multi-session coordination health check. Research only."""
+    print(_MULTI_SESSION_BANNER)
+    from paper_trading.multi_session.health_v166 import MultiSessionCoordinationHealthCheck
+    r = MultiSessionCoordinationHealthCheck().run()
+    print(f"Health: total={r['total']}  passed={r['passed']}  failed={r['failed']}  status={r['status']}")
+    if r['failed'] > 0:
+        for k, v in r['checks'].items():
+            if v[0] == 'FAIL':
+                print(f"  FAIL: {k}: {v[1]}")
+    print(_MULTI_SESSION_BANNER)
+
+
+def cmd_multi_session_gate(args=None):
+    """[v1.6.6] Run multi-session coordination release gate. Research only."""
+    print(_MULTI_SESSION_BANNER)
+    from release.multi_session_coordination_release_gate_v166 import MultiSessionCoordinationReleaseGate
+    r = MultiSessionCoordinationReleaseGate().run()
+    print(f"Gate: total={r['total']}  passed={r['passed']}  failed={r['failed']}  status={r['status']}")
+    if r['failed'] > 0:
+        for k in r['failures']:
+            print(f"  FAIL: {k}")
+    print(_MULTI_SESSION_BANNER)
+
+
+def cmd_multi_session_register(args=None):
+    """[v1.6.6] Register a paper session (simulation). Research only."""
+    print(_MULTI_SESSION_BANNER)
+    from paper_trading.multi_session.session_registry_v166 import SessionRegistry
+    from paper_trading.multi_session.session_descriptor_v166 import make_session_descriptor
+    from paper_trading.multi_session.enums_v166 import SessionType
+    reg = SessionRegistry()
+    desc = make_session_descriptor("demo_session", "demo_owner", session_type=SessionType.PAPER)
+    reg.register(desc)
+    print(f"Registered: {desc.name}  type={desc.session_type.value}  paper_only={desc.paper_only}")
+    print(_MULTI_SESSION_BANNER)
+
+
+def cmd_multi_session_list(args=None):
+    """[v1.6.6] List registered paper sessions. Research only."""
+    print(_MULTI_SESSION_BANNER)
+    from paper_trading.multi_session.session_registry_v166 import SessionRegistry
+    reg = SessionRegistry()
+    sessions = reg.list_sessions()
+    print(f"Sessions registered: {len(sessions)}")
+    for s in sessions[:10]:
+        print(f"  {s.name}  [{s.session_type.value}]  state={s.lifecycle_state.value}")
+    print(_MULTI_SESSION_BANNER)
+
+
+def cmd_multi_session_lifecycle(args=None):
+    """[v1.6.6] Show lifecycle state of paper sessions. Research only."""
+    print(_MULTI_SESSION_BANNER)
+    from paper_trading.multi_session.enums_v166 import SessionLifecycleState, VALID_LIFECYCLE_TRANSITIONS, REQUIRES_VERIFICATION_BEFORE_RUNNING
+    print(f"Lifecycle states: {[s.name for s in SessionLifecycleState]}")
+    print(f"States requiring verification before RUNNING: {[s.name for s in REQUIRES_VERIFICATION_BEFORE_RUNNING]}")
+    terminal = [s.name for s in SessionLifecycleState if not VALID_LIFECYCLE_TRANSITIONS.get(s)]
+    print(f"Terminal states: {terminal}")
+    print(_MULTI_SESSION_BANNER)
+
+
+def cmd_multi_session_policy(args=None):
+    """[v1.6.6] Show default coordination policy. Research only."""
+    print(_MULTI_SESSION_BANNER)
+    from paper_trading.multi_session.coordination_policy_v166 import make_default_policy, DEFAULT_FORBIDDEN_ACTIONS
+    policy = make_default_policy()
+    print(f"Policy version: {policy.version}")
+    print(f"Max sessions: {policy.max_concurrent_sessions}")
+    print(f"Forbidden actions ({len(DEFAULT_FORBIDDEN_ACTIONS)}): {DEFAULT_FORBIDDEN_ACTIONS}")
+    print(_MULTI_SESSION_BANNER)
+
+
+def cmd_multi_session_resources(args=None):
+    """[v1.6.6] Show resource reservations. Research only."""
+    print(_MULTI_SESSION_BANNER)
+    from paper_trading.multi_session.resource_manager_v166 import ResourceManager
+    from paper_trading.multi_session.enums_v166 import ResourceType
+    rm = ResourceManager()
+    print(f"Resource types: {[rt.value for rt in ResourceType]}")
+    print("Resource manager ready. No real resource allocation.")
+    print(_MULTI_SESSION_BANNER)
+
+
+def cmd_multi_session_conflicts(args=None):
+    """[v1.6.6] Show detected conflicts. Research only."""
+    print(_MULTI_SESSION_BANNER)
+    from paper_trading.multi_session.conflict_detector_v166 import ConflictDetector
+    cd = ConflictDetector()
+    print("ConflictDetector ready. No sessions loaded — 0 conflicts.")
+    print(_MULTI_SESSION_BANNER)
+
+
+def cmd_multi_session_priority(args=None):
+    """[v1.6.6] Show session priority ordering. Research only."""
+    print(_MULTI_SESSION_BANNER)
+    from paper_trading.multi_session.enums_v166 import SessionPriority
+    for p in SessionPriority:
+        print(f"  {p.name}: {p.value}")
+    print(_MULTI_SESSION_BANNER)
+
+
+def cmd_multi_session_fairness(args=None):
+    """[v1.6.6] Show fairness metrics and aging state. Research only."""
+    print(_MULTI_SESSION_BANNER)
+    from paper_trading.multi_session.fairness_engine_v166 import FairnessEngine
+    fe = FairnessEngine()
+    summary = fe.fairness_summary()
+    print(f"Fairness summary: {summary}")
+    print(_MULTI_SESSION_BANNER)
+
+
+def cmd_multi_session_schedule(args=None):
+    """[v1.6.6] Show current schedule round. Research only."""
+    print(_MULTI_SESSION_BANNER)
+    from paper_trading.multi_session.scheduler_v166 import SessionScheduler
+    sched = SessionScheduler()
+    entries = sched.schedule_round([])
+    print(f"Schedule entries: {len(entries)}")
+    print(_MULTI_SESSION_BANNER)
+
+
+def cmd_multi_session_locks(args=None):
+    """[v1.6.6] Show logical lock state. Research only."""
+    print(_MULTI_SESSION_BANNER)
+    from paper_trading.multi_session.lock_manager_v166 import LockManager
+    lm = LockManager()
+    held = lm.held_locks()
+    print(f"Held locks: {len(held)}")
+    print("In-memory logical locks only. No OS locks. No Redis.")
+    print(_MULTI_SESSION_BANNER)
+
+
+def cmd_multi_session_leases(args=None):
+    """[v1.6.6] Show active leases. Research only."""
+    print(_MULTI_SESSION_BANNER)
+    from paper_trading.multi_session.lease_v166 import LeaseManager
+    lm = LeaseManager()
+    print("LeaseManager ready. No active leases.")
+    print(_MULTI_SESSION_BANNER)
+
+
+def cmd_multi_session_deadlock(args=None):
+    """[v1.6.6] Run deadlock detection. Research only."""
+    print(_MULTI_SESSION_BANNER)
+    from paper_trading.multi_session.deadlock_detector_v166 import DeadlockDetector
+    dd = DeadlockDetector()
+    cycles = dd.detect_cycles({})
+    print(f"Deadlock cycles detected: {len(cycles)}")
+    print(_MULTI_SESSION_BANNER)
+
+
+def cmd_multi_session_events(args=None):
+    """[v1.6.6] Show event ordering state. Research only."""
+    print(_MULTI_SESSION_BANNER)
+    from paper_trading.multi_session.event_ordering_v166 import EventOrderingEngine
+    engine = EventOrderingEngine()
+    print("EventOrderingEngine ready. Global sequence counter at 0.")
+    print(_MULTI_SESSION_BANNER)
+
+
+def cmd_multi_session_barriers(args=None):
+    """[v1.6.6] Show event barrier state. Research only."""
+    print(_MULTI_SESSION_BANNER)
+    from paper_trading.multi_session.event_barrier_v166 import EventBarrier
+    eb = EventBarrier()
+    print("EventBarrier ready. No active barriers.")
+    print(_MULTI_SESSION_BANNER)
+
+
+def cmd_multi_session_capital(args=None):
+    """[v1.6.6] Show paper capital allocation. Research only."""
+    print(_MULTI_SESSION_BANNER)
+    from paper_trading.multi_session.capital_allocator_v166 import CapitalAllocator
+    ca = CapitalAllocator()
+    print("CapitalAllocator ready. Paper budget only. No real capital movement.")
+    print(_MULTI_SESSION_BANNER)
+
+
+def cmd_multi_session_risk(args=None):
+    """[v1.6.6] Show risk aggregation state. Research only."""
+    print(_MULTI_SESSION_BANNER)
+    from paper_trading.multi_session.risk_aggregator_v166 import RiskAggregator
+    ra = RiskAggregator()
+    result = ra.aggregate([], {})
+    print(f"Risk aggregation: {result}")
+    print(_MULTI_SESSION_BANNER)
+
+
+def cmd_multi_session_symbols(args=None):
+    """[v1.6.6] Show symbol exposure coordination. Research only."""
+    print(_MULTI_SESSION_BANNER)
+    from paper_trading.multi_session.symbol_exposure_v166 import SymbolExposureCoordinator
+    sec = SymbolExposureCoordinator()
+    print("SymbolExposureCoordinator ready. No sessions loaded.")
+    print(_MULTI_SESSION_BANNER)
+
+
+def cmd_multi_session_strategies(args=None):
+    """[v1.6.6] Show strategy conflict detection. Research only."""
+    print(_MULTI_SESSION_BANNER)
+    from paper_trading.multi_session.strategy_conflict_v166 import StrategyConflictDetector
+    scd = StrategyConflictDetector()
+    conflicts = scd.detect([])
+    print(f"Strategy conflicts: {len(conflicts)}")
+    print(_MULTI_SESSION_BANNER)
+
+
+def cmd_multi_session_leader(args=None):
+    """[v1.6.6] Show leader election state. Research only."""
+    print(_MULTI_SESSION_BANNER)
+    from paper_trading.multi_session.leader_election_v166 import LeaderElection
+    le = LeaderElection()
+    print("LeaderElection ready. Deterministic, local, no network.")
+    print(_MULTI_SESSION_BANNER)
+
+
+def cmd_multi_session_heartbeat(args=None):
+    """[v1.6.6] Show heartbeat and stale session state. Research only."""
+    print(_MULTI_SESSION_BANNER)
+    from paper_trading.multi_session.heartbeat_v166 import HeartbeatManager
+    hm = HeartbeatManager()
+    stale = hm.stale_sessions()
+    print(f"Stale sessions: {len(stale)}")
+    print(_MULTI_SESSION_BANNER)
+
+
+def cmd_multi_session_checkpoints(args=None):
+    """[v1.6.6] Show checkpoint state. Research only."""
+    print(_MULTI_SESSION_BANNER)
+    from paper_trading.multi_session.checkpoint_coordinator_v166 import CheckpointCoordinator
+    cc = CheckpointCoordinator()
+    print("CheckpointCoordinator ready. No checkpoints created.")
+    print(_MULTI_SESSION_BANNER)
+
+
+def cmd_multi_session_recovery(args=None):
+    """[v1.6.6] Show recovery plan state. Research only."""
+    print(_MULTI_SESSION_BANNER)
+    from paper_trading.multi_session.recovery_coordinator_v166 import RecoveryCoordinator
+    rc = RecoveryCoordinator()
+    print("RecoveryCoordinator ready. No auto-recovery. Verification required.")
+    print(_MULTI_SESSION_BANNER)
+
+
+def cmd_multi_session_isolation(args=None):
+    """[v1.6.6] Show data isolation status. Research only."""
+    print(_MULTI_SESSION_BANNER)
+    from paper_trading.multi_session.data_isolation_v166 import SessionIsolationStore
+    store = SessionIsolationStore()
+    print(f"Isolated namespaces: {store.ISOLATED_NAMESPACES}")
+    print("Cross-session contamination count requirement: 0")
+    print(_MULTI_SESSION_BANNER)
+
+
+def cmd_multi_session_scorecard(args=None):
+    """[v1.6.6] Compute coordination scorecard. Research only."""
+    print(_MULTI_SESSION_BANNER)
+    from paper_trading.multi_session.scorecard_v166 import MultiSessionScorecard, SCORECARD_WEIGHTS
+    sc = MultiSessionScorecard()
+    print(f"Scorecard dimensions: {len(SCORECARD_WEIGHTS)}")
+    print(f"Weight total: {sum(SCORECARD_WEIGHTS.values())}")
+    for dim, w in SCORECARD_WEIGHTS.items():
+        print(f"  {dim}: {w}")
+    print(_MULTI_SESSION_BANNER)
+
+
+def cmd_multi_session_report(args=None):
+    """[v1.6.6] Generate coordination report. Research only."""
+    print(_MULTI_SESSION_BANNER)
+    from paper_trading.multi_session.report_v166 import CoordinationReport, REPORT_SECTIONS
+    r = CoordinationReport()
+    r.set_section("executive_summary", "v1.6.6 Multi-session Coordination — Paper Only")
+    print(f"Report sections: {len(REPORT_SECTIONS)}")
+    print(r.to_markdown()[:400])
+    print(_MULTI_SESSION_BANNER)
+
+
+def cmd_multi_session_metrics(args=None):
+    """[v1.6.6] Show coordination metrics. Research only."""
+    print(_MULTI_SESSION_BANNER)
+    from paper_trading.multi_session.metrics_v166 import CoordinationMetrics
+    m = CoordinationMetrics()
+    result = m.compute([])
+    print(f"Metrics: {result}")
+    print(_MULTI_SESSION_BANNER)
+
+
+def cmd_multi_session_scenarios(args=None):
+    """[v1.6.6] List all 70 coordination scenarios. Research only."""
+    print(_MULTI_SESSION_BANNER)
+    from paper_trading.multi_session.scenario_registry_v166 import SCENARIO_REGISTRY
+    cats = {}
+    for s in SCENARIO_REGISTRY:
+        cats.setdefault(s.category, 0)
+        cats[s.category] += 1
+    print(f"Total scenarios: {len(SCENARIO_REGISTRY)}")
+    for cat, count in sorted(cats.items()):
+        print(f"  {cat}: {count}")
+    print(_MULTI_SESSION_BANNER)
+
+
+def cmd_multi_session_replay(args=None):
+    """[v1.6.6] Show coordination replay log. Research only."""
+    print(_MULTI_SESSION_BANNER)
+    from paper_trading.multi_session.replay_v166 import CoordinationReplay
+    rp = CoordinationReplay()
+    log = rp.get_log()
+    print(f"Replay log entries: {len(log)}")
+    print(_MULTI_SESSION_BANNER)
+
+
+def cmd_multi_session_lineage(args=None):
+    """[v1.6.6] Show coordination lineage chain. Research only."""
+    print(_MULTI_SESSION_BANNER)
+    from paper_trading.multi_session.lineage_v166 import CoordinationLineage
+    lin = CoordinationLineage()
+    nodes = lin.all_nodes()
+    print(f"Lineage nodes: {len(nodes)}")
+    print(_MULTI_SESSION_BANNER)
+
+
+def cmd_multi_session_reconcile(args=None):
+    """[v1.6.6] Run coordination reconciliation. Research only."""
+    print(_MULTI_SESSION_BANNER)
+    from paper_trading.multi_session.reconciliation_v166 import CoordinationReconciler
+    rec = CoordinationReconciler()
+    print("CoordinationReconciler ready.")
+    print(_MULTI_SESSION_BANNER)
+
+
+def cmd_multi_session_reproducibility(args=None):
+    """[v1.6.6] Validate coordination reproducibility. Research only."""
+    print(_MULTI_SESSION_BANNER)
+    from paper_trading.multi_session.reproducibility_v166 import compute_input_hash
+    h1 = compute_input_hash(["s1", "s2"], "policy_v1", "t=0", 42)
+    h2 = compute_input_hash(["s1", "s2"], "policy_v1", "t=0", 42)
+    match = h1 == h2
+    print(f"Reproducibility: same_input→same_hash={match}  hash={h1[:16]}...")
+    print(_MULTI_SESSION_BANNER)
+
+
+def cmd_multi_session_starvation(args=None):
+    """[v1.6.6] Run starvation detection. Research only."""
+    print(_MULTI_SESSION_BANNER)
+    from paper_trading.multi_session.starvation_detector_v166 import StarvationDetector
+    sd = StarvationDetector()
+    starved = sd.detect_all({})
+    print(f"Starved sessions: {len(starved)}")
+    print(_MULTI_SESSION_BANNER)
+
+
+def cmd_multi_session_panel(args=None):
+    """[v1.6.6] Show multi-session coordination panel state. Research only."""
+    print(_MULTI_SESSION_BANNER)
+    from gui.multi_session_coordination_panel import MultiSessionCoordinationPanel
+    panel = MultiSessionCoordinationPanel()
+    print(panel.render_text_summary())
+    print(_MULTI_SESSION_BANNER)
+
+
+def cmd_multi_session_safety_audit(args=None):
+    """[v1.6.6] Run safety audit for multi-session coordination. Research only."""
+    print(_MULTI_SESSION_BANNER)
+    import paper_trading.multi_session as ms
+    flags = {k: getattr(ms, k) for k in dir(ms) if not k.startswith('_')}
+    print(f"Safety flags ({len(flags)}):")
+    for k, v in sorted(flags.items()):
+        print(f"  {k}: {v}")
+    print(_MULTI_SESSION_BANNER)
+
+
+def cmd_multi_session_fixtures_validate(args=None):
+    """[v1.6.6] Validate all multi-session fixtures. Research only."""
+    print(_MULTI_SESSION_BANNER)
+    import os, json
+    fixture_dir = "tests/fixtures/multi_session"
+    files = [f for f in os.listdir(fixture_dir) if f.endswith('.json')]
+    errors = []
+    for fname in files:
+        path = os.path.join(fixture_dir, fname)
+        with open(path) as f:
+            data = json.load(f)
+        for key in ('paper_only', 'research_only', 'no_real_orders', 'version'):
+            if key not in data:
+                errors.append(f"{fname}: missing {key}")
+    print(f"Fixtures: {len(files)} total  {len(files)-len(errors)} passed  {len(errors)} failed")
+    for e in errors[:5]:
+        print(f"  ERROR: {e}")
+    print(_MULTI_SESSION_BANNER)
+
+
+def cmd_multi_session_store_summary(args=None):
+    """[v1.6.6] Show coordination store summary. Research only."""
+    print(_MULTI_SESSION_BANNER)
+    from paper_trading.multi_session.store_v166 import CoordinationStore
+    store = CoordinationStore()
+    summary = store.summary()
+    print(f"Store summary: {summary}")
+    print(_MULTI_SESSION_BANNER)
+
+
+def cmd_multi_session_version(args=None):
+    """[v1.6.6] Show multi-session coordination version info. Research only."""
+    print(_MULTI_SESSION_BANNER)
+    from release.version_info import VERSION, RELEASE_NAME, MULTI_SESSION_COORDINATION_BASELINE
+    print(f"Version: {VERSION}")
+    print(f"Release: {RELEASE_NAME}")
+    print(f"Multi-session baseline: {MULTI_SESSION_COORDINATION_BASELINE}")
+    print(_MULTI_SESSION_BANNER)
+
+
+def cmd_multi_session_discovery(args=None):
+    """[v1.6.6] Run session discovery. Research only."""
+    print(_MULTI_SESSION_BANNER)
+    from paper_trading.multi_session.session_registry_v166 import SessionRegistry
+    from paper_trading.multi_session.session_discovery_v166 import SessionDiscovery
+    reg = SessionRegistry()
+    disc = SessionDiscovery(reg)
+    summary = disc.summary()
+    print(f"Discovery summary: {summary}")
+    print(_MULTI_SESSION_BANNER)
+
+
+def cmd_multi_session_capabilities(args=None):
+    """[v1.6.6] Show session capability declarations. Research only."""
+    print(_MULTI_SESSION_BANNER)
+    from paper_trading.multi_session.session_capability_v166 import STANDARD_CAPABILITIES
+    print(f"Standard capabilities ({len(STANDARD_CAPABILITIES)}):")
+    for cap in STANDARD_CAPABILITIES:
+        print(f"  {cap}")
+    print(_MULTI_SESSION_BANNER)
+
+
 def cmd_paper_strategy_health(args=None):
     """[v1.6.2] Paper strategy orchestration health check. Research only."""
     print(_STRATEGY_SAFETY_BANNER)
@@ -38396,6 +38832,47 @@ def main() -> None:
         "recovery-post-validate":               cmd_recovery_post_validate,
         "recovery-rollback":                    cmd_recovery_rollback,
         "recovery-idempotency":                 cmd_recovery_idempotency,
+        "multi-session-health":                  cmd_multi_session_health,
+        "multi-session-gate":                    cmd_multi_session_gate,
+        "multi-session-register":                cmd_multi_session_register,
+        "multi-session-list":                    cmd_multi_session_list,
+        "multi-session-lifecycle":               cmd_multi_session_lifecycle,
+        "multi-session-policy":                  cmd_multi_session_policy,
+        "multi-session-resources":               cmd_multi_session_resources,
+        "multi-session-conflicts":               cmd_multi_session_conflicts,
+        "multi-session-priority":                cmd_multi_session_priority,
+        "multi-session-fairness":                cmd_multi_session_fairness,
+        "multi-session-schedule":                cmd_multi_session_schedule,
+        "multi-session-locks":                   cmd_multi_session_locks,
+        "multi-session-leases":                  cmd_multi_session_leases,
+        "multi-session-deadlock":                cmd_multi_session_deadlock,
+        "multi-session-events":                  cmd_multi_session_events,
+        "multi-session-barriers":                cmd_multi_session_barriers,
+        "multi-session-capital":                 cmd_multi_session_capital,
+        "multi-session-risk":                    cmd_multi_session_risk,
+        "multi-session-symbols":                 cmd_multi_session_symbols,
+        "multi-session-strategies":              cmd_multi_session_strategies,
+        "multi-session-leader":                  cmd_multi_session_leader,
+        "multi-session-heartbeat":               cmd_multi_session_heartbeat,
+        "multi-session-checkpoints":             cmd_multi_session_checkpoints,
+        "multi-session-recovery":                cmd_multi_session_recovery,
+        "multi-session-isolation":               cmd_multi_session_isolation,
+        "multi-session-scorecard":               cmd_multi_session_scorecard,
+        "multi-session-report":                  cmd_multi_session_report,
+        "multi-session-metrics":                 cmd_multi_session_metrics,
+        "multi-session-scenarios":               cmd_multi_session_scenarios,
+        "multi-session-replay":                  cmd_multi_session_replay,
+        "multi-session-lineage":                 cmd_multi_session_lineage,
+        "multi-session-reconcile":               cmd_multi_session_reconcile,
+        "multi-session-reproducibility":         cmd_multi_session_reproducibility,
+        "multi-session-starvation":              cmd_multi_session_starvation,
+        "multi-session-panel":                   cmd_multi_session_panel,
+        "multi-session-safety-audit":            cmd_multi_session_safety_audit,
+        "multi-session-fixtures-validate":       cmd_multi_session_fixtures_validate,
+        "multi-session-store-summary":           cmd_multi_session_store_summary,
+        "multi-session-version":                 cmd_multi_session_version,
+        "multi-session-discovery":               cmd_multi_session_discovery,
+        "multi-session-capabilities":            cmd_multi_session_capabilities,
     }
 
     if args.command is None:

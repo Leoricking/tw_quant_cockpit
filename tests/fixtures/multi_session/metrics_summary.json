@@ -1,0 +1,27 @@
+{
+  "paper_only": true,
+  "research_only": true,
+  "no_real_orders": true,
+  "version": "1.6.6",
+  "test_id": "metrics_summary",
+  "description": "Metrics summary across 5 coordinations with 80% admission rate",
+  "metrics": {
+    "total_coordinations": 5,
+    "total_sessions": 12,
+    "admitted_sessions": 10,
+    "blocked_sessions": 2,
+    "admission_rate": 0.8,
+    "average_latency_ticks": 3.2,
+    "conflict_rate": 0.25,
+    "warning_count": 4,
+    "error_count": 1,
+    "capital_utilization": 0.72,
+    "fairness_index": 0.91
+  },
+  "period": {
+    "from_tick": 0,
+    "to_tick": 500
+  },
+  "expected_result": "success",
+  "expected_admission_rate": 0.8
+}

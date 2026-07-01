@@ -56,6 +56,7 @@ _KNOWN_NAMES = {
     "CLI Handler Resolution Integrity Hotfix",
     "Operational Analytics & Review",
     "Failure Injection & Recovery Validation",
+    "Multi-session Coordination",
 }
 
 
@@ -190,7 +191,7 @@ class OperationalAnalyticsReviewReleaseGateV164:
 
     def _base_release_check(self):
         from release.version_info import BASE_RELEASE
-        ok = any(v in BASE_RELEASE for v in ("1.6.3.3", "1.6.4"))
+        ok = any(v in BASE_RELEASE for v in ("1.6.3.3", "1.6.4", "1.6.5"))
         return ok, f"BASE_RELEASE={BASE_RELEASE}"
 
     def _analytics_modules_check(self):

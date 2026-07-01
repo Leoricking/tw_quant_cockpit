@@ -1,0 +1,23 @@
+{
+  "paper_only": true,
+  "research_only": true,
+  "no_real_orders": true,
+  "version": "1.6.6",
+  "test_id": "ll_excl_acquire",
+  "description": "Exclusive lock successfully acquired by s1",
+  "lock_request": {
+    "lock_id": "lock_aapl",
+    "resource": "stock_AAPL",
+    "lock_type": "EXCLUSIVE",
+    "owner": "s1",
+    "tick": 1
+  },
+  "expected_result": "success",
+  "expected_lock": {
+    "lock_id": "lock_aapl",
+    "resource": "stock_AAPL",
+    "lock_type": "EXCLUSIVE",
+    "owner": "s1",
+    "acquired_at_tick": 1
+  }
+}

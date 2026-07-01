@@ -1,0 +1,28 @@
+{
+  "paper_only": true,
+  "research_only": true,
+  "no_real_orders": true,
+  "version": "1.6.6",
+  "test_id": "res_partial",
+  "description": "Partial resource grant when full request cannot be satisfied",
+  "resource_pool": {
+    "resource_type": "CPU_SLOT",
+    "capacity": 4,
+    "available": 2
+  },
+  "request": {
+    "session_id": "s1",
+    "resource_type": "CPU_SLOT",
+    "quantity": 4,
+    "allow_partial": true,
+    "tick": 1
+  },
+  "expected_result": "partial",
+  "expected_grant": {
+    "session_id": "s1",
+    "resource_type": "CPU_SLOT",
+    "quantity_requested": 4,
+    "quantity_granted": 2,
+    "partial": true
+  }
+}

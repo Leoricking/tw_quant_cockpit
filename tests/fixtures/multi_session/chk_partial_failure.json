@@ -1,0 +1,27 @@
+{
+  "paper_only": true,
+  "research_only": true,
+  "no_real_orders": true,
+  "version": "1.6.6",
+  "test_id": "chk_partial_failure",
+  "description": "Partial recovery failure: s1 recovers OK, s2 recovery fails with collision",
+  "recoveries": [
+    {
+      "plan_id": "plan_1",
+      "session_id": "s1",
+      "status": "SUCCESS",
+      "completed_at_tick": 70
+    },
+    {
+      "plan_id": "plan_2",
+      "session_id": "s2",
+      "status": "FAILED",
+      "failed_at_tick": 70,
+      "failure_reason": "recovery_collision"
+    }
+  ],
+  "expected_result": "partial",
+  "expected_conflict": "recovery_collision",
+  "s1_recovered": true,
+  "s2_recovered": false
+}

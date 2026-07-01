@@ -1,0 +1,51 @@
+{
+  "paper_only": true,
+  "research_only": true,
+  "no_real_orders": true,
+  "version": "1.6.6",
+  "test_id": "report_full",
+  "description": "Full coordination report with all sections populated",
+  "report_id": "rpt_1",
+  "generated_at_tick": 200,
+  "sections": {
+    "summary": {
+      "total_sessions": 3,
+      "admitted": 3,
+      "blocked": 0,
+      "warnings": 2,
+      "errors": 0
+    },
+    "registration": {
+      "sessions_registered": 3,
+      "duplicates_detected": 0,
+      "stale_detected": 0
+    },
+    "lifecycle": {
+      "transitions_valid": 12,
+      "transitions_blocked": 1,
+      "sessions_completed": 2,
+      "sessions_failed": 0
+    },
+    "resources": {
+      "total_grants": 6,
+      "total_releases": 4,
+      "double_bookings": 0,
+      "expirations": 0
+    },
+    "capital": {
+      "total_budget": 100000,
+      "total_allocated": 75000,
+      "utilization_fraction": 0.75
+    },
+    "conflicts": [
+      { "type": "symbol_overlap", "count": 1, "severity": "WARNING" },
+      { "type": "concentration_limit", "count": 1, "severity": "WARNING" }
+    ],
+    "checkpoints": {
+      "created": 3,
+      "verified": 3,
+      "collisions": 0
+    }
+  },
+  "expected_result": "success"
+}

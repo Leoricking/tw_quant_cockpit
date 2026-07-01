@@ -1,0 +1,26 @@
+{
+  "paper_only": true,
+  "research_only": true,
+  "no_real_orders": true,
+  "version": "1.6.6",
+  "test_id": "lc_recovering",
+  "description": "RECOVERING to READY transition with successful verification",
+  "session": {
+    "session_id": "s1",
+    "owner": "test_owner",
+    "type": "PAPER",
+    "recovery_started_at_tick": 12
+  },
+  "transition": {
+    "from_state": "RECOVERING",
+    "to_state": "READY",
+    "tick": 18
+  },
+  "verification": {
+    "verified": true,
+    "verifier": "test_owner",
+    "verified_at_tick": 17
+  },
+  "expected_result": "success",
+  "expected_state": "READY"
+}

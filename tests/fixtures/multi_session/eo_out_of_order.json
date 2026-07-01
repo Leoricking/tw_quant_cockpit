@@ -1,0 +1,19 @@
+{
+  "paper_only": true,
+  "research_only": true,
+  "no_real_orders": true,
+  "version": "1.6.6",
+  "test_id": "eo_out_of_order",
+  "description": "Out-of-order event detected when sequence 5 arrives before sequence 3",
+  "session_id": "s1",
+  "events_received": [
+    { "event_id": "e1", "global_sequence": 1, "timestamp": 100 },
+    { "event_id": "e2", "global_sequence": 2, "timestamp": 101 },
+    { "event_id": "e5", "global_sequence": 5, "timestamp": 104, "arrival_order": 3 },
+    { "event_id": "e3", "global_sequence": 3, "timestamp": 102, "arrival_order": 4 }
+  ],
+  "expected_result": "conflict",
+  "expected_conflict": "event_order_violation",
+  "out_of_order_event": "e5",
+  "expected_next_sequence": 3
+}

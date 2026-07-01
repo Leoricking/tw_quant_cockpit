@@ -1,0 +1,27 @@
+{
+  "paper_only": true,
+  "research_only": true,
+  "no_real_orders": true,
+  "version": "1.6.6",
+  "test_id": "pf_high_first",
+  "description": "High priority session admitted first regardless of arrival order",
+  "sessions": [
+    {
+      "session_id": "s1",
+      "priority": "NORMAL",
+      "arrival_tick": 1
+    },
+    {
+      "session_id": "s2",
+      "priority": "CRITICAL_RESEARCH",
+      "arrival_tick": 2
+    },
+    {
+      "session_id": "s3",
+      "priority": "LOW",
+      "arrival_tick": 3
+    }
+  ],
+  "expected_order": ["s2", "s1", "s3"],
+  "expected_result": "success"
+}

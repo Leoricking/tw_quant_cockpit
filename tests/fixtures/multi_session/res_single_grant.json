@@ -1,0 +1,30 @@
+{
+  "paper_only": true,
+  "research_only": true,
+  "no_real_orders": true,
+  "version": "1.6.6",
+  "test_id": "res_single_grant",
+  "description": "Single session resource grant succeeds",
+  "session": {
+    "session_id": "s1",
+    "owner": "test_owner",
+    "type": "PAPER"
+  },
+  "resource_request": {
+    "resource_type": "CPU_SLOT",
+    "quantity": 1,
+    "requested_by": "s1",
+    "tick": 1
+  },
+  "resource_pool": {
+    "resource_type": "CPU_SLOT",
+    "capacity": 4,
+    "available": 4
+  },
+  "expected_result": "success",
+  "expected_grant": {
+    "session_id": "s1",
+    "resource_type": "CPU_SLOT",
+    "quantity": 1
+  }
+}

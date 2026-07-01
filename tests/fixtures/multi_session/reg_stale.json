@@ -1,0 +1,23 @@
+{
+  "paper_only": true,
+  "research_only": true,
+  "no_real_orders": true,
+  "version": "1.6.6",
+  "test_id": "reg_stale",
+  "description": "Stale session detection based on heartbeat age",
+  "session": {
+    "session_id": "s1",
+    "owner": "test_owner",
+    "type": "PAPER",
+    "state": "REGISTERED",
+    "last_heartbeat": 0
+  },
+  "clock": {
+    "clock_tick": 0,
+    "current_tick": 100,
+    "stale_threshold": 5
+  },
+  "expected_result": "conflict",
+  "expected_conflict": "stale_heartbeat",
+  "ticks_since_heartbeat": 100
+}

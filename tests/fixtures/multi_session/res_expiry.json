@@ -1,0 +1,21 @@
+{
+  "paper_only": true,
+  "research_only": true,
+  "no_real_orders": true,
+  "version": "1.6.6",
+  "test_id": "res_expiry",
+  "description": "Reservation expiry invalidates lease after TTL",
+  "reservation": {
+    "reservation_id": "r1",
+    "session_id": "s1",
+    "resource_type": "CPU_SLOT",
+    "quantity": 2,
+    "granted_at_tick": 1,
+    "ttl_seconds": 1,
+    "expires_at_tick": 2
+  },
+  "check_tick": 10,
+  "expected_result": "conflict",
+  "expected_conflict": "lease_expired",
+  "expired": true
+}

@@ -70,7 +70,7 @@ class ProviderStableReleaseGate:
                              "CLI Registration Health Integrity Hotfix",
                              "CLI Handler Resolution Integrity Hotfix",
                              "Operational Analytics & Review",
-                             "Failure Injection & Recovery Validation"}
+                             "Failure Injection & Recovery Validation", "Multi-session Coordination"}
             parts = tuple(int(x) for x in VERSION.split(".")[:3])
             ok = (
                 parts >= (1, 4, 9)

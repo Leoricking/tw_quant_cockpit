@@ -1,0 +1,25 @@
+{
+  "paper_only": true,
+  "research_only": true,
+  "no_real_orders": true,
+  "version": "1.6.6",
+  "test_id": "ll_stale_cleanup",
+  "description": "Stale lock cleanup removes locks held by sessions with stale heartbeats",
+  "lock": {
+    "lock_id": "lock_aapl",
+    "resource": "stock_AAPL",
+    "lock_type": "EXCLUSIVE",
+    "owner": "s1",
+    "acquired_at_tick": 1
+  },
+  "session": {
+    "session_id": "s1",
+    "last_heartbeat": 1,
+    "current_tick": 100,
+    "stale_threshold": 5
+  },
+  "cleanup_tick": 100,
+  "expected_result": "conflict",
+  "expected_conflict": "stale_heartbeat",
+  "lock_cleaned_up": true
+}

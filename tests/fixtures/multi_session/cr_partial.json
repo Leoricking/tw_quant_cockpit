@@ -1,0 +1,32 @@
+{
+  "paper_only": true,
+  "research_only": true,
+  "no_real_orders": true,
+  "version": "1.6.6",
+  "test_id": "cr_partial",
+  "description": "Partial capital grant when both requests cannot be fully satisfied",
+  "capital_pool": {
+    "total_budget": 100000,
+    "allocated": 0,
+    "available": 100000
+  },
+  "requests": [
+    {
+      "session_id": "s1",
+      "capital_requested": 80000,
+      "allow_partial": false
+    },
+    {
+      "session_id": "s2",
+      "capital_requested": 40000,
+      "allow_partial": true
+    }
+  ],
+  "expected_result": "partial",
+  "expected_grants": {
+    "s1": 80000,
+    "s2": 20000
+  },
+  "s2_partial": true,
+  "s2_received_fraction": 0.5
+}

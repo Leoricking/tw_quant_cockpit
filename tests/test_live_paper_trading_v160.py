@@ -1275,7 +1275,7 @@ class TestVersionInfo:
                   "CLI Registration Health Integrity Hotfix",
             "CLI Handler Resolution Integrity Hotfix",
             "Operational Analytics & Review",
-            "Failure Injection & Recovery Validation"}
+            "Failure Injection & Recovery Validation", "Multi-session Coordination"}
         assert self.vi.RELEASE_NAME in _KNOWN or "Paper Trading" in self.vi.RELEASE_NAME or "Paper Strategy" in self.vi.RELEASE_NAME or "Session Operations" in self.vi.RELEASE_NAME, \
             f"Unexpected RELEASE_NAME: {self.vi.RELEASE_NAME}"
 
@@ -1292,7 +1292,7 @@ class TestVersionInfo:
         assert self.vi.LIVE_PAPER_TRADING_BASELINE == "1.6.0"
 
     def test_base_release_references_v159_or_160(self):
-        assert any(v in self.vi.BASE_RELEASE for v in ("1.5.9", "1.6.0", "1.6.1", "1.6.2", "1.6.3", "1.6.4"))
+        assert any(v in self.vi.BASE_RELEASE for v in ("1.5.9", "1.6.0", "1.6.1", "1.6.2", "1.6.3", "1.6.4", "1.6.5"))
 
     def test_version_string_valid_format(self):
         parts = self.vi.VERSION.split(".")

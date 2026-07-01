@@ -1,0 +1,21 @@
+{
+  "paper_only": true,
+  "research_only": true,
+  "no_real_orders": true,
+  "version": "1.6.6",
+  "test_id": "lc_invalid_direct_run",
+  "description": "Invalid direct CREATED to RUNNING transition is blocked",
+  "session": {
+    "session_id": "s1",
+    "owner": "test_owner",
+    "type": "PAPER"
+  },
+  "transition": {
+    "from_state": "CREATED",
+    "to_state": "RUNNING",
+    "tick": 1
+  },
+  "expected_result": "blocked",
+  "expected_block": true,
+  "block_reason": "invalid_transition"
+}

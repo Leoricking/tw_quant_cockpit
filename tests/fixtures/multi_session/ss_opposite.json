@@ -1,0 +1,24 @@
+{
+  "paper_only": true,
+  "research_only": true,
+  "no_real_orders": true,
+  "version": "1.6.6",
+  "test_id": "ss_opposite",
+  "description": "Opposite direction conflict: s1 LONG AAPL, s2 SHORT AAPL",
+  "sessions": [
+    {
+      "session_id": "s1",
+      "symbols": ["AAPL"],
+      "direction": "LONG"
+    },
+    {
+      "session_id": "s2",
+      "symbols": ["AAPL"],
+      "direction": "SHORT"
+    }
+  ],
+  "expected_result": "conflict",
+  "expected_conflict": "strategy_conflict",
+  "conflict_symbol": "AAPL",
+  "severity": "ERROR"
+}

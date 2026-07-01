@@ -2531,12 +2531,13 @@ class TestVersionAlignment:
             "CLI Handler Resolution Integrity Hotfix",
             "Operational Analytics & Review",
             "Failure Injection & Recovery Validation",
+            "Multi-session Coordination",
         }
         assert RELEASE_NAME in _KNOWN, f"Unexpected RELEASE_NAME: {RELEASE_NAME}"
 
     def test_base_release(self):
         from release.version_info import BASE_RELEASE
-        assert any(v in BASE_RELEASE for v in ("1.6.3", "1.6.4"))
+        assert any(v in BASE_RELEASE for v in ("1.6.3", "1.6.4", "1.6.5"))
 
     def test_session_ops_baseline(self):
         from release.version_info import SESSION_OPERATIONS_OBSERVABILITY_BASELINE

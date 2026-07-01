@@ -73,9 +73,9 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # ---------------------------------------------------------------------------
 # v1.3.3 module-level constants (Coverage Repair Workflow)
 # ---------------------------------------------------------------------------
-VERSION                             = "1.6.5"
-RELEASE_NAME                        = "Failure Injection & Recovery Validation"
-BASE_RELEASE                        = "1.6.4 Operational Analytics & Review"
+VERSION                             = "1.6.6"
+RELEASE_NAME                        = "Multi-session Coordination"
+BASE_RELEASE                        = "1.6.5 Failure Injection & Recovery Validation"
 PORTFOLIO_STABLE_BASELINE           = "1.5.9"
 LIVE_PAPER_TRADING_BASELINE         = "1.6.0"
 MARKET_DATA_SESSION_BASELINE        = "1.6.1"
@@ -84,6 +84,24 @@ SESSION_OPERATIONS_OBSERVABILITY_BASELINE = "1.6.3"
 CLI_HANDLER_RESOLUTION_BASELINE     = "1.6.3.3"
 OPERATIONAL_ANALYTICS_BASELINE      = "1.6.4"
 FAILURE_INJECTION_RECOVERY_BASELINE = "1.6.5"
+MULTI_SESSION_COORDINATION_BASELINE = "1.6.6"
+REPLAY_STABLE_BASELINE              = "1.2.9"
+PROVIDER_STABLE_BASELINE            = "1.4.9"
+# v1.6.6 Multi-session Coordination safety flags
+MULTI_SESSION_COORDINATION_AVAILABLE        = True
+MULTI_SESSION_RESEARCH_ONLY                 = True
+MULTI_SESSION_PAPER_ONLY                    = True
+CROSS_SESSION_REAL_ORDER_ENABLED            = False
+CROSS_SESSION_BROKER_ENABLED               = False
+GLOBAL_AUTO_EXECUTION_ENABLED              = False
+GLOBAL_AUTO_RESUME_ENABLED                 = False
+GLOBAL_AUTO_RISK_OVERRIDE_ENABLED          = False
+GLOBAL_AUTO_CAPITAL_REALLOCATION_ENABLED   = False
+GLOBAL_AUTO_SESSION_START_ENABLED          = False
+GLOBAL_AUTO_SESSION_STOP_ENABLED           = False
+PRODUCTION_SESSION_COORDINATION_ENABLED    = False
+EXTERNAL_COORDINATION_BUS_ENABLED          = False
+DISTRIBUTED_LOCK_SERVICE_ENABLED           = False
 # v1.6.5 Failure Injection & Recovery Validation safety flags
 FAILURE_INJECTION_AVAILABLE                 = True
 FAILURE_INJECTION_RESEARCH_ONLY             = True

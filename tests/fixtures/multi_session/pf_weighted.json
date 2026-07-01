@@ -1,0 +1,42 @@
+{
+  "paper_only": true,
+  "research_only": true,
+  "no_real_orders": true,
+  "version": "1.6.6",
+  "test_id": "pf_weighted",
+  "description": "Weighted priority allocation across 4 sessions",
+  "sessions": [
+    {
+      "session_id": "s1",
+      "priority": "CRITICAL_RESEARCH",
+      "weight": 0.4
+    },
+    {
+      "session_id": "s2",
+      "priority": "HIGH",
+      "weight": 0.3
+    },
+    {
+      "session_id": "s3",
+      "priority": "NORMAL",
+      "weight": 0.2
+    },
+    {
+      "session_id": "s4",
+      "priority": "LOW",
+      "weight": 0.1
+    }
+  ],
+  "total_weight": 1.0,
+  "resource_pool": {
+    "resource_type": "CPU_SLOT",
+    "capacity": 10
+  },
+  "expected_result": "success",
+  "expected_allocations": {
+    "s1": 4,
+    "s2": 3,
+    "s3": 2,
+    "s4": 1
+  }
+}

@@ -1,0 +1,22 @@
+{
+  "paper_only": true,
+  "research_only": true,
+  "no_real_orders": true,
+  "version": "1.6.6",
+  "test_id": "lc_completed_run",
+  "description": "COMPLETED to RUNNING transition is blocked (terminal state)",
+  "session": {
+    "session_id": "s1",
+    "owner": "test_owner",
+    "type": "PAPER",
+    "completed_at_tick": 20
+  },
+  "transition": {
+    "from_state": "COMPLETED",
+    "to_state": "RUNNING",
+    "tick": 21
+  },
+  "expected_result": "blocked",
+  "expected_block": true,
+  "block_reason": "terminal_state"
+}

@@ -1,0 +1,19 @@
+{
+  "paper_only": true,
+  "research_only": true,
+  "no_real_orders": true,
+  "version": "1.6.6",
+  "test_id": "eo_seq_gap",
+  "description": "Sequence gap detected when sequence 3 is missing from stream",
+  "session_id": "s1",
+  "events": [
+    { "event_id": "e1", "global_sequence": 1, "timestamp": 100 },
+    { "event_id": "e2", "global_sequence": 2, "timestamp": 101 },
+    { "event_id": "e4", "global_sequence": 4, "timestamp": 103 }
+  ],
+  "expected_sequences": [1, 2, 3, 4],
+  "observed_sequences": [1, 2, 4],
+  "missing_sequence": 3,
+  "expected_result": "conflict",
+  "expected_conflict": "event_order_violation"
+}

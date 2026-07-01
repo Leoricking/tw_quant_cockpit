@@ -1,0 +1,26 @@
+{
+  "paper_only": true,
+  "research_only": true,
+  "no_real_orders": true,
+  "version": "1.6.6",
+  "test_id": "res_three_compete",
+  "description": "Three sessions compete for same resource; only one wins",
+  "resource_pool": {
+    "resource_type": "EXCLUSIVE_FEED",
+    "capacity": 1,
+    "available": 1
+  },
+  "competing_sessions": [
+    { "session_id": "s1", "priority": "NORMAL", "request_tick": 1 },
+    { "session_id": "s2", "priority": "NORMAL", "request_tick": 2 },
+    { "session_id": "s3", "priority": "NORMAL", "request_tick": 3 }
+  ],
+  "expected_winner": "s1",
+  "expected_grants": [
+    { "session_id": "s1", "granted": true }
+  ],
+  "expected_blocks": [
+    { "session_id": "s2", "blocked": true },
+    { "session_id": "s3", "blocked": true }
+  ]
+}

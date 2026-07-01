@@ -1,0 +1,27 @@
+{
+  "paper_only": true,
+  "research_only": true,
+  "no_real_orders": true,
+  "version": "1.6.6",
+  "test_id": "pf_inversion",
+  "description": "Priority inversion detected: LOW priority holding resource needed by HIGH priority",
+  "sessions": [
+    {
+      "session_id": "s_low",
+      "priority": "LOW",
+      "holds_resource": "cpu_slot_1",
+      "acquired_at_tick": 1
+    },
+    {
+      "session_id": "s_high",
+      "priority": "CRITICAL_RESEARCH",
+      "needs_resource": "cpu_slot_1",
+      "waiting_since_tick": 5
+    }
+  ],
+  "expected_result": "conflict",
+  "expected_conflict": "priority_inversion",
+  "inversion_detected": true,
+  "holder_priority": "LOW",
+  "waiter_priority": "CRITICAL_RESEARCH"
+}

@@ -1,0 +1,26 @@
+{
+  "paper_only": true,
+  "research_only": true,
+  "no_real_orders": true,
+  "version": "1.6.6",
+  "test_id": "ss_direction",
+  "description": "Direction conflict detected and blocked: s1 LONG, s2 SHORT, same symbol",
+  "sessions": [
+    {
+      "session_id": "s1",
+      "symbol": "TSLA",
+      "direction": "LONG",
+      "quantity": 100
+    },
+    {
+      "session_id": "s2",
+      "symbol": "TSLA",
+      "direction": "SHORT",
+      "quantity": 100
+    }
+  ],
+  "expected_result": "blocked",
+  "expected_block": true,
+  "block_reason": "direction_conflict",
+  "conflict_symbol": "TSLA"
+}

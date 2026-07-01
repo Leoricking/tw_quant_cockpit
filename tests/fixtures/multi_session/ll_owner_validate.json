@@ -1,0 +1,25 @@
+{
+  "paper_only": true,
+  "research_only": true,
+  "no_real_orders": true,
+  "version": "1.6.6",
+  "test_id": "ll_owner_validate",
+  "description": "Owner validation prevents s2 from releasing s1's lock",
+  "existing_lock": {
+    "lock_id": "lock_aapl",
+    "resource": "stock_AAPL",
+    "lock_type": "EXCLUSIVE",
+    "owner": "s1",
+    "acquired_at_tick": 1
+  },
+  "release_attempt": {
+    "lock_id": "lock_aapl",
+    "attempted_by": "s2",
+    "tick": 5
+  },
+  "expected_result": "blocked",
+  "expected_block": true,
+  "block_reason": "owner_mismatch",
+  "lock_still_held": true,
+  "lock_holder": "s1"
+}

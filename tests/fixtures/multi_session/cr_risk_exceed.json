@@ -1,0 +1,21 @@
+{
+  "paper_only": true,
+  "research_only": true,
+  "no_real_orders": true,
+  "version": "1.6.6",
+  "test_id": "cr_risk_exceed",
+  "description": "Risk budget exceeded when allocated risk surpasses limit",
+  "risk_budget": {
+    "max_risk_fraction": 0.1,
+    "current_allocated_fraction": 0.0
+  },
+  "risk_request": {
+    "session_id": "s1",
+    "requested_risk_fraction": 0.12
+  },
+  "expected_result": "conflict",
+  "expected_conflict": "risk_budget_exceeded",
+  "allocated": 0.12,
+  "limit": 0.1,
+  "over_by": 0.02
+}

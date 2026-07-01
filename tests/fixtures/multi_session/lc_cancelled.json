@@ -1,0 +1,23 @@
+{
+  "paper_only": true,
+  "research_only": true,
+  "no_real_orders": true,
+  "version": "1.6.6",
+  "test_id": "lc_cancelled",
+  "description": "CANCELLED is a terminal state with no further transitions allowed",
+  "session": {
+    "session_id": "s1",
+    "owner": "test_owner",
+    "type": "PAPER",
+    "cancelled_at_tick": 25
+  },
+  "attempted_transitions": [
+    { "to_state": "RUNNING", "tick": 26 },
+    { "to_state": "READY", "tick": 27 },
+    { "to_state": "REGISTERED", "tick": 28 }
+  ],
+  "no_further_transitions": true,
+  "expected_result": "blocked",
+  "expected_block": true,
+  "block_reason": "terminal_state"
+}

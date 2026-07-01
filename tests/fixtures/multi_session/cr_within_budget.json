@@ -1,0 +1,30 @@
+{
+  "paper_only": true,
+  "research_only": true,
+  "no_real_orders": true,
+  "version": "1.6.6",
+  "test_id": "cr_within_budget",
+  "description": "Capital allocation within total budget succeeds",
+  "capital_pool": {
+    "total_budget": 100000,
+    "allocated": 50000,
+    "available": 50000
+  },
+  "sessions": [
+    {
+      "session_id": "s1",
+      "capital_requested": 30000
+    },
+    {
+      "session_id": "s2",
+      "capital_requested": 20000
+    }
+  ],
+  "total_requested": 50000,
+  "expected_result": "success",
+  "expected_allocations": {
+    "s1": 30000,
+    "s2": 20000
+  },
+  "budget_remaining_after": 0
+}

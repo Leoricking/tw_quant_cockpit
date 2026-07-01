@@ -1,0 +1,27 @@
+{
+  "paper_only": true,
+  "research_only": true,
+  "no_real_orders": true,
+  "version": "1.6.6",
+  "test_id": "scorecard_full",
+  "description": "Full scorecard with all 12 dimensions populated",
+  "scorecard_id": "sc_1",
+  "session_count": 3,
+  "dimensions": {
+    "registration_integrity": 100,
+    "lifecycle_compliance": 90,
+    "resource_fairness": 85,
+    "lock_safety": 95,
+    "priority_fairness": 80,
+    "event_ordering": 90,
+    "symbol_separation": 75,
+    "capital_discipline": 85,
+    "checkpoint_integrity": 90,
+    "recovery_completeness": 80,
+    "conflict_resolution": 85,
+    "overall_coordination": 88
+  },
+  "expected_score": 85,
+  "expected_result": "success",
+  "score_computed": true
+}

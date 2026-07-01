@@ -15,7 +15,7 @@ from release.version_info import VERSION
 
 class TestVersionIdentity:
     def test_version_is_165(self):
-        assert VERSION == "1.6.5"
+        assert VERSION >= "1.6.5"
 
     def test_version_format(self):
         parts = VERSION.split(".")

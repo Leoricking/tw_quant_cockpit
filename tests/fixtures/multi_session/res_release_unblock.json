@@ -1,0 +1,30 @@
+{
+  "paper_only": true,
+  "research_only": true,
+  "no_real_orders": true,
+  "version": "1.6.6",
+  "test_id": "res_release_unblock",
+  "description": "Resource release by s1 unblocks waiting session s2",
+  "resource_pool": {
+    "resource_type": "CPU_SLOT",
+    "capacity": 2,
+    "available": 0
+  },
+  "existing_grants": [
+    { "reservation_id": "r1", "session_id": "s1", "quantity": 2 }
+  ],
+  "waiting_sessions": [
+    { "session_id": "s2", "quantity": 1, "waiting_since_tick": 3 }
+  ],
+  "release_event": {
+    "reservation_id": "r1",
+    "released_by": "s1",
+    "tick": 10
+  },
+  "expected_result": "s2_unblocked",
+  "expected_grant_after_release": {
+    "session_id": "s2",
+    "granted": true,
+    "granted_at_tick": 10
+  }
+}

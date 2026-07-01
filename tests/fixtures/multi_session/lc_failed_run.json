@@ -1,0 +1,23 @@
+{
+  "paper_only": true,
+  "research_only": true,
+  "no_real_orders": true,
+  "version": "1.6.6",
+  "test_id": "lc_failed_run",
+  "description": "FAILED to RUNNING transition is blocked",
+  "session": {
+    "session_id": "s1",
+    "owner": "test_owner",
+    "type": "PAPER",
+    "failure_reason": "strategy_error",
+    "failed_at_tick": 10
+  },
+  "transition": {
+    "from_state": "FAILED",
+    "to_state": "RUNNING",
+    "tick": 11
+  },
+  "expected_result": "blocked",
+  "expected_block": true,
+  "block_reason": "must_recover_before_running"
+}

@@ -1,0 +1,24 @@
+{
+  "paper_only": true,
+  "research_only": true,
+  "no_real_orders": true,
+  "version": "1.6.6",
+  "test_id": "cr_no_real_capital",
+  "description": "Confirms no real capital movement occurs in paper trading mode",
+  "no_real_capital": true,
+  "session": {
+    "session_id": "s1",
+    "owner": "test_owner",
+    "type": "PAPER",
+    "capital_allocated": 50000,
+    "capital_source": "SIMULATED"
+  },
+  "assertions": {
+    "no_bank_transfer": true,
+    "no_broker_order": true,
+    "no_real_settlement": true,
+    "simulation_only": true
+  },
+  "expected_result": "success",
+  "capital_type": "PAPER_SIMULATED"
+}

@@ -1,0 +1,28 @@
+{
+  "paper_only": true,
+  "research_only": true,
+  "no_real_orders": true,
+  "version": "1.6.6",
+  "test_id": "res_renew",
+  "description": "Reservation renewal extends lease before expiry",
+  "reservation": {
+    "reservation_id": "r1",
+    "session_id": "s1",
+    "resource_type": "CPU_SLOT",
+    "quantity": 2,
+    "granted_at_tick": 1,
+    "ttl_seconds": 10,
+    "expires_at_tick": 11
+  },
+  "renewal_request": {
+    "reservation_id": "r1",
+    "new_ttl_seconds": 30,
+    "renewed_at_tick": 8
+  },
+  "expected_result": "success",
+  "expected_lease": {
+    "reservation_id": "r1",
+    "expires_at_tick": 38,
+    "ttl_seconds": 30
+  }
+}

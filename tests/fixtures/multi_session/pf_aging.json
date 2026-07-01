@@ -1,0 +1,31 @@
+{
+  "paper_only": true,
+  "research_only": true,
+  "no_real_orders": true,
+  "version": "1.6.6",
+  "test_id": "pf_aging",
+  "description": "Priority aging prevents starvation of low priority sessions",
+  "sessions": [
+    {
+      "session_id": "s1",
+      "priority": "NORMAL",
+      "arrival_tick": 1
+    },
+    {
+      "session_id": "s2",
+      "priority": "CRITICAL_RESEARCH",
+      "arrival_tick": 2
+    },
+    {
+      "session_id": "s3",
+      "priority": "LOW",
+      "arrival_tick": 1,
+      "rounds_denied": 8
+    }
+  ],
+  "aging_bonus_per_round": 1,
+  "expected_result": "success",
+  "expected_aging_applied": true,
+  "s3_effective_priority_boost": 8,
+  "note": "s3 denied 8 rounds; aging bonus elevates effective priority above NORMAL"
+}

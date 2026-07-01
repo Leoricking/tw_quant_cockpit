@@ -1,0 +1,35 @@
+{
+  "paper_only": true,
+  "research_only": true,
+  "no_real_orders": true,
+  "version": "1.6.6",
+  "test_id": "coord_basic",
+  "description": "Basic coordination: 2 sessions admitted with no conflicts",
+  "sessions": [
+    {
+      "session_id": "s1",
+      "owner": "owner_a",
+      "type": "PAPER",
+      "priority": "NORMAL",
+      "symbols": ["AAPL"],
+      "direction": "LONG",
+      "capital_requested": 30000
+    },
+    {
+      "session_id": "s2",
+      "owner": "owner_b",
+      "type": "PAPER",
+      "priority": "NORMAL",
+      "symbols": ["MSFT"],
+      "direction": "LONG",
+      "capital_requested": 25000
+    }
+  ],
+  "capital_pool": {
+    "total_budget": 100000,
+    "available": 100000
+  },
+  "expected_result": "success",
+  "expected_admitted": ["s1", "s2"],
+  "conflicts": []
+}

@@ -1,0 +1,16 @@
+{
+  "paper_only": true,
+  "research_only": true,
+  "no_real_orders": true,
+  "version": "1.6.6",
+  "test_id": "reg_no_type",
+  "description": "Missing session type triggers registration conflict",
+  "session": {
+    "session_id": "s_no_type",
+    "owner": "test_owner",
+    "state": "REGISTERED",
+    "registered_at_tick": 1
+  },
+  "expected_result": "conflict",
+  "expected_conflict": "missing_type"
+}

@@ -1,0 +1,20 @@
+{
+  "paper_only": true,
+  "research_only": true,
+  "no_real_orders": true,
+  "version": "1.6.6",
+  "test_id": "ss_stale",
+  "description": "Stale strategy signal detected when signal age exceeds threshold",
+  "session": {
+    "session_id": "s1",
+    "strategy_id": "momentum_v1",
+    "symbol": "AAPL",
+    "last_signal_tick": 0,
+    "current_tick": 100,
+    "stale_threshold": 50
+  },
+  "signal_age": 100,
+  "expected_result": "conflict",
+  "expected_conflict": "stale_signal",
+  "signal_stale": true
+}

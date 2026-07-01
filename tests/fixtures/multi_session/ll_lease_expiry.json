@@ -1,0 +1,21 @@
+{
+  "paper_only": true,
+  "research_only": true,
+  "no_real_orders": true,
+  "version": "1.6.6",
+  "test_id": "ll_lease_expiry",
+  "description": "Lease expiry invalidates lock after TTL elapses",
+  "lock": {
+    "lock_id": "lock_aapl",
+    "resource": "stock_AAPL",
+    "lock_type": "EXCLUSIVE",
+    "owner": "s1",
+    "acquired_at_tick": 1,
+    "ttl_seconds": 5,
+    "expired_at_tick": 10
+  },
+  "check_tick": 11,
+  "expected_result": "expired",
+  "expected_conflict": "lease_expired",
+  "lock_valid": false
+}

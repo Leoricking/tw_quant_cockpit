@@ -1,0 +1,19 @@
+{
+  "paper_only": true,
+  "research_only": true,
+  "no_real_orders": true,
+  "version": "1.6.6",
+  "test_id": "pf_max_grants",
+  "description": "Max consecutive grants enforced to prevent monopolization",
+  "session": {
+    "session_id": "s1",
+    "priority": "CRITICAL_RESEARCH",
+    "consecutive_grants": 3
+  },
+  "max_consecutive": 3,
+  "next_grant_attempt_tick": 10,
+  "expected_result": "blocked",
+  "expected_block": true,
+  "block_reason": "max_consecutive_grants_reached",
+  "cooldown_required": true
+}

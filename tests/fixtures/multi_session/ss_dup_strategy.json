@@ -1,0 +1,23 @@
+{
+  "paper_only": true,
+  "research_only": true,
+  "no_real_orders": true,
+  "version": "1.6.6",
+  "test_id": "ss_dup_strategy",
+  "description": "Duplicate strategy warned when s1 and s2 both use momentum_v1",
+  "sessions": [
+    {
+      "session_id": "s1",
+      "strategy_id": "momentum_v1",
+      "symbols": ["AAPL"]
+    },
+    {
+      "session_id": "s2",
+      "strategy_id": "momentum_v1",
+      "symbols": ["MSFT"]
+    }
+  ],
+  "expected_result": "warning",
+  "duplicate_strategy_id": "momentum_v1",
+  "severity": "WARNING"
+}

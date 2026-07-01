@@ -1,0 +1,24 @@
+{
+  "paper_only": true,
+  "research_only": true,
+  "no_real_orders": true,
+  "version": "1.6.6",
+  "test_id": "chk_collision",
+  "description": "Checkpoint collision detected when two sessions write to same checkpoint slot",
+  "checkpoint_slot": "slot_1",
+  "checkpoint_attempts": [
+    {
+      "checkpoint_id": "ckpt_1",
+      "session_id": "s1",
+      "tick": 50
+    },
+    {
+      "checkpoint_id": "ckpt_1",
+      "session_id": "s2",
+      "tick": 51
+    }
+  ],
+  "expected_result": "conflict",
+  "expected_conflict": "checkpoint_conflict",
+  "conflict_on_attempt_index": 1
+}

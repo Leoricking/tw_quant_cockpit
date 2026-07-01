@@ -1,0 +1,105 @@
+{
+  "paper_only": true,
+  "research_only": true,
+  "no_real_orders": true,
+  "version": "1.6.6",
+  "test_id": "integration_multi_session",
+  "description": "Integration scenario: 3 sessions through full coordination lifecycle",
+  "sessions": [
+    {
+      "session_id": "s1",
+      "owner": "strategy_owner_a",
+      "type": "PAPER",
+      "priority": "CRITICAL_RESEARCH",
+      "strategy_id": "momentum_v1",
+      "symbols": ["AAPL", "MSFT"],
+      "direction": "LONG",
+      "capital_requested": 40000
+    },
+    {
+      "session_id": "s2",
+      "owner": "strategy_owner_b",
+      "type": "PAPER",
+      "priority": "NORMAL",
+      "strategy_id": "mean_reversion_v1",
+      "symbols": ["TSLA", "NVDA"],
+      "direction": "LONG",
+      "capital_requested": 30000
+    },
+    {
+      "session_id": "s3",
+      "owner": "strategy_owner_c",
+      "type": "PAPER",
+      "priority": "LOW",
+      "strategy_id": "pairs_v1",
+      "symbols": ["GOOG", "META"],
+      "direction": "LONG",
+      "capital_requested": 20000
+    }
+  ],
+  "capital_pool": {
+    "total_budget": 100000,
+    "available": 100000
+  },
+  "resource_pool": {
+    "resource_type": "CPU_SLOT",
+    "capacity": 6
+  },
+  "coordination_phases": [
+    {
+      "phase": "registration",
+      "tick": 1,
+      "result": "all_registered"
+    },
+    {
+      "phase": "resource_admission",
+      "tick": 2,
+      "result": "all_granted",
+      "grants": [
+        { "session_id": "s1", "quantity": 3 },
+        { "session_id": "s2", "quantity": 2 },
+        { "session_id": "s3", "quantity": 1 }
+      ]
+    },
+    {
+      "phase": "capital_admission",
+      "tick": 3,
+      "result": "all_granted",
+      "grants": {
+        "s1": 40000,
+        "s2": 30000,
+        "s3": 20000
+      }
+    },
+    {
+      "phase": "running",
+      "tick_range": [4, 100],
+      "result": "all_running"
+    },
+    {
+      "phase": "checkpoint",
+      "tick": 50,
+      "result": "all_checkpointed",
+      "checkpoints": [
+        { "session_id": "s1", "checkpoint_id": "ckpt_s1_50" },
+        { "session_id": "s2", "checkpoint_id": "ckpt_s2_50" },
+        { "session_id": "s3", "checkpoint_id": "ckpt_s3_50" }
+      ]
+    },
+    {
+      "phase": "completion",
+      "tick": 100,
+      "result": "all_completed"
+    }
+  ],
+  "symbol_conflicts": [],
+  "strategy_conflicts": [],
+  "expected_result": "success",
+  "expected_final_states": {
+    "s1": "COMPLETED",
+    "s2": "COMPLETED",
+    "s3": "COMPLETED"
+  },
+  "total_events": 18,
+  "admission_rate": 1.0
+}

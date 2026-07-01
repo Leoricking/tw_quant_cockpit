@@ -1,0 +1,20 @@
+{
+  "paper_only": true,
+  "research_only": true,
+  "no_real_orders": true,
+  "version": "1.6.6",
+  "test_id": "lc_created_registered",
+  "description": "Valid CREATED to REGISTERED lifecycle transition",
+  "session": {
+    "session_id": "s1",
+    "owner": "test_owner",
+    "type": "PAPER"
+  },
+  "transition": {
+    "from_state": "CREATED",
+    "to_state": "REGISTERED",
+    "tick": 1
+  },
+  "expected_result": "success",
+  "expected_state": "REGISTERED"
+}

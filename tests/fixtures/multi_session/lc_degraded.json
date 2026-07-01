@@ -1,0 +1,27 @@
+{
+  "paper_only": true,
+  "research_only": true,
+  "no_real_orders": true,
+  "version": "1.6.6",
+  "test_id": "lc_degraded",
+  "description": "DEGRADED state requires verification before transition to RUNNING",
+  "session": {
+    "session_id": "s1",
+    "owner": "test_owner",
+    "type": "PAPER",
+    "degraded_reason": "data_feed_lag",
+    "degraded_at_tick": 15
+  },
+  "transition": {
+    "from_state": "DEGRADED",
+    "to_state": "RUNNING",
+    "tick": 16,
+    "requires_verification": true
+  },
+  "verification": {
+    "verified": false
+  },
+  "expected_result": "blocked",
+  "expected_block": true,
+  "block_reason": "verification_required"
+}

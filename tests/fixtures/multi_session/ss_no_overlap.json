@@ -1,0 +1,23 @@
+{
+  "paper_only": true,
+  "research_only": true,
+  "no_real_orders": true,
+  "version": "1.6.6",
+  "test_id": "ss_no_overlap",
+  "description": "No symbol overlap between sessions: s1 trades AAPL, s2 trades MSFT",
+  "sessions": [
+    {
+      "session_id": "s1",
+      "symbols": ["AAPL"],
+      "direction": "LONG"
+    },
+    {
+      "session_id": "s2",
+      "symbols": ["MSFT"],
+      "direction": "LONG"
+    }
+  ],
+  "expected_result": "success",
+  "symbol_overlap": false,
+  "conflicts": []
+}

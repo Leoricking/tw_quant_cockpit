@@ -1,0 +1,29 @@
+{
+  "paper_only": true,
+  "research_only": true,
+  "no_real_orders": true,
+  "version": "1.6.6",
+  "test_id": "reg_history",
+  "description": "Registration history is immutable once written",
+  "session": {
+    "session_id": "s1",
+    "owner": "test_owner",
+    "type": "PAPER",
+    "state": "REGISTERED",
+    "registered_at_tick": 1
+  },
+  "history_entries": [
+    {
+      "tick": 1,
+      "event": "REGISTERED",
+      "session_id": "s1",
+      "immutable": true
+    }
+  ],
+  "mutation_attempt": {
+    "target_tick": 1,
+    "new_event": "MODIFIED"
+  },
+  "expected_result": "conflict",
+  "expected_conflict": "history_immutable"
+}
