@@ -1,0 +1,34 @@
+{
+  "category": "selection_attribution",
+  "demo_only": true,
+  "expected": {
+    "total_selection": 0.019
+  },
+  "fixture_id": "fx_sel_multi_symbol",
+  "input": {
+    "symbols": {
+      "AAPL": {
+        "br": 0.05,
+        "bw": 0.2,
+        "pr": 0.1
+      },
+      "MSFT": {
+        "br": 0.05,
+        "bw": 0.15,
+        "pr": 0.08
+      }
+    }
+  },
+  "no_broker": true,
+  "no_real_account": true,
+  "no_real_orders": true,
+  "not_for_production": true,
+  "not_live": true,
+  "paper_attribution_only": true,
+  "paper_only": true,
+  "policy_version": "1.6.7-paper-attribution",
+  "purpose": "Multi-symbol selection aggregate",
+  "research_only": true,
+  "schema_version": "167",
+  "test_fixture": true
+}

@@ -1,0 +1,23 @@
+{
+  "category": "safety",
+  "demo_only": true,
+  "expected": {
+    "valid": false
+  },
+  "fixture_id": "fx_sf_missing_marker_invalid",
+  "input": {
+    "paper_only": false
+  },
+  "no_broker": true,
+  "no_real_account": true,
+  "no_real_orders": true,
+  "not_for_production": true,
+  "not_live": true,
+  "paper_attribution_only": true,
+  "paper_only": true,
+  "policy_version": "1.6.7-paper-attribution",
+  "purpose": "paper_only=False \u2192 invalid",
+  "research_only": true,
+  "schema_version": "167",
+  "test_fixture": true
+}

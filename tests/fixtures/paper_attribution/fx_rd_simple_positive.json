@@ -1,0 +1,23 @@
+{
+  "category": "return_decomposition",
+  "demo_only": true,
+  "expected": {
+    "status": "PASS"
+  },
+  "fixture_id": "fx_rd_simple_positive",
+  "input": {
+    "gross_return": 0.05
+  },
+  "no_broker": true,
+  "no_real_account": true,
+  "no_real_orders": true,
+  "not_for_production": true,
+  "not_live": true,
+  "paper_attribution_only": true,
+  "paper_only": true,
+  "policy_version": "1.6.7-paper-attribution",
+  "purpose": "Simple positive return",
+  "research_only": true,
+  "schema_version": "167",
+  "test_fixture": true
+}

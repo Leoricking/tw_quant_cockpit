@@ -1,0 +1,23 @@
+{
+  "category": "regression",
+  "demo_only": true,
+  "expected": {
+    "compat": true
+  },
+  "fixture_id": "fx_reg_v166_compat",
+  "input": {
+    "base_version": "1.6.6"
+  },
+  "no_broker": true,
+  "no_real_account": true,
+  "no_real_orders": true,
+  "not_for_production": true,
+  "not_live": true,
+  "paper_attribution_only": true,
+  "paper_only": true,
+  "policy_version": "1.6.7-paper-attribution",
+  "purpose": "v1.6.6 fixture loads without error",
+  "research_only": true,
+  "schema_version": "167",
+  "test_fixture": true
+}

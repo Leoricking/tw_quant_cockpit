@@ -1,0 +1,29 @@
+{
+  "fixture_id": "fx_return_decomp_basic",
+  "purpose": "Basic return decomposition: gross-to-net with known costs",
+  "schema_version": "167",
+  "policy_version": "1.6.7-paper-attribution",
+  "category": "return_decomposition",
+  "test_fixture": true,
+  "demo_only": true,
+  "paper_only": true,
+  "research_only": true,
+  "not_live": true,
+  "no_broker": true,
+  "no_real_account": true,
+  "no_real_orders": true,
+  "not_for_production": true,
+  "paper_attribution_only": true,
+  "input": {
+    "gross_return": 0.05,
+    "commission_pct": 0.002,
+    "tax_pct": 0.001,
+    "spread_pct": 0.001,
+    "slippage_pct": 0.0005
+  },
+  "expected": {
+    "net_return": 0.0455,
+    "total_cost_pct": 0.0045,
+    "cost_quality": "KNOWN"
+  }
+}

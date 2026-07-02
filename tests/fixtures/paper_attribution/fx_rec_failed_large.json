@@ -1,0 +1,24 @@
+{
+  "category": "reconciliation",
+  "demo_only": true,
+  "expected": {
+    "status": "FAILED"
+  },
+  "fixture_id": "fx_rec_failed_large",
+  "input": {
+    "actual": 90.0,
+    "expected": 100.0
+  },
+  "no_broker": true,
+  "no_real_account": true,
+  "no_real_orders": true,
+  "not_for_production": true,
+  "not_live": true,
+  "paper_attribution_only": true,
+  "paper_only": true,
+  "policy_version": "1.6.7-paper-attribution",
+  "purpose": "Failed large residual",
+  "research_only": true,
+  "schema_version": "167",
+  "test_fixture": true
+}

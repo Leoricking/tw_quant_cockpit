@@ -1,0 +1,25 @@
+{
+  "category": "return_decomposition",
+  "demo_only": true,
+  "expected": {
+    "mwr": 0.05
+  },
+  "fixture_id": "fx_rd_mwr_single_cashflow",
+  "input": {
+    "cashflows": [],
+    "equity_end": 1050.0,
+    "equity_start": 1000.0
+  },
+  "no_broker": true,
+  "no_real_account": true,
+  "no_real_orders": true,
+  "not_for_production": true,
+  "not_live": true,
+  "paper_attribution_only": true,
+  "paper_only": true,
+  "policy_version": "1.6.7-paper-attribution",
+  "purpose": "MWR IRR single cashflow",
+  "research_only": true,
+  "schema_version": "167",
+  "test_fixture": true
+}

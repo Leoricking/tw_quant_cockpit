@@ -1,0 +1,25 @@
+{
+  "category": "cost_attribution",
+  "demo_only": true,
+  "expected": {
+    "cost_quality": "ESTIMATED"
+  },
+  "fixture_id": "fx_cost_estimated_tax",
+  "input": {
+    "commission": 100.0,
+    "estimated_tax": 50.0,
+    "notional": 50000.0
+  },
+  "no_broker": true,
+  "no_real_account": true,
+  "no_real_orders": true,
+  "not_for_production": true,
+  "not_live": true,
+  "paper_attribution_only": true,
+  "paper_only": true,
+  "policy_version": "1.6.7-paper-attribution",
+  "purpose": "Estimated tax",
+  "research_only": true,
+  "schema_version": "167",
+  "test_fixture": true
+}

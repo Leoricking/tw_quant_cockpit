@@ -1276,7 +1276,8 @@ class TestVersionInfo:
             "CLI Handler Resolution Integrity Hotfix",
             "Operational Analytics & Review",
             "Failure Injection & Recovery Validation", "Multi-session Coordination", "Fixture Governance & Safety Marker Hotfix",
-            "Replay Session Lineage Handler Integrity Hotfix"}
+            "Replay Session Lineage Handler Integrity Hotfix",
+            "Paper Performance Attribution"}
         assert self.vi.RELEASE_NAME in _KNOWN or "Paper Trading" in self.vi.RELEASE_NAME or "Paper Strategy" in self.vi.RELEASE_NAME or "Session Operations" in self.vi.RELEASE_NAME, \
             f"Unexpected RELEASE_NAME: {self.vi.RELEASE_NAME}"
 

@@ -1,0 +1,25 @@
+{
+  "category": "scorecard",
+  "demo_only": true,
+  "expected": {
+    "blocked": true,
+    "grade": "F",
+    "score": 0.0
+  },
+  "fixture_id": "fx_qs_blocked_real",
+  "input": {
+    "real_markers": true
+  },
+  "no_broker": true,
+  "no_real_account": true,
+  "no_real_orders": true,
+  "not_for_production": true,
+  "not_live": true,
+  "paper_attribution_only": true,
+  "paper_only": true,
+  "policy_version": "1.6.7-paper-attribution",
+  "purpose": "Real markers \u2192 score 0",
+  "research_only": true,
+  "schema_version": "167",
+  "test_fixture": true
+}

@@ -1,0 +1,26 @@
+{
+  "category": "allocation_attribution",
+  "demo_only": true,
+  "expected": {
+    "allocation": 0.006
+  },
+  "fixture_id": "fx_alloc_positive_overweight",
+  "input": {
+    "br": 0.08,
+    "bw": 0.2,
+    "pw": 0.4,
+    "total_bm": 0.05
+  },
+  "no_broker": true,
+  "no_real_account": true,
+  "no_real_orders": true,
+  "not_for_production": true,
+  "not_live": true,
+  "paper_attribution_only": true,
+  "paper_only": true,
+  "policy_version": "1.6.7-paper-attribution",
+  "purpose": "Positive allocation overweight good sector",
+  "research_only": true,
+  "schema_version": "167",
+  "test_fixture": true
+}

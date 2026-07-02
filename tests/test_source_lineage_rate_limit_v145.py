@@ -1616,6 +1616,7 @@ class TestRegression:
             "Multi-session Coordination",
             "Fixture Governance & Safety Marker Hotfix",
             "Replay Session Lineage Handler Integrity Hotfix",
+            "Paper Performance Attribution",
         )
         assert any(name in RELEASE_NAME for name in _KNOWN_NAMES), (
             f"Unexpected RELEASE_NAME for v1.4.5+ release: {RELEASE_NAME}"

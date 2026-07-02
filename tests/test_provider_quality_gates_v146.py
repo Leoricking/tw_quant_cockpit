@@ -1601,6 +1601,7 @@ class TestVersionInfo(unittest.TestCase):
             "Multi-session Coordination",
             "Fixture Governance & Safety Marker Hotfix",
             "Replay Session Lineage Handler Integrity Hotfix",
+            "Paper Performance Attribution",
         )
         self.assertTrue(
             any(name in RELEASE_NAME for name in _KNOWN),

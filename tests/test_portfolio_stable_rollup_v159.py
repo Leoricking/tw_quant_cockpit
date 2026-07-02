@@ -40,7 +40,7 @@ class TestVersionInfo:
         _KNOWN = {"Stable", "Rollup", "Paper Trading", "Foundation", "Market Data", "Adapter",
                   "Strategy", "Orchestration", "Session", "Observability", "CLI", "Registration", "Hotfix", "Handler", "Resolution",
                   "Operational", "Analytics", "Review", "Failure", "Injection", "Recovery", "Validation",
-                  "Multi-session", "Coordination"}
+                  "Multi-session", "Coordination", "Paper", "Performance", "Attribution"}
         assert any(k in RELEASE_NAME for k in _KNOWN), \
             f"Expected known RELEASE_NAME keyword, got {RELEASE_NAME}"
 

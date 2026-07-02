@@ -36946,6 +36946,362 @@ def cmd_multi_session_capabilities(args=None):
     print(_MULTI_SESSION_BANNER)
 
 
+# ── Paper Performance Attribution v1.6.7 ─────────────────────────────────────
+
+_PAPER_ATTRIBUTION_BANNER = (
+    "=" * 70 + "\n"
+    "  PAPER PERFORMANCE ATTRIBUTION v1.6.7\n"
+    "  [!] Research Only. Paper Only. No Real Orders. Not Investment Advice.\n"
+    "=" * 70
+)
+
+
+def cmd_paper_attribution_health(args=None):
+    """[v1.6.7] Run paper performance attribution health check. Research only."""
+    print(_PAPER_ATTRIBUTION_BANNER)
+    from paper_trading.performance_attribution.health_v167 import PaperAttributionHealthCheck
+    result = PaperAttributionHealthCheck().run()
+    status = result.get("status", "UNKNOWN")
+    passed = result.get("passed", 0)
+    total  = result.get("total", 0)
+    failed = result.get("failed", 0)
+    print(f"Paper Performance Attribution Health Check v1.6.7")
+    print(f"Status: {status}  Passed: {passed}/{total}  Failed: {failed}")
+    if failed:
+        for c in result.get("checks", []):
+            if c.get("status") == "FAIL":
+                print(f"  [FAIL] {c.get('check', '?')}: {c.get('detail', '')}")
+    print(_PAPER_ATTRIBUTION_BANNER)
+
+
+def cmd_paper_attribution_gate(args=None):
+    """[v1.6.7] Run paper performance attribution release gate. Research only."""
+    print(_PAPER_ATTRIBUTION_BANNER)
+    from release.paper_performance_attribution_release_gate_v167 import PaperAttributionReleaseGate
+    result = PaperAttributionReleaseGate().run()
+    status = result.get("status", "UNKNOWN")
+    passed = result.get("passed", 0)
+    total  = result.get("total", 0)
+    failed = result.get("failed", 0)
+    print(f"Paper Attribution Release Gate v1.6.7")
+    print(f"Status: {status}  Passed: {passed}/{total}  Failed: {failed}")
+    if failed:
+        for c in result.get("checks", []):
+            if c.get("status") == "FAIL":
+                print(f"  [FAIL] {c.get('check', '?')}: {c.get('detail', '')}")
+    print(_PAPER_ATTRIBUTION_BANNER)
+
+
+def cmd_paper_attribution_version(args=None):
+    """[v1.6.7] Show paper performance attribution version info. Research only."""
+    print(_PAPER_ATTRIBUTION_BANNER)
+    from paper_trading.performance_attribution.version_v167 import (
+        VERSION, RELEASE_NAME, BASE_RELEASE, verify_version, KNOWN_RELEASE_NAMES,
+    )
+    print(f"Version:      {VERSION}")
+    print(f"Release:      {RELEASE_NAME}")
+    print(f"Base:         {BASE_RELEASE}")
+    print(f"Verified:     {verify_version()}")
+    print(f"Known releases ({len(KNOWN_RELEASE_NAMES)}):")
+    for r in sorted(KNOWN_RELEASE_NAMES):
+        print(f"  {r}")
+    print(_PAPER_ATTRIBUTION_BANNER)
+
+
+def cmd_paper_attribution_safety_audit(args=None):
+    """[v1.6.7] Run safety audit for paper attribution. Research only."""
+    print(_PAPER_ATTRIBUTION_BANNER)
+    from paper_trading.performance_attribution.safety_v167 import audit_safety, get_safety_flags
+    audit = audit_safety()
+    flags = get_safety_flags()
+    print(f"Safety audit: all_safe={audit.get('all_safe')}  capabilities={audit.get('safety_capabilities')}")
+    for k, v in sorted(flags.items()):
+        print(f"  {k}: {v}")
+    print(_PAPER_ATTRIBUTION_BANNER)
+
+
+def cmd_paper_attribution_enums(args=None):
+    """[v1.6.7] Show all paper attribution enum definitions. Research only."""
+    print(_PAPER_ATTRIBUTION_BANNER)
+    from paper_trading.performance_attribution.enums_v167 import (
+        AttributionLevel, AttributionDimension, AttributionMethod,
+        ReconciliationStatus, AttributionStatus, ConfidenceLevel, RegimeType,
+    )
+    for enum_cls in (AttributionLevel, AttributionDimension, AttributionMethod,
+                     ReconciliationStatus, AttributionStatus, ConfidenceLevel, RegimeType):
+        print(f"{enum_cls.__name__}: {[e.value for e in enum_cls]}")
+    print(_PAPER_ATTRIBUTION_BANNER)
+
+
+def cmd_paper_attribution_run(args=None):
+    """[v1.6.7] Run paper performance attribution on a stored run. Research only."""
+    print(_PAPER_ATTRIBUTION_BANNER)
+    print("  paper-attribution-run: Runs all attribution engines on a stored paper run.")
+    print("  Provide --run-id to specify the attribution run to query.")
+    print("  All results are PAPER_ONLY, RESEARCH_ONLY, NOT_FOR_PRODUCTION.")
+    print(_PAPER_ATTRIBUTION_BANNER)
+
+
+def cmd_paper_attribution_query(args=None):
+    """[v1.6.7] Query attribution results for a run ID. Research only."""
+    print(_PAPER_ATTRIBUTION_BANNER)
+    from paper_trading.performance_attribution.attribution_store_v167 import AttributionStore
+    from paper_trading.performance_attribution.attribution_query_v167 import AttributionQueryAPI
+    store = AttributionStore()
+    q = AttributionQueryAPI(store)
+    summary = store.summarize()
+    print(f"Store: {summary.get('total_runs', 0)} runs")
+    print("  paper-attribution-query: Use --run-id to query specific run results.")
+    print(_PAPER_ATTRIBUTION_BANNER)
+
+
+def cmd_paper_attribution_portfolio(args=None):
+    """[v1.6.7] Show portfolio-level attribution. Research only."""
+    print(_PAPER_ATTRIBUTION_BANNER)
+    print("  paper-attribution-portfolio: Shows portfolio-level attribution for a run.")
+    print("  Provide --run-id to specify the run. Returns active_return, gross/net return,")
+    print("  selection/allocation/timing/execution/cost/risk/regime/benchmark/factor.")
+    print(_PAPER_ATTRIBUTION_BANNER)
+
+
+def cmd_paper_attribution_strategy(args=None):
+    """[v1.6.7] Show strategy-level attribution. Research only."""
+    print(_PAPER_ATTRIBUTION_BANNER)
+    print("  paper-attribution-strategy: Shows per-strategy attribution for a run.")
+    print("  Provide --run-id to specify the run. Optionally --strategy-id.")
+    print(_PAPER_ATTRIBUTION_BANNER)
+
+
+def cmd_paper_attribution_session(args=None):
+    """[v1.6.7] Show session-level attribution (read-only). Research only."""
+    print(_PAPER_ATTRIBUTION_BANNER)
+    print("  paper-attribution-session: Shows per-session attribution for a run.")
+    print("  Read-only. Does NOT start/stop/modify sessions.")
+    print("  Provide --run-id. Optionally --session-id.")
+    print(_PAPER_ATTRIBUTION_BANNER)
+
+
+def cmd_paper_attribution_symbol(args=None):
+    """[v1.6.7] Show symbol-level attribution. Research only."""
+    print(_PAPER_ATTRIBUTION_BANNER)
+    print("  paper-attribution-symbol: Shows per-symbol attribution for a run.")
+    print("  Provide --run-id. Optionally --symbol.")
+    print(_PAPER_ATTRIBUTION_BANNER)
+
+
+def cmd_paper_attribution_sector(args=None):
+    """[v1.6.7] Show sector-level attribution. Research only."""
+    print(_PAPER_ATTRIBUTION_BANNER)
+    print("  paper-attribution-sector: Shows per-sector attribution for a run.")
+    print("  Provide --run-id.")
+    print(_PAPER_ATTRIBUTION_BANNER)
+
+
+def cmd_paper_attribution_selection(args=None):
+    """[v1.6.7] Show selection attribution (Brinson-Fachler). Research only."""
+    print(_PAPER_ATTRIBUTION_BANNER)
+    print("  paper-attribution-selection: Brinson-Fachler selection effect.")
+    print("  bw * (pr - br) per symbol/sector. Requires benchmark data.")
+    print(_PAPER_ATTRIBUTION_BANNER)
+
+
+def cmd_paper_attribution_allocation(args=None):
+    """[v1.6.7] Show allocation attribution. Research only."""
+    print(_PAPER_ATTRIBUTION_BANNER)
+    print("  paper-attribution-allocation: (pw - bw) * (br - total_bm_return).")
+    print("  Shows overweight/underweight effects, cash drag, leverage.")
+    print(_PAPER_ATTRIBUTION_BANNER)
+
+
+def cmd_paper_attribution_timing(args=None):
+    """[v1.6.7] Show timing attribution. Research only."""
+    print(_PAPER_ATTRIBUTION_BANNER)
+    print("  paper-attribution-timing: Entry/exit timing vs reference price.")
+    print("  No synthetic bar fill-in. Returns INSUFFICIENT_DATA if no reference.")
+    print(_PAPER_ATTRIBUTION_BANNER)
+
+
+def cmd_paper_attribution_execution(args=None):
+    """[v1.6.7] Show execution attribution (implementation shortfall). Research only."""
+    print(_PAPER_ATTRIBUTION_BANNER)
+    print("  paper-attribution-execution: Implementation shortfall, delay cost,")
+    print("  spread, slippage, fill ratio. All executions simulated=True.")
+    print(_PAPER_ATTRIBUTION_BANNER)
+
+
+def cmd_paper_attribution_costs(args=None):
+    """[v1.6.7] Show cost attribution breakdown. Research only."""
+    print(_PAPER_ATTRIBUTION_BANNER)
+    print("  paper-attribution-costs: Commission, tax, spread, slippage breakdown.")
+    print("  Cost quality: KNOWN / ESTIMATED / UNKNOWN. cost_bps derived.")
+    print(_PAPER_ATTRIBUTION_BANNER)
+
+
+def cmd_paper_attribution_risk(args=None):
+    """[v1.6.7] Show risk attribution. Research only."""
+    print(_PAPER_ATTRIBUTION_BANNER)
+    print("  paper-attribution-risk: Volatility, downside vol, Sharpe, drawdown,")
+    print("  beta, overnight/gap risk. Degrades to DEGRADED when data insufficient.")
+    print(_PAPER_ATTRIBUTION_BANNER)
+
+
+def cmd_paper_attribution_drawdown(args=None):
+    """[v1.6.7] Show drawdown attribution. Research only."""
+    print(_PAPER_ATTRIBUTION_BANNER)
+    print("  paper-attribution-drawdown: Peak-to-trough, recovery, source decomp.")
+    print("  Residual always visible, never zeroed.")
+    print(_PAPER_ATTRIBUTION_BANNER)
+
+
+def cmd_paper_attribution_regime(args=None):
+    """[v1.6.7] Show regime attribution. Research only."""
+    print(_PAPER_ATTRIBUTION_BANNER)
+    print("  paper-attribution-regime: Bull/bear/sideways/volatile per sub-period.")
+    print("  UNKNOWN regime stays UNKNOWN, not forced to SIDEWAYS.")
+    print(_PAPER_ATTRIBUTION_BANNER)
+
+
+def cmd_paper_attribution_benchmark(args=None):
+    """[v1.6.7] Show benchmark attribution. Research only."""
+    print(_PAPER_ATTRIBUTION_BANNER)
+    print("  paper-attribution-benchmark: Active return vs benchmark.")
+    print("  No equal-weight fallback. Stale/missing clearly marked.")
+    print(_PAPER_ATTRIBUTION_BANNER)
+
+
+def cmd_paper_attribution_factors(args=None):
+    """[v1.6.7] Show factor attribution. Research only."""
+    print(_PAPER_ATTRIBUTION_BANNER)
+    print("  paper-attribution-factors: Momentum, value, size, quality, low-vol,")
+    print("  growth, dividend, beta, sector, liquidity. UNAVAILABLE if data missing.")
+    print(_PAPER_ATTRIBUTION_BANNER)
+
+
+def cmd_paper_attribution_reconcile(args=None):
+    """[v1.6.7] Run attribution reconciliation. Research only."""
+    print(_PAPER_ATTRIBUTION_BANNER)
+    from paper_trading.performance_attribution.attribution_reconciler_v167 import AttributionReconciler
+    r = AttributionReconciler()
+    print(f"Reconciler ready: tolerance={r._tol}  rounding_tolerance={r._rounding_tol}")
+    print("  paper-attribution-reconcile: Checks component_sum == expected_total.")
+    print("  Returns RECONCILED / RECONCILED_WITH_ROUNDING / DEGRADED / FAILED.")
+    print(_PAPER_ATTRIBUTION_BANNER)
+
+
+def cmd_paper_attribution_scorecard(args=None):
+    """[v1.6.7] Show attribution quality scorecard (0-100). Research only."""
+    print(_PAPER_ATTRIBUTION_BANNER)
+    from paper_trading.performance_attribution.attribution_scorecard_v167 import SCORE_WEIGHTS
+    print(f"Score weights ({sum(SCORE_WEIGHTS.values())} total):")
+    for k, v in sorted(SCORE_WEIGHTS.items(), key=lambda x: -x[1]):
+        print(f"  {k}: {v} pts")
+    print("  Fixture-only runs capped at 80%. Real markers → score=0, grade=F.")
+    print(_PAPER_ATTRIBUTION_BANNER)
+
+
+def cmd_paper_attribution_report(args=None):
+    """[v1.6.7] Generate 31-section attribution report. Research only."""
+    print(_PAPER_ATTRIBUTION_BANNER)
+    from paper_trading.performance_attribution.attribution_report_v167 import (
+        AttributionReportEngine, REPORT_SECTIONS,
+    )
+    print(f"Report sections ({len(REPORT_SECTIONS)}):")
+    for i, s in enumerate(REPORT_SECTIONS, 1):
+        print(f"  {i:2d}. {s}")
+    print("  Formats: Markdown, JSON, CSV, console, GUI model.")
+    print(_PAPER_ATTRIBUTION_BANNER)
+
+
+def cmd_paper_attribution_top_contributors(args=None):
+    """[v1.6.7] Show top-N attribution contributors. Research only."""
+    print(_PAPER_ATTRIBUTION_BANNER)
+    print("  paper-attribution-top-contributors: Top-N symbols by return contribution.")
+    print("  Provide --run-id --level symbol|strategy|session --n 5")
+    print(_PAPER_ATTRIBUTION_BANNER)
+
+
+def cmd_paper_attribution_bottom_contributors(args=None):
+    """[v1.6.7] Show bottom-N attribution contributors. Research only."""
+    print(_PAPER_ATTRIBUTION_BANNER)
+    print("  paper-attribution-bottom-contributors: Bottom-N by return contribution.")
+    print("  Provide --run-id --level symbol|strategy|session --n 5")
+    print(_PAPER_ATTRIBUTION_BANNER)
+
+
+def cmd_paper_attribution_scenarios(args=None):
+    """[v1.6.7] List all 80+ attribution scenarios. Research only."""
+    print(_PAPER_ATTRIBUTION_BANNER)
+    from paper_trading.performance_attribution.scenario_registry_v167 import ScenarioRegistry
+    reg = ScenarioRegistry()
+    summ = reg.summarize()
+    print(f"Total scenarios: {summ['total']}")
+    print(f"Categories: {summ['categories']}")
+    for sid in reg.list_ids():
+        s = reg.get(sid)
+        print(f"  [{sid}] {s['name']} — expected: {s['expected_status']}")
+    print(_PAPER_ATTRIBUTION_BANNER)
+
+
+def cmd_paper_attribution_fixtures_validate(args=None):
+    """[v1.6.7] Validate all paper attribution fixtures. Research only."""
+    print(_PAPER_ATTRIBUTION_BANNER)
+    import os, json
+    from paper_trading.performance_attribution.fixture_schema_v167 import validate_fixture_full
+    fixture_dir = "tests/fixtures/paper_attribution"
+    if not os.path.isdir(fixture_dir):
+        print(f"No fixture directory: {fixture_dir}")
+        print(_PAPER_ATTRIBUTION_BANNER)
+        return
+    files = [f for f in os.listdir(fixture_dir) if f.endswith('.json')]
+    errors = []
+    for fname in sorted(files):
+        path = os.path.join(fixture_dir, fname)
+        with open(path) as fh:
+            data = json.load(fh)
+        r = validate_fixture_full(data)
+        if not r["valid"]:
+            errors.extend([f"{fname}: {e}" for e in r["errors"]])
+    print(f"Fixtures: {len(files)} total  {len(files)-len(errors)} passed  {len(errors)} failed")
+    for e in errors[:10]:
+        print(f"  ERROR: {e}")
+    print(_PAPER_ATTRIBUTION_BANNER)
+
+
+def cmd_paper_attribution_store_summary(args=None):
+    """[v1.6.7] Show attribution store summary. Research only."""
+    print(_PAPER_ATTRIBUTION_BANNER)
+    from paper_trading.performance_attribution.attribution_store_v167 import AttributionStore
+    store = AttributionStore()
+    summary = store.summarize()
+    print(f"Attribution store: {summary}")
+    print(_PAPER_ATTRIBUTION_BANNER)
+
+
+def cmd_paper_attribution_panel(args=None):
+    """[v1.6.7] Show attribution panel state (31 tabs). Research only."""
+    print(_PAPER_ATTRIBUTION_BANNER)
+    from gui.paper_performance_attribution_panel import PaperAttributionPanel
+    panel = PaperAttributionPanel()
+    print(panel.render_text())
+    print(_PAPER_ATTRIBUTION_BANNER)
+
+
+def cmd_paper_attribution_compare_periods(args=None):
+    """[v1.6.7] Compare attribution across multiple run IDs. Research only."""
+    print(_PAPER_ATTRIBUTION_BANNER)
+    print("  paper-attribution-compare-periods: Compare attribution dimension across runs.")
+    print("  Provide --run-ids run1,run2,... --dimension active_return")
+    print(_PAPER_ATTRIBUTION_BANNER)
+
+
+def cmd_paper_attribution_export(args=None):
+    """[v1.6.7] Export attribution run as JSON/CSV/Markdown. Research only."""
+    print(_PAPER_ATTRIBUTION_BANNER)
+    print("  paper-attribution-export: Export run to JSON, CSV, or Markdown.")
+    print("  Provide --run-id --format json|csv|markdown")
+    print(_PAPER_ATTRIBUTION_BANNER)
+
+
 def cmd_paper_strategy_health(args=None):
     """[v1.6.2] Paper strategy orchestration health check. Research only."""
     print(_STRATEGY_SAFETY_BANNER)
@@ -38839,6 +39195,40 @@ def main() -> None:
         "multi-session-version":                 cmd_multi_session_version,
         "multi-session-discovery":               cmd_multi_session_discovery,
         "multi-session-capabilities":            cmd_multi_session_capabilities,
+        # v1.6.7 — Paper Performance Attribution
+        "paper-attribution-health":              cmd_paper_attribution_health,
+        "paper-attribution-gate":                cmd_paper_attribution_gate,
+        "paper-attribution-version":             cmd_paper_attribution_version,
+        "paper-attribution-safety-audit":        cmd_paper_attribution_safety_audit,
+        "paper-attribution-enums":               cmd_paper_attribution_enums,
+        "paper-attribution-run":                 cmd_paper_attribution_run,
+        "paper-attribution-query":               cmd_paper_attribution_query,
+        "paper-attribution-portfolio":           cmd_paper_attribution_portfolio,
+        "paper-attribution-strategy":            cmd_paper_attribution_strategy,
+        "paper-attribution-session":             cmd_paper_attribution_session,
+        "paper-attribution-symbol":              cmd_paper_attribution_symbol,
+        "paper-attribution-sector":              cmd_paper_attribution_sector,
+        "paper-attribution-selection":           cmd_paper_attribution_selection,
+        "paper-attribution-allocation":          cmd_paper_attribution_allocation,
+        "paper-attribution-timing":              cmd_paper_attribution_timing,
+        "paper-attribution-execution":           cmd_paper_attribution_execution,
+        "paper-attribution-costs":               cmd_paper_attribution_costs,
+        "paper-attribution-risk":                cmd_paper_attribution_risk,
+        "paper-attribution-drawdown":            cmd_paper_attribution_drawdown,
+        "paper-attribution-regime":              cmd_paper_attribution_regime,
+        "paper-attribution-benchmark":           cmd_paper_attribution_benchmark,
+        "paper-attribution-factors":             cmd_paper_attribution_factors,
+        "paper-attribution-reconcile":           cmd_paper_attribution_reconcile,
+        "paper-attribution-scorecard":           cmd_paper_attribution_scorecard,
+        "paper-attribution-report":              cmd_paper_attribution_report,
+        "paper-attribution-top-contributors":    cmd_paper_attribution_top_contributors,
+        "paper-attribution-bottom-contributors": cmd_paper_attribution_bottom_contributors,
+        "paper-attribution-scenarios":           cmd_paper_attribution_scenarios,
+        "paper-attribution-fixtures-validate":   cmd_paper_attribution_fixtures_validate,
+        "paper-attribution-store-summary":       cmd_paper_attribution_store_summary,
+        "paper-attribution-panel":               cmd_paper_attribution_panel,
+        "paper-attribution-compare-periods":     cmd_paper_attribution_compare_periods,
+        "paper-attribution-export":              cmd_paper_attribution_export,
     }
 
     if args.command is None:

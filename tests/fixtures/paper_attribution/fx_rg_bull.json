@@ -1,0 +1,26 @@
+{
+  "category": "regime_attribution",
+  "demo_only": true,
+  "expected": {
+    "contribution": 0.03,
+    "regime": "BULL"
+  },
+  "fixture_id": "fx_rg_bull",
+  "input": {
+    "benchmark": 0.05,
+    "regime": "BULL",
+    "return": 0.08
+  },
+  "no_broker": true,
+  "no_real_account": true,
+  "no_real_orders": true,
+  "not_for_production": true,
+  "not_live": true,
+  "paper_attribution_only": true,
+  "paper_only": true,
+  "policy_version": "1.6.7-paper-attribution",
+  "purpose": "Bull regime positive contribution",
+  "research_only": true,
+  "schema_version": "167",
+  "test_fixture": true
+}

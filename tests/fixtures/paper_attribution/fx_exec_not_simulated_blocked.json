@@ -1,0 +1,25 @@
+{
+  "category": "execution_attribution",
+  "demo_only": true,
+  "expected": {
+    "status": "BLOCKED"
+  },
+  "fixture_id": "fx_exec_not_simulated_blocked",
+  "input": {
+    "decision_price": 50.0,
+    "fill_price": 51.0,
+    "simulated": false
+  },
+  "no_broker": true,
+  "no_real_account": true,
+  "no_real_orders": true,
+  "not_for_production": true,
+  "not_live": true,
+  "paper_attribution_only": true,
+  "paper_only": true,
+  "policy_version": "1.6.7-paper-attribution",
+  "purpose": "Not simulated \u2192 BLOCKED",
+  "research_only": true,
+  "schema_version": "167",
+  "test_fixture": true
+}

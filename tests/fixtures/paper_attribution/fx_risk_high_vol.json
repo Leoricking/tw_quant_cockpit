@@ -1,0 +1,29 @@
+{
+  "category": "risk_attribution",
+  "demo_only": true,
+  "expected": {
+    "vol_annualized_approx_gt": 0.2
+  },
+  "fixture_id": "fx_risk_high_vol",
+  "input": {
+    "daily_returns": [
+      0.02,
+      -0.03,
+      0.015,
+      -0.025,
+      0.03
+    ]
+  },
+  "no_broker": true,
+  "no_real_account": true,
+  "no_real_orders": true,
+  "not_for_production": true,
+  "not_live": true,
+  "paper_attribution_only": true,
+  "paper_only": true,
+  "policy_version": "1.6.7-paper-attribution",
+  "purpose": "High volatility portfolio",
+  "research_only": true,
+  "schema_version": "167",
+  "test_fixture": true
+}

@@ -1,0 +1,26 @@
+{
+  "category": "timing_attribution",
+  "demo_only": true,
+  "expected": {
+    "timing": -0.04
+  },
+  "fixture_id": "fx_timing_negative_delayed",
+  "input": {
+    "decision_price": 50.0,
+    "direction": "BUY",
+    "entry_price": 52.0,
+    "exit_price": 55.0
+  },
+  "no_broker": true,
+  "no_real_account": true,
+  "no_real_orders": true,
+  "not_for_production": true,
+  "not_live": true,
+  "paper_attribution_only": true,
+  "paper_only": true,
+  "policy_version": "1.6.7-paper-attribution",
+  "purpose": "Late entry after move",
+  "research_only": true,
+  "schema_version": "167",
+  "test_fixture": true
+}

@@ -1,0 +1,26 @@
+{
+  "category": "selection_attribution",
+  "demo_only": true,
+  "expected": {
+    "method": "brinson_fachler",
+    "selection": 0.015
+  },
+  "fixture_id": "fx_sel_brinson_fachler",
+  "input": {
+    "bm_return": 0.07,
+    "bm_weight": 0.3,
+    "portfolio_return": 0.12
+  },
+  "no_broker": true,
+  "no_real_account": true,
+  "no_real_orders": true,
+  "not_for_production": true,
+  "not_live": true,
+  "paper_attribution_only": true,
+  "paper_only": true,
+  "policy_version": "1.6.7-paper-attribution",
+  "purpose": "Brinson-Fachler formula verified",
+  "research_only": true,
+  "schema_version": "167",
+  "test_fixture": true
+}

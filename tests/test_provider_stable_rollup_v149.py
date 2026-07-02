@@ -41,7 +41,8 @@ class TestVersionInfo:
             "Operational Analytics & Review",
             "Failure Injection & Recovery Validation", "Multi-session Coordination",
             "Fixture Governance & Safety Marker Hotfix",
-            "Replay Session Lineage Handler Integrity Hotfix")
+            "Replay Session Lineage Handler Integrity Hotfix",
+            "Paper Performance Attribution")
 
     def test_3_base_release_contains_148(self):
         from release.version_info import BASE_RELEASE

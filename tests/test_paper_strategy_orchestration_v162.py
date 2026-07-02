@@ -1788,7 +1788,8 @@ class TestVersionInfo(unittest.TestCase):
             "CLI Handler Resolution Integrity Hotfix",
             "Operational Analytics & Review",
             "Failure Injection & Recovery Validation", "Multi-session Coordination", "Fixture Governance & Safety Marker Hotfix",
-            "Replay Session Lineage Handler Integrity Hotfix"}
+            "Replay Session Lineage Handler Integrity Hotfix",
+            "Paper Performance Attribution"}
         self.assertIn(RELEASE_NAME, _KNOWN, f"Unexpected RELEASE_NAME: {RELEASE_NAME}")
 
     def test_442_baseline(self):

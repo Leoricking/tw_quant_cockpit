@@ -1,0 +1,33 @@
+{
+  "category": "pnl_attribution",
+  "demo_only": true,
+  "expected": {
+    "net_pnl": 400.0
+  },
+  "fixture_id": "fx_pnl_multi_trade_net",
+  "input": {
+    "trades": [
+      {
+        "pnl": 500.0
+      },
+      {
+        "pnl": -200.0
+      },
+      {
+        "pnl": 100.0
+      }
+    ]
+  },
+  "no_broker": true,
+  "no_real_account": true,
+  "no_real_orders": true,
+  "not_for_production": true,
+  "not_live": true,
+  "paper_attribution_only": true,
+  "paper_only": true,
+  "policy_version": "1.6.7-paper-attribution",
+  "purpose": "Multiple trades net PnL",
+  "research_only": true,
+  "schema_version": "167",
+  "test_fixture": true
+}

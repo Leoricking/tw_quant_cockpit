@@ -58,6 +58,7 @@ _KNOWN_NAMES = {
     "Multi-session Coordination",
             "Fixture Governance & Safety Marker Hotfix",
     "Replay Session Lineage Handler Integrity Hotfix",
+    "Paper Performance Attribution",
 }
 
 

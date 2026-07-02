@@ -1,0 +1,26 @@
+{
+  "category": "safety",
+  "demo_only": true,
+  "expected": {
+    "valid": true
+  },
+  "fixture_id": "fx_sf_all_markers_present",
+  "input": {
+    "no_real_orders": true,
+    "not_for_production": true,
+    "paper_only": true,
+    "research_only": true
+  },
+  "no_broker": true,
+  "no_real_account": true,
+  "no_real_orders": true,
+  "not_for_production": true,
+  "not_live": true,
+  "paper_attribution_only": true,
+  "paper_only": true,
+  "policy_version": "1.6.7-paper-attribution",
+  "purpose": "All required safety markers present",
+  "research_only": true,
+  "schema_version": "167",
+  "test_fixture": true
+}

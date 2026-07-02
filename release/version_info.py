@@ -73,9 +73,9 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # ---------------------------------------------------------------------------
 # v1.3.3 module-level constants (Coverage Repair Workflow)
 # ---------------------------------------------------------------------------
-VERSION                             = "1.6.6.2"
-RELEASE_NAME                        = "Replay Session Lineage Handler Integrity Hotfix"
-BASE_RELEASE                        = "1.6.6.1 Fixture Governance & Safety Marker Hotfix"
+VERSION                             = "1.6.7"
+RELEASE_NAME                        = "Paper Performance Attribution"
+BASE_RELEASE                        = "1.6.6.2 Replay Session Lineage Handler Integrity Hotfix"
 PORTFOLIO_STABLE_BASELINE           = "1.5.9"
 LIVE_PAPER_TRADING_BASELINE         = "1.6.0"
 MARKET_DATA_SESSION_BASELINE        = "1.6.1"
@@ -102,6 +102,23 @@ GLOBAL_AUTO_SESSION_STOP_ENABLED           = False
 PRODUCTION_SESSION_COORDINATION_ENABLED    = False
 EXTERNAL_COORDINATION_BUS_ENABLED          = False
 DISTRIBUTED_LOCK_SERVICE_ENABLED           = False
+# v1.6.7 Paper Performance Attribution safety flags
+PAPER_ATTRIBUTION_AVAILABLE                         = True
+PAPER_ATTRIBUTION_RESEARCH_ONLY                     = True
+PAPER_ATTRIBUTION_PAPER_ONLY                        = True
+PAPER_ATTRIBUTION_NO_REAL_ORDERS                    = True
+REAL_PERFORMANCE_ATTRIBUTION_ENABLED                = False
+PAPER_ATTRIBUTION_BROKER_ENABLED                    = False
+PAPER_ATTRIBUTION_PRODUCTION_DB_ENABLED             = False
+PAPER_ATTRIBUTION_REAL_LEDGER_WRITE_ENABLED         = False
+PAPER_ATTRIBUTION_LIVE_EXECUTION_ENABLED            = False
+PAPER_ATTRIBUTION_AUTO_REAL_ORDER_ENABLED           = False
+PAPER_ATTRIBUTION_AUTO_REAL_POSITION_CHANGE_ENABLED = False
+PAPER_ATTRIBUTION_AUTO_CAPITAL_ALLOCATION_ENABLED   = False
+PAPER_ATTRIBUTION_EXTERNAL_NETWORK_ENABLED          = False
+PAPER_ATTRIBUTION_REDIS_ENABLED                     = False
+PAPER_ATTRIBUTION_KAFKA_ENABLED                     = False
+PAPER_PERFORMANCE_ATTRIBUTION_BASELINE              = "1.6.7"
 # v1.6.5 Failure Injection & Recovery Validation safety flags
 FAILURE_INJECTION_AVAILABLE                 = True
 FAILURE_INJECTION_RESEARCH_ONLY             = True

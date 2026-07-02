@@ -1,0 +1,25 @@
+{
+  "category": "risk_attribution",
+  "demo_only": true,
+  "expected": {
+    "sharpe": 0.667
+  },
+  "fixture_id": "fx_risk_sharpe_positive",
+  "input": {
+    "annualized_return": 0.12,
+    "annualized_vol": 0.15,
+    "risk_free": 0.02
+  },
+  "no_broker": true,
+  "no_real_account": true,
+  "no_real_orders": true,
+  "not_for_production": true,
+  "not_live": true,
+  "paper_attribution_only": true,
+  "paper_only": true,
+  "policy_version": "1.6.7-paper-attribution",
+  "purpose": "Positive Sharpe ratio",
+  "research_only": true,
+  "schema_version": "167",
+  "test_fixture": true
+}

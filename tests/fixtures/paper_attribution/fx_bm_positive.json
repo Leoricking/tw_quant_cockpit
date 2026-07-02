@@ -1,0 +1,24 @@
+{
+  "category": "benchmark_attribution",
+  "demo_only": true,
+  "expected": {
+    "active_return": -0.02
+  },
+  "fixture_id": "fx_bm_positive",
+  "input": {
+    "benchmark_return": 0.07,
+    "portfolio_return": 0.05
+  },
+  "no_broker": true,
+  "no_real_account": true,
+  "no_real_orders": true,
+  "not_for_production": true,
+  "not_live": true,
+  "paper_attribution_only": true,
+  "paper_only": true,
+  "policy_version": "1.6.7-paper-attribution",
+  "purpose": "Benchmark outperforms \u2192 negative relative",
+  "research_only": true,
+  "schema_version": "167",
+  "test_fixture": true
+}

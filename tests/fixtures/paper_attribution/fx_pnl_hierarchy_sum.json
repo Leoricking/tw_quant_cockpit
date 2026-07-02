@@ -1,0 +1,26 @@
+{
+  "category": "pnl_attribution",
+  "demo_only": true,
+  "expected": {
+    "portfolio_pnl": 500.0
+  },
+  "fixture_id": "fx_pnl_hierarchy_sum",
+  "input": {
+    "symbols": {
+      "AAPL": 300.0,
+      "MSFT": 200.0
+    }
+  },
+  "no_broker": true,
+  "no_real_account": true,
+  "no_real_orders": true,
+  "not_for_production": true,
+  "not_live": true,
+  "paper_attribution_only": true,
+  "paper_only": true,
+  "policy_version": "1.6.7-paper-attribution",
+  "purpose": "Symbol sums to portfolio",
+  "research_only": true,
+  "schema_version": "167",
+  "test_fixture": true
+}

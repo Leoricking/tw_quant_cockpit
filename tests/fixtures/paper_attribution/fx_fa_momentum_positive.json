@@ -1,0 +1,25 @@
+{
+  "category": "factor_attribution",
+  "demo_only": true,
+  "expected": {
+    "contribution": 0.02
+  },
+  "fixture_id": "fx_fa_momentum_positive",
+  "input": {
+    "exposure": 0.5,
+    "factor": "MOMENTUM",
+    "factor_return": 0.04
+  },
+  "no_broker": true,
+  "no_real_account": true,
+  "no_real_orders": true,
+  "not_for_production": true,
+  "not_live": true,
+  "paper_attribution_only": true,
+  "paper_only": true,
+  "policy_version": "1.6.7-paper-attribution",
+  "purpose": "Momentum factor positive",
+  "research_only": true,
+  "schema_version": "167",
+  "test_fixture": true
+}

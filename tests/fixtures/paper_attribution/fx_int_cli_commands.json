@@ -1,0 +1,23 @@
+{
+  "category": "integration",
+  "demo_only": true,
+  "expected": {
+    "command_count_gte": 29
+  },
+  "fixture_id": "fx_int_cli_commands",
+  "input": {
+    "command_prefix": "paper-attribution-"
+  },
+  "no_broker": true,
+  "no_real_account": true,
+  "no_real_orders": true,
+  "not_for_production": true,
+  "not_live": true,
+  "paper_attribution_only": true,
+  "paper_only": true,
+  "policy_version": "1.6.7-paper-attribution",
+  "purpose": "CLI command wiring",
+  "research_only": true,
+  "schema_version": "167",
+  "test_fixture": true
+}

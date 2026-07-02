@@ -108,6 +108,7 @@ class ResearchFoundationReleaseGate:
             "Multi-session Coordination",
             "Fixture Governance & Safety Marker Hotfix",
             "Replay Session Lineage Handler Integrity Hotfix",
+            "Paper Performance Attribution",
             }
             parts = tuple(int(x) for x in VERSION.split(".")[:3])
             ok = (

@@ -1,0 +1,22 @@
+{
+  "category": "regression",
+  "demo_only": true,
+  "expected": {
+    "status": "PASS",
+    "total_runs": 0
+  },
+  "fixture_id": "fx_reg_empty_store",
+  "input": {},
+  "no_broker": true,
+  "no_real_account": true,
+  "no_real_orders": true,
+  "not_for_production": true,
+  "not_live": true,
+  "paper_attribution_only": true,
+  "paper_only": true,
+  "policy_version": "1.6.7-paper-attribution",
+  "purpose": "Empty store zero totals",
+  "research_only": true,
+  "schema_version": "167",
+  "test_fixture": true
+}

@@ -1,0 +1,25 @@
+{
+  "category": "exposure_attribution",
+  "demo_only": true,
+  "expected": {
+    "concentration": 0.25,
+    "warning": true
+  },
+  "fixture_id": "fx_exp_concentrated",
+  "input": {
+    "portfolio_value": 100000.0,
+    "position_value": 25000.0
+  },
+  "no_broker": true,
+  "no_real_account": true,
+  "no_real_orders": true,
+  "not_for_production": true,
+  "not_live": true,
+  "paper_attribution_only": true,
+  "paper_only": true,
+  "policy_version": "1.6.7-paper-attribution",
+  "purpose": "Concentrated position warning",
+  "research_only": true,
+  "schema_version": "167",
+  "test_fixture": true
+}

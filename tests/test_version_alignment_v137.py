@@ -68,6 +68,7 @@ def test_current_release_name():
             "Multi-session Coordination",
             "Fixture Governance & Safety Marker Hotfix",
             "Replay Session Lineage Handler Integrity Hotfix",
+            "Paper Performance Attribution",
     }
     assert RELEASE_NAME in known_names, f"Unexpected RELEASE_NAME: {RELEASE_NAME}"
 

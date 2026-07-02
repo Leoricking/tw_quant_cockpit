@@ -48,6 +48,7 @@ class FixtureGovernanceReleaseGateV1661:
                 "Fixture Governance & Safety Marker Hotfix",
                 "Multi-session Coordination",
                 "Replay Session Lineage Handler Integrity Hotfix",
+                "Paper Performance Attribution",
             },
             f"RELEASE_NAME={RELEASE_NAME}",
             f"RELEASE_NAME={RELEASE_NAME} not in known names"

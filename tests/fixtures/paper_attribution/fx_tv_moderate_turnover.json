@@ -1,0 +1,26 @@
+{
+  "category": "turnover_attribution",
+  "demo_only": true,
+  "expected": {
+    "drag_bps": 10.0,
+    "turnover_rate": 0.5
+  },
+  "fixture_id": "fx_tv_moderate_turnover",
+  "input": {
+    "avg_portfolio": 100000.0,
+    "cost_per_turn": 0.002,
+    "total_traded": 50000.0
+  },
+  "no_broker": true,
+  "no_real_account": true,
+  "no_real_orders": true,
+  "not_for_production": true,
+  "not_live": true,
+  "paper_attribution_only": true,
+  "paper_only": true,
+  "policy_version": "1.6.7-paper-attribution",
+  "purpose": "Moderate turnover",
+  "research_only": true,
+  "schema_version": "167",
+  "test_fixture": true
+}

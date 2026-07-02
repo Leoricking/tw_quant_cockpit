@@ -1,0 +1,26 @@
+{
+  "category": "execution_attribution",
+  "demo_only": true,
+  "expected": {
+    "is_bps": -200.0
+  },
+  "fixture_id": "fx_exec_impl_shortfall_sell",
+  "input": {
+    "decision_price": 50.0,
+    "direction": "SELL",
+    "fill_price": 49.0,
+    "simulated": true
+  },
+  "no_broker": true,
+  "no_real_account": true,
+  "no_real_orders": true,
+  "not_for_production": true,
+  "not_live": true,
+  "paper_attribution_only": true,
+  "paper_only": true,
+  "policy_version": "1.6.7-paper-attribution",
+  "purpose": "Implementation shortfall on sell",
+  "research_only": true,
+  "schema_version": "167",
+  "test_fixture": true
+}

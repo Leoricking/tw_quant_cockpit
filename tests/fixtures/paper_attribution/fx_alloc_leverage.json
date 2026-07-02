@@ -1,0 +1,27 @@
+{
+  "category": "allocation_attribution",
+  "demo_only": true,
+  "expected": {
+    "allocation": 0.015,
+    "leverage": true
+  },
+  "fixture_id": "fx_alloc_leverage",
+  "input": {
+    "br": 0.08,
+    "bw": 1.0,
+    "pw": 1.5,
+    "total_bm": 0.05
+  },
+  "no_broker": true,
+  "no_real_account": true,
+  "no_real_orders": true,
+  "not_for_production": true,
+  "not_live": true,
+  "paper_attribution_only": true,
+  "paper_only": true,
+  "policy_version": "1.6.7-paper-attribution",
+  "purpose": "Leverage > 1.0 attribution",
+  "research_only": true,
+  "schema_version": "167",
+  "test_fixture": true
+}

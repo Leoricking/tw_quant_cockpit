@@ -1,0 +1,24 @@
+{
+  "category": "return_decomposition",
+  "demo_only": true,
+  "expected": {
+    "active_return": -0.02
+  },
+  "fixture_id": "fx_rd_active_return_negative",
+  "input": {
+    "benchmark_return": 0.05,
+    "portfolio_return": 0.03
+  },
+  "no_broker": true,
+  "no_real_account": true,
+  "no_real_orders": true,
+  "not_for_production": true,
+  "not_live": true,
+  "paper_attribution_only": true,
+  "paper_only": true,
+  "policy_version": "1.6.7-paper-attribution",
+  "purpose": "Negative active return",
+  "research_only": true,
+  "schema_version": "167",
+  "test_fixture": true
+}

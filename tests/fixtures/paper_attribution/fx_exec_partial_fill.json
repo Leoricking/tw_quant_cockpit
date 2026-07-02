@@ -1,0 +1,25 @@
+{
+  "category": "execution_attribution",
+  "demo_only": true,
+  "expected": {
+    "fill_ratio": 0.8
+  },
+  "fixture_id": "fx_exec_partial_fill",
+  "input": {
+    "filled_qty": 80,
+    "requested_qty": 100,
+    "simulated": true
+  },
+  "no_broker": true,
+  "no_real_account": true,
+  "no_real_orders": true,
+  "not_for_production": true,
+  "not_live": true,
+  "paper_attribution_only": true,
+  "paper_only": true,
+  "policy_version": "1.6.7-paper-attribution",
+  "purpose": "Partial fill 80%",
+  "research_only": true,
+  "schema_version": "167",
+  "test_fixture": true
+}

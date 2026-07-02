@@ -1,0 +1,33 @@
+{
+  "category": "slippage_attribution",
+  "demo_only": true,
+  "expected": {
+    "avg_slippage": -0.00017
+  },
+  "fixture_id": "fx_slip_multi_trade",
+  "input": {
+    "trades": [
+      {
+        "slip": 0.001
+      },
+      {
+        "slip": -0.002
+      },
+      {
+        "slip": 0.0005
+      }
+    ]
+  },
+  "no_broker": true,
+  "no_real_account": true,
+  "no_real_orders": true,
+  "not_for_production": true,
+  "not_live": true,
+  "paper_attribution_only": true,
+  "paper_only": true,
+  "policy_version": "1.6.7-paper-attribution",
+  "purpose": "Multi-trade slippage aggregate",
+  "research_only": true,
+  "schema_version": "167",
+  "test_fixture": true
+}

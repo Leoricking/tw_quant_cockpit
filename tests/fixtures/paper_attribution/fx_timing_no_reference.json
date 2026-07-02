@@ -1,0 +1,23 @@
+{
+  "category": "timing_attribution",
+  "demo_only": true,
+  "expected": {
+    "status": "INSUFFICIENT_DATA"
+  },
+  "fixture_id": "fx_timing_no_reference",
+  "input": {
+    "has_reference": false
+  },
+  "no_broker": true,
+  "no_real_account": true,
+  "no_real_orders": true,
+  "not_for_production": true,
+  "not_live": true,
+  "paper_attribution_only": true,
+  "paper_only": true,
+  "policy_version": "1.6.7-paper-attribution",
+  "purpose": "No reference price \u2192 INSUFFICIENT_DATA",
+  "research_only": true,
+  "schema_version": "167",
+  "test_fixture": true
+}

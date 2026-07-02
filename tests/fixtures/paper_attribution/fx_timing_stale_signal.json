@@ -1,0 +1,26 @@
+{
+  "category": "timing_attribution",
+  "demo_only": true,
+  "expected": {
+    "stale_signal_drag": true,
+    "timing_effect": -0.06
+  },
+  "fixture_id": "fx_timing_stale_signal",
+  "input": {
+    "entry_price": 53.0,
+    "exit_price": 55.0,
+    "signal_price": 50.0
+  },
+  "no_broker": true,
+  "no_real_account": true,
+  "no_real_orders": true,
+  "not_for_production": true,
+  "not_live": true,
+  "paper_attribution_only": true,
+  "paper_only": true,
+  "policy_version": "1.6.7-paper-attribution",
+  "purpose": "Stale signal drag effect",
+  "research_only": true,
+  "schema_version": "167",
+  "test_fixture": true
+}

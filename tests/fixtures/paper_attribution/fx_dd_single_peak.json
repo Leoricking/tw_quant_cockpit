@@ -1,0 +1,28 @@
+{
+  "category": "drawdown_attribution",
+  "demo_only": true,
+  "expected": {
+    "max_drawdown": -0.1364
+  },
+  "fixture_id": "fx_dd_single_peak",
+  "input": {
+    "equity_curve": [
+      100.0,
+      110.0,
+      95.0,
+      100.0
+    ]
+  },
+  "no_broker": true,
+  "no_real_account": true,
+  "no_real_orders": true,
+  "not_for_production": true,
+  "not_live": true,
+  "paper_attribution_only": true,
+  "paper_only": true,
+  "policy_version": "1.6.7-paper-attribution",
+  "purpose": "Single peak-to-trough",
+  "research_only": true,
+  "schema_version": "167",
+  "test_fixture": true
+}

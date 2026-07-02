@@ -1,0 +1,23 @@
+{
+  "category": "benchmark_attribution",
+  "demo_only": true,
+  "expected": {
+    "equal_weight_fallback": false
+  },
+  "fixture_id": "fx_bm_no_fallback",
+  "input": {
+    "missing_benchmark": true
+  },
+  "no_broker": true,
+  "no_real_account": true,
+  "no_real_orders": true,
+  "not_for_production": true,
+  "not_live": true,
+  "paper_attribution_only": true,
+  "paper_only": true,
+  "policy_version": "1.6.7-paper-attribution",
+  "purpose": "No equal-weight fallback",
+  "research_only": true,
+  "schema_version": "167",
+  "test_fixture": true
+}

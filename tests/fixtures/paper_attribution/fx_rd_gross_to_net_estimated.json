@@ -1,0 +1,25 @@
+{
+  "category": "return_decomposition",
+  "demo_only": true,
+  "expected": {
+    "cost_quality": "ESTIMATED"
+  },
+  "fixture_id": "fx_rd_gross_to_net_estimated",
+  "input": {
+    "commission": 0.002,
+    "gross_return": 0.05,
+    "tax_estimated": 0.001
+  },
+  "no_broker": true,
+  "no_real_account": true,
+  "no_real_orders": true,
+  "not_for_production": true,
+  "not_live": true,
+  "paper_attribution_only": true,
+  "paper_only": true,
+  "policy_version": "1.6.7-paper-attribution",
+  "purpose": "Gross-to-net estimated costs",
+  "research_only": true,
+  "schema_version": "167",
+  "test_fixture": true
+}

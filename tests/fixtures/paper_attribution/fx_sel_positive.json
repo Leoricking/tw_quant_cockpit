@@ -1,0 +1,26 @@
+{
+  "category": "selection_attribution",
+  "demo_only": true,
+  "expected": {
+    "formula": "bw*(pr-br)",
+    "selection": 0.007
+  },
+  "fixture_id": "fx_sel_positive",
+  "input": {
+    "bm_return": 0.08,
+    "bm_weight": 0.1,
+    "portfolio_return": 0.15
+  },
+  "no_broker": true,
+  "no_real_account": true,
+  "no_real_orders": true,
+  "not_for_production": true,
+  "not_live": true,
+  "paper_attribution_only": true,
+  "paper_only": true,
+  "policy_version": "1.6.7-paper-attribution",
+  "purpose": "Positive selection overweight good stock",
+  "research_only": true,
+  "schema_version": "167",
+  "test_fixture": true
+}

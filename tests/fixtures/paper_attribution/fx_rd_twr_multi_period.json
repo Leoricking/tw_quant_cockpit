@@ -1,0 +1,27 @@
+{
+  "category": "return_decomposition",
+  "demo_only": true,
+  "expected": {
+    "twr_approx": 0.04006
+  },
+  "fixture_id": "fx_rd_twr_multi_period",
+  "input": {
+    "sub_returns": [
+      0.02,
+      0.03,
+      -0.01
+    ]
+  },
+  "no_broker": true,
+  "no_real_account": true,
+  "no_real_orders": true,
+  "not_for_production": true,
+  "not_live": true,
+  "paper_attribution_only": true,
+  "paper_only": true,
+  "policy_version": "1.6.7-paper-attribution",
+  "purpose": "TWR multi-period chain",
+  "research_only": true,
+  "schema_version": "167",
+  "test_fixture": true
+}

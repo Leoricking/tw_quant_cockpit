@@ -1,0 +1,31 @@
+{
+  "category": "scorecard",
+  "demo_only": true,
+  "expected": {
+    "score_gte": 80.0
+  },
+  "fixture_id": "fx_qs_high_score",
+  "input": {
+    "cost_known": true,
+    "data_complete": true,
+    "deterministic": true,
+    "exec_simulated": true,
+    "has_benchmark": true,
+    "has_lineage": true,
+    "has_risk": true,
+    "real_markers": false,
+    "reconciled": true
+  },
+  "no_broker": true,
+  "no_real_account": true,
+  "no_real_orders": true,
+  "not_for_production": true,
+  "not_live": true,
+  "paper_attribution_only": true,
+  "paper_only": true,
+  "policy_version": "1.6.7-paper-attribution",
+  "purpose": "High score all complete",
+  "research_only": true,
+  "schema_version": "167",
+  "test_fixture": true
+}
