@@ -63,7 +63,8 @@ class ProviderStableRollupHealthCheck:
             "CLI Handler Resolution Integrity Hotfix",
             "Operational Analytics & Review",
             "Failure Injection & Recovery Validation", "Multi-session Coordination",
-            "Fixture Governance & Safety Marker Hotfix"}
+            "Fixture Governance & Safety Marker Hotfix",
+            "Replay Session Lineage Handler Integrity Hotfix"}
             ok = RELEASE_NAME in _KNOWN_NAMES
             checks["release_name_correct"] = ("PASS" if ok else "FAIL",
                                                f"RELEASE_NAME={RELEASE_NAME}")

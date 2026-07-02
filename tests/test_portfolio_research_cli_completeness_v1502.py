@@ -402,6 +402,7 @@ class TestSafetyAndVersion:
             "Failure Injection & Recovery Validation",
             "Multi-session Coordination",
             "Fixture Governance & Safety Marker Hotfix",
+            "Replay Session Lineage Handler Integrity Hotfix",
         }
         assert RELEASE_NAME in valid_names, f"Unexpected RELEASE_NAME: {RELEASE_NAME}"
 

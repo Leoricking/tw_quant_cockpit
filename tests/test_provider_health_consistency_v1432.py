@@ -617,6 +617,7 @@ class TestVersion:
             "Failure Injection & Recovery Validation",
             "Multi-session Coordination",
             "Fixture Governance & Safety Marker Hotfix",
+            "Replay Session Lineage Handler Integrity Hotfix",
         }
         assert RELEASE_NAME in known_names, f"Unexpected RELEASE_NAME: {RELEASE_NAME}"
 

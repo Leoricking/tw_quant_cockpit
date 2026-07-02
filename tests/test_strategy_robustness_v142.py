@@ -1441,6 +1441,7 @@ def test_release_name_142():
             "Failure Injection & Recovery Validation",
             "Multi-session Coordination",
             "Fixture Governance & Safety Marker Hotfix",
+            "Replay Session Lineage Handler Integrity Hotfix",
     )
     assert RELEASE_NAME in _KNOWN, f"Unexpected RELEASE_NAME: {RELEASE_NAME}"
 

@@ -71,7 +71,8 @@ class ProviderStableReleaseGate:
                              "CLI Handler Resolution Integrity Hotfix",
                              "Operational Analytics & Review",
                              "Failure Injection & Recovery Validation", "Multi-session Coordination",
-                             "Fixture Governance & Safety Marker Hotfix"}
+                             "Fixture Governance & Safety Marker Hotfix",
+                             "Replay Session Lineage Handler Integrity Hotfix"}
             parts = tuple(int(x) for x in VERSION.split(".")[:3])
             ok = (
                 parts >= (1, 4, 9)

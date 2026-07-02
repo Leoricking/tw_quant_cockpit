@@ -40,7 +40,8 @@ class TestVersionInfo:
             "CLI Handler Resolution Integrity Hotfix",
             "Operational Analytics & Review",
             "Failure Injection & Recovery Validation", "Multi-session Coordination",
-            "Fixture Governance & Safety Marker Hotfix")
+            "Fixture Governance & Safety Marker Hotfix",
+            "Replay Session Lineage Handler Integrity Hotfix")
 
     def test_3_base_release_contains_148(self):
         from release.version_info import BASE_RELEASE

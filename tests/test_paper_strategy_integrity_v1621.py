@@ -1174,6 +1174,7 @@ class TestReleaseGate35Checks(unittest.TestCase):
             "Failure Injection & Recovery Validation",
             "Multi-session Coordination",
             "Fixture Governance & Safety Marker Hotfix",
+            "Replay Session Lineage Handler Integrity Hotfix",
         }
         self.assertIn(RELEASE_NAME, known)
 

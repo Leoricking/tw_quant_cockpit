@@ -27847,39 +27847,6 @@ def cmd_replay_session_compare(args) -> None:
         traceback.print_exc()
 
 
-def cmd_replay_session_lineage(args) -> None:
-    """Show session lineage tree. [!] Research Only."""
-    session_id = getattr(args, "session_id", None) or ""
-    if not session_id:
-        print("[ERROR] --session-id required")
-        return
-    try:
-        from replay.session_lineage import ReplaySessionLineageManager
-        from replay.replay_session_store import ReplaySessionStore
-        store = ReplaySessionStore(repo_root=BASE_DIR)
-        lineage_mgr = ReplaySessionLineageManager(store=store, repo_root=BASE_DIR)
-        lin = lineage_mgr.get_lineage(session_id)
-        if lin:
-            d = lin.to_dict()
-            print(f"  Session: {session_id}")
-            print(f"  Root: {d.get('root_session_id', '?')}")
-            print(f"  Parent: {d.get('parent_session_id', 'None (root)')}")
-            print(f"  Relation: {d.get('relation_type', '?')}")
-            print(f"  Depth: {d.get('lineage_depth', 0)}")
-            children = d.get("children_session_ids", [])
-            print(f"  Children: {len(children)}")
-            for c in children:
-                print(f"    -> {c}")
-        else:
-            print(f"  No lineage record found for: {session_id}")
-            print(f"  (This may be a legacy v1.2.0 session — lineage tracking added in v1.2.1)")
-        print(f"  [!] Research Only | No Real Orders")
-    except Exception as exc:
-        print(f"[ERROR] {exc}")
-        import traceback
-        traceback.print_exc()
-
-
 def cmd_replay_batch_preview(args) -> None:
     """Preview batch session creation. Dry-run. [!] Research Only."""
     scenario_id = getattr(args, "scenario_id", None) or ""
@@ -37683,7 +37650,6 @@ def main() -> None:
         "replay-session-checkpoints":               cmd_replay_session_checkpoints,
         "replay-session-fork":                      cmd_replay_session_fork,
         "replay-session-compare":                   cmd_replay_session_compare,
-        "replay-session-lineage":                   cmd_replay_session_lineage,
         "replay-batch-preview":                     cmd_replay_batch_preview,
         "replay-batch-create":                      cmd_replay_batch_create,
         # v1.2.2 Decision Journal Integration

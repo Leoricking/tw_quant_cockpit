@@ -57,6 +57,7 @@ _KNOWN_NAMES = {
     "Failure Injection & Recovery Validation",
     "Multi-session Coordination",
             "Fixture Governance & Safety Marker Hotfix",
+    "Replay Session Lineage Handler Integrity Hotfix",
 }
 
 

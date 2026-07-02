@@ -1525,7 +1525,8 @@ class TestVersionInfo:
                   "CLI Registration Health Integrity Hotfix",
             "CLI Handler Resolution Integrity Hotfix",
             "Operational Analytics & Review",
-            "Failure Injection & Recovery Validation", "Multi-session Coordination", "Fixture Governance & Safety Marker Hotfix"}
+            "Failure Injection & Recovery Validation", "Multi-session Coordination", "Fixture Governance & Safety Marker Hotfix",
+            "Replay Session Lineage Handler Integrity Hotfix"}
         assert self.vi.RELEASE_NAME in _KNOWN or "Market Data Session" in self.vi.RELEASE_NAME or "Paper Strategy" in self.vi.RELEASE_NAME or "Session Operations" in self.vi.RELEASE_NAME, f"Got {self.vi.RELEASE_NAME}"
 
     def test_181_market_data_session_baseline(self):

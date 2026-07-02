@@ -47,6 +47,7 @@ class FixtureGovernanceReleaseGateV1661:
             RELEASE_NAME in {
                 "Fixture Governance & Safety Marker Hotfix",
                 "Multi-session Coordination",
+                "Replay Session Lineage Handler Integrity Hotfix",
             },
             f"RELEASE_NAME={RELEASE_NAME}",
             f"RELEASE_NAME={RELEASE_NAME} not in known names"
