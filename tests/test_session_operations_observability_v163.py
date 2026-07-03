@@ -2535,12 +2535,13 @@ class TestVersionAlignment:
             "Fixture Governance & Safety Marker Hotfix",
             "Replay Session Lineage Handler Integrity Hotfix",
             "Paper Performance Attribution",
+            "Operational Integration Hardening",
         }
         assert RELEASE_NAME in _KNOWN, f"Unexpected RELEASE_NAME: {RELEASE_NAME}"
 
     def test_base_release(self):
         from release.version_info import BASE_RELEASE
-        assert any(v in BASE_RELEASE for v in ("1.6.3", "1.6.4", "1.6.5", "1.6.6"))
+        assert any(v in BASE_RELEASE for v in ("1.6.3", "1.6.4", "1.6.5", "1.6.6", "1.6.7"))
 
     def test_session_ops_baseline(self):
         from release.version_info import SESSION_OPERATIONS_OBSERVABILITY_BASELINE

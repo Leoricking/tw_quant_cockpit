@@ -59,6 +59,7 @@ _KNOWN_NAMES = {
             "Fixture Governance & Safety Marker Hotfix",
     "Replay Session Lineage Handler Integrity Hotfix",
     "Paper Performance Attribution",
+    "Operational Integration Hardening",
 }
 
 

@@ -1,0 +1,22 @@
+{
+  "TEST_FIXTURE": true,
+  "DEMO_ONLY": true,
+  "PAPER_ONLY": true,
+  "RESEARCH_ONLY": true,
+  "NOT_LIVE": true,
+  "NO_BROKER": true,
+  "NO_REAL_ACCOUNT": true,
+  "NO_REAL_ORDERS": true,
+  "NOT_FOR_PRODUCTION": true,
+  "OPERATIONAL_INTEGRATION_ONLY": true,
+  "scenario_id": "OI-DET-003",
+  "scenario_name": "score_stable_across_runs",
+  "category": "determinism",
+  "expected_status": "PASS",
+  "description": "Scorecard total stable across replays",
+  "run_id": "R001",
+  "score_a": 95.0,
+  "score_b": 95.0,
+  "deterministic": true,
+  "status": "PASS"
+}

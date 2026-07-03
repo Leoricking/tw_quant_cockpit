@@ -1,0 +1,22 @@
+{
+  "TEST_FIXTURE": true,
+  "DEMO_ONLY": true,
+  "PAPER_ONLY": true,
+  "RESEARCH_ONLY": true,
+  "NOT_LIVE": true,
+  "NO_BROKER": true,
+  "NO_REAL_ACCOUNT": true,
+  "NO_REAL_ORDERS": true,
+  "NOT_FOR_PRODUCTION": true,
+  "OPERATIONAL_INTEGRATION_ONLY": true,
+  "scenario_id": "OI-I-007",
+  "scenario_name": "conflicting_identities",
+  "category": "identity",
+  "expected_status": "FAIL",
+  "description": "Conflicting identity assignments detected",
+  "entity_type": "attribution",
+  "entity_id": "AT001",
+  "component_id": "ATTRIBUTION",
+  "session_id": "S001",
+  "status": "PASS"
+}

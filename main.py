@@ -37302,6 +37302,466 @@ def cmd_paper_attribution_export(args=None):
     print(_PAPER_ATTRIBUTION_BANNER)
 
 
+# ── Operational Integration Hardening v1.6.8 ─────────────────────────────────
+
+_INTEGRATION_BANNER = (
+    "=" * 70 + "\n"
+    + "  OPERATIONAL INTEGRATION HARDENING v1.6.8\n"
+    + "  [!] Research Only. Paper Only. No Real Orders. Not Investment Advice.\n"
+    + "=" * 70
+)
+
+
+def cmd_integration_version(args=None):
+    """[v1.6.8] Show operational integration version info. Research only."""
+    print(_INTEGRATION_BANNER)
+    from paper_trading.operational_integration.version_v168 import (
+        VERSION, RELEASE_NAME, BASE_RELEASE, get_version_info,
+    )
+    info = get_version_info()
+    print(f"Version:      {VERSION}")
+    print(f"Release:      {RELEASE_NAME}")
+    print(f"Base:         {BASE_RELEASE}")
+    print(f"Paper only:   {info.get('paper_only')}")
+    print(f"Research only:{info.get('research_only')}")
+    print(_INTEGRATION_BANNER)
+
+
+def cmd_integration_capabilities(args=None):
+    """[v1.6.8] Show integration capabilities and safety flags. Research only."""
+    print(_INTEGRATION_BANNER)
+    from paper_trading.operational_integration.safety_v168 import get_safety_flags
+    flags = get_safety_flags()
+    print("Integration safety flags:")
+    for k, v in sorted(flags.items()):
+        print(f"  {k}: {v}")
+    print(_INTEGRATION_BANNER)
+
+
+def cmd_integration_components(args=None):
+    """[v1.6.8] List all registered integration components. Research only."""
+    print(_INTEGRATION_BANNER)
+    from paper_trading.operational_integration.component_registry_v168 import ComponentRegistry
+    reg = ComponentRegistry()
+    components = reg.list_components()
+    print(f"Registered components ({len(components)}):")
+    for comp in components:
+        cid = comp.get("component_id", "?")
+        version = comp.get("component_version", "?")
+        print(f"  [{cid}] v{version}")
+    print(_INTEGRATION_BANNER)
+
+
+def cmd_integration_contracts(args=None):
+    """[v1.6.8] List all integration contracts. Research only."""
+    print(_INTEGRATION_BANNER)
+    from paper_trading.operational_integration.contract_registry_v168 import ContractRegistry
+    reg = ContractRegistry()
+    contracts = reg.list_contracts()
+    print(f"Integration contracts ({len(contracts)}):")
+    for c in contracts:
+        print(f"  {c}")
+    print(_INTEGRATION_BANNER)
+
+
+def cmd_integration_validate(args=None):
+    """[v1.6.8] Validate integration context and contracts. Research only."""
+    print(_INTEGRATION_BANNER)
+    from paper_trading.operational_integration.integration_validator_v168 import IntegrationValidator
+    validator = IntegrationValidator()
+    result = validator.validate_all()
+    status = result.get("status", "UNKNOWN")
+    passed = result.get("passed", 0)
+    total = result.get("total", 0)
+    print(f"Integration Validation: {status}  Passed: {passed}/{total}")
+    for issue in result.get("issues", [])[:10]:
+        print(f"  [ISSUE] {issue}")
+    print(_INTEGRATION_BANNER)
+
+
+def cmd_integration_run(args=None):
+    """[v1.6.8] Run full integration validation pipeline. Research only."""
+    print(_INTEGRATION_BANNER)
+    from paper_trading.operational_integration.enums_v168 import IntegrationStage
+    stages = list(IntegrationStage)
+    print(f"Integration pipeline: {len(stages)} stages")
+    for i, stage in enumerate(stages, 1):
+        print(f"  [{i:02d}] {stage.value}")
+    print("  Use integration-report for full output.")
+    print(_INTEGRATION_BANNER)
+
+
+def cmd_integration_summary(args=None):
+    """[v1.6.8] Show integration run summary. Research only."""
+    print(_INTEGRATION_BANNER)
+    from paper_trading.operational_integration.integration_query_v168 import IntegrationQueryService
+    query = IntegrationQueryService()
+    summary = query.summarize_integration("latest")
+    print(f"Integration summary (paper_only={summary.get('paper_only')}):")
+    print(f"  Status:       {summary.get('status', 'NO_DATA')}")
+    print(f"  Run ID:       {summary.get('run_id', 'N/A')}")
+    print(f"  Total score:  {summary.get('total_score', 'N/A')}")
+    print(_INTEGRATION_BANNER)
+
+
+def cmd_integration_report(args=None):
+    """[v1.6.8] Generate 19-section integration report. Research only."""
+    print(_INTEGRATION_BANNER)
+    from paper_trading.operational_integration.integration_report_v168 import IntegrationReportGenerator
+    gen = IntegrationReportGenerator()
+    sections = gen.get_section_names()
+    print(f"Integration Report v1.6.8 — {len(sections)} sections:")
+    for i, sec in enumerate(sections, 1):
+        print(f"  [{i:02d}] {sec}")
+    print("  Use --run-id to generate a full report.")
+    print(_INTEGRATION_BANNER)
+
+
+def cmd_integration_pipeline(args=None):
+    """[v1.6.8] Show integration pipeline stages. Research only."""
+    print(_INTEGRATION_BANNER)
+    from paper_trading.operational_integration.enums_v168 import IntegrationStage
+    stages = list(IntegrationStage)
+    print(f"Pipeline stages ({len(stages)}):")
+    for i, stage in enumerate(stages, 1):
+        print(f"  [{i:02d}] {stage.value}")
+    print(_INTEGRATION_BANNER)
+
+
+def cmd_integration_data_flow(args=None):
+    """[v1.6.8] Show data flow records and integrity. Research only."""
+    print(_INTEGRATION_BANNER)
+    from paper_trading.operational_integration.data_flow_v168 import DataFlowTracker
+    tracker = DataFlowTracker()
+    summary = tracker.summarize()
+    print(f"Data flow tracker summary (paper_only={summary.get('paper_only')}):")
+    print(f"  Total flows:    {summary.get('total_flows', 0)}")
+    print(f"  Unique routes:  {summary.get('unique_routes', 0)}")
+    print("  No flow records in current session (fresh instance, paper_only=True).")
+    print(_INTEGRATION_BANNER)
+
+
+def cmd_integration_lineage(args=None):
+    """[v1.6.8] Show lineage chain integrity. Research only."""
+    print(_INTEGRATION_BANNER)
+    from paper_trading.operational_integration.lineage_bridge_v168 import LineageBridge
+    bridge = LineageBridge()
+    summary = bridge.summarize()
+    print(f"Lineage bridge summary:")
+    print(f"  Total records:  {summary.get('total_records', 0)}")
+    print(f"  Unique chains:  {summary.get('unique_chains', 0)}")
+    print(f"  Paper only:     {summary.get('paper_only', True)}")
+    print(_INTEGRATION_BANNER)
+
+
+def cmd_integration_timestamps(args=None):
+    """[v1.6.8] Show timestamp integrity checks. Research only."""
+    print(_INTEGRATION_BANNER)
+    from paper_trading.operational_integration.timestamp_bridge_v168 import TimestampBridge
+    bridge = TimestampBridge()
+    # Demonstrate key timestamp detections
+    naive_detected = bridge.check_naive("2024-01-01T10:00:00")
+    future_detected = bridge.check_future("2099-12-31T00:00:00+08:00")
+    print(f"Timestamp bridge:")
+    print(f"  Naive datetime detection: {naive_detected}")
+    print(f"  Future datetime detection: {future_detected}")
+    print(f"  Paper only: True")
+    print(_INTEGRATION_BANNER)
+
+
+def cmd_integration_identities(args=None):
+    """[v1.6.8] Show identity integrity checks. Research only."""
+    print(_INTEGRATION_BANNER)
+    from paper_trading.operational_integration.identity_bridge_v168 import IdentityBridge
+    bridge = IdentityBridge()
+    summary = bridge.summarize()
+    print(f"Identity bridge summary:")
+    print(f"  Total records:  {summary.get('total_records', 0)}")
+    print(f"  Entity types:   {summary.get('entity_types', 0)}")
+    print(f"  Paper only:     {summary.get('paper_only', True)}")
+    print(_INTEGRATION_BANNER)
+
+
+def cmd_integration_consistency(args=None):
+    """[v1.6.8] Show cross-component consistency results. Research only."""
+    print(_INTEGRATION_BANNER)
+    from paper_trading.operational_integration.consistency_checker_v168 import ConsistencyChecker
+    checker = ConsistencyChecker()
+    summary = checker.summarize([])
+    print(f"Consistency checker summary (empty run):")
+    print(f"  Total checks:  {summary.get('total', 0)}")
+    print(f"  Consistent:    {summary.get('consistent', 0)}")
+    print(f"  Inconsistent:  {summary.get('inconsistent', 0)}")
+    print(f"  Paper only:    {summary.get('paper_only', True)}")
+    print(_INTEGRATION_BANNER)
+
+
+def cmd_integration_compatibility(args=None):
+    """[v1.6.8] Show component compatibility results. Research only."""
+    print(_INTEGRATION_BANNER)
+    from paper_trading.operational_integration.compatibility_checker_v168 import CompatibilityChecker
+    checker = CompatibilityChecker()
+    summary = checker.summarize([])
+    print(f"Compatibility checker summary (empty run):")
+    print(f"  Total checks:  {summary.get('total', 0)}")
+    print(f"  Compatible:    {summary.get('compatible', 0)}")
+    print(f"  Incompatible:  {summary.get('incompatible', 0)}")
+    print(f"  Paper only:    {summary.get('paper_only', True)}")
+    print(_INTEGRATION_BANNER)
+
+
+def cmd_integration_reconcile(args=None):
+    """[v1.6.8] Run integration reconciliation checks. Research only."""
+    print(_INTEGRATION_BANNER)
+    from paper_trading.operational_integration.integration_reconciler_v168 import IntegrationReconciler
+    rec = IntegrationReconciler()
+    summary = rec.summarize([])
+    print(f"Reconciliation summary (empty run):")
+    print(f"  Total:          {summary.get('total', 0)}")
+    print(f"  Reconciled:     {summary.get('reconciled', 0)}")
+    print(f"  Failed:         {summary.get('failed', 0)}")
+    print(f"  Paper only:     {summary.get('paper_only', True)}")
+    print(_INTEGRATION_BANNER)
+
+
+def cmd_integration_degraded(args=None):
+    """[v1.6.8] Show degraded components and reasons. Research only."""
+    print(_INTEGRATION_BANNER)
+    from paper_trading.operational_integration.degraded_mode_v168 import DegradedModeHandler
+    handler = DegradedModeHandler()
+    summary = handler.summarize([])
+    print(f"Degraded mode summary (empty run):")
+    print(f"  Total states:   {summary.get('total', 0)}")
+    print(f"  Blocking:       {summary.get('blocking_count', 0)}")
+    print(f"  Non-blocking:   {summary.get('non_blocking_count', 0)}")
+    print(f"  Paper only:     {summary.get('paper_only', True)}")
+    print("  Use 'integration-run' to observe live degraded states.")
+    print(_INTEGRATION_BANNER)
+
+
+def cmd_integration_failures(args=None):
+    """[v1.6.8] Show integration failure records. Research only."""
+    print(_INTEGRATION_BANNER)
+    from paper_trading.operational_integration.failure_isolation_v168 import FailureIsolator
+    isolator = FailureIsolator()
+    summary = isolator.summarize([])
+    print(f"Failure isolation summary (empty run):")
+    print(f"  Total failures: {summary.get('total', 0)}")
+    print(f"  Critical:       {summary.get('critical', 0)}")
+    print(f"  Recoverable:    {summary.get('recoverable', 0)}")
+    print(f"  Paper only:     {summary.get('paper_only', True)}")
+    print("  Use 'integration-run' to observe live failure isolation.")
+    print(_INTEGRATION_BANNER)
+
+
+def cmd_integration_recovery(args=None):
+    """[v1.6.8] Show recovery evidence records. Research only."""
+    print(_INTEGRATION_BANNER)
+    from paper_trading.operational_integration.recovery_bridge_v168 import RecoveryBridge
+    bridge = RecoveryBridge()
+    summary = bridge.summarize([])
+    print(f"Recovery bridge summary (empty run):")
+    print(f"  Total records:  {summary.get('total', 0)}")
+    print(f"  Recovered:      {summary.get('recovered', 0)}")
+    print(f"  No process control: True")
+    print(f"  Paper only:     {summary.get('paper_only', True)}")
+    print(_INTEGRATION_BANNER)
+
+
+def cmd_integration_determinism(args=None):
+    """[v1.6.8] Show determinism check results. Research only."""
+    print(_INTEGRATION_BANNER)
+    from paper_trading.operational_integration.determinism_checker_v168 import DeterminismChecker
+    checker = DeterminismChecker()
+    summary = checker.summarize([])
+    print(f"Determinism summary (empty run):")
+    print(f"  Total checks:  {summary.get('total', 0)}")
+    print(f"  Deterministic: {summary.get('deterministic', 0)}")
+    print(f"  Non-det:       {summary.get('non_deterministic', 0)}")
+    print(f"  Paper only:    {summary.get('paper_only', True)}")
+    print(_INTEGRATION_BANNER)
+
+
+def cmd_integration_scorecard(args=None):
+    """[v1.6.8] Show integration quality scorecard (0-100). Research only."""
+    print(_INTEGRATION_BANNER)
+    from paper_trading.operational_integration.integration_scorecard_v168 import IntegrationScorecard, _WEIGHTS
+    scorecard = IntegrationScorecard()
+    print("Integration Scorecard v1.6.8 — 9 weighted dimensions:")
+    for dim, weight in _WEIGHTS.items():
+        print(f"  {dim}: {weight}")
+    grade_a = scorecard.get_grade(95.0)
+    print(f"  Grade A threshold: >= 90 (example: 95.0 -> {grade_a})")
+    print("  Run 'integration-run' to compute a live score.")
+    print(_INTEGRATION_BANNER)
+
+
+def cmd_integration_snapshots(args=None):
+    """[v1.6.8] List integration state snapshots. Research only."""
+    print(_INTEGRATION_BANNER)
+    from paper_trading.operational_integration.state_snapshot_v168 import StateSnapshotStore
+    store = StateSnapshotStore()
+    snapshots = store.list_snapshots()
+    print(f"State snapshots: {len(snapshots)}")
+    for snap in snapshots[:5]:
+        snap_id = snap.get("snapshot_id", "?")
+        snap_type = snap.get("snapshot_type", "?")
+        print(f"  [{snap_id}] type={snap_type}")
+    if not snapshots:
+        print("  No snapshots in current session (paper_only=True).")
+    print(_INTEGRATION_BANNER)
+
+
+def cmd_integration_store_summary(args=None):
+    """[v1.6.8] Show integration store summary. Research only."""
+    print(_INTEGRATION_BANNER)
+    from paper_trading.operational_integration.integration_store_v168 import IntegrationStore
+    store = IntegrationStore()
+    summary = store.summarize()
+    print(f"Integration store summary:")
+    print(f"  Total runs:    {summary.get('total_runs', 0)}")
+    print(f"  Total snaps:   {summary.get('total_snapshots', 0)}")
+    print(f"  Paper only:    {summary.get('paper_only', True)}")
+    print(_INTEGRATION_BANNER)
+
+
+def cmd_integration_query(args=None):
+    """[v1.6.8] Query integration run by ID. Research only."""
+    print(_INTEGRATION_BANNER)
+    from paper_trading.operational_integration.integration_query_v168 import IntegrationQueryService
+    query = IntegrationQueryService()
+    run_id = getattr(args, "run_id", None) or "latest"
+    result = query.get_integration_run(run_id)
+    if result is None:
+        print(f"  No integration run found for run_id={run_id!r}.")
+    else:
+        print(f"  Run ID:  {result.get('run_id')}")
+        print(f"  Status:  {result.get('status')}")
+        print(f"  Score:   {result.get('total_score')}")
+    print(_INTEGRATION_BANNER)
+
+
+def cmd_integration_compare_runs(args=None):
+    """[v1.6.8] Compare two integration runs. Research only."""
+    print(_INTEGRATION_BANNER)
+    from paper_trading.operational_integration.integration_query_v168 import IntegrationQueryService
+    query = IntegrationQueryService()
+    print("  integration-compare-runs: Compare scorecard, status, and failures across two run IDs.")
+    print("  Provide --run-id-a and --run-id-b.")
+    result = query.compare_runs("run_a", "run_b")
+    print(f"  Comparison result: {result.get('comparison', 'N/A')} (paper_only={result.get('paper_only')})")
+    print(_INTEGRATION_BANNER)
+
+
+def cmd_integration_compare_components(args=None):
+    """[v1.6.8] Compare component status across runs. Research only."""
+    print(_INTEGRATION_BANNER)
+    from paper_trading.operational_integration.integration_query_v168 import IntegrationQueryService
+    query = IntegrationQueryService()
+    print("  integration-compare-components: Compare per-component status across run IDs.")
+    result = query.compare_components("run_a", "run_b")
+    print(f"  Result: paper_only={result.get('paper_only')}")
+    print(_INTEGRATION_BANNER)
+
+
+def cmd_integration_scenarios(args=None):
+    """[v1.6.8] List all 100+ integration scenarios. Research only."""
+    print(_INTEGRATION_BANNER)
+    from paper_trading.operational_integration.scenario_registry_v168 import ScenarioRegistry
+    reg = ScenarioRegistry()
+    count = reg.count()
+    cats = reg.list_categories()
+    print(f"Integration scenarios: {count} across {len(cats)} categories")
+    for cat in cats:
+        scenarios = reg.get_by_category(cat)
+        print(f"  [{cat}]: {len(scenarios)} scenarios")
+    print(_INTEGRATION_BANNER)
+
+
+def cmd_integration_fixtures_validate(args=None):
+    """[v1.6.8] Validate all integration fixtures. Research only."""
+    print(_INTEGRATION_BANNER)
+    import os
+    import json
+    fixture_dir = "tests/fixtures/operational_integration"
+    if not os.path.isdir(fixture_dir):
+        print(f"  Fixture directory not found: {fixture_dir}")
+        print(_INTEGRATION_BANNER)
+        return
+    from paper_trading.operational_integration.fixture_schema_v168 import validate_fixture_full
+    total = 0
+    valid = 0
+    errors = []
+    for fname in sorted(os.listdir(fixture_dir)):
+        if not fname.endswith(".json"):
+            continue
+        total += 1
+        fpath = os.path.join(fixture_dir, fname)
+        try:
+            with open(fpath, encoding="utf-8") as fh:
+                fx = json.load(fh)
+            result = validate_fixture_full(fx)
+            if result["valid"]:
+                valid += 1
+            else:
+                errors.append(f"{fname}: {result['errors']}")
+        except Exception as exc:
+            errors.append(f"{fname}: {exc}")
+    print(f"Fixtures: {total} found, {valid} valid, {len(errors)} errors.")
+    for e in errors[:5]:
+        print(f"  [ERROR] {e}")
+    print(_INTEGRATION_BANNER)
+
+
+def cmd_integration_health(args=None):
+    """[v1.6.8] Run operational integration health check (70+). Research only."""
+    print(_INTEGRATION_BANNER)
+    from paper_trading.operational_integration.health_v168 import OperationalIntegrationHealthCheck
+    result = OperationalIntegrationHealthCheck().run()
+    status = result.get("status", "UNKNOWN")
+    passed = result.get("passed", 0)
+    total  = result.get("total", 0)
+    failed = result.get("failed", 0)
+    print(f"Operational Integration Health Check v1.6.8")
+    print(f"Status: {status}  Passed: {passed}/{total}  Failed: {failed}")
+    if failed:
+        for c in result.get("checks", []):
+            if c.get("status") == "FAIL":
+                print(f"  [FAIL] {c.get('check', '?')}: {c.get('detail', '')}")
+    print(_INTEGRATION_BANNER)
+
+
+def cmd_integration_gate(args=None):
+    """[v1.6.8] Run operational integration release gate (60+). Research only."""
+    print(_INTEGRATION_BANNER)
+    from release.operational_integration_hardening_release_gate_v168 import OperationalIntegrationReleaseGate
+    result = OperationalIntegrationReleaseGate().run()
+    status = result.get("status", "UNKNOWN")
+    passed = result.get("passed", 0)
+    total  = result.get("total", 0)
+    failed = result.get("failed", 0)
+    gate_passed = result.get("gate_passed", False)
+    print(f"Operational Integration Release Gate v1.6.8")
+    print(f"Status: {status}  gate_passed: {gate_passed}  Passed: {passed}/{total}  Failed: {failed}")
+    if failed:
+        for c in result.get("checks", []):
+            if c.get("status") == "FAIL":
+                print(f"  [FAIL] {c.get('check', '?')}: {c.get('detail', '')}")
+    print(_INTEGRATION_BANNER)
+
+
+def cmd_integration_safety_audit(args=None):
+    """[v1.6.8] Run integration safety audit. Research only."""
+    print(_INTEGRATION_BANNER)
+    from paper_trading.operational_integration.safety_v168 import audit_safety, get_safety_flags
+    audit = audit_safety()
+    flags = get_safety_flags()
+    print(f"Safety audit: all_safe={audit.get('all_safe')}  capabilities={audit.get('safety_capabilities')}")
+    for k, v in sorted(flags.items()):
+        print(f"  {k}: {v}")
+    print(_INTEGRATION_BANNER)
+
+
 def cmd_paper_strategy_health(args=None):
     """[v1.6.2] Paper strategy orchestration health check. Research only."""
     print(_STRATEGY_SAFETY_BANNER)
@@ -39229,6 +39689,38 @@ def main() -> None:
         "paper-attribution-panel":               cmd_paper_attribution_panel,
         "paper-attribution-compare-periods":     cmd_paper_attribution_compare_periods,
         "paper-attribution-export":              cmd_paper_attribution_export,
+        # v1.6.8 — Operational Integration Hardening
+        "integration-version":            cmd_integration_version,
+        "integration-capabilities":       cmd_integration_capabilities,
+        "integration-components":         cmd_integration_components,
+        "integration-contracts":          cmd_integration_contracts,
+        "integration-validate":           cmd_integration_validate,
+        "integration-run":                cmd_integration_run,
+        "integration-summary":            cmd_integration_summary,
+        "integration-report":             cmd_integration_report,
+        "integration-pipeline":           cmd_integration_pipeline,
+        "integration-data-flow":          cmd_integration_data_flow,
+        "integration-lineage":            cmd_integration_lineage,
+        "integration-timestamps":         cmd_integration_timestamps,
+        "integration-identities":         cmd_integration_identities,
+        "integration-consistency":        cmd_integration_consistency,
+        "integration-compatibility":      cmd_integration_compatibility,
+        "integration-reconcile":          cmd_integration_reconcile,
+        "integration-degraded":           cmd_integration_degraded,
+        "integration-failures":           cmd_integration_failures,
+        "integration-recovery":           cmd_integration_recovery,
+        "integration-determinism":        cmd_integration_determinism,
+        "integration-scorecard":          cmd_integration_scorecard,
+        "integration-snapshots":          cmd_integration_snapshots,
+        "integration-store-summary":      cmd_integration_store_summary,
+        "integration-query":              cmd_integration_query,
+        "integration-compare-runs":       cmd_integration_compare_runs,
+        "integration-compare-components": cmd_integration_compare_components,
+        "integration-scenarios":          cmd_integration_scenarios,
+        "integration-fixtures-validate":  cmd_integration_fixtures_validate,
+        "integration-health":             cmd_integration_health,
+        "integration-gate":               cmd_integration_gate,
+        "integration-safety-audit":       cmd_integration_safety_audit,
     }
 
     if args.command is None:

@@ -1,0 +1,24 @@
+{
+  "TEST_FIXTURE": true,
+  "DEMO_ONLY": true,
+  "PAPER_ONLY": true,
+  "RESEARCH_ONLY": true,
+  "NOT_LIVE": true,
+  "NO_BROKER": true,
+  "NO_REAL_ACCOUNT": true,
+  "NO_REAL_ORDERS": true,
+  "NOT_FOR_PRODUCTION": true,
+  "OPERATIONAL_INTEGRATION_ONLY": true,
+  "scenario_id": "OI-X-005",
+  "scenario_name": "failure_cascade_blocked",
+  "category": "cross_system",
+  "expected_status": "DEGRADED",
+  "description": "Failure cascade blocked by isolation",
+  "systems": [
+    "PORTFOLIO",
+    "EXECUTION"
+  ],
+  "reconciled": true,
+  "tolerance": 0.01,
+  "status": "PASS"
+}

@@ -1,0 +1,20 @@
+{
+  "TEST_FIXTURE": true,
+  "DEMO_ONLY": true,
+  "PAPER_ONLY": true,
+  "RESEARCH_ONLY": true,
+  "NOT_LIVE": true,
+  "NO_BROKER": true,
+  "NO_REAL_ACCOUNT": true,
+  "NO_REAL_ORDERS": true,
+  "NOT_FOR_PRODUCTION": true,
+  "OPERATIONAL_INTEGRATION_ONLY": true,
+  "scenario_id": "OI-C-007",
+  "scenario_name": "contract_forbidden_field_blocked",
+  "category": "contract",
+  "expected_status": "BLOCKED",
+  "description": "Contract with forbidden field returns BLOCKED",
+  "symbol": "2330.TW",
+  "forbidden_field": "live_order",
+  "contract": "Forbidden"
+}

@@ -1,0 +1,22 @@
+{
+  "TEST_FIXTURE": true,
+  "DEMO_ONLY": true,
+  "PAPER_ONLY": true,
+  "RESEARCH_ONLY": true,
+  "NOT_LIVE": true,
+  "NO_BROKER": true,
+  "NO_REAL_ACCOUNT": true,
+  "NO_REAL_ORDERS": true,
+  "NOT_FOR_PRODUCTION": true,
+  "OPERATIONAL_INTEGRATION_ONLY": true,
+  "scenario_id": "OI-R-010",
+  "scenario_name": "report_status_aggregate",
+  "category": "reconciliation",
+  "expected_status": "PASS",
+  "description": "Aggregate health matches report status",
+  "dimension": "attribution_to_coordination",
+  "expected": 1200.0,
+  "actual": 1195.0,
+  "tolerance": 0.01,
+  "status": "PASS"
+}

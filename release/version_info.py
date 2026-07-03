@@ -73,9 +73,9 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # ---------------------------------------------------------------------------
 # v1.3.3 module-level constants (Coverage Repair Workflow)
 # ---------------------------------------------------------------------------
-VERSION                             = "1.6.7"
-RELEASE_NAME                        = "Paper Performance Attribution"
-BASE_RELEASE                        = "1.6.6.2 Replay Session Lineage Handler Integrity Hotfix"
+VERSION                             = "1.6.8"
+RELEASE_NAME                        = "Operational Integration Hardening"
+BASE_RELEASE                        = "1.6.7 Paper Performance Attribution"
 PORTFOLIO_STABLE_BASELINE           = "1.5.9"
 LIVE_PAPER_TRADING_BASELINE         = "1.6.0"
 MARKET_DATA_SESSION_BASELINE        = "1.6.1"
@@ -119,6 +119,20 @@ PAPER_ATTRIBUTION_EXTERNAL_NETWORK_ENABLED          = False
 PAPER_ATTRIBUTION_REDIS_ENABLED                     = False
 PAPER_ATTRIBUTION_KAFKA_ENABLED                     = False
 PAPER_PERFORMANCE_ATTRIBUTION_BASELINE              = "1.6.7"
+# v1.6.8 Operational Integration Hardening safety flags
+OPERATIONAL_INTEGRATION_AVAILABLE                   = True
+OPERATIONAL_INTEGRATION_RESEARCH_ONLY               = True
+OPERATIONAL_INTEGRATION_PAPER_ONLY                  = True
+OPERATIONAL_INTEGRATION_NO_REAL_ORDERS              = True
+OPERATIONAL_INTEGRATION_BROKER_ENABLED              = False
+OPERATIONAL_INTEGRATION_LIVE_EXECUTION_ENABLED      = False
+OPERATIONAL_INTEGRATION_PRODUCTION_LEDGER_ENABLED   = False
+OPERATIONAL_INTEGRATION_REAL_ACCOUNT_ENABLED        = False
+OPERATIONAL_INTEGRATION_NETWORK_ENABLED             = False
+OPERATIONAL_INTEGRATION_AUTO_CAPITAL_REALLOC        = False
+OPERATIONAL_INTEGRATION_AUTO_RISK_OVERRIDE          = False
+OPERATIONAL_INTEGRATION_AUTO_SESSION_CONTROL        = False
+OPERATIONAL_INTEGRATION_HARDENING_BASELINE          = "1.6.8"
 # v1.6.5 Failure Injection & Recovery Validation safety flags
 FAILURE_INJECTION_AVAILABLE                 = True
 FAILURE_INJECTION_RESEARCH_ONLY             = True

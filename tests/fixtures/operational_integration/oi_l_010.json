@@ -1,0 +1,25 @@
+{
+  "TEST_FIXTURE": true,
+  "DEMO_ONLY": true,
+  "PAPER_ONLY": true,
+  "RESEARCH_ONLY": true,
+  "NOT_LIVE": true,
+  "NO_BROKER": true,
+  "NO_REAL_ACCOUNT": true,
+  "NO_REAL_ORDERS": true,
+  "NOT_FOR_PRODUCTION": true,
+  "OPERATIONAL_INTEGRATION_ONLY": true,
+  "scenario_id": "OI-L-010",
+  "scenario_name": "lineage_cycle_detected",
+  "category": "lineage",
+  "expected_status": "FAIL",
+  "description": "Cyclic lineage reference detected",
+  "lineage_id": "L010",
+  "parent_id": "L009",
+  "component": "REPORT",
+  "chain": [
+    "L009",
+    "L010"
+  ],
+  "status": "PASS"
+}

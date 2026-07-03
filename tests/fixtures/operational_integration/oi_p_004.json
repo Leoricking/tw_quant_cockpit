@@ -1,0 +1,25 @@
+{
+  "TEST_FIXTURE": true,
+  "DEMO_ONLY": true,
+  "PAPER_ONLY": true,
+  "RESEARCH_ONLY": true,
+  "NOT_LIVE": true,
+  "NO_BROKER": true,
+  "NO_REAL_ACCOUNT": true,
+  "NO_REAL_ORDERS": true,
+  "NOT_FOR_PRODUCTION": true,
+  "OPERATIONAL_INTEGRATION_ONLY": true,
+  "scenario_id": "OI-P-004",
+  "scenario_name": "registry_validate_missing",
+  "category": "pipeline",
+  "expected_status": "DEGRADED",
+  "description": "Component registry has missing dependencies",
+  "stage": "CONTEXT_LOAD",
+  "input": {
+    "run_id": "R001"
+  },
+  "output": {
+    "loaded": true
+  },
+  "status": "PASS"
+}

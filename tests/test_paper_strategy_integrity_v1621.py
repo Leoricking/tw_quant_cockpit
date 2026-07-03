@@ -1176,6 +1176,7 @@ class TestReleaseGate35Checks(unittest.TestCase):
             "Fixture Governance & Safety Marker Hotfix",
             "Replay Session Lineage Handler Integrity Hotfix",
             "Paper Performance Attribution",
+            "Operational Integration Hardening",
         }
         self.assertIn(RELEASE_NAME, known)
 

@@ -1,0 +1,21 @@
+{
+  "TEST_FIXTURE": true,
+  "DEMO_ONLY": true,
+  "PAPER_ONLY": true,
+  "RESEARCH_ONLY": true,
+  "NOT_LIVE": true,
+  "NO_BROKER": true,
+  "NO_REAL_ACCOUNT": true,
+  "NO_REAL_ORDERS": true,
+  "NOT_FOR_PRODUCTION": true,
+  "OPERATIONAL_INTEGRATION_ONLY": true,
+  "scenario_id": "OI-C-004",
+  "scenario_name": "strategy_to_portfolio_valid",
+  "category": "contract",
+  "expected_status": "PASS",
+  "description": "Valid StrategyToPortfolio contract",
+  "strategy_id": "ST001",
+  "portfolio_id": "P001",
+  "target_weight": 0.05,
+  "contract": "StrategyToPortfolio"
+}

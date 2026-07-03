@@ -1,0 +1,21 @@
+{
+  "TEST_FIXTURE": true,
+  "DEMO_ONLY": true,
+  "PAPER_ONLY": true,
+  "RESEARCH_ONLY": true,
+  "NOT_LIVE": true,
+  "NO_BROKER": true,
+  "NO_REAL_ACCOUNT": true,
+  "NO_REAL_ORDERS": true,
+  "NOT_FOR_PRODUCTION": true,
+  "OPERATIONAL_INTEGRATION_ONLY": true,
+  "scenario_id": "OI-T-006",
+  "scenario_name": "out_of_order_timestamps",
+  "category": "timestamp",
+  "expected_status": "DEGRADED",
+  "description": "Out-of-order sequence of timestamps",
+  "ts1": "2026-01-02T09:00:02Z",
+  "ts2": "2026-01-02T09:00:01Z",
+  "monotonic": false,
+  "status": "FAIL"
+}

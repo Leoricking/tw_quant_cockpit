@@ -1,0 +1,22 @@
+{
+  "TEST_FIXTURE": true,
+  "DEMO_ONLY": true,
+  "PAPER_ONLY": true,
+  "RESEARCH_ONLY": true,
+  "NOT_LIVE": true,
+  "NO_BROKER": true,
+  "NO_REAL_ACCOUNT": true,
+  "NO_REAL_ORDERS": true,
+  "NOT_FOR_PRODUCTION": true,
+  "OPERATIONAL_INTEGRATION_ONLY": true,
+  "scenario_id": "OI-D-004",
+  "scenario_name": "stale_data_flagged",
+  "category": "data_flow",
+  "expected_status": "DEGRADED",
+  "description": "Stale market data flagged as degraded",
+  "source": "MARKET_DATA",
+  "destination": "SESSION",
+  "data_age_seconds": 3601,
+  "stale_threshold_seconds": 3600,
+  "status": "DEGRADED"
+}

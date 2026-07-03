@@ -1,0 +1,21 @@
+{
+  "TEST_FIXTURE": true,
+  "DEMO_ONLY": true,
+  "PAPER_ONLY": true,
+  "RESEARCH_ONLY": true,
+  "NOT_LIVE": true,
+  "NO_BROKER": true,
+  "NO_REAL_ACCOUNT": true,
+  "NO_REAL_ORDERS": true,
+  "NOT_FOR_PRODUCTION": true,
+  "OPERATIONAL_INTEGRATION_ONLY": true,
+  "scenario_id": "OI-DET-002",
+  "scenario_name": "stage_order_stable",
+  "category": "determinism",
+  "expected_status": "PASS",
+  "description": "Stage ordering is stable across runs",
+  "h1": "abc123",
+  "h2": "def456",
+  "stable": false,
+  "status": "FAIL"
+}

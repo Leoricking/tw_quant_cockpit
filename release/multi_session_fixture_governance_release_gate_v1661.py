@@ -49,14 +49,15 @@ class FixtureGovernanceReleaseGateV1661:
                 "Multi-session Coordination",
                 "Replay Session Lineage Handler Integrity Hotfix",
                 "Paper Performance Attribution",
+                "Operational Integration Hardening",
             },
             f"RELEASE_NAME={RELEASE_NAME}",
             f"RELEASE_NAME={RELEASE_NAME} not in known names"
         )
         checks["base_release_check"] = _check(
-            any(v in BASE_RELEASE for v in ("1.6.6", "1.6.5")),
+            any(v in BASE_RELEASE for v in ("1.6.6", "1.6.5", "1.6.7")),
             f"BASE_RELEASE={BASE_RELEASE}",
-            f"BASE_RELEASE={BASE_RELEASE} does not reference 1.6.6 or 1.6.5"
+            f"BASE_RELEASE={BASE_RELEASE} does not reference 1.6.5, 1.6.6, or 1.6.7"
         )
 
         # Load fixtures

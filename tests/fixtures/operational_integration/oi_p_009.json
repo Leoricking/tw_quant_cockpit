@@ -1,0 +1,25 @@
+{
+  "TEST_FIXTURE": true,
+  "DEMO_ONLY": true,
+  "PAPER_ONLY": true,
+  "RESEARCH_ONLY": true,
+  "NOT_LIVE": true,
+  "NO_BROKER": true,
+  "NO_REAL_ACCOUNT": true,
+  "NO_REAL_ORDERS": true,
+  "NOT_FOR_PRODUCTION": true,
+  "OPERATIONAL_INTEGRATION_ONLY": true,
+  "scenario_id": "OI-P-009",
+  "scenario_name": "report_generated_complete",
+  "category": "pipeline",
+  "expected_status": "PASS",
+  "description": "Full report generated with all sections",
+  "stage": "PIPELINE_COMPLETE",
+  "input": {
+    "all_stages": 12
+  },
+  "output": {
+    "complete": true
+  },
+  "status": "PASS"
+}

@@ -1,0 +1,21 @@
+{
+  "TEST_FIXTURE": true,
+  "DEMO_ONLY": true,
+  "PAPER_ONLY": true,
+  "RESEARCH_ONLY": true,
+  "NOT_LIVE": true,
+  "NO_BROKER": true,
+  "NO_REAL_ACCOUNT": true,
+  "NO_REAL_ORDERS": true,
+  "NOT_FOR_PRODUCTION": true,
+  "OPERATIONAL_INTEGRATION_ONLY": true,
+  "scenario_id": "OI-R-009",
+  "scenario_name": "reconcile_insufficient_data",
+  "category": "reconciliation",
+  "expected_status": "INSUFFICIENT_DATA",
+  "description": "Reconciliation with insufficient data",
+  "dimension": "analytics_to_attribution",
+  "expected": 1200.0,
+  "actual": 1200.0,
+  "status": "PASS"
+}

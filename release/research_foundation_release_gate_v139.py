@@ -109,6 +109,7 @@ class ResearchFoundationReleaseGate:
             "Fixture Governance & Safety Marker Hotfix",
             "Replay Session Lineage Handler Integrity Hotfix",
             "Paper Performance Attribution",
+            "Operational Integration Hardening",
             }
             parts = tuple(int(x) for x in VERSION.split(".")[:3])
             ok = (
