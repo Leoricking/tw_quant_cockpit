@@ -1,0 +1,30 @@
+{
+  "test_fixture": true,
+  "demo_only": true,
+  "paper_only": true,
+  "research_only": true,
+  "not_live": true,
+  "no_broker": true,
+  "no_real_account": true,
+  "no_real_orders": true,
+  "not_for_production": true,
+  "stable_rollup_only": true,
+  "fixture_id": "sr_065",
+  "scenario_id": "manifest_count_13",
+  "purpose": "Stable rollup test fixture 65: manifest_count_13",
+  "usage_type": "test",
+  "referenced_by": [
+    "test_stable_rollup_scenarios_v169"
+  ],
+  "deterministic_seed": 42,
+  "schema_version": "169",
+  "policy_version": "1.6.9-live-paper-stable-rollup",
+  "source_lineage": "v1.6.9",
+  "expected_status": "PASS",
+  "expected_score_range": [
+    85,
+    100
+  ],
+  "expected_reconciliation": "PASS",
+  "expected_migration_readiness": "READY"
+}

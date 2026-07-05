@@ -3902,6 +3902,90 @@ _OPERATIONAL_INTEGRATION_COMMANDS: _List[CommandSpec] = [
                 introduced_in="1.6.8", safety_classification="RESEARCH_ONLY"),
 ]
 
+# ---------------------------------------------------------------------------
+# v1.6.9 Live Paper Trading Stable Rollup commands
+# ---------------------------------------------------------------------------
+_STABLE_ROLLUP_COMMANDS: _List[CommandSpec] = [
+    CommandSpec(name="stable-rollup-version", handler_name="cmd_stable_rollup_version",
+                help="[Research] Show stable rollup version info v1.6.9", group="stable_rollup",
+                introduced_in="1.6.9", safety_classification="RESEARCH_ONLY"),
+    CommandSpec(name="stable-rollup-capabilities", handler_name="cmd_stable_rollup_capabilities",
+                help="[Research] Show stable rollup capabilities v1.6.9", group="stable_rollup",
+                introduced_in="1.6.9", safety_classification="RESEARCH_ONLY"),
+    CommandSpec(name="stable-rollup-releases", handler_name="cmd_stable_rollup_releases",
+                help="[Research] List all v1.6.x releases in stable rollup v1.6.9", group="stable_rollup",
+                introduced_in="1.6.9", safety_classification="RESEARCH_ONLY"),
+    CommandSpec(name="stable-rollup-manifest", handler_name="cmd_stable_rollup_manifest",
+                help="[Research] Show stable rollup release manifest v1.6.9", group="stable_rollup",
+                introduced_in="1.6.9", safety_classification="RESEARCH_ONLY"),
+    CommandSpec(name="stable-rollup-release", handler_name="cmd_stable_rollup_release",
+                help="[Research] Show a specific release entry from manifest v1.6.9", group="stable_rollup",
+                introduced_in="1.6.9", safety_classification="RESEARCH_ONLY"),
+    CommandSpec(name="stable-rollup-lineage", handler_name="cmd_stable_rollup_lineage",
+                help="[Research] Show version lineage chain v1.6.9", group="stable_rollup",
+                introduced_in="1.6.9", safety_classification="RESEARCH_ONLY"),
+    CommandSpec(name="stable-rollup-components", handler_name="cmd_stable_rollup_components",
+                help="[Research] List all stable rollup components v1.6.9", group="stable_rollup",
+                introduced_in="1.6.9", safety_classification="RESEARCH_ONLY"),
+    CommandSpec(name="stable-rollup-safety", handler_name="cmd_stable_rollup_safety",
+                help="[Research] Show safety flags and safety matrix v1.6.9", group="stable_rollup",
+                introduced_in="1.6.9", safety_classification="RESEARCH_ONLY"),
+    CommandSpec(name="stable-rollup-compatibility", handler_name="cmd_stable_rollup_compatibility",
+                help="[Research] Show compatibility matrix v1.6.9", group="stable_rollup",
+                introduced_in="1.6.9", safety_classification="RESEARCH_ONLY"),
+    CommandSpec(name="stable-rollup-health", handler_name="cmd_stable_rollup_health",
+                help="[Research] Run stable rollup health aggregation (80+) v1.6.9", group="stable_rollup",
+                introduced_in="1.6.9", safety_classification="RESEARCH_ONLY"),
+    CommandSpec(name="stable-rollup-gates", handler_name="cmd_stable_rollup_gates",
+                help="[Research] Run stable rollup gate aggregation v1.6.9", group="stable_rollup",
+                introduced_in="1.6.9", safety_classification="RESEARCH_ONLY"),
+    CommandSpec(name="stable-rollup-cli", handler_name="cmd_stable_rollup_cli",
+                help="[Research] Show CLI command integrity summary v1.6.9", group="stable_rollup",
+                introduced_in="1.6.9", safety_classification="RESEARCH_ONLY"),
+    CommandSpec(name="stable-rollup-gui", handler_name="cmd_stable_rollup_gui",
+                help="[Research] Show GUI panel integrity summary v1.6.9", group="stable_rollup",
+                introduced_in="1.6.9", safety_classification="RESEARCH_ONLY"),
+    CommandSpec(name="stable-rollup-fixtures", handler_name="cmd_stable_rollup_fixtures",
+                help="[Research] Show fixture aggregation results v1.6.9", group="stable_rollup",
+                introduced_in="1.6.9", safety_classification="RESEARCH_ONLY"),
+    CommandSpec(name="stable-rollup-scenarios", handler_name="cmd_stable_rollup_scenarios",
+                help="[Research] Show scenario registry summary v1.6.9", group="stable_rollup",
+                introduced_in="1.6.9", safety_classification="RESEARCH_ONLY"),
+    CommandSpec(name="stable-rollup-contract", handler_name="cmd_stable_rollup_contract",
+                help="[Research] Run stable rollup contract validations v1.6.9", group="stable_rollup",
+                introduced_in="1.6.9", safety_classification="RESEARCH_ONLY"),
+    CommandSpec(name="stable-rollup-validate", handler_name="cmd_stable_rollup_validate",
+                help="[Research] Run all stable rollup validators v1.6.9", group="stable_rollup",
+                introduced_in="1.6.9", safety_classification="RESEARCH_ONLY"),
+    CommandSpec(name="stable-rollup-reconcile", handler_name="cmd_stable_rollup_reconcile",
+                help="[Research] Run stable rollup reconciliation v1.6.9", group="stable_rollup",
+                introduced_in="1.6.9", safety_classification="RESEARCH_ONLY"),
+    CommandSpec(name="stable-rollup-scorecard", handler_name="cmd_stable_rollup_scorecard",
+                help="[Research] Compute stable rollup scorecard (0-100) v1.6.9", group="stable_rollup",
+                introduced_in="1.6.9", safety_classification="RESEARCH_ONLY"),
+    CommandSpec(name="stable-rollup-regression", handler_name="cmd_stable_rollup_regression",
+                help="[Research] Check regression against v1.6.8 baseline v1.6.9", group="stable_rollup",
+                introduced_in="1.6.9", safety_classification="RESEARCH_ONLY"),
+    CommandSpec(name="stable-rollup-snapshot", handler_name="cmd_stable_rollup_snapshot",
+                help="[Research] Take a stable rollup snapshot v1.6.9", group="stable_rollup",
+                introduced_in="1.6.9", safety_classification="RESEARCH_ONLY"),
+    CommandSpec(name="stable-rollup-report", handler_name="cmd_stable_rollup_report",
+                help="[Research] Generate full stable rollup report v1.6.9", group="stable_rollup",
+                introduced_in="1.6.9", safety_classification="RESEARCH_ONLY"),
+    CommandSpec(name="stable-rollup-query", handler_name="cmd_stable_rollup_query",
+                help="[Research] Query stable rollup data v1.6.9", group="stable_rollup",
+                introduced_in="1.6.9", safety_classification="RESEARCH_ONLY"),
+    CommandSpec(name="stable-rollup-migration-readiness", handler_name="cmd_stable_rollup_migration_readiness",
+                help="[Research] Assess migration readiness v1.6.9", group="stable_rollup",
+                introduced_in="1.6.9", safety_classification="RESEARCH_ONLY"),
+    CommandSpec(name="stable-rollup-safety-audit", handler_name="cmd_stable_rollup_safety_audit",
+                help="[Research] Run stable rollup safety audit v1.6.9", group="stable_rollup",
+                introduced_in="1.6.9", safety_classification="RESEARCH_ONLY"),
+    CommandSpec(name="stable-rollup-gate", handler_name="cmd_stable_rollup_gate",
+                help="[Research] Run stable rollup release gate (70+) v1.6.9", group="stable_rollup",
+                introduced_in="1.6.9", safety_classification="RESEARCH_ONLY"),
+]
+
 PROVIDER_COMMANDS: _List[CommandSpec] = (
     _RESEARCH_FOUNDATION_COMMANDS
     + _TWSE_COMMANDS
@@ -3929,6 +4013,7 @@ PROVIDER_COMMANDS: _List[CommandSpec] = (
     + _MULTI_SESSION_COORDINATION_COMMANDS
     + _PAPER_ATTRIBUTION_COMMANDS
     + _OPERATIONAL_INTEGRATION_COMMANDS
+    + _STABLE_ROLLUP_COMMANDS
 )
 
 

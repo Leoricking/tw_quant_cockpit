@@ -73,9 +73,9 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # ---------------------------------------------------------------------------
 # v1.3.3 module-level constants (Coverage Repair Workflow)
 # ---------------------------------------------------------------------------
-VERSION                             = "1.6.8"
-RELEASE_NAME                        = "Operational Integration Hardening"
-BASE_RELEASE                        = "1.6.7 Paper Performance Attribution"
+VERSION                             = "1.6.9"
+RELEASE_NAME                        = "Live Paper Trading Stable Rollup"
+BASE_RELEASE                        = "1.6.8 Operational Integration Hardening"
 PORTFOLIO_STABLE_BASELINE           = "1.5.9"
 LIVE_PAPER_TRADING_BASELINE         = "1.6.0"
 MARKET_DATA_SESSION_BASELINE        = "1.6.1"
@@ -133,6 +133,20 @@ OPERATIONAL_INTEGRATION_AUTO_CAPITAL_REALLOC        = False
 OPERATIONAL_INTEGRATION_AUTO_RISK_OVERRIDE          = False
 OPERATIONAL_INTEGRATION_AUTO_SESSION_CONTROL        = False
 OPERATIONAL_INTEGRATION_HARDENING_BASELINE          = "1.6.8"
+# v1.6.9 Live Paper Trading Stable Rollup safety flags
+LIVE_PAPER_STABLE_ROLLUP_AVAILABLE                  = True
+LIVE_PAPER_STABLE_ROLLUP_RESEARCH_ONLY              = True
+LIVE_PAPER_STABLE_ROLLUP_PAPER_ONLY                 = True
+LIVE_PAPER_STABLE_ROLLUP_READ_ONLY                  = True
+LIVE_PAPER_STABLE_ROLLUP_DETERMINISTIC              = True
+LIVE_PAPER_STABLE_ROLLUP_SEALED                     = True
+LIVE_PAPER_STABLE_ROLLUP_REAL_TRADING_ENABLED       = False
+LIVE_PAPER_STABLE_ROLLUP_BROKER_ENABLED             = False
+LIVE_PAPER_STABLE_ROLLUP_PRODUCTION_TRADING_ENABLED = False
+LIVE_PAPER_STABLE_ROLLUP_LIVE_EXECUTION_ENABLED     = False
+LIVE_PAPER_STABLE_ROLLUP_AUTO_SESSION_CONTROL       = False
+LIVE_PAPER_STABLE_ROLLUP_NETWORK_TRADING_ENABLED    = False
+LIVE_PAPER_STABLE_ROLLUP_BASELINE                   = "1.6.9"
 # v1.6.5 Failure Injection & Recovery Validation safety flags
 FAILURE_INJECTION_AVAILABLE                 = True
 FAILURE_INJECTION_RESEARCH_ONLY             = True
