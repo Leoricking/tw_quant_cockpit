@@ -74,7 +74,9 @@ class ProviderStableReleaseGate:
                              "Fixture Governance & Safety Marker Hotfix",
                              "Replay Session Lineage Handler Integrity Hotfix",
                              "Paper Performance Attribution",
-                             "Operational Integration Hardening"}
+                             "Operational Integration Hardening",
+                             "Live Paper Trading Stable Rollup",
+                             "Stable Rollup Compatibility Hotfix"}
             parts = tuple(int(x) for x in VERSION.split(".")[:3])
             ok = (
                 parts >= (1, 4, 9)

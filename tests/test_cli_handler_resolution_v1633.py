@@ -470,6 +470,8 @@ class TestVersionAlignment:
             "Replay Session Lineage Handler Integrity Hotfix",
             "Paper Performance Attribution",
             "Operational Integration Hardening",
+            "Live Paper Trading Stable Rollup",
+            "Stable Rollup Compatibility Hotfix",
         }
         assert RELEASE_NAME in _KNOWN, (
             f"Got: {RELEASE_NAME}"

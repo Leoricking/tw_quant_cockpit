@@ -61,6 +61,8 @@ _KNOWN_NAMES = {
     "Replay Session Lineage Handler Integrity Hotfix",
     "Paper Performance Attribution",
     "Operational Integration Hardening",
+    "Live Paper Trading Stable Rollup",
+    "Stable Rollup Compatibility Hotfix",
 }
 
 
@@ -195,7 +197,7 @@ class OperationalAnalyticsReviewReleaseGateV164:
 
     def _base_release_check(self):
         from release.version_info import BASE_RELEASE
-        ok = any(v in BASE_RELEASE for v in ("1.6.3.3", "1.6.4", "1.6.5", "1.6.6", "1.6.7"))
+        ok = any(v in BASE_RELEASE for v in ("1.6.3.3", "1.6.4", "1.6.5", "1.6.6", "1.6.7", "1.6.8", "1.6.9"))
         return ok, f"BASE_RELEASE={BASE_RELEASE}"
 
     def _analytics_modules_check(self):

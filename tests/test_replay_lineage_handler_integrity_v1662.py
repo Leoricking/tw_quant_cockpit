@@ -365,13 +365,15 @@ class TestVersion:
             "Replay Session Lineage Handler Integrity Hotfix",
             "Paper Performance Attribution",
             "Operational Integration Hardening",
+            "Live Paper Trading Stable Rollup",
+            "Stable Rollup Compatibility Hotfix",
         }
         assert RELEASE_NAME in _known, f"Got: {RELEASE_NAME}"
 
     def test_23_base_release_is_1661(self):
         """Test 23: BASE_RELEASE references 1.6.6.1 or later."""
         from release.version_info import BASE_RELEASE
-        _known = {"1.6.6.1", "1.6.6.2", "1.6.7"}
+        _known = {"1.6.6.1", "1.6.6.2", "1.6.7", "1.6.8", "1.6.9"}
         assert any(v in BASE_RELEASE for v in _known), f"Expected 1.6.6.1+ in BASE_RELEASE, got {BASE_RELEASE}"
 
     def test_24_duplicate_unique_keys_reduced(self):

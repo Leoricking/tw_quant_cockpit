@@ -72,7 +72,7 @@ def test_all_pass_gives_perfect_score():
         gui_valid=True,
     )
     assert score.total_score == 100.0
-    assert score.grade == "A+"
+    assert score.grade == "A"
 
 
 def test_score_component_scores_is_dict():
@@ -89,8 +89,8 @@ def test_compute_scorecard_returns_score():
 
 def test_grade_function():
     sc = StableScorecard()
-    assert sc._grade(100) == "A+"
-    assert sc._grade(95) == "A+"
+    assert sc._grade(100) == "A"
+    assert sc._grade(95) == "A"
     assert sc._grade(90) == "A"
     assert sc._grade(80) == "B"
     assert sc._grade(70) == "C"

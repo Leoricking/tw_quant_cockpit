@@ -76,6 +76,8 @@ def run_checklist() -> list[dict]:
             "Replay Session Lineage Handler Integrity Hotfix",
             "Paper Performance Attribution",
             "Operational Integration Hardening",
+            "Live Paper Trading Stable Rollup",
+            "Stable Rollup Compatibility Hotfix",
         }
         parts = tuple(int(x) for x in VERSION.split(".")[:3])
         return (parts >= (1, 3, 9)

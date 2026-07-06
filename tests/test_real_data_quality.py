@@ -803,6 +803,8 @@ class TestVersionInfo:
             "Replay Session Lineage Handler Integrity Hotfix",
             "Paper Performance Attribution",
             "Operational Integration Hardening",
+            "Live Paper Trading Stable Rollup",
+            "Stable Rollup Compatibility Hotfix",
         ), f"Unexpected release name: {version_info.RELEASE_NAME}"
 
     def test_release_track(self):

@@ -73,9 +73,9 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # ---------------------------------------------------------------------------
 # v1.3.3 module-level constants (Coverage Repair Workflow)
 # ---------------------------------------------------------------------------
-VERSION                             = "1.6.9"
-RELEASE_NAME                        = "Live Paper Trading Stable Rollup"
-BASE_RELEASE                        = "1.6.8 Operational Integration Hardening"
+VERSION                             = "1.6.9.1"
+RELEASE_NAME                        = "Stable Rollup Compatibility Hotfix"
+BASE_RELEASE                        = "1.6.9 Live Paper Trading Stable Rollup"
 PORTFOLIO_STABLE_BASELINE           = "1.5.9"
 LIVE_PAPER_TRADING_BASELINE         = "1.6.0"
 MARKET_DATA_SESSION_BASELINE        = "1.6.1"

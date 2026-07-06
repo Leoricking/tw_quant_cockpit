@@ -1528,7 +1528,9 @@ class TestVersionInfo:
             "Failure Injection & Recovery Validation", "Multi-session Coordination", "Fixture Governance & Safety Marker Hotfix",
             "Replay Session Lineage Handler Integrity Hotfix",
             "Paper Performance Attribution",
-            "Operational Integration Hardening"}
+            "Operational Integration Hardening",
+            "Live Paper Trading Stable Rollup",
+            "Stable Rollup Compatibility Hotfix"}
         assert self.vi.RELEASE_NAME in _KNOWN or "Market Data Session" in self.vi.RELEASE_NAME or "Paper Strategy" in self.vi.RELEASE_NAME or "Session Operations" in self.vi.RELEASE_NAME, f"Got {self.vi.RELEASE_NAME}"
 
     def test_181_market_data_session_baseline(self):

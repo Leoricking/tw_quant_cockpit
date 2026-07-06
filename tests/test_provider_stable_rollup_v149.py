@@ -43,7 +43,9 @@ class TestVersionInfo:
             "Fixture Governance & Safety Marker Hotfix",
             "Replay Session Lineage Handler Integrity Hotfix",
             "Paper Performance Attribution",
-            "Operational Integration Hardening")
+            "Operational Integration Hardening",
+            "Live Paper Trading Stable Rollup",
+            "Stable Rollup Compatibility Hotfix")
 
     def test_3_base_release_contains_148(self):
         from release.version_info import BASE_RELEASE

@@ -35,7 +35,7 @@ class TestCLICommandRegistryCore:
 
     def test_total_count_630(self):
         names = self._get_names()
-        assert len(names) == 630, f"Expected 630 commands, got {len(names)}"
+        assert len(names) == 656, f"Expected 656 commands, got {len(names)}"
 
     def test_integration_commands_at_least_31(self):
         names = self._get_names()
@@ -108,7 +108,7 @@ class TestCLICommandRegistryCore:
 
     def test_total_exactly_630(self):
         names = self._get_names()
-        assert len(names) == 630
+        assert len(names) == 656
 
     def test_integration_scorecard_exists(self):
         names = self._get_names()

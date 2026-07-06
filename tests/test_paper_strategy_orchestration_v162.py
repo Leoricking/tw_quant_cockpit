@@ -1790,7 +1790,9 @@ class TestVersionInfo(unittest.TestCase):
             "Failure Injection & Recovery Validation", "Multi-session Coordination", "Fixture Governance & Safety Marker Hotfix",
             "Replay Session Lineage Handler Integrity Hotfix",
             "Paper Performance Attribution",
-            "Operational Integration Hardening"}
+            "Operational Integration Hardening",
+            "Live Paper Trading Stable Rollup",
+            "Stable Rollup Compatibility Hotfix"}
         self.assertIn(RELEASE_NAME, _KNOWN, f"Unexpected RELEASE_NAME: {RELEASE_NAME}")
 
     def test_442_baseline(self):
@@ -1800,7 +1802,7 @@ class TestVersionInfo(unittest.TestCase):
     def test_443_base_release(self):
         from release.version_info import BASE_RELEASE
         self.assertTrue(
-            any(v in BASE_RELEASE for v in ("1.6.1", "1.6.2", "1.6.3", "1.6.4", "1.6.5", "1.6.6", "1.6.7")),
+            any(v in BASE_RELEASE for v in ("1.6.1", "1.6.2", "1.6.3", "1.6.4", "1.6.5", "1.6.6", "1.6.7", "1.6.8", "1.6.9")),
             f"Expected 1.6.x base in BASE_RELEASE, got {BASE_RELEASE}"
         )
 
@@ -3554,7 +3556,7 @@ class TestHotfixVersionInfo(unittest.TestCase):
 
     def test_792_base_release_is_162(self):
         from release.version_info import BASE_RELEASE
-        self.assertTrue(any(v in BASE_RELEASE for v in ("1.6.2", "1.6.3", "1.6.4", "1.6.5", "1.6.6", "1.6.7")),
+        self.assertTrue(any(v in BASE_RELEASE for v in ("1.6.2", "1.6.3", "1.6.4", "1.6.5", "1.6.6", "1.6.7", "1.6.8", "1.6.9")),
                         f"Expected 1.6.2+ base, got {BASE_RELEASE}")
 
     def test_793_paper_strategy_orchestration_baseline(self):

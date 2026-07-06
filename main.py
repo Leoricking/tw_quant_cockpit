@@ -37311,6 +37311,13 @@ _INTEGRATION_BANNER = (
     + "=" * 70
 )
 
+_STABLE_ROLLUP_BANNER = (
+    "=" * 70 + "\n"
+    + "  LIVE PAPER TRADING STABLE ROLLUP v1.6.9\n"
+    + "  [!] Research Only. Paper Only. No Real Orders. Not Investment Advice.\n"
+    + "=" * 70
+)
+
 
 def cmd_integration_version(args=None):
     """[v1.6.8] Show operational integration version info. Research only."""
@@ -37760,6 +37767,257 @@ def cmd_integration_safety_audit(args=None):
     for k, v in sorted(flags.items()):
         print(f"  {k}: {v}")
     print(_INTEGRATION_BANNER)
+
+
+# ---------------------------------------------------------------------------
+# v1.6.9 — Live Paper Trading Stable Rollup commands
+# ---------------------------------------------------------------------------
+
+def cmd_stable_rollup_version(args=None):
+    """[v1.6.9] Show stable rollup version info. Research only."""
+    print(_STABLE_ROLLUP_BANNER)
+    from paper_trading.stable_rollup.version_v169 import VERSION, RELEASE_NAME, BASE_RELEASE, get_version_info
+    info = get_version_info()
+    print(f"Version:      {VERSION}")
+    print(f"Release:      {RELEASE_NAME}")
+    print(f"Base:         {BASE_RELEASE}")
+    print(f"Paper only:   {info.get('paper_only')}")
+    print(f"Research only:{info.get('research_only')}")
+    print(_STABLE_ROLLUP_BANNER)
+
+
+def cmd_stable_rollup_capabilities(args=None):
+    """[v1.6.9] Show stable rollup capability matrix. Research only."""
+    print(_STABLE_ROLLUP_BANNER)
+    from paper_trading.stable_rollup.capability_matrix_v169 import validate_matrix
+    r = validate_matrix()
+    print(f"Capability matrix: status={r.get('status')}  count={r.get('count')}")
+    print(_STABLE_ROLLUP_BANNER)
+
+
+def cmd_stable_rollup_releases(args=None):
+    """[v1.6.9] Show stable rollup release manifest. Research only."""
+    print(_STABLE_ROLLUP_BANNER)
+    from paper_trading.stable_rollup.release_manifest_v169 import get_all_versions
+    versions = get_all_versions()
+    print(f"Known releases: {len(versions)}")
+    for v in versions:
+        print(f"  {v}")
+    print(_STABLE_ROLLUP_BANNER)
+
+
+def cmd_stable_rollup_manifest(args=None):
+    """[v1.6.9] Validate stable rollup release manifest. Research only."""
+    print(_STABLE_ROLLUP_BANNER)
+    from paper_trading.stable_rollup.release_manifest_v169 import validate_manifest
+    r = validate_manifest()
+    print(f"Manifest: status={r.get('status')}  releases={r.get('release_count')}")
+    print(_STABLE_ROLLUP_BANNER)
+
+
+def cmd_stable_rollup_release(args=None):
+    """[v1.6.9] Show current stable rollup release details. Research only."""
+    print(_STABLE_ROLLUP_BANNER)
+    from paper_trading.stable_rollup.version_v169 import get_version_info
+    info = get_version_info()
+    for k, v in sorted(info.items()):
+        print(f"  {k}: {v}")
+    print(_STABLE_ROLLUP_BANNER)
+
+
+def cmd_stable_rollup_lineage(args=None):
+    """[v1.6.9] Show stable rollup lineage chain. Research only."""
+    print(_STABLE_ROLLUP_BANNER)
+    from paper_trading.stable_rollup.lineage_aggregator_v169 import run
+    r = run()
+    print(f"Lineage: status={r.get('status')}  chain_length={r.get('chain_length')}")
+    print(_STABLE_ROLLUP_BANNER)
+
+
+def cmd_stable_rollup_components(args=None):
+    """[v1.6.9] Show stable rollup component matrix. Research only."""
+    print(_STABLE_ROLLUP_BANNER)
+    from paper_trading.stable_rollup.component_matrix_v169 import validate_matrix
+    r = validate_matrix()
+    print(f"Component matrix: status={r.get('status')}  count={r.get('count')}")
+    print(_STABLE_ROLLUP_BANNER)
+
+
+def cmd_stable_rollup_safety(args=None):
+    """[v1.6.9] Run stable rollup safety validation. Research only."""
+    print(_STABLE_ROLLUP_BANNER)
+    from paper_trading.stable_rollup.safety_v169 import validate_safety
+    r = validate_safety()
+    print(f"Safety: all_safe={r.get('all_safe')}  capabilities={r.get('safety_capabilities')}")
+    print(_STABLE_ROLLUP_BANNER)
+
+
+def cmd_stable_rollup_compatibility(args=None):
+    """[v1.6.9] Show stable rollup compatibility matrix. Research only."""
+    print(_STABLE_ROLLUP_BANNER)
+    from paper_trading.stable_rollup.compatibility_matrix_v169 import validate_matrix
+    r = validate_matrix()
+    print(f"Compatibility matrix: status={r.get('status')}  count={r.get('count')}")
+    print(_STABLE_ROLLUP_BANNER)
+
+
+def cmd_stable_rollup_health(args=None):
+    """[v1.6.9] Run stable rollup health check. Research only."""
+    print(_STABLE_ROLLUP_BANNER)
+    from paper_trading.stable_rollup.health_v169 import StableRollupHealthCheck
+    r = StableRollupHealthCheck().run()
+    print(f"Stable Rollup Health v1.6.9: status={r.get('status')}  passed={r.get('passed')}/{r.get('total')}  failed={r.get('failed')}")
+    print(_STABLE_ROLLUP_BANNER)
+
+
+def cmd_stable_rollup_gates(args=None):
+    """[v1.6.9] Run stable rollup gate aggregator. Research only."""
+    print(_STABLE_ROLLUP_BANNER)
+    from paper_trading.stable_rollup.gate_aggregator_v169 import run
+    r = run()
+    print(f"Gate aggregator: status={r.get('status')}  passed={r.get('passed_gates')}/{r.get('total_gates')}")
+    print(_STABLE_ROLLUP_BANNER)
+
+
+def cmd_stable_rollup_cli(args=None):
+    """[v1.6.9] Show stable rollup CLI aggregator summary. Research only."""
+    print(_STABLE_ROLLUP_BANNER)
+    from paper_trading.stable_rollup.cli_aggregator_v169 import run
+    r = run()
+    print(f"CLI: total={r.get('total_commands')}  sr={r.get('stable_rollup_commands')}  unresolved={r.get('unresolved')}  status={r.get('status')}")
+    print(_STABLE_ROLLUP_BANNER)
+
+
+def cmd_stable_rollup_gui(args=None):
+    """[v1.6.9] Show stable rollup GUI aggregator summary. Research only."""
+    print(_STABLE_ROLLUP_BANNER)
+    from paper_trading.stable_rollup.gui_aggregator_v169 import run
+    r = run()
+    print(f"GUI: status={r.get('status')}  headless_safe={r.get('headless_safe')}")
+    print(_STABLE_ROLLUP_BANNER)
+
+
+def cmd_stable_rollup_fixtures(args=None):
+    """[v1.6.9] Show stable rollup fixture aggregator summary. Research only."""
+    print(_STABLE_ROLLUP_BANNER)
+    from paper_trading.stable_rollup.fixture_aggregator_v169 import run
+    r = run()
+    print(f"Fixtures: status={r.get('status')}  total={r.get('total')}")
+    print(_STABLE_ROLLUP_BANNER)
+
+
+def cmd_stable_rollup_scenarios(args=None):
+    """[v1.6.9] Show stable rollup scenario aggregator summary. Research only."""
+    print(_STABLE_ROLLUP_BANNER)
+    from paper_trading.stable_rollup.scenario_aggregator_v169 import run
+    r = run()
+    print(f"Scenarios: status={r.get('status')}  total={r.get('total')}")
+    print(_STABLE_ROLLUP_BANNER)
+
+
+def cmd_stable_rollup_contract(args=None):
+    """[v1.6.9] Show stable rollup contract aggregator summary. Research only."""
+    print(_STABLE_ROLLUP_BANNER)
+    from paper_trading.stable_rollup.contract_aggregator_v169 import run
+    r = run()
+    print(f"Contract: status={r.get('status')}  total={r.get('total')}")
+    print(_STABLE_ROLLUP_BANNER)
+
+
+def cmd_stable_rollup_validate(args=None):
+    """[v1.6.9] Run stable rollup validation. Research only."""
+    print(_STABLE_ROLLUP_BANNER)
+    from paper_trading.stable_rollup.stable_validator_v169 import run_all_validations
+    results = run_all_validations()
+    passed = sum(1 for r in results if r.severity.name == "OK")
+    print(f"Validations: {passed}/{len(results)} passed")
+    print(_STABLE_ROLLUP_BANNER)
+
+
+def cmd_stable_rollup_reconcile(args=None):
+    """[v1.6.9] Run stable rollup reconciliation. Research only."""
+    print(_STABLE_ROLLUP_BANNER)
+    from paper_trading.stable_rollup.stable_reconciler_v169 import StableReconciler
+    r = StableReconciler()
+    rel = r.reconcile_releases()
+    cap = r.reconcile_capabilities()
+    print(f"Releases: expected={rel.expected}  actual={rel.actual}  status={rel.status.value}")
+    print(f"Capabilities: expected={cap.expected}  actual={cap.actual}  status={cap.status.value}")
+    print(_STABLE_ROLLUP_BANNER)
+
+
+def cmd_stable_rollup_scorecard(args=None):
+    """[v1.6.9] Compute stable rollup scorecard. Research only."""
+    print(_STABLE_ROLLUP_BANNER)
+    from paper_trading.stable_rollup.stable_scorecard_v169 import compute_scorecard
+    score = compute_scorecard()
+    print(f"Scorecard: grade={score.grade}  score={score.total_score}  migration_ready={score.migration_ready}")
+    print(_STABLE_ROLLUP_BANNER)
+
+
+def cmd_stable_rollup_regression(args=None):
+    """[v1.6.9] Show stable rollup regression matrix. Research only."""
+    print(_STABLE_ROLLUP_BANNER)
+    from paper_trading.stable_rollup.regression_matrix_v169 import BASELINE_TEST_COUNT, BASELINE_VERSION
+    print(f"Regression baseline: version={BASELINE_VERSION}  test_count={BASELINE_TEST_COUNT}")
+    print(_STABLE_ROLLUP_BANNER)
+
+
+def cmd_stable_rollup_snapshot(args=None):
+    """[v1.6.9] Show stable rollup snapshot. Research only."""
+    print(_STABLE_ROLLUP_BANNER)
+    from paper_trading.stable_rollup.stable_snapshot_v169 import CURRENT_SNAPSHOT, VERSION
+    print(f"Snapshot: version={VERSION}  status={CURRENT_SNAPSHOT.status.value}")
+    print(_STABLE_ROLLUP_BANNER)
+
+
+def cmd_stable_rollup_report(args=None):
+    """[v1.6.9] Generate stable rollup report. Research only."""
+    print(_STABLE_ROLLUP_BANNER)
+    from paper_trading.stable_rollup.stable_report_v169 import generate_report
+    r = generate_report()
+    print(f"Report: version={r.version}  release={r.release_name}")
+    print(_STABLE_ROLLUP_BANNER)
+
+
+def cmd_stable_rollup_query(args=None):
+    """[v1.6.9] Run stable rollup query. Research only."""
+    print(_STABLE_ROLLUP_BANNER)
+    from paper_trading.stable_rollup.stable_query_v169 import StableRollupQuery
+    q = StableRollupQuery()
+    print(f"Query service ready: version={q.version}")
+    print(_STABLE_ROLLUP_BANNER)
+
+
+def cmd_stable_rollup_migration_readiness(args=None):
+    """[v1.6.9] Assess stable rollup migration readiness. Research only."""
+    print(_STABLE_ROLLUP_BANNER)
+    from paper_trading.stable_rollup.migration_readiness_v169 import assess_migration_readiness
+    r = assess_migration_readiness()
+    print(f"Migration readiness: status={r.status.value}  ready={r.is_ready}")
+    print(_STABLE_ROLLUP_BANNER)
+
+
+def cmd_stable_rollup_safety_audit(args=None):
+    """[v1.6.9] Run stable rollup safety audit. Research only."""
+    print(_STABLE_ROLLUP_BANNER)
+    from paper_trading.stable_rollup.safety_v169 import validate_safety, get_safety_flags
+    audit = validate_safety()
+    flags = get_safety_flags()
+    print(f"Safety audit: all_safe={audit.get('all_safe')}  capabilities={audit.get('safety_capabilities')}")
+    for k, v in sorted(flags.items()):
+        print(f"  {k}: {v}")
+    print(_STABLE_ROLLUP_BANNER)
+
+
+def cmd_stable_rollup_gate(args=None):
+    """[v1.6.9] Run stable rollup release gate. Research only."""
+    print(_STABLE_ROLLUP_BANNER)
+    from release.live_paper_trading_stable_rollup_release_gate_v169 import LivePaperTradingStableRollupReleaseGate
+    g = LivePaperTradingStableRollupReleaseGate()
+    r = g.run()
+    print(f"Release gate v1.6.9: status={r.get('status')}  passed={r.get('passed')}/{r.get('total')}")
+    print(_STABLE_ROLLUP_BANNER)
 
 
 def cmd_paper_strategy_health(args=None):
@@ -39721,6 +39979,33 @@ def main() -> None:
         "integration-health":             cmd_integration_health,
         "integration-gate":               cmd_integration_gate,
         "integration-safety-audit":       cmd_integration_safety_audit,
+        # v1.6.9 — Live Paper Trading Stable Rollup
+        "stable-rollup-version":          cmd_stable_rollup_version,
+        "stable-rollup-capabilities":     cmd_stable_rollup_capabilities,
+        "stable-rollup-releases":         cmd_stable_rollup_releases,
+        "stable-rollup-manifest":         cmd_stable_rollup_manifest,
+        "stable-rollup-release":          cmd_stable_rollup_release,
+        "stable-rollup-lineage":          cmd_stable_rollup_lineage,
+        "stable-rollup-components":       cmd_stable_rollup_components,
+        "stable-rollup-safety":           cmd_stable_rollup_safety,
+        "stable-rollup-compatibility":    cmd_stable_rollup_compatibility,
+        "stable-rollup-health":           cmd_stable_rollup_health,
+        "stable-rollup-gates":            cmd_stable_rollup_gates,
+        "stable-rollup-cli":              cmd_stable_rollup_cli,
+        "stable-rollup-gui":              cmd_stable_rollup_gui,
+        "stable-rollup-fixtures":         cmd_stable_rollup_fixtures,
+        "stable-rollup-scenarios":        cmd_stable_rollup_scenarios,
+        "stable-rollup-contract":         cmd_stable_rollup_contract,
+        "stable-rollup-validate":         cmd_stable_rollup_validate,
+        "stable-rollup-reconcile":        cmd_stable_rollup_reconcile,
+        "stable-rollup-scorecard":        cmd_stable_rollup_scorecard,
+        "stable-rollup-regression":       cmd_stable_rollup_regression,
+        "stable-rollup-snapshot":         cmd_stable_rollup_snapshot,
+        "stable-rollup-report":           cmd_stable_rollup_report,
+        "stable-rollup-query":            cmd_stable_rollup_query,
+        "stable-rollup-migration-readiness": cmd_stable_rollup_migration_readiness,
+        "stable-rollup-safety-audit":     cmd_stable_rollup_safety_audit,
+        "stable-rollup-gate":             cmd_stable_rollup_gate,
     }
 
     if args.command is None:

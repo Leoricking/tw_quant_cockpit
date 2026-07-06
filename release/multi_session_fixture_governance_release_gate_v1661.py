@@ -50,14 +50,18 @@ class FixtureGovernanceReleaseGateV1661:
                 "Replay Session Lineage Handler Integrity Hotfix",
                 "Paper Performance Attribution",
                 "Operational Integration Hardening",
+                "Live Paper Trading Stable Rollup",
+                "Stable Rollup Compatibility Hotfix",
             },
             f"RELEASE_NAME={RELEASE_NAME}",
             f"RELEASE_NAME={RELEASE_NAME} not in known names"
         )
         checks["base_release_check"] = _check(
-            any(v in BASE_RELEASE for v in ("1.6.6", "1.6.5", "1.6.7")),
+            any(v in BASE_RELEASE for v in (
+                "1.6.5", "1.6.6", "1.6.7", "1.6.8", "1.6.9",
+            )),
             f"BASE_RELEASE={BASE_RELEASE}",
-            f"BASE_RELEASE={BASE_RELEASE} does not reference 1.6.5, 1.6.6, or 1.6.7"
+            f"BASE_RELEASE={BASE_RELEASE} does not reference a valid release chain"
         )
 
         # Load fixtures

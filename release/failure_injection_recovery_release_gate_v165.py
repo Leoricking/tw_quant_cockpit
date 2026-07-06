@@ -134,7 +134,7 @@ class FailureInjectionRecoveryReleaseGateV165:
     def _check_release_name(self) -> Dict[str, str]:
         try:
             from release.version_info import RELEASE_NAME
-            _known = {"Failure Injection & Recovery Validation", "Multi-session Coordination", "Fixture Governance & Safety Marker Hotfix", "Replay Session Lineage Handler Integrity Hotfix", "Paper Performance Attribution", "Operational Integration Hardening"}
+            _known = {"Failure Injection & Recovery Validation", "Multi-session Coordination", "Fixture Governance & Safety Marker Hotfix", "Replay Session Lineage Handler Integrity Hotfix", "Paper Performance Attribution", "Operational Integration Hardening", "Live Paper Trading Stable Rollup", "Stable Rollup Compatibility Hotfix"}
             if RELEASE_NAME in _known:
                 return _pass(f"RELEASE_NAME={RELEASE_NAME}")
             return _fail(f"Got: {RELEASE_NAME}")
@@ -144,7 +144,7 @@ class FailureInjectionRecoveryReleaseGateV165:
     def _check_base_release(self) -> Dict[str, str]:
         try:
             from release.version_info import BASE_RELEASE
-            if any(v in BASE_RELEASE for v in ("1.6.4", "1.6.5", "1.6.6", "1.6.7")):
+            if any(v in BASE_RELEASE for v in ("1.6.4", "1.6.5", "1.6.6", "1.6.7", "1.6.8", "1.6.9")):
                 return _pass(f"BASE_RELEASE: {BASE_RELEASE}")
             return _fail(f"BASE_RELEASE should contain 1.6.4 or 1.6.5 or 1.6.6 or 1.6.7: {BASE_RELEASE}")
         except Exception as e:

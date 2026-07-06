@@ -1343,6 +1343,8 @@ def test_149_release_name():
             "Replay Session Lineage Handler Integrity Hotfix",
             "Paper Performance Attribution",
             "Operational Integration Hardening",
+            "Live Paper Trading Stable Rollup",
+            "Stable Rollup Compatibility Hotfix",
     }
     assert RELEASE_NAME in known_names, f"Unexpected RELEASE_NAME: {RELEASE_NAME}"
 

@@ -161,9 +161,7 @@ class StableScorecard:
 
     @staticmethod
     def _grade(score: float) -> str:
-        if score >= 95:
-            return "A+"
-        elif score >= 90:
+        if score >= 90:
             return "A"
         elif score >= 80:
             return "B"

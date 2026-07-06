@@ -1603,6 +1603,8 @@ class TestVersionInfo(unittest.TestCase):
             "Replay Session Lineage Handler Integrity Hotfix",
             "Paper Performance Attribution",
             "Operational Integration Hardening",
+            "Live Paper Trading Stable Rollup",
+            "Stable Rollup Compatibility Hotfix",
         )
         self.assertTrue(
             any(name in RELEASE_NAME for name in _KNOWN),
