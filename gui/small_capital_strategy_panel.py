@@ -1,17 +1,19 @@
 """
 gui/small_capital_strategy_panel.py
-GUI panel for Small Capital Growth Strategy Template v1.7.0.
+GUI panel for Small Capital Growth Strategy Template v1.7.0 +
+Watchlist Strategy Layer v1.7.1.
 [!] Research Only. Paper Only. No Real Orders. Not Investment Advice.
 Headless-safe: no tkinter at module level. Renders to dict.
-22 tabs.
+22 v1.7.0 tabs + 15 watchlist tabs = 37 tabs total.
 """
 from __future__ import annotations
 from typing import Any, Dict, List, Optional
 
-PANEL_VERSION = "1.7.0"
-PANEL_TITLE = "Small Capital Growth Strategy Template v1.7.0"
+PANEL_VERSION = "1.7.1"
+PANEL_TITLE = "Small Capital Strategy v1.7.1 — Watchlist Strategy Layer"
 
-_TABS = [
+# v1.7.0 tabs (preserved unchanged)
+_TABS_V170 = [
     "overview",
     "version_info",
     "safety",
@@ -36,12 +38,39 @@ _TABS = [
     "health_gate",
 ]
 
-assert len(_TABS) == 22, f"Expected 22 tabs, got {len(_TABS)}"
+# v1.7.1 watchlist tabs
+_TABS_V171_WATCHLIST = [
+    "watchlist_overview",
+    "watchlist_candidate_pool",
+    "watchlist_theme_rotation",
+    "watchlist_score_weights",
+    "watchlist_ranking",
+    "watchlist_top_10_focus",
+    "watchlist_top_5_tradable",
+    "watchlist_tier_classification",
+    "watchlist_excluded",
+    "watchlist_overdiversification",
+    "watchlist_allocation_mapping",
+    "watchlist_safety",
+    "watchlist_report",
+    "watchlist_health",
+    "watchlist_gate",
+]
+
+_TABS = _TABS_V170 + _TABS_V171_WATCHLIST
+
+assert len(_TABS_V170) == 22, f"Expected 22 v1.7.0 tabs, got {len(_TABS_V170)}"
+assert len(_TABS_V171_WATCHLIST) == 15, f"Expected 15 watchlist tabs, got {len(_TABS_V171_WATCHLIST)}"
 
 
 def get_tab_names() -> List[str]:
-    """Return list of tab names."""
+    """Return list of all tab names (v1.7.0 + v1.7.1 watchlist)."""
     return list(_TABS)
+
+
+def get_watchlist_tab_names() -> List[str]:
+    """Return list of v1.7.1 watchlist tab names."""
+    return list(_TABS_V171_WATCHLIST)
 
 
 def render_overview_tab() -> Dict[str, Any]:
@@ -348,6 +377,204 @@ def render_health_gate_tab() -> Dict[str, Any]:
     }
 
 
+def render_watchlist_overview_tab() -> Dict[str, Any]:
+    """Render watchlist overview tab. v1.7.1."""
+    from paper_trading.small_capital_strategy.version_v171 import get_version_info
+    from paper_trading.small_capital_strategy.overdiversification_detector_v171 import (
+        get_watchlist_size_rules,
+    )
+    return {
+        "version": "1.7.1",
+        "release_name": "Watchlist Strategy Layer",
+        "watchlist_rules": get_watchlist_size_rules(),
+        "paper_only": True,
+        "research_only": True,
+        "no_real_orders": True,
+        "not_investment_advice": True,
+        "disclaimer": "Research Only | Paper Only | No Real Orders | Not Investment Advice",
+    }
+
+
+def render_watchlist_candidate_pool_tab() -> Dict[str, Any]:
+    """Render watchlist candidate pool tab. v1.7.1."""
+    from paper_trading.small_capital_strategy.watchlist_candidate_v171 import (
+        get_required_candidate_fields,
+    )
+    return {
+        "required_fields": get_required_candidate_fields(),
+        "paper_only": True,
+        "research_only": True,
+        "no_real_orders": True,
+        "not_investment_advice": True,
+    }
+
+
+def render_watchlist_theme_rotation_tab() -> Dict[str, Any]:
+    """Render theme rotation tab. v1.7.1."""
+    from paper_trading.small_capital_strategy.theme_rotation_v171 import (
+        get_sample_theme_signals,
+    )
+    signals = get_sample_theme_signals()
+    return {
+        "theme_signals": [s.to_dict() for s in signals],
+        "paper_only": True,
+        "research_only": True,
+        "no_real_orders": True,
+        "not_investment_advice": True,
+    }
+
+
+def render_watchlist_score_weights_tab() -> Dict[str, Any]:
+    """Render score weights tab. v1.7.1."""
+    from paper_trading.small_capital_strategy.watchlist_score_v171 import get_score_weights
+    return {
+        "score_weights": get_score_weights(),
+        "max_grade": "A",
+        "blocked_grade": "BLOCKED",
+        "paper_only": True,
+        "research_only": True,
+        "no_real_orders": True,
+        "not_investment_advice": True,
+    }
+
+
+def render_watchlist_ranking_tab() -> Dict[str, Any]:
+    """Render ranking tab. v1.7.1."""
+    from paper_trading.small_capital_strategy.watchlist_ranking_v171 import get_ranking_rules
+    return {
+        "ranking_rules": get_ranking_rules(),
+        "paper_only": True,
+        "research_only": True,
+        "no_real_orders": True,
+        "not_investment_advice": True,
+    }
+
+
+def render_watchlist_top_10_focus_tab() -> Dict[str, Any]:
+    """Render top 10 focus candidates tab. v1.7.1."""
+    return {
+        "max_focus": 10,
+        "note": "Provide candidate data via watchlist-top-focus CLI command",
+        "paper_only": True,
+        "research_only": True,
+        "no_real_orders": True,
+        "not_investment_advice": True,
+    }
+
+
+def render_watchlist_top_5_tradable_tab() -> Dict[str, Any]:
+    """Render top 5 tradable candidates tab. v1.7.1."""
+    return {
+        "max_tradable": 5,
+        "note": "Provide candidate data via watchlist-top-tradable CLI command",
+        "paper_only": True,
+        "research_only": True,
+        "no_real_orders": True,
+        "not_investment_advice": True,
+    }
+
+
+def render_watchlist_tier_classification_tab() -> Dict[str, Any]:
+    """Render tier classification tab. v1.7.1."""
+    from paper_trading.small_capital_strategy.watchlist_tier_classifier_v171 import (
+        get_tier_thresholds,
+    )
+    return {
+        "tier_thresholds": get_tier_thresholds(),
+        "tiers": ["CORE", "MAIN_THEME", "SECOND_WAVE", "TRAINING", "EXCLUDED"],
+        "paper_only": True,
+        "research_only": True,
+        "no_real_orders": True,
+        "not_investment_advice": True,
+    }
+
+
+def render_watchlist_excluded_tab() -> Dict[str, Any]:
+    """Render excluded candidates tab. v1.7.1."""
+    from paper_trading.small_capital_strategy.watchlist_enums_v171 import (
+        WatchlistExclusionReason,
+    )
+    return {
+        "exclusion_reasons": [r.value for r in WatchlistExclusionReason],
+        "paper_only": True,
+        "research_only": True,
+        "no_real_orders": True,
+        "not_investment_advice": True,
+    }
+
+
+def render_watchlist_overdiversification_tab() -> Dict[str, Any]:
+    """Render overdiversification tab. v1.7.1."""
+    from paper_trading.small_capital_strategy.overdiversification_detector_v171 import (
+        get_watchlist_size_rules,
+    )
+    return {
+        "size_rules": get_watchlist_size_rules(),
+        "paper_only": True,
+        "research_only": True,
+        "no_real_orders": True,
+        "not_investment_advice": True,
+    }
+
+
+def render_watchlist_allocation_mapping_tab() -> Dict[str, Any]:
+    """Render allocation mapping tab. v1.7.1."""
+    from paper_trading.small_capital_strategy.small_capital_watchlist_bridge_v171 import (
+        get_v170_bridge_summary,
+    )
+    return get_v170_bridge_summary()
+
+
+def render_watchlist_safety_tab() -> Dict[str, Any]:
+    """Render watchlist safety tab. v1.7.1."""
+    from paper_trading.small_capital_strategy.watchlist_safety_v171 import (
+        get_watchlist_safety_flags, audit_watchlist_safety,
+    )
+    return {
+        "flags": get_watchlist_safety_flags(),
+        "audit": audit_watchlist_safety(),
+    }
+
+
+def render_watchlist_report_tab() -> Dict[str, Any]:
+    """Render watchlist report tab. v1.7.1."""
+    from paper_trading.small_capital_strategy.watchlist_report_v171 import get_section_names
+    return {
+        "section_names": get_section_names(),
+        "formats": ["MARKDOWN", "JSON", "CSV", "CONSOLE", "GUI"],
+        "paper_only": True,
+        "research_only": True,
+        "no_real_orders": True,
+        "not_investment_advice": True,
+    }
+
+
+def render_watchlist_health_tab() -> Dict[str, Any]:
+    """Render watchlist health tab. v1.7.1."""
+    from paper_trading.small_capital_strategy.watchlist_health_v171 import run_health_check
+    health = run_health_check()
+    return {
+        "all_passed": health["all_passed"],
+        "passed": health["passed"],
+        "failed": health["failed"],
+        "total": health["total"],
+        "status": health["status"],
+    }
+
+
+def render_watchlist_gate_tab() -> Dict[str, Any]:
+    """Render watchlist gate tab. v1.7.1."""
+    from release.watchlist_strategy_layer_release_gate_v171 import run_release_gate
+    gate = run_release_gate()
+    return {
+        "gate_passed": gate["gate_passed"],
+        "passed_count": gate["passed_count"],
+        "failed_count": gate["failed_count"],
+        "total_count": gate["total_count"],
+        "status": gate["status"],
+    }
+
+
 def render_all_tabs() -> Dict[str, Any]:
     """Render all tabs and return a dict of tab_name -> data."""
     renderers = {
@@ -373,6 +600,22 @@ def render_all_tabs() -> Dict[str, Any]:
         "paper_simulation": render_paper_simulation_tab,
         "scenarios": render_scenarios_tab,
         "health_gate": render_health_gate_tab,
+        # v1.7.1 watchlist tabs
+        "watchlist_overview": render_watchlist_overview_tab,
+        "watchlist_candidate_pool": render_watchlist_candidate_pool_tab,
+        "watchlist_theme_rotation": render_watchlist_theme_rotation_tab,
+        "watchlist_score_weights": render_watchlist_score_weights_tab,
+        "watchlist_ranking": render_watchlist_ranking_tab,
+        "watchlist_top_10_focus": render_watchlist_top_10_focus_tab,
+        "watchlist_top_5_tradable": render_watchlist_top_5_tradable_tab,
+        "watchlist_tier_classification": render_watchlist_tier_classification_tab,
+        "watchlist_excluded": render_watchlist_excluded_tab,
+        "watchlist_overdiversification": render_watchlist_overdiversification_tab,
+        "watchlist_allocation_mapping": render_watchlist_allocation_mapping_tab,
+        "watchlist_safety": render_watchlist_safety_tab,
+        "watchlist_report": render_watchlist_report_tab,
+        "watchlist_health": render_watchlist_health_tab,
+        "watchlist_gate": render_watchlist_gate_tab,
     }
     result = {}
     for tab_name in _TABS:

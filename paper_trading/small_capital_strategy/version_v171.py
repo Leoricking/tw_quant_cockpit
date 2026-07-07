@@ -1,24 +1,24 @@
 """
-paper_trading/small_capital_strategy/version_v170.py
-Version identity for Small Capital Growth Strategy Template v1.7.0.
+paper_trading/small_capital_strategy/version_v171.py
+Version identity for Watchlist Strategy Layer v1.7.1.
 [!] Research Only. Paper Only. No Real Orders. Not Investment Advice.
 """
 from __future__ import annotations
 
-VERSION         = "1.7.0"
-RELEASE_NAME    = "Small Capital Growth Strategy Template"
-BASE_RELEASE    = "1.6.9.1 Stable Rollup Compatibility Hotfix"
-SCHEMA_VERSION  = "170"
-POLICY_VERSION  = "1.7.0-small-capital-strategy"
+VERSION         = "1.7.1"
+RELEASE_NAME    = "Watchlist Strategy Layer"
+BASE_RELEASE    = "1.7.0 Small Capital Growth Strategy Template"
+SCHEMA_VERSION  = "171"
+POLICY_VERSION  = "1.7.1-watchlist-strategy-layer"
 
-COMPONENT_COUNT = 28
-MIN_SCENARIOS   = 80
-MIN_FIXTURES    = 80
-MIN_CLI         = 25
-MIN_HEALTH      = 80
-MIN_GATE        = 70
+COMPONENT_COUNT = 25
+MIN_SCENARIOS   = 70
+MIN_FIXTURES    = 70
+MIN_CLI         = 22
+MIN_HEALTH      = 70
+MIN_GATE        = 65
 
-ACCEPTED_MINIMUM_VERSION = "1.6.9.1"
+ACCEPTED_MINIMUM_VERSION = "1.7.0"
 
 KNOWN_RELEASE_NAMES: frozenset = frozenset({
     "Watchlist Strategy Layer",

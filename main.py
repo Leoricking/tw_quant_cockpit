@@ -38268,6 +38268,210 @@ def cmd_small_capital_gate(args=None):
     print(_SMALL_CAPITAL_BANNER)
 
 
+_WATCHLIST_BANNER = "[!] Research Only. Paper Only. No Real Orders. Not Investment Advice. Watchlist Strategy Layer v1.7.1."
+
+
+def cmd_watchlist_version(args=None):
+    """[v1.7.1] Show watchlist strategy layer version info. Research only."""
+    print(_WATCHLIST_BANNER)
+    from paper_trading.small_capital_strategy.version_v171 import get_version_info
+    info = get_version_info()
+    print(f"Watchlist Strategy Layer v{info['version']} — {info['release_name']}")
+    print(_WATCHLIST_BANNER)
+
+
+def cmd_watchlist_profile(args=None):
+    """[v1.7.1] Show watchlist profile rules. Research only."""
+    print(_WATCHLIST_BANNER)
+    from paper_trading.small_capital_strategy.overdiversification_detector_v171 import get_watchlist_size_rules
+    rules = get_watchlist_size_rules()
+    print(f"Watchlist profile: default={rules['default_watchlist']}  max={rules['max_watchlist']}  focus={rules['focus_candidates']}  tradable={rules['tradable_candidates']}")
+    print(_WATCHLIST_BANNER)
+
+
+def cmd_watchlist_candidates(args=None):
+    """[v1.7.1] Show required candidate fields. Research only."""
+    print(_WATCHLIST_BANNER)
+    from paper_trading.small_capital_strategy.watchlist_candidate_v171 import get_required_candidate_fields
+    fields = get_required_candidate_fields()
+    print(f"Required candidate fields ({len(fields)}): {fields}")
+    print(_WATCHLIST_BANNER)
+
+
+def cmd_watchlist_score(args=None):
+    """[v1.7.1] Show score weights. Research only."""
+    print(_WATCHLIST_BANNER)
+    from paper_trading.small_capital_strategy.watchlist_score_v171 import get_score_weights
+    weights = get_score_weights()
+    print(f"Score weights (sum={sum(weights.values())}): {weights}")
+    print(_WATCHLIST_BANNER)
+
+
+def cmd_watchlist_rank(args=None):
+    """[v1.7.1] Show ranking rules. Research only."""
+    print(_WATCHLIST_BANNER)
+    from paper_trading.small_capital_strategy.watchlist_ranking_v171 import get_ranking_rules
+    rules = get_ranking_rules()
+    print(f"Ranking rules: {list(rules.keys())}")
+    print(_WATCHLIST_BANNER)
+
+
+def cmd_watchlist_filter(args=None):
+    """[v1.7.1] Show filter logic summary. Research only."""
+    print(_WATCHLIST_BANNER)
+    from paper_trading.small_capital_strategy.watchlist_enums_v171 import WatchlistExclusionReason
+    reasons = [r.value for r in WatchlistExclusionReason]
+    print(f"Exclusion reasons ({len(reasons)}): {reasons}")
+    print(_WATCHLIST_BANNER)
+
+
+def cmd_watchlist_tier(args=None):
+    """[v1.7.1] Show tier thresholds. Research only."""
+    print(_WATCHLIST_BANNER)
+    from paper_trading.small_capital_strategy.watchlist_tier_classifier_v171 import get_tier_thresholds
+    thresholds = get_tier_thresholds()
+    print(f"Tier thresholds: {thresholds}")
+    print(_WATCHLIST_BANNER)
+
+
+def cmd_watchlist_theme(args=None):
+    """[v1.7.1] Show sample theme rotation signals. Research only."""
+    print(_WATCHLIST_BANNER)
+    from paper_trading.small_capital_strategy.theme_rotation_v171 import get_sample_theme_signals
+    signals = get_sample_theme_signals()
+    for s in signals:
+        print(f"  theme={s.theme}  strength={s.theme_strength.value}  phase={s.rotation_phase}  momentum={s.momentum_score}")
+    print(_WATCHLIST_BANNER)
+
+
+def cmd_watchlist_liquidity(args=None):
+    """[v1.7.1] Show liquidity filter thresholds. Research only."""
+    print(_WATCHLIST_BANNER)
+    from paper_trading.small_capital_strategy.liquidity_filter_v171 import get_liquidity_thresholds
+    thresholds = get_liquidity_thresholds()
+    print(f"Liquidity thresholds (TWD daily vol): {thresholds}")
+    print(_WATCHLIST_BANNER)
+
+
+def cmd_watchlist_revenue(args=None):
+    """[v1.7.1] Show revenue growth filter thresholds. Research only."""
+    print(_WATCHLIST_BANNER)
+    from paper_trading.small_capital_strategy.revenue_growth_filter_v171 import get_revenue_thresholds
+    thresholds = get_revenue_thresholds()
+    print(f"Revenue growth thresholds: {thresholds}")
+    print(_WATCHLIST_BANNER)
+
+
+def cmd_watchlist_technical(args=None):
+    """[v1.7.1] Show technical strength grade scores. Research only."""
+    print(_WATCHLIST_BANNER)
+    from paper_trading.small_capital_strategy.technical_strength_filter_v171 import get_technical_grade_scores
+    scores = get_technical_grade_scores()
+    print(f"Technical grade scores: {scores}")
+    print(_WATCHLIST_BANNER)
+
+
+def cmd_watchlist_institutional(args=None):
+    """[v1.7.1] Show institutional filter thresholds. Research only."""
+    print(_WATCHLIST_BANNER)
+    from paper_trading.small_capital_strategy.institutional_filter_v171 import get_institutional_thresholds
+    thresholds = get_institutional_thresholds()
+    print(f"Institutional thresholds (net buy days): {thresholds}")
+    print(_WATCHLIST_BANNER)
+
+
+def cmd_watchlist_financing(args=None):
+    """[v1.7.1] Show financing risk filter thresholds. Research only."""
+    print(_WATCHLIST_BANNER)
+    from paper_trading.small_capital_strategy.financing_risk_filter_v171 import get_financing_thresholds
+    thresholds = get_financing_thresholds()
+    print(f"Financing thresholds: {thresholds}")
+    print(_WATCHLIST_BANNER)
+
+
+def cmd_watchlist_overdiversification(args=None):
+    """[v1.7.1] Show overdiversification rules. Research only."""
+    print(_WATCHLIST_BANNER)
+    from paper_trading.small_capital_strategy.overdiversification_detector_v171 import get_watchlist_size_rules
+    rules = get_watchlist_size_rules()
+    print(f"Overdiversification rules: min={rules['min_watchlist']}  max={rules['max_watchlist']}")
+    print(_WATCHLIST_BANNER)
+
+
+def cmd_watchlist_top_focus(args=None):
+    """[v1.7.1] Show top focus candidate selection limits. Research only."""
+    print(_WATCHLIST_BANNER)
+    from paper_trading.small_capital_strategy.top_candidate_selector_v171 import get_selection_limits
+    limits = get_selection_limits()
+    print(f"Selection limits: focus={limits['max_focus']}  tradable={limits['max_tradable']}  training={limits['max_training']}")
+    print(_WATCHLIST_BANNER)
+
+
+def cmd_watchlist_top_tradable(args=None):
+    """[v1.7.1] Show top tradable candidate rules. Research only."""
+    print(_WATCHLIST_BANNER)
+    from paper_trading.small_capital_strategy.top_candidate_selector_v171 import get_selection_limits
+    limits = get_selection_limits()
+    print(f"Max tradable: {limits['max_tradable']}  paper_only={limits['paper_only']}")
+    print(_WATCHLIST_BANNER)
+
+
+def cmd_watchlist_report(args=None):
+    """[v1.7.1] Show watchlist report section names. Research only."""
+    print(_WATCHLIST_BANNER)
+    from paper_trading.small_capital_strategy.watchlist_report_v171 import get_section_names
+    sections = get_section_names()
+    print(f"Report sections ({len(sections)}): {sections}")
+    print(_WATCHLIST_BANNER)
+
+
+def cmd_watchlist_fixtures(args=None):
+    """[v1.7.1] Show fixture registry summary. Research only."""
+    print(_WATCHLIST_BANNER)
+    from paper_trading.small_capital_strategy.watchlist_fixture_registry_v171 import get_fixture_count, validate_all_fixtures
+    count = get_fixture_count()
+    validity = validate_all_fixtures()
+    print(f"Fixtures: {count} total  all_valid={validity['valid']}")
+    print(_WATCHLIST_BANNER)
+
+
+def cmd_watchlist_scenarios(args=None):
+    """[v1.7.1] Show scenario registry summary. Research only."""
+    print(_WATCHLIST_BANNER)
+    from paper_trading.small_capital_strategy.watchlist_scenario_registry_v171 import get_scenario_count, get_scenario_categories
+    count = get_scenario_count()
+    cats = get_scenario_categories()
+    print(f"Scenarios: {count} total  categories={cats}")
+    print(_WATCHLIST_BANNER)
+
+
+def cmd_watchlist_health(args=None):
+    """[v1.7.1] Run watchlist health check. Research only."""
+    print(_WATCHLIST_BANNER)
+    from paper_trading.small_capital_strategy.watchlist_health_v171 import run_health_check
+    result = run_health_check()
+    print(f"Watchlist Health: all_passed={result['all_passed']}  passed={result['passed']}/{result['total']}  failed={result['failed']}")
+    print(_WATCHLIST_BANNER)
+
+
+def cmd_watchlist_gate(args=None):
+    """[v1.7.1] Run watchlist release gate. Research only."""
+    print(_WATCHLIST_BANNER)
+    from release.watchlist_strategy_layer_release_gate_v171 import run_release_gate
+    result = run_release_gate()
+    print(f"Watchlist Gate v{result['gate_version']}: gate_passed={result['gate_passed']}  total={result['total_count']}  failed={result['failed_count']}")
+    print(_WATCHLIST_BANNER)
+
+
+def cmd_watchlist_safety_audit(args=None):
+    """[v1.7.1] Audit watchlist safety flags. Research only."""
+    print(_WATCHLIST_BANNER)
+    from paper_trading.small_capital_strategy.watchlist_safety_v171 import audit_watchlist_safety
+    result = audit_watchlist_safety()
+    print(f"Watchlist safety audit: all_safe={result['all_safe']}  safety_capabilities={result['safety_capabilities']}")
+    print(_WATCHLIST_BANNER)
+
+
 def cmd_paper_strategy_health(args=None):
     """[v1.6.2] Paper strategy orchestration health check. Research only."""
     print(_STRATEGY_SAFETY_BANNER)
@@ -40279,6 +40483,29 @@ def main() -> None:
         "small-capital-scenarios":        cmd_small_capital_scenarios,
         "small-capital-health":           cmd_small_capital_health,
         "small-capital-gate":             cmd_small_capital_gate,
+        # v1.7.1 Watchlist Strategy Layer
+        "watchlist-version":              cmd_watchlist_version,
+        "watchlist-profile":              cmd_watchlist_profile,
+        "watchlist-candidates":           cmd_watchlist_candidates,
+        "watchlist-score":                cmd_watchlist_score,
+        "watchlist-rank":                 cmd_watchlist_rank,
+        "watchlist-filter":               cmd_watchlist_filter,
+        "watchlist-tier":                 cmd_watchlist_tier,
+        "watchlist-theme":                cmd_watchlist_theme,
+        "watchlist-liquidity":            cmd_watchlist_liquidity,
+        "watchlist-revenue":              cmd_watchlist_revenue,
+        "watchlist-technical":            cmd_watchlist_technical,
+        "watchlist-institutional":        cmd_watchlist_institutional,
+        "watchlist-financing":            cmd_watchlist_financing,
+        "watchlist-overdiversification":  cmd_watchlist_overdiversification,
+        "watchlist-top-focus":            cmd_watchlist_top_focus,
+        "watchlist-top-tradable":         cmd_watchlist_top_tradable,
+        "watchlist-report":               cmd_watchlist_report,
+        "watchlist-fixtures":             cmd_watchlist_fixtures,
+        "watchlist-scenarios":            cmd_watchlist_scenarios,
+        "watchlist-health":               cmd_watchlist_health,
+        "watchlist-gate":                 cmd_watchlist_gate,
+        "watchlist-safety-audit":         cmd_watchlist_safety_audit,
     }
 
     if args.command is None:
