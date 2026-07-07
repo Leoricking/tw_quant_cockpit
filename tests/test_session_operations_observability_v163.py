@@ -2520,7 +2520,7 @@ class TestCLICommands:
 class TestVersionAlignment:
     def test_version_16x(self):
         from release.version_info import VERSION
-        assert VERSION.startswith("1.6")
+        assert VERSION.startswith("1.6") or VERSION.startswith("1.7")
 
     def test_release_name(self):
         from release.version_info import RELEASE_NAME
@@ -2538,6 +2538,7 @@ class TestVersionAlignment:
             "Operational Integration Hardening",
             "Live Paper Trading Stable Rollup",
             "Stable Rollup Compatibility Hotfix",
+            "Small Capital Growth Strategy Template",
         }
         assert RELEASE_NAME in _KNOWN, f"Unexpected RELEASE_NAME: {RELEASE_NAME}"
 

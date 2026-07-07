@@ -52,6 +52,7 @@ class FixtureGovernanceReleaseGateV1661:
                 "Operational Integration Hardening",
                 "Live Paper Trading Stable Rollup",
                 "Stable Rollup Compatibility Hotfix",
+                "Small Capital Growth Strategy Template",
             },
             f"RELEASE_NAME={RELEASE_NAME}",
             f"RELEASE_NAME={RELEASE_NAME} not in known names"

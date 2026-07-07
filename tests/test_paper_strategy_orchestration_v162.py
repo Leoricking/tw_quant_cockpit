@@ -1777,7 +1777,7 @@ class TestVersionInfo(unittest.TestCase):
 
     def test_440_version_is_162(self):
         from release.version_info import VERSION
-        self.assertTrue(VERSION.startswith("1.6"), f"Expected 1.6.x, got {VERSION}")
+        self.assertTrue(VERSION.startswith("1.6") or VERSION.startswith("1.7"), f"Expected 1.6.x, got {VERSION}")
 
     def test_441_release_name(self):
         from release.version_info import RELEASE_NAME
@@ -1792,7 +1792,7 @@ class TestVersionInfo(unittest.TestCase):
             "Paper Performance Attribution",
             "Operational Integration Hardening",
             "Live Paper Trading Stable Rollup",
-            "Stable Rollup Compatibility Hotfix"}
+            "Stable Rollup Compatibility Hotfix", "Small Capital Growth Strategy Template"}
         self.assertIn(RELEASE_NAME, _KNOWN, f"Unexpected RELEASE_NAME: {RELEASE_NAME}")
 
     def test_442_baseline(self):
@@ -3547,7 +3547,7 @@ class TestHotfixVersionInfo(unittest.TestCase):
 
     def test_790_version_is_1621(self):
         from release.version_info import VERSION
-        self.assertTrue(VERSION.startswith("1.6"), f"Expected 1.6.x, got {VERSION}")
+        self.assertTrue(VERSION.startswith("1.6") or VERSION.startswith("1.7"), f"Expected 1.6.x, got {VERSION}")
 
     def test_791_release_name_is_integrity_hotfix(self):
         from release.version_info import RELEASE_NAME

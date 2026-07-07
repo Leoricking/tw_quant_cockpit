@@ -263,5 +263,6 @@ class TestFetchHandlersAndVersion:
             "Operational Integration Hardening",
             "Live Paper Trading Stable Rollup",
             "Stable Rollup Compatibility Hotfix",
+            "Small Capital Growth Strategy Template",
         }
         assert RELEASE_NAME in known, f"Unexpected RELEASE_NAME: {RELEASE_NAME}"

@@ -134,7 +134,7 @@ class FailureInjectionRecoveryReleaseGateV165:
     def _check_release_name(self) -> Dict[str, str]:
         try:
             from release.version_info import RELEASE_NAME
-            _known = {"Failure Injection & Recovery Validation", "Multi-session Coordination", "Fixture Governance & Safety Marker Hotfix", "Replay Session Lineage Handler Integrity Hotfix", "Paper Performance Attribution", "Operational Integration Hardening", "Live Paper Trading Stable Rollup", "Stable Rollup Compatibility Hotfix"}
+            _known = {"Failure Injection & Recovery Validation", "Multi-session Coordination", "Fixture Governance & Safety Marker Hotfix", "Replay Session Lineage Handler Integrity Hotfix", "Paper Performance Attribution", "Operational Integration Hardening", "Live Paper Trading Stable Rollup", "Stable Rollup Compatibility Hotfix", "Small Capital Growth Strategy Template"}
             if RELEASE_NAME in _known:
                 return _pass(f"RELEASE_NAME={RELEASE_NAME}")
             return _fail(f"Got: {RELEASE_NAME}")

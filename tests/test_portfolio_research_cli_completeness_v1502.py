@@ -374,7 +374,7 @@ class TestSafetyAndVersion:
     def test_version_is_1502(self):
         """Test 41: release/version_info.py VERSION is in 1.5.x line."""
         from release.version_info import VERSION
-        assert VERSION.startswith("1.5.") or VERSION.startswith("1.6."), f"Expected 1.5.x or 1.6.x, got {VERSION}"
+        assert VERSION.startswith("1.5.") or VERSION.startswith("1.6.") or VERSION.startswith("1.7."), f"Expected 1.5.x or 1.6.x, got {VERSION}"
 
     def test_release_name_is_cli_completeness(self):
         """Test 42: RELEASE_NAME is a known 1.5.x release name."""
@@ -407,6 +407,7 @@ class TestSafetyAndVersion:
             "Operational Integration Hardening",
             "Live Paper Trading Stable Rollup",
             "Stable Rollup Compatibility Hotfix",
+            "Small Capital Growth Strategy Template",
         }
         assert RELEASE_NAME in valid_names, f"Unexpected RELEASE_NAME: {RELEASE_NAME}"
 

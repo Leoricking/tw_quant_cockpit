@@ -1514,7 +1514,7 @@ class TestVersionInfo:
         self.vi = vi
 
     def test_179_version_is_161(self):
-        assert self.vi.VERSION.startswith("1.6"), f"Expected 1.6.x, got {self.vi.VERSION}"
+        assert self.vi.VERSION.startswith("1.6") or self.vi.VERSION.startswith("1.7"), f"Expected 1.6.x or 1.7.x, got {self.vi.VERSION}"
 
     def test_180_release_name(self):
         _KNOWN = {"Market Data Session Adapter", "Market Data Session Warning Hygiene Hotfix",
@@ -1530,7 +1530,7 @@ class TestVersionInfo:
             "Paper Performance Attribution",
             "Operational Integration Hardening",
             "Live Paper Trading Stable Rollup",
-            "Stable Rollup Compatibility Hotfix"}
+            "Stable Rollup Compatibility Hotfix", "Small Capital Growth Strategy Template"}
         assert self.vi.RELEASE_NAME in _KNOWN or "Market Data Session" in self.vi.RELEASE_NAME or "Paper Strategy" in self.vi.RELEASE_NAME or "Session Operations" in self.vi.RELEASE_NAME, f"Got {self.vi.RELEASE_NAME}"
 
     def test_181_market_data_session_baseline(self):
@@ -1837,7 +1837,7 @@ class TestWarningHygieneV1611:
 
     def test_209_version_is_1611(self):
         from release.version_info import VERSION
-        assert VERSION.startswith("1.6"), f"Expected 1.6.x, got {VERSION}"
+        assert VERSION.startswith("1.6") or VERSION.startswith("1.7"), f"Expected 1.6.x, got {VERSION}"
 
     def test_210_tpex_report_no_naive_utc(self):
         """TPEx report generated_at is timezone-aware — no naive UTC."""

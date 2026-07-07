@@ -73,9 +73,9 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # ---------------------------------------------------------------------------
 # v1.3.3 module-level constants (Coverage Repair Workflow)
 # ---------------------------------------------------------------------------
-VERSION                             = "1.6.9.1"
-RELEASE_NAME                        = "Stable Rollup Compatibility Hotfix"
-BASE_RELEASE                        = "1.6.9 Live Paper Trading Stable Rollup"
+VERSION                             = "1.7.0"
+RELEASE_NAME                        = "Small Capital Growth Strategy Template"
+BASE_RELEASE                        = "1.6.9.1 Stable Rollup Compatibility Hotfix"
 PORTFOLIO_STABLE_BASELINE           = "1.5.9"
 LIVE_PAPER_TRADING_BASELINE         = "1.6.0"
 MARKET_DATA_SESSION_BASELINE        = "1.6.1"
@@ -147,6 +147,21 @@ LIVE_PAPER_STABLE_ROLLUP_LIVE_EXECUTION_ENABLED     = False
 LIVE_PAPER_STABLE_ROLLUP_AUTO_SESSION_CONTROL       = False
 LIVE_PAPER_STABLE_ROLLUP_NETWORK_TRADING_ENABLED    = False
 LIVE_PAPER_STABLE_ROLLUP_BASELINE                   = "1.6.9"
+# v1.7.0 Small Capital Growth Strategy Template safety flags
+SMALL_CAPITAL_STRATEGY_AVAILABLE                    = True
+SMALL_CAPITAL_STRATEGY_RESEARCH_ONLY                = True
+SMALL_CAPITAL_STRATEGY_PAPER_ONLY                   = True
+SMALL_CAPITAL_STRATEGY_NO_REAL_ORDERS               = True
+SMALL_CAPITAL_STRATEGY_NOT_INVESTMENT_ADVICE        = True
+SMALL_CAPITAL_STRATEGY_BROKER_ENABLED               = False
+SMALL_CAPITAL_STRATEGY_LIVE_EXECUTION_ENABLED       = False
+SMALL_CAPITAL_STRATEGY_PRODUCTION_TRADING_ENABLED   = False
+SMALL_CAPITAL_STRATEGY_MARGIN_ENABLED               = False
+SMALL_CAPITAL_STRATEGY_LEVERAGE_ENABLED             = False
+SMALL_CAPITAL_STRATEGY_SHORT_SELLING_ENABLED        = False
+SMALL_CAPITAL_STRATEGY_REAL_ORDER_ENABLED           = False
+SMALL_CAPITAL_STRATEGY_AUTOMATED_ORDER_ENABLED      = False
+SMALL_CAPITAL_STRATEGY_BASELINE                     = "1.7.0"
 # v1.6.5 Failure Injection & Recovery Validation safety flags
 FAILURE_INJECTION_AVAILABLE                 = True
 FAILURE_INJECTION_RESEARCH_ONLY             = True

@@ -45,7 +45,7 @@ class TestVersionInfo:
             "Paper Performance Attribution",
             "Operational Integration Hardening",
             "Live Paper Trading Stable Rollup",
-            "Stable Rollup Compatibility Hotfix")
+            "Stable Rollup Compatibility Hotfix", "Small Capital Growth Strategy Template")
 
     def test_3_base_release_contains_148(self):
         from release.version_info import BASE_RELEASE

@@ -1,0 +1,33 @@
+{
+  "fixture_id": "sc_070",
+  "scenario_id": "scorecard_003",
+  "template_id": "small_capital_300k_v170",
+  "schema_version": "170",
+  "paper_only": true,
+  "research_only": true,
+  "no_real_orders": true,
+  "not_investment_advice": true,
+  "small_capital_strategy_only": true,
+  "fixture_data_only": true,
+  "no_live_data": true,
+  "no_broker_connection": true,
+  "simulation_safe": true,
+  "schema_validated": true,
+  "category": "scorecard",
+  "description": "scorecard grade F score 30",
+  "created_at": "2026-07-06T00:00:00Z",
+  "input": {
+    "component_scores": {
+      "risk_budget_compliance": 0.2,
+      "position_sizing_correctness": 0.1,
+      "buy_point_quality": 0.2,
+      "market_regime_alignment": 0.1,
+      "watchlist_quality": 0.0,
+      "exit_plan_completeness": 0.0,
+      "safety_compliance": 0.5
+    }
+  },
+  "expected": {
+    "grade": "F"
+  }
+}

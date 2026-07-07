@@ -1280,7 +1280,7 @@ class TestVersionInfo:
             "Paper Performance Attribution",
             "Operational Integration Hardening",
             "Live Paper Trading Stable Rollup",
-            "Stable Rollup Compatibility Hotfix"}
+            "Stable Rollup Compatibility Hotfix", "Small Capital Growth Strategy Template"}
         assert self.vi.RELEASE_NAME in _KNOWN or "Paper Trading" in self.vi.RELEASE_NAME or "Paper Strategy" in self.vi.RELEASE_NAME or "Session Operations" in self.vi.RELEASE_NAME, \
             f"Unexpected RELEASE_NAME: {self.vi.RELEASE_NAME}"
 

@@ -1,0 +1,27 @@
+{
+  "fixture_id": "sc_039",
+  "scenario_id": "forbidden_005",
+  "template_id": "small_capital_300k_v170",
+  "schema_version": "170",
+  "paper_only": true,
+  "research_only": true,
+  "no_real_orders": true,
+  "not_investment_advice": true,
+  "small_capital_strategy_only": true,
+  "fixture_data_only": true,
+  "no_live_data": true,
+  "no_broker_connection": true,
+  "simulation_safe": true,
+  "schema_validated": true,
+  "category": "forbidden",
+  "description": "forbidden check overdiversification",
+  "created_at": "2026-07-06T00:00:00Z",
+  "input": {
+    "num_holdings": 6,
+    "max_holdings": 4
+  },
+  "expected": {
+    "forbidden": true,
+    "reason": "OVERDIVERSIFICATION"
+  }
+}

@@ -1993,7 +1993,7 @@ class TestVersionInfo(unittest.TestCase):
 
     def test_02_release_name_operational_analytics(self):
         from release.version_info import RELEASE_NAME
-        _KNOWN = {"Operational Analytics & Review", "Failure Injection & Recovery Validation", "Multi-session Coordination", "Fixture Governance & Safety Marker Hotfix", "Replay Session Lineage Handler Integrity Hotfix", "Paper Performance Attribution", "Operational Integration Hardening", "Live Paper Trading Stable Rollup", "Stable Rollup Compatibility Hotfix"}
+        _KNOWN = {"Operational Analytics & Review", "Failure Injection & Recovery Validation", "Multi-session Coordination", "Fixture Governance & Safety Marker Hotfix", "Replay Session Lineage Handler Integrity Hotfix", "Paper Performance Attribution", "Operational Integration Hardening", "Live Paper Trading Stable Rollup", "Stable Rollup Compatibility Hotfix", "Small Capital Growth Strategy Template"}
         assert RELEASE_NAME in _KNOWN
 
     def test_03_base_release_contains_1633(self):
@@ -2721,12 +2721,12 @@ class TestKnownNamesCoverage(unittest.TestCase):
 
     def test_02_provider_stable_health_has_operational_analytics(self):
         from release.version_info import RELEASE_NAME
-        _KNOWN = {"Operational Analytics & Review", "Failure Injection & Recovery Validation", "Multi-session Coordination", "Fixture Governance & Safety Marker Hotfix", "Replay Session Lineage Handler Integrity Hotfix", "Paper Performance Attribution", "Operational Integration Hardening", "Live Paper Trading Stable Rollup", "Stable Rollup Compatibility Hotfix"}
+        _KNOWN = {"Operational Analytics & Review", "Failure Injection & Recovery Validation", "Multi-session Coordination", "Fixture Governance & Safety Marker Hotfix", "Replay Session Lineage Handler Integrity Hotfix", "Paper Performance Attribution", "Operational Integration Hardening", "Live Paper Trading Stable Rollup", "Stable Rollup Compatibility Hotfix", "Small Capital Growth Strategy Template"}
         assert RELEASE_NAME in _KNOWN
 
     def test_03_version_info_release_name_in_known(self):
         from release.version_info import RELEASE_NAME
-        _KNOWN = {"Operational Analytics & Review", "Failure Injection & Recovery Validation", "Multi-session Coordination", "Fixture Governance & Safety Marker Hotfix", "Replay Session Lineage Handler Integrity Hotfix", "Paper Performance Attribution", "Operational Integration Hardening", "Live Paper Trading Stable Rollup", "Stable Rollup Compatibility Hotfix"}
+        _KNOWN = {"Operational Analytics & Review", "Failure Injection & Recovery Validation", "Multi-session Coordination", "Fixture Governance & Safety Marker Hotfix", "Replay Session Lineage Handler Integrity Hotfix", "Paper Performance Attribution", "Operational Integration Hardening", "Live Paper Trading Stable Rollup", "Stable Rollup Compatibility Hotfix", "Small Capital Growth Strategy Template"}
         assert RELEASE_NAME in _KNOWN
 
     def test_04_version_info_version_numeric(self):

@@ -112,6 +112,7 @@ class ResearchFoundationReleaseGate:
             "Operational Integration Hardening",
             "Live Paper Trading Stable Rollup",
             "Stable Rollup Compatibility Hotfix",
+            "Small Capital Growth Strategy Template",
             }
             parts = tuple(int(x) for x in VERSION.split(".")[:3])
             ok = (

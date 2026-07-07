@@ -1,0 +1,31 @@
+{
+  "fixture_id": "sc_044",
+  "scenario_id": "watchlist_002",
+  "template_id": "small_capital_300k_v170",
+  "schema_version": "170",
+  "paper_only": true,
+  "research_only": true,
+  "no_real_orders": true,
+  "not_investment_advice": true,
+  "small_capital_strategy_only": true,
+  "fixture_data_only": true,
+  "no_live_data": true,
+  "no_broker_connection": true,
+  "simulation_safe": true,
+  "schema_validated": true,
+  "category": "watchlist",
+  "description": "watchlist filter small capital liquidity",
+  "created_at": "2026-07-06T00:00:00Z",
+  "input": {
+    "candidates": [
+      {
+        "symbol": "2330",
+        "liquidity_score": 0.8,
+        "risk_score": 0.3
+      }
+    ]
+  },
+  "expected": {
+    "filtered_count": 1
+  }
+}

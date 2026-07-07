@@ -37,6 +37,9 @@ KNOWN_RELEASE_NAMES = frozenset({
     "Position Sizing Foundation",
     "Portfolio Research Foundation",
     "Provider Stable Rollup",
+    "Live Paper Trading Stable Rollup",
+    "Stable Rollup Compatibility Hotfix",
+    "Small Capital Growth Strategy Template",
 })
 
 ACCEPTED_MINIMUM_VERSION = "1.6.7"

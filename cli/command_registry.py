@@ -3986,6 +3986,87 @@ _STABLE_ROLLUP_COMMANDS: _List[CommandSpec] = [
                 introduced_in="1.6.9", safety_classification="RESEARCH_ONLY"),
 ]
 
+# ---------------------------------------------------------------------------
+# v1.7.0 Small Capital Growth Strategy Template commands
+# ---------------------------------------------------------------------------
+_SMALL_CAPITAL_STRATEGY_COMMANDS: _List[CommandSpec] = [
+    CommandSpec(name="small-capital-version", handler_name="cmd_small_capital_version",
+                help="[Research] Show small capital strategy version info v1.7.0", group="small_capital_strategy",
+                introduced_in="1.7.0", safety_classification="RESEARCH_ONLY"),
+    CommandSpec(name="small-capital-safety", handler_name="cmd_small_capital_safety",
+                help="[Research] Show small capital strategy safety flags v1.7.0", group="small_capital_strategy",
+                introduced_in="1.7.0", safety_classification="RESEARCH_ONLY"),
+    CommandSpec(name="small-capital-capital-profile", handler_name="cmd_small_capital_capital_profile",
+                help="[Research] Show 300k capital profile v1.7.0", group="small_capital_strategy",
+                introduced_in="1.7.0", safety_classification="RESEARCH_ONLY"),
+    CommandSpec(name="small-capital-risk-budget", handler_name="cmd_small_capital_risk_budget",
+                help="[Research] Compute risk budget for 300k template v1.7.0", group="small_capital_strategy",
+                introduced_in="1.7.0", safety_classification="RESEARCH_ONLY"),
+    CommandSpec(name="small-capital-allocation", handler_name="cmd_small_capital_allocation",
+                help="[Research] Show allocation template for regime v1.7.0", group="small_capital_strategy",
+                introduced_in="1.7.0", safety_classification="RESEARCH_ONLY"),
+    CommandSpec(name="small-capital-position-sizing", handler_name="cmd_small_capital_position_sizing",
+                help="[Research] Compute position size (paper) v1.7.0", group="small_capital_strategy",
+                introduced_in="1.7.0", safety_classification="RESEARCH_ONLY"),
+    CommandSpec(name="small-capital-watchlist", handler_name="cmd_small_capital_watchlist",
+                help="[Research] Show watchlist profile and ranking v1.7.0", group="small_capital_strategy",
+                introduced_in="1.7.0", safety_classification="RESEARCH_ONLY"),
+    CommandSpec(name="small-capital-theme-filter", handler_name="cmd_small_capital_theme_filter",
+                help="[Research] Filter candidates by theme strength v1.7.0", group="small_capital_strategy",
+                introduced_in="1.7.0", safety_classification="RESEARCH_ONLY"),
+    CommandSpec(name="small-capital-market-regime", handler_name="cmd_small_capital_market_regime",
+                help="[Research] Show market regime control parameters v1.7.0", group="small_capital_strategy",
+                introduced_in="1.7.0", safety_classification="RESEARCH_ONLY"),
+    CommandSpec(name="small-capital-buy-point-a", handler_name="cmd_small_capital_buy_point_a",
+                help="[Research] Check A buy point (10MA pullback) v1.7.0", group="small_capital_strategy",
+                introduced_in="1.7.0", safety_classification="RESEARCH_ONLY"),
+    CommandSpec(name="small-capital-buy-point-b", handler_name="cmd_small_capital_buy_point_b",
+                help="[Research] Check B buy point (platform breakout) v1.7.0", group="small_capital_strategy",
+                introduced_in="1.7.0", safety_classification="RESEARCH_ONLY"),
+    CommandSpec(name="small-capital-buy-point-c", handler_name="cmd_small_capital_buy_point_c",
+                help="[Research] Check C buy point (20MA reclaim) v1.7.0", group="small_capital_strategy",
+                introduced_in="1.7.0", safety_classification="RESEARCH_ONLY"),
+    CommandSpec(name="small-capital-abc-evaluate", handler_name="cmd_small_capital_abc_evaluate",
+                help="[Research] Evaluate all A/B/C buy points v1.7.0", group="small_capital_strategy",
+                introduced_in="1.7.0", safety_classification="RESEARCH_ONLY"),
+    CommandSpec(name="small-capital-entry-plan", handler_name="cmd_small_capital_entry_plan",
+                help="[Research] Build entry plan (paper) v1.7.0", group="small_capital_strategy",
+                introduced_in="1.7.0", safety_classification="RESEARCH_ONLY"),
+    CommandSpec(name="small-capital-exit-plan", handler_name="cmd_small_capital_exit_plan",
+                help="[Research] Build exit plan (paper) v1.7.0", group="small_capital_strategy",
+                introduced_in="1.7.0", safety_classification="RESEARCH_ONLY"),
+    CommandSpec(name="small-capital-stop-loss", handler_name="cmd_small_capital_stop_loss",
+                help="[Research] Build stop loss plan (paper) v1.7.0", group="small_capital_strategy",
+                introduced_in="1.7.0", safety_classification="RESEARCH_ONLY"),
+    CommandSpec(name="small-capital-take-profit", handler_name="cmd_small_capital_take_profit",
+                help="[Research] Build take profit plan (paper) v1.7.0", group="small_capital_strategy",
+                introduced_in="1.7.0", safety_classification="RESEARCH_ONLY"),
+    CommandSpec(name="small-capital-forbidden-checks", handler_name="cmd_small_capital_forbidden_checks",
+                help="[Research] Run all forbidden trade checks v1.7.0", group="small_capital_strategy",
+                introduced_in="1.7.0", safety_classification="RESEARCH_ONLY"),
+    CommandSpec(name="small-capital-cash-control", handler_name="cmd_small_capital_cash_control",
+                help="[Research] Show cash control plan v1.7.0", group="small_capital_strategy",
+                introduced_in="1.7.0", safety_classification="RESEARCH_ONLY"),
+    CommandSpec(name="small-capital-scorecard", handler_name="cmd_small_capital_scorecard",
+                help="[Research] Compute small capital scorecard v1.7.0", group="small_capital_strategy",
+                introduced_in="1.7.0", safety_classification="RESEARCH_ONLY"),
+    CommandSpec(name="small-capital-report", handler_name="cmd_small_capital_report",
+                help="[Research] Generate small capital strategy report v1.7.0", group="small_capital_strategy",
+                introduced_in="1.7.0", safety_classification="RESEARCH_ONLY"),
+    CommandSpec(name="small-capital-simulation", handler_name="cmd_small_capital_simulation",
+                help="[Research] Run paper simulation v1.7.0", group="small_capital_strategy",
+                introduced_in="1.7.0", safety_classification="RESEARCH_ONLY"),
+    CommandSpec(name="small-capital-scenarios", handler_name="cmd_small_capital_scenarios",
+                help="[Research] List small capital strategy scenarios v1.7.0", group="small_capital_strategy",
+                introduced_in="1.7.0", safety_classification="RESEARCH_ONLY"),
+    CommandSpec(name="small-capital-health", handler_name="cmd_small_capital_health",
+                help="[Research] Run small capital strategy health check (80+) v1.7.0", group="small_capital_strategy",
+                introduced_in="1.7.0", safety_classification="RESEARCH_ONLY"),
+    CommandSpec(name="small-capital-gate", handler_name="cmd_small_capital_gate",
+                help="[Research] Run small capital strategy release gate (70+) v1.7.0", group="small_capital_strategy",
+                introduced_in="1.7.0", safety_classification="RESEARCH_ONLY"),
+]
+
 PROVIDER_COMMANDS: _List[CommandSpec] = (
     _RESEARCH_FOUNDATION_COMMANDS
     + _TWSE_COMMANDS
@@ -4014,6 +4095,7 @@ PROVIDER_COMMANDS: _List[CommandSpec] = (
     + _PAPER_ATTRIBUTION_COMMANDS
     + _OPERATIONAL_INTEGRATION_COMMANDS
     + _STABLE_ROLLUP_COMMANDS
+    + _SMALL_CAPITAL_STRATEGY_COMMANDS
 )
 
 

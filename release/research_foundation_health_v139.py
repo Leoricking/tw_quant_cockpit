@@ -109,6 +109,7 @@ class ResearchFoundationStableHealthCheck:
             "Operational Integration Hardening",
             "Live Paper Trading Stable Rollup",
             "Stable Rollup Compatibility Hotfix",
+            "Small Capital Growth Strategy Template",
             }
             ok = RELEASE_NAME in _KNOWN_NAMES
             checks["release_name_correct"] = ("PASS" if ok else "FAIL", f"RELEASE_NAME={RELEASE_NAME}")

@@ -174,7 +174,7 @@ class TestSafetyInvariants:
     def test_version_131(self):
         from release.version_info import VERSION
         # v1.4.0 supersedes v1.3.x; accept 1.3.x, 1.4.x, or 1.5.x
-        assert VERSION.startswith("1.3.") or VERSION.startswith("1.4.") or VERSION.startswith("1.5.") or VERSION.startswith("1.6."), f"Expected 1.3.x-1.6.x, got {VERSION}"
+        assert VERSION.startswith("1.3.") or VERSION.startswith("1.4.") or VERSION.startswith("1.5.") or VERSION.startswith("1.6.") or VERSION.startswith("1.7."), f"Expected 1.3.x-1.6.x, got {VERSION}"
 
     def test_replay_stable_baseline_129(self):
         from release.version_info import REPLAY_STABLE_BASELINE

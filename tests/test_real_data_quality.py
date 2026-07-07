@@ -734,7 +734,7 @@ class TestVersionInfo:
     def test_version_130(self):
         from release import version_info
         # v1.4.0 supersedes v1.3.x; accept 1.3.x, 1.4.x, or 1.5.x
-        assert version_info.VERSION.startswith("1.3.") or version_info.VERSION.startswith("1.4.") or version_info.VERSION.startswith("1.5.") or version_info.VERSION.startswith("1.6."), f"Expected 1.3.x-1.6.x, got {version_info.VERSION}"
+        assert version_info.VERSION.startswith("1.3.") or version_info.VERSION.startswith("1.4.") or version_info.VERSION.startswith("1.5.") or version_info.VERSION.startswith("1.6.") or version_info.VERSION.startswith("1.7."), f"Expected 1.3.x-1.6.x, got {version_info.VERSION}"
 
     def test_real_no_mock_fallback(self):
         from release import version_info
@@ -805,6 +805,7 @@ class TestVersionInfo:
             "Operational Integration Hardening",
             "Live Paper Trading Stable Rollup",
             "Stable Rollup Compatibility Hotfix",
+            "Small Capital Growth Strategy Template",
         ), f"Unexpected release name: {version_info.RELEASE_NAME}"
 
     def test_release_track(self):

@@ -1566,7 +1566,7 @@ class TestVersionInfo(unittest.TestCase):
         from release.version_info import VERSION
         # v1.4.6 feature; accept hotfix and successor releases
         self.assertTrue(
-            VERSION[:5] in ("1.4.6", "1.4.7") or VERSION.startswith("1.4.") or VERSION.startswith("1.5.") or VERSION.startswith("1.6."),
+            VERSION[:5] in ("1.4.6", "1.4.7") or VERSION.startswith("1.4.") or VERSION.startswith("1.5.") or VERSION.startswith("1.6.") or VERSION.startswith("1.7."),
             msg=f"Expected 1.4.x-1.6.x release, got {VERSION}"
         )
 
@@ -1605,6 +1605,7 @@ class TestVersionInfo(unittest.TestCase):
             "Operational Integration Hardening",
             "Live Paper Trading Stable Rollup",
             "Stable Rollup Compatibility Hotfix",
+            "Small Capital Growth Strategy Template",
         )
         self.assertTrue(
             any(name in RELEASE_NAME for name in _KNOWN),

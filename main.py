@@ -38020,6 +38020,254 @@ def cmd_stable_rollup_gate(args=None):
     print(_STABLE_ROLLUP_BANNER)
 
 
+_SMALL_CAPITAL_BANNER = "[!] Research Only. Paper Only. No Real Orders. Not Investment Advice."
+
+
+def cmd_small_capital_version(args=None):
+    """[v1.7.0] Show small capital strategy version info. Research only."""
+    print(_SMALL_CAPITAL_BANNER)
+    from paper_trading.small_capital_strategy.version_v170 import get_version_info
+    info = get_version_info()
+    print(f"Small Capital Growth Strategy Template v{info['version']} — {info['release_name']}")
+    print(_SMALL_CAPITAL_BANNER)
+
+
+def cmd_small_capital_safety(args=None):
+    """[v1.7.0] Audit small capital safety flags. Research only."""
+    print(_SMALL_CAPITAL_BANNER)
+    from paper_trading.small_capital_strategy.safety_v170 import audit_safety
+    result = audit_safety()
+    print(f"Safety audit: all_safe={result['all_safe']}")
+    print(_SMALL_CAPITAL_BANNER)
+
+
+def cmd_small_capital_capital_profile(args=None):
+    """[v1.7.0] Show 300K capital profile. Research only."""
+    print(_SMALL_CAPITAL_BANNER)
+    from paper_trading.small_capital_strategy.capital_profile_v170 import get_300k_template
+    p = get_300k_template()
+    print(f"Capital profile: {p.template_id}  capital={p.capital_twd}")
+    print(_SMALL_CAPITAL_BANNER)
+
+
+def cmd_small_capital_risk_budget(args=None):
+    """[v1.7.0] Show risk budget for 300K template. Research only."""
+    print(_SMALL_CAPITAL_BANNER)
+    from paper_trading.small_capital_strategy.capital_profile_v170 import get_300k_template
+    from paper_trading.small_capital_strategy.risk_budget_v170 import compute_risk_budget
+    budget = compute_risk_budget(get_300k_template())
+    print(f"Risk budget: max_loss_per_trade={budget.max_loss_per_trade}  risk_pct_per_trade={budget.risk_pct_per_trade}")
+    print(_SMALL_CAPITAL_BANNER)
+
+
+def cmd_small_capital_allocation(args=None):
+    """[v1.7.0] Show allocation template for BULL regime. Research only."""
+    print(_SMALL_CAPITAL_BANNER)
+    from paper_trading.small_capital_strategy.enums_v170 import MarketRegime
+    from paper_trading.small_capital_strategy.capital_profile_v170 import get_300k_template, TEMPLATE_300K_ID
+    from paper_trading.small_capital_strategy.allocation_template_v170 import get_allocation_for_regime
+    p = get_300k_template()
+    alloc = get_allocation_for_regime(MarketRegime.BULL, TEMPLATE_300K_ID, p.capital_twd)
+    print(f"Allocation BULL: cash_pct={alloc.cash_pct}  total_invested={alloc.total_invested_pct}")
+    print(_SMALL_CAPITAL_BANNER)
+
+
+def cmd_small_capital_position_sizing(args=None):
+    """[v1.7.0] Compute position size for 300K template. Research only."""
+    print(_SMALL_CAPITAL_BANNER)
+    from paper_trading.small_capital_strategy.enums_v170 import AllocationBucket
+    from paper_trading.small_capital_strategy.position_sizing_v170 import compute_position_size, PositionSizingInput
+    inp = PositionSizingInput(
+        symbol="--", capital_twd=300000.0, max_loss_amount=3000.0,
+        stop_loss_pct=0.06, bucket=AllocationBucket.MAIN_THEME_SWING, bucket_remaining_budget=105000.0,
+    )
+    sizing = compute_position_size(inp)
+    print(f"Position size: {sizing.position_size_twd}  status={sizing.status}")
+    print(_SMALL_CAPITAL_BANNER)
+
+
+def cmd_small_capital_watchlist(args=None):
+    """[v1.7.0] Show default watchlist profile. Research only."""
+    print(_SMALL_CAPITAL_BANNER)
+    from paper_trading.small_capital_strategy.watchlist_profile_v170 import create_default_watchlist_profile
+    wp = create_default_watchlist_profile()
+    print(f"Watchlist profile: paper_only={wp.paper_only}")
+    print(_SMALL_CAPITAL_BANNER)
+
+
+def cmd_small_capital_theme_filter(args=None):
+    """[v1.7.0] Show theme filter config. Research only."""
+    print(_SMALL_CAPITAL_BANNER)
+    from paper_trading.small_capital_strategy.theme_filter_v170 import get_default_theme_filter
+    tf = get_default_theme_filter()
+    print(f"Theme filter: paper_only={tf.paper_only}")
+    print(_SMALL_CAPITAL_BANNER)
+
+
+def cmd_small_capital_market_regime(args=None):
+    """[v1.7.0] Show market regime controls. Research only."""
+    print(_SMALL_CAPITAL_BANNER)
+    from paper_trading.small_capital_strategy.enums_v170 import MarketRegime
+    from paper_trading.small_capital_strategy.market_regime_filter_v170 import get_regime_control, is_trade_allowed_in_regime
+    for regime in [MarketRegime.BULL, MarketRegime.BEAR]:
+        allowed = is_trade_allowed_in_regime(regime)
+        print(f"  {regime.value}: trade_allowed={allowed}")
+    print(_SMALL_CAPITAL_BANNER)
+
+
+def cmd_small_capital_buy_point_a(args=None):
+    """[v1.7.0] Show A buy point (10MA pullback) rules. Research only."""
+    print(_SMALL_CAPITAL_BANNER)
+    from paper_trading.small_capital_strategy.enums_v170 import BuyPointType
+    print(f"Buy point A: {BuyPointType.A_10MA_PULLBACK.value}")
+    print(_SMALL_CAPITAL_BANNER)
+
+
+def cmd_small_capital_buy_point_b(args=None):
+    """[v1.7.0] Show B buy point (platform breakout) rules. Research only."""
+    print(_SMALL_CAPITAL_BANNER)
+    from paper_trading.small_capital_strategy.enums_v170 import BuyPointType
+    print(f"Buy point B: {BuyPointType.B_PLATFORM_BREAKOUT.value}")
+    print(_SMALL_CAPITAL_BANNER)
+
+
+def cmd_small_capital_buy_point_c(args=None):
+    """[v1.7.0] Show C buy point (20MA reclaim) rules. Research only."""
+    print(_SMALL_CAPITAL_BANNER)
+    from paper_trading.small_capital_strategy.enums_v170 import BuyPointType
+    print(f"Buy point C: {BuyPointType.C_20MA_RECLAIM.value}")
+    print(_SMALL_CAPITAL_BANNER)
+
+
+def cmd_small_capital_abc_evaluate(args=None):
+    """[v1.7.0] Evaluate all A/B/C buy points. Research only."""
+    print(_SMALL_CAPITAL_BANNER)
+    from paper_trading.small_capital_strategy.abc_buy_point_v170 import evaluate_all_abc
+    print("A/B/C evaluation: research mode only — provide symbol and signal data via API.")
+    print(_SMALL_CAPITAL_BANNER)
+
+
+def cmd_small_capital_entry_plan(args=None):
+    """[v1.7.0] Show entry plan builder. Research only."""
+    print(_SMALL_CAPITAL_BANNER)
+    print("Entry plan: research mode only — provide symbol and parameters via API.")
+    print(_SMALL_CAPITAL_BANNER)
+
+
+def cmd_small_capital_exit_plan(args=None):
+    """[v1.7.0] Show exit plan rules summary. Research only."""
+    print(_SMALL_CAPITAL_BANNER)
+    from paper_trading.small_capital_strategy.exit_plan_v170 import get_exit_rules_summary
+    summary = get_exit_rules_summary("SWING")
+    print(f"Exit plan rules: {list(summary.keys())}")
+    print(_SMALL_CAPITAL_BANNER)
+
+
+def cmd_small_capital_stop_loss(args=None):
+    """[v1.7.0] Show stop loss plan types. Research only."""
+    print(_SMALL_CAPITAL_BANNER)
+    from paper_trading.small_capital_strategy.enums_v170 import StopLossType
+    for t in StopLossType:
+        print(f"  Stop loss type: {t.value}")
+    print(_SMALL_CAPITAL_BANNER)
+
+
+def cmd_small_capital_take_profit(args=None):
+    """[v1.7.0] Show take profit plan types. Research only."""
+    print(_SMALL_CAPITAL_BANNER)
+    from paper_trading.small_capital_strategy.enums_v170 import TakeProfitType
+    for t in TakeProfitType:
+        print(f"  Take profit type: {t.value}")
+    print(_SMALL_CAPITAL_BANNER)
+
+
+def cmd_small_capital_forbidden_checks(args=None):
+    """[v1.7.0] Show forbidden trade checks. Research only."""
+    print(_SMALL_CAPITAL_BANNER)
+    from paper_trading.small_capital_strategy.forbidden_trade_rules_v170 import run_all_forbidden_checks, get_permission_status
+    from paper_trading.small_capital_strategy.enums_v170 import ThemeStrength
+    ctx = {
+        "margin_requested": False, "is_day_trading_primary": False,
+        "financing_overheated": False, "real_order_requested": False,
+        "broker_requested": False, "stop_loss_price": 470.0,
+        "current_holdings": 0, "max_holdings": 4,
+        "theme_strength": ThemeStrength.STRONG.value, "close_gt_ma20": True, "close_gt_ma60": True,
+        "current_cash_pct": 0.30, "required_cash_min_pct": 0.20,
+        "position_risk_twd": 0.0, "risk_budget_twd": 3000.0,
+    }
+    checks = run_all_forbidden_checks("--", ctx)
+    status = get_permission_status(checks)
+    print(f"Forbidden checks: {len(checks)} checks  permission_status={status.value}")
+    print(_SMALL_CAPITAL_BANNER)
+
+
+def cmd_small_capital_cash_control(args=None):
+    """[v1.7.0] Show cash control plan for BULL regime. Research only."""
+    print(_SMALL_CAPITAL_BANNER)
+    from paper_trading.small_capital_strategy.enums_v170 import MarketRegime
+    from paper_trading.small_capital_strategy.cash_control_v170 import get_cash_control_plan
+    plan = get_cash_control_plan(MarketRegime.BULL, 300000.0)
+    print(f"Cash control BULL: min_cash_pct={plan.min_cash_pct}  target_cash_pct={plan.target_cash_pct}")
+    print(_SMALL_CAPITAL_BANNER)
+
+
+def cmd_small_capital_scorecard(args=None):
+    """[v1.7.0] Show scorecard weights. Research only."""
+    print(_SMALL_CAPITAL_BANNER)
+    from paper_trading.small_capital_strategy.small_capital_scorecard_v170 import SCORE_WEIGHTS
+    print(f"Scorecard weights (sum={sum(SCORE_WEIGHTS.values())}): {SCORE_WEIGHTS}")
+    print(_SMALL_CAPITAL_BANNER)
+
+
+def cmd_small_capital_report(args=None):
+    """[v1.7.0] Generate strategy report. Research only."""
+    print(_SMALL_CAPITAL_BANNER)
+    from paper_trading.small_capital_strategy.capital_profile_v170 import TEMPLATE_300K_ID
+    from paper_trading.small_capital_strategy.small_capital_scorecard_v170 import compute_scorecard, SCORE_WEIGHTS
+    from paper_trading.small_capital_strategy.strategy_report_v170 import build_report, get_section_names
+    sc = compute_scorecard(TEMPLATE_300K_ID, {k: 0.8 for k in SCORE_WEIGHTS})
+    report = build_report(TEMPLATE_300K_ID, sc)
+    print(f"Report sections: {get_section_names()}")
+    print(_SMALL_CAPITAL_BANNER)
+
+
+def cmd_small_capital_simulation(args=None):
+    """[v1.7.0] Show paper simulation safety summary. Research only."""
+    print(_SMALL_CAPITAL_BANNER)
+    from paper_trading.small_capital_strategy.paper_simulation_bridge_v170 import get_simulation_safety_summary
+    summary = get_simulation_safety_summary()
+    sim_keys = list(summary.keys())
+    print(f"Simulation safety: paper_only={summary['paper_only']}  keys={sim_keys}")
+    print(_SMALL_CAPITAL_BANNER)
+
+
+def cmd_small_capital_scenarios(args=None):
+    """[v1.7.0] Show scenario registry summary. Research only."""
+    print(_SMALL_CAPITAL_BANNER)
+    from paper_trading.small_capital_strategy.scenario_registry_v170 import SCENARIO_REGISTRY
+    cats = sorted(set(s["category"] for s in SCENARIO_REGISTRY))
+    print(f"Scenarios: {len(SCENARIO_REGISTRY)} total  categories={cats}")
+    print(_SMALL_CAPITAL_BANNER)
+
+
+def cmd_small_capital_health(args=None):
+    """[v1.7.0] Run small capital health check. Research only."""
+    print(_SMALL_CAPITAL_BANNER)
+    from paper_trading.small_capital_strategy.health_v170 import run_health_check
+    result = run_health_check()
+    print(f"Health: all_passed={result['all_passed']}  passed={result['passed']}/{result['total']}  failed={result['failed']}")
+    print(_SMALL_CAPITAL_BANNER)
+
+
+def cmd_small_capital_gate(args=None):
+    """[v1.7.0] Run small capital release gate. Research only."""
+    print(_SMALL_CAPITAL_BANNER)
+    from release.small_capital_growth_strategy_release_gate_v170 import run_release_gate
+    result = run_release_gate()
+    print(f"Gate v{result['gate_version']}: gate_passed={result['gate_passed']}  total={result['total_count']}  failed={result['failed_count']}")
+    print(_SMALL_CAPITAL_BANNER)
+
+
 def cmd_paper_strategy_health(args=None):
     """[v1.6.2] Paper strategy orchestration health check. Research only."""
     print(_STRATEGY_SAFETY_BANNER)
@@ -40006,6 +40254,31 @@ def main() -> None:
         "stable-rollup-migration-readiness": cmd_stable_rollup_migration_readiness,
         "stable-rollup-safety-audit":     cmd_stable_rollup_safety_audit,
         "stable-rollup-gate":             cmd_stable_rollup_gate,
+        "small-capital-version":          cmd_small_capital_version,
+        "small-capital-safety":           cmd_small_capital_safety,
+        "small-capital-capital-profile":  cmd_small_capital_capital_profile,
+        "small-capital-risk-budget":      cmd_small_capital_risk_budget,
+        "small-capital-allocation":       cmd_small_capital_allocation,
+        "small-capital-position-sizing":  cmd_small_capital_position_sizing,
+        "small-capital-watchlist":        cmd_small_capital_watchlist,
+        "small-capital-theme-filter":     cmd_small_capital_theme_filter,
+        "small-capital-market-regime":    cmd_small_capital_market_regime,
+        "small-capital-buy-point-a":      cmd_small_capital_buy_point_a,
+        "small-capital-buy-point-b":      cmd_small_capital_buy_point_b,
+        "small-capital-buy-point-c":      cmd_small_capital_buy_point_c,
+        "small-capital-abc-evaluate":     cmd_small_capital_abc_evaluate,
+        "small-capital-entry-plan":       cmd_small_capital_entry_plan,
+        "small-capital-exit-plan":        cmd_small_capital_exit_plan,
+        "small-capital-stop-loss":        cmd_small_capital_stop_loss,
+        "small-capital-take-profit":      cmd_small_capital_take_profit,
+        "small-capital-forbidden-checks": cmd_small_capital_forbidden_checks,
+        "small-capital-cash-control":     cmd_small_capital_cash_control,
+        "small-capital-scorecard":        cmd_small_capital_scorecard,
+        "small-capital-report":           cmd_small_capital_report,
+        "small-capital-simulation":       cmd_small_capital_simulation,
+        "small-capital-scenarios":        cmd_small_capital_scenarios,
+        "small-capital-health":           cmd_small_capital_health,
+        "small-capital-gate":             cmd_small_capital_gate,
     }
 
     if args.command is None:

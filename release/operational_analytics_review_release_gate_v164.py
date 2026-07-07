@@ -63,6 +63,7 @@ _KNOWN_NAMES = {
     "Operational Integration Hardening",
     "Live Paper Trading Stable Rollup",
     "Stable Rollup Compatibility Hotfix",
+    "Small Capital Growth Strategy Template",
 }
 
 

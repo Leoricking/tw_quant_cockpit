@@ -1239,6 +1239,7 @@ def test_release_name_141():
             "Operational Integration Hardening",
             "Live Paper Trading Stable Rollup",
             "Stable Rollup Compatibility Hotfix",
+            "Small Capital Growth Strategy Template",
     )
     assert RELEASE_NAME in _KNOWN, f"Unexpected release name: {RELEASE_NAME}"
 

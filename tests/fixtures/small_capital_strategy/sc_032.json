@@ -1,0 +1,26 @@
+{
+  "fixture_id": "sc_032",
+  "scenario_id": "buy_points_006",
+  "template_id": "small_capital_300k_v170",
+  "schema_version": "170",
+  "paper_only": true,
+  "research_only": true,
+  "no_real_orders": true,
+  "not_investment_advice": true,
+  "small_capital_strategy_only": true,
+  "fixture_data_only": true,
+  "no_live_data": true,
+  "no_broker_connection": true,
+  "simulation_safe": true,
+  "schema_validated": true,
+  "category": "buy_points",
+  "description": "C buy point no first wave blocked",
+  "created_at": "2026-07-06T00:00:00Z",
+  "input": {
+    "buy_point_type": "C_20MA_RECLAIM",
+    "had_first_wave": false
+  },
+  "expected": {
+    "valid": false
+  }
+}

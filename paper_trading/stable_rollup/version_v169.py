@@ -41,6 +41,8 @@ KNOWN_RELEASE_NAMES: frozenset = frozenset({
     "Portfolio Research Foundation",
     "Provider Stable Rollup",
     "Warning Clean Hotfix",
+    "Stable Rollup Compatibility Hotfix",
+    "Small Capital Growth Strategy Template",
 })
 
 

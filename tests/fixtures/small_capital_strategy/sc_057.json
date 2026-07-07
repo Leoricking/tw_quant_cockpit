@@ -1,0 +1,27 @@
+{
+  "fixture_id": "sc_057",
+  "scenario_id": "reports_002",
+  "template_id": "small_capital_300k_v170",
+  "schema_version": "170",
+  "paper_only": true,
+  "research_only": true,
+  "no_real_orders": true,
+  "not_investment_advice": true,
+  "small_capital_strategy_only": true,
+  "fixture_data_only": true,
+  "no_live_data": true,
+  "no_broker_connection": true,
+  "simulation_safe": true,
+  "schema_validated": true,
+  "category": "reports",
+  "description": "report to json",
+  "created_at": "2026-07-06T00:00:00Z",
+  "input": {
+    "template_id": "small_capital_300k_v170",
+    "score": 85.0
+  },
+  "expected": {
+    "valid_json": true,
+    "has_template_id": true
+  }
+}

@@ -62,6 +62,7 @@ _KNOWN_NAMES = {
     "Operational Integration Hardening",
     "Live Paper Trading Stable Rollup",
     "Stable Rollup Compatibility Hotfix",
+    "Small Capital Growth Strategy Template",
 }
 
 
@@ -493,7 +494,7 @@ class PaperStrategyOrchestrationReleaseGate:
             assert AUTONOMOUS_PRODUCTION_STRATEGY_ENABLED is False
             assert REAL_STRATEGY_EXECUTION_ENABLED is False
             from release.version_info import VERSION, RELEASE_NAME
-            assert VERSION.startswith("1.6"), f"Expected 1.6.x, got {VERSION}"
+            assert VERSION.startswith("1.6") or VERSION.startswith("1.7"), f"Expected 1.6.x or 1.7.x, got {VERSION}"
             assert RELEASE_NAME in _KNOWN_NAMES, f"Unknown RELEASE_NAME: {RELEASE_NAME}"
         _try("NO_PRODUCTION_TRADING", _no_production)
 
