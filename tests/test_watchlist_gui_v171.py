@@ -24,12 +24,12 @@ from gui.small_capital_strategy_panel import (
 
 def test_panel_version_171():
     # Panel updated to v1.7.2 to include ABC execution tabs
-    assert PANEL_VERSION == "1.7.2"
+    assert PANEL_VERSION == "1.7.3"
 
 
 def test_total_tab_count():
     tabs = get_tab_names()
-    assert len(tabs) == 55  # 22 v1.7.0 + 15 v1.7.1 + 18 v1.7.2
+    assert len(tabs) == 69  # 22 v1.7.0 + 15 v1.7.1 + 18 v1.7.2
 
 
 def test_watchlist_tab_count():

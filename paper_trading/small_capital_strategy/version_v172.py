@@ -21,6 +21,7 @@ MIN_GATE        = 70
 ACCEPTED_MINIMUM_VERSION = "1.7.1"
 
 KNOWN_RELEASE_NAMES: frozenset = frozenset({
+    "Market Regime Position Control",
     "A/B/C Buy Point Execution Plan",
     "Watchlist Strategy Layer",
     "Small Capital Growth Strategy Template",

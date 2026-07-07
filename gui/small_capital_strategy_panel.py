@@ -2,16 +2,17 @@
 gui/small_capital_strategy_panel.py
 GUI panel for Small Capital Growth Strategy Template v1.7.0 +
 Watchlist Strategy Layer v1.7.1 +
-A/B/C Buy Point Execution Plan v1.7.2.
+A/B/C Buy Point Execution Plan v1.7.2 +
+Market Regime Position Control v1.7.3.
 [!] Research Only. Paper Only. No Real Orders. Not Investment Advice.
 Headless-safe: no tkinter at module level. Renders to dict.
-22 v1.7.0 tabs + 15 watchlist tabs + 18 abc tabs = 55 tabs total.
+22 v1.7.0 tabs + 15 watchlist tabs + 18 abc tabs + 14 regime tabs = 69 tabs total.
 """
 from __future__ import annotations
 from typing import Any, Dict, List, Optional
 
-PANEL_VERSION = "1.7.2"
-PANEL_TITLE = "Small Capital Strategy v1.7.2 — A/B/C Buy Point Execution Plan"
+PANEL_VERSION = "1.7.3"
+PANEL_TITLE = "Small Capital Strategy v1.7.3 — Market Regime Position Control"
 
 # v1.7.0 tabs (preserved unchanged)
 _TABS_V170 = [
@@ -80,11 +81,30 @@ _TABS_V172_ABC = [
     "abc_safety",
 ]
 
-_TABS = _TABS_V170 + _TABS_V171_WATCHLIST + _TABS_V172_ABC
+# v1.7.3 Market Regime Position Control tabs
+_TABS_V173_REGIME = [
+    "regime_overview",
+    "regime_detection",
+    "regime_trend_filter",
+    "regime_volatility_filter",
+    "regime_breadth_filter",
+    "regime_risk_off_detection",
+    "regime_cash_ratio",
+    "regime_exposure_control",
+    "regime_bucket_adjustment",
+    "regime_candidate_permission",
+    "regime_abc_compatibility",
+    "regime_scorecard",
+    "regime_report",
+    "regime_health_gate",
+]
+
+_TABS = _TABS_V170 + _TABS_V171_WATCHLIST + _TABS_V172_ABC + _TABS_V173_REGIME
 
 assert len(_TABS_V170) == 22, f"Expected 22 v1.7.0 tabs, got {len(_TABS_V170)}"
 assert len(_TABS_V171_WATCHLIST) == 15, f"Expected 15 watchlist tabs, got {len(_TABS_V171_WATCHLIST)}"
 assert len(_TABS_V172_ABC) == 18, f"Expected 18 ABC tabs, got {len(_TABS_V172_ABC)}"
+assert len(_TABS_V173_REGIME) == 14, f"Expected 14 regime tabs, got {len(_TABS_V173_REGIME)}"
 
 
 def get_tab_names() -> List[str]:
@@ -859,6 +879,222 @@ def get_abc_tab_names() -> List[str]:
     return list(_TABS_V172_ABC)
 
 
+# ── v1.7.3 Market Regime Position Control render functions ──────────────────
+
+def render_regime_overview_tab() -> Dict[str, Any]:
+    """Render regime overview tab. v1.7.3."""
+    return {
+        "title": "Market Regime Position Control v1.7.3",
+        "paper_only": True,
+        "no_real_orders": True,
+        "not_investment_advice": True,
+        "regimes": ["BULL", "RANGE", "BEAR", "RISK_OFF", "UNKNOWN"],
+    }
+
+
+def render_regime_detection_tab() -> Dict[str, Any]:
+    """Render regime detection tab. v1.7.3."""
+    from paper_trading.small_capital_strategy.market_regime_enums_v173 import MarketRegime
+    from paper_trading.small_capital_strategy.market_regime_models_v173 import MarketRegimeInput
+    from paper_trading.small_capital_strategy.market_regime_detector_v173 import detect_market_regime
+    inp = MarketRegimeInput()
+    result = detect_market_regime(inp)
+    return {
+        "regime": result.regime.value,
+        "status": result.status.value,
+        "confidence": result.confidence,
+        "paper_only": True,
+        "no_real_orders": True,
+    }
+
+
+def render_regime_trend_filter_tab() -> Dict[str, Any]:
+    """Render regime trend filter tab. v1.7.3."""
+    from paper_trading.small_capital_strategy.market_regime_models_v173 import MarketRegimeInput
+    from paper_trading.small_capital_strategy.trend_filter_v173 import evaluate_trend_filter
+    result = evaluate_trend_filter(MarketRegimeInput())
+    return {
+        "trend_signal": result.trend_signal.value,
+        "trend_score": result.trend_score,
+        "paper_only": True,
+    }
+
+
+def render_regime_volatility_filter_tab() -> Dict[str, Any]:
+    """Render regime volatility filter tab. v1.7.3."""
+    from paper_trading.small_capital_strategy.market_regime_models_v173 import MarketRegimeInput
+    from paper_trading.small_capital_strategy.volatility_filter_v173 import evaluate_volatility_filter
+    result = evaluate_volatility_filter(MarketRegimeInput())
+    return {
+        "volatility_level": result.volatility_level.value,
+        "volatility_score": result.volatility_score,
+        "volatility_controlled": result.volatility_controlled,
+        "paper_only": True,
+    }
+
+
+def render_regime_breadth_filter_tab() -> Dict[str, Any]:
+    """Render regime breadth filter tab. v1.7.3."""
+    from paper_trading.small_capital_strategy.market_regime_models_v173 import MarketRegimeInput
+    from paper_trading.small_capital_strategy.breadth_filter_v173 import evaluate_breadth_filter
+    result = evaluate_breadth_filter(MarketRegimeInput())
+    return {
+        "breadth_signal": result.breadth_signal.value,
+        "advance_decline_ratio": result.advance_decline_ratio,
+        "breadth_healthy": result.breadth_healthy,
+        "paper_only": True,
+    }
+
+
+def render_regime_risk_off_detection_tab() -> Dict[str, Any]:
+    """Render regime risk-off detection tab. v1.7.3."""
+    from paper_trading.small_capital_strategy.market_regime_models_v173 import MarketRegimeInput
+    from paper_trading.small_capital_strategy.risk_off_detector_v173 import detect_risk_off
+    result = detect_risk_off(MarketRegimeInput())
+    return {
+        "risk_off_signal": result.risk_off_signal.value,
+        "volatility_spike": result.volatility_spike,
+        "risk_event_active": result.risk_event_active,
+        "paper_only": True,
+    }
+
+
+def render_regime_cash_ratio_tab(regime_str: str = "BULL") -> Dict[str, Any]:
+    """Render regime cash ratio tab. v1.7.3."""
+    from paper_trading.small_capital_strategy.market_regime_enums_v173 import MarketRegime
+    from paper_trading.small_capital_strategy.cash_ratio_engine_v173 import build_cash_ratio_plan
+    try:
+        regime = MarketRegime[regime_str.upper()]
+    except KeyError:
+        regime = MarketRegime.UNKNOWN
+    plan = build_cash_ratio_plan(regime)
+    return {
+        "regime": plan.regime.value,
+        "cash_pct": plan.cash_pct,
+        "total_pct": plan.total_pct,
+        "allocation_valid": plan.allocation_valid,
+        "paper_only": True,
+        "no_real_orders": True,
+    }
+
+
+def render_regime_exposure_control_tab(regime_str: str = "BULL") -> Dict[str, Any]:
+    """Render regime exposure control tab. v1.7.3."""
+    from paper_trading.small_capital_strategy.market_regime_enums_v173 import MarketRegime
+    from paper_trading.small_capital_strategy.exposure_control_engine_v173 import build_exposure_control_plan
+    try:
+        regime = MarketRegime[regime_str.upper()]
+    except KeyError:
+        regime = MarketRegime.UNKNOWN
+    plan = build_exposure_control_plan(regime)
+    return {
+        "regime": plan.regime.value,
+        "max_total_exposure_pct": plan.max_total_exposure_pct,
+        "max_single_position_pct": plan.max_single_position_pct,
+        "margin_allowed": plan.margin_allowed,
+        "leverage_allowed": plan.leverage_allowed,
+        "paper_only": True,
+    }
+
+
+def render_regime_bucket_adjustment_tab(regime_str: str = "BULL") -> Dict[str, Any]:
+    """Render regime bucket adjustment tab. v1.7.3."""
+    from paper_trading.small_capital_strategy.market_regime_enums_v173 import MarketRegime
+    from paper_trading.small_capital_strategy.bucket_adjustment_engine_v173 import build_bucket_adjustment_plan
+    try:
+        regime = MarketRegime[regime_str.upper()]
+    except KeyError:
+        regime = MarketRegime.UNKNOWN
+    plan = build_bucket_adjustment_plan(regime)
+    return {
+        "regime": plan.regime.value,
+        "capital_twd": plan.capital_twd,
+        "core_amount": plan.core_amount,
+        "cash_amount": plan.cash_amount,
+        "total_amount": plan.total_amount,
+        "paper_only": True,
+    }
+
+
+def render_regime_candidate_permission_tab(regime_str: str = "BULL") -> Dict[str, Any]:
+    """Render regime candidate permission tab. v1.7.3."""
+    from paper_trading.small_capital_strategy.market_regime_enums_v173 import MarketRegime
+    from paper_trading.small_capital_strategy.candidate_permission_engine_v173 import get_candidate_permission
+    try:
+        regime = MarketRegime[regime_str.upper()]
+    except KeyError:
+        regime = MarketRegime.UNKNOWN
+    perm = get_candidate_permission(regime, "CORE")
+    return {
+        "regime": perm.regime.value,
+        "tier": perm.tier,
+        "permission": perm.permission.value,
+        "max_candidates": perm.max_candidates,
+        "buy_points_allowed": perm.buy_points_allowed,
+        "paper_only": True,
+    }
+
+
+def render_regime_abc_compatibility_tab(regime_str: str = "BULL") -> Dict[str, Any]:
+    """Render regime ABC compatibility tab. v1.7.3."""
+    from paper_trading.small_capital_strategy.market_regime_enums_v173 import MarketRegime
+    from paper_trading.small_capital_strategy.candidate_permission_engine_v173 import get_abc_regime_permission
+    try:
+        regime = MarketRegime[regime_str.upper()]
+    except KeyError:
+        regime = MarketRegime.UNKNOWN
+    perm = get_abc_regime_permission(regime)
+    return {
+        "regime": perm.regime.value,
+        "a_allowed": perm.a_allowed,
+        "b_allowed": perm.b_allowed,
+        "c_allowed": perm.c_allowed,
+        "paper_only": True,
+    }
+
+
+def render_regime_scorecard_tab() -> Dict[str, Any]:
+    """Render regime scorecard tab. v1.7.3."""
+    from paper_trading.small_capital_strategy.market_regime_scorecard_v173 import get_weight_table, WEIGHTS_SUM
+    return {
+        "weight_table": get_weight_table(),
+        "weights_sum": WEIGHTS_SUM,
+        "grade_thresholds": {"A": 85, "B": 70, "C": 55, "D": 40, "F": 0},
+        "paper_only": True,
+    }
+
+
+def render_regime_report_tab() -> Dict[str, Any]:
+    """Render regime report tab. v1.7.3."""
+    from paper_trading.small_capital_strategy.market_regime_report_v173 import get_section_names
+    return {
+        "section_count": 14,
+        "section_names": get_section_names(),
+        "paper_only": True,
+        "no_real_orders": True,
+        "not_investment_advice": True,
+    }
+
+
+def render_regime_health_gate_tab() -> Dict[str, Any]:
+    """Render regime health and gate tab. v1.7.3."""
+    from paper_trading.small_capital_strategy.market_regime_health_v173 import run_health_check
+    health = run_health_check()
+    return {
+        "all_passed": health.all_passed,
+        "passed": health.passed,
+        "failed": health.failed,
+        "total": health.total,
+        "status": health.status,
+        "paper_only": True,
+    }
+
+
+def get_regime_tab_names() -> List[str]:
+    """Return list of v1.7.3 regime tab names."""
+    return list(_TABS_V173_REGIME)
+
+
 def render_all_tabs() -> Dict[str, Any]:
     """Render all tabs and return a dict of tab_name -> data."""
     renderers = {
@@ -919,6 +1155,21 @@ def render_all_tabs() -> Dict[str, Any]:
         "abc_health": render_abc_health_tab,
         "abc_gate": render_abc_gate_tab,
         "abc_safety": render_abc_safety_tab,
+        # v1.7.3 regime tabs
+        "regime_overview": render_regime_overview_tab,
+        "regime_detection": render_regime_detection_tab,
+        "regime_trend_filter": render_regime_trend_filter_tab,
+        "regime_volatility_filter": render_regime_volatility_filter_tab,
+        "regime_breadth_filter": render_regime_breadth_filter_tab,
+        "regime_risk_off_detection": render_regime_risk_off_detection_tab,
+        "regime_cash_ratio": render_regime_cash_ratio_tab,
+        "regime_exposure_control": render_regime_exposure_control_tab,
+        "regime_bucket_adjustment": render_regime_bucket_adjustment_tab,
+        "regime_candidate_permission": render_regime_candidate_permission_tab,
+        "regime_abc_compatibility": render_regime_abc_compatibility_tab,
+        "regime_scorecard": render_regime_scorecard_tab,
+        "regime_report": render_regime_report_tab,
+        "regime_health_gate": render_regime_health_gate_tab,
     }
     result = {}
     for tab_name in _TABS:

@@ -38673,6 +38673,195 @@ def cmd_abc_execution_safety_audit(args=None):
     print(_ABC_BANNER)
 
 
+_REGIME_BANNER = "[!] Research Only. Paper Only. No Real Orders. Not Investment Advice. v1.7.3 Market Regime Position Control"
+
+
+def cmd_market_regime_version(args=None):
+    """[v1.7.3] Show market regime position control version. Research only."""
+    print(_REGIME_BANNER)
+    from paper_trading.small_capital_strategy.version_v173 import get_version_info
+    info = get_version_info()
+    print(f"Market Regime Position Control  version={info['version']}  schema={info['schema_version']}")
+    print(_REGIME_BANNER)
+
+
+def cmd_market_regime_detect(args=None):
+    """[v1.7.3] Detect market regime from default inputs. Research only."""
+    print(_REGIME_BANNER)
+    from paper_trading.small_capital_strategy.market_regime_models_v173 import MarketRegimeInput
+    from paper_trading.small_capital_strategy.market_regime_detector_v173 import detect_market_regime
+    result = detect_market_regime(MarketRegimeInput())
+    print(f"Regime: {result.regime.value}  Status: {result.status.value}  Confidence: {result.confidence:.2f}")
+    print(_REGIME_BANNER)
+
+
+def cmd_market_regime_trend(args=None):
+    """[v1.7.3] Evaluate trend filter. Research only."""
+    print(_REGIME_BANNER)
+    from paper_trading.small_capital_strategy.market_regime_models_v173 import MarketRegimeInput
+    from paper_trading.small_capital_strategy.trend_filter_v173 import evaluate_trend_filter
+    result = evaluate_trend_filter(MarketRegimeInput())
+    print(f"Trend: {result.trend_signal.value}  Score: {result.trend_score:.2f}")
+    print(_REGIME_BANNER)
+
+
+def cmd_market_regime_volatility(args=None):
+    """[v1.7.3] Evaluate volatility filter. Research only."""
+    print(_REGIME_BANNER)
+    from paper_trading.small_capital_strategy.market_regime_models_v173 import MarketRegimeInput
+    from paper_trading.small_capital_strategy.volatility_filter_v173 import evaluate_volatility_filter
+    result = evaluate_volatility_filter(MarketRegimeInput())
+    print(f"Volatility: {result.volatility_level.value}  Score: {result.volatility_score:.2f}  Controlled: {result.volatility_controlled}")
+    print(_REGIME_BANNER)
+
+
+def cmd_market_regime_breadth(args=None):
+    """[v1.7.3] Evaluate breadth filter. Research only."""
+    print(_REGIME_BANNER)
+    from paper_trading.small_capital_strategy.market_regime_models_v173 import MarketRegimeInput
+    from paper_trading.small_capital_strategy.breadth_filter_v173 import evaluate_breadth_filter
+    result = evaluate_breadth_filter(MarketRegimeInput())
+    print(f"Breadth: {result.breadth_signal.value}  ADR: {result.advance_decline_ratio:.3f}  Healthy: {result.breadth_healthy}")
+    print(_REGIME_BANNER)
+
+
+def cmd_market_regime_risk_off(args=None):
+    """[v1.7.3] Detect risk-off signal. Research only."""
+    print(_REGIME_BANNER)
+    from paper_trading.small_capital_strategy.market_regime_models_v173 import MarketRegimeInput
+    from paper_trading.small_capital_strategy.risk_off_detector_v173 import detect_risk_off
+    result = detect_risk_off(MarketRegimeInput())
+    print(f"Risk-Off: {result.risk_off_signal.value}  Spike: {result.volatility_spike}  Event: {result.risk_event_active}")
+    print(_REGIME_BANNER)
+
+
+def cmd_market_regime_cash_ratio(args=None):
+    """[v1.7.3] Show cash ratio plan for all regimes. Research only."""
+    print(_REGIME_BANNER)
+    from paper_trading.small_capital_strategy.market_regime_enums_v173 import MarketRegime
+    from paper_trading.small_capital_strategy.cash_ratio_engine_v173 import build_cash_ratio_plan
+    for regime in MarketRegime:
+        plan = build_cash_ratio_plan(regime)
+        print(f"  {regime.value:<10} cash={plan.cash_pct}%  invested={plan.max_invested_pct}%  valid={plan.allocation_valid}")
+    print(_REGIME_BANNER)
+
+
+def cmd_market_regime_exposure(args=None):
+    """[v1.7.3] Show exposure control limits for all regimes. Research only."""
+    print(_REGIME_BANNER)
+    from paper_trading.small_capital_strategy.market_regime_enums_v173 import MarketRegime
+    from paper_trading.small_capital_strategy.exposure_control_engine_v173 import build_exposure_control_plan
+    for regime in MarketRegime:
+        plan = build_exposure_control_plan(regime)
+        print(f"  {regime.value:<10} max_total={plan.max_total_exposure_pct}%  max_single={plan.max_single_position_pct}%  margin={plan.margin_allowed}")
+    print(_REGIME_BANNER)
+
+
+def cmd_market_regime_buckets(args=None):
+    """[v1.7.3] Show bucket adjustment plan for all regimes. Research only."""
+    print(_REGIME_BANNER)
+    from paper_trading.small_capital_strategy.market_regime_enums_v173 import MarketRegime
+    from paper_trading.small_capital_strategy.bucket_adjustment_engine_v173 import build_bucket_adjustment_plan
+    for regime in MarketRegime:
+        plan = build_bucket_adjustment_plan(regime)
+        print(f"  {regime.value:<10} core={plan.core_amount:.0f}  training={plan.short_term_training_amount:.0f}  cash={plan.cash_amount:.0f}")
+    print(_REGIME_BANNER)
+
+
+def cmd_market_regime_candidates(args=None):
+    """[v1.7.3] Show candidate permission for all tiers in BULL regime. Research only."""
+    print(_REGIME_BANNER)
+    from paper_trading.small_capital_strategy.market_regime_enums_v173 import MarketRegime
+    from paper_trading.small_capital_strategy.candidate_permission_engine_v173 import get_candidate_permission, list_all_tiers
+    for tier in list_all_tiers():
+        perm = get_candidate_permission(MarketRegime.BULL, tier)
+        print(f"  BULL/{tier:<20} perm={perm.permission.value}  max={perm.max_candidates}")
+    print(_REGIME_BANNER)
+
+
+def cmd_market_regime_abc(args=None):
+    """[v1.7.3] Show ABC execution compatibility for all regimes. Research only."""
+    print(_REGIME_BANNER)
+    from paper_trading.small_capital_strategy.market_regime_enums_v173 import MarketRegime
+    from paper_trading.small_capital_strategy.candidate_permission_engine_v173 import get_abc_regime_permission
+    for regime in MarketRegime:
+        perm = get_abc_regime_permission(regime)
+        print(f"  {regime.value:<10} A={perm.a_allowed}  B={perm.b_allowed}  C={perm.c_allowed}")
+    print(_REGIME_BANNER)
+
+
+def cmd_market_regime_scorecard(args=None):
+    """[v1.7.3] Show scorecard weight table. Research only."""
+    print(_REGIME_BANNER)
+    from paper_trading.small_capital_strategy.market_regime_scorecard_v173 import get_weight_table
+    table = get_weight_table()
+    for k, v in table.items():
+        print(f"  {k}: {v}")
+    print(_REGIME_BANNER)
+
+
+def cmd_market_regime_report(args=None):
+    """[v1.7.3] Show regime report section names. Research only."""
+    print(_REGIME_BANNER)
+    from paper_trading.small_capital_strategy.market_regime_report_v173 import get_section_names
+    for i, name in enumerate(get_section_names(), 1):
+        print(f"  {i:2d}. {name}")
+    print(_REGIME_BANNER)
+
+
+def cmd_market_regime_scenarios(args=None):
+    """[v1.7.3] Show scenario registry count and validation. Research only."""
+    print(_REGIME_BANNER)
+    from paper_trading.small_capital_strategy.market_regime_scenario_registry_v173 import validate_registry, count_scenarios
+    result = validate_registry()
+    print(f"Scenarios: count={count_scenarios()}  valid={result['valid']}  errors={len(result['errors'])}")
+    print(_REGIME_BANNER)
+
+
+def cmd_market_regime_fixtures(args=None):
+    """[v1.7.3] Show fixture registry count and validation. Research only."""
+    print(_REGIME_BANNER)
+    from paper_trading.small_capital_strategy.market_regime_fixture_registry_v173 import validate_registry, count_fixtures
+    result = validate_registry()
+    print(f"Fixtures: count={count_fixtures()}  valid={result['valid']}  errors={len(result['errors'])}")
+    print(_REGIME_BANNER)
+
+
+def cmd_market_regime_health(args=None):
+    """[v1.7.3] Run market regime health check. Research only."""
+    print(_REGIME_BANNER)
+    from paper_trading.small_capital_strategy.market_regime_health_v173 import run_health_check
+    result = run_health_check()
+    print(f"Health: status={result.status}  passed={result.passed}  failed={result.failed}  total={result.total}")
+    if result.failed:
+        for c in result.checks:
+            if not c.get("passed"):
+                print(f"  [FAIL] {c.get('name', '?')}: {c.get('error', '')}")
+    print(_REGIME_BANNER)
+
+
+def cmd_market_regime_gate(args=None):
+    """[v1.7.3] Run market regime release gate. Research only."""
+    print(_REGIME_BANNER)
+    from release.market_regime_position_control_release_gate_v173 import run_release_gate
+    result = run_release_gate()
+    print(f"Gate: gate_passed={result['gate_passed']}  passed={result['passed']}  failed={result['failed_count']}  total={result['total_count']}")
+    if result['failed_count']:
+        for c in result['checks']:
+            if not c.get('passed'):
+                print(f"  [FAIL] {c.get('name', '?')}: {c.get('detail', '')}")
+    print(_REGIME_BANNER)
+
+
+def cmd_market_regime_safety_audit(args=None):
+    """[v1.7.3] Audit market regime safety flags. Research only."""
+    print(_REGIME_BANNER)
+    from paper_trading.small_capital_strategy.market_regime_safety_v173 import audit_market_regime_safety
+    result = audit_market_regime_safety()
+    print(f"Market Regime safety audit: all_safe={result['all_safe']}  safety_capabilities={result['safety_capabilities']}")
+    print(_REGIME_BANNER)
+
+
 def cmd_paper_strategy_health(args=None):
     """[v1.6.2] Paper strategy orchestration health check. Research only."""
     print(_STRATEGY_SAFETY_BANNER)
@@ -40729,6 +40918,25 @@ def main() -> None:
         "abc-execution-health":           cmd_abc_execution_health,
         "abc-execution-gate":             cmd_abc_execution_gate,
         "abc-execution-safety-audit":     cmd_abc_execution_safety_audit,
+        # v1.7.3 Market Regime Position Control
+        "market-regime-version":          cmd_market_regime_version,
+        "market-regime-detect":           cmd_market_regime_detect,
+        "market-regime-trend":            cmd_market_regime_trend,
+        "market-regime-volatility":       cmd_market_regime_volatility,
+        "market-regime-breadth":          cmd_market_regime_breadth,
+        "market-regime-risk-off":         cmd_market_regime_risk_off,
+        "market-regime-cash-ratio":       cmd_market_regime_cash_ratio,
+        "market-regime-exposure":         cmd_market_regime_exposure,
+        "market-regime-buckets":          cmd_market_regime_buckets,
+        "market-regime-candidates":       cmd_market_regime_candidates,
+        "market-regime-abc":              cmd_market_regime_abc,
+        "market-regime-scorecard":        cmd_market_regime_scorecard,
+        "market-regime-report":           cmd_market_regime_report,
+        "market-regime-scenarios":        cmd_market_regime_scenarios,
+        "market-regime-fixtures":         cmd_market_regime_fixtures,
+        "market-regime-health":           cmd_market_regime_health,
+        "market-regime-gate":             cmd_market_regime_gate,
+        "market-regime-safety-audit":     cmd_market_regime_safety_audit,
     }
 
     if args.command is None:
