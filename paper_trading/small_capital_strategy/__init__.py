@@ -51,3 +51,23 @@ WATCHLIST_PRODUCTION_TRADING_ENABLED    = False
 WATCHLIST_LIVE_EXECUTION_ENABLED        = False
 WATCHLIST_AUTO_ORDER_ENABLED            = False
 WATCHLIST_MARGIN_ENABLED                = False
+
+# v1.7.2 A/B/C Buy Point Execution Plan safety flags
+ABC_EXECUTION_PLAN_AVAILABLE             = True
+ABC_EXECUTION_PLAN_RESEARCH_ONLY         = True
+ABC_EXECUTION_PLAN_PAPER_ONLY            = True
+ABC_EXECUTION_PLAN_READ_ONLY             = True
+ABC_EXECUTION_PLAN_DETERMINISTIC         = True
+ABC_EXECUTION_PLAN_NOT_INVESTMENT_ADVICE = True
+
+ABC_REAL_TRADING_ENABLED                 = False
+ABC_REAL_ACCOUNT_ENABLED                 = False
+ABC_REAL_ORDER_ENABLED                   = False
+ABC_BROKER_EXECUTION_ENABLED             = False
+ABC_PRODUCTION_TRADING_ENABLED           = False
+ABC_LIVE_EXECUTION_ENABLED               = False
+ABC_AUTO_ORDER_ENABLED                   = False
+ABC_AUTO_STOP_LOSS_ENABLED               = False
+ABC_AUTO_TAKE_PROFIT_ENABLED             = False
+ABC_MARGIN_ENABLED                       = False
+ABC_DAY_TRADING_PRIMARY_ENABLED          = False

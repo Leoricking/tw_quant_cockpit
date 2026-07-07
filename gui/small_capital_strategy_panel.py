@@ -1,16 +1,17 @@
 """
 gui/small_capital_strategy_panel.py
 GUI panel for Small Capital Growth Strategy Template v1.7.0 +
-Watchlist Strategy Layer v1.7.1.
+Watchlist Strategy Layer v1.7.1 +
+A/B/C Buy Point Execution Plan v1.7.2.
 [!] Research Only. Paper Only. No Real Orders. Not Investment Advice.
 Headless-safe: no tkinter at module level. Renders to dict.
-22 v1.7.0 tabs + 15 watchlist tabs = 37 tabs total.
+22 v1.7.0 tabs + 15 watchlist tabs + 18 abc tabs = 55 tabs total.
 """
 from __future__ import annotations
 from typing import Any, Dict, List, Optional
 
-PANEL_VERSION = "1.7.1"
-PANEL_TITLE = "Small Capital Strategy v1.7.1 — Watchlist Strategy Layer"
+PANEL_VERSION = "1.7.2"
+PANEL_TITLE = "Small Capital Strategy v1.7.2 — A/B/C Buy Point Execution Plan"
 
 # v1.7.0 tabs (preserved unchanged)
 _TABS_V170 = [
@@ -57,10 +58,33 @@ _TABS_V171_WATCHLIST = [
     "watchlist_gate",
 ]
 
-_TABS = _TABS_V170 + _TABS_V171_WATCHLIST
+# v1.7.2 A/B/C execution tabs
+_TABS_V172_ABC = [
+    "abc_execution_overview",
+    "abc_a_10ma_pullback",
+    "abc_b_platform_breakout",
+    "abc_c_20ma_reclaim",
+    "abc_candidate_compatibility",
+    "abc_market_regime_compatibility",
+    "abc_entry_plan",
+    "abc_add_plan",
+    "abc_stop_loss_plan",
+    "abc_take_profit_plan",
+    "abc_position_sizing",
+    "abc_forbidden_checks",
+    "abc_paper_order_intent",
+    "abc_scorecard",
+    "abc_report",
+    "abc_health",
+    "abc_gate",
+    "abc_safety",
+]
+
+_TABS = _TABS_V170 + _TABS_V171_WATCHLIST + _TABS_V172_ABC
 
 assert len(_TABS_V170) == 22, f"Expected 22 v1.7.0 tabs, got {len(_TABS_V170)}"
 assert len(_TABS_V171_WATCHLIST) == 15, f"Expected 15 watchlist tabs, got {len(_TABS_V171_WATCHLIST)}"
+assert len(_TABS_V172_ABC) == 18, f"Expected 18 ABC tabs, got {len(_TABS_V172_ABC)}"
 
 
 def get_tab_names() -> List[str]:
@@ -575,6 +599,266 @@ def render_watchlist_gate_tab() -> Dict[str, Any]:
     }
 
 
+def render_abc_execution_overview_tab() -> Dict[str, Any]:
+    """Render ABC execution overview tab. v1.7.2."""
+    from paper_trading.small_capital_strategy.version_v172 import get_version_info
+    info = get_version_info()
+    return {
+        "version": info["version"],
+        "release_name": info["release_name"],
+        "base_release": info["base_release"],
+        "buy_point_types": ["A_10MA_PULLBACK", "B_PLATFORM_BREAKOUT", "C_20MA_RECLAIM"],
+        "paper_only": True,
+        "research_only": True,
+        "no_real_orders": True,
+        "not_investment_advice": True,
+        "disclaimer": "Research Only | Paper Only | No Real Orders | Not Investment Advice",
+    }
+
+
+def render_abc_a_10ma_pullback_tab() -> Dict[str, Any]:
+    """Render A buy point (10MA Pullback) tab. v1.7.2."""
+    from paper_trading.small_capital_strategy.abc_condition_checker_v172 import (
+        get_condition_names,
+    )
+    from paper_trading.small_capital_strategy.abc_execution_enums_v172 import ABCBuyPointType
+    return {
+        "buy_point_type": "A_10MA_PULLBACK",
+        "description": "10MA Pullback: close >= MA10 after pullback, theme STRONG+, above MA20 & MA60",
+        "required_conditions": get_condition_names(ABCBuyPointType.A_10MA_PULLBACK),
+        "entry_mode": "MA10_RECLAIM",
+        "paper_only": True,
+        "not_investment_advice": True,
+    }
+
+
+def render_abc_b_platform_breakout_tab() -> Dict[str, Any]:
+    """Render B buy point (Platform Breakout) tab. v1.7.2."""
+    from paper_trading.small_capital_strategy.abc_condition_checker_v172 import (
+        get_condition_names,
+    )
+    from paper_trading.small_capital_strategy.abc_execution_enums_v172 import ABCBuyPointType
+    return {
+        "buy_point_type": "B_PLATFORM_BREAKOUT",
+        "description": "Platform Breakout: 2-6 week consolidation, close > platform high, volume_ratio >= 1.5",
+        "required_conditions": get_condition_names(ABCBuyPointType.B_PLATFORM_BREAKOUT),
+        "entry_mode": "BREAKOUT_CONFIRMATION",
+        "paper_only": True,
+        "not_investment_advice": True,
+    }
+
+
+def render_abc_c_20ma_reclaim_tab() -> Dict[str, Any]:
+    """Render C buy point (20MA Reclaim) tab. v1.7.2."""
+    from paper_trading.small_capital_strategy.abc_condition_checker_v172 import (
+        get_condition_names,
+    )
+    from paper_trading.small_capital_strategy.abc_execution_enums_v172 import ABCBuyPointType
+    return {
+        "buy_point_type": "C_20MA_RECLAIM",
+        "description": "20MA Second Wave Reclaim: had first wave, pullback completed, KD improving",
+        "required_conditions": get_condition_names(ABCBuyPointType.C_20MA_RECLAIM),
+        "entry_mode": "MA20_RECLAIM",
+        "paper_only": True,
+        "not_investment_advice": True,
+    }
+
+
+def render_abc_candidate_compatibility_tab() -> Dict[str, Any]:
+    """Render candidate/watchlist tier compatibility tab. v1.7.2."""
+    from paper_trading.small_capital_strategy.abc_watchlist_bridge_v172 import (
+        get_tier_allowed_buy_points, get_tier_preferred_buy_points,
+    )
+    tiers = ["CORE", "MAIN_THEME", "SECOND_WAVE", "TRAINING", "EXCLUDED"]
+    return {
+        "tiers": tiers,
+        "allowed": {t: [b.value for b in get_tier_allowed_buy_points(t)] for t in tiers},
+        "preferred": {t: [b.value for b in get_tier_preferred_buy_points(t)] for t in tiers},
+        "paper_only": True,
+        "not_investment_advice": True,
+    }
+
+
+def render_abc_market_regime_compatibility_tab() -> Dict[str, Any]:
+    """Render market regime compatibility tab. v1.7.2."""
+    from paper_trading.small_capital_strategy.abc_market_regime_bridge_v172 import (
+        get_compatible_regimes,
+    )
+    from paper_trading.small_capital_strategy.abc_execution_enums_v172 import ABCBuyPointType
+    return {
+        "A_compatible_regimes": get_compatible_regimes(ABCBuyPointType.A_10MA_PULLBACK),
+        "B_compatible_regimes": get_compatible_regimes(ABCBuyPointType.B_PLATFORM_BREAKOUT),
+        "C_compatible_regimes": get_compatible_regimes(ABCBuyPointType.C_20MA_RECLAIM),
+        "paper_only": True,
+        "not_investment_advice": True,
+    }
+
+
+def render_abc_entry_plan_tab() -> Dict[str, Any]:
+    """Render ABC entry plan tab. v1.7.2."""
+    from paper_trading.small_capital_strategy.abc_execution_enums_v172 import ABCEntryMode
+    return {
+        "entry_modes": [m.value for m in ABCEntryMode],
+        "a_entry_mode": "MA10_RECLAIM",
+        "b_entry_mode": "BREAKOUT_CONFIRMATION",
+        "c_entry_mode": "MA20_RECLAIM",
+        "paper_only": True,
+        "not_investment_advice": True,
+    }
+
+
+def render_abc_add_plan_tab() -> Dict[str, Any]:
+    """Render ABC add plan tab. v1.7.2."""
+    from paper_trading.small_capital_strategy.abc_execution_enums_v172 import ABCAddMode
+    return {
+        "add_modes": [m.value for m in ABCAddMode],
+        "a_add_mode": "MA5_RECLAIM",
+        "b_add_mode": "SECOND_DAY_HOLD",
+        "c_add_mode": "REACTION_HIGH",
+        "max_add_units": 1,
+        "paper_only": True,
+        "not_investment_advice": True,
+    }
+
+
+def render_abc_stop_loss_plan_tab() -> Dict[str, Any]:
+    """Render ABC stop loss plan tab. v1.7.2."""
+    from paper_trading.small_capital_strategy.abc_stop_loss_engine_v172 import (
+        get_stop_loss_constants,
+    )
+    return {
+        "constants": get_stop_loss_constants(),
+        "a_stop_mode": "MA10_BREAK_REF",
+        "b_stop_mode": "PLATFORM_LOWER",
+        "c_stop_mode": "BELOW_MA20",
+        "paper_only": True,
+        "not_investment_advice": True,
+    }
+
+
+def render_abc_take_profit_plan_tab() -> Dict[str, Any]:
+    """Render ABC take profit plan tab. v1.7.2."""
+    from paper_trading.small_capital_strategy.abc_take_profit_engine_v172 import (
+        get_take_profit_constants,
+    )
+    return {
+        "constants": get_take_profit_constants(),
+        "paper_only": True,
+        "not_investment_advice": True,
+    }
+
+
+def render_abc_position_sizing_tab() -> Dict[str, Any]:
+    """Render ABC position sizing tab. v1.7.2."""
+    from paper_trading.small_capital_strategy.abc_position_sizing_bridge_v172 import (
+        get_capital_constants,
+    )
+    return {
+        "constants": get_capital_constants(),
+        "paper_only": True,
+        "not_investment_advice": True,
+    }
+
+
+def render_abc_forbidden_checks_tab() -> Dict[str, Any]:
+    """Render ABC forbidden checks tab. v1.7.2."""
+    from paper_trading.small_capital_strategy.abc_forbidden_rule_bridge_v172 import (
+        check_all_forbidden_rules, all_rules_passed, get_forbidden_rule_names,
+    )
+    results = check_all_forbidden_rules("_gui_sample_")
+    return {
+        "rule_names": get_forbidden_rule_names(),
+        "all_passed": all_rules_passed(results),
+        "paper_only": True,
+        "not_investment_advice": True,
+    }
+
+
+def render_abc_paper_order_intent_tab() -> Dict[str, Any]:
+    """Render ABC paper order intent tab. v1.7.2."""
+    from paper_trading.small_capital_strategy.abc_paper_order_intent_v172 import (
+        get_paper_intent_actions,
+    )
+    return {
+        "actions": get_paper_intent_actions(),
+        "paper_only": True,
+        "no_real_orders": True,
+        "broker_execution_enabled": False,
+        "not_investment_advice": True,
+    }
+
+
+def render_abc_scorecard_tab() -> Dict[str, Any]:
+    """Render ABC scorecard tab. v1.7.2."""
+    from paper_trading.small_capital_strategy.abc_execution_scorecard_v172 import (
+        get_scorecard_weights,
+    )
+    weights = get_scorecard_weights()
+    return {
+        "weights": weights,
+        "grades": ["A", "B", "C", "D", "F", "BLOCKED"],
+        "note": "No A+ grade. Max grade is A (85-100).",
+        "paper_only": True,
+        "not_investment_advice": True,
+    }
+
+
+def render_abc_report_tab() -> Dict[str, Any]:
+    """Render ABC report tab. v1.7.2."""
+    from paper_trading.small_capital_strategy.abc_execution_report_v172 import (
+        get_section_names,
+    )
+    return {
+        "section_names": get_section_names(),
+        "section_count": len(get_section_names()),
+        "formats": ["MARKDOWN", "JSON", "CSV", "CONSOLE", "GUI"],
+        "paper_only": True,
+        "not_investment_advice": True,
+    }
+
+
+def render_abc_health_tab() -> Dict[str, Any]:
+    """Render ABC health check tab. v1.7.2."""
+    from paper_trading.small_capital_strategy.abc_execution_health_v172 import run_health_check
+    health = run_health_check()
+    return {
+        "all_passed": health["all_passed"],
+        "passed": health["passed"],
+        "failed": health["failed"],
+        "total": health["total"],
+        "status": health["status"],
+    }
+
+
+def render_abc_gate_tab() -> Dict[str, Any]:
+    """Render ABC release gate tab. v1.7.2."""
+    from release.abc_buy_point_execution_plan_release_gate_v172 import run_release_gate
+    gate = run_release_gate()
+    return {
+        "gate_passed": gate["gate_passed"],
+        "passed": gate["passed"],
+        "failed_count": gate["failed_count"],
+        "total_count": gate["total_count"],
+        "status": gate["status"],
+    }
+
+
+def render_abc_safety_tab() -> Dict[str, Any]:
+    """Render ABC safety tab. v1.7.2."""
+    from paper_trading.small_capital_strategy.abc_execution_safety_v172 import (
+        get_abc_safety_flags, audit_abc_safety,
+    )
+    return {
+        "flags": get_abc_safety_flags(),
+        "audit": audit_abc_safety(),
+    }
+
+
+def get_abc_tab_names() -> List[str]:
+    """Return list of v1.7.2 ABC execution tab names."""
+    return list(_TABS_V172_ABC)
+
+
 def render_all_tabs() -> Dict[str, Any]:
     """Render all tabs and return a dict of tab_name -> data."""
     renderers = {
@@ -616,6 +900,25 @@ def render_all_tabs() -> Dict[str, Any]:
         "watchlist_report": render_watchlist_report_tab,
         "watchlist_health": render_watchlist_health_tab,
         "watchlist_gate": render_watchlist_gate_tab,
+        # v1.7.2 ABC execution tabs
+        "abc_execution_overview": render_abc_execution_overview_tab,
+        "abc_a_10ma_pullback": render_abc_a_10ma_pullback_tab,
+        "abc_b_platform_breakout": render_abc_b_platform_breakout_tab,
+        "abc_c_20ma_reclaim": render_abc_c_20ma_reclaim_tab,
+        "abc_candidate_compatibility": render_abc_candidate_compatibility_tab,
+        "abc_market_regime_compatibility": render_abc_market_regime_compatibility_tab,
+        "abc_entry_plan": render_abc_entry_plan_tab,
+        "abc_add_plan": render_abc_add_plan_tab,
+        "abc_stop_loss_plan": render_abc_stop_loss_plan_tab,
+        "abc_take_profit_plan": render_abc_take_profit_plan_tab,
+        "abc_position_sizing": render_abc_position_sizing_tab,
+        "abc_forbidden_checks": render_abc_forbidden_checks_tab,
+        "abc_paper_order_intent": render_abc_paper_order_intent_tab,
+        "abc_scorecard": render_abc_scorecard_tab,
+        "abc_report": render_abc_report_tab,
+        "abc_health": render_abc_health_tab,
+        "abc_gate": render_abc_gate_tab,
+        "abc_safety": render_abc_safety_tab,
     }
     result = {}
     for tab_name in _TABS:

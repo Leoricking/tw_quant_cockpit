@@ -38472,6 +38472,207 @@ def cmd_watchlist_safety_audit(args=None):
     print(_WATCHLIST_BANNER)
 
 
+_ABC_BANNER = "[!] Research Only. Paper Only. No Real Orders. Not Investment Advice. A/B/C Buy Point Execution Plan v1.7.2."
+
+
+def cmd_abc_execution_version(args=None):
+    """[v1.7.2] Show ABC execution plan version info. Research only."""
+    print(_ABC_BANNER)
+    from paper_trading.small_capital_strategy.version_v172 import get_version_info
+    info = get_version_info()
+    print(f"A/B/C Buy Point Execution Plan v{info['version']} — {info['release_name']}")
+    print(_ABC_BANNER)
+
+
+def cmd_abc_execution_plan(args=None):
+    """[v1.7.2] Show ABC execution plan overview. Research only."""
+    print(_ABC_BANNER)
+    from paper_trading.small_capital_strategy.abc_execution_enums_v172 import ABCBuyPointType
+    bpts = [b.value for b in ABCBuyPointType if b != ABCBuyPointType.UNSUPPORTED]
+    print(f"Buy point types: {bpts}")
+    print(_ABC_BANNER)
+
+
+def cmd_abc_execution_signal(args=None):
+    """[v1.7.2] Show signal normalizer thresholds. Research only."""
+    print(_ABC_BANNER)
+    from paper_trading.small_capital_strategy.abc_signal_normalizer_v172 import get_normalization_thresholds
+    thresholds = get_normalization_thresholds()
+    print(f"Normalization thresholds: {thresholds}")
+    print(_ABC_BANNER)
+
+
+def cmd_abc_execution_check(args=None):
+    """[v1.7.2] Show condition names for all buy point types. Research only."""
+    print(_ABC_BANNER)
+    from paper_trading.small_capital_strategy.abc_condition_checker_v172 import get_condition_names
+    from paper_trading.small_capital_strategy.abc_execution_enums_v172 import ABCBuyPointType
+    for bpt in [ABCBuyPointType.A_10MA_PULLBACK, ABCBuyPointType.B_PLATFORM_BREAKOUT, ABCBuyPointType.C_20MA_RECLAIM]:
+        names = get_condition_names(bpt)
+        print(f"{bpt.value}: {names}")
+    print(_ABC_BANNER)
+
+
+def cmd_abc_execution_entry(args=None):
+    """[v1.7.2] Show entry price engine modes. Research only."""
+    print(_ABC_BANNER)
+    from paper_trading.small_capital_strategy.abc_execution_enums_v172 import ABCEntryMode
+    modes = [m.value for m in ABCEntryMode]
+    print(f"Entry modes: {modes}")
+    print(_ABC_BANNER)
+
+
+def cmd_abc_execution_add(args=None):
+    """[v1.7.2] Show add price engine modes. Research only."""
+    print(_ABC_BANNER)
+    from paper_trading.small_capital_strategy.abc_execution_enums_v172 import ABCAddMode
+    modes = [m.value for m in ABCAddMode]
+    print(f"Add modes: {modes}")
+    print(_ABC_BANNER)
+
+
+def cmd_abc_execution_stop(args=None):
+    """[v1.7.2] Show stop loss engine constants. Research only."""
+    print(_ABC_BANNER)
+    from paper_trading.small_capital_strategy.abc_stop_loss_engine_v172 import get_stop_loss_constants
+    constants = get_stop_loss_constants()
+    print(f"Stop loss constants: {constants}")
+    print(_ABC_BANNER)
+
+
+def cmd_abc_execution_take_profit(args=None):
+    """[v1.7.2] Show take profit engine constants. Research only."""
+    print(_ABC_BANNER)
+    from paper_trading.small_capital_strategy.abc_take_profit_engine_v172 import get_take_profit_constants
+    constants = get_take_profit_constants()
+    print(f"Take profit constants: {constants}")
+    print(_ABC_BANNER)
+
+
+def cmd_abc_execution_invalidation(args=None):
+    """[v1.7.2] Show invalidation bars per buy point type. Research only."""
+    print(_ABC_BANNER)
+    from paper_trading.small_capital_strategy.abc_invalidation_engine_v172 import get_invalidation_bars
+    from paper_trading.small_capital_strategy.abc_execution_enums_v172 import ABCBuyPointType
+    for bpt in [ABCBuyPointType.A_10MA_PULLBACK, ABCBuyPointType.B_PLATFORM_BREAKOUT, ABCBuyPointType.C_20MA_RECLAIM]:
+        bars = get_invalidation_bars(bpt)
+        print(f"{bpt.value}: {bars} bars to confirm")
+    print(_ABC_BANNER)
+
+
+def cmd_abc_execution_position_size(args=None):
+    """[v1.7.2] Show position sizing capital constants. Research only."""
+    print(_ABC_BANNER)
+    from paper_trading.small_capital_strategy.abc_position_sizing_bridge_v172 import get_capital_constants
+    constants = get_capital_constants()
+    print(f"Capital constants: {constants}")
+    print(_ABC_BANNER)
+
+
+def cmd_abc_execution_watchlist_bridge(args=None):
+    """[v1.7.2] Show watchlist tier allowed buy points. Research only."""
+    print(_ABC_BANNER)
+    from paper_trading.small_capital_strategy.abc_watchlist_bridge_v172 import get_tier_allowed_buy_points
+    for tier in ["CORE", "MAIN_THEME", "SECOND_WAVE", "TRAINING", "EXCLUDED"]:
+        allowed = [b.value for b in get_tier_allowed_buy_points(tier)]
+        print(f"{tier}: {allowed}")
+    print(_ABC_BANNER)
+
+
+def cmd_abc_execution_regime_bridge(args=None):
+    """[v1.7.2] Show market regime compatible buy points. Research only."""
+    print(_ABC_BANNER)
+    from paper_trading.small_capital_strategy.abc_market_regime_bridge_v172 import get_compatible_regimes
+    from paper_trading.small_capital_strategy.abc_execution_enums_v172 import ABCBuyPointType
+    for bpt in [ABCBuyPointType.A_10MA_PULLBACK, ABCBuyPointType.B_PLATFORM_BREAKOUT, ABCBuyPointType.C_20MA_RECLAIM]:
+        regimes = get_compatible_regimes(bpt)
+        print(f"{bpt.value}: compatible_regimes={regimes}")
+    print(_ABC_BANNER)
+
+
+def cmd_abc_execution_forbidden_check(args=None):
+    """[v1.7.2] Run all forbidden rule checks (sample). Research only."""
+    print(_ABC_BANNER)
+    from paper_trading.small_capital_strategy.abc_forbidden_rule_bridge_v172 import check_all_forbidden_rules, all_rules_passed
+    results = check_all_forbidden_rules("_cli_sample_")
+    print(f"Forbidden checks: all_passed={all_rules_passed(results)}  total={len(results)}")
+    print(_ABC_BANNER)
+
+
+def cmd_abc_execution_paper_intent(args=None):
+    """[v1.7.2] Show paper order intent action types. Research only."""
+    print(_ABC_BANNER)
+    from paper_trading.small_capital_strategy.abc_paper_order_intent_v172 import get_paper_intent_actions
+    actions = get_paper_intent_actions()
+    print(f"Paper intent actions: {actions}")
+    print(_ABC_BANNER)
+
+
+def cmd_abc_execution_scorecard(args=None):
+    """[v1.7.2] Show execution scorecard weights. Research only."""
+    print(_ABC_BANNER)
+    from paper_trading.small_capital_strategy.abc_execution_scorecard_v172 import get_scorecard_weights
+    weights = get_scorecard_weights()
+    print(f"Scorecard weights (sum={weights['sum']}): {weights}")
+    print(_ABC_BANNER)
+
+
+def cmd_abc_execution_report(args=None):
+    """[v1.7.2] Show execution report section names. Research only."""
+    print(_ABC_BANNER)
+    from paper_trading.small_capital_strategy.abc_execution_report_v172 import get_section_names
+    sections = get_section_names()
+    print(f"Report sections ({len(sections)}): {sections}")
+    print(_ABC_BANNER)
+
+
+def cmd_abc_execution_fixtures(args=None):
+    """[v1.7.2] Show ABC fixture registry summary. Research only."""
+    print(_ABC_BANNER)
+    from paper_trading.small_capital_strategy.abc_fixture_registry_v172 import get_fixture_count, validate_registry
+    count = get_fixture_count()
+    validity = validate_registry()
+    print(f"ABC fixtures: {count} total  all_valid={validity['valid']}")
+    print(_ABC_BANNER)
+
+
+def cmd_abc_execution_scenarios(args=None):
+    """[v1.7.2] Show ABC scenario registry summary. Research only."""
+    print(_ABC_BANNER)
+    from paper_trading.small_capital_strategy.abc_scenario_registry_v172 import get_scenario_count, get_scenario_categories
+    count = get_scenario_count()
+    cats = get_scenario_categories()
+    print(f"ABC scenarios: {count} total  categories={cats}")
+    print(_ABC_BANNER)
+
+
+def cmd_abc_execution_health(args=None):
+    """[v1.7.2] Run ABC execution plan health check. Research only."""
+    print(_ABC_BANNER)
+    from paper_trading.small_capital_strategy.abc_execution_health_v172 import run_health_check
+    result = run_health_check()
+    print(f"ABC Health: all_passed={result['all_passed']}  passed={result['passed']}/{result['total']}  failed={result['failed']}")
+    print(_ABC_BANNER)
+
+
+def cmd_abc_execution_gate(args=None):
+    """[v1.7.2] Run ABC execution plan release gate. Research only."""
+    print(_ABC_BANNER)
+    from release.abc_buy_point_execution_plan_release_gate_v172 import run_release_gate
+    result = run_release_gate()
+    print(f"ABC Gate: gate_passed={result['gate_passed']}  total={result['total_count']}  failed={result['failed_count']}")
+    print(_ABC_BANNER)
+
+
+def cmd_abc_execution_safety_audit(args=None):
+    """[v1.7.2] Audit ABC execution plan safety flags. Research only."""
+    print(_ABC_BANNER)
+    from paper_trading.small_capital_strategy.abc_execution_safety_v172 import audit_abc_safety
+    result = audit_abc_safety()
+    print(f"ABC safety audit: all_safe={result['all_safe']}  safety_capabilities={result['safety_capabilities']}")
+    print(_ABC_BANNER)
+
+
 def cmd_paper_strategy_health(args=None):
     """[v1.6.2] Paper strategy orchestration health check. Research only."""
     print(_STRATEGY_SAFETY_BANNER)
@@ -40506,6 +40707,28 @@ def main() -> None:
         "watchlist-health":               cmd_watchlist_health,
         "watchlist-gate":                 cmd_watchlist_gate,
         "watchlist-safety-audit":         cmd_watchlist_safety_audit,
+        # v1.7.2 A/B/C Buy Point Execution Plan
+        "abc-execution-version":          cmd_abc_execution_version,
+        "abc-execution-plan":             cmd_abc_execution_plan,
+        "abc-execution-signal":           cmd_abc_execution_signal,
+        "abc-execution-check":            cmd_abc_execution_check,
+        "abc-execution-entry":            cmd_abc_execution_entry,
+        "abc-execution-add":              cmd_abc_execution_add,
+        "abc-execution-stop":             cmd_abc_execution_stop,
+        "abc-execution-take-profit":      cmd_abc_execution_take_profit,
+        "abc-execution-invalidation":     cmd_abc_execution_invalidation,
+        "abc-execution-position-size":    cmd_abc_execution_position_size,
+        "abc-execution-watchlist-bridge": cmd_abc_execution_watchlist_bridge,
+        "abc-execution-regime-bridge":    cmd_abc_execution_regime_bridge,
+        "abc-execution-forbidden-check":  cmd_abc_execution_forbidden_check,
+        "abc-execution-paper-intent":     cmd_abc_execution_paper_intent,
+        "abc-execution-scorecard":        cmd_abc_execution_scorecard,
+        "abc-execution-report":           cmd_abc_execution_report,
+        "abc-execution-fixtures":         cmd_abc_execution_fixtures,
+        "abc-execution-scenarios":        cmd_abc_execution_scenarios,
+        "abc-execution-health":           cmd_abc_execution_health,
+        "abc-execution-gate":             cmd_abc_execution_gate,
+        "abc-execution-safety-audit":     cmd_abc_execution_safety_audit,
     }
 
     if args.command is None:

@@ -10,8 +10,8 @@ from gui.small_capital_strategy_panel import (
 
 
 def test_panel_version():
-    # Panel updated to v1.7.1 to include watchlist tabs
-    assert PANEL_VERSION == "1.7.1"
+    # Panel updated to v1.7.2 to include ABC execution tabs
+    assert PANEL_VERSION == "1.7.2"
 
 
 def test_panel_title_contains_v170():
@@ -20,14 +20,14 @@ def test_panel_title_contains_v170():
 
 
 def test_tab_count_22():
-    # v1.7.1 adds 15 watchlist tabs on top of 22 v1.7.0 tabs = 37 total
-    assert len(_TABS) == 37
+    # v1.7.2 adds 18 ABC tabs on top of 37 (22+15) = 55 total
+    assert len(_TABS) == 55
 
 
 def test_get_tab_names_returns_22():
-    # v1.7.1 extended panel has 37 tabs (22 v1.7.0 + 15 watchlist)
+    # v1.7.2 extended panel has 55 tabs (22 v1.7.0 + 15 watchlist + 18 ABC)
     tabs = get_tab_names()
-    assert len(tabs) == 37
+    assert len(tabs) == 55
 
 
 def test_get_panel_info_returns_dict():
@@ -36,9 +36,9 @@ def test_get_panel_info_returns_dict():
 
 
 def test_get_panel_info_tab_count_22():
-    # v1.7.1 extended panel has 37 tabs
+    # v1.7.2 extended panel has 55 tabs
     info = get_panel_info()
-    assert info["tab_count"] == 37
+    assert info["tab_count"] == 55
 
 
 def test_get_panel_info_paper_only():
@@ -117,10 +117,10 @@ def test_render_scenarios_tab():
 
 
 def test_render_all_tabs_returns_dict():
-    # v1.7.1 extended panel renders 37 tabs (22 v1.7.0 + 15 watchlist)
+    # v1.7.2 extended panel renders 55 tabs (22 v1.7.0 + 15 watchlist + 18 ABC)
     data = render_all_tabs()
     assert isinstance(data, dict)
-    assert len(data) == 37
+    assert len(data) == 55
 
 
 def test_render_all_tabs_no_import_errors():

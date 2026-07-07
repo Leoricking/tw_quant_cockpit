@@ -1,24 +1,24 @@
 """
-paper_trading/small_capital_strategy/version_v171.py
-Version identity for Watchlist Strategy Layer v1.7.1.
+paper_trading/small_capital_strategy/version_v172.py
+Version identity for A/B/C Buy Point Execution Plan v1.7.2.
 [!] Research Only. Paper Only. No Real Orders. Not Investment Advice.
 """
 from __future__ import annotations
 
-VERSION         = "1.7.1"
-RELEASE_NAME    = "Watchlist Strategy Layer"
-BASE_RELEASE    = "1.7.0 Small Capital Growth Strategy Template"
-SCHEMA_VERSION  = "171"
-POLICY_VERSION  = "1.7.1-watchlist-strategy-layer"
+VERSION         = "1.7.2"
+RELEASE_NAME    = "A/B/C Buy Point Execution Plan"
+BASE_RELEASE    = "1.7.1 Watchlist Strategy Layer"
+SCHEMA_VERSION  = "172"
+POLICY_VERSION  = "1.7.2-abc-buy-point-execution-plan"
 
-COMPONENT_COUNT = 25
+COMPONENT_COUNT = 24
 MIN_SCENARIOS   = 70
 MIN_FIXTURES    = 70
-MIN_CLI         = 22
-MIN_HEALTH      = 70
-MIN_GATE        = 65
+MIN_CLI         = 20
+MIN_HEALTH      = 75
+MIN_GATE        = 70
 
-ACCEPTED_MINIMUM_VERSION = "1.7.0"
+ACCEPTED_MINIMUM_VERSION = "1.7.1"
 
 KNOWN_RELEASE_NAMES: frozenset = frozenset({
     "A/B/C Buy Point Execution Plan",
