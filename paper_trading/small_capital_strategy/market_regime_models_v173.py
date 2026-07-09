@@ -20,7 +20,7 @@ _LINEAGE = "paper_trading.small_capital_strategy.market_regime_models_v173"
 
 
 def _now() -> str:
-    return datetime.datetime.utcnow().isoformat()
+    return datetime.datetime.now(datetime.timezone.utc).isoformat()
 
 
 @dataclass

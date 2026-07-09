@@ -25,7 +25,7 @@ class BatchIngestionGate:
     def evaluate(self, fetch_run_id: str,
                  audit: Optional[Dict[str, Any]] = None) -> Dict[str, Any]:
         ctx = audit or {}
-        now = datetime.datetime.utcnow().isoformat() + "Z"
+        now = datetime.datetime.now(datetime.timezone.utc).isoformat() + "Z"
         results: List[QualityGateResult] = []
 
         records_written = ctx.get("records_written", 0)
@@ -91,6 +91,6 @@ class BatchIngestionGate:
             passed=(status == GateStatus.PASS.value),
             blocking=blocking, evidence=evidence,
             warnings=warnings or [],
-            evaluated_at=datetime.datetime.utcnow().isoformat() + "Z",
+            evaluated_at=datetime.datetime.now(datetime.timezone.utc).isoformat() + "Z",
             policy_version=self.POLICY_VERSION,
         )

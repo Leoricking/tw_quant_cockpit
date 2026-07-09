@@ -23,13 +23,13 @@ from gui.small_capital_strategy_panel import (
 
 
 def test_panel_version_171():
-    # Panel updated to v1.7.4 to include Risk Dashboard tabs
-    assert PANEL_VERSION == "1.7.4"
+    # Panel updated to v1.7.5 to include Trade Journal tabs
+    assert PANEL_VERSION == "1.7.5"
 
 
 def test_total_tab_count():
     tabs = get_tab_names()
-    assert len(tabs) == 84  # 22+15+18+14+15 = 84
+    assert len(tabs) == 98  # 22+15+18+14+15+14 = 98
 
 
 def test_watchlist_tab_count():

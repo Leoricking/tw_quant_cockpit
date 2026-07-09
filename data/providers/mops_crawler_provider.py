@@ -20,7 +20,7 @@ from __future__ import annotations
 
 import logging
 import time
-from datetime import datetime
+from datetime import datetime, timezone
 from typing import Optional
 
 import pandas as pd
@@ -140,7 +140,7 @@ class MOPSCrawlerProvider(BaseMarketDataProvider):
         url = "https://mops.twse.com.tw/server-java/t187ap05_L"
         # Try JSON endpoint first
         json_url = "https://mops.twse.com.tw/mops/web/ajax_t187ap05_L"
-        fetched_at = datetime.utcnow().isoformat()
+        fetched_at = datetime.now(timezone.utc).isoformat()
         rows = []
 
         # Try MOPS JSON-like endpoint
@@ -237,7 +237,7 @@ class MOPSCrawlerProvider(BaseMarketDataProvider):
 
         # MOPS income statement endpoint
         url = "https://mops.twse.com.tw/mops/web/ajax_t163sb04"
-        fetched_at = datetime.utcnow().isoformat()
+        fetched_at = datetime.now(timezone.utc).isoformat()
 
         time.sleep(_REQUEST_DELAY)
         post_data = {
@@ -322,7 +322,7 @@ class MOPSCrawlerProvider(BaseMarketDataProvider):
                 pass
 
         url = "https://mops.twse.com.tw/mops/web/ajax_t100sb01_1"
-        fetched_at = datetime.utcnow().isoformat()
+        fetched_at = datetime.now(timezone.utc).isoformat()
 
         time.sleep(_REQUEST_DELAY)
         post_data = {

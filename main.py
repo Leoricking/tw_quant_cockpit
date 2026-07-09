@@ -39078,6 +39078,203 @@ def cmd_risk_dashboard_safety_audit(args=None):
     print(_RISK_DASHBOARD_BANNER)
 
 
+# ---------------------------------------------------------------------------
+# v1.7.5 Trade Journal command handlers
+# ---------------------------------------------------------------------------
+
+_TRADE_JOURNAL_BANNER = "=" * 60 + "\n  [!] Research Only | Paper Only | No Real Orders | Not Investment Advice\n" + "=" * 60
+
+
+def cmd_trade_journal_version(args=None):
+    """[v1.7.5] Show trade journal version info. Research only."""
+    print(_TRADE_JOURNAL_BANNER)
+    from paper_trading.small_capital_strategy.version_v175 import get_version_info
+    info = get_version_info()
+    print(f"  Trade Journal Version: {info['version']}  Release: {info['release_name']}")
+    print(f"  Schema: {info['schema_version']}  Policy: {info['policy_version']}")
+    print(_TRADE_JOURNAL_BANNER)
+
+
+def cmd_trade_journal_entry(args=None):
+    """[v1.7.5] Show trade journal entry creation info. Research only."""
+    print(_TRADE_JOURNAL_BANNER)
+    from paper_trading.small_capital_strategy.trade_journal_enums_v175 import TradeDirection, ABCPattern
+    from paper_trading.small_capital_strategy.trade_journal_entry_v175 import create_journal_entry, validate_entry
+    entry = create_journal_entry("2330", TradeDirection.LONG, "2026-01-05",
+                                 580.0, 50000.0, 552.0, 0.05, ABCPattern.B_BREAKOUT, "BULL", 1)
+    print(f"  Trade Journal Entry: symbol={entry.symbol}  valid={validate_entry(entry)}")
+    print(f"  paper_only={entry.paper_only}  no_real_orders={entry.no_real_orders}")
+    print(_TRADE_JOURNAL_BANNER)
+
+
+def cmd_trade_journal_review_entry(args=None):
+    """[v1.7.5] Review a trade entry. Research only."""
+    print(_TRADE_JOURNAL_BANNER)
+    from paper_trading.small_capital_strategy.trade_journal_enums_v175 import TradeDirection, ABCPattern
+    from paper_trading.small_capital_strategy.trade_journal_entry_v175 import create_journal_entry
+    from paper_trading.small_capital_strategy.trade_journal_models_v175 import TradeDecisionSnapshot
+    from paper_trading.small_capital_strategy.trade_journal_review_entry_v175 import review_entry
+    entry = create_journal_entry("2330", TradeDirection.LONG, "2026-01-05",
+                                 580.0, 50000.0, 552.0, 0.05, ABCPattern.B_BREAKOUT, "BULL", 1)
+    snap  = TradeDecisionSnapshot(entry_trigger="B_BREAKOUT", market_regime="BULL",
+                                  stop_loss_pct=0.05, position_size_twd=50000.0, watchlist_tier=1)
+    result = review_entry(entry, snap)
+    print(f"  Entry Review: quality={result.entry_quality.value}  score={result.entry_score}  status={result.review_status.value}")
+    print(_TRADE_JOURNAL_BANNER)
+
+
+def cmd_trade_journal_review_exit(args=None):
+    """[v1.7.5] Review a trade exit. Research only."""
+    print(_TRADE_JOURNAL_BANNER)
+    from paper_trading.small_capital_strategy.trade_journal_enums_v175 import TradeDirection
+    from paper_trading.small_capital_strategy.trade_journal_entry_v175 import create_journal_entry, close_journal_entry
+    from paper_trading.small_capital_strategy.trade_journal_review_exit_v175 import review_exit
+    entry  = create_journal_entry("2330", TradeDirection.LONG, "2026-01-05", 580.0, 50000.0, 552.0, 0.05)
+    closed = close_journal_entry(entry, "2026-01-20", 638.0)
+    result = review_exit(closed)
+    print(f"  Exit Review: quality={result.exit_quality.value}  score={result.exit_score}  status={result.review_status.value}")
+    print(_TRADE_JOURNAL_BANNER)
+
+
+def cmd_trade_journal_abc_review(args=None):
+    """[v1.7.5] Review ABC execution. Research only."""
+    print(_TRADE_JOURNAL_BANNER)
+    from paper_trading.small_capital_strategy.trade_journal_enums_v175 import TradeDirection, ABCPattern
+    from paper_trading.small_capital_strategy.trade_journal_entry_v175 import create_journal_entry
+    from paper_trading.small_capital_strategy.trade_journal_models_v175 import TradeDecisionSnapshot
+    from paper_trading.small_capital_strategy.trade_journal_abc_review_v175 import review_abc_execution
+    entry = create_journal_entry("2330", TradeDirection.LONG, "2026-01-05",
+                                 580.0, 50000.0, 552.0, 0.05, ABCPattern.C_RECLAIM, "BULL", 1)
+    snap  = TradeDecisionSnapshot(stop_loss_pct=0.05, position_size_twd=50000.0)
+    result = review_abc_execution(entry, snap)
+    print(f"  ABC Execution Review: pattern={result.abc_pattern.value}  score={result.execution_score}  status={result.review_status.value}")
+    print(_TRADE_JOURNAL_BANNER)
+
+
+def cmd_trade_journal_watchlist_review(args=None):
+    """[v1.7.5] Review watchlist conversion. Research only."""
+    print(_TRADE_JOURNAL_BANNER)
+    from paper_trading.small_capital_strategy.trade_journal_watchlist_review_v175 import (
+        review_watchlist_conversion, calculate_conversion_rate,
+    )
+    result = review_watchlist_conversion("2330", 1, True, "", 5, 3, 4)
+    print(f"  Watchlist Review: symbol={result.symbol}  tier={result.watchlist_tier}  converted={result.converted_to_trade}")
+    print(f"  conversion_score={result.conversion_score}  rate={result.conversion_rate_pct}%")
+    print(_TRADE_JOURNAL_BANNER)
+
+
+def cmd_trade_journal_risk_review(args=None):
+    """[v1.7.5] Review risk violations. Research only."""
+    print(_TRADE_JOURNAL_BANNER)
+    from paper_trading.small_capital_strategy.trade_journal_enums_v175 import TradeDirection, ABCPattern
+    from paper_trading.small_capital_strategy.trade_journal_entry_v175 import create_journal_entry
+    from paper_trading.small_capital_strategy.trade_journal_risk_review_v175 import review_risk_violations
+    entry  = create_journal_entry("2330", TradeDirection.LONG, "2026-01-05",
+                                  580.0, 50000.0, 552.0, 0.05, ABCPattern.B_BREAKOUT, "BULL", 1)
+    result = review_risk_violations(entry)
+    print(f"  Risk Review: violations={result.violation_type}  severity={result.severity}  status={result.review_status.value}")
+    print(_TRADE_JOURNAL_BANNER)
+
+
+def cmd_trade_journal_regime_review(args=None):
+    """[v1.7.5] Review regime outcome. Research only."""
+    print(_TRADE_JOURNAL_BANNER)
+    from paper_trading.small_capital_strategy.trade_journal_enums_v175 import TradeDirection
+    from paper_trading.small_capital_strategy.trade_journal_entry_v175 import create_journal_entry, close_journal_entry
+    from paper_trading.small_capital_strategy.trade_journal_regime_review_v175 import review_regime_outcome
+    e1     = close_journal_entry(
+        create_journal_entry("2330", TradeDirection.LONG, "2026-01-05", 580.0, 50000.0, 552.0, 0.05,
+                             market_regime="BULL"), "2026-01-20", 638.0)
+    result = review_regime_outcome("BULL", [e1])
+    print(f"  Regime Review: regime={result.regime}  trades={result.trade_count}  win_rate={result.win_rate_pct}%")
+    print(_TRADE_JOURNAL_BANNER)
+
+
+def cmd_trade_journal_scorecard(args=None):
+    """[v1.7.5] Build review scorecard. Research only."""
+    print(_TRADE_JOURNAL_BANNER)
+    from paper_trading.small_capital_strategy.trade_journal_enums_v175 import TradeDirection
+    from paper_trading.small_capital_strategy.trade_journal_entry_v175 import create_journal_entry, close_journal_entry
+    from paper_trading.small_capital_strategy.trade_journal_scorecard_v175 import build_scorecard
+    e1 = close_journal_entry(
+        create_journal_entry("2330", TradeDirection.LONG, "2026-01-05", 580.0, 50000.0, 552.0, 0.05),
+        "2026-01-20", 638.0)
+    sc = build_scorecard([e1])
+    print(f"  Trade Journal Scorecard: score={sc.total_score}  grade={sc.grade}  win_rate={sc.win_rate_pct}%")
+    print(_TRADE_JOURNAL_BANNER)
+
+
+def cmd_trade_journal_report(args=None):
+    """[v1.7.5] Generate trade journal report. Research only."""
+    print(_TRADE_JOURNAL_BANNER)
+    from paper_trading.small_capital_strategy.trade_journal_enums_v175 import TradeDirection
+    from paper_trading.small_capital_strategy.trade_journal_entry_v175 import create_journal_entry, close_journal_entry
+    from paper_trading.small_capital_strategy.trade_journal_dashboard_v175 import build_dashboard
+    from paper_trading.small_capital_strategy.trade_journal_report_v175 import build_report, get_report_sections
+    e1   = close_journal_entry(
+        create_journal_entry("2330", TradeDirection.LONG, "2026-01-05", 580.0, 50000.0, 552.0, 0.05),
+        "2026-01-20", 638.0)
+    dash = build_dashboard([e1])
+    rep  = build_report(dash)
+    print(f"  Trade Journal Report: sections={len(rep.sections)}  format={rep.report_format}")
+    print(f"  Sections: {', '.join(get_report_sections()[:5])} ...")
+    print(_TRADE_JOURNAL_BANNER)
+
+
+def cmd_trade_journal_scenarios(args=None):
+    """[v1.7.5] List trade journal scenarios. Research only."""
+    print(_TRADE_JOURNAL_BANNER)
+    from paper_trading.small_capital_strategy.trade_journal_scenarios_v175 import count_scenarios, get_scenarios
+    print(f"  Trade Journal Scenarios: count={count_scenarios()}  all_paper_only={all(s['paper_only'] for s in get_scenarios())}")
+    print(_TRADE_JOURNAL_BANNER)
+
+
+def cmd_trade_journal_fixtures(args=None):
+    """[v1.7.5] List trade journal fixtures. Research only."""
+    print(_TRADE_JOURNAL_BANNER)
+    from paper_trading.small_capital_strategy.trade_journal_fixture_registry_v175 import count_fixtures, validate_registry
+    result = validate_registry()
+    print(f"  Trade Journal Fixtures: count={count_fixtures()}  valid={result['valid']}")
+    print(_TRADE_JOURNAL_BANNER)
+
+
+def cmd_trade_journal_health(args=None):
+    """[v1.7.5] Run trade journal health check. Research only."""
+    print(_TRADE_JOURNAL_BANNER)
+    from paper_trading.small_capital_strategy.trade_journal_health_v175 import run_health_check
+    summary = run_health_check()
+    print(f"  Trade Journal Health v1.7.5")
+    print(f"  Status: {summary.status}  Passed: {summary.passed}/{summary.total}  Failed: {summary.failed}")
+    if summary.failed:
+        for c in summary.checks:
+            if not c["passed"]:
+                print(f"  [FAIL] {c['name']}: {c.get('error', '')}")
+    print(_TRADE_JOURNAL_BANNER)
+
+
+def cmd_trade_journal_gate(args=None):
+    """[v1.7.5] Run trade journal release gate. Research only."""
+    print(_TRADE_JOURNAL_BANNER)
+    from release.small_account_trade_journal_release_gate_v175 import run_gate
+    result = run_gate()
+    print(f"  Trade Journal Gate v1.7.5")
+    print(f"  Gate: {'PASS' if result['gate_passed'] else 'FAIL'}  Passed: {result['passed']}/{result['total']}  Failed: {result['failed']}")
+    if result["failed"]:
+        for c in result["checks"]:
+            if not c["passed"]:
+                print(f"  [FAIL] {c['name']}: {c.get('error', '')}")
+    print(_TRADE_JOURNAL_BANNER)
+
+
+def cmd_trade_journal_safety_audit(args=None):
+    """[v1.7.5] Run trade journal safety audit. Research only."""
+    print(_TRADE_JOURNAL_BANNER)
+    from paper_trading.small_capital_strategy.trade_journal_safety_v175 import run_safety_audit
+    result = run_safety_audit()
+    print(f"  Trade Journal Safety Audit: all_safe={result['all_safe']}  issues={result['issues']}")
+    print(_TRADE_JOURNAL_BANNER)
+
+
 def cmd_paper_strategy_health(args=None):
     """[v1.6.2] Paper strategy orchestration health check. Research only."""
     print(_STRATEGY_SAFETY_BANNER)
@@ -41173,6 +41370,22 @@ def main() -> None:
         "risk-dashboard-health":          cmd_risk_dashboard_health,
         "risk-dashboard-gate":            cmd_risk_dashboard_gate,
         "risk-dashboard-safety-audit":    cmd_risk_dashboard_safety_audit,
+        # v1.7.5 Trade Journal
+        "trade-journal-version":          cmd_trade_journal_version,
+        "trade-journal-entry":            cmd_trade_journal_entry,
+        "trade-journal-review-entry":     cmd_trade_journal_review_entry,
+        "trade-journal-review-exit":      cmd_trade_journal_review_exit,
+        "trade-journal-abc-review":       cmd_trade_journal_abc_review,
+        "trade-journal-watchlist-review": cmd_trade_journal_watchlist_review,
+        "trade-journal-risk-review":      cmd_trade_journal_risk_review,
+        "trade-journal-regime-review":    cmd_trade_journal_regime_review,
+        "trade-journal-scorecard":        cmd_trade_journal_scorecard,
+        "trade-journal-report":           cmd_trade_journal_report,
+        "trade-journal-scenarios":        cmd_trade_journal_scenarios,
+        "trade-journal-fixtures":         cmd_trade_journal_fixtures,
+        "trade-journal-health":           cmd_trade_journal_health,
+        "trade-journal-gate":             cmd_trade_journal_gate,
+        "trade-journal-safety-audit":     cmd_trade_journal_safety_audit,
     }
 
     if args.command is None:

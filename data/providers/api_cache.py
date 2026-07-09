@@ -16,7 +16,7 @@ import json
 import logging
 import os
 import time
-from datetime import datetime
+from datetime import datetime, timezone
 from typing import Any, Dict, Optional
 
 logger = logging.getLogger(__name__)
@@ -162,7 +162,7 @@ class APICache:
         envelope = {
             "provider":    provider,
             "dataset":     dataset,
-            "stored_at":   datetime.utcnow().isoformat(),
+            "stored_at":   datetime.now(timezone.utc).isoformat(),
             "stored_at_ts": time.time(),
             "ttl_seconds": self._ttl,
             "metadata":    safe_meta,

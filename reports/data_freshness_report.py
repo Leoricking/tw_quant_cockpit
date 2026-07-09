@@ -9,7 +9,7 @@ from __future__ import annotations
 
 import logging
 import os
-from datetime import datetime
+from datetime import datetime, timezone
 from typing import Any, Dict, List, Optional
 
 logger = logging.getLogger(__name__)
@@ -61,7 +61,7 @@ class DataFreshnessReportBuilder:
         Returns the path to the saved report file.
         [!] Does NOT auto-download or auto-repair data.
         """
-        date_str = datetime.utcnow().strftime("%Y-%m-%d")
+        date_str = datetime.now(timezone.utc).strftime("%Y-%m-%d")
         filename = f"data_freshness_report_{date_str}.md"
         os.makedirs(output_dir, exist_ok=True)
         filepath = os.path.join(output_dir, filename)
@@ -136,10 +136,10 @@ class DataFreshnessReportBuilder:
 
         cal = TradingCalendar()
         # Determine expected latest trading date
-        today = datetime.utcnow().date()
+        today = datetime.now(timezone.utc).date()
         expected_date = today
         while not cal.is_trading_day(expected_date):
-            from datetime import timedelta
+            from datetime import timedelta, timezone
             expected_date = expected_date - timedelta(days=1)
 
         overall_status = "UNKNOWN"
@@ -587,7 +587,7 @@ class DataFreshnessReportBuilder:
             "- auto_download_disabled = True",
             "- auto_repair_disabled = True",
             "",
-            f"_Report generated: {datetime.utcnow().isoformat()} UTC_",
+            f"_Report generated: {datetime.now(timezone.utc).isoformat()} UTC_",
         ]
         return "\n".join(lines)
 

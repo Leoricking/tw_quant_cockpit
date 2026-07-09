@@ -16,7 +16,7 @@ from __future__ import annotations
 
 import logging
 import time
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, timezone
 from typing import Optional
 
 import pandas as pd
@@ -86,7 +86,7 @@ class TWPublicProvider(BaseMarketDataProvider):
                 pass
 
         rows = []
-        fetched_at = datetime.utcnow().isoformat()
+        fetched_at = datetime.now(timezone.utc).isoformat()
 
         # TWSE OpenAPI: monthly revenue endpoint
         url = f"{_TWSE_API_BASE}/exchangeReport/BWIBBU_d"
@@ -154,7 +154,7 @@ class TWPublicProvider(BaseMarketDataProvider):
         if not data:
             return None
 
-        fetched_at = datetime.utcnow().isoformat()
+        fetched_at = datetime.now(timezone.utc).isoformat()
         rows = []
         for item in data:
             stock_id = item.get("Code", "").strip()
@@ -226,7 +226,7 @@ class TWPublicProvider(BaseMarketDataProvider):
         if not data:
             return None
 
-        fetched_at = datetime.utcnow().isoformat()
+        fetched_at = datetime.now(timezone.utc).isoformat()
         rows = []
         for item in data:
             stock_id = item.get("StockNo", "").strip()

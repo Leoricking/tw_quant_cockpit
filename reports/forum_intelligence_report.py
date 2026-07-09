@@ -9,7 +9,7 @@ reports/forum_intelligence_report.py — Forum Intelligence Report v1.4.7.
 from __future__ import annotations
 
 import logging
-from datetime import datetime
+from datetime import datetime, timezone
 from typing import Any, Dict, List, Optional
 
 logger = logging.getLogger(__name__)
@@ -52,7 +52,7 @@ class ForumIntelligenceReport:
 
     def build(self, as_of: Optional[str] = None) -> Dict[str, Any]:
         """Build the full report."""
-        as_of = as_of or datetime.utcnow().isoformat() + "Z"
+        as_of = as_of or datetime.now(timezone.utc).isoformat() + "Z"
         report = {
             "_report_type": "forum_intelligence",
             "_version": self.VERSION,

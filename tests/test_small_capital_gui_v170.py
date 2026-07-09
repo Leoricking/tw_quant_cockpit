@@ -10,8 +10,8 @@ from gui.small_capital_strategy_panel import (
 
 
 def test_panel_version():
-    # Panel updated to v1.7.4 to include Risk Dashboard tabs
-    assert PANEL_VERSION == "1.7.4"
+    # Panel updated to v1.7.5 to include Trade Journal tabs
+    assert PANEL_VERSION == "1.7.5"
 
 
 def test_panel_title_contains_v170():
@@ -21,13 +21,13 @@ def test_panel_title_contains_v170():
 
 def test_tab_count_22():
     # v1.7.4 panel has 84 tabs total (22+15+18+14+15)
-    assert len(_TABS) == 84
+    assert len(_TABS) == 98
 
 
 def test_get_tab_names_returns_22():
     # v1.7.4 extended panel has 84 tabs
     tabs = get_tab_names()
-    assert len(tabs) == 84
+    assert len(tabs) == 98
 
 
 def test_get_panel_info_returns_dict():
@@ -38,7 +38,7 @@ def test_get_panel_info_returns_dict():
 def test_get_panel_info_tab_count_22():
     # v1.7.4 extended panel has 84 tabs
     info = get_panel_info()
-    assert info["tab_count"] == 84
+    assert info["tab_count"] == 98
 
 
 def test_get_panel_info_paper_only():
@@ -120,7 +120,7 @@ def test_render_all_tabs_returns_dict():
     # v1.7.4 extended panel renders 84 tabs
     data = render_all_tabs()
     assert isinstance(data, dict)
-    assert len(data) == 84
+    assert len(data) == 98
 
 
 def test_render_all_tabs_no_import_errors():

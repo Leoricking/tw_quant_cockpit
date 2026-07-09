@@ -23,7 +23,7 @@ class ReportEligibilityGate:
     def evaluate_section(self, section_id: str, provider_id: str, dataset_id: str,
                          context: Optional[Dict[str, Any]] = None) -> ReportSectionEligibility:
         ctx = context or {}
-        now = datetime.datetime.utcnow().isoformat() + "Z"
+        now = datetime.datetime.now(datetime.timezone.utc).isoformat() + "Z"
 
         source_ok = ctx.get("source_valid", False)
         authority_ok = ctx.get("authority_valid", False)

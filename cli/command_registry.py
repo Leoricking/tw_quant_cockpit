@@ -4127,6 +4127,57 @@ _RISK_DASHBOARD_COMMANDS: _List[CommandSpec] = [
                 introduced_in="1.7.4", safety_classification="RESEARCH_ONLY"),
 ]
 
+# ---------------------------------------------------------------------------
+# v1.7.5 Trade Journal commands
+# ---------------------------------------------------------------------------
+_TRADE_JOURNAL_COMMANDS: _List[CommandSpec] = [
+    CommandSpec(name="trade-journal-version", handler_name="cmd_trade_journal_version",
+                help="[Research] Show trade journal version info v1.7.5", group="journal",
+                introduced_in="1.7.5", safety_classification="RESEARCH_ONLY"),
+    CommandSpec(name="trade-journal-entry", handler_name="cmd_trade_journal_entry",
+                help="[Research] Create a trade journal entry v1.7.5", group="journal",
+                introduced_in="1.7.5", safety_classification="RESEARCH_ONLY"),
+    CommandSpec(name="trade-journal-review-entry", handler_name="cmd_trade_journal_review_entry",
+                help="[Research] Review a trade entry v1.7.5", group="journal",
+                introduced_in="1.7.5", safety_classification="RESEARCH_ONLY"),
+    CommandSpec(name="trade-journal-review-exit", handler_name="cmd_trade_journal_review_exit",
+                help="[Research] Review a trade exit v1.7.5", group="journal",
+                introduced_in="1.7.5", safety_classification="RESEARCH_ONLY"),
+    CommandSpec(name="trade-journal-abc-review", handler_name="cmd_trade_journal_abc_review",
+                help="[Research] Review ABC execution v1.7.5", group="journal",
+                introduced_in="1.7.5", safety_classification="RESEARCH_ONLY"),
+    CommandSpec(name="trade-journal-watchlist-review", handler_name="cmd_trade_journal_watchlist_review",
+                help="[Research] Review watchlist conversion v1.7.5", group="journal",
+                introduced_in="1.7.5", safety_classification="RESEARCH_ONLY"),
+    CommandSpec(name="trade-journal-risk-review", handler_name="cmd_trade_journal_risk_review",
+                help="[Research] Review risk violations v1.7.5", group="journal",
+                introduced_in="1.7.5", safety_classification="RESEARCH_ONLY"),
+    CommandSpec(name="trade-journal-regime-review", handler_name="cmd_trade_journal_regime_review",
+                help="[Research] Review regime outcome v1.7.5", group="journal",
+                introduced_in="1.7.5", safety_classification="RESEARCH_ONLY"),
+    CommandSpec(name="trade-journal-scorecard", handler_name="cmd_trade_journal_scorecard",
+                help="[Research] Build review scorecard v1.7.5", group="journal",
+                introduced_in="1.7.5", safety_classification="RESEARCH_ONLY"),
+    CommandSpec(name="trade-journal-report", handler_name="cmd_trade_journal_report",
+                help="[Research] Generate trade journal report v1.7.5", group="journal",
+                introduced_in="1.7.5", safety_classification="RESEARCH_ONLY"),
+    CommandSpec(name="trade-journal-scenarios", handler_name="cmd_trade_journal_scenarios",
+                help="[Research] List trade journal scenarios v1.7.5", group="journal",
+                introduced_in="1.7.5", safety_classification="RESEARCH_ONLY"),
+    CommandSpec(name="trade-journal-fixtures", handler_name="cmd_trade_journal_fixtures",
+                help="[Research] List trade journal fixtures v1.7.5", group="journal",
+                introduced_in="1.7.5", safety_classification="RESEARCH_ONLY"),
+    CommandSpec(name="trade-journal-health", handler_name="cmd_trade_journal_health",
+                help="[Research] Run trade journal health check v1.7.5", group="journal",
+                introduced_in="1.7.5", safety_classification="RESEARCH_ONLY"),
+    CommandSpec(name="trade-journal-gate", handler_name="cmd_trade_journal_gate",
+                help="[Research] Run trade journal release gate v1.7.5", group="journal",
+                introduced_in="1.7.5", safety_classification="RESEARCH_ONLY"),
+    CommandSpec(name="trade-journal-safety-audit", handler_name="cmd_trade_journal_safety_audit",
+                help="[Research] Run trade journal safety audit v1.7.5", group="journal",
+                introduced_in="1.7.5", safety_classification="RESEARCH_ONLY"),
+]
+
 PROVIDER_COMMANDS: _List[CommandSpec] = (
     _RESEARCH_FOUNDATION_COMMANDS
     + _TWSE_COMMANDS
@@ -4157,6 +4208,7 @@ PROVIDER_COMMANDS: _List[CommandSpec] = (
     + _STABLE_ROLLUP_COMMANDS
     + _SMALL_CAPITAL_STRATEGY_COMMANDS
     + _RISK_DASHBOARD_COMMANDS
+    + _TRADE_JOURNAL_COMMANDS
 )
 
 

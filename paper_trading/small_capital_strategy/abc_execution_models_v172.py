@@ -5,7 +5,7 @@ Dataclass models for A/B/C Buy Point Execution Plan v1.7.2.
 """
 from __future__ import annotations
 from dataclasses import dataclass, field
-from datetime import datetime
+from datetime import datetime, timezone
 from typing import Any, Dict, List, Optional
 
 from paper_trading.small_capital_strategy.abc_execution_enums_v172 import (
@@ -22,7 +22,7 @@ _LINEAGE = "paper_trading.small_capital_strategy.abc_execution_models_v172"
 
 
 def _now() -> str:
-    return datetime.utcnow().isoformat()
+    return datetime.now(timezone.utc).isoformat()
 
 
 @dataclass

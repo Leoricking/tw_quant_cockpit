@@ -138,7 +138,7 @@ class QualityGateRegistry:
                 subject_id=subject_id, status=GateStatus.UNKNOWN.value,
                 passed=False, blocking=True,
                 evidence=f"Gate '{gate_id}' not found in registry",
-                evaluated_at=datetime.datetime.utcnow().isoformat() + "Z",
+                evaluated_at=datetime.datetime.now(datetime.timezone.utc).isoformat() + "Z",
             )
 
         evaluator = self._evaluators.get(gate_id)
@@ -151,7 +151,7 @@ class QualityGateRegistry:
                 passed=(status != GateStatus.FAIL.value),
                 blocking=gate.blocking,
                 evidence="No evaluator registered",
-                evaluated_at=datetime.datetime.utcnow().isoformat() + "Z",
+                evaluated_at=datetime.datetime.now(datetime.timezone.utc).isoformat() + "Z",
                 policy_version=gate.policy_version,
             )
 
@@ -168,7 +168,7 @@ class QualityGateRegistry:
                 passed=False, blocking=gate.blocking,
                 evidence=f"Evaluator raised exception: {exc}",
                 errors=[str(exc)],
-                evaluated_at=datetime.datetime.utcnow().isoformat() + "Z",
+                evaluated_at=datetime.datetime.now(datetime.timezone.utc).isoformat() + "Z",
                 policy_version=gate.policy_version,
             )
 

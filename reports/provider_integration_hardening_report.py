@@ -165,7 +165,7 @@ class ProviderIntegrationHardeningReport:
             "overview": {
                 "version":     _VERSION,
                 "release":     _RELEASE,
-                "generated_at": datetime.datetime.utcnow().isoformat() + "Z",
+                "generated_at": datetime.datetime.now(datetime.timezone.utc).isoformat() + "Z",
                 "overall":     health.get("overall"),
             },
             "contracts":    self.build_contracts_section(),

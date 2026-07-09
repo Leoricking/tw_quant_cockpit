@@ -65,7 +65,7 @@ class RuleChangeLog:
                 os.makedirs(parent, exist_ok=True)
 
             entry = {
-                "timestamp": datetime.datetime.utcnow().isoformat() + "Z",
+                "timestamp": datetime.datetime.now(datetime.timezone.utc).isoformat() + "Z",
                 "rule_id": rule_id,
                 "change_type": change_type,
                 "reason": reason,

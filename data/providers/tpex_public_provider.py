@@ -15,7 +15,7 @@ from __future__ import annotations
 
 import logging
 import time
-from datetime import datetime
+from datetime import datetime, timezone
 from typing import Optional
 
 import pandas as pd
@@ -82,7 +82,7 @@ class TPExPublicProvider(BaseMarketDataProvider):
         if not data:
             return None
 
-        fetched_at = datetime.utcnow().isoformat()
+        fetched_at = datetime.now(timezone.utc).isoformat()
         rows = []
         for item in data:
             stock_id = item.get("公司代號", "").strip()
@@ -137,7 +137,7 @@ class TPExPublicProvider(BaseMarketDataProvider):
         if not data:
             return None
 
-        fetched_at = datetime.utcnow().isoformat()
+        fetched_at = datetime.now(timezone.utc).isoformat()
         rows = []
         for item in data:
             stock_id = item.get("SecuritiesCompanyCode", "").strip()
@@ -211,7 +211,7 @@ class TPExPublicProvider(BaseMarketDataProvider):
         if not data:
             return None
 
-        fetched_at = datetime.utcnow().isoformat()
+        fetched_at = datetime.now(timezone.utc).isoformat()
         rows = []
         for item in data:
             stock_id = item.get("StockNo", "").strip()

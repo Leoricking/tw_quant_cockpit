@@ -13,18 +13,18 @@ from gui.small_capital_strategy_panel import (
 
 class TestPanelVersion:
     def test_panel_version_174(self):
-        assert PANEL_VERSION == "1.7.4"
+        assert PANEL_VERSION == "1.7.5"
 
     def test_panel_title_has_174(self):
-        assert "1.7.4" in PANEL_TITLE
+        assert "1.7.5" in PANEL_TITLE
 
     def test_panel_title_has_risk_dashboard(self):
-        assert "Risk Dashboard" in PANEL_TITLE
+        assert "Small Capital" in PANEL_TITLE
 
 
 class TestTabCount:
     def test_total_tabs_84(self):
-        assert len(_TABS) == 84
+        assert len(_TABS) == 98
 
     def test_risk_dashboard_tabs_15(self):
         assert len(_TABS_V174_RISK_DASHBOARD) == 15

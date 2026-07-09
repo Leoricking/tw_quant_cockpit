@@ -4,16 +4,17 @@ GUI panel for Small Capital Growth Strategy Template v1.7.0 +
 Watchlist Strategy Layer v1.7.1 +
 A/B/C Buy Point Execution Plan v1.7.2 +
 Market Regime Position Control v1.7.3 +
-Small Account Risk Dashboard v1.7.4.
+Small Account Risk Dashboard v1.7.4 +
+Small Account Trade Journal v1.7.5.
 [!] Research Only. Paper Only. No Real Orders. Not Investment Advice.
 Headless-safe: no tkinter at module level. Renders to dict.
-22 v1.7.0 tabs + 15 watchlist tabs + 18 abc tabs + 14 regime tabs + 15 risk dashboard tabs = 84 tabs total.
+22 v1.7.0 tabs + 15 watchlist tabs + 18 abc tabs + 14 regime tabs + 15 risk dashboard tabs + 14 trade journal tabs = 98 tabs total.
 """
 from __future__ import annotations
 from typing import Any, Dict, List, Optional
 
-PANEL_VERSION = "1.7.4"
-PANEL_TITLE = "Small Capital Strategy v1.7.4 — Small Account Risk Dashboard"
+PANEL_VERSION = "1.7.5"
+PANEL_TITLE = "Small Capital Strategy v1.7.5 — Small Account Trade Journal"
 
 # v1.7.0 tabs (preserved unchanged)
 _TABS_V170 = [
@@ -119,13 +120,32 @@ _TABS_V174_RISK_DASHBOARD = [
     "risk_scorecard",
 ]
 
-_TABS = _TABS_V170 + _TABS_V171_WATCHLIST + _TABS_V172_ABC + _TABS_V173_REGIME + _TABS_V174_RISK_DASHBOARD
+# v1.7.5 Trade Journal tabs
+_TABS_V175_TRADE_JOURNAL = [
+    "trade_journal_overview",
+    "trade_journal_entry",
+    "trade_journal_review_entry",
+    "trade_journal_review_exit",
+    "trade_journal_abc_review",
+    "trade_journal_watchlist_review",
+    "trade_journal_risk_review",
+    "trade_journal_regime_review",
+    "trade_journal_mistake_taxonomy",
+    "trade_journal_scorecard",
+    "trade_journal_report",
+    "trade_journal_scenarios",
+    "trade_journal_health",
+    "trade_journal_gate",
+]
+
+_TABS = _TABS_V170 + _TABS_V171_WATCHLIST + _TABS_V172_ABC + _TABS_V173_REGIME + _TABS_V174_RISK_DASHBOARD + _TABS_V175_TRADE_JOURNAL
 
 assert len(_TABS_V170) == 22, f"Expected 22 v1.7.0 tabs, got {len(_TABS_V170)}"
 assert len(_TABS_V171_WATCHLIST) == 15, f"Expected 15 watchlist tabs, got {len(_TABS_V171_WATCHLIST)}"
 assert len(_TABS_V172_ABC) == 18, f"Expected 18 ABC tabs, got {len(_TABS_V172_ABC)}"
 assert len(_TABS_V173_REGIME) == 14, f"Expected 14 regime tabs, got {len(_TABS_V173_REGIME)}"
 assert len(_TABS_V174_RISK_DASHBOARD) == 15, f"Expected 15 risk dashboard tabs, got {len(_TABS_V174_RISK_DASHBOARD)}"
+assert len(_TABS_V175_TRADE_JOURNAL) == 14, f"Expected 14 trade journal tabs, got {len(_TABS_V175_TRADE_JOURNAL)}"
 
 
 def get_tab_names() -> List[str]:
@@ -1207,6 +1227,21 @@ def render_all_tabs() -> Dict[str, Any]:
         "risk_watchlist_risk": render_risk_watchlist_tab,
         "risk_market_regime_risk": render_risk_market_regime_tab,
         "risk_scorecard": render_risk_scorecard_tab,
+        # v1.7.5 trade journal tabs
+        "trade_journal_overview":        render_trade_journal_overview_tab,
+        "trade_journal_entry":           render_trade_journal_entry_tab,
+        "trade_journal_review_entry":    render_trade_journal_review_entry_tab,
+        "trade_journal_review_exit":     render_trade_journal_review_exit_tab,
+        "trade_journal_abc_review":      render_trade_journal_abc_review_tab,
+        "trade_journal_watchlist_review": render_trade_journal_watchlist_review_tab,
+        "trade_journal_risk_review":     render_trade_journal_risk_review_tab,
+        "trade_journal_regime_review":   render_trade_journal_regime_review_tab,
+        "trade_journal_mistake_taxonomy": render_trade_journal_mistake_taxonomy_tab,
+        "trade_journal_scorecard":       render_trade_journal_scorecard_tab,
+        "trade_journal_report":          render_trade_journal_report_tab,
+        "trade_journal_scenarios":       render_trade_journal_scenarios_tab,
+        "trade_journal_health":          render_trade_journal_health_tab,
+        "trade_journal_gate":            render_trade_journal_gate_tab,
     }
     result = {}
     for tab_name in _TABS:
@@ -1490,6 +1525,256 @@ def render_risk_scorecard_tab() -> Dict[str, Any]:
 def get_risk_dashboard_tab_names() -> List[str]:
     """Return list of v1.7.4 risk dashboard tab names."""
     return list(_TABS_V174_RISK_DASHBOARD)
+
+
+def get_trade_journal_tab_names() -> List[str]:
+    """Return list of v1.7.5 trade journal tab names."""
+    return list(_TABS_V175_TRADE_JOURNAL)
+
+
+# ---------------------------------------------------------------------------
+# v1.7.5 Trade Journal tab renderers
+# ---------------------------------------------------------------------------
+
+def render_trade_journal_overview_tab() -> Dict[str, Any]:
+    """Render Trade Journal Overview tab. v1.7.5."""
+    from paper_trading.small_capital_strategy.version_v175 import get_version_info
+    info = get_version_info()
+    return {
+        "title":          "Small Account Trade Journal v1.7.5",
+        "version":        "1.7.5",
+        "release_name":   "Small Account Trade Journal",
+        "base_release":   "1.7.4 Small Account Risk Dashboard",
+        "tab_count":      len(_TABS_V175_TRADE_JOURNAL),
+        "paper_only":     True,
+        "research_only":  True,
+        "no_real_orders": True,
+        "no_broker":      True,
+        "not_investment_advice": True,
+        "version_info":   info,
+    }
+
+
+def render_trade_journal_entry_tab() -> Dict[str, Any]:
+    """Render Trade Journal Entry tab. v1.7.5."""
+    from paper_trading.small_capital_strategy.trade_journal_enums_v175 import TradeDirection, ABCPattern
+    from paper_trading.small_capital_strategy.trade_journal_entry_v175 import create_journal_entry, validate_entry
+    sample = create_journal_entry("2330", TradeDirection.LONG, "2026-01-05",
+                                  580.0, 50000.0, 552.0, 0.05, ABCPattern.B_BREAKOUT, "BULL", 1)
+    return {
+        "sample_entry_symbol":   sample.symbol,
+        "sample_entry_valid":    validate_entry(sample),
+        "paper_only":            sample.paper_only,
+        "no_real_orders":        sample.no_real_orders,
+        "not_investment_advice": True,
+    }
+
+
+def render_trade_journal_review_entry_tab() -> Dict[str, Any]:
+    """Render Trade Journal Review Entry tab. v1.7.5."""
+    from paper_trading.small_capital_strategy.trade_journal_enums_v175 import TradeDirection, ABCPattern
+    from paper_trading.small_capital_strategy.trade_journal_entry_v175 import create_journal_entry
+    from paper_trading.small_capital_strategy.trade_journal_review_entry_v175 import review_entry, score_entry
+    from paper_trading.small_capital_strategy.trade_journal_models_v175 import TradeDecisionSnapshot
+    entry = create_journal_entry("2330", TradeDirection.LONG, "2026-01-05",
+                                 580.0, 50000.0, 552.0, 0.05, ABCPattern.B_BREAKOUT, "BULL", 1)
+    snap  = TradeDecisionSnapshot(entry_trigger="B_BREAKOUT", market_regime="BULL",
+                                  stop_loss_pct=0.05, position_size_twd=50000.0, watchlist_tier=1)
+    result = review_entry(entry, snap)
+    return {
+        "entry_quality":  result.entry_quality.value,
+        "entry_score":    result.entry_score,
+        "review_status":  result.review_status.value,
+        "paper_only":     result.paper_only,
+        "not_investment_advice": True,
+    }
+
+
+def render_trade_journal_review_exit_tab() -> Dict[str, Any]:
+    """Render Trade Journal Review Exit tab. v1.7.5."""
+    from paper_trading.small_capital_strategy.trade_journal_enums_v175 import TradeDirection
+    from paper_trading.small_capital_strategy.trade_journal_entry_v175 import create_journal_entry, close_journal_entry
+    from paper_trading.small_capital_strategy.trade_journal_review_exit_v175 import review_exit
+    entry  = create_journal_entry("2330", TradeDirection.LONG, "2026-01-05", 580.0, 50000.0, 552.0, 0.05)
+    closed = close_journal_entry(entry, "2026-01-20", 638.0)
+    result = review_exit(closed)
+    return {
+        "exit_quality":  result.exit_quality.value,
+        "exit_score":    result.exit_score,
+        "review_status": result.review_status.value,
+        "paper_only":    result.paper_only,
+        "not_investment_advice": True,
+    }
+
+
+def render_trade_journal_abc_review_tab() -> Dict[str, Any]:
+    """Render Trade Journal ABC Review tab. v1.7.5."""
+    from paper_trading.small_capital_strategy.trade_journal_enums_v175 import TradeDirection, ABCPattern
+    from paper_trading.small_capital_strategy.trade_journal_entry_v175 import create_journal_entry
+    from paper_trading.small_capital_strategy.trade_journal_abc_review_v175 import review_abc_execution
+    from paper_trading.small_capital_strategy.trade_journal_models_v175 import TradeDecisionSnapshot
+    entry = create_journal_entry("2330", TradeDirection.LONG, "2026-01-05",
+                                 580.0, 50000.0, 552.0, 0.05, ABCPattern.C_RECLAIM, "BULL", 1)
+    snap  = TradeDecisionSnapshot(stop_loss_pct=0.05, position_size_twd=50000.0)
+    result = review_abc_execution(entry, snap)
+    return {
+        "abc_pattern":     result.abc_pattern.value,
+        "execution_score": result.execution_score,
+        "review_status":   result.review_status.value,
+        "paper_only":      result.paper_only,
+        "not_investment_advice": True,
+    }
+
+
+def render_trade_journal_watchlist_review_tab() -> Dict[str, Any]:
+    """Render Trade Journal Watchlist Review tab. v1.7.5."""
+    from paper_trading.small_capital_strategy.trade_journal_watchlist_review_v175 import (
+        review_watchlist_conversion, calculate_conversion_rate,
+    )
+    result = review_watchlist_conversion("2330", 1, True, "", 5, 3, 4)
+    return {
+        "symbol":             result.symbol,
+        "watchlist_tier":     result.watchlist_tier,
+        "converted":          result.converted_to_trade,
+        "conversion_score":   result.conversion_score,
+        "conversion_rate_pct": calculate_conversion_rate(5, 3, 4),
+        "paper_only":         result.paper_only,
+        "not_investment_advice": True,
+    }
+
+
+def render_trade_journal_risk_review_tab() -> Dict[str, Any]:
+    """Render Trade Journal Risk Review tab. v1.7.5."""
+    from paper_trading.small_capital_strategy.trade_journal_enums_v175 import TradeDirection, ABCPattern
+    from paper_trading.small_capital_strategy.trade_journal_entry_v175 import create_journal_entry
+    from paper_trading.small_capital_strategy.trade_journal_risk_review_v175 import review_risk_violations
+    entry  = create_journal_entry("2330", TradeDirection.LONG, "2026-01-05",
+                                  580.0, 50000.0, 552.0, 0.05, ABCPattern.B_BREAKOUT, "BULL", 1)
+    result = review_risk_violations(entry)
+    return {
+        "violation_type":  result.violation_type,
+        "severity":        result.severity,
+        "review_status":   result.review_status.value,
+        "paper_only":      result.paper_only,
+        "not_investment_advice": True,
+    }
+
+
+def render_trade_journal_regime_review_tab() -> Dict[str, Any]:
+    """Render Trade Journal Regime Review tab. v1.7.5."""
+    from paper_trading.small_capital_strategy.trade_journal_enums_v175 import TradeDirection, ABCPattern
+    from paper_trading.small_capital_strategy.trade_journal_entry_v175 import create_journal_entry, close_journal_entry
+    from paper_trading.small_capital_strategy.trade_journal_regime_review_v175 import review_regime_outcome
+    e1 = close_journal_entry(
+        create_journal_entry("2330", TradeDirection.LONG, "2026-01-05", 580.0, 50000.0, 552.0, 0.05,
+                             ABCPattern.B_BREAKOUT, "BULL", 1), "2026-01-20", 638.0)
+    result = review_regime_outcome("BULL", [e1])
+    return {
+        "regime":          result.regime,
+        "trade_count":     result.trade_count,
+        "win_rate_pct":    result.win_rate_pct,
+        "review_status":   result.review_status.value,
+        "paper_only":      result.paper_only,
+        "not_investment_advice": True,
+    }
+
+
+def render_trade_journal_mistake_taxonomy_tab() -> Dict[str, Any]:
+    """Render Trade Journal Mistake Taxonomy tab. v1.7.5."""
+    from paper_trading.small_capital_strategy.trade_journal_enums_v175 import TradeDirection, ABCPattern
+    from paper_trading.small_capital_strategy.trade_journal_entry_v175 import create_journal_entry
+    from paper_trading.small_capital_strategy.trade_journal_mistake_taxonomy_v175 import classify_mistakes
+    entry  = create_journal_entry("2330", TradeDirection.LONG, "2026-01-05",
+                                  580.0, 50000.0, 552.0, 0.05, ABCPattern.B_BREAKOUT, "BULL", 1)
+    result = classify_mistakes(entry)
+    return {
+        "primary_mistake":  result.primary_mistake.value,
+        "severity_score":   result.severity_score,
+        "corrective_action": result.corrective_action,
+        "review_status":    result.review_status.value,
+        "paper_only":       result.paper_only,
+        "not_investment_advice": True,
+    }
+
+
+def render_trade_journal_scorecard_tab() -> Dict[str, Any]:
+    """Render Trade Journal Scorecard tab. v1.7.5."""
+    from paper_trading.small_capital_strategy.trade_journal_enums_v175 import TradeDirection
+    from paper_trading.small_capital_strategy.trade_journal_entry_v175 import create_journal_entry, close_journal_entry
+    from paper_trading.small_capital_strategy.trade_journal_scorecard_v175 import build_scorecard, get_weight_table
+    e1 = close_journal_entry(
+        create_journal_entry("2330", TradeDirection.LONG, "2026-01-05", 580.0, 50000.0, 552.0, 0.05),
+        "2026-01-20", 638.0)
+    sc = build_scorecard([e1])
+    return {
+        "total_score":  sc.total_score,
+        "grade":        sc.grade,
+        "win_rate_pct": sc.win_rate_pct,
+        "weights":      get_weight_table(),
+        "paper_only":   sc.paper_only,
+        "not_investment_advice": True,
+    }
+
+
+def render_trade_journal_report_tab() -> Dict[str, Any]:
+    """Render Trade Journal Report tab. v1.7.5."""
+    from paper_trading.small_capital_strategy.trade_journal_enums_v175 import TradeDirection
+    from paper_trading.small_capital_strategy.trade_journal_entry_v175 import create_journal_entry, close_journal_entry
+    from paper_trading.small_capital_strategy.trade_journal_dashboard_v175 import build_dashboard
+    from paper_trading.small_capital_strategy.trade_journal_report_v175 import build_report, get_report_sections
+    e1 = close_journal_entry(
+        create_journal_entry("2330", TradeDirection.LONG, "2026-01-05", 580.0, 50000.0, 552.0, 0.05),
+        "2026-01-20", 638.0)
+    dash   = build_dashboard([e1])
+    report = build_report(dash)
+    return {
+        "sections_count": len(report.sections),
+        "section_names":  get_report_sections(),
+        "paper_only":     report.paper_only,
+        "not_investment_advice": True,
+    }
+
+
+def render_trade_journal_scenarios_tab() -> Dict[str, Any]:
+    """Render Trade Journal Scenarios tab. v1.7.5."""
+    from paper_trading.small_capital_strategy.trade_journal_scenarios_v175 import (
+        get_scenarios, count_scenarios,
+    )
+    return {
+        "scenario_count": count_scenarios(),
+        "all_paper_only": all(s["paper_only"] for s in get_scenarios()),
+        "paper_only":     True,
+        "not_investment_advice": True,
+    }
+
+
+def render_trade_journal_health_tab() -> Dict[str, Any]:
+    """Render Trade Journal Health tab. v1.7.5."""
+    from paper_trading.small_capital_strategy.trade_journal_health_v175 import run_health_check
+    result = run_health_check()
+    return {
+        "all_passed": result.all_passed,
+        "passed":     result.passed,
+        "failed":     result.failed,
+        "total":      result.total,
+        "status":     result.status,
+        "paper_only": result.paper_only,
+        "not_investment_advice": True,
+    }
+
+
+def render_trade_journal_gate_tab() -> Dict[str, Any]:
+    """Render Trade Journal Gate tab. v1.7.5."""
+    from release.small_account_trade_journal_release_gate_v175 import run_gate
+    result = run_gate()
+    return {
+        "gate_passed": result["gate_passed"],
+        "passed":      result["passed"],
+        "failed":      result["failed"],
+        "total":       result["total"],
+        "paper_only":  True,
+        "not_investment_advice": True,
+    }
 
 
 def get_panel_info() -> Dict[str, Any]:

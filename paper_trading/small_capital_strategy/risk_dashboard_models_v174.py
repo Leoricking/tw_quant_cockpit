@@ -19,7 +19,7 @@ _LINEAGE = "paper_trading.small_capital_strategy.risk_dashboard_models_v174"
 
 
 def _now() -> str:
-    return datetime.datetime.utcnow().isoformat()
+    return datetime.datetime.now(datetime.timezone.utc).isoformat()
 
 
 @dataclass

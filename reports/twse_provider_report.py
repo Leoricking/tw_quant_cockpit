@@ -18,7 +18,7 @@ class TWSEProviderReport:
                 "release": RELEASE_NAME,
                 "provider": "twse_official",
                 "official_source": True,
-                "generated_at": datetime.datetime.utcnow().isoformat() + "Z",
+                "generated_at": datetime.datetime.now(datetime.timezone.utc).isoformat() + "Z",
                 "research_only": True,
                 "no_real_orders": True,
             },

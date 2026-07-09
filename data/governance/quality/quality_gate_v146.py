@@ -39,7 +39,7 @@ class DataQualityGate:
     def evaluate(self, subject_id: str,
                  context: Optional[Dict[str, Any]] = None) -> QualityGateResult:
         ctx = context or {}
-        now = datetime.datetime.utcnow().isoformat() + "Z"
+        now = datetime.datetime.now(datetime.timezone.utc).isoformat() + "Z"
 
         quality_score = ctx.get("quality_score", None)
         quality_status = ctx.get("quality_status", "UNKNOWN")

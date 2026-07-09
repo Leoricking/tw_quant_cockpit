@@ -9,7 +9,7 @@ data_freshness/freshness_engine.py — Data Freshness Engine for v1.1.3.
 from __future__ import annotations
 
 import logging
-from datetime import datetime
+from datetime import datetime, timezone
 from typing import Any, Dict, List, Optional
 from uuid import uuid4
 
@@ -170,7 +170,7 @@ class DataFreshnessEngine:
         Creates alerts for: DELAYED, STALE, INTERRUPTED, MISSING, FUTURE_DATE, DATE_REGRESSION.
         """
         alerts: List[FreshnessAlert] = []
-        now_iso = datetime.utcnow().isoformat()
+        now_iso = datetime.now(timezone.utc).isoformat()
 
         status_to_alert = {
             STATUS_DELAYED:        (ALERT_DATA_DELAY,    SEVERITY_MEDIUM),
@@ -258,7 +258,7 @@ class DataFreshnessEngine:
         self, records: List[DatasetFreshnessRecord]
     ) -> FreshnessSummary:
         """Build a FreshnessSummary from a list of records."""
-        now_iso = datetime.utcnow().isoformat()
+        now_iso = datetime.now(timezone.utc).isoformat()
 
         # Determine tier
         tiers = list({r.tier for r in records if r.tier})

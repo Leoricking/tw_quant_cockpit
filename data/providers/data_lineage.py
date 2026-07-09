@@ -15,7 +15,7 @@ import json
 import logging
 import os
 import uuid
-from datetime import datetime
+from datetime import datetime, timezone
 from typing import Any, Dict, List, Optional
 
 logger = logging.getLogger(__name__)
@@ -78,7 +78,7 @@ class DataLineageTracker:
         Returns the lineage record dict.
         """
         lineage_id    = f"LIN-{uuid.uuid4().hex[:12].upper()}"
-        fetched_at    = datetime.utcnow().isoformat()
+        fetched_at    = datetime.now(timezone.utc).isoformat()
         params_hash   = self._hash_params(params)
         source_masked = self._mask_url(result_summary.get("source_url", ""))
 
@@ -114,7 +114,7 @@ class DataLineageTracker:
         Record a data write operation. Updates the most recent fetch record
         for the same dataset if found, otherwise creates a standalone write record.
         """
-        written_at = datetime.utcnow().isoformat()
+        written_at = datetime.now(timezone.utc).isoformat()
 
         # Try to update the most recent fetch record for this dataset
         for rec in reversed(self._records):
@@ -158,7 +158,7 @@ class DataLineageTracker:
     def export_lineage_summary(self) -> dict:
         """Export all lineage records as a summary."""
         return {
-            "generated_at":  datetime.utcnow().isoformat(),
+            "generated_at":  datetime.now(timezone.utc).isoformat(),
             "total_records": len(self._records),
             "records":       list(self._records),
             "datasets":      list({r.get("dataset", "") for r in self._records}),

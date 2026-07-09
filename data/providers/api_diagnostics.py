@@ -9,7 +9,7 @@ Aggregates per-provider, per-dataset fetch results for display in CLI and GUI.
 from __future__ import annotations
 
 import logging
-from datetime import datetime
+from datetime import datetime, timezone
 from typing import Any, Dict, List, Optional
 
 logger = logging.getLogger(__name__)
@@ -83,7 +83,7 @@ class APIFetchDiagnostics:
             "error_type":        error_type or "",
             "warning":           warning or "",
             "recommended_action": recommended_action,
-            "recorded_at":       datetime.utcnow().isoformat(),
+            "recorded_at":       datetime.now(timezone.utc).isoformat(),
         }
         self._records.append(record)
         return record

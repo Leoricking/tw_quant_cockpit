@@ -28,7 +28,7 @@ class EndpointReadinessGate:
     def evaluate(self, endpoint_id: str,
                  context: Optional[Dict[str, Any]] = None) -> Dict[str, Any]:
         ctx = context or {}
-        now = datetime.datetime.utcnow().isoformat() + "Z"
+        now = datetime.datetime.now(datetime.timezone.utc).isoformat() + "Z"
         results: List[QualityGateResult] = []
 
         registered = endpoint_id in _KNOWN_ENDPOINTS or ctx.get("registered", False)
@@ -85,6 +85,6 @@ class EndpointReadinessGate:
             passed=(status == GateStatus.PASS.value),
             blocking=blocking, evidence=evidence,
             warnings=warnings or [],
-            evaluated_at=datetime.datetime.utcnow().isoformat() + "Z",
+            evaluated_at=datetime.datetime.now(datetime.timezone.utc).isoformat() + "Z",
             policy_version=self.POLICY_VERSION,
         )

@@ -20,7 +20,7 @@ class MOPSProviderReport:
                 "official_source": True,
                 "market": "MOPS",
                 "data_domain": "financial_disclosure",
-                "generated_at": datetime.datetime.utcnow().isoformat() + "Z",
+                "generated_at": datetime.datetime.now(datetime.timezone.utc).isoformat() + "Z",
                 "research_only": True,
                 "no_real_orders": True,
             },

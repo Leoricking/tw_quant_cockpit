@@ -22,7 +22,7 @@ from __future__ import annotations
 import logging
 import os
 import time
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, timezone
 from typing import Optional
 
 import pandas as pd
@@ -131,7 +131,7 @@ class FinMindProvider(BaseMarketDataProvider):
         if not data:
             return None
 
-        fetched_at = datetime.utcnow().isoformat()
+        fetched_at = datetime.now(timezone.utc).isoformat()
         rows = []
         for item in data:
             try:
@@ -187,7 +187,7 @@ class FinMindProvider(BaseMarketDataProvider):
         if not data:
             return None
 
-        fetched_at = datetime.utcnow().isoformat()
+        fetched_at = datetime.now(timezone.utc).isoformat()
         rows = []
         # Group by date to build quarterly rows
         by_date: dict = {}
@@ -265,7 +265,7 @@ class FinMindProvider(BaseMarketDataProvider):
         if not data:
             return None
 
-        fetched_at = datetime.utcnow().isoformat()
+        fetched_at = datetime.now(timezone.utc).isoformat()
         # FinMind returns one row per institution type per date — pivot to wide
         by_date: dict = {}
         for item in data:
@@ -333,7 +333,7 @@ class FinMindProvider(BaseMarketDataProvider):
         if not data:
             return None
 
-        fetched_at = datetime.utcnow().isoformat()
+        fetched_at = datetime.now(timezone.utc).isoformat()
         rows = []
         for item in data:
             try:

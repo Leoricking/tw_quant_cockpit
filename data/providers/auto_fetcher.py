@@ -14,7 +14,7 @@ from __future__ import annotations
 
 import logging
 import os
-from datetime import datetime
+from datetime import datetime, timezone
 from typing import Any, Dict, List, Optional
 
 logger = logging.getLogger(__name__)
@@ -164,7 +164,7 @@ class DataProviderAutoFetcher:
     def fetch_daily_price(self, symbols: List[str]) -> dict:
         """Fetch daily OHLCV price data."""
         import pandas as pd
-        fetched_at = datetime.utcnow().isoformat()
+        fetched_at = datetime.now(timezone.utc).isoformat()
         rows: list = []
         provider_used = ""
         warnings: list = []
@@ -205,7 +205,7 @@ class DataProviderAutoFetcher:
     def fetch_monthly_revenue(self, symbols: List[str]) -> dict:
         """Fetch monthly revenue data."""
         import pandas as pd
-        fetched_at = datetime.utcnow().isoformat()
+        fetched_at = datetime.now(timezone.utc).isoformat()
         rows: list = []
         provider_used = ""
         warnings: list = []
@@ -253,7 +253,7 @@ class DataProviderAutoFetcher:
 
     def fetch_institutional(self, symbols: List[str]) -> dict:
         """Fetch institutional net-buy data."""
-        fetched_at = datetime.utcnow().isoformat()
+        fetched_at = datetime.now(timezone.utc).isoformat()
         rows: list = []
         provider_used = ""
         warnings: list = []
@@ -300,7 +300,7 @@ class DataProviderAutoFetcher:
 
     def fetch_margin(self, symbols: List[str]) -> dict:
         """Fetch margin/short-sell balance data."""
-        fetched_at = datetime.utcnow().isoformat()
+        fetched_at = datetime.now(timezone.utc).isoformat()
         rows: list = []
         provider_used = ""
         warnings: list = []
@@ -340,7 +340,7 @@ class DataProviderAutoFetcher:
 
     def fetch_fundamental(self, symbols: List[str]) -> dict:
         """Fetch fundamental (EPS, margins) data."""
-        fetched_at = datetime.utcnow().isoformat()
+        fetched_at = datetime.now(timezone.utc).isoformat()
         rows: list = []
         provider_used = ""
         warnings: list = []
