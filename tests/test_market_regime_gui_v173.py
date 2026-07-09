@@ -19,21 +19,21 @@ from gui.small_capital_strategy_panel import (
 
 class TestPanelVersion:
     def test_panel_version_173(self):
-        assert PANEL_VERSION == "1.7.3"
+        assert PANEL_VERSION == "1.7.4"
 
     def test_panel_title_contains_173(self):
-        assert "1.7.3" in PANEL_TITLE
+        assert "1.7.4" in PANEL_TITLE
 
 
 class TestTabCounts:
     def test_total_tab_count_69(self):
-        assert len(_TABS) == 69
+        assert len(_TABS) == 84
 
     def test_regime_tab_count_14(self):
         assert len(_TABS_V173_REGIME) == 14
 
     def test_get_tab_names_length_69(self):
-        assert len(get_tab_names()) == 69
+        assert len(get_tab_names()) == 84
 
     def test_get_regime_tab_names_length_14(self):
         assert len(get_regime_tab_names()) == 14

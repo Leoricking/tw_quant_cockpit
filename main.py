@@ -38862,6 +38862,222 @@ def cmd_market_regime_safety_audit(args=None):
     print(_REGIME_BANNER)
 
 
+# ---------------------------------------------------------------------------
+# v1.7.4 — Small Account Risk Dashboard Commands
+# ---------------------------------------------------------------------------
+
+_RISK_DASHBOARD_BANNER = "[!] Research Only | Paper Only | No Real Orders | Not Investment Advice"
+
+
+def cmd_risk_dashboard_version(args=None):
+    """[v1.7.4] Show risk dashboard version info. Research only."""
+    print(_RISK_DASHBOARD_BANNER)
+    from paper_trading.small_capital_strategy.version_v174 import get_version_info
+    info = get_version_info()
+    print(f"  Version: {info['version']}  Release: {info['release_name']}")
+    print(f"  Base: {info['base_release']}")
+    print(_RISK_DASHBOARD_BANNER)
+
+
+def cmd_risk_dashboard_summary(args=None):
+    """[v1.7.4] Show risk dashboard summary. Research only."""
+    print(_RISK_DASHBOARD_BANNER)
+    from paper_trading.small_capital_strategy.small_capital_risk_adapter_v174 import build_risk_dashboard, get_default_pass_input
+    dashboard = build_risk_dashboard(get_default_pass_input())
+    print(f"  Risk Dashboard: {dashboard.overall_status.value}")
+    print(f"  Summary: {dashboard.summary}")
+    print(_RISK_DASHBOARD_BANNER)
+
+
+def cmd_risk_dashboard_single_trade(args=None):
+    """[v1.7.4] Evaluate single trade risk. Research only."""
+    print(_RISK_DASHBOARD_BANNER)
+    from paper_trading.small_capital_strategy.risk_dashboard_models_v174 import SmallAccountRiskInput
+    from paper_trading.small_capital_strategy.single_trade_risk_monitor_v174 import evaluate_single_trade_risk
+    inp = SmallAccountRiskInput(position_size_amount=50000, stop_loss_pct=0.05, has_stop_loss=True)
+    result = evaluate_single_trade_risk(inp)
+    print(f"  Single Trade Risk: {result.status.value}  loss={result.single_trade_loss_amount:.0f} TWD  risk_pct={result.risk_pct:.2f}%")
+    print(_RISK_DASHBOARD_BANNER)
+
+
+def cmd_risk_dashboard_exposure(args=None):
+    """[v1.7.4] Evaluate portfolio exposure risk. Research only."""
+    print(_RISK_DASHBOARD_BANNER)
+    from paper_trading.small_capital_strategy.risk_dashboard_models_v174 import SmallAccountRiskInput
+    from paper_trading.small_capital_strategy.portfolio_exposure_monitor_v174 import evaluate_portfolio_exposure
+    inp = SmallAccountRiskInput(market_regime="BULL", total_invested_pct=30.0, cash_pct=70.0)
+    result = evaluate_portfolio_exposure(inp)
+    print(f"  Exposure: {result.status.value}  invested={result.invested_pct:.1f}%  cash={result.cash_pct:.1f}%  regime={result.market_regime}")
+    print(_RISK_DASHBOARD_BANNER)
+
+
+def cmd_risk_dashboard_cash(args=None):
+    """[v1.7.4] Evaluate cash ratio risk. Research only."""
+    print(_RISK_DASHBOARD_BANNER)
+    from paper_trading.small_capital_strategy.risk_dashboard_models_v174 import SmallAccountRiskInput
+    from paper_trading.small_capital_strategy.cash_ratio_risk_monitor_v174 import evaluate_cash_ratio
+    inp = SmallAccountRiskInput(market_regime="BULL", cash_pct=70.0)
+    result = evaluate_cash_ratio(inp)
+    print(f"  Cash Ratio: {result.status.value}  cash={result.cash_pct:.1f}%  min={result.min_cash_pct}%  regime={result.market_regime}")
+    print(_RISK_DASHBOARD_BANNER)
+
+
+def cmd_risk_dashboard_drawdown(args=None):
+    """[v1.7.4] Evaluate drawdown risk. Research only."""
+    print(_RISK_DASHBOARD_BANNER)
+    from paper_trading.small_capital_strategy.risk_dashboard_models_v174 import SmallAccountRiskInput
+    from paper_trading.small_capital_strategy.drawdown_monitor_v174 import evaluate_drawdown
+    inp = SmallAccountRiskInput(current_drawdown_pct=2.0)
+    result = evaluate_drawdown(inp)
+    print(f"  Drawdown: {result.status.value}  drawdown={result.drawdown_pct:.2f}%  level={result.level.value}")
+    print(_RISK_DASHBOARD_BANNER)
+
+
+def cmd_risk_dashboard_losing_streak(args=None):
+    """[v1.7.4] Evaluate losing streak risk. Research only."""
+    print(_RISK_DASHBOARD_BANNER)
+    from paper_trading.small_capital_strategy.risk_dashboard_models_v174 import SmallAccountRiskInput
+    from paper_trading.small_capital_strategy.losing_streak_monitor_v174 import evaluate_losing_streak
+    inp = SmallAccountRiskInput(losing_streak_count=0)
+    result = evaluate_losing_streak(inp)
+    print(f"  Losing Streak: {result.status.value}  streak={result.losing_streak_count}  level={result.level.value}")
+    print(_RISK_DASHBOARD_BANNER)
+
+
+def cmd_risk_dashboard_concentration(args=None):
+    """[v1.7.4] Evaluate concentration risk. Research only."""
+    print(_RISK_DASHBOARD_BANNER)
+    from paper_trading.small_capital_strategy.risk_dashboard_models_v174 import SmallAccountRiskInput
+    from paper_trading.small_capital_strategy.concentration_risk_monitor_v174 import evaluate_concentration_risk
+    inp = SmallAccountRiskInput(max_single_position_pct=20.0, sector_exposure_pct=40.0)
+    result = evaluate_concentration_risk(inp)
+    print(f"  Concentration: {result.status.value}  single={result.max_single_position_pct:.1f}%  sector={result.sector_exposure_pct:.1f}%")
+    print(_RISK_DASHBOARD_BANNER)
+
+
+def cmd_risk_dashboard_theme_exposure(args=None):
+    """[v1.7.4] Evaluate theme exposure risk. Research only."""
+    print(_RISK_DASHBOARD_BANNER)
+    from paper_trading.small_capital_strategy.risk_dashboard_models_v174 import SmallAccountRiskInput
+    from paper_trading.small_capital_strategy.theme_exposure_monitor_v174 import evaluate_theme_exposure
+    inp = SmallAccountRiskInput(theme_exposure_pct=30.0, short_term_training_amount=5000.0)
+    result = evaluate_theme_exposure(inp)
+    print(f"  Theme Exposure: {result.status.value}  theme={result.theme_exposure_pct:.1f}%  training={result.training_amount:.0f} TWD")
+    print(_RISK_DASHBOARD_BANNER)
+
+
+def cmd_risk_dashboard_position_count(args=None):
+    """[v1.7.4] Evaluate position count risk. Research only."""
+    print(_RISK_DASHBOARD_BANNER)
+    from paper_trading.small_capital_strategy.risk_dashboard_models_v174 import SmallAccountRiskInput
+    from paper_trading.small_capital_strategy.position_count_monitor_v174 import evaluate_position_count
+    inp = SmallAccountRiskInput(holdings_count=2)
+    result = evaluate_position_count(inp)
+    print(f"  Position Count: {result.status.value}  holdings={result.holdings_count}  max={result.max_holdings}")
+    print(_RISK_DASHBOARD_BANNER)
+
+
+def cmd_risk_dashboard_stop_loss(args=None):
+    """[v1.7.4] Evaluate stop loss coverage. Research only."""
+    print(_RISK_DASHBOARD_BANNER)
+    from paper_trading.small_capital_strategy.risk_dashboard_models_v174 import SmallAccountRiskInput
+    from paper_trading.small_capital_strategy.stop_loss_coverage_monitor_v174 import evaluate_stop_loss_coverage
+    inp = SmallAccountRiskInput(has_stop_loss=True, stop_loss_pct=0.05)
+    result = evaluate_stop_loss_coverage(inp)
+    print(f"  Stop Loss Coverage: {result.status.value}  covered={result.all_positions_covered}")
+    print(_RISK_DASHBOARD_BANNER)
+
+
+def cmd_risk_dashboard_budget_usage(args=None):
+    """[v1.7.4] Evaluate risk budget usage. Research only."""
+    print(_RISK_DASHBOARD_BANNER)
+    from paper_trading.small_capital_strategy.risk_dashboard_models_v174 import SmallAccountRiskInput
+    from paper_trading.small_capital_strategy.risk_budget_monitor_v174 import evaluate_risk_budget
+    inp = SmallAccountRiskInput(position_size_amount=50000, stop_loss_pct=0.05, has_stop_loss=True)
+    result = evaluate_risk_budget(inp)
+    print(f"  Risk Budget: {result.status.value}  used={result.used_risk_twd:.0f} TWD  budget={result.max_risk_twd:.0f} TWD  usage={result.usage_pct:.1f}%")
+    print(_RISK_DASHBOARD_BANNER)
+
+
+def cmd_risk_dashboard_scorecard(args=None):
+    """[v1.7.4] Compute risk dashboard scorecard. Research only."""
+    print(_RISK_DASHBOARD_BANNER)
+    from paper_trading.small_capital_strategy.small_capital_risk_adapter_v174 import build_risk_dashboard, get_default_pass_input
+    from paper_trading.small_capital_strategy.risk_dashboard_scorecard_v174 import compute_scorecard
+    dashboard = build_risk_dashboard(get_default_pass_input())
+    scorecard = compute_scorecard(dashboard)
+    print(f"  Scorecard: {scorecard.total_score:.1f}/100  Grade: {scorecard.grade.value}")
+    print(_RISK_DASHBOARD_BANNER)
+
+
+def cmd_risk_dashboard_report(args=None):
+    """[v1.7.4] Generate risk dashboard report. Research only."""
+    print(_RISK_DASHBOARD_BANNER)
+    from paper_trading.small_capital_strategy.small_capital_risk_adapter_v174 import build_risk_dashboard, get_default_pass_input
+    from paper_trading.small_capital_strategy.risk_dashboard_scorecard_v174 import compute_scorecard
+    from paper_trading.small_capital_strategy.risk_dashboard_report_v174 import build_report, render_console_summary
+    dashboard = build_risk_dashboard(get_default_pass_input())
+    scorecard = compute_scorecard(dashboard)
+    report = build_report(dashboard, scorecard)
+    print(render_console_summary(report))
+    print(_RISK_DASHBOARD_BANNER)
+
+
+def cmd_risk_dashboard_fixtures(args=None):
+    """[v1.7.4] List risk dashboard fixtures. Research only."""
+    print(_RISK_DASHBOARD_BANNER)
+    from paper_trading.small_capital_strategy.risk_dashboard_fixture_registry_v174 import count_fixtures, validate_registry
+    result = validate_registry()
+    print(f"  Fixtures: {result['count']}  valid={result['valid']}")
+    print(_RISK_DASHBOARD_BANNER)
+
+
+def cmd_risk_dashboard_scenarios(args=None):
+    """[v1.7.4] List risk dashboard scenarios. Research only."""
+    print(_RISK_DASHBOARD_BANNER)
+    from paper_trading.small_capital_strategy.risk_dashboard_scenario_registry_v174 import count_scenarios, validate_registry
+    result = validate_registry()
+    print(f"  Scenarios: {result['count']}  valid={result['valid']}")
+    print(_RISK_DASHBOARD_BANNER)
+
+
+def cmd_risk_dashboard_health(args=None):
+    """[v1.7.4] Run risk dashboard health check. Research only."""
+    print(_RISK_DASHBOARD_BANNER)
+    from paper_trading.small_capital_strategy.risk_dashboard_health_v174 import run_health_check
+    summary = run_health_check()
+    print(f"  Risk Dashboard Health v1.7.4")
+    print(f"  Status: {summary.status}  Passed: {summary.passed}/{summary.total}  Failed: {summary.failed}")
+    if summary.failed:
+        for c in summary.checks:
+            if not c["passed"]:
+                print(f"  [FAIL] {c['name']}: {c.get('error', '')}")
+    print(_RISK_DASHBOARD_BANNER)
+
+
+def cmd_risk_dashboard_gate(args=None):
+    """[v1.7.4] Run risk dashboard release gate. Research only."""
+    print(_RISK_DASHBOARD_BANNER)
+    from release.small_account_risk_dashboard_release_gate_v174 import run_release_gate
+    result = run_release_gate()
+    print(f"  Risk Dashboard Gate v1.7.4")
+    print(f"  Gate: {'PASS' if result['gate_passed'] else 'FAIL'}  Passed: {result['passed']}/{result['total_count']}  Failed: {result['failed_count']}")
+    if result["failed_count"]:
+        for c in result["checks"]:
+            if not c["passed"]:
+                print(f"  [FAIL] {c['name']}: {c.get('detail', '')}")
+    print(_RISK_DASHBOARD_BANNER)
+
+
+def cmd_risk_dashboard_safety_audit(args=None):
+    """[v1.7.4] Run risk dashboard safety audit. Research only."""
+    print(_RISK_DASHBOARD_BANNER)
+    from paper_trading.small_capital_strategy.risk_dashboard_safety_v174 import audit_risk_dashboard_safety
+    result = audit_risk_dashboard_safety()
+    print(f"  Risk Dashboard Safety Audit: all_safe={result['all_safe']}  capabilities={result['safety_capabilities']}")
+    print(_RISK_DASHBOARD_BANNER)
+
+
 def cmd_paper_strategy_health(args=None):
     """[v1.6.2] Paper strategy orchestration health check. Research only."""
     print(_STRATEGY_SAFETY_BANNER)
@@ -40937,6 +41153,26 @@ def main() -> None:
         "market-regime-health":           cmd_market_regime_health,
         "market-regime-gate":             cmd_market_regime_gate,
         "market-regime-safety-audit":     cmd_market_regime_safety_audit,
+        # v1.7.4 Risk Dashboard
+        "risk-dashboard-version":         cmd_risk_dashboard_version,
+        "risk-dashboard-summary":         cmd_risk_dashboard_summary,
+        "risk-dashboard-single-trade":    cmd_risk_dashboard_single_trade,
+        "risk-dashboard-exposure":        cmd_risk_dashboard_exposure,
+        "risk-dashboard-cash":            cmd_risk_dashboard_cash,
+        "risk-dashboard-drawdown":        cmd_risk_dashboard_drawdown,
+        "risk-dashboard-losing-streak":   cmd_risk_dashboard_losing_streak,
+        "risk-dashboard-concentration":   cmd_risk_dashboard_concentration,
+        "risk-dashboard-theme-exposure":  cmd_risk_dashboard_theme_exposure,
+        "risk-dashboard-position-count":  cmd_risk_dashboard_position_count,
+        "risk-dashboard-stop-loss":       cmd_risk_dashboard_stop_loss,
+        "risk-dashboard-budget-usage":    cmd_risk_dashboard_budget_usage,
+        "risk-dashboard-scorecard":       cmd_risk_dashboard_scorecard,
+        "risk-dashboard-report":          cmd_risk_dashboard_report,
+        "risk-dashboard-fixtures":        cmd_risk_dashboard_fixtures,
+        "risk-dashboard-scenarios":       cmd_risk_dashboard_scenarios,
+        "risk-dashboard-health":          cmd_risk_dashboard_health,
+        "risk-dashboard-gate":            cmd_risk_dashboard_gate,
+        "risk-dashboard-safety-audit":    cmd_risk_dashboard_safety_audit,
     }
 
     if args.command is None:

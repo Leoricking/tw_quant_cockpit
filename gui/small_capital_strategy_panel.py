@@ -3,16 +3,17 @@ gui/small_capital_strategy_panel.py
 GUI panel for Small Capital Growth Strategy Template v1.7.0 +
 Watchlist Strategy Layer v1.7.1 +
 A/B/C Buy Point Execution Plan v1.7.2 +
-Market Regime Position Control v1.7.3.
+Market Regime Position Control v1.7.3 +
+Small Account Risk Dashboard v1.7.4.
 [!] Research Only. Paper Only. No Real Orders. Not Investment Advice.
 Headless-safe: no tkinter at module level. Renders to dict.
-22 v1.7.0 tabs + 15 watchlist tabs + 18 abc tabs + 14 regime tabs = 69 tabs total.
+22 v1.7.0 tabs + 15 watchlist tabs + 18 abc tabs + 14 regime tabs + 15 risk dashboard tabs = 84 tabs total.
 """
 from __future__ import annotations
 from typing import Any, Dict, List, Optional
 
-PANEL_VERSION = "1.7.3"
-PANEL_TITLE = "Small Capital Strategy v1.7.3 — Market Regime Position Control"
+PANEL_VERSION = "1.7.4"
+PANEL_TITLE = "Small Capital Strategy v1.7.4 — Small Account Risk Dashboard"
 
 # v1.7.0 tabs (preserved unchanged)
 _TABS_V170 = [
@@ -99,12 +100,32 @@ _TABS_V173_REGIME = [
     "regime_health_gate",
 ]
 
-_TABS = _TABS_V170 + _TABS_V171_WATCHLIST + _TABS_V172_ABC + _TABS_V173_REGIME
+# v1.7.4 Small Account Risk Dashboard tabs
+_TABS_V174_RISK_DASHBOARD = [
+    "risk_dashboard_overview",
+    "risk_capital",
+    "risk_single_trade",
+    "risk_portfolio_exposure",
+    "risk_cash_ratio",
+    "risk_position_count",
+    "risk_drawdown",
+    "risk_losing_streak",
+    "risk_concentration",
+    "risk_theme_exposure",
+    "risk_stop_loss_coverage",
+    "risk_abc_risk",
+    "risk_watchlist_risk",
+    "risk_market_regime_risk",
+    "risk_scorecard",
+]
+
+_TABS = _TABS_V170 + _TABS_V171_WATCHLIST + _TABS_V172_ABC + _TABS_V173_REGIME + _TABS_V174_RISK_DASHBOARD
 
 assert len(_TABS_V170) == 22, f"Expected 22 v1.7.0 tabs, got {len(_TABS_V170)}"
 assert len(_TABS_V171_WATCHLIST) == 15, f"Expected 15 watchlist tabs, got {len(_TABS_V171_WATCHLIST)}"
 assert len(_TABS_V172_ABC) == 18, f"Expected 18 ABC tabs, got {len(_TABS_V172_ABC)}"
 assert len(_TABS_V173_REGIME) == 14, f"Expected 14 regime tabs, got {len(_TABS_V173_REGIME)}"
+assert len(_TABS_V174_RISK_DASHBOARD) == 15, f"Expected 15 risk dashboard tabs, got {len(_TABS_V174_RISK_DASHBOARD)}"
 
 
 def get_tab_names() -> List[str]:
@@ -1170,6 +1191,22 @@ def render_all_tabs() -> Dict[str, Any]:
         "regime_scorecard": render_regime_scorecard_tab,
         "regime_report": render_regime_report_tab,
         "regime_health_gate": render_regime_health_gate_tab,
+        # v1.7.4 risk dashboard tabs
+        "risk_dashboard_overview": render_risk_dashboard_overview_tab,
+        "risk_capital": render_risk_capital_tab,
+        "risk_single_trade": render_risk_single_trade_tab,
+        "risk_portfolio_exposure": render_risk_portfolio_exposure_tab,
+        "risk_cash_ratio": render_risk_cash_ratio_tab,
+        "risk_position_count": render_risk_position_count_tab,
+        "risk_drawdown": render_risk_drawdown_tab,
+        "risk_losing_streak": render_risk_losing_streak_tab,
+        "risk_concentration": render_risk_concentration_tab,
+        "risk_theme_exposure": render_risk_theme_exposure_tab,
+        "risk_stop_loss_coverage": render_risk_stop_loss_coverage_tab,
+        "risk_abc_risk": render_risk_abc_tab,
+        "risk_watchlist_risk": render_risk_watchlist_tab,
+        "risk_market_regime_risk": render_risk_market_regime_tab,
+        "risk_scorecard": render_risk_scorecard_tab,
     }
     result = {}
     for tab_name in _TABS:
@@ -1178,6 +1215,281 @@ def render_all_tabs() -> Dict[str, Any]:
         except Exception as exc:
             result[tab_name] = {"error": str(exc)}
     return result
+
+
+def render_risk_dashboard_overview_tab() -> Dict[str, Any]:
+    """Render Risk Dashboard Overview tab. v1.7.4."""
+    return {
+        "title": "Small Account Risk Dashboard v1.7.4",
+        "version": "1.7.4",
+        "release_name": "Small Account Risk Dashboard",
+        "base_release": "1.7.3 Market Regime Position Control",
+        "capital_twd": 300_000,
+        "tab_count": len(_TABS_V174_RISK_DASHBOARD),
+        "paper_only": True,
+        "research_only": True,
+        "no_real_orders": True,
+        "not_investment_advice": True,
+        "disclaimer": "Research Only | Paper Only | No Real Orders | Not Investment Advice",
+    }
+
+
+def render_risk_capital_tab() -> Dict[str, Any]:
+    """Render capital risk tab. v1.7.4."""
+    from paper_trading.small_capital_strategy.single_trade_risk_monitor_v174 import get_single_trade_risk_thresholds
+    return {
+        "capital_twd": 300_000,
+        "max_single_trade_loss_twd": 3000,
+        "max_holdings": 4,
+        "thresholds": get_single_trade_risk_thresholds(),
+        "paper_only": True,
+        "not_investment_advice": True,
+    }
+
+
+def render_risk_single_trade_tab(
+    position_size_amount: float = 50000.0,
+    stop_loss_pct: float = 0.05,
+    has_stop_loss: bool = True,
+) -> Dict[str, Any]:
+    """Render single trade risk tab. v1.7.4. Headless-safe."""
+    from paper_trading.small_capital_strategy.risk_dashboard_models_v174 import SmallAccountRiskInput
+    from paper_trading.small_capital_strategy.single_trade_risk_monitor_v174 import evaluate_single_trade_risk
+    inp = SmallAccountRiskInput(
+        position_size_amount=position_size_amount,
+        stop_loss_pct=stop_loss_pct,
+        has_stop_loss=has_stop_loss,
+    )
+    result = evaluate_single_trade_risk(inp)
+    return {
+        "status": result.status.value,
+        "loss_amount": result.single_trade_loss_amount,
+        "risk_pct": result.risk_pct,
+        "has_stop_loss": result.has_stop_loss,
+        "block_reasons": [r.value for r in result.block_reasons],
+        "paper_only": True,
+        "not_investment_advice": True,
+    }
+
+
+def render_risk_portfolio_exposure_tab(
+    market_regime: str = "BULL",
+    invested_pct: float = 30.0,
+    cash_pct: float = 70.0,
+) -> Dict[str, Any]:
+    """Render portfolio exposure tab. v1.7.4. Headless-safe."""
+    from paper_trading.small_capital_strategy.risk_dashboard_models_v174 import SmallAccountRiskInput
+    from paper_trading.small_capital_strategy.portfolio_exposure_monitor_v174 import evaluate_portfolio_exposure
+    inp = SmallAccountRiskInput(
+        market_regime=market_regime,
+        total_invested_pct=invested_pct,
+        cash_pct=cash_pct,
+    )
+    result = evaluate_portfolio_exposure(inp)
+    return {
+        "status": result.status.value,
+        "invested_pct": result.invested_pct,
+        "cash_pct": result.cash_pct,
+        "max_invested_pct": result.max_invested_pct,
+        "min_cash_pct": result.min_cash_pct,
+        "regime": result.market_regime,
+        "paper_only": True,
+        "not_investment_advice": True,
+    }
+
+
+def render_risk_cash_ratio_tab(
+    market_regime: str = "BULL",
+    cash_pct: float = 70.0,
+) -> Dict[str, Any]:
+    """Render cash ratio risk tab. v1.7.4. Headless-safe."""
+    from paper_trading.small_capital_strategy.risk_dashboard_models_v174 import SmallAccountRiskInput
+    from paper_trading.small_capital_strategy.cash_ratio_risk_monitor_v174 import evaluate_cash_ratio
+    inp = SmallAccountRiskInput(market_regime=market_regime, cash_pct=cash_pct)
+    result = evaluate_cash_ratio(inp)
+    return {
+        "status": result.status.value,
+        "cash_pct": result.cash_pct,
+        "min_cash_pct": result.min_cash_pct,
+        "regime": result.market_regime,
+        "paper_only": True,
+        "not_investment_advice": True,
+    }
+
+
+def render_risk_position_count_tab(holdings_count: int = 2) -> Dict[str, Any]:
+    """Render position count tab. v1.7.4. Headless-safe."""
+    from paper_trading.small_capital_strategy.risk_dashboard_models_v174 import SmallAccountRiskInput
+    from paper_trading.small_capital_strategy.position_count_monitor_v174 import evaluate_position_count
+    inp = SmallAccountRiskInput(holdings_count=holdings_count)
+    result = evaluate_position_count(inp)
+    return {
+        "status": result.status.value,
+        "holdings_count": result.holdings_count,
+        "max_holdings": result.max_holdings,
+        "paper_only": True,
+        "not_investment_advice": True,
+    }
+
+
+def render_risk_drawdown_tab(drawdown_pct: float = 2.0) -> Dict[str, Any]:
+    """Render drawdown risk tab. v1.7.4. Headless-safe."""
+    from paper_trading.small_capital_strategy.risk_dashboard_models_v174 import SmallAccountRiskInput
+    from paper_trading.small_capital_strategy.drawdown_monitor_v174 import evaluate_drawdown
+    inp = SmallAccountRiskInput(current_drawdown_pct=drawdown_pct)
+    result = evaluate_drawdown(inp)
+    return {
+        "status": result.status.value,
+        "drawdown_pct": result.drawdown_pct,
+        "level": result.level.value,
+        "paper_only": True,
+        "not_investment_advice": True,
+    }
+
+
+def render_risk_losing_streak_tab(losing_streak_count: int = 0) -> Dict[str, Any]:
+    """Render losing streak tab. v1.7.4. Headless-safe."""
+    from paper_trading.small_capital_strategy.risk_dashboard_models_v174 import SmallAccountRiskInput
+    from paper_trading.small_capital_strategy.losing_streak_monitor_v174 import evaluate_losing_streak
+    inp = SmallAccountRiskInput(losing_streak_count=losing_streak_count)
+    result = evaluate_losing_streak(inp)
+    return {
+        "status": result.status.value,
+        "losing_streak_count": result.losing_streak_count,
+        "level": result.level.value,
+        "paper_only": True,
+        "not_investment_advice": True,
+    }
+
+
+def render_risk_concentration_tab(
+    single_position_pct: float = 20.0,
+    sector_pct: float = 40.0,
+) -> Dict[str, Any]:
+    """Render concentration risk tab. v1.7.4. Headless-safe."""
+    from paper_trading.small_capital_strategy.risk_dashboard_models_v174 import SmallAccountRiskInput
+    from paper_trading.small_capital_strategy.concentration_risk_monitor_v174 import evaluate_concentration_risk
+    inp = SmallAccountRiskInput(
+        max_single_position_pct=single_position_pct,
+        sector_exposure_pct=sector_pct,
+    )
+    result = evaluate_concentration_risk(inp)
+    return {
+        "status": result.status.value,
+        "single_position_pct": result.max_single_position_pct,
+        "sector_pct": result.sector_exposure_pct,
+        "paper_only": True,
+        "not_investment_advice": True,
+    }
+
+
+def render_risk_theme_exposure_tab(
+    theme_pct: float = 30.0,
+    training_amount: float = 5000.0,
+) -> Dict[str, Any]:
+    """Render theme exposure tab. v1.7.4. Headless-safe."""
+    from paper_trading.small_capital_strategy.risk_dashboard_models_v174 import SmallAccountRiskInput
+    from paper_trading.small_capital_strategy.theme_exposure_monitor_v174 import evaluate_theme_exposure
+    inp = SmallAccountRiskInput(
+        theme_exposure_pct=theme_pct,
+        short_term_training_amount=training_amount,
+    )
+    result = evaluate_theme_exposure(inp)
+    return {
+        "status": result.status.value,
+        "theme_pct": result.theme_exposure_pct,
+        "training_amount": result.training_amount,
+        "paper_only": True,
+        "not_investment_advice": True,
+    }
+
+
+def render_risk_stop_loss_coverage_tab(
+    has_stop_loss: bool = True,
+    stop_loss_pct: float = 0.05,
+) -> Dict[str, Any]:
+    """Render stop loss coverage tab. v1.7.4. Headless-safe."""
+    from paper_trading.small_capital_strategy.risk_dashboard_models_v174 import SmallAccountRiskInput
+    from paper_trading.small_capital_strategy.stop_loss_coverage_monitor_v174 import evaluate_stop_loss_coverage
+    inp = SmallAccountRiskInput(has_stop_loss=has_stop_loss, stop_loss_pct=stop_loss_pct)
+    result = evaluate_stop_loss_coverage(inp)
+    return {
+        "status": result.status.value,
+        "all_covered": result.all_positions_covered,
+        "missing_count": result.missing_stop_loss_count,
+        "paper_only": True,
+        "not_investment_advice": True,
+    }
+
+
+def render_risk_abc_tab(abc_plan_blocked: bool = False) -> Dict[str, Any]:
+    """Render ABC risk tab. v1.7.4. Headless-safe."""
+    from paper_trading.small_capital_strategy.risk_dashboard_models_v174 import SmallAccountRiskInput
+    from paper_trading.small_capital_strategy.abc_execution_risk_adapter_v174 import evaluate_abc_execution_risk
+    inp = SmallAccountRiskInput(abc_plan_blocked=abc_plan_blocked)
+    result = evaluate_abc_execution_risk(inp)
+    return {
+        "status": result["status"],
+        "abc_plan_blocked": abc_plan_blocked,
+        "paper_only": True,
+        "not_investment_advice": True,
+    }
+
+
+def render_risk_watchlist_tab(candidate_excluded: bool = False) -> Dict[str, Any]:
+    """Render watchlist risk tab. v1.7.4. Headless-safe."""
+    from paper_trading.small_capital_strategy.risk_dashboard_models_v174 import SmallAccountRiskInput
+    from paper_trading.small_capital_strategy.watchlist_risk_adapter_v174 import evaluate_watchlist_risk
+    inp = SmallAccountRiskInput(watchlist_candidate_excluded=candidate_excluded)
+    result = evaluate_watchlist_risk(inp)
+    return {
+        "status": result["status"],
+        "candidate_excluded": candidate_excluded,
+        "paper_only": True,
+        "not_investment_advice": True,
+    }
+
+
+def render_risk_market_regime_tab(
+    market_regime: str = "BULL",
+    cash_pct: float = 70.0,
+) -> Dict[str, Any]:
+    """Render market regime risk tab. v1.7.4. Headless-safe."""
+    from paper_trading.small_capital_strategy.risk_dashboard_models_v174 import SmallAccountRiskInput
+    from paper_trading.small_capital_strategy.market_regime_risk_adapter_v174 import evaluate_market_regime_risk
+    inp = SmallAccountRiskInput(market_regime=market_regime, cash_pct=cash_pct)
+    result = evaluate_market_regime_risk(inp)
+    return {
+        "status": result["status"],
+        "regime": market_regime,
+        "cash_pct": cash_pct,
+        "paper_only": True,
+        "not_investment_advice": True,
+    }
+
+
+def render_risk_scorecard_tab() -> Dict[str, Any]:
+    """Render risk scorecard tab. v1.7.4. Headless-safe."""
+    from paper_trading.small_capital_strategy.small_capital_risk_adapter_v174 import (
+        build_risk_dashboard, get_default_pass_input,
+    )
+    from paper_trading.small_capital_strategy.risk_dashboard_scorecard_v174 import (
+        compute_scorecard, get_weight_table,
+    )
+    dashboard = build_risk_dashboard(get_default_pass_input())
+    scorecard = compute_scorecard(dashboard)
+    return {
+        "total_score": scorecard.total_score,
+        "grade": scorecard.grade.value,
+        "weights": get_weight_table(),
+        "paper_only": True,
+        "not_investment_advice": True,
+    }
+
+
+def get_risk_dashboard_tab_names() -> List[str]:
+    """Return list of v1.7.4 risk dashboard tab names."""
+    return list(_TABS_V174_RISK_DASHBOARD)
 
 
 def get_panel_info() -> Dict[str, Any]:

@@ -1,21 +1,21 @@
 """
-paper_trading/small_capital_strategy/version_v173.py
-Version metadata for Market Regime Position Control v1.7.3.
+paper_trading/small_capital_strategy/version_v174.py
+Version metadata for Small Account Risk Dashboard v1.7.4.
 [!] Research Only. Paper Only. No Real Orders. Not Investment Advice.
 """
 from __future__ import annotations
 from typing import Dict, Any
 
-VERSION      = "1.7.3"
-RELEASE_NAME = "Market Regime Position Control"
-BASE_RELEASE = "1.7.2 A/B/C Buy Point Execution Plan"
-SCHEMA_VERSION  = "173"
-POLICY_VERSION  = "1.7.3-market-regime-position-control"
+VERSION      = "1.7.4"
+RELEASE_NAME = "Small Account Risk Dashboard"
+BASE_RELEASE = "1.7.3 Market Regime Position Control"
+SCHEMA_VERSION  = "174"
+POLICY_VERSION  = "1.7.4-small-account-risk-dashboard"
 
-COMPONENT_COUNT = 23
+COMPONENT_COUNT = 24
 MIN_SCENARIOS   = 65
 MIN_FIXTURES    = 65
-MIN_CLI         = 18
+MIN_CLI         = 19
 MIN_HEALTH      = 70
 MIN_GATE        = 65
 

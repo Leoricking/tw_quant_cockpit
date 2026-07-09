@@ -4067,6 +4067,66 @@ _SMALL_CAPITAL_STRATEGY_COMMANDS: _List[CommandSpec] = [
                 introduced_in="1.7.0", safety_classification="RESEARCH_ONLY"),
 ]
 
+_RISK_DASHBOARD_COMMANDS: _List[CommandSpec] = [
+    CommandSpec(name="risk-dashboard-version", handler_name="cmd_risk_dashboard_version",
+                help="[Research] Show risk dashboard version info v1.7.4", group="small_capital_strategy",
+                introduced_in="1.7.4", safety_classification="RESEARCH_ONLY"),
+    CommandSpec(name="risk-dashboard-summary", handler_name="cmd_risk_dashboard_summary",
+                help="[Research] Show risk dashboard summary v1.7.4", group="small_capital_strategy",
+                introduced_in="1.7.4", safety_classification="RESEARCH_ONLY"),
+    CommandSpec(name="risk-dashboard-single-trade", handler_name="cmd_risk_dashboard_single_trade",
+                help="[Research] Evaluate single trade risk v1.7.4", group="small_capital_strategy",
+                introduced_in="1.7.4", safety_classification="RESEARCH_ONLY"),
+    CommandSpec(name="risk-dashboard-exposure", handler_name="cmd_risk_dashboard_exposure",
+                help="[Research] Evaluate portfolio exposure risk v1.7.4", group="small_capital_strategy",
+                introduced_in="1.7.4", safety_classification="RESEARCH_ONLY"),
+    CommandSpec(name="risk-dashboard-cash", handler_name="cmd_risk_dashboard_cash",
+                help="[Research] Evaluate cash ratio risk v1.7.4", group="small_capital_strategy",
+                introduced_in="1.7.4", safety_classification="RESEARCH_ONLY"),
+    CommandSpec(name="risk-dashboard-drawdown", handler_name="cmd_risk_dashboard_drawdown",
+                help="[Research] Evaluate drawdown risk v1.7.4", group="small_capital_strategy",
+                introduced_in="1.7.4", safety_classification="RESEARCH_ONLY"),
+    CommandSpec(name="risk-dashboard-losing-streak", handler_name="cmd_risk_dashboard_losing_streak",
+                help="[Research] Evaluate losing streak risk v1.7.4", group="small_capital_strategy",
+                introduced_in="1.7.4", safety_classification="RESEARCH_ONLY"),
+    CommandSpec(name="risk-dashboard-concentration", handler_name="cmd_risk_dashboard_concentration",
+                help="[Research] Evaluate concentration risk v1.7.4", group="small_capital_strategy",
+                introduced_in="1.7.4", safety_classification="RESEARCH_ONLY"),
+    CommandSpec(name="risk-dashboard-theme-exposure", handler_name="cmd_risk_dashboard_theme_exposure",
+                help="[Research] Evaluate theme exposure risk v1.7.4", group="small_capital_strategy",
+                introduced_in="1.7.4", safety_classification="RESEARCH_ONLY"),
+    CommandSpec(name="risk-dashboard-position-count", handler_name="cmd_risk_dashboard_position_count",
+                help="[Research] Evaluate position count risk v1.7.4", group="small_capital_strategy",
+                introduced_in="1.7.4", safety_classification="RESEARCH_ONLY"),
+    CommandSpec(name="risk-dashboard-stop-loss", handler_name="cmd_risk_dashboard_stop_loss",
+                help="[Research] Evaluate stop loss coverage v1.7.4", group="small_capital_strategy",
+                introduced_in="1.7.4", safety_classification="RESEARCH_ONLY"),
+    CommandSpec(name="risk-dashboard-budget-usage", handler_name="cmd_risk_dashboard_budget_usage",
+                help="[Research] Evaluate risk budget usage v1.7.4", group="small_capital_strategy",
+                introduced_in="1.7.4", safety_classification="RESEARCH_ONLY"),
+    CommandSpec(name="risk-dashboard-scorecard", handler_name="cmd_risk_dashboard_scorecard",
+                help="[Research] Compute risk dashboard scorecard v1.7.4", group="small_capital_strategy",
+                introduced_in="1.7.4", safety_classification="RESEARCH_ONLY"),
+    CommandSpec(name="risk-dashboard-report", handler_name="cmd_risk_dashboard_report",
+                help="[Research] Generate risk dashboard report v1.7.4", group="small_capital_strategy",
+                introduced_in="1.7.4", safety_classification="RESEARCH_ONLY"),
+    CommandSpec(name="risk-dashboard-fixtures", handler_name="cmd_risk_dashboard_fixtures",
+                help="[Research] List risk dashboard fixtures v1.7.4", group="small_capital_strategy",
+                introduced_in="1.7.4", safety_classification="RESEARCH_ONLY"),
+    CommandSpec(name="risk-dashboard-scenarios", handler_name="cmd_risk_dashboard_scenarios",
+                help="[Research] List risk dashboard scenarios v1.7.4", group="small_capital_strategy",
+                introduced_in="1.7.4", safety_classification="RESEARCH_ONLY"),
+    CommandSpec(name="risk-dashboard-health", handler_name="cmd_risk_dashboard_health",
+                help="[Research] Run risk dashboard health check v1.7.4", group="small_capital_strategy",
+                introduced_in="1.7.4", safety_classification="RESEARCH_ONLY"),
+    CommandSpec(name="risk-dashboard-gate", handler_name="cmd_risk_dashboard_gate",
+                help="[Research] Run risk dashboard release gate v1.7.4", group="small_capital_strategy",
+                introduced_in="1.7.4", safety_classification="RESEARCH_ONLY"),
+    CommandSpec(name="risk-dashboard-safety-audit", handler_name="cmd_risk_dashboard_safety_audit",
+                help="[Research] Run risk dashboard safety audit v1.7.4", group="small_capital_strategy",
+                introduced_in="1.7.4", safety_classification="RESEARCH_ONLY"),
+]
+
 PROVIDER_COMMANDS: _List[CommandSpec] = (
     _RESEARCH_FOUNDATION_COMMANDS
     + _TWSE_COMMANDS
@@ -4096,6 +4156,7 @@ PROVIDER_COMMANDS: _List[CommandSpec] = (
     + _OPERATIONAL_INTEGRATION_COMMANDS
     + _STABLE_ROLLUP_COMMANDS
     + _SMALL_CAPITAL_STRATEGY_COMMANDS
+    + _RISK_DASHBOARD_COMMANDS
 )
 
 
