@@ -5,6 +5,8 @@ Release gate for Small Account Trade Journal v1.7.5.
 [!] Research Only. Paper Only. No Real Orders. Not Investment Advice.
 """
 from __future__ import annotations
+import os as _os, sys as _sys
+_sys.path.insert(0, _os.path.normpath(_os.path.join(_os.path.dirname(_os.path.abspath(__file__)), '..')))
 from typing import Any, Dict, List
 
 GATE_VERSION = "1.7.5"
@@ -191,3 +193,20 @@ class SmallAccountTradeJournalReleaseGate:
 def run_gate() -> Dict[str, Any]:
     """Run the release gate and return the result dict."""
     return SmallAccountTradeJournalReleaseGate().run()
+
+
+if __name__ == "__main__":
+    import json
+    _result = run_gate()
+    print(json.dumps({
+        "gate_passed":  _result["gate_passed"],
+        "passed":       _result["passed"],
+        "failed":       _result["failed"],
+        "total":        _result["total"],
+        "gate_version": _result["gate_version"],
+    }, indent=2))
+    if not _result["gate_passed"]:
+        for _c in _result["checks"]:
+            if not _c["passed"]:
+                print(f"  FAIL: {_c['name']}  error={_c['error']}")
+    raise SystemExit(0 if _result["gate_passed"] else 1)

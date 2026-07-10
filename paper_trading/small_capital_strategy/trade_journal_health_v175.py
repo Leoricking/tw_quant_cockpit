@@ -4,6 +4,8 @@ Health checks for Small Account Trade Journal v1.7.5.
 [!] Research Only. Paper Only. No Real Orders. Not Investment Advice.
 """
 from __future__ import annotations
+import os as _os, sys as _sys
+_sys.path.insert(0, _os.path.normpath(_os.path.join(_os.path.dirname(_os.path.abspath(__file__)), '..', '..')))
 from typing import Any, Callable, Dict, List
 
 from paper_trading.small_capital_strategy.trade_journal_models_v175 import TradeJournalHealthSummary
@@ -268,3 +270,20 @@ def run_health_check() -> TradeJournalHealthSummary:
         policy_version=_POLICY,
         source_lineage=_LINEAGE,
     )
+
+
+if __name__ == "__main__":
+    import json
+    _summary = run_health_check()
+    print(json.dumps({
+        "status":     _summary.status,
+        "passed":     _summary.passed,
+        "failed":     _summary.failed,
+        "total":      _summary.total,
+        "all_passed": _summary.all_passed,
+    }, indent=2))
+    if _summary.failed:
+        for _c in _summary.checks:
+            if not _c["passed"]:
+                print(f"  FAIL: {_c['name']}  error={_c['error']}")
+    raise SystemExit(0 if _summary.all_passed else 1)
