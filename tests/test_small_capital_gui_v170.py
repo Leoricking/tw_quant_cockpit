@@ -10,8 +10,8 @@ from gui.small_capital_strategy_panel import (
 
 
 def test_panel_version():
-    # Panel updated to v1.7.6 to include Mistake Taxonomy tabs
-    assert PANEL_VERSION == "1.7.6"
+    # Panel updated to v1.7.7 to include Theme Rotation Scanner tabs
+    assert PANEL_VERSION == "1.7.7"
 
 
 def test_panel_title_contains_v170():
@@ -21,13 +21,13 @@ def test_panel_title_contains_v170():
 
 def test_tab_count_22():
     # v1.7.6 panel has 111 tabs total (22+15+18+14+15+14+13)
-    assert len(_TABS) == 111
+    assert len(_TABS) == 114
 
 
 def test_get_tab_names_returns_22():
     # v1.7.6 extended panel has 111 tabs
     tabs = get_tab_names()
-    assert len(tabs) == 111
+    assert len(tabs) == 114
 
 
 def test_get_panel_info_returns_dict():
@@ -38,7 +38,7 @@ def test_get_panel_info_returns_dict():
 def test_get_panel_info_tab_count_22():
     # v1.7.6 extended panel has 111 tabs
     info = get_panel_info()
-    assert info["tab_count"] == 111
+    assert info["tab_count"] == 114
 
 
 def test_get_panel_info_paper_only():
@@ -117,10 +117,10 @@ def test_render_scenarios_tab():
 
 
 def test_render_all_tabs_returns_dict():
-    # v1.7.6 extended panel renders 111 tabs
+    # v1.7.7 extended panel renders 114 tabs
     data = render_all_tabs()
     assert isinstance(data, dict)
-    assert len(data) == 111
+    assert len(data) == 114
 
 
 def test_render_all_tabs_no_import_errors():

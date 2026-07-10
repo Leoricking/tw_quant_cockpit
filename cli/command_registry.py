@@ -4226,6 +4226,63 @@ _MISTAKE_TAXONOMY_COMMANDS: _List[CommandSpec] = [
                 introduced_in="1.7.6", safety_classification="RESEARCH_ONLY"),
 ]
 
+# ---------------------------------------------------------------------------
+# v1.7.7 Theme Rotation Scanner commands
+# ---------------------------------------------------------------------------
+_THEME_ROTATION_COMMANDS: _List[CommandSpec] = [
+    CommandSpec(name="theme-rotation-version", handler_name="cmd_theme_rotation_version",
+                help="[Research] Show theme rotation scanner version info v1.7.7", group="theme_rotation",
+                introduced_in="1.7.7", safety_classification="RESEARCH_ONLY"),
+    CommandSpec(name="theme-rotation-classify", handler_name="cmd_theme_rotation_classify",
+                help="[Research] Classify theme from signals v1.7.7", group="theme_rotation",
+                introduced_in="1.7.7", safety_classification="RESEARCH_ONLY"),
+    CommandSpec(name="theme-rotation-score", handler_name="cmd_theme_rotation_score",
+                help="[Research] Calculate theme strength score v1.7.7", group="theme_rotation",
+                introduced_in="1.7.7", safety_classification="RESEARCH_ONLY"),
+    CommandSpec(name="theme-rotation-rank", handler_name="cmd_theme_rotation_rank",
+                help="[Research] Rank themes by strength v1.7.7", group="theme_rotation",
+                introduced_in="1.7.7", safety_classification="RESEARCH_ONLY"),
+    CommandSpec(name="theme-rotation-breadth", handler_name="cmd_theme_rotation_breadth",
+                help="[Research] Calculate theme breadth score v1.7.7", group="theme_rotation",
+                introduced_in="1.7.7", safety_classification="RESEARCH_ONLY"),
+    CommandSpec(name="theme-rotation-momentum", handler_name="cmd_theme_rotation_momentum",
+                help="[Research] Calculate theme momentum score v1.7.7", group="theme_rotation",
+                introduced_in="1.7.7", safety_classification="RESEARCH_ONLY"),
+    CommandSpec(name="theme-rotation-continuation", handler_name="cmd_theme_rotation_continuation",
+                help="[Research] Calculate theme continuation score v1.7.7", group="theme_rotation",
+                introduced_in="1.7.7", safety_classification="RESEARCH_ONLY"),
+    CommandSpec(name="theme-rotation-risk", handler_name="cmd_theme_rotation_risk",
+                help="[Research] Calculate theme risk score v1.7.7", group="theme_rotation",
+                introduced_in="1.7.7", safety_classification="RESEARCH_ONLY"),
+    CommandSpec(name="theme-rotation-stock-map", handler_name="cmd_theme_rotation_stock_map",
+                help="[Research] Build theme stock mapping v1.7.7", group="theme_rotation",
+                introduced_in="1.7.7", safety_classification="RESEARCH_ONLY"),
+    CommandSpec(name="theme-rotation-watchlist", handler_name="cmd_theme_rotation_watchlist",
+                help="[Research] Build theme watchlist candidates v1.7.7", group="theme_rotation",
+                introduced_in="1.7.7", safety_classification="RESEARCH_ONLY"),
+    CommandSpec(name="theme-rotation-dashboard", handler_name="cmd_theme_rotation_dashboard",
+                help="[Research] Build theme rotation dashboard v1.7.7", group="theme_rotation",
+                introduced_in="1.7.7", safety_classification="RESEARCH_ONLY"),
+    CommandSpec(name="theme-rotation-report", handler_name="cmd_theme_rotation_report",
+                help="[Research] Generate theme rotation report v1.7.7", group="theme_rotation",
+                introduced_in="1.7.7", safety_classification="RESEARCH_ONLY"),
+    CommandSpec(name="theme-rotation-scenarios", handler_name="cmd_theme_rotation_scenarios",
+                help="[Research] List theme rotation scenarios v1.7.7", group="theme_rotation",
+                introduced_in="1.7.7", safety_classification="RESEARCH_ONLY"),
+    CommandSpec(name="theme-rotation-fixtures", handler_name="cmd_theme_rotation_fixtures",
+                help="[Research] List theme rotation fixtures v1.7.7", group="theme_rotation",
+                introduced_in="1.7.7", safety_classification="RESEARCH_ONLY"),
+    CommandSpec(name="theme-rotation-health", handler_name="cmd_theme_rotation_health",
+                help="[Research] Run theme rotation health check v1.7.7", group="theme_rotation",
+                introduced_in="1.7.7", safety_classification="RESEARCH_ONLY"),
+    CommandSpec(name="theme-rotation-gate", handler_name="cmd_theme_rotation_gate",
+                help="[Research] Run theme rotation release gate v1.7.7", group="theme_rotation",
+                introduced_in="1.7.7", safety_classification="RESEARCH_ONLY"),
+    CommandSpec(name="theme-rotation-safety-audit", handler_name="cmd_theme_rotation_safety_audit",
+                help="[Research] Run theme rotation safety audit v1.7.7", group="theme_rotation",
+                introduced_in="1.7.7", safety_classification="RESEARCH_ONLY"),
+]
+
 PROVIDER_COMMANDS: _List[CommandSpec] = (
     _RESEARCH_FOUNDATION_COMMANDS
     + _TWSE_COMMANDS
@@ -4258,6 +4315,7 @@ PROVIDER_COMMANDS: _List[CommandSpec] = (
     + _RISK_DASHBOARD_COMMANDS
     + _TRADE_JOURNAL_COMMANDS
     + _MISTAKE_TAXONOMY_COMMANDS
+    + _THEME_ROTATION_COMMANDS
 )
 
 

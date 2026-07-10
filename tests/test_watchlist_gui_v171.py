@@ -23,13 +23,13 @@ from gui.small_capital_strategy_panel import (
 
 
 def test_panel_version_171():
-    # Panel updated to v1.7.6 to include Mistake Taxonomy tabs
-    assert PANEL_VERSION == "1.7.6"
+    # Panel updated to v1.7.7 to include Theme Rotation Scanner tabs
+    assert PANEL_VERSION == "1.7.7"
 
 
 def test_total_tab_count():
     tabs = get_tab_names()
-    assert len(tabs) == 111  # 22+15+18+14+15+14+13 = 111
+    assert len(tabs) == 114  # 22+15+18+14+15+14+13+3 = 114
 
 
 def test_watchlist_tab_count():

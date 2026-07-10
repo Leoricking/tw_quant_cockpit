@@ -14,8 +14,8 @@ Headless-safe: no tkinter at module level. Renders to dict.
 from __future__ import annotations
 from typing import Any, Dict, List, Optional
 
-PANEL_VERSION = "1.7.6"
-PANEL_TITLE = "Small Capital Strategy v1.7.6 — Mistake Taxonomy & Weekly Review Dashboard"
+PANEL_VERSION = "1.7.7"
+PANEL_TITLE = "Small Capital Strategy v1.7.7 — Theme Rotation Scanner"
 
 # v1.7.0 tabs (preserved unchanged)
 _TABS_V170 = [
@@ -139,6 +139,13 @@ _TABS_V175_TRADE_JOURNAL = [
     "trade_journal_gate",
 ]
 
+# v1.7.7 Theme Rotation Scanner tabs
+_TABS_V177_THEME_ROTATION = [
+    "theme_rotation",
+    "theme_ranking",
+    "theme_watchlist",
+]
+
 # v1.7.6 Mistake Taxonomy & Weekly Review Dashboard tabs
 _TABS_V176_MISTAKE_TAXONOMY = [
     "mistake_review_overview",
@@ -164,6 +171,7 @@ _TABS = (
     + _TABS_V174_RISK_DASHBOARD
     + _TABS_V175_TRADE_JOURNAL
     + _TABS_V176_MISTAKE_TAXONOMY
+    + _TABS_V177_THEME_ROTATION
 )
 
 assert len(_TABS_V170) == 22, f"Expected 22 v1.7.0 tabs, got {len(_TABS_V170)}"
@@ -173,6 +181,7 @@ assert len(_TABS_V173_REGIME) == 14, f"Expected 14 regime tabs, got {len(_TABS_V
 assert len(_TABS_V174_RISK_DASHBOARD) == 15, f"Expected 15 risk dashboard tabs, got {len(_TABS_V174_RISK_DASHBOARD)}"
 assert len(_TABS_V175_TRADE_JOURNAL) == 14, f"Expected 14 trade journal tabs, got {len(_TABS_V175_TRADE_JOURNAL)}"
 assert len(_TABS_V176_MISTAKE_TAXONOMY) == 13, f"Expected 13 mistake taxonomy tabs, got {len(_TABS_V176_MISTAKE_TAXONOMY)}"
+assert len(_TABS_V177_THEME_ROTATION) == 3, f"Expected 3 theme rotation tabs, got {len(_TABS_V177_THEME_ROTATION)}"
 
 
 def get_tab_names() -> List[str]:
@@ -1283,6 +1292,10 @@ def render_all_tabs() -> Dict[str, Any]:
         "review_scenarios":              render_mistake_review_overview_tab,
         "review_health":                 render_review_health_tab,
         "review_gate":                   render_review_gate_tab,
+        # v1.7.7 theme rotation tabs
+        "theme_rotation":                render_theme_rotation_tab,
+        "theme_ranking":                 render_theme_ranking_tab,
+        "theme_watchlist":               render_theme_watchlist_tab,
     }
     result = {}
     for tab_name in _TABS:
@@ -1881,6 +1894,62 @@ def render_review_gate_tab() -> Dict[str, Any]:
 def get_mistake_taxonomy_tab_names() -> List[str]:
     """Return v1.7.6 mistake taxonomy tab names."""
     return list(_TABS_V176_MISTAKE_TAXONOMY)
+
+
+def render_theme_rotation_tab() -> Dict[str, Any]:
+    """Render Theme Rotation tab. v1.7.7."""
+    from paper_trading.small_capital_strategy.version_v177 import get_version_info
+    info = get_version_info()
+    return {
+        "version": info["version"],
+        "release_name": info["release_name"],
+        "paper_only": True,
+        "not_investment_advice": True,
+        "disclaimer": "Research Only | Paper Only | No Real Orders | Not Investment Advice",
+    }
+
+
+def render_theme_ranking_tab() -> Dict[str, Any]:
+    """Render Theme Ranking tab. v1.7.7."""
+    from paper_trading.small_capital_strategy.theme_rotation_enums_v177 import ThemeCategory
+    from paper_trading.small_capital_strategy.theme_rotation_models_v177 import ThemeStrengthScore, ThemeGrade
+    from paper_trading.small_capital_strategy.theme_rotation_rank_v177 import rank_themes
+    from paper_trading.small_capital_strategy.theme_rotation_enums_v177 import ThemeGrade as TGrade
+    ss_list = [
+        ThemeStrengthScore(theme=ThemeCategory.AI_SERVER, score=88.0, grade=TGrade.LEADER),
+        ThemeStrengthScore(theme=ThemeCategory.SEMICONDUCTOR, score=72.0, grade=TGrade.STRONG),
+    ]
+    ranks = rank_themes(ss_list)
+    return {
+        "rank_count": len(ranks),
+        "top_theme": ranks[0].theme.value if ranks else "UNKNOWN",
+        "paper_only": True,
+        "not_investment_advice": True,
+    }
+
+
+def render_theme_watchlist_tab() -> Dict[str, Any]:
+    """Render Theme Watchlist tab. v1.7.7."""
+    from paper_trading.small_capital_strategy.theme_rotation_enums_v177 import ThemeCategory, ThemeGrade
+    from paper_trading.small_capital_strategy.theme_rotation_watchlist_v177 import (
+        build_watchlist_candidate, filter_eligible_candidates,
+    )
+    candidates = [
+        build_watchlist_candidate("2330", ThemeCategory.SEMICONDUCTOR, ThemeGrade.LEADER, "Leader stock"),
+        build_watchlist_candidate("2317", ThemeCategory.AI_SERVER, ThemeGrade.WATCH, "Watch only"),
+    ]
+    eligible = filter_eligible_candidates(candidates)
+    return {
+        "candidate_count": len(candidates),
+        "eligible_count":  len(eligible),
+        "paper_only":      True,
+        "not_investment_advice": True,
+    }
+
+
+def get_theme_rotation_tab_names() -> List[str]:
+    """Return v1.7.7 theme rotation tab names."""
+    return list(_TABS_V177_THEME_ROTATION)
 
 
 def get_panel_info() -> Dict[str, Any]:

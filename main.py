@@ -39427,6 +39427,195 @@ def cmd_mistake_taxonomy_safety_audit(args=None):
     print(_MISTAKE_TAXONOMY_BANNER)
 
 
+# ---------------------------------------------------------------------------
+# v1.7.7 Theme Rotation Scanner command handlers
+# ---------------------------------------------------------------------------
+
+_THEME_ROTATION_BANNER = "=" * 60 + "\n  [!] Research Only | Paper Only | No Real Orders | Not Investment Advice\n" + "=" * 60
+
+
+def cmd_theme_rotation_version(args=None):
+    """[v1.7.7] Show theme rotation scanner version info. Research only."""
+    print(_THEME_ROTATION_BANNER)
+    from paper_trading.small_capital_strategy.version_v177 import get_version_info
+    info = get_version_info()
+    print(f"  Theme Rotation Scanner Version: {info['version']}  Release: {info['release_name']}")
+    print(f"  Schema: {info['schema_version']}  Policy: {info['policy_version']}")
+    print(_THEME_ROTATION_BANNER)
+
+
+def cmd_theme_rotation_classify(args=None):
+    """[v1.7.7] Classify theme from signals. Research only."""
+    print(_THEME_ROTATION_BANNER)
+    from paper_trading.small_capital_strategy.theme_rotation_classifier_v177 import get_all_theme_categories
+    cats = get_all_theme_categories()
+    print(f"  Theme Rotation Classify: categories={len(cats)}")
+    print(f"  paper_only=True  no_real_orders=True")
+    print(_THEME_ROTATION_BANNER)
+
+
+def cmd_theme_rotation_score(args=None):
+    """[v1.7.7] Calculate theme strength score. Research only."""
+    print(_THEME_ROTATION_BANNER)
+    from paper_trading.small_capital_strategy.theme_rotation_score_v177 import score_to_grade
+    grade = score_to_grade(80.0)
+    print(f"  Theme Rotation Score: grade_at_80={grade.value}")
+    print(f"  paper_only=True  no_real_orders=True")
+    print(_THEME_ROTATION_BANNER)
+
+
+def cmd_theme_rotation_rank(args=None):
+    """[v1.7.7] Rank themes by strength. Research only."""
+    print(_THEME_ROTATION_BANNER)
+    from paper_trading.small_capital_strategy.theme_rotation_rank_v177 import rank_themes
+    ranks = rank_themes([])
+    print(f"  Theme Rotation Rank: count={len(ranks)}")
+    print(f"  paper_only=True  no_real_orders=True")
+    print(_THEME_ROTATION_BANNER)
+
+
+def cmd_theme_rotation_breadth(args=None):
+    """[v1.7.7] Calculate theme breadth score. Research only."""
+    print(_THEME_ROTATION_BANNER)
+    from paper_trading.small_capital_strategy.theme_rotation_enums_v177 import ThemeCategory
+    from paper_trading.small_capital_strategy.theme_rotation_breadth_v177 import calculate_breadth_score
+    score = calculate_breadth_score(8, 2, 10, ThemeCategory.AI_SERVER)
+    print(f"  Theme Rotation Breadth: score={score.score}  adv_dec_ratio={score.advance_decline_ratio}")
+    print(f"  paper_only={score.paper_only}")
+    print(_THEME_ROTATION_BANNER)
+
+
+def cmd_theme_rotation_momentum(args=None):
+    """[v1.7.7] Calculate theme momentum score. Research only."""
+    print(_THEME_ROTATION_BANNER)
+    from paper_trading.small_capital_strategy.theme_rotation_enums_v177 import ThemeCategory
+    from paper_trading.small_capital_strategy.theme_rotation_momentum_v177 import calculate_momentum_score
+    score = calculate_momentum_score(ThemeCategory.AI_SERVER, 10.0, 20.0, 30.0)
+    print(f"  Theme Rotation Momentum: score={score.score}")
+    print(f"  paper_only={score.paper_only}")
+    print(_THEME_ROTATION_BANNER)
+
+
+def cmd_theme_rotation_continuation(args=None):
+    """[v1.7.7] Calculate theme continuation score. Research only."""
+    print(_THEME_ROTATION_BANNER)
+    from paper_trading.small_capital_strategy.theme_rotation_enums_v177 import ThemeCategory
+    from paper_trading.small_capital_strategy.theme_rotation_continuation_v177 import calculate_continuation_score
+    score = calculate_continuation_score(ThemeCategory.AI_SERVER, 3, True, True)
+    print(f"  Theme Rotation Continuation: score={score.score}")
+    print(f"  paper_only={score.paper_only}")
+    print(_THEME_ROTATION_BANNER)
+
+
+def cmd_theme_rotation_risk(args=None):
+    """[v1.7.7] Calculate theme risk score. Research only."""
+    print(_THEME_ROTATION_BANNER)
+    from paper_trading.small_capital_strategy.theme_rotation_enums_v177 import ThemeCategory
+    from paper_trading.small_capital_strategy.theme_rotation_risk_v177 import calculate_risk_score
+    score = calculate_risk_score(ThemeCategory.AI_SERVER, 0.5, False, False, False)
+    print(f"  Theme Rotation Risk: score={score.score}")
+    print(f"  paper_only={score.paper_only}")
+    print(_THEME_ROTATION_BANNER)
+
+
+def cmd_theme_rotation_stock_map(args=None):
+    """[v1.7.7] Build theme stock mapping. Research only."""
+    print(_THEME_ROTATION_BANNER)
+    from paper_trading.small_capital_strategy.theme_rotation_enums_v177 import ThemeCategory
+    from paper_trading.small_capital_strategy.theme_rotation_stock_map_v177 import build_stock_mapping
+    mapping = build_stock_mapping("2330", ThemeCategory.SEMICONDUCTOR, True, 1)
+    print(f"  Theme Rotation Stock Map: symbol={mapping.symbol}  theme={mapping.theme.value}")
+    print(f"  paper_only={mapping.paper_only}")
+    print(_THEME_ROTATION_BANNER)
+
+
+def cmd_theme_rotation_watchlist(args=None):
+    """[v1.7.7] Build theme watchlist candidates. Research only."""
+    print(_THEME_ROTATION_BANNER)
+    from paper_trading.small_capital_strategy.theme_rotation_enums_v177 import ThemeCategory, ThemeGrade
+    from paper_trading.small_capital_strategy.theme_rotation_watchlist_v177 import build_watchlist_candidate
+    candidate = build_watchlist_candidate("2330", ThemeCategory.SEMICONDUCTOR, ThemeGrade.LEADER, "Leader")
+    print(f"  Theme Rotation Watchlist: symbol={candidate.symbol}  eligible={candidate.eligible}")
+    print(f"  paper_only={candidate.paper_only}")
+    print(_THEME_ROTATION_BANNER)
+
+
+def cmd_theme_rotation_dashboard(args=None):
+    """[v1.7.7] Build theme rotation dashboard. Research only."""
+    print(_THEME_ROTATION_BANNER)
+    from paper_trading.small_capital_strategy.theme_rotation_dashboard_v177 import build_dashboard
+    dash = build_dashboard([], "2026-07-10")
+    print(f"  Theme Rotation Dashboard: sections={len(dash.sections)}  total_themes={dash.total_themes}")
+    print(f"  paper_only={dash.paper_only}")
+    print(_THEME_ROTATION_BANNER)
+
+
+def cmd_theme_rotation_report(args=None):
+    """[v1.7.7] Generate theme rotation report. Research only."""
+    print(_THEME_ROTATION_BANNER)
+    from paper_trading.small_capital_strategy.theme_rotation_dashboard_v177 import build_dashboard
+    from paper_trading.small_capital_strategy.theme_rotation_report_v177 import build_report
+    dash = build_dashboard([], "2026-07-10")
+    report = build_report(dash)
+    print(f"  Theme Rotation Report: sections={len(report.sections)}  top_theme={report.top_theme.value}")
+    print(f"  paper_only={report.paper_only}")
+    print(_THEME_ROTATION_BANNER)
+
+
+def cmd_theme_rotation_scenarios(args=None):
+    """[v1.7.7] List theme rotation scenarios. Research only."""
+    print(_THEME_ROTATION_BANNER)
+    from paper_trading.small_capital_strategy.theme_rotation_scenarios_v177 import count_scenarios, get_scenarios
+    print(f"  Theme Rotation Scenarios: count={count_scenarios()}  all_paper_only={all(s['paper_only'] for s in get_scenarios())}")
+    print(_THEME_ROTATION_BANNER)
+
+
+def cmd_theme_rotation_fixtures(args=None):
+    """[v1.7.7] List theme rotation fixtures. Research only."""
+    print(_THEME_ROTATION_BANNER)
+    from paper_trading.small_capital_strategy.theme_rotation_fixture_registry_v177 import count_fixtures, validate_registry
+    result = validate_registry()
+    print(f"  Theme Rotation Fixtures: count={count_fixtures()}  valid={result['valid']}")
+    print(_THEME_ROTATION_BANNER)
+
+
+def cmd_theme_rotation_health(args=None):
+    """[v1.7.7] Run theme rotation health check. Research only."""
+    print(_THEME_ROTATION_BANNER)
+    from paper_trading.small_capital_strategy.theme_rotation_health_v177 import run_health_check
+    summary = run_health_check()
+    print(f"  Theme Rotation Health v1.7.7")
+    print(f"  Status: {summary.status}  Passed: {summary.passed}/{summary.total}  Failed: {summary.failed}")
+    if summary.failed:
+        for c in summary.checks:
+            if not c["passed"]:
+                print(f"  [FAIL] {c['name']}: {c.get('error', '')}")
+    print(_THEME_ROTATION_BANNER)
+
+
+def cmd_theme_rotation_gate(args=None):
+    """[v1.7.7] Run theme rotation release gate. Research only."""
+    print(_THEME_ROTATION_BANNER)
+    from release.theme_rotation_scanner_release_gate_v177 import run_release_gate
+    result = run_release_gate()
+    print(f"  Theme Rotation Gate v1.7.7")
+    print(f"  Gate: {'PASS' if result['gate_passed'] else 'FAIL'}  Passed: {result['passed']}/{result['total']}  Failed: {result['failed']}")
+    if result["failed"]:
+        for c in result.get("checks", []):
+            if not c.get("passed"):
+                print(f"  [FAIL] {c.get('name', '?')}: {c.get('error', '')}")
+    print(_THEME_ROTATION_BANNER)
+
+
+def cmd_theme_rotation_safety_audit(args=None):
+    """[v1.7.7] Run theme rotation safety audit. Research only."""
+    print(_THEME_ROTATION_BANNER)
+    from paper_trading.small_capital_strategy.theme_rotation_safety_v177 import run_safety_audit
+    result = run_safety_audit()
+    print(f"  Theme Rotation Safety Audit: all_safe={result['all_safe']}  issues={result['issues']}")
+    print(_THEME_ROTATION_BANNER)
+
+
 def cmd_paper_strategy_health(args=None):
     """[v1.6.2] Paper strategy orchestration health check. Research only."""
     print(_STRATEGY_SAFETY_BANNER)
@@ -41553,6 +41742,24 @@ def main() -> None:
         "mistake-taxonomy-health":        cmd_mistake_taxonomy_health,
         "mistake-taxonomy-gate":          cmd_mistake_taxonomy_gate,
         "mistake-taxonomy-safety-audit":  cmd_mistake_taxonomy_safety_audit,
+        # v1.7.7 Theme Rotation Scanner
+        "theme-rotation-version":         cmd_theme_rotation_version,
+        "theme-rotation-classify":        cmd_theme_rotation_classify,
+        "theme-rotation-score":           cmd_theme_rotation_score,
+        "theme-rotation-rank":            cmd_theme_rotation_rank,
+        "theme-rotation-breadth":         cmd_theme_rotation_breadth,
+        "theme-rotation-momentum":        cmd_theme_rotation_momentum,
+        "theme-rotation-continuation":    cmd_theme_rotation_continuation,
+        "theme-rotation-risk":            cmd_theme_rotation_risk,
+        "theme-rotation-stock-map":       cmd_theme_rotation_stock_map,
+        "theme-rotation-watchlist":       cmd_theme_rotation_watchlist,
+        "theme-rotation-dashboard":       cmd_theme_rotation_dashboard,
+        "theme-rotation-report":          cmd_theme_rotation_report,
+        "theme-rotation-scenarios":       cmd_theme_rotation_scenarios,
+        "theme-rotation-fixtures":        cmd_theme_rotation_fixtures,
+        "theme-rotation-health":          cmd_theme_rotation_health,
+        "theme-rotation-gate":            cmd_theme_rotation_gate,
+        "theme-rotation-safety-audit":    cmd_theme_rotation_safety_audit,
     }
 
     if args.command is None:
