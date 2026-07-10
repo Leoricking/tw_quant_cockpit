@@ -39275,6 +39275,158 @@ def cmd_trade_journal_safety_audit(args=None):
     print(_TRADE_JOURNAL_BANNER)
 
 
+# ---------------------------------------------------------------------------
+# v1.7.6 Mistake Taxonomy command handlers
+# ---------------------------------------------------------------------------
+
+_MISTAKE_TAXONOMY_BANNER = "=" * 60 + "\n  [!] Research Only | Paper Only | No Real Orders | Not Investment Advice\n" + "=" * 60
+
+
+def cmd_mistake_taxonomy_version(args=None):
+    """[v1.7.6] Show mistake taxonomy version info. Research only."""
+    print(_MISTAKE_TAXONOMY_BANNER)
+    from paper_trading.small_capital_strategy.version_v176 import get_version_info
+    info = get_version_info()
+    print(f"  Mistake Taxonomy Version: {info['version']}  Release: {info['release_name']}")
+    print(f"  Schema: {info['schema_version']}  Policy: {info['policy_version']}")
+    print(_MISTAKE_TAXONOMY_BANNER)
+
+
+def cmd_mistake_taxonomy_classify(args=None):
+    """[v1.7.6] Classify a mistake event. Research only."""
+    print(_MISTAKE_TAXONOMY_BANNER)
+    from paper_trading.small_capital_strategy.mistake_taxonomy_classifier_v176 import get_all_rules
+    rules = get_all_rules()
+    print(f"  Mistake Taxonomy Classify: rules={len(rules)}")
+    print(f"  paper_only=True  no_real_orders=True")
+    print(_MISTAKE_TAXONOMY_BANNER)
+
+
+def cmd_mistake_taxonomy_cost(args=None):
+    """[v1.7.6] Calculate mistake cost summary. Research only."""
+    print(_MISTAKE_TAXONOMY_BANNER)
+    from paper_trading.small_capital_strategy.mistake_taxonomy_cost_v176 import calculate_cost_summary
+    summary = calculate_cost_summary([])
+    print(f"  Mistake Taxonomy Cost: total_cost_twd={summary.total_cost_twd}  event_count={summary.event_count}")
+    print(f"  paper_only={summary.paper_only}  no_real_orders={summary.no_real_orders}")
+    print(_MISTAKE_TAXONOMY_BANNER)
+
+
+def cmd_mistake_taxonomy_repeat(args=None):
+    """[v1.7.6] Detect repeated mistake patterns. Research only."""
+    print(_MISTAKE_TAXONOMY_BANNER)
+    from paper_trading.small_capital_strategy.mistake_taxonomy_repeat_v176 import detect_repeated_patterns
+    patterns = detect_repeated_patterns([])
+    print(f"  Mistake Taxonomy Repeat: patterns={len(patterns)}")
+    print(f"  paper_only=True  no_real_orders=True")
+    print(_MISTAKE_TAXONOMY_BANNER)
+
+
+def cmd_mistake_taxonomy_weekly_review(args=None):
+    """[v1.7.6] Run weekly mistake review. Research only."""
+    print(_MISTAKE_TAXONOMY_BANNER)
+    from paper_trading.small_capital_strategy.mistake_taxonomy_weekly_review_v176 import create_weekly_input, run_weekly_review
+    inp = create_weekly_input("2026-W01", [])
+    result = run_weekly_review(inp)
+    print(f"  Mistake Taxonomy Weekly Review: week={result.week_id}  status={result.status}")
+    print(f"  paper_only={result.paper_only}  no_real_orders={result.no_real_orders}")
+    print(_MISTAKE_TAXONOMY_BANNER)
+
+
+def cmd_mistake_taxonomy_monthly_review(args=None):
+    """[v1.7.6] Run monthly mistake review rollup. Research only."""
+    print(_MISTAKE_TAXONOMY_BANNER)
+    from paper_trading.small_capital_strategy.mistake_taxonomy_monthly_review_v176 import run_monthly_review
+    result = run_monthly_review("2026-01", [])
+    print(f"  Mistake Taxonomy Monthly Review: month={result.month_id}  status={result.status}")
+    print(f"  paper_only={result.paper_only}  no_real_orders={result.no_real_orders}")
+    print(_MISTAKE_TAXONOMY_BANNER)
+
+
+def cmd_mistake_taxonomy_behavior_score(args=None):
+    """[v1.7.6] Compute behavior risk score. Research only."""
+    print(_MISTAKE_TAXONOMY_BANNER)
+    from paper_trading.small_capital_strategy.mistake_taxonomy_behavior_score_v176 import compute_behavior_score
+    score = compute_behavior_score([])
+    print(f"  Mistake Taxonomy Behavior Score: score={score.score}  level={score.level}")
+    print(f"  paper_only={score.paper_only}  no_real_orders={score.no_real_orders}")
+    print(_MISTAKE_TAXONOMY_BANNER)
+
+
+def cmd_mistake_taxonomy_dashboard(args=None):
+    """[v1.7.6] Build review dashboard. Research only."""
+    print(_MISTAKE_TAXONOMY_BANNER)
+    from paper_trading.small_capital_strategy.mistake_taxonomy_dashboard_v176 import build_dashboard
+    dash = build_dashboard([])
+    print(f"  Mistake Taxonomy Dashboard: sections={len(dash.sections)}")
+    print(f"  paper_only={dash.paper_only}  no_real_orders={dash.no_real_orders}")
+    print(_MISTAKE_TAXONOMY_BANNER)
+
+
+def cmd_mistake_taxonomy_actions(args=None):
+    """[v1.7.6] Generate improvement actions. Research only."""
+    print(_MISTAKE_TAXONOMY_BANNER)
+    from paper_trading.small_capital_strategy.mistake_taxonomy_actions_v176 import generate_actions_from_events
+    actions = generate_actions_from_events([])
+    print(f"  Mistake Taxonomy Actions: count={len(actions)}")
+    print(f"  paper_only=True  no_real_orders=True")
+    print(_MISTAKE_TAXONOMY_BANNER)
+
+
+def cmd_mistake_taxonomy_scenarios(args=None):
+    """[v1.7.6] List mistake taxonomy scenarios. Research only."""
+    print(_MISTAKE_TAXONOMY_BANNER)
+    from paper_trading.small_capital_strategy.mistake_taxonomy_scenarios_v176 import count_scenarios, get_scenarios
+    print(f"  Mistake Taxonomy Scenarios: count={count_scenarios()}  all_paper_only={all(s['paper_only'] for s in get_scenarios())}")
+    print(_MISTAKE_TAXONOMY_BANNER)
+
+
+def cmd_mistake_taxonomy_fixtures(args=None):
+    """[v1.7.6] List mistake taxonomy fixtures. Research only."""
+    print(_MISTAKE_TAXONOMY_BANNER)
+    from paper_trading.small_capital_strategy.mistake_taxonomy_fixture_registry_v176 import count_fixtures, validate_registry
+    result = validate_registry()
+    print(f"  Mistake Taxonomy Fixtures: count={count_fixtures()}  valid={result['valid']}")
+    print(_MISTAKE_TAXONOMY_BANNER)
+
+
+def cmd_mistake_taxonomy_health(args=None):
+    """[v1.7.6] Run mistake taxonomy health check. Research only."""
+    print(_MISTAKE_TAXONOMY_BANNER)
+    from paper_trading.small_capital_strategy.mistake_taxonomy_health_v176 import run_health_check
+    summary = run_health_check()
+    print(f"  Mistake Taxonomy Health v1.7.6")
+    print(f"  Status: {summary.status}  Passed: {summary.passed}/{summary.total}  Failed: {summary.failed}")
+    if summary.failed:
+        for c in summary.checks:
+            if not c["passed"]:
+                print(f"  [FAIL] {c['name']}: {c.get('error', '')}")
+    print(_MISTAKE_TAXONOMY_BANNER)
+
+
+def cmd_mistake_taxonomy_gate(args=None):
+    """[v1.7.6] Run mistake taxonomy release gate. Research only."""
+    print(_MISTAKE_TAXONOMY_BANNER)
+    from release.mistake_taxonomy_weekly_review_release_gate_v176 import run_release_gate
+    result = run_release_gate()
+    print(f"  Mistake Taxonomy Gate v1.7.6")
+    print(f"  Gate: {'PASS' if result['gate_passed'] else 'FAIL'}  Passed: {result['passed']}/{result['total']}  Failed: {result['failed']}")
+    if result["failed"]:
+        for c in result.get("checks", []):
+            if not c.get("passed"):
+                print(f"  [FAIL] {c.get('name', '?')}: {c.get('detail', '')}")
+    print(_MISTAKE_TAXONOMY_BANNER)
+
+
+def cmd_mistake_taxonomy_safety_audit(args=None):
+    """[v1.7.6] Run mistake taxonomy safety audit. Research only."""
+    print(_MISTAKE_TAXONOMY_BANNER)
+    from paper_trading.small_capital_strategy.mistake_taxonomy_safety_v176 import run_safety_audit
+    result = run_safety_audit()
+    print(f"  Mistake Taxonomy Safety Audit: all_safe={result['all_safe']}  issues={result['issues']}")
+    print(_MISTAKE_TAXONOMY_BANNER)
+
+
 def cmd_paper_strategy_health(args=None):
     """[v1.6.2] Paper strategy orchestration health check. Research only."""
     print(_STRATEGY_SAFETY_BANNER)
@@ -41386,6 +41538,21 @@ def main() -> None:
         "trade-journal-health":           cmd_trade_journal_health,
         "trade-journal-gate":             cmd_trade_journal_gate,
         "trade-journal-safety-audit":     cmd_trade_journal_safety_audit,
+        # v1.7.6 Mistake Taxonomy
+        "mistake-taxonomy-version":       cmd_mistake_taxonomy_version,
+        "mistake-taxonomy-classify":      cmd_mistake_taxonomy_classify,
+        "mistake-taxonomy-cost":          cmd_mistake_taxonomy_cost,
+        "mistake-taxonomy-repeat":        cmd_mistake_taxonomy_repeat,
+        "mistake-taxonomy-weekly-review": cmd_mistake_taxonomy_weekly_review,
+        "mistake-taxonomy-monthly-review": cmd_mistake_taxonomy_monthly_review,
+        "mistake-taxonomy-behavior-score": cmd_mistake_taxonomy_behavior_score,
+        "mistake-taxonomy-dashboard":     cmd_mistake_taxonomy_dashboard,
+        "mistake-taxonomy-actions":       cmd_mistake_taxonomy_actions,
+        "mistake-taxonomy-scenarios":     cmd_mistake_taxonomy_scenarios,
+        "mistake-taxonomy-fixtures":      cmd_mistake_taxonomy_fixtures,
+        "mistake-taxonomy-health":        cmd_mistake_taxonomy_health,
+        "mistake-taxonomy-gate":          cmd_mistake_taxonomy_gate,
+        "mistake-taxonomy-safety-audit":  cmd_mistake_taxonomy_safety_audit,
     }
 
     if args.command is None:

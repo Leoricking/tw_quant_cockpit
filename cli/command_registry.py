@@ -4178,6 +4178,54 @@ _TRADE_JOURNAL_COMMANDS: _List[CommandSpec] = [
                 introduced_in="1.7.5", safety_classification="RESEARCH_ONLY"),
 ]
 
+# ---------------------------------------------------------------------------
+# v1.7.6 Mistake Taxonomy & Weekly Review Dashboard commands
+# ---------------------------------------------------------------------------
+_MISTAKE_TAXONOMY_COMMANDS: _List[CommandSpec] = [
+    CommandSpec(name="mistake-taxonomy-version", handler_name="cmd_mistake_taxonomy_version",
+                help="[Research] Show mistake taxonomy version info v1.7.6", group="mistake_taxonomy",
+                introduced_in="1.7.6", safety_classification="RESEARCH_ONLY"),
+    CommandSpec(name="mistake-taxonomy-classify", handler_name="cmd_mistake_taxonomy_classify",
+                help="[Research] Classify a mistake event v1.7.6", group="mistake_taxonomy",
+                introduced_in="1.7.6", safety_classification="RESEARCH_ONLY"),
+    CommandSpec(name="mistake-taxonomy-cost", handler_name="cmd_mistake_taxonomy_cost",
+                help="[Research] Calculate mistake cost summary v1.7.6", group="mistake_taxonomy",
+                introduced_in="1.7.6", safety_classification="RESEARCH_ONLY"),
+    CommandSpec(name="mistake-taxonomy-repeat", handler_name="cmd_mistake_taxonomy_repeat",
+                help="[Research] Detect repeated mistake patterns v1.7.6", group="mistake_taxonomy",
+                introduced_in="1.7.6", safety_classification="RESEARCH_ONLY"),
+    CommandSpec(name="mistake-taxonomy-weekly-review", handler_name="cmd_mistake_taxonomy_weekly_review",
+                help="[Research] Run weekly mistake review v1.7.6", group="mistake_taxonomy",
+                introduced_in="1.7.6", safety_classification="RESEARCH_ONLY"),
+    CommandSpec(name="mistake-taxonomy-monthly-review", handler_name="cmd_mistake_taxonomy_monthly_review",
+                help="[Research] Run monthly mistake review rollup v1.7.6", group="mistake_taxonomy",
+                introduced_in="1.7.6", safety_classification="RESEARCH_ONLY"),
+    CommandSpec(name="mistake-taxonomy-behavior-score", handler_name="cmd_mistake_taxonomy_behavior_score",
+                help="[Research] Compute behavior risk score v1.7.6", group="mistake_taxonomy",
+                introduced_in="1.7.6", safety_classification="RESEARCH_ONLY"),
+    CommandSpec(name="mistake-taxonomy-dashboard", handler_name="cmd_mistake_taxonomy_dashboard",
+                help="[Research] Build review dashboard v1.7.6", group="mistake_taxonomy",
+                introduced_in="1.7.6", safety_classification="RESEARCH_ONLY"),
+    CommandSpec(name="mistake-taxonomy-actions", handler_name="cmd_mistake_taxonomy_actions",
+                help="[Research] Generate improvement actions v1.7.6", group="mistake_taxonomy",
+                introduced_in="1.7.6", safety_classification="RESEARCH_ONLY"),
+    CommandSpec(name="mistake-taxonomy-scenarios", handler_name="cmd_mistake_taxonomy_scenarios",
+                help="[Research] List mistake taxonomy scenarios v1.7.6", group="mistake_taxonomy",
+                introduced_in="1.7.6", safety_classification="RESEARCH_ONLY"),
+    CommandSpec(name="mistake-taxonomy-fixtures", handler_name="cmd_mistake_taxonomy_fixtures",
+                help="[Research] List mistake taxonomy fixtures v1.7.6", group="mistake_taxonomy",
+                introduced_in="1.7.6", safety_classification="RESEARCH_ONLY"),
+    CommandSpec(name="mistake-taxonomy-health", handler_name="cmd_mistake_taxonomy_health",
+                help="[Research] Run mistake taxonomy health check v1.7.6", group="mistake_taxonomy",
+                introduced_in="1.7.6", safety_classification="RESEARCH_ONLY"),
+    CommandSpec(name="mistake-taxonomy-gate", handler_name="cmd_mistake_taxonomy_gate",
+                help="[Research] Run mistake taxonomy release gate v1.7.6", group="mistake_taxonomy",
+                introduced_in="1.7.6", safety_classification="RESEARCH_ONLY"),
+    CommandSpec(name="mistake-taxonomy-safety-audit", handler_name="cmd_mistake_taxonomy_safety_audit",
+                help="[Research] Run mistake taxonomy safety audit v1.7.6", group="mistake_taxonomy",
+                introduced_in="1.7.6", safety_classification="RESEARCH_ONLY"),
+]
+
 PROVIDER_COMMANDS: _List[CommandSpec] = (
     _RESEARCH_FOUNDATION_COMMANDS
     + _TWSE_COMMANDS
@@ -4209,6 +4257,7 @@ PROVIDER_COMMANDS: _List[CommandSpec] = (
     + _SMALL_CAPITAL_STRATEGY_COMMANDS
     + _RISK_DASHBOARD_COMMANDS
     + _TRADE_JOURNAL_COMMANDS
+    + _MISTAKE_TAXONOMY_COMMANDS
 )
 
 

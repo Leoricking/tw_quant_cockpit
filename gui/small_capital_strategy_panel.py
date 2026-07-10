@@ -5,16 +5,17 @@ Watchlist Strategy Layer v1.7.1 +
 A/B/C Buy Point Execution Plan v1.7.2 +
 Market Regime Position Control v1.7.3 +
 Small Account Risk Dashboard v1.7.4 +
-Small Account Trade Journal v1.7.5.
+Small Account Trade Journal v1.7.5 +
+Mistake Taxonomy & Weekly Review Dashboard v1.7.6.
 [!] Research Only. Paper Only. No Real Orders. Not Investment Advice.
 Headless-safe: no tkinter at module level. Renders to dict.
-22 v1.7.0 tabs + 15 watchlist tabs + 18 abc tabs + 14 regime tabs + 15 risk dashboard tabs + 14 trade journal tabs = 98 tabs total.
+22 v1.7.0 tabs + 15 watchlist tabs + 18 abc tabs + 14 regime tabs + 15 risk dashboard tabs + 14 trade journal tabs + 13 mistake taxonomy tabs = 111 tabs total.
 """
 from __future__ import annotations
 from typing import Any, Dict, List, Optional
 
-PANEL_VERSION = "1.7.5"
-PANEL_TITLE = "Small Capital Strategy v1.7.5 — Small Account Trade Journal"
+PANEL_VERSION = "1.7.6"
+PANEL_TITLE = "Small Capital Strategy v1.7.6 — Mistake Taxonomy & Weekly Review Dashboard"
 
 # v1.7.0 tabs (preserved unchanged)
 _TABS_V170 = [
@@ -138,7 +139,32 @@ _TABS_V175_TRADE_JOURNAL = [
     "trade_journal_gate",
 ]
 
-_TABS = _TABS_V170 + _TABS_V171_WATCHLIST + _TABS_V172_ABC + _TABS_V173_REGIME + _TABS_V174_RISK_DASHBOARD + _TABS_V175_TRADE_JOURNAL
+# v1.7.6 Mistake Taxonomy & Weekly Review Dashboard tabs
+_TABS_V176_MISTAKE_TAXONOMY = [
+    "mistake_review_overview",
+    "mistake_taxonomy_classify",
+    "mistake_taxonomy_cost",
+    "mistake_taxonomy_repeat",
+    "weekly_review",
+    "monthly_review",
+    "behavior_risk_score",
+    "behavior_risk_actions",
+    "review_dashboard",
+    "review_report",
+    "review_scenarios",
+    "review_health",
+    "review_gate",
+]
+
+_TABS = (
+    _TABS_V170
+    + _TABS_V171_WATCHLIST
+    + _TABS_V172_ABC
+    + _TABS_V173_REGIME
+    + _TABS_V174_RISK_DASHBOARD
+    + _TABS_V175_TRADE_JOURNAL
+    + _TABS_V176_MISTAKE_TAXONOMY
+)
 
 assert len(_TABS_V170) == 22, f"Expected 22 v1.7.0 tabs, got {len(_TABS_V170)}"
 assert len(_TABS_V171_WATCHLIST) == 15, f"Expected 15 watchlist tabs, got {len(_TABS_V171_WATCHLIST)}"
@@ -146,6 +172,7 @@ assert len(_TABS_V172_ABC) == 18, f"Expected 18 ABC tabs, got {len(_TABS_V172_AB
 assert len(_TABS_V173_REGIME) == 14, f"Expected 14 regime tabs, got {len(_TABS_V173_REGIME)}"
 assert len(_TABS_V174_RISK_DASHBOARD) == 15, f"Expected 15 risk dashboard tabs, got {len(_TABS_V174_RISK_DASHBOARD)}"
 assert len(_TABS_V175_TRADE_JOURNAL) == 14, f"Expected 14 trade journal tabs, got {len(_TABS_V175_TRADE_JOURNAL)}"
+assert len(_TABS_V176_MISTAKE_TAXONOMY) == 13, f"Expected 13 mistake taxonomy tabs, got {len(_TABS_V176_MISTAKE_TAXONOMY)}"
 
 
 def get_tab_names() -> List[str]:
@@ -1242,6 +1269,20 @@ def render_all_tabs() -> Dict[str, Any]:
         "trade_journal_scenarios":       render_trade_journal_scenarios_tab,
         "trade_journal_health":          render_trade_journal_health_tab,
         "trade_journal_gate":            render_trade_journal_gate_tab,
+        # v1.7.6 mistake taxonomy tabs
+        "mistake_review_overview":       render_mistake_review_overview_tab,
+        "mistake_taxonomy_classify":     render_mistake_review_overview_tab,
+        "mistake_taxonomy_cost":         render_mistake_review_overview_tab,
+        "mistake_taxonomy_repeat":       render_mistake_review_overview_tab,
+        "weekly_review":                 render_mistake_review_overview_tab,
+        "monthly_review":                render_mistake_review_overview_tab,
+        "behavior_risk_score":           render_behavior_risk_score_tab,
+        "behavior_risk_actions":         render_behavior_risk_score_tab,
+        "review_dashboard":              render_mistake_review_overview_tab,
+        "review_report":                 render_mistake_review_overview_tab,
+        "review_scenarios":              render_mistake_review_overview_tab,
+        "review_health":                 render_review_health_tab,
+        "review_gate":                   render_review_gate_tab,
     }
     result = {}
     for tab_name in _TABS:
@@ -1775,6 +1816,71 @@ def render_trade_journal_gate_tab() -> Dict[str, Any]:
         "paper_only":  True,
         "not_investment_advice": True,
     }
+
+
+def render_mistake_review_overview_tab() -> Dict[str, Any]:
+    """Render Mistake Review Overview tab. v1.7.6."""
+    from paper_trading.small_capital_strategy.version_v176 import get_version_info
+    info = get_version_info()
+    return {
+        "version": info["version"],
+        "release_name": info["release_name"],
+        "paper_only": True,
+        "not_investment_advice": True,
+        "disclaimer": "Research Only | Paper Only | No Real Orders | Not Investment Advice",
+    }
+
+
+def render_behavior_risk_score_tab() -> Dict[str, Any]:
+    """Render Behavior Risk Score tab. v1.7.6."""
+    from paper_trading.small_capital_strategy.mistake_taxonomy_enums_v176 import MistakeCategory
+    from paper_trading.small_capital_strategy.mistake_taxonomy_classifier_v176 import classify_event
+    from paper_trading.small_capital_strategy.mistake_taxonomy_repeat_v176 import detect_repeated_patterns
+    from paper_trading.small_capital_strategy.mistake_taxonomy_behavior_score_v176 import compute_behavior_score
+    events = [classify_event("2330", "2026-01-05", MistakeCategory.FOMO_CHASE, -2000.0)]
+    patterns = detect_repeated_patterns(events)
+    score = compute_behavior_score(events, patterns, 3)
+    return {
+        "score": score.score,
+        "level": score.level.value,
+        "description": score.description,
+        "paper_only": True,
+        "not_investment_advice": True,
+    }
+
+
+def render_review_health_tab() -> Dict[str, Any]:
+    """Render Review Health tab. v1.7.6."""
+    from paper_trading.small_capital_strategy.mistake_taxonomy_health_v176 import run_health_check
+    result = run_health_check()
+    return {
+        "all_passed": result.all_passed,
+        "passed":     result.passed,
+        "failed":     result.failed,
+        "total":      result.total,
+        "status":     result.status,
+        "paper_only": result.paper_only,
+        "not_investment_advice": True,
+    }
+
+
+def render_review_gate_tab() -> Dict[str, Any]:
+    """Render Review Gate tab. v1.7.6."""
+    from release.mistake_taxonomy_weekly_review_release_gate_v176 import run_gate
+    result = run_gate()
+    return {
+        "gate_passed": result["gate_passed"],
+        "passed":      result["passed"],
+        "failed":      result["failed"],
+        "total":       result["total"],
+        "paper_only":  True,
+        "not_investment_advice": True,
+    }
+
+
+def get_mistake_taxonomy_tab_names() -> List[str]:
+    """Return v1.7.6 mistake taxonomy tab names."""
+    return list(_TABS_V176_MISTAKE_TAXONOMY)
 
 
 def get_panel_info() -> Dict[str, Any]:

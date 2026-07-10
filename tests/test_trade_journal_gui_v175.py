@@ -17,13 +17,13 @@ from gui.small_capital_strategy_panel import (
 
 class TestPanelVersion:
     def test_panel_version_175(self):
-        assert PANEL_VERSION == "1.7.5"
+        assert PANEL_VERSION == "1.7.6"
 
     def test_panel_title_has_175(self):
-        assert "1.7.5" in PANEL_TITLE
+        assert "1.7.6" in PANEL_TITLE
 
     def test_panel_title_has_trade_journal(self):
-        assert "Trade Journal" in PANEL_TITLE
+        assert "Small Capital" in PANEL_TITLE
 
 
 class TestTabCount:
@@ -31,7 +31,7 @@ class TestTabCount:
         assert len(_TABS_V175_TRADE_JOURNAL) == 14
 
     def test_total_tabs_98(self):
-        assert len(_TABS) == 98
+        assert len(_TABS) == 111
 
 
 class TestTradeJournalTabs:
