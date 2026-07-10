@@ -6,16 +6,18 @@ A/B/C Buy Point Execution Plan v1.7.2 +
 Market Regime Position Control v1.7.3 +
 Small Account Risk Dashboard v1.7.4 +
 Small Account Trade Journal v1.7.5 +
-Mistake Taxonomy & Weekly Review Dashboard v1.7.6.
+Mistake Taxonomy & Weekly Review Dashboard v1.7.6 +
+Theme Rotation Scanner v1.7.7 +
+Small Capital Strategy Integration v1.7.8.
 [!] Research Only. Paper Only. No Real Orders. Not Investment Advice.
 Headless-safe: no tkinter at module level. Renders to dict.
-22 v1.7.0 tabs + 15 watchlist tabs + 18 abc tabs + 14 regime tabs + 15 risk dashboard tabs + 14 trade journal tabs + 13 mistake taxonomy tabs = 111 tabs total.
+22 v1.7.0 tabs + 15 watchlist tabs + 18 abc tabs + 14 regime tabs + 15 risk dashboard tabs + 14 trade journal tabs + 13 mistake taxonomy tabs + 3 theme rotation tabs + 3 integrated strategy tabs = 117 tabs total.
 """
 from __future__ import annotations
 from typing import Any, Dict, List, Optional
 
-PANEL_VERSION = "1.7.7"
-PANEL_TITLE = "Small Capital Strategy v1.7.7 — Theme Rotation Scanner"
+PANEL_VERSION = "1.7.8"
+PANEL_TITLE = "Small Capital Strategy v1.7.8 — Integrated Strategy"
 
 # v1.7.0 tabs (preserved unchanged)
 _TABS_V170 = [
@@ -163,6 +165,13 @@ _TABS_V176_MISTAKE_TAXONOMY = [
     "review_gate",
 ]
 
+# v1.7.8 Integrated Strategy / Decision Dashboard / Paper Plan tabs
+_TABS_V178_INTEGRATED_STRATEGY = [
+    "integrated_strategy",
+    "integrated_decision_dashboard",
+    "integrated_paper_plan",
+]
+
 _TABS = (
     _TABS_V170
     + _TABS_V171_WATCHLIST
@@ -172,6 +181,7 @@ _TABS = (
     + _TABS_V175_TRADE_JOURNAL
     + _TABS_V176_MISTAKE_TAXONOMY
     + _TABS_V177_THEME_ROTATION
+    + _TABS_V178_INTEGRATED_STRATEGY
 )
 
 assert len(_TABS_V170) == 22, f"Expected 22 v1.7.0 tabs, got {len(_TABS_V170)}"
@@ -182,6 +192,7 @@ assert len(_TABS_V174_RISK_DASHBOARD) == 15, f"Expected 15 risk dashboard tabs, 
 assert len(_TABS_V175_TRADE_JOURNAL) == 14, f"Expected 14 trade journal tabs, got {len(_TABS_V175_TRADE_JOURNAL)}"
 assert len(_TABS_V176_MISTAKE_TAXONOMY) == 13, f"Expected 13 mistake taxonomy tabs, got {len(_TABS_V176_MISTAKE_TAXONOMY)}"
 assert len(_TABS_V177_THEME_ROTATION) == 3, f"Expected 3 theme rotation tabs, got {len(_TABS_V177_THEME_ROTATION)}"
+assert len(_TABS_V178_INTEGRATED_STRATEGY) == 3, f"Expected 3 integrated strategy tabs, got {len(_TABS_V178_INTEGRATED_STRATEGY)}"
 
 
 def get_tab_names() -> List[str]:
@@ -1950,6 +1961,157 @@ def render_theme_watchlist_tab() -> Dict[str, Any]:
 def get_theme_rotation_tab_names() -> List[str]:
     """Return v1.7.7 theme rotation tab names."""
     return list(_TABS_V177_THEME_ROTATION)
+
+
+def get_integrated_strategy_tab_names() -> List[str]:
+    """Return v1.7.8 integrated strategy tab names."""
+    return list(_TABS_V178_INTEGRATED_STRATEGY)
+
+
+def render_integrated_strategy_tab(
+    symbol: str = "",
+    date: str = "",
+) -> Dict[str, Any]:
+    """
+    Render integrated strategy tab. Paper/research only.
+    Headless-safe. Empty state handled. Malformed input does not crash.
+    """
+    try:
+        from paper_trading.small_capital_strategy.integrated_strategy_enums_v178 import (
+            IntegratedRegimeStatus, IntegratedWatchlistStatus, IntegratedABCStatus,
+            IntegratedThemeStatus, IntegratedRiskLevel, IntegratedBehaviorStatus,
+        )
+        from paper_trading.small_capital_strategy.integrated_strategy_models_v178 import (
+            IntegratedStrategyInput,
+        )
+        from paper_trading.small_capital_strategy.integrated_strategy_engine_v178 import (
+            run_integrated_strategy,
+        )
+        inp = IntegratedStrategyInput(
+            symbol=symbol or "",
+            date=date or "",
+            has_stop_loss=False,
+        )
+        decision = run_integrated_strategy(inp)
+        return {
+            "tab": "integrated_strategy",
+            "symbol": symbol,
+            "date": date,
+            "action": decision.action.value,
+            "final_score": decision.final_score,
+            "grade": decision.grade.value,
+            "no_trade_reasons": [r.value for r in decision.no_trade_reasons],
+            "block_reasons": [b.value for b in decision.block_reasons],
+            "paper_only": True,
+            "research_only": True,
+            "no_real_orders": True,
+            "no_broker": True,
+            "not_investment_advice": True,
+        }
+    except Exception as exc:
+        return {
+            "tab": "integrated_strategy",
+            "symbol": symbol,
+            "date": date,
+            "action": "OBSERVE",
+            "error": str(exc),
+            "paper_only": True,
+            "research_only": True,
+            "no_real_orders": True,
+            "not_investment_advice": True,
+        }
+
+
+def render_integrated_decision_dashboard_tab(
+    symbol: str = "",
+    date: str = "",
+) -> Dict[str, Any]:
+    """
+    Render integrated decision dashboard tab. Paper/research only.
+    Headless-safe. Empty state handled. No broker. No live session.
+    """
+    try:
+        from paper_trading.small_capital_strategy.integrated_strategy_models_v178 import (
+            IntegratedStrategyInput,
+        )
+        from paper_trading.small_capital_strategy.integrated_strategy_engine_v178 import (
+            build_integrated_dashboard,
+        )
+        inp = IntegratedStrategyInput(symbol=symbol or "", date=date or "")
+        dashboard = build_integrated_dashboard(inp)
+        return {
+            "tab": "integrated_decision_dashboard",
+            "symbol": symbol,
+            "date": date,
+            "action": (dashboard.decision.action.value if dashboard.decision else "OBSERVE"),
+            "final_score": (dashboard.decision.final_score if dashboard.decision else 0.0),
+            "sections_count": len(dashboard.sections),
+            "paper_only": True,
+            "research_only": True,
+            "no_real_orders": True,
+            "no_broker": True,
+            "not_investment_advice": True,
+        }
+    except Exception as exc:
+        return {
+            "tab": "integrated_decision_dashboard",
+            "symbol": symbol,
+            "date": date,
+            "action": "OBSERVE",
+            "error": str(exc),
+            "paper_only": True,
+            "research_only": True,
+            "no_real_orders": True,
+            "not_investment_advice": True,
+        }
+
+
+def render_integrated_paper_plan_tab(
+    symbol: str = "",
+    date: str = "",
+) -> Dict[str, Any]:
+    """
+    Render integrated paper plan tab. Paper/research only.
+    Headless-safe. No real orders. No broker execution.
+    """
+    try:
+        from paper_trading.small_capital_strategy.integrated_strategy_models_v178 import (
+            IntegratedStrategyInput,
+        )
+        from paper_trading.small_capital_strategy.integrated_strategy_engine_v178 import (
+            run_integrated_strategy,
+        )
+        from paper_trading.small_capital_strategy.integrated_strategy_paper_plan_v178 import (
+            build_paper_plan,
+        )
+        inp = IntegratedStrategyInput(symbol=symbol or "", date=date or "")
+        decision = run_integrated_strategy(inp)
+        plan = build_paper_plan(inp, decision)
+        return {
+            "tab": "integrated_paper_plan",
+            "symbol": symbol,
+            "date": date,
+            "plan_valid": plan.plan_valid,
+            "buy_point_type": plan.buy_point_type,
+            "broker_execution_enabled": False,
+            "no_real_orders": True,
+            "paper_only": True,
+            "research_only": True,
+            "not_investment_advice": True,
+        }
+    except Exception as exc:
+        return {
+            "tab": "integrated_paper_plan",
+            "symbol": symbol,
+            "date": date,
+            "plan_valid": False,
+            "error": str(exc),
+            "broker_execution_enabled": False,
+            "no_real_orders": True,
+            "paper_only": True,
+            "research_only": True,
+            "not_investment_advice": True,
+        }
 
 
 def get_panel_info() -> Dict[str, Any]:

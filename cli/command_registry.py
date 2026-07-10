@@ -4283,6 +4283,63 @@ _THEME_ROTATION_COMMANDS: _List[CommandSpec] = [
                 introduced_in="1.7.7", safety_classification="RESEARCH_ONLY"),
 ]
 
+# ---------------------------------------------------------------------------
+# v1.7.8 Integrated Strategy commands
+# ---------------------------------------------------------------------------
+_INTEGRATED_STRATEGY_COMMANDS: _List[CommandSpec] = [
+    CommandSpec(name="integrated-strategy-version", handler_name="cmd_integrated_strategy_version",
+                help="[Research] Show integrated strategy version info v1.7.8", group="integrated_strategy",
+                introduced_in="1.7.8", safety_classification="RESEARCH_ONLY"),
+    CommandSpec(name="integrated-strategy-run", handler_name="cmd_integrated_strategy_run",
+                help="[Research] Run integrated strategy decision engine v1.7.8", group="integrated_strategy",
+                introduced_in="1.7.8", safety_classification="RESEARCH_ONLY"),
+    CommandSpec(name="integrated-strategy-score", handler_name="cmd_integrated_strategy_score",
+                help="[Research] Compute integrated strategy scorecard v1.7.8", group="integrated_strategy",
+                introduced_in="1.7.8", safety_classification="RESEARCH_ONLY"),
+    CommandSpec(name="integrated-strategy-watchlist", handler_name="cmd_integrated_strategy_watchlist",
+                help="[Research] Show integrated watchlist decision v1.7.8", group="integrated_strategy",
+                introduced_in="1.7.8", safety_classification="RESEARCH_ONLY"),
+    CommandSpec(name="integrated-strategy-theme", handler_name="cmd_integrated_strategy_theme",
+                help="[Research] Show integrated theme decision v1.7.8", group="integrated_strategy",
+                introduced_in="1.7.8", safety_classification="RESEARCH_ONLY"),
+    CommandSpec(name="integrated-strategy-abc", handler_name="cmd_integrated_strategy_abc",
+                help="[Research] Show integrated ABC buy point decision v1.7.8", group="integrated_strategy",
+                introduced_in="1.7.8", safety_classification="RESEARCH_ONLY"),
+    CommandSpec(name="integrated-strategy-risk", handler_name="cmd_integrated_strategy_risk",
+                help="[Research] Show integrated risk decision v1.7.8", group="integrated_strategy",
+                introduced_in="1.7.8", safety_classification="RESEARCH_ONLY"),
+    CommandSpec(name="integrated-strategy-behavior", handler_name="cmd_integrated_strategy_behavior",
+                help="[Research] Show integrated behavior decision v1.7.8", group="integrated_strategy",
+                introduced_in="1.7.8", safety_classification="RESEARCH_ONLY"),
+    CommandSpec(name="integrated-strategy-paper-plan", handler_name="cmd_integrated_strategy_paper_plan",
+                help="[Research] Generate integrated paper plan v1.7.8", group="integrated_strategy",
+                introduced_in="1.7.8", safety_classification="RESEARCH_ONLY"),
+    CommandSpec(name="integrated-strategy-no-trade", handler_name="cmd_integrated_strategy_no_trade",
+                help="[Research] List no-trade reasons v1.7.8", group="integrated_strategy",
+                introduced_in="1.7.8", safety_classification="RESEARCH_ONLY"),
+    CommandSpec(name="integrated-strategy-dashboard", handler_name="cmd_integrated_strategy_dashboard",
+                help="[Research] Build integrated strategy dashboard v1.7.8", group="integrated_strategy",
+                introduced_in="1.7.8", safety_classification="RESEARCH_ONLY"),
+    CommandSpec(name="integrated-strategy-report", handler_name="cmd_integrated_strategy_report",
+                help="[Research] Generate integrated strategy report v1.7.8", group="integrated_strategy",
+                introduced_in="1.7.8", safety_classification="RESEARCH_ONLY"),
+    CommandSpec(name="integrated-strategy-scenarios", handler_name="cmd_integrated_strategy_scenarios",
+                help="[Research] List integrated strategy scenarios v1.7.8", group="integrated_strategy",
+                introduced_in="1.7.8", safety_classification="RESEARCH_ONLY"),
+    CommandSpec(name="integrated-strategy-fixtures", handler_name="cmd_integrated_strategy_fixtures",
+                help="[Research] List integrated strategy fixtures v1.7.8", group="integrated_strategy",
+                introduced_in="1.7.8", safety_classification="RESEARCH_ONLY"),
+    CommandSpec(name="integrated-strategy-health", handler_name="cmd_integrated_strategy_health",
+                help="[Research] Run integrated strategy health check v1.7.8", group="integrated_strategy",
+                introduced_in="1.7.8", safety_classification="RESEARCH_ONLY"),
+    CommandSpec(name="integrated-strategy-gate", handler_name="cmd_integrated_strategy_gate",
+                help="[Research] Run integrated strategy release gate v1.7.8", group="integrated_strategy",
+                introduced_in="1.7.8", safety_classification="RESEARCH_ONLY"),
+    CommandSpec(name="integrated-strategy-safety-audit", handler_name="cmd_integrated_strategy_safety_audit",
+                help="[Research] Run integrated strategy safety audit v1.7.8", group="integrated_strategy",
+                introduced_in="1.7.8", safety_classification="RESEARCH_ONLY"),
+]
+
 PROVIDER_COMMANDS: _List[CommandSpec] = (
     _RESEARCH_FOUNDATION_COMMANDS
     + _TWSE_COMMANDS
@@ -4316,6 +4373,7 @@ PROVIDER_COMMANDS: _List[CommandSpec] = (
     + _TRADE_JOURNAL_COMMANDS
     + _MISTAKE_TAXONOMY_COMMANDS
     + _THEME_ROTATION_COMMANDS
+    + _INTEGRATED_STRATEGY_COMMANDS
 )
 
 
