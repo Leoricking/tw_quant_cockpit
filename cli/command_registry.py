@@ -4340,6 +4340,45 @@ _INTEGRATED_STRATEGY_COMMANDS: _List[CommandSpec] = [
                 introduced_in="1.7.8", safety_classification="RESEARCH_ONLY"),
 ]
 
+_STABLE_ROLLUP_V179_COMMANDS: _List[CommandSpec] = [
+    CommandSpec(name="small-capital-stable-version", handler_name="cmd_small_capital_stable_version",
+                help="[Research] Show stable rollup version info v1.7.9", group="stable_rollup",
+                introduced_in="1.7.9", safety_classification="RESEARCH_ONLY"),
+    CommandSpec(name="small-capital-stable-manifest", handler_name="cmd_small_capital_stable_manifest",
+                help="[Research] Show stable rollup manifest v1.7.9", group="stable_rollup",
+                introduced_in="1.7.9", safety_classification="RESEARCH_ONLY"),
+    CommandSpec(name="small-capital-stable-health", handler_name="cmd_small_capital_stable_health",
+                help="[Research] Run stable rollup health checks v1.7.9", group="stable_rollup",
+                introduced_in="1.7.9", safety_classification="RESEARCH_ONLY"),
+    CommandSpec(name="small-capital-stable-gate", handler_name="cmd_small_capital_stable_gate",
+                help="[Research] Run stable rollup release gate v1.7.9", group="stable_rollup",
+                introduced_in="1.7.9", safety_classification="RESEARCH_ONLY"),
+    CommandSpec(name="small-capital-stable-safety", handler_name="cmd_small_capital_stable_safety",
+                help="[Research] Run stable rollup safety audit v1.7.9", group="stable_rollup",
+                introduced_in="1.7.9", safety_classification="RESEARCH_ONLY"),
+    CommandSpec(name="small-capital-stable-compat", handler_name="cmd_small_capital_stable_compat",
+                help="[Research] Run stable rollup compatibility check v1.7.9", group="stable_rollup",
+                introduced_in="1.7.9", safety_classification="RESEARCH_ONLY"),
+    CommandSpec(name="small-capital-stable-cli-audit", handler_name="cmd_small_capital_stable_cli_audit",
+                help="[Research] Run stable rollup CLI audit v1.7.9", group="stable_rollup",
+                introduced_in="1.7.9", safety_classification="RESEARCH_ONLY"),
+    CommandSpec(name="small-capital-stable-gui-audit", handler_name="cmd_small_capital_stable_gui_audit",
+                help="[Research] Run stable rollup GUI audit v1.7.9", group="stable_rollup",
+                introduced_in="1.7.9", safety_classification="RESEARCH_ONLY"),
+    CommandSpec(name="small-capital-stable-fixture-audit", handler_name="cmd_small_capital_stable_fixture_audit",
+                help="[Research] Run stable rollup fixture audit v1.7.9", group="stable_rollup",
+                introduced_in="1.7.9", safety_classification="RESEARCH_ONLY"),
+    CommandSpec(name="small-capital-stable-scenario-audit", handler_name="cmd_small_capital_stable_scenario_audit",
+                help="[Research] Run stable rollup scenario audit v1.7.9", group="stable_rollup",
+                introduced_in="1.7.9", safety_classification="RESEARCH_ONLY"),
+    CommandSpec(name="small-capital-stable-regression-audit", handler_name="cmd_small_capital_stable_regression_audit",
+                help="[Research] Run stable rollup regression audit v1.7.9", group="stable_rollup",
+                introduced_in="1.7.9", safety_classification="RESEARCH_ONLY"),
+    CommandSpec(name="small-capital-stable-report", handler_name="cmd_small_capital_stable_report",
+                help="[Research] Build stable rollup full report v1.7.9", group="stable_rollup",
+                introduced_in="1.7.9", safety_classification="RESEARCH_ONLY"),
+]
+
 PROVIDER_COMMANDS: _List[CommandSpec] = (
     _RESEARCH_FOUNDATION_COMMANDS
     + _TWSE_COMMANDS
@@ -4374,6 +4413,7 @@ PROVIDER_COMMANDS: _List[CommandSpec] = (
     + _MISTAKE_TAXONOMY_COMMANDS
     + _THEME_ROTATION_COMMANDS
     + _INTEGRATED_STRATEGY_COMMANDS
+    + _STABLE_ROLLUP_V179_COMMANDS
 )
 
 

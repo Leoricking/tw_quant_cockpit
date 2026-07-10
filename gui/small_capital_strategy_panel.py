@@ -11,13 +11,13 @@ Theme Rotation Scanner v1.7.7 +
 Small Capital Strategy Integration v1.7.8.
 [!] Research Only. Paper Only. No Real Orders. Not Investment Advice.
 Headless-safe: no tkinter at module level. Renders to dict.
-22 v1.7.0 tabs + 15 watchlist tabs + 18 abc tabs + 14 regime tabs + 15 risk dashboard tabs + 14 trade journal tabs + 13 mistake taxonomy tabs + 3 theme rotation tabs + 3 integrated strategy tabs = 117 tabs total.
+22 v1.7.0 tabs + 15 watchlist tabs + 18 abc tabs + 14 regime tabs + 15 risk dashboard tabs + 14 trade journal tabs + 13 mistake taxonomy tabs + 3 theme rotation tabs + 3 integrated strategy tabs + 3 stable rollup tabs = 120 tabs total.
 """
 from __future__ import annotations
 from typing import Any, Dict, List, Optional
 
-PANEL_VERSION = "1.7.8"
-PANEL_TITLE = "Small Capital Strategy v1.7.8 — Integrated Strategy"
+PANEL_VERSION = "1.7.9"
+PANEL_TITLE = "Small Capital Strategy v1.7.9 — Stable Rollup"
 
 # v1.7.0 tabs (preserved unchanged)
 _TABS_V170 = [
@@ -172,6 +172,12 @@ _TABS_V178_INTEGRATED_STRATEGY = [
     "integrated_paper_plan",
 ]
 
+_TABS_V179_STABLE_ROLLUP = [
+    "stable_rollup",
+    "stable_health",
+    "stable_report",
+]
+
 _TABS = (
     _TABS_V170
     + _TABS_V171_WATCHLIST
@@ -182,6 +188,7 @@ _TABS = (
     + _TABS_V176_MISTAKE_TAXONOMY
     + _TABS_V177_THEME_ROTATION
     + _TABS_V178_INTEGRATED_STRATEGY
+    + _TABS_V179_STABLE_ROLLUP
 )
 
 assert len(_TABS_V170) == 22, f"Expected 22 v1.7.0 tabs, got {len(_TABS_V170)}"
@@ -193,6 +200,7 @@ assert len(_TABS_V175_TRADE_JOURNAL) == 14, f"Expected 14 trade journal tabs, go
 assert len(_TABS_V176_MISTAKE_TAXONOMY) == 13, f"Expected 13 mistake taxonomy tabs, got {len(_TABS_V176_MISTAKE_TAXONOMY)}"
 assert len(_TABS_V177_THEME_ROTATION) == 3, f"Expected 3 theme rotation tabs, got {len(_TABS_V177_THEME_ROTATION)}"
 assert len(_TABS_V178_INTEGRATED_STRATEGY) == 3, f"Expected 3 integrated strategy tabs, got {len(_TABS_V178_INTEGRATED_STRATEGY)}"
+assert len(_TABS_V179_STABLE_ROLLUP) == 3, f"Expected 3 stable rollup tabs, got {len(_TABS_V179_STABLE_ROLLUP)}"
 
 
 def get_tab_names() -> List[str]:
@@ -1311,6 +1319,10 @@ def render_all_tabs() -> Dict[str, Any]:
         "integrated_strategy":               render_integrated_strategy_tab,
         "integrated_decision_dashboard":     render_integrated_decision_dashboard_tab,
         "integrated_paper_plan":             render_integrated_paper_plan_tab,
+        # v1.7.9 stable rollup tabs
+        "stable_rollup":                     render_stable_rollup_tab,
+        "stable_health":                     render_stable_health_tab,
+        "stable_report":                     render_stable_report_tab,
     }
     result = {}
     for tab_name in _TABS:
@@ -2116,6 +2128,70 @@ def render_integrated_paper_plan_tab(
             "research_only": True,
             "not_investment_advice": True,
         }
+
+
+def render_stable_rollup_tab() -> Dict[str, Any]:
+    """Render Stable Rollup overview tab. v1.7.9."""
+    return {
+        "tab": "stable_rollup",
+        "title": "Small Capital Strategy Stable Rollup v1.7.9",
+        "version": "1.7.9",
+        "release_name": "Small Capital Strategy Stable Rollup",
+        "base_release": "1.7.8 Small Capital Strategy Integration",
+        "included_releases": 9,
+        "schema_version": "179",
+        "policy_version": "1.7.9-small-capital-strategy-stable-rollup",
+        "paper_only": True,
+        "research_only": True,
+        "no_real_orders": True,
+        "no_broker": True,
+        "not_investment_advice": True,
+        "demo_only": True,
+        "not_for_production": True,
+        "disclaimer": "Research Only | Paper Only | No Real Orders | Not Investment Advice",
+    }
+
+
+def render_stable_health_tab() -> Dict[str, Any]:
+    """Render Stable Health check tab. v1.7.9. Headless-safe. Does not call run_health_check to avoid circular dependency."""
+    return {
+        "tab": "stable_health",
+        "title": "Stable Rollup Health v1.7.9",
+        "description": "Run 'small-capital-stable-health' CLI command for full health check.",
+        "version": "1.7.9",
+        "status": "READY",
+        "paper_only": True,
+        "research_only": True,
+        "no_real_orders": True,
+        "no_broker": True,
+        "not_investment_advice": True,
+        "demo_only": True,
+        "not_for_production": True,
+    }
+
+
+def render_stable_report_tab() -> Dict[str, Any]:
+    """Render Stable Report summary tab. v1.7.9."""
+    return {
+        "tab": "stable_report",
+        "title": "Stable Rollup Report v1.7.9",
+        "version": "1.7.9",
+        "release_name": "Small Capital Strategy Stable Rollup",
+        "report_sections": 11,
+        "paper_only": True,
+        "research_only": True,
+        "no_real_orders": True,
+        "no_broker": True,
+        "not_investment_advice": True,
+        "demo_only": True,
+        "not_for_production": True,
+        "disclaimer": "Research Only | Paper Only | No Real Orders | Not Investment Advice",
+    }
+
+
+def get_stable_rollup_tab_names() -> List[str]:
+    """Return list of v1.7.9 stable rollup tab names."""
+    return list(_TABS_V179_STABLE_ROLLUP)
 
 
 def get_panel_info() -> Dict[str, Any]:

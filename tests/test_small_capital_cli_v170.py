@@ -39,7 +39,7 @@ def _get_all_names():
 def test_small_capital_commands_count_25():
     all_names = _get_all_names()
     sc_names = [n for n in all_names if n.startswith("small-capital")]
-    assert len(sc_names) == 25
+    assert len(sc_names) == 37  # 25 original + 12 new stable rollup commands (v1.7.9)
 
 
 @pytest.mark.parametrize("cmd_name", _SMALL_CAP_COMMAND_NAMES)

@@ -14,10 +14,10 @@ from gui.small_capital_strategy_panel import (
 
 class TestPanelVersionAndTitle:
     def test_panel_version_is_178(self):
-        assert PANEL_VERSION == "1.7.8"
+        assert PANEL_VERSION == "1.7.9"
 
     def test_panel_title_contains_178(self):
-        assert "1.7.8" in PANEL_TITLE
+        assert "1.7.9" in PANEL_TITLE
 
 
 class TestGetTabNames:
@@ -58,9 +58,9 @@ class TestGetIntegratedStrategyTabNames:
 
 
 class TestGetPanelInfo:
-    def test_panel_version_178(self):
+    def test_panel_version_179(self):
         result = get_panel_info()
-        assert result["panel_version"] == "1.7.8"
+        assert result["panel_version"] == "1.7.9"
 
     def test_paper_only_true(self):
         result = get_panel_info()

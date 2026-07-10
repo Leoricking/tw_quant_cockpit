@@ -84,8 +84,10 @@ def test_all_sr_commands_group_is_stable_rollup():
 
 
 def test_sr_commands_introduced_in_169():
+    # Only check v1.6.9 stable rollup commands (names starting with "sr-"), not v1.7.9 ones
     cmds = get_commands_by_group("stable_rollup")
-    for cmd in cmds:
+    sr_cmds = [c for c in cmds if c.name.startswith("sr-")]
+    for cmd in sr_cmds:
         assert cmd.introduced_in == "1.6.9"
 
 

@@ -211,7 +211,7 @@ def _get_all_checks() -> List[Dict[str, Any]]:
 
     # --- GUI check (1) ---
     from gui.small_capital_strategy_panel import PANEL_VERSION
-    checks.append(_check("gui_panel_version_177",     lambda: PANEL_VERSION in ("1.7.7", "1.7.8")))
+    checks.append(_check("gui_panel_version_177",     lambda: PANEL_VERSION in ("1.7.7", "1.7.8", "1.7.9")))
 
     # --- No margin check (1) ---
     from paper_trading.small_capital_strategy.theme_rotation_safety_v177 import SAFETY_FLAGS as SF177

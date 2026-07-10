@@ -23,13 +23,13 @@ from gui.small_capital_strategy_panel import (
 
 
 def test_panel_version_171():
-    # Panel updated to v1.7.8 to include Integrated Strategy tabs
-    assert PANEL_VERSION == "1.7.8"
+    # Panel updated to v1.7.9 to include Stable Rollup tabs
+    assert PANEL_VERSION == "1.7.9"
 
 
 def test_total_tab_count():
     tabs = get_tab_names()
-    assert len(tabs) == 117  # 22+15+18+14+15+14+13+3+3 = 117
+    assert len(tabs) == 120  # 22+15+18+14+15+14+13+3+3+3 = 120
 
 
 def test_watchlist_tab_count():

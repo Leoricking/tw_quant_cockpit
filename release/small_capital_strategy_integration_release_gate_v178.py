@@ -169,7 +169,7 @@ class SmallCapitalStrategyIntegrationReleaseGate:
 
         # ── GUI check (1) ─────────────────────────────────────────────────────
         from gui.small_capital_strategy_panel import PANEL_VERSION
-        self._check("gui_panel_version_178",    lambda: PANEL_VERSION == "1.7.8")
+        self._check("gui_panel_version_178",    lambda: PANEL_VERSION in ("1.7.8", "1.7.9"))
 
         # ── CLI checks (5) ────────────────────────────────────────────────────
         from cli.command_registry import PROVIDER_COMMANDS

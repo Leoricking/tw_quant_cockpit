@@ -39827,6 +39827,137 @@ def cmd_integrated_strategy_safety_audit(args=None):
     print(_INTEGRATED_STRATEGY_BANNER)
 
 
+_STABLE_ROLLUP_BANNER = "=" * 60 + "\n  [!] Research Only | Paper Only | No Real Orders | Not Investment Advice\n  [!] Small Capital Strategy Stable Rollup v1.7.9\n" + "=" * 60
+
+
+def cmd_small_capital_stable_version(args=None):
+    """[v1.7.9] Show stable rollup version info. Research only."""
+    print(_STABLE_ROLLUP_BANNER)
+    from paper_trading.small_capital_strategy.stable_rollup_version_v179 import get_version_info
+    info = get_version_info()
+    print(f"  Stable Rollup Version: {info['version']}  Release: {info['release_name']}")
+    print(f"  Schema: {info['schema_version']}  Policy: {info['policy_version']}")
+    print(_STABLE_ROLLUP_BANNER)
+
+
+def cmd_small_capital_stable_manifest(args=None):
+    """[v1.7.9] Show stable rollup manifest. Research only."""
+    print(_STABLE_ROLLUP_BANNER)
+    from paper_trading.small_capital_strategy.stable_rollup_manifest_v179 import get_manifest, validate_manifest
+    manifest = get_manifest()
+    valid = validate_manifest()
+    print(f"  Stable Rollup Manifest: version={manifest['version']}  valid={valid['valid']}")
+    print(f"  Included releases: {len(manifest['included_releases'])}  Required modules: {len(manifest['required_modules'])}")
+    print(_STABLE_ROLLUP_BANNER)
+
+
+def cmd_small_capital_stable_health(args=None):
+    """[v1.7.9] Run stable rollup health check. Research only."""
+    print(_STABLE_ROLLUP_BANNER)
+    from paper_trading.small_capital_strategy.stable_rollup_health_v179 import run_health_check
+    result = run_health_check()
+    print(f"  Stable Rollup Health: {result.status}  Passed: {result.passed}/{result.total}  Failed: {result.failed}")
+    if not result.all_passed:
+        for c in result.checks:
+            if not c.get("passed"):
+                print(f"  [FAIL] {c['name']}: {c.get('error')}")
+    print(_STABLE_ROLLUP_BANNER)
+
+
+def cmd_small_capital_stable_gate(args=None):
+    """[v1.7.9] Run stable rollup release gate. Research only."""
+    print(_STABLE_ROLLUP_BANNER)
+    from release.stable_rollup_release_gate_v179 import run_release_gate
+    result = run_release_gate()
+    print(f"  Stable Rollup Gate: gate_passed={result['gate_passed']}  Passed: {result['passed']}/{result['total']}")
+    if not result["gate_passed"]:
+        for c in result["checks"]:
+            if not c.get("passed"):
+                print(f"  [FAIL] {c['name']}: {c.get('error')}")
+    print(_STABLE_ROLLUP_BANNER)
+
+
+def cmd_small_capital_stable_safety(args=None):
+    """[v1.7.9] Run stable rollup safety audit. Research only."""
+    print(_STABLE_ROLLUP_BANNER)
+    from paper_trading.small_capital_strategy.stable_rollup_safety_v179 import run_safety_audit
+    result = run_safety_audit()
+    print(f"  Stable Rollup Safety Audit: all_safe={result['all_safe']}  issues={result['issues']}")
+    print(_STABLE_ROLLUP_BANNER)
+
+
+def cmd_small_capital_stable_compat(args=None):
+    """[v1.7.9] Run stable rollup compatibility check. Research only."""
+    print(_STABLE_ROLLUP_BANNER)
+    from paper_trading.small_capital_strategy.stable_rollup_compatibility_v179 import run_compatibility_check
+    result = run_compatibility_check()
+    print(f"  Stable Rollup Compat: all_compatible={result['all_compatible']}  total={result['total']}")
+    for ver, ok in result["results"].items():
+        status = "OK" if ok else "FAIL"
+        print(f"    {ver}: {status}")
+    print(_STABLE_ROLLUP_BANNER)
+
+
+def cmd_small_capital_stable_cli_audit(args=None):
+    """[v1.7.9] Run stable rollup CLI audit. Research only."""
+    print(_STABLE_ROLLUP_BANNER)
+    from paper_trading.small_capital_strategy.stable_rollup_cli_audit_v179 import run_cli_audit
+    result = run_cli_audit()
+    print(f"  Stable CLI Audit: all_registered={result['all_registered']}  found={result['found']}/{result['required']}")
+    if result["missing"]:
+        print(f"  Missing: {result['missing']}")
+    print(_STABLE_ROLLUP_BANNER)
+
+
+def cmd_small_capital_stable_gui_audit(args=None):
+    """[v1.7.9] Run stable rollup GUI audit. Research only."""
+    print(_STABLE_ROLLUP_BANNER)
+    from paper_trading.small_capital_strategy.stable_rollup_gui_audit_v179 import run_gui_audit
+    result = run_gui_audit()
+    print(f"  Stable GUI Audit: all_registered={result['all_registered']}  render_ok={result['render_ok']}")
+    if result["missing_tabs"]:
+        print(f"  Missing tabs: {result['missing_tabs']}")
+    print(_STABLE_ROLLUP_BANNER)
+
+
+def cmd_small_capital_stable_fixture_audit(args=None):
+    """[v1.7.9] Run stable rollup fixture audit. Research only."""
+    print(_STABLE_ROLLUP_BANNER)
+    from paper_trading.small_capital_strategy.stable_rollup_fixture_audit_v179 import run_fixture_audit
+    result = run_fixture_audit()
+    print(f"  Stable Fixture Audit: all_safe={result['all_safe']}  total_fixtures={result['total_fixtures']}")
+    print(_STABLE_ROLLUP_BANNER)
+
+
+def cmd_small_capital_stable_scenario_audit(args=None):
+    """[v1.7.9] Run stable rollup scenario audit. Research only."""
+    print(_STABLE_ROLLUP_BANNER)
+    from paper_trading.small_capital_strategy.stable_rollup_scenario_audit_v179 import run_scenario_audit
+    result = run_scenario_audit()
+    print(f"  Stable Scenario Audit: all_deterministic={result['all_deterministic']}  total_scenarios={result['total_scenarios']}")
+    print(_STABLE_ROLLUP_BANNER)
+
+
+def cmd_small_capital_stable_regression_audit(args=None):
+    """[v1.7.9] Run stable rollup regression audit. Research only."""
+    print(_STABLE_ROLLUP_BANNER)
+    from paper_trading.small_capital_strategy.stable_rollup_regression_audit_v179 import run_regression_audit
+    result = run_regression_audit()
+    print(f"  Stable Regression Audit: regression_free={result['regression_free']}  checks={result['total_checks']}")
+    print(_STABLE_ROLLUP_BANNER)
+
+
+def cmd_small_capital_stable_report(args=None):
+    """[v1.7.9] Build and display stable rollup report. Research only."""
+    print(_STABLE_ROLLUP_BANNER)
+    from paper_trading.small_capital_strategy.stable_rollup_report_v179 import build_report
+    report = build_report()
+    print(f"  Stable Rollup Report v{report.version}: {report.release_name}")
+    print(f"  Status: {report.status}  Sections: {len(report.sections)}")
+    print(f"  paper_only={report.paper_only}  no_real_orders={report.no_real_orders}")
+    print(_STABLE_ROLLUP_BANNER)
+
+
 def cmd_paper_strategy_health(args=None):
     """[v1.6.2] Paper strategy orchestration health check. Research only."""
     print(_STRATEGY_SAFETY_BANNER)
@@ -41989,6 +42120,19 @@ def main() -> None:
         "integrated-strategy-health":         cmd_integrated_strategy_health,
         "integrated-strategy-gate":           cmd_integrated_strategy_gate,
         "integrated-strategy-safety-audit":   cmd_integrated_strategy_safety_audit,
+        # v1.7.9 stable rollup commands
+        "small-capital-stable-version":        cmd_small_capital_stable_version,
+        "small-capital-stable-manifest":       cmd_small_capital_stable_manifest,
+        "small-capital-stable-health":         cmd_small_capital_stable_health,
+        "small-capital-stable-gate":           cmd_small_capital_stable_gate,
+        "small-capital-stable-safety":         cmd_small_capital_stable_safety,
+        "small-capital-stable-compat":         cmd_small_capital_stable_compat,
+        "small-capital-stable-cli-audit":      cmd_small_capital_stable_cli_audit,
+        "small-capital-stable-gui-audit":      cmd_small_capital_stable_gui_audit,
+        "small-capital-stable-fixture-audit":  cmd_small_capital_stable_fixture_audit,
+        "small-capital-stable-scenario-audit": cmd_small_capital_stable_scenario_audit,
+        "small-capital-stable-regression-audit": cmd_small_capital_stable_regression_audit,
+        "small-capital-stable-report":         cmd_small_capital_stable_report,
     }
 
     if args.command is None:

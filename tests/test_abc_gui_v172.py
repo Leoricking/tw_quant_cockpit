@@ -17,15 +17,15 @@ from gui.small_capital_strategy_panel import (
 
 
 def test_panel_version_172():
-    assert PANEL_VERSION == "1.7.8"
+    assert PANEL_VERSION == "1.7.9"
 
 
 def test_panel_title_has_172():
-    assert "1.7.8" in PANEL_TITLE
+    assert "1.7.9" in PANEL_TITLE
 
 
 def test_tabs_total_55():
-    assert len(_TABS) == 117
+    assert len(_TABS) == 120
 
 
 def test_abc_tabs_count_18():
@@ -39,7 +39,7 @@ def test_get_abc_tab_names_count_18():
 
 def test_render_all_tabs_count_55():
     result = render_all_tabs()
-    assert len(result) == 117
+    assert len(result) == 120
 
 
 def test_render_abc_execution_overview_returns_dict():
