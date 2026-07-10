@@ -39616,6 +39616,217 @@ def cmd_theme_rotation_safety_audit(args=None):
     print(_THEME_ROTATION_BANNER)
 
 
+# ---------------------------------------------------------------------------
+# v1.7.8 Integrated Strategy command handlers
+# ---------------------------------------------------------------------------
+
+_INTEGRATED_STRATEGY_BANNER = "=" * 60 + "\n  [!] Research Only | Paper Only | No Real Orders | Not Investment Advice\n" + "=" * 60
+
+
+def cmd_integrated_strategy_version(args=None):
+    """[v1.7.8] Show integrated strategy version info. Research only."""
+    print(_INTEGRATED_STRATEGY_BANNER)
+    from paper_trading.small_capital_strategy.version_v178 import get_version_info
+    info = get_version_info()
+    print(f"  Integrated Strategy Version: {info['version']}  Release: {info['release_name']}")
+    print(f"  Schema: {info['schema_version']}  Policy: {info['policy_version']}")
+    print(_INTEGRATED_STRATEGY_BANNER)
+
+
+def cmd_integrated_strategy_run(args=None):
+    """[v1.7.8] Run integrated strategy decision engine. Research only."""
+    print(_INTEGRATED_STRATEGY_BANNER)
+    from paper_trading.small_capital_strategy.integrated_strategy_engine_v178 import build_integrated_dashboard
+    from paper_trading.small_capital_strategy.integrated_strategy_models_v178 import IntegratedStrategyInput
+    inp = IntegratedStrategyInput()
+    db = build_integrated_dashboard(inp)
+    action = db.decision.action.value if db.decision else "OBSERVE"
+    score = db.scorecard.composite_score if db.scorecard else 0.0
+    print(f"  Integrated Strategy Run: action={action}  score={score:.1f}")
+    print(f"  paper_only=True  no_real_orders=True")
+    print(_INTEGRATED_STRATEGY_BANNER)
+
+
+def cmd_integrated_strategy_score(args=None):
+    """[v1.7.8] Compute integrated strategy scorecard. Research only."""
+    print(_INTEGRATED_STRATEGY_BANNER)
+    from paper_trading.small_capital_strategy.integrated_strategy_scorecard_v178 import compute_scorecard
+    from paper_trading.small_capital_strategy.integrated_strategy_models_v178 import IntegratedStrategyInput
+    inp = IntegratedStrategyInput()
+    sc = compute_scorecard(inp)
+    print(f"  Integrated Scorecard: composite={sc.composite_score:.1f}  grade={sc.grade}")
+    print(_INTEGRATED_STRATEGY_BANNER)
+
+
+def cmd_integrated_strategy_watchlist(args=None):
+    """[v1.7.8] Show integrated watchlist decision. Research only."""
+    print(_INTEGRATED_STRATEGY_BANNER)
+    from paper_trading.small_capital_strategy.integrated_strategy_engine_v178 import build_integrated_dashboard
+    from paper_trading.small_capital_strategy.integrated_strategy_models_v178 import IntegratedStrategyInput
+    inp = IntegratedStrategyInput()
+    db = build_integrated_dashboard(inp)
+    wd = db.watchlist_decision
+    status = wd.status.value if wd else "UNKNOWN"
+    print(f"  Integrated Watchlist: status={status}  paper_only=True")
+    print(_INTEGRATED_STRATEGY_BANNER)
+
+
+def cmd_integrated_strategy_theme(args=None):
+    """[v1.7.8] Show integrated theme decision. Research only."""
+    print(_INTEGRATED_STRATEGY_BANNER)
+    from paper_trading.small_capital_strategy.integrated_strategy_engine_v178 import build_integrated_dashboard
+    from paper_trading.small_capital_strategy.integrated_strategy_models_v178 import IntegratedStrategyInput
+    inp = IntegratedStrategyInput()
+    db = build_integrated_dashboard(inp)
+    td = db.theme_decision
+    status = td.theme_status.value if td else "UNKNOWN"
+    print(f"  Integrated Theme: status={status}  paper_only=True")
+    print(_INTEGRATED_STRATEGY_BANNER)
+
+
+def cmd_integrated_strategy_abc(args=None):
+    """[v1.7.8] Show integrated ABC buy point decision. Research only."""
+    print(_INTEGRATED_STRATEGY_BANNER)
+    from paper_trading.small_capital_strategy.integrated_strategy_engine_v178 import build_integrated_dashboard
+    from paper_trading.small_capital_strategy.integrated_strategy_models_v178 import IntegratedStrategyInput
+    inp = IntegratedStrategyInput()
+    db = build_integrated_dashboard(inp)
+    ad = db.abc_decision
+    status = ad.abc_status.value if ad else "NOT_READY"
+    print(f"  Integrated ABC: status={status}  paper_only=True")
+    print(_INTEGRATED_STRATEGY_BANNER)
+
+
+def cmd_integrated_strategy_risk(args=None):
+    """[v1.7.8] Show integrated risk decision. Research only."""
+    print(_INTEGRATED_STRATEGY_BANNER)
+    from paper_trading.small_capital_strategy.integrated_strategy_engine_v178 import build_integrated_dashboard
+    from paper_trading.small_capital_strategy.integrated_strategy_models_v178 import IntegratedStrategyInput
+    inp = IntegratedStrategyInput()
+    db = build_integrated_dashboard(inp)
+    rd = db.risk_decision
+    status = rd.risk_level.value if rd else "UNKNOWN"
+    print(f"  Integrated Risk: status={status}  paper_only=True")
+    print(_INTEGRATED_STRATEGY_BANNER)
+
+
+def cmd_integrated_strategy_behavior(args=None):
+    """[v1.7.8] Show integrated behavior decision. Research only."""
+    print(_INTEGRATED_STRATEGY_BANNER)
+    from paper_trading.small_capital_strategy.integrated_strategy_engine_v178 import build_integrated_dashboard
+    from paper_trading.small_capital_strategy.integrated_strategy_models_v178 import IntegratedStrategyInput
+    inp = IntegratedStrategyInput()
+    db = build_integrated_dashboard(inp)
+    bd = db.behavior_decision
+    status = bd.behavior_status.value if bd else "UNKNOWN"
+    print(f"  Integrated Behavior: status={status}  paper_only=True")
+    print(_INTEGRATED_STRATEGY_BANNER)
+
+
+def cmd_integrated_strategy_paper_plan(args=None):
+    """[v1.7.8] Generate integrated paper plan. Research only."""
+    print(_INTEGRATED_STRATEGY_BANNER)
+    from paper_trading.small_capital_strategy.integrated_strategy_engine_v178 import build_integrated_dashboard
+    from paper_trading.small_capital_strategy.integrated_strategy_models_v178 import IntegratedStrategyInput
+    inp = IntegratedStrategyInput()
+    db = build_integrated_dashboard(inp)
+    pp = db.paper_plan
+    valid = pp.plan_valid if pp else False
+    action = pp.action.value if pp else "OBSERVE"
+    print(f"  Integrated Paper Plan: valid={valid}  action={action}  paper_only=True")
+    print(_INTEGRATED_STRATEGY_BANNER)
+
+
+def cmd_integrated_strategy_no_trade(args=None):
+    """[v1.7.8] List no-trade reasons. Research only."""
+    print(_INTEGRATED_STRATEGY_BANNER)
+    from paper_trading.small_capital_strategy.integrated_strategy_engine_v178 import build_integrated_dashboard
+    from paper_trading.small_capital_strategy.integrated_strategy_models_v178 import IntegratedStrategyInput
+    inp = IntegratedStrategyInput()
+    db = build_integrated_dashboard(inp)
+    reasons = db.no_trade_reasons
+    print(f"  No-Trade Reasons ({len(reasons)}): {[r.value for r in reasons]}")
+    print(_INTEGRATED_STRATEGY_BANNER)
+
+
+def cmd_integrated_strategy_dashboard(args=None):
+    """[v1.7.8] Build integrated strategy dashboard. Research only."""
+    print(_INTEGRATED_STRATEGY_BANNER)
+    from paper_trading.small_capital_strategy.integrated_strategy_engine_v178 import build_integrated_dashboard
+    from paper_trading.small_capital_strategy.integrated_strategy_models_v178 import IntegratedStrategyInput
+    inp = IntegratedStrategyInput()
+    db = build_integrated_dashboard(inp)
+    action = db.decision.action.value if db.decision else "OBSERVE"
+    print(f"  Integrated Dashboard: action={action}  paper_only=True")
+    print(_INTEGRATED_STRATEGY_BANNER)
+
+
+def cmd_integrated_strategy_report(args=None):
+    """[v1.7.8] Generate integrated strategy report. Research only."""
+    print(_INTEGRATED_STRATEGY_BANNER)
+    from paper_trading.small_capital_strategy.integrated_strategy_engine_v178 import build_integrated_dashboard
+    from paper_trading.small_capital_strategy.integrated_strategy_report_v178 import build_report
+    from paper_trading.small_capital_strategy.integrated_strategy_models_v178 import IntegratedStrategyInput
+    inp = IntegratedStrategyInput()
+    db = build_integrated_dashboard(inp)
+    rpt = build_report(db)
+    print(f"  Integrated Strategy Report: sections={len(rpt.sections)}  paper_only=True")
+    print(_INTEGRATED_STRATEGY_BANNER)
+
+
+def cmd_integrated_strategy_scenarios(args=None):
+    """[v1.7.8] List integrated strategy scenarios. Research only."""
+    print(_INTEGRATED_STRATEGY_BANNER)
+    from paper_trading.small_capital_strategy.integrated_strategy_scenarios_v178 import count_scenarios
+    count = count_scenarios()
+    print(f"  Integrated Scenarios: count={count}  paper_only=True")
+    print(_INTEGRATED_STRATEGY_BANNER)
+
+
+def cmd_integrated_strategy_fixtures(args=None):
+    """[v1.7.8] List integrated strategy fixtures. Research only."""
+    print(_INTEGRATED_STRATEGY_BANNER)
+    from paper_trading.small_capital_strategy.integrated_strategy_fixture_registry_v178 import count_fixtures
+    count = count_fixtures()
+    print(f"  Integrated Fixtures: count={count}  paper_only=True")
+    print(_INTEGRATED_STRATEGY_BANNER)
+
+
+def cmd_integrated_strategy_health(args=None):
+    """[v1.7.8] Run integrated strategy health check. Research only."""
+    print(_INTEGRATED_STRATEGY_BANNER)
+    from paper_trading.small_capital_strategy.integrated_strategy_health_v178 import run_health_check
+    result = run_health_check()
+    print(f"  Integrated Strategy Health: status={result.status}  passed={result.passed}/{result.total}")
+    if result.failed:
+        for c in result.checks:
+            if not c["passed"]:
+                print(f"  [FAIL] {c['name']}: {c['error']}")
+    print(_INTEGRATED_STRATEGY_BANNER)
+
+
+def cmd_integrated_strategy_gate(args=None):
+    """[v1.7.8] Run integrated strategy release gate. Research only."""
+    print(_INTEGRATED_STRATEGY_BANNER)
+    from release.small_capital_strategy_integration_release_gate_v178 import run_release_gate
+    result = run_release_gate()
+    print(f"  Integrated Strategy Gate: passed={result['gate_passed']}  {result['passed']}/{result['total']}")
+    if not result["gate_passed"]:
+        for c in result["checks"]:
+            if not c.get("passed"):
+                print(f"  [FAIL] {c['name']}: {c.get('error')}")
+    print(_INTEGRATED_STRATEGY_BANNER)
+
+
+def cmd_integrated_strategy_safety_audit(args=None):
+    """[v1.7.8] Run integrated strategy safety audit. Research only."""
+    print(_INTEGRATED_STRATEGY_BANNER)
+    from paper_trading.small_capital_strategy.integrated_strategy_safety_v178 import run_safety_audit
+    result = run_safety_audit()
+    print(f"  Integrated Strategy Safety Audit: all_safe={result['all_safe']}  issues={result['issues']}")
+    print(_INTEGRATED_STRATEGY_BANNER)
+
+
 def cmd_paper_strategy_health(args=None):
     """[v1.6.2] Paper strategy orchestration health check. Research only."""
     print(_STRATEGY_SAFETY_BANNER)
@@ -41760,6 +41971,24 @@ def main() -> None:
         "theme-rotation-health":          cmd_theme_rotation_health,
         "theme-rotation-gate":            cmd_theme_rotation_gate,
         "theme-rotation-safety-audit":    cmd_theme_rotation_safety_audit,
+        # v1.7.8 Integrated Strategy
+        "integrated-strategy-version":        cmd_integrated_strategy_version,
+        "integrated-strategy-run":            cmd_integrated_strategy_run,
+        "integrated-strategy-score":          cmd_integrated_strategy_score,
+        "integrated-strategy-watchlist":      cmd_integrated_strategy_watchlist,
+        "integrated-strategy-theme":          cmd_integrated_strategy_theme,
+        "integrated-strategy-abc":            cmd_integrated_strategy_abc,
+        "integrated-strategy-risk":           cmd_integrated_strategy_risk,
+        "integrated-strategy-behavior":       cmd_integrated_strategy_behavior,
+        "integrated-strategy-paper-plan":     cmd_integrated_strategy_paper_plan,
+        "integrated-strategy-no-trade":       cmd_integrated_strategy_no_trade,
+        "integrated-strategy-dashboard":      cmd_integrated_strategy_dashboard,
+        "integrated-strategy-report":         cmd_integrated_strategy_report,
+        "integrated-strategy-scenarios":      cmd_integrated_strategy_scenarios,
+        "integrated-strategy-fixtures":       cmd_integrated_strategy_fixtures,
+        "integrated-strategy-health":         cmd_integrated_strategy_health,
+        "integrated-strategy-gate":           cmd_integrated_strategy_gate,
+        "integrated-strategy-safety-audit":   cmd_integrated_strategy_safety_audit,
     }
 
     if args.command is None:
