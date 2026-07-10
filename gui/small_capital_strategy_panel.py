@@ -1307,6 +1307,10 @@ def render_all_tabs() -> Dict[str, Any]:
         "theme_rotation":                render_theme_rotation_tab,
         "theme_ranking":                 render_theme_ranking_tab,
         "theme_watchlist":               render_theme_watchlist_tab,
+        # v1.7.8 integrated strategy tabs
+        "integrated_strategy":               render_integrated_strategy_tab,
+        "integrated_decision_dashboard":     render_integrated_decision_dashboard_tab,
+        "integrated_paper_plan":             render_integrated_paper_plan_tab,
     }
     result = {}
     for tab_name in _TABS:
