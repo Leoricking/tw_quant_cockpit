@@ -9,10 +9,10 @@ from gui.small_capital_strategy_panel import (
 
 class TestPanelVersion:
     def test_panel_version_177(self):
-        assert PANEL_VERSION == "1.8.1"
+        assert PANEL_VERSION == "1.8.2"
 
     def test_panel_title_contains_177(self):
-        assert "1.8.1" in PANEL_TITLE
+        assert "1.8.2" in PANEL_TITLE
 
 
 class TestThemeRotationTabs:
@@ -40,7 +40,7 @@ class TestGetPanelInfo:
 
     def test_panel_version_179(self):
         result = get_panel_info()
-        assert result["panel_version"] == "1.8.1"
+        assert result["panel_version"] == "1.8.2"
 
     def test_headless_safe(self):
         result = get_panel_info()

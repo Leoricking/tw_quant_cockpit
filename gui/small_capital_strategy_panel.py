@@ -16,8 +16,8 @@ Headless-safe: no tkinter at module level. Renders to dict.
 from __future__ import annotations
 from typing import Any, Dict, List, Optional
 
-PANEL_VERSION = "1.8.1"
-PANEL_TITLE = "Small Capital Strategy v1.8.1 — Simulation Scenario Matrix & Stress Test Lab"
+PANEL_VERSION = "1.8.2"
+PANEL_TITLE = "Small Capital Strategy v1.8.2 — Parameter Optimization & Walk-Forward Validation Lab"
 
 # v1.7.0 tabs (preserved unchanged)
 _TABS_V170 = [
@@ -191,6 +191,12 @@ _TABS_V181_SIM_MATRIX = [
     "sim_robustness_score",
 ]
 
+_TABS_V182_OPTIMIZATION = [
+    "param_optimization",
+    "walk_forward_validation",
+    "overfitting_risk",
+]
+
 _TABS = (
     _TABS_V170
     + _TABS_V171_WATCHLIST
@@ -204,6 +210,7 @@ _TABS = (
     + _TABS_V179_STABLE_ROLLUP
     + _TABS_V180_PAPER_SIM
     + _TABS_V181_SIM_MATRIX
+    + _TABS_V182_OPTIMIZATION
 )
 
 assert len(_TABS_V170) == 22, f"Expected 22 v1.7.0 tabs, got {len(_TABS_V170)}"
@@ -218,6 +225,7 @@ assert len(_TABS_V178_INTEGRATED_STRATEGY) == 3, f"Expected 3 integrated strateg
 assert len(_TABS_V179_STABLE_ROLLUP) == 3, f"Expected 3 stable rollup tabs, got {len(_TABS_V179_STABLE_ROLLUP)}"
 assert len(_TABS_V180_PAPER_SIM) == 3, f"Expected 3 paper sim tabs, got {len(_TABS_V180_PAPER_SIM)}"
 assert len(_TABS_V181_SIM_MATRIX) == 3, f"Expected 3 sim matrix tabs, got {len(_TABS_V181_SIM_MATRIX)}"
+assert len(_TABS_V182_OPTIMIZATION) == 3, f"Expected 3 optimization tabs, got {len(_TABS_V182_OPTIMIZATION)}"
 
 
 def get_tab_names() -> List[str]:
@@ -1348,6 +1356,10 @@ def render_all_tabs() -> Dict[str, Any]:
         "sim_matrix_lab":                    render_sim_matrix_lab_tab,
         "sim_stress_test":                   render_sim_stress_test_tab,
         "sim_robustness_score":              render_sim_robustness_score_tab,
+        # v1.8.2 optimization tabs
+        "param_optimization":                render_param_optimization_tab,
+        "walk_forward_validation":           render_walk_forward_validation_tab,
+        "overfitting_risk":                  render_overfitting_risk_tab,
     }
     result = {}
     for tab_name in _TABS:
@@ -2499,6 +2511,81 @@ def render_sim_robustness_score_tab() -> Dict[str, Any]:
 def get_sim_matrix_tab_names() -> List[str]:
     """Return list of v1.8.1 simulation matrix tab names."""
     return list(_TABS_V181_SIM_MATRIX)
+
+
+def render_param_optimization_tab() -> Dict[str, Any]:
+    """Render parameter optimization tab. v1.8.2."""
+    from paper_trading.small_capital_strategy.optimization_version_v182 import get_version_info
+    from paper_trading.small_capital_strategy.optimization_engine_v182 import get_engine_info
+    info = get_version_info()
+    engine = get_engine_info()
+    return {
+        "tab": "param_optimization",
+        "title": "Parameter Optimization Lab v1.8.2",
+        "version": "1.8.2",
+        "paper_only": True,
+        "research_only": True,
+        "validation_only": True,
+        "no_real_orders": True,
+        "not_investment_advice": True,
+        "stress_test_only": True,
+        "no_broker": True,
+        "parameter_dimensions": 12,
+        "allowed_actions_count": len(engine["allowed_output_actions"]),
+        "headless_safe": True,
+    }
+
+
+def render_walk_forward_validation_tab() -> Dict[str, Any]:
+    """Render walk-forward validation tab. v1.8.2."""
+    from paper_trading.small_capital_strategy.optimization_walk_forward_v182 import get_walk_forward_info
+    info = get_walk_forward_info()
+    return {
+        "tab": "walk_forward_validation",
+        "title": "Walk-Forward Validation Lab v1.8.2",
+        "version": "1.8.2",
+        "paper_only": True,
+        "research_only": True,
+        "validation_only": True,
+        "no_real_orders": True,
+        "not_investment_advice": True,
+        "stress_test_only": True,
+        "no_broker": True,
+        "walk_forward_types_count": info["count"],
+        "headless_safe": True,
+    }
+
+
+def render_overfitting_risk_tab() -> Dict[str, Any]:
+    """Render overfitting risk dashboard tab. v1.8.2."""
+    from paper_trading.small_capital_strategy.optimization_report_v182 import build_dashboard_report
+    from paper_trading.small_capital_strategy.optimization_engine_v182 import run_parameter_search
+    from paper_trading.small_capital_strategy.optimization_models_v182 import ParameterGrid, OptimizationConfig
+    grid = ParameterGrid()
+    config = OptimizationConfig()
+    result = run_parameter_search(grid, config)
+    dashboard = build_dashboard_report(result)
+    return {
+        "tab": "overfitting_risk",
+        "title": "Overfitting Risk Dashboard v1.8.2",
+        "version": "1.8.2",
+        "paper_only": True,
+        "research_only": True,
+        "validation_only": True,
+        "no_real_orders": True,
+        "not_investment_advice": True,
+        "stress_test_only": True,
+        "no_broker": True,
+        "final_grade": dashboard.final_grade,
+        "overfitting_risk_score": dashboard.overfitting_risk_score,
+        "walk_forward_pass_rate_pct": dashboard.walk_forward_pass_rate_pct,
+        "headless_safe": True,
+    }
+
+
+def get_optimization_tab_names() -> List[str]:
+    """Return list of v1.8.2 optimization tab names."""
+    return list(_TABS_V182_OPTIMIZATION)
 
 
 def get_panel_info() -> Dict[str, Any]:

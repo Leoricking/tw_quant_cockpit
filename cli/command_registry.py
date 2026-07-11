@@ -4508,6 +4508,63 @@ _SIMULATION_MATRIX_COMMANDS: _List[CommandSpec] = [
                 introduced_in="1.8.1", safety_classification="RESEARCH_ONLY"),
 ]
 
+# ---------------------------------------------------------------------------
+# v1.8.2 Parameter Optimization & Walk-Forward Validation Lab commands
+# ---------------------------------------------------------------------------
+_OPTIMIZATION_COMMANDS: _List[CommandSpec] = [
+    CommandSpec(name="optimization-version", handler_name="cmd_optimization_version",
+                help="[Research] Show optimization version info v1.8.2", group="optimization",
+                introduced_in="1.8.2", safety_classification="RESEARCH_ONLY"),
+    CommandSpec(name="optimization-run", handler_name="cmd_optimization_run",
+                help="[Research] Run parameter optimization engine v1.8.2", group="optimization",
+                introduced_in="1.8.2", safety_classification="RESEARCH_ONLY"),
+    CommandSpec(name="optimization-config", handler_name="cmd_optimization_config",
+                help="[Research] Show optimization config v1.8.2", group="optimization",
+                introduced_in="1.8.2", safety_classification="RESEARCH_ONLY"),
+    CommandSpec(name="optimization-grid", handler_name="cmd_optimization_grid",
+                help="[Research] Show parameter grid dimensions v1.8.2", group="optimization",
+                introduced_in="1.8.2", safety_classification="RESEARCH_ONLY"),
+    CommandSpec(name="optimization-parameter-set", handler_name="cmd_optimization_parameter_set",
+                help="[Research] Show parameter set details v1.8.2", group="optimization",
+                introduced_in="1.8.2", safety_classification="RESEARCH_ONLY"),
+    CommandSpec(name="optimization-ranking", handler_name="cmd_optimization_ranking",
+                help="[Research] Show parameter ranking v1.8.2", group="optimization",
+                introduced_in="1.8.2", safety_classification="RESEARCH_ONLY"),
+    CommandSpec(name="optimization-walk-forward", handler_name="cmd_optimization_walk_forward",
+                help="[Research] Run walk-forward validation v1.8.2", group="optimization",
+                introduced_in="1.8.2", safety_classification="RESEARCH_ONLY"),
+    CommandSpec(name="optimization-stability", handler_name="cmd_optimization_stability",
+                help="[Research] Compute stability score v1.8.2", group="optimization",
+                introduced_in="1.8.2", safety_classification="RESEARCH_ONLY"),
+    CommandSpec(name="optimization-sensitivity", handler_name="cmd_optimization_sensitivity",
+                help="[Research] Run sensitivity analysis v1.8.2", group="optimization",
+                introduced_in="1.8.2", safety_classification="RESEARCH_ONLY"),
+    CommandSpec(name="optimization-overfitting-risk", handler_name="cmd_optimization_overfitting_risk",
+                help="[Research] Compute overfitting risk v1.8.2", group="optimization",
+                introduced_in="1.8.2", safety_classification="RESEARCH_ONLY"),
+    CommandSpec(name="optimization-dashboard", handler_name="cmd_optimization_dashboard",
+                help="[Research] Show optimization dashboard v1.8.2", group="optimization",
+                introduced_in="1.8.2", safety_classification="RESEARCH_ONLY"),
+    CommandSpec(name="optimization-report", handler_name="cmd_optimization_report",
+                help="[Research] Build optimization full report v1.8.2", group="optimization",
+                introduced_in="1.8.2", safety_classification="RESEARCH_ONLY"),
+    CommandSpec(name="optimization-scenarios", handler_name="cmd_optimization_scenarios",
+                help="[Research] List optimization scenarios v1.8.2", group="optimization",
+                introduced_in="1.8.2", safety_classification="RESEARCH_ONLY"),
+    CommandSpec(name="optimization-fixtures", handler_name="cmd_optimization_fixtures",
+                help="[Research] List optimization fixtures v1.8.2", group="optimization",
+                introduced_in="1.8.2", safety_classification="RESEARCH_ONLY"),
+    CommandSpec(name="optimization-health", handler_name="cmd_optimization_health",
+                help="[Research] Run optimization health check v1.8.2", group="optimization",
+                introduced_in="1.8.2", safety_classification="RESEARCH_ONLY"),
+    CommandSpec(name="optimization-gate", handler_name="cmd_optimization_gate",
+                help="[Research] Run optimization release gate v1.8.2", group="optimization",
+                introduced_in="1.8.2", safety_classification="RESEARCH_ONLY"),
+    CommandSpec(name="optimization-safety-audit", handler_name="cmd_optimization_safety_audit",
+                help="[Research] Run optimization safety audit v1.8.2", group="optimization",
+                introduced_in="1.8.2", safety_classification="RESEARCH_ONLY"),
+]
+
 PROVIDER_COMMANDS: _List[CommandSpec] = (
     _RESEARCH_FOUNDATION_COMMANDS
     + _TWSE_COMMANDS
@@ -4545,6 +4602,7 @@ PROVIDER_COMMANDS: _List[CommandSpec] = (
     + _STABLE_ROLLUP_V179_COMMANDS
     + _PAPER_SIMULATION_COMMANDS
     + _SIMULATION_MATRIX_COMMANDS
+    + _OPTIMIZATION_COMMANDS
 )
 
 

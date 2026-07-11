@@ -19,11 +19,11 @@ from gui.small_capital_strategy_panel import (
 
 
 def test_panel_version_is_179():
-    assert PANEL_VERSION == "1.8.1"
+    assert PANEL_VERSION == "1.8.2"
 
 
 def test_panel_title_contains_179():
-    assert "1.8.1" in PANEL_TITLE
+    assert "1.8.2" in PANEL_TITLE
 
 
 def test_tabs_v179_stable_rollup_count_3():

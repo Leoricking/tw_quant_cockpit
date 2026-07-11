@@ -88,7 +88,7 @@ class TestV175NewCapabilities:
 
     def test_v175_gui_has_more_tabs_than_v174(self):
         from gui.small_capital_strategy_panel import _TABS
-        assert len(_TABS) == 126  # was 84 at v1.7.4, 98 at v1.7.5, 111 at v1.7.6, 114 at v1.7.7, 117 at v1.7.8, 120 at v1.7.9, 123 at v1.8.0, 126 at v1.8.1
+        assert len(_TABS) == 129  # was 84 at v1.7.4, 98 at v1.7.5, 111 at v1.7.6, 114 at v1.7.7, 117 at v1.7.8, 120 at v1.7.9, 123 at v1.8.0, 126 at v1.8.1, 129 at v1.8.2
 
     def test_v175_cli_has_more_commands(self):
         from cli.command_registry import PROVIDER_COMMANDS

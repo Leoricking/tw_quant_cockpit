@@ -1,0 +1,42 @@
+{
+  "_fixture_meta": {
+    "fixture_id": "fix_param_valid_002",
+    "version": "1.8.2",
+    "schema": "182",
+    "category": "parameter_valid",
+    "paper_only": true,
+    "research_only": true,
+    "simulate_only": true,
+    "validation_only": true,
+    "no_real_orders": true,
+    "no_broker": true,
+    "not_investment_advice": true,
+    "demo_only": true,
+    "not_for_production": true,
+    "production_trading_blocked": true
+  },
+  "fixture_id": "fix_param_valid_002",
+  "scenario_id": "OP182-002",
+  "paper_only": true,
+  "research_only": true,
+  "simulate_only": true,
+  "validation_only": true,
+  "no_real_orders": true,
+  "no_broker": true,
+  "not_investment_advice": true,
+  "demo_only": true,
+  "not_for_production": true,
+  "production_trading_blocked": true,
+  "input": {
+    "initial_capital": 500000.0,
+    "single_trade_risk_pct": 1.0,
+    "max_positions": 4,
+    "stop_loss_pct": 7.0,
+    "take_profit_pct": 15.0,
+    "market_regime": "BULL",
+    "behavior_risk_limit": "PASS",
+    "risk_dashboard_limit": "PASS"
+  },
+  "expected_action": "PAPER_ENTRY_ALLOWED",
+  "expected_paper_only": true
+}
