@@ -4379,6 +4379,69 @@ _STABLE_ROLLUP_V179_COMMANDS: _List[CommandSpec] = [
                 introduced_in="1.7.9", safety_classification="RESEARCH_ONLY"),
 ]
 
+# ---------------------------------------------------------------------------
+# v1.8.0 Paper Simulation & Performance Lab commands
+# ---------------------------------------------------------------------------
+_PAPER_SIMULATION_COMMANDS: _List[CommandSpec] = [
+    CommandSpec(name="paper-simulation-version", handler_name="cmd_paper_simulation_version",
+                help="[Research] Show paper simulation version info v1.8.0", group="paper_simulation",
+                introduced_in="1.8.0", safety_classification="RESEARCH_ONLY"),
+    CommandSpec(name="paper-simulation-run", handler_name="cmd_paper_simulation_run",
+                help="[Research] Run paper simulation engine v1.8.0", group="paper_simulation",
+                introduced_in="1.8.0", safety_classification="RESEARCH_ONLY"),
+    CommandSpec(name="paper-simulation-config", handler_name="cmd_paper_simulation_config",
+                help="[Research] Show paper simulation config v1.8.0", group="paper_simulation",
+                introduced_in="1.8.0", safety_classification="RESEARCH_ONLY"),
+    CommandSpec(name="paper-simulation-scenario", handler_name="cmd_paper_simulation_scenario",
+                help="[Research] Run single paper simulation scenario v1.8.0", group="paper_simulation",
+                introduced_in="1.8.0", safety_classification="RESEARCH_ONLY"),
+    CommandSpec(name="paper-simulation-metrics", handler_name="cmd_paper_simulation_metrics",
+                help="[Research] Compute paper simulation performance metrics v1.8.0", group="paper_simulation",
+                introduced_in="1.8.0", safety_classification="RESEARCH_ONLY"),
+    CommandSpec(name="paper-simulation-equity-curve", handler_name="cmd_paper_simulation_equity_curve",
+                help="[Research] Show paper simulation equity curve v1.8.0", group="paper_simulation",
+                introduced_in="1.8.0", safety_classification="RESEARCH_ONLY"),
+    CommandSpec(name="paper-simulation-drawdown", handler_name="cmd_paper_simulation_drawdown",
+                help="[Research] Show paper simulation drawdown report v1.8.0", group="paper_simulation",
+                introduced_in="1.8.0", safety_classification="RESEARCH_ONLY"),
+    CommandSpec(name="paper-simulation-risk", handler_name="cmd_paper_simulation_risk",
+                help="[Research] Show paper simulation risk report v1.8.0", group="paper_simulation",
+                introduced_in="1.8.0", safety_classification="RESEARCH_ONLY"),
+    CommandSpec(name="paper-simulation-regime", handler_name="cmd_paper_simulation_regime",
+                help="[Research] Show paper simulation regime performance v1.8.0", group="paper_simulation",
+                introduced_in="1.8.0", safety_classification="RESEARCH_ONLY"),
+    CommandSpec(name="paper-simulation-theme", handler_name="cmd_paper_simulation_theme",
+                help="[Research] Show paper simulation theme performance v1.8.0", group="paper_simulation",
+                introduced_in="1.8.0", safety_classification="RESEARCH_ONLY"),
+    CommandSpec(name="paper-simulation-abc", handler_name="cmd_paper_simulation_abc",
+                help="[Research] Show paper simulation ABC performance v1.8.0", group="paper_simulation",
+                introduced_in="1.8.0", safety_classification="RESEARCH_ONLY"),
+    CommandSpec(name="paper-simulation-mistake-impact", handler_name="cmd_paper_simulation_mistake_impact",
+                help="[Research] Show paper simulation mistake impact report v1.8.0", group="paper_simulation",
+                introduced_in="1.8.0", safety_classification="RESEARCH_ONLY"),
+    CommandSpec(name="paper-simulation-dashboard", handler_name="cmd_paper_simulation_dashboard",
+                help="[Research] Show paper simulation dashboard v1.8.0", group="paper_simulation",
+                introduced_in="1.8.0", safety_classification="RESEARCH_ONLY"),
+    CommandSpec(name="paper-simulation-report", handler_name="cmd_paper_simulation_report",
+                help="[Research] Build paper simulation full report v1.8.0", group="paper_simulation",
+                introduced_in="1.8.0", safety_classification="RESEARCH_ONLY"),
+    CommandSpec(name="paper-simulation-scenarios", handler_name="cmd_paper_simulation_scenarios",
+                help="[Research] List paper simulation scenarios v1.8.0", group="paper_simulation",
+                introduced_in="1.8.0", safety_classification="RESEARCH_ONLY"),
+    CommandSpec(name="paper-simulation-fixtures", handler_name="cmd_paper_simulation_fixtures",
+                help="[Research] List paper simulation fixtures v1.8.0", group="paper_simulation",
+                introduced_in="1.8.0", safety_classification="RESEARCH_ONLY"),
+    CommandSpec(name="paper-simulation-health", handler_name="cmd_paper_simulation_health",
+                help="[Research] Run paper simulation health check v1.8.0", group="paper_simulation",
+                introduced_in="1.8.0", safety_classification="RESEARCH_ONLY"),
+    CommandSpec(name="paper-simulation-gate", handler_name="cmd_paper_simulation_gate",
+                help="[Research] Run paper simulation release gate v1.8.0", group="paper_simulation",
+                introduced_in="1.8.0", safety_classification="RESEARCH_ONLY"),
+    CommandSpec(name="paper-simulation-safety-audit", handler_name="cmd_paper_simulation_safety_audit",
+                help="[Research] Run paper simulation safety audit v1.8.0", group="paper_simulation",
+                introduced_in="1.8.0", safety_classification="RESEARCH_ONLY"),
+]
+
 PROVIDER_COMMANDS: _List[CommandSpec] = (
     _RESEARCH_FOUNDATION_COMMANDS
     + _TWSE_COMMANDS
@@ -4414,6 +4477,7 @@ PROVIDER_COMMANDS: _List[CommandSpec] = (
     + _THEME_ROTATION_COMMANDS
     + _INTEGRATED_STRATEGY_COMMANDS
     + _STABLE_ROLLUP_V179_COMMANDS
+    + _PAPER_SIMULATION_COMMANDS
 )
 
 

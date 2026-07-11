@@ -1,0 +1,30 @@
+{
+  "_fixture_meta": {
+    "TEST_FIXTURE": true,
+    "DEMO_ONLY": true,
+    "NOT_REAL_DATA": true,
+    "NOT_FOR_FORMAL_CONCLUSION": true
+  },
+  "fixture_id": "PSFIX180-055",
+  "scenario_id": "SC180-055",
+  "paper_only": true,
+  "research_only": true,
+  "simulate_only": true,
+  "no_real_orders": true,
+  "no_broker": true,
+  "not_investment_advice": true,
+  "demo_only": true,
+  "not_for_production": true,
+  "production_trading_blocked": true,
+  "initial_capital": 300000,
+  "risk_per_trade_pct": 0.8,
+  "max_holdings": 5,
+  "market_regime": "BULL",
+  "theme_rank": "STRONG",
+  "watchlist_rank": "CORE",
+  "abc_buy_point": "C",
+  "mistake_taxonomy_effect": "none",
+  "risk_dashboard_status": "WARNING",
+  "integrated_decision": "REVIEW_REQUIRED",
+  "expected_action": "REVIEW_REQUIRED"
+}

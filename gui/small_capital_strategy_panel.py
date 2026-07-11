@@ -16,8 +16,8 @@ Headless-safe: no tkinter at module level. Renders to dict.
 from __future__ import annotations
 from typing import Any, Dict, List, Optional
 
-PANEL_VERSION = "1.7.9"
-PANEL_TITLE = "Small Capital Strategy v1.7.9 — Stable Rollup"
+PANEL_VERSION = "1.8.0"
+PANEL_TITLE = "Small Capital Strategy v1.8.0 — Paper Simulation & Performance Lab"
 
 # v1.7.0 tabs (preserved unchanged)
 _TABS_V170 = [
@@ -178,6 +178,12 @@ _TABS_V179_STABLE_ROLLUP = [
     "stable_report",
 ]
 
+_TABS_V180_PAPER_SIM = [
+    "paper_sim_lab",
+    "paper_sim_equity_curve",
+    "paper_sim_performance",
+]
+
 _TABS = (
     _TABS_V170
     + _TABS_V171_WATCHLIST
@@ -189,6 +195,7 @@ _TABS = (
     + _TABS_V177_THEME_ROTATION
     + _TABS_V178_INTEGRATED_STRATEGY
     + _TABS_V179_STABLE_ROLLUP
+    + _TABS_V180_PAPER_SIM
 )
 
 assert len(_TABS_V170) == 22, f"Expected 22 v1.7.0 tabs, got {len(_TABS_V170)}"
@@ -201,6 +208,7 @@ assert len(_TABS_V176_MISTAKE_TAXONOMY) == 13, f"Expected 13 mistake taxonomy ta
 assert len(_TABS_V177_THEME_ROTATION) == 3, f"Expected 3 theme rotation tabs, got {len(_TABS_V177_THEME_ROTATION)}"
 assert len(_TABS_V178_INTEGRATED_STRATEGY) == 3, f"Expected 3 integrated strategy tabs, got {len(_TABS_V178_INTEGRATED_STRATEGY)}"
 assert len(_TABS_V179_STABLE_ROLLUP) == 3, f"Expected 3 stable rollup tabs, got {len(_TABS_V179_STABLE_ROLLUP)}"
+assert len(_TABS_V180_PAPER_SIM) == 3, f"Expected 3 paper sim tabs, got {len(_TABS_V180_PAPER_SIM)}"
 
 
 def get_tab_names() -> List[str]:
@@ -1323,6 +1331,10 @@ def render_all_tabs() -> Dict[str, Any]:
         "stable_rollup":                     render_stable_rollup_tab,
         "stable_health":                     render_stable_health_tab,
         "stable_report":                     render_stable_report_tab,
+        # v1.8.0 paper simulation tabs
+        "paper_sim_lab":                     render_paper_sim_lab_tab,
+        "paper_sim_equity_curve":            render_paper_sim_equity_curve_tab,
+        "paper_sim_performance":             render_paper_sim_performance_tab,
     }
     result = {}
     for tab_name in _TABS:
@@ -2192,6 +2204,149 @@ def render_stable_report_tab() -> Dict[str, Any]:
 def get_stable_rollup_tab_names() -> List[str]:
     """Return list of v1.7.9 stable rollup tab names."""
     return list(_TABS_V179_STABLE_ROLLUP)
+
+
+# ---------------------------------------------------------------------------
+# v1.8.0 Paper Simulation & Performance Lab tab renderers
+# Headless-safe. No broker. No real orders. No production DB writes.
+# ---------------------------------------------------------------------------
+
+def render_paper_sim_lab_tab() -> Dict[str, Any]:
+    """Render Paper Simulation Lab tab. v1.8.0. Headless-safe."""
+    try:
+        from paper_trading.small_capital_strategy.paper_simulation_version_v180 import (
+            VERSION, RELEASE_NAME, get_version_info,
+        )
+        from paper_trading.small_capital_strategy.paper_simulation_scenarios_v180 import (
+            get_scenario_count, get_scenario_categories,
+        )
+        version_info = get_version_info()
+        return {
+            "tab": "paper_sim_lab",
+            "title": "Paper Simulation Lab v1.8.0",
+            "version": VERSION,
+            "release_name": RELEASE_NAME,
+            "description": "Paper-only simulation engine for 300K small capital strategy research.",
+            "scenario_count": get_scenario_count(),
+            "categories": get_scenario_categories(),
+            "status": "READY",
+            "paper_only": version_info["paper_only"],
+            "research_only": version_info["research_only"],
+            "no_real_orders": version_info["no_real_orders"],
+            "no_broker": True,
+            "not_investment_advice": version_info["not_investment_advice"],
+            "demo_only": version_info["demo_only"],
+            "not_for_production": version_info["not_for_production"],
+            "disclaimer": "Research Only | Paper Only | No Real Orders | Not Investment Advice",
+        }
+    except Exception as exc:
+        return {
+            "tab": "paper_sim_lab",
+            "title": "Paper Simulation Lab v1.8.0",
+            "status": "EMPTY",
+            "error": str(exc),
+            "paper_only": True,
+            "research_only": True,
+            "no_real_orders": True,
+            "not_investment_advice": True,
+        }
+
+
+def render_paper_sim_equity_curve_tab() -> Dict[str, Any]:
+    """Render Paper Simulation Equity Curve tab. v1.8.0. Headless-safe."""
+    try:
+        from paper_trading.small_capital_strategy.paper_simulation_models_v180 import (
+            PaperSimulationInput,
+        )
+        from paper_trading.small_capital_strategy.paper_simulation_engine_v180 import (
+            run_paper_simulation,
+        )
+        from paper_trading.small_capital_strategy.paper_simulation_metrics_v180 import (
+            compute_equity_curve,
+        )
+        inp = PaperSimulationInput()
+        result = run_paper_simulation(inp)
+        curve = compute_equity_curve(result.trades, inp.initial_capital)
+        return {
+            "tab": "paper_sim_equity_curve",
+            "title": "Paper Simulation Equity Curve v1.8.0",
+            "version": "1.8.0",
+            "point_count": len(curve.values),
+            "initial_capital": inp.initial_capital,
+            "final_value": curve.values[-1] if curve.values else inp.initial_capital,
+            "max_drawdown_pct": max(curve.drawdowns) if curve.drawdowns else 0.0,
+            "paper_only": True,
+            "research_only": True,
+            "no_real_orders": True,
+            "no_broker": True,
+            "not_investment_advice": True,
+            "demo_only": True,
+            "not_for_production": True,
+        }
+    except Exception as exc:
+        return {
+            "tab": "paper_sim_equity_curve",
+            "title": "Paper Simulation Equity Curve v1.8.0",
+            "status": "EMPTY",
+            "error": str(exc),
+            "paper_only": True,
+            "research_only": True,
+            "no_real_orders": True,
+            "not_investment_advice": True,
+        }
+
+
+def render_paper_sim_performance_tab() -> Dict[str, Any]:
+    """Render Paper Simulation Performance Lab tab. v1.8.0. Headless-safe."""
+    try:
+        from paper_trading.small_capital_strategy.paper_simulation_models_v180 import (
+            PaperSimulationInput,
+        )
+        from paper_trading.small_capital_strategy.paper_simulation_engine_v180 import (
+            run_paper_simulation,
+        )
+        from paper_trading.small_capital_strategy.paper_simulation_metrics_v180 import (
+            compute_metrics,
+        )
+        inp = PaperSimulationInput()
+        result = run_paper_simulation(inp)
+        metrics = compute_metrics(result.trades, inp.initial_capital)
+        return {
+            "tab": "paper_sim_performance",
+            "title": "Paper Simulation Performance Lab v1.8.0",
+            "version": "1.8.0",
+            "trade_count": metrics.trade_count,
+            "total_return_pct": metrics.total_return_pct,
+            "win_rate_pct": metrics.win_rate_pct,
+            "max_drawdown_pct": metrics.max_drawdown_pct,
+            "profit_factor": metrics.profit_factor,
+            "expectancy_r": metrics.expectancy_r,
+            "final_grade": metrics.final_grade,
+            "paper_only": True,
+            "research_only": True,
+            "no_real_orders": True,
+            "no_broker": True,
+            "not_investment_advice": True,
+            "demo_only": True,
+            "not_for_production": True,
+            "disclaimer": "Research Only | Paper Only | No Real Orders | Not Investment Advice",
+        }
+    except Exception as exc:
+        return {
+            "tab": "paper_sim_performance",
+            "title": "Paper Simulation Performance Lab v1.8.0",
+            "status": "EMPTY",
+            "error": str(exc),
+            "paper_only": True,
+            "research_only": True,
+            "no_real_orders": True,
+            "not_investment_advice": True,
+        }
+
+
+def get_paper_sim_tab_names() -> List[str]:
+    """Return list of v1.8.0 paper simulation tab names."""
+    return list(_TABS_V180_PAPER_SIM)
 
 
 def get_panel_info() -> Dict[str, Any]:
