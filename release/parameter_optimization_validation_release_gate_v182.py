@@ -136,5 +136,10 @@ def run_release_gate() -> dict:
 
 
 if __name__ == "__main__":
+    import sys as _sys
+    import pathlib as _pathlib
+    _root = str(_pathlib.Path(__file__).resolve().parents[1])
+    if _root not in _sys.path:
+        _sys.path.insert(0, _root)
     result = run_release_gate()
     print(f"Release Gate v1.8.2: {'PASS' if result['gate_passed'] else 'FAIL'} {result['passed']}/{result['total']}")

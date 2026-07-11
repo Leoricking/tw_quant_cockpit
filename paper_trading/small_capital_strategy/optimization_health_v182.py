@@ -81,7 +81,7 @@ def run_health_check():
 
     # --- Parameter grid checks (1) ---
     checks.append(_check("parameter_grid_12_dimensions", lambda: len([
-        f for f in dir(ParameterGrid) if f.endswith("_values")
+        f for f in ParameterGrid.__dataclass_fields__ if f.endswith("_values")
     ]) == 12))
 
     # --- Scenario checks (1) ---
@@ -169,5 +169,10 @@ def run_health_check():
 
 
 if __name__ == "__main__":
+    import sys as _sys
+    import pathlib as _pathlib
+    _root = str(_pathlib.Path(__file__).resolve().parents[2])
+    if _root not in _sys.path:
+        _sys.path.insert(0, _root)
     result = run_health_check()
     print(f"Health Check v1.8.2: {result.status} {result.passed}/{result.total}")
