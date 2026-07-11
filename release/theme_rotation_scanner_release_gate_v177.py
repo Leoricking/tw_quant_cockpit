@@ -174,7 +174,7 @@ class ThemeRotationScannerReleaseGate:
 
         # ── GUI check (1) ─────────────────────────────────────────────────
         from gui.small_capital_strategy_panel import PANEL_VERSION
-        self._check("gui_panel_version_177",    lambda: PANEL_VERSION in ("1.7.7", "1.7.8", "1.7.9"))
+        self._check("gui_panel_version_177",    lambda: PANEL_VERSION in ("1.7.7", "1.7.8", "1.7.9", "1.8.0", "1.8.1"))
 
         # ── CLI checks (5) ───────────────────────────────────────────────
         from cli.command_registry import PROVIDER_COMMANDS

@@ -52,7 +52,7 @@ def test_run_gui_audit_render_clean():
 
 def test_run_gui_audit_panel_version_179():
     result = run_gui_audit()
-    assert result["panel_version"] == "1.7.9"
+    assert result["panel_version"] == "1.8.1"
 
 
 def test_run_gui_audit_no_missing_tabs():
