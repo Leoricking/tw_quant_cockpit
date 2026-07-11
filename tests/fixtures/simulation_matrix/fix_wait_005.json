@@ -1,0 +1,40 @@
+{
+  "_fixture_meta": {
+    "fixture_id": "fix_wait_005",
+    "version": "1.8.1",
+    "schema": "181",
+    "category": "wait",
+    "paper_only": true,
+    "research_only": true,
+    "simulate_only": true,
+    "stress_test_only": true,
+    "no_real_orders": true,
+    "no_broker": true,
+    "not_investment_advice": true,
+    "production_trading_blocked": true
+  },
+  "fixture_id": "fix_wait_005",
+  "scenario_id": "SM181-035",
+  "paper_only": true,
+  "research_only": true,
+  "simulate_only": true,
+  "stress_test_only": true,
+  "no_real_orders": true,
+  "no_broker": true,
+  "not_investment_advice": true,
+  "production_trading_blocked": true,
+  "input": {
+    "initial_capital": 300000.0,
+    "single_trade_risk_pct": 1.0,
+    "max_positions": 4,
+    "market_regime": "BULL",
+    "theme_rank": "LEADER",
+    "watchlist_rank": "TRAINING",
+    "abc_signal": "A",
+    "behavior_risk": "PASS",
+    "risk_dashboard": "PASS",
+    "mistake_injection": "NONE"
+  },
+  "expected_action": "WAIT",
+  "expected_paper_only": true
+}

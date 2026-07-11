@@ -4442,6 +4442,72 @@ _PAPER_SIMULATION_COMMANDS: _List[CommandSpec] = [
                 introduced_in="1.8.0", safety_classification="RESEARCH_ONLY"),
 ]
 
+# ---------------------------------------------------------------------------
+# v1.8.1 Simulation Scenario Matrix & Stress Test Lab commands
+# ---------------------------------------------------------------------------
+_SIMULATION_MATRIX_COMMANDS: _List[CommandSpec] = [
+    CommandSpec(name="simulation-matrix-version", handler_name="cmd_simulation_matrix_version",
+                help="[Research] Show simulation scenario matrix version info v1.8.1", group="simulation_matrix",
+                introduced_in="1.8.1", safety_classification="RESEARCH_ONLY"),
+    CommandSpec(name="simulation-matrix-run", handler_name="cmd_simulation_matrix_run",
+                help="[Research] Run simulation scenario matrix engine v1.8.1", group="simulation_matrix",
+                introduced_in="1.8.1", safety_classification="RESEARCH_ONLY"),
+    CommandSpec(name="simulation-matrix-config", handler_name="cmd_simulation_matrix_config",
+                help="[Research] Show simulation matrix config v1.8.1", group="simulation_matrix",
+                introduced_in="1.8.1", safety_classification="RESEARCH_ONLY"),
+    CommandSpec(name="simulation-matrix-axis", handler_name="cmd_simulation_matrix_axis",
+                help="[Research] Show simulation matrix axis definitions v1.8.1", group="simulation_matrix",
+                introduced_in="1.8.1", safety_classification="RESEARCH_ONLY"),
+    CommandSpec(name="simulation-matrix-cell", handler_name="cmd_simulation_matrix_cell",
+                help="[Research] Run single simulation matrix cell v1.8.1", group="simulation_matrix",
+                introduced_in="1.8.1", safety_classification="RESEARCH_ONLY"),
+    CommandSpec(name="simulation-matrix-result", handler_name="cmd_simulation_matrix_result",
+                help="[Research] Show simulation matrix aggregated result v1.8.1", group="simulation_matrix",
+                introduced_in="1.8.1", safety_classification="RESEARCH_ONLY"),
+    CommandSpec(name="simulation-stress-test", handler_name="cmd_simulation_stress_test",
+                help="[Research] Run stress test scenario v1.8.1", group="simulation_matrix",
+                introduced_in="1.8.1", safety_classification="RESEARCH_ONLY"),
+    CommandSpec(name="simulation-stress-drawdown", handler_name="cmd_simulation_stress_drawdown",
+                help="[Research] Run stress drawdown shock test v1.8.1", group="simulation_matrix",
+                introduced_in="1.8.1", safety_classification="RESEARCH_ONLY"),
+    CommandSpec(name="simulation-stress-losing-streak", handler_name="cmd_simulation_stress_losing_streak",
+                help="[Research] Run stress losing streak injection v1.8.1", group="simulation_matrix",
+                introduced_in="1.8.1", safety_classification="RESEARCH_ONLY"),
+    CommandSpec(name="simulation-stress-regime-shift", handler_name="cmd_simulation_stress_regime_shift",
+                help="[Research] Run stress regime shift shock v1.8.1", group="simulation_matrix",
+                introduced_in="1.8.1", safety_classification="RESEARCH_ONLY"),
+    CommandSpec(name="simulation-stress-theme-collapse", handler_name="cmd_simulation_stress_theme_collapse",
+                help="[Research] Run stress theme collapse shock v1.8.1", group="simulation_matrix",
+                introduced_in="1.8.1", safety_classification="RESEARCH_ONLY"),
+    CommandSpec(name="simulation-stress-mistake-impact", handler_name="cmd_simulation_stress_mistake_impact",
+                help="[Research] Run stress mistake injection impact v1.8.1", group="simulation_matrix",
+                introduced_in="1.8.1", safety_classification="RESEARCH_ONLY"),
+    CommandSpec(name="simulation-robustness-score", handler_name="cmd_simulation_robustness_score",
+                help="[Research] Compute simulation robustness score v1.8.1", group="simulation_matrix",
+                introduced_in="1.8.1", safety_classification="RESEARCH_ONLY"),
+    CommandSpec(name="simulation-matrix-dashboard", handler_name="cmd_simulation_matrix_dashboard",
+                help="[Research] Show simulation matrix dashboard v1.8.1", group="simulation_matrix",
+                introduced_in="1.8.1", safety_classification="RESEARCH_ONLY"),
+    CommandSpec(name="simulation-matrix-report", handler_name="cmd_simulation_matrix_report",
+                help="[Research] Build simulation matrix full report v1.8.1", group="simulation_matrix",
+                introduced_in="1.8.1", safety_classification="RESEARCH_ONLY"),
+    CommandSpec(name="simulation-matrix-scenarios", handler_name="cmd_simulation_matrix_scenarios",
+                help="[Research] List simulation matrix scenarios v1.8.1", group="simulation_matrix",
+                introduced_in="1.8.1", safety_classification="RESEARCH_ONLY"),
+    CommandSpec(name="simulation-matrix-fixtures", handler_name="cmd_simulation_matrix_fixtures",
+                help="[Research] List simulation matrix fixtures v1.8.1", group="simulation_matrix",
+                introduced_in="1.8.1", safety_classification="RESEARCH_ONLY"),
+    CommandSpec(name="simulation-matrix-health", handler_name="cmd_simulation_matrix_health",
+                help="[Research] Run simulation matrix health check v1.8.1", group="simulation_matrix",
+                introduced_in="1.8.1", safety_classification="RESEARCH_ONLY"),
+    CommandSpec(name="simulation-matrix-gate", handler_name="cmd_simulation_matrix_gate",
+                help="[Research] Run simulation matrix release gate v1.8.1", group="simulation_matrix",
+                introduced_in="1.8.1", safety_classification="RESEARCH_ONLY"),
+    CommandSpec(name="simulation-matrix-safety-audit", handler_name="cmd_simulation_matrix_safety_audit",
+                help="[Research] Run simulation matrix safety audit v1.8.1", group="simulation_matrix",
+                introduced_in="1.8.1", safety_classification="RESEARCH_ONLY"),
+]
+
 PROVIDER_COMMANDS: _List[CommandSpec] = (
     _RESEARCH_FOUNDATION_COMMANDS
     + _TWSE_COMMANDS
@@ -4478,6 +4544,7 @@ PROVIDER_COMMANDS: _List[CommandSpec] = (
     + _INTEGRATED_STRATEGY_COMMANDS
     + _STABLE_ROLLUP_V179_COMMANDS
     + _PAPER_SIMULATION_COMMANDS
+    + _SIMULATION_MATRIX_COMMANDS
 )
 
 

@@ -16,8 +16,8 @@ Headless-safe: no tkinter at module level. Renders to dict.
 from __future__ import annotations
 from typing import Any, Dict, List, Optional
 
-PANEL_VERSION = "1.8.0"
-PANEL_TITLE = "Small Capital Strategy v1.8.0 — Paper Simulation & Performance Lab"
+PANEL_VERSION = "1.8.1"
+PANEL_TITLE = "Small Capital Strategy v1.8.1 — Simulation Scenario Matrix & Stress Test Lab"
 
 # v1.7.0 tabs (preserved unchanged)
 _TABS_V170 = [
@@ -184,6 +184,13 @@ _TABS_V180_PAPER_SIM = [
     "paper_sim_performance",
 ]
 
+# v1.8.1 Simulation Scenario Matrix & Stress Test Lab tabs
+_TABS_V181_SIM_MATRIX = [
+    "sim_matrix_lab",
+    "sim_stress_test",
+    "sim_robustness_score",
+]
+
 _TABS = (
     _TABS_V170
     + _TABS_V171_WATCHLIST
@@ -196,6 +203,7 @@ _TABS = (
     + _TABS_V178_INTEGRATED_STRATEGY
     + _TABS_V179_STABLE_ROLLUP
     + _TABS_V180_PAPER_SIM
+    + _TABS_V181_SIM_MATRIX
 )
 
 assert len(_TABS_V170) == 22, f"Expected 22 v1.7.0 tabs, got {len(_TABS_V170)}"
@@ -209,6 +217,7 @@ assert len(_TABS_V177_THEME_ROTATION) == 3, f"Expected 3 theme rotation tabs, go
 assert len(_TABS_V178_INTEGRATED_STRATEGY) == 3, f"Expected 3 integrated strategy tabs, got {len(_TABS_V178_INTEGRATED_STRATEGY)}"
 assert len(_TABS_V179_STABLE_ROLLUP) == 3, f"Expected 3 stable rollup tabs, got {len(_TABS_V179_STABLE_ROLLUP)}"
 assert len(_TABS_V180_PAPER_SIM) == 3, f"Expected 3 paper sim tabs, got {len(_TABS_V180_PAPER_SIM)}"
+assert len(_TABS_V181_SIM_MATRIX) == 3, f"Expected 3 sim matrix tabs, got {len(_TABS_V181_SIM_MATRIX)}"
 
 
 def get_tab_names() -> List[str]:
@@ -1335,6 +1344,10 @@ def render_all_tabs() -> Dict[str, Any]:
         "paper_sim_lab":                     render_paper_sim_lab_tab,
         "paper_sim_equity_curve":            render_paper_sim_equity_curve_tab,
         "paper_sim_performance":             render_paper_sim_performance_tab,
+        # v1.8.1 simulation scenario matrix tabs
+        "sim_matrix_lab":                    render_sim_matrix_lab_tab,
+        "sim_stress_test":                   render_sim_stress_test_tab,
+        "sim_robustness_score":              render_sim_robustness_score_tab,
     }
     result = {}
     for tab_name in _TABS:
@@ -2347,6 +2360,145 @@ def render_paper_sim_performance_tab() -> Dict[str, Any]:
 def get_paper_sim_tab_names() -> List[str]:
     """Return list of v1.8.0 paper simulation tab names."""
     return list(_TABS_V180_PAPER_SIM)
+
+
+# ---------------------------------------------------------------------------
+# v1.8.1 Simulation Scenario Matrix & Stress Test Lab tab renderers
+# Headless-safe. No broker. No real orders. Stress test only. Research only.
+# ---------------------------------------------------------------------------
+
+def render_sim_matrix_lab_tab() -> Dict[str, Any]:
+    """Render Simulation Matrix Lab tab. v1.8.1. Headless-safe."""
+    try:
+        from paper_trading.small_capital_strategy.simulation_matrix_version_v181 import (
+            VERSION, RELEASE_NAME, get_version_info,
+        )
+        from paper_trading.small_capital_strategy.simulation_matrix_scenarios_v181 import (
+            get_scenario_count, get_scenario_categories,
+        )
+        version_info = get_version_info()
+        return {
+            "tab": "sim_matrix_lab",
+            "title": "Simulation Scenario Matrix Lab v1.8.1",
+            "version": VERSION,
+            "release_name": RELEASE_NAME,
+            "description": "Scenario matrix across 10 dimensions for 300K paper strategy research.",
+            "scenario_count": get_scenario_count(),
+            "categories": get_scenario_categories(),
+            "status": "READY",
+            "paper_only": version_info["paper_only"],
+            "research_only": version_info["research_only"],
+            "simulate_only": version_info["simulate_only"],
+            "stress_test_only": version_info["stress_test_only"],
+            "no_real_orders": version_info["no_real_orders"],
+            "no_broker": True,
+            "not_investment_advice": version_info["not_investment_advice"],
+            "disclaimer": "Research Only | Paper Only | Stress Test Only | No Real Orders | Not Investment Advice",
+        }
+    except Exception as exc:
+        return {
+            "tab": "sim_matrix_lab",
+            "title": "Simulation Scenario Matrix Lab v1.8.1",
+            "status": "EMPTY",
+            "error": str(exc),
+            "paper_only": True,
+            "research_only": True,
+            "no_real_orders": True,
+            "not_investment_advice": True,
+        }
+
+
+def render_sim_stress_test_tab() -> Dict[str, Any]:
+    """Render Simulation Stress Test tab. v1.8.1. Headless-safe."""
+    try:
+        from paper_trading.small_capital_strategy.simulation_stress_engine_v181 import (
+            STRESS_TEST_TYPES, run_all_stress_tests, get_stress_engine_info,
+        )
+        results = run_all_stress_tests()
+        survived = sum(1 for r in results if r.survived)
+        info = get_stress_engine_info()
+        return {
+            "tab": "sim_stress_test",
+            "title": "Simulation Stress Test Lab v1.8.1",
+            "version": "1.8.1",
+            "stress_test_count": len(results),
+            "survived_count": survived,
+            "failed_count": len(results) - survived,
+            "stress_test_types": STRESS_TEST_TYPES,
+            "paper_only": info["paper_only"],
+            "research_only": info["research_only"],
+            "simulate_only": info["simulate_only"],
+            "stress_test_only": info["stress_test_only"],
+            "no_real_orders": info["no_real_orders"],
+            "no_broker": True,
+            "not_investment_advice": info["not_investment_advice"],
+            "disclaimer": "Research Only | Paper Only | Stress Test Only | No Real Orders | Not Investment Advice",
+        }
+    except Exception as exc:
+        return {
+            "tab": "sim_stress_test",
+            "title": "Simulation Stress Test Lab v1.8.1",
+            "status": "EMPTY",
+            "error": str(exc),
+            "paper_only": True,
+            "research_only": True,
+            "no_real_orders": True,
+            "not_investment_advice": True,
+        }
+
+
+def render_sim_robustness_score_tab() -> Dict[str, Any]:
+    """Render Simulation Robustness Score tab. v1.8.1. Headless-safe."""
+    try:
+        from paper_trading.small_capital_strategy.simulation_matrix_models_v181 import (
+            SimulationMatrixInput,
+        )
+        from paper_trading.small_capital_strategy.simulation_matrix_engine_v181 import (
+            run_matrix_cell, compute_robustness_score, run_scenario_matrix,
+        )
+        from paper_trading.small_capital_strategy.simulation_stress_engine_v181 import (
+            run_all_stress_tests,
+        )
+        inp = SimulationMatrixInput()
+        matrix_result = run_scenario_matrix([inp])
+        stress_results = run_all_stress_tests()
+        robustness = compute_robustness_score(matrix_result, stress_results)
+        return {
+            "tab": "sim_robustness_score",
+            "title": "Simulation Robustness Score v1.8.1",
+            "version": "1.8.1",
+            "score": robustness.score,
+            "final_grade": robustness.final_grade,
+            "stress_survival_rate_pct": robustness.stress_survival_rate_pct,
+            "scenario_pass_rate_pct": robustness.scenario_pass_rate_pct,
+            "average_max_drawdown_pct": robustness.average_max_drawdown_pct,
+            "worst_case_return_pct": robustness.worst_case_return_pct,
+            "behavior_resilience_score": robustness.behavior_resilience_score,
+            "paper_only": robustness.paper_only,
+            "research_only": robustness.research_only,
+            "simulate_only": robustness.simulate_only,
+            "stress_test_only": robustness.stress_test_only,
+            "no_real_orders": robustness.no_real_orders,
+            "no_broker": True,
+            "not_investment_advice": robustness.not_investment_advice,
+            "disclaimer": "Research Only | Paper Only | Stress Test Only | No Real Orders | Not Investment Advice",
+        }
+    except Exception as exc:
+        return {
+            "tab": "sim_robustness_score",
+            "title": "Simulation Robustness Score v1.8.1",
+            "status": "EMPTY",
+            "error": str(exc),
+            "paper_only": True,
+            "research_only": True,
+            "no_real_orders": True,
+            "not_investment_advice": True,
+        }
+
+
+def get_sim_matrix_tab_names() -> List[str]:
+    """Return list of v1.8.1 simulation matrix tab names."""
+    return list(_TABS_V181_SIM_MATRIX)
 
 
 def get_panel_info() -> Dict[str, Any]:
