@@ -17,7 +17,7 @@ from __future__ import annotations
 from typing import Any, Dict, List, Optional
 
 PANEL_VERSION = "1.8.2"
-PANEL_TITLE = "Small Capital Strategy v1.8.2 — Parameter Optimization & Walk-Forward Validation Lab"
+PANEL_TITLE = "Small Capital Strategy v1.8.2 — Parameter Optimization, Walk-Forward Validation & Simulation Lab"
 
 # v1.7.0 tabs (preserved unchanged)
 _TABS_V170 = [

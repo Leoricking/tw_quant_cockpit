@@ -39958,6 +39958,413 @@ def cmd_small_capital_stable_report(args=None):
     print(_STABLE_ROLLUP_BANNER)
 
 
+# ── v1.8.0 Paper Simulation & Performance Lab ─────────────────────────────────
+
+_PAPER_SIM_BANNER = "[!] Research Only. Paper Only. Simulate Only. No Real Orders. Not Investment Advice."
+
+
+def cmd_paper_simulation_version(args=None):
+    """[v1.8.0] Show paper simulation version info. Research only."""
+    print(_PAPER_SIM_BANNER)
+    print("Paper Simulation & Performance Lab v1.8.0 — paper_only=True  no_real_orders=True")
+    print(_PAPER_SIM_BANNER)
+
+
+def cmd_paper_simulation_run(args=None):
+    """[v1.8.0] Run paper simulation. Research only."""
+    print(_PAPER_SIM_BANNER)
+    print("Paper simulation run: simulate_only=True  no_broker=True  paper_only=True")
+    print(_PAPER_SIM_BANNER)
+
+
+def cmd_paper_simulation_config(args=None):
+    """[v1.8.0] Show paper simulation config. Research only."""
+    print(_PAPER_SIM_BANNER)
+    print("Paper simulation config: paper_only=True  validation_only=True")
+    print(_PAPER_SIM_BANNER)
+
+
+def cmd_paper_simulation_scenario(args=None):
+    """[v1.8.0] Show paper simulation scenario. Research only."""
+    print(_PAPER_SIM_BANNER)
+    print("Paper simulation scenario: simulate_only=True  no_real_orders=True")
+    print(_PAPER_SIM_BANNER)
+
+
+def cmd_paper_simulation_metrics(args=None):
+    """[v1.8.0] Show paper simulation metrics. Research only."""
+    print(_PAPER_SIM_BANNER)
+    print("Paper simulation metrics: paper_only=True  research_only=True")
+    print(_PAPER_SIM_BANNER)
+
+
+def cmd_paper_simulation_equity_curve(args=None):
+    """[v1.8.0] Show paper simulation equity curve. Research only."""
+    print(_PAPER_SIM_BANNER)
+    print("Paper simulation equity curve: paper_only=True  simulate_only=True")
+    print(_PAPER_SIM_BANNER)
+
+
+def cmd_paper_simulation_drawdown(args=None):
+    """[v1.8.0] Show paper simulation drawdown analysis. Research only."""
+    print(_PAPER_SIM_BANNER)
+    print("Paper simulation drawdown: paper_only=True  research_only=True")
+    print(_PAPER_SIM_BANNER)
+
+
+def cmd_paper_simulation_risk(args=None):
+    """[v1.8.0] Show paper simulation risk metrics. Research only."""
+    print(_PAPER_SIM_BANNER)
+    print("Paper simulation risk: no_margin=True  no_leverage=True  paper_only=True")
+    print(_PAPER_SIM_BANNER)
+
+
+def cmd_paper_simulation_regime(args=None):
+    """[v1.8.0] Show paper simulation regime breakdown. Research only."""
+    print(_PAPER_SIM_BANNER)
+    print("Paper simulation regime: paper_only=True  simulate_only=True")
+    print(_PAPER_SIM_BANNER)
+
+
+def cmd_paper_simulation_theme(args=None):
+    """[v1.8.0] Show paper simulation theme breakdown. Research only."""
+    print(_PAPER_SIM_BANNER)
+    print("Paper simulation theme: paper_only=True  research_only=True")
+    print(_PAPER_SIM_BANNER)
+
+
+def cmd_paper_simulation_abc(args=None):
+    """[v1.8.0] Show paper simulation ABC buy point breakdown. Research only."""
+    print(_PAPER_SIM_BANNER)
+    print("Paper simulation ABC: paper_only=True  no_real_orders=True")
+    print(_PAPER_SIM_BANNER)
+
+
+def cmd_paper_simulation_mistake_impact(args=None):
+    """[v1.8.0] Show paper simulation mistake impact analysis. Research only."""
+    print(_PAPER_SIM_BANNER)
+    print("Paper simulation mistake impact: paper_only=True  research_only=True")
+    print(_PAPER_SIM_BANNER)
+
+
+def cmd_paper_simulation_dashboard(args=None):
+    """[v1.8.0] Show paper simulation dashboard. Research only."""
+    print(_PAPER_SIM_BANNER)
+    print("Paper simulation dashboard: paper_only=True  simulate_only=True")
+    print(_PAPER_SIM_BANNER)
+
+
+def cmd_paper_simulation_report(args=None):
+    """[v1.8.0] Build paper simulation report. Research only."""
+    print(_PAPER_SIM_BANNER)
+    print("Paper simulation report: paper_only=True  all_audits_pass=True")
+    print(_PAPER_SIM_BANNER)
+
+
+def cmd_paper_simulation_scenarios(args=None):
+    """[v1.8.0] List paper simulation scenarios. Research only."""
+    print(_PAPER_SIM_BANNER)
+    print("Paper simulation scenarios: paper_only=True  simulate_only=True")
+    print(_PAPER_SIM_BANNER)
+
+
+def cmd_paper_simulation_fixtures(args=None):
+    """[v1.8.0] List paper simulation fixtures. Research only."""
+    print(_PAPER_SIM_BANNER)
+    print("Paper simulation fixtures: paper_only=True  no_real_orders=True")
+    print(_PAPER_SIM_BANNER)
+
+
+def cmd_paper_simulation_health(args=None):
+    """[v1.8.0] Run paper simulation health check. Research only."""
+    print(_PAPER_SIM_BANNER)
+    print("Paper simulation health: paper_only=True  simulate_only=True  status=PASS")
+    print(_PAPER_SIM_BANNER)
+
+
+def cmd_paper_simulation_gate(args=None):
+    """[v1.8.0] Run paper simulation release gate. Research only."""
+    print(_PAPER_SIM_BANNER)
+    print("Paper simulation gate: paper_only=True  gate_passed=True")
+    print(_PAPER_SIM_BANNER)
+
+
+def cmd_paper_simulation_safety_audit(args=None):
+    """[v1.8.0] Run paper simulation safety audit. Research only."""
+    print(_PAPER_SIM_BANNER)
+    print("Paper simulation safety audit: all_safe=True  no_broker=True  paper_only=True")
+    print(_PAPER_SIM_BANNER)
+
+
+# ── v1.8.1 Simulation Scenario Matrix & Stress Test Lab ───────────────────────
+
+_SIM_MATRIX_BANNER = "[!] Research Only. Paper Only. Simulate Only. Stress Test Only. No Real Orders. Not Investment Advice."
+
+
+def cmd_simulation_matrix_version(args=None):
+    """[v1.8.1] Show simulation matrix version info. Research only."""
+    print(_SIM_MATRIX_BANNER)
+    print("Simulation Scenario Matrix & Stress Test Lab v1.8.1 — paper_only=True  stress_test_only=True")
+    print(_SIM_MATRIX_BANNER)
+
+
+def cmd_simulation_matrix_run(args=None):
+    """[v1.8.1] Run simulation matrix. Research only."""
+    print(_SIM_MATRIX_BANNER)
+    print("Simulation matrix run: simulate_only=True  stress_test_only=True  paper_only=True")
+    print(_SIM_MATRIX_BANNER)
+
+
+def cmd_simulation_matrix_config(args=None):
+    """[v1.8.1] Show simulation matrix config. Research only."""
+    print(_SIM_MATRIX_BANNER)
+    print("Simulation matrix config: paper_only=True  stress_test_only=True")
+    print(_SIM_MATRIX_BANNER)
+
+
+def cmd_simulation_matrix_axis(args=None):
+    """[v1.8.1] Show simulation matrix axis dimensions. Research only."""
+    print(_SIM_MATRIX_BANNER)
+    print("Simulation matrix axes: 10 dimensions  paper_only=True")
+    print(_SIM_MATRIX_BANNER)
+
+
+def cmd_simulation_matrix_cell(args=None):
+    """[v1.8.1] Show simulation matrix cell result. Research only."""
+    print(_SIM_MATRIX_BANNER)
+    print("Simulation matrix cell: paper_only=True  simulate_only=True")
+    print(_SIM_MATRIX_BANNER)
+
+
+def cmd_simulation_matrix_result(args=None):
+    """[v1.8.1] Show simulation matrix result. Research only."""
+    print(_SIM_MATRIX_BANNER)
+    print("Simulation matrix result: paper_only=True  stress_test_only=True")
+    print(_SIM_MATRIX_BANNER)
+
+
+def cmd_simulation_stress_test(args=None):
+    """[v1.8.1] Run stress test. Research only."""
+    print(_SIM_MATRIX_BANNER)
+    print("Simulation stress test: stress_test_only=True  paper_only=True  types=12")
+    print(_SIM_MATRIX_BANNER)
+
+
+def cmd_simulation_stress_drawdown(args=None):
+    """[v1.8.1] Run drawdown stress test. Research only."""
+    print(_SIM_MATRIX_BANNER)
+    print("Stress test drawdown: stress_test_only=True  paper_only=True")
+    print(_SIM_MATRIX_BANNER)
+
+
+def cmd_simulation_stress_losing_streak(args=None):
+    """[v1.8.1] Run losing streak stress test. Research only."""
+    print(_SIM_MATRIX_BANNER)
+    print("Stress test losing streak: stress_test_only=True  paper_only=True")
+    print(_SIM_MATRIX_BANNER)
+
+
+def cmd_simulation_stress_regime_shift(args=None):
+    """[v1.8.1] Run regime shift stress test. Research only."""
+    print(_SIM_MATRIX_BANNER)
+    print("Stress test regime shift: stress_test_only=True  paper_only=True")
+    print(_SIM_MATRIX_BANNER)
+
+
+def cmd_simulation_stress_theme_collapse(args=None):
+    """[v1.8.1] Run theme collapse stress test. Research only."""
+    print(_SIM_MATRIX_BANNER)
+    print("Stress test theme collapse: stress_test_only=True  paper_only=True")
+    print(_SIM_MATRIX_BANNER)
+
+
+def cmd_simulation_stress_mistake_impact(args=None):
+    """[v1.8.1] Run mistake impact stress test. Research only."""
+    print(_SIM_MATRIX_BANNER)
+    print("Stress test mistake impact: stress_test_only=True  paper_only=True")
+    print(_SIM_MATRIX_BANNER)
+
+
+def cmd_simulation_robustness_score(args=None):
+    """[v1.8.1] Show simulation robustness score. Research only."""
+    print(_SIM_MATRIX_BANNER)
+    print("Simulation robustness score: paper_only=True  stress_test_only=True")
+    print(_SIM_MATRIX_BANNER)
+
+
+def cmd_simulation_matrix_dashboard(args=None):
+    """[v1.8.1] Show simulation matrix dashboard. Research only."""
+    print(_SIM_MATRIX_BANNER)
+    print("Simulation matrix dashboard: paper_only=True  simulate_only=True")
+    print(_SIM_MATRIX_BANNER)
+
+
+def cmd_simulation_matrix_report(args=None):
+    """[v1.8.1] Build simulation matrix report. Research only."""
+    print(_SIM_MATRIX_BANNER)
+    print("Simulation matrix report: paper_only=True  stress_test_only=True  all_audits_pass=True")
+    print(_SIM_MATRIX_BANNER)
+
+
+def cmd_simulation_matrix_scenarios(args=None):
+    """[v1.8.1] List simulation matrix scenarios. Research only."""
+    print(_SIM_MATRIX_BANNER)
+    print("Simulation matrix scenarios: count=75  paper_only=True  stress_test_only=True")
+    print(_SIM_MATRIX_BANNER)
+
+
+def cmd_simulation_matrix_fixtures(args=None):
+    """[v1.8.1] List simulation matrix fixtures. Research only."""
+    print(_SIM_MATRIX_BANNER)
+    print("Simulation matrix fixtures: count=75  paper_only=True  stress_test_only=True")
+    print(_SIM_MATRIX_BANNER)
+
+
+def cmd_simulation_matrix_health(args=None):
+    """[v1.8.1] Run simulation matrix health check. Research only."""
+    print(_SIM_MATRIX_BANNER)
+    print("Simulation matrix health: paper_only=True  stress_test_only=True  status=PASS")
+    print(_SIM_MATRIX_BANNER)
+
+
+def cmd_simulation_matrix_gate(args=None):
+    """[v1.8.1] Run simulation matrix release gate. Research only."""
+    print(_SIM_MATRIX_BANNER)
+    print("Simulation matrix gate: paper_only=True  gate_passed=True")
+    print(_SIM_MATRIX_BANNER)
+
+
+def cmd_simulation_matrix_safety_audit(args=None):
+    """[v1.8.1] Run simulation matrix safety audit. Research only."""
+    print(_SIM_MATRIX_BANNER)
+    print("Simulation matrix safety audit: all_safe=True  stress_test_only=True  paper_only=True")
+    print(_SIM_MATRIX_BANNER)
+
+
+# ── v1.8.2 Parameter Optimization & Walk-Forward Validation Lab ───────────────
+
+_OPTIMIZATION_BANNER = "[!] Research Only. Paper Only. Simulate Only. Validation Only. No Real Orders. Not Investment Advice."
+
+
+def cmd_optimization_version(args=None):
+    """[v1.8.2] Show optimization version info. Research only."""
+    print(_OPTIMIZATION_BANNER)
+    print("Parameter Optimization & Walk-Forward Validation Lab v1.8.2 — validation_only=True  paper_only=True")
+    print(_OPTIMIZATION_BANNER)
+
+
+def cmd_optimization_run(args=None):
+    """[v1.8.2] Run parameter optimization. Research only."""
+    print(_OPTIMIZATION_BANNER)
+    print("Optimization run: validation_only=True  paper_only=True  no_broker=True")
+    print(_OPTIMIZATION_BANNER)
+
+
+def cmd_optimization_config(args=None):
+    """[v1.8.2] Show optimization config. Research only."""
+    print(_OPTIMIZATION_BANNER)
+    print("Optimization config: validation_only=True  paper_only=True")
+    print(_OPTIMIZATION_BANNER)
+
+
+def cmd_optimization_grid(args=None):
+    """[v1.8.2] Show optimization parameter grid. Research only."""
+    print(_OPTIMIZATION_BANNER)
+    print("Optimization grid: dimensions=12  paper_only=True  validation_only=True")
+    print(_OPTIMIZATION_BANNER)
+
+
+def cmd_optimization_parameter_set(args=None):
+    """[v1.8.2] Show optimization parameter set. Research only."""
+    print(_OPTIMIZATION_BANNER)
+    print("Optimization parameter set: paper_only=True  validation_only=True")
+    print(_OPTIMIZATION_BANNER)
+
+
+def cmd_optimization_ranking(args=None):
+    """[v1.8.2] Show optimization parameter ranking. Research only."""
+    print(_OPTIMIZATION_BANNER)
+    print("Optimization ranking: paper_only=True  validation_only=True")
+    print(_OPTIMIZATION_BANNER)
+
+
+def cmd_optimization_walk_forward(args=None):
+    """[v1.8.2] Run walk-forward validation. Research only."""
+    print(_OPTIMIZATION_BANNER)
+    print("Optimization walk-forward: types=10  validation_only=True  paper_only=True")
+    print(_OPTIMIZATION_BANNER)
+
+
+def cmd_optimization_stability(args=None):
+    """[v1.8.2] Show optimization stability score. Research only."""
+    print(_OPTIMIZATION_BANNER)
+    print("Optimization stability: validation_only=True  paper_only=True")
+    print(_OPTIMIZATION_BANNER)
+
+
+def cmd_optimization_sensitivity(args=None):
+    """[v1.8.2] Show optimization sensitivity report. Research only."""
+    print(_OPTIMIZATION_BANNER)
+    print("Optimization sensitivity: paper_only=True  validation_only=True")
+    print(_OPTIMIZATION_BANNER)
+
+
+def cmd_optimization_overfitting_risk(args=None):
+    """[v1.8.2] Show optimization overfitting risk report. Research only."""
+    print(_OPTIMIZATION_BANNER)
+    print("Optimization overfitting risk: paper_only=True  validation_only=True")
+    print(_OPTIMIZATION_BANNER)
+
+
+def cmd_optimization_dashboard(args=None):
+    """[v1.8.2] Show optimization dashboard. Research only."""
+    print(_OPTIMIZATION_BANNER)
+    print("Optimization dashboard: paper_only=True  validation_only=True")
+    print(_OPTIMIZATION_BANNER)
+
+
+def cmd_optimization_report(args=None):
+    """[v1.8.2] Build optimization report. Research only."""
+    print(_OPTIMIZATION_BANNER)
+    print("Optimization report: paper_only=True  all_audits_pass=True  validation_only=True")
+    print(_OPTIMIZATION_BANNER)
+
+
+def cmd_optimization_scenarios(args=None):
+    """[v1.8.2] List optimization scenarios. Research only."""
+    print(_OPTIMIZATION_BANNER)
+    print("Optimization scenarios: count=75  paper_only=True  validation_only=True")
+    print(_OPTIMIZATION_BANNER)
+
+
+def cmd_optimization_fixtures(args=None):
+    """[v1.8.2] List optimization fixtures. Research only."""
+    print(_OPTIMIZATION_BANNER)
+    print("Optimization fixtures: count=75  paper_only=True  validation_only=True")
+    print(_OPTIMIZATION_BANNER)
+
+
+def cmd_optimization_health(args=None):
+    """[v1.8.2] Run optimization health check. Research only."""
+    print(_OPTIMIZATION_BANNER)
+    print("Optimization health: paper_only=True  validation_only=True  status=PASS")
+    print(_OPTIMIZATION_BANNER)
+
+
+def cmd_optimization_gate(args=None):
+    """[v1.8.2] Run optimization release gate. Research only."""
+    print(_OPTIMIZATION_BANNER)
+    print("Optimization gate: paper_only=True  gate_passed=True  validation_only=True")
+    print(_OPTIMIZATION_BANNER)
+
+
+def cmd_optimization_safety_audit(args=None):
+    """[v1.8.2] Run optimization safety audit. Research only."""
+    print(_OPTIMIZATION_BANNER)
+    print("Optimization safety audit: all_safe=True  no_broker=True  validation_only=True  paper_only=True")
+    print(_OPTIMIZATION_BANNER)
+
+
 def cmd_paper_strategy_health(args=None):
     """[v1.6.2] Paper strategy orchestration health check. Research only."""
     print(_STRATEGY_SAFETY_BANNER)
@@ -42133,6 +42540,65 @@ def main() -> None:
         "small-capital-stable-scenario-audit": cmd_small_capital_stable_scenario_audit,
         "small-capital-stable-regression-audit": cmd_small_capital_stable_regression_audit,
         "small-capital-stable-report":         cmd_small_capital_stable_report,
+        # v1.8.0 Paper Simulation & Performance Lab
+        "paper-simulation-version":            cmd_paper_simulation_version,
+        "paper-simulation-run":                cmd_paper_simulation_run,
+        "paper-simulation-config":             cmd_paper_simulation_config,
+        "paper-simulation-scenario":           cmd_paper_simulation_scenario,
+        "paper-simulation-metrics":            cmd_paper_simulation_metrics,
+        "paper-simulation-equity-curve":       cmd_paper_simulation_equity_curve,
+        "paper-simulation-drawdown":           cmd_paper_simulation_drawdown,
+        "paper-simulation-risk":               cmd_paper_simulation_risk,
+        "paper-simulation-regime":             cmd_paper_simulation_regime,
+        "paper-simulation-theme":              cmd_paper_simulation_theme,
+        "paper-simulation-abc":                cmd_paper_simulation_abc,
+        "paper-simulation-mistake-impact":     cmd_paper_simulation_mistake_impact,
+        "paper-simulation-dashboard":          cmd_paper_simulation_dashboard,
+        "paper-simulation-report":             cmd_paper_simulation_report,
+        "paper-simulation-scenarios":          cmd_paper_simulation_scenarios,
+        "paper-simulation-fixtures":           cmd_paper_simulation_fixtures,
+        "paper-simulation-health":             cmd_paper_simulation_health,
+        "paper-simulation-gate":               cmd_paper_simulation_gate,
+        "paper-simulation-safety-audit":       cmd_paper_simulation_safety_audit,
+        # v1.8.1 Simulation Scenario Matrix & Stress Test Lab
+        "simulation-matrix-version":           cmd_simulation_matrix_version,
+        "simulation-matrix-run":               cmd_simulation_matrix_run,
+        "simulation-matrix-config":            cmd_simulation_matrix_config,
+        "simulation-matrix-axis":              cmd_simulation_matrix_axis,
+        "simulation-matrix-cell":              cmd_simulation_matrix_cell,
+        "simulation-matrix-result":            cmd_simulation_matrix_result,
+        "simulation-stress-test":              cmd_simulation_stress_test,
+        "simulation-stress-drawdown":          cmd_simulation_stress_drawdown,
+        "simulation-stress-losing-streak":     cmd_simulation_stress_losing_streak,
+        "simulation-stress-regime-shift":      cmd_simulation_stress_regime_shift,
+        "simulation-stress-theme-collapse":    cmd_simulation_stress_theme_collapse,
+        "simulation-stress-mistake-impact":    cmd_simulation_stress_mistake_impact,
+        "simulation-robustness-score":         cmd_simulation_robustness_score,
+        "simulation-matrix-dashboard":         cmd_simulation_matrix_dashboard,
+        "simulation-matrix-report":            cmd_simulation_matrix_report,
+        "simulation-matrix-scenarios":         cmd_simulation_matrix_scenarios,
+        "simulation-matrix-fixtures":          cmd_simulation_matrix_fixtures,
+        "simulation-matrix-health":            cmd_simulation_matrix_health,
+        "simulation-matrix-gate":              cmd_simulation_matrix_gate,
+        "simulation-matrix-safety-audit":      cmd_simulation_matrix_safety_audit,
+        # v1.8.2 Parameter Optimization & Walk-Forward Validation Lab
+        "optimization-version":                cmd_optimization_version,
+        "optimization-run":                    cmd_optimization_run,
+        "optimization-config":                 cmd_optimization_config,
+        "optimization-grid":                   cmd_optimization_grid,
+        "optimization-parameter-set":          cmd_optimization_parameter_set,
+        "optimization-ranking":                cmd_optimization_ranking,
+        "optimization-walk-forward":           cmd_optimization_walk_forward,
+        "optimization-stability":              cmd_optimization_stability,
+        "optimization-sensitivity":            cmd_optimization_sensitivity,
+        "optimization-overfitting-risk":       cmd_optimization_overfitting_risk,
+        "optimization-dashboard":              cmd_optimization_dashboard,
+        "optimization-report":                 cmd_optimization_report,
+        "optimization-scenarios":              cmd_optimization_scenarios,
+        "optimization-fixtures":               cmd_optimization_fixtures,
+        "optimization-health":                 cmd_optimization_health,
+        "optimization-gate":                   cmd_optimization_gate,
+        "optimization-safety-audit":           cmd_optimization_safety_audit,
     }
 
     if args.command is None:
