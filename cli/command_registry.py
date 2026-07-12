@@ -4509,6 +4509,71 @@ _SIMULATION_MATRIX_COMMANDS: _List[CommandSpec] = [
 ]
 
 # ---------------------------------------------------------------------------
+# v1.8.3 Monte Carlo Risk-of-Ruin & Robustness Lab commands
+# ---------------------------------------------------------------------------
+_MONTE_CARLO_COMMANDS: _List[CommandSpec] = [
+    CommandSpec(name="monte-carlo-version", handler_name="cmd_monte_carlo_version",
+                help="[Research] Show Monte Carlo version info v1.8.3", group="monte_carlo",
+                introduced_in="1.8.3", safety_classification="RESEARCH_ONLY"),
+    CommandSpec(name="monte-carlo-run", handler_name="cmd_monte_carlo_run",
+                help="[Research] Run Monte Carlo simulation engine v1.8.3", group="monte_carlo",
+                introduced_in="1.8.3", safety_classification="RESEARCH_ONLY"),
+    CommandSpec(name="monte-carlo-config", handler_name="cmd_monte_carlo_config",
+                help="[Research] Show Monte Carlo config v1.8.3", group="monte_carlo",
+                introduced_in="1.8.3", safety_classification="RESEARCH_ONLY"),
+    CommandSpec(name="monte-carlo-trial", handler_name="cmd_monte_carlo_trial",
+                help="[Research] Show single Monte Carlo trial v1.8.3", group="monte_carlo",
+                introduced_in="1.8.3", safety_classification="RESEARCH_ONLY"),
+    CommandSpec(name="monte-carlo-bootstrap", handler_name="cmd_monte_carlo_bootstrap",
+                help="[Research] Run bootstrap resampling v1.8.3", group="monte_carlo",
+                introduced_in="1.8.3", safety_classification="RESEARCH_ONLY"),
+    CommandSpec(name="monte-carlo-risk-of-ruin", handler_name="cmd_monte_carlo_risk_of_ruin",
+                help="[Research] Compute risk-of-ruin v1.8.3", group="monte_carlo",
+                introduced_in="1.8.3", safety_classification="RESEARCH_ONLY"),
+    CommandSpec(name="monte-carlo-drawdown-distribution", handler_name="cmd_monte_carlo_drawdown_distribution",
+                help="[Research] Compute drawdown distribution v1.8.3", group="monte_carlo",
+                introduced_in="1.8.3", safety_classification="RESEARCH_ONLY"),
+    CommandSpec(name="monte-carlo-return-distribution", handler_name="cmd_monte_carlo_return_distribution",
+                help="[Research] Compute return distribution v1.8.3", group="monte_carlo",
+                introduced_in="1.8.3", safety_classification="RESEARCH_ONLY"),
+    CommandSpec(name="monte-carlo-sequence-risk", handler_name="cmd_monte_carlo_sequence_risk",
+                help="[Research] Compute sequence risk report v1.8.3", group="monte_carlo",
+                introduced_in="1.8.3", safety_classification="RESEARCH_ONLY"),
+    CommandSpec(name="monte-carlo-tail-risk", handler_name="cmd_monte_carlo_tail_risk",
+                help="[Research] Compute tail risk report v1.8.3", group="monte_carlo",
+                introduced_in="1.8.3", safety_classification="RESEARCH_ONLY"),
+    CommandSpec(name="monte-carlo-slippage-shock", handler_name="cmd_monte_carlo_slippage_shock",
+                help="[Research] Run slippage shock simulation v1.8.3", group="monte_carlo",
+                introduced_in="1.8.3", safety_classification="RESEARCH_ONLY"),
+    CommandSpec(name="monte-carlo-cost-shock", handler_name="cmd_monte_carlo_cost_shock",
+                help="[Research] Run cost shock simulation v1.8.3", group="monte_carlo",
+                introduced_in="1.8.3", safety_classification="RESEARCH_ONLY"),
+    CommandSpec(name="monte-carlo-robustness-probability", handler_name="cmd_monte_carlo_robustness_probability",
+                help="[Research] Compute robustness probability v1.8.3", group="monte_carlo",
+                introduced_in="1.8.3", safety_classification="RESEARCH_ONLY"),
+    CommandSpec(name="monte-carlo-dashboard", handler_name="cmd_monte_carlo_dashboard",
+                help="[Research] Show Monte Carlo dashboard v1.8.3", group="monte_carlo",
+                introduced_in="1.8.3", safety_classification="RESEARCH_ONLY"),
+    CommandSpec(name="monte-carlo-report", handler_name="cmd_monte_carlo_report",
+                help="[Research] Build Monte Carlo full report v1.8.3", group="monte_carlo",
+                introduced_in="1.8.3", safety_classification="RESEARCH_ONLY"),
+    CommandSpec(name="monte-carlo-scenarios", handler_name="cmd_monte_carlo_scenarios",
+                help="[Research] List Monte Carlo scenarios v1.8.3", group="monte_carlo",
+                introduced_in="1.8.3", safety_classification="RESEARCH_ONLY"),
+    CommandSpec(name="monte-carlo-fixtures", handler_name="cmd_monte_carlo_fixtures",
+                help="[Research] List Monte Carlo fixtures v1.8.3", group="monte_carlo",
+                introduced_in="1.8.3", safety_classification="RESEARCH_ONLY"),
+    CommandSpec(name="monte-carlo-health", handler_name="cmd_monte_carlo_health",
+                help="[Research] Run Monte Carlo health check v1.8.3", group="monte_carlo",
+                introduced_in="1.8.3", safety_classification="RESEARCH_ONLY"),
+    CommandSpec(name="monte-carlo-gate", handler_name="cmd_monte_carlo_gate",
+                help="[Research] Run Monte Carlo release gate v1.8.3", group="monte_carlo",
+                introduced_in="1.8.3", safety_classification="RESEARCH_ONLY"),
+    CommandSpec(name="monte-carlo-safety-audit", handler_name="cmd_monte_carlo_safety_audit",
+                help="[Research] Run Monte Carlo safety audit v1.8.3", group="monte_carlo",
+                introduced_in="1.8.3", safety_classification="RESEARCH_ONLY"),
+]
+
 # v1.8.2 Parameter Optimization & Walk-Forward Validation Lab commands
 # ---------------------------------------------------------------------------
 _OPTIMIZATION_COMMANDS: _List[CommandSpec] = [
@@ -4603,7 +4668,9 @@ PROVIDER_COMMANDS: _List[CommandSpec] = (
     + _PAPER_SIMULATION_COMMANDS
     + _SIMULATION_MATRIX_COMMANDS
     + _OPTIMIZATION_COMMANDS
+    + _MONTE_CARLO_COMMANDS
 )
+
 
 
 def get_all_commands() -> _List[CommandSpec]:

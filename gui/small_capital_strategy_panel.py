@@ -16,8 +16,8 @@ Headless-safe: no tkinter at module level. Renders to dict.
 from __future__ import annotations
 from typing import Any, Dict, List, Optional
 
-PANEL_VERSION = "1.8.2"
-PANEL_TITLE = "Small Capital Strategy v1.8.2 — Parameter Optimization, Walk-Forward Validation & Simulation Lab"
+PANEL_VERSION = "1.8.3"
+PANEL_TITLE = "Small Capital Strategy v1.8.3 — Simulation, Optimization & Monte Carlo Risk-of-Ruin Robustness Lab"
 
 # v1.7.0 tabs (preserved unchanged)
 _TABS_V170 = [
@@ -197,6 +197,13 @@ _TABS_V182_OPTIMIZATION = [
     "overfitting_risk",
 ]
 
+# v1.8.3 Monte Carlo Risk-of-Ruin & Robustness Lab tabs
+_TABS_V183_MONTE_CARLO = [
+    "monte_carlo",
+    "risk_of_ruin",
+    "robustness_probability",
+]
+
 _TABS = (
     _TABS_V170
     + _TABS_V171_WATCHLIST
@@ -211,6 +218,7 @@ _TABS = (
     + _TABS_V180_PAPER_SIM
     + _TABS_V181_SIM_MATRIX
     + _TABS_V182_OPTIMIZATION
+    + _TABS_V183_MONTE_CARLO
 )
 
 assert len(_TABS_V170) == 22, f"Expected 22 v1.7.0 tabs, got {len(_TABS_V170)}"
@@ -226,6 +234,7 @@ assert len(_TABS_V179_STABLE_ROLLUP) == 3, f"Expected 3 stable rollup tabs, got 
 assert len(_TABS_V180_PAPER_SIM) == 3, f"Expected 3 paper sim tabs, got {len(_TABS_V180_PAPER_SIM)}"
 assert len(_TABS_V181_SIM_MATRIX) == 3, f"Expected 3 sim matrix tabs, got {len(_TABS_V181_SIM_MATRIX)}"
 assert len(_TABS_V182_OPTIMIZATION) == 3, f"Expected 3 optimization tabs, got {len(_TABS_V182_OPTIMIZATION)}"
+assert len(_TABS_V183_MONTE_CARLO) == 3, f"Expected 3 monte carlo tabs, got {len(_TABS_V183_MONTE_CARLO)}"
 
 
 def get_tab_names() -> List[str]:
@@ -1360,6 +1369,10 @@ def render_all_tabs() -> Dict[str, Any]:
         "param_optimization":                render_param_optimization_tab,
         "walk_forward_validation":           render_walk_forward_validation_tab,
         "overfitting_risk":                  render_overfitting_risk_tab,
+        # v1.8.3 Monte Carlo tabs
+        "monte_carlo":                       render_monte_carlo_tab,
+        "risk_of_ruin":                      render_risk_of_ruin_tab,
+        "robustness_probability":            render_robustness_probability_tab,
     }
     result = {}
     for tab_name in _TABS:
@@ -2586,6 +2599,52 @@ def render_overfitting_risk_tab() -> Dict[str, Any]:
 def get_optimization_tab_names() -> List[str]:
     """Return list of v1.8.2 optimization tab names."""
     return list(_TABS_V182_OPTIMIZATION)
+
+
+def get_monte_carlo_tab_names() -> List[str]:
+    """Return list of v1.8.3 Monte Carlo tab names."""
+    return list(_TABS_V183_MONTE_CARLO)
+
+
+def render_monte_carlo_tab() -> Dict[str, Any]:
+    """Render v1.8.3 Monte Carlo tab. Headless-safe."""
+    return {
+        "tab": "monte_carlo",
+        "version": "1.8.3",
+        "paper_only": True,
+        "monte_carlo_only": True,
+        "no_real_orders": True,
+        "headless_safe": True,
+        "trial_counts": [100, 500, 1000, 5000],
+        "deterministic_seed": True,
+    }
+
+
+def render_risk_of_ruin_tab() -> Dict[str, Any]:
+    """Render v1.8.3 Risk-of-Ruin tab. Headless-safe."""
+    return {
+        "tab": "risk_of_ruin",
+        "version": "1.8.3",
+        "paper_only": True,
+        "monte_carlo_only": True,
+        "no_real_orders": True,
+        "headless_safe": True,
+        "capital_floor_options": [50, 60, 70],
+        "max_drawdown_limit_options": [10, 15, 20, 25],
+    }
+
+
+def render_robustness_probability_tab() -> Dict[str, Any]:
+    """Render v1.8.3 Robustness Probability tab. Headless-safe."""
+    return {
+        "tab": "robustness_probability",
+        "version": "1.8.3",
+        "paper_only": True,
+        "monte_carlo_only": True,
+        "no_real_orders": True,
+        "headless_safe": True,
+        "bootstrap_enabled": True,
+    }
 
 
 def get_panel_info() -> Dict[str, Any]:

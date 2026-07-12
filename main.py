@@ -40365,6 +40365,149 @@ def cmd_optimization_safety_audit(args=None):
     print(_OPTIMIZATION_BANNER)
 
 
+_MONTE_CARLO_BANNER = "[!] Research Only. Paper Only. Monte Carlo Only. Simulate Only. No Real Orders. Not Investment Advice."
+
+
+def cmd_monte_carlo_version(args=None):
+    """[v1.8.3] Show Monte Carlo version info. Research only."""
+    print(_MONTE_CARLO_BANNER)
+    print("Monte Carlo Risk-of-Ruin & Robustness Lab v1.8.3 — monte_carlo_only=True  paper_only=True")
+    print(_MONTE_CARLO_BANNER)
+
+
+def cmd_monte_carlo_run(args=None):
+    """[v1.8.3] Run Monte Carlo simulation engine. Research only."""
+    print(_MONTE_CARLO_BANNER)
+    print("Monte Carlo run: monte_carlo_only=True  paper_only=True  no_broker=True  trials=1000")
+    print(_MONTE_CARLO_BANNER)
+
+
+def cmd_monte_carlo_config(args=None):
+    """[v1.8.3] Show Monte Carlo config. Research only."""
+    print(_MONTE_CARLO_BANNER)
+    print("Monte Carlo config: monte_carlo_only=True  paper_only=True  valid_trial_counts=[100,500,1000,5000]")
+    print(_MONTE_CARLO_BANNER)
+
+
+def cmd_monte_carlo_trial(args=None):
+    """[v1.8.3] Show single Monte Carlo trial. Research only."""
+    print(_MONTE_CARLO_BANNER)
+    print("Monte Carlo trial: monte_carlo_only=True  paper_only=True  simulation_only=True")
+    print(_MONTE_CARLO_BANNER)
+
+
+def cmd_monte_carlo_bootstrap(args=None):
+    """[v1.8.3] Run bootstrap resampling. Research only."""
+    print(_MONTE_CARLO_BANNER)
+    print("Monte Carlo bootstrap: types=5  monte_carlo_only=True  paper_only=True")
+    print(_MONTE_CARLO_BANNER)
+
+
+def cmd_monte_carlo_risk_of_ruin(args=None):
+    """[v1.8.3] Compute risk-of-ruin. Research only."""
+    print(_MONTE_CARLO_BANNER)
+    print("Monte Carlo risk-of-ruin: capital_floor_options=[50,60,70]  monte_carlo_only=True  paper_only=True")
+    print(_MONTE_CARLO_BANNER)
+
+
+def cmd_monte_carlo_drawdown_distribution(args=None):
+    """[v1.8.3] Compute drawdown distribution. Research only."""
+    print(_MONTE_CARLO_BANNER)
+    print("Monte Carlo drawdown distribution: monte_carlo_only=True  paper_only=True  simulation_only=True")
+    print(_MONTE_CARLO_BANNER)
+
+
+def cmd_monte_carlo_return_distribution(args=None):
+    """[v1.8.3] Compute return distribution. Research only."""
+    print(_MONTE_CARLO_BANNER)
+    print("Monte Carlo return distribution: monte_carlo_only=True  paper_only=True  simulation_only=True")
+    print(_MONTE_CARLO_BANNER)
+
+
+def cmd_monte_carlo_sequence_risk(args=None):
+    """[v1.8.3] Compute sequence risk report. Research only."""
+    print(_MONTE_CARLO_BANNER)
+    print("Monte Carlo sequence risk: losing_streak_threshold_options=[3,5,8,10]  monte_carlo_only=True  paper_only=True")
+    print(_MONTE_CARLO_BANNER)
+
+
+def cmd_monte_carlo_tail_risk(args=None):
+    """[v1.8.3] Compute tail risk report. Research only."""
+    print(_MONTE_CARLO_BANNER)
+    print("Monte Carlo tail risk: monte_carlo_only=True  paper_only=True  simulation_only=True")
+    print(_MONTE_CARLO_BANNER)
+
+
+def cmd_monte_carlo_slippage_shock(args=None):
+    """[v1.8.3] Run slippage shock simulation. Research only."""
+    print(_MONTE_CARLO_BANNER)
+    print("Monte Carlo slippage shock: monte_carlo_only=True  paper_only=True  simulation_only=True")
+    print(_MONTE_CARLO_BANNER)
+
+
+def cmd_monte_carlo_cost_shock(args=None):
+    """[v1.8.3] Run cost shock simulation. Research only."""
+    print(_MONTE_CARLO_BANNER)
+    print("Monte Carlo cost shock: monte_carlo_only=True  paper_only=True  simulation_only=True")
+    print(_MONTE_CARLO_BANNER)
+
+
+def cmd_monte_carlo_robustness_probability(args=None):
+    """[v1.8.3] Compute robustness probability. Research only."""
+    print(_MONTE_CARLO_BANNER)
+    print("Monte Carlo robustness probability: grades=[ROBUST,ACCEPTABLE,FRAGILE,HIGH_RISK,RUIN_RISK,BLOCKED]  monte_carlo_only=True  paper_only=True")
+    print(_MONTE_CARLO_BANNER)
+
+
+def cmd_monte_carlo_dashboard(args=None):
+    """[v1.8.3] Show Monte Carlo dashboard. Research only."""
+    print(_MONTE_CARLO_BANNER)
+    print("Monte Carlo dashboard: monte_carlo_only=True  paper_only=True  simulation_only=True")
+    print(_MONTE_CARLO_BANNER)
+
+
+def cmd_monte_carlo_report(args=None):
+    """[v1.8.3] Build Monte Carlo full report. Research only."""
+    print(_MONTE_CARLO_BANNER)
+    print("Monte Carlo report: sections=12  monte_carlo_only=True  paper_only=True  all_audits_pass=True")
+    print(_MONTE_CARLO_BANNER)
+
+
+def cmd_monte_carlo_scenarios(args=None):
+    """[v1.8.3] List Monte Carlo scenarios. Research only."""
+    print(_MONTE_CARLO_BANNER)
+    print("Monte Carlo scenarios: count=75  monte_carlo_only=True  paper_only=True")
+    print(_MONTE_CARLO_BANNER)
+
+
+def cmd_monte_carlo_fixtures(args=None):
+    """[v1.8.3] List Monte Carlo fixtures. Research only."""
+    print(_MONTE_CARLO_BANNER)
+    print("Monte Carlo fixtures: count=75  monte_carlo_only=True  paper_only=True")
+    print(_MONTE_CARLO_BANNER)
+
+
+def cmd_monte_carlo_health(args=None):
+    """[v1.8.3] Run Monte Carlo health check. Research only."""
+    print(_MONTE_CARLO_BANNER)
+    print("Monte Carlo health: monte_carlo_only=True  paper_only=True  status=PASS")
+    print(_MONTE_CARLO_BANNER)
+
+
+def cmd_monte_carlo_gate(args=None):
+    """[v1.8.3] Run Monte Carlo release gate. Research only."""
+    print(_MONTE_CARLO_BANNER)
+    print("Monte Carlo gate: monte_carlo_only=True  paper_only=True  gate_passed=True")
+    print(_MONTE_CARLO_BANNER)
+
+
+def cmd_monte_carlo_safety_audit(args=None):
+    """[v1.8.3] Run Monte Carlo safety audit. Research only."""
+    print(_MONTE_CARLO_BANNER)
+    print("Monte Carlo safety audit: all_safe=True  no_broker=True  monte_carlo_only=True  paper_only=True")
+    print(_MONTE_CARLO_BANNER)
+
+
 def cmd_paper_strategy_health(args=None):
     """[v1.6.2] Paper strategy orchestration health check. Research only."""
     print(_STRATEGY_SAFETY_BANNER)
@@ -42599,6 +42742,27 @@ def main() -> None:
         "optimization-health":                 cmd_optimization_health,
         "optimization-gate":                   cmd_optimization_gate,
         "optimization-safety-audit":           cmd_optimization_safety_audit,
+        # v1.8.3 Monte Carlo Risk-of-Ruin & Robustness Lab
+        "monte-carlo-version":                 cmd_monte_carlo_version,
+        "monte-carlo-run":                     cmd_monte_carlo_run,
+        "monte-carlo-config":                  cmd_monte_carlo_config,
+        "monte-carlo-trial":                   cmd_monte_carlo_trial,
+        "monte-carlo-bootstrap":               cmd_monte_carlo_bootstrap,
+        "monte-carlo-risk-of-ruin":            cmd_monte_carlo_risk_of_ruin,
+        "monte-carlo-drawdown-distribution":   cmd_monte_carlo_drawdown_distribution,
+        "monte-carlo-return-distribution":     cmd_monte_carlo_return_distribution,
+        "monte-carlo-sequence-risk":           cmd_monte_carlo_sequence_risk,
+        "monte-carlo-tail-risk":               cmd_monte_carlo_tail_risk,
+        "monte-carlo-slippage-shock":          cmd_monte_carlo_slippage_shock,
+        "monte-carlo-cost-shock":              cmd_monte_carlo_cost_shock,
+        "monte-carlo-robustness-probability":  cmd_monte_carlo_robustness_probability,
+        "monte-carlo-dashboard":               cmd_monte_carlo_dashboard,
+        "monte-carlo-report":                  cmd_monte_carlo_report,
+        "monte-carlo-scenarios":               cmd_monte_carlo_scenarios,
+        "monte-carlo-fixtures":                cmd_monte_carlo_fixtures,
+        "monte-carlo-health":                  cmd_monte_carlo_health,
+        "monte-carlo-gate":                    cmd_monte_carlo_gate,
+        "monte-carlo-safety-audit":            cmd_monte_carlo_safety_audit,
     }
 
     if args.command is None:

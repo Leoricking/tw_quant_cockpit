@@ -126,7 +126,7 @@ def run_health_check():
         _TABS_V182_OPTIMIZATION, PANEL_VERSION,
     )
     checks.append(_check("gui_optimization_tabs_3", lambda: len(_TABS_V182_OPTIMIZATION) == 3))
-    checks.append(_check("gui_panel_version_182", lambda: PANEL_VERSION == "1.8.2"))
+    checks.append(_check("gui_panel_version_182", lambda: PANEL_VERSION in ("1.8.2", "1.8.3")))
     checks.append(_check("gui_tab_param_optimization", lambda: "param_optimization" in _TABS_V182_OPTIMIZATION))
 
     # --- Backward compat (1) ---

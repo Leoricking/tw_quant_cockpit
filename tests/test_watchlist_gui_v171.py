@@ -24,12 +24,12 @@ from gui.small_capital_strategy_panel import (
 
 def test_panel_version_171():
     # Panel updated to v1.7.9 to include Stable Rollup tabs
-    assert PANEL_VERSION == "1.8.2"
+    assert PANEL_VERSION == "1.8.3"
 
 
 def test_total_tab_count():
     tabs = get_tab_names()
-    assert len(tabs) == 129  # 22+15+18+14+15+14+13+3+3+3+3+3 = 129
+    assert len(tabs) == 132  # 22+15+18+14+15+14+13+3+3+3+3+3 = 129
 
 
 def test_watchlist_tab_count():

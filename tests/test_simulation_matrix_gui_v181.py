@@ -14,10 +14,10 @@ from gui.small_capital_strategy_panel import (
 # ── Panel version ──────────────────────────────────────────────────────────────
 
 def test_panel_version_181():
-    assert PANEL_VERSION == "1.8.2"
+    assert PANEL_VERSION == "1.8.3"
 
 def test_panel_title_contains_181():
-    assert "1.8.2" in PANEL_TITLE
+    assert "1.8.3" in PANEL_TITLE
 
 def test_panel_title_contains_simulation():
     assert "Simulation" in PANEL_TITLE

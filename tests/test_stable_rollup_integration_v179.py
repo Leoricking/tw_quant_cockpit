@@ -25,7 +25,7 @@ from gui.small_capital_strategy_panel import PANEL_VERSION, render_stable_rollup
 def test_integration_version_matches_panel():
     # Stable rollup VERSION is pinned at 1.7.9; PANEL_VERSION advances with each new release
     assert VERSION == "1.7.9"
-    assert PANEL_VERSION in ("1.7.9", "1.8.0", "1.8.1", "1.8.2")
+    assert PANEL_VERSION in ("1.7.9", "1.8.0", "1.8.1", "1.8.2", "1.8.3")
 
 
 def test_integration_version_info_and_safety_agree():
