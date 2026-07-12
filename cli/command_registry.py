@@ -4574,6 +4574,71 @@ _MONTE_CARLO_COMMANDS: _List[CommandSpec] = [
                 introduced_in="1.8.3", safety_classification="RESEARCH_ONLY"),
 ]
 
+# v1.8.4 Position Sizing & Capital Allocation Lab commands
+# ---------------------------------------------------------------------------
+_PS_V184_COMMANDS: _List[CommandSpec] = [
+    CommandSpec(name="position-sizing-version", handler_name="cmd_position_sizing_version",
+                help="[Research] Show position sizing version info v1.8.4", group="position_sizing",
+                introduced_in="1.8.4", safety_classification="RESEARCH_ONLY"),
+    CommandSpec(name="position-sizing-run", handler_name="cmd_position_sizing_run",
+                help="[Research] Run position sizing engine v1.8.4", group="position_sizing",
+                introduced_in="1.8.4", safety_classification="RESEARCH_ONLY"),
+    CommandSpec(name="position-sizing-config", handler_name="cmd_position_sizing_config",
+                help="[Research] Show position sizing config v1.8.4", group="position_sizing",
+                introduced_in="1.8.4", safety_classification="RESEARCH_ONLY"),
+    CommandSpec(name="position-sizing-capital-profile", handler_name="cmd_position_sizing_capital_profile",
+                help="[Research] Show capital profile v1.8.4", group="position_sizing",
+                introduced_in="1.8.4", safety_classification="RESEARCH_ONLY"),
+    CommandSpec(name="position-sizing-risk-budget", handler_name="cmd_position_sizing_risk_budget",
+                help="[Research] Show risk budget v1.8.4", group="position_sizing",
+                introduced_in="1.8.4", safety_classification="RESEARCH_ONLY"),
+    CommandSpec(name="position-sizing-by-stop", handler_name="cmd_position_sizing_by_stop",
+                help="[Research] Size by stop distance v1.8.4", group="position_sizing",
+                introduced_in="1.8.4", safety_classification="RESEARCH_ONLY"),
+    CommandSpec(name="position-sizing-by-volatility", handler_name="cmd_position_sizing_by_volatility",
+                help="[Research] Size by volatility adjusted v1.8.4", group="position_sizing",
+                introduced_in="1.8.4", safety_classification="RESEARCH_ONLY"),
+    CommandSpec(name="position-sizing-by-drawdown", handler_name="cmd_position_sizing_by_drawdown",
+                help="[Research] Size by drawdown-aware v1.8.4", group="position_sizing",
+                introduced_in="1.8.4", safety_classification="RESEARCH_ONLY"),
+    CommandSpec(name="position-sizing-monte-carlo-adjusted", handler_name="cmd_position_sizing_monte_carlo_adjusted",
+                help="[Research] Monte Carlo ruin-risk adjusted sizing v1.8.4", group="position_sizing",
+                introduced_in="1.8.4", safety_classification="RESEARCH_ONLY"),
+    CommandSpec(name="position-sizing-abc-plan", handler_name="cmd_position_sizing_abc_plan",
+                help="[Research] A/B/C buy point staged sizing v1.8.4", group="position_sizing",
+                introduced_in="1.8.4", safety_classification="RESEARCH_ONLY"),
+    CommandSpec(name="position-sizing-add-plan", handler_name="cmd_position_sizing_add_plan",
+                help="[Research] Add position plan v1.8.4", group="position_sizing",
+                introduced_in="1.8.4", safety_classification="RESEARCH_ONLY"),
+    CommandSpec(name="position-sizing-reduce-plan", handler_name="cmd_position_sizing_reduce_plan",
+                help="[Research] Reduce position plan v1.8.4", group="position_sizing",
+                introduced_in="1.8.4", safety_classification="RESEARCH_ONLY"),
+    CommandSpec(name="position-sizing-exposure-limit", handler_name="cmd_position_sizing_exposure_limit",
+                help="[Research] Show exposure limit report v1.8.4", group="position_sizing",
+                introduced_in="1.8.4", safety_classification="RESEARCH_ONLY"),
+    CommandSpec(name="position-sizing-concentration-risk", handler_name="cmd_position_sizing_concentration_risk",
+                help="[Research] Show concentration risk report v1.8.4", group="position_sizing",
+                introduced_in="1.8.4", safety_classification="RESEARCH_ONLY"),
+    CommandSpec(name="position-sizing-cash-reserve", handler_name="cmd_position_sizing_cash_reserve",
+                help="[Research] Show cash reserve plan v1.8.4", group="position_sizing",
+                introduced_in="1.8.4", safety_classification="RESEARCH_ONLY"),
+    CommandSpec(name="position-sizing-dashboard", handler_name="cmd_position_sizing_dashboard",
+                help="[Research] Show position sizing dashboard v1.8.4", group="position_sizing",
+                introduced_in="1.8.4", safety_classification="RESEARCH_ONLY"),
+    CommandSpec(name="position-sizing-scenarios", handler_name="cmd_position_sizing_scenarios",
+                help="[Research] List position sizing scenarios v1.8.4", group="position_sizing",
+                introduced_in="1.8.4", safety_classification="RESEARCH_ONLY"),
+    CommandSpec(name="position-sizing-fixtures", handler_name="cmd_position_sizing_fixtures",
+                help="[Research] List position sizing fixtures v1.8.4", group="position_sizing",
+                introduced_in="1.8.4", safety_classification="RESEARCH_ONLY"),
+    CommandSpec(name="position-sizing-gate", handler_name="cmd_position_sizing_gate",
+                help="[Research] Run position sizing release gate v1.8.4", group="position_sizing",
+                introduced_in="1.8.4", safety_classification="RESEARCH_ONLY"),
+    CommandSpec(name="position-sizing-safety-audit", handler_name="cmd_position_sizing_safety_audit",
+                help="[Research] Run position sizing safety audit v1.8.4", group="position_sizing",
+                introduced_in="1.8.4", safety_classification="RESEARCH_ONLY"),
+]
+
 # v1.8.2 Parameter Optimization & Walk-Forward Validation Lab commands
 # ---------------------------------------------------------------------------
 _OPTIMIZATION_COMMANDS: _List[CommandSpec] = [
@@ -4669,6 +4734,7 @@ PROVIDER_COMMANDS: _List[CommandSpec] = (
     + _SIMULATION_MATRIX_COMMANDS
     + _OPTIMIZATION_COMMANDS
     + _MONTE_CARLO_COMMANDS
+    + _PS_V184_COMMANDS
 )
 
 

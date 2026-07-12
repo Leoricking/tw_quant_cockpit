@@ -14,11 +14,11 @@ from gui.small_capital_strategy_panel import (
 # ---------------------------------------------------------------------------
 
 def test_panel_version_is_180() -> None:
-    assert PANEL_VERSION == "1.8.3"
+    assert PANEL_VERSION == "1.8.4"
 
 
 def test_panel_title_contains_version_180() -> None:
-    assert "1.8.3" in PANEL_TITLE
+    assert "1.8.4" in PANEL_TITLE
 
 
 # ---------------------------------------------------------------------------
@@ -175,7 +175,7 @@ def test_render_all_tabs_contains_paper_sim_performance() -> None:
 # ---------------------------------------------------------------------------
 
 def test_get_panel_info_panel_version_is_180() -> None:
-    assert get_panel_info()["panel_version"] == "1.8.3"
+    assert get_panel_info()["panel_version"] == "1.8.4"
 
 
 def test_get_panel_info_tab_count_matches_tabs() -> None:

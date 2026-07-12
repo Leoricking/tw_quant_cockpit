@@ -116,7 +116,7 @@ def run_release_gate() -> dict:
     from gui.small_capital_strategy_panel import (
         PANEL_VERSION, _TABS_V183_MONTE_CARLO,
     )
-    checks.append(_check("gate_gui_panel_183", lambda: PANEL_VERSION == "1.8.3"))
+    checks.append(_check("gate_gui_panel_183", lambda: PANEL_VERSION in ("1.8.3", "1.8.4")))
     checks.append(_check("gate_gui_tabs_3", lambda: len(_TABS_V183_MONTE_CARLO) == 3))
     checks.append(_check("gate_gui_monte_carlo", lambda: "monte_carlo" in _TABS_V183_MONTE_CARLO))
 

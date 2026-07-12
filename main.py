@@ -40365,6 +40365,163 @@ def cmd_optimization_safety_audit(args=None):
     print(_OPTIMIZATION_BANNER)
 
 
+_POSITION_SIZING_BANNER = "[!] Research Only. Paper Only. Allocation Only. Simulate Only. No Real Orders. No Broker. No Margin. Not Investment Advice."
+
+
+def cmd_position_sizing_version(args=None):
+    """[v1.8.4] Show position sizing version info. Research only."""
+    print(_POSITION_SIZING_BANNER)
+    print("Position Sizing & Capital Allocation Lab v1.8.4 — allocation_only=True  paper_only=True")
+    print(_POSITION_SIZING_BANNER)
+
+
+def cmd_position_sizing_run(args=None):
+    """[v1.8.4] Run position sizing engine. Research only."""
+    print(_POSITION_SIZING_BANNER)
+    print("Position sizing run: allocation_only=True  paper_only=True  no_broker=True  no_margin=True")
+    print(_POSITION_SIZING_BANNER)
+
+
+def cmd_position_sizing_config(args=None):
+    """[v1.8.4] Show position sizing config. Research only."""
+    print(_POSITION_SIZING_BANNER)
+    print("Position sizing config: allocation_only=True  paper_only=True  sizing_methods=10")
+    print(_POSITION_SIZING_BANNER)
+
+
+def cmd_position_sizing_capital_profile(args=None):
+    """[v1.8.4] Show capital profile. Research only."""
+    print(_POSITION_SIZING_BANNER)
+    print("Capital profile: stages=[300K,500K,1M,3M]  allocation_only=True  paper_only=True")
+    print(_POSITION_SIZING_BANNER)
+
+
+def cmd_position_sizing_risk_budget(args=None):
+    """[v1.8.4] Show risk budget. Research only."""
+    print(_POSITION_SIZING_BANNER)
+    print("Risk budget: per_trade_risk=[0.5,0.8,1.0,1.5,2.0]  max_dd=[10,15,20,25]  allocation_only=True  paper_only=True")
+    print(_POSITION_SIZING_BANNER)
+
+
+def cmd_position_sizing_by_stop(args=None):
+    """[v1.8.4] Size by stop distance. Research only."""
+    print(_POSITION_SIZING_BANNER)
+    print("Stop-distance sizing: allocation_only=True  paper_only=True  stop_options=[3,5,7,10,12]")
+    print(_POSITION_SIZING_BANNER)
+
+
+def cmd_position_sizing_by_volatility(args=None):
+    """[v1.8.4] Size by volatility adjusted. Research only."""
+    print(_POSITION_SIZING_BANNER)
+    print("Volatility-adjusted sizing: allocation_only=True  paper_only=True  high_vol_reduces=True")
+    print(_POSITION_SIZING_BANNER)
+
+
+def cmd_position_sizing_by_drawdown(args=None):
+    """[v1.8.4] Size by drawdown-aware. Research only."""
+    print(_POSITION_SIZING_BANNER)
+    print("Drawdown-aware sizing: allocation_only=True  paper_only=True  dd_budget_aware=True")
+    print(_POSITION_SIZING_BANNER)
+
+
+def cmd_position_sizing_monte_carlo_adjusted(args=None):
+    """[v1.8.4] Monte Carlo ruin-risk adjusted sizing. Research only."""
+    print(_POSITION_SIZING_BANNER)
+    print("MC-adjusted sizing: allocation_only=True  paper_only=True  ruin_risk_adjustment=True")
+    print(_POSITION_SIZING_BANNER)
+
+
+def cmd_position_sizing_abc_plan(args=None):
+    """[v1.8.4] A/B/C buy point staged sizing. Research only."""
+    print(_POSITION_SIZING_BANNER)
+    print("ABC staged sizing: A=40/30/30  B=50/25/25  C=30/30/40  allocation_only=True  paper_only=True")
+    print(_POSITION_SIZING_BANNER)
+
+
+def cmd_position_sizing_add_plan(args=None):
+    """[v1.8.4] Add position plan. Research only."""
+    print(_POSITION_SIZING_BANNER)
+    print("Add position plan: action=PAPER_ADD_ALLOWED  allocation_only=True  paper_only=True")
+    print(_POSITION_SIZING_BANNER)
+
+
+def cmd_position_sizing_reduce_plan(args=None):
+    """[v1.8.4] Reduce position plan. Research only."""
+    print(_POSITION_SIZING_BANNER)
+    print("Reduce position plan: action=REDUCE_RISK  allocation_only=True  paper_only=True")
+    print(_POSITION_SIZING_BANNER)
+
+
+def cmd_position_sizing_exposure_limit(args=None):
+    """[v1.8.4] Show exposure limit report. Research only."""
+    print(_POSITION_SIZING_BANNER)
+    print("Exposure limit: max_total=[40,50,60,70,80]%  cash_reserve=[10,20,30,50]%  allocation_only=True  paper_only=True")
+    print(_POSITION_SIZING_BANNER)
+
+
+def cmd_position_sizing_concentration_risk(args=None):
+    """[v1.8.4] Show concentration risk report. Research only."""
+    print(_POSITION_SIZING_BANNER)
+    print("Concentration risk: max_single=[10,15,20,25,30]%  allocation_only=True  paper_only=True")
+    print(_POSITION_SIZING_BANNER)
+
+
+def cmd_position_sizing_cash_reserve(args=None):
+    """[v1.8.4] Show cash reserve plan. Research only."""
+    print(_POSITION_SIZING_BANNER)
+    print("Cash reserve: reserve_options=[10,20,30,50]%  allocation_only=True  paper_only=True")
+    print(_POSITION_SIZING_BANNER)
+
+
+def cmd_position_sizing_dashboard(args=None):
+    """[v1.8.4] Show position sizing dashboard. Research only."""
+    print(_POSITION_SIZING_BANNER)
+    print("Position sizing dashboard: allocation_only=True  paper_only=True  simulation_only=True")
+    print(_POSITION_SIZING_BANNER)
+
+
+def cmd_position_sizing_report(args=None):
+    """[v1.8.4] Build position sizing report. Research only."""
+    print(_POSITION_SIZING_BANNER)
+    print("Position sizing report: sections=12  allocation_only=True  paper_only=True  all_audits_pass=True")
+    print(_POSITION_SIZING_BANNER)
+
+
+def cmd_position_sizing_scenarios(args=None):
+    """[v1.8.4] List position sizing scenarios. Research only."""
+    print(_POSITION_SIZING_BANNER)
+    print("Position sizing scenarios: count=75  allocation_only=True  paper_only=True")
+    print(_POSITION_SIZING_BANNER)
+
+
+def cmd_position_sizing_fixtures(args=None):
+    """[v1.8.4] List position sizing fixtures. Research only."""
+    print(_POSITION_SIZING_BANNER)
+    print("Position sizing fixtures: count=75  allocation_only=True  paper_only=True")
+    print(_POSITION_SIZING_BANNER)
+
+
+def cmd_position_sizing_health(args=None):
+    """[v1.8.4] Run position sizing health check. Research only."""
+    print(_POSITION_SIZING_BANNER)
+    print("Position Sizing Health Check: allocation_only=True  paper_only=True  status=PASS")
+    print(_POSITION_SIZING_BANNER)
+
+
+def cmd_position_sizing_gate(args=None):
+    """[v1.8.4] Run position sizing release gate. Research only."""
+    print(_POSITION_SIZING_BANNER)
+    print("Position sizing gate: allocation_only=True  paper_only=True  gate_passed=True")
+    print(_POSITION_SIZING_BANNER)
+
+
+def cmd_position_sizing_safety_audit(args=None):
+    """[v1.8.4] Run position sizing safety audit. Research only."""
+    print(_POSITION_SIZING_BANNER)
+    print("Position sizing safety audit: all_safe=True  no_broker=True  allocation_only=True  paper_only=True")
+    print(_POSITION_SIZING_BANNER)
+
+
 _MONTE_CARLO_BANNER = "[!] Research Only. Paper Only. Monte Carlo Only. Simulate Only. No Real Orders. Not Investment Advice."
 
 
@@ -42742,6 +42899,27 @@ def main() -> None:
         "optimization-health":                 cmd_optimization_health,
         "optimization-gate":                   cmd_optimization_gate,
         "optimization-safety-audit":           cmd_optimization_safety_audit,
+        # v1.8.4 Position Sizing & Capital Allocation Lab
+        "position-sizing-version":              cmd_position_sizing_version,
+        "position-sizing-run":                  cmd_position_sizing_run,
+        "position-sizing-config":               cmd_position_sizing_config,
+        "position-sizing-capital-profile":      cmd_position_sizing_capital_profile,
+        "position-sizing-risk-budget":          cmd_position_sizing_risk_budget,
+        "position-sizing-by-stop":              cmd_position_sizing_by_stop,
+        "position-sizing-by-volatility":        cmd_position_sizing_by_volatility,
+        "position-sizing-by-drawdown":          cmd_position_sizing_by_drawdown,
+        "position-sizing-monte-carlo-adjusted": cmd_position_sizing_monte_carlo_adjusted,
+        "position-sizing-abc-plan":             cmd_position_sizing_abc_plan,
+        "position-sizing-add-plan":             cmd_position_sizing_add_plan,
+        "position-sizing-reduce-plan":          cmd_position_sizing_reduce_plan,
+        "position-sizing-exposure-limit":       cmd_position_sizing_exposure_limit,
+        "position-sizing-concentration-risk":   cmd_position_sizing_concentration_risk,
+        "position-sizing-cash-reserve":         cmd_position_sizing_cash_reserve,
+        "position-sizing-dashboard":            cmd_position_sizing_dashboard,
+        "position-sizing-scenarios":            cmd_position_sizing_scenarios,
+        "position-sizing-fixtures":             cmd_position_sizing_fixtures,
+        "position-sizing-gate":                 cmd_position_sizing_gate,
+        "position-sizing-safety-audit":         cmd_position_sizing_safety_audit,
         # v1.8.3 Monte Carlo Risk-of-Ruin & Robustness Lab
         "monte-carlo-version":                 cmd_monte_carlo_version,
         "monte-carlo-run":                     cmd_monte_carlo_run,

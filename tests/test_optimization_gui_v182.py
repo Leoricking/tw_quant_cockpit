@@ -16,10 +16,10 @@ from gui.small_capital_strategy_panel import (
 
 # --- PANEL_VERSION ---
 def test_panel_version_182():
-    assert PANEL_VERSION == "1.8.3"
+    assert PANEL_VERSION == "1.8.4"
 
 def test_panel_title_182():
-    assert "1.8.3" in PANEL_TITLE
+    assert "1.8.4" in PANEL_TITLE
 
 def test_panel_title_optimization():
     assert "Optimization" in PANEL_TITLE
@@ -41,7 +41,7 @@ def test_optimization_tabs_overfitting():
 
 # --- _TABS total ---
 def test_tabs_total_129():
-    assert len(_TABS) == 132
+    assert len(_TABS) == 135
 
 def test_tabs_includes_optimization():
     for tab in _TABS_V182_OPTIMIZATION:
@@ -178,12 +178,12 @@ def test_render_all_tabs_includes_optimization():
 
 # --- get_tab_names ---
 def test_get_tab_names_count():
-    assert len(get_tab_names()) == 132
+    assert len(get_tab_names()) == 135
 
 
 # --- get_panel_info ---
 def test_panel_info_version():
-    assert get_panel_info()["panel_version"] == "1.8.3"
+    assert get_panel_info()["panel_version"] == "1.8.4"
 
 def test_panel_info_tab_count():
-    assert get_panel_info()["tab_count"] == 132
+    assert get_panel_info()["tab_count"] == 135

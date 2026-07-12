@@ -106,7 +106,7 @@ def run_release_gate() -> dict:
     from gui.small_capital_strategy_panel import (
         PANEL_VERSION, _TABS_V182_OPTIMIZATION,
     )
-    checks.append(_check("gate_gui_panel_182", lambda: PANEL_VERSION in ("1.8.2", "1.8.3")))
+    checks.append(_check("gate_gui_panel_182", lambda: PANEL_VERSION in ("1.8.2", "1.8.3", "1.8.4")))
     checks.append(_check("gate_gui_tabs_3", lambda: len(_TABS_V182_OPTIMIZATION) == 3))
     checks.append(_check("gate_gui_param_optimization", lambda: "param_optimization" in _TABS_V182_OPTIMIZATION))
 

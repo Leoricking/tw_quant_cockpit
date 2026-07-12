@@ -16,8 +16,8 @@ Headless-safe: no tkinter at module level. Renders to dict.
 from __future__ import annotations
 from typing import Any, Dict, List, Optional
 
-PANEL_VERSION = "1.8.3"
-PANEL_TITLE = "Small Capital Strategy v1.8.3 — Simulation, Optimization & Monte Carlo Risk-of-Ruin Robustness Lab"
+PANEL_VERSION = "1.8.4"
+PANEL_TITLE = "Small Capital Strategy v1.8.4 — Simulation, Optimization, Monte Carlo & Position Sizing Capital Allocation Lab"
 
 # v1.7.0 tabs (preserved unchanged)
 _TABS_V170 = [
@@ -204,6 +204,13 @@ _TABS_V183_MONTE_CARLO = [
     "robustness_probability",
 ]
 
+# v1.8.4 Position Sizing & Capital Allocation Lab tabs
+_TABS_V184_POSITION_SIZING = [
+    "position_sizing_lab",
+    "risk_budget_allocation",
+    "capital_allocation",
+]
+
 _TABS = (
     _TABS_V170
     + _TABS_V171_WATCHLIST
@@ -219,6 +226,7 @@ _TABS = (
     + _TABS_V181_SIM_MATRIX
     + _TABS_V182_OPTIMIZATION
     + _TABS_V183_MONTE_CARLO
+    + _TABS_V184_POSITION_SIZING
 )
 
 assert len(_TABS_V170) == 22, f"Expected 22 v1.7.0 tabs, got {len(_TABS_V170)}"
@@ -235,6 +243,7 @@ assert len(_TABS_V180_PAPER_SIM) == 3, f"Expected 3 paper sim tabs, got {len(_TA
 assert len(_TABS_V181_SIM_MATRIX) == 3, f"Expected 3 sim matrix tabs, got {len(_TABS_V181_SIM_MATRIX)}"
 assert len(_TABS_V182_OPTIMIZATION) == 3, f"Expected 3 optimization tabs, got {len(_TABS_V182_OPTIMIZATION)}"
 assert len(_TABS_V183_MONTE_CARLO) == 3, f"Expected 3 monte carlo tabs, got {len(_TABS_V183_MONTE_CARLO)}"
+assert len(_TABS_V184_POSITION_SIZING) == 3, f"Expected 3 position sizing tabs, got {len(_TABS_V184_POSITION_SIZING)}"
 
 
 def get_tab_names() -> List[str]:
@@ -1373,6 +1382,10 @@ def render_all_tabs() -> Dict[str, Any]:
         "monte_carlo":                       render_monte_carlo_tab,
         "risk_of_ruin":                      render_risk_of_ruin_tab,
         "robustness_probability":            render_robustness_probability_tab,
+        # v1.8.4 Position Sizing tabs
+        "position_sizing_lab":               render_position_sizing_tab,
+        "risk_budget_allocation":            render_risk_budget_allocation_tab,
+        "capital_allocation":               render_capital_allocation_tab,
     }
     result = {}
     for tab_name in _TABS:
@@ -2644,6 +2657,58 @@ def render_robustness_probability_tab() -> Dict[str, Any]:
         "no_real_orders": True,
         "headless_safe": True,
         "bootstrap_enabled": True,
+    }
+
+
+def get_position_sizing_tab_names() -> List[str]:
+    """Return list of v1.8.4 position sizing tab names."""
+    return list(_TABS_V184_POSITION_SIZING)
+
+
+def render_position_sizing_tab() -> Dict[str, Any]:
+    """Render v1.8.4 Position Sizing tab. Headless-safe."""
+    return {
+        "tab": "position_sizing",
+        "version": "1.8.4",
+        "paper_only": True,
+        "allocation_only": True,
+        "no_real_orders": True,
+        "no_broker": True,
+        "no_margin": True,
+        "no_leverage": True,
+        "headless_safe": True,
+        "capital_stages": [300000, 500000, 1000000, 3000000],
+        "sizing_methods": 10,
+    }
+
+
+def render_risk_budget_allocation_tab() -> Dict[str, Any]:
+    """Render v1.8.4 Risk Budget Allocation tab. Headless-safe."""
+    return {
+        "tab": "risk_budget_allocation",
+        "version": "1.8.4",
+        "paper_only": True,
+        "allocation_only": True,
+        "no_real_orders": True,
+        "no_broker": True,
+        "headless_safe": True,
+        "per_trade_risk_options": [0.5, 0.8, 1.0, 1.5, 2.0],
+        "max_drawdown_options": [10, 15, 20, 25],
+    }
+
+
+def render_capital_allocation_tab() -> Dict[str, Any]:
+    """Render v1.8.4 Capital Allocation tab. Headless-safe."""
+    return {
+        "tab": "capital_allocation",
+        "version": "1.8.4",
+        "paper_only": True,
+        "allocation_only": True,
+        "no_real_orders": True,
+        "no_broker": True,
+        "headless_safe": True,
+        "abc_buy_points": ["A_10MA_PULLBACK", "B_BREAKOUT", "C_20MA_RECLAIM"],
+        "final_grades": ["SAFE", "ACCEPTABLE", "CAUTION", "HIGH_RISK", "BLOCKED"],
     }
 
 
