@@ -4695,6 +4695,77 @@ _OPTIMIZATION_COMMANDS: _List[CommandSpec] = [
                 introduced_in="1.8.2", safety_classification="RESEARCH_ONLY"),
 ]
 
+# v1.8.5 Portfolio Construction & Rebalancing Lab commands
+# ---------------------------------------------------------------------------
+_PC_V185_COMMANDS: _List[CommandSpec] = [
+    CommandSpec(name="portfolio-construction-version", handler_name="cmd_portfolio_construction_version",
+                help="[Research] Show portfolio construction version info v1.8.5", group="portfolio_construction",
+                introduced_in="1.8.5", safety_classification="RESEARCH_ONLY"),
+    CommandSpec(name="portfolio-construction-run", handler_name="cmd_portfolio_construction_run",
+                help="[Research] Run portfolio construction engine v1.8.5", group="portfolio_construction",
+                introduced_in="1.8.5", safety_classification="RESEARCH_ONLY"),
+    CommandSpec(name="portfolio-construction-config", handler_name="cmd_portfolio_construction_config",
+                help="[Research] Show portfolio construction config v1.8.5", group="portfolio_construction",
+                introduced_in="1.8.5", safety_classification="RESEARCH_ONLY"),
+    CommandSpec(name="portfolio-construction-profile", handler_name="cmd_portfolio_construction_profile",
+                help="[Research] Show portfolio profile v1.8.5", group="portfolio_construction",
+                introduced_in="1.8.5", safety_classification="RESEARCH_ONLY"),
+    CommandSpec(name="portfolio-construction-holdings", handler_name="cmd_portfolio_construction_holdings",
+                help="[Research] Show portfolio holdings v1.8.5", group="portfolio_construction",
+                introduced_in="1.8.5", safety_classification="RESEARCH_ONLY"),
+    CommandSpec(name="portfolio-construction-candidates", handler_name="cmd_portfolio_construction_candidates",
+                help="[Research] Show portfolio candidates v1.8.5", group="portfolio_construction",
+                introduced_in="1.8.5", safety_classification="RESEARCH_ONLY"),
+    CommandSpec(name="portfolio-construction-build", handler_name="cmd_portfolio_construction_build",
+                help="[Research] Build portfolio construction plan v1.8.5", group="portfolio_construction",
+                introduced_in="1.8.5", safety_classification="RESEARCH_ONLY"),
+    CommandSpec(name="portfolio-construction-rebalance", handler_name="cmd_portfolio_construction_rebalance",
+                help="[Research] Run rebalance engine v1.8.5", group="portfolio_construction",
+                introduced_in="1.8.5", safety_classification="RESEARCH_ONLY"),
+    CommandSpec(name="portfolio-construction-exposure", handler_name="cmd_portfolio_construction_exposure",
+                help="[Research] Show portfolio exposure report v1.8.5", group="portfolio_construction",
+                introduced_in="1.8.5", safety_classification="RESEARCH_ONLY"),
+    CommandSpec(name="portfolio-construction-sector-risk", handler_name="cmd_portfolio_construction_sector_risk",
+                help="[Research] Show sector exposure risk v1.8.5", group="portfolio_construction",
+                introduced_in="1.8.5", safety_classification="RESEARCH_ONLY"),
+    CommandSpec(name="portfolio-construction-theme-risk", handler_name="cmd_portfolio_construction_theme_risk",
+                help="[Research] Show theme exposure risk v1.8.5", group="portfolio_construction",
+                introduced_in="1.8.5", safety_classification="RESEARCH_ONLY"),
+    CommandSpec(name="portfolio-construction-correlation-risk", handler_name="cmd_portfolio_construction_correlation_risk",
+                help="[Research] Show correlation risk report v1.8.5", group="portfolio_construction",
+                introduced_in="1.8.5", safety_classification="RESEARCH_ONLY"),
+    CommandSpec(name="portfolio-construction-diversification", handler_name="cmd_portfolio_construction_diversification",
+                help="[Research] Show diversification score v1.8.5", group="portfolio_construction",
+                introduced_in="1.8.5", safety_classification="RESEARCH_ONLY"),
+    CommandSpec(name="portfolio-construction-rotation", handler_name="cmd_portfolio_construction_rotation",
+                help="[Research] Show rotation candidates v1.8.5", group="portfolio_construction",
+                introduced_in="1.8.5", safety_classification="RESEARCH_ONLY"),
+    CommandSpec(name="portfolio-construction-keep-replace", handler_name="cmd_portfolio_construction_keep_replace",
+                help="[Research] Show keep/reduce/replace decisions v1.8.5", group="portfolio_construction",
+                introduced_in="1.8.5", safety_classification="RESEARCH_ONLY"),
+    CommandSpec(name="portfolio-construction-dashboard", handler_name="cmd_portfolio_construction_dashboard",
+                help="[Research] Show portfolio construction dashboard v1.8.5", group="portfolio_construction",
+                introduced_in="1.8.5", safety_classification="RESEARCH_ONLY"),
+    CommandSpec(name="portfolio-construction-report", handler_name="cmd_portfolio_construction_report",
+                help="[Research] Show portfolio construction report v1.8.5", group="portfolio_construction",
+                introduced_in="1.8.5", safety_classification="RESEARCH_ONLY"),
+    CommandSpec(name="portfolio-construction-scenarios", handler_name="cmd_portfolio_construction_scenarios",
+                help="[Research] List portfolio construction scenarios v1.8.5", group="portfolio_construction",
+                introduced_in="1.8.5", safety_classification="RESEARCH_ONLY"),
+    CommandSpec(name="portfolio-construction-fixtures", handler_name="cmd_portfolio_construction_fixtures",
+                help="[Research] List portfolio construction fixtures v1.8.5", group="portfolio_construction",
+                introduced_in="1.8.5", safety_classification="RESEARCH_ONLY"),
+    CommandSpec(name="portfolio-construction-health", handler_name="cmd_portfolio_construction_health",
+                help="[Research] Run portfolio construction health check v1.8.5", group="portfolio_construction",
+                introduced_in="1.8.5", safety_classification="RESEARCH_ONLY"),
+    CommandSpec(name="portfolio-construction-gate", handler_name="cmd_portfolio_construction_gate",
+                help="[Research] Run portfolio construction release gate v1.8.5", group="portfolio_construction",
+                introduced_in="1.8.5", safety_classification="RESEARCH_ONLY"),
+    CommandSpec(name="portfolio-construction-safety-audit", handler_name="cmd_portfolio_construction_safety_audit",
+                help="[Research] Run portfolio construction safety audit v1.8.5", group="portfolio_construction",
+                introduced_in="1.8.5", safety_classification="RESEARCH_ONLY"),
+]
+
 PROVIDER_COMMANDS: _List[CommandSpec] = (
     _RESEARCH_FOUNDATION_COMMANDS
     + _TWSE_COMMANDS
@@ -4735,6 +4806,7 @@ PROVIDER_COMMANDS: _List[CommandSpec] = (
     + _OPTIMIZATION_COMMANDS
     + _MONTE_CARLO_COMMANDS
     + _PS_V184_COMMANDS
+    + _PC_V185_COMMANDS
 )
 
 

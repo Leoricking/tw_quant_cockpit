@@ -1,0 +1,30 @@
+{
+  "_fixture_meta": {
+    "fixture_id": "fix_pc185_001",
+    "category": "empty_portfolio",
+    "schema_version": "185",
+    "paper_only": true,
+    "research_only": true,
+    "simulate_only": true,
+    "validation_only": true,
+    "portfolio_only": true,
+    "no_real_orders": true,
+    "no_broker": true,
+    "no_margin": true,
+    "no_leverage": true,
+    "not_investment_advice": true,
+    "demo_only": true,
+    "not_for_production": true,
+    "production_trading_blocked": true
+  },
+  "scenario": "empty_portfolio_300k",
+  "capital": 300000,
+  "currency": "TWD",
+  "market_regime": "NEUTRAL",
+  "holdings": [],
+  "max_positions": 6,
+  "cash_ratio": 1.0,
+  "expected_grade": "EMPTY",
+  "expected_action": "AWAIT_SIGNAL",
+  "notes": "初始資金 30 萬，尚未建倉，全倉現金"
+}

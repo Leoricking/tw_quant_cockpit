@@ -1,0 +1,45 @@
+{
+  "_fixture_meta": {
+    "fixture_id": "fix_pc185_071",
+    "category": "capital_stage",
+    "schema_version": "185",
+    "paper_only": true,
+    "research_only": true,
+    "simulate_only": true,
+    "validation_only": true,
+    "portfolio_only": true,
+    "no_real_orders": true,
+    "no_broker": true,
+    "no_margin": true,
+    "no_leverage": true,
+    "not_investment_advice": true,
+    "demo_only": true,
+    "not_for_production": true,
+    "production_trading_blocked": true
+  },
+  "scenario": "capital_stage_300k_beginner",
+  "capital": 300000,
+  "currency": "TWD",
+  "capital_stage": "BEGINNER",
+  "market_regime": "NEUTRAL",
+  "recommended_max_positions": 3,
+  "min_position_size_twd": 50000,
+  "holdings": [
+    {
+      "ticker": "0050",
+      "name": "元大台灣50",
+      "shares": 3000,
+      "avg_cost": 96.0,
+      "current_price": 98.5,
+      "weight": 0.329,
+      "conviction": "MEDIUM",
+      "etf": true
+    }
+  ],
+  "max_positions": 3,
+  "cash_ratio": 0.671,
+  "expected_grade": "B",
+  "expected_action": "GRADUAL_DEPLOY",
+  "stage_guidance": "30 萬初階資金建議先以 ETF 為主，逐步建立 2-3 檔部位",
+  "notes": "小資族 30 萬入門，建議以 0050 ETF 作為核心部位，降低選股風險"
+}

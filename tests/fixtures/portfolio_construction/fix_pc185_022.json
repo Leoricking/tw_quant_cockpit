@@ -1,0 +1,87 @@
+{
+  "_fixture_meta": {
+    "fixture_id": "fix_pc185_022",
+    "category": "multi_holding",
+    "schema_version": "185",
+    "paper_only": true,
+    "research_only": true,
+    "simulate_only": true,
+    "validation_only": true,
+    "portfolio_only": true,
+    "no_real_orders": true,
+    "no_broker": true,
+    "no_margin": true,
+    "no_leverage": true,
+    "not_investment_advice": true,
+    "demo_only": true,
+    "not_for_production": true,
+    "production_trading_blocked": true
+  },
+  "scenario": "multi_holding_5_tech_heavy",
+  "capital": 1000000,
+  "currency": "TWD",
+  "market_regime": "BULL",
+  "holdings": [
+    {
+      "ticker": "2330",
+      "name": "台積電",
+      "shares": 1000,
+      "avg_cost": 850.0,
+      "current_price": 950.0,
+      "weight": 0.323,
+      "unrealized_pnl_pct": 0.1176,
+      "sector": "半導體",
+      "conviction": "HIGH"
+    },
+    {
+      "ticker": "2454",
+      "name": "聯發科",
+      "shares": 800,
+      "avg_cost": 760.0,
+      "current_price": 785.0,
+      "weight": 0.213,
+      "unrealized_pnl_pct": 0.0329,
+      "sector": "IC設計",
+      "conviction": "HIGH"
+    },
+    {
+      "ticker": "6669",
+      "name": "緯穎",
+      "shares": 300,
+      "avg_cost": 1100.0,
+      "current_price": 1380.0,
+      "weight": 0.140,
+      "unrealized_pnl_pct": 0.2545,
+      "sector": "雲端伺服器",
+      "conviction": "HIGH"
+    },
+    {
+      "ticker": "3034",
+      "name": "聯詠",
+      "shares": 1500,
+      "avg_cost": 200.0,
+      "current_price": 215.0,
+      "weight": 0.109,
+      "unrealized_pnl_pct": 0.075,
+      "sector": "IC設計",
+      "conviction": "MEDIUM"
+    },
+    {
+      "ticker": "2317",
+      "name": "鴻海",
+      "shares": 3000,
+      "avg_cost": 102.0,
+      "current_price": 112.0,
+      "weight": 0.114,
+      "unrealized_pnl_pct": 0.098,
+      "sector": "電子製造",
+      "conviction": "MEDIUM"
+    }
+  ],
+  "max_positions": 10,
+  "cash_ratio": 0.101,
+  "expected_grade": "A",
+  "expected_action": "KEEP_MONITOR_CONCENTRATION",
+  "sector_concentration_pct": 0.785,
+  "notes": "五檔科技股組合，全部獲利，但科技板塊集中度達 78.5%"
+}

@@ -1,0 +1,55 @@
+{
+  "_fixture_meta": {
+    "fixture_id": "fix_pc185_045",
+    "category": "theme_exposure",
+    "schema_version": "185",
+    "paper_only": true,
+    "research_only": true,
+    "simulate_only": true,
+    "validation_only": true,
+    "portfolio_only": true,
+    "no_real_orders": true,
+    "no_broker": true,
+    "no_margin": true,
+    "no_leverage": true,
+    "not_investment_advice": true,
+    "demo_only": true,
+    "not_for_production": true,
+    "production_trading_blocked": true
+  },
+  "scenario": "theme_exposure_faded_theme",
+  "capital": 800000,
+  "currency": "TWD",
+  "market_regime": "WEAK",
+  "theme": "元宇宙(已退燒)",
+  "holdings": [
+    {
+      "ticker": "2353",
+      "name": "宏碁",
+      "shares": 8000,
+      "avg_cost": 58.0,
+      "current_price": 42.0,
+      "weight": 0.126,
+      "theme_tags": ["元宇宙", "PC", "AR/VR"],
+      "conviction": "LOW",
+      "theme_status": "FADING"
+    },
+    {
+      "ticker": "3231",
+      "name": "緯創",
+      "shares": 5000,
+      "avg_cost": 85.0,
+      "current_price": 68.0,
+      "weight": 0.128,
+      "theme_tags": ["元宇宙", "MR設備", "電子製造"],
+      "conviction": "LOW",
+      "theme_status": "FADING"
+    }
+  ],
+  "max_positions": 8,
+  "cash_ratio": 0.746,
+  "theme_status": "FADING",
+  "expected_grade": "D",
+  "expected_action": "EXIT_FADED_THEME",
+  "notes": "元宇宙主題已退燒，持有標的雙雙虧損，應轉向新主題"
+}

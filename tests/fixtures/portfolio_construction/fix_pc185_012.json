@@ -1,0 +1,53 @@
+{
+  "_fixture_meta": {
+    "fixture_id": "fix_pc185_012",
+    "category": "equal_weight_2",
+    "schema_version": "185",
+    "paper_only": true,
+    "research_only": true,
+    "simulate_only": true,
+    "validation_only": true,
+    "portfolio_only": true,
+    "no_real_orders": true,
+    "no_broker": true,
+    "no_margin": true,
+    "no_leverage": true,
+    "not_investment_advice": true,
+    "demo_only": true,
+    "not_for_production": true,
+    "production_trading_blocked": true
+  },
+  "scenario": "equal_weight_2_cross_sector",
+  "capital": 500000,
+  "currency": "TWD",
+  "market_regime": "NEUTRAL",
+  "holdings": [
+    {
+      "ticker": "2330",
+      "name": "台積電",
+      "shares": 500,
+      "avg_cost": 900.0,
+      "current_price": 905.0,
+      "weight": 0.452,
+      "unrealized_pnl_pct": 0.0056,
+      "sector": "半導體",
+      "conviction": "HIGH"
+    },
+    {
+      "ticker": "2882",
+      "name": "國泰金",
+      "shares": 10000,
+      "avg_cost": 47.0,
+      "current_price": 48.2,
+      "weight": 0.482,
+      "unrealized_pnl_pct": 0.0255,
+      "sector": "金融",
+      "conviction": "MEDIUM"
+    }
+  ],
+  "max_positions": 8,
+  "cash_ratio": 0.066,
+  "expected_grade": "B",
+  "expected_action": "CONSIDER_ADDING",
+  "notes": "科技與金融跨板塊等權配置，分散效果良好"
+}

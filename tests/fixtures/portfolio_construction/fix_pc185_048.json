@@ -1,0 +1,54 @@
+{
+  "_fixture_meta": {
+    "fixture_id": "fix_pc185_048",
+    "category": "market_regime",
+    "schema_version": "185",
+    "paper_only": true,
+    "research_only": true,
+    "simulate_only": true,
+    "validation_only": true,
+    "portfolio_only": true,
+    "no_real_orders": true,
+    "no_broker": true,
+    "no_margin": true,
+    "no_leverage": true,
+    "not_investment_advice": true,
+    "demo_only": true,
+    "not_for_production": true,
+    "production_trading_blocked": true
+  },
+  "scenario": "market_regime_risk_off_defensive",
+  "capital": 1000000,
+  "currency": "TWD",
+  "market_regime": "RISK_OFF",
+  "regime_confidence": 0.80,
+  "taiex_trend": "SIDEWAYS_VOLATILE",
+  "vix_spike": true,
+  "vix_level": 28.5,
+  "holdings": [
+    {
+      "ticker": "2412",
+      "name": "中華電",
+      "shares": 5000,
+      "avg_cost": 118.0,
+      "current_price": 124.5,
+      "weight": 0.186,
+      "conviction": "HIGH"
+    },
+    {
+      "ticker": "2884",
+      "name": "玉山金",
+      "shares": 10000,
+      "avg_cost": 28.0,
+      "current_price": 29.5,
+      "weight": 0.088,
+      "conviction": "MEDIUM"
+    }
+  ],
+  "max_positions": 8,
+  "cash_ratio": 0.726,
+  "expected_grade": "B",
+  "expected_action": "HOLD_DEFENSIVE_INCREASE_CASH",
+  "regime_target_equity_pct": 0.20,
+  "notes": "風險規避環境，持有防禦型標的，現金水位提高至 70% 以上"
+}

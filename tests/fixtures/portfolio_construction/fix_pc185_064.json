@@ -1,0 +1,57 @@
+{
+  "_fixture_meta": {
+    "fixture_id": "fix_pc185_064",
+    "category": "rebalance",
+    "schema_version": "185",
+    "paper_only": true,
+    "research_only": true,
+    "simulate_only": true,
+    "validation_only": true,
+    "portfolio_only": true,
+    "no_real_orders": true,
+    "no_broker": true,
+    "no_margin": true,
+    "no_leverage": true,
+    "not_investment_advice": true,
+    "demo_only": true,
+    "not_for_production": true,
+    "production_trading_blocked": true
+  },
+  "scenario": "rebalance_new_capital_injection",
+  "capital_before": 800000,
+  "capital_added": 200000,
+  "capital_after": 1000000,
+  "currency": "TWD",
+  "market_regime": "BULL",
+  "holdings": [
+    {
+      "ticker": "2330",
+      "name": "台積電",
+      "shares": 1000,
+      "avg_cost": 880.0,
+      "current_price": 920.0,
+      "current_weight": 0.276,
+      "target_weight_new": 0.25,
+      "conviction": "HIGH"
+    },
+    {
+      "ticker": "2454",
+      "name": "聯發科",
+      "shares": 600,
+      "avg_cost": 750.0,
+      "current_price": 785.0,
+      "current_weight": 0.141,
+      "target_weight_new": 0.15,
+      "conviction": "HIGH"
+    }
+  ],
+  "new_capital_allocation": {
+    "add_to_2330": 50000,
+    "add_to_2454": 50000,
+    "add_new_position": 100000,
+    "suggested_new_ticker": "6669"
+  },
+  "expected_action": "DEPLOY_NEW_CAPITAL",
+  "expected_grade": "A",
+  "notes": "注入 20 萬新資金，依新目標權重分配，並建立第三檔新部位"
+}

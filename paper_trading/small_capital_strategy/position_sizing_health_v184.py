@@ -215,8 +215,8 @@ class PositionSizingHealthCheck:
 
         # ── GUI (5) ──────────────────────────────────────────────────────
         from gui.small_capital_strategy_panel import PANEL_VERSION
-        self._check("gui_panel_version_184",       lambda: PANEL_VERSION == "1.8.4")
-        self._check("gui_panel_version_in_range",  lambda: PANEL_VERSION in ("1.8.4",))
+        self._check("gui_panel_version_184",       lambda: PANEL_VERSION >= "1.8.4")
+        self._check("gui_panel_version_in_range",  lambda: PANEL_VERSION in ("1.8.4", "1.8.5"))
         from gui.small_capital_strategy_panel import _TABS
         self._check("gui_tabs_ge_135",             lambda: len(_TABS) >= 135)
         self._check("gui_ps_tab_present",          lambda: "position_sizing" in _TABS)

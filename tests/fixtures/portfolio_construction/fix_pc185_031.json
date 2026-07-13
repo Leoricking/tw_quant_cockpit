@@ -1,0 +1,59 @@
+{
+  "_fixture_meta": {
+    "fixture_id": "fix_pc185_031",
+    "category": "volatility_adjusted",
+    "schema_version": "185",
+    "paper_only": true,
+    "research_only": true,
+    "simulate_only": true,
+    "validation_only": true,
+    "portfolio_only": true,
+    "no_real_orders": true,
+    "no_broker": true,
+    "no_margin": true,
+    "no_leverage": true,
+    "not_investment_advice": true,
+    "demo_only": true,
+    "not_for_production": true,
+    "production_trading_blocked": true
+  },
+  "scenario": "volatility_adjusted_basic",
+  "capital": 1000000,
+  "currency": "TWD",
+  "market_regime": "NEUTRAL",
+  "holdings": [
+    {
+      "ticker": "2330",
+      "name": "台積電",
+      "shares": 1500,
+      "avg_cost": 880.0,
+      "current_price": 920.0,
+      "weight": 0.414,
+      "annualized_vol": 0.28,
+      "vol_adjusted_weight": 0.414,
+      "unrealized_pnl_pct": 0.0455,
+      "sector": "半導體",
+      "conviction": "HIGH"
+    },
+    {
+      "ticker": "2412",
+      "name": "中華電",
+      "shares": 5000,
+      "avg_cost": 122.0,
+      "current_price": 124.5,
+      "weight": 0.187,
+      "annualized_vol": 0.12,
+      "vol_adjusted_weight": 0.224,
+      "unrealized_pnl_pct": 0.0205,
+      "sector": "電信",
+      "conviction": "MEDIUM"
+    }
+  ],
+  "max_positions": 8,
+  "cash_ratio": 0.399,
+  "weight_scheme": "inverse_volatility",
+  "target_portfolio_vol": 0.15,
+  "expected_grade": "B",
+  "expected_action": "REBALANCE_BY_VOL",
+  "notes": "依波動率調整權重，低波電信股實際應得更高比例"
+}

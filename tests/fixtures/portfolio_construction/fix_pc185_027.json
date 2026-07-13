@@ -1,0 +1,80 @@
+{
+  "_fixture_meta": {
+    "fixture_id": "fix_pc185_027",
+    "category": "conviction_weight",
+    "schema_version": "185",
+    "paper_only": true,
+    "research_only": true,
+    "simulate_only": true,
+    "validation_only": true,
+    "portfolio_only": true,
+    "no_real_orders": true,
+    "no_broker": true,
+    "no_margin": true,
+    "no_leverage": true,
+    "not_investment_advice": true,
+    "demo_only": true,
+    "not_for_production": true,
+    "production_trading_blocked": true
+  },
+  "scenario": "conviction_weight_tiered",
+  "capital": 1000000,
+  "currency": "TWD",
+  "market_regime": "BULL",
+  "holdings": [
+    {
+      "ticker": "2330",
+      "name": "台積電",
+      "shares": 2000,
+      "avg_cost": 820.0,
+      "current_price": 950.0,
+      "weight": 0.38,
+      "unrealized_pnl_pct": 0.1585,
+      "sector": "半導體",
+      "conviction": "HIGH",
+      "conviction_score": 9
+    },
+    {
+      "ticker": "6669",
+      "name": "緯穎",
+      "shares": 500,
+      "avg_cost": 1100.0,
+      "current_price": 1380.0,
+      "weight": 0.138,
+      "unrealized_pnl_pct": 0.2545,
+      "sector": "雲端伺服器",
+      "conviction": "HIGH",
+      "conviction_score": 8
+    },
+    {
+      "ticker": "2454",
+      "name": "聯發科",
+      "shares": 600,
+      "avg_cost": 750.0,
+      "current_price": 785.0,
+      "weight": 0.094,
+      "unrealized_pnl_pct": 0.0467,
+      "sector": "IC設計",
+      "conviction": "MEDIUM",
+      "conviction_score": 6
+    },
+    {
+      "ticker": "2882",
+      "name": "國泰金",
+      "shares": 8000,
+      "avg_cost": 46.0,
+      "current_price": 48.5,
+      "weight": 0.077,
+      "unrealized_pnl_pct": 0.0543,
+      "sector": "金融",
+      "conviction": "LOW",
+      "conviction_score": 4
+    }
+  ],
+  "max_positions": 8,
+  "cash_ratio": 0.311,
+  "weight_scheme": "conviction_tiered",
+  "expected_grade": "A",
+  "expected_action": "KEEP",
+  "notes": "四層次信心度配重組合，高信心標的佔比最高，結構合理"
+}

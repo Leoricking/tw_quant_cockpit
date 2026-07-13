@@ -1,0 +1,40 @@
+{
+  "_fixture_meta": {
+    "fixture_id": "fix_pc185_067",
+    "category": "diversification",
+    "schema_version": "185",
+    "paper_only": true,
+    "research_only": true,
+    "simulate_only": true,
+    "validation_only": true,
+    "portfolio_only": true,
+    "no_real_orders": true,
+    "no_broker": true,
+    "no_margin": true,
+    "no_leverage": true,
+    "not_investment_advice": true,
+    "demo_only": true,
+    "not_for_production": true,
+    "production_trading_blocked": true
+  },
+  "scenario": "diversification_poorly_diversified",
+  "capital": 800000,
+  "currency": "TWD",
+  "market_regime": "NEUTRAL",
+  "holdings": [
+    {"ticker": "2330", "name": "台積電", "weight": 0.45, "sector": "半導體", "conviction": "HIGH"},
+    {"ticker": "2454", "name": "聯發科", "weight": 0.30, "sector": "半導體", "conviction": "HIGH"},
+    {"ticker": "2303", "name": "聯電", "weight": 0.15, "sector": "半導體", "conviction": "MEDIUM"}
+  ],
+  "max_positions": 8,
+  "cash_ratio": 0.10,
+  "diversification_metrics": {
+    "num_sectors": 1,
+    "herfindahl_index": 0.315,
+    "max_single_weight": 0.45,
+    "effective_n": 1.6
+  },
+  "expected_grade": "D",
+  "expected_action": "DIVERSIFY_IMMEDIATELY",
+  "notes": "完全集中單一板塊（半導體），赫芬達爾指數 0.315 顯示高度集中，需立即分散"
+}

@@ -1,0 +1,60 @@
+{
+  "_fixture_meta": {
+    "fixture_id": "fix_pc185_030",
+    "category": "conviction_weight",
+    "schema_version": "185",
+    "paper_only": true,
+    "research_only": true,
+    "simulate_only": true,
+    "validation_only": true,
+    "portfolio_only": true,
+    "no_real_orders": true,
+    "no_broker": true,
+    "no_margin": true,
+    "no_leverage": true,
+    "not_investment_advice": true,
+    "demo_only": true,
+    "not_for_production": true,
+    "production_trading_blocked": true
+  },
+  "scenario": "conviction_weight_downgraded",
+  "capital": 800000,
+  "currency": "TWD",
+  "market_regime": "WEAK",
+  "holdings": [
+    {
+      "ticker": "2330",
+      "name": "台積電",
+      "shares": 1000,
+      "avg_cost": 950.0,
+      "current_price": 870.0,
+      "weight": 0.328,
+      "unrealized_pnl_pct": -0.0842,
+      "sector": "半導體",
+      "conviction": "MEDIUM",
+      "conviction_score": 5,
+      "previous_conviction": "HIGH",
+      "conviction_changed": true
+    },
+    {
+      "ticker": "2454",
+      "name": "聯發科",
+      "shares": 800,
+      "avg_cost": 800.0,
+      "current_price": 710.0,
+      "weight": 0.213,
+      "unrealized_pnl_pct": -0.1125,
+      "sector": "IC設計",
+      "conviction": "LOW",
+      "conviction_score": 3,
+      "previous_conviction": "MEDIUM",
+      "conviction_changed": true
+    }
+  ],
+  "max_positions": 8,
+  "cash_ratio": 0.459,
+  "weight_scheme": "conviction_degraded",
+  "expected_grade": "D",
+  "expected_action": "TRIM_TO_NEW_CONVICTION_SIZE",
+  "notes": "兩檔信心度均下調，現有部位超過新信心度對應的合理權重，需修剪"
+}

@@ -1,0 +1,62 @@
+{
+  "_fixture_meta": {
+    "fixture_id": "fix_pc185_072",
+    "category": "capital_stage",
+    "schema_version": "185",
+    "paper_only": true,
+    "research_only": true,
+    "simulate_only": true,
+    "validation_only": true,
+    "portfolio_only": true,
+    "no_real_orders": true,
+    "no_broker": true,
+    "no_margin": true,
+    "no_leverage": true,
+    "not_investment_advice": true,
+    "demo_only": true,
+    "not_for_production": true,
+    "production_trading_blocked": true
+  },
+  "scenario": "capital_stage_500k_intermediate",
+  "capital": 500000,
+  "currency": "TWD",
+  "capital_stage": "INTERMEDIATE",
+  "market_regime": "BULL",
+  "recommended_max_positions": 5,
+  "min_position_size_twd": 60000,
+  "holdings": [
+    {
+      "ticker": "2330",
+      "name": "台積電",
+      "shares": 600,
+      "avg_cost": 880.0,
+      "current_price": 920.0,
+      "weight": 0.331,
+      "conviction": "HIGH"
+    },
+    {
+      "ticker": "2882",
+      "name": "國泰金",
+      "shares": 6000,
+      "avg_cost": 47.0,
+      "current_price": 48.5,
+      "weight": 0.174,
+      "conviction": "MEDIUM"
+    },
+    {
+      "ticker": "2412",
+      "name": "中華電",
+      "shares": 2000,
+      "avg_cost": 120.0,
+      "current_price": 124.5,
+      "weight": 0.149,
+      "conviction": "MEDIUM"
+    }
+  ],
+  "max_positions": 5,
+  "cash_ratio": 0.346,
+  "expected_grade": "A",
+  "expected_action": "CONSIDER_4TH_POSITION",
+  "stage_guidance": "50 萬中階資金可持有 4-5 檔個股，適度分散",
+  "notes": "中階 50 萬資金，持有 3 檔表現良好，現金水位充足可建立第 4 檔"
+}

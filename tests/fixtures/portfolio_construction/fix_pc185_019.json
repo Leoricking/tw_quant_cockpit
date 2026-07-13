@@ -1,0 +1,64 @@
+{
+  "_fixture_meta": {
+    "fixture_id": "fix_pc185_019",
+    "category": "equal_weight_3",
+    "schema_version": "185",
+    "paper_only": true,
+    "research_only": true,
+    "simulate_only": true,
+    "validation_only": true,
+    "portfolio_only": true,
+    "no_real_orders": true,
+    "no_broker": true,
+    "no_margin": true,
+    "no_leverage": true,
+    "not_investment_advice": true,
+    "demo_only": true,
+    "not_for_production": true,
+    "production_trading_blocked": true
+  },
+  "scenario": "equal_weight_3_defensive",
+  "capital": 600000,
+  "currency": "TWD",
+  "market_regime": "RISK_OFF",
+  "holdings": [
+    {
+      "ticker": "2412",
+      "name": "中華電",
+      "shares": 2500,
+      "avg_cost": 118.0,
+      "current_price": 124.5,
+      "weight": 0.519,
+      "unrealized_pnl_pct": 0.0551,
+      "sector": "電信",
+      "conviction": "HIGH"
+    },
+    {
+      "ticker": "2884",
+      "name": "玉山金",
+      "shares": 8000,
+      "avg_cost": 28.0,
+      "current_price": 29.5,
+      "weight": 0.197,
+      "unrealized_pnl_pct": 0.0536,
+      "sector": "金融",
+      "conviction": "MEDIUM"
+    },
+    {
+      "ticker": "9904",
+      "name": "寶成",
+      "shares": 5000,
+      "avg_cost": 33.0,
+      "current_price": 34.0,
+      "weight": 0.142,
+      "unrealized_pnl_pct": 0.0303,
+      "sector": "消費",
+      "conviction": "MEDIUM"
+    }
+  ],
+  "max_positions": 8,
+  "cash_ratio": 0.142,
+  "expected_grade": "B",
+  "expected_action": "KEEP_DEFENSIVE",
+  "notes": "風險規避環境下持有防禦性標的，策略合理"
+}

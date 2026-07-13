@@ -1,0 +1,64 @@
+{
+  "_fixture_meta": {
+    "fixture_id": "fix_pc185_017",
+    "category": "equal_weight_3",
+    "schema_version": "185",
+    "paper_only": true,
+    "research_only": true,
+    "simulate_only": true,
+    "validation_only": true,
+    "portfolio_only": true,
+    "no_real_orders": true,
+    "no_broker": true,
+    "no_margin": true,
+    "no_leverage": true,
+    "not_investment_advice": true,
+    "demo_only": true,
+    "not_for_production": true,
+    "production_trading_blocked": true
+  },
+  "scenario": "equal_weight_3_diversified",
+  "capital": 600000,
+  "currency": "TWD",
+  "market_regime": "NEUTRAL",
+  "holdings": [
+    {
+      "ticker": "2330",
+      "name": "台積電",
+      "shares": 600,
+      "avg_cost": 900.0,
+      "current_price": 905.0,
+      "weight": 0.362,
+      "unrealized_pnl_pct": 0.0056,
+      "sector": "半導體",
+      "conviction": "HIGH"
+    },
+    {
+      "ticker": "2882",
+      "name": "國泰金",
+      "shares": 8000,
+      "avg_cost": 48.0,
+      "current_price": 48.5,
+      "weight": 0.323,
+      "unrealized_pnl_pct": 0.0104,
+      "sector": "金融",
+      "conviction": "MEDIUM"
+    },
+    {
+      "ticker": "1301",
+      "name": "台塑",
+      "shares": 3000,
+      "avg_cost": 83.0,
+      "current_price": 85.0,
+      "weight": 0.212,
+      "unrealized_pnl_pct": 0.0241,
+      "sector": "石化",
+      "conviction": "LOW"
+    }
+  ],
+  "max_positions": 8,
+  "cash_ratio": 0.103,
+  "expected_grade": "B",
+  "expected_action": "KEEP",
+  "notes": "跨三板塊等權配置，分散效果良好，中性市場下穩定操作"
+}

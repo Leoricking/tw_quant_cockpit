@@ -1,0 +1,41 @@
+{
+  "_fixture_meta": {
+    "fixture_id": "fix_pc185_056",
+    "category": "keep_replace",
+    "schema_version": "185",
+    "paper_only": true,
+    "research_only": true,
+    "simulate_only": true,
+    "validation_only": true,
+    "portfolio_only": true,
+    "no_real_orders": true,
+    "no_broker": true,
+    "no_margin": true,
+    "no_leverage": true,
+    "not_investment_advice": true,
+    "demo_only": true,
+    "not_for_production": true,
+    "production_trading_blocked": true
+  },
+  "scenario": "keep_replace_winner_keep",
+  "capital": 800000,
+  "currency": "TWD",
+  "market_regime": "BULL",
+  "candidate": {
+    "ticker": "2330",
+    "name": "台積電",
+    "shares": 1000,
+    "avg_cost": 820.0,
+    "current_price": 950.0,
+    "unrealized_pnl_pct": 0.1585,
+    "technical_score": 8.5,
+    "fundamental_score": 9.0,
+    "momentum_score": 8.0,
+    "composite_score": 8.5
+  },
+  "decision": "KEEP",
+  "keep_reasons": ["強勁上漲動能", "EPS 持續上修", "技術面突破新高"],
+  "expected_action": "KEEP",
+  "expected_grade": "A",
+  "notes": "台積電三項評分均高，繼續持有理由充分"
+}

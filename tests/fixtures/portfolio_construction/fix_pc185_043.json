@@ -1,0 +1,67 @@
+{
+  "_fixture_meta": {
+    "fixture_id": "fix_pc185_043",
+    "category": "theme_exposure",
+    "schema_version": "185",
+    "paper_only": true,
+    "research_only": true,
+    "simulate_only": true,
+    "validation_only": true,
+    "portfolio_only": true,
+    "no_real_orders": true,
+    "no_broker": true,
+    "no_margin": true,
+    "no_leverage": true,
+    "not_investment_advice": true,
+    "demo_only": true,
+    "not_for_production": true,
+    "production_trading_blocked": true
+  },
+  "scenario": "theme_exposure_dividend_yield",
+  "capital": 1000000,
+  "currency": "TWD",
+  "market_regime": "NEUTRAL",
+  "theme": "高殖利率防禦",
+  "holdings": [
+    {
+      "ticker": "2412",
+      "name": "中華電",
+      "shares": 5000,
+      "avg_cost": 119.0,
+      "current_price": 124.5,
+      "dividend_yield": 0.048,
+      "weight": 0.187,
+      "theme_tags": ["高殖利率", "電信", "防禦"],
+      "conviction": "HIGH"
+    },
+    {
+      "ticker": "5880",
+      "name": "合庫金",
+      "shares": 20000,
+      "avg_cost": 24.0,
+      "current_price": 25.5,
+      "dividend_yield": 0.055,
+      "weight": 0.153,
+      "theme_tags": ["高殖利率", "金融", "官股"],
+      "conviction": "MEDIUM"
+    },
+    {
+      "ticker": "2303",
+      "name": "聯電",
+      "shares": 8000,
+      "avg_cost": 48.0,
+      "current_price": 49.5,
+      "dividend_yield": 0.052,
+      "weight": 0.119,
+      "theme_tags": ["高殖利率", "半導體"],
+      "conviction": "MEDIUM"
+    }
+  ],
+  "max_positions": 8,
+  "cash_ratio": 0.541,
+  "theme_total_weight": 0.459,
+  "portfolio_avg_yield": 0.051,
+  "expected_grade": "B",
+  "expected_action": "KEEP",
+  "notes": "高殖利率防禦主題，組合平均殖利率 5.1%，適合穩健型策略"
+}

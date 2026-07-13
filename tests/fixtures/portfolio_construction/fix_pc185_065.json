@@ -1,0 +1,54 @@
+{
+  "_fixture_meta": {
+    "fixture_id": "fix_pc185_065",
+    "category": "rebalance",
+    "schema_version": "185",
+    "paper_only": true,
+    "research_only": true,
+    "simulate_only": true,
+    "validation_only": true,
+    "portfolio_only": true,
+    "no_real_orders": true,
+    "no_broker": true,
+    "no_margin": true,
+    "no_leverage": true,
+    "not_investment_advice": true,
+    "demo_only": true,
+    "not_for_production": true,
+    "production_trading_blocked": true
+  },
+  "scenario": "rebalance_tax_loss_harvest",
+  "capital": 1000000,
+  "currency": "TWD",
+  "market_regime": "WEAK",
+  "tax_year_end_approaching": true,
+  "holdings": [
+    {
+      "ticker": "2330",
+      "name": "台積電",
+      "shares": 1000,
+      "avg_cost": 850.0,
+      "current_price": 920.0,
+      "unrealized_pnl_pct": 0.0824,
+      "unrealized_pnl_twd": 70000,
+      "conviction": "HIGH"
+    },
+    {
+      "ticker": "2303",
+      "name": "聯電",
+      "shares": 5000,
+      "avg_cost": 56.0,
+      "current_price": 49.5,
+      "unrealized_pnl_pct": -0.1161,
+      "unrealized_pnl_twd": -32500,
+      "conviction": "LOW",
+      "tax_loss_harvest_candidate": true
+    }
+  ],
+  "max_positions": 8,
+  "cash_ratio": 0.531,
+  "expected_action": "TAX_LOSS_HARVEST",
+  "expected_grade": "B",
+  "tax_saving_estimate_twd": 3250,
+  "notes": "年底稅務籌劃，賣出聯電虧損部位可抵消台積電獲利稅負"
+}

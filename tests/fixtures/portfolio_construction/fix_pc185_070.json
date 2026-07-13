@@ -1,0 +1,42 @@
+{
+  "_fixture_meta": {
+    "fixture_id": "fix_pc185_070",
+    "category": "diversification",
+    "schema_version": "185",
+    "paper_only": true,
+    "research_only": true,
+    "simulate_only": true,
+    "validation_only": true,
+    "portfolio_only": true,
+    "no_real_orders": true,
+    "no_broker": true,
+    "no_margin": true,
+    "no_leverage": true,
+    "not_investment_advice": true,
+    "demo_only": true,
+    "not_for_production": true,
+    "production_trading_blocked": true
+  },
+  "scenario": "diversification_low_corr_optimal",
+  "capital": 1000000,
+  "currency": "TWD",
+  "market_regime": "BULL",
+  "holdings": [
+    {"ticker": "2330", "name": "台積電", "weight": 0.30, "sector": "半導體", "conviction": "HIGH", "beta": 1.2},
+    {"ticker": "2412", "name": "中華電", "weight": 0.20, "sector": "電信", "conviction": "MEDIUM", "beta": 0.5},
+    {"ticker": "1301", "name": "台塑", "weight": 0.15, "sector": "石化", "conviction": "MEDIUM", "beta": 0.8},
+    {"ticker": "2882", "name": "國泰金", "weight": 0.15, "sector": "金融", "conviction": "MEDIUM", "beta": 0.9}
+  ],
+  "max_positions": 8,
+  "cash_ratio": 0.20,
+  "diversification_metrics": {
+    "num_sectors": 4,
+    "avg_pairwise_correlation": 0.35,
+    "portfolio_beta": 0.88,
+    "herfindahl_index": 0.155,
+    "effective_n": 4.5
+  },
+  "expected_grade": "A",
+  "expected_action": "KEEP",
+  "notes": "四板塊低相關（0.35）最佳組合，組合 Beta 0.88 接近市場但風險更低"
+}

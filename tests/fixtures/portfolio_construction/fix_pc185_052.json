@@ -1,0 +1,58 @@
+{
+  "_fixture_meta": {
+    "fixture_id": "fix_pc185_052",
+    "category": "monte_carlo_ruin",
+    "schema_version": "185",
+    "paper_only": true,
+    "research_only": true,
+    "simulate_only": true,
+    "validation_only": true,
+    "portfolio_only": true,
+    "no_real_orders": true,
+    "no_broker": true,
+    "no_margin": true,
+    "no_leverage": true,
+    "not_investment_advice": true,
+    "demo_only": true,
+    "not_for_production": true,
+    "production_trading_blocked": true
+  },
+  "scenario": "monte_carlo_ruin_8pct",
+  "capital": 800000,
+  "currency": "TWD",
+  "market_regime": "NEUTRAL",
+  "monte_carlo": {
+    "simulations": 10000,
+    "horizon_days": 252,
+    "ruin_threshold": 0.50,
+    "ruin_probability": 0.08,
+    "median_return": 0.10,
+    "p5_return": -0.15,
+    "p95_return": 0.35
+  },
+  "holdings": [
+    {
+      "ticker": "2330",
+      "name": "台積電",
+      "shares": 1200,
+      "avg_cost": 890.0,
+      "current_price": 920.0,
+      "weight": 0.414,
+      "conviction": "HIGH"
+    },
+    {
+      "ticker": "3008",
+      "name": "大立光",
+      "shares": 200,
+      "avg_cost": 1800.0,
+      "current_price": 1950.0,
+      "weight": 0.146,
+      "conviction": "MEDIUM"
+    }
+  ],
+  "max_positions": 8,
+  "cash_ratio": 0.440,
+  "expected_grade": "B",
+  "expected_action": "MONITOR_RUIN_RISK",
+  "notes": "蒙地卡羅破產機率為 8%，處於可接受範圍，需持續監控"
+}

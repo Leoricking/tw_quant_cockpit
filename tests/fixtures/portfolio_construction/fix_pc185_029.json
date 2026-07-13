@@ -1,0 +1,68 @@
+{
+  "_fixture_meta": {
+    "fixture_id": "fix_pc185_029",
+    "category": "conviction_weight",
+    "schema_version": "185",
+    "paper_only": true,
+    "research_only": true,
+    "simulate_only": true,
+    "validation_only": true,
+    "portfolio_only": true,
+    "no_real_orders": true,
+    "no_broker": true,
+    "no_margin": true,
+    "no_leverage": true,
+    "not_investment_advice": true,
+    "demo_only": true,
+    "not_for_production": true,
+    "production_trading_blocked": true
+  },
+  "scenario": "conviction_weight_all_high",
+  "capital": 1200000,
+  "currency": "TWD",
+  "market_regime": "BULL",
+  "holdings": [
+    {
+      "ticker": "2330",
+      "name": "台積電",
+      "shares": 1500,
+      "avg_cost": 800.0,
+      "current_price": 950.0,
+      "weight": 0.238,
+      "unrealized_pnl_pct": 0.1875,
+      "sector": "半導體",
+      "conviction": "HIGH",
+      "conviction_score": 9
+    },
+    {
+      "ticker": "6669",
+      "name": "緯穎",
+      "shares": 600,
+      "avg_cost": 1050.0,
+      "current_price": 1380.0,
+      "weight": 0.115,
+      "unrealized_pnl_pct": 0.3143,
+      "sector": "雲端伺服器",
+      "conviction": "HIGH",
+      "conviction_score": 9
+    },
+    {
+      "ticker": "2454",
+      "name": "聯發科",
+      "shares": 1200,
+      "avg_cost": 740.0,
+      "current_price": 785.0,
+      "weight": 0.131,
+      "unrealized_pnl_pct": 0.0608,
+      "sector": "IC設計",
+      "conviction": "HIGH",
+      "conviction_score": 8
+    }
+  ],
+  "max_positions": 8,
+  "cash_ratio": 0.516,
+  "weight_scheme": "high_conviction_only",
+  "expected_grade": "A",
+  "expected_action": "DEPLOY_MORE_CASH",
+  "notes": "全部高信心標的，現金水位高，建議尋找更多高信心機會部署"
+}

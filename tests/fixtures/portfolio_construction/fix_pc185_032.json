@@ -1,0 +1,59 @@
+{
+  "_fixture_meta": {
+    "fixture_id": "fix_pc185_032",
+    "category": "volatility_adjusted",
+    "schema_version": "185",
+    "paper_only": true,
+    "research_only": true,
+    "simulate_only": true,
+    "validation_only": true,
+    "portfolio_only": true,
+    "no_real_orders": true,
+    "no_broker": true,
+    "no_margin": true,
+    "no_leverage": true,
+    "not_investment_advice": true,
+    "demo_only": true,
+    "not_for_production": true,
+    "production_trading_blocked": true
+  },
+  "scenario": "volatility_adjusted_high_vol_overweight",
+  "capital": 800000,
+  "currency": "TWD",
+  "market_regime": "BULL",
+  "holdings": [
+    {
+      "ticker": "3008",
+      "name": "大立光",
+      "shares": 400,
+      "avg_cost": 1850.0,
+      "current_price": 1950.0,
+      "weight": 0.488,
+      "annualized_vol": 0.42,
+      "vol_adjusted_weight": 0.208,
+      "unrealized_pnl_pct": 0.0541,
+      "sector": "光學",
+      "conviction": "HIGH"
+    },
+    {
+      "ticker": "2882",
+      "name": "國泰金",
+      "shares": 10000,
+      "avg_cost": 47.0,
+      "current_price": 48.5,
+      "weight": 0.152,
+      "annualized_vol": 0.15,
+      "vol_adjusted_weight": 0.292,
+      "unrealized_pnl_pct": 0.032,
+      "sector": "金融",
+      "conviction": "MEDIUM"
+    }
+  ],
+  "max_positions": 8,
+  "cash_ratio": 0.360,
+  "weight_scheme": "inverse_volatility",
+  "target_portfolio_vol": 0.18,
+  "expected_grade": "C",
+  "expected_action": "REDUCE_HIGH_VOL",
+  "notes": "高波動大立光超配，逆波動率模型建議大幅降低其比重"
+}

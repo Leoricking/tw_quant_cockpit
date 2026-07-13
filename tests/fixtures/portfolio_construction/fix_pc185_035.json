@@ -1,0 +1,61 @@
+{
+  "_fixture_meta": {
+    "fixture_id": "fix_pc185_035",
+    "category": "volatility_adjusted",
+    "schema_version": "185",
+    "paper_only": true,
+    "research_only": true,
+    "simulate_only": true,
+    "validation_only": true,
+    "portfolio_only": true,
+    "no_real_orders": true,
+    "no_broker": true,
+    "no_margin": true,
+    "no_leverage": true,
+    "not_investment_advice": true,
+    "demo_only": true,
+    "not_for_production": true,
+    "production_trading_blocked": true
+  },
+  "scenario": "volatility_adjusted_low_vol_environment",
+  "capital": 1000000,
+  "currency": "TWD",
+  "market_regime": "BULL",
+  "vix_level": 12.3,
+  "holdings": [
+    {
+      "ticker": "2330",
+      "name": "台積電",
+      "shares": 2000,
+      "avg_cost": 850.0,
+      "current_price": 950.0,
+      "weight": 0.57,
+      "annualized_vol": 0.22,
+      "realized_vol_20d": 0.18,
+      "unrealized_pnl_pct": 0.1176,
+      "sector": "半導體",
+      "conviction": "HIGH"
+    },
+    {
+      "ticker": "6669",
+      "name": "緯穎",
+      "shares": 300,
+      "avg_cost": 1200.0,
+      "current_price": 1380.0,
+      "weight": 0.124,
+      "annualized_vol": 0.35,
+      "realized_vol_20d": 0.28,
+      "unrealized_pnl_pct": 0.15,
+      "sector": "雲端伺服器",
+      "conviction": "HIGH"
+    }
+  ],
+  "max_positions": 8,
+  "cash_ratio": 0.306,
+  "weight_scheme": "vol_target",
+  "target_portfolio_vol": 0.18,
+  "current_portfolio_vol": 0.14,
+  "expected_grade": "A",
+  "expected_action": "INCREASE_EXPOSURE",
+  "notes": "低波動環境下組合波動率低於目標，可考慮增加曝險"
+}

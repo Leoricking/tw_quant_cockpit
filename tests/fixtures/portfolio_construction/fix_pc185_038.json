@@ -1,0 +1,66 @@
+{
+  "_fixture_meta": {
+    "fixture_id": "fix_pc185_038",
+    "category": "sector_exposure",
+    "schema_version": "185",
+    "paper_only": true,
+    "research_only": true,
+    "simulate_only": true,
+    "validation_only": true,
+    "portfolio_only": true,
+    "no_real_orders": true,
+    "no_broker": true,
+    "no_margin": true,
+    "no_leverage": true,
+    "not_investment_advice": true,
+    "demo_only": true,
+    "not_for_production": true,
+    "production_trading_blocked": true
+  },
+  "scenario": "sector_exposure_financial_overexposed",
+  "capital": 800000,
+  "currency": "TWD",
+  "market_regime": "NEUTRAL",
+  "holdings": [
+    {
+      "ticker": "2882",
+      "name": "國泰金",
+      "shares": 15000,
+      "avg_cost": 46.0,
+      "current_price": 48.5,
+      "weight": 0.273,
+      "sector": "金融",
+      "conviction": "MEDIUM"
+    },
+    {
+      "ticker": "2884",
+      "name": "玉山金",
+      "shares": 20000,
+      "avg_cost": 28.5,
+      "current_price": 29.5,
+      "weight": 0.221,
+      "sector": "金融",
+      "conviction": "MEDIUM"
+    },
+    {
+      "ticker": "2886",
+      "name": "兆豐金",
+      "shares": 15000,
+      "avg_cost": 32.0,
+      "current_price": 33.5,
+      "weight": 0.188,
+      "sector": "金融",
+      "conviction": "LOW"
+    }
+  ],
+  "max_positions": 8,
+  "cash_ratio": 0.318,
+  "sector_weights": {
+    "金融": 0.682
+  },
+  "sector_limit": 0.40,
+  "expected_grade": "D",
+  "expected_action": "DIVERSIFY_OUT_OF_FINANCIAL",
+  "overexposed_sector": "金融",
+  "notes": "金融股佔比 68.2% 嚴重超過上限，需大幅分散至非金融板塊"
+}

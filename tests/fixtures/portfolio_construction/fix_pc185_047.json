@@ -1,0 +1,53 @@
+{
+  "_fixture_meta": {
+    "fixture_id": "fix_pc185_047",
+    "category": "market_regime",
+    "schema_version": "185",
+    "paper_only": true,
+    "research_only": true,
+    "simulate_only": true,
+    "validation_only": true,
+    "portfolio_only": true,
+    "no_real_orders": true,
+    "no_broker": true,
+    "no_margin": true,
+    "no_leverage": true,
+    "not_investment_advice": true,
+    "demo_only": true,
+    "not_for_production": true,
+    "production_trading_blocked": true
+  },
+  "scenario": "market_regime_weak_reduce",
+  "capital": 1000000,
+  "currency": "TWD",
+  "market_regime": "WEAK",
+  "regime_confidence": 0.70,
+  "taiex_trend": "DECLINING",
+  "ma_alignment": "BEARISH_CROSSOVER",
+  "holdings": [
+    {
+      "ticker": "2330",
+      "name": "台積電",
+      "shares": 800,
+      "avg_cost": 900.0,
+      "current_price": 860.0,
+      "weight": 0.206,
+      "conviction": "MEDIUM"
+    },
+    {
+      "ticker": "2454",
+      "name": "聯發科",
+      "shares": 500,
+      "avg_cost": 780.0,
+      "current_price": 730.0,
+      "weight": 0.110,
+      "conviction": "LOW"
+    }
+  ],
+  "max_positions": 8,
+  "cash_ratio": 0.684,
+  "expected_grade": "C",
+  "expected_action": "REDUCE_EQUITY",
+  "regime_target_equity_pct": 0.30,
+  "notes": "市場轉弱訊號出現，建議降低股票部位至 30% 以下，增加現金防禦"
+}

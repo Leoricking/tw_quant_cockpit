@@ -1,0 +1,42 @@
+{
+  "_fixture_meta": {
+    "fixture_id": "fix_pc185_060",
+    "category": "keep_replace",
+    "schema_version": "185",
+    "paper_only": true,
+    "research_only": true,
+    "simulate_only": true,
+    "validation_only": true,
+    "portfolio_only": true,
+    "no_real_orders": true,
+    "no_broker": true,
+    "no_margin": true,
+    "no_leverage": true,
+    "not_investment_advice": true,
+    "demo_only": true,
+    "not_for_production": true,
+    "production_trading_blocked": true
+  },
+  "scenario": "keep_replace_stop_loss_forced",
+  "capital": 800000,
+  "currency": "TWD",
+  "market_regime": "BEAR",
+  "candidate": {
+    "ticker": "2408",
+    "name": "南亞科",
+    "shares": 5000,
+    "avg_cost": 78.0,
+    "current_price": 62.0,
+    "unrealized_pnl_pct": -0.2051,
+    "stop_loss_triggered": true,
+    "stop_loss_level": 70.2,
+    "technical_score": 2.0,
+    "momentum_score": 1.5,
+    "composite_score": 2.0
+  },
+  "decision": "FORCED_EXIT",
+  "exit_reasons": ["觸及止損點 -15%", "熊市環境", "動能持續惡化"],
+  "expected_action": "EXIT",
+  "expected_grade": "F",
+  "notes": "南亞科跌幅超過 20% 且技術面崩潰，強制止損出場"
+}

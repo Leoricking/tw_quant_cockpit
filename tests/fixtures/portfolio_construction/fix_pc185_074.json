@@ -1,0 +1,41 @@
+{
+  "_fixture_meta": {
+    "fixture_id": "fix_pc185_074",
+    "category": "capital_stage",
+    "schema_version": "185",
+    "paper_only": true,
+    "research_only": true,
+    "simulate_only": true,
+    "validation_only": true,
+    "portfolio_only": true,
+    "no_real_orders": true,
+    "no_broker": true,
+    "no_margin": true,
+    "no_leverage": true,
+    "not_investment_advice": true,
+    "demo_only": true,
+    "not_for_production": true,
+    "production_trading_blocked": true
+  },
+  "scenario": "capital_stage_3m_professional",
+  "capital": 3000000,
+  "currency": "TWD",
+  "capital_stage": "PROFESSIONAL",
+  "market_regime": "BULL",
+  "recommended_max_positions": 12,
+  "min_position_size_twd": 150000,
+  "holdings": [
+    {"ticker": "2330", "name": "台積電", "shares": 3000, "avg_cost": 860.0, "current_price": 950.0, "weight": 0.285, "conviction": "HIGH"},
+    {"ticker": "6669", "name": "緯穎", "shares": 1000, "avg_cost": 1150.0, "current_price": 1380.0, "weight": 0.138, "conviction": "HIGH"},
+    {"ticker": "2454", "name": "聯發科", "shares": 2000, "avg_cost": 740.0, "current_price": 785.0, "weight": 0.157, "conviction": "HIGH"},
+    {"ticker": "2882", "name": "國泰金", "shares": 30000, "avg_cost": 46.0, "current_price": 48.5, "weight": 0.146, "conviction": "MEDIUM"},
+    {"ticker": "2412", "name": "中華電", "shares": 8000, "avg_cost": 118.0, "current_price": 124.5, "weight": 0.099, "conviction": "MEDIUM"},
+    {"ticker": "1301", "name": "台塑", "shares": 10000, "avg_cost": 82.0, "current_price": 85.0, "weight": 0.085, "conviction": "LOW"}
+  ],
+  "max_positions": 12,
+  "cash_ratio": 0.090,
+  "expected_grade": "A",
+  "expected_action": "KEEP_CONSIDER_EXPANSION",
+  "stage_guidance": "300 萬專業級資金可持有 10-12 檔，追求最佳化分散",
+  "notes": "專業級 300 萬組合，六檔跨板塊充分分散，表現良好"
+}

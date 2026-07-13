@@ -1,0 +1,97 @@
+{
+  "_fixture_meta": {
+    "fixture_id": "fix_pc185_023",
+    "category": "multi_holding",
+    "schema_version": "185",
+    "paper_only": true,
+    "research_only": true,
+    "simulate_only": true,
+    "validation_only": true,
+    "portfolio_only": true,
+    "no_real_orders": true,
+    "no_broker": true,
+    "no_margin": true,
+    "no_leverage": true,
+    "not_investment_advice": true,
+    "demo_only": true,
+    "not_for_production": true,
+    "production_trading_blocked": true
+  },
+  "scenario": "multi_holding_6_full_portfolio",
+  "capital": 1500000,
+  "currency": "TWD",
+  "market_regime": "NEUTRAL",
+  "holdings": [
+    {
+      "ticker": "2330",
+      "name": "台積電",
+      "shares": 1500,
+      "avg_cost": 900.0,
+      "current_price": 905.0,
+      "weight": 0.272,
+      "unrealized_pnl_pct": 0.0056,
+      "sector": "半導體",
+      "conviction": "HIGH"
+    },
+    {
+      "ticker": "2317",
+      "name": "鴻海",
+      "shares": 8000,
+      "avg_cost": 108.0,
+      "current_price": 112.0,
+      "weight": 0.179,
+      "unrealized_pnl_pct": 0.037,
+      "sector": "電子製造",
+      "conviction": "MEDIUM"
+    },
+    {
+      "ticker": "2882",
+      "name": "國泰金",
+      "shares": 20000,
+      "avg_cost": 47.5,
+      "current_price": 48.5,
+      "weight": 0.194,
+      "unrealized_pnl_pct": 0.021,
+      "sector": "金融",
+      "conviction": "MEDIUM"
+    },
+    {
+      "ticker": "1301",
+      "name": "台塑",
+      "shares": 5000,
+      "avg_cost": 84.0,
+      "current_price": 85.0,
+      "weight": 0.085,
+      "unrealized_pnl_pct": 0.0119,
+      "sector": "石化",
+      "conviction": "LOW"
+    },
+    {
+      "ticker": "2412",
+      "name": "中華電",
+      "shares": 5000,
+      "avg_cost": 123.0,
+      "current_price": 124.5,
+      "weight": 0.166,
+      "unrealized_pnl_pct": 0.0122,
+      "sector": "電信",
+      "conviction": "MEDIUM"
+    },
+    {
+      "ticker": "2308",
+      "name": "台達電",
+      "shares": 1000,
+      "avg_cost": 295.0,
+      "current_price": 290.0,
+      "weight": 0.058,
+      "unrealized_pnl_pct": -0.0169,
+      "sector": "電源",
+      "conviction": "LOW"
+    }
+  ],
+  "max_positions": 8,
+  "cash_ratio": 0.046,
+  "expected_grade": "B",
+  "expected_action": "REVIEW_WEAKEST",
+  "notes": "六檔滿倉組合，分散良好，台達電略虧建議追蹤"
+}

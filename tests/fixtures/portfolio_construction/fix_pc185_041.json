@@ -1,0 +1,63 @@
+{
+  "_fixture_meta": {
+    "fixture_id": "fix_pc185_041",
+    "category": "theme_exposure",
+    "schema_version": "185",
+    "paper_only": true,
+    "research_only": true,
+    "simulate_only": true,
+    "validation_only": true,
+    "portfolio_only": true,
+    "no_real_orders": true,
+    "no_broker": true,
+    "no_margin": true,
+    "no_leverage": true,
+    "not_investment_advice": true,
+    "demo_only": true,
+    "not_for_production": true,
+    "production_trading_blocked": true
+  },
+  "scenario": "theme_exposure_ai_server",
+  "capital": 1000000,
+  "currency": "TWD",
+  "market_regime": "BULL",
+  "theme": "AI伺服器",
+  "holdings": [
+    {
+      "ticker": "2330",
+      "name": "台積電",
+      "shares": 1200,
+      "avg_cost": 820.0,
+      "current_price": 950.0,
+      "weight": 0.342,
+      "theme_tags": ["AI", "半導體", "CoWoS"],
+      "conviction": "HIGH"
+    },
+    {
+      "ticker": "6669",
+      "name": "緯穎",
+      "shares": 400,
+      "avg_cost": 1100.0,
+      "current_price": 1380.0,
+      "weight": 0.166,
+      "theme_tags": ["AI", "雲端伺服器", "GB200"],
+      "conviction": "HIGH"
+    },
+    {
+      "ticker": "2353",
+      "name": "宏碁",
+      "shares": 5000,
+      "avg_cost": 38.0,
+      "current_price": 42.0,
+      "weight": 0.063,
+      "theme_tags": ["AI", "PC", "邊緣AI"],
+      "conviction": "MEDIUM"
+    }
+  ],
+  "max_positions": 8,
+  "cash_ratio": 0.429,
+  "theme_total_weight": 0.571,
+  "expected_grade": "A",
+  "expected_action": "KEEP_THEME",
+  "notes": "AI 伺服器主題組合，台積電與緯穎為核心受益標的"
+}

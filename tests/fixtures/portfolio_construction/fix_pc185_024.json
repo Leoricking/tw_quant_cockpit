@@ -1,0 +1,75 @@
+{
+  "_fixture_meta": {
+    "fixture_id": "fix_pc185_024",
+    "category": "multi_holding",
+    "schema_version": "185",
+    "paper_only": true,
+    "research_only": true,
+    "simulate_only": true,
+    "validation_only": true,
+    "portfolio_only": true,
+    "no_real_orders": true,
+    "no_broker": true,
+    "no_margin": true,
+    "no_leverage": true,
+    "not_investment_advice": true,
+    "demo_only": true,
+    "not_for_production": true,
+    "production_trading_blocked": true
+  },
+  "scenario": "multi_holding_4_risk_off",
+  "capital": 800000,
+  "currency": "TWD",
+  "market_regime": "RISK_OFF",
+  "holdings": [
+    {
+      "ticker": "2330",
+      "name": "台積電",
+      "shares": 500,
+      "avg_cost": 850.0,
+      "current_price": 810.0,
+      "weight": 0.152,
+      "unrealized_pnl_pct": -0.047,
+      "sector": "半導體",
+      "conviction": "MEDIUM"
+    },
+    {
+      "ticker": "2454",
+      "name": "聯發科",
+      "shares": 400,
+      "avg_cost": 770.0,
+      "current_price": 720.0,
+      "weight": 0.108,
+      "unrealized_pnl_pct": -0.0649,
+      "sector": "IC設計",
+      "conviction": "LOW"
+    },
+    {
+      "ticker": "2412",
+      "name": "中華電",
+      "shares": 5000,
+      "avg_cost": 120.0,
+      "current_price": 124.5,
+      "weight": 0.233,
+      "unrealized_pnl_pct": 0.0375,
+      "sector": "電信",
+      "conviction": "HIGH"
+    },
+    {
+      "ticker": "2884",
+      "name": "玉山金",
+      "shares": 15000,
+      "avg_cost": 28.5,
+      "current_price": 29.5,
+      "weight": 0.166,
+      "unrealized_pnl_pct": 0.0351,
+      "sector": "金融",
+      "conviction": "MEDIUM"
+    }
+  ],
+  "max_positions": 8,
+  "cash_ratio": 0.341,
+  "expected_grade": "C",
+  "expected_action": "REDUCE_RISK_INCREASE_CASH",
+  "notes": "風險規避環境下，科技股虧損，應減少科技部位增加防禦性配置"
+}

@@ -16,8 +16,8 @@ Headless-safe: no tkinter at module level. Renders to dict.
 from __future__ import annotations
 from typing import Any, Dict, List, Optional
 
-PANEL_VERSION = "1.8.4"
-PANEL_TITLE = "Small Capital Strategy v1.8.4 — Simulation, Optimization, Monte Carlo & Position Sizing Capital Allocation Lab"
+PANEL_VERSION = "1.8.5"
+PANEL_TITLE = "Small Capital Strategy v1.8.5 — Portfolio Construction, Rebalancing & Exposure Control Lab"
 
 # v1.7.0 tabs (preserved unchanged)
 _TABS_V170 = [
@@ -211,6 +211,13 @@ _TABS_V184_POSITION_SIZING = [
     "capital_allocation",
 ]
 
+# v1.8.5 Portfolio Construction & Rebalancing Lab tabs
+_TABS_V185_PORTFOLIO_CONSTRUCTION = [
+    "portfolio_construction_lab",
+    "portfolio_rebalancing",
+    "portfolio_exposure_control",
+]
+
 _TABS = (
     _TABS_V170
     + _TABS_V171_WATCHLIST
@@ -227,6 +234,7 @@ _TABS = (
     + _TABS_V182_OPTIMIZATION
     + _TABS_V183_MONTE_CARLO
     + _TABS_V184_POSITION_SIZING
+    + _TABS_V185_PORTFOLIO_CONSTRUCTION
 )
 
 assert len(_TABS_V170) == 22, f"Expected 22 v1.7.0 tabs, got {len(_TABS_V170)}"
@@ -244,6 +252,7 @@ assert len(_TABS_V181_SIM_MATRIX) == 3, f"Expected 3 sim matrix tabs, got {len(_
 assert len(_TABS_V182_OPTIMIZATION) == 3, f"Expected 3 optimization tabs, got {len(_TABS_V182_OPTIMIZATION)}"
 assert len(_TABS_V183_MONTE_CARLO) == 3, f"Expected 3 monte carlo tabs, got {len(_TABS_V183_MONTE_CARLO)}"
 assert len(_TABS_V184_POSITION_SIZING) == 3, f"Expected 3 position sizing tabs, got {len(_TABS_V184_POSITION_SIZING)}"
+assert len(_TABS_V185_PORTFOLIO_CONSTRUCTION) == 3, f"Expected 3 portfolio construction tabs, got {len(_TABS_V185_PORTFOLIO_CONSTRUCTION)}"
 
 
 def get_tab_names() -> List[str]:
@@ -1386,6 +1395,10 @@ def render_all_tabs() -> Dict[str, Any]:
         "position_sizing_lab":               render_position_sizing_tab,
         "risk_budget_allocation":            render_risk_budget_allocation_tab,
         "capital_allocation":               render_capital_allocation_tab,
+        # v1.8.5 Portfolio Construction tabs
+        "portfolio_construction_lab":        render_portfolio_construction_lab_tab,
+        "portfolio_rebalancing":             render_portfolio_rebalancing_tab,
+        "portfolio_exposure_control":        render_portfolio_exposure_control_tab,
     }
     result = {}
     for tab_name in _TABS:
@@ -2710,6 +2723,65 @@ def render_capital_allocation_tab() -> Dict[str, Any]:
         "abc_buy_points": ["A_10MA_PULLBACK", "B_BREAKOUT", "C_20MA_RECLAIM"],
         "final_grades": ["SAFE", "ACCEPTABLE", "CAUTION", "HIGH_RISK", "BLOCKED"],
     }
+
+
+def render_portfolio_construction_lab_tab() -> Dict[str, Any]:
+    """Render v1.8.5 Portfolio Construction Lab tab. Headless-safe."""
+    return {
+        "tab": "portfolio_construction_lab",
+        "version": "1.8.5",
+        "paper_only": True,
+        "research_only": True,
+        "portfolio_only": True,
+        "no_real_orders": True,
+        "no_broker": True,
+        "headless_safe": True,
+        "capital_stages": [300000, 500000, 1000000, 3000000],
+        "weighting_methods": [
+            "equal_weight", "risk_budget_weight", "conviction_weight",
+            "volatility_adjusted_weight", "monte_carlo_ruin_risk_adjusted_weight",
+        ],
+        "final_grades": ["BALANCED", "ACCEPTABLE", "CONCENTRATED", "OVEREXPOSED", "HIGH_RISK", "BLOCKED"],
+    }
+
+
+def render_portfolio_rebalancing_tab() -> Dict[str, Any]:
+    """Render v1.8.5 Portfolio Rebalancing tab. Headless-safe."""
+    return {
+        "tab": "portfolio_rebalancing",
+        "version": "1.8.5",
+        "paper_only": True,
+        "research_only": True,
+        "portfolio_only": True,
+        "no_real_orders": True,
+        "no_broker": True,
+        "headless_safe": True,
+        "rebalance_thresholds": [5, 10, 15],
+        "actions": ["OBSERVE", "REVIEW_REQUIRED", "REDUCE_RISK", "PORTFOLIO_ONLY"],
+    }
+
+
+def render_portfolio_exposure_control_tab() -> Dict[str, Any]:
+    """Render v1.8.5 Portfolio Exposure Control tab. Headless-safe."""
+    return {
+        "tab": "portfolio_exposure_control",
+        "version": "1.8.5",
+        "paper_only": True,
+        "research_only": True,
+        "portfolio_only": True,
+        "no_real_orders": True,
+        "no_broker": True,
+        "headless_safe": True,
+        "max_total_exposure_options": [40, 50, 60, 70, 80],
+        "max_sector_exposure_options": [25, 35, 45],
+        "max_theme_exposure_options": [30, 40, 50],
+        "min_cash_reserve_options": [10, 20, 30, 50],
+    }
+
+
+def get_portfolio_construction_tab_names() -> List[str]:
+    """Return list of v1.8.5 portfolio construction tab names."""
+    return list(_TABS_V185_PORTFOLIO_CONSTRUCTION)
 
 
 def get_panel_info() -> Dict[str, Any]:

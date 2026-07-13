@@ -1,0 +1,56 @@
+{
+  "_fixture_meta": {
+    "fixture_id": "fix_pc185_028",
+    "category": "conviction_weight",
+    "schema_version": "185",
+    "paper_only": true,
+    "research_only": true,
+    "simulate_only": true,
+    "validation_only": true,
+    "portfolio_only": true,
+    "no_real_orders": true,
+    "no_broker": true,
+    "no_margin": true,
+    "no_leverage": true,
+    "not_investment_advice": true,
+    "demo_only": true,
+    "not_for_production": true,
+    "production_trading_blocked": true
+  },
+  "scenario": "conviction_weight_inverted_bad",
+  "capital": 800000,
+  "currency": "TWD",
+  "market_regime": "NEUTRAL",
+  "holdings": [
+    {
+      "ticker": "2303",
+      "name": "聯電",
+      "shares": 10000,
+      "avg_cost": 52.0,
+      "current_price": 49.5,
+      "weight": 0.371,
+      "unrealized_pnl_pct": -0.0481,
+      "sector": "半導體",
+      "conviction": "LOW",
+      "conviction_score": 3
+    },
+    {
+      "ticker": "2330",
+      "name": "台積電",
+      "shares": 500,
+      "avg_cost": 880.0,
+      "current_price": 920.0,
+      "weight": 0.173,
+      "unrealized_pnl_pct": 0.0455,
+      "sector": "半導體",
+      "conviction": "HIGH",
+      "conviction_score": 9
+    }
+  ],
+  "max_positions": 8,
+  "cash_ratio": 0.456,
+  "weight_scheme": "conviction_inverted",
+  "expected_grade": "D",
+  "expected_action": "REBALANCE_BY_CONVICTION",
+  "notes": "信心度配重錯誤：低信心聯電佔比反高於高信心台積電，需調整"
+}

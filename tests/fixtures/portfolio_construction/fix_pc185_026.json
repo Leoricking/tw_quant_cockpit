@@ -1,0 +1,56 @@
+{
+  "_fixture_meta": {
+    "fixture_id": "fix_pc185_026",
+    "category": "conviction_weight",
+    "schema_version": "185",
+    "paper_only": true,
+    "research_only": true,
+    "simulate_only": true,
+    "validation_only": true,
+    "portfolio_only": true,
+    "no_real_orders": true,
+    "no_broker": true,
+    "no_margin": true,
+    "no_leverage": true,
+    "not_investment_advice": true,
+    "demo_only": true,
+    "not_for_production": true,
+    "production_trading_blocked": true
+  },
+  "scenario": "conviction_weight_high_low",
+  "capital": 1000000,
+  "currency": "TWD",
+  "market_regime": "BULL",
+  "holdings": [
+    {
+      "ticker": "2330",
+      "name": "台積電",
+      "shares": 2500,
+      "avg_cost": 800.0,
+      "current_price": 950.0,
+      "weight": 0.475,
+      "unrealized_pnl_pct": 0.1875,
+      "sector": "半導體",
+      "conviction": "HIGH",
+      "conviction_score": 9
+    },
+    {
+      "ticker": "1301",
+      "name": "台塑",
+      "shares": 3000,
+      "avg_cost": 85.0,
+      "current_price": 85.0,
+      "weight": 0.085,
+      "unrealized_pnl_pct": 0.0,
+      "sector": "石化",
+      "conviction": "LOW",
+      "conviction_score": 3
+    }
+  ],
+  "max_positions": 8,
+  "cash_ratio": 0.44,
+  "weight_scheme": "conviction_proportional",
+  "expected_grade": "A",
+  "expected_action": "KEEP",
+  "notes": "依信心度配重，高信心台積電佔大比例，低信心台塑佔小比例"
+}

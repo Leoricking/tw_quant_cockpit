@@ -1,0 +1,43 @@
+{
+  "_fixture_meta": {
+    "fixture_id": "fix_pc185_010",
+    "category": "single_holding",
+    "schema_version": "185",
+    "paper_only": true,
+    "research_only": true,
+    "simulate_only": true,
+    "validation_only": true,
+    "portfolio_only": true,
+    "no_real_orders": true,
+    "no_broker": true,
+    "no_margin": true,
+    "no_leverage": true,
+    "not_investment_advice": true,
+    "demo_only": true,
+    "not_for_production": true,
+    "production_trading_blocked": true
+  },
+  "scenario": "single_holding_high_conviction_bull",
+  "capital": 1000000,
+  "currency": "TWD",
+  "market_regime": "BULL",
+  "holdings": [
+    {
+      "ticker": "2330",
+      "name": "台積電",
+      "shares": 3000,
+      "avg_cost": 780.0,
+      "current_price": 950.0,
+      "weight": 0.285,
+      "unrealized_pnl_pct": 0.2179,
+      "sector": "半導體",
+      "conviction": "HIGH",
+      "signal": "BREAKOUT"
+    }
+  ],
+  "max_positions": 10,
+  "cash_ratio": 0.715,
+  "expected_grade": "A",
+  "expected_action": "KEEP",
+  "notes": "台積電突破新高，高信心度持有，大量現金可繼續加碼其他標的"
+}

@@ -1,0 +1,62 @@
+{
+  "_fixture_meta": {
+    "fixture_id": "fix_pc185_044",
+    "category": "theme_exposure",
+    "schema_version": "185",
+    "paper_only": true,
+    "research_only": true,
+    "simulate_only": true,
+    "validation_only": true,
+    "portfolio_only": true,
+    "no_real_orders": true,
+    "no_broker": true,
+    "no_margin": true,
+    "no_leverage": true,
+    "not_investment_advice": true,
+    "demo_only": true,
+    "not_for_production": true,
+    "production_trading_blocked": true
+  },
+  "scenario": "theme_exposure_mixed_themes",
+  "capital": 1200000,
+  "currency": "TWD",
+  "market_regime": "BULL",
+  "holdings": [
+    {
+      "ticker": "2330",
+      "name": "台積電",
+      "shares": 1500,
+      "avg_cost": 830.0,
+      "current_price": 950.0,
+      "weight": 0.356,
+      "theme_tags": ["AI", "半導體", "CoWoS"],
+      "conviction": "HIGH"
+    },
+    {
+      "ticker": "2308",
+      "name": "台達電",
+      "shares": 1200,
+      "avg_cost": 275.0,
+      "current_price": 290.0,
+      "weight": 0.087,
+      "theme_tags": ["EV", "電源", "綠能"],
+      "conviction": "MEDIUM"
+    },
+    {
+      "ticker": "5880",
+      "name": "合庫金",
+      "shares": 15000,
+      "avg_cost": 24.5,
+      "current_price": 25.5,
+      "weight": 0.095,
+      "theme_tags": ["高殖利率", "金融"],
+      "conviction": "LOW"
+    }
+  ],
+  "max_positions": 8,
+  "cash_ratio": 0.462,
+  "themes_present": ["AI", "EV", "高殖利率"],
+  "expected_grade": "B",
+  "expected_action": "KEEP_DIVERSIFY_THEMES",
+  "notes": "三大主題並存，AI 為核心，EV 與高殖利率為分散配置"
+}

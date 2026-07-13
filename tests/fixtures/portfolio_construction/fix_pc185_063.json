@@ -1,0 +1,68 @@
+{
+  "_fixture_meta": {
+    "fixture_id": "fix_pc185_063",
+    "category": "rebalance",
+    "schema_version": "185",
+    "paper_only": true,
+    "research_only": true,
+    "simulate_only": true,
+    "validation_only": true,
+    "portfolio_only": true,
+    "no_real_orders": true,
+    "no_broker": true,
+    "no_margin": true,
+    "no_leverage": true,
+    "not_investment_advice": true,
+    "demo_only": true,
+    "not_for_production": true,
+    "production_trading_blocked": true
+  },
+  "scenario": "rebalance_calendar_quarterly",
+  "capital": 1500000,
+  "currency": "TWD",
+  "market_regime": "NEUTRAL",
+  "rebalance_type": "CALENDAR",
+  "rebalance_frequency": "QUARTERLY",
+  "last_rebalance_date": "2025-03-31",
+  "next_rebalance_date": "2025-06-30",
+  "holdings": [
+    {
+      "ticker": "2330",
+      "name": "台積電",
+      "shares": 1500,
+      "avg_cost": 870.0,
+      "current_price": 905.0,
+      "current_weight": 0.271,
+      "target_weight": 0.25,
+      "drift": 0.021,
+      "conviction": "HIGH"
+    },
+    {
+      "ticker": "2882",
+      "name": "國泰金",
+      "shares": 15000,
+      "avg_cost": 47.5,
+      "current_price": 48.5,
+      "current_weight": 0.218,
+      "target_weight": 0.25,
+      "drift": -0.032,
+      "conviction": "MEDIUM"
+    },
+    {
+      "ticker": "1301",
+      "name": "台塑",
+      "shares": 5000,
+      "avg_cost": 83.0,
+      "current_price": 85.0,
+      "current_weight": 0.085,
+      "target_weight": 0.10,
+      "drift": -0.015,
+      "conviction": "LOW"
+    }
+  ],
+  "max_positions": 8,
+  "cash_ratio": 0.426,
+  "expected_action": "SCHEDULE_REBALANCE",
+  "expected_grade": "B",
+  "notes": "季度再平衡週期到期，各項偏離在可接受範圍，預定執行再平衡"
+}

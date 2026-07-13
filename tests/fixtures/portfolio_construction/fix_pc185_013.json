@@ -1,0 +1,54 @@
+{
+  "_fixture_meta": {
+    "fixture_id": "fix_pc185_013",
+    "category": "equal_weight_2",
+    "schema_version": "185",
+    "paper_only": true,
+    "research_only": true,
+    "simulate_only": true,
+    "validation_only": true,
+    "portfolio_only": true,
+    "no_real_orders": true,
+    "no_broker": true,
+    "no_margin": true,
+    "no_leverage": true,
+    "not_investment_advice": true,
+    "demo_only": true,
+    "not_for_production": true,
+    "production_trading_blocked": true
+  },
+  "scenario": "equal_weight_2_imbalanced",
+  "capital": 500000,
+  "currency": "TWD",
+  "market_regime": "NEUTRAL",
+  "holdings": [
+    {
+      "ticker": "2317",
+      "name": "鴻海",
+      "shares": 5000,
+      "avg_cost": 105.0,
+      "current_price": 112.0,
+      "weight": 0.56,
+      "unrealized_pnl_pct": 0.0667,
+      "sector": "電子製造",
+      "conviction": "MEDIUM"
+    },
+    {
+      "ticker": "1301",
+      "name": "台塑",
+      "shares": 2000,
+      "avg_cost": 88.0,
+      "current_price": 85.5,
+      "weight": 0.171,
+      "unrealized_pnl_pct": -0.0284,
+      "sector": "石化",
+      "conviction": "LOW"
+    }
+  ],
+  "max_positions": 8,
+  "cash_ratio": 0.269,
+  "expected_grade": "C",
+  "expected_action": "REBALANCE",
+  "target_weight_each": 0.35,
+  "notes": "兩檔權重嚴重失衡，需調整至接近等權"
+}

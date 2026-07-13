@@ -1,0 +1,63 @@
+{
+  "_fixture_meta": {
+    "fixture_id": "fix_pc185_042",
+    "category": "theme_exposure",
+    "schema_version": "185",
+    "paper_only": true,
+    "research_only": true,
+    "simulate_only": true,
+    "validation_only": true,
+    "portfolio_only": true,
+    "no_real_orders": true,
+    "no_broker": true,
+    "no_margin": true,
+    "no_leverage": true,
+    "not_investment_advice": true,
+    "demo_only": true,
+    "not_for_production": true,
+    "production_trading_blocked": true
+  },
+  "scenario": "theme_exposure_ev_supply_chain",
+  "capital": 800000,
+  "currency": "TWD",
+  "market_regime": "NEUTRAL",
+  "theme": "電動車供應鏈",
+  "holdings": [
+    {
+      "ticker": "2308",
+      "name": "台達電",
+      "shares": 1500,
+      "avg_cost": 280.0,
+      "current_price": 290.0,
+      "weight": 0.163,
+      "theme_tags": ["EV", "電源模組", "充電樁"],
+      "conviction": "HIGH"
+    },
+    {
+      "ticker": "1590",
+      "name": "亞德客",
+      "shares": 1000,
+      "avg_cost": 680.0,
+      "current_price": 720.0,
+      "weight": 0.27,
+      "theme_tags": ["EV", "自動化", "氣動元件"],
+      "conviction": "HIGH"
+    },
+    {
+      "ticker": "2395",
+      "name": "研華",
+      "shares": 1000,
+      "avg_cost": 340.0,
+      "current_price": 355.0,
+      "weight": 0.133,
+      "theme_tags": ["EV", "工業電腦", "AIoT"],
+      "conviction": "MEDIUM"
+    }
+  ],
+  "max_positions": 8,
+  "cash_ratio": 0.434,
+  "theme_total_weight": 0.566,
+  "expected_grade": "B",
+  "expected_action": "KEEP",
+  "notes": "電動車供應鏈主題，三檔均受益於EV趨勢且全部獲利"
+}

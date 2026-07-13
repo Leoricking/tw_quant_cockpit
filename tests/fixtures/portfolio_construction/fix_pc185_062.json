@@ -1,0 +1,55 @@
+{
+  "_fixture_meta": {
+    "fixture_id": "fix_pc185_062",
+    "category": "rebalance",
+    "schema_version": "185",
+    "paper_only": true,
+    "research_only": true,
+    "simulate_only": true,
+    "validation_only": true,
+    "portfolio_only": true,
+    "no_real_orders": true,
+    "no_broker": true,
+    "no_margin": true,
+    "no_leverage": true,
+    "not_investment_advice": true,
+    "demo_only": true,
+    "not_for_production": true,
+    "production_trading_blocked": true
+  },
+  "scenario": "rebalance_within_tolerance",
+  "capital": 1000000,
+  "currency": "TWD",
+  "market_regime": "NEUTRAL",
+  "holdings": [
+    {
+      "ticker": "2330",
+      "name": "台積電",
+      "shares": 1100,
+      "avg_cost": 880.0,
+      "current_price": 920.0,
+      "current_weight": 0.304,
+      "target_weight": 0.30,
+      "drift": 0.004,
+      "conviction": "HIGH"
+    },
+    {
+      "ticker": "2454",
+      "name": "聯發科",
+      "shares": 700,
+      "avg_cost": 760.0,
+      "current_price": 785.0,
+      "current_weight": 0.165,
+      "target_weight": 0.17,
+      "drift": -0.005,
+      "conviction": "HIGH"
+    }
+  ],
+  "max_positions": 8,
+  "cash_ratio": 0.531,
+  "rebalance_threshold": 0.05,
+  "rebalance_triggered": false,
+  "expected_action": "NO_REBALANCE_NEEDED",
+  "expected_grade": "A",
+  "notes": "兩檔偏離均在 1% 以內，無需再平衡，維持現況"
+}

@@ -1,0 +1,49 @@
+{
+  "_fixture_meta": {
+    "fixture_id": "fix_pc185_057",
+    "category": "keep_replace",
+    "schema_version": "185",
+    "paper_only": true,
+    "research_only": true,
+    "simulate_only": true,
+    "validation_only": true,
+    "portfolio_only": true,
+    "no_real_orders": true,
+    "no_broker": true,
+    "no_margin": true,
+    "no_leverage": true,
+    "not_investment_advice": true,
+    "demo_only": true,
+    "not_for_production": true,
+    "production_trading_blocked": true
+  },
+  "scenario": "keep_replace_loser_replace",
+  "capital": 800000,
+  "currency": "TWD",
+  "market_regime": "NEUTRAL",
+  "candidate": {
+    "ticker": "2303",
+    "name": "聯電",
+    "shares": 5000,
+    "avg_cost": 55.0,
+    "current_price": 47.5,
+    "unrealized_pnl_pct": -0.1364,
+    "technical_score": 3.5,
+    "fundamental_score": 4.0,
+    "momentum_score": 2.5,
+    "composite_score": 3.3
+  },
+  "replacement_candidate": {
+    "ticker": "2379",
+    "name": "瑞昱",
+    "technical_score": 7.5,
+    "fundamental_score": 7.0,
+    "momentum_score": 8.0,
+    "composite_score": 7.5
+  },
+  "decision": "REPLACE",
+  "replace_reasons": ["技術面持續惡化", "動能分數最低", "更佳替代標的已出現"],
+  "expected_action": "REPLACE",
+  "expected_grade": "D",
+  "notes": "聯電評分全面落後且虧損超過 13%，以瑞昱替換"
+}

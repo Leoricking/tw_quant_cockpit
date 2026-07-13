@@ -1,0 +1,97 @@
+{
+  "_fixture_meta": {
+    "fixture_id": "fix_pc185_025",
+    "category": "multi_holding",
+    "schema_version": "185",
+    "paper_only": true,
+    "research_only": true,
+    "simulate_only": true,
+    "validation_only": true,
+    "portfolio_only": true,
+    "no_real_orders": true,
+    "no_broker": true,
+    "no_margin": true,
+    "no_leverage": true,
+    "not_investment_advice": true,
+    "demo_only": true,
+    "not_for_production": true,
+    "production_trading_blocked": true
+  },
+  "scenario": "multi_holding_6_bear",
+  "capital": 1000000,
+  "currency": "TWD",
+  "market_regime": "BEAR",
+  "holdings": [
+    {
+      "ticker": "2330",
+      "name": "台積電",
+      "shares": 400,
+      "avg_cost": 900.0,
+      "current_price": 780.0,
+      "weight": 0.106,
+      "unrealized_pnl_pct": -0.1333,
+      "sector": "半導體",
+      "conviction": "LOW"
+    },
+    {
+      "ticker": "2454",
+      "name": "聯發科",
+      "shares": 300,
+      "avg_cost": 790.0,
+      "current_price": 660.0,
+      "weight": 0.067,
+      "unrealized_pnl_pct": -0.1645,
+      "sector": "IC設計",
+      "conviction": "LOW"
+    },
+    {
+      "ticker": "2317",
+      "name": "鴻海",
+      "shares": 2000,
+      "avg_cost": 112.0,
+      "current_price": 95.0,
+      "weight": 0.064,
+      "unrealized_pnl_pct": -0.1518,
+      "sector": "電子製造",
+      "conviction": "LOW"
+    },
+    {
+      "ticker": "2882",
+      "name": "國泰金",
+      "shares": 8000,
+      "avg_cost": 50.0,
+      "current_price": 44.0,
+      "weight": 0.119,
+      "unrealized_pnl_pct": -0.12,
+      "sector": "金融",
+      "conviction": "LOW"
+    },
+    {
+      "ticker": "1301",
+      "name": "台塑",
+      "shares": 3000,
+      "avg_cost": 88.0,
+      "current_price": 76.0,
+      "weight": 0.077,
+      "unrealized_pnl_pct": -0.1364,
+      "sector": "石化",
+      "conviction": "LOW"
+    },
+    {
+      "ticker": "2412",
+      "name": "中華電",
+      "shares": 2000,
+      "avg_cost": 125.0,
+      "current_price": 122.0,
+      "weight": 0.082,
+      "unrealized_pnl_pct": -0.024,
+      "sector": "電信",
+      "conviction": "MEDIUM"
+    }
+  ],
+  "max_positions": 8,
+  "cash_ratio": 0.485,
+  "expected_grade": "D",
+  "expected_action": "DEFENSIVE_LIQUIDATE",
+  "notes": "熊市中六檔全線虧損，建議大幅減倉至安全水位，保留現金"
+}

@@ -1,0 +1,53 @@
+{
+  "_fixture_meta": {
+    "fixture_id": "fix_pc185_015",
+    "category": "equal_weight_2",
+    "schema_version": "185",
+    "paper_only": true,
+    "research_only": true,
+    "simulate_only": true,
+    "validation_only": true,
+    "portfolio_only": true,
+    "no_real_orders": true,
+    "no_broker": true,
+    "no_margin": true,
+    "no_leverage": true,
+    "not_investment_advice": true,
+    "demo_only": true,
+    "not_for_production": true,
+    "production_trading_blocked": true
+  },
+  "scenario": "equal_weight_2_perfect_balance",
+  "capital": 1000000,
+  "currency": "TWD",
+  "market_regime": "BULL",
+  "holdings": [
+    {
+      "ticker": "2330",
+      "name": "台積電",
+      "shares": 1000,
+      "avg_cost": 490.0,
+      "current_price": 950.0,
+      "weight": 0.475,
+      "unrealized_pnl_pct": 0.9388,
+      "sector": "半導體",
+      "conviction": "HIGH"
+    },
+    {
+      "ticker": "6505",
+      "name": "台塑化",
+      "shares": 10000,
+      "avg_cost": 50.0,
+      "current_price": 52.0,
+      "weight": 0.26,
+      "unrealized_pnl_pct": 0.04,
+      "sector": "石化",
+      "conviction": "MEDIUM"
+    }
+  ],
+  "max_positions": 10,
+  "cash_ratio": 0.265,
+  "expected_grade": "A",
+  "expected_action": "KEEP",
+  "notes": "台積電大幅獲利，整體配置良好，可考慮再加入一至兩檔"
+}

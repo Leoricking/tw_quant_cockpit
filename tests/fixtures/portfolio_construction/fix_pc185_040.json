@@ -1,0 +1,77 @@
+{
+  "_fixture_meta": {
+    "fixture_id": "fix_pc185_040",
+    "category": "sector_exposure",
+    "schema_version": "185",
+    "paper_only": true,
+    "research_only": true,
+    "simulate_only": true,
+    "validation_only": true,
+    "portfolio_only": true,
+    "no_real_orders": true,
+    "no_broker": true,
+    "no_margin": true,
+    "no_leverage": true,
+    "not_investment_advice": true,
+    "demo_only": true,
+    "not_for_production": true,
+    "production_trading_blocked": true
+  },
+  "scenario": "sector_exposure_borderline_ok",
+  "capital": 1000000,
+  "currency": "TWD",
+  "market_regime": "NEUTRAL",
+  "holdings": [
+    {
+      "ticker": "2330",
+      "name": "台積電",
+      "shares": 1000,
+      "avg_cost": 900.0,
+      "current_price": 905.0,
+      "weight": 0.272,
+      "sector": "半導體",
+      "conviction": "HIGH"
+    },
+    {
+      "ticker": "2454",
+      "name": "聯發科",
+      "shares": 800,
+      "avg_cost": 750.0,
+      "current_price": 785.0,
+      "weight": 0.189,
+      "sector": "半導體",
+      "conviction": "HIGH"
+    },
+    {
+      "ticker": "2308",
+      "name": "台達電",
+      "shares": 500,
+      "avg_cost": 285.0,
+      "current_price": 290.0,
+      "weight": 0.044,
+      "sector": "電源",
+      "conviction": "LOW"
+    },
+    {
+      "ticker": "2882",
+      "name": "國泰金",
+      "shares": 6000,
+      "avg_cost": 47.0,
+      "current_price": 48.5,
+      "weight": 0.087,
+      "sector": "金融",
+      "conviction": "MEDIUM"
+    }
+  ],
+  "max_positions": 8,
+  "cash_ratio": 0.408,
+  "sector_weights": {
+    "半導體": 0.461,
+    "電源": 0.044,
+    "金融": 0.087
+  },
+  "sector_limit": 0.50,
+  "expected_grade": "B",
+  "expected_action": "MONITOR_SEMI_EXPOSURE",
+  "notes": "半導體佔比 46.1% 接近 50% 上限，需監控避免超標"
+}

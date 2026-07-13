@@ -1,0 +1,40 @@
+{
+  "_fixture_meta": {
+    "fixture_id": "fix_pc185_073",
+    "category": "capital_stage",
+    "schema_version": "185",
+    "paper_only": true,
+    "research_only": true,
+    "simulate_only": true,
+    "validation_only": true,
+    "portfolio_only": true,
+    "no_real_orders": true,
+    "no_broker": true,
+    "no_margin": true,
+    "no_leverage": true,
+    "not_investment_advice": true,
+    "demo_only": true,
+    "not_for_production": true,
+    "production_trading_blocked": true
+  },
+  "scenario": "capital_stage_1m_advanced",
+  "capital": 1000000,
+  "currency": "TWD",
+  "capital_stage": "ADVANCED",
+  "market_regime": "NEUTRAL",
+  "recommended_max_positions": 8,
+  "min_position_size_twd": 80000,
+  "holdings": [
+    {"ticker": "2330", "name": "台積電", "shares": 1000, "avg_cost": 880.0, "current_price": 920.0, "weight": 0.276, "conviction": "HIGH"},
+    {"ticker": "2454", "name": "聯發科", "shares": 700, "avg_cost": 750.0, "current_price": 785.0, "weight": 0.165, "conviction": "HIGH"},
+    {"ticker": "2882", "name": "國泰金", "shares": 8000, "avg_cost": 47.0, "current_price": 48.5, "weight": 0.116, "conviction": "MEDIUM"},
+    {"ticker": "2412", "name": "中華電", "shares": 3000, "avg_cost": 120.0, "current_price": 124.5, "weight": 0.112, "conviction": "MEDIUM"},
+    {"ticker": "1301", "name": "台塑", "shares": 3000, "avg_cost": 82.0, "current_price": 85.0, "weight": 0.076, "conviction": "LOW"}
+  ],
+  "max_positions": 8,
+  "cash_ratio": 0.255,
+  "expected_grade": "A",
+  "expected_action": "CONSIDER_6TH_POSITION",
+  "stage_guidance": "100 萬進階資金可持有 6-8 檔個股，兼顧分散與集中",
+  "notes": "進階 100 萬資金，持有 5 檔跨板塊組合，可考慮增加第 6 檔"
+}

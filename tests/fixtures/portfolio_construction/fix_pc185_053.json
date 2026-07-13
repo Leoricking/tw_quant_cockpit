@@ -1,0 +1,59 @@
+{
+  "_fixture_meta": {
+    "fixture_id": "fix_pc185_053",
+    "category": "monte_carlo_ruin",
+    "schema_version": "185",
+    "paper_only": true,
+    "research_only": true,
+    "simulate_only": true,
+    "validation_only": true,
+    "portfolio_only": true,
+    "no_real_orders": true,
+    "no_broker": true,
+    "no_margin": true,
+    "no_leverage": true,
+    "not_investment_advice": true,
+    "demo_only": true,
+    "not_for_production": true,
+    "production_trading_blocked": true
+  },
+  "scenario": "monte_carlo_ruin_15pct_warning",
+  "capital": 600000,
+  "currency": "TWD",
+  "market_regime": "WEAK",
+  "monte_carlo": {
+    "simulations": 10000,
+    "horizon_days": 252,
+    "ruin_threshold": 0.50,
+    "ruin_probability": 0.15,
+    "median_return": 0.02,
+    "p5_return": -0.28,
+    "p95_return": 0.30
+  },
+  "holdings": [
+    {
+      "ticker": "2454",
+      "name": "聯發科",
+      "shares": 1000,
+      "avg_cost": 800.0,
+      "current_price": 730.0,
+      "weight": 0.365,
+      "conviction": "LOW"
+    },
+    {
+      "ticker": "3008",
+      "name": "大立光",
+      "shares": 200,
+      "avg_cost": 1900.0,
+      "current_price": 1750.0,
+      "weight": 0.175,
+      "conviction": "LOW"
+    }
+  ],
+  "max_positions": 8,
+  "cash_ratio": 0.460,
+  "expected_grade": "C",
+  "expected_action": "REDUCE_TO_LOWER_RUIN_RISK",
+  "ruin_risk_level": "WARNING",
+  "notes": "破產機率 15% 已達警戒線，需降低高波動部位減少下行風險"
+}

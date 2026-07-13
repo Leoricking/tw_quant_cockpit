@@ -1,0 +1,44 @@
+{
+  "_fixture_meta": {
+    "fixture_id": "fix_pc185_069",
+    "category": "diversification",
+    "schema_version": "185",
+    "paper_only": true,
+    "research_only": true,
+    "simulate_only": true,
+    "validation_only": true,
+    "portfolio_only": true,
+    "no_real_orders": true,
+    "no_broker": true,
+    "no_margin": true,
+    "no_leverage": true,
+    "not_investment_advice": true,
+    "demo_only": true,
+    "not_for_production": true,
+    "production_trading_blocked": true
+  },
+  "scenario": "diversification_over_diversified",
+  "capital": 500000,
+  "currency": "TWD",
+  "market_regime": "NEUTRAL",
+  "holdings": [
+    {"ticker": "2330", "name": "台積電", "weight": 0.08, "sector": "半導體", "conviction": "HIGH"},
+    {"ticker": "2317", "name": "鴻海", "weight": 0.07, "sector": "電子製造", "conviction": "MEDIUM"},
+    {"ticker": "2882", "name": "國泰金", "weight": 0.07, "sector": "金融", "conviction": "MEDIUM"},
+    {"ticker": "2412", "name": "中華電", "weight": 0.07, "sector": "電信", "conviction": "LOW"},
+    {"ticker": "1301", "name": "台塑", "weight": 0.06, "sector": "石化", "conviction": "LOW"},
+    {"ticker": "2308", "name": "台達電", "weight": 0.06, "sector": "電源", "conviction": "LOW"},
+    {"ticker": "3008", "name": "大立光", "weight": 0.06, "sector": "光學", "conviction": "LOW"},
+    {"ticker": "2303", "name": "聯電", "weight": 0.05, "sector": "半導體", "conviction": "LOW"}
+  ],
+  "max_positions": 8,
+  "cash_ratio": 0.48,
+  "diversification_metrics": {
+    "num_sectors": 7,
+    "effective_n": 8.0,
+    "over_diversified": true
+  },
+  "expected_grade": "C",
+  "expected_action": "CONCENTRATE_BEST_IDEAS",
+  "notes": "過度分散（8 檔），每檔僅佔 5-8%，難以影響整體績效，建議精選 4-6 檔高信心標的"
+}

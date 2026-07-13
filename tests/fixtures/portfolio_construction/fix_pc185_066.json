@@ -1,0 +1,42 @@
+{
+  "_fixture_meta": {
+    "fixture_id": "fix_pc185_066",
+    "category": "diversification",
+    "schema_version": "185",
+    "paper_only": true,
+    "research_only": true,
+    "simulate_only": true,
+    "validation_only": true,
+    "portfolio_only": true,
+    "no_real_orders": true,
+    "no_broker": true,
+    "no_margin": true,
+    "no_leverage": true,
+    "not_investment_advice": true,
+    "demo_only": true,
+    "not_for_production": true,
+    "production_trading_blocked": true
+  },
+  "scenario": "diversification_well_diversified",
+  "capital": 1200000,
+  "currency": "TWD",
+  "market_regime": "NEUTRAL",
+  "holdings": [
+    {"ticker": "2330", "name": "台積電", "weight": 0.20, "sector": "半導體", "conviction": "HIGH"},
+    {"ticker": "2317", "name": "鴻海", "weight": 0.12, "sector": "電子製造", "conviction": "MEDIUM"},
+    {"ticker": "2882", "name": "國泰金", "weight": 0.10, "sector": "金融", "conviction": "MEDIUM"},
+    {"ticker": "2412", "name": "中華電", "weight": 0.10, "sector": "電信", "conviction": "MEDIUM"},
+    {"ticker": "1301", "name": "台塑", "weight": 0.08, "sector": "石化", "conviction": "LOW"}
+  ],
+  "max_positions": 8,
+  "cash_ratio": 0.40,
+  "diversification_metrics": {
+    "num_sectors": 5,
+    "herfindahl_index": 0.062,
+    "max_single_weight": 0.20,
+    "effective_n": 6.8
+  },
+  "expected_grade": "A",
+  "expected_action": "KEEP",
+  "notes": "五板塊分散配置，赫芬達爾指數 0.062 顯示良好分散度"
+}

@@ -1,0 +1,78 @@
+{
+  "_fixture_meta": {
+    "fixture_id": "fix_pc185_037",
+    "category": "sector_exposure",
+    "schema_version": "185",
+    "paper_only": true,
+    "research_only": true,
+    "simulate_only": true,
+    "validation_only": true,
+    "portfolio_only": true,
+    "no_real_orders": true,
+    "no_broker": true,
+    "no_margin": true,
+    "no_leverage": true,
+    "not_investment_advice": true,
+    "demo_only": true,
+    "not_for_production": true,
+    "production_trading_blocked": true
+  },
+  "scenario": "sector_exposure_balanced_ok",
+  "capital": 1000000,
+  "currency": "TWD",
+  "market_regime": "BULL",
+  "holdings": [
+    {
+      "ticker": "2330",
+      "name": "台積電",
+      "shares": 1000,
+      "avg_cost": 880.0,
+      "current_price": 920.0,
+      "weight": 0.276,
+      "sector": "半導體",
+      "conviction": "HIGH"
+    },
+    {
+      "ticker": "2882",
+      "name": "國泰金",
+      "shares": 10000,
+      "avg_cost": 46.0,
+      "current_price": 48.5,
+      "weight": 0.146,
+      "sector": "金融",
+      "conviction": "MEDIUM"
+    },
+    {
+      "ticker": "1301",
+      "name": "台塑",
+      "shares": 4000,
+      "avg_cost": 83.0,
+      "current_price": 85.0,
+      "weight": 0.102,
+      "sector": "石化",
+      "conviction": "LOW"
+    },
+    {
+      "ticker": "2412",
+      "name": "中華電",
+      "shares": 3000,
+      "avg_cost": 120.0,
+      "current_price": 124.5,
+      "weight": 0.112,
+      "sector": "電信",
+      "conviction": "MEDIUM"
+    }
+  ],
+  "max_positions": 8,
+  "cash_ratio": 0.364,
+  "sector_weights": {
+    "半導體": 0.276,
+    "金融": 0.146,
+    "石化": 0.102,
+    "電信": 0.112
+  },
+  "sector_limit": 0.50,
+  "expected_grade": "A",
+  "expected_action": "KEEP",
+  "notes": "四板塊均衡配置，無板塊超過限制，分散效果良好"
+}

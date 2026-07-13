@@ -1,0 +1,41 @@
+{
+  "_fixture_meta": {
+    "fixture_id": "fix_pc185_058",
+    "category": "keep_replace",
+    "schema_version": "185",
+    "paper_only": true,
+    "research_only": true,
+    "simulate_only": true,
+    "validation_only": true,
+    "portfolio_only": true,
+    "no_real_orders": true,
+    "no_broker": true,
+    "no_margin": true,
+    "no_leverage": true,
+    "not_investment_advice": true,
+    "demo_only": true,
+    "not_for_production": true,
+    "production_trading_blocked": true
+  },
+  "scenario": "keep_replace_marginal_hold",
+  "capital": 1000000,
+  "currency": "TWD",
+  "market_regime": "NEUTRAL",
+  "candidate": {
+    "ticker": "2317",
+    "name": "鴻海",
+    "shares": 3000,
+    "avg_cost": 108.0,
+    "current_price": 112.0,
+    "unrealized_pnl_pct": 0.037,
+    "technical_score": 5.5,
+    "fundamental_score": 5.0,
+    "momentum_score": 5.5,
+    "composite_score": 5.3
+  },
+  "decision": "KEEP_WATCH",
+  "watch_reasons": ["評分中等，持倉成本低", "需觀察下季財報", "短期無明確方向"],
+  "expected_action": "KEEP",
+  "expected_grade": "B",
+  "notes": "鴻海評分中等但有小獲利，短期繼續持有並密切觀察財報"
+}

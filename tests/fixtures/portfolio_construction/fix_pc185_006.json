@@ -1,0 +1,42 @@
+{
+  "_fixture_meta": {
+    "fixture_id": "fix_pc185_006",
+    "category": "single_holding",
+    "schema_version": "185",
+    "paper_only": true,
+    "research_only": true,
+    "simulate_only": true,
+    "validation_only": true,
+    "portfolio_only": true,
+    "no_real_orders": true,
+    "no_broker": true,
+    "no_margin": true,
+    "no_leverage": true,
+    "not_investment_advice": true,
+    "demo_only": true,
+    "not_for_production": true,
+    "production_trading_blocked": true
+  },
+  "scenario": "single_holding_keep",
+  "capital": 500000,
+  "currency": "TWD",
+  "market_regime": "BULL",
+  "holdings": [
+    {
+      "ticker": "2330",
+      "name": "台積電",
+      "shares": 1000,
+      "avg_cost": 850.0,
+      "current_price": 920.0,
+      "weight": 0.184,
+      "unrealized_pnl_pct": 0.0824,
+      "sector": "半導體",
+      "conviction": "HIGH"
+    }
+  ],
+  "max_positions": 8,
+  "cash_ratio": 0.816,
+  "expected_grade": "B",
+  "expected_action": "KEEP",
+  "notes": "持有台積電，趨勢向上，建議繼續持有"
+}

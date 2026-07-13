@@ -1,0 +1,55 @@
+{
+  "_fixture_meta": {
+    "fixture_id": "fix_pc185_061",
+    "category": "rebalance",
+    "schema_version": "185",
+    "paper_only": true,
+    "research_only": true,
+    "simulate_only": true,
+    "validation_only": true,
+    "portfolio_only": true,
+    "no_real_orders": true,
+    "no_broker": true,
+    "no_margin": true,
+    "no_leverage": true,
+    "not_investment_advice": true,
+    "demo_only": true,
+    "not_for_production": true,
+    "production_trading_blocked": true
+  },
+  "scenario": "rebalance_drift_triggered",
+  "capital": 1000000,
+  "currency": "TWD",
+  "market_regime": "BULL",
+  "holdings": [
+    {
+      "ticker": "2330",
+      "name": "台積電",
+      "shares": 1500,
+      "avg_cost": 700.0,
+      "current_price": 950.0,
+      "current_weight": 0.428,
+      "target_weight": 0.25,
+      "drift": 0.178,
+      "conviction": "HIGH"
+    },
+    {
+      "ticker": "2882",
+      "name": "國泰金",
+      "shares": 10000,
+      "avg_cost": 48.0,
+      "current_price": 48.5,
+      "current_weight": 0.146,
+      "target_weight": 0.25,
+      "drift": -0.104,
+      "conviction": "MEDIUM"
+    }
+  ],
+  "max_positions": 8,
+  "cash_ratio": 0.426,
+  "rebalance_threshold": 0.05,
+  "rebalance_triggered": true,
+  "expected_action": "REBALANCE",
+  "expected_grade": "B",
+  "notes": "台積電大幅上漲導致權重偏離目標 17.8%，超過 5% 閾值需再平衡"
+}

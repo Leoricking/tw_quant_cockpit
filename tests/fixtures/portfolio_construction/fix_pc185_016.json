@@ -1,0 +1,64 @@
+{
+  "_fixture_meta": {
+    "fixture_id": "fix_pc185_016",
+    "category": "equal_weight_3",
+    "schema_version": "185",
+    "paper_only": true,
+    "research_only": true,
+    "simulate_only": true,
+    "validation_only": true,
+    "portfolio_only": true,
+    "no_real_orders": true,
+    "no_broker": true,
+    "no_margin": true,
+    "no_leverage": true,
+    "not_investment_advice": true,
+    "demo_only": true,
+    "not_for_production": true,
+    "production_trading_blocked": true
+  },
+  "scenario": "equal_weight_3_tech_bull",
+  "capital": 600000,
+  "currency": "TWD",
+  "market_regime": "BULL",
+  "holdings": [
+    {
+      "ticker": "2330",
+      "name": "台積電",
+      "shares": 700,
+      "avg_cost": 820.0,
+      "current_price": 920.0,
+      "weight": 0.322,
+      "unrealized_pnl_pct": 0.1220,
+      "sector": "半導體",
+      "conviction": "HIGH"
+    },
+    {
+      "ticker": "2454",
+      "name": "聯發科",
+      "shares": 800,
+      "avg_cost": 750.0,
+      "current_price": 785.0,
+      "weight": 0.313,
+      "unrealized_pnl_pct": 0.0467,
+      "sector": "半導體",
+      "conviction": "HIGH"
+    },
+    {
+      "ticker": "3034",
+      "name": "聯詠",
+      "shares": 1500,
+      "avg_cost": 200.0,
+      "current_price": 215.0,
+      "weight": 0.269,
+      "unrealized_pnl_pct": 0.075,
+      "sector": "IC設計",
+      "conviction": "MEDIUM"
+    }
+  ],
+  "max_positions": 8,
+  "cash_ratio": 0.096,
+  "expected_grade": "B",
+  "expected_action": "HOLD_CONSIDER_EXPANDING",
+  "notes": "三檔科技股等權配置，牛市環境下表現良好，可考慮增加非科技部位"
+}

@@ -1,0 +1,64 @@
+{
+  "_fixture_meta": {
+    "fixture_id": "fix_pc185_020",
+    "category": "equal_weight_3",
+    "schema_version": "185",
+    "paper_only": true,
+    "research_only": true,
+    "simulate_only": true,
+    "validation_only": true,
+    "portfolio_only": true,
+    "no_real_orders": true,
+    "no_broker": true,
+    "no_margin": true,
+    "no_leverage": true,
+    "not_investment_advice": true,
+    "demo_only": true,
+    "not_for_production": true,
+    "production_trading_blocked": true
+  },
+  "scenario": "equal_weight_3_all_gains",
+  "capital": 1000000,
+  "currency": "TWD",
+  "market_regime": "BULL",
+  "holdings": [
+    {
+      "ticker": "2330",
+      "name": "台積電",
+      "shares": 1200,
+      "avg_cost": 750.0,
+      "current_price": 950.0,
+      "weight": 0.38,
+      "unrealized_pnl_pct": 0.2667,
+      "sector": "半導體",
+      "conviction": "HIGH"
+    },
+    {
+      "ticker": "6669",
+      "name": "緯穎",
+      "shares": 1500,
+      "avg_cost": 1200.0,
+      "current_price": 1380.0,
+      "weight": 0.69,
+      "unrealized_pnl_pct": 0.15,
+      "sector": "雲端伺服器",
+      "conviction": "HIGH"
+    },
+    {
+      "ticker": "4938",
+      "name": "和碩",
+      "shares": 5000,
+      "avg_cost": 68.0,
+      "current_price": 75.0,
+      "weight": 0.125,
+      "unrealized_pnl_pct": 0.1029,
+      "sector": "電子製造",
+      "conviction": "MEDIUM"
+    }
+  ],
+  "max_positions": 10,
+  "cash_ratio": -0.195,
+  "expected_grade": "A",
+  "expected_action": "PROFIT_TAKING_CONSIDER",
+  "notes": "三檔全部獲利，AI/伺服器主題強勁，可考慮部分獲利了結"
+}

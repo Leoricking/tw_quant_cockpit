@@ -1,0 +1,41 @@
+{
+  "_fixture_meta": {
+    "fixture_id": "fix_pc185_068",
+    "category": "diversification",
+    "schema_version": "185",
+    "paper_only": true,
+    "research_only": true,
+    "simulate_only": true,
+    "validation_only": true,
+    "portfolio_only": true,
+    "no_real_orders": true,
+    "no_broker": true,
+    "no_margin": true,
+    "no_leverage": true,
+    "not_investment_advice": true,
+    "demo_only": true,
+    "not_for_production": true,
+    "production_trading_blocked": true
+  },
+  "scenario": "diversification_correlation_trap",
+  "capital": 1000000,
+  "currency": "TWD",
+  "market_regime": "NEUTRAL",
+  "holdings": [
+    {"ticker": "2330", "name": "台積電", "weight": 0.25, "sector": "半導體", "conviction": "HIGH"},
+    {"ticker": "2454", "name": "聯發科", "weight": 0.20, "sector": "IC設計", "conviction": "HIGH"},
+    {"ticker": "3034", "name": "聯詠", "weight": 0.15, "sector": "IC設計", "conviction": "MEDIUM"},
+    {"ticker": "2379", "name": "瑞昱", "weight": 0.12, "sector": "IC設計", "conviction": "MEDIUM"}
+  ],
+  "max_positions": 8,
+  "cash_ratio": 0.28,
+  "diversification_metrics": {
+    "num_sectors": 2,
+    "avg_pairwise_correlation": 0.78,
+    "herfindahl_index": 0.145,
+    "effective_n": 3.2
+  },
+  "expected_grade": "C",
+  "expected_action": "REDUCE_CORRELATION",
+  "notes": "四檔名義上分屬兩板塊但實際相關性達 0.78，分散效果差，需加入低相關標的"
+}

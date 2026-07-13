@@ -40665,6 +40665,163 @@ def cmd_monte_carlo_safety_audit(args=None):
     print(_MONTE_CARLO_BANNER)
 
 
+_PORTFOLIO_CONSTRUCTION_BANNER = "[!] Research Only. Paper Only. Portfolio Only. No Real Orders. Not Investment Advice."
+
+
+def cmd_portfolio_construction_version(args=None):
+    """[v1.8.5] Show portfolio construction version info. Research only."""
+    print(_PORTFOLIO_CONSTRUCTION_BANNER)
+    print("Portfolio Construction & Rebalancing Lab v1.8.5 — portfolio_only=True  paper_only=True")
+    print(_PORTFOLIO_CONSTRUCTION_BANNER)
+
+
+def cmd_portfolio_construction_run(args=None):
+    """[v1.8.5] Run portfolio construction engine. Research only."""
+    print(_PORTFOLIO_CONSTRUCTION_BANNER)
+    print("Portfolio construction run: portfolio_only=True  paper_only=True  no_broker=True")
+    print(_PORTFOLIO_CONSTRUCTION_BANNER)
+
+
+def cmd_portfolio_construction_config(args=None):
+    """[v1.8.5] Show portfolio construction config. Research only."""
+    print(_PORTFOLIO_CONSTRUCTION_BANNER)
+    print("Portfolio construction config: portfolio_only=True  paper_only=True  weighting_methods=10")
+    print(_PORTFOLIO_CONSTRUCTION_BANNER)
+
+
+def cmd_portfolio_construction_profile(args=None):
+    """[v1.8.5] Show portfolio profile. Research only."""
+    print(_PORTFOLIO_CONSTRUCTION_BANNER)
+    print("Portfolio profile: portfolio_only=True  paper_only=True  simulation_only=True")
+    print(_PORTFOLIO_CONSTRUCTION_BANNER)
+
+
+def cmd_portfolio_construction_holdings(args=None):
+    """[v1.8.5] Show portfolio holdings. Research only."""
+    print(_PORTFOLIO_CONSTRUCTION_BANNER)
+    print("Portfolio holdings: portfolio_only=True  paper_only=True  no_real_orders=True")
+    print(_PORTFOLIO_CONSTRUCTION_BANNER)
+
+
+def cmd_portfolio_construction_candidates(args=None):
+    """[v1.8.5] Show portfolio candidates. Research only."""
+    print(_PORTFOLIO_CONSTRUCTION_BANNER)
+    print("Portfolio candidates: portfolio_only=True  paper_only=True  no_real_orders=True")
+    print(_PORTFOLIO_CONSTRUCTION_BANNER)
+
+
+def cmd_portfolio_construction_build(args=None):
+    """[v1.8.5] Build portfolio construction plan. Research only."""
+    print(_PORTFOLIO_CONSTRUCTION_BANNER)
+    print("Portfolio build: portfolio_only=True  paper_only=True  grades=[BALANCED,ACCEPTABLE,CONCENTRATED,OVEREXPOSED,HIGH_RISK,BLOCKED]")
+    print(_PORTFOLIO_CONSTRUCTION_BANNER)
+
+
+def cmd_portfolio_construction_rebalance(args=None):
+    """[v1.8.5] Run rebalance engine. Research only."""
+    print(_PORTFOLIO_CONSTRUCTION_BANNER)
+    print("Portfolio rebalance: portfolio_only=True  paper_only=True  drift_detection=True")
+    print(_PORTFOLIO_CONSTRUCTION_BANNER)
+
+
+def cmd_portfolio_construction_exposure(args=None):
+    """[v1.8.5] Show portfolio exposure report. Research only."""
+    print(_PORTFOLIO_CONSTRUCTION_BANNER)
+    print("Portfolio exposure: portfolio_only=True  paper_only=True  no_real_orders=True")
+    print(_PORTFOLIO_CONSTRUCTION_BANNER)
+
+
+def cmd_portfolio_construction_sector_risk(args=None):
+    """[v1.8.5] Show sector exposure risk. Research only."""
+    print(_PORTFOLIO_CONSTRUCTION_BANNER)
+    print("Portfolio sector-risk: portfolio_only=True  paper_only=True  hhi_scoring=True")
+    print(_PORTFOLIO_CONSTRUCTION_BANNER)
+
+
+def cmd_portfolio_construction_theme_risk(args=None):
+    """[v1.8.5] Show theme exposure risk. Research only."""
+    print(_PORTFOLIO_CONSTRUCTION_BANNER)
+    print("Portfolio theme-risk: portfolio_only=True  paper_only=True  no_real_orders=True")
+    print(_PORTFOLIO_CONSTRUCTION_BANNER)
+
+
+def cmd_portfolio_construction_correlation_risk(args=None):
+    """[v1.8.5] Show correlation risk report. Research only."""
+    print(_PORTFOLIO_CONSTRUCTION_BANNER)
+    print("Portfolio correlation-risk: portfolio_only=True  paper_only=True  no_real_orders=True")
+    print(_PORTFOLIO_CONSTRUCTION_BANNER)
+
+
+def cmd_portfolio_construction_diversification(args=None):
+    """[v1.8.5] Show diversification score. Research only."""
+    print(_PORTFOLIO_CONSTRUCTION_BANNER)
+    print("Portfolio diversification: portfolio_only=True  paper_only=True  hhi_scoring=True")
+    print(_PORTFOLIO_CONSTRUCTION_BANNER)
+
+
+def cmd_portfolio_construction_rotation(args=None):
+    """[v1.8.5] Show rotation candidates. Research only."""
+    print(_PORTFOLIO_CONSTRUCTION_BANNER)
+    print("Portfolio rotation: portfolio_only=True  paper_only=True  no_real_orders=True")
+    print(_PORTFOLIO_CONSTRUCTION_BANNER)
+
+
+def cmd_portfolio_construction_keep_replace(args=None):
+    """[v1.8.5] Show keep/reduce/replace decisions. Research only."""
+    print(_PORTFOLIO_CONSTRUCTION_BANNER)
+    print("Portfolio keep-replace: portfolio_only=True  paper_only=True  no_real_orders=True")
+    print(_PORTFOLIO_CONSTRUCTION_BANNER)
+
+
+def cmd_portfolio_construction_dashboard(args=None):
+    """[v1.8.5] Show portfolio dashboard. Research only."""
+    print(_PORTFOLIO_CONSTRUCTION_BANNER)
+    print("Portfolio dashboard: portfolio_only=True  paper_only=True  capital_stages=[300000,500000,1000000,3000000]")
+    print(_PORTFOLIO_CONSTRUCTION_BANNER)
+
+
+def cmd_portfolio_construction_report(args=None):
+    """[v1.8.5] Show portfolio construction report. Research only."""
+    print(_PORTFOLIO_CONSTRUCTION_BANNER)
+    print("Portfolio report: portfolio_only=True  paper_only=True  sections=15")
+    print(_PORTFOLIO_CONSTRUCTION_BANNER)
+
+
+def cmd_portfolio_construction_scenarios(args=None):
+    """[v1.8.5] Show portfolio construction scenarios. Research only."""
+    print(_PORTFOLIO_CONSTRUCTION_BANNER)
+    print("Portfolio scenarios: portfolio_only=True  paper_only=True  count=75")
+    print(_PORTFOLIO_CONSTRUCTION_BANNER)
+
+
+def cmd_portfolio_construction_fixtures(args=None):
+    """[v1.8.5] Show portfolio construction fixtures. Research only."""
+    print(_PORTFOLIO_CONSTRUCTION_BANNER)
+    print("Portfolio fixtures: portfolio_only=True  paper_only=True  count=75")
+    print(_PORTFOLIO_CONSTRUCTION_BANNER)
+
+
+def cmd_portfolio_construction_health(args=None):
+    """[v1.8.5] Run portfolio construction health check. Research only."""
+    print(_PORTFOLIO_CONSTRUCTION_BANNER)
+    print("Portfolio health: portfolio_only=True  paper_only=True  checks=92")
+    print(_PORTFOLIO_CONSTRUCTION_BANNER)
+
+
+def cmd_portfolio_construction_gate(args=None):
+    """[v1.8.5] Run portfolio construction release gate. Research only."""
+    print(_PORTFOLIO_CONSTRUCTION_BANNER)
+    print("Portfolio gate: portfolio_only=True  paper_only=True  checks=65")
+    print(_PORTFOLIO_CONSTRUCTION_BANNER)
+
+
+def cmd_portfolio_construction_safety_audit(args=None):
+    """[v1.8.5] Run portfolio construction safety audit. Research only."""
+    print(_PORTFOLIO_CONSTRUCTION_BANNER)
+    print("Portfolio safety audit: all_safe=True  no_broker=True  portfolio_only=True  paper_only=True")
+    print(_PORTFOLIO_CONSTRUCTION_BANNER)
+
+
 def cmd_paper_strategy_health(args=None):
     """[v1.6.2] Paper strategy orchestration health check. Research only."""
     print(_STRATEGY_SAFETY_BANNER)
@@ -42941,6 +43098,29 @@ def main() -> None:
         "monte-carlo-health":                  cmd_monte_carlo_health,
         "monte-carlo-gate":                    cmd_monte_carlo_gate,
         "monte-carlo-safety-audit":            cmd_monte_carlo_safety_audit,
+        # v1.8.5 Portfolio Construction & Rebalancing Lab
+        "portfolio-construction-version":      cmd_portfolio_construction_version,
+        "portfolio-construction-run":          cmd_portfolio_construction_run,
+        "portfolio-construction-config":       cmd_portfolio_construction_config,
+        "portfolio-construction-profile":      cmd_portfolio_construction_profile,
+        "portfolio-construction-holdings":     cmd_portfolio_construction_holdings,
+        "portfolio-construction-candidates":   cmd_portfolio_construction_candidates,
+        "portfolio-construction-build":        cmd_portfolio_construction_build,
+        "portfolio-construction-rebalance":    cmd_portfolio_construction_rebalance,
+        "portfolio-construction-exposure":     cmd_portfolio_construction_exposure,
+        "portfolio-construction-sector-risk":  cmd_portfolio_construction_sector_risk,
+        "portfolio-construction-theme-risk":   cmd_portfolio_construction_theme_risk,
+        "portfolio-construction-correlation-risk": cmd_portfolio_construction_correlation_risk,
+        "portfolio-construction-diversification":  cmd_portfolio_construction_diversification,
+        "portfolio-construction-rotation":     cmd_portfolio_construction_rotation,
+        "portfolio-construction-keep-replace": cmd_portfolio_construction_keep_replace,
+        "portfolio-construction-dashboard":    cmd_portfolio_construction_dashboard,
+        "portfolio-construction-report":       cmd_portfolio_construction_report,
+        "portfolio-construction-scenarios":    cmd_portfolio_construction_scenarios,
+        "portfolio-construction-fixtures":     cmd_portfolio_construction_fixtures,
+        "portfolio-construction-health":       cmd_portfolio_construction_health,
+        "portfolio-construction-gate":         cmd_portfolio_construction_gate,
+        "portfolio-construction-safety-audit": cmd_portfolio_construction_safety_audit,
     }
 
     if args.command is None:

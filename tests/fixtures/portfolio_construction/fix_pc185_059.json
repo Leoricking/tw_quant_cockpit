@@ -1,0 +1,44 @@
+{
+  "_fixture_meta": {
+    "fixture_id": "fix_pc185_059",
+    "category": "keep_replace",
+    "schema_version": "185",
+    "paper_only": true,
+    "research_only": true,
+    "simulate_only": true,
+    "validation_only": true,
+    "portfolio_only": true,
+    "no_real_orders": true,
+    "no_broker": true,
+    "no_margin": true,
+    "no_leverage": true,
+    "not_investment_advice": true,
+    "demo_only": true,
+    "not_for_production": true,
+    "production_trading_blocked": true
+  },
+  "scenario": "keep_replace_upgrade_swap",
+  "capital": 1000000,
+  "currency": "TWD",
+  "market_regime": "BULL",
+  "current_holding": {
+    "ticker": "1301",
+    "name": "台塑",
+    "shares": 5000,
+    "avg_cost": 84.0,
+    "current_price": 85.5,
+    "unrealized_pnl_pct": 0.0179,
+    "composite_score": 5.0
+  },
+  "upgrade_candidate": {
+    "ticker": "2330",
+    "name": "台積電",
+    "composite_score": 9.0,
+    "expected_return_12m": 0.22
+  },
+  "decision": "UPGRADE_REPLACE",
+  "replace_reasons": ["發現更高分標的", "台塑動能平淡", "台積電技術面強勢突破"],
+  "expected_action": "REPLACE",
+  "expected_grade": "B",
+  "notes": "台塑小幅獲利但分數低，以高分台積電替換以提升組合品質"
+}

@@ -1,0 +1,42 @@
+{
+  "_fixture_meta": {
+    "fixture_id": "fix_pc185_007",
+    "category": "single_holding",
+    "schema_version": "185",
+    "paper_only": true,
+    "research_only": true,
+    "simulate_only": true,
+    "validation_only": true,
+    "portfolio_only": true,
+    "no_real_orders": true,
+    "no_broker": true,
+    "no_margin": true,
+    "no_leverage": true,
+    "not_investment_advice": true,
+    "demo_only": true,
+    "not_for_production": true,
+    "production_trading_blocked": true
+  },
+  "scenario": "single_holding_reduce",
+  "capital": 500000,
+  "currency": "TWD",
+  "market_regime": "WEAK",
+  "holdings": [
+    {
+      "ticker": "2454",
+      "name": "聯發科",
+      "shares": 2000,
+      "avg_cost": 780.0,
+      "current_price": 710.0,
+      "weight": 0.568,
+      "unrealized_pnl_pct": -0.0897,
+      "sector": "半導體",
+      "conviction": "MEDIUM"
+    }
+  ],
+  "max_positions": 8,
+  "cash_ratio": 0.432,
+  "expected_grade": "C",
+  "expected_action": "REDUCE",
+  "notes": "聯發科部位過重且出現虧損，市場走弱，建議減碼"
+}

@@ -1,0 +1,47 @@
+{
+  "_fixture_meta": {
+    "fixture_id": "fix_pc185_075",
+    "category": "capital_stage",
+    "schema_version": "185",
+    "paper_only": true,
+    "research_only": true,
+    "simulate_only": true,
+    "validation_only": true,
+    "portfolio_only": true,
+    "no_real_orders": true,
+    "no_broker": true,
+    "no_margin": true,
+    "no_leverage": true,
+    "not_investment_advice": true,
+    "demo_only": true,
+    "not_for_production": true,
+    "production_trading_blocked": true
+  },
+  "scenario": "capital_stage_500k_6holdings_full",
+  "capital": 500000,
+  "currency": "TWD",
+  "capital_stage": "INTERMEDIATE_FULL",
+  "market_regime": "BULL",
+  "recommended_max_positions": 6,
+  "min_position_size_twd": 50000,
+  "holdings": [
+    {"ticker": "2330", "name": "台積電", "shares": 400, "avg_cost": 880.0, "current_price": 920.0, "weight": 0.221, "conviction": "HIGH", "unrealized_pnl_pct": 0.0455},
+    {"ticker": "2454", "name": "聯發科", "shares": 400, "avg_cost": 750.0, "current_price": 785.0, "weight": 0.188, "conviction": "HIGH", "unrealized_pnl_pct": 0.0467},
+    {"ticker": "2882", "name": "國泰金", "shares": 5000, "avg_cost": 47.0, "current_price": 48.5, "weight": 0.145, "conviction": "MEDIUM", "unrealized_pnl_pct": 0.0319},
+    {"ticker": "2412", "name": "中華電", "shares": 1500, "avg_cost": 120.0, "current_price": 124.5, "weight": 0.112, "conviction": "MEDIUM", "unrealized_pnl_pct": 0.0375},
+    {"ticker": "1301", "name": "台塑", "shares": 2000, "avg_cost": 82.0, "current_price": 85.0, "weight": 0.102, "conviction": "LOW", "unrealized_pnl_pct": 0.0366},
+    {"ticker": "2308", "name": "台達電", "shares": 300, "avg_cost": 285.0, "current_price": 290.0, "weight": 0.052, "conviction": "LOW", "unrealized_pnl_pct": 0.0175}
+  ],
+  "max_positions": 6,
+  "cash_ratio": 0.180,
+  "expected_grade": "A",
+  "expected_action": "KEEP_MONITOR",
+  "stage_guidance": "50 萬滿倉 6 檔，跨五板塊充分分散",
+  "portfolio_metrics": {
+    "all_holdings_profitable": true,
+    "avg_unrealized_pnl_pct": 0.037,
+    "num_sectors": 5,
+    "herfindahl_index": 0.107
+  },
+  "notes": "50 萬中階資金持有 6 檔滿倉配置，五板塊分散，全部獲利，整體組合健康"
+}

@@ -1,0 +1,61 @@
+{
+  "_fixture_meta": {
+    "fixture_id": "fix_pc185_034",
+    "category": "volatility_adjusted",
+    "schema_version": "185",
+    "paper_only": true,
+    "research_only": true,
+    "simulate_only": true,
+    "validation_only": true,
+    "portfolio_only": true,
+    "no_real_orders": true,
+    "no_broker": true,
+    "no_margin": true,
+    "no_leverage": true,
+    "not_investment_advice": true,
+    "demo_only": true,
+    "not_for_production": true,
+    "production_trading_blocked": true
+  },
+  "scenario": "volatility_adjusted_vix_spike",
+  "capital": 1000000,
+  "currency": "TWD",
+  "market_regime": "RISK_OFF",
+  "vix_level": 32.5,
+  "holdings": [
+    {
+      "ticker": "2330",
+      "name": "台積電",
+      "shares": 800,
+      "avg_cost": 900.0,
+      "current_price": 850.0,
+      "weight": 0.204,
+      "annualized_vol": 0.38,
+      "realized_vol_20d": 0.45,
+      "unrealized_pnl_pct": -0.0556,
+      "sector": "半導體",
+      "conviction": "MEDIUM"
+    },
+    {
+      "ticker": "2412",
+      "name": "中華電",
+      "shares": 5000,
+      "avg_cost": 120.0,
+      "current_price": 124.5,
+      "weight": 0.187,
+      "annualized_vol": 0.12,
+      "realized_vol_20d": 0.10,
+      "unrealized_pnl_pct": 0.0375,
+      "sector": "電信",
+      "conviction": "HIGH"
+    }
+  ],
+  "max_positions": 8,
+  "cash_ratio": 0.609,
+  "weight_scheme": "vol_target",
+  "target_portfolio_vol": 0.12,
+  "current_portfolio_vol": 0.22,
+  "expected_grade": "C",
+  "expected_action": "DELEVERAGE_TO_VOL_TARGET",
+  "notes": "VIX 飆升，組合波動率超標，需降低高波動部位至目標波動率"
+}

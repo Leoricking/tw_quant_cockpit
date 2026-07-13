@@ -106,7 +106,7 @@ def _get_all_checks() -> List[Dict[str, Any]]:
     )
     checks.append(_check("gui_stable_tabs_present",      lambda: run_gui_audit()["all_tabs_present"]))
     checks.append(_check("gui_render_clean",             lambda: run_gui_audit()["render_clean"]))
-    checks.append(_check("gui_panel_version_179",        lambda: run_gui_audit()["panel_version"] in ("1.7.9", "1.8.0", "1.8.1", "1.8.2", "1.8.3", "1.8.4")))
+    checks.append(_check("gui_panel_version_179",        lambda: run_gui_audit()["panel_version"] in ("1.7.9", "1.8.0", "1.8.1", "1.8.2", "1.8.3", "1.8.4", "1.8.5")))
     checks.append(_check("gui_required_tabs_3",          lambda: len(get_required_stable_tabs()) == 3))
 
     # ── Fixture audit checks (3) ──────────────────────────────────────────────
