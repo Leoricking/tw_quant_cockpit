@@ -4766,6 +4766,77 @@ _PC_V185_COMMANDS: _List[CommandSpec] = [
                 introduced_in="1.8.5", safety_classification="RESEARCH_ONLY"),
 ]
 
+# v1.8.6 End-to-End Small Capital Decision Cockpit commands
+# ---------------------------------------------------------------------------
+_DC_V186_COMMANDS: _List[CommandSpec] = [
+    CommandSpec(name="decision-cockpit-version", handler_name="cmd_decision_cockpit_version",
+                help="[Research] Show decision cockpit version info v1.8.6", group="decision_cockpit",
+                introduced_in="1.8.6", safety_classification="RESEARCH_ONLY"),
+    CommandSpec(name="decision-cockpit-run", handler_name="cmd_decision_cockpit_run",
+                help="[Research] Run end-to-end decision cockpit v1.8.6", group="decision_cockpit",
+                introduced_in="1.8.6", safety_classification="RESEARCH_ONLY"),
+    CommandSpec(name="decision-cockpit-config", handler_name="cmd_decision_cockpit_config",
+                help="[Research] Show decision cockpit config v1.8.6", group="decision_cockpit",
+                introduced_in="1.8.6", safety_classification="RESEARCH_ONLY"),
+    CommandSpec(name="decision-cockpit-daily", handler_name="cmd_decision_cockpit_daily",
+                help="[Research] Run daily decision check v1.8.6", group="decision_cockpit",
+                introduced_in="1.8.6", safety_classification="RESEARCH_ONLY"),
+    CommandSpec(name="decision-cockpit-weekly", handler_name="cmd_decision_cockpit_weekly",
+                help="[Research] Run weekly decision review v1.8.6", group="decision_cockpit",
+                introduced_in="1.8.6", safety_classification="RESEARCH_ONLY"),
+    CommandSpec(name="decision-cockpit-market-regime", handler_name="cmd_decision_cockpit_market_regime",
+                help="[Research] Show market regime decision v1.8.6", group="decision_cockpit",
+                introduced_in="1.8.6", safety_classification="RESEARCH_ONLY"),
+    CommandSpec(name="decision-cockpit-watchlist", handler_name="cmd_decision_cockpit_watchlist",
+                help="[Research] Run watchlist review decision v1.8.6", group="decision_cockpit",
+                introduced_in="1.8.6", safety_classification="RESEARCH_ONLY"),
+    CommandSpec(name="decision-cockpit-candidates", handler_name="cmd_decision_cockpit_candidates",
+                help="[Research] Evaluate candidate decisions v1.8.6", group="decision_cockpit",
+                introduced_in="1.8.6", safety_classification="RESEARCH_ONLY"),
+    CommandSpec(name="decision-cockpit-buy-points", handler_name="cmd_decision_cockpit_buy_points",
+                help="[Research] Show A/B/C buy point decisions v1.8.6", group="decision_cockpit",
+                introduced_in="1.8.6", safety_classification="RESEARCH_ONLY"),
+    CommandSpec(name="decision-cockpit-risk", handler_name="cmd_decision_cockpit_risk",
+                help="[Research] Show risk decision v1.8.6", group="decision_cockpit",
+                introduced_in="1.8.6", safety_classification="RESEARCH_ONLY"),
+    CommandSpec(name="decision-cockpit-position-sizing", handler_name="cmd_decision_cockpit_position_sizing",
+                help="[Research] Show position sizing decision v1.8.6", group="decision_cockpit",
+                introduced_in="1.8.6", safety_classification="RESEARCH_ONLY"),
+    CommandSpec(name="decision-cockpit-portfolio", handler_name="cmd_decision_cockpit_portfolio",
+                help="[Research] Show portfolio decision v1.8.6", group="decision_cockpit",
+                introduced_in="1.8.6", safety_classification="RESEARCH_ONLY"),
+    CommandSpec(name="decision-cockpit-monte-carlo", handler_name="cmd_decision_cockpit_monte_carlo",
+                help="[Research] Show Monte Carlo decision v1.8.6", group="decision_cockpit",
+                introduced_in="1.8.6", safety_classification="RESEARCH_ONLY"),
+    CommandSpec(name="decision-cockpit-theme", handler_name="cmd_decision_cockpit_theme",
+                help="[Research] Show theme decision v1.8.6", group="decision_cockpit",
+                introduced_in="1.8.6", safety_classification="RESEARCH_ONLY"),
+    CommandSpec(name="decision-cockpit-blocks", handler_name="cmd_decision_cockpit_blocks",
+                help="[Research] Show block reasons v1.8.6", group="decision_cockpit",
+                introduced_in="1.8.6", safety_classification="RESEARCH_ONLY"),
+    CommandSpec(name="decision-cockpit-dashboard", handler_name="cmd_decision_cockpit_dashboard",
+                help="[Research] Show decision cockpit dashboard v1.8.6", group="decision_cockpit",
+                introduced_in="1.8.6", safety_classification="RESEARCH_ONLY"),
+    CommandSpec(name="decision-cockpit-report", handler_name="cmd_decision_cockpit_report",
+                help="[Research] Show decision cockpit report v1.8.6", group="decision_cockpit",
+                introduced_in="1.8.6", safety_classification="RESEARCH_ONLY"),
+    CommandSpec(name="decision-cockpit-scenarios", handler_name="cmd_decision_cockpit_scenarios",
+                help="[Research] List decision cockpit scenarios v1.8.6", group="decision_cockpit",
+                introduced_in="1.8.6", safety_classification="RESEARCH_ONLY"),
+    CommandSpec(name="decision-cockpit-fixtures", handler_name="cmd_decision_cockpit_fixtures",
+                help="[Research] List decision cockpit fixtures v1.8.6", group="decision_cockpit",
+                introduced_in="1.8.6", safety_classification="RESEARCH_ONLY"),
+    CommandSpec(name="decision-cockpit-health", handler_name="cmd_decision_cockpit_health",
+                help="[Research] Run decision cockpit health check v1.8.6", group="decision_cockpit",
+                introduced_in="1.8.6", safety_classification="RESEARCH_ONLY"),
+    CommandSpec(name="decision-cockpit-gate", handler_name="cmd_decision_cockpit_gate",
+                help="[Research] Run decision cockpit release gate v1.8.6", group="decision_cockpit",
+                introduced_in="1.8.6", safety_classification="RESEARCH_ONLY"),
+    CommandSpec(name="decision-cockpit-safety-audit", handler_name="cmd_decision_cockpit_safety_audit",
+                help="[Research] Run decision cockpit safety audit v1.8.6", group="decision_cockpit",
+                introduced_in="1.8.6", safety_classification="RESEARCH_ONLY"),
+]
+
 PROVIDER_COMMANDS: _List[CommandSpec] = (
     _RESEARCH_FOUNDATION_COMMANDS
     + _TWSE_COMMANDS
@@ -4807,6 +4878,7 @@ PROVIDER_COMMANDS: _List[CommandSpec] = (
     + _MONTE_CARLO_COMMANDS
     + _PS_V184_COMMANDS
     + _PC_V185_COMMANDS
+    + _DC_V186_COMMANDS
 )
 
 

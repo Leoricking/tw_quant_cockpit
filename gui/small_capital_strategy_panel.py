@@ -16,8 +16,8 @@ Headless-safe: no tkinter at module level. Renders to dict.
 from __future__ import annotations
 from typing import Any, Dict, List, Optional
 
-PANEL_VERSION = "1.8.5"
-PANEL_TITLE = "Small Capital Strategy v1.8.5 — Portfolio Construction, Rebalancing & Exposure Control Lab"
+PANEL_VERSION = "1.8.6"
+PANEL_TITLE = "Small Capital Strategy v1.8.6 — End-to-End Small Capital Decision Cockpit"
 
 # v1.7.0 tabs (preserved unchanged)
 _TABS_V170 = [
@@ -218,6 +218,13 @@ _TABS_V185_PORTFOLIO_CONSTRUCTION = [
     "portfolio_exposure_control",
 ]
 
+# v1.8.6 End-to-End Small Capital Decision Cockpit tabs
+_TABS_V186_DECISION_COCKPIT = [
+    "daily_decision_cockpit",
+    "weekly_decision_review",
+    "block_reasons",
+]
+
 _TABS = (
     _TABS_V170
     + _TABS_V171_WATCHLIST
@@ -235,6 +242,7 @@ _TABS = (
     + _TABS_V183_MONTE_CARLO
     + _TABS_V184_POSITION_SIZING
     + _TABS_V185_PORTFOLIO_CONSTRUCTION
+    + _TABS_V186_DECISION_COCKPIT
 )
 
 assert len(_TABS_V170) == 22, f"Expected 22 v1.7.0 tabs, got {len(_TABS_V170)}"
@@ -253,6 +261,7 @@ assert len(_TABS_V182_OPTIMIZATION) == 3, f"Expected 3 optimization tabs, got {l
 assert len(_TABS_V183_MONTE_CARLO) == 3, f"Expected 3 monte carlo tabs, got {len(_TABS_V183_MONTE_CARLO)}"
 assert len(_TABS_V184_POSITION_SIZING) == 3, f"Expected 3 position sizing tabs, got {len(_TABS_V184_POSITION_SIZING)}"
 assert len(_TABS_V185_PORTFOLIO_CONSTRUCTION) == 3, f"Expected 3 portfolio construction tabs, got {len(_TABS_V185_PORTFOLIO_CONSTRUCTION)}"
+assert len(_TABS_V186_DECISION_COCKPIT) == 3, f"Expected 3 decision cockpit tabs, got {len(_TABS_V186_DECISION_COCKPIT)}"
 
 
 def get_tab_names() -> List[str]:
@@ -263,6 +272,63 @@ def get_tab_names() -> List[str]:
 def get_watchlist_tab_names() -> List[str]:
     """Return list of v1.7.1 watchlist tab names."""
     return list(_TABS_V171_WATCHLIST)
+
+
+def render_daily_decision_cockpit_tab() -> Dict[str, Any]:
+    """Render daily decision cockpit tab data (headless-safe, decision-only)."""
+    return {
+        "tab": "daily_decision_cockpit",
+        "version": PANEL_VERSION,
+        "release_name": "End-to-End Small Capital Decision Cockpit",
+        "description": "Daily paper-only decision cockpit: regime, candidates, A/B/C buy points, risk, portfolio, Monte Carlo.",
+        "paper_only": True,
+        "research_only": True,
+        "decision_only": True,
+        "no_real_orders": True,
+        "no_broker": True,
+        "not_investment_advice": True,
+        "production_trading_blocked": True,
+        "empty_state": "No daily decision data available. Run decision-cockpit-daily to populate.",
+        "schema_version": "186",
+    }
+
+
+def render_weekly_decision_review_tab() -> Dict[str, Any]:
+    """Render weekly decision review tab data (headless-safe, decision-only)."""
+    return {
+        "tab": "weekly_decision_review",
+        "version": PANEL_VERSION,
+        "release_name": "End-to-End Small Capital Decision Cockpit",
+        "description": "Weekly review: portfolio health, exposure, regime, block reasons, rebalance decisions.",
+        "paper_only": True,
+        "research_only": True,
+        "decision_only": True,
+        "no_real_orders": True,
+        "no_broker": True,
+        "not_investment_advice": True,
+        "production_trading_blocked": True,
+        "empty_state": "No weekly review data available. Run decision-cockpit-weekly to populate.",
+        "schema_version": "186",
+    }
+
+
+def render_block_reasons_tab() -> Dict[str, Any]:
+    """Render block reasons tab data (headless-safe, decision-only)."""
+    return {
+        "tab": "block_reasons",
+        "version": PANEL_VERSION,
+        "release_name": "End-to-End Small Capital Decision Cockpit",
+        "description": "Block reason registry: hard block conditions, triggered blocks, resolution guidance.",
+        "paper_only": True,
+        "research_only": True,
+        "decision_only": True,
+        "no_real_orders": True,
+        "no_broker": True,
+        "not_investment_advice": True,
+        "production_trading_blocked": True,
+        "empty_state": "No block reasons recorded. All conditions clear.",
+        "schema_version": "186",
+    }
 
 
 def render_overview_tab() -> Dict[str, Any]:
@@ -1399,6 +1465,10 @@ def render_all_tabs() -> Dict[str, Any]:
         "portfolio_construction_lab":        render_portfolio_construction_lab_tab,
         "portfolio_rebalancing":             render_portfolio_rebalancing_tab,
         "portfolio_exposure_control":        render_portfolio_exposure_control_tab,
+        # v1.8.6 Decision Cockpit tabs
+        "daily_decision_cockpit":            render_daily_decision_cockpit_tab,
+        "weekly_decision_review":            render_weekly_decision_review_tab,
+        "block_reasons":                     render_block_reasons_tab,
     }
     result = {}
     for tab_name in _TABS:

@@ -198,7 +198,7 @@ class PortfolioConstructionHealthCheck:
 
         # ── GUI (5) ──────────────────────────────────────────────────
         from gui.small_capital_strategy_panel import PANEL_VERSION
-        self._check("gui_panel_version_185",        lambda: PANEL_VERSION == "1.8.5")
+        self._check("gui_panel_version_185",        lambda: PANEL_VERSION >= "1.8.5")
         from gui.small_capital_strategy_panel import _TABS
         self._check("gui_tabs_ge_138",              lambda: len(_TABS) >= 138)
         self._check("gui_portfolio_construction_tab",lambda: "portfolio_construction_lab" in _TABS)

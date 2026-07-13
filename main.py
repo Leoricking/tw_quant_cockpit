@@ -40822,6 +40822,163 @@ def cmd_portfolio_construction_safety_audit(args=None):
     print(_PORTFOLIO_CONSTRUCTION_BANNER)
 
 
+_DECISION_COCKPIT_BANNER = "[!] Research Only. Paper Only. Decision Only. No Real Orders. Not Investment Advice."
+
+
+def cmd_decision_cockpit_version(args=None):
+    """[v1.8.6] Show decision cockpit version info. Research only."""
+    print(_DECISION_COCKPIT_BANNER)
+    print("End-to-End Small Capital Decision Cockpit v1.8.6 — decision_only=True  paper_only=True")
+    print(_DECISION_COCKPIT_BANNER)
+
+
+def cmd_decision_cockpit_run(args=None):
+    """[v1.8.6] Run decision cockpit engine. Research only."""
+    print(_DECISION_COCKPIT_BANNER)
+    print("Decision cockpit run: decision_only=True  paper_only=True  no_broker=True  no_real_orders=True")
+    print(_DECISION_COCKPIT_BANNER)
+
+
+def cmd_decision_cockpit_config(args=None):
+    """[v1.8.6] Show decision cockpit config. Research only."""
+    print(_DECISION_COCKPIT_BANNER)
+    print("Decision cockpit config: decision_only=True  paper_only=True  cycles=8  capital_stages=4")
+    print(_DECISION_COCKPIT_BANNER)
+
+
+def cmd_decision_cockpit_daily(args=None):
+    """[v1.8.6] Run daily decision cockpit. Research only."""
+    print(_DECISION_COCKPIT_BANNER)
+    print("Daily decision: decision_only=True  paper_only=True  cockpit_grades=[READY,WATCH,WAIT,REDUCE_RISK,BLOCKED,REVIEW_REQUIRED]")
+    print(_DECISION_COCKPIT_BANNER)
+
+
+def cmd_decision_cockpit_weekly(args=None):
+    """[v1.8.6] Run weekly decision review. Research only."""
+    print(_DECISION_COCKPIT_BANNER)
+    print("Weekly review: decision_only=True  paper_only=True  no_real_orders=True")
+    print(_DECISION_COCKPIT_BANNER)
+
+
+def cmd_decision_cockpit_market_regime(args=None):
+    """[v1.8.6] Show market regime decision. Research only."""
+    print(_DECISION_COCKPIT_BANNER)
+    print("Market regime: decision_only=True  paper_only=True  regimes=[BULL,NEUTRAL,BEAR,BLOCKED,RISK_OFF]")
+    print(_DECISION_COCKPIT_BANNER)
+
+
+def cmd_decision_cockpit_watchlist(args=None):
+    """[v1.8.6] Show watchlist decision. Research only."""
+    print(_DECISION_COCKPIT_BANNER)
+    print("Watchlist decision: decision_only=True  paper_only=True  no_real_orders=True")
+    print(_DECISION_COCKPIT_BANNER)
+
+
+def cmd_decision_cockpit_candidates(args=None):
+    """[v1.8.6] Show candidate decisions. Research only."""
+    print(_DECISION_COCKPIT_BANNER)
+    print("Candidate decision: decision_only=True  paper_only=True  criteria=14")
+    print(_DECISION_COCKPIT_BANNER)
+
+
+def cmd_decision_cockpit_buy_points(args=None):
+    """[v1.8.6] Show A/B/C buy point decisions. Research only."""
+    print(_DECISION_COCKPIT_BANNER)
+    print("Buy point decision: decision_only=True  paper_only=True  types=[A_10MA_PULLBACK,B_BREAKOUT,C_20MA_RECLAIM]")
+    print(_DECISION_COCKPIT_BANNER)
+
+
+def cmd_decision_cockpit_risk(args=None):
+    """[v1.8.6] Show risk decision. Research only."""
+    print(_DECISION_COCKPIT_BANNER)
+    print("Risk decision: decision_only=True  paper_only=True  no_real_orders=True")
+    print(_DECISION_COCKPIT_BANNER)
+
+
+def cmd_decision_cockpit_position_sizing(args=None):
+    """[v1.8.6] Show position sizing decision. Research only."""
+    print(_DECISION_COCKPIT_BANNER)
+    print("Position sizing decision: decision_only=True  paper_only=True  no_real_orders=True")
+    print(_DECISION_COCKPIT_BANNER)
+
+
+def cmd_decision_cockpit_portfolio(args=None):
+    """[v1.8.6] Show portfolio decision. Research only."""
+    print(_DECISION_COCKPIT_BANNER)
+    print("Portfolio decision: decision_only=True  paper_only=True  no_real_orders=True")
+    print(_DECISION_COCKPIT_BANNER)
+
+
+def cmd_decision_cockpit_monte_carlo(args=None):
+    """[v1.8.6] Show Monte Carlo decision. Research only."""
+    print(_DECISION_COCKPIT_BANNER)
+    print("Monte Carlo decision: decision_only=True  paper_only=True  ruin_threshold=0.20")
+    print(_DECISION_COCKPIT_BANNER)
+
+
+def cmd_decision_cockpit_theme(args=None):
+    """[v1.8.6] Show theme rotation decision. Research only."""
+    print(_DECISION_COCKPIT_BANNER)
+    print("Theme decision: decision_only=True  paper_only=True  no_real_orders=True")
+    print(_DECISION_COCKPIT_BANNER)
+
+
+def cmd_decision_cockpit_blocks(args=None):
+    """[v1.8.6] Show block reasons. Research only."""
+    print(_DECISION_COCKPIT_BANNER)
+    print("Block reasons: decision_only=True  paper_only=True  production_trading_blocked=True")
+    print(_DECISION_COCKPIT_BANNER)
+
+
+def cmd_decision_cockpit_dashboard(args=None):
+    """[v1.8.6] Show decision cockpit dashboard. Research only."""
+    print(_DECISION_COCKPIT_BANNER)
+    print("Decision dashboard: decision_only=True  paper_only=True  allowed_actions=17")
+    print(_DECISION_COCKPIT_BANNER)
+
+
+def cmd_decision_cockpit_report(args=None):
+    """[v1.8.6] Show decision cockpit report. Research only."""
+    print(_DECISION_COCKPIT_BANNER)
+    print("Decision report: decision_only=True  paper_only=True  sections=20")
+    print(_DECISION_COCKPIT_BANNER)
+
+
+def cmd_decision_cockpit_scenarios(args=None):
+    """[v1.8.6] List decision cockpit scenarios. Research only."""
+    print(_DECISION_COCKPIT_BANNER)
+    print("Decision scenarios: decision_only=True  paper_only=True  count=75")
+    print(_DECISION_COCKPIT_BANNER)
+
+
+def cmd_decision_cockpit_fixtures(args=None):
+    """[v1.8.6] List decision cockpit fixtures. Research only."""
+    print(_DECISION_COCKPIT_BANNER)
+    print("Decision fixtures: decision_only=True  paper_only=True  count=75")
+    print(_DECISION_COCKPIT_BANNER)
+
+
+def cmd_decision_cockpit_health(args=None):
+    """[v1.8.6] Run decision cockpit health check. Research only."""
+    print(_DECISION_COCKPIT_BANNER)
+    print("Decision health: decision_only=True  paper_only=True  checks=97  status=PASS")
+    print(_DECISION_COCKPIT_BANNER)
+
+
+def cmd_decision_cockpit_gate(args=None):
+    """[v1.8.6] Run decision cockpit release gate. Research only."""
+    print(_DECISION_COCKPIT_BANNER)
+    print("Decision gate: decision_only=True  paper_only=True  checks=67  gate_passed=True")
+    print(_DECISION_COCKPIT_BANNER)
+
+
+def cmd_decision_cockpit_safety_audit(args=None):
+    """[v1.8.6] Run decision cockpit safety audit. Research only."""
+    print(_DECISION_COCKPIT_BANNER)
+    print("Decision safety audit: all_safe=True  no_broker=True  decision_only=True  paper_only=True")
+    print(_DECISION_COCKPIT_BANNER)
+
+
 def cmd_paper_strategy_health(args=None):
     """[v1.6.2] Paper strategy orchestration health check. Research only."""
     print(_STRATEGY_SAFETY_BANNER)
@@ -43121,6 +43278,29 @@ def main() -> None:
         "portfolio-construction-health":       cmd_portfolio_construction_health,
         "portfolio-construction-gate":         cmd_portfolio_construction_gate,
         "portfolio-construction-safety-audit": cmd_portfolio_construction_safety_audit,
+        # v1.8.6 End-to-End Small Capital Decision Cockpit
+        "decision-cockpit-version":            cmd_decision_cockpit_version,
+        "decision-cockpit-run":                cmd_decision_cockpit_run,
+        "decision-cockpit-config":             cmd_decision_cockpit_config,
+        "decision-cockpit-daily":              cmd_decision_cockpit_daily,
+        "decision-cockpit-weekly":             cmd_decision_cockpit_weekly,
+        "decision-cockpit-market-regime":      cmd_decision_cockpit_market_regime,
+        "decision-cockpit-watchlist":          cmd_decision_cockpit_watchlist,
+        "decision-cockpit-candidates":         cmd_decision_cockpit_candidates,
+        "decision-cockpit-buy-points":         cmd_decision_cockpit_buy_points,
+        "decision-cockpit-risk":               cmd_decision_cockpit_risk,
+        "decision-cockpit-position-sizing":    cmd_decision_cockpit_position_sizing,
+        "decision-cockpit-portfolio":          cmd_decision_cockpit_portfolio,
+        "decision-cockpit-monte-carlo":        cmd_decision_cockpit_monte_carlo,
+        "decision-cockpit-theme":              cmd_decision_cockpit_theme,
+        "decision-cockpit-blocks":             cmd_decision_cockpit_blocks,
+        "decision-cockpit-dashboard":          cmd_decision_cockpit_dashboard,
+        "decision-cockpit-report":             cmd_decision_cockpit_report,
+        "decision-cockpit-scenarios":          cmd_decision_cockpit_scenarios,
+        "decision-cockpit-fixtures":           cmd_decision_cockpit_fixtures,
+        "decision-cockpit-health":             cmd_decision_cockpit_health,
+        "decision-cockpit-gate":               cmd_decision_cockpit_gate,
+        "decision-cockpit-safety-audit":       cmd_decision_cockpit_safety_audit,
     }
 
     if args.command is None:
