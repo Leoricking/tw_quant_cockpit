@@ -1,0 +1,35 @@
+{
+  "fixture_id": "dr_014",
+  "scenario_id": "DR187-019",
+  "report_type": "weekly_decision_report",
+  "category": "weekly_3m_stage",
+  "description": "Weekly 3M stage + 5 holdings, theme rotation -> REVIEW_REQUIRED",
+  "schema_version": "187",
+  "paper_only": true,
+  "research_only": true,
+  "simulate_only": true,
+  "validation_only": true,
+  "decision_only": true,
+  "report_only": true,
+  "audit_only": true,
+  "no_real_orders": true,
+  "no_broker": true,
+  "no_margin": true,
+  "no_leverage": true,
+  "not_investment_advice": true,
+  "demo_only": true,
+  "not_for_production": true,
+  "production_trading_blocked": true,
+  "created_at": "2026-07-14T00:00:00Z",
+  "input": {
+    "market_regime": "SIDEWAYS",
+    "capital_stage": "3M",
+    "portfolio_holding_count": 5,
+    "theme_rotation_active": true,
+    "report_type": "weekly_decision_report"
+  },
+  "expected": {
+    "final_report_grade": "REVIEW_REQUIRED",
+    "report_type": "weekly_decision_report"
+  }
+}

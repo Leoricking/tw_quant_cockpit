@@ -16,8 +16,8 @@ Headless-safe: no tkinter at module level. Renders to dict.
 from __future__ import annotations
 from typing import Any, Dict, List, Optional
 
-PANEL_VERSION = "1.8.6"
-PANEL_TITLE = "Small Capital Strategy v1.8.6 — End-to-End Small Capital Decision Cockpit"
+PANEL_VERSION = "1.8.7"
+PANEL_TITLE = "Small Capital Strategy v1.8.7 — Decision Report Export & Evidence Pack"
 
 # v1.7.0 tabs (preserved unchanged)
 _TABS_V170 = [
@@ -225,6 +225,15 @@ _TABS_V186_DECISION_COCKPIT = [
     "block_reasons",
 ]
 
+# v1.8.7 Decision Report Export & Evidence Pack tabs
+_TABS_V187_DECISION_REPORT = [
+    "decision_report",
+    "evidence_pack",
+    "audit_trail_report",
+]
+
+assert len(_TABS_V187_DECISION_REPORT) == 3, f"Expected 3 decision report tabs, got {len(_TABS_V187_DECISION_REPORT)}"
+
 _TABS = (
     _TABS_V170
     + _TABS_V171_WATCHLIST
@@ -243,6 +252,7 @@ _TABS = (
     + _TABS_V184_POSITION_SIZING
     + _TABS_V185_PORTFOLIO_CONSTRUCTION
     + _TABS_V186_DECISION_COCKPIT
+    + _TABS_V187_DECISION_REPORT
 )
 
 assert len(_TABS_V170) == 22, f"Expected 22 v1.7.0 tabs, got {len(_TABS_V170)}"
@@ -1469,6 +1479,10 @@ def render_all_tabs() -> Dict[str, Any]:
         "daily_decision_cockpit":            render_daily_decision_cockpit_tab,
         "weekly_decision_review":            render_weekly_decision_review_tab,
         "block_reasons":                     render_block_reasons_tab,
+        # v1.8.7 Decision Report Export & Evidence Pack tabs
+        "decision_report":                   render_decision_report_tab,
+        "evidence_pack":                     render_evidence_pack_tab,
+        "audit_trail_report":                render_audit_trail_report_tab,
     }
     result = {}
     for tab_name in _TABS:
@@ -2852,6 +2866,71 @@ def render_portfolio_exposure_control_tab() -> Dict[str, Any]:
 def get_portfolio_construction_tab_names() -> List[str]:
     """Return list of v1.8.5 portfolio construction tab names."""
     return list(_TABS_V185_PORTFOLIO_CONSTRUCTION)
+
+
+def get_portfolio_construction_tab_names_v187() -> List[str]:
+    """Return list of v1.8.7 decision report tab names."""
+    return list(_TABS_V187_DECISION_REPORT)
+
+
+def render_decision_report_tab() -> Dict[str, Any]:
+    """Render decision report tab data (headless-safe, report-only)."""
+    return {
+        "tab": "decision_report",
+        "version": PANEL_VERSION,
+        "release_name": "Decision Report Export & Evidence Pack",
+        "description": "Daily/weekly decision reports: JSON, Markdown, CSV-like rows, console summary, dashboard payload.",
+        "paper_only": True,
+        "research_only": True,
+        "report_only": True,
+        "audit_only": True,
+        "no_real_orders": True,
+        "no_broker": True,
+        "not_investment_advice": True,
+        "production_trading_blocked": True,
+        "empty_state": "No decision report data available. Run decision-report-run to populate.",
+        "schema_version": "187",
+    }
+
+
+def render_evidence_pack_tab() -> Dict[str, Any]:
+    """Render evidence pack tab data (headless-safe, report-only)."""
+    return {
+        "tab": "evidence_pack",
+        "version": PANEL_VERSION,
+        "release_name": "Decision Report Export & Evidence Pack",
+        "description": "Candidate evidence pack: traceable decision evidence for all candidates.",
+        "paper_only": True,
+        "research_only": True,
+        "report_only": True,
+        "audit_only": True,
+        "no_real_orders": True,
+        "no_broker": True,
+        "not_investment_advice": True,
+        "production_trading_blocked": True,
+        "empty_state": "No evidence pack data available. Run decision-report-evidence to populate.",
+        "schema_version": "187",
+    }
+
+
+def render_audit_trail_report_tab() -> Dict[str, Any]:
+    """Render audit trail report tab data (headless-safe, audit-only)."""
+    return {
+        "tab": "audit_trail_report",
+        "version": PANEL_VERSION,
+        "release_name": "Decision Report Export & Evidence Pack",
+        "description": "Audit trail: traceable decision audit log for all decisions.",
+        "paper_only": True,
+        "research_only": True,
+        "report_only": True,
+        "audit_only": True,
+        "no_real_orders": True,
+        "no_broker": True,
+        "not_investment_advice": True,
+        "production_trading_blocked": True,
+        "empty_state": "No audit trail data available. Run decision-report-audit-trail to populate.",
+        "schema_version": "187",
+    }
 
 
 def get_panel_info() -> Dict[str, Any]:

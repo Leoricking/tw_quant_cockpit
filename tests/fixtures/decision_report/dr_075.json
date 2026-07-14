@@ -1,0 +1,64 @@
+{
+  "fixture_id": "dr_075",
+  "scenario_id": "DR187-075",
+  "report_type": "export_manifest",
+  "category": "complete_export_manifest",
+  "description": "Export manifest: 5 export formats logged, all_exports_safe=True",
+  "schema_version": "187",
+  "paper_only": true,
+  "research_only": true,
+  "simulate_only": true,
+  "validation_only": true,
+  "decision_only": true,
+  "report_only": true,
+  "audit_only": true,
+  "no_real_orders": true,
+  "no_broker": true,
+  "no_margin": true,
+  "no_leverage": true,
+  "not_investment_advice": true,
+  "demo_only": true,
+  "not_for_production": true,
+  "production_trading_blocked": true,
+  "created_at": "2026-07-14T00:00:00Z",
+  "input": {
+    "report_type": "export_manifest",
+    "exports": [
+      {
+        "format": "json",
+        "size": 1024,
+        "safe": true
+      },
+      {
+        "format": "markdown",
+        "size": 2048,
+        "safe": true
+      },
+      {
+        "format": "csv_rows",
+        "size": 512,
+        "safe": true
+      },
+      {
+        "format": "console_summary",
+        "size": 256,
+        "safe": true
+      },
+      {
+        "format": "dashboard_payload",
+        "size": 768,
+        "safe": true
+      }
+    ]
+  },
+  "expected": {
+    "report_type": "export_manifest",
+    "export_count": 5,
+    "all_exports_safe": true,
+    "json_exports": 1,
+    "markdown_exports": 1,
+    "csv_exports": 1,
+    "console_exports": 1,
+    "dashboard_exports": 1
+  }
+}

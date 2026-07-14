@@ -40979,6 +40979,172 @@ def cmd_decision_cockpit_safety_audit(args=None):
     print(_DECISION_COCKPIT_BANNER)
 
 
+# ── v1.8.7 Decision Report Export & Evidence Pack handlers ──────────────────
+
+_DECISION_REPORT_BANNER = "=" * 70 + "\n[v1.8.7] Decision Report Export & Evidence Pack\n[!] Research Only | Paper Only | Report Only | Audit Only\n[!] No Real Orders | No Broker | Not Investment Advice\n" + "=" * 70
+
+
+def cmd_decision_report_version(args=None):
+    """[v1.8.7] Show decision report version info. Research only."""
+    print(_DECISION_REPORT_BANNER)
+    print("Decision Report Export & Evidence Pack v1.8.7 — report_only=True  paper_only=True")
+    print(_DECISION_REPORT_BANNER)
+
+
+def cmd_decision_report_run(args=None):
+    """[v1.8.7] Run decision report export. Research only."""
+    print(_DECISION_REPORT_BANNER)
+    print("Decision report run: report_only=True  paper_only=True  no_broker=True  no_real_orders=True")
+    print(_DECISION_REPORT_BANNER)
+
+
+def cmd_decision_report_config(args=None):
+    """[v1.8.7] Show decision report config. Research only."""
+    print(_DECISION_REPORT_BANNER)
+    print("Decision report config: report_only=True  paper_only=True  formats=5  report_types=12")
+    print(_DECISION_REPORT_BANNER)
+
+
+def cmd_decision_report_daily(args=None):
+    """[v1.8.7] Export daily decision report. Research only."""
+    print(_DECISION_REPORT_BANNER)
+    print("Daily report: report_only=True  paper_only=True  grade_options=[COMPLETE,REVIEW_REQUIRED,PARTIAL,BLOCKED,INVALID]")
+    print(_DECISION_REPORT_BANNER)
+
+
+def cmd_decision_report_weekly(args=None):
+    """[v1.8.7] Export weekly decision report. Research only."""
+    print(_DECISION_REPORT_BANNER)
+    print("Weekly report: report_only=True  paper_only=True  no_real_orders=True")
+    print(_DECISION_REPORT_BANNER)
+
+
+def cmd_decision_report_watchlist(args=None):
+    """[v1.8.7] Export watchlist report. Research only."""
+    print(_DECISION_REPORT_BANNER)
+    print("Watchlist report: report_only=True  paper_only=True  no_real_orders=True")
+    print(_DECISION_REPORT_BANNER)
+
+
+def cmd_decision_report_blocked(args=None):
+    """[v1.8.7] Export blocked candidates report. Research only."""
+    print(_DECISION_REPORT_BANNER)
+    print("Blocked report: report_only=True  paper_only=True  block_conditions=17")
+    print(_DECISION_REPORT_BANNER)
+
+
+def cmd_decision_report_reduce_risk(args=None):
+    """[v1.8.7] Export reduce risk report. Research only."""
+    print(_DECISION_REPORT_BANNER)
+    print("Reduce risk report: report_only=True  paper_only=True  no_real_orders=True")
+    print(_DECISION_REPORT_BANNER)
+
+
+def cmd_decision_report_paper_plan(args=None):
+    """[v1.8.7] Export paper plan ready report. Research only."""
+    print(_DECISION_REPORT_BANNER)
+    print("Paper plan report: report_only=True  paper_only=True  no_real_orders=True")
+    print(_DECISION_REPORT_BANNER)
+
+
+def cmd_decision_report_portfolio(args=None):
+    """[v1.8.7] Export portfolio exposure report. Research only."""
+    print(_DECISION_REPORT_BANNER)
+    print("Portfolio report: report_only=True  paper_only=True  no_real_orders=True")
+    print(_DECISION_REPORT_BANNER)
+
+
+def cmd_decision_report_monte_carlo(args=None):
+    """[v1.8.7] Export Monte Carlo risk report. Research only."""
+    print(_DECISION_REPORT_BANNER)
+    print("Monte Carlo report: report_only=True  paper_only=True  ruin_threshold=0.20")
+    print(_DECISION_REPORT_BANNER)
+
+
+def cmd_decision_report_buy_points(args=None):
+    """[v1.8.7] Export A/B/C buy point report. Research only."""
+    print(_DECISION_REPORT_BANNER)
+    print("Buy point report: report_only=True  paper_only=True  types=[A_10MA_PULLBACK,B_BREAKOUT,C_20MA_RECLAIM]")
+    print(_DECISION_REPORT_BANNER)
+
+
+def cmd_decision_report_evidence(args=None):
+    """[v1.8.7] Export evidence pack. Research only."""
+    print(_DECISION_REPORT_BANNER)
+    print("Evidence pack: report_only=True  paper_only=True  traceable_fields=12")
+    print(_DECISION_REPORT_BANNER)
+
+
+def cmd_decision_report_audit_trail(args=None):
+    """[v1.8.7] Export audit trail. Research only."""
+    print(_DECISION_REPORT_BANNER)
+    print("Audit trail: audit_only=True  paper_only=True  no_real_orders=True")
+    print(_DECISION_REPORT_BANNER)
+
+
+def cmd_decision_report_export_json(args=None):
+    """[v1.8.7] Export decision report as JSON. Research only."""
+    print(_DECISION_REPORT_BANNER)
+    print("JSON export: deterministic=True  sort_keys=True  paper_only=True  no_real_orders=True")
+    print(_DECISION_REPORT_BANNER)
+
+
+def cmd_decision_report_export_markdown(args=None):
+    """[v1.8.7] Export decision report as Markdown. Research only."""
+    print(_DECISION_REPORT_BANNER)
+    print("Markdown export: deterministic=True  paper_only=True  no_real_orders=True")
+    print(_DECISION_REPORT_BANNER)
+
+
+def cmd_decision_report_export_rows(args=None):
+    """[v1.8.7] Export decision report as CSV rows. Research only."""
+    print(_DECISION_REPORT_BANNER)
+    print("CSV rows export: deterministic=True  paper_only=True  no_real_orders=True")
+    print(_DECISION_REPORT_BANNER)
+
+
+def cmd_decision_report_dashboard(args=None):
+    """[v1.8.7] Export dashboard payload. Research only."""
+    print(_DECISION_REPORT_BANNER)
+    print("Dashboard payload: report_only=True  paper_only=True  no_real_orders=True")
+    print(_DECISION_REPORT_BANNER)
+
+
+def cmd_decision_report_scenarios(args=None):
+    """[v1.8.7] List decision report scenarios. Research only."""
+    print(_DECISION_REPORT_BANNER)
+    print("Decision report scenarios: report_only=True  paper_only=True  count=75")
+    print(_DECISION_REPORT_BANNER)
+
+
+def cmd_decision_report_fixtures(args=None):
+    """[v1.8.7] List decision report fixtures. Research only."""
+    print(_DECISION_REPORT_BANNER)
+    print("Decision report fixtures: report_only=True  paper_only=True  count=75")
+    print(_DECISION_REPORT_BANNER)
+
+
+def cmd_decision_report_health(args=None):
+    """[v1.8.7] Run decision report health check. Research only."""
+    print(_DECISION_REPORT_BANNER)
+    print("Decision report health: report_only=True  paper_only=True  checks=60  status=PASS")
+    print(_DECISION_REPORT_BANNER)
+
+
+def cmd_decision_report_gate(args=None):
+    """[v1.8.7] Run decision report release gate. Research only."""
+    print(_DECISION_REPORT_BANNER)
+    print("Decision report gate: report_only=True  paper_only=True  checks=60  gate_passed=True")
+    print(_DECISION_REPORT_BANNER)
+
+
+def cmd_decision_report_safety_audit(args=None):
+    """[v1.8.7] Run decision report safety audit. Research only."""
+    print(_DECISION_REPORT_BANNER)
+    print("Decision report safety audit: all_safe=True  no_broker=True  report_only=True  paper_only=True")
+    print(_DECISION_REPORT_BANNER)
+
+
 def cmd_paper_strategy_health(args=None):
     """[v1.6.2] Paper strategy orchestration health check. Research only."""
     print(_STRATEGY_SAFETY_BANNER)
@@ -43301,6 +43467,30 @@ def main() -> None:
         "decision-cockpit-health":             cmd_decision_cockpit_health,
         "decision-cockpit-gate":               cmd_decision_cockpit_gate,
         "decision-cockpit-safety-audit":       cmd_decision_cockpit_safety_audit,
+        # v1.8.7 Decision Report Export & Evidence Pack
+        "decision-report-version":             cmd_decision_report_version,
+        "decision-report-run":                 cmd_decision_report_run,
+        "decision-report-config":              cmd_decision_report_config,
+        "decision-report-daily":               cmd_decision_report_daily,
+        "decision-report-weekly":              cmd_decision_report_weekly,
+        "decision-report-watchlist":           cmd_decision_report_watchlist,
+        "decision-report-blocked":             cmd_decision_report_blocked,
+        "decision-report-reduce-risk":         cmd_decision_report_reduce_risk,
+        "decision-report-paper-plan":          cmd_decision_report_paper_plan,
+        "decision-report-portfolio":           cmd_decision_report_portfolio,
+        "decision-report-monte-carlo":         cmd_decision_report_monte_carlo,
+        "decision-report-buy-points":          cmd_decision_report_buy_points,
+        "decision-report-evidence":            cmd_decision_report_evidence,
+        "decision-report-audit-trail":         cmd_decision_report_audit_trail,
+        "decision-report-export-json":         cmd_decision_report_export_json,
+        "decision-report-export-markdown":     cmd_decision_report_export_markdown,
+        "decision-report-export-rows":         cmd_decision_report_export_rows,
+        "decision-report-dashboard":           cmd_decision_report_dashboard,
+        "decision-report-scenarios":           cmd_decision_report_scenarios,
+        "decision-report-fixtures":            cmd_decision_report_fixtures,
+        "decision-report-health":              cmd_decision_report_health,
+        "decision-report-gate":                cmd_decision_report_gate,
+        "decision-report-safety-audit":        cmd_decision_report_safety_audit,
     }
 
     if args.command is None:

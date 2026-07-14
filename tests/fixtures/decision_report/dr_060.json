@@ -1,0 +1,36 @@
+{
+  "fixture_id": "dr_060",
+  "scenario_id": "DR187-057",
+  "report_type": "portfolio_exposure_report",
+  "category": "portfolio_rebalance_needed",
+  "description": "Portfolio drift 20% from target -> rebalance needed",
+  "schema_version": "187",
+  "paper_only": true,
+  "research_only": true,
+  "simulate_only": true,
+  "validation_only": true,
+  "decision_only": true,
+  "report_only": true,
+  "audit_only": true,
+  "no_real_orders": true,
+  "no_broker": true,
+  "no_margin": true,
+  "no_leverage": true,
+  "not_investment_advice": true,
+  "demo_only": true,
+  "not_for_production": true,
+  "production_trading_blocked": true,
+  "created_at": "2026-07-14T00:00:00Z",
+  "input": {
+    "portfolio_holding_count": 4,
+    "total_exposure_pct": 0.6,
+    "rebalance_needed": true,
+    "concentration_risk_score": 0.55,
+    "report_type": "portfolio_exposure_report"
+  },
+  "expected": {
+    "final_report_grade": "REVIEW_REQUIRED",
+    "rebalance_needed": true,
+    "report_type": "portfolio_exposure_report"
+  }
+}

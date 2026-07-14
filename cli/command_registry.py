@@ -4837,6 +4837,80 @@ _DC_V186_COMMANDS: _List[CommandSpec] = [
                 introduced_in="1.8.6", safety_classification="RESEARCH_ONLY"),
 ]
 
+# v1.8.7 Decision Report Export & Evidence Pack commands
+# ---------------------------------------------------------------------------
+_DR_V187_COMMANDS: _List[CommandSpec] = [
+    CommandSpec(name="decision-report-version", handler_name="cmd_decision_report_version",
+                help="[Research] Show decision report version info v1.8.7", group="decision_report",
+                introduced_in="1.8.7", safety_classification="RESEARCH_ONLY"),
+    CommandSpec(name="decision-report-run", handler_name="cmd_decision_report_run",
+                help="[Research] Run decision report export v1.8.7", group="decision_report",
+                introduced_in="1.8.7", safety_classification="RESEARCH_ONLY"),
+    CommandSpec(name="decision-report-config", handler_name="cmd_decision_report_config",
+                help="[Research] Show decision report config v1.8.7", group="decision_report",
+                introduced_in="1.8.7", safety_classification="RESEARCH_ONLY"),
+    CommandSpec(name="decision-report-daily", handler_name="cmd_decision_report_daily",
+                help="[Research] Export daily decision report v1.8.7", group="decision_report",
+                introduced_in="1.8.7", safety_classification="RESEARCH_ONLY"),
+    CommandSpec(name="decision-report-weekly", handler_name="cmd_decision_report_weekly",
+                help="[Research] Export weekly decision report v1.8.7", group="decision_report",
+                introduced_in="1.8.7", safety_classification="RESEARCH_ONLY"),
+    CommandSpec(name="decision-report-watchlist", handler_name="cmd_decision_report_watchlist",
+                help="[Research] Export watchlist report v1.8.7", group="decision_report",
+                introduced_in="1.8.7", safety_classification="RESEARCH_ONLY"),
+    CommandSpec(name="decision-report-blocked", handler_name="cmd_decision_report_blocked",
+                help="[Research] Export blocked candidates report v1.8.7", group="decision_report",
+                introduced_in="1.8.7", safety_classification="RESEARCH_ONLY"),
+    CommandSpec(name="decision-report-reduce-risk", handler_name="cmd_decision_report_reduce_risk",
+                help="[Research] Export reduce risk report v1.8.7", group="decision_report",
+                introduced_in="1.8.7", safety_classification="RESEARCH_ONLY"),
+    CommandSpec(name="decision-report-paper-plan", handler_name="cmd_decision_report_paper_plan",
+                help="[Research] Export paper plan ready report v1.8.7", group="decision_report",
+                introduced_in="1.8.7", safety_classification="RESEARCH_ONLY"),
+    CommandSpec(name="decision-report-portfolio", handler_name="cmd_decision_report_portfolio",
+                help="[Research] Export portfolio exposure report v1.8.7", group="decision_report",
+                introduced_in="1.8.7", safety_classification="RESEARCH_ONLY"),
+    CommandSpec(name="decision-report-monte-carlo", handler_name="cmd_decision_report_monte_carlo",
+                help="[Research] Export Monte Carlo risk report v1.8.7", group="decision_report",
+                introduced_in="1.8.7", safety_classification="RESEARCH_ONLY"),
+    CommandSpec(name="decision-report-buy-points", handler_name="cmd_decision_report_buy_points",
+                help="[Research] Export A/B/C buy point report v1.8.7", group="decision_report",
+                introduced_in="1.8.7", safety_classification="RESEARCH_ONLY"),
+    CommandSpec(name="decision-report-evidence", handler_name="cmd_decision_report_evidence",
+                help="[Research] Export evidence pack v1.8.7", group="decision_report",
+                introduced_in="1.8.7", safety_classification="RESEARCH_ONLY"),
+    CommandSpec(name="decision-report-audit-trail", handler_name="cmd_decision_report_audit_trail",
+                help="[Research] Export audit trail v1.8.7", group="decision_report",
+                introduced_in="1.8.7", safety_classification="RESEARCH_ONLY"),
+    CommandSpec(name="decision-report-export-json", handler_name="cmd_decision_report_export_json",
+                help="[Research] Export decision report as JSON v1.8.7", group="decision_report",
+                introduced_in="1.8.7", safety_classification="RESEARCH_ONLY"),
+    CommandSpec(name="decision-report-export-markdown", handler_name="cmd_decision_report_export_markdown",
+                help="[Research] Export decision report as Markdown v1.8.7", group="decision_report",
+                introduced_in="1.8.7", safety_classification="RESEARCH_ONLY"),
+    CommandSpec(name="decision-report-export-rows", handler_name="cmd_decision_report_export_rows",
+                help="[Research] Export decision report as CSV rows v1.8.7", group="decision_report",
+                introduced_in="1.8.7", safety_classification="RESEARCH_ONLY"),
+    CommandSpec(name="decision-report-dashboard", handler_name="cmd_decision_report_dashboard",
+                help="[Research] Export dashboard payload v1.8.7", group="decision_report",
+                introduced_in="1.8.7", safety_classification="RESEARCH_ONLY"),
+    CommandSpec(name="decision-report-scenarios", handler_name="cmd_decision_report_scenarios",
+                help="[Research] List decision report scenarios v1.8.7", group="decision_report",
+                introduced_in="1.8.7", safety_classification="RESEARCH_ONLY"),
+    CommandSpec(name="decision-report-fixtures", handler_name="cmd_decision_report_fixtures",
+                help="[Research] List decision report fixtures v1.8.7", group="decision_report",
+                introduced_in="1.8.7", safety_classification="RESEARCH_ONLY"),
+    CommandSpec(name="decision-report-health", handler_name="cmd_decision_report_health",
+                help="[Research] Run decision report health check v1.8.7", group="decision_report",
+                introduced_in="1.8.7", safety_classification="RESEARCH_ONLY"),
+    CommandSpec(name="decision-report-gate", handler_name="cmd_decision_report_gate",
+                help="[Research] Run decision report release gate v1.8.7", group="decision_report",
+                introduced_in="1.8.7", safety_classification="RESEARCH_ONLY"),
+    CommandSpec(name="decision-report-safety-audit", handler_name="cmd_decision_report_safety_audit",
+                help="[Research] Run decision report safety audit v1.8.7", group="decision_report",
+                introduced_in="1.8.7", safety_classification="RESEARCH_ONLY"),
+]
+
 PROVIDER_COMMANDS: _List[CommandSpec] = (
     _RESEARCH_FOUNDATION_COMMANDS
     + _TWSE_COMMANDS
@@ -4879,6 +4953,7 @@ PROVIDER_COMMANDS: _List[CommandSpec] = (
     + _PS_V184_COMMANDS
     + _PC_V185_COMMANDS
     + _DC_V186_COMMANDS
+    + _DR_V187_COMMANDS
 )
 
 

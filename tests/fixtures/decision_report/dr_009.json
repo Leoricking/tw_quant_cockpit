@@ -1,0 +1,36 @@
+{
+  "fixture_id": "dr_009",
+  "scenario_id": "DR187-014",
+  "report_type": "weekly_decision_report",
+  "category": "weekly_blocked",
+  "description": "Weekly BLOCKED cockpit grade -> BLOCKED report",
+  "schema_version": "187",
+  "paper_only": true,
+  "research_only": true,
+  "simulate_only": true,
+  "validation_only": true,
+  "decision_only": true,
+  "report_only": true,
+  "audit_only": true,
+  "no_real_orders": true,
+  "no_broker": true,
+  "no_margin": true,
+  "no_leverage": true,
+  "not_investment_advice": true,
+  "demo_only": true,
+  "not_for_production": true,
+  "production_trading_blocked": true,
+  "created_at": "2026-07-14T00:00:00Z",
+  "input": {
+    "market_regime": "BEAR",
+    "final_cockpit_grade": "BLOCKED",
+    "block_reasons": [
+      "market_regime_blocked"
+    ],
+    "report_type": "weekly_decision_report"
+  },
+  "expected": {
+    "final_report_grade": "BLOCKED",
+    "report_type": "weekly_decision_report"
+  }
+}

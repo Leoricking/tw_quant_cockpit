@@ -138,7 +138,7 @@ def run_health_check():
         _TABS_V183_MONTE_CARLO, PANEL_VERSION,
     )
     checks.append(_check("gui_monte_carlo_tabs_3", lambda: len(_TABS_V183_MONTE_CARLO) == 3))
-    checks.append(_check("gui_panel_version_183", lambda: PANEL_VERSION in ("1.8.3", "1.8.4", "1.8.5", "1.8.6")))
+    checks.append(_check("gui_panel_version_183", lambda: PANEL_VERSION in ("1.8.3", "1.8.4", "1.8.5", "1.8.6", "1.8.7")))
     checks.append(_check("gui_tab_monte_carlo", lambda: "monte_carlo" in _TABS_V183_MONTE_CARLO))
     checks.append(_check("gui_tab_risk_of_ruin", lambda: "risk_of_ruin" in _TABS_V183_MONTE_CARLO))
     checks.append(_check("gui_tab_robustness_probability", lambda: "robustness_probability" in _TABS_V183_MONTE_CARLO))

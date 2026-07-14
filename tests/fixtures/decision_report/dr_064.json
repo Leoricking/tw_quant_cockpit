@@ -1,0 +1,35 @@
+{
+  "fixture_id": "dr_064",
+  "scenario_id": "DR187-061",
+  "report_type": "monte_carlo_risk_report",
+  "category": "mc_zero_risk",
+  "description": "MC ruin 0% (no positions) -> COMPLETE",
+  "schema_version": "187",
+  "paper_only": true,
+  "research_only": true,
+  "simulate_only": true,
+  "validation_only": true,
+  "decision_only": true,
+  "report_only": true,
+  "audit_only": true,
+  "no_real_orders": true,
+  "no_broker": true,
+  "no_margin": true,
+  "no_leverage": true,
+  "not_investment_advice": true,
+  "demo_only": true,
+  "not_for_production": true,
+  "production_trading_blocked": true,
+  "created_at": "2026-07-14T00:00:00Z",
+  "input": {
+    "monte_carlo_ruin_risk": 0.0,
+    "ruin_risk_level": "LOW",
+    "portfolio_holding_count": 0,
+    "report_type": "monte_carlo_risk_report"
+  },
+  "expected": {
+    "final_report_grade": "COMPLETE",
+    "risk_level": "LOW",
+    "report_type": "monte_carlo_risk_report"
+  }
+}

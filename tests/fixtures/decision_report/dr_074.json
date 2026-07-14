@@ -1,0 +1,57 @@
+{
+  "fixture_id": "dr_074",
+  "scenario_id": "DR187-074",
+  "report_type": "audit_trail",
+  "category": "complete_audit_trail",
+  "description": "Complete audit trail: all steps logged, decision_evidence_count >= 3",
+  "schema_version": "187",
+  "paper_only": true,
+  "research_only": true,
+  "simulate_only": true,
+  "validation_only": true,
+  "decision_only": true,
+  "report_only": true,
+  "audit_only": true,
+  "no_real_orders": true,
+  "no_broker": true,
+  "no_margin": true,
+  "no_leverage": true,
+  "not_investment_advice": true,
+  "demo_only": true,
+  "not_for_production": true,
+  "production_trading_blocked": true,
+  "created_at": "2026-07-14T00:00:00Z",
+  "input": {
+    "report_type": "audit_trail",
+    "market_regime": "BULL",
+    "daily_action": "DECISION_ONLY",
+    "final_cockpit_grade": "WATCH",
+    "block_reasons": [],
+    "audit_entries": [
+      {
+        "step": "market_regime",
+        "value": "BULL",
+        "action": "DECISION_ONLY",
+        "evidence": "market_regime_status"
+      },
+      {
+        "step": "daily_action",
+        "value": "DECISION_ONLY",
+        "action": "DECISION_ONLY",
+        "evidence": "cockpit_engine_v186"
+      },
+      {
+        "step": "final_cockpit_grade",
+        "value": "WATCH",
+        "action": "REPORT_ONLY",
+        "evidence": "cockpit_grade_computation"
+      }
+    ]
+  },
+  "expected": {
+    "report_type": "audit_trail",
+    "final_report_grade": "COMPLETE",
+    "audit_complete": true,
+    "decision_evidence_count": 3
+  }
+}
