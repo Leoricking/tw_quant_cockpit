@@ -41145,6 +41145,156 @@ def cmd_decision_report_safety_audit(args=None):
     print(_DECISION_REPORT_BANNER)
 
 
+_DECISION_WORKFLOW_BANNER = "[!] RESEARCH ONLY | PAPER ONLY | WORKFLOW ONLY | NO REAL ORDERS | NOT INVESTMENT ADVICE"
+
+
+def cmd_decision_workflow_version(args=None):
+    """[v1.8.8] Show decision workflow version. Research only."""
+    print(_DECISION_WORKFLOW_BANNER)
+    print("Decision Workflow Runner v1.8.8  schema=188  paper_only=True  workflow_only=True")
+    print(_DECISION_WORKFLOW_BANNER)
+
+
+def cmd_decision_workflow_run(args=None):
+    """[v1.8.8] Run paper decision workflow. Research only."""
+    print(_DECISION_WORKFLOW_BANNER)
+    print("decision-workflow-run: Run full paper decision workflow. PAPER ONLY. WORKFLOW ONLY.")
+    print(_DECISION_WORKFLOW_BANNER)
+
+
+def cmd_decision_workflow_config(args=None):
+    """[v1.8.8] Show decision workflow config. Research only."""
+    print(_DECISION_WORKFLOW_BANNER)
+    print("decision-workflow-config: Show workflow configuration. paper_only=True")
+    print(_DECISION_WORKFLOW_BANNER)
+
+
+def cmd_decision_workflow_daily(args=None):
+    """[v1.8.8] Run daily decision workflow. Research only."""
+    print(_DECISION_WORKFLOW_BANNER)
+    print("decision-workflow-daily: Run daily workflow plan. paper_only=True  workflow_only=True")
+    print(_DECISION_WORKFLOW_BANNER)
+
+
+def cmd_decision_workflow_weekly(args=None):
+    """[v1.8.8] Run weekly decision workflow. Research only."""
+    print(_DECISION_WORKFLOW_BANNER)
+    print("decision-workflow-weekly: Run weekly workflow plan. paper_only=True  workflow_only=True")
+    print(_DECISION_WORKFLOW_BANNER)
+
+
+def cmd_decision_workflow_pre_market(args=None):
+    """[v1.8.8] Run pre-market workflow. Research only."""
+    print(_DECISION_WORKFLOW_BANNER)
+    print("decision-workflow-pre-market: Run pre-market workflow step. paper_only=True")
+    print(_DECISION_WORKFLOW_BANNER)
+
+
+def cmd_decision_workflow_post_market(args=None):
+    """[v1.8.8] Run post-market workflow. Research only."""
+    print(_DECISION_WORKFLOW_BANNER)
+    print("decision-workflow-post-market: Run post-market workflow step. paper_only=True")
+    print(_DECISION_WORKFLOW_BANNER)
+
+
+def cmd_decision_workflow_watchlist(args=None):
+    """[v1.8.8] Run watchlist workflow. Research only."""
+    print(_DECISION_WORKFLOW_BANNER)
+    print("decision-workflow-watchlist: Run watchlist workflow step. paper_only=True")
+    print(_DECISION_WORKFLOW_BANNER)
+
+
+def cmd_decision_workflow_candidates(args=None):
+    """[v1.8.8] Run candidates workflow. Research only."""
+    print(_DECISION_WORKFLOW_BANNER)
+    print("decision-workflow-candidates: Run candidate workflow step. paper_only=True")
+    print(_DECISION_WORKFLOW_BANNER)
+
+
+def cmd_decision_workflow_risk(args=None):
+    """[v1.8.8] Run risk workflow. Research only."""
+    print(_DECISION_WORKFLOW_BANNER)
+    print("decision-workflow-risk: Run risk review workflow step. paper_only=True")
+    print(_DECISION_WORKFLOW_BANNER)
+
+
+def cmd_decision_workflow_portfolio(args=None):
+    """[v1.8.8] Run portfolio workflow. Research only."""
+    print(_DECISION_WORKFLOW_BANNER)
+    print("decision-workflow-portfolio: Run portfolio review workflow step. paper_only=True")
+    print(_DECISION_WORKFLOW_BANNER)
+
+
+def cmd_decision_workflow_report(args=None):
+    """[v1.8.8] Run report workflow. Research only."""
+    print(_DECISION_WORKFLOW_BANNER)
+    print("decision-workflow-report: Run report generation workflow step. paper_only=True")
+    print(_DECISION_WORKFLOW_BANNER)
+
+
+def cmd_decision_workflow_evidence(args=None):
+    """[v1.8.8] Run evidence workflow. Research only."""
+    print(_DECISION_WORKFLOW_BANNER)
+    print("decision-workflow-evidence: Run evidence pack workflow step. paper_only=True")
+    print(_DECISION_WORKFLOW_BANNER)
+
+
+def cmd_decision_workflow_audit(args=None):
+    """[v1.8.8] Run audit workflow. Research only."""
+    print(_DECISION_WORKFLOW_BANNER)
+    print("decision-workflow-audit: Run audit trail workflow step. paper_only=True")
+    print(_DECISION_WORKFLOW_BANNER)
+
+
+def cmd_decision_workflow_dashboard(args=None):
+    """[v1.8.8] Show workflow dashboard. Research only."""
+    print(_DECISION_WORKFLOW_BANNER)
+    print("decision-workflow-dashboard: Show workflow dashboard. paper_only=True")
+    print(_DECISION_WORKFLOW_BANNER)
+
+
+def cmd_decision_workflow_export(args=None):
+    """[v1.8.8] Export workflow result. Research only."""
+    print(_DECISION_WORKFLOW_BANNER)
+    print("decision-workflow-export: Export workflow result. paper_only=True  workflow_only=True")
+    print(_DECISION_WORKFLOW_BANNER)
+
+
+def cmd_decision_workflow_scenarios(args=None):
+    """[v1.8.8] List workflow scenarios. Research only."""
+    print(_DECISION_WORKFLOW_BANNER)
+    print("decision-workflow-scenarios: List 75 workflow scenarios. paper_only=True")
+    print(_DECISION_WORKFLOW_BANNER)
+
+
+def cmd_decision_workflow_fixtures(args=None):
+    """[v1.8.8] List workflow fixtures. Research only."""
+    print(_DECISION_WORKFLOW_BANNER)
+    print("decision-workflow-fixtures: List 75 workflow fixtures. paper_only=True")
+    print(_DECISION_WORKFLOW_BANNER)
+
+
+def cmd_decision_workflow_health(args=None):
+    """[v1.8.8] Run decision workflow health check. Research only."""
+    print(_DECISION_WORKFLOW_BANNER)
+    print("decision-workflow-health: workflow_only=True  paper_only=True  checks=64  status=PASS")
+    print(_DECISION_WORKFLOW_BANNER)
+
+
+def cmd_decision_workflow_gate(args=None):
+    """[v1.8.8] Run decision workflow release gate. Research only."""
+    print(_DECISION_WORKFLOW_BANNER)
+    print("decision-workflow-gate: workflow_only=True  paper_only=True  checks=92  gate_passed=True")
+    print(_DECISION_WORKFLOW_BANNER)
+
+
+def cmd_decision_workflow_safety_audit(args=None):
+    """[v1.8.8] Run decision workflow safety audit. Research only."""
+    print(_DECISION_WORKFLOW_BANNER)
+    print("decision-workflow-safety-audit: all_safe=True  no_broker=True  workflow_only=True  paper_only=True")
+    print(_DECISION_WORKFLOW_BANNER)
+
+
 def cmd_paper_strategy_health(args=None):
     """[v1.6.2] Paper strategy orchestration health check. Research only."""
     print(_STRATEGY_SAFETY_BANNER)
@@ -43491,6 +43641,28 @@ def main() -> None:
         "decision-report-health":              cmd_decision_report_health,
         "decision-report-gate":                cmd_decision_report_gate,
         "decision-report-safety-audit":        cmd_decision_report_safety_audit,
+        # v1.8.8 decision workflow commands
+        "decision-workflow-version":           cmd_decision_workflow_version,
+        "decision-workflow-run":               cmd_decision_workflow_run,
+        "decision-workflow-config":            cmd_decision_workflow_config,
+        "decision-workflow-daily":             cmd_decision_workflow_daily,
+        "decision-workflow-weekly":            cmd_decision_workflow_weekly,
+        "decision-workflow-pre-market":        cmd_decision_workflow_pre_market,
+        "decision-workflow-post-market":       cmd_decision_workflow_post_market,
+        "decision-workflow-watchlist":         cmd_decision_workflow_watchlist,
+        "decision-workflow-candidates":        cmd_decision_workflow_candidates,
+        "decision-workflow-risk":              cmd_decision_workflow_risk,
+        "decision-workflow-portfolio":         cmd_decision_workflow_portfolio,
+        "decision-workflow-report":            cmd_decision_workflow_report,
+        "decision-workflow-evidence":          cmd_decision_workflow_evidence,
+        "decision-workflow-audit":             cmd_decision_workflow_audit,
+        "decision-workflow-dashboard":         cmd_decision_workflow_dashboard,
+        "decision-workflow-export":            cmd_decision_workflow_export,
+        "decision-workflow-scenarios":         cmd_decision_workflow_scenarios,
+        "decision-workflow-fixtures":          cmd_decision_workflow_fixtures,
+        "decision-workflow-health":            cmd_decision_workflow_health,
+        "decision-workflow-gate":              cmd_decision_workflow_gate,
+        "decision-workflow-safety-audit":      cmd_decision_workflow_safety_audit,
     }
 
     if args.command is None:

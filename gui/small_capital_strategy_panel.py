@@ -16,8 +16,8 @@ Headless-safe: no tkinter at module level. Renders to dict.
 from __future__ import annotations
 from typing import Any, Dict, List, Optional
 
-PANEL_VERSION = "1.8.7"
-PANEL_TITLE = "Small Capital Strategy v1.8.7 — Decision Report Export & Evidence Pack"
+PANEL_VERSION = "1.8.8"
+PANEL_TITLE = "Small Capital Strategy v1.8.8 — Paper Decision Workflow Runner"
 
 # v1.7.0 tabs (preserved unchanged)
 _TABS_V170 = [
@@ -234,6 +234,15 @@ _TABS_V187_DECISION_REPORT = [
 
 assert len(_TABS_V187_DECISION_REPORT) == 3, f"Expected 3 decision report tabs, got {len(_TABS_V187_DECISION_REPORT)}"
 
+# v1.8.8 Paper Decision Workflow Runner tabs
+_TABS_V188_DECISION_WORKFLOW = [
+    "decision_workflow",
+    "daily_workflow",
+    "weekly_workflow",
+]
+
+assert len(_TABS_V188_DECISION_WORKFLOW) == 3, f"Expected 3 decision workflow tabs, got {len(_TABS_V188_DECISION_WORKFLOW)}"
+
 _TABS = (
     _TABS_V170
     + _TABS_V171_WATCHLIST
@@ -253,6 +262,7 @@ _TABS = (
     + _TABS_V185_PORTFOLIO_CONSTRUCTION
     + _TABS_V186_DECISION_COCKPIT
     + _TABS_V187_DECISION_REPORT
+    + _TABS_V188_DECISION_WORKFLOW
 )
 
 assert len(_TABS_V170) == 22, f"Expected 22 v1.7.0 tabs, got {len(_TABS_V170)}"
@@ -1483,6 +1493,10 @@ def render_all_tabs() -> Dict[str, Any]:
         "decision_report":                   render_decision_report_tab,
         "evidence_pack":                     render_evidence_pack_tab,
         "audit_trail_report":                render_audit_trail_report_tab,
+        # v1.8.8 Paper Decision Workflow Runner tabs
+        "decision_workflow":                 render_decision_workflow_tab,
+        "daily_workflow":                    render_daily_workflow_tab,
+        "weekly_workflow":                   render_weekly_workflow_tab,
     }
     result = {}
     for tab_name in _TABS:
@@ -2930,6 +2944,71 @@ def render_audit_trail_report_tab() -> Dict[str, Any]:
         "production_trading_blocked": True,
         "empty_state": "No audit trail data available. Run decision-report-audit-trail to populate.",
         "schema_version": "187",
+    }
+
+
+def get_decision_workflow_tab_names() -> List[str]:
+    """Return list of v1.8.8 decision workflow tab names."""
+    return list(_TABS_V188_DECISION_WORKFLOW)
+
+
+def render_decision_workflow_tab() -> Dict[str, Any]:
+    """Render decision workflow tab data (headless-safe, workflow-only)."""
+    return {
+        "tab": "decision_workflow",
+        "version": PANEL_VERSION,
+        "release_name": "Paper Decision Workflow Runner",
+        "description": "Paper-only deterministic decision workflow runner: daily and weekly workflow orchestration.",
+        "paper_only": True,
+        "research_only": True,
+        "workflow_only": True,
+        "audit_only": True,
+        "no_real_orders": True,
+        "no_broker": True,
+        "not_investment_advice": True,
+        "production_trading_blocked": True,
+        "empty_state": "No workflow data available. Run decision-workflow-run to populate.",
+        "schema_version": "188",
+    }
+
+
+def render_daily_workflow_tab() -> Dict[str, Any]:
+    """Render daily workflow tab data (headless-safe, workflow-only)."""
+    return {
+        "tab": "daily_workflow",
+        "version": PANEL_VERSION,
+        "release_name": "Paper Decision Workflow Runner",
+        "description": "Daily paper-only workflow: regime, candidates, A/B/C, risk, portfolio, Monte Carlo, report.",
+        "paper_only": True,
+        "research_only": True,
+        "workflow_only": True,
+        "audit_only": True,
+        "no_real_orders": True,
+        "no_broker": True,
+        "not_investment_advice": True,
+        "production_trading_blocked": True,
+        "empty_state": "No daily workflow data available. Run decision-workflow-daily to populate.",
+        "schema_version": "188",
+    }
+
+
+def render_weekly_workflow_tab() -> Dict[str, Any]:
+    """Render weekly workflow tab data (headless-safe, workflow-only)."""
+    return {
+        "tab": "weekly_workflow",
+        "version": PANEL_VERSION,
+        "release_name": "Paper Decision Workflow Runner",
+        "description": "Weekly paper-only workflow: portfolio review, exposure, regime, risk, rebalance decisions.",
+        "paper_only": True,
+        "research_only": True,
+        "workflow_only": True,
+        "audit_only": True,
+        "no_real_orders": True,
+        "no_broker": True,
+        "not_investment_advice": True,
+        "production_trading_blocked": True,
+        "empty_state": "No weekly workflow data available. Run decision-workflow-weekly to populate.",
+        "schema_version": "188",
     }
 
 

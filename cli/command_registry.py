@@ -4911,6 +4911,74 @@ _DR_V187_COMMANDS: _List[CommandSpec] = [
                 introduced_in="1.8.7", safety_classification="RESEARCH_ONLY"),
 ]
 
+# v1.8.8 Paper Decision Workflow Runner commands
+# ---------------------------------------------------------------------------
+_DW_V188_COMMANDS: _List[CommandSpec] = [
+    CommandSpec(name="decision-workflow-version", handler_name="cmd_decision_workflow_version",
+                help="[Research] Show decision workflow version info v1.8.8", group="decision_workflow",
+                introduced_in="1.8.8", safety_classification="RESEARCH_ONLY"),
+    CommandSpec(name="decision-workflow-run", handler_name="cmd_decision_workflow_run",
+                help="[Research] Run full decision workflow v1.8.8", group="decision_workflow",
+                introduced_in="1.8.8", safety_classification="RESEARCH_ONLY"),
+    CommandSpec(name="decision-workflow-config", handler_name="cmd_decision_workflow_config",
+                help="[Research] Show decision workflow config v1.8.8", group="decision_workflow",
+                introduced_in="1.8.8", safety_classification="RESEARCH_ONLY"),
+    CommandSpec(name="decision-workflow-daily", handler_name="cmd_decision_workflow_daily",
+                help="[Research] Run daily decision workflow v1.8.8", group="decision_workflow",
+                introduced_in="1.8.8", safety_classification="RESEARCH_ONLY"),
+    CommandSpec(name="decision-workflow-weekly", handler_name="cmd_decision_workflow_weekly",
+                help="[Research] Run weekly decision workflow v1.8.8", group="decision_workflow",
+                introduced_in="1.8.8", safety_classification="RESEARCH_ONLY"),
+    CommandSpec(name="decision-workflow-pre-market", handler_name="cmd_decision_workflow_pre_market",
+                help="[Research] Run pre-market workflow v1.8.8", group="decision_workflow",
+                introduced_in="1.8.8", safety_classification="RESEARCH_ONLY"),
+    CommandSpec(name="decision-workflow-post-market", handler_name="cmd_decision_workflow_post_market",
+                help="[Research] Run post-market workflow v1.8.8", group="decision_workflow",
+                introduced_in="1.8.8", safety_classification="RESEARCH_ONLY"),
+    CommandSpec(name="decision-workflow-watchlist", handler_name="cmd_decision_workflow_watchlist",
+                help="[Research] Run watchlist workflow v1.8.8", group="decision_workflow",
+                introduced_in="1.8.8", safety_classification="RESEARCH_ONLY"),
+    CommandSpec(name="decision-workflow-candidates", handler_name="cmd_decision_workflow_candidates",
+                help="[Research] Run candidate review workflow v1.8.8", group="decision_workflow",
+                introduced_in="1.8.8", safety_classification="RESEARCH_ONLY"),
+    CommandSpec(name="decision-workflow-risk", handler_name="cmd_decision_workflow_risk",
+                help="[Research] Run risk review workflow v1.8.8", group="decision_workflow",
+                introduced_in="1.8.8", safety_classification="RESEARCH_ONLY"),
+    CommandSpec(name="decision-workflow-portfolio", handler_name="cmd_decision_workflow_portfolio",
+                help="[Research] Run portfolio review workflow v1.8.8", group="decision_workflow",
+                introduced_in="1.8.8", safety_classification="RESEARCH_ONLY"),
+    CommandSpec(name="decision-workflow-report", handler_name="cmd_decision_workflow_report",
+                help="[Research] Run report generation workflow v1.8.8", group="decision_workflow",
+                introduced_in="1.8.8", safety_classification="RESEARCH_ONLY"),
+    CommandSpec(name="decision-workflow-evidence", handler_name="cmd_decision_workflow_evidence",
+                help="[Research] Run evidence pack workflow v1.8.8", group="decision_workflow",
+                introduced_in="1.8.8", safety_classification="RESEARCH_ONLY"),
+    CommandSpec(name="decision-workflow-audit", handler_name="cmd_decision_workflow_audit",
+                help="[Research] Run audit trail workflow v1.8.8", group="decision_workflow",
+                introduced_in="1.8.8", safety_classification="RESEARCH_ONLY"),
+    CommandSpec(name="decision-workflow-dashboard", handler_name="cmd_decision_workflow_dashboard",
+                help="[Research] Generate workflow dashboard payload v1.8.8", group="decision_workflow",
+                introduced_in="1.8.8", safety_classification="RESEARCH_ONLY"),
+    CommandSpec(name="decision-workflow-export", handler_name="cmd_decision_workflow_export",
+                help="[Research] Export workflow result v1.8.8", group="decision_workflow",
+                introduced_in="1.8.8", safety_classification="RESEARCH_ONLY"),
+    CommandSpec(name="decision-workflow-scenarios", handler_name="cmd_decision_workflow_scenarios",
+                help="[Research] List decision workflow scenarios v1.8.8", group="decision_workflow",
+                introduced_in="1.8.8", safety_classification="RESEARCH_ONLY"),
+    CommandSpec(name="decision-workflow-fixtures", handler_name="cmd_decision_workflow_fixtures",
+                help="[Research] List decision workflow fixtures v1.8.8", group="decision_workflow",
+                introduced_in="1.8.8", safety_classification="RESEARCH_ONLY"),
+    CommandSpec(name="decision-workflow-health", handler_name="cmd_decision_workflow_health",
+                help="[Research] Run decision workflow health check v1.8.8", group="decision_workflow",
+                introduced_in="1.8.8", safety_classification="RESEARCH_ONLY"),
+    CommandSpec(name="decision-workflow-gate", handler_name="cmd_decision_workflow_gate",
+                help="[Research] Run decision workflow release gate v1.8.8", group="decision_workflow",
+                introduced_in="1.8.8", safety_classification="RESEARCH_ONLY"),
+    CommandSpec(name="decision-workflow-safety-audit", handler_name="cmd_decision_workflow_safety_audit",
+                help="[Research] Run decision workflow safety audit v1.8.8", group="decision_workflow",
+                introduced_in="1.8.8", safety_classification="RESEARCH_ONLY"),
+]
+
 PROVIDER_COMMANDS: _List[CommandSpec] = (
     _RESEARCH_FOUNDATION_COMMANDS
     + _TWSE_COMMANDS
@@ -4954,6 +5022,7 @@ PROVIDER_COMMANDS: _List[CommandSpec] = (
     + _PC_V185_COMMANDS
     + _DC_V186_COMMANDS
     + _DR_V187_COMMANDS
+    + _DW_V188_COMMANDS
 )
 
 

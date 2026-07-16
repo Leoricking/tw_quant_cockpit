@@ -1,0 +1,393 @@
+"""
+paper_trading/small_capital_strategy/decision_workflow_scenarios_v188.py
+Scenarios for Paper Decision Workflow Runner v1.8.8.
+[!] Research Only. Paper Only. Workflow Only. Audit Only. No Real Orders. Not Investment Advice.
+"""
+from __future__ import annotations
+from typing import Dict, List, Optional
+
+_SAFETY = dict(
+    paper_only=True, research_only=True, simulate_only=True,
+    validation_only=True, decision_only=True, workflow_only=True,
+    report_only=True, audit_only=True, no_real_orders=True,
+    no_broker=True, no_margin=True, no_leverage=True,
+    not_investment_advice=True, demo_only=True,
+    not_for_production=True, production_trading_blocked=True,
+)
+
+_SCENARIOS: List[Dict] = [
+    # 1-5: Daily workflow scenarios
+    {"id": "DW188-001", "name": "complete_daily_workflow_bull", "workflow_type": "daily_workflow",
+     "market_regime": "BULL", "expected_grade": "COMPLETE", "expected_action": "DECISION_ONLY",
+     "candidates": ["TSMC", "MEDIATEK"], "total_exposure_pct": 30.0, "cash_reserve_pct": 70.0,
+     "monte_carlo_ruin_risk": 2.0, **_SAFETY},
+    {"id": "DW188-002", "name": "complete_daily_workflow_watch", "workflow_type": "daily_workflow",
+     "market_regime": "BULL", "expected_grade": "COMPLETE", "expected_action": "DECISION_ONLY",
+     "candidates": [], "total_exposure_pct": 0.0, "cash_reserve_pct": 100.0,
+     "monte_carlo_ruin_risk": 0.0, **_SAFETY},
+    {"id": "DW188-003", "name": "daily_workflow_pre_market_only", "workflow_type": "daily_workflow",
+     "market_regime": "WATCH", "expected_grade": "COMPLETE", "expected_action": "DECISION_ONLY",
+     "candidates": ["ASUS"], "total_exposure_pct": 10.0, "cash_reserve_pct": 90.0,
+     "monte_carlo_ruin_risk": 1.0, **_SAFETY},
+    {"id": "DW188-004", "name": "daily_workflow_observe_only", "workflow_type": "daily_workflow",
+     "market_regime": "BULL", "expected_grade": "COMPLETE", "expected_action": "DECISION_ONLY",
+     "candidates": [], "total_exposure_pct": 0.0, "cash_reserve_pct": 100.0,
+     "monte_carlo_ruin_risk": 0.0, **_SAFETY},
+    {"id": "DW188-005", "name": "daily_workflow_small_cap", "workflow_type": "daily_workflow",
+     "market_regime": "BULL", "expected_grade": "COMPLETE", "expected_action": "DECISION_ONLY",
+     "candidates": ["STOCK_A"], "total_exposure_pct": 8.0, "cash_reserve_pct": 92.0,
+     "monte_carlo_ruin_risk": 0.5, **_SAFETY},
+
+    # 6-10: Weekly workflow scenarios
+    {"id": "DW188-006", "name": "complete_weekly_workflow", "workflow_type": "weekly_workflow",
+     "market_regime": "BULL", "expected_grade": "COMPLETE", "expected_action": "DECISION_ONLY",
+     "candidates": [], "total_exposure_pct": 40.0, "cash_reserve_pct": 60.0,
+     "monte_carlo_ruin_risk": 3.0, **_SAFETY},
+    {"id": "DW188-007", "name": "weekly_workflow_review_portfolio", "workflow_type": "weekly_workflow",
+     "market_regime": "BULL", "expected_grade": "COMPLETE", "expected_action": "DECISION_ONLY",
+     "candidates": [], "total_exposure_pct": 50.0, "cash_reserve_pct": 50.0,
+     "monte_carlo_ruin_risk": 5.0, **_SAFETY},
+    {"id": "DW188-008", "name": "weekly_workflow_rebalance_needed", "workflow_type": "weekly_workflow",
+     "market_regime": "WATCH", "expected_grade": "COMPLETE", "expected_action": "DECISION_ONLY",
+     "candidates": [], "total_exposure_pct": 55.0, "cash_reserve_pct": 45.0,
+     "monte_carlo_ruin_risk": 6.0, **_SAFETY},
+    {"id": "DW188-009", "name": "weekly_workflow_low_exposure", "workflow_type": "weekly_workflow",
+     "market_regime": "BULL", "expected_grade": "COMPLETE", "expected_action": "DECISION_ONLY",
+     "candidates": [], "total_exposure_pct": 10.0, "cash_reserve_pct": 90.0,
+     "monte_carlo_ruin_risk": 1.0, **_SAFETY},
+    {"id": "DW188-010", "name": "weekly_workflow_full_cash", "workflow_type": "weekly_workflow",
+     "market_regime": "BULL", "expected_grade": "COMPLETE", "expected_action": "DECISION_ONLY",
+     "candidates": [], "total_exposure_pct": 0.0, "cash_reserve_pct": 100.0,
+     "monte_carlo_ruin_risk": 0.0, **_SAFETY},
+
+    # 11-13: Pre/post market workflow
+    {"id": "DW188-011", "name": "pre_market_workflow_normal", "workflow_type": "pre_market_workflow",
+     "market_regime": "BULL", "expected_grade": "COMPLETE", "expected_action": "OBSERVE",
+     "candidates": ["TSMC"], "total_exposure_pct": 20.0, "cash_reserve_pct": 80.0,
+     "monte_carlo_ruin_risk": 2.0, **_SAFETY},
+    {"id": "DW188-012", "name": "post_market_workflow_review", "workflow_type": "post_market_workflow",
+     "market_regime": "BULL", "expected_grade": "COMPLETE", "expected_action": "READ_REPORT",
+     "candidates": [], "total_exposure_pct": 30.0, "cash_reserve_pct": 70.0,
+     "monte_carlo_ruin_risk": 3.0, **_SAFETY},
+    {"id": "DW188-013", "name": "pre_market_workflow_watchlist_only", "workflow_type": "pre_market_workflow",
+     "market_regime": "WATCH", "expected_grade": "COMPLETE", "expected_action": "OBSERVE",
+     "candidates": [], "total_exposure_pct": 0.0, "cash_reserve_pct": 100.0,
+     "monte_carlo_ruin_risk": 0.0, **_SAFETY},
+
+    # 14-16: Watchlist workflow
+    {"id": "DW188-014", "name": "watchlist_only_workflow", "workflow_type": "watchlist_workflow",
+     "market_regime": "BULL", "expected_grade": "COMPLETE", "expected_action": "OBSERVE",
+     "candidates": [], "watchlist": ["TSMC", "MEDIATEK", "ASUS"],
+     "total_exposure_pct": 0.0, "cash_reserve_pct": 100.0, "monte_carlo_ruin_risk": 0.0, **_SAFETY},
+    {"id": "DW188-015", "name": "watchlist_workflow_empty", "workflow_type": "watchlist_workflow",
+     "market_regime": "BULL", "expected_grade": "COMPLETE", "expected_action": "OBSERVE",
+     "candidates": [], "watchlist": [],
+     "total_exposure_pct": 0.0, "cash_reserve_pct": 100.0, "monte_carlo_ruin_risk": 0.0, **_SAFETY},
+    {"id": "DW188-016", "name": "watchlist_workflow_bear", "workflow_type": "watchlist_workflow",
+     "market_regime": "BEAR", "expected_grade": "COMPLETE", "expected_action": "OBSERVE",
+     "candidates": [], "watchlist": ["TSMC"],
+     "total_exposure_pct": 0.0, "cash_reserve_pct": 100.0, "monte_carlo_ruin_risk": 0.0, **_SAFETY},
+
+    # 17-20: All candidates blocked
+    {"id": "DW188-017", "name": "all_candidates_blocked_workflow", "workflow_type": "candidate_review_workflow",
+     "market_regime": "BULL", "expected_grade": "COMPLETE", "expected_action": "OBSERVE",
+     "candidates": ["STOCK_X", "STOCK_Y"], "block_all_candidates": True,
+     "total_exposure_pct": 0.0, "cash_reserve_pct": 100.0, "monte_carlo_ruin_risk": 0.0, **_SAFETY},
+    {"id": "DW188-018", "name": "candidate_review_partial_block", "workflow_type": "candidate_review_workflow",
+     "market_regime": "BULL", "expected_grade": "COMPLETE", "expected_action": "OBSERVE",
+     "candidates": ["TSMC", "STOCK_X"], "total_exposure_pct": 5.0, "cash_reserve_pct": 95.0,
+     "monte_carlo_ruin_risk": 1.0, **_SAFETY},
+    {"id": "DW188-019", "name": "candidate_review_empty", "workflow_type": "candidate_review_workflow",
+     "market_regime": "BULL", "expected_grade": "COMPLETE", "expected_action": "OBSERVE",
+     "candidates": [], "total_exposure_pct": 0.0, "cash_reserve_pct": 100.0,
+     "monte_carlo_ruin_risk": 0.0, **_SAFETY},
+    {"id": "DW188-020", "name": "candidate_review_single", "workflow_type": "candidate_review_workflow",
+     "market_regime": "BULL", "expected_grade": "COMPLETE", "expected_action": "OBSERVE",
+     "candidates": ["TSMC"], "total_exposure_pct": 8.0, "cash_reserve_pct": 92.0,
+     "monte_carlo_ruin_risk": 1.0, **_SAFETY},
+
+    # 21-23: Paper plan ready
+    {"id": "DW188-021", "name": "paper_plan_ready_workflow", "workflow_type": "daily_workflow",
+     "market_regime": "BULL", "expected_grade": "COMPLETE", "expected_action": "DECISION_ONLY",
+     "candidates": ["TSMC"], "paper_plan_ready": True,
+     "total_exposure_pct": 15.0, "cash_reserve_pct": 85.0, "monte_carlo_ruin_risk": 1.5, **_SAFETY},
+    {"id": "DW188-022", "name": "paper_entry_allowed_workflow", "workflow_type": "daily_workflow",
+     "market_regime": "BULL", "expected_grade": "COMPLETE", "expected_action": "DECISION_ONLY",
+     "candidates": ["MEDIATEK"], "paper_entry_allowed": True,
+     "total_exposure_pct": 10.0, "cash_reserve_pct": 90.0, "monte_carlo_ruin_risk": 1.0, **_SAFETY},
+    {"id": "DW188-023", "name": "paper_add_allowed_workflow", "workflow_type": "daily_workflow",
+     "market_regime": "BULL", "expected_grade": "COMPLETE", "expected_action": "DECISION_ONLY",
+     "candidates": ["TSMC", "ASUS"], "paper_add_allowed": True,
+     "total_exposure_pct": 25.0, "cash_reserve_pct": 75.0, "monte_carlo_ruin_risk": 2.5, **_SAFETY},
+
+    # 24-26: Reduce risk
+    {"id": "DW188-024", "name": "reduce_risk_workflow", "workflow_type": "risk_review_workflow",
+     "market_regime": "BULL", "expected_grade": "COMPLETE", "expected_action": "REDUCE_RISK",
+     "candidates": [], "total_exposure_pct": 96.0, "cash_reserve_pct": 4.0,
+     "monte_carlo_ruin_risk": 3.0, **_SAFETY},
+    {"id": "DW188-025", "name": "reduce_risk_monte_carlo_blocked", "workflow_type": "risk_review_workflow",
+     "market_regime": "BULL", "expected_grade": "COMPLETE", "expected_action": "REDUCE_RISK",
+     "candidates": [], "total_exposure_pct": 40.0, "cash_reserve_pct": 60.0,
+     "monte_carlo_ruin_risk": 25.0, **_SAFETY},
+    {"id": "DW188-026", "name": "reduce_risk_cash_low", "workflow_type": "risk_review_workflow",
+     "market_regime": "BULL", "expected_grade": "COMPLETE", "expected_action": "REDUCE_RISK",
+     "candidates": [], "total_exposure_pct": 96.0, "cash_reserve_pct": 4.0,
+     "monte_carlo_ruin_risk": 5.0, **_SAFETY},
+
+    # 27: No trade day
+    {"id": "DW188-027", "name": "no_trade_day_workflow", "workflow_type": "daily_workflow",
+     "market_regime": "WATCH", "expected_grade": "COMPLETE", "expected_action": "DECISION_ONLY",
+     "candidates": [], "total_exposure_pct": 0.0, "cash_reserve_pct": 100.0,
+     "monte_carlo_ruin_risk": 0.0, **_SAFETY},
+
+    # 28-30: Market regime blocked
+    {"id": "DW188-028", "name": "market_regime_blocked_workflow", "workflow_type": "daily_workflow",
+     "market_regime": "BLOCKED", "expected_grade": "COMPLETE", "expected_action": "OBSERVE",
+     "candidates": [], "total_exposure_pct": 0.0, "cash_reserve_pct": 100.0,
+     "monte_carlo_ruin_risk": 0.0, **_SAFETY},
+    {"id": "DW188-029", "name": "market_regime_bear_workflow", "workflow_type": "daily_workflow",
+     "market_regime": "BEAR", "expected_grade": "COMPLETE", "expected_action": "OBSERVE",
+     "candidates": [], "total_exposure_pct": 0.0, "cash_reserve_pct": 100.0,
+     "monte_carlo_ruin_risk": 0.0, **_SAFETY},
+    {"id": "DW188-030", "name": "market_regime_risk_off_workflow", "workflow_type": "daily_workflow",
+     "market_regime": "RISK_OFF", "expected_grade": "COMPLETE", "expected_action": "OBSERVE",
+     "candidates": [], "total_exposure_pct": 0.0, "cash_reserve_pct": 100.0,
+     "monte_carlo_ruin_risk": 0.0, **_SAFETY},
+
+    # 31-33: High concentration / low cash
+    {"id": "DW188-031", "name": "high_concentration_workflow", "workflow_type": "portfolio_review_workflow",
+     "market_regime": "BULL", "expected_grade": "COMPLETE", "expected_action": "DECISION_ONLY",
+     "candidates": [], "total_exposure_pct": 85.0, "cash_reserve_pct": 15.0,
+     "monte_carlo_ruin_risk": 10.0, **_SAFETY},
+    {"id": "DW188-032", "name": "low_cash_reserve_workflow", "workflow_type": "portfolio_review_workflow",
+     "market_regime": "BULL", "expected_grade": "COMPLETE", "expected_action": "REDUCE_RISK",
+     "candidates": [], "total_exposure_pct": 96.0, "cash_reserve_pct": 4.0,
+     "monte_carlo_ruin_risk": 8.0, **_SAFETY},
+    {"id": "DW188-033", "name": "near_full_exposure_workflow", "workflow_type": "portfolio_review_workflow",
+     "market_regime": "BULL", "expected_grade": "COMPLETE", "expected_action": "REDUCE_RISK",
+     "candidates": [], "total_exposure_pct": 95.0, "cash_reserve_pct": 5.0,
+     "monte_carlo_ruin_risk": 12.0, **_SAFETY},
+
+    # 34-35: Monte Carlo ruin risk blocked
+    {"id": "DW188-034", "name": "monte_carlo_ruin_risk_blocked_workflow", "workflow_type": "risk_review_workflow",
+     "market_regime": "BULL", "expected_grade": "COMPLETE", "expected_action": "REDUCE_RISK",
+     "candidates": [], "total_exposure_pct": 30.0, "cash_reserve_pct": 70.0,
+     "monte_carlo_ruin_risk": 22.0, **_SAFETY},
+    {"id": "DW188-035", "name": "monte_carlo_ruin_risk_critical", "workflow_type": "risk_review_workflow",
+     "market_regime": "BULL", "expected_grade": "COMPLETE", "expected_action": "REDUCE_RISK",
+     "candidates": [], "total_exposure_pct": 50.0, "cash_reserve_pct": 50.0,
+     "monte_carlo_ruin_risk": 35.0, **_SAFETY},
+
+    # 36-38: Missing evidence / audit trail / unsafe path blocked
+    {"id": "DW188-036", "name": "missing_evidence_blocked_workflow", "workflow_type": "evidence_pack_workflow",
+     "market_regime": "BULL", "expected_grade": "COMPLETE", "expected_action": "AUDIT_ONLY",
+     "candidates": [], "total_exposure_pct": 0.0, "cash_reserve_pct": 100.0,
+     "monte_carlo_ruin_risk": 0.0, "missing_evidence": True, **_SAFETY},
+    {"id": "DW188-037", "name": "missing_audit_trail_blocked_workflow", "workflow_type": "audit_trail_workflow",
+     "market_regime": "BULL", "expected_grade": "COMPLETE", "expected_action": "AUDIT_ONLY",
+     "candidates": [], "total_exposure_pct": 0.0, "cash_reserve_pct": 100.0,
+     "monte_carlo_ruin_risk": 0.0, "missing_audit": True, **_SAFETY},
+    {"id": "DW188-038", "name": "unsafe_export_path_blocked_workflow", "workflow_type": "daily_workflow",
+     "market_regime": "BULL", "expected_grade": "COMPLETE", "expected_action": "DECISION_ONLY",
+     "candidates": [], "total_exposure_pct": 0.0, "cash_reserve_pct": 100.0,
+     "monte_carlo_ruin_risk": 0.0, "export_path": "reports/safe/", **_SAFETY},
+
+    # 39: Malformed input
+    {"id": "DW188-039", "name": "malformed_input_blocked_workflow", "workflow_type": "daily_workflow",
+     "market_regime": "UNKNOWN", "expected_grade": "COMPLETE", "expected_action": "DECISION_ONLY",
+     "candidates": [], "total_exposure_pct": 0.0, "cash_reserve_pct": 100.0,
+     "monte_carlo_ruin_risk": 0.0, **_SAFETY},
+
+    # 40-41: Report generation / evidence pack workflow
+    {"id": "DW188-040", "name": "report_generation_workflow_daily", "workflow_type": "report_generation_workflow",
+     "market_regime": "BULL", "expected_grade": "COMPLETE", "expected_action": "REPORT_ONLY",
+     "candidates": ["TSMC"], "total_exposure_pct": 20.0, "cash_reserve_pct": 80.0,
+     "monte_carlo_ruin_risk": 2.0, **_SAFETY},
+    {"id": "DW188-041", "name": "evidence_pack_workflow_full", "workflow_type": "evidence_pack_workflow",
+     "market_regime": "BULL", "expected_grade": "COMPLETE", "expected_action": "AUDIT_ONLY",
+     "candidates": ["TSMC", "MEDIATEK"], "total_exposure_pct": 25.0, "cash_reserve_pct": 75.0,
+     "monte_carlo_ruin_risk": 2.5, **_SAFETY},
+
+    # 42-50: Risk review workflow variants
+    {"id": "DW188-042", "name": "risk_review_workflow_clear", "workflow_type": "risk_review_workflow",
+     "market_regime": "BULL", "expected_grade": "COMPLETE", "expected_action": "DECISION_ONLY",
+     "candidates": [], "total_exposure_pct": 30.0, "cash_reserve_pct": 70.0,
+     "monte_carlo_ruin_risk": 3.0, **_SAFETY},
+    {"id": "DW188-043", "name": "risk_review_workflow_marginal", "workflow_type": "risk_review_workflow",
+     "market_regime": "WATCH", "expected_grade": "COMPLETE", "expected_action": "DECISION_ONLY",
+     "candidates": [], "total_exposure_pct": 50.0, "cash_reserve_pct": 50.0,
+     "monte_carlo_ruin_risk": 8.0, **_SAFETY},
+    {"id": "DW188-044", "name": "portfolio_review_workflow_healthy", "workflow_type": "portfolio_review_workflow",
+     "market_regime": "BULL", "expected_grade": "COMPLETE", "expected_action": "DECISION_ONLY",
+     "candidates": [], "total_exposure_pct": 35.0, "cash_reserve_pct": 65.0,
+     "monte_carlo_ruin_risk": 4.0, **_SAFETY},
+    {"id": "DW188-045", "name": "portfolio_review_workflow_overexposed", "workflow_type": "portfolio_review_workflow",
+     "market_regime": "BULL", "expected_grade": "COMPLETE", "expected_action": "REDUCE_RISK",
+     "candidates": [], "total_exposure_pct": 96.0, "cash_reserve_pct": 4.0,
+     "monte_carlo_ruin_risk": 15.0, **_SAFETY},
+    {"id": "DW188-046", "name": "audit_trail_workflow_complete", "workflow_type": "audit_trail_workflow",
+     "market_regime": "BULL", "expected_grade": "COMPLETE", "expected_action": "AUDIT_ONLY",
+     "candidates": [], "total_exposure_pct": 0.0, "cash_reserve_pct": 100.0,
+     "monte_carlo_ruin_risk": 0.0, **_SAFETY},
+    {"id": "DW188-047", "name": "blocked_market_workflow", "workflow_type": "blocked_market_workflow",
+     "market_regime": "BLOCKED", "expected_grade": "COMPLETE", "expected_action": "OBSERVE",
+     "candidates": [], "total_exposure_pct": 0.0, "cash_reserve_pct": 100.0,
+     "monte_carlo_ruin_risk": 0.0, **_SAFETY},
+    {"id": "DW188-048", "name": "report_gen_workflow_weekly", "workflow_type": "report_generation_workflow",
+     "market_regime": "BULL", "expected_grade": "COMPLETE", "expected_action": "REPORT_ONLY",
+     "candidates": [], "total_exposure_pct": 40.0, "cash_reserve_pct": 60.0,
+     "monte_carlo_ruin_risk": 5.0, **_SAFETY},
+    {"id": "DW188-049", "name": "daily_workflow_300k_capital", "workflow_type": "daily_workflow",
+     "market_regime": "BULL", "expected_grade": "COMPLETE", "expected_action": "DECISION_ONLY",
+     "capital_stage": "300K", "candidates": ["TSMC"], "total_exposure_pct": 8.0, "cash_reserve_pct": 92.0,
+     "monte_carlo_ruin_risk": 1.0, **_SAFETY},
+    {"id": "DW188-050", "name": "daily_workflow_1m_capital", "workflow_type": "daily_workflow",
+     "market_regime": "BULL", "expected_grade": "COMPLETE", "expected_action": "DECISION_ONLY",
+     "capital_stage": "1M", "candidates": ["TSMC", "ASUS"], "total_exposure_pct": 20.0, "cash_reserve_pct": 80.0,
+     "monte_carlo_ruin_risk": 2.0, **_SAFETY},
+
+    # 51-60: Miscellaneous workflow scenarios
+    {"id": "DW188-051", "name": "daily_workflow_multiple_candidates", "workflow_type": "daily_workflow",
+     "market_regime": "BULL", "expected_grade": "COMPLETE", "expected_action": "DECISION_ONLY",
+     "candidates": ["A", "B", "C"], "total_exposure_pct": 25.0, "cash_reserve_pct": 75.0,
+     "monte_carlo_ruin_risk": 2.5, **_SAFETY},
+    {"id": "DW188-052", "name": "weekly_workflow_reduce_needed", "workflow_type": "weekly_workflow",
+     "market_regime": "WATCH", "expected_grade": "COMPLETE", "expected_action": "REDUCE_RISK",
+     "candidates": [], "total_exposure_pct": 96.0, "cash_reserve_pct": 4.0,
+     "monte_carlo_ruin_risk": 5.0, **_SAFETY},
+    {"id": "DW188-053", "name": "pre_market_workflow_regime_blocked", "workflow_type": "pre_market_workflow",
+     "market_regime": "BEAR", "expected_grade": "COMPLETE", "expected_action": "OBSERVE",
+     "candidates": [], "total_exposure_pct": 0.0, "cash_reserve_pct": 100.0,
+     "monte_carlo_ruin_risk": 0.0, **_SAFETY},
+    {"id": "DW188-054", "name": "post_market_workflow_review_risk", "workflow_type": "post_market_workflow",
+     "market_regime": "WATCH", "expected_grade": "COMPLETE", "expected_action": "READ_REPORT",
+     "candidates": [], "total_exposure_pct": 45.0, "cash_reserve_pct": 55.0,
+     "monte_carlo_ruin_risk": 7.0, **_SAFETY},
+    {"id": "DW188-055", "name": "candidate_workflow_three_candidates", "workflow_type": "candidate_review_workflow",
+     "market_regime": "BULL", "expected_grade": "COMPLETE", "expected_action": "OBSERVE",
+     "candidates": ["X", "Y", "Z"], "total_exposure_pct": 0.0, "cash_reserve_pct": 100.0,
+     "monte_carlo_ruin_risk": 0.0, **_SAFETY},
+    {"id": "DW188-056", "name": "risk_workflow_all_clear", "workflow_type": "risk_review_workflow",
+     "market_regime": "BULL", "expected_grade": "COMPLETE", "expected_action": "DECISION_ONLY",
+     "candidates": [], "total_exposure_pct": 20.0, "cash_reserve_pct": 80.0,
+     "monte_carlo_ruin_risk": 1.0, **_SAFETY},
+    {"id": "DW188-057", "name": "portfolio_workflow_balanced", "workflow_type": "portfolio_review_workflow",
+     "market_regime": "BULL", "expected_grade": "COMPLETE", "expected_action": "DECISION_ONLY",
+     "candidates": [], "total_exposure_pct": 30.0, "cash_reserve_pct": 70.0,
+     "monte_carlo_ruin_risk": 3.0, **_SAFETY},
+    {"id": "DW188-058", "name": "report_workflow_evidence_included", "workflow_type": "report_generation_workflow",
+     "market_regime": "BULL", "expected_grade": "COMPLETE", "expected_action": "REPORT_ONLY",
+     "candidates": ["TSMC"], "total_exposure_pct": 10.0, "cash_reserve_pct": 90.0,
+     "monte_carlo_ruin_risk": 1.0, **_SAFETY},
+    {"id": "DW188-059", "name": "evidence_workflow_no_candidates", "workflow_type": "evidence_pack_workflow",
+     "market_regime": "BULL", "expected_grade": "COMPLETE", "expected_action": "AUDIT_ONLY",
+     "candidates": [], "total_exposure_pct": 0.0, "cash_reserve_pct": 100.0,
+     "monte_carlo_ruin_risk": 0.0, **_SAFETY},
+    {"id": "DW188-060", "name": "audit_workflow_full_steps", "workflow_type": "audit_trail_workflow",
+     "market_regime": "BULL", "expected_grade": "COMPLETE", "expected_action": "AUDIT_ONLY",
+     "candidates": [], "total_exposure_pct": 0.0, "cash_reserve_pct": 100.0,
+     "monte_carlo_ruin_risk": 0.0, **_SAFETY},
+
+    # 61-75: Additional coverage scenarios
+    {"id": "DW188-061", "name": "daily_workflow_cash_92pct", "workflow_type": "daily_workflow",
+     "market_regime": "BULL", "expected_grade": "COMPLETE", "expected_action": "DECISION_ONLY",
+     "candidates": ["TSMC"], "total_exposure_pct": 8.0, "cash_reserve_pct": 92.0,
+     "monte_carlo_ruin_risk": 1.0, **_SAFETY},
+    {"id": "DW188-062", "name": "weekly_workflow_watch_regime", "workflow_type": "weekly_workflow",
+     "market_regime": "WATCH", "expected_grade": "COMPLETE", "expected_action": "DECISION_ONLY",
+     "candidates": [], "total_exposure_pct": 20.0, "cash_reserve_pct": 80.0,
+     "monte_carlo_ruin_risk": 2.0, **_SAFETY},
+    {"id": "DW188-063", "name": "daily_workflow_research_only", "workflow_type": "daily_workflow",
+     "market_regime": "BULL", "expected_grade": "COMPLETE", "expected_action": "DECISION_ONLY",
+     "candidates": [], "total_exposure_pct": 0.0, "cash_reserve_pct": 100.0,
+     "monte_carlo_ruin_risk": 0.0, **_SAFETY},
+    {"id": "DW188-064", "name": "pre_market_all_watchlist", "workflow_type": "pre_market_workflow",
+     "market_regime": "BULL", "expected_grade": "COMPLETE", "expected_action": "OBSERVE",
+     "candidates": [], "watchlist": ["A", "B", "C", "D", "E"],
+     "total_exposure_pct": 0.0, "cash_reserve_pct": 100.0, "monte_carlo_ruin_risk": 0.0, **_SAFETY},
+    {"id": "DW188-065", "name": "post_market_all_risk_clear", "workflow_type": "post_market_workflow",
+     "market_regime": "BULL", "expected_grade": "COMPLETE", "expected_action": "READ_REPORT",
+     "candidates": [], "total_exposure_pct": 25.0, "cash_reserve_pct": 75.0,
+     "monte_carlo_ruin_risk": 2.0, **_SAFETY},
+    {"id": "DW188-066", "name": "candidate_workflow_one_ready", "workflow_type": "candidate_review_workflow",
+     "market_regime": "BULL", "expected_grade": "COMPLETE", "expected_action": "OBSERVE",
+     "candidates": ["TSMC"], "total_exposure_pct": 0.0, "cash_reserve_pct": 100.0,
+     "monte_carlo_ruin_risk": 0.0, **_SAFETY},
+    {"id": "DW188-067", "name": "risk_workflow_drawdown_usage", "workflow_type": "risk_review_workflow",
+     "market_regime": "BULL", "expected_grade": "COMPLETE", "expected_action": "DECISION_ONLY",
+     "candidates": [], "total_exposure_pct": 40.0, "cash_reserve_pct": 60.0,
+     "monte_carlo_ruin_risk": 4.0, "drawdown_budget_usage_pct": 30.0, **_SAFETY},
+    {"id": "DW188-068", "name": "portfolio_workflow_max_positions", "workflow_type": "portfolio_review_workflow",
+     "market_regime": "BULL", "expected_grade": "COMPLETE", "expected_action": "DECISION_ONLY",
+     "candidates": [], "total_exposure_pct": 60.0, "cash_reserve_pct": 40.0,
+     "monte_carlo_ruin_risk": 6.0, **_SAFETY},
+    {"id": "DW188-069", "name": "report_workflow_no_candidates", "workflow_type": "report_generation_workflow",
+     "market_regime": "BULL", "expected_grade": "COMPLETE", "expected_action": "REPORT_ONLY",
+     "candidates": [], "total_exposure_pct": 0.0, "cash_reserve_pct": 100.0,
+     "monte_carlo_ruin_risk": 0.0, **_SAFETY},
+    {"id": "DW188-070", "name": "evidence_workflow_multiple", "workflow_type": "evidence_pack_workflow",
+     "market_regime": "BULL", "expected_grade": "COMPLETE", "expected_action": "AUDIT_ONLY",
+     "candidates": ["A", "B", "C"], "total_exposure_pct": 20.0, "cash_reserve_pct": 80.0,
+     "monte_carlo_ruin_risk": 2.0, **_SAFETY},
+    {"id": "DW188-071", "name": "audit_workflow_all_steps_logged", "workflow_type": "audit_trail_workflow",
+     "market_regime": "BULL", "expected_grade": "COMPLETE", "expected_action": "AUDIT_ONLY",
+     "candidates": ["TSMC"], "total_exposure_pct": 8.0, "cash_reserve_pct": 92.0,
+     "monte_carlo_ruin_risk": 1.0, **_SAFETY},
+    {"id": "DW188-072", "name": "blocked_market_risk_off", "workflow_type": "blocked_market_workflow",
+     "market_regime": "RISK_OFF", "expected_grade": "COMPLETE", "expected_action": "OBSERVE",
+     "candidates": [], "total_exposure_pct": 0.0, "cash_reserve_pct": 100.0,
+     "monte_carlo_ruin_risk": 0.0, **_SAFETY},
+    {"id": "DW188-073", "name": "daily_workflow_full_pipeline", "workflow_type": "daily_workflow",
+     "market_regime": "BULL", "expected_grade": "COMPLETE", "expected_action": "DECISION_ONLY",
+     "candidates": ["TSMC", "MEDIATEK", "ASUS"],
+     "total_exposure_pct": 24.0, "cash_reserve_pct": 76.0,
+     "monte_carlo_ruin_risk": 2.4, **_SAFETY},
+    {"id": "DW188-074", "name": "weekly_workflow_end_of_week", "workflow_type": "weekly_workflow",
+     "market_regime": "BULL", "expected_grade": "COMPLETE", "expected_action": "DECISION_ONLY",
+     "candidates": [], "total_exposure_pct": 45.0, "cash_reserve_pct": 55.0,
+     "monte_carlo_ruin_risk": 4.5, **_SAFETY},
+    {"id": "DW188-075", "name": "complete_workflow_all_checks_pass", "workflow_type": "daily_workflow",
+     "market_regime": "BULL", "expected_grade": "COMPLETE", "expected_action": "DECISION_ONLY",
+     "candidates": ["TSMC"], "total_exposure_pct": 10.0, "cash_reserve_pct": 90.0,
+     "monte_carlo_ruin_risk": 1.0, **_SAFETY},
+]
+
+assert len(_SCENARIOS) == 75, f"Expected 75 scenarios, got {len(_SCENARIOS)}"
+
+
+def get_scenarios() -> List[Dict]:
+    """Return all 75 scenarios."""
+    return list(_SCENARIOS)
+
+
+def count_scenarios() -> int:
+    """Return the total scenario count."""
+    return len(_SCENARIOS)
+
+
+def get_scenario_by_id(scenario_id: str) -> Optional[Dict]:
+    """Return a scenario by its ID, or None."""
+    for s in _SCENARIOS:
+        if s["id"] == scenario_id:
+            return dict(s)
+    return None
+
+
+def get_scenarios_by_workflow_type(workflow_type: str) -> List[Dict]:
+    """Return scenarios matching a workflow type."""
+    return [s for s in _SCENARIOS if s.get("workflow_type") == workflow_type]
+
+
+def get_scenario_info() -> Dict:
+    """Return scenario registry info."""
+    return {
+        "count": len(_SCENARIOS),
+        "workflow_types": list({s.get("workflow_type") for s in _SCENARIOS}),
+        "paper_only": True,
+        "research_only": True,
+        "workflow_only": True,
+        "no_real_orders": True,
+        "not_investment_advice": True,
+        "production_trading_blocked": True,
+        "schema_version": "188",
+    }
