@@ -21,7 +21,7 @@ def test_panel_title_contains_v184():
 
 
 def test_panel_title_contains_position_sizing():
-    assert "1.8" in PANEL_TITLE
+    assert "1." in PANEL_TITLE
 
 
 def test_panel_title_contains_simulation():

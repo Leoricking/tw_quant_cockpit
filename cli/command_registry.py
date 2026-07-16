@@ -5038,6 +5038,65 @@ _DJ_V189_COMMANDS: _List[CommandSpec] = [
                 introduced_in="1.8.9", safety_classification="RESEARCH_ONLY"),
 ]
 
+# v1.9.0 Paper Trading Performance Review & Strategy Improvement Lab commands
+# ---------------------------------------------------------------------------
+_DP_V190_COMMANDS: _List[CommandSpec] = [
+    CommandSpec(name="decision-performance-version", handler_name="cmd_decision_performance_version",
+                help="[Research] Show decision performance version info v1.9.0", group="decision_performance",
+                introduced_in="1.9.0", safety_classification="RESEARCH_ONLY"),
+    CommandSpec(name="decision-performance-review", handler_name="cmd_decision_performance_review",
+                help="[Research] Run paper trading performance review v1.9.0", group="decision_performance",
+                introduced_in="1.9.0", safety_classification="RESEARCH_ONLY"),
+    CommandSpec(name="decision-performance-setup-analytics", handler_name="cmd_decision_performance_setup_analytics",
+                help="[Research] Analyze performance by setup type v1.9.0", group="decision_performance",
+                introduced_in="1.9.0", safety_classification="RESEARCH_ONLY"),
+    CommandSpec(name="decision-performance-r-multiple", handler_name="cmd_decision_performance_r_multiple",
+                help="[Research] Show R-multiple analytics v1.9.0", group="decision_performance",
+                introduced_in="1.9.0", safety_classification="RESEARCH_ONLY"),
+    CommandSpec(name="decision-performance-drawdown", handler_name="cmd_decision_performance_drawdown",
+                help="[Research] Show drawdown review v1.9.0", group="decision_performance",
+                introduced_in="1.9.0", safety_classification="RESEARCH_ONLY"),
+    CommandSpec(name="decision-performance-expectancy", handler_name="cmd_decision_performance_expectancy",
+                help="[Research] Show expectancy analytics v1.9.0", group="decision_performance",
+                introduced_in="1.9.0", safety_classification="RESEARCH_ONLY"),
+    CommandSpec(name="decision-performance-win-rate", handler_name="cmd_decision_performance_win_rate",
+                help="[Research] Show win rate analytics v1.9.0", group="decision_performance",
+                introduced_in="1.9.0", safety_classification="RESEARCH_ONLY"),
+    CommandSpec(name="decision-performance-mistakes", handler_name="cmd_decision_performance_mistakes",
+                help="[Research] Analyze performance mistake patterns v1.9.0", group="decision_performance",
+                introduced_in="1.9.0", safety_classification="RESEARCH_ONLY"),
+    CommandSpec(name="decision-performance-improvement", handler_name="cmd_decision_performance_improvement",
+                help="[Research] Run strategy improvement suggestions v1.9.0", group="decision_performance",
+                introduced_in="1.9.0", safety_classification="RESEARCH_ONLY"),
+    CommandSpec(name="decision-performance-dashboard", handler_name="cmd_decision_performance_dashboard",
+                help="[Research] Show performance review dashboard v1.9.0", group="decision_performance",
+                introduced_in="1.9.0", safety_classification="RESEARCH_ONLY"),
+    CommandSpec(name="decision-performance-export", handler_name="cmd_decision_performance_export",
+                help="[Research] Export performance review report v1.9.0", group="decision_performance",
+                introduced_in="1.9.0", safety_classification="RESEARCH_ONLY"),
+    CommandSpec(name="decision-performance-evidence", handler_name="cmd_decision_performance_evidence",
+                help="[Research] Show performance evidence pack v1.9.0", group="decision_performance",
+                introduced_in="1.9.0", safety_classification="RESEARCH_ONLY"),
+    CommandSpec(name="decision-performance-audit", handler_name="cmd_decision_performance_audit",
+                help="[Research] Show performance audit trail v1.9.0", group="decision_performance",
+                introduced_in="1.9.0", safety_classification="RESEARCH_ONLY"),
+    CommandSpec(name="decision-performance-quality", handler_name="cmd_decision_performance_quality",
+                help="[Research] Show quality grade for performance period v1.9.0", group="decision_performance",
+                introduced_in="1.9.0", safety_classification="RESEARCH_ONLY"),
+    CommandSpec(name="decision-performance-scenarios", handler_name="cmd_decision_performance_scenarios",
+                help="[Research] List decision performance scenarios v1.9.0", group="decision_performance",
+                introduced_in="1.9.0", safety_classification="RESEARCH_ONLY"),
+    CommandSpec(name="decision-performance-fixtures", handler_name="cmd_decision_performance_fixtures",
+                help="[Research] List decision performance fixtures v1.9.0", group="decision_performance",
+                introduced_in="1.9.0", safety_classification="RESEARCH_ONLY"),
+    CommandSpec(name="decision-performance-health", handler_name="cmd_decision_performance_health",
+                help="[Research] Run decision performance health check v1.9.0", group="decision_performance",
+                introduced_in="1.9.0", safety_classification="RESEARCH_ONLY"),
+    CommandSpec(name="decision-performance-safety-audit", handler_name="cmd_decision_performance_safety_audit",
+                help="[Research] Run decision performance safety audit v1.9.0", group="decision_performance",
+                introduced_in="1.9.0", safety_classification="RESEARCH_ONLY"),
+]
+
 PROVIDER_COMMANDS: _List[CommandSpec] = (
     _RESEARCH_FOUNDATION_COMMANDS
     + _TWSE_COMMANDS
@@ -5083,6 +5142,7 @@ PROVIDER_COMMANDS: _List[CommandSpec] = (
     + _DR_V187_COMMANDS
     + _DW_V188_COMMANDS
     + _DJ_V189_COMMANDS
+    + _DP_V190_COMMANDS
 )
 
 

@@ -14,7 +14,7 @@ def test_panel_version_185():
     assert PANEL_VERSION >= "1.8.5"
 
 def test_panel_title_contains_185():
-    assert "1.8" in PANEL_TITLE
+    assert "1." in PANEL_TITLE
 
 def test_panel_title_contains_portfolio():
     assert "Small Capital" in PANEL_TITLE

@@ -16,8 +16,8 @@ Headless-safe: no tkinter at module level. Renders to dict.
 from __future__ import annotations
 from typing import Any, Dict, List, Optional
 
-PANEL_VERSION = "1.8.9"
-PANEL_TITLE = "Small Capital Strategy v1.8.9 — Paper Decision Journal & Review Loop"
+PANEL_VERSION = "1.9.0"
+PANEL_TITLE = "Small Capital Strategy v1.9.0 — Paper Trading Performance Review & Strategy Improvement Lab"
 
 # v1.7.0 tabs (preserved unchanged)
 _TABS_V170 = [
@@ -252,6 +252,15 @@ _TABS_V189_DECISION_JOURNAL = [
 
 assert len(_TABS_V189_DECISION_JOURNAL) == 3, f"Expected 3 decision journal tabs, got {len(_TABS_V189_DECISION_JOURNAL)}"
 
+# v1.9.0 Paper Trading Performance Review & Strategy Improvement Lab tabs
+_TABS_V190_PERFORMANCE_REVIEW = [
+    "performance_review",
+    "strategy_improvement",
+    "setup_analytics",
+]
+
+assert len(_TABS_V190_PERFORMANCE_REVIEW) == 3, f"Expected 3 performance review tabs, got {len(_TABS_V190_PERFORMANCE_REVIEW)}"
+
 _TABS = (
     _TABS_V170
     + _TABS_V171_WATCHLIST
@@ -273,6 +282,7 @@ _TABS = (
     + _TABS_V187_DECISION_REPORT
     + _TABS_V188_DECISION_WORKFLOW
     + ["decision_journal", "daily_review"]  # v1.8.9: weekly_review already present from v1.7.6
+    + _TABS_V190_PERFORMANCE_REVIEW
 )
 
 assert len(_TABS_V170) == 22, f"Expected 22 v1.7.0 tabs, got {len(_TABS_V170)}"
@@ -1510,6 +1520,10 @@ def render_all_tabs() -> Dict[str, Any]:
         # v1.8.9 Paper Decision Journal tabs
         "decision_journal":                  render_decision_journal_tab,
         "daily_review":                      render_daily_review_tab,
+        # v1.9.0 Paper Trading Performance Review tabs
+        "performance_review":                render_performance_review_tab,
+        "strategy_improvement":              render_strategy_improvement_tab,
+        "setup_analytics":                   render_setup_analytics_tab,
     }
     result = {}
     for tab_name in _TABS:
@@ -3091,6 +3105,71 @@ def render_weekly_review_v189_tab() -> Dict[str, Any]:
         "empty_state": "No weekly review data available. Run decision-journal-weekly-review to populate.",
         "schema_version": "189",
     }
+
+
+def render_performance_review_tab() -> Dict[str, Any]:
+    """Render performance review tab data (headless-safe, performance-review-only)."""
+    return {
+        "tab": "performance_review",
+        "version": PANEL_VERSION,
+        "release_name": "Paper Trading Performance Review & Strategy Improvement Lab",
+        "description": "Performance review: win rate, R-multiple, expectancy, drawdown, quality grade.",
+        "paper_only": True,
+        "research_only": True,
+        "performance_review_only": True,
+        "strategy_improvement_only": True,
+        "no_real_orders": True,
+        "no_broker": True,
+        "not_investment_advice": True,
+        "production_trading_blocked": True,
+        "empty_state": "No performance review data. Run decision-performance-review to populate.",
+        "schema_version": "190",
+    }
+
+
+def render_strategy_improvement_tab() -> Dict[str, Any]:
+    """Render strategy improvement tab data (headless-safe, strategy-improvement-only)."""
+    return {
+        "tab": "strategy_improvement",
+        "version": PANEL_VERSION,
+        "release_name": "Paper Trading Performance Review & Strategy Improvement Lab",
+        "description": "Strategy improvement suggestions: KEEP_RULE, TIGHTEN_RULE, BLOCK_SETUP, etc.",
+        "paper_only": True,
+        "research_only": True,
+        "performance_review_only": True,
+        "strategy_improvement_only": True,
+        "no_real_orders": True,
+        "no_broker": True,
+        "not_investment_advice": True,
+        "production_trading_blocked": True,
+        "empty_state": "No strategy improvement data. Run decision-performance-review to populate.",
+        "schema_version": "190",
+    }
+
+
+def render_setup_analytics_tab() -> Dict[str, Any]:
+    """Render setup analytics tab data (headless-safe, performance-review-only)."""
+    return {
+        "tab": "setup_analytics",
+        "version": PANEL_VERSION,
+        "release_name": "Paper Trading Performance Review & Strategy Improvement Lab",
+        "description": "Setup analytics: A_10MA_PULLBACK, B_BASE_BREAKOUT, C_20MA_RECLAIM win rates and R-multiples.",
+        "paper_only": True,
+        "research_only": True,
+        "performance_review_only": True,
+        "strategy_improvement_only": True,
+        "no_real_orders": True,
+        "no_broker": True,
+        "not_investment_advice": True,
+        "production_trading_blocked": True,
+        "empty_state": "No setup analytics data. Run decision-performance-review to populate.",
+        "schema_version": "190",
+    }
+
+
+def get_performance_review_tab_names() -> List[str]:
+    """Return list of v1.9.0 performance review tab names."""
+    return list(_TABS_V190_PERFORMANCE_REVIEW)
 
 
 def get_panel_info() -> Dict[str, Any]:

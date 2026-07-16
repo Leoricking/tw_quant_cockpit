@@ -41424,6 +41424,177 @@ def cmd_decision_journal_safety_audit(args=None):
     print(_DECISION_JOURNAL_BANNER)
 
 
+# ── v1.9.0 Paper Trading Performance Review & Strategy Improvement Lab ──────
+_DECISION_PERFORMANCE_BANNER = "[!] RESEARCH ONLY | PAPER ONLY | PERFORMANCE REVIEW ONLY | STRATEGY IMPROVEMENT ONLY | NO REAL ORDERS | NOT INVESTMENT ADVICE"
+
+
+def cmd_decision_performance_version(args=None):
+    """[v1.9.0] Show decision performance version info. Research only."""
+    print(_DECISION_PERFORMANCE_BANNER)
+    from paper_trading.small_capital_strategy.decision_performance_version_v190 import get_version_info
+    info = get_version_info()
+    print(f"Decision Performance v{info['version']} — {info['release_name']}")
+    print(f"Schema: {info['schema_version']}  paper_only={info['paper_only']}  performance_review_only={info['performance_review_only']}")
+    print(_DECISION_PERFORMANCE_BANNER)
+
+
+def cmd_decision_performance_review(args=None):
+    """[v1.9.0] Run paper trading performance review. Research only."""
+    print(_DECISION_PERFORMANCE_BANNER)
+    from paper_trading.small_capital_strategy.decision_performance_engine_v190 import run_performance_review
+    result = run_performance_review("review_001", ["entry_001"])
+    print(f"decision-performance-review: blocked={result['blocked']}  paper_only={result['paper_only']}  performance_review_only={result['performance_review_only']}")
+    print(_DECISION_PERFORMANCE_BANNER)
+
+
+def cmd_decision_performance_setup_analytics(args=None):
+    """[v1.9.0] Analyze performance by setup type. Research only."""
+    print(_DECISION_PERFORMANCE_BANNER)
+    from paper_trading.small_capital_strategy.decision_performance_version_v190 import get_setup_types
+    types = get_setup_types()
+    print(f"decision-performance-setup-analytics: setup_types_count={len(types)}  paper_only=True  performance_review_only=True")
+    print(_DECISION_PERFORMANCE_BANNER)
+
+
+def cmd_decision_performance_r_multiple(args=None):
+    """[v1.9.0] Show R-multiple analytics. Research only."""
+    print(_DECISION_PERFORMANCE_BANNER)
+    from paper_trading.small_capital_strategy.decision_performance_engine_v190 import build_r_multiple_summary
+    result = build_r_multiple_summary([])
+    print(f"decision-performance-r-multiple: total_trades={result['total_trades']}  paper_only={result['paper_only']}  no_broker={result['no_broker']}")
+    print(_DECISION_PERFORMANCE_BANNER)
+
+
+def cmd_decision_performance_drawdown(args=None):
+    """[v1.9.0] Show drawdown review. Research only."""
+    print(_DECISION_PERFORMANCE_BANNER)
+    from paper_trading.small_capital_strategy.decision_performance_engine_v190 import build_drawdown_summary
+    result = build_drawdown_summary([])
+    print(f"decision-performance-drawdown: paper_only={result['paper_only']}  production_trading_blocked={result['production_trading_blocked']}")
+    print(_DECISION_PERFORMANCE_BANNER)
+
+
+def cmd_decision_performance_expectancy(args=None):
+    """[v1.9.0] Show expectancy analytics. Research only."""
+    print(_DECISION_PERFORMANCE_BANNER)
+    from paper_trading.small_capital_strategy.decision_performance_engine_v190 import build_expectancy_summary
+    result = build_expectancy_summary(0.5, 1.5, 1.0)
+    print(f"decision-performance-expectancy: expectancy_positive={result['expectancy_positive']}  strategy_improvement_only={result['strategy_improvement_only']}")
+    print(_DECISION_PERFORMANCE_BANNER)
+
+
+def cmd_decision_performance_win_rate(args=None):
+    """[v1.9.0] Show win rate analytics. Research only."""
+    print(_DECISION_PERFORMANCE_BANNER)
+    from paper_trading.small_capital_strategy.decision_performance_engine_v190 import build_strategy_summary
+    result = build_strategy_summary([])
+    print(f"decision-performance-win-rate: paper_only={result['paper_only']}  performance_review_only={result['performance_review_only']}")
+    print(_DECISION_PERFORMANCE_BANNER)
+
+
+def cmd_decision_performance_mistakes(args=None):
+    """[v1.9.0] Analyze performance mistake patterns. Research only."""
+    print(_DECISION_PERFORMANCE_BANNER)
+    from paper_trading.small_capital_strategy.decision_performance_engine_v190 import build_mistake_summary
+    result = build_mistake_summary([])
+    print(f"decision-performance-mistakes: paper_only={result['paper_only']}  audit_only={result['audit_only']}")
+    print(_DECISION_PERFORMANCE_BANNER)
+
+
+def cmd_decision_performance_improvement(args=None):
+    """[v1.9.0] Run strategy improvement suggestions. Research only."""
+    print(_DECISION_PERFORMANCE_BANNER)
+    from paper_trading.small_capital_strategy.decision_performance_engine_v190 import build_improvement_suggestion
+    result = build_improvement_suggestion("s001", "NO_CHANGE", "A_10MA_PULLBACK", "test", ["evidence_001"])
+    print(f"decision-performance-improvement: blocked={result['blocked']}  strategy_improvement_only={result['strategy_improvement_only']}")
+    print(_DECISION_PERFORMANCE_BANNER)
+
+
+def cmd_decision_performance_dashboard(args=None):
+    """[v1.9.0] Show performance review dashboard. Research only."""
+    print(_DECISION_PERFORMANCE_BANNER)
+    from paper_trading.small_capital_strategy.decision_performance_engine_v190 import build_dashboard
+    result = build_dashboard({})
+    print(f"decision-performance-dashboard: paper_only={result['paper_only']}  no_leverage={result['no_leverage']}")
+    print(_DECISION_PERFORMANCE_BANNER)
+
+
+def cmd_decision_performance_export(args=None):
+    """[v1.9.0] Export performance review report. Research only."""
+    print(_DECISION_PERFORMANCE_BANNER)
+    from paper_trading.small_capital_strategy.decision_performance_report_v190 import export_strategy_summary_as_json
+    result = export_strategy_summary_as_json({})
+    print(f"decision-performance-export: json_length={len(result)}  paper_only=True  performance_review_only=True")
+    print(_DECISION_PERFORMANCE_BANNER)
+
+
+def cmd_decision_performance_evidence(args=None):
+    """[v1.9.0] Show performance evidence pack. Research only."""
+    print(_DECISION_PERFORMANCE_BANNER)
+    from paper_trading.small_capital_strategy.decision_performance_engine_v190 import build_evidence_pack
+    result = build_evidence_pack({})
+    print(f"decision-performance-evidence: paper_only={result['paper_only']}  validation_only={result['validation_only']}")
+    print(_DECISION_PERFORMANCE_BANNER)
+
+
+def cmd_decision_performance_audit(args=None):
+    """[v1.9.0] Show performance audit trail. Research only."""
+    print(_DECISION_PERFORMANCE_BANNER)
+    from paper_trading.small_capital_strategy.decision_performance_engine_v190 import build_audit_trail
+    result = build_audit_trail({})
+    print(f"decision-performance-audit: paper_only={result['paper_only']}  audit_only={result['audit_only']}")
+    print(_DECISION_PERFORMANCE_BANNER)
+
+
+def cmd_decision_performance_quality(args=None):
+    """[v1.9.0] Show quality grade for performance period. Research only."""
+    print(_DECISION_PERFORMANCE_BANNER)
+    from paper_trading.small_capital_strategy.decision_performance_version_v190 import get_quality_grades
+    grades = get_quality_grades()
+    print(f"decision-performance-quality: quality_grades_count={len(grades)}  paper_only=True  performance_review_only=True")
+    print(_DECISION_PERFORMANCE_BANNER)
+
+
+def cmd_decision_performance_scenarios(args=None):
+    """[v1.9.0] List decision performance scenarios. Research only."""
+    print(_DECISION_PERFORMANCE_BANNER)
+    from paper_trading.small_capital_strategy.decision_performance_scenarios_v190 import get_all_scenarios
+    scenarios = get_all_scenarios()
+    print(f"decision-performance-scenarios: count={len(scenarios)}  paper_only=True  performance_review_only=True")
+    print(_DECISION_PERFORMANCE_BANNER)
+
+
+def cmd_decision_performance_fixtures(args=None):
+    """[v1.9.0] List decision performance fixtures. Research only."""
+    print(_DECISION_PERFORMANCE_BANNER)
+    from paper_trading.small_capital_strategy.decision_performance_fixtures_v190 import get_all_fixtures
+    fixtures = get_all_fixtures()
+    print(f"decision-performance-fixtures: count={len(fixtures)}  paper_only=True  performance_review_only=True")
+    print(_DECISION_PERFORMANCE_BANNER)
+
+
+def cmd_decision_performance_health(args=None):
+    """[v1.9.0] Run decision performance health check. Research only."""
+    print(_DECISION_PERFORMANCE_BANNER)
+    from paper_trading.small_capital_strategy.decision_performance_health_v190 import run_health_check
+    result = run_health_check()
+    print(f"decision-performance-health: {result.status} ({result.passed}/{result.total})")
+    if result.failed:
+        for c in result.checks:
+            if not c["passed"]:
+                print(f"  [FAIL] {c['name']}: {c['error']}")
+    print(_DECISION_PERFORMANCE_BANNER)
+
+
+def cmd_decision_performance_safety_audit(args=None):
+    """[v1.9.0] Run decision performance safety audit. Research only."""
+    print(_DECISION_PERFORMANCE_BANNER)
+    from paper_trading.small_capital_strategy.decision_performance_safety_v190 import run_safety_audit
+    result = run_safety_audit()
+    print(f"decision-performance-safety-audit: all_safe={result['all_safe']}  paper_only=True  performance_review_only=True")
+    print(_DECISION_PERFORMANCE_BANNER)
+
+
 def cmd_paper_strategy_health(args=None):
     """[v1.6.2] Paper strategy orchestration health check. Research only."""
     print(_STRATEGY_SAFETY_BANNER)
@@ -43811,6 +43982,25 @@ def main() -> None:
         "decision-journal-scenarios":          cmd_decision_journal_scenarios,
         "decision-journal-fixtures":           cmd_decision_journal_fixtures,
         "decision-journal-safety-audit":       cmd_decision_journal_safety_audit,
+        # v1.9.0 decision performance commands
+        "decision-performance-version":        cmd_decision_performance_version,
+        "decision-performance-review":         cmd_decision_performance_review,
+        "decision-performance-setup-analytics": cmd_decision_performance_setup_analytics,
+        "decision-performance-r-multiple":     cmd_decision_performance_r_multiple,
+        "decision-performance-drawdown":       cmd_decision_performance_drawdown,
+        "decision-performance-expectancy":     cmd_decision_performance_expectancy,
+        "decision-performance-win-rate":       cmd_decision_performance_win_rate,
+        "decision-performance-mistakes":       cmd_decision_performance_mistakes,
+        "decision-performance-improvement":    cmd_decision_performance_improvement,
+        "decision-performance-dashboard":      cmd_decision_performance_dashboard,
+        "decision-performance-export":         cmd_decision_performance_export,
+        "decision-performance-evidence":       cmd_decision_performance_evidence,
+        "decision-performance-audit":          cmd_decision_performance_audit,
+        "decision-performance-quality":        cmd_decision_performance_quality,
+        "decision-performance-scenarios":      cmd_decision_performance_scenarios,
+        "decision-performance-fixtures":       cmd_decision_performance_fixtures,
+        "decision-performance-health":         cmd_decision_performance_health,
+        "decision-performance-safety-audit":   cmd_decision_performance_safety_audit,
     }
 
     if args.command is None:
