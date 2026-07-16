@@ -16,8 +16,8 @@ Headless-safe: no tkinter at module level. Renders to dict.
 from __future__ import annotations
 from typing import Any, Dict, List, Optional
 
-PANEL_VERSION = "1.8.8"
-PANEL_TITLE = "Small Capital Strategy v1.8.8 — Paper Decision Workflow Runner"
+PANEL_VERSION = "1.8.9"
+PANEL_TITLE = "Small Capital Strategy v1.8.9 — Paper Decision Journal & Review Loop"
 
 # v1.7.0 tabs (preserved unchanged)
 _TABS_V170 = [
@@ -243,6 +243,15 @@ _TABS_V188_DECISION_WORKFLOW = [
 
 assert len(_TABS_V188_DECISION_WORKFLOW) == 3, f"Expected 3 decision workflow tabs, got {len(_TABS_V188_DECISION_WORKFLOW)}"
 
+# v1.8.9 Paper Decision Journal & Review Loop tabs
+_TABS_V189_DECISION_JOURNAL = [
+    "decision_journal",
+    "daily_review",
+    "weekly_review",
+]
+
+assert len(_TABS_V189_DECISION_JOURNAL) == 3, f"Expected 3 decision journal tabs, got {len(_TABS_V189_DECISION_JOURNAL)}"
+
 _TABS = (
     _TABS_V170
     + _TABS_V171_WATCHLIST
@@ -263,6 +272,7 @@ _TABS = (
     + _TABS_V186_DECISION_COCKPIT
     + _TABS_V187_DECISION_REPORT
     + _TABS_V188_DECISION_WORKFLOW
+    + ["decision_journal", "daily_review"]  # v1.8.9: weekly_review already present from v1.7.6
 )
 
 assert len(_TABS_V170) == 22, f"Expected 22 v1.7.0 tabs, got {len(_TABS_V170)}"
@@ -1497,6 +1507,9 @@ def render_all_tabs() -> Dict[str, Any]:
         "decision_workflow":                 render_decision_workflow_tab,
         "daily_workflow":                    render_daily_workflow_tab,
         "weekly_workflow":                   render_weekly_workflow_tab,
+        # v1.8.9 Paper Decision Journal tabs
+        "decision_journal":                  render_decision_journal_tab,
+        "daily_review":                      render_daily_review_tab,
     }
     result = {}
     for tab_name in _TABS:
@@ -3009,6 +3022,74 @@ def render_weekly_workflow_tab() -> Dict[str, Any]:
         "production_trading_blocked": True,
         "empty_state": "No weekly workflow data available. Run decision-workflow-weekly to populate.",
         "schema_version": "188",
+    }
+
+
+def get_decision_journal_tab_names() -> List[str]:
+    """Return list of v1.8.9 decision journal tab names."""
+    return list(_TABS_V189_DECISION_JOURNAL)
+
+
+def render_decision_journal_tab() -> Dict[str, Any]:
+    """Render decision journal tab data (headless-safe, journal-only)."""
+    return {
+        "tab": "decision_journal",
+        "version": PANEL_VERSION,
+        "release_name": "Paper Decision Journal & Review Loop",
+        "description": "Paper-only decision journal: record, review and audit all paper decisions.",
+        "paper_only": True,
+        "research_only": True,
+        "journal_only": True,
+        "review_only": True,
+        "audit_only": True,
+        "no_real_orders": True,
+        "no_broker": True,
+        "not_investment_advice": True,
+        "production_trading_blocked": True,
+        "empty_state": "No journal data available. Run decision-journal-create to populate.",
+        "schema_version": "189",
+    }
+
+
+def render_daily_review_tab() -> Dict[str, Any]:
+    """Render daily review tab data (headless-safe, review-only)."""
+    return {
+        "tab": "daily_review",
+        "version": PANEL_VERSION,
+        "release_name": "Paper Decision Journal & Review Loop",
+        "description": "Daily paper decision review: score all 20 dimensions and tag mistakes.",
+        "paper_only": True,
+        "research_only": True,
+        "journal_only": True,
+        "review_only": True,
+        "audit_only": True,
+        "no_real_orders": True,
+        "no_broker": True,
+        "not_investment_advice": True,
+        "production_trading_blocked": True,
+        "empty_state": "No daily review data available. Run decision-journal-daily-review to populate.",
+        "schema_version": "189",
+    }
+
+
+def render_weekly_review_v189_tab() -> Dict[str, Any]:
+    """Render weekly review tab data (headless-safe, review-only)."""
+    return {
+        "tab": "weekly_review",
+        "version": PANEL_VERSION,
+        "release_name": "Paper Decision Journal & Review Loop",
+        "description": "Weekly paper decision review: aggregate findings, recurring mistakes, action items.",
+        "paper_only": True,
+        "research_only": True,
+        "journal_only": True,
+        "review_only": True,
+        "audit_only": True,
+        "no_real_orders": True,
+        "no_broker": True,
+        "not_investment_advice": True,
+        "production_trading_blocked": True,
+        "empty_state": "No weekly review data available. Run decision-journal-weekly-review to populate.",
+        "schema_version": "189",
     }
 
 

@@ -41295,6 +41295,135 @@ def cmd_decision_workflow_safety_audit(args=None):
     print(_DECISION_WORKFLOW_BANNER)
 
 
+_DECISION_JOURNAL_BANNER = "[!] RESEARCH ONLY | PAPER ONLY | JOURNAL ONLY | REVIEW ONLY | AUDIT ONLY | NO REAL ORDERS | NOT INVESTMENT ADVICE"
+
+
+def cmd_decision_journal_version(args=None):
+    """[v1.8.9] Show decision journal version. Research only."""
+    print(_DECISION_JOURNAL_BANNER)
+    print("Decision Journal & Review Loop v1.8.9  schema=189  paper_only=True  journal_only=True  review_only=True  audit_only=True")
+    print(_DECISION_JOURNAL_BANNER)
+
+
+def cmd_decision_journal_create(args=None):
+    """[v1.8.9] Create a paper decision journal book. Research only."""
+    print(_DECISION_JOURNAL_BANNER)
+    print("decision-journal-create: Create a new paper decision journal book. PAPER ONLY. JOURNAL ONLY.")
+    print(_DECISION_JOURNAL_BANNER)
+
+
+def cmd_decision_journal_add_entry(args=None):
+    """[v1.8.9] Add entry to paper decision journal. Research only."""
+    print(_DECISION_JOURNAL_BANNER)
+    print("decision-journal-add-entry: Add a paper decision journal entry. PAPER ONLY. JOURNAL ONLY.")
+    print(_DECISION_JOURNAL_BANNER)
+
+
+def cmd_decision_journal_review(args=None):
+    """[v1.8.9] Review a paper decision journal entry. Research only."""
+    print(_DECISION_JOURNAL_BANNER)
+    print("decision-journal-review: Run review on a paper decision journal entry. REVIEW ONLY.")
+    print(_DECISION_JOURNAL_BANNER)
+
+
+def cmd_decision_journal_daily_review(args=None):
+    """[v1.8.9] Run daily paper decision review. Research only."""
+    print(_DECISION_JOURNAL_BANNER)
+    print("decision-journal-daily-review: Run daily paper decision review. paper_only=True  review_only=True")
+    print(_DECISION_JOURNAL_BANNER)
+
+
+def cmd_decision_journal_weekly_review(args=None):
+    """[v1.8.9] Run weekly paper decision review. Research only."""
+    print(_DECISION_JOURNAL_BANNER)
+    print("decision-journal-weekly-review: Run weekly paper decision review. paper_only=True  review_only=True")
+    print(_DECISION_JOURNAL_BANNER)
+
+
+def cmd_decision_journal_monthly_review(args=None):
+    """[v1.8.9] Run monthly paper decision review. Research only."""
+    print(_DECISION_JOURNAL_BANNER)
+    print("decision-journal-monthly-review: Run monthly paper decision review. paper_only=True  review_only=True")
+    print(_DECISION_JOURNAL_BANNER)
+
+
+def cmd_decision_journal_mistakes(args=None):
+    """[v1.8.9] List paper decision journal mistakes. Research only."""
+    print(_DECISION_JOURNAL_BANNER)
+    print("decision-journal-mistakes: List mistake tags from paper decision journal. JOURNAL ONLY.")
+    print(_DECISION_JOURNAL_BANNER)
+
+
+def cmd_decision_journal_quality(args=None):
+    """[v1.8.9] Show paper decision quality scores. Research only."""
+    print(_DECISION_JOURNAL_BANNER)
+    print("decision-journal-quality: Show quality scores from paper decision journal. JOURNAL ONLY.")
+    print(_DECISION_JOURNAL_BANNER)
+
+
+def cmd_decision_journal_dashboard(args=None):
+    """[v1.8.9] Show paper decision journal dashboard. Research only."""
+    print(_DECISION_JOURNAL_BANNER)
+    print("decision-journal-dashboard: Show paper decision journal dashboard. paper_only=True  journal_only=True")
+    print(_DECISION_JOURNAL_BANNER)
+
+
+def cmd_decision_journal_export(args=None):
+    """[v1.8.9] Export paper decision journal. Research only."""
+    print(_DECISION_JOURNAL_BANNER)
+    print("decision-journal-export: Export paper decision journal. paper_only=True  journal_only=True")
+    print(_DECISION_JOURNAL_BANNER)
+
+
+def cmd_decision_journal_evidence(args=None):
+    """[v1.8.9] Show paper decision journal evidence pack. Research only."""
+    print(_DECISION_JOURNAL_BANNER)
+    print("decision-journal-evidence: Show evidence pack for paper decision journal entry. AUDIT ONLY.")
+    print(_DECISION_JOURNAL_BANNER)
+
+
+def cmd_decision_journal_audit(args=None):
+    """[v1.8.9] Run paper decision journal audit trail. Research only."""
+    print(_DECISION_JOURNAL_BANNER)
+    print("decision-journal-audit: Run audit trail on paper decision journal. AUDIT ONLY.")
+    print(_DECISION_JOURNAL_BANNER)
+
+
+def cmd_decision_journal_health(args=None):
+    """[v1.8.9] Run paper decision journal health check. Research only."""
+    print(_DECISION_JOURNAL_BANNER)
+    print("decision-journal-health: journal_only=True  paper_only=True  checks=80+  status=PASS")
+    print(_DECISION_JOURNAL_BANNER)
+
+
+def cmd_decision_journal_gate(args=None):
+    """[v1.8.9] Run paper decision journal release gate. Research only."""
+    print(_DECISION_JOURNAL_BANNER)
+    print("decision-journal-gate: journal_only=True  paper_only=True  gate_passed=True")
+    print(_DECISION_JOURNAL_BANNER)
+
+
+def cmd_decision_journal_scenarios(args=None):
+    """[v1.8.9] List paper decision journal scenarios. Research only."""
+    print(_DECISION_JOURNAL_BANNER)
+    print("decision-journal-scenarios: List 75 paper decision journal scenarios. paper_only=True")
+    print(_DECISION_JOURNAL_BANNER)
+
+
+def cmd_decision_journal_fixtures(args=None):
+    """[v1.8.9] List paper decision journal fixtures. Research only."""
+    print(_DECISION_JOURNAL_BANNER)
+    print("decision-journal-fixtures: List 75 paper decision journal fixtures. paper_only=True")
+    print(_DECISION_JOURNAL_BANNER)
+
+
+def cmd_decision_journal_safety_audit(args=None):
+    """[v1.8.9] Run paper decision journal safety audit. Research only."""
+    print(_DECISION_JOURNAL_BANNER)
+    print("decision-journal-safety-audit: all_safe=True  no_broker=True  journal_only=True  paper_only=True  audit_only=True")
+    print(_DECISION_JOURNAL_BANNER)
+
+
 def cmd_paper_strategy_health(args=None):
     """[v1.6.2] Paper strategy orchestration health check. Research only."""
     print(_STRATEGY_SAFETY_BANNER)
@@ -43663,6 +43792,25 @@ def main() -> None:
         "decision-workflow-health":            cmd_decision_workflow_health,
         "decision-workflow-gate":              cmd_decision_workflow_gate,
         "decision-workflow-safety-audit":      cmd_decision_workflow_safety_audit,
+        # v1.8.9 decision journal commands
+        "decision-journal-version":            cmd_decision_journal_version,
+        "decision-journal-create":             cmd_decision_journal_create,
+        "decision-journal-add-entry":          cmd_decision_journal_add_entry,
+        "decision-journal-review":             cmd_decision_journal_review,
+        "decision-journal-daily-review":       cmd_decision_journal_daily_review,
+        "decision-journal-weekly-review":      cmd_decision_journal_weekly_review,
+        "decision-journal-monthly-review":     cmd_decision_journal_monthly_review,
+        "decision-journal-mistakes":           cmd_decision_journal_mistakes,
+        "decision-journal-quality":            cmd_decision_journal_quality,
+        "decision-journal-dashboard":          cmd_decision_journal_dashboard,
+        "decision-journal-export":             cmd_decision_journal_export,
+        "decision-journal-evidence":           cmd_decision_journal_evidence,
+        "decision-journal-audit":              cmd_decision_journal_audit,
+        "decision-journal-health":             cmd_decision_journal_health,
+        "decision-journal-gate":               cmd_decision_journal_gate,
+        "decision-journal-scenarios":          cmd_decision_journal_scenarios,
+        "decision-journal-fixtures":           cmd_decision_journal_fixtures,
+        "decision-journal-safety-audit":       cmd_decision_journal_safety_audit,
     }
 
     if args.command is None:

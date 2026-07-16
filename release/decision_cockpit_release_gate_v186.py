@@ -125,7 +125,7 @@ class DecisionCockpitReleaseGate:
 
         # ── GUI (4) ──────────────────────────────────────────────────────
         from gui.small_capital_strategy_panel import PANEL_VERSION, _TABS
-        self._check("gui_panel_version_186",       lambda: PANEL_VERSION in ("1.8.6", "1.8.7", "1.8.8"))
+        self._check("gui_panel_version_186",       lambda: PANEL_VERSION in ("1.8.6", "1.8.7", "1.8.8", "1.8.9"))
         self._check("gui_tabs_ge_141",             lambda: len(_TABS) >= 141)
         self._check("gui_daily_decision_tab",      lambda: "daily_decision_cockpit" in _TABS)
         self._check("gui_weekly_review_tab",       lambda: "weekly_decision_review" in _TABS)

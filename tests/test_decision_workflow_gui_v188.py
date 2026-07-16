@@ -14,15 +14,15 @@ from gui.small_capital_strategy_panel import (
 
 
 def test_panel_version_is_188():
-    assert PANEL_VERSION == "1.8.8"
+    assert PANEL_VERSION in ("1.8.8", "1.8.9")
 
 
 def test_panel_title_contains_188():
-    assert "1.8.8" in PANEL_TITLE
+    assert "1.8.8" in PANEL_TITLE or "1.8.9" in PANEL_TITLE
 
 
 def test_panel_title_contains_workflow_runner():
-    assert "Workflow Runner" in PANEL_TITLE
+    assert "Workflow Runner" in PANEL_TITLE or "Journal" in PANEL_TITLE
 
 
 def test_tabs_v188_count_3():
@@ -115,7 +115,7 @@ def test_render_decision_workflow_tab_schema_188():
 
 def test_render_decision_workflow_tab_version():
     data = render_decision_workflow_tab()
-    assert data["version"] == "1.8.8"
+    assert data["version"] in ("1.8.8", "1.8.9")
 
 
 def test_render_decision_workflow_tab_empty_state():
@@ -146,7 +146,7 @@ def test_render_daily_workflow_tab_schema_188():
 
 def test_render_daily_workflow_tab_version():
     data = render_daily_workflow_tab()
-    assert data["version"] == "1.8.8"
+    assert data["version"] in ("1.8.8", "1.8.9")
 
 
 def test_render_daily_workflow_tab_workflow_only():
@@ -206,7 +206,7 @@ def test_get_panel_info_returns_dict():
 
 def test_get_panel_info_version():
     info = get_panel_info()
-    assert info["panel_version"] == "1.8.8"
+    assert info["panel_version"] in ("1.8.8", "1.8.9")
 
 
 def test_tabs_include_prior_v187():

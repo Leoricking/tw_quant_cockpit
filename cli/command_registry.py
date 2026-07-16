@@ -4979,6 +4979,65 @@ _DW_V188_COMMANDS: _List[CommandSpec] = [
                 introduced_in="1.8.8", safety_classification="RESEARCH_ONLY"),
 ]
 
+# v1.8.9 Paper Decision Journal & Review Loop commands
+# ---------------------------------------------------------------------------
+_DJ_V189_COMMANDS: _List[CommandSpec] = [
+    CommandSpec(name="decision-journal-version", handler_name="cmd_decision_journal_version",
+                help="[Research] Show decision journal version info v1.8.9", group="decision_journal",
+                introduced_in="1.8.9", safety_classification="RESEARCH_ONLY"),
+    CommandSpec(name="decision-journal-create", handler_name="cmd_decision_journal_create",
+                help="[Research] Create a new decision journal v1.8.9", group="decision_journal",
+                introduced_in="1.8.9", safety_classification="RESEARCH_ONLY"),
+    CommandSpec(name="decision-journal-add-entry", handler_name="cmd_decision_journal_add_entry",
+                help="[Research] Add entry to decision journal v1.8.9", group="decision_journal",
+                introduced_in="1.8.9", safety_classification="RESEARCH_ONLY"),
+    CommandSpec(name="decision-journal-review", handler_name="cmd_decision_journal_review",
+                help="[Research] Run decision journal review v1.8.9", group="decision_journal",
+                introduced_in="1.8.9", safety_classification="RESEARCH_ONLY"),
+    CommandSpec(name="decision-journal-daily-review", handler_name="cmd_decision_journal_daily_review",
+                help="[Research] Run daily decision journal review v1.8.9", group="decision_journal",
+                introduced_in="1.8.9", safety_classification="RESEARCH_ONLY"),
+    CommandSpec(name="decision-journal-weekly-review", handler_name="cmd_decision_journal_weekly_review",
+                help="[Research] Run weekly decision journal review v1.8.9", group="decision_journal",
+                introduced_in="1.8.9", safety_classification="RESEARCH_ONLY"),
+    CommandSpec(name="decision-journal-monthly-review", handler_name="cmd_decision_journal_monthly_review",
+                help="[Research] Run monthly decision journal review v1.8.9", group="decision_journal",
+                introduced_in="1.8.9", safety_classification="RESEARCH_ONLY"),
+    CommandSpec(name="decision-journal-mistakes", handler_name="cmd_decision_journal_mistakes",
+                help="[Research] List decision journal mistake tags v1.8.9", group="decision_journal",
+                introduced_in="1.8.9", safety_classification="RESEARCH_ONLY"),
+    CommandSpec(name="decision-journal-quality", handler_name="cmd_decision_journal_quality",
+                help="[Research] Show decision quality scores v1.8.9", group="decision_journal",
+                introduced_in="1.8.9", safety_classification="RESEARCH_ONLY"),
+    CommandSpec(name="decision-journal-dashboard", handler_name="cmd_decision_journal_dashboard",
+                help="[Research] Show decision journal dashboard v1.8.9", group="decision_journal",
+                introduced_in="1.8.9", safety_classification="RESEARCH_ONLY"),
+    CommandSpec(name="decision-journal-export", handler_name="cmd_decision_journal_export",
+                help="[Research] Export decision journal v1.8.9", group="decision_journal",
+                introduced_in="1.8.9", safety_classification="RESEARCH_ONLY"),
+    CommandSpec(name="decision-journal-evidence", handler_name="cmd_decision_journal_evidence",
+                help="[Research] Show decision journal evidence pack v1.8.9", group="decision_journal",
+                introduced_in="1.8.9", safety_classification="RESEARCH_ONLY"),
+    CommandSpec(name="decision-journal-audit", handler_name="cmd_decision_journal_audit",
+                help="[Research] Show decision journal audit trail v1.8.9", group="decision_journal",
+                introduced_in="1.8.9", safety_classification="RESEARCH_ONLY"),
+    CommandSpec(name="decision-journal-health", handler_name="cmd_decision_journal_health",
+                help="[Research] Run decision journal health check v1.8.9", group="decision_journal",
+                introduced_in="1.8.9", safety_classification="RESEARCH_ONLY"),
+    CommandSpec(name="decision-journal-gate", handler_name="cmd_decision_journal_gate",
+                help="[Research] Run decision journal release gate v1.8.9", group="decision_journal",
+                introduced_in="1.8.9", safety_classification="RESEARCH_ONLY"),
+    CommandSpec(name="decision-journal-scenarios", handler_name="cmd_decision_journal_scenarios",
+                help="[Research] List decision journal scenarios v1.8.9", group="decision_journal",
+                introduced_in="1.8.9", safety_classification="RESEARCH_ONLY"),
+    CommandSpec(name="decision-journal-fixtures", handler_name="cmd_decision_journal_fixtures",
+                help="[Research] List decision journal fixtures v1.8.9", group="decision_journal",
+                introduced_in="1.8.9", safety_classification="RESEARCH_ONLY"),
+    CommandSpec(name="decision-journal-safety-audit", handler_name="cmd_decision_journal_safety_audit",
+                help="[Research] Run decision journal safety audit v1.8.9", group="decision_journal",
+                introduced_in="1.8.9", safety_classification="RESEARCH_ONLY"),
+]
+
 PROVIDER_COMMANDS: _List[CommandSpec] = (
     _RESEARCH_FOUNDATION_COMMANDS
     + _TWSE_COMMANDS
@@ -5023,6 +5082,7 @@ PROVIDER_COMMANDS: _List[CommandSpec] = (
     + _DC_V186_COMMANDS
     + _DR_V187_COMMANDS
     + _DW_V188_COMMANDS
+    + _DJ_V189_COMMANDS
 )
 
 
