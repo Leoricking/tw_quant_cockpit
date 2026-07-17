@@ -5097,6 +5097,65 @@ _DP_V190_COMMANDS: _List[CommandSpec] = [
                 introduced_in="1.9.0", safety_classification="RESEARCH_ONLY"),
 ]
 
+# v1.9.1 Paper Strategy Rule Tuning & Guardrail Lab commands
+# ---------------------------------------------------------------------------
+_ST_V191_COMMANDS: _List[CommandSpec] = [
+    CommandSpec(name="strategy-tuning-version", handler_name="cmd_strategy_tuning_version",
+                help="[Research] Show strategy tuning version info v1.9.1", group="strategy_tuning",
+                introduced_in="1.9.1", safety_classification="RESEARCH_ONLY"),
+    CommandSpec(name="strategy-tuning-review", handler_name="cmd_strategy_tuning_review",
+                help="[Research] Run paper strategy rule tuning review v1.9.1", group="strategy_tuning",
+                introduced_in="1.9.1", safety_classification="RESEARCH_ONLY"),
+    CommandSpec(name="strategy-tuning-rules", handler_name="cmd_strategy_tuning_rules",
+                help="[Research] List rule categories and candidates v1.9.1", group="strategy_tuning",
+                introduced_in="1.9.1", safety_classification="RESEARCH_ONLY"),
+    CommandSpec(name="strategy-tuning-guardrails", handler_name="cmd_strategy_tuning_guardrails",
+                help="[Research] Show guardrail definitions and status v1.9.1", group="strategy_tuning",
+                introduced_in="1.9.1", safety_classification="RESEARCH_ONLY"),
+    CommandSpec(name="strategy-tuning-recommend", handler_name="cmd_strategy_tuning_recommend",
+                help="[Research] Generate rule tuning recommendations v1.9.1", group="strategy_tuning",
+                introduced_in="1.9.1", safety_classification="RESEARCH_ONLY"),
+    CommandSpec(name="strategy-tuning-abc", handler_name="cmd_strategy_tuning_abc",
+                help="[Research] Analyze A/B/C buy point rule tuning v1.9.1", group="strategy_tuning",
+                introduced_in="1.9.1", safety_classification="RESEARCH_ONLY"),
+    CommandSpec(name="strategy-tuning-position-sizing", handler_name="cmd_strategy_tuning_position_sizing",
+                help="[Research] Review position sizing rule tuning v1.9.1", group="strategy_tuning",
+                introduced_in="1.9.1", safety_classification="RESEARCH_ONLY"),
+    CommandSpec(name="strategy-tuning-cash-reserve", handler_name="cmd_strategy_tuning_cash_reserve",
+                help="[Research] Review cash reserve rule tuning v1.9.1", group="strategy_tuning",
+                introduced_in="1.9.1", safety_classification="RESEARCH_ONLY"),
+    CommandSpec(name="strategy-tuning-concentration", handler_name="cmd_strategy_tuning_concentration",
+                help="[Research] Review concentration limit rule tuning v1.9.1", group="strategy_tuning",
+                introduced_in="1.9.1", safety_classification="RESEARCH_ONLY"),
+    CommandSpec(name="strategy-tuning-evidence", handler_name="cmd_strategy_tuning_evidence",
+                help="[Research] Show rule tuning evidence pack v1.9.1", group="strategy_tuning",
+                introduced_in="1.9.1", safety_classification="RESEARCH_ONLY"),
+    CommandSpec(name="strategy-tuning-dashboard", handler_name="cmd_strategy_tuning_dashboard",
+                help="[Research] Show rule tuning dashboard v1.9.1", group="strategy_tuning",
+                introduced_in="1.9.1", safety_classification="RESEARCH_ONLY"),
+    CommandSpec(name="strategy-tuning-export", handler_name="cmd_strategy_tuning_export",
+                help="[Research] Export rule tuning report v1.9.1", group="strategy_tuning",
+                introduced_in="1.9.1", safety_classification="RESEARCH_ONLY"),
+    CommandSpec(name="strategy-tuning-audit", handler_name="cmd_strategy_tuning_audit",
+                help="[Research] Show rule tuning audit trail v1.9.1", group="strategy_tuning",
+                introduced_in="1.9.1", safety_classification="RESEARCH_ONLY"),
+    CommandSpec(name="strategy-tuning-health", handler_name="cmd_strategy_tuning_health",
+                help="[Research] Run strategy tuning health check v1.9.1", group="strategy_tuning",
+                introduced_in="1.9.1", safety_classification="RESEARCH_ONLY"),
+    CommandSpec(name="strategy-tuning-gate", handler_name="cmd_strategy_tuning_gate",
+                help="[Research] Run strategy tuning release gate v1.9.1", group="strategy_tuning",
+                introduced_in="1.9.1", safety_classification="RESEARCH_ONLY"),
+    CommandSpec(name="strategy-tuning-scenarios", handler_name="cmd_strategy_tuning_scenarios",
+                help="[Research] List strategy tuning scenarios v1.9.1", group="strategy_tuning",
+                introduced_in="1.9.1", safety_classification="RESEARCH_ONLY"),
+    CommandSpec(name="strategy-tuning-fixtures", handler_name="cmd_strategy_tuning_fixtures",
+                help="[Research] List strategy tuning fixtures v1.9.1", group="strategy_tuning",
+                introduced_in="1.9.1", safety_classification="RESEARCH_ONLY"),
+    CommandSpec(name="strategy-tuning-safety-audit", handler_name="cmd_strategy_tuning_safety_audit",
+                help="[Research] Run strategy tuning safety audit v1.9.1", group="strategy_tuning",
+                introduced_in="1.9.1", safety_classification="RESEARCH_ONLY"),
+]
+
 PROVIDER_COMMANDS: _List[CommandSpec] = (
     _RESEARCH_FOUNDATION_COMMANDS
     + _TWSE_COMMANDS
@@ -5143,6 +5202,7 @@ PROVIDER_COMMANDS: _List[CommandSpec] = (
     + _DW_V188_COMMANDS
     + _DJ_V189_COMMANDS
     + _DP_V190_COMMANDS
+    + _ST_V191_COMMANDS
 )
 
 

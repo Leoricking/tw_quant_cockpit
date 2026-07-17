@@ -131,7 +131,7 @@ class DecisionReportReleaseGate:
             PANEL_VERSION, render_decision_report_tab,
             render_evidence_pack_tab, render_audit_trail_report_tab,
         )
-        self._check("gui_panel_version_187", lambda: PANEL_VERSION in ("1.8.7", "1.8.8", "1.8.9", "1.9.0"))
+        self._check("gui_panel_version_187", lambda: PANEL_VERSION in ("1.8.7", "1.8.8", "1.8.9", "1.9.0", "1.9.1"))
         self._check("gui_render_decision_report_tab", lambda: render_decision_report_tab()["paper_only"] is True)
         self._check("gui_render_evidence_pack_tab", lambda: render_evidence_pack_tab()["paper_only"] is True)
 

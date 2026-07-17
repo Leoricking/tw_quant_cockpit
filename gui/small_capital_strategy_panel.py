@@ -16,8 +16,8 @@ Headless-safe: no tkinter at module level. Renders to dict.
 from __future__ import annotations
 from typing import Any, Dict, List, Optional
 
-PANEL_VERSION = "1.9.0"
-PANEL_TITLE = "Small Capital Strategy v1.9.0 — Paper Trading Performance Review & Strategy Improvement Lab"
+PANEL_VERSION = "1.9.1"
+PANEL_TITLE = "Small Capital Strategy v1.9.1 — Paper Strategy Rule Tuning & Guardrail Lab"
 
 # v1.7.0 tabs (preserved unchanged)
 _TABS_V170 = [
@@ -261,6 +261,15 @@ _TABS_V190_PERFORMANCE_REVIEW = [
 
 assert len(_TABS_V190_PERFORMANCE_REVIEW) == 3, f"Expected 3 performance review tabs, got {len(_TABS_V190_PERFORMANCE_REVIEW)}"
 
+# v1.9.1 Paper Strategy Rule Tuning & Guardrail Lab tabs
+_TABS_V191_STRATEGY_TUNING = [
+    "strategy_rule_tuning",
+    "guardrail_review",
+    "rule_recommendations",
+]
+
+assert len(_TABS_V191_STRATEGY_TUNING) == 3, f"Expected 3 strategy tuning tabs, got {len(_TABS_V191_STRATEGY_TUNING)}"
+
 _TABS = (
     _TABS_V170
     + _TABS_V171_WATCHLIST
@@ -283,6 +292,7 @@ _TABS = (
     + _TABS_V188_DECISION_WORKFLOW
     + ["decision_journal", "daily_review"]  # v1.8.9: weekly_review already present from v1.7.6
     + _TABS_V190_PERFORMANCE_REVIEW
+    + _TABS_V191_STRATEGY_TUNING
 )
 
 assert len(_TABS_V170) == 22, f"Expected 22 v1.7.0 tabs, got {len(_TABS_V170)}"
@@ -1524,6 +1534,10 @@ def render_all_tabs() -> Dict[str, Any]:
         "performance_review":                render_performance_review_tab,
         "strategy_improvement":              render_strategy_improvement_tab,
         "setup_analytics":                   render_setup_analytics_tab,
+        # v1.9.1 Paper Strategy Rule Tuning & Guardrail Lab tabs
+        "strategy_rule_tuning":              render_strategy_rule_tuning_tab,
+        "guardrail_review":                  render_guardrail_review_tab,
+        "rule_recommendations":              render_rule_recommendations_tab,
     }
     result = {}
     for tab_name in _TABS:
@@ -3170,6 +3184,74 @@ def render_setup_analytics_tab() -> Dict[str, Any]:
 def get_performance_review_tab_names() -> List[str]:
     """Return list of v1.9.0 performance review tab names."""
     return list(_TABS_V190_PERFORMANCE_REVIEW)
+
+
+def render_strategy_rule_tuning_tab() -> Dict[str, Any]:
+    """Render strategy rule tuning tab data (headless-safe, tuning-only)."""
+    return {
+        "tab": "strategy_rule_tuning",
+        "version": PANEL_VERSION,
+        "release_name": "Paper Strategy Rule Tuning & Guardrail Lab",
+        "description": "Strategy Rule Tuning: review rule categories, propose adjustments, track approval state.",
+        "paper_only": True,
+        "research_only": True,
+        "tuning_only": True,
+        "guardrail_only": True,
+        "no_real_orders": True,
+        "no_broker": True,
+        "no_production_strategy_mutation": True,
+        "not_investment_advice": True,
+        "production_trading_blocked": True,
+        "empty_state": "No rule tuning data. Run strategy-tuning-review to populate.",
+        "schema_version": "191",
+    }
+
+
+def render_guardrail_review_tab() -> Dict[str, Any]:
+    """Render guardrail review tab data (headless-safe, guardrail-only)."""
+    return {
+        "tab": "guardrail_review",
+        "version": PANEL_VERSION,
+        "release_name": "Paper Strategy Rule Tuning & Guardrail Lab",
+        "description": "Guardrail Review: triggered guardrails, severity, action required.",
+        "paper_only": True,
+        "research_only": True,
+        "tuning_only": True,
+        "guardrail_only": True,
+        "no_real_orders": True,
+        "no_broker": True,
+        "no_production_strategy_mutation": True,
+        "not_investment_advice": True,
+        "production_trading_blocked": True,
+        "empty_state": "No guardrail data. Run strategy-tuning-guardrails to populate.",
+        "schema_version": "191",
+    }
+
+
+def render_rule_recommendations_tab() -> Dict[str, Any]:
+    """Render rule recommendations tab data (headless-safe, tuning-only)."""
+    return {
+        "tab": "rule_recommendations",
+        "version": PANEL_VERSION,
+        "release_name": "Paper Strategy Rule Tuning & Guardrail Lab",
+        "description": "Rule Recommendations: KEEP_RULE, TIGHTEN_RULE, DISABLE_SETUP, ADD_GUARDRAIL, etc.",
+        "paper_only": True,
+        "research_only": True,
+        "tuning_only": True,
+        "guardrail_only": True,
+        "no_real_orders": True,
+        "no_broker": True,
+        "no_production_strategy_mutation": True,
+        "not_investment_advice": True,
+        "production_trading_blocked": True,
+        "empty_state": "No recommendations data. Run strategy-tuning-recommend to populate.",
+        "schema_version": "191",
+    }
+
+
+def get_strategy_tuning_tab_names() -> List[str]:
+    """Return list of v1.9.1 strategy tuning tab names."""
+    return list(_TABS_V191_STRATEGY_TUNING)
 
 
 def get_panel_info() -> Dict[str, Any]:

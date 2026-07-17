@@ -41595,6 +41595,159 @@ def cmd_decision_performance_safety_audit(args=None):
     print(_DECISION_PERFORMANCE_BANNER)
 
 
+_STRATEGY_TUNING_BANNER = "[!] RESEARCH ONLY — PAPER ONLY — TUNING ONLY — NOT INVESTMENT ADVICE"
+
+
+def cmd_strategy_tuning_version(args=None):
+    """[v1.9.1] Show strategy tuning version. Research only."""
+    print(_STRATEGY_TUNING_BANNER)
+    from paper_trading.small_capital_strategy.strategy_tuning_version_v191 import verify_version
+    info = verify_version()
+    print(f"strategy-tuning-version: version={info['version']}  schema={info['schema_version']}  paper_only={info['paper_only']}")
+    print(_STRATEGY_TUNING_BANNER)
+
+
+def cmd_strategy_tuning_review(args=None):
+    """[v1.9.1] Run strategy tuning review. Research only."""
+    print(_STRATEGY_TUNING_BANNER)
+    from paper_trading.small_capital_strategy.strategy_tuning_engine_v191 import run_tuning_review
+    result = run_tuning_review("review_001", ["rule_001"], "perf_src", "journal_src")
+    print(f"strategy-tuning-review: blocked={result.get('blocked', False)}  paper_only=True  tuning_only=True")
+    print(_STRATEGY_TUNING_BANNER)
+
+
+def cmd_strategy_tuning_rules(args=None):
+    """[v1.9.1] List strategy tuning rules. Research only."""
+    print(_STRATEGY_TUNING_BANNER)
+    from paper_trading.small_capital_strategy.strategy_tuning_version_v191 import get_rule_categories
+    cats = get_rule_categories()
+    print(f"strategy-tuning-rules: rule_categories_count={len(cats)}  paper_only=True  tuning_only=True")
+    print(_STRATEGY_TUNING_BANNER)
+
+
+def cmd_strategy_tuning_guardrails(args=None):
+    """[v1.9.1] List guardrail triggers. Research only."""
+    print(_STRATEGY_TUNING_BANNER)
+    from paper_trading.small_capital_strategy.strategy_tuning_version_v191 import get_guardrail_triggers
+    triggers = get_guardrail_triggers()
+    print(f"strategy-tuning-guardrails: triggers_count={len(triggers)}  paper_only=True  tuning_only=True")
+    print(_STRATEGY_TUNING_BANNER)
+
+
+def cmd_strategy_tuning_recommend(args=None):
+    """[v1.9.1] Get tuning recommendations. Research only."""
+    print(_STRATEGY_TUNING_BANNER)
+    from paper_trading.small_capital_strategy.strategy_tuning_version_v191 import get_tuning_recommendations
+    recs = get_tuning_recommendations()
+    print(f"strategy-tuning-recommend: recommendations_count={len(recs)}  paper_only=True  tuning_only=True")
+    print(_STRATEGY_TUNING_BANNER)
+
+
+def cmd_strategy_tuning_abc(args=None):
+    """[v1.9.1] Tune ABC buy point rules. Research only."""
+    print(_STRATEGY_TUNING_BANNER)
+    from paper_trading.small_capital_strategy.strategy_tuning_engine_v191 import evaluate_guardrail_triggers
+    triggers = evaluate_guardrail_triggers(0.4, 0.1, 0.3, 0.5)
+    print(f"strategy-tuning-abc: triggers_fired={sum(1 for t in triggers if t.get('fired'))}  paper_only=True  tuning_only=True")
+    print(_STRATEGY_TUNING_BANNER)
+
+
+def cmd_strategy_tuning_position_sizing(args=None):
+    """[v1.9.1] Tune position sizing rules. Research only."""
+    print(_STRATEGY_TUNING_BANNER)
+    print(f"strategy-tuning-position-sizing: paper_only=True  tuning_only=True  no_real_orders=True")
+    print(_STRATEGY_TUNING_BANNER)
+
+
+def cmd_strategy_tuning_cash_reserve(args=None):
+    """[v1.9.1] Tune cash reserve rules. Research only."""
+    print(_STRATEGY_TUNING_BANNER)
+    print(f"strategy-tuning-cash-reserve: paper_only=True  tuning_only=True  no_real_orders=True")
+    print(_STRATEGY_TUNING_BANNER)
+
+
+def cmd_strategy_tuning_concentration(args=None):
+    """[v1.9.1] Tune concentration rules. Research only."""
+    print(_STRATEGY_TUNING_BANNER)
+    print(f"strategy-tuning-concentration: paper_only=True  tuning_only=True  no_real_orders=True")
+    print(_STRATEGY_TUNING_BANNER)
+
+
+def cmd_strategy_tuning_evidence(args=None):
+    """[v1.9.1] Show tuning evidence pack. Research only."""
+    print(_STRATEGY_TUNING_BANNER)
+    print(f"strategy-tuning-evidence: paper_only=True  tuning_only=True  no_real_orders=True")
+    print(_STRATEGY_TUNING_BANNER)
+
+
+def cmd_strategy_tuning_dashboard(args=None):
+    """[v1.9.1] Show strategy tuning dashboard. Research only."""
+    print(_STRATEGY_TUNING_BANNER)
+    print(f"strategy-tuning-dashboard: paper_only=True  tuning_only=True  no_real_orders=True")
+    print(_STRATEGY_TUNING_BANNER)
+
+
+def cmd_strategy_tuning_export(args=None):
+    """[v1.9.1] Export tuning report. Research only."""
+    print(_STRATEGY_TUNING_BANNER)
+    from paper_trading.small_capital_strategy.strategy_tuning_report_v191 import export_tuning_summary
+    result = export_tuning_summary("review_001", [])
+    print(f"strategy-tuning-export: json_length={len(result)}  paper_only=True  tuning_only=True")
+    print(_STRATEGY_TUNING_BANNER)
+
+
+def cmd_strategy_tuning_audit(args=None):
+    """[v1.9.1] Show tuning audit trail. Research only."""
+    print(_STRATEGY_TUNING_BANNER)
+    print(f"strategy-tuning-audit: paper_only=True  tuning_only=True  no_real_orders=True")
+    print(_STRATEGY_TUNING_BANNER)
+
+
+def cmd_strategy_tuning_health(args=None):
+    """[v1.9.1] Run strategy tuning health check. Research only."""
+    print(_STRATEGY_TUNING_BANNER)
+    from paper_trading.small_capital_strategy.strategy_tuning_health_v191 import StrategyTuningHealthCheck
+    result = StrategyTuningHealthCheck()._check()
+    print(f"strategy-tuning-health: status={result.status}  passed={result.passed}/{result.total}  failed={result.failed}")
+    print(_STRATEGY_TUNING_BANNER)
+
+
+def cmd_strategy_tuning_gate(args=None):
+    """[v1.9.1] Run strategy tuning release gate. Research only."""
+    print(_STRATEGY_TUNING_BANNER)
+    from release.strategy_tuning_release_gate_v191 import StrategyTuningReleaseGate
+    result = StrategyTuningReleaseGate()._gate()
+    print(f"strategy-tuning-gate: gate_passed={result['gate_passed']}  passed={result['passed']}/{result['total']}  failed={result['failed']}")
+    print(_STRATEGY_TUNING_BANNER)
+
+
+def cmd_strategy_tuning_scenarios(args=None):
+    """[v1.9.1] List tuning scenarios. Research only."""
+    print(_STRATEGY_TUNING_BANNER)
+    from paper_trading.small_capital_strategy.strategy_tuning_scenarios_v191 import get_all_scenarios
+    scenarios = get_all_scenarios()
+    print(f"strategy-tuning-scenarios: count={len(scenarios)}  paper_only=True  tuning_only=True")
+    print(_STRATEGY_TUNING_BANNER)
+
+
+def cmd_strategy_tuning_fixtures(args=None):
+    """[v1.9.1] List tuning fixtures. Research only."""
+    print(_STRATEGY_TUNING_BANNER)
+    from paper_trading.small_capital_strategy.strategy_tuning_fixtures_v191 import get_all_fixtures
+    fixtures = get_all_fixtures()
+    print(f"strategy-tuning-fixtures: count={len(fixtures)}  paper_only=True  tuning_only=True")
+    print(_STRATEGY_TUNING_BANNER)
+
+
+def cmd_strategy_tuning_safety_audit(args=None):
+    """[v1.9.1] Run strategy tuning safety audit. Research only."""
+    print(_STRATEGY_TUNING_BANNER)
+    from paper_trading.small_capital_strategy.strategy_tuning_safety_v191 import run_safety_audit
+    result = run_safety_audit()
+    print(f"strategy-tuning-safety-audit: all_safe={result['all_safe']}  paper_only=True  tuning_only=True")
+    print(_STRATEGY_TUNING_BANNER)
+
+
 def cmd_paper_strategy_health(args=None):
     """[v1.6.2] Paper strategy orchestration health check. Research only."""
     print(_STRATEGY_SAFETY_BANNER)
@@ -44001,6 +44154,24 @@ def main() -> None:
         "decision-performance-fixtures":       cmd_decision_performance_fixtures,
         "decision-performance-health":         cmd_decision_performance_health,
         "decision-performance-safety-audit":   cmd_decision_performance_safety_audit,
+        "strategy-tuning-version":             cmd_strategy_tuning_version,
+        "strategy-tuning-review":              cmd_strategy_tuning_review,
+        "strategy-tuning-rules":               cmd_strategy_tuning_rules,
+        "strategy-tuning-guardrails":          cmd_strategy_tuning_guardrails,
+        "strategy-tuning-recommend":           cmd_strategy_tuning_recommend,
+        "strategy-tuning-abc":                 cmd_strategy_tuning_abc,
+        "strategy-tuning-position-sizing":     cmd_strategy_tuning_position_sizing,
+        "strategy-tuning-cash-reserve":        cmd_strategy_tuning_cash_reserve,
+        "strategy-tuning-concentration":       cmd_strategy_tuning_concentration,
+        "strategy-tuning-evidence":            cmd_strategy_tuning_evidence,
+        "strategy-tuning-dashboard":           cmd_strategy_tuning_dashboard,
+        "strategy-tuning-export":              cmd_strategy_tuning_export,
+        "strategy-tuning-audit":               cmd_strategy_tuning_audit,
+        "strategy-tuning-health":              cmd_strategy_tuning_health,
+        "strategy-tuning-gate":                cmd_strategy_tuning_gate,
+        "strategy-tuning-scenarios":           cmd_strategy_tuning_scenarios,
+        "strategy-tuning-fixtures":            cmd_strategy_tuning_fixtures,
+        "strategy-tuning-safety-audit":        cmd_strategy_tuning_safety_audit,
     }
 
     if args.command is None:
