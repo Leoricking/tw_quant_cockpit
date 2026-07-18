@@ -16,7 +16,7 @@ from gui.small_capital_strategy_panel import (
 # ── PANEL_VERSION ─────────────────────────────────────────────────────────────
 
 def test_panel_version_192():
-    assert PANEL_VERSION in ("1.9.2", "1.9.3", "1.9.4")
+    assert PANEL_VERSION in ("1.9.2", "1.9.3", "1.9.4", "1.9.5")
 
 
 # ── render_strategy_sandbox_tab ───────────────────────────────────────────────
@@ -142,7 +142,7 @@ def test_get_panel_info_returns_dict():
     assert isinstance(get_panel_info(), dict)
 
 def test_get_panel_info_panel_version_192():
-    assert get_panel_info()["panel_version"] in ("1.9.2", "1.9.3", "1.9.4")
+    assert get_panel_info()["panel_version"] in ("1.9.2", "1.9.3", "1.9.4", "1.9.5")
 
 def test_get_panel_info_paper_only():
     assert get_panel_info()["paper_only"] is True

@@ -230,7 +230,7 @@ class StrategyMonitoringHealthCheck:
         # ── backward compat (4) ───────────────────────────────────────────────
         from gui.small_capital_strategy_panel import PANEL_VERSION, get_panel_info
         self._check("backward_compat_panel_version_194",
-                    lambda: PANEL_VERSION == "1.9.4")
+                    lambda: PANEL_VERSION in ("1.9.4", "1.9.5"))
         self._check("backward_compat_panel_info_paper_only",
                     lambda: get_panel_info()["paper_only"] is True)
         self._check("backward_compat_panel_info_no_real_orders",
@@ -239,8 +239,8 @@ class StrategyMonitoringHealthCheck:
                     lambda: get_panel_info()["tab_count"] >= 154)
 
         # ── hard block conditions (2) ─────────────────────────────────────────
-        self._check("hard_block_conditions_count_19",
-                    lambda: len(get_hard_block_conditions()) == 19)
+        self._check("hard_block_conditions_count_20",
+                    lambda: len(get_hard_block_conditions()) == 20)
         self._check("hard_block_conditions_has_missing_promotion_package",
                     lambda: "missing_promotion_package_source" in get_hard_block_conditions())
 

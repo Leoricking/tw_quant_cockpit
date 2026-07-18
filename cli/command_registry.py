@@ -5336,6 +5336,66 @@ _SM_V194_COMMANDS: _List[CommandSpec] = [
                 introduced_in="1.9.4", safety_classification="RESEARCH_ONLY"),
 ]
 
+# ---------------------------------------------------------------------------
+# v1.9.5 Strategy Review Alert & Human Approval Lab commands
+# ---------------------------------------------------------------------------
+_SR_V195_COMMANDS: _List[CommandSpec] = [
+    CommandSpec(name="strategy-review-version", handler_name="cmd_strategy_review_version",
+                help="[Research] Show strategy review version v1.9.5", group="strategy_review",
+                introduced_in="1.9.5", safety_classification="RESEARCH_ONLY"),
+    CommandSpec(name="strategy-review-run", handler_name="cmd_strategy_review_run",
+                help="[Research] Run strategy review alert workflow v1.9.5", group="strategy_review",
+                introduced_in="1.9.5", safety_classification="RESEARCH_ONLY"),
+    CommandSpec(name="strategy-review-alerts", handler_name="cmd_strategy_review_alerts",
+                help="[Research] List strategy review alerts v1.9.5", group="strategy_review",
+                introduced_in="1.9.5", safety_classification="RESEARCH_ONLY"),
+    CommandSpec(name="strategy-review-queue", handler_name="cmd_strategy_review_queue",
+                help="[Research] Show review queue v1.9.5", group="strategy_review",
+                introduced_in="1.9.5", safety_classification="RESEARCH_ONLY"),
+    CommandSpec(name="strategy-review-approval", handler_name="cmd_strategy_review_approval",
+                help="[Research] Build human approval request v1.9.5", group="strategy_review",
+                introduced_in="1.9.5", safety_classification="RESEARCH_ONLY"),
+    CommandSpec(name="strategy-review-decision", handler_name="cmd_strategy_review_decision",
+                help="[Research] Record review decision v1.9.5", group="strategy_review",
+                introduced_in="1.9.5", safety_classification="RESEARCH_ONLY"),
+    CommandSpec(name="strategy-review-rollback-ticket", handler_name="cmd_strategy_review_rollback_ticket",
+                help="[Research] Generate rollback review ticket v1.9.5", group="strategy_review",
+                introduced_in="1.9.5", safety_classification="RESEARCH_ONLY"),
+    CommandSpec(name="strategy-review-escalation", handler_name="cmd_strategy_review_escalation",
+                help="[Research] Check review escalation rules v1.9.5", group="strategy_review",
+                introduced_in="1.9.5", safety_classification="RESEARCH_ONLY"),
+    CommandSpec(name="strategy-review-report", handler_name="cmd_strategy_review_report",
+                help="[Research] Export review summary report v1.9.5", group="strategy_review",
+                introduced_in="1.9.5", safety_classification="RESEARCH_ONLY"),
+    CommandSpec(name="strategy-review-dashboard", handler_name="cmd_strategy_review_dashboard",
+                help="[Research] Build review dashboard v1.9.5", group="strategy_review",
+                introduced_in="1.9.5", safety_classification="RESEARCH_ONLY"),
+    CommandSpec(name="strategy-review-export", handler_name="cmd_strategy_review_export",
+                help="[Research] Export full review pack v1.9.5", group="strategy_review",
+                introduced_in="1.9.5", safety_classification="RESEARCH_ONLY"),
+    CommandSpec(name="strategy-review-evidence", handler_name="cmd_strategy_review_evidence",
+                help="[Research] Build review evidence pack v1.9.5", group="strategy_review",
+                introduced_in="1.9.5", safety_classification="RESEARCH_ONLY"),
+    CommandSpec(name="strategy-review-audit", handler_name="cmd_strategy_review_audit",
+                help="[Research] Build review audit trail v1.9.5", group="strategy_review",
+                introduced_in="1.9.5", safety_classification="RESEARCH_ONLY"),
+    CommandSpec(name="strategy-review-health", handler_name="cmd_strategy_review_health",
+                help="[Research] Run strategy review health check v1.9.5", group="strategy_review",
+                introduced_in="1.9.5", safety_classification="RESEARCH_ONLY"),
+    CommandSpec(name="strategy-review-gate", handler_name="cmd_strategy_review_gate",
+                help="[Research] Run strategy review release gate v1.9.5", group="strategy_review",
+                introduced_in="1.9.5", safety_classification="RESEARCH_ONLY"),
+    CommandSpec(name="strategy-review-scenarios", handler_name="cmd_strategy_review_scenarios",
+                help="[Research] List review scenarios v1.9.5", group="strategy_review",
+                introduced_in="1.9.5", safety_classification="RESEARCH_ONLY"),
+    CommandSpec(name="strategy-review-fixtures", handler_name="cmd_strategy_review_fixtures",
+                help="[Research] List review fixtures v1.9.5", group="strategy_review",
+                introduced_in="1.9.5", safety_classification="RESEARCH_ONLY"),
+    CommandSpec(name="strategy-review-safety-audit", handler_name="cmd_strategy_review_safety_audit",
+                help="[Research] Run strategy review safety audit v1.9.5", group="strategy_review",
+                introduced_in="1.9.5", safety_classification="RESEARCH_ONLY"),
+]
+
 PROVIDER_COMMANDS: _List[CommandSpec] = (
     _RESEARCH_FOUNDATION_COMMANDS
     + _TWSE_COMMANDS
@@ -5386,6 +5446,7 @@ PROVIDER_COMMANDS: _List[CommandSpec] = (
     + _SS_V192_COMMANDS
     + _SP_V193_COMMANDS
     + _SM_V194_COMMANDS
+    + _SR_V195_COMMANDS
 )
 
 

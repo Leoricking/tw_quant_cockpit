@@ -52,8 +52,8 @@ class StrategyMonitoringReleaseGate:
         self._gate("drift_categories_count_17", lambda: len(get_drift_categories()) == 17)
         self._gate("drift_severities_count_5", lambda: len(get_drift_severities()) == 5)
         self._gate("monitoring_statuses_count_6", lambda: len(get_monitoring_statuses()) == 6)
-        self._gate("hard_block_conditions_count_19",
-                   lambda: len(get_hard_block_conditions()) == 19)
+        self._gate("hard_block_conditions_count_20",
+                   lambda: len(get_hard_block_conditions()) == 20)
 
         # ── safety (13) ──────────────────────────────────────────────────────
         from paper_trading.small_capital_strategy.strategy_monitoring_safety_v194 import (
@@ -175,7 +175,7 @@ class StrategyMonitoringReleaseGate:
             render_rollback_alerts_tab,
             get_monitoring_tab_names,
         )
-        self._gate("gui_panel_version_194", lambda: PANEL_VERSION == "1.9.4")
+        self._gate("gui_panel_version_194", lambda: PANEL_VERSION in ("1.9.4", "1.9.5"))
         self._gate("gui_panel_info_paper_only",
                    lambda: get_panel_info()["paper_only"] is True)
         self._gate("gui_monitoring_tab_paper_only",
@@ -207,7 +207,7 @@ class StrategyMonitoringReleaseGate:
 
         # ── backward compat (2) ───────────────────────────────────────────────
         self._gate("backward_compat_panel_version",
-                   lambda: get_panel_info()["panel_version"] == "1.9.4")
+                   lambda: get_panel_info()["panel_version"] in ("1.9.4", "1.9.5"))
         self._gate("backward_compat_tab_count",
                    lambda: get_panel_info()["tab_count"] >= 154)
 

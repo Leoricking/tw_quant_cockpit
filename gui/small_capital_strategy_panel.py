@@ -16,8 +16,8 @@ Headless-safe: no tkinter at module level. Renders to dict.
 from __future__ import annotations
 from typing import Any, Dict, List, Optional
 
-PANEL_VERSION = "1.9.4"
-PANEL_TITLE = "Small Capital Strategy v1.9.4 — Paper Strategy Monitoring & Drift Detection Lab"
+PANEL_VERSION = "1.9.5"
+PANEL_TITLE = "Small Capital Strategy v1.9.5 — Paper Strategy Review Alert & Human Approval Lab"
 
 # v1.7.0 tabs (preserved unchanged)
 _TABS_V170 = [
@@ -297,6 +297,15 @@ _TABS_V194_STRATEGY_MONITORING = [
 
 assert len(_TABS_V194_STRATEGY_MONITORING) == 3, f"Expected 3 strategy monitoring tabs, got {len(_TABS_V194_STRATEGY_MONITORING)}"
 
+# v1.9.5 Paper Strategy Review Alert & Human Approval Lab tabs
+_TABS_V195_STRATEGY_REVIEW = [
+    "review_alerts",
+    "human_approval",
+    "rollback_review",
+]
+
+assert len(_TABS_V195_STRATEGY_REVIEW) == 3, f"Expected 3 strategy review tabs, got {len(_TABS_V195_STRATEGY_REVIEW)}"
+
 _TABS = (
     _TABS_V170
     + _TABS_V171_WATCHLIST
@@ -323,6 +332,7 @@ _TABS = (
     + _TABS_V192_STRATEGY_SANDBOX
     + _TABS_V193_STRATEGY_PROMOTION
     + _TABS_V194_STRATEGY_MONITORING
+    + _TABS_V195_STRATEGY_REVIEW
 )
 
 assert len(_TABS_V170) == 22, f"Expected 22 v1.7.0 tabs, got {len(_TABS_V170)}"
@@ -1580,6 +1590,10 @@ def render_all_tabs() -> Dict[str, Any]:
         "strategy_monitoring":               render_strategy_monitoring_tab,
         "drift_detection":                   render_drift_detection_tab,
         "rollback_alerts":                   render_rollback_alerts_tab,
+        # v1.9.5 Paper Strategy Review Alert & Human Approval Lab tabs
+        "review_alerts":                     render_review_alerts_tab,
+        "human_approval":                    render_human_approval_tab,
+        "rollback_review":                   render_rollback_review_tab,
     }
     result = {}
     for tab_name in _TABS:
@@ -3509,6 +3523,84 @@ def render_rollback_alerts_tab() -> Dict[str, Any]:
 def get_monitoring_tab_names() -> List[str]:
     """Return list of v1.9.4 strategy monitoring tab names."""
     return list(_TABS_V194_STRATEGY_MONITORING)
+
+
+def render_review_alerts_tab() -> Dict[str, Any]:
+    """Render review alerts tab data (headless-safe, review-only)."""
+    return {
+        "tab": "review_alerts",
+        "version": PANEL_VERSION,
+        "release_name": "Paper Strategy Review Alert & Human Approval Lab",
+        "description": "Review Alerts: monitoring and drift alerts organized for human review and decision-making.",
+        "paper_only": True,
+        "research_only": True,
+        "review_only": True,
+        "human_approval_only": True,
+        "no_real_orders": True,
+        "no_broker": True,
+        "no_production_strategy_mutation": True,
+        "no_live_strategy_activation": True,
+        "not_investment_advice": True,
+        "production_trading_blocked": True,
+        "auto_approval": False,
+        "requires_human_review": True,
+        "empty_state": "No review alerts. Run strategy-review-alerts to populate.",
+        "schema_version": "195",
+    }
+
+
+def render_human_approval_tab() -> Dict[str, Any]:
+    """Render human approval tab data (headless-safe, human-approval-only)."""
+    return {
+        "tab": "human_approval",
+        "version": PANEL_VERSION,
+        "release_name": "Paper Strategy Review Alert & Human Approval Lab",
+        "description": "Human Approval: checklist-driven review decisions; no automatic approval or live activation.",
+        "paper_only": True,
+        "research_only": True,
+        "review_only": True,
+        "human_approval_only": True,
+        "no_real_orders": True,
+        "no_broker": True,
+        "no_production_strategy_mutation": True,
+        "no_live_strategy_activation": True,
+        "not_investment_advice": True,
+        "production_trading_blocked": True,
+        "auto_approval": False,
+        "auto_execute": False,
+        "requires_manual_review": True,
+        "empty_state": "No pending approvals. Run strategy-review-approval to populate.",
+        "schema_version": "195",
+    }
+
+
+def render_rollback_review_tab() -> Dict[str, Any]:
+    """Render rollback review tab data (headless-safe, rollback-review-only)."""
+    return {
+        "tab": "rollback_review",
+        "version": PANEL_VERSION,
+        "release_name": "Paper Strategy Review Alert & Human Approval Lab",
+        "description": "Rollback Review: generate rollback review tickets from critical alerts; no automatic rollback.",
+        "paper_only": True,
+        "research_only": True,
+        "review_only": True,
+        "rollback_review_only": True,
+        "no_real_orders": True,
+        "no_broker": True,
+        "no_production_strategy_mutation": True,
+        "no_live_strategy_activation": True,
+        "not_investment_advice": True,
+        "production_trading_blocked": True,
+        "auto_rollback": False,
+        "requires_manual_review": True,
+        "empty_state": "No rollback review tickets. Run strategy-review-rollback-ticket to populate.",
+        "schema_version": "195",
+    }
+
+
+def get_review_tab_names() -> List[str]:
+    """Return list of v1.9.5 strategy review tab names."""
+    return list(_TABS_V195_STRATEGY_REVIEW)
 
 
 def get_panel_info() -> Dict[str, Any]:

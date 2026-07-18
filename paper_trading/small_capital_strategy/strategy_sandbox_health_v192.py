@@ -248,7 +248,7 @@ class StrategySandboxHealthCheck:
 
         # ── GUI panel check (1) ───────────────────────────────────────────────
         from gui.small_capital_strategy_panel import PANEL_VERSION
-        self._check("gui_panel_version_192", lambda: PANEL_VERSION in ("1.9.2", "1.9.3", "1.9.4"))
+        self._check("gui_panel_version_192", lambda: PANEL_VERSION in ("1.9.2", "1.9.3", "1.9.4", "1.9.5"))
 
         # ── backward compat (2) ───────────────────────────────────────────────
         self._check("backward_compat_v191_known",

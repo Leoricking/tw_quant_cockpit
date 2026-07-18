@@ -42220,6 +42220,171 @@ def cmd_strategy_monitoring_safety_audit(args=None):
     print(_STRATEGY_MONITORING_BANNER)
 
 
+_STRATEGY_REVIEW_BANNER = "[!] RESEARCH ONLY — PAPER ONLY — REVIEW ONLY — HUMAN APPROVAL ONLY — NOT INVESTMENT ADVICE"
+
+
+def cmd_strategy_review_version(args=None):
+    """[v1.9.5] Show strategy review version. Research only."""
+    print(_STRATEGY_REVIEW_BANNER)
+    from paper_trading.small_capital_strategy.strategy_review_version_v195 import get_version_info
+    info = get_version_info()
+    print(f"strategy-review-version: {info['version']}  schema={info['schema_version']}  paper_only=True  review_only=True")
+    print(_STRATEGY_REVIEW_BANNER)
+
+
+def cmd_strategy_review_run(args=None):
+    """[v1.9.5] Run strategy review alert workflow. Research only."""
+    print(_STRATEGY_REVIEW_BANNER)
+    from paper_trading.small_capital_strategy.strategy_review_engine_v195 import get_engine_info
+    info = get_engine_info()
+    print(f"strategy-review-run: version={info['version']}  paper_only=True  review_only=True")
+    print(_STRATEGY_REVIEW_BANNER)
+
+
+def cmd_strategy_review_alerts(args=None):
+    """[v1.9.5] List strategy review alerts. Research only."""
+    print(_STRATEGY_REVIEW_BANNER)
+    from paper_trading.small_capital_strategy.strategy_review_version_v195 import get_review_alert_categories
+    cats = get_review_alert_categories()
+    print(f"strategy-review-alerts: review_alert_categories={len(cats)}  paper_only=True  review_only=True")
+    print(_STRATEGY_REVIEW_BANNER)
+
+
+def cmd_strategy_review_queue(args=None):
+    """[v1.9.5] Show review queue. Research only."""
+    print(_STRATEGY_REVIEW_BANNER)
+    from paper_trading.small_capital_strategy.strategy_review_models_v195 import ReviewQueue
+    q = ReviewQueue()
+    print(f"strategy-review-queue: auto_processing={q.auto_processing}  requires_human_review={q.requires_human_review}")
+    print(_STRATEGY_REVIEW_BANNER)
+
+
+def cmd_strategy_review_approval(args=None):
+    """[v1.9.5] Build human approval request. Research only."""
+    print(_STRATEGY_REVIEW_BANNER)
+    from paper_trading.small_capital_strategy.strategy_review_engine_v195 import build_human_approval_request
+    result = build_human_approval_request("", "", "")
+    print(f"strategy-review-approval: blocked={result['blocked']}  auto_approval=False  paper_only=True")
+    print(_STRATEGY_REVIEW_BANNER)
+
+
+def cmd_strategy_review_decision(args=None):
+    """[v1.9.5] Record review decision. Research only."""
+    print(_STRATEGY_REVIEW_BANNER)
+    from paper_trading.small_capital_strategy.strategy_review_models_v195 import HumanApprovalDecision
+    d = HumanApprovalDecision()
+    print(f"strategy-review-decision: auto_approval={d.auto_approval}  paper_only={d.paper_only}")
+    print(_STRATEGY_REVIEW_BANNER)
+
+
+def cmd_strategy_review_rollback_ticket(args=None):
+    """[v1.9.5] Generate rollback review ticket. Research only."""
+    print(_STRATEGY_REVIEW_BANNER)
+    from paper_trading.small_capital_strategy.strategy_review_engine_v195 import build_rollback_review_ticket
+    result = build_rollback_review_ticket("", "")
+    print(f"strategy-review-rollback-ticket: blocked={result['blocked']}  auto_rollback=False  paper_only=True")
+    print(_STRATEGY_REVIEW_BANNER)
+
+
+def cmd_strategy_review_escalation(args=None):
+    """[v1.9.5] Check review escalation rules. Research only."""
+    print(_STRATEGY_REVIEW_BANNER)
+    from paper_trading.small_capital_strategy.strategy_review_models_v195 import ReviewEscalationRule
+    r = ReviewEscalationRule()
+    print(f"strategy-review-escalation: auto_escalate_execution={r.auto_escalate_execution}  paper_only={r.paper_only}")
+    print(_STRATEGY_REVIEW_BANNER)
+
+
+def cmd_strategy_review_report(args=None):
+    """[v1.9.5] Export review summary report. Research only."""
+    print(_STRATEGY_REVIEW_BANNER)
+    from paper_trading.small_capital_strategy.strategy_review_report_v195 import export_review_summary
+    result = export_review_summary("DEMO-REV-001")
+    print(f"strategy-review-report: valid={result['valid']}  paper_only=True  report_only=True")
+    print(_STRATEGY_REVIEW_BANNER)
+
+
+def cmd_strategy_review_dashboard(args=None):
+    """[v1.9.5] Build review dashboard. Research only."""
+    print(_STRATEGY_REVIEW_BANNER)
+    from paper_trading.small_capital_strategy.strategy_review_engine_v195 import build_review_dashboard
+    result = build_review_dashboard("", "REV-001")
+    print(f"strategy-review-dashboard: blocked={result['blocked']}  paper_only=True")
+    print(_STRATEGY_REVIEW_BANNER)
+
+
+def cmd_strategy_review_export(args=None):
+    """[v1.9.5] Export full review pack. Research only."""
+    print(_STRATEGY_REVIEW_BANNER)
+    from paper_trading.small_capital_strategy.strategy_review_report_v195 import export_full_review_pack
+    result = export_full_review_pack("DEMO-REV-001")
+    print(f"strategy-review-export: valid={result['valid']}  paper_only=True  report_only=True")
+    print(_STRATEGY_REVIEW_BANNER)
+
+
+def cmd_strategy_review_evidence(args=None):
+    """[v1.9.5] Build review evidence pack. Research only."""
+    print(_STRATEGY_REVIEW_BANNER)
+    from paper_trading.small_capital_strategy.strategy_review_engine_v195 import build_review_evidence_pack
+    result = build_review_evidence_pack("", [])
+    print(f"strategy-review-evidence: blocked={result['blocked']}  paper_only=True  audit_only=True")
+    print(_STRATEGY_REVIEW_BANNER)
+
+
+def cmd_strategy_review_audit(args=None):
+    """[v1.9.5] Build review audit trail. Research only."""
+    print(_STRATEGY_REVIEW_BANNER)
+    from paper_trading.small_capital_strategy.strategy_review_engine_v195 import build_review_audit_trail
+    result = build_review_audit_trail("", "REV-001")
+    print(f"strategy-review-audit: blocked={result['blocked']}  paper_only=True  audit_only=True")
+    print(_STRATEGY_REVIEW_BANNER)
+
+
+def cmd_strategy_review_health(args=None):
+    """[v1.9.5] Run strategy review health check. Research only."""
+    print(_STRATEGY_REVIEW_BANNER)
+    from paper_trading.small_capital_strategy.strategy_review_health_v195 import run_health_check
+    result = run_health_check()
+    print(f"strategy-review-health: {result['passed']}/{result['total']} passed  all_passed={result['all_passed']}")
+    print(_STRATEGY_REVIEW_BANNER)
+
+
+def cmd_strategy_review_gate(args=None):
+    """[v1.9.5] Run strategy review release gate. Research only."""
+    print(_STRATEGY_REVIEW_BANNER)
+    from release.strategy_review_release_gate_v195 import run_release_gate
+    result = run_release_gate()
+    print(f"strategy-review-gate: {result['passed_count']}/{result['total']} passed  gate_passed={result['gate_passed']}")
+    print(_STRATEGY_REVIEW_BANNER)
+
+
+def cmd_strategy_review_scenarios(args=None):
+    """[v1.9.5] List review scenarios. Research only."""
+    print(_STRATEGY_REVIEW_BANNER)
+    from paper_trading.small_capital_strategy.strategy_review_scenarios_v195 import get_all_scenarios
+    scenarios = get_all_scenarios()
+    print(f"strategy-review-scenarios: count={len(scenarios)}  paper_only=True  review_only=True")
+    print(_STRATEGY_REVIEW_BANNER)
+
+
+def cmd_strategy_review_fixtures(args=None):
+    """[v1.9.5] List review fixtures. Research only."""
+    print(_STRATEGY_REVIEW_BANNER)
+    from paper_trading.small_capital_strategy.strategy_review_fixtures_v195 import get_all_fixtures
+    fixtures = get_all_fixtures()
+    print(f"strategy-review-fixtures: count={len(fixtures)}  paper_only=True  review_only=True")
+    print(_STRATEGY_REVIEW_BANNER)
+
+
+def cmd_strategy_review_safety_audit(args=None):
+    """[v1.9.5] Run strategy review safety audit. Research only."""
+    print(_STRATEGY_REVIEW_BANNER)
+    from paper_trading.small_capital_strategy.strategy_review_safety_v195 import run_safety_audit
+    result = run_safety_audit()
+    print(f"strategy-review-safety-audit: all_safe={result['all_safe']}  paper_only=True  review_only=True")
+    print(_STRATEGY_REVIEW_BANNER)
+
+
 def cmd_paper_strategy_health(args=None):
     """[v1.6.2] Paper strategy orchestration health check. Research only."""
     print(_STRATEGY_SAFETY_BANNER)
@@ -44682,6 +44847,25 @@ def main() -> None:
         "strategy-promotion-rollback-validate": cmd_strategy_promotion_rollback_validate,
         "strategy-promotion-approval-state":   cmd_strategy_promotion_approval_state,
         "strategy-promotion-safety-audit":     cmd_strategy_promotion_safety_audit,
+        # v1.9.5 strategy review commands
+        "strategy-review-version":             cmd_strategy_review_version,
+        "strategy-review-run":                 cmd_strategy_review_run,
+        "strategy-review-alerts":              cmd_strategy_review_alerts,
+        "strategy-review-queue":               cmd_strategy_review_queue,
+        "strategy-review-approval":            cmd_strategy_review_approval,
+        "strategy-review-decision":            cmd_strategy_review_decision,
+        "strategy-review-rollback-ticket":     cmd_strategy_review_rollback_ticket,
+        "strategy-review-escalation":          cmd_strategy_review_escalation,
+        "strategy-review-report":              cmd_strategy_review_report,
+        "strategy-review-dashboard":           cmd_strategy_review_dashboard,
+        "strategy-review-export":              cmd_strategy_review_export,
+        "strategy-review-evidence":            cmd_strategy_review_evidence,
+        "strategy-review-audit":               cmd_strategy_review_audit,
+        "strategy-review-health":              cmd_strategy_review_health,
+        "strategy-review-gate":                cmd_strategy_review_gate,
+        "strategy-review-scenarios":           cmd_strategy_review_scenarios,
+        "strategy-review-fixtures":            cmd_strategy_review_fixtures,
+        "strategy-review-safety-audit":        cmd_strategy_review_safety_audit,
         # v1.9.4 strategy monitoring commands
         "strategy-monitoring-version":         cmd_strategy_monitoring_version,
         "strategy-monitoring-run":             cmd_strategy_monitoring_run,

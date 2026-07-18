@@ -296,7 +296,7 @@ def test_rollback_alert_in_allowed_actions():
 # ── hard block conditions ─────────────────────────────────────────────────────
 
 def test_hard_block_conditions_count():
-    assert len(get_hard_block_conditions()) == 19
+    assert len(get_hard_block_conditions()) == 20
 
 
 def test_missing_promotion_package_source_in_hard_blocks():

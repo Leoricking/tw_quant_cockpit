@@ -15,13 +15,13 @@ from gui.small_capital_strategy_panel import (
 
 
 def test_panel_version_186():
-    assert PANEL_VERSION in ("1.8.6", "1.8.7", "1.8.8", "1.8.9", "1.9.0", "1.9.1", "1.9.2", "1.9.3", "1.9.4")
+    assert PANEL_VERSION in ("1.8.6", "1.8.7", "1.8.8", "1.8.9", "1.9.0", "1.9.1", "1.9.2", "1.9.3", "1.9.4", "1.9.5")
 
 def test_panel_title_contains_186():
-    assert "1.8.6" in PANEL_TITLE or "1.8.7" in PANEL_TITLE or "1.8.8" in PANEL_TITLE or "1.8.9" in PANEL_TITLE or "1.9.0" in PANEL_TITLE or "1.9.1" in PANEL_TITLE or "1.9.2" in PANEL_TITLE or "1.9.3" in PANEL_TITLE or "1.9.4" in PANEL_TITLE
+    assert "1.8.6" in PANEL_TITLE or "1.8.7" in PANEL_TITLE or "1.8.8" in PANEL_TITLE or "1.8.9" in PANEL_TITLE or "1.9.0" in PANEL_TITLE or "1.9.1" in PANEL_TITLE or "1.9.2" in PANEL_TITLE or "1.9.3" in PANEL_TITLE or "1.9.4" in PANEL_TITLE or "1.9.5" in PANEL_TITLE
 
 def test_panel_title_contains_decision_cockpit():
-    assert "Decision Cockpit" in PANEL_TITLE or "Decision Report" in PANEL_TITLE or "Workflow Runner" in PANEL_TITLE or "Journal" in PANEL_TITLE or "Performance" in PANEL_TITLE or "Tuning" in PANEL_TITLE or "Sandbox" in PANEL_TITLE or "Promotion" in PANEL_TITLE or "Rollback" in PANEL_TITLE or "Monitoring" in PANEL_TITLE or "Drift" in PANEL_TITLE
+    assert "Decision Cockpit" in PANEL_TITLE or "Decision Report" in PANEL_TITLE or "Workflow Runner" in PANEL_TITLE or "Journal" in PANEL_TITLE or "Performance" in PANEL_TITLE or "Tuning" in PANEL_TITLE or "Sandbox" in PANEL_TITLE or "Promotion" in PANEL_TITLE or "Rollback" in PANEL_TITLE or "Monitoring" in PANEL_TITLE or "Drift" in PANEL_TITLE or "Review" in PANEL_TITLE
 
 def test_tabs_v186_count():
     assert len(_TABS_V186_DECISION_COCKPIT) == 3
@@ -61,7 +61,7 @@ def test_render_overview_tab_paper_only():
     assert render_overview_tab()["paper_only"] is True
 
 def test_render_overview_tab_version():
-    assert render_overview_tab()["version"] in ("1.8.6", "1.8.7", "1.8.8", "1.8.9", "1.9.0", "1.9.1", "1.9.2", "1.9.3", "1.9.4")
+    assert render_overview_tab()["version"] in ("1.8.6", "1.8.7", "1.8.8", "1.8.9", "1.9.0", "1.9.1", "1.9.2", "1.9.3", "1.9.4", "1.9.5")
 
 def test_render_daily_decision_tab_callable():
     result = render_daily_decision_cockpit_tab()

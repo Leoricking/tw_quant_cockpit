@@ -1,16 +1,16 @@
 """
-paper_trading/small_capital_strategy/strategy_monitoring_version_v194.py
-Version metadata for Paper Strategy Monitoring & Drift Detection Lab v1.9.4.
-[!] Research Only. Paper Only. Monitoring Only. Drift Detection Only.
+paper_trading/small_capital_strategy/strategy_review_version_v195.py
+Version metadata for Paper Strategy Review Alert & Human Approval Lab v1.9.5.
+[!] Research Only. Paper Only. Review Only. Human Approval Only.
 [!] No Real Orders. Not Investment Advice.
 """
 from __future__ import annotations
 
-VERSION = "1.9.4"
-RELEASE_NAME = "Paper Strategy Monitoring & Drift Detection Lab"
-BASE_RELEASE = "v1.9.3-paper-strategy-promotion-package-rollback-plan-lab"
-SCHEMA_VERSION = "194"
-POLICY_VERSION = "1.9.4-small-capital-strategy-paper-strategy-monitoring-drift-detection-lab"
+VERSION = "1.9.5"
+RELEASE_NAME = "Paper Strategy Review Alert & Human Approval Lab"
+BASE_RELEASE = "v1.9.4-paper-strategy-monitoring-drift-detection-lab"
+SCHEMA_VERSION = "195"
+POLICY_VERSION = "1.9.5-small-capital-strategy-paper-strategy-review-alert-human-approval-lab"
 
 INCLUDED_RELEASES = [
     "Small Capital Strategy v1.7.0",
@@ -37,62 +37,61 @@ INCLUDED_RELEASES = [
     "Paper Strategy Rule Sandbox & Shadow Validation Lab v1.9.2",
     "Paper Strategy Promotion Package & Rollback Plan Lab v1.9.3",
     "Paper Strategy Monitoring & Drift Detection Lab v1.9.4",
+    "Paper Strategy Review Alert & Human Approval Lab v1.9.5",
 ]
 
-DRIFT_CATEGORIES = [
-    "WIN_RATE_DRIFT",
-    "EXPECTANCY_DRIFT",
-    "PROFIT_FACTOR_DRIFT",
-    "DRAWDOWN_DRIFT",
-    "AVERAGE_LOSS_DRIFT",
-    "SIGNAL_COUNT_DRIFT",
-    "SIGNAL_QUALITY_DRIFT",
-    "MISTAKE_RATE_DRIFT",
-    "CHASE_HIGH_DRIFT",
-    "EARLY_ENTRY_DRIFT",
-    "OVER_CONCENTRATION_DRIFT",
-    "CASH_RESERVE_DRIFT",
-    "GUARDRAIL_FALSE_POSITIVE_DRIFT",
-    "GUARDRAIL_FALSE_NEGATIVE_DRIFT",
-    "OPPORTUNITY_LOSS_DRIFT",
-    "EVIDENCE_COMPLETENESS_DRIFT",
-    "MARKET_REGIME_MISMATCH_DRIFT",
+REVIEW_ALERT_CATEGORIES = [
+    "WIN_RATE_DRIFT_REVIEW",
+    "EXPECTANCY_DRIFT_REVIEW",
+    "PROFIT_FACTOR_DRIFT_REVIEW",
+    "DRAWDOWN_REVIEW",
+    "SIGNAL_COLLAPSE_REVIEW",
+    "GUARDRAIL_FALSE_POSITIVE_REVIEW",
+    "OPPORTUNITY_LOSS_REVIEW",
+    "EVIDENCE_MISSING_REVIEW",
+    "MARKET_REGIME_MISMATCH_REVIEW",
+    "ROLLBACK_TRIGGER_REVIEW",
+    "SAFETY_FLAG_REVIEW",
+    "MANUAL_APPROVAL_REQUIRED",
+    "PACKAGE_SUSPENSION_REVIEW",
+    "CONTINUE_MONITORING_REVIEW",
 ]
 
-DRIFT_SEVERITIES = [
-    "NONE",
+REVIEW_SEVERITIES = [
+    "INFO",
     "LOW",
     "MEDIUM",
     "HIGH",
     "CRITICAL",
 ]
 
-MONITORING_STATUSES = [
-    "HEALTHY",
-    "WATCH",
-    "REVIEW_REQUIRED",
-    "ROLLBACK_REQUIRED",
-    "BLOCKED",
+REVIEW_DECISION_STATES = [
+    "DRAFT",
+    "PENDING_REVIEW",
+    "APPROVED_FOR_PAPER_ONLY",
+    "KEEP_MONITORING",
+    "KEEP_SHADOW_ONLY",
+    "REJECTED",
+    "ROLLBACK_REVIEW_REQUIRED",
+    "SUSPENDED_FOR_PAPER",
+    "NEED_MORE_EVIDENCE",
     "INVALID",
 ]
 
-MONITORING_RECOMMENDATIONS = [
-    "CONTINUE_MONITORING",
+REVIEW_RECOMMENDATIONS = [
+    "APPROVE_FOR_PAPER_ONLY",
+    "KEEP_MONITORING",
     "KEEP_SHADOW_ONLY",
-    "REQUIRE_MANUAL_REVIEW",
-    "TRIGGER_ROLLBACK_REVIEW",
-    "ROLLBACK_TO_BASELINE",
-    "EXTEND_MONITORING_WINDOW",
-    "REQUIRE_MORE_DATA",
-    "TIGHTEN_GUARDRAIL",
-    "LOOSEN_GUARDRAIL",
-    "LOWER_POSITION_SIZE",
-    "RAISE_CASH_RESERVE",
+    "REJECT_CANDIDATE",
+    "OPEN_ROLLBACK_REVIEW",
     "SUSPEND_CANDIDATE_RULE",
+    "REQUIRE_MORE_EVIDENCE",
+    "REQUIRE_LONGER_MONITORING",
+    "ESCALATE_TO_MANUAL_REVIEW",
     "NO_CHANGE",
 ]
 
-FORBIDDEN_MONITORING_ACTIONS = [
+FORBIDDEN_REVIEW_ACTIONS = [
     "BUY",
     "SELL",
     "ORDER",
@@ -104,7 +103,7 @@ FORBIDDEN_MONITORING_ACTIONS = [
     "BROKER_ORDER",
 ]
 
-ALLOWED_MONITORING_ACTIONS = [
+ALLOWED_REVIEW_ACTIONS = [
     "REVIEW",
     "MONITOR",
     "DRIFT_CHECK",
@@ -121,6 +120,8 @@ ALLOWED_MONITORING_ACTIONS = [
     "DASHBOARD",
     "HEALTH_CHECK",
     "SAFETY_AUDIT",
+    "HUMAN_APPROVAL",
+    "REVIEW_DECISION",
 ]
 
 HARD_BLOCK_CONDITIONS = [
@@ -130,20 +131,19 @@ HARD_BLOCK_CONDITIONS = [
     "leverage_requested",
     "production_db_write_attempted",
     "production_strategy_mutation_attempted",
+    "automatic_rollback_attempted",
     "live_strategy_activation_attempted",
     "missing_paper_only_flags",
     "missing_no_broker_flags",
     "missing_not_investment_advice_flags",
-    "missing_promotion_package_source",
-    "missing_rollback_plan_source",
-    "missing_baseline_monitoring_snapshot",
-    "missing_current_monitoring_snapshot",
-    "missing_monitoring_window",
-    "missing_evidence",
-    "malformed_monitoring_input",
+    "missing_monitoring_alert_source",
+    "missing_drift_detection_source",
+    "missing_review_evidence",
+    "missing_human_approval_checklist",
+    "missing_decision_rationale",
+    "malformed_review_input",
     "unsafe_export_path",
     "forbidden_action_words",
-    "auto_rollback_attempted",
 ]
 
 MIN_SCENARIOS = 75
@@ -165,9 +165,9 @@ def get_version_info() -> dict:
         "research_only": True,
         "simulate_only": True,
         "validation_only": True,
-        "monitoring_only": True,
-        "drift_detection_only": True,
-        "rollback_trigger_only": True,
+        "monitoring_review_only": True,
+        "human_approval_only": True,
+        "rollback_review_only": True,
         "review_only": True,
         "report_only": True,
         "audit_only": True,
@@ -176,24 +176,25 @@ def get_version_info() -> dict:
         "no_margin": True,
         "no_leverage": True,
         "no_production_strategy_mutation": True,
+        "no_automatic_rollback": True,
         "no_live_strategy_activation": True,
         "not_investment_advice": True,
         "demo_only": True,
         "not_for_production": True,
         "production_trading_blocked": True,
-        "drift_categories": DRIFT_CATEGORIES,
-        "drift_severities": DRIFT_SEVERITIES,
-        "monitoring_statuses": MONITORING_STATUSES,
-        "monitoring_recommendations": MONITORING_RECOMMENDATIONS,
-        "forbidden_monitoring_actions": FORBIDDEN_MONITORING_ACTIONS,
-        "allowed_monitoring_actions": ALLOWED_MONITORING_ACTIONS,
+        "review_alert_categories": REVIEW_ALERT_CATEGORIES,
+        "review_severities": REVIEW_SEVERITIES,
+        "review_decision_states": REVIEW_DECISION_STATES,
+        "review_recommendations": REVIEW_RECOMMENDATIONS,
+        "forbidden_review_actions": FORBIDDEN_REVIEW_ACTIONS,
+        "allowed_review_actions": ALLOWED_REVIEW_ACTIONS,
         "hard_block_conditions": HARD_BLOCK_CONDITIONS,
     }
 
 
 def verify_version() -> bool:
-    """Return True if VERSION == '1.9.4'."""
-    return VERSION == "1.9.4"
+    """Return True if VERSION == '1.9.5'."""
+    return VERSION == "1.9.5"
 
 
 def is_known_release(name: str) -> bool:
@@ -206,36 +207,29 @@ def check_minimum_version(min_version: str) -> bool:
     return VERSION >= min_version
 
 
-def get_drift_categories() -> list:
-    """Return list of drift categories."""
-    return list(DRIFT_CATEGORIES)
+def get_review_alert_categories() -> list:
+    return list(REVIEW_ALERT_CATEGORIES)
 
 
-def get_drift_severities() -> list:
-    """Return list of drift severities."""
-    return list(DRIFT_SEVERITIES)
+def get_review_severities() -> list:
+    return list(REVIEW_SEVERITIES)
 
 
-def get_monitoring_statuses() -> list:
-    """Return list of monitoring statuses."""
-    return list(MONITORING_STATUSES)
+def get_review_decision_states() -> list:
+    return list(REVIEW_DECISION_STATES)
 
 
-def get_monitoring_recommendations() -> list:
-    """Return list of monitoring recommendations."""
-    return list(MONITORING_RECOMMENDATIONS)
+def get_review_recommendations() -> list:
+    return list(REVIEW_RECOMMENDATIONS)
 
 
-def get_forbidden_monitoring_actions() -> list:
-    """Return list of forbidden monitoring actions."""
-    return list(FORBIDDEN_MONITORING_ACTIONS)
+def get_forbidden_review_actions() -> list:
+    return list(FORBIDDEN_REVIEW_ACTIONS)
 
 
-def get_allowed_monitoring_actions() -> list:
-    """Return list of allowed monitoring actions."""
-    return list(ALLOWED_MONITORING_ACTIONS)
+def get_allowed_review_actions() -> list:
+    return list(ALLOWED_REVIEW_ACTIONS)
 
 
 def get_hard_block_conditions() -> list:
-    """Return list of hard block conditions."""
     return list(HARD_BLOCK_CONDITIONS)
