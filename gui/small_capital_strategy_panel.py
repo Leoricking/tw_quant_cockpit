@@ -16,8 +16,8 @@ Headless-safe: no tkinter at module level. Renders to dict.
 from __future__ import annotations
 from typing import Any, Dict, List, Optional
 
-PANEL_VERSION = "1.9.2"
-PANEL_TITLE = "Small Capital Strategy v1.9.2 — Paper Strategy Rule Sandbox & Shadow Validation Lab"
+PANEL_VERSION = "1.9.3"
+PANEL_TITLE = "Small Capital Strategy v1.9.3 — Paper Strategy Promotion Package & Rollback Plan Lab"
 
 # v1.7.0 tabs (preserved unchanged)
 _TABS_V170 = [
@@ -279,6 +279,15 @@ _TABS_V192_STRATEGY_SANDBOX = [
 
 assert len(_TABS_V192_STRATEGY_SANDBOX) == 3, f"Expected 3 strategy sandbox tabs, got {len(_TABS_V192_STRATEGY_SANDBOX)}"
 
+# v1.9.3 Paper Strategy Promotion Package & Rollback Plan Lab tabs
+_TABS_V193_STRATEGY_PROMOTION = [
+    "strategy_promotion",
+    "rollback_plan",
+    "promotion_evidence",
+]
+
+assert len(_TABS_V193_STRATEGY_PROMOTION) == 3, f"Expected 3 strategy promotion tabs, got {len(_TABS_V193_STRATEGY_PROMOTION)}"
+
 _TABS = (
     _TABS_V170
     + _TABS_V171_WATCHLIST
@@ -303,6 +312,7 @@ _TABS = (
     + _TABS_V190_PERFORMANCE_REVIEW
     + _TABS_V191_STRATEGY_TUNING
     + _TABS_V192_STRATEGY_SANDBOX
+    + _TABS_V193_STRATEGY_PROMOTION
 )
 
 assert len(_TABS_V170) == 22, f"Expected 22 v1.7.0 tabs, got {len(_TABS_V170)}"
@@ -1552,6 +1562,10 @@ def render_all_tabs() -> Dict[str, Any]:
         "strategy_sandbox":                  render_strategy_sandbox_tab,
         "shadow_validation":                 render_shadow_validation_tab,
         "rule_comparison":                   render_rule_comparison_tab,
+        # v1.9.3 Paper Strategy Promotion Package & Rollback Plan Lab tabs
+        "strategy_promotion":                render_strategy_promotion_tab,
+        "rollback_plan":                     render_rollback_plan_tab,
+        "promotion_evidence":                render_promotion_evidence_tab,
     }
     result = {}
     for tab_name in _TABS:
@@ -3337,6 +3351,77 @@ def render_rule_comparison_tab() -> Dict[str, Any]:
 def get_sandbox_tab_names() -> List[str]:
     """Return list of v1.9.2 strategy sandbox tab names."""
     return list(_TABS_V192_STRATEGY_SANDBOX)
+
+
+def render_strategy_promotion_tab() -> Dict[str, Any]:
+    """Render strategy promotion tab data (headless-safe, promotion-package-only)."""
+    return {
+        "tab": "strategy_promotion",
+        "version": PANEL_VERSION,
+        "release_name": "Paper Strategy Promotion Package & Rollback Plan Lab",
+        "description": "Strategy Promotion: build and review promotion packages for sandbox-validated candidates.",
+        "paper_only": True,
+        "research_only": True,
+        "promotion_package_only": True,
+        "rollback_plan_only": True,
+        "no_real_orders": True,
+        "no_broker": True,
+        "no_production_strategy_mutation": True,
+        "no_live_strategy_activation": True,
+        "not_investment_advice": True,
+        "production_trading_blocked": True,
+        "empty_state": "No promotion data. Run strategy-promotion-build to populate.",
+        "schema_version": "193",
+    }
+
+
+def render_rollback_plan_tab() -> Dict[str, Any]:
+    """Render rollback plan tab data (headless-safe, rollback-plan-only)."""
+    return {
+        "tab": "rollback_plan",
+        "version": PANEL_VERSION,
+        "release_name": "Paper Strategy Promotion Package & Rollback Plan Lab",
+        "description": "Rollback Plan: define triggers and steps to revert to baseline if candidate degrades.",
+        "paper_only": True,
+        "research_only": True,
+        "promotion_package_only": True,
+        "rollback_plan_only": True,
+        "no_real_orders": True,
+        "no_broker": True,
+        "no_production_strategy_mutation": True,
+        "no_live_strategy_activation": True,
+        "not_investment_advice": True,
+        "production_trading_blocked": True,
+        "empty_state": "No rollback plan data. Run strategy-promotion-rollback to populate.",
+        "schema_version": "193",
+    }
+
+
+def render_promotion_evidence_tab() -> Dict[str, Any]:
+    """Render promotion evidence tab data (headless-safe, audit-only)."""
+    return {
+        "tab": "promotion_evidence",
+        "version": PANEL_VERSION,
+        "release_name": "Paper Strategy Promotion Package & Rollback Plan Lab",
+        "description": "Promotion Evidence: auditable evidence pack linking sandbox validation to promotion decision.",
+        "paper_only": True,
+        "research_only": True,
+        "promotion_package_only": True,
+        "rollback_plan_only": True,
+        "no_real_orders": True,
+        "no_broker": True,
+        "no_production_strategy_mutation": True,
+        "no_live_strategy_activation": True,
+        "not_investment_advice": True,
+        "production_trading_blocked": True,
+        "empty_state": "No evidence data. Run strategy-promotion-evidence to populate.",
+        "schema_version": "193",
+    }
+
+
+def get_promotion_tab_names() -> List[str]:
+    """Return list of v1.9.3 strategy promotion tab names."""
+    return list(_TABS_V193_STRATEGY_PROMOTION)
 
 
 def get_panel_info() -> Dict[str, Any]:

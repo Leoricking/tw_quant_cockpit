@@ -199,7 +199,7 @@ def _get_all_checks() -> List[Dict[str, Any]]:
 
     # ── GUI check (1) ─────────────────────────────────────────────────────────
     from gui.small_capital_strategy_panel import PANEL_VERSION
-    checks.append(_check("gui_panel_version_178",       lambda: PANEL_VERSION in ("1.7.8", "1.7.9", "1.8.0", "1.8.1", "1.8.2", "1.8.3", "1.8.4", "1.8.5", "1.8.6", "1.8.7", "1.8.8", "1.8.9", "1.9.0", "1.9.1", "1.9.2")))
+    checks.append(_check("gui_panel_version_178",       lambda: PANEL_VERSION in ("1.7.8", "1.7.9", "1.8.0", "1.8.1", "1.8.2", "1.8.3", "1.8.4", "1.8.5", "1.8.6", "1.8.7", "1.8.8", "1.8.9", "1.9.0", "1.9.1", "1.9.2", "1.9.3")))
 
     # ── Backward compat checks (6) ──────────────────────────────────────────
     from paper_trading.small_capital_strategy.version_v178 import is_known_release as ikr178

@@ -5222,6 +5222,63 @@ _SS_V192_COMMANDS: _List[CommandSpec] = [
                 introduced_in="1.9.2", safety_classification="RESEARCH_ONLY"),
 ]
 
+_SP_V193_COMMANDS: _List[CommandSpec] = [
+    CommandSpec(name="strategy-promotion-version", handler_name="cmd_strategy_promotion_version",
+                help="[Research] Show strategy promotion version v1.9.3", group="strategy_promotion",
+                introduced_in="1.9.3", safety_classification="RESEARCH_ONLY"),
+    CommandSpec(name="strategy-promotion-build", handler_name="cmd_strategy_promotion_build",
+                help="[Research] Build strategy promotion package v1.9.3", group="strategy_promotion",
+                introduced_in="1.9.3", safety_classification="RESEARCH_ONLY"),
+    CommandSpec(name="strategy-promotion-rollback", handler_name="cmd_strategy_promotion_rollback",
+                help="[Research] Build rollback plan v1.9.3", group="strategy_promotion",
+                introduced_in="1.9.3", safety_classification="RESEARCH_ONLY"),
+    CommandSpec(name="strategy-promotion-gate", handler_name="cmd_strategy_promotion_gate",
+                help="[Research] Run strategy promotion release gate v1.9.3", group="strategy_promotion",
+                introduced_in="1.9.3", safety_classification="RESEARCH_ONLY"),
+    CommandSpec(name="strategy-promotion-checklist", handler_name="cmd_strategy_promotion_checklist",
+                help="[Research] Build promotion approval checklist v1.9.3", group="strategy_promotion",
+                introduced_in="1.9.3", safety_classification="RESEARCH_ONLY"),
+    CommandSpec(name="strategy-promotion-recommendation", handler_name="cmd_strategy_promotion_recommendation",
+                help="[Research] Build promotion recommendation v1.9.3", group="strategy_promotion",
+                introduced_in="1.9.3", safety_classification="RESEARCH_ONLY"),
+    CommandSpec(name="strategy-promotion-evidence", handler_name="cmd_strategy_promotion_evidence",
+                help="[Research] Build promotion evidence pack v1.9.3", group="strategy_promotion",
+                introduced_in="1.9.3", safety_classification="RESEARCH_ONLY"),
+    CommandSpec(name="strategy-promotion-audit-trail", handler_name="cmd_strategy_promotion_audit_trail",
+                help="[Research] Build promotion audit trail v1.9.3", group="strategy_promotion",
+                introduced_in="1.9.3", safety_classification="RESEARCH_ONLY"),
+    CommandSpec(name="strategy-promotion-dashboard", handler_name="cmd_strategy_promotion_dashboard",
+                help="[Research] Build promotion dashboard v1.9.3", group="strategy_promotion",
+                introduced_in="1.9.3", safety_classification="RESEARCH_ONLY"),
+    CommandSpec(name="strategy-promotion-export", handler_name="cmd_strategy_promotion_export",
+                help="[Research] Export promotion manifest v1.9.3", group="strategy_promotion",
+                introduced_in="1.9.3", safety_classification="RESEARCH_ONLY"),
+    CommandSpec(name="strategy-promotion-validate", handler_name="cmd_strategy_promotion_validate",
+                help="[Research] Validate promotion action v1.9.3", group="strategy_promotion",
+                introduced_in="1.9.3", safety_classification="RESEARCH_ONLY"),
+    CommandSpec(name="strategy-promotion-report", handler_name="cmd_strategy_promotion_report",
+                help="[Research] Export promotion summary report v1.9.3", group="strategy_promotion",
+                introduced_in="1.9.3", safety_classification="RESEARCH_ONLY"),
+    CommandSpec(name="strategy-promotion-scenarios", handler_name="cmd_strategy_promotion_scenarios",
+                help="[Research] List promotion scenarios v1.9.3", group="strategy_promotion",
+                introduced_in="1.9.3", safety_classification="RESEARCH_ONLY"),
+    CommandSpec(name="strategy-promotion-fixtures", handler_name="cmd_strategy_promotion_fixtures",
+                help="[Research] List promotion fixtures v1.9.3", group="strategy_promotion",
+                introduced_in="1.9.3", safety_classification="RESEARCH_ONLY"),
+    CommandSpec(name="strategy-promotion-health", handler_name="cmd_strategy_promotion_health",
+                help="[Research] Run strategy promotion health check v1.9.3", group="strategy_promotion",
+                introduced_in="1.9.3", safety_classification="RESEARCH_ONLY"),
+    CommandSpec(name="strategy-promotion-rollback-validate", handler_name="cmd_strategy_promotion_rollback_validate",
+                help="[Research] Validate rollback plan v1.9.3", group="strategy_promotion",
+                introduced_in="1.9.3", safety_classification="RESEARCH_ONLY"),
+    CommandSpec(name="strategy-promotion-approval-state", handler_name="cmd_strategy_promotion_approval_state",
+                help="[Research] Validate promotion approval state v1.9.3", group="strategy_promotion",
+                introduced_in="1.9.3", safety_classification="RESEARCH_ONLY"),
+    CommandSpec(name="strategy-promotion-safety-audit", handler_name="cmd_strategy_promotion_safety_audit",
+                help="[Research] Run strategy promotion safety audit v1.9.3", group="strategy_promotion",
+                introduced_in="1.9.3", safety_classification="RESEARCH_ONLY"),
+]
+
 PROVIDER_COMMANDS: _List[CommandSpec] = (
     _RESEARCH_FOUNDATION_COMMANDS
     + _TWSE_COMMANDS
@@ -5270,6 +5327,7 @@ PROVIDER_COMMANDS: _List[CommandSpec] = (
     + _DP_V190_COMMANDS
     + _ST_V191_COMMANDS
     + _SS_V192_COMMANDS
+    + _SP_V193_COMMANDS
 )
 
 

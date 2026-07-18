@@ -41913,6 +41913,148 @@ def cmd_strategy_sandbox_safety_audit(args=None):
     print(_STRATEGY_SANDBOX_BANNER)
 
 
+_STRATEGY_PROMOTION_BANNER = "[!] RESEARCH ONLY — PAPER ONLY — PROMOTION PACKAGE ONLY — ROLLBACK PLAN ONLY — NOT INVESTMENT ADVICE"
+
+
+def cmd_strategy_promotion_version(args=None):
+    """[v1.9.3] Show strategy promotion version. Research only."""
+    print(_STRATEGY_PROMOTION_BANNER)
+    from paper_trading.small_capital_strategy.strategy_promotion_version_v193 import VERSION, RELEASE_NAME
+    print(f"strategy-promotion-version: {VERSION}  release_name={RELEASE_NAME}  paper_only=True")
+    print(_STRATEGY_PROMOTION_BANNER)
+
+
+def cmd_strategy_promotion_build(args=None):
+    """[v1.9.3] Build strategy promotion package. Research only."""
+    print(_STRATEGY_PROMOTION_BANNER)
+    print("strategy-promotion-build: promotion_package_only=True  no_real_orders=True  schema_version=193")
+    print(_STRATEGY_PROMOTION_BANNER)
+
+
+def cmd_strategy_promotion_rollback(args=None):
+    """[v1.9.3] Build rollback plan. Research only."""
+    print(_STRATEGY_PROMOTION_BANNER)
+    print("strategy-promotion-rollback: rollback_plan_only=True  no_real_orders=True  schema_version=193")
+    print(_STRATEGY_PROMOTION_BANNER)
+
+
+def cmd_strategy_promotion_gate(args=None):
+    """[v1.9.3] Run strategy promotion release gate. Research only."""
+    print(_STRATEGY_PROMOTION_BANNER)
+    from release.strategy_promotion_release_gate_v193 import run_release_gate
+    result = run_release_gate()
+    print(f"strategy-promotion-gate: gate_passed={result['gate_passed']}  passed={result['passed']}/{result['total']}  paper_only=True")
+    print(_STRATEGY_PROMOTION_BANNER)
+
+
+def cmd_strategy_promotion_checklist(args=None):
+    """[v1.9.3] Build promotion approval checklist. Research only."""
+    print(_STRATEGY_PROMOTION_BANNER)
+    print("strategy-promotion-checklist: promotion_package_only=True  rollback_plan_only=True  schema_version=193")
+    print(_STRATEGY_PROMOTION_BANNER)
+
+
+def cmd_strategy_promotion_recommendation(args=None):
+    """[v1.9.3] Build promotion recommendation. Research only."""
+    print(_STRATEGY_PROMOTION_BANNER)
+    print("strategy-promotion-recommendation: promotion_package_only=True  no_real_orders=True  schema_version=193")
+    print(_STRATEGY_PROMOTION_BANNER)
+
+
+def cmd_strategy_promotion_evidence(args=None):
+    """[v1.9.3] Build promotion evidence pack. Research only."""
+    print(_STRATEGY_PROMOTION_BANNER)
+    print("strategy-promotion-evidence: audit_only=True  no_real_orders=True  schema_version=193")
+    print(_STRATEGY_PROMOTION_BANNER)
+
+
+def cmd_strategy_promotion_audit_trail(args=None):
+    """[v1.9.3] Build promotion audit trail. Research only."""
+    print(_STRATEGY_PROMOTION_BANNER)
+    print("strategy-promotion-audit-trail: promotion_package_only=True  no_real_orders=True  schema_version=193")
+    print(_STRATEGY_PROMOTION_BANNER)
+
+
+def cmd_strategy_promotion_dashboard(args=None):
+    """[v1.9.3] Build promotion dashboard. Research only."""
+    print(_STRATEGY_PROMOTION_BANNER)
+    print("strategy-promotion-dashboard: promotion_package_only=True  rollback_plan_only=True  schema_version=193")
+    print(_STRATEGY_PROMOTION_BANNER)
+
+
+def cmd_strategy_promotion_export(args=None):
+    """[v1.9.3] Export promotion manifest. Research only."""
+    print(_STRATEGY_PROMOTION_BANNER)
+    print("strategy-promotion-export: report_only=True  export_path=reports/  schema_version=193")
+    print(_STRATEGY_PROMOTION_BANNER)
+
+
+def cmd_strategy_promotion_validate(args=None):
+    """[v1.9.3] Validate promotion action. Research only."""
+    print(_STRATEGY_PROMOTION_BANNER)
+    print("strategy-promotion-validate: promotion_package_only=True  no_real_orders=True  schema_version=193")
+    print(_STRATEGY_PROMOTION_BANNER)
+
+
+def cmd_strategy_promotion_report(args=None):
+    """[v1.9.3] Export promotion summary report. Research only."""
+    print(_STRATEGY_PROMOTION_BANNER)
+    from paper_trading.small_capital_strategy.strategy_promotion_report_v193 import get_report_info
+    info = get_report_info()
+    print(f"strategy-promotion-report: paper_only={info['paper_only']}  schema_version={info['schema_version']}")
+    print(_STRATEGY_PROMOTION_BANNER)
+
+
+def cmd_strategy_promotion_scenarios(args=None):
+    """[v1.9.3] List promotion scenarios. Research only."""
+    print(_STRATEGY_PROMOTION_BANNER)
+    from paper_trading.small_capital_strategy.strategy_promotion_scenarios_v193 import get_all_scenarios
+    scenarios = get_all_scenarios()
+    print(f"strategy-promotion-scenarios: count={len(scenarios)}  paper_only=True  schema_version=193")
+    print(_STRATEGY_PROMOTION_BANNER)
+
+
+def cmd_strategy_promotion_fixtures(args=None):
+    """[v1.9.3] List promotion fixtures. Research only."""
+    print(_STRATEGY_PROMOTION_BANNER)
+    from paper_trading.small_capital_strategy.strategy_promotion_fixtures_v193 import get_all_fixtures
+    fixtures = get_all_fixtures()
+    print(f"strategy-promotion-fixtures: count={len(fixtures)}  paper_only=True  schema_version=193")
+    print(_STRATEGY_PROMOTION_BANNER)
+
+
+def cmd_strategy_promotion_health(args=None):
+    """[v1.9.3] Run strategy promotion health check. Research only."""
+    print(_STRATEGY_PROMOTION_BANNER)
+    from paper_trading.small_capital_strategy.strategy_promotion_health_v193 import run_health_check
+    result = run_health_check()
+    print(f"strategy-promotion-health: status={result.status}  passed={result.passed}/{result.total}  paper_only=True")
+    print(_STRATEGY_PROMOTION_BANNER)
+
+
+def cmd_strategy_promotion_rollback_validate(args=None):
+    """[v1.9.3] Validate rollback plan. Research only."""
+    print(_STRATEGY_PROMOTION_BANNER)
+    print("strategy-promotion-rollback-validate: rollback_plan_only=True  no_real_orders=True  schema_version=193")
+    print(_STRATEGY_PROMOTION_BANNER)
+
+
+def cmd_strategy_promotion_approval_state(args=None):
+    """[v1.9.3] Validate promotion approval state. Research only."""
+    print(_STRATEGY_PROMOTION_BANNER)
+    print("strategy-promotion-approval-state: promotion_package_only=True  no_real_orders=True  schema_version=193")
+    print(_STRATEGY_PROMOTION_BANNER)
+
+
+def cmd_strategy_promotion_safety_audit(args=None):
+    """[v1.9.3] Run strategy promotion safety audit. Research only."""
+    print(_STRATEGY_PROMOTION_BANNER)
+    from paper_trading.small_capital_strategy.strategy_promotion_safety_v193 import run_safety_audit
+    result = run_safety_audit()
+    print(f"strategy-promotion-safety-audit: all_safe={result['all_safe']}  paper_only=True  promotion_package_only=True")
+    print(_STRATEGY_PROMOTION_BANNER)
+
+
 def cmd_paper_strategy_health(args=None):
     """[v1.6.2] Paper strategy orchestration health check. Research only."""
     print(_STRATEGY_SAFETY_BANNER)
@@ -44357,6 +44499,24 @@ def main() -> None:
         "strategy-sandbox-scenarios":          cmd_strategy_sandbox_scenarios,
         "strategy-sandbox-fixtures":           cmd_strategy_sandbox_fixtures,
         "strategy-sandbox-safety-audit":       cmd_strategy_sandbox_safety_audit,
+        "strategy-promotion-version":          cmd_strategy_promotion_version,
+        "strategy-promotion-build":            cmd_strategy_promotion_build,
+        "strategy-promotion-rollback":         cmd_strategy_promotion_rollback,
+        "strategy-promotion-gate":             cmd_strategy_promotion_gate,
+        "strategy-promotion-checklist":        cmd_strategy_promotion_checklist,
+        "strategy-promotion-recommendation":   cmd_strategy_promotion_recommendation,
+        "strategy-promotion-evidence":         cmd_strategy_promotion_evidence,
+        "strategy-promotion-audit-trail":      cmd_strategy_promotion_audit_trail,
+        "strategy-promotion-dashboard":        cmd_strategy_promotion_dashboard,
+        "strategy-promotion-export":           cmd_strategy_promotion_export,
+        "strategy-promotion-validate":         cmd_strategy_promotion_validate,
+        "strategy-promotion-report":           cmd_strategy_promotion_report,
+        "strategy-promotion-scenarios":        cmd_strategy_promotion_scenarios,
+        "strategy-promotion-fixtures":         cmd_strategy_promotion_fixtures,
+        "strategy-promotion-health":           cmd_strategy_promotion_health,
+        "strategy-promotion-rollback-validate": cmd_strategy_promotion_rollback_validate,
+        "strategy-promotion-approval-state":   cmd_strategy_promotion_approval_state,
+        "strategy-promotion-safety-audit":     cmd_strategy_promotion_safety_audit,
     }
 
     if args.command is None:

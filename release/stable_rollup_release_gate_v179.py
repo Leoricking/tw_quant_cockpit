@@ -101,7 +101,7 @@ class StableRollupReleaseGate:
         from paper_trading.small_capital_strategy.stable_rollup_gui_audit_v179 import run_gui_audit
         self._check("gui_stable_tabs_present",    lambda: run_gui_audit()["all_tabs_present"])
         self._check("gui_render_clean",           lambda: run_gui_audit()["render_clean"])
-        self._check("gui_panel_version_179",      lambda: run_gui_audit()["panel_version"] in ("1.7.9", "1.8.0", "1.8.1", "1.8.2", "1.8.3", "1.8.4", "1.8.5", "1.8.6", "1.8.7", "1.8.8", "1.8.9", "1.9.0", "1.9.1", "1.9.2"))
+        self._check("gui_panel_version_179",      lambda: run_gui_audit()["panel_version"] in ("1.7.9", "1.8.0", "1.8.1", "1.8.2", "1.8.3", "1.8.4", "1.8.5", "1.8.6", "1.8.7", "1.8.8", "1.8.9", "1.9.0", "1.9.1", "1.9.2", "1.9.3"))
         self._check("gui_error_tabs_zero",        lambda: len(run_gui_audit()["error_tabs"]) == 0)
 
         # ── Fixture Audit (3) ────────────────────────────────────────────────
@@ -130,7 +130,7 @@ class StableRollupReleaseGate:
 
         # ── GUI panel version (1) ─────────────────────────────────────────────
         from gui.small_capital_strategy_panel import PANEL_VERSION
-        self._check("gui_panel_version_match",    lambda: PANEL_VERSION in ("1.7.9", "1.8.0", "1.8.1", "1.8.2", "1.8.3", "1.8.4", "1.8.5", "1.8.6", "1.8.7", "1.8.8", "1.8.9", "1.9.0", "1.9.1", "1.9.2"))
+        self._check("gui_panel_version_match",    lambda: PANEL_VERSION in ("1.7.9", "1.8.0", "1.8.1", "1.8.2", "1.8.3", "1.8.4", "1.8.5", "1.8.6", "1.8.7", "1.8.8", "1.8.9", "1.9.0", "1.9.1", "1.9.2", "1.9.3"))
 
         passed = sum(1 for c in self._checks if c["passed"])
         failed = sum(1 for c in self._checks if not c["passed"])
