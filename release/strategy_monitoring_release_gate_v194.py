@@ -175,7 +175,7 @@ class StrategyMonitoringReleaseGate:
             render_rollback_alerts_tab,
             get_monitoring_tab_names,
         )
-        self._gate("gui_panel_version_194", lambda: PANEL_VERSION in ("1.9.4", "1.9.5"))
+        self._gate("gui_panel_version_194", lambda: PANEL_VERSION in ("1.9.4", "1.9.5", "1.9.6"))
         self._gate("gui_panel_info_paper_only",
                    lambda: get_panel_info()["paper_only"] is True)
         self._gate("gui_monitoring_tab_paper_only",
@@ -207,7 +207,7 @@ class StrategyMonitoringReleaseGate:
 
         # ── backward compat (2) ───────────────────────────────────────────────
         self._gate("backward_compat_panel_version",
-                   lambda: get_panel_info()["panel_version"] in ("1.9.4", "1.9.5"))
+                   lambda: get_panel_info()["panel_version"] in ("1.9.4", "1.9.5", "1.9.6"))
         self._gate("backward_compat_tab_count",
                    lambda: get_panel_info()["tab_count"] >= 154)
 

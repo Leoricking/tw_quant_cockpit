@@ -42385,6 +42385,227 @@ def cmd_strategy_review_safety_audit(args=None):
     print(_STRATEGY_REVIEW_BANNER)
 
 
+_STRATEGY_REGISTRY_BANNER = "[!] RESEARCH ONLY — PAPER ONLY — GOVERNANCE ONLY — REGISTRY ONLY — DECISION RECORD ONLY — NOT INVESTMENT ADVICE"
+
+
+def cmd_strategy_registry_version(args=None):
+    """[v1.9.6] Show strategy registry version. Research only."""
+    print(_STRATEGY_REGISTRY_BANNER)
+    from paper_trading.small_capital_strategy.strategy_registry_version_v196 import get_version_info
+    info = get_version_info()
+    print(f"strategy-registry-version: {info['version']}  schema={info['schema_version']}  paper_only=True  governance_only=True")
+    print(_STRATEGY_REGISTRY_BANNER)
+
+
+def cmd_strategy_registry_run(args=None):
+    """[v1.9.6] Run strategy decision registry workflow. Research only."""
+    print(_STRATEGY_REGISTRY_BANNER)
+    from paper_trading.small_capital_strategy.strategy_registry_engine_v196 import get_engine_info
+    info = get_engine_info()
+    print(f"strategy-registry-run: version={info['version']}  paper_only=True  governance_only=True")
+    print(_STRATEGY_REGISTRY_BANNER)
+
+
+def cmd_strategy_registry_record(args=None):
+    """[v1.9.6] Record a strategy decision. Research only."""
+    print(_STRATEGY_REGISTRY_BANNER)
+    from paper_trading.small_capital_strategy.strategy_registry_engine_v196 import build_decision_record
+    result = build_decision_record("", "", "", "")
+    print(f"strategy-registry-record: blocked={result['blocked']}  auto_decision=False  paper_only=True")
+    print(_STRATEGY_REGISTRY_BANNER)
+
+
+def cmd_strategy_registry_list(args=None):
+    """[v1.9.6] List decision registry entries. Research only."""
+    print(_STRATEGY_REGISTRY_BANNER)
+    from paper_trading.small_capital_strategy.strategy_registry_version_v196 import get_decision_states
+    states = get_decision_states()
+    print(f"strategy-registry-list: decision_states={len(states)}  paper_only=True  registry_only=True")
+    print(_STRATEGY_REGISTRY_BANNER)
+
+
+def cmd_strategy_registry_lineage(args=None):
+    """[v1.9.6] Show decision lineage. Research only."""
+    print(_STRATEGY_REGISTRY_BANNER)
+    from paper_trading.small_capital_strategy.strategy_registry_engine_v196 import build_decision_lineage
+    result = build_decision_lineage("", [])
+    print(f"strategy-registry-lineage: blocked={result['blocked']}  paper_only=True  governance_only=True")
+    print(_STRATEGY_REGISTRY_BANNER)
+
+
+def cmd_strategy_registry_governance(args=None):
+    """[v1.9.6] Run governance checks. Research only."""
+    print(_STRATEGY_REGISTRY_BANNER)
+    from paper_trading.small_capital_strategy.strategy_registry_version_v196 import get_governance_checks
+    checks = get_governance_checks()
+    print(f"strategy-registry-governance: governance_check_count={len(checks)}  paper_only=True  auto_approval=False")
+    print(_STRATEGY_REGISTRY_BANNER)
+
+
+def cmd_strategy_registry_queue(args=None):
+    """[v1.9.6] Show decision queue. Research only."""
+    print(_STRATEGY_REGISTRY_BANNER)
+    from paper_trading.small_capital_strategy.strategy_registry_models_v196 import StrategyDecisionQueue
+    q = StrategyDecisionQueue()
+    print(f"strategy-registry-queue: auto_processing={q.auto_processing}  requires_human_review={q.requires_human_review}")
+    print(_STRATEGY_REGISTRY_BANNER)
+
+
+def cmd_strategy_registry_validate(args=None):
+    """[v1.9.6] Validate a decision record. Research only."""
+    print(_STRATEGY_REGISTRY_BANNER)
+    from paper_trading.small_capital_strategy.strategy_registry_engine_v196 import validate_decision_source
+    result = validate_decision_source("TUNING_PROPOSAL")
+    print(f"strategy-registry-validate: valid={result['valid']}  paper_only=True  governance_only=True")
+    print(_STRATEGY_REGISTRY_BANNER)
+
+
+def cmd_strategy_registry_report(args=None):
+    """[v1.9.6] Export registry report. Research only."""
+    print(_STRATEGY_REGISTRY_BANNER)
+    from paper_trading.small_capital_strategy.strategy_registry_report_v196 import export_registry_summary
+    result = export_registry_summary("DEMO-DEC-001")
+    print(f"strategy-registry-report: valid={result['valid']}  paper_only=True  report_only=True")
+    print(_STRATEGY_REGISTRY_BANNER)
+
+
+def cmd_strategy_registry_dashboard(args=None):
+    """[v1.9.6] Build registry dashboard. Research only."""
+    print(_STRATEGY_REGISTRY_BANNER)
+    from paper_trading.small_capital_strategy.strategy_registry_engine_v196 import build_registry_dashboard
+    result = build_registry_dashboard("", "DEC-001")
+    print(f"strategy-registry-dashboard: blocked={result['blocked']}  paper_only=True")
+    print(_STRATEGY_REGISTRY_BANNER)
+
+
+def cmd_strategy_registry_export(args=None):
+    """[v1.9.6] Export full registry pack. Research only."""
+    print(_STRATEGY_REGISTRY_BANNER)
+    from paper_trading.small_capital_strategy.strategy_registry_report_v196 import export_full_registry_pack
+    result = export_full_registry_pack("DEMO-DEC-001")
+    print(f"strategy-registry-export: valid={result['valid']}  paper_only=True  report_only=True")
+    print(_STRATEGY_REGISTRY_BANNER)
+
+
+def cmd_strategy_registry_evidence(args=None):
+    """[v1.9.6] Build decision evidence pack. Research only."""
+    print(_STRATEGY_REGISTRY_BANNER)
+    from paper_trading.small_capital_strategy.strategy_registry_engine_v196 import build_evidence_pack
+    result = build_evidence_pack("", [])
+    print(f"strategy-registry-evidence: blocked={result['blocked']}  paper_only=True  audit_only=True")
+    print(_STRATEGY_REGISTRY_BANNER)
+
+
+def cmd_strategy_registry_audit(args=None):
+    """[v1.9.6] Build decision audit trail. Research only."""
+    print(_STRATEGY_REGISTRY_BANNER)
+    from paper_trading.small_capital_strategy.strategy_registry_engine_v196 import build_audit_trail
+    result = build_audit_trail("", "DEC-001")
+    print(f"strategy-registry-audit: blocked={result['blocked']}  paper_only=True  audit_only=True")
+    print(_STRATEGY_REGISTRY_BANNER)
+
+
+def cmd_strategy_registry_health(args=None):
+    """[v1.9.6] Run strategy registry health check. Research only."""
+    print(_STRATEGY_REGISTRY_BANNER)
+    from paper_trading.small_capital_strategy.strategy_registry_health_v196 import run_health_check
+    result = run_health_check()
+    print(f"strategy-registry-health: {result['passed']}/{result['total']} passed  all_passed={result['all_passed']}")
+    print(_STRATEGY_REGISTRY_BANNER)
+
+
+def cmd_strategy_registry_gate(args=None):
+    """[v1.9.6] Run strategy registry release gate. Research only."""
+    print(_STRATEGY_REGISTRY_BANNER)
+    from release.strategy_registry_release_gate_v196 import run_release_gate
+    result = run_release_gate()
+    print(f"strategy-registry-gate: {result['passed_count']}/{result['total']} passed  gate_passed={result['gate_passed']}")
+    print(_STRATEGY_REGISTRY_BANNER)
+
+
+def cmd_strategy_registry_scenarios(args=None):
+    """[v1.9.6] List registry scenarios. Research only."""
+    print(_STRATEGY_REGISTRY_BANNER)
+    from paper_trading.small_capital_strategy.strategy_registry_scenarios_v196 import get_all_scenarios
+    scenarios = get_all_scenarios()
+    print(f"strategy-registry-scenarios: count={len(scenarios)}  paper_only=True  governance_only=True")
+    print(_STRATEGY_REGISTRY_BANNER)
+
+
+def cmd_strategy_registry_fixtures(args=None):
+    """[v1.9.6] List registry fixtures. Research only."""
+    print(_STRATEGY_REGISTRY_BANNER)
+    from paper_trading.small_capital_strategy.strategy_registry_fixtures_v196 import get_all_fixtures
+    fixtures = get_all_fixtures()
+    print(f"strategy-registry-fixtures: count={len(fixtures)}  paper_only=True  governance_only=True")
+    print(_STRATEGY_REGISTRY_BANNER)
+
+
+def cmd_strategy_registry_safety_audit(args=None):
+    """[v1.9.6] Run strategy registry safety audit. Research only."""
+    print(_STRATEGY_REGISTRY_BANNER)
+    from paper_trading.small_capital_strategy.strategy_registry_safety_v196 import run_safety_audit
+    result = run_safety_audit()
+    print(f"strategy-registry-safety-audit: all_safe={result['all_safe']}  paper_only=True  governance_only=True")
+    print(_STRATEGY_REGISTRY_BANNER)
+
+
+def cmd_strategy_registry_register(args=None):
+    """[v1.9.6] Register a new strategy decision. Research only."""
+    print(_STRATEGY_REGISTRY_BANNER)
+    print("strategy-registry-register: paper_only=True  governance_only=True  registry_only=True")
+    print(_STRATEGY_REGISTRY_BANNER)
+
+
+def cmd_strategy_registry_get(args=None):
+    """[v1.9.6] Get a strategy decision record by ID. Research only."""
+    print(_STRATEGY_REGISTRY_BANNER)
+    print("strategy-registry-get: paper_only=True  governance_only=True  registry_only=True")
+    print(_STRATEGY_REGISTRY_BANNER)
+
+
+def cmd_strategy_registry_governance_check(args=None):
+    """[v1.9.6] Run governance check on a decision record. Research only."""
+    print(_STRATEGY_REGISTRY_BANNER)
+    print("strategy-registry-governance-check: paper_only=True  governance_only=True")
+    print(_STRATEGY_REGISTRY_BANNER)
+
+
+def cmd_strategy_registry_governance_report(args=None):
+    """[v1.9.6] Export governance report for a decision. Research only."""
+    print(_STRATEGY_REGISTRY_BANNER)
+    print("strategy-registry-governance-report: paper_only=True  governance_only=True")
+    print(_STRATEGY_REGISTRY_BANNER)
+
+
+def cmd_strategy_registry_audit_trail(args=None):
+    """[v1.9.6] Build audit trail for a decision. Research only."""
+    print(_STRATEGY_REGISTRY_BANNER)
+    print("strategy-registry-audit-trail: paper_only=True  governance_only=True  immutable=True")
+    print(_STRATEGY_REGISTRY_BANNER)
+
+
+def cmd_strategy_registry_violation_report(args=None):
+    """[v1.9.6] Build violation report for a decision. Research only."""
+    print(_STRATEGY_REGISTRY_BANNER)
+    print("strategy-registry-violation-report: paper_only=True  governance_only=True")
+    print(_STRATEGY_REGISTRY_BANNER)
+
+
+def cmd_strategy_registry_retention_policy(args=None):
+    """[v1.9.6] Show retention policy for a decision. Research only."""
+    print(_STRATEGY_REGISTRY_BANNER)
+    print("strategy-registry-retention-policy: paper_only=True  governance_only=True  auto_deletion=False")
+    print(_STRATEGY_REGISTRY_BANNER)
+
+
+def cmd_strategy_registry_full_pack(args=None):
+    """[v1.9.6] Export full registry pack for a decision. Research only."""
+    print(_STRATEGY_REGISTRY_BANNER)
+    print("strategy-registry-full-pack: paper_only=True  governance_only=True  registry_only=True")
+    print(_STRATEGY_REGISTRY_BANNER)
+
+
 def cmd_paper_strategy_health(args=None):
     """[v1.6.2] Paper strategy orchestration health check. Research only."""
     print(_STRATEGY_SAFETY_BANNER)
@@ -44847,6 +45068,33 @@ def main() -> None:
         "strategy-promotion-rollback-validate": cmd_strategy_promotion_rollback_validate,
         "strategy-promotion-approval-state":   cmd_strategy_promotion_approval_state,
         "strategy-promotion-safety-audit":     cmd_strategy_promotion_safety_audit,
+        # v1.9.6 strategy registry commands
+        "strategy-registry-version":           cmd_strategy_registry_version,
+        "strategy-registry-run":               cmd_strategy_registry_run,
+        "strategy-registry-record":            cmd_strategy_registry_record,
+        "strategy-registry-list":              cmd_strategy_registry_list,
+        "strategy-registry-lineage":           cmd_strategy_registry_lineage,
+        "strategy-registry-governance":        cmd_strategy_registry_governance,
+        "strategy-registry-queue":             cmd_strategy_registry_queue,
+        "strategy-registry-validate":          cmd_strategy_registry_validate,
+        "strategy-registry-report":            cmd_strategy_registry_report,
+        "strategy-registry-dashboard":         cmd_strategy_registry_dashboard,
+        "strategy-registry-export":            cmd_strategy_registry_export,
+        "strategy-registry-evidence":          cmd_strategy_registry_evidence,
+        "strategy-registry-audit":             cmd_strategy_registry_audit,
+        "strategy-registry-health":            cmd_strategy_registry_health,
+        "strategy-registry-gate":              cmd_strategy_registry_gate,
+        "strategy-registry-scenarios":         cmd_strategy_registry_scenarios,
+        "strategy-registry-fixtures":          cmd_strategy_registry_fixtures,
+        "strategy-registry-safety-audit":      cmd_strategy_registry_safety_audit,
+        "strategy-registry-register":          cmd_strategy_registry_register,
+        "strategy-registry-get":               cmd_strategy_registry_get,
+        "strategy-registry-governance-check":  cmd_strategy_registry_governance_check,
+        "strategy-registry-governance-report": cmd_strategy_registry_governance_report,
+        "strategy-registry-audit-trail":       cmd_strategy_registry_audit_trail,
+        "strategy-registry-violation-report":  cmd_strategy_registry_violation_report,
+        "strategy-registry-retention-policy":  cmd_strategy_registry_retention_policy,
+        "strategy-registry-full-pack":         cmd_strategy_registry_full_pack,
         # v1.9.5 strategy review commands
         "strategy-review-version":             cmd_strategy_review_version,
         "strategy-review-run":                 cmd_strategy_review_run,

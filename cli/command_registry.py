@@ -5396,6 +5396,89 @@ _SR_V195_COMMANDS: _List[CommandSpec] = [
                 introduced_in="1.9.5", safety_classification="RESEARCH_ONLY"),
 ]
 
+# v1.9.6 Strategy Decision Registry & Governance Lab commands
+# ---------------------------------------------------------------------------
+_SRG_V196_COMMANDS: _List[CommandSpec] = [
+    CommandSpec(name="strategy-registry-version", handler_name="cmd_strategy_registry_version",
+                help="[Research] Show strategy registry version v1.9.6", group="strategy_registry",
+                introduced_in="1.9.6", safety_classification="RESEARCH_ONLY"),
+    CommandSpec(name="strategy-registry-run", handler_name="cmd_strategy_registry_run",
+                help="[Research] Run strategy decision registry workflow v1.9.6", group="strategy_registry",
+                introduced_in="1.9.6", safety_classification="RESEARCH_ONLY"),
+    CommandSpec(name="strategy-registry-record", handler_name="cmd_strategy_registry_record",
+                help="[Research] Record a strategy decision v1.9.6", group="strategy_registry",
+                introduced_in="1.9.6", safety_classification="RESEARCH_ONLY"),
+    CommandSpec(name="strategy-registry-list", handler_name="cmd_strategy_registry_list",
+                help="[Research] List decision registry entries v1.9.6", group="strategy_registry",
+                introduced_in="1.9.6", safety_classification="RESEARCH_ONLY"),
+    CommandSpec(name="strategy-registry-lineage", handler_name="cmd_strategy_registry_lineage",
+                help="[Research] Show decision lineage v1.9.6", group="strategy_registry",
+                introduced_in="1.9.6", safety_classification="RESEARCH_ONLY"),
+    CommandSpec(name="strategy-registry-governance", handler_name="cmd_strategy_registry_governance",
+                help="[Research] Run governance checks v1.9.6", group="strategy_registry",
+                introduced_in="1.9.6", safety_classification="RESEARCH_ONLY"),
+    CommandSpec(name="strategy-registry-queue", handler_name="cmd_strategy_registry_queue",
+                help="[Research] Show decision queue v1.9.6", group="strategy_registry",
+                introduced_in="1.9.6", safety_classification="RESEARCH_ONLY"),
+    CommandSpec(name="strategy-registry-validate", handler_name="cmd_strategy_registry_validate",
+                help="[Research] Validate a decision record v1.9.6", group="strategy_registry",
+                introduced_in="1.9.6", safety_classification="RESEARCH_ONLY"),
+    CommandSpec(name="strategy-registry-report", handler_name="cmd_strategy_registry_report",
+                help="[Research] Export registry report v1.9.6", group="strategy_registry",
+                introduced_in="1.9.6", safety_classification="RESEARCH_ONLY"),
+    CommandSpec(name="strategy-registry-dashboard", handler_name="cmd_strategy_registry_dashboard",
+                help="[Research] Build registry dashboard v1.9.6", group="strategy_registry",
+                introduced_in="1.9.6", safety_classification="RESEARCH_ONLY"),
+    CommandSpec(name="strategy-registry-export", handler_name="cmd_strategy_registry_export",
+                help="[Research] Export full registry pack v1.9.6", group="strategy_registry",
+                introduced_in="1.9.6", safety_classification="RESEARCH_ONLY"),
+    CommandSpec(name="strategy-registry-evidence", handler_name="cmd_strategy_registry_evidence",
+                help="[Research] Build decision evidence pack v1.9.6", group="strategy_registry",
+                introduced_in="1.9.6", safety_classification="RESEARCH_ONLY"),
+    CommandSpec(name="strategy-registry-audit", handler_name="cmd_strategy_registry_audit",
+                help="[Research] Build decision audit trail v1.9.6", group="strategy_registry",
+                introduced_in="1.9.6", safety_classification="RESEARCH_ONLY"),
+    CommandSpec(name="strategy-registry-health", handler_name="cmd_strategy_registry_health",
+                help="[Research] Run strategy registry health check v1.9.6", group="strategy_registry",
+                introduced_in="1.9.6", safety_classification="RESEARCH_ONLY"),
+    CommandSpec(name="strategy-registry-gate", handler_name="cmd_strategy_registry_gate",
+                help="[Research] Run strategy registry release gate v1.9.6", group="strategy_registry",
+                introduced_in="1.9.6", safety_classification="RESEARCH_ONLY"),
+    CommandSpec(name="strategy-registry-scenarios", handler_name="cmd_strategy_registry_scenarios",
+                help="[Research] List registry scenarios v1.9.6", group="strategy_registry",
+                introduced_in="1.9.6", safety_classification="RESEARCH_ONLY"),
+    CommandSpec(name="strategy-registry-fixtures", handler_name="cmd_strategy_registry_fixtures",
+                help="[Research] List registry fixtures v1.9.6", group="strategy_registry",
+                introduced_in="1.9.6", safety_classification="RESEARCH_ONLY"),
+    CommandSpec(name="strategy-registry-safety-audit", handler_name="cmd_strategy_registry_safety_audit",
+                help="[Research] Run strategy registry safety audit v1.9.6", group="strategy_registry",
+                introduced_in="1.9.6", safety_classification="RESEARCH_ONLY"),
+    CommandSpec(name="strategy-registry-register", handler_name="cmd_strategy_registry_register",
+                help="[Research] Register a new strategy decision v1.9.6", group="strategy_registry",
+                introduced_in="1.9.6", safety_classification="RESEARCH_ONLY"),
+    CommandSpec(name="strategy-registry-get", handler_name="cmd_strategy_registry_get",
+                help="[Research] Get a strategy decision record by ID v1.9.6", group="strategy_registry",
+                introduced_in="1.9.6", safety_classification="RESEARCH_ONLY"),
+    CommandSpec(name="strategy-registry-governance-check", handler_name="cmd_strategy_registry_governance_check",
+                help="[Research] Run governance check on a decision record v1.9.6", group="strategy_registry",
+                introduced_in="1.9.6", safety_classification="RESEARCH_ONLY"),
+    CommandSpec(name="strategy-registry-governance-report", handler_name="cmd_strategy_registry_governance_report",
+                help="[Research] Export governance report for a decision v1.9.6", group="strategy_registry",
+                introduced_in="1.9.6", safety_classification="RESEARCH_ONLY"),
+    CommandSpec(name="strategy-registry-audit-trail", handler_name="cmd_strategy_registry_audit_trail",
+                help="[Research] Build audit trail for a decision v1.9.6", group="strategy_registry",
+                introduced_in="1.9.6", safety_classification="RESEARCH_ONLY"),
+    CommandSpec(name="strategy-registry-violation-report", handler_name="cmd_strategy_registry_violation_report",
+                help="[Research] Build violation report for a decision v1.9.6", group="strategy_registry",
+                introduced_in="1.9.6", safety_classification="RESEARCH_ONLY"),
+    CommandSpec(name="strategy-registry-retention-policy", handler_name="cmd_strategy_registry_retention_policy",
+                help="[Research] Show retention policy for a decision v1.9.6", group="strategy_registry",
+                introduced_in="1.9.6", safety_classification="RESEARCH_ONLY"),
+    CommandSpec(name="strategy-registry-full-pack", handler_name="cmd_strategy_registry_full_pack",
+                help="[Research] Export full registry pack for a decision v1.9.6", group="strategy_registry",
+                introduced_in="1.9.6", safety_classification="RESEARCH_ONLY"),
+]
+
 PROVIDER_COMMANDS: _List[CommandSpec] = (
     _RESEARCH_FOUNDATION_COMMANDS
     + _TWSE_COMMANDS
@@ -5447,6 +5530,7 @@ PROVIDER_COMMANDS: _List[CommandSpec] = (
     + _SP_V193_COMMANDS
     + _SM_V194_COMMANDS
     + _SR_V195_COMMANDS
+    + _SRG_V196_COMMANDS
 )
 
 

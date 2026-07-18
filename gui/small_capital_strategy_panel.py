@@ -16,8 +16,8 @@ Headless-safe: no tkinter at module level. Renders to dict.
 from __future__ import annotations
 from typing import Any, Dict, List, Optional
 
-PANEL_VERSION = "1.9.5"
-PANEL_TITLE = "Small Capital Strategy v1.9.5 — Paper Strategy Review Alert & Human Approval Lab"
+PANEL_VERSION = "1.9.6"
+PANEL_TITLE = "Small Capital Strategy v1.9.6 — Paper Strategy Decision Registry & Governance Review Lab"
 
 # v1.7.0 tabs (preserved unchanged)
 _TABS_V170 = [
@@ -306,6 +306,15 @@ _TABS_V195_STRATEGY_REVIEW = [
 
 assert len(_TABS_V195_STRATEGY_REVIEW) == 3, f"Expected 3 strategy review tabs, got {len(_TABS_V195_STRATEGY_REVIEW)}"
 
+# v1.9.6 Paper Strategy Decision Registry & Governance Lab tabs
+_TABS_V196_STRATEGY_REGISTRY = [
+    "decision_registry",
+    "governance_review",
+    "decision_lineage",
+]
+
+assert len(_TABS_V196_STRATEGY_REGISTRY) == 3, f"Expected 3 strategy registry tabs, got {len(_TABS_V196_STRATEGY_REGISTRY)}"
+
 _TABS = (
     _TABS_V170
     + _TABS_V171_WATCHLIST
@@ -333,6 +342,7 @@ _TABS = (
     + _TABS_V193_STRATEGY_PROMOTION
     + _TABS_V194_STRATEGY_MONITORING
     + _TABS_V195_STRATEGY_REVIEW
+    + _TABS_V196_STRATEGY_REGISTRY
 )
 
 assert len(_TABS_V170) == 22, f"Expected 22 v1.7.0 tabs, got {len(_TABS_V170)}"
@@ -1594,6 +1604,10 @@ def render_all_tabs() -> Dict[str, Any]:
         "review_alerts":                     render_review_alerts_tab,
         "human_approval":                    render_human_approval_tab,
         "rollback_review":                   render_rollback_review_tab,
+        # v1.9.6 Paper Strategy Decision Registry & Governance Review Lab tabs
+        "decision_registry":                 render_decision_registry_tab,
+        "governance_review":                 render_governance_review_tab,
+        "decision_lineage":                  render_decision_lineage_tab,
     }
     result = {}
     for tab_name in _TABS:
@@ -3601,6 +3615,88 @@ def render_rollback_review_tab() -> Dict[str, Any]:
 def get_review_tab_names() -> List[str]:
     """Return list of v1.9.5 strategy review tab names."""
     return list(_TABS_V195_STRATEGY_REVIEW)
+
+
+def render_decision_registry_tab() -> Dict[str, Any]:
+    """Render decision registry tab data (headless-safe, registry-only)."""
+    return {
+        "tab": "decision_registry",
+        "version": PANEL_VERSION,
+        "release_name": "Paper Strategy Decision Registry & Governance Lab",
+        "description": "Decision Registry: track all paper strategy decisions with unique IDs, sources, lineage, evidence, and governance results.",
+        "paper_only": True,
+        "research_only": True,
+        "governance_only": True,
+        "registry_only": True,
+        "decision_record_only": True,
+        "no_real_orders": True,
+        "no_broker": True,
+        "no_production_strategy_mutation": True,
+        "no_automatic_rollback": True,
+        "no_live_strategy_activation": True,
+        "not_investment_advice": True,
+        "production_trading_blocked": True,
+        "auto_decision": False,
+        "auto_approval": False,
+        "immutable_record": True,
+        "empty_state": "No decisions recorded. Run strategy-registry-run to populate.",
+        "schema_version": "196",
+    }
+
+
+def render_governance_review_tab() -> Dict[str, Any]:
+    """Render governance review tab data (headless-safe, governance-only)."""
+    return {
+        "tab": "governance_review",
+        "version": PANEL_VERSION,
+        "release_name": "Paper Strategy Decision Registry & Governance Lab",
+        "description": "Governance Review: apply 19 governance checks to each decision record; no automatic approval or production mutation.",
+        "paper_only": True,
+        "research_only": True,
+        "governance_only": True,
+        "registry_only": True,
+        "no_real_orders": True,
+        "no_broker": True,
+        "no_production_strategy_mutation": True,
+        "no_automatic_rollback": True,
+        "no_live_strategy_activation": True,
+        "not_investment_advice": True,
+        "production_trading_blocked": True,
+        "auto_approval": False,
+        "requires_human_review": True,
+        "governance_check_count": 19,
+        "empty_state": "No governance data. Run strategy-registry-governance to populate.",
+        "schema_version": "196",
+    }
+
+
+def render_decision_lineage_tab() -> Dict[str, Any]:
+    """Render decision lineage tab data (headless-safe, lineage-only)."""
+    return {
+        "tab": "decision_lineage",
+        "version": PANEL_VERSION,
+        "release_name": "Paper Strategy Decision Registry & Governance Lab",
+        "description": "Decision Lineage: trace each decision back to its source tuning proposals, sandbox validations, monitoring alerts, and human approval requests.",
+        "paper_only": True,
+        "research_only": True,
+        "governance_only": True,
+        "registry_only": True,
+        "no_real_orders": True,
+        "no_broker": True,
+        "no_production_strategy_mutation": True,
+        "no_live_strategy_activation": True,
+        "not_investment_advice": True,
+        "production_trading_blocked": True,
+        "immutable_lineage": True,
+        "immutable": True,
+        "empty_state": "No lineage data. Run strategy-registry-lineage to populate.",
+        "schema_version": "196",
+    }
+
+
+def get_registry_tab_names() -> List[str]:
+    """Return list of v1.9.6 strategy registry tab names."""
+    return list(_TABS_V196_STRATEGY_REGISTRY)
 
 
 def get_panel_info() -> Dict[str, Any]:
