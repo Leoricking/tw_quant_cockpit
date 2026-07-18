@@ -269,7 +269,7 @@ class StrategyTuningReleaseGate:
 
         # ── GUI panel version (1) ─────────────────────────────────────────────
         from gui.small_capital_strategy_panel import PANEL_VERSION
-        self._gate("gui_panel_version_191", lambda: PANEL_VERSION == "1.9.1")
+        self._gate("gui_panel_version_191", lambda: PANEL_VERSION in ("1.9.1", "1.9.2"))
 
         # ── CLI check (1) ────────────────────────────────────────────────────
         from cli.command_registry import get_commands_by_group

@@ -41748,6 +41748,171 @@ def cmd_strategy_tuning_safety_audit(args=None):
     print(_STRATEGY_TUNING_BANNER)
 
 
+_STRATEGY_SANDBOX_BANNER = "[!] RESEARCH ONLY — PAPER ONLY — SANDBOX ONLY — SHADOW ONLY — NOT INVESTMENT ADVICE"
+
+
+def cmd_strategy_sandbox_version(args=None):
+    """[v1.9.2] Show strategy sandbox version. Research only."""
+    print(_STRATEGY_SANDBOX_BANNER)
+    from paper_trading.small_capital_strategy.strategy_sandbox_version_v192 import get_version_info
+    info = get_version_info()
+    print(f"strategy-sandbox-version: version={info['version']}  schema={info['schema_version']}  paper_only={info['paper_only']}  sandbox_only={info['sandbox_only']}")
+    print(_STRATEGY_SANDBOX_BANNER)
+
+
+def cmd_strategy_sandbox_run(args=None):
+    """[v1.9.2] Run strategy sandbox validation. Research only."""
+    print(_STRATEGY_SANDBOX_BANNER)
+    from paper_trading.small_capital_strategy.strategy_sandbox_engine_v192 import run_sandbox_validation
+    result = run_sandbox_validation("sandbox_001", "tuning_proposal_001", "baseline_001", "candidate_001")
+    print(f"strategy-sandbox-run: blocked={result.get('blocked', False)}  approval_state={result.get('approval_state', 'SHADOW_ONLY')}  paper_only=True  sandbox_only=True")
+    print(_STRATEGY_SANDBOX_BANNER)
+
+
+def cmd_strategy_sandbox_compare(args=None):
+    """[v1.9.2] Compare baseline vs candidate in sandbox. Research only."""
+    print(_STRATEGY_SANDBOX_BANNER)
+    from paper_trading.small_capital_strategy.strategy_sandbox_engine_v192 import run_shadow_comparison
+    result = run_shadow_comparison("cmp_001", "baseline_001", "candidate_001")
+    print(f"strategy-sandbox-compare: blocked={result.get('blocked', False)}  improvement_detected={result.get('improvement_detected', False)}  paper_only=True  sandbox_only=True")
+    print(_STRATEGY_SANDBOX_BANNER)
+
+
+def cmd_strategy_sandbox_shadow(args=None):
+    """[v1.9.2] Run shadow validation. Research only."""
+    print(_STRATEGY_SANDBOX_BANNER)
+    from paper_trading.small_capital_strategy.strategy_sandbox_version_v192 import get_validation_dimensions
+    dims = get_validation_dimensions()
+    print(f"strategy-sandbox-shadow: validation_dimensions={len(dims)}  paper_only=True  shadow_only=True  no_real_orders=True")
+    print(_STRATEGY_SANDBOX_BANNER)
+
+
+def cmd_strategy_sandbox_rules(args=None):
+    """[v1.9.2] List sandbox rule sets. Research only."""
+    print(_STRATEGY_SANDBOX_BANNER)
+    from paper_trading.small_capital_strategy.strategy_sandbox_version_v192 import get_sandbox_modes
+    modes = get_sandbox_modes()
+    print(f"strategy-sandbox-rules: sandbox_modes_count={len(modes)}  paper_only=True  sandbox_only=True  no_real_orders=True")
+    print(_STRATEGY_SANDBOX_BANNER)
+
+
+def cmd_strategy_sandbox_guardrails(args=None):
+    """[v1.9.2] Show sandbox guardrail sets. Research only."""
+    print(_STRATEGY_SANDBOX_BANNER)
+    print(f"strategy-sandbox-guardrails: paper_only=True  sandbox_only=True  no_real_orders=True")
+    print(_STRATEGY_SANDBOX_BANNER)
+
+
+def cmd_strategy_sandbox_abc(args=None):
+    """[v1.9.2] Sandbox A/B/C buy point comparison. Research only."""
+    print(_STRATEGY_SANDBOX_BANNER)
+    print(f"strategy-sandbox-abc: sandbox_mode=A_B_RULE_COMPARE  paper_only=True  sandbox_only=True  no_real_orders=True")
+    print(_STRATEGY_SANDBOX_BANNER)
+
+
+def cmd_strategy_sandbox_position_sizing(args=None):
+    """[v1.9.2] Sandbox position sizing comparison. Research only."""
+    print(_STRATEGY_SANDBOX_BANNER)
+    print(f"strategy-sandbox-position-sizing: sandbox_mode=POSITION_SIZING_COMPARE  paper_only=True  sandbox_only=True  no_real_orders=True")
+    print(_STRATEGY_SANDBOX_BANNER)
+
+
+def cmd_strategy_sandbox_cash_reserve(args=None):
+    """[v1.9.2] Sandbox cash reserve comparison. Research only."""
+    print(_STRATEGY_SANDBOX_BANNER)
+    print(f"strategy-sandbox-cash-reserve: sandbox_mode=CASH_RESERVE_COMPARE  paper_only=True  sandbox_only=True  no_real_orders=True")
+    print(_STRATEGY_SANDBOX_BANNER)
+
+
+def cmd_strategy_sandbox_concentration(args=None):
+    """[v1.9.2] Sandbox concentration limit comparison. Research only."""
+    print(_STRATEGY_SANDBOX_BANNER)
+    print(f"strategy-sandbox-concentration: sandbox_mode=CONCENTRATION_LIMIT_COMPARE  paper_only=True  sandbox_only=True  no_real_orders=True")
+    print(_STRATEGY_SANDBOX_BANNER)
+
+
+def cmd_strategy_sandbox_report(args=None):
+    """[v1.9.2] Export sandbox validation report. Research only."""
+    print(_STRATEGY_SANDBOX_BANNER)
+    from paper_trading.small_capital_strategy.strategy_sandbox_report_v192 import export_sandbox_summary_as_json
+    result = export_sandbox_summary_as_json({})
+    print(f"strategy-sandbox-report: json_length={len(result)}  paper_only=True  sandbox_only=True")
+    print(_STRATEGY_SANDBOX_BANNER)
+
+
+def cmd_strategy_sandbox_dashboard(args=None):
+    """[v1.9.2] Show strategy sandbox dashboard. Research only."""
+    print(_STRATEGY_SANDBOX_BANNER)
+    print(f"strategy-sandbox-dashboard: paper_only=True  sandbox_only=True  no_real_orders=True")
+    print(_STRATEGY_SANDBOX_BANNER)
+
+
+def cmd_strategy_sandbox_export(args=None):
+    """[v1.9.2] Export sandbox evidence pack. Research only."""
+    print(_STRATEGY_SANDBOX_BANNER)
+    print(f"strategy-sandbox-export: paper_only=True  sandbox_only=True  no_real_orders=True")
+    print(_STRATEGY_SANDBOX_BANNER)
+
+
+def cmd_strategy_sandbox_evidence(args=None):
+    """[v1.9.2] Show sandbox evidence pack. Research only."""
+    print(_STRATEGY_SANDBOX_BANNER)
+    print(f"strategy-sandbox-evidence: paper_only=True  sandbox_only=True  no_real_orders=True")
+    print(_STRATEGY_SANDBOX_BANNER)
+
+
+def cmd_strategy_sandbox_audit(args=None):
+    """[v1.9.2] Show sandbox audit trail. Research only."""
+    print(_STRATEGY_SANDBOX_BANNER)
+    print(f"strategy-sandbox-audit: paper_only=True  sandbox_only=True  no_real_orders=True")
+    print(_STRATEGY_SANDBOX_BANNER)
+
+
+def cmd_strategy_sandbox_health(args=None):
+    """[v1.9.2] Run strategy sandbox health check. Research only."""
+    print(_STRATEGY_SANDBOX_BANNER)
+    from paper_trading.small_capital_strategy.strategy_sandbox_health_v192 import run_health_check
+    result = run_health_check()
+    print(f"strategy-sandbox-health: status={result.status}  passed={result.passed}/{result.total}  failed={result.failed}")
+    print(_STRATEGY_SANDBOX_BANNER)
+
+
+def cmd_strategy_sandbox_gate(args=None):
+    """[v1.9.2] Run strategy sandbox release gate. Research only."""
+    print(_STRATEGY_SANDBOX_BANNER)
+    from release.strategy_sandbox_release_gate_v192 import run_release_gate
+    result = run_release_gate()
+    print(f"strategy-sandbox-gate: gate_passed={result['gate_passed']}  passed={result['passed']}/{result['total']}  failed={result['failed']}")
+    print(_STRATEGY_SANDBOX_BANNER)
+
+
+def cmd_strategy_sandbox_scenarios(args=None):
+    """[v1.9.2] List sandbox scenarios. Research only."""
+    print(_STRATEGY_SANDBOX_BANNER)
+    from paper_trading.small_capital_strategy.strategy_sandbox_scenarios_v192 import get_all_scenarios
+    scenarios = get_all_scenarios()
+    print(f"strategy-sandbox-scenarios: count={len(scenarios)}  paper_only=True  sandbox_only=True")
+    print(_STRATEGY_SANDBOX_BANNER)
+
+
+def cmd_strategy_sandbox_fixtures(args=None):
+    """[v1.9.2] List sandbox fixtures. Research only."""
+    print(_STRATEGY_SANDBOX_BANNER)
+    from paper_trading.small_capital_strategy.strategy_sandbox_fixtures_v192 import get_all_fixtures
+    fixtures = get_all_fixtures()
+    print(f"strategy-sandbox-fixtures: count={len(fixtures)}  paper_only=True  sandbox_only=True")
+    print(_STRATEGY_SANDBOX_BANNER)
+
+
+def cmd_strategy_sandbox_safety_audit(args=None):
+    """[v1.9.2] Run strategy sandbox safety audit. Research only."""
+    print(_STRATEGY_SANDBOX_BANNER)
+    from paper_trading.small_capital_strategy.strategy_sandbox_safety_v192 import run_safety_audit
+    result = run_safety_audit()
+    print(f"strategy-sandbox-safety-audit: all_safe={result['all_safe']}  paper_only=True  sandbox_only=True")
+    print(_STRATEGY_SANDBOX_BANNER)
+
+
 def cmd_paper_strategy_health(args=None):
     """[v1.6.2] Paper strategy orchestration health check. Research only."""
     print(_STRATEGY_SAFETY_BANNER)
@@ -44172,6 +44337,26 @@ def main() -> None:
         "strategy-tuning-scenarios":           cmd_strategy_tuning_scenarios,
         "strategy-tuning-fixtures":            cmd_strategy_tuning_fixtures,
         "strategy-tuning-safety-audit":        cmd_strategy_tuning_safety_audit,
+        "strategy-sandbox-version":            cmd_strategy_sandbox_version,
+        "strategy-sandbox-run":                cmd_strategy_sandbox_run,
+        "strategy-sandbox-compare":            cmd_strategy_sandbox_compare,
+        "strategy-sandbox-shadow":             cmd_strategy_sandbox_shadow,
+        "strategy-sandbox-rules":              cmd_strategy_sandbox_rules,
+        "strategy-sandbox-guardrails":         cmd_strategy_sandbox_guardrails,
+        "strategy-sandbox-abc":                cmd_strategy_sandbox_abc,
+        "strategy-sandbox-position-sizing":    cmd_strategy_sandbox_position_sizing,
+        "strategy-sandbox-cash-reserve":       cmd_strategy_sandbox_cash_reserve,
+        "strategy-sandbox-concentration":      cmd_strategy_sandbox_concentration,
+        "strategy-sandbox-report":             cmd_strategy_sandbox_report,
+        "strategy-sandbox-dashboard":          cmd_strategy_sandbox_dashboard,
+        "strategy-sandbox-export":             cmd_strategy_sandbox_export,
+        "strategy-sandbox-evidence":           cmd_strategy_sandbox_evidence,
+        "strategy-sandbox-audit":              cmd_strategy_sandbox_audit,
+        "strategy-sandbox-health":             cmd_strategy_sandbox_health,
+        "strategy-sandbox-gate":               cmd_strategy_sandbox_gate,
+        "strategy-sandbox-scenarios":          cmd_strategy_sandbox_scenarios,
+        "strategy-sandbox-fixtures":           cmd_strategy_sandbox_fixtures,
+        "strategy-sandbox-safety-audit":       cmd_strategy_sandbox_safety_audit,
     }
 
     if args.command is None:

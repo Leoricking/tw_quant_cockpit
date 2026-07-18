@@ -5156,6 +5156,72 @@ _ST_V191_COMMANDS: _List[CommandSpec] = [
                 introduced_in="1.9.1", safety_classification="RESEARCH_ONLY"),
 ]
 
+# ---------------------------------------------------------------------------
+# v1.9.2 Paper Strategy Rule Sandbox & Shadow Validation Lab commands
+# ---------------------------------------------------------------------------
+_SS_V192_COMMANDS: _List[CommandSpec] = [
+    CommandSpec(name="strategy-sandbox-version", handler_name="cmd_strategy_sandbox_version",
+                help="[Research] Show strategy sandbox version info v1.9.2", group="strategy_sandbox",
+                introduced_in="1.9.2", safety_classification="RESEARCH_ONLY"),
+    CommandSpec(name="strategy-sandbox-run", handler_name="cmd_strategy_sandbox_run",
+                help="[Research] Run paper strategy sandbox validation v1.9.2", group="strategy_sandbox",
+                introduced_in="1.9.2", safety_classification="RESEARCH_ONLY"),
+    CommandSpec(name="strategy-sandbox-compare", handler_name="cmd_strategy_sandbox_compare",
+                help="[Research] Compare baseline vs candidate strategy in sandbox v1.9.2", group="strategy_sandbox",
+                introduced_in="1.9.2", safety_classification="RESEARCH_ONLY"),
+    CommandSpec(name="strategy-sandbox-shadow", handler_name="cmd_strategy_sandbox_shadow",
+                help="[Research] Run shadow validation for candidate strategy v1.9.2", group="strategy_sandbox",
+                introduced_in="1.9.2", safety_classification="RESEARCH_ONLY"),
+    CommandSpec(name="strategy-sandbox-rules", handler_name="cmd_strategy_sandbox_rules",
+                help="[Research] List sandbox rule sets and changes v1.9.2", group="strategy_sandbox",
+                introduced_in="1.9.2", safety_classification="RESEARCH_ONLY"),
+    CommandSpec(name="strategy-sandbox-guardrails", handler_name="cmd_strategy_sandbox_guardrails",
+                help="[Research] Show sandbox guardrail sets v1.9.2", group="strategy_sandbox",
+                introduced_in="1.9.2", safety_classification="RESEARCH_ONLY"),
+    CommandSpec(name="strategy-sandbox-abc", handler_name="cmd_strategy_sandbox_abc",
+                help="[Research] Sandbox A/B/C buy point rule comparison v1.9.2", group="strategy_sandbox",
+                introduced_in="1.9.2", safety_classification="RESEARCH_ONLY"),
+    CommandSpec(name="strategy-sandbox-position-sizing", handler_name="cmd_strategy_sandbox_position_sizing",
+                help="[Research] Sandbox position sizing comparison v1.9.2", group="strategy_sandbox",
+                introduced_in="1.9.2", safety_classification="RESEARCH_ONLY"),
+    CommandSpec(name="strategy-sandbox-cash-reserve", handler_name="cmd_strategy_sandbox_cash_reserve",
+                help="[Research] Sandbox cash reserve comparison v1.9.2", group="strategy_sandbox",
+                introduced_in="1.9.2", safety_classification="RESEARCH_ONLY"),
+    CommandSpec(name="strategy-sandbox-concentration", handler_name="cmd_strategy_sandbox_concentration",
+                help="[Research] Sandbox concentration limit comparison v1.9.2", group="strategy_sandbox",
+                introduced_in="1.9.2", safety_classification="RESEARCH_ONLY"),
+    CommandSpec(name="strategy-sandbox-report", handler_name="cmd_strategy_sandbox_report",
+                help="[Research] Export sandbox validation report v1.9.2", group="strategy_sandbox",
+                introduced_in="1.9.2", safety_classification="RESEARCH_ONLY"),
+    CommandSpec(name="strategy-sandbox-dashboard", handler_name="cmd_strategy_sandbox_dashboard",
+                help="[Research] Show strategy sandbox dashboard v1.9.2", group="strategy_sandbox",
+                introduced_in="1.9.2", safety_classification="RESEARCH_ONLY"),
+    CommandSpec(name="strategy-sandbox-export", handler_name="cmd_strategy_sandbox_export",
+                help="[Research] Export sandbox evidence pack v1.9.2", group="strategy_sandbox",
+                introduced_in="1.9.2", safety_classification="RESEARCH_ONLY"),
+    CommandSpec(name="strategy-sandbox-evidence", handler_name="cmd_strategy_sandbox_evidence",
+                help="[Research] Show sandbox evidence pack v1.9.2", group="strategy_sandbox",
+                introduced_in="1.9.2", safety_classification="RESEARCH_ONLY"),
+    CommandSpec(name="strategy-sandbox-audit", handler_name="cmd_strategy_sandbox_audit",
+                help="[Research] Show sandbox audit trail v1.9.2", group="strategy_sandbox",
+                introduced_in="1.9.2", safety_classification="RESEARCH_ONLY"),
+    CommandSpec(name="strategy-sandbox-health", handler_name="cmd_strategy_sandbox_health",
+                help="[Research] Run strategy sandbox health check v1.9.2", group="strategy_sandbox",
+                introduced_in="1.9.2", safety_classification="RESEARCH_ONLY"),
+    CommandSpec(name="strategy-sandbox-gate", handler_name="cmd_strategy_sandbox_gate",
+                help="[Research] Run strategy sandbox release gate v1.9.2", group="strategy_sandbox",
+                introduced_in="1.9.2", safety_classification="RESEARCH_ONLY"),
+    CommandSpec(name="strategy-sandbox-scenarios", handler_name="cmd_strategy_sandbox_scenarios",
+                help="[Research] List strategy sandbox scenarios v1.9.2", group="strategy_sandbox",
+                introduced_in="1.9.2", safety_classification="RESEARCH_ONLY"),
+    CommandSpec(name="strategy-sandbox-fixtures", handler_name="cmd_strategy_sandbox_fixtures",
+                help="[Research] List strategy sandbox fixtures v1.9.2", group="strategy_sandbox",
+                introduced_in="1.9.2", safety_classification="RESEARCH_ONLY"),
+    CommandSpec(name="strategy-sandbox-safety-audit", handler_name="cmd_strategy_sandbox_safety_audit",
+                help="[Research] Run strategy sandbox safety audit v1.9.2", group="strategy_sandbox",
+                introduced_in="1.9.2", safety_classification="RESEARCH_ONLY"),
+]
+
 PROVIDER_COMMANDS: _List[CommandSpec] = (
     _RESEARCH_FOUNDATION_COMMANDS
     + _TWSE_COMMANDS
@@ -5203,6 +5269,7 @@ PROVIDER_COMMANDS: _List[CommandSpec] = (
     + _DJ_V189_COMMANDS
     + _DP_V190_COMMANDS
     + _ST_V191_COMMANDS
+    + _SS_V192_COMMANDS
 )
 
 

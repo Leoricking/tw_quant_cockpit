@@ -16,8 +16,8 @@ Headless-safe: no tkinter at module level. Renders to dict.
 from __future__ import annotations
 from typing import Any, Dict, List, Optional
 
-PANEL_VERSION = "1.9.1"
-PANEL_TITLE = "Small Capital Strategy v1.9.1 — Paper Strategy Rule Tuning & Guardrail Lab"
+PANEL_VERSION = "1.9.2"
+PANEL_TITLE = "Small Capital Strategy v1.9.2 — Paper Strategy Rule Sandbox & Shadow Validation Lab"
 
 # v1.7.0 tabs (preserved unchanged)
 _TABS_V170 = [
@@ -270,6 +270,15 @@ _TABS_V191_STRATEGY_TUNING = [
 
 assert len(_TABS_V191_STRATEGY_TUNING) == 3, f"Expected 3 strategy tuning tabs, got {len(_TABS_V191_STRATEGY_TUNING)}"
 
+# v1.9.2 Paper Strategy Rule Sandbox & Shadow Validation Lab tabs
+_TABS_V192_STRATEGY_SANDBOX = [
+    "strategy_sandbox",
+    "shadow_validation",
+    "rule_comparison",
+]
+
+assert len(_TABS_V192_STRATEGY_SANDBOX) == 3, f"Expected 3 strategy sandbox tabs, got {len(_TABS_V192_STRATEGY_SANDBOX)}"
+
 _TABS = (
     _TABS_V170
     + _TABS_V171_WATCHLIST
@@ -293,6 +302,7 @@ _TABS = (
     + ["decision_journal", "daily_review"]  # v1.8.9: weekly_review already present from v1.7.6
     + _TABS_V190_PERFORMANCE_REVIEW
     + _TABS_V191_STRATEGY_TUNING
+    + _TABS_V192_STRATEGY_SANDBOX
 )
 
 assert len(_TABS_V170) == 22, f"Expected 22 v1.7.0 tabs, got {len(_TABS_V170)}"
@@ -1538,6 +1548,10 @@ def render_all_tabs() -> Dict[str, Any]:
         "strategy_rule_tuning":              render_strategy_rule_tuning_tab,
         "guardrail_review":                  render_guardrail_review_tab,
         "rule_recommendations":              render_rule_recommendations_tab,
+        # v1.9.2 Paper Strategy Rule Sandbox & Shadow Validation Lab tabs
+        "strategy_sandbox":                  render_strategy_sandbox_tab,
+        "shadow_validation":                 render_shadow_validation_tab,
+        "rule_comparison":                   render_rule_comparison_tab,
     }
     result = {}
     for tab_name in _TABS:
@@ -3252,6 +3266,77 @@ def render_rule_recommendations_tab() -> Dict[str, Any]:
 def get_strategy_tuning_tab_names() -> List[str]:
     """Return list of v1.9.1 strategy tuning tab names."""
     return list(_TABS_V191_STRATEGY_TUNING)
+
+
+def render_strategy_sandbox_tab() -> Dict[str, Any]:
+    """Render strategy sandbox tab data (headless-safe, sandbox-only)."""
+    return {
+        "tab": "strategy_sandbox",
+        "version": PANEL_VERSION,
+        "release_name": "Paper Strategy Rule Sandbox & Shadow Validation Lab",
+        "description": "Strategy Sandbox: validate rule changes in sandbox before paper approval.",
+        "paper_only": True,
+        "research_only": True,
+        "sandbox_only": True,
+        "shadow_only": True,
+        "no_real_orders": True,
+        "no_broker": True,
+        "no_production_strategy_mutation": True,
+        "no_live_strategy_activation": True,
+        "not_investment_advice": True,
+        "production_trading_blocked": True,
+        "empty_state": "No sandbox data. Run strategy-sandbox-run to populate.",
+        "schema_version": "192",
+    }
+
+
+def render_shadow_validation_tab() -> Dict[str, Any]:
+    """Render shadow validation tab data (headless-safe, shadow-only)."""
+    return {
+        "tab": "shadow_validation",
+        "version": PANEL_VERSION,
+        "release_name": "Paper Strategy Rule Sandbox & Shadow Validation Lab",
+        "description": "Shadow Validation: baseline vs candidate comparison across 20 dimensions.",
+        "paper_only": True,
+        "research_only": True,
+        "sandbox_only": True,
+        "shadow_only": True,
+        "no_real_orders": True,
+        "no_broker": True,
+        "no_production_strategy_mutation": True,
+        "no_live_strategy_activation": True,
+        "not_investment_advice": True,
+        "production_trading_blocked": True,
+        "empty_state": "No shadow validation data. Run strategy-sandbox-shadow to populate.",
+        "schema_version": "192",
+    }
+
+
+def render_rule_comparison_tab() -> Dict[str, Any]:
+    """Render rule comparison tab data (headless-safe, sandbox-only)."""
+    return {
+        "tab": "rule_comparison",
+        "version": PANEL_VERSION,
+        "release_name": "Paper Strategy Rule Sandbox & Shadow Validation Lab",
+        "description": "Rule Comparison: baseline vs candidate rule sets, guardrails, position sizing.",
+        "paper_only": True,
+        "research_only": True,
+        "sandbox_only": True,
+        "shadow_only": True,
+        "no_real_orders": True,
+        "no_broker": True,
+        "no_production_strategy_mutation": True,
+        "no_live_strategy_activation": True,
+        "not_investment_advice": True,
+        "production_trading_blocked": True,
+        "empty_state": "No rule comparison data. Run strategy-sandbox-compare to populate.",
+        "schema_version": "192",
+    }
+
+
+def get_sandbox_tab_names() -> List[str]:
+    """Return list of v1.9.2 strategy sandbox tab names."""
+    return list(_TABS_V192_STRATEGY_SANDBOX)
 
 
 def get_panel_info() -> Dict[str, Any]:

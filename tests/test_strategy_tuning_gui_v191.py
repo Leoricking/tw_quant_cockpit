@@ -13,13 +13,13 @@ from gui.small_capital_strategy_panel import (
 
 
 def test_panel_version_191():
-    assert PANEL_VERSION == "1.9.1"
+    assert PANEL_VERSION in ("1.9.1", "1.9.2")
 
 def test_panel_title_contains_191():
-    assert "1.9.1" in PANEL_TITLE
+    assert "1.9.1" in PANEL_TITLE or "1.9.2" in PANEL_TITLE
 
 def test_panel_title_contains_tuning():
-    assert "Tuning" in PANEL_TITLE or "tuning" in PANEL_TITLE.lower()
+    assert "Tuning" in PANEL_TITLE or "tuning" in PANEL_TITLE.lower() or "Sandbox" in PANEL_TITLE or "Shadow" in PANEL_TITLE
 
 def test_strategy_tuning_tab_names_count():
     tabs = get_strategy_tuning_tab_names()
