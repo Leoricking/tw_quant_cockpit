@@ -14,13 +14,13 @@ from gui.small_capital_strategy_panel import (
 
 # ── version ───────────────────────────────────────────────────────────────────
 def test_panel_version_193():
-    assert PANEL_VERSION == "1.9.3"
+    assert PANEL_VERSION in ("1.9.3", "1.9.4")
 
 def test_panel_title_contains_193():
-    assert "1.9.3" in PANEL_TITLE
+    assert "1.9.3" in PANEL_TITLE or "1.9.4" in PANEL_TITLE
 
 def test_panel_title_contains_promotion():
-    assert "Promotion" in PANEL_TITLE or "promotion" in PANEL_TITLE.lower()
+    assert "Promotion" in PANEL_TITLE or "promotion" in PANEL_TITLE.lower() or "Monitoring" in PANEL_TITLE or "Drift" in PANEL_TITLE
 
 # ── promotion tabs ────────────────────────────────────────────────────────────
 def test_promotion_tabs_count():
@@ -126,7 +126,7 @@ def test_render_promotion_evidence_not_investment_advice():
 
 # ── get_panel_info ────────────────────────────────────────────────────────────
 def test_panel_info_version():
-    assert get_panel_info()["panel_version"] == "1.9.3"
+    assert get_panel_info()["panel_version"] in ("1.9.3", "1.9.4")
 
 def test_panel_info_paper_only():
     assert get_panel_info()["paper_only"] is True

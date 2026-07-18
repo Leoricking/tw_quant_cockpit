@@ -42055,6 +42055,171 @@ def cmd_strategy_promotion_safety_audit(args=None):
     print(_STRATEGY_PROMOTION_BANNER)
 
 
+_STRATEGY_MONITORING_BANNER = "[!] RESEARCH ONLY — PAPER ONLY — MONITORING ONLY — DRIFT DETECTION ONLY — NOT INVESTMENT ADVICE"
+
+
+def cmd_strategy_monitoring_version(args=None):
+    """[v1.9.4] Show strategy monitoring version. Research only."""
+    print(_STRATEGY_MONITORING_BANNER)
+    from paper_trading.small_capital_strategy.strategy_monitoring_version_v194 import get_version_info
+    info = get_version_info()
+    print(f"strategy-monitoring-version: {info['version']}  schema={info['schema_version']}  paper_only=True  monitoring_only=True")
+    print(_STRATEGY_MONITORING_BANNER)
+
+
+def cmd_strategy_monitoring_run(args=None):
+    """[v1.9.4] Run strategy monitoring. Research only."""
+    print(_STRATEGY_MONITORING_BANNER)
+    from paper_trading.small_capital_strategy.strategy_monitoring_engine_v194 import get_engine_info
+    info = get_engine_info()
+    print(f"strategy-monitoring-run: version={info['version']}  paper_only=True  monitoring_only=True")
+    print(_STRATEGY_MONITORING_BANNER)
+
+
+def cmd_strategy_monitoring_drift(args=None):
+    """[v1.9.4] Run drift detection. Research only."""
+    print(_STRATEGY_MONITORING_BANNER)
+    from paper_trading.small_capital_strategy.strategy_monitoring_version_v194 import get_drift_categories
+    cats = get_drift_categories()
+    print(f"strategy-monitoring-drift: drift_categories={len(cats)}  paper_only=True  drift_detection_only=True")
+    print(_STRATEGY_MONITORING_BANNER)
+
+
+def cmd_strategy_monitoring_package(args=None):
+    """[v1.9.4] Build monitoring package snapshot. Research only."""
+    print(_STRATEGY_MONITORING_BANNER)
+    from paper_trading.small_capital_strategy.strategy_monitoring_engine_v194 import build_monitoring_package_snapshot
+    result = build_monitoring_package_snapshot("", "", "")
+    print(f"strategy-monitoring-package: blocked={result['blocked']}  paper_only=True  monitoring_only=True")
+    print(_STRATEGY_MONITORING_BANNER)
+
+
+def cmd_strategy_monitoring_rules(args=None):
+    """[v1.9.4] List monitoring rule snapshots. Research only."""
+    print(_STRATEGY_MONITORING_BANNER)
+    from paper_trading.small_capital_strategy.strategy_monitoring_models_v194 import MonitoringRuleSnapshot
+    snap = MonitoringRuleSnapshot()
+    print(f"strategy-monitoring-rules: monitoring_only={snap.monitoring_only}  paper_only=True")
+    print(_STRATEGY_MONITORING_BANNER)
+
+
+def cmd_strategy_monitoring_window(args=None):
+    """[v1.9.4] Show monitoring window. Research only."""
+    print(_STRATEGY_MONITORING_BANNER)
+    from paper_trading.small_capital_strategy.strategy_monitoring_models_v194 import MonitoringWindow
+    win = MonitoringWindow()
+    print(f"strategy-monitoring-window: monitoring_only={win.monitoring_only}  paper_only=True")
+    print(_STRATEGY_MONITORING_BANNER)
+
+
+def cmd_strategy_monitoring_alerts(args=None):
+    """[v1.9.4] List monitoring review alerts. Research only."""
+    print(_STRATEGY_MONITORING_BANNER)
+    from paper_trading.small_capital_strategy.strategy_monitoring_models_v194 import MonitoringReviewAlert
+    alert = MonitoringReviewAlert()
+    print(f"strategy-monitoring-alerts: paper_only={alert.paper_only}  review_only={alert.review_only}")
+    print(_STRATEGY_MONITORING_BANNER)
+
+
+def cmd_strategy_monitoring_rollback(args=None):
+    """[v1.9.4] Build rollback alert. Research only."""
+    print(_STRATEGY_MONITORING_BANNER)
+    from paper_trading.small_capital_strategy.strategy_monitoring_engine_v194 import build_rollback_alert
+    result = build_rollback_alert("", "")
+    print(f"strategy-monitoring-rollback: blocked={result['blocked']}  auto_rollback=False  paper_only=True")
+    print(_STRATEGY_MONITORING_BANNER)
+
+
+def cmd_strategy_monitoring_report(args=None):
+    """[v1.9.4] Export monitoring summary report. Research only."""
+    print(_STRATEGY_MONITORING_BANNER)
+    from paper_trading.small_capital_strategy.strategy_monitoring_report_v194 import export_monitoring_summary
+    result = export_monitoring_summary("DEMO-MON-001")
+    print(f"strategy-monitoring-report: valid={result['valid']}  paper_only=True  report_only=True")
+    print(_STRATEGY_MONITORING_BANNER)
+
+
+def cmd_strategy_monitoring_dashboard(args=None):
+    """[v1.9.4] Build monitoring dashboard. Research only."""
+    print(_STRATEGY_MONITORING_BANNER)
+    from paper_trading.small_capital_strategy.strategy_monitoring_engine_v194 import build_monitoring_dashboard
+    result = build_monitoring_dashboard("", "MON-001")
+    print(f"strategy-monitoring-dashboard: blocked={result['blocked']}  paper_only=True")
+    print(_STRATEGY_MONITORING_BANNER)
+
+
+def cmd_strategy_monitoring_export(args=None):
+    """[v1.9.4] Export full monitoring pack. Research only."""
+    print(_STRATEGY_MONITORING_BANNER)
+    from paper_trading.small_capital_strategy.strategy_monitoring_report_v194 import export_full_monitoring_pack
+    result = export_full_monitoring_pack("DEMO-MON-001")
+    print(f"strategy-monitoring-export: valid={result['valid']}  paper_only=True  report_only=True")
+    print(_STRATEGY_MONITORING_BANNER)
+
+
+def cmd_strategy_monitoring_evidence(args=None):
+    """[v1.9.4] Build monitoring evidence pack. Research only."""
+    print(_STRATEGY_MONITORING_BANNER)
+    from paper_trading.small_capital_strategy.strategy_monitoring_engine_v194 import build_monitoring_evidence_pack
+    result = build_monitoring_evidence_pack("", "MON-001")
+    print(f"strategy-monitoring-evidence: blocked={result['blocked']}  paper_only=True  audit_only=True")
+    print(_STRATEGY_MONITORING_BANNER)
+
+
+def cmd_strategy_monitoring_audit(args=None):
+    """[v1.9.4] Build monitoring audit trail. Research only."""
+    print(_STRATEGY_MONITORING_BANNER)
+    from paper_trading.small_capital_strategy.strategy_monitoring_engine_v194 import build_monitoring_audit_trail
+    result = build_monitoring_audit_trail("", "MON-001")
+    print(f"strategy-monitoring-audit: blocked={result['blocked']}  paper_only=True  audit_only=True")
+    print(_STRATEGY_MONITORING_BANNER)
+
+
+def cmd_strategy_monitoring_health(args=None):
+    """[v1.9.4] Run strategy monitoring health check. Research only."""
+    print(_STRATEGY_MONITORING_BANNER)
+    from paper_trading.small_capital_strategy.strategy_monitoring_health_v194 import run_health_check
+    result = run_health_check()
+    print(f"strategy-monitoring-health: {result['passed']}/{result['total']} passed  all_passed={result['all_passed']}")
+    print(_STRATEGY_MONITORING_BANNER)
+
+
+def cmd_strategy_monitoring_gate(args=None):
+    """[v1.9.4] Run strategy monitoring release gate. Research only."""
+    print(_STRATEGY_MONITORING_BANNER)
+    from release.strategy_monitoring_release_gate_v194 import run_release_gate
+    result = run_release_gate()
+    print(f"strategy-monitoring-gate: {result['passed_count']}/{result['total']} passed  gate_passed={result['gate_passed']}")
+    print(_STRATEGY_MONITORING_BANNER)
+
+
+def cmd_strategy_monitoring_scenarios(args=None):
+    """[v1.9.4] List monitoring scenarios. Research only."""
+    print(_STRATEGY_MONITORING_BANNER)
+    from paper_trading.small_capital_strategy.strategy_monitoring_scenarios_v194 import get_all_scenarios
+    scenarios = get_all_scenarios()
+    print(f"strategy-monitoring-scenarios: count={len(scenarios)}  paper_only=True  monitoring_only=True")
+    print(_STRATEGY_MONITORING_BANNER)
+
+
+def cmd_strategy_monitoring_fixtures(args=None):
+    """[v1.9.4] List monitoring fixtures. Research only."""
+    print(_STRATEGY_MONITORING_BANNER)
+    from paper_trading.small_capital_strategy.strategy_monitoring_fixtures_v194 import get_all_fixtures
+    fixtures = get_all_fixtures()
+    print(f"strategy-monitoring-fixtures: count={len(fixtures)}  paper_only=True  monitoring_only=True")
+    print(_STRATEGY_MONITORING_BANNER)
+
+
+def cmd_strategy_monitoring_safety_audit(args=None):
+    """[v1.9.4] Run strategy monitoring safety audit. Research only."""
+    print(_STRATEGY_MONITORING_BANNER)
+    from paper_trading.small_capital_strategy.strategy_monitoring_safety_v194 import run_safety_audit
+    result = run_safety_audit()
+    print(f"strategy-monitoring-safety-audit: all_safe={result['all_safe']}  paper_only=True  monitoring_only=True")
+    print(_STRATEGY_MONITORING_BANNER)
+
+
 def cmd_paper_strategy_health(args=None):
     """[v1.6.2] Paper strategy orchestration health check. Research only."""
     print(_STRATEGY_SAFETY_BANNER)
@@ -44517,6 +44682,25 @@ def main() -> None:
         "strategy-promotion-rollback-validate": cmd_strategy_promotion_rollback_validate,
         "strategy-promotion-approval-state":   cmd_strategy_promotion_approval_state,
         "strategy-promotion-safety-audit":     cmd_strategy_promotion_safety_audit,
+        # v1.9.4 strategy monitoring commands
+        "strategy-monitoring-version":         cmd_strategy_monitoring_version,
+        "strategy-monitoring-run":             cmd_strategy_monitoring_run,
+        "strategy-monitoring-drift":           cmd_strategy_monitoring_drift,
+        "strategy-monitoring-package":         cmd_strategy_monitoring_package,
+        "strategy-monitoring-rules":           cmd_strategy_monitoring_rules,
+        "strategy-monitoring-window":          cmd_strategy_monitoring_window,
+        "strategy-monitoring-alerts":          cmd_strategy_monitoring_alerts,
+        "strategy-monitoring-rollback":        cmd_strategy_monitoring_rollback,
+        "strategy-monitoring-report":          cmd_strategy_monitoring_report,
+        "strategy-monitoring-dashboard":       cmd_strategy_monitoring_dashboard,
+        "strategy-monitoring-export":          cmd_strategy_monitoring_export,
+        "strategy-monitoring-evidence":        cmd_strategy_monitoring_evidence,
+        "strategy-monitoring-audit":           cmd_strategy_monitoring_audit,
+        "strategy-monitoring-health":          cmd_strategy_monitoring_health,
+        "strategy-monitoring-gate":            cmd_strategy_monitoring_gate,
+        "strategy-monitoring-scenarios":       cmd_strategy_monitoring_scenarios,
+        "strategy-monitoring-fixtures":        cmd_strategy_monitoring_fixtures,
+        "strategy-monitoring-safety-audit":    cmd_strategy_monitoring_safety_audit,
     }
 
     if args.command is None:

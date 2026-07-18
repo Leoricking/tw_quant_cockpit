@@ -18,15 +18,15 @@ from gui.small_capital_strategy_panel import (
 
 
 def test_panel_version_is_189():
-    assert PANEL_VERSION in ("1.8.9", "1.9.0", "1.9.1", "1.9.2", "1.9.3")
+    assert PANEL_VERSION in ("1.8.9", "1.9.0", "1.9.1", "1.9.2", "1.9.3", "1.9.4")
 
 
 def test_panel_title_contains_189():
-    assert "1.8.9" in PANEL_TITLE or "1.9.0" in PANEL_TITLE or "1.9.1" in PANEL_TITLE or "1.9.2" in PANEL_TITLE or "1.9.3" in PANEL_TITLE
+    assert "1.8.9" in PANEL_TITLE or "1.9.0" in PANEL_TITLE or "1.9.1" in PANEL_TITLE or "1.9.2" in PANEL_TITLE or "1.9.3" in PANEL_TITLE or "1.9.4" in PANEL_TITLE
 
 
 def test_panel_title_contains_journal():
-    assert "Journal" in PANEL_TITLE or "journal" in PANEL_TITLE.lower() or "Performance" in PANEL_TITLE or "Tuning" in PANEL_TITLE or "Sandbox" in PANEL_TITLE or "Promotion" in PANEL_TITLE or "Rollback" in PANEL_TITLE
+    assert "Journal" in PANEL_TITLE or "journal" in PANEL_TITLE.lower() or "Performance" in PANEL_TITLE or "Tuning" in PANEL_TITLE or "Sandbox" in PANEL_TITLE or "Promotion" in PANEL_TITLE or "Rollback" in PANEL_TITLE or "Monitoring" in PANEL_TITLE or "Drift" in PANEL_TITLE
 
 
 def test_decision_journal_tabs_count():
@@ -172,7 +172,7 @@ def test_get_panel_info_returns_dict():
 
 
 def test_get_panel_info_panel_version():
-    assert get_panel_info()["panel_version"] in ("1.8.9", "1.9.0", "1.9.1", "1.9.2", "1.9.3")
+    assert get_panel_info()["panel_version"] in ("1.8.9", "1.9.0", "1.9.1", "1.9.2", "1.9.3", "1.9.4")
 
 
 def test_get_panel_info_headless_safe():

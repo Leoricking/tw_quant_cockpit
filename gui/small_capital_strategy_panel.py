@@ -16,8 +16,8 @@ Headless-safe: no tkinter at module level. Renders to dict.
 from __future__ import annotations
 from typing import Any, Dict, List, Optional
 
-PANEL_VERSION = "1.9.3"
-PANEL_TITLE = "Small Capital Strategy v1.9.3 — Paper Strategy Promotion Package & Rollback Plan Lab"
+PANEL_VERSION = "1.9.4"
+PANEL_TITLE = "Small Capital Strategy v1.9.4 — Paper Strategy Monitoring & Drift Detection Lab"
 
 # v1.7.0 tabs (preserved unchanged)
 _TABS_V170 = [
@@ -288,6 +288,15 @@ _TABS_V193_STRATEGY_PROMOTION = [
 
 assert len(_TABS_V193_STRATEGY_PROMOTION) == 3, f"Expected 3 strategy promotion tabs, got {len(_TABS_V193_STRATEGY_PROMOTION)}"
 
+# v1.9.4 Paper Strategy Monitoring & Drift Detection Lab tabs
+_TABS_V194_STRATEGY_MONITORING = [
+    "strategy_monitoring",
+    "drift_detection",
+    "rollback_alerts",
+]
+
+assert len(_TABS_V194_STRATEGY_MONITORING) == 3, f"Expected 3 strategy monitoring tabs, got {len(_TABS_V194_STRATEGY_MONITORING)}"
+
 _TABS = (
     _TABS_V170
     + _TABS_V171_WATCHLIST
@@ -313,6 +322,7 @@ _TABS = (
     + _TABS_V191_STRATEGY_TUNING
     + _TABS_V192_STRATEGY_SANDBOX
     + _TABS_V193_STRATEGY_PROMOTION
+    + _TABS_V194_STRATEGY_MONITORING
 )
 
 assert len(_TABS_V170) == 22, f"Expected 22 v1.7.0 tabs, got {len(_TABS_V170)}"
@@ -1566,6 +1576,10 @@ def render_all_tabs() -> Dict[str, Any]:
         "strategy_promotion":                render_strategy_promotion_tab,
         "rollback_plan":                     render_rollback_plan_tab,
         "promotion_evidence":                render_promotion_evidence_tab,
+        # v1.9.4 Paper Strategy Monitoring & Drift Detection Lab tabs
+        "strategy_monitoring":               render_strategy_monitoring_tab,
+        "drift_detection":                   render_drift_detection_tab,
+        "rollback_alerts":                   render_rollback_alerts_tab,
     }
     result = {}
     for tab_name in _TABS:
@@ -3422,6 +3436,79 @@ def render_promotion_evidence_tab() -> Dict[str, Any]:
 def get_promotion_tab_names() -> List[str]:
     """Return list of v1.9.3 strategy promotion tab names."""
     return list(_TABS_V193_STRATEGY_PROMOTION)
+
+
+def render_strategy_monitoring_tab() -> Dict[str, Any]:
+    """Render strategy monitoring tab data (headless-safe, monitoring-only)."""
+    return {
+        "tab": "strategy_monitoring",
+        "version": PANEL_VERSION,
+        "release_name": "Paper Strategy Monitoring & Drift Detection Lab",
+        "description": "Strategy Monitoring: track promoted paper packages for performance drift and risk changes.",
+        "paper_only": True,
+        "research_only": True,
+        "monitoring_only": True,
+        "drift_detection_only": True,
+        "no_real_orders": True,
+        "no_broker": True,
+        "no_production_strategy_mutation": True,
+        "no_live_strategy_activation": True,
+        "not_investment_advice": True,
+        "production_trading_blocked": True,
+        "empty_state": "No monitoring data. Run strategy-monitoring-run to populate.",
+        "schema_version": "194",
+    }
+
+
+def render_drift_detection_tab() -> Dict[str, Any]:
+    """Render drift detection tab data (headless-safe, drift-detection-only)."""
+    return {
+        "tab": "drift_detection",
+        "version": PANEL_VERSION,
+        "release_name": "Paper Strategy Monitoring & Drift Detection Lab",
+        "description": "Drift Detection: compare baseline vs current snapshots across 17 drift dimensions.",
+        "paper_only": True,
+        "research_only": True,
+        "monitoring_only": True,
+        "drift_detection_only": True,
+        "no_real_orders": True,
+        "no_broker": True,
+        "no_production_strategy_mutation": True,
+        "no_live_strategy_activation": True,
+        "not_investment_advice": True,
+        "production_trading_blocked": True,
+        "empty_state": "No drift data. Run strategy-monitoring-drift to populate.",
+        "schema_version": "194",
+    }
+
+
+def render_rollback_alerts_tab() -> Dict[str, Any]:
+    """Render rollback alerts tab data (headless-safe, rollback-trigger-only)."""
+    return {
+        "tab": "rollback_alerts",
+        "version": PANEL_VERSION,
+        "release_name": "Paper Strategy Monitoring & Drift Detection Lab",
+        "description": "Rollback Alerts: review alerts triggered by monitoring drift; no automatic rollback.",
+        "paper_only": True,
+        "research_only": True,
+        "monitoring_only": True,
+        "rollback_trigger_only": True,
+        "no_real_orders": True,
+        "no_broker": True,
+        "no_production_strategy_mutation": True,
+        "no_live_strategy_activation": True,
+        "not_investment_advice": True,
+        "production_trading_blocked": True,
+        "auto_rollback": False,
+        "requires_manual_review": True,
+        "empty_state": "No rollback alerts. Run strategy-monitoring-rollback to populate.",
+        "schema_version": "194",
+    }
+
+
+def get_monitoring_tab_names() -> List[str]:
+    """Return list of v1.9.4 strategy monitoring tab names."""
+    return list(_TABS_V194_STRATEGY_MONITORING)
 
 
 def get_panel_info() -> Dict[str, Any]:

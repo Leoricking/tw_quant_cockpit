@@ -5279,6 +5279,63 @@ _SP_V193_COMMANDS: _List[CommandSpec] = [
                 introduced_in="1.9.3", safety_classification="RESEARCH_ONLY"),
 ]
 
+_SM_V194_COMMANDS: _List[CommandSpec] = [
+    CommandSpec(name="strategy-monitoring-version", handler_name="cmd_strategy_monitoring_version",
+                help="[Research] Show strategy monitoring version v1.9.4", group="strategy_monitoring",
+                introduced_in="1.9.4", safety_classification="RESEARCH_ONLY"),
+    CommandSpec(name="strategy-monitoring-run", handler_name="cmd_strategy_monitoring_run",
+                help="[Research] Run strategy monitoring v1.9.4", group="strategy_monitoring",
+                introduced_in="1.9.4", safety_classification="RESEARCH_ONLY"),
+    CommandSpec(name="strategy-monitoring-drift", handler_name="cmd_strategy_monitoring_drift",
+                help="[Research] Run drift detection v1.9.4", group="strategy_monitoring",
+                introduced_in="1.9.4", safety_classification="RESEARCH_ONLY"),
+    CommandSpec(name="strategy-monitoring-package", handler_name="cmd_strategy_monitoring_package",
+                help="[Research] Build monitoring package snapshot v1.9.4", group="strategy_monitoring",
+                introduced_in="1.9.4", safety_classification="RESEARCH_ONLY"),
+    CommandSpec(name="strategy-monitoring-rules", handler_name="cmd_strategy_monitoring_rules",
+                help="[Research] List monitoring rule snapshots v1.9.4", group="strategy_monitoring",
+                introduced_in="1.9.4", safety_classification="RESEARCH_ONLY"),
+    CommandSpec(name="strategy-monitoring-window", handler_name="cmd_strategy_monitoring_window",
+                help="[Research] Show monitoring window v1.9.4", group="strategy_monitoring",
+                introduced_in="1.9.4", safety_classification="RESEARCH_ONLY"),
+    CommandSpec(name="strategy-monitoring-alerts", handler_name="cmd_strategy_monitoring_alerts",
+                help="[Research] List monitoring review alerts v1.9.4", group="strategy_monitoring",
+                introduced_in="1.9.4", safety_classification="RESEARCH_ONLY"),
+    CommandSpec(name="strategy-monitoring-rollback", handler_name="cmd_strategy_monitoring_rollback",
+                help="[Research] Build rollback alert v1.9.4", group="strategy_monitoring",
+                introduced_in="1.9.4", safety_classification="RESEARCH_ONLY"),
+    CommandSpec(name="strategy-monitoring-report", handler_name="cmd_strategy_monitoring_report",
+                help="[Research] Export monitoring summary report v1.9.4", group="strategy_monitoring",
+                introduced_in="1.9.4", safety_classification="RESEARCH_ONLY"),
+    CommandSpec(name="strategy-monitoring-dashboard", handler_name="cmd_strategy_monitoring_dashboard",
+                help="[Research] Build monitoring dashboard v1.9.4", group="strategy_monitoring",
+                introduced_in="1.9.4", safety_classification="RESEARCH_ONLY"),
+    CommandSpec(name="strategy-monitoring-export", handler_name="cmd_strategy_monitoring_export",
+                help="[Research] Export full monitoring pack v1.9.4", group="strategy_monitoring",
+                introduced_in="1.9.4", safety_classification="RESEARCH_ONLY"),
+    CommandSpec(name="strategy-monitoring-evidence", handler_name="cmd_strategy_monitoring_evidence",
+                help="[Research] Build monitoring evidence pack v1.9.4", group="strategy_monitoring",
+                introduced_in="1.9.4", safety_classification="RESEARCH_ONLY"),
+    CommandSpec(name="strategy-monitoring-audit", handler_name="cmd_strategy_monitoring_audit",
+                help="[Research] Build monitoring audit trail v1.9.4", group="strategy_monitoring",
+                introduced_in="1.9.4", safety_classification="RESEARCH_ONLY"),
+    CommandSpec(name="strategy-monitoring-health", handler_name="cmd_strategy_monitoring_health",
+                help="[Research] Run strategy monitoring health check v1.9.4", group="strategy_monitoring",
+                introduced_in="1.9.4", safety_classification="RESEARCH_ONLY"),
+    CommandSpec(name="strategy-monitoring-gate", handler_name="cmd_strategy_monitoring_gate",
+                help="[Research] Run strategy monitoring release gate v1.9.4", group="strategy_monitoring",
+                introduced_in="1.9.4", safety_classification="RESEARCH_ONLY"),
+    CommandSpec(name="strategy-monitoring-scenarios", handler_name="cmd_strategy_monitoring_scenarios",
+                help="[Research] List monitoring scenarios v1.9.4", group="strategy_monitoring",
+                introduced_in="1.9.4", safety_classification="RESEARCH_ONLY"),
+    CommandSpec(name="strategy-monitoring-fixtures", handler_name="cmd_strategy_monitoring_fixtures",
+                help="[Research] List monitoring fixtures v1.9.4", group="strategy_monitoring",
+                introduced_in="1.9.4", safety_classification="RESEARCH_ONLY"),
+    CommandSpec(name="strategy-monitoring-safety-audit", handler_name="cmd_strategy_monitoring_safety_audit",
+                help="[Research] Run strategy monitoring safety audit v1.9.4", group="strategy_monitoring",
+                introduced_in="1.9.4", safety_classification="RESEARCH_ONLY"),
+]
+
 PROVIDER_COMMANDS: _List[CommandSpec] = (
     _RESEARCH_FOUNDATION_COMMANDS
     + _TWSE_COMMANDS
@@ -5328,6 +5385,7 @@ PROVIDER_COMMANDS: _List[CommandSpec] = (
     + _ST_V191_COMMANDS
     + _SS_V192_COMMANDS
     + _SP_V193_COMMANDS
+    + _SM_V194_COMMANDS
 )
 
 

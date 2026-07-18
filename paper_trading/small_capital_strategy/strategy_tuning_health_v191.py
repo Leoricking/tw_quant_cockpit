@@ -252,7 +252,7 @@ class StrategyTuningHealthCheck:
 
         # ── GUI panel check (1) ───────────────────────────────────────────────
         from gui.small_capital_strategy_panel import PANEL_VERSION
-        self._check("gui_panel_version_191", lambda: PANEL_VERSION in ("1.9.1", "1.9.2", "1.9.3"))
+        self._check("gui_panel_version_191", lambda: PANEL_VERSION in ("1.9.1", "1.9.2", "1.9.3", "1.9.4"))
 
         # ── backward compat (2) ───────────────────────────────────────────────
         self._check("backward_compat_v190_known",
