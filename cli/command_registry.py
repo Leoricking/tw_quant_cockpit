@@ -5543,6 +5543,60 @@ _PG_V198_COMMANDS: _List[CommandSpec] = [
 
 # v1.9.9 Paper Portfolio Risk Report & Position Sizing Policy Lab commands
 # ---------------------------------------------------------------------------
+_PC_V200_COMMANDS: _List[CommandSpec] = [
+    CommandSpec(name="paper-cockpit-version", handler_name="cmd_paper_cockpit_version",
+                help="[Research] Show paper cockpit version v2.0.0", group="paper_cockpit",
+                introduced_in="2.0.0", safety_classification="RESEARCH_ONLY"),
+    CommandSpec(name="paper-cockpit-run", handler_name="cmd_paper_cockpit_run",
+                help="[Research] Run full unified paper cockpit workflow v2.0.0", group="paper_cockpit",
+                introduced_in="2.0.0", safety_classification="RESEARCH_ONLY"),
+    CommandSpec(name="paper-cockpit-watchlist", handler_name="cmd_paper_cockpit_watchlist",
+                help="[Research] Score and validate paper watchlist v2.0.0", group="paper_cockpit",
+                introduced_in="2.0.0", safety_classification="RESEARCH_ONLY"),
+    CommandSpec(name="paper-cockpit-score", handler_name="cmd_paper_cockpit_score",
+                help="[Research] Score candidate signals v2.0.0", group="paper_cockpit",
+                introduced_in="2.0.0", safety_classification="RESEARCH_ONLY"),
+    CommandSpec(name="paper-cockpit-abc-check", handler_name="cmd_paper_cockpit_abc_check",
+                help="[Research] Classify A/B/C entry type v2.0.0", group="paper_cockpit",
+                introduced_in="2.0.0", safety_classification="RESEARCH_ONLY"),
+    CommandSpec(name="paper-cockpit-risk-check", handler_name="cmd_paper_cockpit_risk_check",
+                help="[Research] Run portfolio risk overlay check v2.0.0", group="paper_cockpit",
+                introduced_in="2.0.0", safety_classification="RESEARCH_ONLY"),
+    CommandSpec(name="paper-cockpit-sizing-check", handler_name="cmd_paper_cockpit_sizing_check",
+                help="[Research] Run position sizing policy check v2.0.0", group="paper_cockpit",
+                introduced_in="2.0.0", safety_classification="RESEARCH_ONLY"),
+    CommandSpec(name="paper-cockpit-no-entry", handler_name="cmd_paper_cockpit_no_entry",
+                help="[Research] Evaluate no-entry conditions v2.0.0", group="paper_cockpit",
+                introduced_in="2.0.0", safety_classification="RESEARCH_ONLY"),
+    CommandSpec(name="paper-cockpit-decision-ticket", handler_name="cmd_paper_cockpit_decision_ticket",
+                help="[Research] Generate paper decision ticket v2.0.0", group="paper_cockpit",
+                introduced_in="2.0.0", safety_classification="RESEARCH_ONLY"),
+    CommandSpec(name="paper-cockpit-dashboard", handler_name="cmd_paper_cockpit_dashboard",
+                help="[Research] Build unified cockpit dashboard v2.0.0", group="paper_cockpit",
+                introduced_in="2.0.0", safety_classification="RESEARCH_ONLY"),
+    CommandSpec(name="paper-cockpit-report", handler_name="cmd_paper_cockpit_report",
+                help="[Research] Build cockpit report v2.0.0", group="paper_cockpit",
+                introduced_in="2.0.0", safety_classification="RESEARCH_ONLY"),
+    CommandSpec(name="paper-cockpit-export", handler_name="cmd_paper_cockpit_export",
+                help="[Research] Export cockpit audit pack v2.0.0", group="paper_cockpit",
+                introduced_in="2.0.0", safety_classification="RESEARCH_ONLY"),
+    CommandSpec(name="paper-cockpit-health", handler_name="cmd_paper_cockpit_health",
+                help="[Research] Run paper cockpit health check v2.0.0", group="paper_cockpit",
+                introduced_in="2.0.0", safety_classification="RESEARCH_ONLY"),
+    CommandSpec(name="paper-cockpit-gate", handler_name="cmd_paper_cockpit_gate",
+                help="[Research] Run paper cockpit release gate v2.0.0", group="paper_cockpit",
+                introduced_in="2.0.0", safety_classification="RESEARCH_ONLY"),
+    CommandSpec(name="paper-cockpit-scenarios", handler_name="cmd_paper_cockpit_scenarios",
+                help="[Research] List paper cockpit scenarios v2.0.0", group="paper_cockpit",
+                introduced_in="2.0.0", safety_classification="RESEARCH_ONLY"),
+    CommandSpec(name="paper-cockpit-fixtures", handler_name="cmd_paper_cockpit_fixtures",
+                help="[Research] List paper cockpit fixtures v2.0.0", group="paper_cockpit",
+                introduced_in="2.0.0", safety_classification="RESEARCH_ONLY"),
+    CommandSpec(name="paper-cockpit-safety-audit", handler_name="cmd_paper_cockpit_safety_audit",
+                help="[Research] Run paper cockpit safety audit v2.0.0", group="paper_cockpit",
+                introduced_in="2.0.0", safety_classification="RESEARCH_ONLY"),
+]
+
 _GS_V1910_COMMANDS: _List[CommandSpec] = [
     CommandSpec(name="governance-stack-version", handler_name="cmd_governance_stack_version",
                 help="[Research] Show governance stack version v1.9.10", group="governance_stack",
@@ -5700,7 +5754,8 @@ _SGD_V197_COMMANDS: _List[CommandSpec] = [
 ]
 
 PROVIDER_COMMANDS: _List[CommandSpec] = (
-    _RESEARCH_FOUNDATION_COMMANDS
+    _PC_V200_COMMANDS
+    + _RESEARCH_FOUNDATION_COMMANDS
     + _TWSE_COMMANDS
     + _TPEX_COMMANDS
     + _MOPS_COMMANDS

@@ -16,8 +16,8 @@ Headless-safe: no tkinter at module level. Renders to dict.
 from __future__ import annotations
 from typing import Any, Dict, List, Optional
 
-PANEL_VERSION = "1.9.10"
-PANEL_TITLE = "Small Capital Strategy v1.9.10 — Paper Governance Stack Consolidation & Release Audit"
+PANEL_VERSION = "2.0.0"
+PANEL_TITLE = "Small Capital Strategy v2.0.0 — Paper Cockpit Unified Entry & Strategy Decision Console"
 
 # v1.7.0 tabs (preserved unchanged)
 _TABS_V170 = [
@@ -351,6 +351,15 @@ _TABS_V1910_GOVERNANCE_STACK = [
 
 assert len(_TABS_V1910_GOVERNANCE_STACK) == 3, f"Expected 3 governance stack tabs, got {len(_TABS_V1910_GOVERNANCE_STACK)}"
 
+# v2.0.0 Paper Cockpit Unified Entry & Strategy Decision Console tabs
+_TABS_V200_PAPER_COCKPIT = [
+    "paper_cockpit",
+    "strategy_decision_console",
+    "decision_ticket",
+]
+
+assert len(_TABS_V200_PAPER_COCKPIT) == 3, f"Expected 3 paper cockpit tabs, got {len(_TABS_V200_PAPER_COCKPIT)}"
+
 _TABS = (
     _TABS_V170
     + _TABS_V171_WATCHLIST
@@ -383,6 +392,7 @@ _TABS = (
     + _TABS_V198_PORTFOLIO_GOVERNANCE
     + _TABS_V199_RISK_REPORT
     + _TABS_V1910_GOVERNANCE_STACK
+    + _TABS_V200_PAPER_COCKPIT
 )
 
 assert len(_TABS_V170) == 22, f"Expected 22 v1.7.0 tabs, got {len(_TABS_V170)}"
@@ -1664,6 +1674,10 @@ def render_all_tabs() -> Dict[str, Any]:
         "governance_stack_audit":            render_governance_stack_audit_tab,
         "release_audit":                     render_release_audit_tab,
         "compatibility_summary":             render_compatibility_summary_tab,
+        # v2.0.0 Paper Cockpit Unified Entry & Strategy Decision Console tabs
+        "paper_cockpit":                     render_paper_cockpit_tab,
+        "strategy_decision_console":         render_strategy_decision_console_tab,
+        "decision_ticket":                   render_decision_ticket_tab,
     }
     result = {}
     for tab_name in _TABS:
@@ -4031,6 +4045,76 @@ def render_compatibility_summary_tab() -> Dict[str, Any]:
 def get_governance_stack_tab_names() -> List[str]:
     """Return list of v1.9.10 governance stack tab names."""
     return list(_TABS_V1910_GOVERNANCE_STACK)
+
+
+def render_paper_cockpit_tab() -> Dict[str, Any]:
+    """Render Paper Cockpit tab. v2.0.0."""
+    return {
+        "tab": "paper_cockpit",
+        "paper_only": True,
+        "research_only": True,
+        "simulate_only": True,
+        "unified_paper_cockpit_only": True,
+        "no_real_orders": True,
+        "no_broker": True,
+        "not_investment_advice": True,
+        "human_review_required": True,
+        "production_trading_blocked": True,
+        "cockpit_executes_order": False,
+        "cockpit_mutates_strategy": False,
+        "cockpit_rebalances_real_portfolio": False,
+        "version": PANEL_VERSION,
+        "schema_version": "200",
+        "empty_state": "No cockpit data. Run paper-cockpit-run to populate.",
+        "description": "Unified paper cockpit: watchlist, A/B/C scoring, portfolio risk overlay, position sizing, decision tickets.",
+    }
+
+
+def render_strategy_decision_console_tab() -> Dict[str, Any]:
+    """Render Strategy Decision Console tab. v2.0.0."""
+    return {
+        "tab": "strategy_decision_console",
+        "paper_only": True,
+        "research_only": True,
+        "decision_console_only": True,
+        "no_real_orders": True,
+        "no_broker": True,
+        "not_investment_advice": True,
+        "human_review_required": True,
+        "production_trading_blocked": True,
+        "cockpit_executes_order": False,
+        "cockpit_mutates_strategy": False,
+        "version": PANEL_VERSION,
+        "schema_version": "200",
+        "empty_state": "No decision console data. Run paper-cockpit-dashboard to populate.",
+        "description": "Paper strategy decision console: candidate scoring, A/B/C classification, no-entry conditions, recommendations.",
+    }
+
+
+def render_decision_ticket_tab() -> Dict[str, Any]:
+    """Render Decision Ticket tab. v2.0.0."""
+    return {
+        "tab": "decision_ticket",
+        "paper_only": True,
+        "research_only": True,
+        "no_real_orders": True,
+        "no_broker": True,
+        "not_investment_advice": True,
+        "human_review_required": True,
+        "production_trading_blocked": True,
+        "ticket_triggers_broker": False,
+        "ticket_executes_order": False,
+        "ticket_mutates_strategy": False,
+        "version": PANEL_VERSION,
+        "schema_version": "200",
+        "empty_state": "No decision tickets. Run paper-cockpit-decision-ticket to populate.",
+        "description": "Paper decision ticket: symbol, A/B/C type, recommendation, position size, human review gate.",
+    }
+
+
+def get_cockpit_tab_names() -> List[str]:
+    """Return list of v2.0.0 paper cockpit tab names."""
+    return list(_TABS_V200_PAPER_COCKPIT)
 
 
 def get_panel_info() -> Dict[str, Any]:

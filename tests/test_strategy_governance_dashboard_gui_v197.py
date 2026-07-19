@@ -20,13 +20,13 @@ from gui.small_capital_strategy_panel import (
 # ── PANEL_VERSION ──────────────────────────────────────────────────────────────
 
 def test_panel_version_is_197():
-    assert PANEL_VERSION in ("1.9.7", "1.9.8", "1.9.9", "1.9.10")
+    assert PANEL_VERSION in ("1.9.7", "1.9.8", "1.9.9", "1.9.10", "2.0.0")
 
 def test_panel_title_contains_197():
-    assert "1.9.7" in PANEL_TITLE or "1.9.8" in PANEL_TITLE or "1.9.9" in PANEL_TITLE or "1.9.10" in PANEL_TITLE
+    assert "1.9.7" in PANEL_TITLE or "1.9.8" in PANEL_TITLE or "1.9.9" in PANEL_TITLE or "1.9.10" in PANEL_TITLE or "2.0.0" in PANEL_TITLE
 
 def test_panel_title_contains_governance_dashboard():
-    assert "Governance Dashboard" in PANEL_TITLE or "Governance" in PANEL_TITLE or "Portfolio" in PANEL_TITLE
+    assert "Governance Dashboard" in PANEL_TITLE or "Governance" in PANEL_TITLE or "Portfolio" in PANEL_TITLE or "Cockpit" in PANEL_TITLE or "Console" in PANEL_TITLE
 
 
 # ── get_governance_dashboard_tab_names() ───────────────────────────────────────
@@ -70,7 +70,7 @@ def test_render_governance_dashboard_tab_tab_name():
 
 def test_render_governance_dashboard_tab_version():
     result = render_governance_dashboard_tab()
-    assert result["version"] in ("1.9.7", "1.9.8", "1.9.9", "1.9.10")
+    assert result["version"] in ("1.9.7", "1.9.8", "1.9.9", "1.9.10", "2.0.0")
 
 def test_render_governance_dashboard_tab_paper_only():
     result = render_governance_dashboard_tab()
@@ -156,7 +156,7 @@ def test_render_decision_quality_tab_tab_name():
 
 def test_render_decision_quality_tab_version():
     result = render_decision_quality_tab()
-    assert result["version"] in ("1.9.7", "1.9.8", "1.9.9", "1.9.10")
+    assert result["version"] in ("1.9.7", "1.9.8", "1.9.9", "1.9.10", "2.0.0")
 
 def test_render_decision_quality_tab_paper_only():
     result = render_decision_quality_tab()
@@ -230,7 +230,7 @@ def test_render_governance_analytics_tab_tab_name():
 
 def test_render_governance_analytics_tab_version():
     result = render_governance_analytics_tab()
-    assert result["version"] in ("1.9.7", "1.9.8", "1.9.9", "1.9.10")
+    assert result["version"] in ("1.9.7", "1.9.8", "1.9.9", "1.9.10", "2.0.0")
 
 def test_render_governance_analytics_tab_paper_only():
     result = render_governance_analytics_tab()
@@ -304,7 +304,7 @@ def test_get_panel_info_returns_dict():
 
 def test_get_panel_info_panel_version():
     info = get_panel_info()
-    assert info["panel_version"] in ("1.9.7", "1.9.8", "1.9.9", "1.9.10")
+    assert info["panel_version"] in ("1.9.7", "1.9.8", "1.9.9", "1.9.10", "2.0.0")
 
 def test_get_panel_info_paper_only():
     info = get_panel_info()

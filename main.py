@@ -42716,6 +42716,169 @@ def cmd_portfolio_governance_safety_audit(args=None):
 
 
 # ---------------------------------------------------------------------------
+# v2.0.0 Paper Cockpit Unified Entry & Strategy Decision Console handlers
+# ---------------------------------------------------------------------------
+_PAPER_COCKPIT_BANNER = "[!] RESEARCH ONLY — PAPER ONLY — SIMULATE ONLY — VALIDATION ONLY — UNIFIED PAPER COCKPIT ONLY — NO REAL ORDERS — NO BROKER — NOT INVESTMENT ADVICE"
+
+
+def cmd_paper_cockpit_version(args=None):
+    """[v2.0.0] Show paper cockpit version. Research only."""
+    print(_PAPER_COCKPIT_BANNER)
+    from paper_trading.small_capital_strategy.paper_cockpit_v200 import get_version_info
+    import json
+    print(json.dumps(get_version_info(), indent=2))
+
+
+def cmd_paper_cockpit_run(args=None):
+    """[v2.0.0] Run full unified paper cockpit workflow. Research only."""
+    print(_PAPER_COCKPIT_BANNER)
+    from paper_trading.small_capital_strategy.paper_cockpit_v200 import run_cockpit, PaperCockpitInput
+    result = run_cockpit(PaperCockpitInput())
+    print(f"Paper cockpit run: all_passed={result.all_passed}, regime={result.regime}, paper_only={result.paper_only}")
+
+
+def cmd_paper_cockpit_watchlist(args=None):
+    """[v2.0.0] Score and validate paper watchlist. Research only."""
+    print(_PAPER_COCKPIT_BANNER)
+    from paper_trading.small_capital_strategy.paper_cockpit_v200 import score_watchlist
+    result = score_watchlist(["2330", "2454"])
+    print(f"Watchlist: count={result.count}, is_valid={result.is_valid}, paper_only={result.paper_only}")
+
+
+def cmd_paper_cockpit_score(args=None):
+    """[v2.0.0] Score candidate signals. Research only."""
+    print(_PAPER_COCKPIT_BANNER)
+    from paper_trading.small_capital_strategy.paper_cockpit_v200 import score_candidate
+    result = score_candidate("2330")
+    print(f"Candidate score: symbol={result.symbol}, grade={result.grade}, tradable={result.is_tradable}, paper_only={result.paper_only}")
+
+
+def cmd_paper_cockpit_abc_check(args=None):
+    """[v2.0.0] Classify A/B/C entry type. Research only."""
+    print(_PAPER_COCKPIT_BANNER)
+    from paper_trading.small_capital_strategy.paper_cockpit_v200 import classify_abc, score_candidate
+    sig = score_candidate("2330")
+    result = classify_abc("2330", sig)
+    print(f"ABC classification: type={result.abc_type}, size_pct={result.paper_size_pct}, paper_only={result.paper_only}")
+
+
+def cmd_paper_cockpit_risk_check(args=None):
+    """[v2.0.0] Run portfolio risk overlay check. Research only."""
+    print(_PAPER_COCKPIT_BANNER)
+    from paper_trading.small_capital_strategy.paper_cockpit_v200 import check_portfolio_risk
+    result = check_portfolio_risk()
+    print(f"Portfolio risk: overall_ok={result.overall_ok}, recommendation={result.recommendation}, paper_only={result.paper_only}")
+
+
+def cmd_paper_cockpit_sizing_check(args=None):
+    """[v2.0.0] Run position sizing policy check. Research only."""
+    print(_PAPER_COCKPIT_BANNER)
+    from paper_trading.small_capital_strategy.paper_cockpit_v200 import check_position_sizing
+    result = check_position_sizing()
+    print(f"Position sizing: ok={result.sizing_ok}, size_twd={result.paper_size_twd}, max_loss={result.max_loss_per_trade_twd}")
+
+
+def cmd_paper_cockpit_no_entry(args=None):
+    """[v2.0.0] Evaluate no-entry conditions. Research only."""
+    print(_PAPER_COCKPIT_BANNER)
+    from paper_trading.small_capital_strategy.paper_cockpit_v200 import (
+        evaluate_no_entry, classify_abc, check_portfolio_risk, check_position_sizing, score_candidate,
+        PaperCockpitABCDecision,
+    )
+    abc = PaperCockpitABCDecision()
+    risk = check_portfolio_risk()
+    sizing = check_position_sizing()
+    result = evaluate_no_entry(abc, risk, sizing)
+    print(f"No-entry: triggered={result.condition_triggered}, type={result.condition_type}, recommendation={result.recommendation}")
+
+
+def cmd_paper_cockpit_decision_ticket(args=None):
+    """[v2.0.0] Generate paper decision ticket. Research only."""
+    print(_PAPER_COCKPIT_BANNER)
+    from paper_trading.small_capital_strategy.paper_cockpit_v200 import (
+        generate_decision_ticket, classify_abc, check_portfolio_risk, check_position_sizing,
+        evaluate_no_entry, score_candidate, PaperCockpitABCDecision,
+    )
+    abc = PaperCockpitABCDecision()
+    risk = check_portfolio_risk()
+    sizing = check_position_sizing()
+    no_entry = evaluate_no_entry(abc, risk, sizing)
+    ticket = generate_decision_ticket("2330", abc, risk, sizing, no_entry)
+    print(f"Decision ticket: id={ticket.ticket_id}, type={ticket.abc_type}, blocked={ticket.is_blocked}, paper_only={ticket.paper_only}")
+
+
+def cmd_paper_cockpit_dashboard(args=None):
+    """[v2.0.0] Build unified cockpit dashboard. Research only."""
+    print(_PAPER_COCKPIT_BANNER)
+    from paper_trading.small_capital_strategy.paper_cockpit_v200 import (
+        build_dashboard, check_portfolio_risk, PaperCockpitInput,
+    )
+    inp = PaperCockpitInput(market_regime="BULL", watchlist=["2330", "2454"])
+    risk = check_portfolio_risk()
+    dashboard = build_dashboard(inp, [], risk)
+    print(f"Dashboard: regime={dashboard.regime}, paper_only={dashboard.paper_only}, no_production_writes={not dashboard.dashboard_writes_production_db}")
+
+
+def cmd_paper_cockpit_report(args=None):
+    """[v2.0.0] Build cockpit report. Research only."""
+    print(_PAPER_COCKPIT_BANNER)
+    from paper_trading.small_capital_strategy.paper_cockpit_v200 import (
+        build_report, PaperCockpitInput,
+    )
+    inp = PaperCockpitInput(market_regime="BULL")
+    report = build_report(inp, [], [])
+    print(f"Report: paper_only={report.paper_only}, candidates={report.total_candidates}, no_order={not report.report_triggers_real_order}")
+
+
+def cmd_paper_cockpit_export(args=None):
+    """[v2.0.0] Export cockpit audit pack. Research only."""
+    print(_PAPER_COCKPIT_BANNER)
+    from paper_trading.small_capital_strategy.paper_cockpit_v200 import get_cockpit_summary
+    summary = get_cockpit_summary()
+    print(f"Cockpit export: version={summary['version']}, paper_only={summary['paper_only']}, no_real_orders={summary['no_real_orders']}")
+
+
+def cmd_paper_cockpit_health(args=None):
+    """[v2.0.0] Run paper cockpit health check. Research only."""
+    print(_PAPER_COCKPIT_BANNER)
+    from paper_trading.small_capital_strategy.paper_cockpit_health_v200 import run_health_check
+    result = run_health_check()
+    print(f"Health: all_passed={result['all_passed']}, passed={result['passed']}/{result['total']}")
+
+
+def cmd_paper_cockpit_gate(args=None):
+    """[v2.0.0] Run paper cockpit release gate. Research only."""
+    print(_PAPER_COCKPIT_BANNER)
+    from release.paper_cockpit_release_gate_v200 import run_release_gate
+    result = run_release_gate()
+    print(f"Gate: passed={result['gate_passed']}, {result['passed_count']}/{result['total_count']}")
+
+
+def cmd_paper_cockpit_scenarios(args=None):
+    """[v2.0.0] List paper cockpit scenarios. Research only."""
+    print(_PAPER_COCKPIT_BANNER)
+    from paper_trading.small_capital_strategy.paper_cockpit_scenarios_v200 import SCENARIOS
+    print(f"Scenarios: count={len(SCENARIOS)}, schema_version=200, paper_only=True")
+
+
+def cmd_paper_cockpit_fixtures(args=None):
+    """[v2.0.0] List paper cockpit fixtures. Research only."""
+    print(_PAPER_COCKPIT_BANNER)
+    from paper_trading.small_capital_strategy.paper_cockpit_fixtures_v200 import FIXTURES
+    print(f"Fixtures: count={len(FIXTURES)}, schema_version=200, paper_only=True")
+
+
+def cmd_paper_cockpit_safety_audit(args=None):
+    """[v2.0.0] Run paper cockpit safety audit. Research only."""
+    print(_PAPER_COCKPIT_BANNER)
+    from paper_trading.small_capital_strategy.paper_cockpit_v200 import (
+        SAFETY_FLAGS, FORBIDDEN_ACTIONS, ALLOWED_ACTIONS, verify_version,
+    )
+    ok = verify_version()
+    print(f"Safety audit: verify_version={ok}, safety_flags={len(SAFETY_FLAGS)}, forbidden={len(FORBIDDEN_ACTIONS)}, allowed={len(ALLOWED_ACTIONS)}")
+
+
+# ---------------------------------------------------------------------------
 # v1.9.10 Paper Governance Stack Consolidation & Release Audit handlers
 # ---------------------------------------------------------------------------
 _GOVERNANCE_STACK_BANNER = "[!] RESEARCH ONLY — PAPER ONLY — CONSOLIDATION ONLY — RELEASE AUDIT ONLY — NOT INVESTMENT ADVICE — NO REAL ORDERS"
@@ -45716,6 +45879,24 @@ def main() -> None:
         "strategy-promotion-rollback-validate": cmd_strategy_promotion_rollback_validate,
         "strategy-promotion-approval-state":   cmd_strategy_promotion_approval_state,
         "strategy-promotion-safety-audit":     cmd_strategy_promotion_safety_audit,
+        # v2.0.0 paper cockpit commands
+        "paper-cockpit-version":              cmd_paper_cockpit_version,
+        "paper-cockpit-run":                  cmd_paper_cockpit_run,
+        "paper-cockpit-watchlist":            cmd_paper_cockpit_watchlist,
+        "paper-cockpit-score":                cmd_paper_cockpit_score,
+        "paper-cockpit-abc-check":            cmd_paper_cockpit_abc_check,
+        "paper-cockpit-risk-check":           cmd_paper_cockpit_risk_check,
+        "paper-cockpit-sizing-check":         cmd_paper_cockpit_sizing_check,
+        "paper-cockpit-no-entry":             cmd_paper_cockpit_no_entry,
+        "paper-cockpit-decision-ticket":      cmd_paper_cockpit_decision_ticket,
+        "paper-cockpit-dashboard":            cmd_paper_cockpit_dashboard,
+        "paper-cockpit-report":               cmd_paper_cockpit_report,
+        "paper-cockpit-export":               cmd_paper_cockpit_export,
+        "paper-cockpit-health":               cmd_paper_cockpit_health,
+        "paper-cockpit-gate":                 cmd_paper_cockpit_gate,
+        "paper-cockpit-scenarios":            cmd_paper_cockpit_scenarios,
+        "paper-cockpit-fixtures":             cmd_paper_cockpit_fixtures,
+        "paper-cockpit-safety-audit":         cmd_paper_cockpit_safety_audit,
         # v1.9.10 governance stack commands
         "governance-stack-version":           cmd_governance_stack_version,
         "governance-stack-audit":             cmd_governance_stack_audit,

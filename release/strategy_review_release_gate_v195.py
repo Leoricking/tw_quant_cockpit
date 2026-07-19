@@ -175,7 +175,7 @@ class StrategyReviewReleaseGate:
             render_rollback_review_tab,
             get_review_tab_names,
         )
-        self._gate("gui_panel_version_195", lambda: PANEL_VERSION in ("1.9.5", "1.9.6", "1.9.7", "1.9.8", "1.9.9", "1.9.10"))
+        self._gate("gui_panel_version_195", lambda: PANEL_VERSION in ("1.9.5", "1.9.6", "1.9.7", "1.9.8", "1.9.9", "1.9.10", "2.0.0"))
         self._gate("gui_panel_info_paper_only",
                    lambda: get_panel_info()["paper_only"] is True)
         self._gate("gui_review_alerts_tab_paper_only",
@@ -207,7 +207,7 @@ class StrategyReviewReleaseGate:
 
         # ── backward compat (2) ───────────────────────────────────────────────
         self._gate("backward_compat_panel_version",
-                   lambda: get_panel_info()["panel_version"] in ("1.9.5", "1.9.6", "1.9.7", "1.9.8", "1.9.9", "1.9.10"))
+                   lambda: get_panel_info()["panel_version"] in ("1.9.5", "1.9.6", "1.9.7", "1.9.8", "1.9.9", "1.9.10", "2.0.0"))
         self._gate("backward_compat_tab_count",
                    lambda: get_panel_info()["tab_count"] >= 157)
 

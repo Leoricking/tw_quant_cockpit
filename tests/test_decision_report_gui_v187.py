@@ -13,15 +13,15 @@ from gui.small_capital_strategy_panel import (
 
 
 def test_panel_version_is_187():
-    assert PANEL_VERSION in ("1.8.7", "1.8.8", "1.8.9", "1.9.0", "1.9.1", "1.9.2", "1.9.3", "1.9.4", "1.9.5", "1.9.6", "1.9.7", "1.9.8", "1.9.9", "1.9.10")
+    assert PANEL_VERSION in ("1.8.7", "1.8.8", "1.8.9", "1.9.0", "1.9.1", "1.9.2", "1.9.3", "1.9.4", "1.9.5", "1.9.6", "1.9.7", "1.9.8", "1.9.9", "1.9.10", "2.0.0")
 
 
 def test_panel_title_contains_187():
-    assert "1.8.7" in PANEL_TITLE or "1.8.8" in PANEL_TITLE or "1.8.9" in PANEL_TITLE or "1.9.0" in PANEL_TITLE or "1.9.1" in PANEL_TITLE or "1.9.2" in PANEL_TITLE or "1.9.3" in PANEL_TITLE or "1.9.4" in PANEL_TITLE or "1.9.5" in PANEL_TITLE or "1.9.6" in PANEL_TITLE or "1.9.7" in PANEL_TITLE or "1.9.8" in PANEL_TITLE or "1.9.9" in PANEL_TITLE or "1.9.10" in PANEL_TITLE
+    assert "1.8.7" in PANEL_TITLE or "1.8.8" in PANEL_TITLE or "1.8.9" in PANEL_TITLE or "1.9.0" in PANEL_TITLE or "1.9.1" in PANEL_TITLE or "1.9.2" in PANEL_TITLE or "1.9.3" in PANEL_TITLE or "1.9.4" in PANEL_TITLE or "1.9.5" in PANEL_TITLE or "1.9.6" in PANEL_TITLE or "1.9.7" in PANEL_TITLE or "1.9.8" in PANEL_TITLE or "1.9.9" in PANEL_TITLE or "1.9.10" in PANEL_TITLE or "2.0.0" in PANEL_TITLE
 
 
 def test_panel_title_contains_decision_report():
-    assert "Decision Report" in PANEL_TITLE or "Workflow Runner" in PANEL_TITLE or "Journal" in PANEL_TITLE or "Performance" in PANEL_TITLE or "Tuning" in PANEL_TITLE or "Sandbox" in PANEL_TITLE or "Promotion" in PANEL_TITLE or "Rollback" in PANEL_TITLE or "Monitoring" in PANEL_TITLE or "Drift" in PANEL_TITLE or "Review" in PANEL_TITLE or "Governance" in PANEL_TITLE or "Portfolio" in PANEL_TITLE
+    assert "Decision Report" in PANEL_TITLE or "Workflow Runner" in PANEL_TITLE or "Journal" in PANEL_TITLE or "Performance" in PANEL_TITLE or "Tuning" in PANEL_TITLE or "Sandbox" in PANEL_TITLE or "Promotion" in PANEL_TITLE or "Rollback" in PANEL_TITLE or "Monitoring" in PANEL_TITLE or "Drift" in PANEL_TITLE or "Review" in PANEL_TITLE or "Governance" in PANEL_TITLE or "Portfolio" in PANEL_TITLE or "Cockpit" in PANEL_TITLE or "Console" in PANEL_TITLE
 
 
 def test_tabs_v187_decision_report_count():
@@ -99,7 +99,7 @@ def test_render_decision_report_tab_schema_version():
 
 def test_render_decision_report_tab_version():
     result = render_decision_report_tab()
-    assert result["version"] in ("1.8.7", "1.8.8", "1.8.9", "1.9.0", "1.9.1", "1.9.2", "1.9.3", "1.9.4", "1.9.5", "1.9.6", "1.9.7", "1.9.8", "1.9.9", "1.9.10")
+    assert result["version"] in ("1.8.7", "1.8.8", "1.8.9", "1.9.0", "1.9.1", "1.9.2", "1.9.3", "1.9.4", "1.9.5", "1.9.6", "1.9.7", "1.9.8", "1.9.9", "1.9.10", "2.0.0")
 
 
 def test_render_decision_report_tab_report_only():
@@ -161,7 +161,7 @@ def test_render_evidence_pack_tab_schema_version():
 
 def test_render_evidence_pack_tab_version():
     result = render_evidence_pack_tab()
-    assert result["version"] in ("1.8.7", "1.8.8", "1.8.9", "1.9.0", "1.9.1", "1.9.2", "1.9.3", "1.9.4", "1.9.5", "1.9.6", "1.9.7", "1.9.8", "1.9.9", "1.9.10")
+    assert result["version"] in ("1.8.7", "1.8.8", "1.8.9", "1.9.0", "1.9.1", "1.9.2", "1.9.3", "1.9.4", "1.9.5", "1.9.6", "1.9.7", "1.9.8", "1.9.9", "1.9.10", "2.0.0")
 
 
 def test_render_evidence_pack_tab_has_description():
@@ -208,7 +208,7 @@ def test_render_audit_trail_report_tab_schema_version():
 
 def test_render_audit_trail_report_tab_version():
     result = render_audit_trail_report_tab()
-    assert result["version"] in ("1.8.7", "1.8.8", "1.8.9", "1.9.0", "1.9.1", "1.9.2", "1.9.3", "1.9.4", "1.9.5", "1.9.6", "1.9.7", "1.9.8", "1.9.9", "1.9.10")
+    assert result["version"] in ("1.8.7", "1.8.8", "1.8.9", "1.9.0", "1.9.1", "1.9.2", "1.9.3", "1.9.4", "1.9.5", "1.9.6", "1.9.7", "1.9.8", "1.9.9", "1.9.10", "2.0.0")
 
 
 def test_render_audit_trail_report_tab_audit_only():
@@ -225,7 +225,7 @@ def test_render_audit_trail_report_tab_has_description():
 
 def test_get_panel_info_panel_version():
     info = get_panel_info()
-    assert info["panel_version"] in ("1.8.7", "1.8.8", "1.8.9", "1.9.0", "1.9.1", "1.9.2", "1.9.3", "1.9.4", "1.9.5", "1.9.6", "1.9.7", "1.9.8", "1.9.9", "1.9.10")
+    assert info["panel_version"] in ("1.8.7", "1.8.8", "1.8.9", "1.9.0", "1.9.1", "1.9.2", "1.9.3", "1.9.4", "1.9.5", "1.9.6", "1.9.7", "1.9.8", "1.9.9", "1.9.10", "2.0.0")
 
 
 def test_get_panel_info_paper_only():

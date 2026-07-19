@@ -185,7 +185,7 @@ class StrategyGovernanceDashboardReleaseGate:
         # ── GUI (3) ──────────────────────────────────────────────────────────
         from gui.small_capital_strategy_panel import PANEL_VERSION, get_governance_dashboard_tab_names
         self._check("gui_panel_version_197",
-                    lambda: PANEL_VERSION in ("1.9.7", "1.9.8", "1.9.9", "1.9.10"))
+                    lambda: PANEL_VERSION in ("1.9.7", "1.9.8", "1.9.9", "1.9.10", "2.0.0"))
         self._check("gui_governance_dashboard_tabs_present",
                     lambda: "governance_dashboard" in get_governance_dashboard_tab_names())
         self._check("gui_governance_dashboard_tab_count_3",
@@ -215,7 +215,7 @@ class StrategyGovernanceDashboardReleaseGate:
 
         # ── Panel version check (1) ───────────────────────────────────────────
         from gui.small_capital_strategy_panel import PANEL_VERSION as _PV
-        self._check("gui_panel_version_match", lambda: _PV in ("1.9.7", "1.9.8", "1.9.9", "1.9.10"))
+        self._check("gui_panel_version_match", lambda: _PV in ("1.9.7", "1.9.8", "1.9.9", "1.9.10", "2.0.0"))
 
         passed_count = sum(1 for c in self._checks if c["passed"])
         failed_count = sum(1 for c in self._checks if not c["passed"])

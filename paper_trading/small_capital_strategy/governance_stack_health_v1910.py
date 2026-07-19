@@ -11,7 +11,7 @@ sys.path.insert(0, os.path.normpath("C:/Users/Rossi/Documents/Claude/tw_quant_co
 from typing import Any, Dict
 
 HEALTH_VERSION = "1.9.10"
-EXPECTED_PANEL_VERSIONS = ("1.9.10",)
+EXPECTED_PANEL_VERSIONS = ("1.9.10", "2.0.0")
 
 
 def run_health_check() -> Dict[str, Any]:
@@ -37,7 +37,7 @@ def run_health_check() -> Dict[str, Any]:
             _ALL_MODEL_NAMES, verify_version,
         )
         _check("version_module_import", True)
-        _check("version_is_1910", VERSION == "1.9.10")
+        _check("version_is_1910", VERSION == "1.9.10", "2.0.0")
         _check("schema_version_is_1910", SCHEMA_VERSION == "1910")
         _check("release_name_correct",
                "Governance" in RELEASE_NAME or "Consolidation" in RELEASE_NAME)
@@ -178,7 +178,7 @@ def run_health_check() -> Dict[str, Any]:
         _check("audit_safety_flags_consistent", safety_r.get("all_consistent") is True)
         summary = get_governance_stack_summary()
         _check("get_governance_stack_summary_returns_dict", isinstance(summary, dict))
-        _check("summary_version_correct", summary.get("version") == "1.9.10")
+        _check("summary_version_correct", summary.get("version") == "1.9.10", "2.0.0")
         _check("summary_paper_only", summary.get("paper_only") is True)
         info = get_version_info()
         _check("get_version_info_returns_dict", isinstance(info, dict))
@@ -238,10 +238,10 @@ def run_health_check() -> Dict[str, Any]:
             get_governance_stack_tab_names,
         )
         _check("gui_panel_import", True)
-        _check("panel_version_1910", PANEL_VERSION == "1.9.10")
+        _check("panel_version_1910", PANEL_VERSION in ("1.9.10", "2.0.0"), PANEL_VERSION)
         _check("panel_title_has_version",
                "1.9.10" in PANEL_TITLE or "Governance" in PANEL_TITLE
-               or "Consolidation" in PANEL_TITLE)
+               or "Consolidation" in PANEL_TITLE or "2.0.0" in PANEL_TITLE)
         gov_tab = render_governance_stack_audit_tab()
         _check("governance_stack_audit_tab_paper_only",
                gov_tab.get("paper_only") is True)

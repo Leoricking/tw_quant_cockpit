@@ -1,17 +1,16 @@
 """
-tests/test_governance_stack_backward_compat_v1910.py
-v1.9.10 Paper Governance Stack Consolidation & Release Audit — Backward Compat Tests
-[!] Paper Only. Research Only. Consolidation Only. Release Audit Only.
-[!] No Real Orders. Not Investment Advice.
+tests/test_paper_cockpit_backward_compat_v200.py
+v2.0.0 Paper Cockpit — Backward Compatibility Tests (v1.7.0~v1.9.10)
+[!] Paper Only. Research Only. No Real Orders. Not Investment Advice.
 """
 from gui.small_capital_strategy_panel import PANEL_VERSION, PANEL_TITLE, get_tab_names
 
 
-def test_panel_version_is_1910():
-    assert PANEL_VERSION in ("1.9.10", "2.0.0")
+def test_panel_version_is_200():
+    assert PANEL_VERSION == "2.0.0"
 
 def test_panel_title_contains_version():
-    assert "1.9.10" in PANEL_TITLE or "Governance" in PANEL_TITLE or "Consolidation" in PANEL_TITLE or "2.0.0" in PANEL_TITLE
+    assert "2.0.0" in PANEL_TITLE or "Cockpit" in PANEL_TITLE or "Console" in PANEL_TITLE
 
 # v1.7.0 core tabs still present
 def test_v170_tab_overview_present():
@@ -164,6 +163,16 @@ def test_v1910_release_audit_present():
 def test_v1910_compatibility_summary_present():
     assert "compatibility_summary" in get_tab_names()
 
+# v2.0.0 cockpit tabs
+def test_v200_paper_cockpit_present():
+    assert "paper_cockpit" in get_tab_names()
+
+def test_v200_strategy_decision_console_present():
+    assert "strategy_decision_console" in get_tab_names()
+
+def test_v200_decision_ticket_present():
+    assert "decision_ticket" in get_tab_names()
+
 # v1.9.9 modules still importable
 def test_v199_portfolio_risk_report_version_importable():
     from paper_trading.small_capital_strategy.portfolio_risk_report_version_v199 import VERSION
@@ -178,12 +187,36 @@ def test_v194_strategy_monitoring_importable():
     from paper_trading.small_capital_strategy.strategy_monitoring_version_v194 import VERSION
     assert VERSION == "1.9.4"
 
-# v1.9.10 new tabs coexist with old
-def test_all_v1910_tabs_coexist_with_all_old_tabs():
+# v1.9.10 still importable
+def test_v1910_governance_stack_importable():
+    from paper_trading.small_capital_strategy.governance_stack_audit_v1910 import VERSION
+    assert VERSION == "1.9.10"
+
+# v2.0.0 new tabs coexist with all old tabs
+def test_all_v200_tabs_coexist_with_all_old_tabs():
     tabs = get_tab_names()
+    assert "paper_cockpit" in tabs
     assert "governance_stack_audit" in tabs
     assert "portfolio_risk_report" in tabs
     assert "portfolio_governance" in tabs
     assert "governance_dashboard" in tabs
     assert "decision_registry" in tabs
     assert "strategy_monitoring" in tabs
+    assert "performance_review" in tabs
+    assert "daily_decision_cockpit" in tabs
+    assert "paper_sim_lab" in tabs
+    assert "overview" in tabs
+
+# v2.0.0 module backward compat check
+def test_v200_covered_versions_includes_v170():
+    from paper_trading.small_capital_strategy.paper_cockpit_v200 import COVERED_VERSIONS
+    assert "1.7.0" in COVERED_VERSIONS
+
+def test_v200_covered_versions_includes_v1910():
+    from paper_trading.small_capital_strategy.paper_cockpit_v200 import COVERED_VERSIONS
+    assert "1.9.10" in COVERED_VERSIONS
+
+def test_v200_covered_versions_all_present():
+    from paper_trading.small_capital_strategy.paper_cockpit_v200 import COVERED_VERSIONS
+    for v in ["1.7.0", "1.7.1", "1.7.2", "1.7.3", "1.7.5", "1.8.0", "1.9.0", "1.9.10"]:
+        assert v in COVERED_VERSIONS, f"Version {v} missing from COVERED_VERSIONS"

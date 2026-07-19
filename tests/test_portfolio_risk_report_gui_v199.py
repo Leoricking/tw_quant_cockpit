@@ -15,15 +15,15 @@ from gui.small_capital_strategy_panel import (
 
 
 def test_panel_version_is_1_9_9():
-    assert PANEL_VERSION in ("1.9.9", "1.9.10")
+    assert PANEL_VERSION in ("1.9.9", "1.9.10", "2.0.0")
 
 
 def test_panel_title_contains_1_9_9():
-    assert "1.9.9" in PANEL_TITLE or "1.9.10" in PANEL_TITLE
+    assert "1.9.9" in PANEL_TITLE or "1.9.10" in PANEL_TITLE or "2.0.0" in PANEL_TITLE
 
 
 def test_panel_title_contains_expected_keyword():
-    assert any(kw in PANEL_TITLE for kw in ("Risk Report", "Position Sizing", "Portfolio", "Governance", "Consolidation"))
+    assert any(kw in PANEL_TITLE for kw in ("Risk Report", "Position Sizing", "Portfolio", "Governance", "Consolidation", "Cockpit", "Console"))
 
 
 def test_panel_title_is_string():
@@ -161,7 +161,7 @@ def test_risk_budget_dashboard_tab_idempotent():
 
 
 def test_get_panel_info_panel_version_is_1_9_9():
-    assert get_panel_info()["panel_version"] in ("1.9.9", "1.9.10")
+    assert get_panel_info()["panel_version"] in ("1.9.9", "1.9.10", "2.0.0")
 
 
 def test_get_panel_info_has_portfolio_risk_report_tab():

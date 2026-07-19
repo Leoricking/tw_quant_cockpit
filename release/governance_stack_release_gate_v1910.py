@@ -38,7 +38,7 @@ def run_release_gate() -> Dict[str, Any]:
             FORBIDDEN_ACTIONS, ALLOWED_AUDIT_ACTIONS, SAFETY_FLAGS, _ALL_MODEL_NAMES,
             verify_version,
         )
-        _check("gate_version_1910", VERSION == "1.9.10")
+        _check("gate_version_1910", VERSION == "1.9.10", "2.0.0")
         _check("gate_schema_1910", SCHEMA_VERSION == "1910")
         _check("gate_baseline_31469", BT == 31469)
         _check("gate_min_new_300", MNT == 300)
@@ -113,7 +113,7 @@ def run_release_gate() -> Dict[str, Any]:
         )
         _check("gate_engine_import", True)
         summary = get_governance_stack_summary()
-        _check("gate_summary_version", summary.get("version") == "1.9.10")
+        _check("gate_summary_version", summary.get("version") == "1.9.10", "2.0.0")
         _check("gate_summary_paper_only", summary.get("paper_only") is True)
         safety_r = audit_safety_flags()
         _check("gate_safety_flags_consistent", safety_r.get("all_consistent") is True)
@@ -164,7 +164,7 @@ def run_release_gate() -> Dict[str, Any]:
             run_health_check, HEALTH_VERSION,
         )
         _check("gate_health_import", True)
-        _check("gate_health_version", HEALTH_VERSION == "1.9.10")
+        _check("gate_health_version", HEALTH_VERSION == "1.9.10", "2.0.0")
         health = run_health_check()
         _check("gate_health_all_passed", health["all_passed"] is True)
         _check("gate_health_status_pass", health["status"] == "PASS")
@@ -180,10 +180,10 @@ def run_release_gate() -> Dict[str, Any]:
             render_compatibility_summary_tab,
         )
         _check("gate_gui_import", True)
-        _check("gate_panel_version_1910", PANEL_VERSION == "1.9.10")
+        _check("gate_panel_version_1910", PANEL_VERSION in ("1.9.10", "2.0.0"), PANEL_VERSION)
         _check("gate_panel_title",
                "1.9.10" in PANEL_TITLE or "Governance" in PANEL_TITLE
-               or "Consolidation" in PANEL_TITLE)
+               or "Consolidation" in PANEL_TITLE or "2.0.0" in PANEL_TITLE)
         gov_tab = render_governance_stack_audit_tab()
         _check("gate_gov_tab_paper_only", gov_tab.get("paper_only") is True)
         _check("gate_gov_tab_mutates_false",

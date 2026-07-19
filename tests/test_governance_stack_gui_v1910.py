@@ -16,10 +16,10 @@ from gui.small_capital_strategy_panel import (
 
 
 def test_panel_version_1910():
-    assert PANEL_VERSION == "1.9.10"
+    assert PANEL_VERSION in ("1.9.10", "2.0.0")
 
 def test_panel_title_has_governance_or_1910():
-    assert "1.9.10" in PANEL_TITLE or "Governance" in PANEL_TITLE or "Consolidation" in PANEL_TITLE
+    assert "1.9.10" in PANEL_TITLE or "Governance" in PANEL_TITLE or "Consolidation" in PANEL_TITLE or "2.0.0" in PANEL_TITLE
 
 def test_governance_stack_tab_names_count_3():
     assert len(get_governance_stack_tab_names()) == 3
