@@ -16,8 +16,8 @@ Headless-safe: no tkinter at module level. Renders to dict.
 from __future__ import annotations
 from typing import Any, Dict, List, Optional
 
-PANEL_VERSION = "1.9.7"
-PANEL_TITLE = "Small Capital Strategy v1.9.7 — Paper Strategy Governance Dashboard & Decision Quality Analytics Lab"
+PANEL_VERSION = "1.9.8"
+PANEL_TITLE = "Small Capital Strategy v1.9.8 — Paper Portfolio Governance & Risk Overlay Lab"
 
 # v1.7.0 tabs (preserved unchanged)
 _TABS_V170 = [
@@ -324,6 +324,15 @@ _TABS_V197_GOVERNANCE_DASHBOARD = [
 
 assert len(_TABS_V197_GOVERNANCE_DASHBOARD) == 3, f"Expected 3 governance dashboard tabs, got {len(_TABS_V197_GOVERNANCE_DASHBOARD)}"
 
+# v1.9.8 Paper Portfolio Governance & Risk Overlay Lab tabs
+_TABS_V198_PORTFOLIO_GOVERNANCE = [
+    "portfolio_governance",
+    "risk_overlay",
+    "exposure_dashboard",
+]
+
+assert len(_TABS_V198_PORTFOLIO_GOVERNANCE) == 3, f"Expected 3 portfolio governance tabs, got {len(_TABS_V198_PORTFOLIO_GOVERNANCE)}"
+
 _TABS = (
     _TABS_V170
     + _TABS_V171_WATCHLIST
@@ -353,6 +362,7 @@ _TABS = (
     + _TABS_V195_STRATEGY_REVIEW
     + _TABS_V196_STRATEGY_REGISTRY
     + _TABS_V197_GOVERNANCE_DASHBOARD
+    + _TABS_V198_PORTFOLIO_GOVERNANCE
 )
 
 assert len(_TABS_V170) == 22, f"Expected 22 v1.7.0 tabs, got {len(_TABS_V170)}"
@@ -1622,6 +1632,10 @@ def render_all_tabs() -> Dict[str, Any]:
         "governance_dashboard":              render_governance_dashboard_tab,
         "decision_quality":                  render_decision_quality_tab,
         "governance_analytics":              render_governance_analytics_tab,
+        # v1.9.8 Paper Portfolio Governance & Risk Overlay Lab tabs
+        "portfolio_governance":              render_portfolio_governance_tab,
+        "risk_overlay":                      render_risk_overlay_tab,
+        "exposure_dashboard":               render_exposure_dashboard_tab,
     }
     result = {}
     for tab_name in _TABS:
@@ -3794,6 +3808,63 @@ def render_governance_analytics_tab() -> Dict[str, Any]:
 def get_governance_dashboard_tab_names() -> List[str]:
     """Return list of v1.9.7 governance dashboard tab names."""
     return list(_TABS_V197_GOVERNANCE_DASHBOARD)
+
+
+def render_portfolio_governance_tab() -> Dict[str, Any]:
+    """Render Portfolio Governance tab. v1.9.8."""
+    return {
+        "tab": "portfolio_governance",
+        "paper_only": True,
+        "research_only": True,
+        "no_real_orders": True,
+        "no_broker": True,
+        "portfolio_governance_only": True,
+        "dashboard_mutates_strategy": False,
+        "not_investment_advice": True,
+        "version": PANEL_VERSION,
+        "schema_version": "198",
+        "empty_state": "No portfolio governance data. Run portfolio-governance-run to populate.",
+    }
+
+
+def render_risk_overlay_tab() -> Dict[str, Any]:
+    """Render Risk Overlay tab. v1.9.8."""
+    return {
+        "tab": "risk_overlay",
+        "paper_only": True,
+        "research_only": True,
+        "no_real_orders": True,
+        "no_broker": True,
+        "risk_overlay_only": True,
+        "dashboard_mutates_strategy": False,
+        "overlay_places_real_order": False,
+        "not_investment_advice": True,
+        "version": PANEL_VERSION,
+        "schema_version": "198",
+        "empty_state": "No risk overlay data. Run portfolio-governance-risk-overlay to populate.",
+    }
+
+
+def render_exposure_dashboard_tab() -> Dict[str, Any]:
+    """Render Exposure Dashboard tab. v1.9.8."""
+    return {
+        "tab": "exposure_dashboard",
+        "paper_only": True,
+        "research_only": True,
+        "no_real_orders": True,
+        "no_broker": True,
+        "exposure_dashboard_only": True,
+        "dashboard_mutates_strategy": False,
+        "not_investment_advice": True,
+        "version": PANEL_VERSION,
+        "schema_version": "198",
+        "empty_state": "No exposure data. Run portfolio-governance-exposure to populate.",
+    }
+
+
+def get_governance_portfolio_tab_names() -> List[str]:
+    """Return list of v1.9.8 portfolio governance tab names."""
+    return list(_TABS_V198_PORTFOLIO_GOVERNANCE)
 
 
 def get_panel_info() -> Dict[str, Any]:

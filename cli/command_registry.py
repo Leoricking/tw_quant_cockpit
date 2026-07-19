@@ -5481,6 +5481,66 @@ _SRG_V196_COMMANDS: _List[CommandSpec] = [
 
 # v1.9.7 Strategy Governance Dashboard & Decision Quality Analytics Lab commands
 # ---------------------------------------------------------------------------
+_PG_V198_COMMANDS: _List[CommandSpec] = [
+    CommandSpec(name="portfolio-governance-version", handler_name="cmd_portfolio_governance_version",
+                help="[Research] Show portfolio governance version v1.9.8", group="portfolio_governance",
+                introduced_in="1.9.8", safety_classification="RESEARCH_ONLY"),
+    CommandSpec(name="portfolio-governance-run", handler_name="cmd_portfolio_governance_run",
+                help="[Research] Run portfolio governance check v1.9.8", group="portfolio_governance",
+                introduced_in="1.9.8", safety_classification="RESEARCH_ONLY"),
+    CommandSpec(name="portfolio-governance-snapshot", handler_name="cmd_portfolio_governance_snapshot",
+                help="[Research] Show portfolio snapshot v1.9.8", group="portfolio_governance",
+                introduced_in="1.9.8", safety_classification="RESEARCH_ONLY"),
+    CommandSpec(name="portfolio-governance-exposure", handler_name="cmd_portfolio_governance_exposure",
+                help="[Research] Show portfolio exposure summary v1.9.8", group="portfolio_governance",
+                introduced_in="1.9.8", safety_classification="RESEARCH_ONLY"),
+    CommandSpec(name="portfolio-governance-theme-risk", handler_name="cmd_portfolio_governance_theme_risk",
+                help="[Research] Show portfolio theme risk v1.9.8", group="portfolio_governance",
+                introduced_in="1.9.8", safety_classification="RESEARCH_ONLY"),
+    CommandSpec(name="portfolio-governance-industry-risk", handler_name="cmd_portfolio_governance_industry_risk",
+                help="[Research] Show portfolio industry risk v1.9.8", group="portfolio_governance",
+                introduced_in="1.9.8", safety_classification="RESEARCH_ONLY"),
+    CommandSpec(name="portfolio-governance-correlation-risk", handler_name="cmd_portfolio_governance_correlation_risk",
+                help="[Research] Show portfolio correlation risk v1.9.8", group="portfolio_governance",
+                introduced_in="1.9.8", safety_classification="RESEARCH_ONLY"),
+    CommandSpec(name="portfolio-governance-risk-limits", handler_name="cmd_portfolio_governance_risk_limits",
+                help="[Research] Evaluate portfolio risk limits v1.9.8", group="portfolio_governance",
+                introduced_in="1.9.8", safety_classification="RESEARCH_ONLY"),
+    CommandSpec(name="portfolio-governance-risk-overlay", handler_name="cmd_portfolio_governance_risk_overlay",
+                help="[Research] Run portfolio risk overlay v1.9.8", group="portfolio_governance",
+                introduced_in="1.9.8", safety_classification="RESEARCH_ONLY"),
+    CommandSpec(name="portfolio-governance-risk-score", handler_name="cmd_portfolio_governance_risk_score",
+                help="[Research] Compute portfolio risk score v1.9.8", group="portfolio_governance",
+                introduced_in="1.9.8", safety_classification="RESEARCH_ONLY"),
+    CommandSpec(name="portfolio-governance-recommendations", handler_name="cmd_portfolio_governance_recommendations",
+                help="[Research] Get portfolio governance recommendations v1.9.8", group="portfolio_governance",
+                introduced_in="1.9.8", safety_classification="RESEARCH_ONLY"),
+    CommandSpec(name="portfolio-governance-dashboard", handler_name="cmd_portfolio_governance_dashboard",
+                help="[Research] Render portfolio governance dashboard v1.9.8", group="portfolio_governance",
+                introduced_in="1.9.8", safety_classification="RESEARCH_ONLY"),
+    CommandSpec(name="portfolio-governance-report", handler_name="cmd_portfolio_governance_report",
+                help="[Research] Generate portfolio governance report v1.9.8", group="portfolio_governance",
+                introduced_in="1.9.8", safety_classification="RESEARCH_ONLY"),
+    CommandSpec(name="portfolio-governance-export", handler_name="cmd_portfolio_governance_export",
+                help="[Research] Export portfolio governance pack v1.9.8", group="portfolio_governance",
+                introduced_in="1.9.8", safety_classification="RESEARCH_ONLY"),
+    CommandSpec(name="portfolio-governance-health", handler_name="cmd_portfolio_governance_health",
+                help="[Research] Run portfolio governance health check v1.9.8", group="portfolio_governance",
+                introduced_in="1.9.8", safety_classification="RESEARCH_ONLY"),
+    CommandSpec(name="portfolio-governance-gate", handler_name="cmd_portfolio_governance_gate",
+                help="[Research] Run portfolio governance release gate v1.9.8", group="portfolio_governance",
+                introduced_in="1.9.8", safety_classification="RESEARCH_ONLY"),
+    CommandSpec(name="portfolio-governance-scenarios", handler_name="cmd_portfolio_governance_scenarios",
+                help="[Research] List portfolio governance scenarios v1.9.8", group="portfolio_governance",
+                introduced_in="1.9.8", safety_classification="RESEARCH_ONLY"),
+    CommandSpec(name="portfolio-governance-fixtures", handler_name="cmd_portfolio_governance_fixtures",
+                help="[Research] List portfolio governance fixtures v1.9.8", group="portfolio_governance",
+                introduced_in="1.9.8", safety_classification="RESEARCH_ONLY"),
+    CommandSpec(name="portfolio-governance-safety-audit", handler_name="cmd_portfolio_governance_safety_audit",
+                help="[Research] Run portfolio governance safety audit v1.9.8", group="portfolio_governance",
+                introduced_in="1.9.8", safety_classification="RESEARCH_ONLY"),
+]
+
 _SGD_V197_COMMANDS: _List[CommandSpec] = [
     CommandSpec(name="strategy-governance-dashboard-version", handler_name="cmd_strategy_governance_dashboard_version",
                 help="[Research] Show strategy governance dashboard version v1.9.7", group="strategy_governance_dashboard",
@@ -5588,6 +5648,7 @@ PROVIDER_COMMANDS: _List[CommandSpec] = (
     + _SR_V195_COMMANDS
     + _SRG_V196_COMMANDS
     + _SGD_V197_COMMANDS
+    + _PG_V198_COMMANDS
 )
 
 

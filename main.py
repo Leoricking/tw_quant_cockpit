@@ -42541,6 +42541,180 @@ def cmd_strategy_governance_dashboard_safety_audit(args=None):
     print(_STRATEGY_GOVERNANCE_DASHBOARD_BANNER)
 
 
+_PORTFOLIO_GOVERNANCE_BANNER = "[!] RESEARCH ONLY — PAPER ONLY — PORTFOLIO GOVERNANCE ONLY — RISK OVERLAY ONLY — NO REAL ORDERS — NOT INVESTMENT ADVICE"
+
+
+def cmd_portfolio_governance_version(args=None):
+    """[v1.9.8] Show portfolio governance version. Research only."""
+    print(_PORTFOLIO_GOVERNANCE_BANNER)
+    from paper_trading.small_capital_strategy.portfolio_governance_version_v198 import get_version_info
+    info = get_version_info()
+    print(f"portfolio-governance-version: {info['version']}  schema={info['schema_version']}  paper_only=True  portfolio_governance_only=True")
+    print(_PORTFOLIO_GOVERNANCE_BANNER)
+
+
+def cmd_portfolio_governance_run(args=None):
+    """[v1.9.8] Run portfolio governance check. Research only."""
+    print(_PORTFOLIO_GOVERNANCE_BANNER)
+    from paper_trading.small_capital_strategy.portfolio_governance_engine_v198 import validate_portfolio_input
+    result = validate_portfolio_input({"paper_only": True, "no_real_orders": True, "no_broker": True, "positions": [], "snapshot": {}, "risk_limits": {}})
+    print(f"portfolio-governance-run: blocked={result.get('blocked')}  paper_only=True  portfolio_governance_only=True")
+    print(_PORTFOLIO_GOVERNANCE_BANNER)
+
+
+def cmd_portfolio_governance_snapshot(args=None):
+    """[v1.9.8] Show portfolio governance snapshot. Research only."""
+    print(_PORTFOLIO_GOVERNANCE_BANNER)
+    from paper_trading.small_capital_strategy.portfolio_governance_models_v198 import PaperPortfolioSnapshot
+    snap = PaperPortfolioSnapshot(snapshot_id="demo", snapshot_date="2026-07-19")
+    print(f"portfolio-governance-snapshot: snapshot_id={snap.snapshot_id}  paper_only={snap.paper_only}")
+    print(_PORTFOLIO_GOVERNANCE_BANNER)
+
+
+def cmd_portfolio_governance_exposure(args=None):
+    """[v1.9.8] Show portfolio exposure summary. Research only."""
+    print(_PORTFOLIO_GOVERNANCE_BANNER)
+    from paper_trading.small_capital_strategy.portfolio_governance_engine_v198 import build_exposure_summary
+    result = build_exposure_summary([])
+    print(f"portfolio-governance-exposure: symbol_count={result.get('symbol_count')}  paper_only=True  portfolio_governance_only=True")
+    print(_PORTFOLIO_GOVERNANCE_BANNER)
+
+
+def cmd_portfolio_governance_theme_risk(args=None):
+    """[v1.9.8] Show portfolio theme risk. Research only."""
+    print(_PORTFOLIO_GOVERNANCE_BANNER)
+    from paper_trading.small_capital_strategy.portfolio_governance_report_v198 import export_theme_risk
+    result = export_theme_risk([])
+    print(f"portfolio-governance-theme-risk: section={result.get('section')}  paper_only=True  portfolio_governance_only=True")
+    print(_PORTFOLIO_GOVERNANCE_BANNER)
+
+
+def cmd_portfolio_governance_industry_risk(args=None):
+    """[v1.9.8] Show portfolio industry risk. Research only."""
+    print(_PORTFOLIO_GOVERNANCE_BANNER)
+    from paper_trading.small_capital_strategy.portfolio_governance_report_v198 import export_industry_risk
+    result = export_industry_risk([])
+    print(f"portfolio-governance-industry-risk: section={result.get('section')}  paper_only=True  portfolio_governance_only=True")
+    print(_PORTFOLIO_GOVERNANCE_BANNER)
+
+
+def cmd_portfolio_governance_correlation_risk(args=None):
+    """[v1.9.8] Show portfolio correlation risk. Research only."""
+    print(_PORTFOLIO_GOVERNANCE_BANNER)
+    from paper_trading.small_capital_strategy.portfolio_governance_engine_v198 import detect_correlation_risk
+    result = detect_correlation_risk([])
+    print(f"portfolio-governance-correlation-risk: any_breach={result.get('any_breach')}  paper_only=True  portfolio_governance_only=True")
+    print(_PORTFOLIO_GOVERNANCE_BANNER)
+
+
+def cmd_portfolio_governance_risk_limits(args=None):
+    """[v1.9.8] Evaluate portfolio risk limits. Research only."""
+    print(_PORTFOLIO_GOVERNANCE_BANNER)
+    from paper_trading.small_capital_strategy.portfolio_governance_engine_v198 import evaluate_risk_limits
+    result = evaluate_risk_limits({}, {})
+    print(f"portfolio-governance-risk-limits: any_breach={result.get('any_breach')}  paper_only=True  portfolio_governance_only=True")
+    print(_PORTFOLIO_GOVERNANCE_BANNER)
+
+
+def cmd_portfolio_governance_risk_overlay(args=None):
+    """[v1.9.8] Run portfolio risk overlay. Research only."""
+    print(_PORTFOLIO_GOVERNANCE_BANNER)
+    from paper_trading.small_capital_strategy.portfolio_governance_engine_v198 import run_risk_overlay
+    result = run_risk_overlay("demo_candidate", {"paper_only": True, "no_real_orders": True, "risk_score": 0.2})
+    print(f"portfolio-governance-risk-overlay: overlay_passed={result.get('overlay_passed')}  paper_only=True  portfolio_governance_only=True")
+    print(_PORTFOLIO_GOVERNANCE_BANNER)
+
+
+def cmd_portfolio_governance_risk_score(args=None):
+    """[v1.9.8] Compute portfolio risk score. Research only."""
+    print(_PORTFOLIO_GOVERNANCE_BANNER)
+    from paper_trading.small_capital_strategy.portfolio_governance_engine_v198 import compute_risk_score
+    result = compute_risk_score({"raw_score": 0.3})
+    print(f"portfolio-governance-risk-score: score={result.get('score')}  paper_only=True  portfolio_governance_only=True")
+    print(_PORTFOLIO_GOVERNANCE_BANNER)
+
+
+def cmd_portfolio_governance_recommendations(args=None):
+    """[v1.9.8] Get portfolio governance recommendations. Research only."""
+    print(_PORTFOLIO_GOVERNANCE_BANNER)
+    from paper_trading.small_capital_strategy.portfolio_governance_engine_v198 import generate_recommendations
+    result = generate_recommendations("LOW", [])
+    print(f"portfolio-governance-recommendations: count={result.get('count')}  paper_only=True  portfolio_governance_only=True")
+    print(_PORTFOLIO_GOVERNANCE_BANNER)
+
+
+def cmd_portfolio_governance_dashboard(args=None):
+    """[v1.9.8] Render portfolio governance dashboard. Research only."""
+    print(_PORTFOLIO_GOVERNANCE_BANNER)
+    from paper_trading.small_capital_strategy.portfolio_governance_engine_v198 import build_portfolio_dashboard
+    result = build_portfolio_dashboard({}, {}, "LOW", [])
+    print(f"portfolio-governance-dashboard: panel_count={result.get('panel_count')}  paper_only=True  dashboard_mutates_strategy=False")
+    print(_PORTFOLIO_GOVERNANCE_BANNER)
+
+
+def cmd_portfolio_governance_report(args=None):
+    """[v1.9.8] Generate portfolio governance report. Research only."""
+    print(_PORTFOLIO_GOVERNANCE_BANNER)
+    from paper_trading.small_capital_strategy.portfolio_governance_engine_v198 import build_governance_report
+    result = build_governance_report({}, [])
+    print(f"portfolio-governance-report: section_count={result.get('section_count')}  paper_only=True  report_triggers_rebalance=False")
+    print(_PORTFOLIO_GOVERNANCE_BANNER)
+
+
+def cmd_portfolio_governance_export(args=None):
+    """[v1.9.8] Export portfolio governance pack. Research only."""
+    print(_PORTFOLIO_GOVERNANCE_BANNER)
+    from paper_trading.small_capital_strategy.portfolio_governance_engine_v198 import export_governance_pack
+    result = export_governance_pack({})
+    print(f"portfolio-governance-export: exported={result.get('exported')}  paper_only=True  portfolio_governance_only=True")
+    print(_PORTFOLIO_GOVERNANCE_BANNER)
+
+
+def cmd_portfolio_governance_health(args=None):
+    """[v1.9.8] Run portfolio governance health check. Research only."""
+    print(_PORTFOLIO_GOVERNANCE_BANNER)
+    from paper_trading.small_capital_strategy.portfolio_governance_health_v198 import run_health_check
+    result = run_health_check()
+    print(f"portfolio-governance-health: {result['status']}  passed={result['passed']}/{result['total']}  paper_only=True")
+    print(_PORTFOLIO_GOVERNANCE_BANNER)
+
+
+def cmd_portfolio_governance_gate(args=None):
+    """[v1.9.8] Run portfolio governance release gate. Research only."""
+    print(_PORTFOLIO_GOVERNANCE_BANNER)
+    from release.portfolio_governance_release_gate_v198 import run_release_gate
+    result = run_release_gate()
+    print(f"portfolio-governance-gate: {'PASS' if result['gate_passed'] else 'FAIL'}  passed={result['passed_count']}/{result['total']}  paper_only=True")
+    print(_PORTFOLIO_GOVERNANCE_BANNER)
+
+
+def cmd_portfolio_governance_scenarios(args=None):
+    """[v1.9.8] List portfolio governance scenarios. Research only."""
+    print(_PORTFOLIO_GOVERNANCE_BANNER)
+    from paper_trading.small_capital_strategy.portfolio_governance_scenarios_v198 import get_scenarios
+    scenarios = get_scenarios()
+    print(f"portfolio-governance-scenarios: count={len(scenarios)}  paper_only=True  portfolio_governance_only=True")
+    print(_PORTFOLIO_GOVERNANCE_BANNER)
+
+
+def cmd_portfolio_governance_fixtures(args=None):
+    """[v1.9.8] List portfolio governance fixtures. Research only."""
+    print(_PORTFOLIO_GOVERNANCE_BANNER)
+    from paper_trading.small_capital_strategy.portfolio_governance_fixtures_v198 import get_fixtures
+    fixtures = get_fixtures()
+    print(f"portfolio-governance-fixtures: count={len(fixtures)}  paper_only=True  portfolio_governance_only=True")
+    print(_PORTFOLIO_GOVERNANCE_BANNER)
+
+
+def cmd_portfolio_governance_safety_audit(args=None):
+    """[v1.9.8] Run portfolio governance safety audit. Research only."""
+    print(_PORTFOLIO_GOVERNANCE_BANNER)
+    from paper_trading.small_capital_strategy.portfolio_governance_safety_v198 import run_safety_audit
+    result = run_safety_audit()
+    print(f"portfolio-governance-safety-audit: all_safe={result['all_safe']}  paper_only=True  portfolio_governance_only=True")
+    print(_PORTFOLIO_GOVERNANCE_BANNER)
+
+
 _STRATEGY_REGISTRY_BANNER = "[!] RESEARCH ONLY — PAPER ONLY — GOVERNANCE ONLY — REGISTRY ONLY — DECISION RECORD ONLY — NOT INVESTMENT ADVICE"
 
 
@@ -45224,6 +45398,26 @@ def main() -> None:
         "strategy-promotion-rollback-validate": cmd_strategy_promotion_rollback_validate,
         "strategy-promotion-approval-state":   cmd_strategy_promotion_approval_state,
         "strategy-promotion-safety-audit":     cmd_strategy_promotion_safety_audit,
+        # v1.9.8 portfolio governance commands
+        "portfolio-governance-version":            cmd_portfolio_governance_version,
+        "portfolio-governance-run":                cmd_portfolio_governance_run,
+        "portfolio-governance-snapshot":           cmd_portfolio_governance_snapshot,
+        "portfolio-governance-exposure":           cmd_portfolio_governance_exposure,
+        "portfolio-governance-theme-risk":         cmd_portfolio_governance_theme_risk,
+        "portfolio-governance-industry-risk":      cmd_portfolio_governance_industry_risk,
+        "portfolio-governance-correlation-risk":   cmd_portfolio_governance_correlation_risk,
+        "portfolio-governance-risk-limits":        cmd_portfolio_governance_risk_limits,
+        "portfolio-governance-risk-overlay":       cmd_portfolio_governance_risk_overlay,
+        "portfolio-governance-risk-score":         cmd_portfolio_governance_risk_score,
+        "portfolio-governance-recommendations":    cmd_portfolio_governance_recommendations,
+        "portfolio-governance-dashboard":          cmd_portfolio_governance_dashboard,
+        "portfolio-governance-report":             cmd_portfolio_governance_report,
+        "portfolio-governance-export":             cmd_portfolio_governance_export,
+        "portfolio-governance-health":             cmd_portfolio_governance_health,
+        "portfolio-governance-gate":               cmd_portfolio_governance_gate,
+        "portfolio-governance-scenarios":          cmd_portfolio_governance_scenarios,
+        "portfolio-governance-fixtures":           cmd_portfolio_governance_fixtures,
+        "portfolio-governance-safety-audit":       cmd_portfolio_governance_safety_audit,
         # v1.9.7 strategy governance dashboard commands
         "strategy-governance-dashboard-version":          cmd_strategy_governance_dashboard_version,
         "strategy-governance-dashboard-run":              cmd_strategy_governance_dashboard_run,

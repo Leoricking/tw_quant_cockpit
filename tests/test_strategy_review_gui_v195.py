@@ -16,11 +16,11 @@ from gui.small_capital_strategy_panel import (
 # ── version ───────────────────────────────────────────────────────────────────
 
 def test_panel_version_195():
-    assert PANEL_VERSION in ("1.9.5", "1.9.6", "1.9.7")
+    assert PANEL_VERSION in ("1.9.5", "1.9.6", "1.9.7", "1.9.8")
 
 
 def test_panel_title_contains_195():
-    assert "1.9.5" in PANEL_TITLE or "1.9.6" in PANEL_TITLE or "1.9.7" in PANEL_TITLE
+    assert "1.9.5" in PANEL_TITLE or "1.9.6" in PANEL_TITLE or "1.9.7" in PANEL_TITLE or "1.9.8" in PANEL_TITLE
 
 
 def test_panel_title_contains_review_or_approval():
@@ -209,7 +209,7 @@ def test_total_tabs_ge_157():
 # ── get_panel_info ────────────────────────────────────────────────────────────
 
 def test_get_panel_info_panel_version():
-    assert get_panel_info()["panel_version"] in ("1.9.5", "1.9.6", "1.9.7")
+    assert get_panel_info()["panel_version"] in ("1.9.5", "1.9.6", "1.9.7", "1.9.8")
 
 
 def test_get_panel_info_paper_only():

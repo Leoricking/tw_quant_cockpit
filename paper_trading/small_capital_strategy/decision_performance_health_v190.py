@@ -249,7 +249,7 @@ class DecisionPerformanceHealthCheck:
 
         # ── GUI panel check (1) ───────────────────────────────────────────────
         from gui.small_capital_strategy_panel import PANEL_VERSION
-        self._check("gui_panel_version_190", lambda: PANEL_VERSION in ("1.9.0", "1.9.1", "1.9.2", "1.9.3", "1.9.4", "1.9.5", "1.9.6", "1.9.7"))
+        self._check("gui_panel_version_190", lambda: PANEL_VERSION in ("1.9.0", "1.9.1", "1.9.2", "1.9.3", "1.9.4", "1.9.5", "1.9.6", "1.9.7", "1.9.8"))
 
         passed = sum(1 for c in self._checks if c["passed"])
         failed = sum(1 for c in self._checks if not c["passed"])

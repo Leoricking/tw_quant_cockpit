@@ -181,7 +181,7 @@ class StrategyRegistryReleaseGate:
         # ── GUI (3) ──────────────────────────────────────────────────────────
         from gui.small_capital_strategy_panel import PANEL_VERSION, get_registry_tab_names
         self._check("gui_panel_version_196",
-                    lambda: PANEL_VERSION in ("1.9.6", "1.9.7"))
+                    lambda: PANEL_VERSION in ("1.9.6", "1.9.7", "1.9.8"))
         self._check("gui_registry_tabs_present",
                     lambda: "decision_registry" in get_registry_tab_names())
         self._check("gui_registry_tab_count_3",
@@ -207,11 +207,11 @@ class StrategyRegistryReleaseGate:
         self._check("backward_compat_v193",
                     lambda: is_known_release("Paper Strategy Promotion Package & Rollback Plan Lab v1.9.3"))
         self._check("backward_compat_panel_version",
-                    lambda: PANEL_VERSION in ("1.9.6", "1.9.7"))
+                    lambda: PANEL_VERSION in ("1.9.6", "1.9.7", "1.9.8"))
 
         # ── Panel version check (1) ───────────────────────────────────────────
         from gui.small_capital_strategy_panel import PANEL_VERSION as _PV
-        self._check("gui_panel_version_match", lambda: _PV in ("1.9.6", "1.9.7"))
+        self._check("gui_panel_version_match", lambda: _PV in ("1.9.6", "1.9.7", "1.9.8"))
 
         passed_count = sum(1 for c in self._checks if c["passed"])
         failed_count = sum(1 for c in self._checks if not c["passed"])

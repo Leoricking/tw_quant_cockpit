@@ -19,15 +19,15 @@ from gui.small_capital_strategy_panel import (
 
 
 def test_panel_version_is_190():
-    assert PANEL_VERSION in ("1.9.0", "1.9.1", "1.9.2", "1.9.3", "1.9.4", "1.9.5", "1.9.6", "1.9.7")
+    assert PANEL_VERSION in ("1.9.0", "1.9.1", "1.9.2", "1.9.3", "1.9.4", "1.9.5", "1.9.6", "1.9.7", "1.9.8")
 
 
 def test_panel_title_contains_190():
-    assert "1.9.0" in PANEL_TITLE or "1.9.1" in PANEL_TITLE or "1.9.2" in PANEL_TITLE or "1.9.3" in PANEL_TITLE or "1.9.4" in PANEL_TITLE or "1.9.5" in PANEL_TITLE or "1.9.6" in PANEL_TITLE or "1.9.7" in PANEL_TITLE
+    assert "1.9.0" in PANEL_TITLE or "1.9.1" in PANEL_TITLE or "1.9.2" in PANEL_TITLE or "1.9.3" in PANEL_TITLE or "1.9.4" in PANEL_TITLE or "1.9.5" in PANEL_TITLE or "1.9.6" in PANEL_TITLE or "1.9.7" in PANEL_TITLE or "1.9.8" in PANEL_TITLE
 
 
 def test_panel_title_contains_performance_or_review():
-    assert "Performance" in PANEL_TITLE or "Review" in PANEL_TITLE or "Tuning" in PANEL_TITLE or "Sandbox" in PANEL_TITLE or "Promotion" in PANEL_TITLE or "Rollback" in PANEL_TITLE or "Monitoring" in PANEL_TITLE or "Drift" in PANEL_TITLE or "Governance" in PANEL_TITLE
+    assert "Performance" in PANEL_TITLE or "Review" in PANEL_TITLE or "Tuning" in PANEL_TITLE or "Sandbox" in PANEL_TITLE or "Promotion" in PANEL_TITLE or "Rollback" in PANEL_TITLE or "Monitoring" in PANEL_TITLE or "Drift" in PANEL_TITLE or "Governance" in PANEL_TITLE or "Governance" in PANEL_TITLE
 
 
 def test_tabs_v190_performance_review_count():
@@ -155,7 +155,7 @@ def test_render_setup_analytics_tab_empty_state():
 
 
 def test_get_panel_info_panel_version():
-    assert get_panel_info()["panel_version"] in ("1.9.0", "1.9.1", "1.9.2", "1.9.3", "1.9.4", "1.9.5", "1.9.6", "1.9.7")
+    assert get_panel_info()["panel_version"] in ("1.9.0", "1.9.1", "1.9.2", "1.9.3", "1.9.4", "1.9.5", "1.9.6", "1.9.7", "1.9.8")
 
 
 def test_get_panel_info_paper_only():

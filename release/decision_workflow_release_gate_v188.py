@@ -171,7 +171,7 @@ class DecisionWorkflowReleaseGate:
             render_decision_workflow_tab, render_daily_workflow_tab,
             render_weekly_workflow_tab,
         )
-        self._gate("gui_panel_version_188", lambda: PANEL_VERSION in ("1.8.8", "1.8.9", "1.9.0", "1.9.1", "1.9.2", "1.9.3", "1.9.4", "1.9.5", "1.9.6", "1.9.7"))
+        self._gate("gui_panel_version_188", lambda: PANEL_VERSION in ("1.8.8", "1.8.9", "1.9.0", "1.9.1", "1.9.2", "1.9.3", "1.9.4", "1.9.5", "1.9.6", "1.9.7", "1.9.8"))
         self._gate("gui_v188_tabs_count_3", lambda: len(_TABS_V188_DECISION_WORKFLOW) == 3)
         self._gate("gui_decision_workflow_tab_in_tabs", lambda: "decision_workflow" in _TABS_V188_DECISION_WORKFLOW)
         self._gate("gui_daily_workflow_tab_in_tabs", lambda: "daily_workflow" in _TABS_V188_DECISION_WORKFLOW)
