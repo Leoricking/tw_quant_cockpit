@@ -19,10 +19,10 @@ from gui.small_capital_strategy_panel import (
 # ── version ───────────────────────────────────────────────────────────────────
 
 def test_panel_version_196():
-    assert PANEL_VERSION in ("1.9.6", "1.9.7", "1.9.8", "1.9.9")
+    assert PANEL_VERSION in ("1.9.6", "1.9.7", "1.9.8", "1.9.9", "1.9.10")
 
 def test_panel_title_contains_196():
-    assert "1.9.6" in PANEL_TITLE or "1.9.7" in PANEL_TITLE or "1.9.8" in PANEL_TITLE or "1.9.9" in PANEL_TITLE
+    assert "1.9.6" in PANEL_TITLE or "1.9.7" in PANEL_TITLE or "1.9.8" in PANEL_TITLE or "1.9.9" in PANEL_TITLE or "1.9.10" in PANEL_TITLE
 
 def test_panel_title_contains_registry_or_governance():
     assert "Registry" in PANEL_TITLE or "Governance" in PANEL_TITLE or "Decision" in PANEL_TITLE or "Portfolio" in PANEL_TITLE
@@ -34,7 +34,7 @@ def test_get_panel_info_returns_dict():
     assert isinstance(get_panel_info(), dict)
 
 def test_get_panel_info_panel_version():
-    assert get_panel_info()["panel_version"] in ("1.9.6", "1.9.7", "1.9.8", "1.9.9")
+    assert get_panel_info()["panel_version"] in ("1.9.6", "1.9.7", "1.9.8", "1.9.9", "1.9.10")
 
 def test_get_panel_info_paper_only():
     assert get_panel_info()["paper_only"] is True

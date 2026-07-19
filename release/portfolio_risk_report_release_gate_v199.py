@@ -12,7 +12,7 @@ from typing import List, Dict, Any
 GATE_VERSION = "1.9.9"
 BASELINE_TESTS = 31044
 MIN_NEW_TESTS = 400
-EXPECTED_PANEL_VERSION = ("1.9.9",)
+EXPECTED_PANEL_VERSION = ("1.9.9", "1.9.10")
 
 
 def run_release_gate() -> Dict[str, Any]:

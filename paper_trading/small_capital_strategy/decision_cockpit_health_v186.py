@@ -179,7 +179,7 @@ class DecisionCockpitHealthCheck:
 
         # ── GUI (5) ──────────────────────────────────────────────────────
         from gui.small_capital_strategy_panel import PANEL_VERSION
-        self._check("gui_panel_version_186",        lambda: PANEL_VERSION in ("1.8.6", "1.8.7", "1.8.8", "1.8.9", "1.9.0", "1.9.1", "1.9.2", "1.9.3", "1.9.4", "1.9.5", "1.9.6", "1.9.7", "1.9.8", "1.9.9"))
+        self._check("gui_panel_version_186",        lambda: PANEL_VERSION in ("1.8.6", "1.8.7", "1.8.8", "1.8.9", "1.9.0", "1.9.1", "1.9.2", "1.9.3", "1.9.4", "1.9.5", "1.9.6", "1.9.7", "1.9.8", "1.9.9", "1.9.10"))
         from gui.small_capital_strategy_panel import _TABS
         self._check("gui_tabs_ge_141",              lambda: len(_TABS) >= 141)
         self._check("gui_daily_decision_tab",       lambda: "daily_decision_cockpit" in _TABS)

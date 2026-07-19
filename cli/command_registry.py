@@ -5543,6 +5543,51 @@ _PG_V198_COMMANDS: _List[CommandSpec] = [
 
 # v1.9.9 Paper Portfolio Risk Report & Position Sizing Policy Lab commands
 # ---------------------------------------------------------------------------
+_GS_V1910_COMMANDS: _List[CommandSpec] = [
+    CommandSpec(name="governance-stack-version", handler_name="cmd_governance_stack_version",
+                help="[Research] Show governance stack version v1.9.10", group="governance_stack",
+                introduced_in="1.9.10", safety_classification="RESEARCH_ONLY"),
+    CommandSpec(name="governance-stack-audit", handler_name="cmd_governance_stack_audit",
+                help="[Research] Run full governance stack audit v1.9.10", group="governance_stack",
+                introduced_in="1.9.10", safety_classification="RESEARCH_ONLY"),
+    CommandSpec(name="governance-stack-summary", handler_name="cmd_governance_stack_summary",
+                help="[Research] Show governance stack summary v1.9.10", group="governance_stack",
+                introduced_in="1.9.10", safety_classification="RESEARCH_ONLY"),
+    CommandSpec(name="governance-stack-cli-audit", handler_name="cmd_governance_stack_cli_audit",
+                help="[Research] Audit CLI command registration v1.9.10", group="governance_stack",
+                introduced_in="1.9.10", safety_classification="RESEARCH_ONLY"),
+    CommandSpec(name="governance-stack-gui-audit", handler_name="cmd_governance_stack_gui_audit",
+                help="[Research] Audit GUI tabs v1.9.10", group="governance_stack",
+                introduced_in="1.9.10", safety_classification="RESEARCH_ONLY"),
+    CommandSpec(name="governance-stack-health-audit", handler_name="cmd_governance_stack_health_audit",
+                help="[Research] Audit health checks v1.9.4-v1.9.9 v1.9.10", group="governance_stack",
+                introduced_in="1.9.10", safety_classification="RESEARCH_ONLY"),
+    CommandSpec(name="governance-stack-gate-audit", handler_name="cmd_governance_stack_gate_audit",
+                help="[Research] Audit release gates v1.9.4-v1.9.9 v1.9.10", group="governance_stack",
+                introduced_in="1.9.10", safety_classification="RESEARCH_ONLY"),
+    CommandSpec(name="governance-stack-fixture-audit", handler_name="cmd_governance_stack_fixture_audit",
+                help="[Research] Audit fixture schema consistency v1.9.10", group="governance_stack",
+                introduced_in="1.9.10", safety_classification="RESEARCH_ONLY"),
+    CommandSpec(name="governance-stack-scenario-audit", handler_name="cmd_governance_stack_scenario_audit",
+                help="[Research] Audit scenario schema consistency v1.9.10", group="governance_stack",
+                introduced_in="1.9.10", safety_classification="RESEARCH_ONLY"),
+    CommandSpec(name="governance-stack-safety-audit", handler_name="cmd_governance_stack_safety_audit",
+                help="[Research] Audit safety flags consistency v1.9.10", group="governance_stack",
+                introduced_in="1.9.10", safety_classification="RESEARCH_ONLY"),
+    CommandSpec(name="governance-stack-compatibility", handler_name="cmd_governance_stack_compatibility",
+                help="[Research] Check backward compatibility v1.7.0-v1.9.9 v1.9.10", group="governance_stack",
+                introduced_in="1.9.10", safety_classification="RESEARCH_ONLY"),
+    CommandSpec(name="governance-stack-report", handler_name="cmd_governance_stack_report",
+                help="[Research] Export governance stack audit report v1.9.10", group="governance_stack",
+                introduced_in="1.9.10", safety_classification="RESEARCH_ONLY"),
+    CommandSpec(name="governance-stack-health", handler_name="cmd_governance_stack_health",
+                help="[Research] Run governance stack health check v1.9.10", group="governance_stack",
+                introduced_in="1.9.10", safety_classification="RESEARCH_ONLY"),
+    CommandSpec(name="governance-stack-gate", handler_name="cmd_governance_stack_gate",
+                help="[Research] Run governance stack release gate v1.9.10", group="governance_stack",
+                introduced_in="1.9.10", safety_classification="RESEARCH_ONLY"),
+]
+
 _PRR_V199_COMMANDS: _List[CommandSpec] = [
     CommandSpec(name="portfolio-risk-report-version", handler_name="cmd_portfolio_risk_report_version",
                 help="[Research] Show portfolio risk report version v1.9.9", group="portfolio_risk_report",
@@ -5709,6 +5754,7 @@ PROVIDER_COMMANDS: _List[CommandSpec] = (
     + _SGD_V197_COMMANDS
     + _PG_V198_COMMANDS
     + _PRR_V199_COMMANDS
+    + _GS_V1910_COMMANDS
 )
 
 

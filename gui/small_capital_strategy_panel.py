@@ -16,8 +16,8 @@ Headless-safe: no tkinter at module level. Renders to dict.
 from __future__ import annotations
 from typing import Any, Dict, List, Optional
 
-PANEL_VERSION = "1.9.9"
-PANEL_TITLE = "Small Capital Strategy v1.9.9 — Paper Portfolio Risk Report & Position Sizing Policy Lab"
+PANEL_VERSION = "1.9.10"
+PANEL_TITLE = "Small Capital Strategy v1.9.10 — Paper Governance Stack Consolidation & Release Audit"
 
 # v1.7.0 tabs (preserved unchanged)
 _TABS_V170 = [
@@ -342,6 +342,15 @@ _TABS_V199_RISK_REPORT = [
 
 assert len(_TABS_V199_RISK_REPORT) == 3, f"Expected 3 risk report tabs, got {len(_TABS_V199_RISK_REPORT)}"
 
+# v1.9.10 Paper Governance Stack Consolidation & Release Audit tabs
+_TABS_V1910_GOVERNANCE_STACK = [
+    "governance_stack_audit",
+    "release_audit",
+    "compatibility_summary",
+]
+
+assert len(_TABS_V1910_GOVERNANCE_STACK) == 3, f"Expected 3 governance stack tabs, got {len(_TABS_V1910_GOVERNANCE_STACK)}"
+
 _TABS = (
     _TABS_V170
     + _TABS_V171_WATCHLIST
@@ -373,6 +382,7 @@ _TABS = (
     + _TABS_V197_GOVERNANCE_DASHBOARD
     + _TABS_V198_PORTFOLIO_GOVERNANCE
     + _TABS_V199_RISK_REPORT
+    + _TABS_V1910_GOVERNANCE_STACK
 )
 
 assert len(_TABS_V170) == 22, f"Expected 22 v1.7.0 tabs, got {len(_TABS_V170)}"
@@ -1650,6 +1660,10 @@ def render_all_tabs() -> Dict[str, Any]:
         "portfolio_risk_report":             render_portfolio_risk_report_tab,
         "position_sizing_policy":            render_position_sizing_policy_tab,
         "risk_budget_dashboard":             render_risk_budget_dashboard_tab,
+        # v1.9.10 Paper Governance Stack Consolidation & Release Audit tabs
+        "governance_stack_audit":            render_governance_stack_audit_tab,
+        "release_audit":                     render_release_audit_tab,
+        "compatibility_summary":             render_compatibility_summary_tab,
     }
     result = {}
     for tab_name in _TABS:
@@ -3948,6 +3962,75 @@ def render_risk_budget_dashboard_tab() -> Dict[str, Any]:
 def get_risk_report_tab_names() -> List[str]:
     """Return list of v1.9.9 portfolio risk report tab names."""
     return list(_TABS_V199_RISK_REPORT)
+
+
+def render_governance_stack_audit_tab() -> Dict[str, Any]:
+    """Render Governance Stack Audit tab. v1.9.10."""
+    return {
+        "tab": "governance_stack_audit",
+        "paper_only": True,
+        "research_only": True,
+        "consolidation_only": True,
+        "release_audit_only": True,
+        "audit_only": True,
+        "no_real_orders": True,
+        "no_broker": True,
+        "not_investment_advice": True,
+        "production_trading_blocked": True,
+        "dashboard_mutates_strategy": False,
+        "dashboard_places_real_order": False,
+        "audit_executes_order": False,
+        "version": PANEL_VERSION,
+        "schema_version": "1910",
+        "empty_state": "No governance stack audit data. Run governance-stack-audit to populate.",
+        "description": "Paper-only governance stack audit: v1.9.4-v1.9.9 module consolidation and release audit.",
+    }
+
+
+def render_release_audit_tab() -> Dict[str, Any]:
+    """Render Release Audit tab. v1.9.10."""
+    return {
+        "tab": "release_audit",
+        "paper_only": True,
+        "research_only": True,
+        "release_audit_only": True,
+        "audit_only": True,
+        "no_real_orders": True,
+        "no_broker": True,
+        "not_investment_advice": True,
+        "production_trading_blocked": True,
+        "dashboard_mutates_strategy": False,
+        "audit_executes_order": False,
+        "version": PANEL_VERSION,
+        "schema_version": "1910",
+        "empty_state": "No release audit data. Run governance-stack-report to populate.",
+        "description": "Paper-only release audit: v1.9.4-v1.9.9 stack health, gates, CLI, GUI consistency.",
+    }
+
+
+def render_compatibility_summary_tab() -> Dict[str, Any]:
+    """Render Compatibility Summary tab. v1.9.10."""
+    return {
+        "tab": "compatibility_summary",
+        "paper_only": True,
+        "research_only": True,
+        "consolidation_only": True,
+        "no_real_orders": True,
+        "no_broker": True,
+        "not_investment_advice": True,
+        "production_trading_blocked": True,
+        "compatibility_check_executes_order": False,
+        "dashboard_mutates_strategy": False,
+        "version": PANEL_VERSION,
+        "schema_version": "1910",
+        "empty_state": "No compatibility data. Run governance-stack-compatibility to populate.",
+        "description": "Paper-only compatibility summary: v1.7.0-v1.9.9 backward compatibility audit.",
+    }
+
+
+def get_governance_stack_tab_names() -> List[str]:
+    """Return list of v1.9.10 governance stack tab names."""
+    return list(_TABS_V1910_GOVERNANCE_STACK)
 
 
 def get_panel_info() -> Dict[str, Any]:

@@ -42716,6 +42716,138 @@ def cmd_portfolio_governance_safety_audit(args=None):
 
 
 # ---------------------------------------------------------------------------
+# v1.9.10 Paper Governance Stack Consolidation & Release Audit handlers
+# ---------------------------------------------------------------------------
+_GOVERNANCE_STACK_BANNER = "[!] RESEARCH ONLY — PAPER ONLY — CONSOLIDATION ONLY — RELEASE AUDIT ONLY — NOT INVESTMENT ADVICE — NO REAL ORDERS"
+
+
+def cmd_governance_stack_version(args=None):
+    """[v1.9.10] Show governance stack version. Research only."""
+    print(_GOVERNANCE_STACK_BANNER)
+    from paper_trading.small_capital_strategy.governance_stack_audit_v1910 import get_version_info
+    info = get_version_info()
+    print(f"governance-stack-version: {info['version']}  schema={info['schema_version']}  paper_only=True  consolidation_only=True")
+    print(_GOVERNANCE_STACK_BANNER)
+
+
+def cmd_governance_stack_audit(args=None):
+    """[v1.9.10] Run full governance stack audit. Research only."""
+    print(_GOVERNANCE_STACK_BANNER)
+    from paper_trading.small_capital_strategy.governance_stack_audit_v1910 import run_full_governance_stack_audit
+    result = run_full_governance_stack_audit()
+    print(f"governance-stack-audit: all_passed={result.get('all_passed')}  passed={result.get('passed')}/{result.get('total')}  paper_only=True")
+    print(_GOVERNANCE_STACK_BANNER)
+
+
+def cmd_governance_stack_summary(args=None):
+    """[v1.9.10] Show governance stack summary. Research only."""
+    print(_GOVERNANCE_STACK_BANNER)
+    from paper_trading.small_capital_strategy.governance_stack_audit_v1910 import get_governance_stack_summary
+    summary = get_governance_stack_summary()
+    print(f"governance-stack-summary: version={summary.get('version')}  covered={len(summary.get('covered_versions', []))}  models={summary.get('model_count')}  paper_only=True")
+    print(_GOVERNANCE_STACK_BANNER)
+
+
+def cmd_governance_stack_cli_audit(args=None):
+    """[v1.9.10] Audit CLI command registration. Research only."""
+    print(_GOVERNANCE_STACK_BANNER)
+    from paper_trading.small_capital_strategy.governance_stack_audit_v1910 import audit_cli_commands
+    result = audit_cli_commands()
+    print(f"governance-stack-cli-audit: all_registered={result.get('all_registered')}  total={result.get('total_commands')}  paper_only=True")
+    print(_GOVERNANCE_STACK_BANNER)
+
+
+def cmd_governance_stack_gui_audit(args=None):
+    """[v1.9.10] Audit GUI tabs. Research only."""
+    print(_GOVERNANCE_STACK_BANNER)
+    from paper_trading.small_capital_strategy.governance_stack_audit_v1910 import audit_gui_tabs
+    result = audit_gui_tabs()
+    print(f"governance-stack-gui-audit: all_tabs_present={result.get('all_tabs_present')}  total_tabs={result.get('total_tabs')}  paper_only=True")
+    print(_GOVERNANCE_STACK_BANNER)
+
+
+def cmd_governance_stack_health_audit(args=None):
+    """[v1.9.10] Audit v1.9.4-v1.9.9 health checks. Research only."""
+    print(_GOVERNANCE_STACK_BANNER)
+    from paper_trading.small_capital_strategy.governance_stack_audit_v1910 import audit_health_checks
+    result = audit_health_checks()
+    print(f"governance-stack-health-audit: all_health_pass={result.get('all_health_pass')}  pass_count={result.get('pass_count')}/{result.get('total')}  paper_only=True")
+    print(_GOVERNANCE_STACK_BANNER)
+
+
+def cmd_governance_stack_gate_audit(args=None):
+    """[v1.9.10] Audit v1.9.4-v1.9.9 release gates. Research only."""
+    print(_GOVERNANCE_STACK_BANNER)
+    from paper_trading.small_capital_strategy.governance_stack_audit_v1910 import audit_release_gates
+    result = audit_release_gates()
+    print(f"governance-stack-gate-audit: all_gates_pass={result.get('all_gates_pass')}  pass_count={result.get('pass_count')}/{result.get('total')}  paper_only=True")
+    print(_GOVERNANCE_STACK_BANNER)
+
+
+def cmd_governance_stack_fixture_audit(args=None):
+    """[v1.9.10] Audit fixture schema consistency. Research only."""
+    print(_GOVERNANCE_STACK_BANNER)
+    from paper_trading.small_capital_strategy.governance_stack_audit_v1910 import audit_fixture_schemas
+    result = audit_fixture_schemas()
+    print(f"governance-stack-fixture-audit: all_consistent={result.get('all_consistent')}  consistent_count={result.get('consistent_count')}/{result.get('total')}  paper_only=True")
+    print(_GOVERNANCE_STACK_BANNER)
+
+
+def cmd_governance_stack_scenario_audit(args=None):
+    """[v1.9.10] Audit scenario schema consistency. Research only."""
+    print(_GOVERNANCE_STACK_BANNER)
+    from paper_trading.small_capital_strategy.governance_stack_audit_v1910 import audit_scenario_schemas
+    result = audit_scenario_schemas()
+    print(f"governance-stack-scenario-audit: all_consistent={result.get('all_consistent')}  consistent_count={result.get('consistent_count')}/{result.get('total')}  paper_only=True")
+    print(_GOVERNANCE_STACK_BANNER)
+
+
+def cmd_governance_stack_safety_audit(args=None):
+    """[v1.9.10] Audit safety flags consistency. Research only."""
+    print(_GOVERNANCE_STACK_BANNER)
+    from paper_trading.small_capital_strategy.governance_stack_audit_v1910 import run_safety_audit
+    result = run_safety_audit()
+    print(f"governance-stack-safety-audit: all_safe={result.get('all_safe')}  flags={result.get('safety_flags_count')}  paper_only=True")
+    print(_GOVERNANCE_STACK_BANNER)
+
+
+def cmd_governance_stack_compatibility(args=None):
+    """[v1.9.10] Check backward compatibility v1.7.0-v1.9.9. Research only."""
+    print(_GOVERNANCE_STACK_BANNER)
+    from paper_trading.small_capital_strategy.governance_stack_audit_v1910 import audit_backward_compatibility
+    result = audit_backward_compatibility()
+    print(f"governance-stack-compatibility: all_compatible={result.get('all_compatible')}  panel_version={result.get('panel_version')}  paper_only=True")
+    print(_GOVERNANCE_STACK_BANNER)
+
+
+def cmd_governance_stack_report(args=None):
+    """[v1.9.10] Export governance stack audit report. Research only."""
+    print(_GOVERNANCE_STACK_BANNER)
+    from paper_trading.small_capital_strategy.governance_stack_audit_v1910 import get_governance_stack_summary
+    summary = get_governance_stack_summary()
+    print(f"governance-stack-report: version={summary.get('version')}  release_name={summary.get('release_name')}  paper_only=True")
+    print(_GOVERNANCE_STACK_BANNER)
+
+
+def cmd_governance_stack_health(args=None):
+    """[v1.9.10] Run governance stack health check. Research only."""
+    print(_GOVERNANCE_STACK_BANNER)
+    from paper_trading.small_capital_strategy.governance_stack_health_v1910 import run_health_check
+    result = run_health_check()
+    print(f"governance-stack-health: {result.get('status')}  {result.get('passed')}/{result.get('total')}  paper_only=True")
+    print(_GOVERNANCE_STACK_BANNER)
+
+
+def cmd_governance_stack_gate(args=None):
+    """[v1.9.10] Run governance stack release gate. Research only."""
+    print(_GOVERNANCE_STACK_BANNER)
+    from release.governance_stack_release_gate_v1910 import run_release_gate
+    result = run_release_gate()
+    print(f"governance-stack-gate: {result.get('status')}  {result.get('passed')}/{result.get('total')}  paper_only=True")
+    print(_GOVERNANCE_STACK_BANNER)
+
+
+# ---------------------------------------------------------------------------
 # v1.9.9 Paper Portfolio Risk Report & Position Sizing Policy Lab handlers
 # ---------------------------------------------------------------------------
 _PORTFOLIO_RISK_REPORT_BANNER = "[!] RESEARCH ONLY — PAPER ONLY — PORTFOLIO RISK REPORT ONLY — POSITION SIZING POLICY ONLY — NOT INVESTMENT ADVICE — NO REAL ORDERS"
@@ -45584,6 +45716,21 @@ def main() -> None:
         "strategy-promotion-rollback-validate": cmd_strategy_promotion_rollback_validate,
         "strategy-promotion-approval-state":   cmd_strategy_promotion_approval_state,
         "strategy-promotion-safety-audit":     cmd_strategy_promotion_safety_audit,
+        # v1.9.10 governance stack commands
+        "governance-stack-version":           cmd_governance_stack_version,
+        "governance-stack-audit":             cmd_governance_stack_audit,
+        "governance-stack-summary":           cmd_governance_stack_summary,
+        "governance-stack-cli-audit":         cmd_governance_stack_cli_audit,
+        "governance-stack-gui-audit":         cmd_governance_stack_gui_audit,
+        "governance-stack-health-audit":      cmd_governance_stack_health_audit,
+        "governance-stack-gate-audit":        cmd_governance_stack_gate_audit,
+        "governance-stack-fixture-audit":     cmd_governance_stack_fixture_audit,
+        "governance-stack-scenario-audit":    cmd_governance_stack_scenario_audit,
+        "governance-stack-safety-audit":      cmd_governance_stack_safety_audit,
+        "governance-stack-compatibility":     cmd_governance_stack_compatibility,
+        "governance-stack-report":            cmd_governance_stack_report,
+        "governance-stack-health":            cmd_governance_stack_health,
+        "governance-stack-gate":              cmd_governance_stack_gate,
         # v1.9.9 portfolio risk report commands
         "portfolio-risk-report-version":           cmd_portfolio_risk_report_version,
         "portfolio-risk-report-run":               cmd_portfolio_risk_report_run,

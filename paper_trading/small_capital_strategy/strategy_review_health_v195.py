@@ -225,7 +225,7 @@ class StrategyReviewHealthCheck:
         # ── backward compat (4) ───────────────────────────────────────────────
         from gui.small_capital_strategy_panel import PANEL_VERSION, get_panel_info
         self._check("backward_compat_panel_version_195",
-                    lambda: PANEL_VERSION in ("1.9.5", "1.9.6", "1.9.7", "1.9.8", "1.9.9"))
+                    lambda: PANEL_VERSION in ("1.9.5", "1.9.6", "1.9.7", "1.9.8", "1.9.9", "1.9.10"))
         self._check("backward_compat_panel_info_paper_only",
                     lambda: get_panel_info()["paper_only"] is True)
         self._check("backward_compat_panel_info_no_real_orders",

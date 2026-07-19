@@ -11,7 +11,7 @@ sys.path.insert(0, os.path.normpath("C:/Users/Rossi/Documents/Claude/tw_quant_co
 from typing import List, Dict, Any
 
 HEALTH_VERSION = "1.9.9"
-EXPECTED_PANEL_VERSIONS = ("1.9.9",)
+EXPECTED_PANEL_VERSIONS = ("1.9.9", "1.9.10")
 
 
 def run_health_check() -> Dict[str, Any]:
