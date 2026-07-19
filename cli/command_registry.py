@@ -5479,6 +5479,62 @@ _SRG_V196_COMMANDS: _List[CommandSpec] = [
                 introduced_in="1.9.6", safety_classification="RESEARCH_ONLY"),
 ]
 
+# v1.9.7 Strategy Governance Dashboard & Decision Quality Analytics Lab commands
+# ---------------------------------------------------------------------------
+_SGD_V197_COMMANDS: _List[CommandSpec] = [
+    CommandSpec(name="strategy-governance-dashboard-version", handler_name="cmd_strategy_governance_dashboard_version",
+                help="[Research] Show strategy governance dashboard version v1.9.7", group="strategy_governance_dashboard",
+                introduced_in="1.9.7", safety_classification="RESEARCH_ONLY"),
+    CommandSpec(name="strategy-governance-dashboard-run", handler_name="cmd_strategy_governance_dashboard_run",
+                help="[Research] Run strategy governance dashboard analytics v1.9.7", group="strategy_governance_dashboard",
+                introduced_in="1.9.7", safety_classification="RESEARCH_ONLY"),
+    CommandSpec(name="strategy-governance-dashboard-quality", handler_name="cmd_strategy_governance_dashboard_quality",
+                help="[Research] Show decision quality scores v1.9.7", group="strategy_governance_dashboard",
+                introduced_in="1.9.7", safety_classification="RESEARCH_ONLY"),
+    CommandSpec(name="strategy-governance-dashboard-scorecard", handler_name="cmd_strategy_governance_dashboard_scorecard",
+                help="[Research] Export decision quality scorecard v1.9.7", group="strategy_governance_dashboard",
+                introduced_in="1.9.7", safety_classification="RESEARCH_ONLY"),
+    CommandSpec(name="strategy-governance-dashboard-evidence", handler_name="cmd_strategy_governance_dashboard_evidence",
+                help="[Research] Show evidence coverage summary v1.9.7", group="strategy_governance_dashboard",
+                introduced_in="1.9.7", safety_classification="RESEARCH_ONLY"),
+    CommandSpec(name="strategy-governance-dashboard-outcomes", handler_name="cmd_strategy_governance_dashboard_outcomes",
+                help="[Research] Show decision outcome distribution v1.9.7", group="strategy_governance_dashboard",
+                introduced_in="1.9.7", safety_classification="RESEARCH_ONLY"),
+    CommandSpec(name="strategy-governance-dashboard-violations", handler_name="cmd_strategy_governance_dashboard_violations",
+                help="[Research] Show governance violation summary v1.9.7", group="strategy_governance_dashboard",
+                introduced_in="1.9.7", safety_classification="RESEARCH_ONLY"),
+    CommandSpec(name="strategy-governance-dashboard-rollback-frequency", handler_name="cmd_strategy_governance_dashboard_rollback_frequency",
+                help="[Research] Show rollback review frequency v1.9.7", group="strategy_governance_dashboard",
+                introduced_in="1.9.7", safety_classification="RESEARCH_ONLY"),
+    CommandSpec(name="strategy-governance-dashboard-lineage-health", handler_name="cmd_strategy_governance_dashboard_lineage_health",
+                help="[Research] Show decision lineage health v1.9.7", group="strategy_governance_dashboard",
+                introduced_in="1.9.7", safety_classification="RESEARCH_ONLY"),
+    CommandSpec(name="strategy-governance-dashboard-audit-health", handler_name="cmd_strategy_governance_dashboard_audit_health",
+                help="[Research] Show audit trail health v1.9.7", group="strategy_governance_dashboard",
+                introduced_in="1.9.7", safety_classification="RESEARCH_ONLY"),
+    CommandSpec(name="strategy-governance-dashboard-report", handler_name="cmd_strategy_governance_dashboard_report",
+                help="[Research] Export full governance dashboard report v1.9.7", group="strategy_governance_dashboard",
+                introduced_in="1.9.7", safety_classification="RESEARCH_ONLY"),
+    CommandSpec(name="strategy-governance-dashboard-export", handler_name="cmd_strategy_governance_dashboard_export",
+                help="[Research] Export full dashboard pack v1.9.7", group="strategy_governance_dashboard",
+                introduced_in="1.9.7", safety_classification="RESEARCH_ONLY"),
+    CommandSpec(name="strategy-governance-dashboard-health", handler_name="cmd_strategy_governance_dashboard_health",
+                help="[Research] Run governance dashboard health check v1.9.7", group="strategy_governance_dashboard",
+                introduced_in="1.9.7", safety_classification="RESEARCH_ONLY"),
+    CommandSpec(name="strategy-governance-dashboard-gate", handler_name="cmd_strategy_governance_dashboard_gate",
+                help="[Research] Run governance dashboard release gate v1.9.7", group="strategy_governance_dashboard",
+                introduced_in="1.9.7", safety_classification="RESEARCH_ONLY"),
+    CommandSpec(name="strategy-governance-dashboard-scenarios", handler_name="cmd_strategy_governance_dashboard_scenarios",
+                help="[Research] List governance dashboard scenarios v1.9.7", group="strategy_governance_dashboard",
+                introduced_in="1.9.7", safety_classification="RESEARCH_ONLY"),
+    CommandSpec(name="strategy-governance-dashboard-fixtures", handler_name="cmd_strategy_governance_dashboard_fixtures",
+                help="[Research] List governance dashboard fixtures v1.9.7", group="strategy_governance_dashboard",
+                introduced_in="1.9.7", safety_classification="RESEARCH_ONLY"),
+    CommandSpec(name="strategy-governance-dashboard-safety-audit", handler_name="cmd_strategy_governance_dashboard_safety_audit",
+                help="[Research] Run governance dashboard safety audit v1.9.7", group="strategy_governance_dashboard",
+                introduced_in="1.9.7", safety_classification="RESEARCH_ONLY"),
+]
+
 PROVIDER_COMMANDS: _List[CommandSpec] = (
     _RESEARCH_FOUNDATION_COMMANDS
     + _TWSE_COMMANDS
@@ -5531,6 +5587,7 @@ PROVIDER_COMMANDS: _List[CommandSpec] = (
     + _SM_V194_COMMANDS
     + _SR_V195_COMMANDS
     + _SRG_V196_COMMANDS
+    + _SGD_V197_COMMANDS
 )
 
 

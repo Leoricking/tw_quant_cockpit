@@ -16,8 +16,8 @@ Headless-safe: no tkinter at module level. Renders to dict.
 from __future__ import annotations
 from typing import Any, Dict, List, Optional
 
-PANEL_VERSION = "1.9.6"
-PANEL_TITLE = "Small Capital Strategy v1.9.6 — Paper Strategy Decision Registry & Governance Review Lab"
+PANEL_VERSION = "1.9.7"
+PANEL_TITLE = "Small Capital Strategy v1.9.7 — Paper Strategy Governance Dashboard & Decision Quality Analytics Lab"
 
 # v1.7.0 tabs (preserved unchanged)
 _TABS_V170 = [
@@ -315,6 +315,15 @@ _TABS_V196_STRATEGY_REGISTRY = [
 
 assert len(_TABS_V196_STRATEGY_REGISTRY) == 3, f"Expected 3 strategy registry tabs, got {len(_TABS_V196_STRATEGY_REGISTRY)}"
 
+# v1.9.7 Paper Strategy Governance Dashboard & Decision Quality Analytics Lab tabs
+_TABS_V197_GOVERNANCE_DASHBOARD = [
+    "governance_dashboard",
+    "decision_quality",
+    "governance_analytics",
+]
+
+assert len(_TABS_V197_GOVERNANCE_DASHBOARD) == 3, f"Expected 3 governance dashboard tabs, got {len(_TABS_V197_GOVERNANCE_DASHBOARD)}"
+
 _TABS = (
     _TABS_V170
     + _TABS_V171_WATCHLIST
@@ -343,6 +352,7 @@ _TABS = (
     + _TABS_V194_STRATEGY_MONITORING
     + _TABS_V195_STRATEGY_REVIEW
     + _TABS_V196_STRATEGY_REGISTRY
+    + _TABS_V197_GOVERNANCE_DASHBOARD
 )
 
 assert len(_TABS_V170) == 22, f"Expected 22 v1.7.0 tabs, got {len(_TABS_V170)}"
@@ -1608,6 +1618,10 @@ def render_all_tabs() -> Dict[str, Any]:
         "decision_registry":                 render_decision_registry_tab,
         "governance_review":                 render_governance_review_tab,
         "decision_lineage":                  render_decision_lineage_tab,
+        # v1.9.7 Paper Strategy Governance Dashboard & Decision Quality Analytics Lab tabs
+        "governance_dashboard":              render_governance_dashboard_tab,
+        "decision_quality":                  render_decision_quality_tab,
+        "governance_analytics":              render_governance_analytics_tab,
     }
     result = {}
     for tab_name in _TABS:
@@ -3697,6 +3711,89 @@ def render_decision_lineage_tab() -> Dict[str, Any]:
 def get_registry_tab_names() -> List[str]:
     """Return list of v1.9.6 strategy registry tab names."""
     return list(_TABS_V196_STRATEGY_REGISTRY)
+
+
+def render_governance_dashboard_tab() -> Dict[str, Any]:
+    """Render governance dashboard tab data (headless-safe, analytics-only)."""
+    return {
+        "tab": "governance_dashboard",
+        "version": PANEL_VERSION,
+        "release_name": "Paper Strategy Governance Dashboard & Decision Quality Analytics Lab",
+        "description": "Governance Dashboard: visualise decision quality scores, evidence coverage, outcome distribution, and violation patterns across all paper strategy decisions.",
+        "paper_only": True,
+        "research_only": True,
+        "governance_analytics_only": True,
+        "dashboard_only": True,
+        "quality_analytics_only": True,
+        "no_real_orders": True,
+        "no_broker": True,
+        "no_production_strategy_mutation": True,
+        "no_automatic_rollback": True,
+        "no_live_strategy_activation": True,
+        "not_investment_advice": True,
+        "production_trading_blocked": True,
+        "analytics_executes_decision": False,
+        "dashboard_mutates_strategy": False,
+        "panels_count": 12,
+        "empty_state": "No governance data. Run strategy-governance-dashboard-run to populate.",
+        "schema_version": "197",
+    }
+
+
+def render_decision_quality_tab() -> Dict[str, Any]:
+    """Render decision quality tab data (headless-safe, quality-analytics-only)."""
+    return {
+        "tab": "decision_quality",
+        "version": PANEL_VERSION,
+        "release_name": "Paper Strategy Governance Dashboard & Decision Quality Analytics Lab",
+        "description": "Decision Quality: score each paper strategy decision across 12 quality metrics; assign EXCELLENT/GOOD/WATCH/WEAK/INVALID grades.",
+        "paper_only": True,
+        "research_only": True,
+        "governance_analytics_only": True,
+        "quality_analytics_only": True,
+        "no_real_orders": True,
+        "no_broker": True,
+        "no_production_strategy_mutation": True,
+        "no_live_strategy_activation": True,
+        "not_investment_advice": True,
+        "production_trading_blocked": True,
+        "analytics_executes_decision": False,
+        "quality_metrics_count": 12,
+        "quality_grades": ["EXCELLENT", "GOOD", "WATCH", "WEAK", "INVALID"],
+        "empty_state": "No quality data. Run strategy-governance-dashboard-quality to populate.",
+        "schema_version": "197",
+    }
+
+
+def render_governance_analytics_tab() -> Dict[str, Any]:
+    """Render governance analytics tab data (headless-safe, report-only)."""
+    return {
+        "tab": "governance_analytics",
+        "version": PANEL_VERSION,
+        "release_name": "Paper Strategy Governance Dashboard & Decision Quality Analytics Lab",
+        "description": "Governance Analytics: full-history and windowed analytics for evidence coverage, outcome consistency, rollback review frequency, and violation patterns.",
+        "paper_only": True,
+        "research_only": True,
+        "governance_analytics_only": True,
+        "report_only": True,
+        "audit_only": True,
+        "no_real_orders": True,
+        "no_broker": True,
+        "no_production_strategy_mutation": True,
+        "no_live_strategy_activation": True,
+        "not_investment_advice": True,
+        "production_trading_blocked": True,
+        "analytics_executes_decision": False,
+        "dashboard_mutates_strategy": False,
+        "analytics_windows": ["DAILY", "WEEKLY", "MONTHLY", "QUARTERLY", "FULL_HISTORY"],
+        "empty_state": "No analytics data. Run strategy-governance-dashboard-report to populate.",
+        "schema_version": "197",
+    }
+
+
+def get_governance_dashboard_tab_names() -> List[str]:
+    """Return list of v1.9.7 governance dashboard tab names."""
+    return list(_TABS_V197_GOVERNANCE_DASHBOARD)
 
 
 def get_panel_info() -> Dict[str, Any]:

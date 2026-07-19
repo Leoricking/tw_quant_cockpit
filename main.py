@@ -42385,6 +42385,162 @@ def cmd_strategy_review_safety_audit(args=None):
     print(_STRATEGY_REVIEW_BANNER)
 
 
+_STRATEGY_GOVERNANCE_DASHBOARD_BANNER = "[!] RESEARCH ONLY — PAPER ONLY — GOVERNANCE ANALYTICS ONLY — DASHBOARD ONLY — QUALITY ANALYTICS ONLY — NOT INVESTMENT ADVICE"
+
+
+def cmd_strategy_governance_dashboard_version(args=None):
+    """[v1.9.7] Show strategy governance dashboard version. Research only."""
+    print(_STRATEGY_GOVERNANCE_DASHBOARD_BANNER)
+    from paper_trading.small_capital_strategy.strategy_governance_dashboard_version_v197 import get_version_info
+    info = get_version_info()
+    print(f"strategy-governance-dashboard-version: {info['version']}  schema={info['schema_version']}  paper_only=True  governance_analytics_only=True")
+    print(_STRATEGY_GOVERNANCE_DASHBOARD_BANNER)
+
+
+def cmd_strategy_governance_dashboard_run(args=None):
+    """[v1.9.7] Run strategy governance dashboard analytics. Research only."""
+    print(_STRATEGY_GOVERNANCE_DASHBOARD_BANNER)
+    from paper_trading.small_capital_strategy.strategy_governance_dashboard_engine_v197 import get_engine_info
+    info = get_engine_info()
+    print(f"strategy-governance-dashboard-run: version={info['version']}  paper_only=True  analytics_executes_decision=False")
+    print(_STRATEGY_GOVERNANCE_DASHBOARD_BANNER)
+
+
+def cmd_strategy_governance_dashboard_quality(args=None):
+    """[v1.9.7] Show decision quality scores. Research only."""
+    print(_STRATEGY_GOVERNANCE_DASHBOARD_BANNER)
+    from paper_trading.small_capital_strategy.strategy_governance_dashboard_version_v197 import get_decision_quality_metrics
+    metrics = get_decision_quality_metrics()
+    print(f"strategy-governance-dashboard-quality: metrics={len(metrics)}  paper_only=True  quality_analytics_only=True")
+    print(_STRATEGY_GOVERNANCE_DASHBOARD_BANNER)
+
+
+def cmd_strategy_governance_dashboard_scorecard(args=None):
+    """[v1.9.7] Export decision quality scorecard. Research only."""
+    print(_STRATEGY_GOVERNANCE_DASHBOARD_BANNER)
+    from paper_trading.small_capital_strategy.strategy_governance_dashboard_report_v197 import export_scorecard_report
+    result = export_scorecard_report("DEMO-REG-001")
+    print(f"strategy-governance-dashboard-scorecard: valid={result['valid']}  paper_only=True  report_only=True")
+    print(_STRATEGY_GOVERNANCE_DASHBOARD_BANNER)
+
+
+def cmd_strategy_governance_dashboard_evidence(args=None):
+    """[v1.9.7] Show evidence coverage summary. Research only."""
+    print(_STRATEGY_GOVERNANCE_DASHBOARD_BANNER)
+    from paper_trading.small_capital_strategy.strategy_governance_dashboard_engine_v197 import build_evidence_coverage_summary
+    result = build_evidence_coverage_summary("DEMO-REG-001")
+    print(f"strategy-governance-dashboard-evidence: valid={result['valid']}  paper_only=True  audit_only=True")
+    print(_STRATEGY_GOVERNANCE_DASHBOARD_BANNER)
+
+
+def cmd_strategy_governance_dashboard_outcomes(args=None):
+    """[v1.9.7] Show decision outcome distribution. Research only."""
+    print(_STRATEGY_GOVERNANCE_DASHBOARD_BANNER)
+    from paper_trading.small_capital_strategy.strategy_governance_dashboard_engine_v197 import build_outcome_summary
+    result = build_outcome_summary("DEMO-REG-001")
+    print(f"strategy-governance-dashboard-outcomes: valid={result['valid']}  paper_only=True  analytics_only=True")
+    print(_STRATEGY_GOVERNANCE_DASHBOARD_BANNER)
+
+
+def cmd_strategy_governance_dashboard_violations(args=None):
+    """[v1.9.7] Show governance violation summary. Research only."""
+    print(_STRATEGY_GOVERNANCE_DASHBOARD_BANNER)
+    from paper_trading.small_capital_strategy.strategy_governance_dashboard_engine_v197 import build_violation_summary
+    result = build_violation_summary("DEMO-REG-001")
+    print(f"strategy-governance-dashboard-violations: valid={result['valid']}  paper_only=True  governance_analytics_only=True")
+    print(_STRATEGY_GOVERNANCE_DASHBOARD_BANNER)
+
+
+def cmd_strategy_governance_dashboard_rollback_frequency(args=None):
+    """[v1.9.7] Show rollback review frequency. Research only."""
+    print(_STRATEGY_GOVERNANCE_DASHBOARD_BANNER)
+    from paper_trading.small_capital_strategy.strategy_governance_dashboard_engine_v197 import build_rollback_review_frequency
+    result = build_rollback_review_frequency("DEMO-REG-001")
+    print(f"strategy-governance-dashboard-rollback-frequency: valid={result['valid']}  auto_rollback=False  paper_only=True")
+    print(_STRATEGY_GOVERNANCE_DASHBOARD_BANNER)
+
+
+def cmd_strategy_governance_dashboard_lineage_health(args=None):
+    """[v1.9.7] Show decision lineage health. Research only."""
+    print(_STRATEGY_GOVERNANCE_DASHBOARD_BANNER)
+    from paper_trading.small_capital_strategy.strategy_governance_dashboard_engine_v197 import build_quality_health_summary
+    result = build_quality_health_summary("DEMO-REG-001")
+    print(f"strategy-governance-dashboard-lineage-health: valid={result['valid']}  paper_only=True  governance_analytics_only=True")
+    print(_STRATEGY_GOVERNANCE_DASHBOARD_BANNER)
+
+
+def cmd_strategy_governance_dashboard_audit_health(args=None):
+    """[v1.9.7] Show audit trail health. Research only."""
+    print(_STRATEGY_GOVERNANCE_DASHBOARD_BANNER)
+    from paper_trading.small_capital_strategy.strategy_governance_dashboard_engine_v197 import build_quality_audit_trail
+    result = build_quality_audit_trail("DEMO-REG-001")
+    print(f"strategy-governance-dashboard-audit-health: valid={result['valid']}  immutable={result.get('immutable', True)}  paper_only=True")
+    print(_STRATEGY_GOVERNANCE_DASHBOARD_BANNER)
+
+
+def cmd_strategy_governance_dashboard_report(args=None):
+    """[v1.9.7] Export full governance dashboard report. Research only."""
+    print(_STRATEGY_GOVERNANCE_DASHBOARD_BANNER)
+    from paper_trading.small_capital_strategy.strategy_governance_dashboard_report_v197 import export_full_dashboard_pack
+    result = export_full_dashboard_pack("DEMO-REG-001")
+    print(f"strategy-governance-dashboard-report: valid={result['valid']}  paper_only=True  report_only=True")
+    print(_STRATEGY_GOVERNANCE_DASHBOARD_BANNER)
+
+
+def cmd_strategy_governance_dashboard_export(args=None):
+    """[v1.9.7] Export full dashboard pack. Research only."""
+    print(_STRATEGY_GOVERNANCE_DASHBOARD_BANNER)
+    from paper_trading.small_capital_strategy.strategy_governance_dashboard_engine_v197 import build_dashboard_export
+    result = build_dashboard_export("./reports/governance_dashboard_export.json")
+    print(f"strategy-governance-dashboard-export: valid={result['valid']}  paper_only=True  safe_path_only=True")
+    print(_STRATEGY_GOVERNANCE_DASHBOARD_BANNER)
+
+
+def cmd_strategy_governance_dashboard_health(args=None):
+    """[v1.9.7] Run governance dashboard health check. Research only."""
+    print(_STRATEGY_GOVERNANCE_DASHBOARD_BANNER)
+    from paper_trading.small_capital_strategy.strategy_governance_dashboard_health_v197 import run_health_check
+    result = run_health_check()
+    print(f"strategy-governance-dashboard-health: {result['passed']}/{result['total']} passed  all_passed={result['all_passed']}")
+    print(_STRATEGY_GOVERNANCE_DASHBOARD_BANNER)
+
+
+def cmd_strategy_governance_dashboard_gate(args=None):
+    """[v1.9.7] Run governance dashboard release gate. Research only."""
+    print(_STRATEGY_GOVERNANCE_DASHBOARD_BANNER)
+    from release.strategy_governance_dashboard_release_gate_v197 import run_release_gate
+    result = run_release_gate()
+    print(f"strategy-governance-dashboard-gate: {result['passed_count']}/{result['total']} passed  gate_passed={result['gate_passed']}")
+    print(_STRATEGY_GOVERNANCE_DASHBOARD_BANNER)
+
+
+def cmd_strategy_governance_dashboard_scenarios(args=None):
+    """[v1.9.7] List governance dashboard scenarios. Research only."""
+    print(_STRATEGY_GOVERNANCE_DASHBOARD_BANNER)
+    from paper_trading.small_capital_strategy.strategy_governance_dashboard_scenarios_v197 import get_all_scenarios
+    scenarios = get_all_scenarios()
+    print(f"strategy-governance-dashboard-scenarios: count={len(scenarios)}  paper_only=True  governance_analytics_only=True")
+    print(_STRATEGY_GOVERNANCE_DASHBOARD_BANNER)
+
+
+def cmd_strategy_governance_dashboard_fixtures(args=None):
+    """[v1.9.7] List governance dashboard fixtures. Research only."""
+    print(_STRATEGY_GOVERNANCE_DASHBOARD_BANNER)
+    from paper_trading.small_capital_strategy.strategy_governance_dashboard_fixtures_v197 import get_all_fixtures
+    fixtures = get_all_fixtures()
+    print(f"strategy-governance-dashboard-fixtures: count={len(fixtures)}  paper_only=True  governance_analytics_only=True")
+    print(_STRATEGY_GOVERNANCE_DASHBOARD_BANNER)
+
+
+def cmd_strategy_governance_dashboard_safety_audit(args=None):
+    """[v1.9.7] Run governance dashboard safety audit. Research only."""
+    print(_STRATEGY_GOVERNANCE_DASHBOARD_BANNER)
+    from paper_trading.small_capital_strategy.strategy_governance_dashboard_safety_v197 import run_safety_audit
+    result = run_safety_audit()
+    print(f"strategy-governance-dashboard-safety-audit: all_safe={result['all_safe']}  paper_only=True  governance_analytics_only=True")
+    print(_STRATEGY_GOVERNANCE_DASHBOARD_BANNER)
+
+
 _STRATEGY_REGISTRY_BANNER = "[!] RESEARCH ONLY — PAPER ONLY — GOVERNANCE ONLY — REGISTRY ONLY — DECISION RECORD ONLY — NOT INVESTMENT ADVICE"
 
 
@@ -45068,6 +45224,24 @@ def main() -> None:
         "strategy-promotion-rollback-validate": cmd_strategy_promotion_rollback_validate,
         "strategy-promotion-approval-state":   cmd_strategy_promotion_approval_state,
         "strategy-promotion-safety-audit":     cmd_strategy_promotion_safety_audit,
+        # v1.9.7 strategy governance dashboard commands
+        "strategy-governance-dashboard-version":          cmd_strategy_governance_dashboard_version,
+        "strategy-governance-dashboard-run":              cmd_strategy_governance_dashboard_run,
+        "strategy-governance-dashboard-quality":          cmd_strategy_governance_dashboard_quality,
+        "strategy-governance-dashboard-scorecard":        cmd_strategy_governance_dashboard_scorecard,
+        "strategy-governance-dashboard-evidence":         cmd_strategy_governance_dashboard_evidence,
+        "strategy-governance-dashboard-outcomes":         cmd_strategy_governance_dashboard_outcomes,
+        "strategy-governance-dashboard-violations":       cmd_strategy_governance_dashboard_violations,
+        "strategy-governance-dashboard-rollback-frequency": cmd_strategy_governance_dashboard_rollback_frequency,
+        "strategy-governance-dashboard-lineage-health":   cmd_strategy_governance_dashboard_lineage_health,
+        "strategy-governance-dashboard-audit-health":     cmd_strategy_governance_dashboard_audit_health,
+        "strategy-governance-dashboard-report":           cmd_strategy_governance_dashboard_report,
+        "strategy-governance-dashboard-export":           cmd_strategy_governance_dashboard_export,
+        "strategy-governance-dashboard-health":           cmd_strategy_governance_dashboard_health,
+        "strategy-governance-dashboard-gate":             cmd_strategy_governance_dashboard_gate,
+        "strategy-governance-dashboard-scenarios":        cmd_strategy_governance_dashboard_scenarios,
+        "strategy-governance-dashboard-fixtures":         cmd_strategy_governance_dashboard_fixtures,
+        "strategy-governance-dashboard-safety-audit":     cmd_strategy_governance_dashboard_safety_audit,
         # v1.9.6 strategy registry commands
         "strategy-registry-version":           cmd_strategy_registry_version,
         "strategy-registry-run":               cmd_strategy_registry_run,

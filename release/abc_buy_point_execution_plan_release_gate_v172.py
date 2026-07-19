@@ -254,7 +254,7 @@ class ABCBuyPointExecutionPlanReleaseGate:
             get_panel_info, get_tab_names, PANEL_VERSION,
         )
         self._check("gui_panel_version_172",
-                    lambda: PANEL_VERSION in ("1.7.2", "1.7.3", "1.7.4", "1.7.5", "1.7.6", "1.7.7", "1.7.8", "1.7.9", "1.8.0", "1.8.1", "1.8.2", "1.8.3", "1.8.4", "1.8.5", "1.8.6", "1.8.7", "1.8.8", "1.8.9", "1.9.0", "1.9.1", "1.9.2", "1.9.3", "1.9.4", "1.9.5", "1.9.6"))
+                    lambda: PANEL_VERSION in ("1.7.2", "1.7.3", "1.7.4", "1.7.5", "1.7.6", "1.7.7", "1.7.8", "1.7.9", "1.8.0", "1.8.1", "1.8.2", "1.8.3", "1.8.4", "1.8.5", "1.8.6", "1.8.7", "1.8.8", "1.8.9", "1.9.0", "1.9.1", "1.9.2", "1.9.3", "1.9.4", "1.9.5", "1.9.6", "1.9.7"))
         self._check("gui_has_abc_tabs",
                     lambda: any("abc" in t for t in get_tab_names()))
         self._check("gui_panel_info_dict",

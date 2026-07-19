@@ -178,7 +178,7 @@ class StrategyPromotionReleaseGate:
 
         # ── GUI (2) ──────────────────────────────────────────────────────────
         from gui.small_capital_strategy_panel import PANEL_VERSION
-        self._gate("gui_panel_version_193", lambda: PANEL_VERSION in ("1.9.3", "1.9.4", "1.9.5", "1.9.6"))
+        self._gate("gui_panel_version_193", lambda: PANEL_VERSION in ("1.9.3", "1.9.4", "1.9.5", "1.9.6", "1.9.7"))
         from gui.small_capital_strategy_panel import get_promotion_tab_names
         self._gate("gui_promotion_tabs_count_3",
                    lambda: len(get_promotion_tab_names()) == 3)
