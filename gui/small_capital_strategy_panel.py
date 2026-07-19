@@ -16,8 +16,8 @@ Headless-safe: no tkinter at module level. Renders to dict.
 from __future__ import annotations
 from typing import Any, Dict, List, Optional
 
-PANEL_VERSION = "1.9.8"
-PANEL_TITLE = "Small Capital Strategy v1.9.8 — Paper Portfolio Governance & Risk Overlay Lab"
+PANEL_VERSION = "1.9.9"
+PANEL_TITLE = "Small Capital Strategy v1.9.9 — Paper Portfolio Risk Report & Position Sizing Policy Lab"
 
 # v1.7.0 tabs (preserved unchanged)
 _TABS_V170 = [
@@ -333,6 +333,15 @@ _TABS_V198_PORTFOLIO_GOVERNANCE = [
 
 assert len(_TABS_V198_PORTFOLIO_GOVERNANCE) == 3, f"Expected 3 portfolio governance tabs, got {len(_TABS_V198_PORTFOLIO_GOVERNANCE)}"
 
+# v1.9.9 Paper Portfolio Risk Report & Position Sizing Policy Lab tabs
+_TABS_V199_RISK_REPORT = [
+    "portfolio_risk_report",
+    "position_sizing_policy",
+    "risk_budget_dashboard",
+]
+
+assert len(_TABS_V199_RISK_REPORT) == 3, f"Expected 3 risk report tabs, got {len(_TABS_V199_RISK_REPORT)}"
+
 _TABS = (
     _TABS_V170
     + _TABS_V171_WATCHLIST
@@ -363,6 +372,7 @@ _TABS = (
     + _TABS_V196_STRATEGY_REGISTRY
     + _TABS_V197_GOVERNANCE_DASHBOARD
     + _TABS_V198_PORTFOLIO_GOVERNANCE
+    + _TABS_V199_RISK_REPORT
 )
 
 assert len(_TABS_V170) == 22, f"Expected 22 v1.7.0 tabs, got {len(_TABS_V170)}"
@@ -1635,7 +1645,11 @@ def render_all_tabs() -> Dict[str, Any]:
         # v1.9.8 Paper Portfolio Governance & Risk Overlay Lab tabs
         "portfolio_governance":              render_portfolio_governance_tab,
         "risk_overlay":                      render_risk_overlay_tab,
-        "exposure_dashboard":               render_exposure_dashboard_tab,
+        "exposure_dashboard":                render_exposure_dashboard_tab,
+        # v1.9.9 Paper Portfolio Risk Report & Position Sizing Policy Lab tabs
+        "portfolio_risk_report":             render_portfolio_risk_report_tab,
+        "position_sizing_policy":            render_position_sizing_policy_tab,
+        "risk_budget_dashboard":             render_risk_budget_dashboard_tab,
     }
     result = {}
     for tab_name in _TABS:
@@ -3865,6 +3879,75 @@ def render_exposure_dashboard_tab() -> Dict[str, Any]:
 def get_governance_portfolio_tab_names() -> List[str]:
     """Return list of v1.9.8 portfolio governance tab names."""
     return list(_TABS_V198_PORTFOLIO_GOVERNANCE)
+
+
+def render_portfolio_risk_report_tab() -> Dict[str, Any]:
+    """Render Portfolio Risk Report tab. v1.9.9."""
+    return {
+        "tab": "portfolio_risk_report",
+        "paper_only": True,
+        "research_only": True,
+        "simulate_only": True,
+        "validation_only": True,
+        "portfolio_risk_report_only": True,
+        "no_real_orders": True,
+        "no_broker": True,
+        "not_investment_advice": True,
+        "production_trading_blocked": True,
+        "dashboard_mutates_strategy": False,
+        "report_triggers_rebalance": False,
+        "version": PANEL_VERSION,
+        "schema_version": "199",
+        "empty_state": "No portfolio risk report data. Run portfolio-risk-report-run to populate.",
+        "description": "Paper-only portfolio risk report: capital profile, risk budget, exposure limits, sizing policy.",
+    }
+
+
+def render_position_sizing_policy_tab() -> Dict[str, Any]:
+    """Render Position Sizing Policy tab. v1.9.9."""
+    return {
+        "tab": "position_sizing_policy",
+        "paper_only": True,
+        "research_only": True,
+        "simulate_only": True,
+        "position_sizing_policy_only": True,
+        "no_real_orders": True,
+        "no_broker": True,
+        "not_investment_advice": True,
+        "production_trading_blocked": True,
+        "sizing_executes_order": False,
+        "sizing_mutates_strategy": False,
+        "version": PANEL_VERSION,
+        "schema_version": "199",
+        "empty_state": "No position sizing policy data. Run portfolio-risk-report-position-size to populate.",
+        "description": "Paper-only position sizing policy: A/B/C entry rules, stop distance, risk-off mode.",
+    }
+
+
+def render_risk_budget_dashboard_tab() -> Dict[str, Any]:
+    """Render Risk Budget Dashboard tab. v1.9.9."""
+    return {
+        "tab": "risk_budget_dashboard",
+        "paper_only": True,
+        "research_only": True,
+        "dashboard_only": True,
+        "report_only": True,
+        "no_real_orders": True,
+        "no_broker": True,
+        "not_investment_advice": True,
+        "production_trading_blocked": True,
+        "dashboard_mutates_strategy": False,
+        "dashboard_places_real_order": False,
+        "version": PANEL_VERSION,
+        "schema_version": "199",
+        "empty_state": "No risk budget data. Run portfolio-risk-report-risk-budget to populate.",
+        "description": "Paper-only risk budget dashboard: used/remaining budget, cash buffer, exposure summary.",
+    }
+
+
+def get_risk_report_tab_names() -> List[str]:
+    """Return list of v1.9.9 portfolio risk report tab names."""
+    return list(_TABS_V199_RISK_REPORT)
 
 
 def get_panel_info() -> Dict[str, Any]:

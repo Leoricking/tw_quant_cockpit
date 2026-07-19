@@ -5541,6 +5541,65 @@ _PG_V198_COMMANDS: _List[CommandSpec] = [
                 introduced_in="1.9.8", safety_classification="RESEARCH_ONLY"),
 ]
 
+# v1.9.9 Paper Portfolio Risk Report & Position Sizing Policy Lab commands
+# ---------------------------------------------------------------------------
+_PRR_V199_COMMANDS: _List[CommandSpec] = [
+    CommandSpec(name="portfolio-risk-report-version", handler_name="cmd_portfolio_risk_report_version",
+                help="[Research] Show portfolio risk report version v1.9.9", group="portfolio_risk_report",
+                introduced_in="1.9.9", safety_classification="RESEARCH_ONLY"),
+    CommandSpec(name="portfolio-risk-report-run", handler_name="cmd_portfolio_risk_report_run",
+                help="[Research] Run portfolio risk report v1.9.9", group="portfolio_risk_report",
+                introduced_in="1.9.9", safety_classification="RESEARCH_ONLY"),
+    CommandSpec(name="portfolio-risk-report-capital-profile", handler_name="cmd_portfolio_risk_report_capital_profile",
+                help="[Research] Show capital profile v1.9.9", group="portfolio_risk_report",
+                introduced_in="1.9.9", safety_classification="RESEARCH_ONLY"),
+    CommandSpec(name="portfolio-risk-report-risk-budget", handler_name="cmd_portfolio_risk_report_risk_budget",
+                help="[Research] Show risk budget v1.9.9", group="portfolio_risk_report",
+                introduced_in="1.9.9", safety_classification="RESEARCH_ONLY"),
+    CommandSpec(name="portfolio-risk-report-position-size", handler_name="cmd_portfolio_risk_report_position_size",
+                help="[Research] Compute position size v1.9.9", group="portfolio_risk_report",
+                introduced_in="1.9.9", safety_classification="RESEARCH_ONLY"),
+    CommandSpec(name="portfolio-risk-report-entry-rule", handler_name="cmd_portfolio_risk_report_entry_rule",
+                help="[Research] Show entry sizing rules v1.9.9", group="portfolio_risk_report",
+                introduced_in="1.9.9", safety_classification="RESEARCH_ONLY"),
+    CommandSpec(name="portfolio-risk-report-stop-distance", handler_name="cmd_portfolio_risk_report_stop_distance",
+                help="[Research] Analyze stop distance v1.9.9", group="portfolio_risk_report",
+                introduced_in="1.9.9", safety_classification="RESEARCH_ONLY"),
+    CommandSpec(name="portfolio-risk-report-cash-buffer", handler_name="cmd_portfolio_risk_report_cash_buffer",
+                help="[Research] Show cash buffer status v1.9.9", group="portfolio_risk_report",
+                introduced_in="1.9.9", safety_classification="RESEARCH_ONLY"),
+    CommandSpec(name="portfolio-risk-report-exposure-limits", handler_name="cmd_portfolio_risk_report_exposure_limits",
+                help="[Research] Show exposure limits v1.9.9", group="portfolio_risk_report",
+                introduced_in="1.9.9", safety_classification="RESEARCH_ONLY"),
+    CommandSpec(name="portfolio-risk-report-no-entry", handler_name="cmd_portfolio_risk_report_no_entry",
+                help="[Research] Evaluate no-entry conditions v1.9.9", group="portfolio_risk_report",
+                introduced_in="1.9.9", safety_classification="RESEARCH_ONLY"),
+    CommandSpec(name="portfolio-risk-report-risk-off", handler_name="cmd_portfolio_risk_report_risk_off",
+                help="[Research] Show risk-off sizing policy v1.9.9", group="portfolio_risk_report",
+                introduced_in="1.9.9", safety_classification="RESEARCH_ONLY"),
+    CommandSpec(name="portfolio-risk-report-dashboard", handler_name="cmd_portfolio_risk_report_dashboard",
+                help="[Research] Render risk report dashboard v1.9.9", group="portfolio_risk_report",
+                introduced_in="1.9.9", safety_classification="RESEARCH_ONLY"),
+    CommandSpec(name="portfolio-risk-report-export", handler_name="cmd_portfolio_risk_report_export",
+                help="[Research] Export portfolio risk report v1.9.9", group="portfolio_risk_report",
+                introduced_in="1.9.9", safety_classification="RESEARCH_ONLY"),
+    CommandSpec(name="portfolio-risk-report-health", handler_name="cmd_portfolio_risk_report_health",
+                help="[Research] Run portfolio risk report health check v1.9.9", group="portfolio_risk_report",
+                introduced_in="1.9.9", safety_classification="RESEARCH_ONLY"),
+    CommandSpec(name="portfolio-risk-report-gate", handler_name="cmd_portfolio_risk_report_gate",
+                help="[Research] Run portfolio risk report release gate v1.9.9", group="portfolio_risk_report",
+                introduced_in="1.9.9", safety_classification="RESEARCH_ONLY"),
+    CommandSpec(name="portfolio-risk-report-scenarios", handler_name="cmd_portfolio_risk_report_scenarios",
+                help="[Research] List portfolio risk report scenarios v1.9.9", group="portfolio_risk_report",
+                introduced_in="1.9.9", safety_classification="RESEARCH_ONLY"),
+    CommandSpec(name="portfolio-risk-report-fixtures", handler_name="cmd_portfolio_risk_report_fixtures",
+                help="[Research] List portfolio risk report fixtures v1.9.9", group="portfolio_risk_report",
+                introduced_in="1.9.9", safety_classification="RESEARCH_ONLY"),
+    CommandSpec(name="portfolio-risk-report-safety-audit", handler_name="cmd_portfolio_risk_report_safety_audit",
+                help="[Research] Run portfolio risk report safety audit v1.9.9", group="portfolio_risk_report",
+                introduced_in="1.9.9", safety_classification="RESEARCH_ONLY"),
+]
+
 _SGD_V197_COMMANDS: _List[CommandSpec] = [
     CommandSpec(name="strategy-governance-dashboard-version", handler_name="cmd_strategy_governance_dashboard_version",
                 help="[Research] Show strategy governance dashboard version v1.9.7", group="strategy_governance_dashboard",
@@ -5649,6 +5708,7 @@ PROVIDER_COMMANDS: _List[CommandSpec] = (
     + _SRG_V196_COMMANDS
     + _SGD_V197_COMMANDS
     + _PG_V198_COMMANDS
+    + _PRR_V199_COMMANDS
 )
 
 

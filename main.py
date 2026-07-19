@@ -42715,6 +42715,192 @@ def cmd_portfolio_governance_safety_audit(args=None):
     print(_PORTFOLIO_GOVERNANCE_BANNER)
 
 
+# ---------------------------------------------------------------------------
+# v1.9.9 Paper Portfolio Risk Report & Position Sizing Policy Lab handlers
+# ---------------------------------------------------------------------------
+_PORTFOLIO_RISK_REPORT_BANNER = "[!] RESEARCH ONLY — PAPER ONLY — PORTFOLIO RISK REPORT ONLY — POSITION SIZING POLICY ONLY — NOT INVESTMENT ADVICE — NO REAL ORDERS"
+
+
+def cmd_portfolio_risk_report_version(args=None):
+    """[v1.9.9] Show portfolio risk report version. Research only."""
+    print(_PORTFOLIO_RISK_REPORT_BANNER)
+    from paper_trading.small_capital_strategy.portfolio_risk_report_version_v199 import get_version_info
+    info = get_version_info()
+    print(f"portfolio-risk-report-version: {info['version']}  schema={info['schema_version']}  paper_only=True  portfolio_risk_report_only=True")
+    print(_PORTFOLIO_RISK_REPORT_BANNER)
+
+
+def cmd_portfolio_risk_report_run(args=None):
+    """[v1.9.9] Run portfolio risk report. Research only."""
+    print(_PORTFOLIO_RISK_REPORT_BANNER)
+    from paper_trading.small_capital_strategy.portfolio_risk_report_engine_v199 import run_position_sizing_report
+    sample = {
+        "paper_only": True, "no_real_orders": True, "not_investment_advice": True,
+        "capital_base": 300_000, "entry_type": "A_PULLBACK_10MA",
+        "stop_distance_pct": 0.05, "portfolio_risk_grade": "LOW",
+        "current_cash_pct": 0.20, "market_risk_off": False,
+        "theme_exposures": {}, "industry_exposures": {}, "symbol_weights": {},
+    }
+    result = run_position_sizing_report(sample)
+    print(f"portfolio-risk-report-run: allowed={result.get('allowed')}  recommendation={result.get('recommendation')}  paper_only=True")
+    print(_PORTFOLIO_RISK_REPORT_BANNER)
+
+
+def cmd_portfolio_risk_report_capital_profile(args=None):
+    """[v1.9.9] Show capital profile. Research only."""
+    print(_PORTFOLIO_RISK_REPORT_BANNER)
+    from paper_trading.small_capital_strategy.portfolio_risk_report_report_v199 import export_capital_profile
+    result = export_capital_profile()
+    print(f"portfolio-risk-report-capital-profile: capital_base={result['profile']['capital_base']}  paper_only=True")
+    print(_PORTFOLIO_RISK_REPORT_BANNER)
+
+
+def cmd_portfolio_risk_report_risk_budget(args=None):
+    """[v1.9.9] Show risk budget. Research only."""
+    print(_PORTFOLIO_RISK_REPORT_BANNER)
+    from paper_trading.small_capital_strategy.portfolio_risk_report_report_v199 import export_risk_budget
+    result = export_risk_budget()
+    print(f"portfolio-risk-report-risk-budget: total_budget={result['total_risk_budget']}  paper_only=True")
+    print(_PORTFOLIO_RISK_REPORT_BANNER)
+
+
+def cmd_portfolio_risk_report_position_size(args=None):
+    """[v1.9.9] Compute position size. Research only."""
+    print(_PORTFOLIO_RISK_REPORT_BANNER)
+    from paper_trading.small_capital_strategy.portfolio_risk_report_engine_v199 import compute_position_size
+    result = compute_position_size(300_000, 0.01, 0.05, 1.0)
+    print(f"portfolio-risk-report-position-size: adjusted={result.get('adjusted_position_amount')}  max_loss={result.get('max_loss_amount')}  paper_only=True")
+    print(_PORTFOLIO_RISK_REPORT_BANNER)
+
+
+def cmd_portfolio_risk_report_entry_rule(args=None):
+    """[v1.9.9] Show entry sizing rules. Research only."""
+    print(_PORTFOLIO_RISK_REPORT_BANNER)
+    from paper_trading.small_capital_strategy.portfolio_risk_report_report_v199 import export_entry_sizing_rules
+    result = export_entry_sizing_rules()
+    print(f"portfolio-risk-report-entry-rule: rules_count={result['rules_count']}  paper_only=True")
+    print(_PORTFOLIO_RISK_REPORT_BANNER)
+
+
+def cmd_portfolio_risk_report_stop_distance(args=None):
+    """[v1.9.9] Analyze stop distance. Research only."""
+    print(_PORTFOLIO_RISK_REPORT_BANNER)
+    from paper_trading.small_capital_strategy.portfolio_risk_report_report_v199 import export_stop_distance_analysis
+    result = export_stop_distance_analysis(0.05)
+    print(f"portfolio-risk-report-stop-distance: blocked={result.get('blocked')}  paper_only=True")
+    print(_PORTFOLIO_RISK_REPORT_BANNER)
+
+
+def cmd_portfolio_risk_report_cash_buffer(args=None):
+    """[v1.9.9] Show cash buffer status. Research only."""
+    print(_PORTFOLIO_RISK_REPORT_BANNER)
+    from paper_trading.small_capital_strategy.portfolio_risk_report_report_v199 import export_cash_buffer_status
+    result = export_cash_buffer_status(0.20)
+    print(f"portfolio-risk-report-cash-buffer: cash_buffer_ok={result.get('cash_buffer_ok')}  paper_only=True")
+    print(_PORTFOLIO_RISK_REPORT_BANNER)
+
+
+def cmd_portfolio_risk_report_exposure_limits(args=None):
+    """[v1.9.9] Show exposure limits. Research only."""
+    print(_PORTFOLIO_RISK_REPORT_BANNER)
+    from paper_trading.small_capital_strategy.portfolio_risk_report_report_v199 import export_exposure_limits
+    result = export_exposure_limits({}, {}, {})
+    print(f"portfolio-risk-report-exposure-limits: any_limit_exceeded={result.get('any_limit_exceeded')}  paper_only=True")
+    print(_PORTFOLIO_RISK_REPORT_BANNER)
+
+
+def cmd_portfolio_risk_report_no_entry(args=None):
+    """[v1.9.9] Evaluate no-entry conditions. Research only."""
+    print(_PORTFOLIO_RISK_REPORT_BANNER)
+    from paper_trading.small_capital_strategy.portfolio_risk_report_engine_v199 import evaluate_no_entry_conditions
+    conditions = evaluate_no_entry_conditions({
+        "portfolio_risk_grade": "LOW", "current_cash_pct": 0.20,
+        "stop_distance_pct": 0.05, "market_risk_off": False,
+        "theme_exposures": {}, "candidate_theme": "",
+    })
+    print(f"portfolio-risk-report-no-entry: conditions_count={len(conditions)}  paper_only=True")
+    print(_PORTFOLIO_RISK_REPORT_BANNER)
+
+
+def cmd_portfolio_risk_report_risk_off(args=None):
+    """[v1.9.9] Show risk-off sizing policy. Research only."""
+    print(_PORTFOLIO_RISK_REPORT_BANNER)
+    from paper_trading.small_capital_strategy.portfolio_risk_report_report_v199 import export_risk_off_status
+    result = export_risk_off_status(False)
+    print(f"portfolio-risk-report-risk-off: risk_off_active={result.get('risk_off_active')}  paper_only=True")
+    print(_PORTFOLIO_RISK_REPORT_BANNER)
+
+
+def cmd_portfolio_risk_report_dashboard(args=None):
+    """[v1.9.9] Render risk report dashboard. Research only."""
+    print(_PORTFOLIO_RISK_REPORT_BANNER)
+    from gui.small_capital_strategy_panel import render_risk_budget_dashboard_tab
+    result = render_risk_budget_dashboard_tab()
+    print(f"portfolio-risk-report-dashboard: tab={result.get('tab')}  schema_version={result.get('schema_version')}  paper_only=True")
+    print(_PORTFOLIO_RISK_REPORT_BANNER)
+
+
+def cmd_portfolio_risk_report_export(args=None):
+    """[v1.9.9] Export portfolio risk report. Research only."""
+    print(_PORTFOLIO_RISK_REPORT_BANNER)
+    from paper_trading.small_capital_strategy.portfolio_risk_report_report_v199 import export_full_risk_report
+    sample = {
+        "paper_only": True, "no_real_orders": True, "not_investment_advice": True,
+        "capital_base": 300_000, "entry_type": "A_PULLBACK_10MA",
+        "stop_distance_pct": 0.05, "current_cash_pct": 0.20,
+        "market_risk_off": False, "theme_exposures": {}, "industry_exposures": {},
+        "symbol_weights": {}, "high_correlation_cluster_weight": 0.0,
+    }
+    result = export_full_risk_report(sample, {}, [])
+    print(f"portfolio-risk-report-export: sections_count={result.get('sections_count')}  paper_only=True")
+    print(_PORTFOLIO_RISK_REPORT_BANNER)
+
+
+def cmd_portfolio_risk_report_health(args=None):
+    """[v1.9.9] Run portfolio risk report health check. Research only."""
+    print(_PORTFOLIO_RISK_REPORT_BANNER)
+    from paper_trading.small_capital_strategy.portfolio_risk_report_health_v199 import run_health_check
+    result = run_health_check()
+    print(f"portfolio-risk-report-health: {result['status']} {result['passed']}/{result['total']}  paper_only=True")
+    print(_PORTFOLIO_RISK_REPORT_BANNER)
+
+
+def cmd_portfolio_risk_report_gate(args=None):
+    """[v1.9.9] Run portfolio risk report release gate. Research only."""
+    print(_PORTFOLIO_RISK_REPORT_BANNER)
+    from release.portfolio_risk_report_release_gate_v199 import run_release_gate
+    result = run_release_gate()
+    print(f"portfolio-risk-report-gate: {result['status']} {result['passed']}/{result['total']}  paper_only=True")
+    print(_PORTFOLIO_RISK_REPORT_BANNER)
+
+
+def cmd_portfolio_risk_report_scenarios(args=None):
+    """[v1.9.9] List portfolio risk report scenarios. Research only."""
+    print(_PORTFOLIO_RISK_REPORT_BANNER)
+    from paper_trading.small_capital_strategy.portfolio_risk_report_scenarios_v199 import get_scenarios
+    scenarios = get_scenarios()
+    print(f"portfolio-risk-report-scenarios: count={len(scenarios)}  paper_only=True  portfolio_risk_report_only=True")
+    print(_PORTFOLIO_RISK_REPORT_BANNER)
+
+
+def cmd_portfolio_risk_report_fixtures(args=None):
+    """[v1.9.9] List portfolio risk report fixtures. Research only."""
+    print(_PORTFOLIO_RISK_REPORT_BANNER)
+    from paper_trading.small_capital_strategy.portfolio_risk_report_fixtures_v199 import get_fixtures
+    fixtures = get_fixtures()
+    print(f"portfolio-risk-report-fixtures: count={len(fixtures)}  paper_only=True  portfolio_risk_report_only=True")
+    print(_PORTFOLIO_RISK_REPORT_BANNER)
+
+
+def cmd_portfolio_risk_report_safety_audit(args=None):
+    """[v1.9.9] Run portfolio risk report safety audit. Research only."""
+    print(_PORTFOLIO_RISK_REPORT_BANNER)
+    from paper_trading.small_capital_strategy.portfolio_risk_report_safety_v199 import run_safety_audit
+    result = run_safety_audit()
+    print(f"portfolio-risk-report-safety-audit: all_safe={result['all_safe']}  paper_only=True  portfolio_risk_report_only=True")
+    print(_PORTFOLIO_RISK_REPORT_BANNER)
+
+
 _STRATEGY_REGISTRY_BANNER = "[!] RESEARCH ONLY — PAPER ONLY — GOVERNANCE ONLY — REGISTRY ONLY — DECISION RECORD ONLY — NOT INVESTMENT ADVICE"
 
 
@@ -45398,6 +45584,25 @@ def main() -> None:
         "strategy-promotion-rollback-validate": cmd_strategy_promotion_rollback_validate,
         "strategy-promotion-approval-state":   cmd_strategy_promotion_approval_state,
         "strategy-promotion-safety-audit":     cmd_strategy_promotion_safety_audit,
+        # v1.9.9 portfolio risk report commands
+        "portfolio-risk-report-version":           cmd_portfolio_risk_report_version,
+        "portfolio-risk-report-run":               cmd_portfolio_risk_report_run,
+        "portfolio-risk-report-capital-profile":   cmd_portfolio_risk_report_capital_profile,
+        "portfolio-risk-report-risk-budget":       cmd_portfolio_risk_report_risk_budget,
+        "portfolio-risk-report-position-size":     cmd_portfolio_risk_report_position_size,
+        "portfolio-risk-report-entry-rule":        cmd_portfolio_risk_report_entry_rule,
+        "portfolio-risk-report-stop-distance":     cmd_portfolio_risk_report_stop_distance,
+        "portfolio-risk-report-cash-buffer":       cmd_portfolio_risk_report_cash_buffer,
+        "portfolio-risk-report-exposure-limits":   cmd_portfolio_risk_report_exposure_limits,
+        "portfolio-risk-report-no-entry":          cmd_portfolio_risk_report_no_entry,
+        "portfolio-risk-report-risk-off":          cmd_portfolio_risk_report_risk_off,
+        "portfolio-risk-report-dashboard":         cmd_portfolio_risk_report_dashboard,
+        "portfolio-risk-report-export":            cmd_portfolio_risk_report_export,
+        "portfolio-risk-report-health":            cmd_portfolio_risk_report_health,
+        "portfolio-risk-report-gate":              cmd_portfolio_risk_report_gate,
+        "portfolio-risk-report-scenarios":         cmd_portfolio_risk_report_scenarios,
+        "portfolio-risk-report-fixtures":          cmd_portfolio_risk_report_fixtures,
+        "portfolio-risk-report-safety-audit":      cmd_portfolio_risk_report_safety_audit,
         # v1.9.8 portfolio governance commands
         "portfolio-governance-version":            cmd_portfolio_governance_version,
         "portfolio-governance-run":                cmd_portfolio_governance_run,
