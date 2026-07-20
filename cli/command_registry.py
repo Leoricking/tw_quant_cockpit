@@ -5753,8 +5753,44 @@ _SGD_V197_COMMANDS: _List[CommandSpec] = [
                 introduced_in="1.9.7", safety_classification="RESEARCH_ONLY"),
 ]
 
+# v2.0.1 Paper Cockpit Usability & Daily Workflow Hardening commands
+# ---------------------------------------------------------------------------
+_PC_V201_COMMANDS: _List[CommandSpec] = [
+    CommandSpec(name="paper-cockpit-daily-workflow", handler_name="cmd_paper_cockpit_daily_workflow",
+                help="[Research] Run daily workflow hardening v2.0.1", group="paper_cockpit_v201",
+                introduced_in="2.0.1", safety_classification="RESEARCH_ONLY"),
+    CommandSpec(name="paper-cockpit-no-entry-reason", handler_name="cmd_paper_cockpit_no_entry_reason",
+                help="[Research] Show no-entry reason details v2.0.1", group="paper_cockpit_v201",
+                introduced_in="2.0.1", safety_classification="RESEARCH_ONLY"),
+    CommandSpec(name="paper-cockpit-final-action", handler_name="cmd_paper_cockpit_final_action",
+                help="[Research] Classify daily final action v2.0.1", group="paper_cockpit_v201",
+                introduced_in="2.0.1", safety_classification="RESEARCH_ONLY"),
+    CommandSpec(name="paper-cockpit-candidate-rank", handler_name="cmd_paper_cockpit_candidate_rank",
+                help="[Research] Build candidate ranking v2.0.1", group="paper_cockpit_v201",
+                introduced_in="2.0.1", safety_classification="RESEARCH_ONLY"),
+    CommandSpec(name="paper-cockpit-risk-budget-status", handler_name="cmd_paper_cockpit_risk_budget_status",
+                help="[Research] Show risk budget status v2.0.1", group="paper_cockpit_v201",
+                introduced_in="2.0.1", safety_classification="RESEARCH_ONLY"),
+    CommandSpec(name="paper-cockpit-cli-display", handler_name="cmd_paper_cockpit_cli_display",
+                help="[Research] Show CLI display output v2.0.1", group="paper_cockpit_v201",
+                introduced_in="2.0.1", safety_classification="RESEARCH_ONLY"),
+    CommandSpec(name="paper-cockpit-version-201", handler_name="cmd_paper_cockpit_version_201",
+                help="[Research] Show paper cockpit v2.0.1 version info", group="paper_cockpit_v201",
+                introduced_in="2.0.1", safety_classification="RESEARCH_ONLY"),
+    CommandSpec(name="paper-cockpit-health-201", handler_name="cmd_paper_cockpit_health_201",
+                help="[Research] Run paper cockpit v2.0.1 health check", group="paper_cockpit_v201",
+                introduced_in="2.0.1", safety_classification="RESEARCH_ONLY"),
+    CommandSpec(name="paper-cockpit-gate-201", handler_name="cmd_paper_cockpit_gate_201",
+                help="[Research] Run paper cockpit v2.0.1 release gate", group="paper_cockpit_v201",
+                introduced_in="2.0.1", safety_classification="RESEARCH_ONLY"),
+    CommandSpec(name="paper-cockpit-safety-audit-201", handler_name="cmd_paper_cockpit_safety_audit_201",
+                help="[Research] Run paper cockpit v2.0.1 safety audit", group="paper_cockpit_v201",
+                introduced_in="2.0.1", safety_classification="RESEARCH_ONLY"),
+]
+
 PROVIDER_COMMANDS: _List[CommandSpec] = (
     _PC_V200_COMMANDS
+    + _PC_V201_COMMANDS
     + _RESEARCH_FOUNDATION_COMMANDS
     + _TWSE_COMMANDS
     + _TPEX_COMMANDS

@@ -18,6 +18,7 @@ from typing import Any, Dict, List, Optional
 
 PANEL_VERSION = "2.0.0"
 PANEL_TITLE = "Small Capital Strategy v2.0.0 — Paper Cockpit Unified Entry & Strategy Decision Console"
+PANEL_VERSION_V201 = "2.0.1"
 
 # v1.7.0 tabs (preserved unchanged)
 _TABS_V170 = [
@@ -360,6 +361,15 @@ _TABS_V200_PAPER_COCKPIT = [
 
 assert len(_TABS_V200_PAPER_COCKPIT) == 3, f"Expected 3 paper cockpit tabs, got {len(_TABS_V200_PAPER_COCKPIT)}"
 
+# v2.0.1 Paper Cockpit Usability & Daily Workflow Hardening tabs
+_TABS_V201_DAILY_WORKFLOW = [
+    "daily_workflow_v201",
+    "no_entry_reason_detail",
+    "decision_ticket_v201",
+]
+
+assert len(_TABS_V201_DAILY_WORKFLOW) == 3, f"Expected 3 daily workflow v201 tabs, got {len(_TABS_V201_DAILY_WORKFLOW)}"
+
 _TABS = (
     _TABS_V170
     + _TABS_V171_WATCHLIST
@@ -393,6 +403,7 @@ _TABS = (
     + _TABS_V199_RISK_REPORT
     + _TABS_V1910_GOVERNANCE_STACK
     + _TABS_V200_PAPER_COCKPIT
+    + _TABS_V201_DAILY_WORKFLOW
 )
 
 assert len(_TABS_V170) == 22, f"Expected 22 v1.7.0 tabs, got {len(_TABS_V170)}"
@@ -1678,6 +1689,10 @@ def render_all_tabs() -> Dict[str, Any]:
         "paper_cockpit":                     render_paper_cockpit_tab,
         "strategy_decision_console":         render_strategy_decision_console_tab,
         "decision_ticket":                   render_decision_ticket_tab,
+        # v2.0.1 Paper Cockpit Usability & Daily Workflow Hardening tabs
+        "daily_workflow_v201":               render_daily_workflow_v201_tab,
+        "no_entry_reason_detail":            render_no_entry_reason_detail_tab,
+        "decision_ticket_v201":              render_decision_ticket_v201_tab,
     }
     result = {}
     for tab_name in _TABS:
@@ -4115,6 +4130,91 @@ def render_decision_ticket_tab() -> Dict[str, Any]:
 def get_cockpit_tab_names() -> List[str]:
     """Return list of v2.0.0 paper cockpit tab names."""
     return list(_TABS_V200_PAPER_COCKPIT)
+
+
+def render_daily_workflow_v201_tab() -> Dict[str, Any]:
+    """Render daily workflow v2.0.1 tab data (headless-safe, paper-only)."""
+    return {
+        "tab": "daily_workflow_v201",
+        "version": PANEL_VERSION,
+        "release_name": "Paper Cockpit Usability & Daily Workflow Hardening",
+        "description": (
+            "Daily workflow v2.0.1: watchlist summary, candidate ranking, "
+            "A/B/C entry status, no-entry reason, risk overlay, position sizing, "
+            "paper decision ticket, human review, final action."
+        ),
+        "paper_only": True,
+        "research_only": True,
+        "no_real_orders": True,
+        "no_broker": True,
+        "not_investment_advice": True,
+        "production_trading_blocked": True,
+        "human_review_required": True,
+        "schema_version": "201",
+        "final_actions": [
+            "WATCH", "WAIT", "PAPER_BUY_PLAN", "PAPER_ADD_PLAN",
+            "PAPER_REDUCE_PLAN", "PAPER_EXIT_PLAN", "NO_ENTRY",
+        ],
+        "empty_state": "No daily workflow data. Run paper-cockpit-daily-workflow to populate.",
+    }
+
+
+def render_no_entry_reason_detail_tab() -> Dict[str, Any]:
+    """Render no-entry reason detail tab data (headless-safe, paper-only)."""
+    return {
+        "tab": "no_entry_reason_detail",
+        "version": PANEL_VERSION,
+        "release_name": "Paper Cockpit Usability & Daily Workflow Hardening",
+        "description": "Structured no-entry reason details: 13 reason codes with severity and recommendation.",
+        "paper_only": True,
+        "research_only": True,
+        "no_real_orders": True,
+        "not_investment_advice": True,
+        "production_trading_blocked": True,
+        "human_review_required": True,
+        "schema_version": "201",
+        "no_entry_reasons": [
+            "trend_broken", "below_20ma", "below_60ma", "volume_overheated",
+            "volume_dry_up_failed", "institutional_selling", "margin_overheated",
+            "market_risk_high", "risk_budget_exceeded", "position_size_too_large",
+            "stop_loss_too_wide", "missing_required_signal", "human_review_required",
+        ],
+        "empty_state": "No no-entry data. Run paper-cockpit-no-entry-reason to populate.",
+    }
+
+
+def render_decision_ticket_v201_tab() -> Dict[str, Any]:
+    """Render enhanced decision ticket v2.0.1 tab data (headless-safe, paper-only)."""
+    return {
+        "tab": "decision_ticket_v201",
+        "version": PANEL_VERSION,
+        "release_name": "Paper Cockpit Usability & Daily Workflow Hardening",
+        "description": "Enhanced decision ticket v2.0.1: 21 required fields including scores, prices, risk, sizing, reasons, action.",
+        "paper_only": True,
+        "research_only": True,
+        "no_real_orders": True,
+        "no_broker": True,
+        "not_investment_advice": True,
+        "production_trading_blocked": True,
+        "human_review_required": True,
+        "schema_version": "201",
+        "ticket_fields": [
+            "symbol", "name", "setup_type", "theme_score", "fundamental_score",
+            "technical_score", "volume_score", "chip_score", "margin_score",
+            "total_score", "entry_price_plan", "add_price_plan", "reduce_price_plan",
+            "exit_price_plan", "stop_loss_price", "invalid_conditions", "risk_amount",
+            "max_position_size", "position_size_reason", "no_entry_reasons",
+            "human_review_required", "final_action",
+        ],
+        "ticket_triggers_broker": False,
+        "ticket_executes_order": False,
+        "empty_state": "No decision ticket data. Run paper-cockpit-final-action to populate.",
+    }
+
+
+def get_v201_tab_names() -> List[str]:
+    """Return list of v2.0.1 new tab names."""
+    return list(_TABS_V201_DAILY_WORKFLOW)
 
 
 def get_panel_info() -> Dict[str, Any]:

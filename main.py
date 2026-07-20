@@ -42878,6 +42878,121 @@ def cmd_paper_cockpit_safety_audit(args=None):
     print(f"Safety audit: verify_version={ok}, safety_flags={len(SAFETY_FLAGS)}, forbidden={len(FORBIDDEN_ACTIONS)}, allowed={len(ALLOWED_ACTIONS)}")
 
 
+
+# ---------------------------------------------------------------------------
+# v2.0.1 Paper Cockpit Daily Workflow Hardening handlers
+# ---------------------------------------------------------------------------
+_PAPER_COCKPIT_V201_BANNER = "[!] RESEARCH ONLY — PAPER ONLY — DAILY WORKFLOW HARDENING — NOT INVESTMENT ADVICE — NO REAL ORDERS"
+
+
+def cmd_paper_cockpit_daily_workflow(args=None):
+    """[v2.0.1] Run daily workflow hardening. Research only."""
+    print(_PAPER_COCKPIT_V201_BANNER)
+    from paper_trading.small_capital_strategy.paper_cockpit_v201 import (
+        run_daily_workflow, DailyWorkflowInput,
+    )
+    result = run_daily_workflow(DailyWorkflowInput())
+    print(f"paper-cockpit-daily-workflow: version={result.version}  paper_only={result.paper_only}  candidates={len(result.candidate_results)}  all_passed={result.all_passed}")
+    print(_PAPER_COCKPIT_V201_BANNER)
+
+
+def cmd_paper_cockpit_no_entry_reason(args=None):
+    """[v2.0.1] Show no-entry reason details. Research only."""
+    print(_PAPER_COCKPIT_V201_BANNER)
+    from paper_trading.small_capital_strategy.paper_cockpit_v201 import (
+        NO_ENTRY_REASONS, evaluate_no_entry_reasons,
+    )
+    reasons = evaluate_no_entry_reasons()
+    print(f"paper-cockpit-no-entry-reason: total_reasons={len(NO_ENTRY_REASONS)}  evaluated={len(reasons)}  paper_only=True")
+    print(_PAPER_COCKPIT_V201_BANNER)
+
+
+def cmd_paper_cockpit_final_action(args=None):
+    """[v2.0.1] Classify daily final action. Research only."""
+    print(_PAPER_COCKPIT_V201_BANNER)
+    from paper_trading.small_capital_strategy.paper_cockpit_v201 import (
+        classify_final_action, DAILY_FINAL_ACTIONS,
+    )
+    action = classify_final_action("2330", "A_PULLBACK_10MA", [], True, True)
+    print(f"paper-cockpit-final-action: example_action={action}  total_actions={len(DAILY_FINAL_ACTIONS)}  paper_only=True")
+    print(_PAPER_COCKPIT_V201_BANNER)
+
+
+def cmd_paper_cockpit_candidate_rank(args=None):
+    """[v2.0.1] Build candidate ranking. Research only."""
+    print(_PAPER_COCKPIT_V201_BANNER)
+    from paper_trading.small_capital_strategy.paper_cockpit_v201 import build_candidate_ranking
+    ranking = build_candidate_ranking([
+        {"symbol": "2330", "total_score": 90.0, "final_action": "PAPER_BUY_PLAN"},
+        {"symbol": "2454", "total_score": 72.0, "final_action": "WAIT"},
+    ])
+    print(f"paper-cockpit-candidate-rank: candidates={len(ranking)}  top_symbol={ranking[0].symbol if ranking else 'none'}  paper_only=True")
+    print(_PAPER_COCKPIT_V201_BANNER)
+
+
+def cmd_paper_cockpit_risk_budget_status(args=None):
+    """[v2.0.1] Show risk budget status. Research only."""
+    print(_PAPER_COCKPIT_V201_BANNER)
+    from paper_trading.small_capital_strategy.paper_cockpit_v201 import get_risk_budget_status
+    status = get_risk_budget_status(portfolio_risk_pct=20.0, risk_budget_remaining_pct=80.0)
+    print(f"paper-cockpit-risk-budget-status: status={status.status_label}  remaining={status.risk_budget_remaining_pct}%  ok={status.risk_budget_ok}  paper_only=True")
+    print(_PAPER_COCKPIT_V201_BANNER)
+
+
+def cmd_paper_cockpit_cli_display(args=None):
+    """[v2.0.1] Show CLI display output. Research only."""
+    print(_PAPER_COCKPIT_V201_BANNER)
+    from paper_trading.small_capital_strategy.paper_cockpit_v201 import (
+        run_daily_workflow, DailyWorkflowInput,
+    )
+    result = run_daily_workflow(DailyWorkflowInput(candidates=["2330"]))
+    display = result.cli_display
+    if display:
+        print(f"paper-cockpit-cli-display: total={display.total_candidates}  paper_buy_plan={display.paper_buy_plan_count}  no_entry={display.no_entry_count}  paper_only=True")
+    else:
+        print("paper-cockpit-cli-display: no display data  paper_only=True")
+    print(_PAPER_COCKPIT_V201_BANNER)
+
+
+def cmd_paper_cockpit_version_201(args=None):
+    """[v2.0.1] Show paper cockpit v2.0.1 version info. Research only."""
+    print(_PAPER_COCKPIT_V201_BANNER)
+    from paper_trading.small_capital_strategy.paper_cockpit_v201 import get_version_info
+    info = get_version_info()
+    print(f"paper-cockpit-version-201: version={info['version']}  schema={info['schema_version']}  paper_only=True  no_real_orders=True")
+    print(_PAPER_COCKPIT_V201_BANNER)
+
+
+def cmd_paper_cockpit_health_201(args=None):
+    """[v2.0.1] Run paper cockpit v2.0.1 health check. Research only."""
+    print(_PAPER_COCKPIT_V201_BANNER)
+    from paper_trading.small_capital_strategy.paper_cockpit_health_v201 import run_health_check
+    result = run_health_check()
+    print(f"paper-cockpit-health-201: all_passed={result['all_passed']}  passed={result['passed']}/{result['total']}  paper_only=True")
+    print(_PAPER_COCKPIT_V201_BANNER)
+
+
+def cmd_paper_cockpit_gate_201(args=None):
+    """[v2.0.1] Run paper cockpit v2.0.1 release gate. Research only."""
+    print(_PAPER_COCKPIT_V201_BANNER)
+    from release.paper_cockpit_release_gate_v201 import run_release_gate
+    result = run_release_gate()
+    print(f"paper-cockpit-gate-201: gate_passed={result['gate_passed']}  passed={result['passed_count']}/{result['total_count']}  paper_only=True")
+    print(_PAPER_COCKPIT_V201_BANNER)
+
+
+def cmd_paper_cockpit_safety_audit_201(args=None):
+    """[v2.0.1] Run paper cockpit v2.0.1 safety audit. Research only."""
+    print(_PAPER_COCKPIT_V201_BANNER)
+    from paper_trading.small_capital_strategy.paper_cockpit_v201 import (
+        SAFETY_FLAGS, FORBIDDEN_ACTIONS, NO_REAL_ORDERS, BROKER_EXECUTION_ENABLED,
+        PRODUCTION_TRADING_BLOCKED, verify_version,
+    )
+    ok = verify_version()
+    print(f"paper-cockpit-safety-audit-201: verify={ok}  NO_REAL_ORDERS={NO_REAL_ORDERS}  BROKER_ENABLED={BROKER_EXECUTION_ENABLED}  PRODUCTION_BLOCKED={PRODUCTION_TRADING_BLOCKED}  safety_flags={len(SAFETY_FLAGS)}  forbidden={len(FORBIDDEN_ACTIONS)}")
+    print(_PAPER_COCKPIT_V201_BANNER)
+
+
 # ---------------------------------------------------------------------------
 # v1.9.10 Paper Governance Stack Consolidation & Release Audit handlers
 # ---------------------------------------------------------------------------
@@ -45879,6 +45994,17 @@ def main() -> None:
         "strategy-promotion-rollback-validate": cmd_strategy_promotion_rollback_validate,
         "strategy-promotion-approval-state":   cmd_strategy_promotion_approval_state,
         "strategy-promotion-safety-audit":     cmd_strategy_promotion_safety_audit,
+        # v2.0.1 paper cockpit daily workflow hardening commands
+        "paper-cockpit-daily-workflow":       cmd_paper_cockpit_daily_workflow,
+        "paper-cockpit-no-entry-reason":      cmd_paper_cockpit_no_entry_reason,
+        "paper-cockpit-final-action":         cmd_paper_cockpit_final_action,
+        "paper-cockpit-candidate-rank":       cmd_paper_cockpit_candidate_rank,
+        "paper-cockpit-risk-budget-status":   cmd_paper_cockpit_risk_budget_status,
+        "paper-cockpit-cli-display":          cmd_paper_cockpit_cli_display,
+        "paper-cockpit-version-201":          cmd_paper_cockpit_version_201,
+        "paper-cockpit-health-201":           cmd_paper_cockpit_health_201,
+        "paper-cockpit-gate-201":             cmd_paper_cockpit_gate_201,
+        "paper-cockpit-safety-audit-201":     cmd_paper_cockpit_safety_audit_201,
         # v2.0.0 paper cockpit commands
         "paper-cockpit-version":              cmd_paper_cockpit_version,
         "paper-cockpit-run":                  cmd_paper_cockpit_run,
