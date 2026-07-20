@@ -5753,6 +5753,32 @@ _SGD_V197_COMMANDS: _List[CommandSpec] = [
                 introduced_in="1.9.7", safety_classification="RESEARCH_ONLY"),
 ]
 
+# v2.0.2 Paper Cockpit Report Export & Audit Pack commands
+# ---------------------------------------------------------------------------
+_PC_V202_COMMANDS: _List[CommandSpec] = [
+    CommandSpec(name="paper-cockpit-v202-report-json", handler_name="cmd_paper_cockpit_v202_report_json",
+                help="[Research] Export paper cockpit report as JSON v2.0.2", group="paper_cockpit_v202",
+                introduced_in="2.0.2", safety_classification="RESEARCH_ONLY"),
+    CommandSpec(name="paper-cockpit-v202-report-md", handler_name="cmd_paper_cockpit_v202_report_md",
+                help="[Research] Export paper cockpit report as Markdown v2.0.2", group="paper_cockpit_v202",
+                introduced_in="2.0.2", safety_classification="RESEARCH_ONLY"),
+    CommandSpec(name="paper-cockpit-v202-report-csv", handler_name="cmd_paper_cockpit_v202_report_csv",
+                help="[Research] Export paper cockpit report as CSV v2.0.2", group="paper_cockpit_v202",
+                introduced_in="2.0.2", safety_classification="RESEARCH_ONLY"),
+    CommandSpec(name="paper-cockpit-v202-audit-pack", handler_name="cmd_paper_cockpit_v202_audit_pack",
+                help="[Research] Build paper cockpit audit pack v2.0.2", group="paper_cockpit_v202",
+                introduced_in="2.0.2", safety_classification="RESEARCH_ONLY"),
+    CommandSpec(name="paper-cockpit-v202-export-all", handler_name="cmd_paper_cockpit_v202_export_all",
+                help="[Research] Run all paper cockpit exports v2.0.2", group="paper_cockpit_v202",
+                introduced_in="2.0.2", safety_classification="RESEARCH_ONLY"),
+    CommandSpec(name="paper-cockpit-v202-health", handler_name="cmd_paper_cockpit_v202_health",
+                help="[Research] Run paper cockpit v2.0.2 health check", group="paper_cockpit_v202",
+                introduced_in="2.0.2", safety_classification="RESEARCH_ONLY"),
+    CommandSpec(name="paper-cockpit-v202-gate", handler_name="cmd_paper_cockpit_v202_gate",
+                help="[Research] Run paper cockpit v2.0.2 release gate", group="paper_cockpit_v202",
+                introduced_in="2.0.2", safety_classification="RESEARCH_ONLY"),
+]
+
 # v2.0.1 Paper Cockpit Usability & Daily Workflow Hardening commands
 # ---------------------------------------------------------------------------
 _PC_V201_COMMANDS: _List[CommandSpec] = [
@@ -5789,7 +5815,8 @@ _PC_V201_COMMANDS: _List[CommandSpec] = [
 ]
 
 PROVIDER_COMMANDS: _List[CommandSpec] = (
-    _PC_V200_COMMANDS
+    _PC_V202_COMMANDS
+    + _PC_V200_COMMANDS
     + _PC_V201_COMMANDS
     + _RESEARCH_FOUNDATION_COMMANDS
     + _TWSE_COMMANDS

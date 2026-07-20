@@ -1,0 +1,261 @@
+"""
+paper_trading/small_capital_strategy/paper_cockpit_fixtures_v202.py
+v2.0.2 Paper Cockpit — 80 Fixtures (PC202-F001 through PC202-F080)
+[!] Paper Only. Research Only. No Real Orders. Not Investment Advice.
+"""
+from __future__ import annotations
+from typing import Any, Dict, List
+
+_BASE = {
+    "schema_version": "202",
+    "paper_only": True,
+    "no_real_orders": True,
+    "not_investment_advice": True,
+    "human_review_required": True,
+    "version": "2.0.2",
+}
+
+
+def _f(n: int, category: str, fixture_title: str, **data) -> Dict[str, Any]:
+    d = dict(_BASE)
+    d["id"] = f"PC202-F{n:03d}"
+    d["fixture_id"] = d["id"]
+    d["category"] = category
+    d["fixture_title"] = fixture_title
+    d.update(data)
+    return d
+
+
+FIXTURES: List[Dict[str, Any]] = [
+    # --- ReportExportInput fixtures (F001-F010) ---
+    _f(1, "report_export_input", "Default ReportExportInput",
+       report_format="json", report_id="PC202-RPT-001", run_date="2026-07-20",
+       watchlist_symbols=[], candidates=[], source="paper_cockpit"),
+    _f(2, "report_export_input", "ReportExportInput with 3 candidates",
+       report_format="json", report_id="PC202-RPT-002", run_date="2026-07-20",
+       candidates=["2330", "2454", "2317"], source="paper_cockpit"),
+    _f(3, "report_export_input", "ReportExportInput markdown format",
+       report_format="markdown", report_id="PC202-RPT-003", run_date="2026-07-20",
+       candidates=["2330"], source="paper_cockpit"),
+    _f(4, "report_export_input", "ReportExportInput csv format",
+       report_format="csv", report_id="PC202-RPT-004", run_date="2026-07-20",
+       candidates=["2330", "2454"], source="paper_cockpit"),
+    _f(5, "report_export_input", "ReportExportInput audit format",
+       report_format="audit_summary", report_id="PC202-RPT-005", run_date="2026-07-20",
+       candidates=[], source="paper_cockpit"),
+    _f(6, "report_export_input", "ReportExportInput all formats",
+       include_audit_pack=True, include_markdown=True, include_csv=True,
+       report_id="PC202-RPT-006", run_date="2026-07-20"),
+    _f(7, "report_export_input", "ReportExportInput schema_version=202",
+       schema_version="202", report_id="PC202-RPT-007"),
+    _f(8, "report_export_input", "ReportExportInput paper_only=True",
+       paper_only=True, no_real_orders=True, report_id="PC202-RPT-008"),
+    _f(9, "report_export_input", "ReportExportInput with watchlist",
+       watchlist_symbols=["2330", "2454", "2317", "2382"],
+       report_id="PC202-RPT-009"),
+    _f(10, "report_export_input", "ReportExportInput human_review_required=True",
+       human_review_required=True, report_id="PC202-RPT-010"),
+
+    # --- ReportExportOutput fixtures (F011-F020) ---
+    _f(11, "report_export_output", "Default ReportExportOutput",
+       report_id="PC202-RPT-001", report_version="2.0.2", source="paper_cockpit",
+       export_ok=True, abc_entry_status="NO_ENTRY"),
+    _f(12, "report_export_output", "ReportExportOutput with candidate ranking",
+       report_id="PC202-RPT-012", report_version="2.0.2",
+       candidate_ranking=["2330", "2454"], final_actions=["NO_ENTRY", "NO_ENTRY"]),
+    _f(13, "report_export_output", "ReportExportOutput risk overlay normal",
+       report_id="PC202-RPT-013", risk_overlay_status="NORMAL",
+       position_sizing_suggestion="PAPER_ALLOW_NORMAL_SIZE"),
+    _f(14, "report_export_output", "ReportExportOutput with safety flags",
+       report_id="PC202-RPT-014",
+       paper_only_safety_flags={"NO_REAL_ORDERS": True, "BROKER_EXECUTION_ENABLED": False}),
+    _f(15, "report_export_output", "ReportExportOutput human review flags",
+       report_id="PC202-RPT-015",
+       human_review_flags=["human_review_required=True"]),
+    _f(16, "report_export_output", "ReportExportOutput watchlist summary",
+       report_id="PC202-RPT-016", watchlist_summary="symbols=['2330','2454']"),
+    _f(17, "report_export_output", "ReportExportOutput generated_at set",
+       report_id="PC202-RPT-017", generated_at="2026-07-20T00:00:00"),
+    _f(18, "report_export_output", "ReportExportOutput no_entry_reasons empty",
+       report_id="PC202-RPT-018", no_entry_reasons=[]),
+    _f(19, "report_export_output", "ReportExportOutput paper_decision_tickets empty",
+       report_id="PC202-RPT-019", paper_decision_tickets=[]),
+    _f(20, "report_export_output", "ReportExportOutput schema_version=202",
+       report_id="PC202-RPT-020", schema_version="202"),
+
+    # --- AuditPackSchema / AuditPackResult fixtures (F021-F030) ---
+    _f(21, "audit_pack", "Default AuditPackSchema",
+       run_metadata={}, input_snapshot={}, export_format="json", export_status="ok"),
+    _f(22, "audit_pack", "AuditPackResult with pack_id",
+       pack_id="PC202-PACK-001", export_status="ok", reproducibility_hash="abc123"),
+    _f(23, "audit_pack", "AuditPackResult run_metadata populated",
+       pack_id="PC202-PACK-002",
+       run_metadata={"version": "2.0.2", "paper_only": True}),
+    _f(24, "audit_pack", "AuditPackResult input_snapshot populated",
+       pack_id="PC202-PACK-003",
+       input_snapshot={"candidates": ["2330"], "report_format": "json"}),
+    _f(25, "audit_pack", "AuditPackResult decision_snapshot populated",
+       pack_id="PC202-PACK-004",
+       decision_snapshot={"final_actions": [], "paper_only": True}),
+    _f(26, "audit_pack", "AuditPackResult risk_snapshot populated",
+       pack_id="PC202-PACK-005",
+       risk_snapshot={"risk_overlay_status": "NORMAL", "risk_budget_ok": True}),
+    _f(27, "audit_pack", "AuditPackResult safety_snapshot populated",
+       pack_id="PC202-PACK-006",
+       safety_snapshot={"NO_REAL_ORDERS": True, "PRODUCTION_TRADING_BLOCKED": True}),
+    _f(28, "audit_pack", "AuditPackResult reproducibility_hash is MD5",
+       pack_id="PC202-PACK-007",
+       reproducibility_hash="d41d8cd98f00b204e9800998ecf8427e"),
+    _f(29, "audit_pack", "AuditPackResult human_review_snapshot",
+       pack_id="PC202-PACK-008",
+       human_review_snapshot={"human_review_required": True}),
+    _f(30, "audit_pack", "AuditPackResult ticket_snapshot",
+       pack_id="PC202-PACK-009",
+       ticket_snapshot={"ticket_count": 0, "paper_only": True}),
+
+    # --- MarkdownReport fixtures (F031-F040) ---
+    _f(31, "markdown_report", "Default MarkdownReport",
+       title="# Paper Cockpit Report v2.0.2", summary="Report summary"),
+    _f(32, "markdown_report", "MarkdownReport with top_candidates",
+       title="# Paper Cockpit Report v2.0.2",
+       top_candidates="## Top Candidates\n- 2330\n- 2454"),
+    _f(33, "markdown_report", "MarkdownReport with blocked_candidates",
+       title="# Paper Cockpit Report v2.0.2",
+       blocked_candidates="## Blocked Candidates\n_None_"),
+    _f(34, "markdown_report", "MarkdownReport with abc_setup_table",
+       title="# Paper Cockpit Report v2.0.2",
+       abc_setup_table="## A/B/C Setup Table\n| Symbol | Setup |\n|--------|-------|"),
+    _f(35, "markdown_report", "MarkdownReport with risk_budget_table",
+       title="# Paper Cockpit Report v2.0.2",
+       risk_budget_table="## Risk Budget Table\n| Metric | Value |"),
+    _f(36, "markdown_report", "MarkdownReport decision_ticket_section",
+       title="# Paper Cockpit Report v2.0.2",
+       decision_ticket_section="## Decision Ticket Section\n_Paper Only_"),
+    _f(37, "markdown_report", "MarkdownReport human_review_required_section",
+       title="# Paper Cockpit Report v2.0.2",
+       human_review_required_section="## Human Review Required\nRequired."),
+    _f(38, "markdown_report", "MarkdownReport safety_guard_section",
+       title="# Paper Cockpit Report v2.0.2",
+       safety_guard_section="## Safety Guard Section\nNO_REAL_ORDERS=True"),
+    _f(39, "markdown_report", "MarkdownReport final_action_summary",
+       title="# Paper Cockpit Report v2.0.2",
+       final_action_summary="## Final Action Summary\nAll NO_ENTRY"),
+    _f(40, "markdown_report", "MarkdownReport full_markdown non-empty",
+       title="# Paper Cockpit Report v2.0.2",
+       full_markdown="# Paper Cockpit Report v2.0.2\n\nSummary\n"),
+
+    # --- CSVExportResult fixtures (F041-F050) ---
+    _f(41, "csv_export_result", "Default CSVExportResult",
+       export_ok=True, candidates_rows=0, decision_tickets_rows=0),
+    _f(42, "csv_export_result", "CSVExportResult with 3 candidate rows",
+       export_ok=True, candidates_rows=3,
+       candidates_csv="symbol,name,rank\n2330,TSMC,1\n2454,MediaTek,2\n2317,Foxconn,3\n"),
+    _f(43, "csv_export_result", "CSVExportResult decision_tickets_csv",
+       export_ok=True, decision_tickets_rows=1,
+       decision_tickets_csv="ticket_id,symbol\nPC202-TKT-001,2330\n"),
+    _f(44, "csv_export_result", "CSVExportResult no_entry_reasons_csv",
+       export_ok=True, no_entry_reasons_rows=0,
+       no_entry_reasons_csv="symbol,reason_code,reason_label\n"),
+    _f(45, "csv_export_result", "CSVExportResult risk_overlay_csv",
+       export_ok=True, risk_overlay_rows=1,
+       risk_overlay_csv="symbol,risk_overlay_status\n2330,NORMAL\n"),
+    _f(46, "csv_export_result", "CSVExportResult final_actions_csv",
+       export_ok=True, final_actions_rows=1,
+       final_actions_csv="symbol,final_action\n2330,NO_ENTRY\n"),
+    _f(47, "csv_export_result", "CSVExportResult csv_names has 5",
+       export_ok=True,
+       csv_names=["candidates.csv", "decision_tickets.csv", "no_entry_reasons.csv",
+                  "risk_overlay.csv", "final_actions.csv"]),
+    _f(48, "csv_export_result", "CSVExportResult paper_only=True",
+       export_ok=True, paper_only=True),
+    _f(49, "csv_export_result", "CSVExportResult human_review_required=True",
+       export_ok=True, human_review_required=True),
+    _f(50, "csv_export_result", "CSVExportResult schema_version=202",
+       export_ok=True, schema_version="202"),
+
+    # --- JSONExportResult fixtures (F051-F055) ---
+    _f(51, "json_export_result", "Default JSONExportResult",
+       is_valid=True, export_format="json", report_version="2.0.2"),
+    _f(52, "json_export_result", "JSONExportResult with json_str",
+       is_valid=True, json_str='{"schema_version": "202", "paper_only": true}'),
+    _f(53, "json_export_result", "JSONExportResult source=paper_cockpit",
+       is_valid=True, source="paper_cockpit"),
+    _f(54, "json_export_result", "JSONExportResult paper_only=True",
+       is_valid=True, paper_only=True),
+    _f(55, "json_export_result", "JSONExportResult human_review_required=True",
+       is_valid=True, human_review_required=True),
+
+    # --- ExportStatusSummary fixtures (F056-F060) ---
+    _f(56, "export_status_summary", "Default ExportStatusSummary",
+       export_ok=True, json_ok=True, markdown_ok=True, csv_ok=True, audit_pack_ok=True),
+    _f(57, "export_status_summary", "ExportStatusSummary formats_available 4",
+       export_ok=True,
+       formats_available=["json", "markdown", "csv", "audit_summary"]),
+    _f(58, "export_status_summary", "ExportStatusSummary paper_only_guard=True",
+       export_ok=True, paper_only_guard_enabled=True),
+    _f(59, "export_status_summary", "ExportStatusSummary broker_execution_disabled=True",
+       export_ok=True, broker_execution_disabled=True),
+    _f(60, "export_status_summary", "ExportStatusSummary production_trading_blocked=True",
+       export_ok=True, production_trading_blocked=True),
+
+    # --- ReportCandidateRow fixtures (F061-F065) ---
+    _f(61, "report_candidate_row", "Default ReportCandidateRow",
+       symbol="", final_action="NO_ENTRY", human_review_required=True),
+    _f(62, "report_candidate_row", "ReportCandidateRow for 2330",
+       symbol="2330", name="TSMC", rank=1, total_score=90.0,
+       abc_type="A_PULLBACK_10MA", final_action="NO_ENTRY"),
+    _f(63, "report_candidate_row", "ReportCandidateRow entry_allowed=False",
+       symbol="2454", name="MediaTek", rank=2, entry_allowed=False,
+       block_reason="trend_broken"),
+    _f(64, "report_candidate_row", "ReportCandidateRow schema_version=202",
+       symbol="2317", schema_version="202"),
+    _f(65, "report_candidate_row", "ReportCandidateRow paper_only=True",
+       symbol="2382", paper_only=True, no_real_orders=True),
+
+    # --- ReportTicketRow fixtures (F066-F070) ---
+    _f(66, "report_ticket_row", "Default ReportTicketRow",
+       ticket_id="PC202-TKT-001", symbol="", final_action="NO_ENTRY"),
+    _f(67, "report_ticket_row", "ReportTicketRow for 2330",
+       ticket_id="PC202-TKT-002", symbol="2330", name="TSMC",
+       setup_type="A_PULLBACK_10MA", final_action="NO_ENTRY",
+       entry_price_plan=580.0, stop_loss_price=536.0, risk_amount=4500.0),
+    _f(68, "report_ticket_row", "ReportTicketRow with no_entry_reasons",
+       ticket_id="PC202-TKT-003", symbol="2454",
+       no_entry_reasons=["trend_broken", "below_20ma"]),
+    _f(69, "report_ticket_row", "ReportTicketRow paper_only=True",
+       ticket_id="PC202-TKT-004", symbol="2317",
+       paper_only=True, no_real_orders=True),
+    _f(70, "report_ticket_row", "ReportTicketRow human_review_required=True",
+       ticket_id="PC202-TKT-005", symbol="2382", human_review_required=True),
+
+    # --- V202HealthSummary fixtures (F071-F075) ---
+    _f(71, "health_summary", "Default V202HealthSummary",
+       version="2.0.2", all_passed=False, passed=0, failed=0, total=0),
+    _f(72, "health_summary", "V202HealthSummary all passed",
+       version="2.0.2", all_passed=True, passed=20, failed=0, total=20),
+    _f(73, "health_summary", "V202HealthSummary export_formats_count=4",
+       version="2.0.2", export_formats_count=4),
+    _f(74, "health_summary", "V202HealthSummary csv_names_count=5",
+       version="2.0.2", csv_names_count=5),
+    _f(75, "health_summary", "V202HealthSummary audit_pack_fields_count=11",
+       version="2.0.2", audit_pack_fields_count=11),
+
+    # --- V202ReleaseSummary fixtures (F076-F080) ---
+    _f(76, "release_summary", "Default V202ReleaseSummary",
+       version="2.0.2", release_name="Paper Cockpit Report Export & Audit Pack",
+       models_count=12, cli_count=7, gui_tabs_count=3),
+    _f(77, "release_summary", "V202ReleaseSummary scenarios_count=80",
+       version="2.0.2", scenarios_count=80, fixtures_count=80),
+    _f(78, "release_summary", "V202ReleaseSummary baseline_tests=32820",
+       version="2.0.2", baseline_tests=32820, min_new_tests=300),
+    _f(79, "release_summary", "V202ReleaseSummary export counts",
+       version="2.0.2", export_formats_count=4, csv_names_count=5, audit_pack_fields_count=11),
+    _f(80, "release_summary", "V202ReleaseSummary paper_only=True",
+       version="2.0.2", paper_only=True, no_real_orders=True),
+]
+
+assert len(FIXTURES) == 80, f"Expected 80 fixtures, got {len(FIXTURES)}"
+assert all(f["schema_version"] == "202" for f in FIXTURES), "All fixtures must have schema_version='202'"
+assert all(f["paper_only"] is True for f in FIXTURES), "All fixtures must have paper_only=True"
+assert all("fixture_id" in f for f in FIXTURES), "All fixtures must have fixture_id"
+assert all(f["id"].startswith("PC202-F") for f in FIXTURES), "All fixtures must have PC202-F prefix"

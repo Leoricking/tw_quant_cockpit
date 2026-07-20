@@ -19,6 +19,7 @@ from typing import Any, Dict, List, Optional
 PANEL_VERSION = "2.0.0"
 PANEL_TITLE = "Small Capital Strategy v2.0.0 — Paper Cockpit Unified Entry & Strategy Decision Console"
 PANEL_VERSION_V201 = "2.0.1"
+PANEL_VERSION_V202 = "2.0.2"
 
 # v1.7.0 tabs (preserved unchanged)
 _TABS_V170 = [
@@ -370,6 +371,15 @@ _TABS_V201_DAILY_WORKFLOW = [
 
 assert len(_TABS_V201_DAILY_WORKFLOW) == 3, f"Expected 3 daily workflow v201 tabs, got {len(_TABS_V201_DAILY_WORKFLOW)}"
 
+# v2.0.2 Paper Cockpit Report Export & Audit Pack tabs
+_TABS_V202_REPORT_EXPORT = [
+    "report_export_v202",
+    "audit_pack_v202",
+    "export_status_v202",
+]
+
+assert len(_TABS_V202_REPORT_EXPORT) == 3, f"Expected 3 report export v202 tabs, got {len(_TABS_V202_REPORT_EXPORT)}"
+
 _TABS = (
     _TABS_V170
     + _TABS_V171_WATCHLIST
@@ -404,6 +414,7 @@ _TABS = (
     + _TABS_V1910_GOVERNANCE_STACK
     + _TABS_V200_PAPER_COCKPIT
     + _TABS_V201_DAILY_WORKFLOW
+    + _TABS_V202_REPORT_EXPORT
 )
 
 assert len(_TABS_V170) == 22, f"Expected 22 v1.7.0 tabs, got {len(_TABS_V170)}"
@@ -1693,6 +1704,10 @@ def render_all_tabs() -> Dict[str, Any]:
         "daily_workflow_v201":               render_daily_workflow_v201_tab,
         "no_entry_reason_detail":            render_no_entry_reason_detail_tab,
         "decision_ticket_v201":              render_decision_ticket_v201_tab,
+        # v2.0.2 Paper Cockpit Report Export & Audit Pack tabs
+        "report_export_v202":               render_report_export_v202_tab,
+        "audit_pack_v202":                  render_audit_pack_v202_tab,
+        "export_status_v202":               render_export_status_v202_tab,
     }
     result = {}
     for tab_name in _TABS:
@@ -4215,6 +4230,81 @@ def render_decision_ticket_v201_tab() -> Dict[str, Any]:
 def get_v201_tab_names() -> List[str]:
     """Return list of v2.0.1 new tab names."""
     return list(_TABS_V201_DAILY_WORKFLOW)
+
+
+def get_v202_tab_names() -> List[str]:
+    """Return list of v2.0.2 new tab names."""
+    return list(_TABS_V202_REPORT_EXPORT)
+
+
+def render_report_export_v202_tab() -> Dict[str, Any]:
+    """Render report export v202 tab data (headless-safe, paper-only)."""
+    return {
+        "tab": "report_export_v202",
+        "version": PANEL_VERSION_V202,
+        "release_name": "Paper Cockpit Report Export & Audit Pack",
+        "description": "Paper-only report export: JSON, Markdown, CSV, Audit Summary.",
+        "paper_only": True,
+        "research_only": True,
+        "no_real_orders": True,
+        "not_investment_advice": True,
+        "production_trading_blocked": True,
+        "human_review_required": True,
+        "export_formats": ["json", "markdown", "csv", "audit_summary"],
+        "schema_version": "202",
+        "empty_state": "No export data. Run paper-cockpit-v202-export-all to populate.",
+    }
+
+
+def render_audit_pack_v202_tab() -> Dict[str, Any]:
+    """Render audit pack v202 tab data (headless-safe, paper-only)."""
+    return {
+        "tab": "audit_pack_v202",
+        "version": PANEL_VERSION_V202,
+        "release_name": "Paper Cockpit Report Export & Audit Pack",
+        "description": "Audit pack schema: run_metadata, snapshots, reproducibility_hash.",
+        "paper_only": True,
+        "research_only": True,
+        "no_real_orders": True,
+        "not_investment_advice": True,
+        "production_trading_blocked": True,
+        "human_review_required": True,
+        "audit_pack_fields": [
+            "run_metadata", "input_snapshot", "decision_snapshot", "risk_snapshot",
+            "ticket_snapshot", "blocked_reason_snapshot", "human_review_snapshot",
+            "safety_snapshot", "reproducibility_hash", "export_format", "export_status",
+        ],
+        "schema_version": "202",
+        "empty_state": "No audit pack data. Run paper-cockpit-v202-audit-pack to populate.",
+    }
+
+
+def render_export_status_v202_tab() -> Dict[str, Any]:
+    """Render export status v202 tab data (headless-safe, paper-only)."""
+    return {
+        "tab": "export_status_v202",
+        "version": PANEL_VERSION_V202,
+        "release_name": "Paper Cockpit Report Export & Audit Pack",
+        "description": "Export status summary: all format availability, paper-only guards.",
+        "paper_only": True,
+        "research_only": True,
+        "no_real_orders": True,
+        "not_investment_advice": True,
+        "production_trading_blocked": True,
+        "human_review_required": True,
+        "formats_available": ["json", "markdown", "csv", "audit_summary"],
+        "paper_only_guard_enabled": True,
+        "broker_execution_disabled": True,
+        "schema_version": "202",
+        "empty_state": "No export status. Run paper-cockpit-v202-export-all to populate.",
+    }
+
+
+_TAB_RENDER_MAP_V202: Dict[str, Any] = {
+    "report_export_v202": render_report_export_v202_tab,
+    "audit_pack_v202": render_audit_pack_v202_tab,
+    "export_status_v202": render_export_status_v202_tab,
+}
 
 
 def get_panel_info() -> Dict[str, Any]:

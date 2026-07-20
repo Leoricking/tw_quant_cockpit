@@ -42880,6 +42880,85 @@ def cmd_paper_cockpit_safety_audit(args=None):
 
 
 # ---------------------------------------------------------------------------
+# v2.0.2 Paper Cockpit Report Export & Audit Pack handlers
+# ---------------------------------------------------------------------------
+_PAPER_COCKPIT_V202_BANNER = "[!] RESEARCH ONLY — PAPER ONLY — REPORT EXPORT & AUDIT PACK — NOT INVESTMENT ADVICE — NO REAL ORDERS"
+
+
+def cmd_paper_cockpit_v202_report_json(args=None):
+    """[v2.0.2] Export paper cockpit report as JSON. Research only."""
+    print(_PAPER_COCKPIT_V202_BANNER)
+    from paper_trading.small_capital_strategy.paper_cockpit_v202 import (
+        export_json, ReportExportInput,
+    )
+    result = export_json(ReportExportInput())
+    print(f"paper-cockpit-v202-report-json: report_version={result.report_version}  is_valid={result.is_valid}  paper_only={result.paper_only}  no_real_orders={result.no_real_orders}")
+    print(_PAPER_COCKPIT_V202_BANNER)
+
+
+def cmd_paper_cockpit_v202_report_md(args=None):
+    """[v2.0.2] Export paper cockpit report as Markdown. Research only."""
+    print(_PAPER_COCKPIT_V202_BANNER)
+    from paper_trading.small_capital_strategy.paper_cockpit_v202 import (
+        export_markdown, ReportExportInput,
+    )
+    result = export_markdown(ReportExportInput())
+    print(f"paper-cockpit-v202-report-md: has_title={bool(result.title)}  has_full_md={bool(result.full_markdown)}  paper_only={result.paper_only}  no_real_orders={result.no_real_orders}")
+    print(_PAPER_COCKPIT_V202_BANNER)
+
+
+def cmd_paper_cockpit_v202_report_csv(args=None):
+    """[v2.0.2] Export paper cockpit report as CSV. Research only."""
+    print(_PAPER_COCKPIT_V202_BANNER)
+    from paper_trading.small_capital_strategy.paper_cockpit_v202 import (
+        export_csv, ReportExportInput,
+    )
+    result = export_csv(ReportExportInput())
+    print(f"paper-cockpit-v202-report-csv: export_ok={result.export_ok}  csv_names={len(result.csv_names)}  paper_only={result.paper_only}  no_real_orders={result.no_real_orders}")
+    print(_PAPER_COCKPIT_V202_BANNER)
+
+
+def cmd_paper_cockpit_v202_audit_pack(args=None):
+    """[v2.0.2] Build paper cockpit audit pack. Research only."""
+    print(_PAPER_COCKPIT_V202_BANNER)
+    from paper_trading.small_capital_strategy.paper_cockpit_v202 import (
+        build_audit_pack, ReportExportInput,
+    )
+    result = build_audit_pack(ReportExportInput())
+    print(f"paper-cockpit-v202-audit-pack: pack_id={result.pack_id}  export_status={result.export_status}  hash_len={len(result.reproducibility_hash)}  paper_only={result.paper_only}")
+    print(_PAPER_COCKPIT_V202_BANNER)
+
+
+def cmd_paper_cockpit_v202_export_all(args=None):
+    """[v2.0.2] Run all paper cockpit exports. Research only."""
+    print(_PAPER_COCKPIT_V202_BANNER)
+    from paper_trading.small_capital_strategy.paper_cockpit_v202 import (
+        export_all, ReportExportInput,
+    )
+    result = export_all(ReportExportInput())
+    print(f"paper-cockpit-v202-export-all: export_ok={result.export_ok}  formats={len(result.formats_available)}  json_ok={result.json_ok}  csv_ok={result.csv_ok}  paper_only={result.paper_only}")
+    print(_PAPER_COCKPIT_V202_BANNER)
+
+
+def cmd_paper_cockpit_v202_health(args=None):
+    """[v2.0.2] Run paper cockpit v2.0.2 health check. Research only."""
+    print(_PAPER_COCKPIT_V202_BANNER)
+    from paper_trading.small_capital_strategy.paper_cockpit_health_v202 import run_health_check
+    result = run_health_check()
+    print(f"paper-cockpit-v202-health: all_passed={result['all_passed']}  passed={result['passed']}/{result['total']}  paper_only=True")
+    print(_PAPER_COCKPIT_V202_BANNER)
+
+
+def cmd_paper_cockpit_v202_gate(args=None):
+    """[v2.0.2] Run paper cockpit v2.0.2 release gate. Research only."""
+    print(_PAPER_COCKPIT_V202_BANNER)
+    from release.paper_cockpit_release_gate_v202 import run_release_gate
+    result = run_release_gate()
+    print(f"paper-cockpit-v202-gate: gate_passed={result['gate_passed']}  passed={result['passed_count']}/{result['total_count']}  paper_only=True")
+    print(_PAPER_COCKPIT_V202_BANNER)
+
+
+# ---------------------------------------------------------------------------
 # v2.0.1 Paper Cockpit Daily Workflow Hardening handlers
 # ---------------------------------------------------------------------------
 _PAPER_COCKPIT_V201_BANNER = "[!] RESEARCH ONLY — PAPER ONLY — DAILY WORKFLOW HARDENING — NOT INVESTMENT ADVICE — NO REAL ORDERS"
@@ -45994,6 +46073,14 @@ def main() -> None:
         "strategy-promotion-rollback-validate": cmd_strategy_promotion_rollback_validate,
         "strategy-promotion-approval-state":   cmd_strategy_promotion_approval_state,
         "strategy-promotion-safety-audit":     cmd_strategy_promotion_safety_audit,
+        # v2.0.2 paper cockpit report export & audit pack commands
+        "paper-cockpit-v202-report-json":     cmd_paper_cockpit_v202_report_json,
+        "paper-cockpit-v202-report-md":       cmd_paper_cockpit_v202_report_md,
+        "paper-cockpit-v202-report-csv":      cmd_paper_cockpit_v202_report_csv,
+        "paper-cockpit-v202-audit-pack":      cmd_paper_cockpit_v202_audit_pack,
+        "paper-cockpit-v202-export-all":      cmd_paper_cockpit_v202_export_all,
+        "paper-cockpit-v202-health":          cmd_paper_cockpit_v202_health,
+        "paper-cockpit-v202-gate":            cmd_paper_cockpit_v202_gate,
         # v2.0.1 paper cockpit daily workflow hardening commands
         "paper-cockpit-daily-workflow":       cmd_paper_cockpit_daily_workflow,
         "paper-cockpit-no-entry-reason":      cmd_paper_cockpit_no_entry_reason,
