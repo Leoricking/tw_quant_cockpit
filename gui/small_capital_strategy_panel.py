@@ -22,6 +22,7 @@ PANEL_VERSION_V201 = "2.0.1"
 PANEL_VERSION_V202 = "2.0.2"
 PANEL_VERSION_V203 = "2.0.3"
 PANEL_VERSION_V204 = "2.0.4"
+PANEL_VERSION_V205 = "2.0.5"
 
 # v1.7.0 tabs (preserved unchanged)
 _TABS_V170 = [
@@ -400,6 +401,15 @@ _TABS_V204_REVIEW = [
 
 assert len(_TABS_V204_REVIEW) == 3, f"Expected 3 review v204 tabs, got {len(_TABS_V204_REVIEW)}"
 
+# v2.0.5 Paper Watchlist Rotation & Candidate Promotion Queue tabs
+_TABS_V205_WATCHLIST = [
+    "watchlist_rotation_v205",
+    "promotion_queue_v205",
+    "human_review_queue_v205",
+]
+
+assert len(_TABS_V205_WATCHLIST) == 3, f"Expected 3 watchlist v205 tabs, got {len(_TABS_V205_WATCHLIST)}"
+
 _TABS = (
     _TABS_V170
     + _TABS_V171_WATCHLIST
@@ -437,6 +447,7 @@ _TABS = (
     + _TABS_V202_REPORT_EXPORT
     + _TABS_V203_SIMULATION
     + _TABS_V204_REVIEW
+    + _TABS_V205_WATCHLIST
 )
 
 assert len(_TABS_V170) == 22, f"Expected 22 v1.7.0 tabs, got {len(_TABS_V170)}"
@@ -1738,6 +1749,10 @@ def render_all_tabs() -> Dict[str, Any]:
         "weekly_review_v204":               render_weekly_review_v204_tab,
         "improvement_pack_v204":            render_improvement_pack_v204_tab,
         "review_metrics_v204":              render_review_metrics_v204_tab,
+        # v2.0.5 Paper Watchlist Rotation & Candidate Promotion Queue tabs
+        "watchlist_rotation_v205":          render_watchlist_rotation_v205_tab,
+        "promotion_queue_v205":             render_promotion_queue_v205_tab,
+        "human_review_queue_v205":          render_human_review_queue_v205_tab,
     }
     result = {}
     for tab_name in _TABS:
@@ -4515,6 +4530,92 @@ _TAB_RENDER_MAP_V204: Dict[str, Any] = {
     "weekly_review_v204": render_weekly_review_v204_tab,
     "improvement_pack_v204": render_improvement_pack_v204_tab,
     "review_metrics_v204": render_review_metrics_v204_tab,
+}
+
+
+def get_v205_tab_names() -> List[str]:
+    """Return list of v2.0.5 new tab names."""
+    return list(_TABS_V205_WATCHLIST)
+
+
+def render_watchlist_rotation_v205_tab() -> Dict[str, Any]:
+    """Render watchlist rotation v205 tab data (headless-safe, paper-only)."""
+    return {
+        "tab": "watchlist_rotation_v205",
+        "version": PANEL_VERSION_V205,
+        "release_name": "Paper Watchlist Rotation & Candidate Promotion Queue",
+        "description": "Paper-only watchlist rotation: keep/promote/demote/remove/quarantine/human-review decision queues.",
+        "paper_only": True,
+        "research_only": True,
+        "rotation_only": True,
+        "no_real_orders": True,
+        "no_broker": True,
+        "not_investment_advice": True,
+        "production_trading_blocked": True,
+        "should_auto_apply": False,
+        "human_review_required": True,
+        "watchlist_statuses": [
+            "active_watchlist", "promoted_candidate", "second_wave_candidate",
+            "abc_pullback_candidate", "breakout_candidate", "quarantined_no_entry",
+            "downgraded", "removed", "human_review_required",
+        ],
+        "schema_version": "205",
+        "empty_state": "No rotation data. Run paper-cockpit-v205-rotate-watchlist to populate.",
+    }
+
+
+def render_promotion_queue_v205_tab() -> Dict[str, Any]:
+    """Render promotion queue v205 tab data (headless-safe, paper-only)."""
+    return {
+        "tab": "promotion_queue_v205",
+        "version": PANEL_VERSION_V205,
+        "release_name": "Paper Watchlist Rotation & Candidate Promotion Queue",
+        "description": "Paper-only candidate promotion queue: risk-budget-aware, simulation-ranking-aware, strategy-profile-aware.",
+        "paper_only": True,
+        "research_only": True,
+        "rotation_only": True,
+        "no_real_orders": True,
+        "no_broker": True,
+        "not_investment_advice": True,
+        "production_trading_blocked": True,
+        "should_auto_apply": False,
+        "human_review_required": True,
+        "promotion_decision_fields": [
+            "decision_id", "symbol", "from_status", "to_status",
+            "promotion_score", "risk_score", "theme_score", "technical_score",
+            "liquidity_score", "chip_score", "reason_codes", "blocked_reasons",
+            "requires_human_review", "should_auto_apply",
+        ],
+        "schema_version": "205",
+        "empty_state": "No promotion queue data. Run paper-cockpit-v205-promote-candidates to populate.",
+    }
+
+
+def render_human_review_queue_v205_tab() -> Dict[str, Any]:
+    """Render human review queue v205 tab data (headless-safe, paper-only)."""
+    return {
+        "tab": "human_review_queue_v205",
+        "version": PANEL_VERSION_V205,
+        "release_name": "Paper Watchlist Rotation & Candidate Promotion Queue",
+        "description": "Paper-only human review queue: items requiring manual analyst decision before any promotion action.",
+        "paper_only": True,
+        "research_only": True,
+        "rotation_only": True,
+        "no_real_orders": True,
+        "no_broker": True,
+        "not_investment_advice": True,
+        "production_trading_blocked": True,
+        "should_auto_apply": False,
+        "human_review_required": True,
+        "schema_version": "205",
+        "empty_state": "No human review queue data. Run paper-cockpit-v205-build-human-review-queue to populate.",
+    }
+
+
+_TAB_RENDER_MAP_V205: Dict[str, Any] = {
+    "watchlist_rotation_v205": render_watchlist_rotation_v205_tab,
+    "promotion_queue_v205": render_promotion_queue_v205_tab,
+    "human_review_queue_v205": render_human_review_queue_v205_tab,
 }
 
 

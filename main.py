@@ -42880,6 +42880,102 @@ def cmd_paper_cockpit_safety_audit(args=None):
 
 
 # ---------------------------------------------------------------------------
+# v2.0.5 Paper Watchlist Rotation & Candidate Promotion Queue handlers
+# ---------------------------------------------------------------------------
+_PAPER_COCKPIT_V205_BANNER = "[!] RESEARCH ONLY — PAPER ONLY — WATCHLIST ROTATION — NOT INVESTMENT ADVICE — NO REAL ORDERS — should_auto_apply=False"
+
+
+def cmd_paper_cockpit_v205_rotate_watchlist(args=None):
+    """[v2.0.5] Run paper watchlist rotation. Research only."""
+    print(_PAPER_COCKPIT_V205_BANNER)
+    from paper_trading.small_capital_strategy.paper_cockpit_v205 import run_watchlist_rotation
+    result = run_watchlist_rotation()
+    print(f"paper-cockpit-v205-rotate-watchlist: rotation_version={result.rotation_version}  paper_only={result.paper_only}  all_passed={result.all_passed}  should_auto_apply={result.should_auto_apply}")
+    print(_PAPER_COCKPIT_V205_BANNER)
+
+
+def cmd_paper_cockpit_v205_promote_candidates(args=None):
+    """[v2.0.5] Build promotion candidate queue. Research only."""
+    print(_PAPER_COCKPIT_V205_BANNER)
+    from paper_trading.small_capital_strategy.paper_cockpit_v205 import build_promotion_queue
+    queue = build_promotion_queue()
+    print(f"paper-cockpit-v205-promote-candidates: promote_count={len(queue)}  paper_only=True  should_auto_apply=False")
+    print(_PAPER_COCKPIT_V205_BANNER)
+
+
+def cmd_paper_cockpit_v205_demote_candidates(args=None):
+    """[v2.0.5] Build demotion candidate queue. Research only."""
+    print(_PAPER_COCKPIT_V205_BANNER)
+    from paper_trading.small_capital_strategy.paper_cockpit_v205 import build_demotion_queue
+    queue = build_demotion_queue()
+    print(f"paper-cockpit-v205-demote-candidates: demote_count={len(queue)}  paper_only=True  should_auto_apply=False")
+    print(_PAPER_COCKPIT_V205_BANNER)
+
+
+def cmd_paper_cockpit_v205_build_human_review_queue(args=None):
+    """[v2.0.5] Build human review queue. Research only."""
+    print(_PAPER_COCKPIT_V205_BANNER)
+    from paper_trading.small_capital_strategy.paper_cockpit_v205 import build_human_review_queue
+    queue = build_human_review_queue()
+    print(f"paper-cockpit-v205-build-human-review-queue: human_review_count={len(queue)}  paper_only=True")
+    print(_PAPER_COCKPIT_V205_BANNER)
+
+
+def cmd_paper_cockpit_v205_build_quarantine_queue(args=None):
+    """[v2.0.5] Build no-entry quarantine queue. Research only."""
+    print(_PAPER_COCKPIT_V205_BANNER)
+    from paper_trading.small_capital_strategy.paper_cockpit_v205 import build_quarantine_queue
+    queue = build_quarantine_queue()
+    print(f"paper-cockpit-v205-build-quarantine-queue: quarantine_count={len(queue)}  paper_only=True")
+    print(_PAPER_COCKPIT_V205_BANNER)
+
+
+def cmd_paper_cockpit_v205_export_json(args=None):
+    """[v2.0.5] Export rotation as JSON. Research only."""
+    print(_PAPER_COCKPIT_V205_BANNER)
+    from paper_trading.small_capital_strategy.paper_cockpit_v205 import run_watchlist_rotation, export_rotation_json
+    result = export_rotation_json(run_watchlist_rotation())
+    print(f"paper-cockpit-v205-export-json: is_valid={result.is_valid}  paper_only={result.paper_only}  export_status={result.export_status}")
+    print(_PAPER_COCKPIT_V205_BANNER)
+
+
+def cmd_paper_cockpit_v205_export_md(args=None):
+    """[v2.0.5] Export rotation as Markdown. Research only."""
+    print(_PAPER_COCKPIT_V205_BANNER)
+    from paper_trading.small_capital_strategy.paper_cockpit_v205 import run_watchlist_rotation, export_rotation_markdown
+    result = export_rotation_markdown(run_watchlist_rotation())
+    print(f"paper-cockpit-v205-export-md: is_valid={result.is_valid}  paper_only={result.paper_only}  export_status={result.export_status}")
+    print(_PAPER_COCKPIT_V205_BANNER)
+
+
+def cmd_paper_cockpit_v205_export_csv(args=None):
+    """[v2.0.5] Export rotation queues as CSV. Research only."""
+    print(_PAPER_COCKPIT_V205_BANNER)
+    from paper_trading.small_capital_strategy.paper_cockpit_v205 import run_watchlist_rotation, export_promotion_queue_csv
+    result = export_promotion_queue_csv(run_watchlist_rotation())
+    print(f"paper-cockpit-v205-export-csv: is_valid={result.is_valid}  paper_only={result.paper_only}  row_count={result.row_count}")
+    print(_PAPER_COCKPIT_V205_BANNER)
+
+
+def cmd_paper_cockpit_v205_health(args=None):
+    """[v2.0.5] Run paper cockpit v2.0.5 health check. Research only."""
+    print(_PAPER_COCKPIT_V205_BANNER)
+    from paper_trading.small_capital_strategy.paper_cockpit_health_v205 import run_health_check
+    result = run_health_check()
+    print(f"paper-cockpit-v205-health: all_passed={result['all_passed']}  passed={result['passed']}/{result['total']}  paper_only=True")
+    print(_PAPER_COCKPIT_V205_BANNER)
+
+
+def cmd_paper_cockpit_v205_gate(args=None):
+    """[v2.0.5] Run paper cockpit v2.0.5 release gate. Research only."""
+    print(_PAPER_COCKPIT_V205_BANNER)
+    from release.paper_cockpit_release_gate_v205 import run_release_gate
+    result = run_release_gate()
+    print(f"paper-cockpit-v205-gate: gate_passed={result['gate_passed']}  passed={result['passed_count']}/{result['total_count']}  paper_only=True")
+    print(_PAPER_COCKPIT_V205_BANNER)
+
+
+# ---------------------------------------------------------------------------
 # v2.0.4 Paper Portfolio Review Loop & Weekly Improvement Pack handlers
 # ---------------------------------------------------------------------------
 _PAPER_COCKPIT_V204_BANNER = "[!] RESEARCH ONLY — PAPER ONLY — PORTFOLIO REVIEW LOOP — NOT INVESTMENT ADVICE — NO REAL ORDERS — should_auto_apply=False"
@@ -46274,6 +46370,17 @@ def main() -> None:
         "strategy-promotion-rollback-validate": cmd_strategy_promotion_rollback_validate,
         "strategy-promotion-approval-state":   cmd_strategy_promotion_approval_state,
         "strategy-promotion-safety-audit":     cmd_strategy_promotion_safety_audit,
+        # v2.0.5 paper cockpit watchlist rotation & candidate promotion queue commands
+        "paper-cockpit-v205-rotate-watchlist":         cmd_paper_cockpit_v205_rotate_watchlist,
+        "paper-cockpit-v205-promote-candidates":       cmd_paper_cockpit_v205_promote_candidates,
+        "paper-cockpit-v205-demote-candidates":        cmd_paper_cockpit_v205_demote_candidates,
+        "paper-cockpit-v205-build-human-review-queue": cmd_paper_cockpit_v205_build_human_review_queue,
+        "paper-cockpit-v205-build-quarantine-queue":   cmd_paper_cockpit_v205_build_quarantine_queue,
+        "paper-cockpit-v205-export-json":              cmd_paper_cockpit_v205_export_json,
+        "paper-cockpit-v205-export-md":                cmd_paper_cockpit_v205_export_md,
+        "paper-cockpit-v205-export-csv":               cmd_paper_cockpit_v205_export_csv,
+        "paper-cockpit-v205-health":                   cmd_paper_cockpit_v205_health,
+        "paper-cockpit-v205-gate":                     cmd_paper_cockpit_v205_gate,
         # v2.0.4 paper cockpit portfolio review loop & weekly improvement pack commands
         "paper-cockpit-v204-review-weekly":            cmd_paper_cockpit_v204_review_weekly,
         "paper-cockpit-v204-review-portfolio":         cmd_paper_cockpit_v204_review_portfolio,

@@ -5753,6 +5753,41 @@ _SGD_V197_COMMANDS: _List[CommandSpec] = [
                 introduced_in="1.9.7", safety_classification="RESEARCH_ONLY"),
 ]
 
+# v2.0.5 Paper Watchlist Rotation & Candidate Promotion Queue commands
+# ---------------------------------------------------------------------------
+_PC_V205_COMMANDS: _List[CommandSpec] = [
+    CommandSpec(name="paper-cockpit-v205-rotate-watchlist", handler_name="cmd_paper_cockpit_v205_rotate_watchlist",
+                help="[Research] Run paper watchlist rotation v2.0.5", group="paper_cockpit_v205",
+                introduced_in="2.0.5", safety_classification="RESEARCH_ONLY"),
+    CommandSpec(name="paper-cockpit-v205-promote-candidates", handler_name="cmd_paper_cockpit_v205_promote_candidates",
+                help="[Research] Build promotion candidate queue v2.0.5", group="paper_cockpit_v205",
+                introduced_in="2.0.5", safety_classification="RESEARCH_ONLY"),
+    CommandSpec(name="paper-cockpit-v205-demote-candidates", handler_name="cmd_paper_cockpit_v205_demote_candidates",
+                help="[Research] Build demotion candidate queue v2.0.5", group="paper_cockpit_v205",
+                introduced_in="2.0.5", safety_classification="RESEARCH_ONLY"),
+    CommandSpec(name="paper-cockpit-v205-build-human-review-queue", handler_name="cmd_paper_cockpit_v205_build_human_review_queue",
+                help="[Research] Build human review queue v2.0.5", group="paper_cockpit_v205",
+                introduced_in="2.0.5", safety_classification="RESEARCH_ONLY"),
+    CommandSpec(name="paper-cockpit-v205-build-quarantine-queue", handler_name="cmd_paper_cockpit_v205_build_quarantine_queue",
+                help="[Research] Build no-entry quarantine queue v2.0.5", group="paper_cockpit_v205",
+                introduced_in="2.0.5", safety_classification="RESEARCH_ONLY"),
+    CommandSpec(name="paper-cockpit-v205-export-json", handler_name="cmd_paper_cockpit_v205_export_json",
+                help="[Research] Export rotation as JSON v2.0.5", group="paper_cockpit_v205",
+                introduced_in="2.0.5", safety_classification="RESEARCH_ONLY"),
+    CommandSpec(name="paper-cockpit-v205-export-md", handler_name="cmd_paper_cockpit_v205_export_md",
+                help="[Research] Export rotation as Markdown v2.0.5", group="paper_cockpit_v205",
+                introduced_in="2.0.5", safety_classification="RESEARCH_ONLY"),
+    CommandSpec(name="paper-cockpit-v205-export-csv", handler_name="cmd_paper_cockpit_v205_export_csv",
+                help="[Research] Export rotation queues as CSV v2.0.5", group="paper_cockpit_v205",
+                introduced_in="2.0.5", safety_classification="RESEARCH_ONLY"),
+    CommandSpec(name="paper-cockpit-v205-health", handler_name="cmd_paper_cockpit_v205_health",
+                help="[Research] Run paper cockpit v2.0.5 health check", group="paper_cockpit_v205",
+                introduced_in="2.0.5", safety_classification="RESEARCH_ONLY"),
+    CommandSpec(name="paper-cockpit-v205-gate", handler_name="cmd_paper_cockpit_v205_gate",
+                help="[Research] Run paper cockpit v2.0.5 release gate", group="paper_cockpit_v205",
+                introduced_in="2.0.5", safety_classification="RESEARCH_ONLY"),
+]
+
 # v2.0.4 Paper Portfolio Review Loop & Weekly Improvement Pack commands
 # ---------------------------------------------------------------------------
 _PC_V204_COMMANDS: _List[CommandSpec] = [
@@ -5888,7 +5923,8 @@ _PC_V201_COMMANDS: _List[CommandSpec] = [
 ]
 
 PROVIDER_COMMANDS: _List[CommandSpec] = (
-    _PC_V204_COMMANDS
+    _PC_V205_COMMANDS
+    + _PC_V204_COMMANDS
     + _PC_V203_COMMANDS
     + _PC_V202_COMMANDS
     + _PC_V200_COMMANDS
