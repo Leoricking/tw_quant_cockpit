@@ -42880,6 +42880,102 @@ def cmd_paper_cockpit_safety_audit(args=None):
 
 
 # ---------------------------------------------------------------------------
+# v2.0.3 Paper Strategy Simulation Batch & Scenario Replay handlers
+# ---------------------------------------------------------------------------
+_PAPER_COCKPIT_V203_BANNER = "[!] RESEARCH ONLY — PAPER ONLY — SIMULATION BATCH & SCENARIO REPLAY — NOT INVESTMENT ADVICE — NO REAL ORDERS"
+
+
+def cmd_paper_cockpit_v203_simulate_one(args=None):
+    """[v2.0.3] Run single paper simulation. Research only."""
+    print(_PAPER_COCKPIT_V203_BANNER)
+    from paper_trading.small_capital_strategy.paper_cockpit_v203 import simulate_one, SimulationInput
+    result = simulate_one(SimulationInput())
+    print(f"paper-cockpit-v203-simulate-one: version={result.simulation_version}  paper_only={result.paper_only}  all_passed={result.all_passed}")
+    print(_PAPER_COCKPIT_V203_BANNER)
+
+
+def cmd_paper_cockpit_v203_simulate_batch(args=None):
+    """[v2.0.3] Run batch paper simulation. Research only."""
+    print(_PAPER_COCKPIT_V203_BANNER)
+    from paper_trading.small_capital_strategy.paper_cockpit_v203 import simulate_batch
+    result = simulate_batch()
+    print(f"paper-cockpit-v203-simulate-batch: total_simulations={result.total_simulations}  all_passed={result.all_passed}  paper_only={result.paper_only}")
+    print(_PAPER_COCKPIT_V203_BANNER)
+
+
+def cmd_paper_cockpit_v203_replay_scenario(args=None):
+    """[v2.0.3] Replay paper simulation scenario. Research only."""
+    print(_PAPER_COCKPIT_V203_BANNER)
+    from paper_trading.small_capital_strategy.paper_cockpit_v203 import replay_scenario, ScenarioReplaySchema
+    result = replay_scenario(ScenarioReplaySchema())
+    print(f"paper-cockpit-v203-replay-scenario: scenario_id={result.scenario_id}  paper_only={result.paper_only}")
+    print(_PAPER_COCKPIT_V203_BANNER)
+
+
+def cmd_paper_cockpit_v203_compare_profiles(args=None):
+    """[v2.0.3] Compare strategy profiles. Research only."""
+    print(_PAPER_COCKPIT_V203_BANNER)
+    from paper_trading.small_capital_strategy.paper_cockpit_v203 import simulate_one, build_batch_comparison
+    result = build_batch_comparison(simulate_one(), "P001")
+    print(f"paper-cockpit-v203-compare-profiles: profile_id={result.strategy_profile_id}  quality_score={result.simulation_quality_score}")
+    print(_PAPER_COCKPIT_V203_BANNER)
+
+
+def cmd_paper_cockpit_v203_rank_results(args=None):
+    """[v2.0.3] Rank simulation results. Research only."""
+    print(_PAPER_COCKPIT_V203_BANNER)
+    from paper_trading.small_capital_strategy.paper_cockpit_v203 import simulate_one, build_batch_comparison, rank_simulations
+    rankings = rank_simulations([build_batch_comparison(simulate_one(), "P001")])
+    print(f"paper-cockpit-v203-rank-results: rankings={len(rankings)}  paper_only=True")
+    print(_PAPER_COCKPIT_V203_BANNER)
+
+
+def cmd_paper_cockpit_v203_export_json(args=None):
+    """[v2.0.3] Export simulation as JSON. Research only."""
+    print(_PAPER_COCKPIT_V203_BANNER)
+    from paper_trading.small_capital_strategy.paper_cockpit_v203 import simulate_one, export_simulation_json
+    result = export_simulation_json(simulate_one())
+    print(f"paper-cockpit-v203-export-json: is_valid={result.is_valid}  paper_only={result.paper_only}")
+    print(_PAPER_COCKPIT_V203_BANNER)
+
+
+def cmd_paper_cockpit_v203_export_md(args=None):
+    """[v2.0.3] Export simulation as Markdown. Research only."""
+    print(_PAPER_COCKPIT_V203_BANNER)
+    from paper_trading.small_capital_strategy.paper_cockpit_v203 import simulate_one, export_simulation_markdown
+    result = export_simulation_markdown(simulate_one())
+    print(f"paper-cockpit-v203-export-md: is_valid={result.is_valid}  paper_only={result.paper_only}")
+    print(_PAPER_COCKPIT_V203_BANNER)
+
+
+def cmd_paper_cockpit_v203_export_csv(args=None):
+    """[v2.0.3] Export simulation as CSV. Research only."""
+    print(_PAPER_COCKPIT_V203_BANNER)
+    from paper_trading.small_capital_strategy.paper_cockpit_v203 import simulate_one, export_simulation_csv
+    result = export_simulation_csv(simulate_one())
+    print(f"paper-cockpit-v203-export-csv: is_valid={result.is_valid}  paper_only={result.paper_only}")
+    print(_PAPER_COCKPIT_V203_BANNER)
+
+
+def cmd_paper_cockpit_v203_health(args=None):
+    """[v2.0.3] Run paper cockpit v2.0.3 health check. Research only."""
+    print(_PAPER_COCKPIT_V203_BANNER)
+    from paper_trading.small_capital_strategy.paper_cockpit_health_v203 import run_health_check
+    result = run_health_check()
+    print(f"paper-cockpit-v203-health: all_passed={result['all_passed']}  passed={result['passed']}/{result['total']}")
+    print(_PAPER_COCKPIT_V203_BANNER)
+
+
+def cmd_paper_cockpit_v203_gate(args=None):
+    """[v2.0.3] Run paper cockpit v2.0.3 release gate. Research only."""
+    print(_PAPER_COCKPIT_V203_BANNER)
+    from release.paper_cockpit_release_gate_v203 import run_release_gate
+    result = run_release_gate()
+    print(f"paper-cockpit-v203-gate: gate_passed={result['gate_passed']}  passed={result['passed_count']}/{result['total_count']}  paper_only=True")
+    print(_PAPER_COCKPIT_V203_BANNER)
+
+
+# ---------------------------------------------------------------------------
 # v2.0.2 Paper Cockpit Report Export & Audit Pack handlers
 # ---------------------------------------------------------------------------
 _PAPER_COCKPIT_V202_BANNER = "[!] RESEARCH ONLY — PAPER ONLY — REPORT EXPORT & AUDIT PACK — NOT INVESTMENT ADVICE — NO REAL ORDERS"
@@ -46073,6 +46169,17 @@ def main() -> None:
         "strategy-promotion-rollback-validate": cmd_strategy_promotion_rollback_validate,
         "strategy-promotion-approval-state":   cmd_strategy_promotion_approval_state,
         "strategy-promotion-safety-audit":     cmd_strategy_promotion_safety_audit,
+        # v2.0.3 paper cockpit simulation batch & scenario replay commands
+        "paper-cockpit-v203-simulate-one":    cmd_paper_cockpit_v203_simulate_one,
+        "paper-cockpit-v203-simulate-batch":  cmd_paper_cockpit_v203_simulate_batch,
+        "paper-cockpit-v203-replay-scenario": cmd_paper_cockpit_v203_replay_scenario,
+        "paper-cockpit-v203-compare-profiles": cmd_paper_cockpit_v203_compare_profiles,
+        "paper-cockpit-v203-rank-results":    cmd_paper_cockpit_v203_rank_results,
+        "paper-cockpit-v203-export-json":     cmd_paper_cockpit_v203_export_json,
+        "paper-cockpit-v203-export-md":       cmd_paper_cockpit_v203_export_md,
+        "paper-cockpit-v203-export-csv":      cmd_paper_cockpit_v203_export_csv,
+        "paper-cockpit-v203-health":          cmd_paper_cockpit_v203_health,
+        "paper-cockpit-v203-gate":            cmd_paper_cockpit_v203_gate,
         # v2.0.2 paper cockpit report export & audit pack commands
         "paper-cockpit-v202-report-json":     cmd_paper_cockpit_v202_report_json,
         "paper-cockpit-v202-report-md":       cmd_paper_cockpit_v202_report_md,

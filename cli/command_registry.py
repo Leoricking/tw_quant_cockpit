@@ -5753,6 +5753,41 @@ _SGD_V197_COMMANDS: _List[CommandSpec] = [
                 introduced_in="1.9.7", safety_classification="RESEARCH_ONLY"),
 ]
 
+# v2.0.3 Paper Strategy Simulation Batch & Scenario Replay commands
+# ---------------------------------------------------------------------------
+_PC_V203_COMMANDS: _List[CommandSpec] = [
+    CommandSpec(name="paper-cockpit-v203-simulate-one", handler_name="cmd_paper_cockpit_v203_simulate_one",
+                help="[Research] Run single paper simulation v2.0.3", group="paper_cockpit_v203",
+                introduced_in="2.0.3", safety_classification="RESEARCH_ONLY"),
+    CommandSpec(name="paper-cockpit-v203-simulate-batch", handler_name="cmd_paper_cockpit_v203_simulate_batch",
+                help="[Research] Run batch paper simulation v2.0.3", group="paper_cockpit_v203",
+                introduced_in="2.0.3", safety_classification="RESEARCH_ONLY"),
+    CommandSpec(name="paper-cockpit-v203-replay-scenario", handler_name="cmd_paper_cockpit_v203_replay_scenario",
+                help="[Research] Replay paper simulation scenario v2.0.3", group="paper_cockpit_v203",
+                introduced_in="2.0.3", safety_classification="RESEARCH_ONLY"),
+    CommandSpec(name="paper-cockpit-v203-compare-profiles", handler_name="cmd_paper_cockpit_v203_compare_profiles",
+                help="[Research] Compare strategy profiles v2.0.3", group="paper_cockpit_v203",
+                introduced_in="2.0.3", safety_classification="RESEARCH_ONLY"),
+    CommandSpec(name="paper-cockpit-v203-rank-results", handler_name="cmd_paper_cockpit_v203_rank_results",
+                help="[Research] Rank simulation results v2.0.3", group="paper_cockpit_v203",
+                introduced_in="2.0.3", safety_classification="RESEARCH_ONLY"),
+    CommandSpec(name="paper-cockpit-v203-export-json", handler_name="cmd_paper_cockpit_v203_export_json",
+                help="[Research] Export simulation as JSON v2.0.3", group="paper_cockpit_v203",
+                introduced_in="2.0.3", safety_classification="RESEARCH_ONLY"),
+    CommandSpec(name="paper-cockpit-v203-export-md", handler_name="cmd_paper_cockpit_v203_export_md",
+                help="[Research] Export simulation as Markdown v2.0.3", group="paper_cockpit_v203",
+                introduced_in="2.0.3", safety_classification="RESEARCH_ONLY"),
+    CommandSpec(name="paper-cockpit-v203-export-csv", handler_name="cmd_paper_cockpit_v203_export_csv",
+                help="[Research] Export simulation as CSV v2.0.3", group="paper_cockpit_v203",
+                introduced_in="2.0.3", safety_classification="RESEARCH_ONLY"),
+    CommandSpec(name="paper-cockpit-v203-health", handler_name="cmd_paper_cockpit_v203_health",
+                help="[Research] Run paper cockpit v2.0.3 health check", group="paper_cockpit_v203",
+                introduced_in="2.0.3", safety_classification="RESEARCH_ONLY"),
+    CommandSpec(name="paper-cockpit-v203-gate", handler_name="cmd_paper_cockpit_v203_gate",
+                help="[Research] Run paper cockpit v2.0.3 release gate", group="paper_cockpit_v203",
+                introduced_in="2.0.3", safety_classification="RESEARCH_ONLY"),
+]
+
 # v2.0.2 Paper Cockpit Report Export & Audit Pack commands
 # ---------------------------------------------------------------------------
 _PC_V202_COMMANDS: _List[CommandSpec] = [
@@ -5815,7 +5850,8 @@ _PC_V201_COMMANDS: _List[CommandSpec] = [
 ]
 
 PROVIDER_COMMANDS: _List[CommandSpec] = (
-    _PC_V202_COMMANDS
+    _PC_V203_COMMANDS
+    + _PC_V202_COMMANDS
     + _PC_V200_COMMANDS
     + _PC_V201_COMMANDS
     + _RESEARCH_FOUNDATION_COMMANDS

@@ -20,6 +20,7 @@ PANEL_VERSION = "2.0.0"
 PANEL_TITLE = "Small Capital Strategy v2.0.0 — Paper Cockpit Unified Entry & Strategy Decision Console"
 PANEL_VERSION_V201 = "2.0.1"
 PANEL_VERSION_V202 = "2.0.2"
+PANEL_VERSION_V203 = "2.0.3"
 
 # v1.7.0 tabs (preserved unchanged)
 _TABS_V170 = [
@@ -380,6 +381,15 @@ _TABS_V202_REPORT_EXPORT = [
 
 assert len(_TABS_V202_REPORT_EXPORT) == 3, f"Expected 3 report export v202 tabs, got {len(_TABS_V202_REPORT_EXPORT)}"
 
+# v2.0.3 Paper Strategy Simulation Batch & Scenario Replay tabs
+_TABS_V203_SIMULATION = [
+    "simulation_batch_v203",
+    "scenario_replay_v203",
+    "strategy_comparison_v203",
+]
+
+assert len(_TABS_V203_SIMULATION) == 3, f"Expected 3 simulation v203 tabs, got {len(_TABS_V203_SIMULATION)}"
+
 _TABS = (
     _TABS_V170
     + _TABS_V171_WATCHLIST
@@ -415,6 +425,7 @@ _TABS = (
     + _TABS_V200_PAPER_COCKPIT
     + _TABS_V201_DAILY_WORKFLOW
     + _TABS_V202_REPORT_EXPORT
+    + _TABS_V203_SIMULATION
 )
 
 assert len(_TABS_V170) == 22, f"Expected 22 v1.7.0 tabs, got {len(_TABS_V170)}"
@@ -1708,6 +1719,10 @@ def render_all_tabs() -> Dict[str, Any]:
         "report_export_v202":               render_report_export_v202_tab,
         "audit_pack_v202":                  render_audit_pack_v202_tab,
         "export_status_v202":               render_export_status_v202_tab,
+        # v2.0.3 Paper Strategy Simulation Batch & Scenario Replay tabs
+        "simulation_batch_v203":            render_simulation_batch_v203_tab,
+        "scenario_replay_v203":             render_scenario_replay_v203_tab,
+        "strategy_comparison_v203":         render_strategy_comparison_v203_tab,
     }
     result = {}
     for tab_name in _TABS:
@@ -4304,6 +4319,99 @@ _TAB_RENDER_MAP_V202: Dict[str, Any] = {
     "report_export_v202": render_report_export_v202_tab,
     "audit_pack_v202": render_audit_pack_v202_tab,
     "export_status_v202": render_export_status_v202_tab,
+}
+
+
+def get_v203_tab_names() -> List[str]:
+    """Return list of v2.0.3 new tab names."""
+    return list(_TABS_V203_SIMULATION)
+
+
+def render_simulation_batch_v203_tab() -> Dict[str, Any]:
+    """Render simulation batch v203 tab data (headless-safe, paper-only)."""
+    return {
+        "tab": "simulation_batch_v203",
+        "version": PANEL_VERSION_V203,
+        "release_name": "Paper Strategy Simulation Batch & Scenario Replay",
+        "description": "Paper-only simulation batch engine: watchlist, candidate ranking, A/B/C replay.",
+        "paper_only": True,
+        "research_only": True,
+        "no_real_orders": True,
+        "not_investment_advice": True,
+        "production_trading_blocked": True,
+        "human_review_required": True,
+        "simulation_version": "2.0.3",
+        "schema_version": "203",
+        "market_conditions": [
+            "bull_trend", "pullback", "range_bound", "breakdown",
+            "panic_selloff", "rebound", "high_volatility", "low_liquidity",
+        ],
+        "entry_styles": [
+            "conservative", "balanced", "aggressive", "second_wave",
+            "abc_pullback", "breakout_only", "risk_first",
+        ],
+        "empty_state": "No simulation data. Run paper-cockpit-v203-simulate-batch to populate.",
+    }
+
+
+def render_scenario_replay_v203_tab() -> Dict[str, Any]:
+    """Render scenario replay v203 tab data (headless-safe, paper-only)."""
+    return {
+        "tab": "scenario_replay_v203",
+        "version": PANEL_VERSION_V203,
+        "release_name": "Paper Strategy Simulation Batch & Scenario Replay",
+        "description": "Scenario replay schema: market condition, trend, volatility, liquidity, chip, margin.",
+        "paper_only": True,
+        "research_only": True,
+        "no_real_orders": True,
+        "not_investment_advice": True,
+        "production_trading_blocked": True,
+        "human_review_required": True,
+        "scenario_replay_fields": [
+            "scenario_id", "scenario_name", "market_condition", "trend_condition",
+            "volatility_condition", "liquidity_condition", "chip_condition",
+            "margin_condition", "candidate_inputs", "expected_block_reasons",
+            "expected_final_actions", "replay_notes",
+        ],
+        "schema_version": "203",
+        "empty_state": "No scenario data. Run paper-cockpit-v203-replay-scenario to populate.",
+    }
+
+
+def render_strategy_comparison_v203_tab() -> Dict[str, Any]:
+    """Render strategy comparison v203 tab data (headless-safe, paper-only)."""
+    return {
+        "tab": "strategy_comparison_v203",
+        "version": PANEL_VERSION_V203,
+        "release_name": "Paper Strategy Simulation Batch & Scenario Replay",
+        "description": "Strategy profile comparison: batch comparison, simulation ranking, quality scoring.",
+        "paper_only": True,
+        "research_only": True,
+        "no_real_orders": True,
+        "not_investment_advice": True,
+        "production_trading_blocked": True,
+        "human_review_required": True,
+        "batch_comparison_fields": [
+            "strategy_profile_id", "total_candidates", "allowed_count", "blocked_count",
+            "paper_buy_plan_count", "paper_add_plan_count", "reduce_plan_count",
+            "exit_plan_count", "no_entry_count", "avg_score", "avg_risk_used",
+            "human_review_count", "top_candidates", "worst_blocked_reasons",
+            "simulation_quality_score",
+        ],
+        "ranking_fields": [
+            "rank", "profile_id", "scenario_id", "quality_score", "risk_score",
+            "selectivity_score", "actionability_score", "review_burden_score",
+            "safety_score", "final_grade",
+        ],
+        "schema_version": "203",
+        "empty_state": "No comparison data. Run paper-cockpit-v203-compare-profiles to populate.",
+    }
+
+
+_TAB_RENDER_MAP_V203: Dict[str, Any] = {
+    "simulation_batch_v203": render_simulation_batch_v203_tab,
+    "scenario_replay_v203": render_scenario_replay_v203_tab,
+    "strategy_comparison_v203": render_strategy_comparison_v203_tab,
 }
 
 
