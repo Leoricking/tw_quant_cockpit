@@ -5753,6 +5753,44 @@ _SGD_V197_COMMANDS: _List[CommandSpec] = [
                 introduced_in="1.9.7", safety_classification="RESEARCH_ONLY"),
 ]
 
+# v2.0.4 Paper Portfolio Review Loop & Weekly Improvement Pack commands
+# ---------------------------------------------------------------------------
+_PC_V204_COMMANDS: _List[CommandSpec] = [
+    CommandSpec(name="paper-cockpit-v204-review-weekly", handler_name="cmd_paper_cockpit_v204_review_weekly",
+                help="[Research] Run weekly portfolio review loop v2.0.4", group="paper_cockpit_v204",
+                introduced_in="2.0.4", safety_classification="RESEARCH_ONLY"),
+    CommandSpec(name="paper-cockpit-v204-review-portfolio", handler_name="cmd_paper_cockpit_v204_review_portfolio",
+                help="[Research] Run portfolio review v2.0.4", group="paper_cockpit_v204",
+                introduced_in="2.0.4", safety_classification="RESEARCH_ONLY"),
+    CommandSpec(name="paper-cockpit-v204-review-strategy", handler_name="cmd_paper_cockpit_v204_review_strategy",
+                help="[Research] Run strategy profile review v2.0.4", group="paper_cockpit_v204",
+                introduced_in="2.0.4", safety_classification="RESEARCH_ONLY"),
+    CommandSpec(name="paper-cockpit-v204-review-blocked-reasons", handler_name="cmd_paper_cockpit_v204_review_blocked_reasons",
+                help="[Research] Run blocked reason review v2.0.4", group="paper_cockpit_v204",
+                introduced_in="2.0.4", safety_classification="RESEARCH_ONLY"),
+    CommandSpec(name="paper-cockpit-v204-review-risk-usage", handler_name="cmd_paper_cockpit_v204_review_risk_usage",
+                help="[Research] Run risk usage review v2.0.4", group="paper_cockpit_v204",
+                introduced_in="2.0.4", safety_classification="RESEARCH_ONLY"),
+    CommandSpec(name="paper-cockpit-v204-generate-improvement-pack", handler_name="cmd_paper_cockpit_v204_generate_improvement_pack",
+                help="[Research] Generate weekly improvement pack v2.0.4", group="paper_cockpit_v204",
+                introduced_in="2.0.4", safety_classification="RESEARCH_ONLY"),
+    CommandSpec(name="paper-cockpit-v204-export-json", handler_name="cmd_paper_cockpit_v204_export_json",
+                help="[Research] Export review as JSON v2.0.4", group="paper_cockpit_v204",
+                introduced_in="2.0.4", safety_classification="RESEARCH_ONLY"),
+    CommandSpec(name="paper-cockpit-v204-export-md", handler_name="cmd_paper_cockpit_v204_export_md",
+                help="[Research] Export review as Markdown v2.0.4", group="paper_cockpit_v204",
+                introduced_in="2.0.4", safety_classification="RESEARCH_ONLY"),
+    CommandSpec(name="paper-cockpit-v204-export-csv", handler_name="cmd_paper_cockpit_v204_export_csv",
+                help="[Research] Export review as CSV v2.0.4", group="paper_cockpit_v204",
+                introduced_in="2.0.4", safety_classification="RESEARCH_ONLY"),
+    CommandSpec(name="paper-cockpit-v204-health", handler_name="cmd_paper_cockpit_v204_health",
+                help="[Research] Run paper cockpit v2.0.4 health check", group="paper_cockpit_v204",
+                introduced_in="2.0.4", safety_classification="RESEARCH_ONLY"),
+    CommandSpec(name="paper-cockpit-v204-gate", handler_name="cmd_paper_cockpit_v204_gate",
+                help="[Research] Run paper cockpit v2.0.4 release gate", group="paper_cockpit_v204",
+                introduced_in="2.0.4", safety_classification="RESEARCH_ONLY"),
+]
+
 # v2.0.3 Paper Strategy Simulation Batch & Scenario Replay commands
 # ---------------------------------------------------------------------------
 _PC_V203_COMMANDS: _List[CommandSpec] = [
@@ -5850,7 +5888,8 @@ _PC_V201_COMMANDS: _List[CommandSpec] = [
 ]
 
 PROVIDER_COMMANDS: _List[CommandSpec] = (
-    _PC_V203_COMMANDS
+    _PC_V204_COMMANDS
+    + _PC_V203_COMMANDS
     + _PC_V202_COMMANDS
     + _PC_V200_COMMANDS
     + _PC_V201_COMMANDS

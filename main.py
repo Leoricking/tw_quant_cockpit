@@ -42880,6 +42880,111 @@ def cmd_paper_cockpit_safety_audit(args=None):
 
 
 # ---------------------------------------------------------------------------
+# v2.0.4 Paper Portfolio Review Loop & Weekly Improvement Pack handlers
+# ---------------------------------------------------------------------------
+_PAPER_COCKPIT_V204_BANNER = "[!] RESEARCH ONLY — PAPER ONLY — PORTFOLIO REVIEW LOOP — NOT INVESTMENT ADVICE — NO REAL ORDERS — should_auto_apply=False"
+
+
+def cmd_paper_cockpit_v204_review_weekly(args=None):
+    """[v2.0.4] Run weekly portfolio review loop. Research only."""
+    print(_PAPER_COCKPIT_V204_BANNER)
+    from paper_trading.small_capital_strategy.paper_cockpit_v204 import run_portfolio_review
+    result = run_portfolio_review()
+    print(f"paper-cockpit-v204-review-weekly: review_version={result.review_version}  paper_only={result.paper_only}  all_passed={result.all_passed}")
+    print(_PAPER_COCKPIT_V204_BANNER)
+
+
+def cmd_paper_cockpit_v204_review_portfolio(args=None):
+    """[v2.0.4] Run portfolio review. Research only."""
+    print(_PAPER_COCKPIT_V204_BANNER)
+    from paper_trading.small_capital_strategy.paper_cockpit_v204 import run_portfolio_review
+    result = run_portfolio_review()
+    print(f"paper-cockpit-v204-review-portfolio: review_id={result.review_id}  paper_only={result.paper_only}  all_passed={result.all_passed}")
+    print(_PAPER_COCKPIT_V204_BANNER)
+
+
+def cmd_paper_cockpit_v204_review_strategy(args=None):
+    """[v2.0.4] Run strategy profile review. Research only."""
+    print(_PAPER_COCKPIT_V204_BANNER)
+    from paper_trading.small_capital_strategy.paper_cockpit_v204 import run_portfolio_review
+    result = run_portfolio_review()
+    print(f"paper-cockpit-v204-review-strategy: profiles={len(result.strategy_profile_summary)}  paper_only={result.paper_only}")
+    print(_PAPER_COCKPIT_V204_BANNER)
+
+
+def cmd_paper_cockpit_v204_review_blocked_reasons(args=None):
+    """[v2.0.4] Run blocked reason review. Research only."""
+    print(_PAPER_COCKPIT_V204_BANNER)
+    from paper_trading.small_capital_strategy.paper_cockpit_v204 import run_portfolio_review
+    result = run_portfolio_review()
+    print(f"paper-cockpit-v204-review-blocked-reasons: total_blocked={result.blocked_reason_summary.total_blocked}  paper_only=True")
+    print(_PAPER_COCKPIT_V204_BANNER)
+
+
+def cmd_paper_cockpit_v204_review_risk_usage(args=None):
+    """[v2.0.4] Run risk usage review. Research only."""
+    print(_PAPER_COCKPIT_V204_BANNER)
+    from paper_trading.small_capital_strategy.paper_cockpit_v204 import run_portfolio_review
+    result = run_portfolio_review()
+    print(f"paper-cockpit-v204-review-risk-usage: used_risk={result.risk_usage_summary.used_risk_pct}  paper_only=True")
+    print(_PAPER_COCKPIT_V204_BANNER)
+
+
+def cmd_paper_cockpit_v204_generate_improvement_pack(args=None):
+    """[v2.0.4] Generate weekly improvement pack. Research only."""
+    print(_PAPER_COCKPIT_V204_BANNER)
+    from paper_trading.small_capital_strategy.paper_cockpit_v204 import build_weekly_improvement_pack
+    pack = build_weekly_improvement_pack()
+    print(f"paper-cockpit-v204-generate-improvement-pack: week_id={pack.week_id}  should_auto_apply={pack.should_auto_apply}  paper_only={pack.paper_only}")
+    print(_PAPER_COCKPIT_V204_BANNER)
+
+
+def cmd_paper_cockpit_v204_export_json(args=None):
+    """[v2.0.4] Export review as JSON. Research only."""
+    print(_PAPER_COCKPIT_V204_BANNER)
+    from paper_trading.small_capital_strategy.paper_cockpit_v204 import run_portfolio_review, export_review_json
+    result = export_review_json(run_portfolio_review())
+    print(f"paper-cockpit-v204-export-json: is_valid={result.is_valid}  paper_only={result.paper_only}  export_status={result.export_status}")
+    print(_PAPER_COCKPIT_V204_BANNER)
+
+
+def cmd_paper_cockpit_v204_export_md(args=None):
+    """[v2.0.4] Export review as Markdown. Research only."""
+    print(_PAPER_COCKPIT_V204_BANNER)
+    from paper_trading.small_capital_strategy.paper_cockpit_v204 import run_portfolio_review, export_review_markdown
+    result = export_review_markdown(run_portfolio_review())
+    print(f"paper-cockpit-v204-export-md: is_valid={result.is_valid}  paper_only={result.paper_only}  export_status={result.export_status}")
+    print(_PAPER_COCKPIT_V204_BANNER)
+
+
+def cmd_paper_cockpit_v204_export_csv(args=None):
+    """[v2.0.4] Export review as CSV. Research only."""
+    print(_PAPER_COCKPIT_V204_BANNER)
+    from paper_trading.small_capital_strategy.paper_cockpit_v204 import run_portfolio_review, export_review_csv
+    result = export_review_csv(run_portfolio_review())
+    print(f"paper-cockpit-v204-export-csv: is_valid={result.is_valid}  paper_only={result.paper_only}  export_status={result.export_status}")
+    print(_PAPER_COCKPIT_V204_BANNER)
+
+
+def cmd_paper_cockpit_v204_health(args=None):
+    """[v2.0.4] Run paper cockpit v2.0.4 health check. Research only."""
+    print(_PAPER_COCKPIT_V204_BANNER)
+    from paper_trading.small_capital_strategy.paper_cockpit_health_v204 import run_health_check
+    result = run_health_check()
+    print(f"paper-cockpit-v204-health: all_passed={result['all_passed']}  passed={result['passed']}/{result['total']}  paper_only=True")
+    print(_PAPER_COCKPIT_V204_BANNER)
+
+
+def cmd_paper_cockpit_v204_gate(args=None):
+    """[v2.0.4] Run paper cockpit v2.0.4 release gate. Research only."""
+    print(_PAPER_COCKPIT_V204_BANNER)
+    from release.paper_cockpit_release_gate_v204 import run_release_gate
+    result = run_release_gate()
+    print(f"paper-cockpit-v204-gate: gate_passed={result['gate_passed']}  passed={result['passed_count']}/{result['total_count']}  paper_only=True")
+    print(_PAPER_COCKPIT_V204_BANNER)
+
+
+# ---------------------------------------------------------------------------
 # v2.0.3 Paper Strategy Simulation Batch & Scenario Replay handlers
 # ---------------------------------------------------------------------------
 _PAPER_COCKPIT_V203_BANNER = "[!] RESEARCH ONLY — PAPER ONLY — SIMULATION BATCH & SCENARIO REPLAY — NOT INVESTMENT ADVICE — NO REAL ORDERS"
@@ -46169,6 +46274,18 @@ def main() -> None:
         "strategy-promotion-rollback-validate": cmd_strategy_promotion_rollback_validate,
         "strategy-promotion-approval-state":   cmd_strategy_promotion_approval_state,
         "strategy-promotion-safety-audit":     cmd_strategy_promotion_safety_audit,
+        # v2.0.4 paper cockpit portfolio review loop & weekly improvement pack commands
+        "paper-cockpit-v204-review-weekly":            cmd_paper_cockpit_v204_review_weekly,
+        "paper-cockpit-v204-review-portfolio":         cmd_paper_cockpit_v204_review_portfolio,
+        "paper-cockpit-v204-review-strategy":          cmd_paper_cockpit_v204_review_strategy,
+        "paper-cockpit-v204-review-blocked-reasons":   cmd_paper_cockpit_v204_review_blocked_reasons,
+        "paper-cockpit-v204-review-risk-usage":        cmd_paper_cockpit_v204_review_risk_usage,
+        "paper-cockpit-v204-generate-improvement-pack": cmd_paper_cockpit_v204_generate_improvement_pack,
+        "paper-cockpit-v204-export-json":              cmd_paper_cockpit_v204_export_json,
+        "paper-cockpit-v204-export-md":                cmd_paper_cockpit_v204_export_md,
+        "paper-cockpit-v204-export-csv":               cmd_paper_cockpit_v204_export_csv,
+        "paper-cockpit-v204-health":                   cmd_paper_cockpit_v204_health,
+        "paper-cockpit-v204-gate":                     cmd_paper_cockpit_v204_gate,
         # v2.0.3 paper cockpit simulation batch & scenario replay commands
         "paper-cockpit-v203-simulate-one":    cmd_paper_cockpit_v203_simulate_one,
         "paper-cockpit-v203-simulate-batch":  cmd_paper_cockpit_v203_simulate_batch,

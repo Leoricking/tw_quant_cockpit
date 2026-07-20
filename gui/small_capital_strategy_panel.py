@@ -21,6 +21,7 @@ PANEL_TITLE = "Small Capital Strategy v2.0.0 — Paper Cockpit Unified Entry & S
 PANEL_VERSION_V201 = "2.0.1"
 PANEL_VERSION_V202 = "2.0.2"
 PANEL_VERSION_V203 = "2.0.3"
+PANEL_VERSION_V204 = "2.0.4"
 
 # v1.7.0 tabs (preserved unchanged)
 _TABS_V170 = [
@@ -390,6 +391,15 @@ _TABS_V203_SIMULATION = [
 
 assert len(_TABS_V203_SIMULATION) == 3, f"Expected 3 simulation v203 tabs, got {len(_TABS_V203_SIMULATION)}"
 
+# v2.0.4 Paper Portfolio Review Loop & Weekly Improvement Pack tabs
+_TABS_V204_REVIEW = [
+    "weekly_review_v204",
+    "improvement_pack_v204",
+    "review_metrics_v204",
+]
+
+assert len(_TABS_V204_REVIEW) == 3, f"Expected 3 review v204 tabs, got {len(_TABS_V204_REVIEW)}"
+
 _TABS = (
     _TABS_V170
     + _TABS_V171_WATCHLIST
@@ -426,6 +436,7 @@ _TABS = (
     + _TABS_V201_DAILY_WORKFLOW
     + _TABS_V202_REPORT_EXPORT
     + _TABS_V203_SIMULATION
+    + _TABS_V204_REVIEW
 )
 
 assert len(_TABS_V170) == 22, f"Expected 22 v1.7.0 tabs, got {len(_TABS_V170)}"
@@ -1723,6 +1734,10 @@ def render_all_tabs() -> Dict[str, Any]:
         "simulation_batch_v203":            render_simulation_batch_v203_tab,
         "scenario_replay_v203":             render_scenario_replay_v203_tab,
         "strategy_comparison_v203":         render_strategy_comparison_v203_tab,
+        # v2.0.4 Paper Portfolio Review Loop & Weekly Improvement Pack tabs
+        "weekly_review_v204":               render_weekly_review_v204_tab,
+        "improvement_pack_v204":            render_improvement_pack_v204_tab,
+        "review_metrics_v204":              render_review_metrics_v204_tab,
     }
     result = {}
     for tab_name in _TABS:
@@ -4412,6 +4427,94 @@ _TAB_RENDER_MAP_V203: Dict[str, Any] = {
     "simulation_batch_v203": render_simulation_batch_v203_tab,
     "scenario_replay_v203": render_scenario_replay_v203_tab,
     "strategy_comparison_v203": render_strategy_comparison_v203_tab,
+}
+
+
+def get_v204_tab_names() -> List[str]:
+    """Return list of v2.0.4 new tab names."""
+    return list(_TABS_V204_REVIEW)
+
+
+def render_weekly_review_v204_tab() -> Dict[str, Any]:
+    """Render weekly review v204 tab data (headless-safe, paper-only)."""
+    return {
+        "tab": "weekly_review_v204",
+        "version": PANEL_VERSION_V204,
+        "release_name": "Paper Portfolio Review Loop & Weekly Improvement Pack",
+        "description": "Paper-only weekly portfolio review: decisions, simulations, blocked reasons, risk usage.",
+        "paper_only": True,
+        "research_only": True,
+        "review_only": True,
+        "no_real_orders": True,
+        "no_broker": True,
+        "not_investment_advice": True,
+        "production_trading_blocked": True,
+        "should_auto_apply": False,
+        "human_review_required": True,
+        "schema_version": "204",
+        "empty_state": "No weekly review data. Run paper-cockpit-v204-review-weekly to populate.",
+    }
+
+
+def render_improvement_pack_v204_tab() -> Dict[str, Any]:
+    """Render improvement pack v204 tab data (headless-safe, paper-only)."""
+    return {
+        "tab": "improvement_pack_v204",
+        "version": PANEL_VERSION_V204,
+        "release_name": "Paper Portfolio Review Loop & Weekly Improvement Pack",
+        "description": "Weekly improvement pack: top setups, weakest setups, rule adjustments (human approval required).",
+        "paper_only": True,
+        "research_only": True,
+        "review_only": True,
+        "no_real_orders": True,
+        "no_broker": True,
+        "not_investment_advice": True,
+        "production_trading_blocked": True,
+        "should_auto_apply": False,
+        "human_review_required": True,
+        "weekly_pack_fields": [
+            "week_id", "generated_at", "reviewed_decision_count", "reviewed_candidate_count",
+            "reviewed_strategy_profile_count", "top_working_setups", "weakest_setups",
+            "most_common_no_entry_reasons", "most_common_human_review_reasons",
+            "risk_budget_findings", "position_sizing_findings", "simulation_vs_decision_gap",
+            "suggested_rule_adjustments", "do_not_change_rules", "human_review_required_items",
+        ],
+        "schema_version": "204",
+        "empty_state": "No improvement pack data. Run paper-cockpit-v204-generate-improvement-pack to populate.",
+    }
+
+
+def render_review_metrics_v204_tab() -> Dict[str, Any]:
+    """Render review metrics v204 tab data (headless-safe, paper-only)."""
+    return {
+        "tab": "review_metrics_v204",
+        "version": PANEL_VERSION_V204,
+        "release_name": "Paper Portfolio Review Loop & Weekly Improvement Pack",
+        "description": "Review metrics: actionability, discipline, selectivity, risk control, improvement scores.",
+        "paper_only": True,
+        "research_only": True,
+        "review_only": True,
+        "no_real_orders": True,
+        "no_broker": True,
+        "not_investment_advice": True,
+        "production_trading_blocked": True,
+        "should_auto_apply": False,
+        "human_review_required": True,
+        "review_metrics_fields": [
+            "actionability_score", "discipline_score", "selectivity_score",
+            "risk_control_score", "review_burden_score", "missed_opportunity_score",
+            "false_positive_risk_score", "no_entry_quality_score",
+            "strategy_improvement_score", "final_review_grade",
+        ],
+        "schema_version": "204",
+        "empty_state": "No review metrics data. Run paper-cockpit-v204-review-weekly to populate.",
+    }
+
+
+_TAB_RENDER_MAP_V204: Dict[str, Any] = {
+    "weekly_review_v204": render_weekly_review_v204_tab,
+    "improvement_pack_v204": render_improvement_pack_v204_tab,
+    "review_metrics_v204": render_review_metrics_v204_tab,
 }
 
 

@@ -207,7 +207,7 @@ def run_health_check():
     # --- tests exist ---
     import os as _os
     chk("test_v201_exists", lambda: None if _os.path.exists(
-        _os.path.normpath("D:/code/Claude/tw_quant_cockpit/tests/test_paper_cockpit_v201.py")
+        _os.path.normpath(_os.path.join(_os.path.dirname(__file__), "..", "..", "tests", "test_paper_cockpit_v201.py"))
     ) else (_ for _ in ()).throw(AssertionError("test_paper_cockpit_v201.py not found")))
 
     all_passed = (failed == 0)
