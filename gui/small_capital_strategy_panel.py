@@ -23,6 +23,7 @@ PANEL_VERSION_V202 = "2.0.2"
 PANEL_VERSION_V203 = "2.0.3"
 PANEL_VERSION_V204 = "2.0.4"
 PANEL_VERSION_V205 = "2.0.5"
+PANEL_VERSION_V206 = "2.0.6"
 
 # v1.7.0 tabs (preserved unchanged)
 _TABS_V170 = [
@@ -410,6 +411,15 @@ _TABS_V205_WATCHLIST = [
 
 assert len(_TABS_V205_WATCHLIST) == 3, f"Expected 3 watchlist v205 tabs, got {len(_TABS_V205_WATCHLIST)}"
 
+# v2.0.6 Paper Candidate Lifecycle & Setup Aging Control tabs
+_TABS_V206_LIFECYCLE = [
+    "candidate_lifecycle_v206",
+    "setup_aging_v206",
+    "stale_candidate_queue_v206",
+]
+
+assert len(_TABS_V206_LIFECYCLE) == 3, f"Expected 3 lifecycle v206 tabs, got {len(_TABS_V206_LIFECYCLE)}"
+
 _TABS = (
     _TABS_V170
     + _TABS_V171_WATCHLIST
@@ -448,6 +458,7 @@ _TABS = (
     + _TABS_V203_SIMULATION
     + _TABS_V204_REVIEW
     + _TABS_V205_WATCHLIST
+    + _TABS_V206_LIFECYCLE
 )
 
 assert len(_TABS_V170) == 22, f"Expected 22 v1.7.0 tabs, got {len(_TABS_V170)}"
@@ -1753,6 +1764,10 @@ def render_all_tabs() -> Dict[str, Any]:
         "watchlist_rotation_v205":          render_watchlist_rotation_v205_tab,
         "promotion_queue_v205":             render_promotion_queue_v205_tab,
         "human_review_queue_v205":          render_human_review_queue_v205_tab,
+        # v2.0.6 Paper Candidate Lifecycle & Setup Aging Control tabs
+        "candidate_lifecycle_v206":         render_candidate_lifecycle_v206_tab,
+        "setup_aging_v206":                 render_setup_aging_v206_tab,
+        "stale_candidate_queue_v206":       render_stale_candidate_queue_v206_tab,
     }
     result = {}
     for tab_name in _TABS:
@@ -4616,6 +4631,81 @@ _TAB_RENDER_MAP_V205: Dict[str, Any] = {
     "watchlist_rotation_v205": render_watchlist_rotation_v205_tab,
     "promotion_queue_v205": render_promotion_queue_v205_tab,
     "human_review_queue_v205": render_human_review_queue_v205_tab,
+}
+
+
+def get_v206_tab_names() -> List[str]:
+    """Return list of v2.0.6 new tab names."""
+    return list(_TABS_V206_LIFECYCLE)
+
+
+def render_candidate_lifecycle_v206_tab() -> Dict[str, Any]:
+    """Render candidate lifecycle v206 tab data (headless-safe, paper-only)."""
+    return {
+        "tab": "candidate_lifecycle_v206",
+        "version": PANEL_VERSION_V206,
+        "release_name": "Paper Candidate Lifecycle & Setup Aging Control",
+        "description": "Candidate lifecycle tracking: newly_promoted → active → waiting → stale → expired → human_review.",
+        "paper_only": True,
+        "research_only": True,
+        "lifecycle_only": True,
+        "no_real_orders": True,
+        "no_broker": True,
+        "not_investment_advice": True,
+        "production_trading_blocked": True,
+        "should_auto_apply": False,
+        "auto_apply_enabled": False,
+        "schema_version": "206",
+        "empty_state": "No lifecycle data. Run paper-cockpit-v206-review-lifecycle to populate.",
+    }
+
+
+def render_setup_aging_v206_tab() -> Dict[str, Any]:
+    """Render setup aging v206 tab data (headless-safe, paper-only)."""
+    return {
+        "tab": "setup_aging_v206",
+        "version": PANEL_VERSION_V206,
+        "release_name": "Paper Candidate Lifecycle & Setup Aging Control",
+        "description": "Setup aging evaluation: fresh/normal/aging/stale/expired bucket classification for buy-point setups.",
+        "paper_only": True,
+        "research_only": True,
+        "lifecycle_only": True,
+        "no_real_orders": True,
+        "no_broker": True,
+        "not_investment_advice": True,
+        "production_trading_blocked": True,
+        "should_auto_apply": False,
+        "auto_apply_enabled": False,
+        "schema_version": "206",
+        "empty_state": "No aging data. Run paper-cockpit-v206-evaluate-aging to populate.",
+    }
+
+
+def render_stale_candidate_queue_v206_tab() -> Dict[str, Any]:
+    """Render stale candidate queue v206 tab data (headless-safe, paper-only)."""
+    return {
+        "tab": "stale_candidate_queue_v206",
+        "version": PANEL_VERSION_V206,
+        "release_name": "Paper Candidate Lifecycle & Setup Aging Control",
+        "description": "Stale candidate queue: candidates with aged setups pending rescore, cooldown, or removal.",
+        "paper_only": True,
+        "research_only": True,
+        "lifecycle_only": True,
+        "no_real_orders": True,
+        "no_broker": True,
+        "not_investment_advice": True,
+        "production_trading_blocked": True,
+        "should_auto_apply": False,
+        "auto_apply_enabled": False,
+        "schema_version": "206",
+        "empty_state": "No stale candidates. Run paper-cockpit-v206-build-stale-queue to populate.",
+    }
+
+
+_TAB_RENDER_MAP_V206: Dict[str, Any] = {
+    "candidate_lifecycle_v206": render_candidate_lifecycle_v206_tab,
+    "setup_aging_v206": render_setup_aging_v206_tab,
+    "stale_candidate_queue_v206": render_stale_candidate_queue_v206_tab,
 }
 
 

@@ -42880,6 +42880,111 @@ def cmd_paper_cockpit_safety_audit(args=None):
 
 
 # ---------------------------------------------------------------------------
+# v2.0.6 Paper Candidate Lifecycle & Setup Aging Control handlers
+# ---------------------------------------------------------------------------
+_PAPER_COCKPIT_V206_BANNER = "[!] RESEARCH ONLY — PAPER ONLY — CANDIDATE LIFECYCLE — NOT INVESTMENT ADVICE — NO REAL ORDERS — should_auto_apply=False — auto_apply_enabled=False"
+
+
+def cmd_paper_cockpit_v206_review_lifecycle(args=None):
+    """[v2.0.6] Run paper candidate lifecycle review. Research only."""
+    print(_PAPER_COCKPIT_V206_BANNER)
+    from paper_trading.small_capital_strategy.paper_cockpit_v206 import run_lifecycle_review
+    result = run_lifecycle_review()
+    print(f"paper-cockpit-v206-review-lifecycle: lifecycle_version={result.lifecycle_version}  paper_only={result.paper_only}  all_passed={result.all_passed}  should_auto_apply={result.should_auto_apply}  action_count={len(result.lifecycle_action_queue)}")
+    print(_PAPER_COCKPIT_V206_BANNER)
+
+
+def cmd_paper_cockpit_v206_evaluate_aging(args=None):
+    """[v2.0.6] Evaluate aging for all candidate items. Research only."""
+    print(_PAPER_COCKPIT_V206_BANNER)
+    from paper_trading.small_capital_strategy.paper_cockpit_v206 import evaluate_aging
+    actions = evaluate_aging()
+    print(f"paper-cockpit-v206-evaluate-aging: action_count={len(actions)}  paper_only=True  should_auto_apply=False")
+    print(_PAPER_COCKPIT_V206_BANNER)
+
+
+def cmd_paper_cockpit_v206_build_stale_queue(args=None):
+    """[v2.0.6] Build stale setup candidate queue. Research only."""
+    print(_PAPER_COCKPIT_V206_BANNER)
+    from paper_trading.small_capital_strategy.paper_cockpit_v206 import build_stale_queue
+    queue = build_stale_queue()
+    print(f"paper-cockpit-v206-build-stale-queue: stale_count={len(queue)}  paper_only=True  should_auto_apply=False")
+    print(_PAPER_COCKPIT_V206_BANNER)
+
+
+def cmd_paper_cockpit_v206_build_expired_queue(args=None):
+    """[v2.0.6] Build expired candidate queue. Research only."""
+    print(_PAPER_COCKPIT_V206_BANNER)
+    from paper_trading.small_capital_strategy.paper_cockpit_v206 import build_expired_queue
+    queue = build_expired_queue()
+    print(f"paper-cockpit-v206-build-expired-queue: expired_count={len(queue)}  paper_only=True  should_auto_apply=False")
+    print(_PAPER_COCKPIT_V206_BANNER)
+
+
+def cmd_paper_cockpit_v206_build_rescore_queue(args=None):
+    """[v2.0.6] Build rescore candidate queue. Research only."""
+    print(_PAPER_COCKPIT_V206_BANNER)
+    from paper_trading.small_capital_strategy.paper_cockpit_v206 import build_rescore_queue
+    queue = build_rescore_queue()
+    print(f"paper-cockpit-v206-build-rescore-queue: rescore_count={len(queue)}  paper_only=True  should_auto_apply=False")
+    print(_PAPER_COCKPIT_V206_BANNER)
+
+
+def cmd_paper_cockpit_v206_build_cooldown_queue(args=None):
+    """[v2.0.6] Build cooldown candidate queue. Research only."""
+    print(_PAPER_COCKPIT_V206_BANNER)
+    from paper_trading.small_capital_strategy.paper_cockpit_v206 import build_cooldown_queue
+    queue = build_cooldown_queue()
+    print(f"paper-cockpit-v206-build-cooldown-queue: cooldown_count={len(queue)}  paper_only=True  should_auto_apply=False")
+    print(_PAPER_COCKPIT_V206_BANNER)
+
+
+def cmd_paper_cockpit_v206_export_json(args=None):
+    """[v2.0.6] Export lifecycle review as JSON. Research only."""
+    print(_PAPER_COCKPIT_V206_BANNER)
+    from paper_trading.small_capital_strategy.paper_cockpit_v206 import run_lifecycle_review, export_lifecycle_json
+    result = export_lifecycle_json(run_lifecycle_review())
+    print(f"paper-cockpit-v206-export-json: is_valid={result.is_valid}  paper_only={result.paper_only}  export_status={result.export_status}  should_auto_apply=False")
+    print(_PAPER_COCKPIT_V206_BANNER)
+
+
+def cmd_paper_cockpit_v206_export_md(args=None):
+    """[v2.0.6] Export lifecycle review as Markdown. Research only."""
+    print(_PAPER_COCKPIT_V206_BANNER)
+    from paper_trading.small_capital_strategy.paper_cockpit_v206 import run_lifecycle_review, export_lifecycle_markdown
+    result = export_lifecycle_markdown(run_lifecycle_review())
+    print(f"paper-cockpit-v206-export-md: is_valid={result.is_valid}  paper_only={result.paper_only}  export_status={result.export_status}  should_auto_apply=False")
+    print(_PAPER_COCKPIT_V206_BANNER)
+
+
+def cmd_paper_cockpit_v206_export_csv(args=None):
+    """[v2.0.6] Export lifecycle action queue as CSV. Research only."""
+    print(_PAPER_COCKPIT_V206_BANNER)
+    from paper_trading.small_capital_strategy.paper_cockpit_v206 import run_lifecycle_review, export_lifecycle_action_csv
+    result = export_lifecycle_action_csv(run_lifecycle_review())
+    print(f"paper-cockpit-v206-export-csv: is_valid={result.is_valid}  paper_only={result.paper_only}  export_status={result.export_status}  should_auto_apply=False")
+    print(_PAPER_COCKPIT_V206_BANNER)
+
+
+def cmd_paper_cockpit_v206_health(args=None):
+    """[v2.0.6] Run paper cockpit v2.0.6 health check. Research only."""
+    print(_PAPER_COCKPIT_V206_BANNER)
+    from paper_trading.small_capital_strategy.paper_cockpit_health_v206 import run_health_check
+    result = run_health_check()
+    print(f"paper-cockpit-v206-health: all_passed={result['all_passed']}  passed={result['passed']}/{result['total']}  paper_only=True")
+    print(_PAPER_COCKPIT_V206_BANNER)
+
+
+def cmd_paper_cockpit_v206_gate(args=None):
+    """[v2.0.6] Run paper cockpit v2.0.6 release gate. Research only."""
+    print(_PAPER_COCKPIT_V206_BANNER)
+    from release.paper_cockpit_release_gate_v206 import run_release_gate
+    result = run_release_gate()
+    print(f"paper-cockpit-v206-gate: gate_passed={result['gate_passed']}  passed={result['passed_count']}/{result['total_count']}  paper_only=True")
+    print(_PAPER_COCKPIT_V206_BANNER)
+
+
+# ---------------------------------------------------------------------------
 # v2.0.5 Paper Watchlist Rotation & Candidate Promotion Queue handlers
 # ---------------------------------------------------------------------------
 _PAPER_COCKPIT_V205_BANNER = "[!] RESEARCH ONLY — PAPER ONLY — WATCHLIST ROTATION — NOT INVESTMENT ADVICE — NO REAL ORDERS — should_auto_apply=False"
@@ -46370,6 +46475,18 @@ def main() -> None:
         "strategy-promotion-rollback-validate": cmd_strategy_promotion_rollback_validate,
         "strategy-promotion-approval-state":   cmd_strategy_promotion_approval_state,
         "strategy-promotion-safety-audit":     cmd_strategy_promotion_safety_audit,
+        # v2.0.6 paper cockpit candidate lifecycle & setup aging control commands
+        "paper-cockpit-v206-review-lifecycle":         cmd_paper_cockpit_v206_review_lifecycle,
+        "paper-cockpit-v206-evaluate-aging":           cmd_paper_cockpit_v206_evaluate_aging,
+        "paper-cockpit-v206-build-stale-queue":        cmd_paper_cockpit_v206_build_stale_queue,
+        "paper-cockpit-v206-build-expired-queue":      cmd_paper_cockpit_v206_build_expired_queue,
+        "paper-cockpit-v206-build-rescore-queue":      cmd_paper_cockpit_v206_build_rescore_queue,
+        "paper-cockpit-v206-build-cooldown-queue":     cmd_paper_cockpit_v206_build_cooldown_queue,
+        "paper-cockpit-v206-export-json":              cmd_paper_cockpit_v206_export_json,
+        "paper-cockpit-v206-export-md":                cmd_paper_cockpit_v206_export_md,
+        "paper-cockpit-v206-export-csv":               cmd_paper_cockpit_v206_export_csv,
+        "paper-cockpit-v206-health":                   cmd_paper_cockpit_v206_health,
+        "paper-cockpit-v206-gate":                     cmd_paper_cockpit_v206_gate,
         # v2.0.5 paper cockpit watchlist rotation & candidate promotion queue commands
         "paper-cockpit-v205-rotate-watchlist":         cmd_paper_cockpit_v205_rotate_watchlist,
         "paper-cockpit-v205-promote-candidates":       cmd_paper_cockpit_v205_promote_candidates,

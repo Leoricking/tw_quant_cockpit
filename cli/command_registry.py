@@ -5753,6 +5753,44 @@ _SGD_V197_COMMANDS: _List[CommandSpec] = [
                 introduced_in="1.9.7", safety_classification="RESEARCH_ONLY"),
 ]
 
+# v2.0.6 Paper Candidate Lifecycle & Setup Aging Control commands
+# ---------------------------------------------------------------------------
+_PC_V206_COMMANDS: _List[CommandSpec] = [
+    CommandSpec(name="paper-cockpit-v206-review-lifecycle", handler_name="cmd_paper_cockpit_v206_review_lifecycle",
+                help="[Research] Run paper candidate lifecycle review v2.0.6", group="paper_cockpit_v206",
+                introduced_in="2.0.6", safety_classification="RESEARCH_ONLY"),
+    CommandSpec(name="paper-cockpit-v206-evaluate-aging", handler_name="cmd_paper_cockpit_v206_evaluate_aging",
+                help="[Research] Evaluate setup aging for candidates v2.0.6", group="paper_cockpit_v206",
+                introduced_in="2.0.6", safety_classification="RESEARCH_ONLY"),
+    CommandSpec(name="paper-cockpit-v206-build-stale-queue", handler_name="cmd_paper_cockpit_v206_build_stale_queue",
+                help="[Research] Build stale setup queue v2.0.6", group="paper_cockpit_v206",
+                introduced_in="2.0.6", safety_classification="RESEARCH_ONLY"),
+    CommandSpec(name="paper-cockpit-v206-build-expired-queue", handler_name="cmd_paper_cockpit_v206_build_expired_queue",
+                help="[Research] Build expired candidate queue v2.0.6", group="paper_cockpit_v206",
+                introduced_in="2.0.6", safety_classification="RESEARCH_ONLY"),
+    CommandSpec(name="paper-cockpit-v206-build-rescore-queue", handler_name="cmd_paper_cockpit_v206_build_rescore_queue",
+                help="[Research] Build rescore required queue v2.0.6", group="paper_cockpit_v206",
+                introduced_in="2.0.6", safety_classification="RESEARCH_ONLY"),
+    CommandSpec(name="paper-cockpit-v206-build-cooldown-queue", handler_name="cmd_paper_cockpit_v206_build_cooldown_queue",
+                help="[Research] Build cooldown queue v2.0.6", group="paper_cockpit_v206",
+                introduced_in="2.0.6", safety_classification="RESEARCH_ONLY"),
+    CommandSpec(name="paper-cockpit-v206-export-json", handler_name="cmd_paper_cockpit_v206_export_json",
+                help="[Research] Export lifecycle review as JSON v2.0.6", group="paper_cockpit_v206",
+                introduced_in="2.0.6", safety_classification="RESEARCH_ONLY"),
+    CommandSpec(name="paper-cockpit-v206-export-md", handler_name="cmd_paper_cockpit_v206_export_md",
+                help="[Research] Export lifecycle review as Markdown v2.0.6", group="paper_cockpit_v206",
+                introduced_in="2.0.6", safety_classification="RESEARCH_ONLY"),
+    CommandSpec(name="paper-cockpit-v206-export-csv", handler_name="cmd_paper_cockpit_v206_export_csv",
+                help="[Research] Export lifecycle queues as CSV v2.0.6", group="paper_cockpit_v206",
+                introduced_in="2.0.6", safety_classification="RESEARCH_ONLY"),
+    CommandSpec(name="paper-cockpit-v206-health", handler_name="cmd_paper_cockpit_v206_health",
+                help="[Research] Run paper cockpit v2.0.6 health check", group="paper_cockpit_v206",
+                introduced_in="2.0.6", safety_classification="RESEARCH_ONLY"),
+    CommandSpec(name="paper-cockpit-v206-gate", handler_name="cmd_paper_cockpit_v206_gate",
+                help="[Research] Run paper cockpit v2.0.6 release gate", group="paper_cockpit_v206",
+                introduced_in="2.0.6", safety_classification="RESEARCH_ONLY"),
+]
+
 # v2.0.5 Paper Watchlist Rotation & Candidate Promotion Queue commands
 # ---------------------------------------------------------------------------
 _PC_V205_COMMANDS: _List[CommandSpec] = [
@@ -5923,7 +5961,8 @@ _PC_V201_COMMANDS: _List[CommandSpec] = [
 ]
 
 PROVIDER_COMMANDS: _List[CommandSpec] = (
-    _PC_V205_COMMANDS
+    _PC_V206_COMMANDS
+    + _PC_V205_COMMANDS
     + _PC_V204_COMMANDS
     + _PC_V203_COMMANDS
     + _PC_V202_COMMANDS
