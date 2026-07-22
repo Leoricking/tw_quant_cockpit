@@ -27,6 +27,7 @@ PANEL_VERSION_V206 = "2.0.6"
 PANEL_VERSION_V207 = "2.0.7"
 PANEL_VERSION_V208 = "2.0.8"
 PANEL_VERSION_V209 = "2.0.9"
+PANEL_VERSION_V210 = "2.0.10"
 
 # v1.7.0 tabs (preserved unchanged)
 _TABS_V170 = [
@@ -450,6 +451,15 @@ _TABS_V209_SIZING = [
 
 assert len(_TABS_V209_SIZING) == 3, f"Expected 3 sizing v209 tabs, got {len(_TABS_V209_SIZING)}"
 
+# v2.0.10 Paper Exit Plan & Stop-Loss Discipline Control tabs
+_TABS_V210_EXIT = [
+    "exit_plan_v210",
+    "stop_discipline_v210",
+    "exit_warning_queue_v210",
+]
+
+assert len(_TABS_V210_EXIT) == 3, f"Expected 3 exit v210 tabs, got {len(_TABS_V210_EXIT)}"
+
 _TABS = (
     _TABS_V170
     + _TABS_V171_WATCHLIST
@@ -492,6 +502,7 @@ _TABS = (
     + _TABS_V207_THEME_REGIME
     + _TABS_V208_EXPOSURE
     + _TABS_V209_SIZING
+    + _TABS_V210_EXIT
 )
 
 assert len(_TABS_V170) == 22, f"Expected 22 v1.7.0 tabs, got {len(_TABS_V170)}"
@@ -1813,6 +1824,10 @@ def render_all_tabs() -> Dict[str, Any]:
         "position_sizing_v209":             render_position_sizing_v209_tab,
         "risk_budget_v209":                 render_risk_budget_v209_tab,
         "size_reduction_queue_v209":        render_size_reduction_queue_v209_tab,
+        # v2.0.10 Paper Exit Plan & Stop-Loss Discipline Control tabs
+        "exit_plan_v210":                   render_exit_plan_v210_tab,
+        "stop_discipline_v210":             render_stop_discipline_v210_tab,
+        "exit_warning_queue_v210":          render_exit_warning_queue_v210_tab,
     }
     result = {}
     for tab_name in _TABS:
@@ -4979,6 +4994,85 @@ _TAB_RENDER_MAP_V209: Dict[str, Any] = {
     "position_sizing_v209": render_position_sizing_v209_tab,
     "risk_budget_v209": render_risk_budget_v209_tab,
     "size_reduction_queue_v209": render_size_reduction_queue_v209_tab,
+}
+
+
+def get_v210_tab_names() -> List[str]:
+    """Return list of v2.0.10 new tab names."""
+    return list(_TABS_V210_EXIT)
+
+
+def render_exit_plan_v210_tab() -> Dict[str, Any]:
+    """Render exit plan v210 tab data (headless-safe, paper-only)."""
+    return {
+        "tab": "exit_plan_v210",
+        "version": PANEL_VERSION_V210,
+        "release_name": "Paper Exit Plan & Stop-Loss Discipline Control",
+        "description": "Paper-only exit plan dashboard: stop-loss calculation, take-profit targets, trailing stop, reward/risk ratio, exit action classification — recommendation only, no auto apply.",
+        "paper_only": True,
+        "research_only": True,
+        "exit_plan_recommendation_only": True,
+        "no_real_orders": True,
+        "no_broker": True,
+        "not_investment_advice": True,
+        "production_trading_blocked": True,
+        "should_auto_apply": False,
+        "auto_apply_enabled": False,
+        "exit_actions_recommendation_only": True,
+        "require_stop_loss_before_entry": True,
+        "schema_version": "210",
+        "empty_state": "No exit plan data. Run paper-cockpit-v210-review-exit-plan to populate.",
+    }
+
+
+def render_stop_discipline_v210_tab() -> Dict[str, Any]:
+    """Render stop discipline v210 tab data (headless-safe, paper-only)."""
+    return {
+        "tab": "stop_discipline_v210",
+        "version": PANEL_VERSION_V210,
+        "release_name": "Paper Exit Plan & Stop-Loss Discipline Control",
+        "description": "Stop-loss discipline dashboard: missing stop count, excessive stop distance, bad R/R count, blocked entries, discipline quality grade — paper only.",
+        "paper_only": True,
+        "research_only": True,
+        "exit_plan_recommendation_only": True,
+        "no_real_orders": True,
+        "no_broker": True,
+        "not_investment_advice": True,
+        "production_trading_blocked": True,
+        "should_auto_apply": False,
+        "auto_apply_enabled": False,
+        "require_stop_loss_before_entry": True,
+        "schema_version": "210",
+        "empty_state": "No discipline data. Run paper-cockpit-v210-evaluate-stop-discipline to populate.",
+    }
+
+
+def render_exit_warning_queue_v210_tab() -> Dict[str, Any]:
+    """Render exit warning queue v210 tab data (headless-safe, paper-only)."""
+    return {
+        "tab": "exit_warning_queue_v210",
+        "version": PANEL_VERSION_V210,
+        "release_name": "Paper Exit Plan & Stop-Loss Discipline Control",
+        "description": "Exit warning queue: candidates with missing stop, excessive stop distance, bad R/R or requiring human review — paper recommendation only, no automatic apply.",
+        "paper_only": True,
+        "research_only": True,
+        "exit_plan_recommendation_only": True,
+        "no_real_orders": True,
+        "no_broker": True,
+        "not_investment_advice": True,
+        "production_trading_blocked": True,
+        "should_auto_apply": False,
+        "auto_apply_enabled": False,
+        "require_stop_loss_before_entry": True,
+        "schema_version": "210",
+        "empty_state": "No warnings. Run paper-cockpit-v210-build-exit-warning-queue to populate.",
+    }
+
+
+_TAB_RENDER_MAP_V210: Dict[str, Any] = {
+    "exit_plan_v210": render_exit_plan_v210_tab,
+    "stop_discipline_v210": render_stop_discipline_v210_tab,
+    "exit_warning_queue_v210": render_exit_warning_queue_v210_tab,
 }
 
 

@@ -5755,6 +5755,41 @@ _SGD_V197_COMMANDS: _List[CommandSpec] = [
 
 # v2.0.9 Paper Position Sizing & Risk Budget Control commands
 # ---------------------------------------------------------------------------
+_PC_V210_COMMANDS: _List[CommandSpec] = [
+    CommandSpec(name="paper-cockpit-v210-review-exit-plan", handler_name="cmd_paper_cockpit_v210_review_exit_plan",
+                help="[Research] Run paper exit plan review v2.0.10", group="paper_cockpit_v210",
+                introduced_in="2.0.10", safety_classification="RESEARCH_ONLY"),
+    CommandSpec(name="paper-cockpit-v210-evaluate-stop-discipline", handler_name="cmd_paper_cockpit_v210_evaluate_stop_discipline",
+                help="[Research] Evaluate stop-loss discipline v2.0.10", group="paper_cockpit_v210",
+                introduced_in="2.0.10", safety_classification="RESEARCH_ONLY"),
+    CommandSpec(name="paper-cockpit-v210-build-exit-warning-queue", handler_name="cmd_paper_cockpit_v210_build_exit_warning_queue",
+                help="[Research] Build exit warning queue v2.0.10", group="paper_cockpit_v210",
+                introduced_in="2.0.10", safety_classification="RESEARCH_ONLY"),
+    CommandSpec(name="paper-cockpit-v210-build-stop-violation-queue", handler_name="cmd_paper_cockpit_v210_build_stop_violation_queue",
+                help="[Research] Build stop-loss violation queue v2.0.10", group="paper_cockpit_v210",
+                introduced_in="2.0.10", safety_classification="RESEARCH_ONLY"),
+    CommandSpec(name="paper-cockpit-v210-evaluate-reward-risk", handler_name="cmd_paper_cockpit_v210_evaluate_reward_risk",
+                help="[Research] Evaluate reward/risk ratios v2.0.10", group="paper_cockpit_v210",
+                introduced_in="2.0.10", safety_classification="RESEARCH_ONLY"),
+    CommandSpec(name="paper-cockpit-v210-export-json", handler_name="cmd_paper_cockpit_v210_export_json",
+                help="[Research] Export exit plan review as JSON v2.0.10", group="paper_cockpit_v210",
+                introduced_in="2.0.10", safety_classification="RESEARCH_ONLY"),
+    CommandSpec(name="paper-cockpit-v210-export-md", handler_name="cmd_paper_cockpit_v210_export_md",
+                help="[Research] Export exit plan review as Markdown v2.0.10", group="paper_cockpit_v210",
+                introduced_in="2.0.10", safety_classification="RESEARCH_ONLY"),
+    CommandSpec(name="paper-cockpit-v210-export-csv", handler_name="cmd_paper_cockpit_v210_export_csv",
+                help="[Research] Export exit plan items as CSV v2.0.10", group="paper_cockpit_v210",
+                introduced_in="2.0.10", safety_classification="RESEARCH_ONLY"),
+    CommandSpec(name="paper-cockpit-v210-health", handler_name="cmd_paper_cockpit_v210_health",
+                help="[Research] Run paper cockpit v2.0.10 health check", group="paper_cockpit_v210",
+                introduced_in="2.0.10", safety_classification="RESEARCH_ONLY"),
+    CommandSpec(name="paper-cockpit-v210-gate", handler_name="cmd_paper_cockpit_v210_gate",
+                help="[Research] Run paper cockpit v2.0.10 release gate", group="paper_cockpit_v210",
+                introduced_in="2.0.10", safety_classification="RESEARCH_ONLY"),
+]
+
+# v2.0.9 Paper Position Sizing & Risk Budget Control commands
+# ---------------------------------------------------------------------------
 _PC_V209_COMMANDS: _List[CommandSpec] = [
     CommandSpec(name="paper-cockpit-v209-review-sizing", handler_name="cmd_paper_cockpit_v209_review_sizing",
                 help="[Research] Run paper position sizing review v2.0.9", group="paper_cockpit_v209",
@@ -6069,7 +6104,8 @@ _PC_V201_COMMANDS: _List[CommandSpec] = [
 ]
 
 PROVIDER_COMMANDS: _List[CommandSpec] = (
-    _PC_V209_COMMANDS
+    _PC_V210_COMMANDS
+    + _PC_V209_COMMANDS
     + _PC_V208_COMMANDS
     + _PC_V207_COMMANDS
     + _PC_V206_COMMANDS

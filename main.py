@@ -42880,6 +42880,101 @@ def cmd_paper_cockpit_safety_audit(args=None):
 
 
 # ---------------------------------------------------------------------------
+# v2.0.10 Paper Exit Plan & Stop-Loss Discipline Control handlers
+# ---------------------------------------------------------------------------
+_PAPER_COCKPIT_V210_BANNER = "[!] RESEARCH ONLY — PAPER ONLY — EXIT PLAN RECOMMENDATION ONLY — NOT INVESTMENT ADVICE — NO REAL ORDERS — should_auto_apply=False — auto_apply_enabled=False — require_stop_loss_before_entry=True — exit_actions_recommendation_only=True"
+
+
+def cmd_paper_cockpit_v210_review_exit_plan(args=None):
+    """[v2.0.10] Run paper exit plan review. Research only."""
+    print(_PAPER_COCKPIT_V210_BANNER)
+    from paper_trading.small_capital_strategy.paper_cockpit_v210 import run_exit_plan_review
+    result = run_exit_plan_review()
+    print(f"paper-cockpit-v210-review-exit-plan: exit_version={result.exit_version}  paper_only={result.paper_only}  all_passed={result.all_passed}  should_auto_apply={result.should_auto_apply}  auto_apply_enabled={result.auto_apply_enabled}  candidate_count={len(result.exit_plan_snapshot)}")
+    print(_PAPER_COCKPIT_V210_BANNER)
+
+
+def cmd_paper_cockpit_v210_evaluate_stop_discipline(args=None):
+    """[v2.0.10] Evaluate stop-loss discipline. Research only."""
+    print(_PAPER_COCKPIT_V210_BANNER)
+    from paper_trading.small_capital_strategy.paper_cockpit_v210 import evaluate_stop_discipline
+    sd = evaluate_stop_discipline()
+    print(f"paper-cockpit-v210-evaluate-stop-discipline: total={sd['total_candidates']}  missing_stop={sd['missing_stop_count']}  violations={sd['total_violations']}  paper_only=True  should_auto_apply=False")
+    print(_PAPER_COCKPIT_V210_BANNER)
+
+
+def cmd_paper_cockpit_v210_build_exit_warning_queue(args=None):
+    """[v2.0.10] Build exit warning queue. Research only."""
+    print(_PAPER_COCKPIT_V210_BANNER)
+    from paper_trading.small_capital_strategy.paper_cockpit_v210 import build_exit_warning_queue
+    queue = build_exit_warning_queue()
+    print(f"paper-cockpit-v210-build-exit-warning-queue: warning_count={len(queue)}  paper_only=True  should_auto_apply=False  auto_apply_enabled=False")
+    print(_PAPER_COCKPIT_V210_BANNER)
+
+
+def cmd_paper_cockpit_v210_build_stop_violation_queue(args=None):
+    """[v2.0.10] Build stop-loss violation queue. Research only."""
+    print(_PAPER_COCKPIT_V210_BANNER)
+    from paper_trading.small_capital_strategy.paper_cockpit_v210 import build_stop_violation_queue
+    queue = build_stop_violation_queue()
+    print(f"paper-cockpit-v210-build-stop-violation-queue: violation_count={len(queue)}  paper_only=True  should_auto_apply=False  auto_apply_enabled=False")
+    print(_PAPER_COCKPIT_V210_BANNER)
+
+
+def cmd_paper_cockpit_v210_evaluate_reward_risk(args=None):
+    """[v2.0.10] Evaluate reward/risk ratios. Research only."""
+    print(_PAPER_COCKPIT_V210_BANNER)
+    from paper_trading.small_capital_strategy.paper_cockpit_v210 import evaluate_reward_risk
+    rr = evaluate_reward_risk()
+    print(f"paper-cockpit-v210-evaluate-reward-risk: candidates={rr['candidate_count']}  avg_rr={rr['average_reward_risk_ratio']:.2f}  passing={rr['passing_rr_count']}  paper_only=True  should_auto_apply=False")
+    print(_PAPER_COCKPIT_V210_BANNER)
+
+
+def cmd_paper_cockpit_v210_export_json(args=None):
+    """[v2.0.10] Export exit plan review as JSON. Research only."""
+    print(_PAPER_COCKPIT_V210_BANNER)
+    from paper_trading.small_capital_strategy.paper_cockpit_v210 import run_exit_plan_review, export_exit_plan_json
+    result = export_exit_plan_json(run_exit_plan_review())
+    print(f"paper-cockpit-v210-export-json: is_valid={result.is_valid}  paper_only={result.paper_only}  export_status={result.export_status}  should_auto_apply=False  auto_apply_enabled=False")
+    print(_PAPER_COCKPIT_V210_BANNER)
+
+
+def cmd_paper_cockpit_v210_export_md(args=None):
+    """[v2.0.10] Export exit plan review as Markdown. Research only."""
+    print(_PAPER_COCKPIT_V210_BANNER)
+    from paper_trading.small_capital_strategy.paper_cockpit_v210 import run_exit_plan_review, export_exit_plan_markdown
+    result = export_exit_plan_markdown(run_exit_plan_review())
+    print(f"paper-cockpit-v210-export-md: is_valid={result.is_valid}  paper_only={result.paper_only}  export_status={result.export_status}  should_auto_apply=False  auto_apply_enabled=False")
+    print(_PAPER_COCKPIT_V210_BANNER)
+
+
+def cmd_paper_cockpit_v210_export_csv(args=None):
+    """[v2.0.10] Export exit plan items as CSV. Research only."""
+    print(_PAPER_COCKPIT_V210_BANNER)
+    from paper_trading.small_capital_strategy.paper_cockpit_v210 import run_exit_plan_review, export_candidate_exit_csv
+    result = export_candidate_exit_csv(run_exit_plan_review())
+    print(f"paper-cockpit-v210-export-csv: is_valid={result.is_valid}  paper_only={result.paper_only}  row_count={result.row_count}  should_auto_apply=False  auto_apply_enabled=False")
+    print(_PAPER_COCKPIT_V210_BANNER)
+
+
+def cmd_paper_cockpit_v210_health(args=None):
+    """[v2.0.10] Run paper cockpit v2.0.10 health check. Research only."""
+    print(_PAPER_COCKPIT_V210_BANNER)
+    from paper_trading.small_capital_strategy.paper_cockpit_health_v210 import run_health_check
+    result = run_health_check()
+    print(f"paper-cockpit-v210-health: all_passed={result['all_passed']}  passed={result['passed']}/{result['total']}  paper_only=True")
+    print(_PAPER_COCKPIT_V210_BANNER)
+
+
+def cmd_paper_cockpit_v210_gate(args=None):
+    """[v2.0.10] Run paper cockpit v2.0.10 release gate. Research only."""
+    print(_PAPER_COCKPIT_V210_BANNER)
+    from release.paper_cockpit_release_gate_v210 import run_release_gate
+    result = run_release_gate()
+    print(f"paper-cockpit-v210-gate: gate_passed={result['gate_passed']}  passed={result['passed_count']}/{result['total_count']}  paper_only=True")
+    print(_PAPER_COCKPIT_V210_BANNER)
+
+
 # v2.0.9 Paper Position Sizing & Risk Budget Control handlers
 # ---------------------------------------------------------------------------
 _PAPER_COCKPIT_V209_BANNER = "[!] RESEARCH ONLY — PAPER ONLY — POSITION SIZING RECOMMENDATION ONLY — NOT INVESTMENT ADVICE — NO REAL ORDERS — should_auto_apply=False — auto_apply_enabled=False — sizing_actions_recommendation_only=True"
@@ -46776,6 +46871,17 @@ def main() -> None:
         "strategy-promotion-rollback-validate": cmd_strategy_promotion_rollback_validate,
         "strategy-promotion-approval-state":   cmd_strategy_promotion_approval_state,
         "strategy-promotion-safety-audit":     cmd_strategy_promotion_safety_audit,
+        # v2.0.10 paper cockpit exit plan & stop-loss discipline control commands
+        "paper-cockpit-v210-review-exit-plan":           cmd_paper_cockpit_v210_review_exit_plan,
+        "paper-cockpit-v210-evaluate-stop-discipline":   cmd_paper_cockpit_v210_evaluate_stop_discipline,
+        "paper-cockpit-v210-build-exit-warning-queue":   cmd_paper_cockpit_v210_build_exit_warning_queue,
+        "paper-cockpit-v210-build-stop-violation-queue": cmd_paper_cockpit_v210_build_stop_violation_queue,
+        "paper-cockpit-v210-evaluate-reward-risk":       cmd_paper_cockpit_v210_evaluate_reward_risk,
+        "paper-cockpit-v210-export-json":                cmd_paper_cockpit_v210_export_json,
+        "paper-cockpit-v210-export-md":                  cmd_paper_cockpit_v210_export_md,
+        "paper-cockpit-v210-export-csv":                 cmd_paper_cockpit_v210_export_csv,
+        "paper-cockpit-v210-health":                     cmd_paper_cockpit_v210_health,
+        "paper-cockpit-v210-gate":                       cmd_paper_cockpit_v210_gate,
         # v2.0.9 paper cockpit position sizing & risk budget control commands
         "paper-cockpit-v209-review-sizing":              cmd_paper_cockpit_v209_review_sizing,
         "paper-cockpit-v209-evaluate-risk-budget":       cmd_paper_cockpit_v209_evaluate_risk_budget,
