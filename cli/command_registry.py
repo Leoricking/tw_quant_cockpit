@@ -5753,6 +5753,44 @@ _SGD_V197_COMMANDS: _List[CommandSpec] = [
                 introduced_in="1.9.7", safety_classification="RESEARCH_ONLY"),
 ]
 
+# v2.0.7 Paper Theme Rotation & Market Regime Control commands
+# ---------------------------------------------------------------------------
+_PC_V207_COMMANDS: _List[CommandSpec] = [
+    CommandSpec(name="paper-cockpit-v207-review-theme-rotation", handler_name="cmd_paper_cockpit_v207_review_theme_rotation",
+                help="[Research] Run paper theme rotation review v2.0.7", group="paper_cockpit_v207",
+                introduced_in="2.0.7", safety_classification="RESEARCH_ONLY"),
+    CommandSpec(name="paper-cockpit-v207-evaluate-market-regime", handler_name="cmd_paper_cockpit_v207_evaluate_market_regime",
+                help="[Research] Evaluate market regime v2.0.7", group="paper_cockpit_v207",
+                introduced_in="2.0.7", safety_classification="RESEARCH_ONLY"),
+    CommandSpec(name="paper-cockpit-v207-rank-themes", handler_name="cmd_paper_cockpit_v207_rank_themes",
+                help="[Research] Rank themes by strength v2.0.7", group="paper_cockpit_v207",
+                introduced_in="2.0.7", safety_classification="RESEARCH_ONLY"),
+    CommandSpec(name="paper-cockpit-v207-detect-overheating", handler_name="cmd_paper_cockpit_v207_detect_overheating",
+                help="[Research] Detect overheating themes v2.0.7", group="paper_cockpit_v207",
+                introduced_in="2.0.7", safety_classification="RESEARCH_ONLY"),
+    CommandSpec(name="paper-cockpit-v207-detect-weakening", handler_name="cmd_paper_cockpit_v207_detect_weakening",
+                help="[Research] Detect weakening themes v2.0.7", group="paper_cockpit_v207",
+                introduced_in="2.0.7", safety_classification="RESEARCH_ONLY"),
+    CommandSpec(name="paper-cockpit-v207-adjust-candidate-priority", handler_name="cmd_paper_cockpit_v207_adjust_candidate_priority",
+                help="[Research] Adjust candidate priority by theme+regime v2.0.7", group="paper_cockpit_v207",
+                introduced_in="2.0.7", safety_classification="RESEARCH_ONLY"),
+    CommandSpec(name="paper-cockpit-v207-export-json", handler_name="cmd_paper_cockpit_v207_export_json",
+                help="[Research] Export theme rotation review as JSON v2.0.7", group="paper_cockpit_v207",
+                introduced_in="2.0.7", safety_classification="RESEARCH_ONLY"),
+    CommandSpec(name="paper-cockpit-v207-export-md", handler_name="cmd_paper_cockpit_v207_export_md",
+                help="[Research] Export theme rotation review as Markdown v2.0.7", group="paper_cockpit_v207",
+                introduced_in="2.0.7", safety_classification="RESEARCH_ONLY"),
+    CommandSpec(name="paper-cockpit-v207-export-csv", handler_name="cmd_paper_cockpit_v207_export_csv",
+                help="[Research] Export theme rotation as CSV v2.0.7", group="paper_cockpit_v207",
+                introduced_in="2.0.7", safety_classification="RESEARCH_ONLY"),
+    CommandSpec(name="paper-cockpit-v207-health", handler_name="cmd_paper_cockpit_v207_health",
+                help="[Research] Run paper cockpit v2.0.7 health check", group="paper_cockpit_v207",
+                introduced_in="2.0.7", safety_classification="RESEARCH_ONLY"),
+    CommandSpec(name="paper-cockpit-v207-gate", handler_name="cmd_paper_cockpit_v207_gate",
+                help="[Research] Run paper cockpit v2.0.7 release gate", group="paper_cockpit_v207",
+                introduced_in="2.0.7", safety_classification="RESEARCH_ONLY"),
+]
+
 # v2.0.6 Paper Candidate Lifecycle & Setup Aging Control commands
 # ---------------------------------------------------------------------------
 _PC_V206_COMMANDS: _List[CommandSpec] = [
@@ -5961,7 +5999,8 @@ _PC_V201_COMMANDS: _List[CommandSpec] = [
 ]
 
 PROVIDER_COMMANDS: _List[CommandSpec] = (
-    _PC_V206_COMMANDS
+    _PC_V207_COMMANDS
+    + _PC_V206_COMMANDS
     + _PC_V205_COMMANDS
     + _PC_V204_COMMANDS
     + _PC_V203_COMMANDS

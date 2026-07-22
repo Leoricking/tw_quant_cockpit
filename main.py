@@ -42880,6 +42880,114 @@ def cmd_paper_cockpit_safety_audit(args=None):
 
 
 # ---------------------------------------------------------------------------
+# v2.0.7 Paper Theme Rotation & Market Regime Control handlers
+# ---------------------------------------------------------------------------
+_PAPER_COCKPIT_V207_BANNER = "[!] RESEARCH ONLY — PAPER ONLY — THEME ROTATION — MARKET REGIME — NOT INVESTMENT ADVICE — NO REAL ORDERS — should_auto_apply=False"
+
+
+def cmd_paper_cockpit_v207_review_theme_rotation(args=None):
+    """[v2.0.7] Run paper theme rotation review. Research only."""
+    print(_PAPER_COCKPIT_V207_BANNER)
+    from paper_trading.small_capital_strategy.paper_cockpit_v207 import run_theme_rotation_review
+    result = run_theme_rotation_review()
+    print(f"paper-cockpit-v207-review-theme-rotation: theme_rotation_version={result.theme_rotation_version}  paper_only={result.paper_only}  all_passed={result.all_passed}  should_auto_apply={result.should_auto_apply}  theme_count={len(result.theme_rotation_action_queue)}")
+    print(_PAPER_COCKPIT_V207_BANNER)
+
+
+def cmd_paper_cockpit_v207_evaluate_market_regime(args=None):
+    """[v2.0.7] Evaluate market regime. Research only."""
+    print(_PAPER_COCKPIT_V207_BANNER)
+    from paper_trading.small_capital_strategy.paper_cockpit_v207 import evaluate_market_regime
+    regime = evaluate_market_regime()
+    print(f"paper-cockpit-v207-evaluate-market-regime: market_state={regime.market_state}  allowed_risk_mode={regime.allowed_risk_mode}  candidate_promotion_allowed={regime.candidate_promotion_allowed}  should_auto_apply={regime.should_auto_apply}")
+    print(_PAPER_COCKPIT_V207_BANNER)
+
+
+def cmd_paper_cockpit_v207_rank_themes(args=None):
+    """[v2.0.7] Rank themes by strength. Research only."""
+    print(_PAPER_COCKPIT_V207_BANNER)
+    from paper_trading.small_capital_strategy.paper_cockpit_v207 import rank_themes
+    ranked = rank_themes()
+    print(f"paper-cockpit-v207-rank-themes: ranked_count={len(ranked)}  paper_only=True  should_auto_apply=False")
+    print(_PAPER_COCKPIT_V207_BANNER)
+
+
+def cmd_paper_cockpit_v207_detect_overheating(args=None):
+    """[v2.0.7] Detect overheating themes. Research only."""
+    print(_PAPER_COCKPIT_V207_BANNER)
+    from paper_trading.small_capital_strategy.paper_cockpit_v207 import detect_overheating
+    themes = detect_overheating()
+    print(f"paper-cockpit-v207-detect-overheating: overheating_count={len(themes)}  paper_only=True  should_auto_apply=False")
+    print(_PAPER_COCKPIT_V207_BANNER)
+
+
+def cmd_paper_cockpit_v207_detect_weakening(args=None):
+    """[v2.0.7] Detect weakening themes. Research only."""
+    print(_PAPER_COCKPIT_V207_BANNER)
+    from paper_trading.small_capital_strategy.paper_cockpit_v207 import detect_weakening
+    themes = detect_weakening()
+    print(f"paper-cockpit-v207-detect-weakening: weakening_count={len(themes)}  paper_only=True  should_auto_apply=False")
+    print(_PAPER_COCKPIT_V207_BANNER)
+
+
+def cmd_paper_cockpit_v207_adjust_candidate_priority(args=None):
+    """[v2.0.7] Adjust candidate priority by theme and regime. Research only."""
+    print(_PAPER_COCKPIT_V207_BANNER)
+    from paper_trading.small_capital_strategy.paper_cockpit_v207 import (
+        run_theme_rotation_review,
+    )
+    result = run_theme_rotation_review()
+    adj_count = len(result.candidate_priority_adjustment_snapshot)
+    print(f"paper-cockpit-v207-adjust-candidate-priority: adjustment_count={adj_count}  paper_only=True  should_auto_apply=False")
+    print(_PAPER_COCKPIT_V207_BANNER)
+
+
+def cmd_paper_cockpit_v207_export_json(args=None):
+    """[v2.0.7] Export theme rotation review as JSON. Research only."""
+    print(_PAPER_COCKPIT_V207_BANNER)
+    from paper_trading.small_capital_strategy.paper_cockpit_v207 import run_theme_rotation_review, export_theme_rotation_json
+    result = export_theme_rotation_json(run_theme_rotation_review())
+    print(f"paper-cockpit-v207-export-json: is_valid={result.is_valid}  paper_only={result.paper_only}  export_status={result.export_status}  should_auto_apply=False")
+    print(_PAPER_COCKPIT_V207_BANNER)
+
+
+def cmd_paper_cockpit_v207_export_md(args=None):
+    """[v2.0.7] Export theme rotation review as Markdown. Research only."""
+    print(_PAPER_COCKPIT_V207_BANNER)
+    from paper_trading.small_capital_strategy.paper_cockpit_v207 import run_theme_rotation_review, export_theme_rotation_markdown
+    result = export_theme_rotation_markdown(run_theme_rotation_review())
+    print(f"paper-cockpit-v207-export-md: is_valid={result.is_valid}  paper_only={result.paper_only}  export_status={result.export_status}  should_auto_apply=False")
+    print(_PAPER_COCKPIT_V207_BANNER)
+
+
+def cmd_paper_cockpit_v207_export_csv(args=None):
+    """[v2.0.7] Export theme rotation as CSV. Research only."""
+    print(_PAPER_COCKPIT_V207_BANNER)
+    from paper_trading.small_capital_strategy.paper_cockpit_v207 import run_theme_rotation_review, export_theme_strength_csv
+    result = export_theme_strength_csv(run_theme_rotation_review())
+    print(f"paper-cockpit-v207-export-csv: is_valid={result.is_valid}  paper_only={result.paper_only}  row_count={result.row_count}  should_auto_apply=False")
+    print(_PAPER_COCKPIT_V207_BANNER)
+
+
+def cmd_paper_cockpit_v207_health(args=None):
+    """[v2.0.7] Run paper cockpit v2.0.7 health check. Research only."""
+    print(_PAPER_COCKPIT_V207_BANNER)
+    from paper_trading.small_capital_strategy.paper_cockpit_health_v207 import run_health_check
+    result = run_health_check()
+    print(f"paper-cockpit-v207-health: all_passed={result['all_passed']}  passed={result['passed']}/{result['total']}  paper_only=True")
+    print(_PAPER_COCKPIT_V207_BANNER)
+
+
+def cmd_paper_cockpit_v207_gate(args=None):
+    """[v2.0.7] Run paper cockpit v2.0.7 release gate. Research only."""
+    print(_PAPER_COCKPIT_V207_BANNER)
+    from release.paper_cockpit_release_gate_v207 import run_release_gate
+    result = run_release_gate()
+    print(f"paper-cockpit-v207-gate: gate_passed={result['gate_passed']}  passed={result['passed_count']}/{result['total_count']}  paper_only=True")
+    print(_PAPER_COCKPIT_V207_BANNER)
+
+
+# ---------------------------------------------------------------------------
 # v2.0.6 Paper Candidate Lifecycle & Setup Aging Control handlers
 # ---------------------------------------------------------------------------
 _PAPER_COCKPIT_V206_BANNER = "[!] RESEARCH ONLY — PAPER ONLY — CANDIDATE LIFECYCLE — NOT INVESTMENT ADVICE — NO REAL ORDERS — should_auto_apply=False — auto_apply_enabled=False"
@@ -46475,6 +46583,18 @@ def main() -> None:
         "strategy-promotion-rollback-validate": cmd_strategy_promotion_rollback_validate,
         "strategy-promotion-approval-state":   cmd_strategy_promotion_approval_state,
         "strategy-promotion-safety-audit":     cmd_strategy_promotion_safety_audit,
+        # v2.0.7 paper cockpit theme rotation & market regime control commands
+        "paper-cockpit-v207-review-theme-rotation":    cmd_paper_cockpit_v207_review_theme_rotation,
+        "paper-cockpit-v207-evaluate-market-regime":   cmd_paper_cockpit_v207_evaluate_market_regime,
+        "paper-cockpit-v207-rank-themes":              cmd_paper_cockpit_v207_rank_themes,
+        "paper-cockpit-v207-detect-overheating":       cmd_paper_cockpit_v207_detect_overheating,
+        "paper-cockpit-v207-detect-weakening":         cmd_paper_cockpit_v207_detect_weakening,
+        "paper-cockpit-v207-adjust-candidate-priority": cmd_paper_cockpit_v207_adjust_candidate_priority,
+        "paper-cockpit-v207-export-json":              cmd_paper_cockpit_v207_export_json,
+        "paper-cockpit-v207-export-md":                cmd_paper_cockpit_v207_export_md,
+        "paper-cockpit-v207-export-csv":               cmd_paper_cockpit_v207_export_csv,
+        "paper-cockpit-v207-health":                   cmd_paper_cockpit_v207_health,
+        "paper-cockpit-v207-gate":                     cmd_paper_cockpit_v207_gate,
         # v2.0.6 paper cockpit candidate lifecycle & setup aging control commands
         "paper-cockpit-v206-review-lifecycle":         cmd_paper_cockpit_v206_review_lifecycle,
         "paper-cockpit-v206-evaluate-aging":           cmd_paper_cockpit_v206_evaluate_aging,

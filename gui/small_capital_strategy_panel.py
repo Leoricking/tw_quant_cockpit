@@ -24,6 +24,7 @@ PANEL_VERSION_V203 = "2.0.3"
 PANEL_VERSION_V204 = "2.0.4"
 PANEL_VERSION_V205 = "2.0.5"
 PANEL_VERSION_V206 = "2.0.6"
+PANEL_VERSION_V207 = "2.0.7"
 
 # v1.7.0 tabs (preserved unchanged)
 _TABS_V170 = [
@@ -420,6 +421,15 @@ _TABS_V206_LIFECYCLE = [
 
 assert len(_TABS_V206_LIFECYCLE) == 3, f"Expected 3 lifecycle v206 tabs, got {len(_TABS_V206_LIFECYCLE)}"
 
+# v2.0.7 Paper Theme Rotation & Market Regime Control tabs
+_TABS_V207_THEME_REGIME = [
+    "theme_rotation_v207",
+    "market_regime_v207",
+    "candidate_priority_adjustment_v207",
+]
+
+assert len(_TABS_V207_THEME_REGIME) == 3, f"Expected 3 theme regime v207 tabs, got {len(_TABS_V207_THEME_REGIME)}"
+
 _TABS = (
     _TABS_V170
     + _TABS_V171_WATCHLIST
@@ -459,6 +469,7 @@ _TABS = (
     + _TABS_V204_REVIEW
     + _TABS_V205_WATCHLIST
     + _TABS_V206_LIFECYCLE
+    + _TABS_V207_THEME_REGIME
 )
 
 assert len(_TABS_V170) == 22, f"Expected 22 v1.7.0 tabs, got {len(_TABS_V170)}"
@@ -1768,6 +1779,10 @@ def render_all_tabs() -> Dict[str, Any]:
         "candidate_lifecycle_v206":         render_candidate_lifecycle_v206_tab,
         "setup_aging_v206":                 render_setup_aging_v206_tab,
         "stale_candidate_queue_v206":       render_stale_candidate_queue_v206_tab,
+        # v2.0.7 Paper Theme Rotation & Market Regime Control tabs
+        "theme_rotation_v207":              render_theme_rotation_v207_tab,
+        "market_regime_v207":               render_market_regime_v207_tab,
+        "candidate_priority_adjustment_v207": render_candidate_priority_adjustment_v207_tab,
     }
     result = {}
     for tab_name in _TABS:
@@ -4706,6 +4721,78 @@ _TAB_RENDER_MAP_V206: Dict[str, Any] = {
     "candidate_lifecycle_v206": render_candidate_lifecycle_v206_tab,
     "setup_aging_v206": render_setup_aging_v206_tab,
     "stale_candidate_queue_v206": render_stale_candidate_queue_v206_tab,
+}
+
+
+def get_v207_tab_names() -> List[str]:
+    """Return list of v2.0.7 new tab names."""
+    return list(_TABS_V207_THEME_REGIME)
+
+
+def render_theme_rotation_v207_tab() -> Dict[str, Any]:
+    """Render theme rotation v207 tab data (headless-safe, paper-only)."""
+    return {
+        "tab": "theme_rotation_v207",
+        "version": PANEL_VERSION_V207,
+        "release_name": "Paper Theme Rotation & Market Regime Control",
+        "description": "Paper-only theme rotation dashboard: rank themes by strength, detect overheating/weakening, view rotation action queue.",
+        "paper_only": True,
+        "research_only": True,
+        "theme_rotation_only": True,
+        "no_real_orders": True,
+        "no_broker": True,
+        "not_investment_advice": True,
+        "production_trading_blocked": True,
+        "should_auto_apply": False,
+        "schema_version": "207",
+        "empty_state": "No theme data. Run paper-cockpit-v207-review-theme-rotation to populate.",
+    }
+
+
+def render_market_regime_v207_tab() -> Dict[str, Any]:
+    """Render market regime v207 tab data (headless-safe, paper-only)."""
+    return {
+        "tab": "market_regime_v207",
+        "version": PANEL_VERSION_V207,
+        "release_name": "Paper Theme Rotation & Market Regime Control",
+        "description": "Market regime snapshot: index trend, breadth, volume, volatility, risk appetite — determines allowed_risk_mode and entry gates.",
+        "paper_only": True,
+        "research_only": True,
+        "market_regime_only": True,
+        "no_real_orders": True,
+        "no_broker": True,
+        "not_investment_advice": True,
+        "production_trading_blocked": True,
+        "should_auto_apply": False,
+        "schema_version": "207",
+        "empty_state": "No regime data. Run paper-cockpit-v207-evaluate-market-regime to populate.",
+    }
+
+
+def render_candidate_priority_adjustment_v207_tab() -> Dict[str, Any]:
+    """Render candidate priority adjustment v207 tab data (headless-safe, paper-only)."""
+    return {
+        "tab": "candidate_priority_adjustment_v207",
+        "version": PANEL_VERSION_V207,
+        "release_name": "Paper Theme Rotation & Market Regime Control",
+        "description": "Candidate priority adjustment: theme-adjusted, regime-adjusted, lifecycle-adjusted scores — paper recommendation only.",
+        "paper_only": True,
+        "research_only": True,
+        "candidate_priority_adjustment_only": True,
+        "no_real_orders": True,
+        "no_broker": True,
+        "not_investment_advice": True,
+        "production_trading_blocked": True,
+        "should_auto_apply": False,
+        "schema_version": "207",
+        "empty_state": "No priority data. Run paper-cockpit-v207-adjust-candidate-priority to populate.",
+    }
+
+
+_TAB_RENDER_MAP_V207: Dict[str, Any] = {
+    "theme_rotation_v207": render_theme_rotation_v207_tab,
+    "market_regime_v207": render_market_regime_v207_tab,
+    "candidate_priority_adjustment_v207": render_candidate_priority_adjustment_v207_tab,
 }
 
 
