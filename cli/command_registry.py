@@ -5753,6 +5753,41 @@ _SGD_V197_COMMANDS: _List[CommandSpec] = [
                 introduced_in="1.9.7", safety_classification="RESEARCH_ONLY"),
 ]
 
+# v2.0.8 Paper Portfolio Exposure & Theme Concentration Risk Control commands
+# ---------------------------------------------------------------------------
+_PC_V208_COMMANDS: _List[CommandSpec] = [
+    CommandSpec(name="paper-cockpit-v208-review-exposure", handler_name="cmd_paper_cockpit_v208_review_exposure",
+                help="[Research] Run paper portfolio exposure review v2.0.8", group="paper_cockpit_v208",
+                introduced_in="2.0.8", safety_classification="RESEARCH_ONLY"),
+    CommandSpec(name="paper-cockpit-v208-evaluate-concentration", handler_name="cmd_paper_cockpit_v208_evaluate_concentration",
+                help="[Research] Evaluate theme/sector/style concentration v2.0.8", group="paper_cockpit_v208",
+                introduced_in="2.0.8", safety_classification="RESEARCH_ONLY"),
+    CommandSpec(name="paper-cockpit-v208-build-warning-queue", handler_name="cmd_paper_cockpit_v208_build_warning_queue",
+                help="[Research] Build exposure warning queue v2.0.8", group="paper_cockpit_v208",
+                introduced_in="2.0.8", safety_classification="RESEARCH_ONLY"),
+    CommandSpec(name="paper-cockpit-v208-build-risk-cap-queue", handler_name="cmd_paper_cockpit_v208_build_risk_cap_queue",
+                help="[Research] Build risk cap recommendation queue v2.0.8", group="paper_cockpit_v208",
+                introduced_in="2.0.8", safety_classification="RESEARCH_ONLY"),
+    CommandSpec(name="paper-cockpit-v208-adjust-candidate-exposure", handler_name="cmd_paper_cockpit_v208_adjust_candidate_exposure",
+                help="[Research] Adjust candidate priority by exposure v2.0.8", group="paper_cockpit_v208",
+                introduced_in="2.0.8", safety_classification="RESEARCH_ONLY"),
+    CommandSpec(name="paper-cockpit-v208-export-json", handler_name="cmd_paper_cockpit_v208_export_json",
+                help="[Research] Export portfolio exposure review as JSON v2.0.8", group="paper_cockpit_v208",
+                introduced_in="2.0.8", safety_classification="RESEARCH_ONLY"),
+    CommandSpec(name="paper-cockpit-v208-export-md", handler_name="cmd_paper_cockpit_v208_export_md",
+                help="[Research] Export portfolio exposure review as Markdown v2.0.8", group="paper_cockpit_v208",
+                introduced_in="2.0.8", safety_classification="RESEARCH_ONLY"),
+    CommandSpec(name="paper-cockpit-v208-export-csv", handler_name="cmd_paper_cockpit_v208_export_csv",
+                help="[Research] Export exposure items as CSV v2.0.8", group="paper_cockpit_v208",
+                introduced_in="2.0.8", safety_classification="RESEARCH_ONLY"),
+    CommandSpec(name="paper-cockpit-v208-health", handler_name="cmd_paper_cockpit_v208_health",
+                help="[Research] Run paper cockpit v2.0.8 health check", group="paper_cockpit_v208",
+                introduced_in="2.0.8", safety_classification="RESEARCH_ONLY"),
+    CommandSpec(name="paper-cockpit-v208-gate", handler_name="cmd_paper_cockpit_v208_gate",
+                help="[Research] Run paper cockpit v2.0.8 release gate", group="paper_cockpit_v208",
+                introduced_in="2.0.8", safety_classification="RESEARCH_ONLY"),
+]
+
 # v2.0.7 Paper Theme Rotation & Market Regime Control commands
 # ---------------------------------------------------------------------------
 _PC_V207_COMMANDS: _List[CommandSpec] = [
@@ -5999,7 +6034,8 @@ _PC_V201_COMMANDS: _List[CommandSpec] = [
 ]
 
 PROVIDER_COMMANDS: _List[CommandSpec] = (
-    _PC_V207_COMMANDS
+    _PC_V208_COMMANDS
+    + _PC_V207_COMMANDS
     + _PC_V206_COMMANDS
     + _PC_V205_COMMANDS
     + _PC_V204_COMMANDS

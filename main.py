@@ -42880,6 +42880,103 @@ def cmd_paper_cockpit_safety_audit(args=None):
 
 
 # ---------------------------------------------------------------------------
+# v2.0.8 Paper Portfolio Exposure & Theme Concentration Risk Control handlers
+# ---------------------------------------------------------------------------
+_PAPER_COCKPIT_V208_BANNER = "[!] RESEARCH ONLY — PAPER ONLY — EXPOSURE ANALYSIS — CONCENTRATION RISK — NOT INVESTMENT ADVICE — NO REAL ORDERS — should_auto_apply=False — auto_apply_enabled=False — exposure_actions_recommendation_only=True"
+
+
+def cmd_paper_cockpit_v208_review_exposure(args=None):
+    """[v2.0.8] Run paper portfolio exposure review. Research only."""
+    print(_PAPER_COCKPIT_V208_BANNER)
+    from paper_trading.small_capital_strategy.paper_cockpit_v208 import run_exposure_review
+    result = run_exposure_review()
+    print(f"paper-cockpit-v208-review-exposure: exposure_version={result.exposure_version}  paper_only={result.paper_only}  all_passed={result.all_passed}  should_auto_apply={result.should_auto_apply}  auto_apply_enabled={result.auto_apply_enabled}  warning_count={len(result.exposure_warning_queue)}")
+    print(_PAPER_COCKPIT_V208_BANNER)
+
+
+def cmd_paper_cockpit_v208_evaluate_concentration(args=None):
+    """[v2.0.8] Evaluate theme/sector/style concentration. Research only."""
+    print(_PAPER_COCKPIT_V208_BANNER)
+    from paper_trading.small_capital_strategy.paper_cockpit_v208 import evaluate_concentration
+    items = evaluate_concentration()
+    print(f"paper-cockpit-v208-evaluate-concentration: item_count={len(items)}  paper_only=True  should_auto_apply=False  auto_apply_enabled=False")
+    print(_PAPER_COCKPIT_V208_BANNER)
+
+
+def cmd_paper_cockpit_v208_build_warning_queue(args=None):
+    """[v2.0.8] Build exposure warning queue. Research only."""
+    print(_PAPER_COCKPIT_V208_BANNER)
+    from paper_trading.small_capital_strategy.paper_cockpit_v208 import build_warning_queue
+    queue = build_warning_queue()
+    print(f"paper-cockpit-v208-build-warning-queue: warning_count={len(queue)}  paper_only=True  should_auto_apply=False  auto_apply_enabled=False")
+    print(_PAPER_COCKPIT_V208_BANNER)
+
+
+def cmd_paper_cockpit_v208_build_risk_cap_queue(args=None):
+    """[v2.0.8] Build risk cap recommendation queue. Research only."""
+    print(_PAPER_COCKPIT_V208_BANNER)
+    from paper_trading.small_capital_strategy.paper_cockpit_v208 import build_risk_cap_queue
+    queue = build_risk_cap_queue()
+    print(f"paper-cockpit-v208-build-risk-cap-queue: risk_cap_count={len(queue)}  paper_only=True  should_auto_apply=False  auto_apply_enabled=False")
+    print(_PAPER_COCKPIT_V208_BANNER)
+
+
+def cmd_paper_cockpit_v208_adjust_candidate_exposure(args=None):
+    """[v2.0.8] Adjust candidate priority by portfolio exposure. Research only."""
+    print(_PAPER_COCKPIT_V208_BANNER)
+    from paper_trading.small_capital_strategy.paper_cockpit_v208 import run_exposure_review
+    result = run_exposure_review()
+    adj_count = len(result.candidate_exposure_adjustments)
+    print(f"paper-cockpit-v208-adjust-candidate-exposure: adjustment_count={adj_count}  paper_only=True  should_auto_apply=False  auto_apply_enabled=False")
+    print(_PAPER_COCKPIT_V208_BANNER)
+
+
+def cmd_paper_cockpit_v208_export_json(args=None):
+    """[v2.0.8] Export portfolio exposure review as JSON. Research only."""
+    print(_PAPER_COCKPIT_V208_BANNER)
+    from paper_trading.small_capital_strategy.paper_cockpit_v208 import run_exposure_review, export_exposure_json
+    result = export_exposure_json(run_exposure_review())
+    print(f"paper-cockpit-v208-export-json: is_valid={result.is_valid}  paper_only={result.paper_only}  export_status={result.export_status}  should_auto_apply=False  auto_apply_enabled=False")
+    print(_PAPER_COCKPIT_V208_BANNER)
+
+
+def cmd_paper_cockpit_v208_export_md(args=None):
+    """[v2.0.8] Export portfolio exposure review as Markdown. Research only."""
+    print(_PAPER_COCKPIT_V208_BANNER)
+    from paper_trading.small_capital_strategy.paper_cockpit_v208 import run_exposure_review, export_exposure_markdown
+    result = export_exposure_markdown(run_exposure_review())
+    print(f"paper-cockpit-v208-export-md: is_valid={result.is_valid}  paper_only={result.paper_only}  export_status={result.export_status}  should_auto_apply=False  auto_apply_enabled=False")
+    print(_PAPER_COCKPIT_V208_BANNER)
+
+
+def cmd_paper_cockpit_v208_export_csv(args=None):
+    """[v2.0.8] Export exposure items as CSV. Research only."""
+    print(_PAPER_COCKPIT_V208_BANNER)
+    from paper_trading.small_capital_strategy.paper_cockpit_v208 import run_exposure_review, export_exposure_item_csv
+    result = export_exposure_item_csv(run_exposure_review())
+    print(f"paper-cockpit-v208-export-csv: is_valid={result.is_valid}  paper_only={result.paper_only}  row_count={result.row_count}  should_auto_apply=False  auto_apply_enabled=False")
+    print(_PAPER_COCKPIT_V208_BANNER)
+
+
+def cmd_paper_cockpit_v208_health(args=None):
+    """[v2.0.8] Run paper cockpit v2.0.8 health check. Research only."""
+    print(_PAPER_COCKPIT_V208_BANNER)
+    from paper_trading.small_capital_strategy.paper_cockpit_health_v208 import run_health_check
+    result = run_health_check()
+    print(f"paper-cockpit-v208-health: all_passed={result['all_passed']}  passed={result['passed']}/{result['total']}  paper_only=True")
+    print(_PAPER_COCKPIT_V208_BANNER)
+
+
+def cmd_paper_cockpit_v208_gate(args=None):
+    """[v2.0.8] Run paper cockpit v2.0.8 release gate. Research only."""
+    print(_PAPER_COCKPIT_V208_BANNER)
+    from release.paper_cockpit_release_gate_v208 import run_release_gate
+    result = run_release_gate()
+    print(f"paper-cockpit-v208-gate: gate_passed={result['gate_passed']}  passed={result['passed_count']}/{result['total_count']}  paper_only=True")
+    print(_PAPER_COCKPIT_V208_BANNER)
+
+
+# ---------------------------------------------------------------------------
 # v2.0.7 Paper Theme Rotation & Market Regime Control handlers
 # ---------------------------------------------------------------------------
 _PAPER_COCKPIT_V207_BANNER = "[!] RESEARCH ONLY — PAPER ONLY — THEME ROTATION — MARKET REGIME — NOT INVESTMENT ADVICE — NO REAL ORDERS — should_auto_apply=False"
@@ -46583,6 +46680,17 @@ def main() -> None:
         "strategy-promotion-rollback-validate": cmd_strategy_promotion_rollback_validate,
         "strategy-promotion-approval-state":   cmd_strategy_promotion_approval_state,
         "strategy-promotion-safety-audit":     cmd_strategy_promotion_safety_audit,
+        # v2.0.8 paper cockpit portfolio exposure & theme concentration risk control commands
+        "paper-cockpit-v208-review-exposure":          cmd_paper_cockpit_v208_review_exposure,
+        "paper-cockpit-v208-evaluate-concentration":   cmd_paper_cockpit_v208_evaluate_concentration,
+        "paper-cockpit-v208-build-warning-queue":      cmd_paper_cockpit_v208_build_warning_queue,
+        "paper-cockpit-v208-build-risk-cap-queue":     cmd_paper_cockpit_v208_build_risk_cap_queue,
+        "paper-cockpit-v208-adjust-candidate-exposure": cmd_paper_cockpit_v208_adjust_candidate_exposure,
+        "paper-cockpit-v208-export-json":              cmd_paper_cockpit_v208_export_json,
+        "paper-cockpit-v208-export-md":                cmd_paper_cockpit_v208_export_md,
+        "paper-cockpit-v208-export-csv":               cmd_paper_cockpit_v208_export_csv,
+        "paper-cockpit-v208-health":                   cmd_paper_cockpit_v208_health,
+        "paper-cockpit-v208-gate":                     cmd_paper_cockpit_v208_gate,
         # v2.0.7 paper cockpit theme rotation & market regime control commands
         "paper-cockpit-v207-review-theme-rotation":    cmd_paper_cockpit_v207_review_theme_rotation,
         "paper-cockpit-v207-evaluate-market-regime":   cmd_paper_cockpit_v207_evaluate_market_regime,

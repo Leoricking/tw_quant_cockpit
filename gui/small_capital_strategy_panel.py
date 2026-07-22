@@ -25,6 +25,7 @@ PANEL_VERSION_V204 = "2.0.4"
 PANEL_VERSION_V205 = "2.0.5"
 PANEL_VERSION_V206 = "2.0.6"
 PANEL_VERSION_V207 = "2.0.7"
+PANEL_VERSION_V208 = "2.0.8"
 
 # v1.7.0 tabs (preserved unchanged)
 _TABS_V170 = [
@@ -430,6 +431,15 @@ _TABS_V207_THEME_REGIME = [
 
 assert len(_TABS_V207_THEME_REGIME) == 3, f"Expected 3 theme regime v207 tabs, got {len(_TABS_V207_THEME_REGIME)}"
 
+# v2.0.8 Paper Portfolio Exposure & Theme Concentration Risk Control tabs
+_TABS_V208_EXPOSURE = [
+    "portfolio_exposure_v208",
+    "theme_concentration_v208",
+    "exposure_warning_queue_v208",
+]
+
+assert len(_TABS_V208_EXPOSURE) == 3, f"Expected 3 exposure v208 tabs, got {len(_TABS_V208_EXPOSURE)}"
+
 _TABS = (
     _TABS_V170
     + _TABS_V171_WATCHLIST
@@ -470,6 +480,7 @@ _TABS = (
     + _TABS_V205_WATCHLIST
     + _TABS_V206_LIFECYCLE
     + _TABS_V207_THEME_REGIME
+    + _TABS_V208_EXPOSURE
 )
 
 assert len(_TABS_V170) == 22, f"Expected 22 v1.7.0 tabs, got {len(_TABS_V170)}"
@@ -1783,6 +1794,10 @@ def render_all_tabs() -> Dict[str, Any]:
         "theme_rotation_v207":              render_theme_rotation_v207_tab,
         "market_regime_v207":               render_market_regime_v207_tab,
         "candidate_priority_adjustment_v207": render_candidate_priority_adjustment_v207_tab,
+        # v2.0.8 Paper Portfolio Exposure & Theme Concentration Risk Control tabs
+        "portfolio_exposure_v208":          render_portfolio_exposure_v208_tab,
+        "theme_concentration_v208":         render_theme_concentration_v208_tab,
+        "exposure_warning_queue_v208":      render_exposure_warning_queue_v208_tab,
     }
     result = {}
     for tab_name in _TABS:
@@ -4793,6 +4808,84 @@ _TAB_RENDER_MAP_V207: Dict[str, Any] = {
     "theme_rotation_v207": render_theme_rotation_v207_tab,
     "market_regime_v207": render_market_regime_v207_tab,
     "candidate_priority_adjustment_v207": render_candidate_priority_adjustment_v207_tab,
+}
+
+
+def get_v208_tab_names() -> List[str]:
+    """Return list of v2.0.8 new tab names."""
+    return list(_TABS_V208_EXPOSURE)
+
+
+def render_portfolio_exposure_v208_tab() -> Dict[str, Any]:
+    """Render portfolio exposure v208 tab data (headless-safe, paper-only)."""
+    return {
+        "tab": "portfolio_exposure_v208",
+        "version": PANEL_VERSION_V208,
+        "release_name": "Paper Portfolio Exposure & Theme Concentration Risk Control",
+        "description": "Portfolio exposure snapshot: theme/sector/style/volatility/liquidity/market_regime concentration scoring and risk cap recommendations.",
+        "paper_only": True,
+        "research_only": True,
+        "exposure_analysis_only": True,
+        "no_real_orders": True,
+        "no_broker": True,
+        "not_investment_advice": True,
+        "production_trading_blocked": True,
+        "should_auto_apply": False,
+        "auto_apply_enabled": False,
+        "exposure_actions_recommendation_only": True,
+        "schema_version": "208",
+        "empty_state": "No exposure data. Run paper-cockpit-v208-review-exposure to populate.",
+    }
+
+
+def render_theme_concentration_v208_tab() -> Dict[str, Any]:
+    """Render theme concentration v208 tab data (headless-safe, paper-only)."""
+    return {
+        "tab": "theme_concentration_v208",
+        "version": PANEL_VERSION_V208,
+        "release_name": "Paper Portfolio Exposure & Theme Concentration Risk Control",
+        "description": "Theme concentration dashboard: per-theme concentration scoring, over-limit detection, warning levels, exposure actions.",
+        "paper_only": True,
+        "research_only": True,
+        "exposure_analysis_only": True,
+        "no_real_orders": True,
+        "no_broker": True,
+        "not_investment_advice": True,
+        "production_trading_blocked": True,
+        "should_auto_apply": False,
+        "auto_apply_enabled": False,
+        "exposure_actions_recommendation_only": True,
+        "schema_version": "208",
+        "empty_state": "No concentration data. Run paper-cockpit-v208-evaluate-concentration to populate.",
+    }
+
+
+def render_exposure_warning_queue_v208_tab() -> Dict[str, Any]:
+    """Render exposure warning queue v208 tab data (headless-safe, paper-only)."""
+    return {
+        "tab": "exposure_warning_queue_v208",
+        "version": PANEL_VERSION_V208,
+        "release_name": "Paper Portfolio Exposure & Theme Concentration Risk Control",
+        "description": "Exposure warning queue: medium/high/critical warnings, risk cap recommendations, candidate priority penalties — paper recommendation only.",
+        "paper_only": True,
+        "research_only": True,
+        "exposure_analysis_only": True,
+        "no_real_orders": True,
+        "no_broker": True,
+        "not_investment_advice": True,
+        "production_trading_blocked": True,
+        "should_auto_apply": False,
+        "auto_apply_enabled": False,
+        "exposure_actions_recommendation_only": True,
+        "schema_version": "208",
+        "empty_state": "No warnings. Run paper-cockpit-v208-build-warning-queue to populate.",
+    }
+
+
+_TAB_RENDER_MAP_V208: Dict[str, Any] = {
+    "portfolio_exposure_v208": render_portfolio_exposure_v208_tab,
+    "theme_concentration_v208": render_theme_concentration_v208_tab,
+    "exposure_warning_queue_v208": render_exposure_warning_queue_v208_tab,
 }
 
 
