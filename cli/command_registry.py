@@ -5753,6 +5753,41 @@ _SGD_V197_COMMANDS: _List[CommandSpec] = [
                 introduced_in="1.9.7", safety_classification="RESEARCH_ONLY"),
 ]
 
+# v2.0.9 Paper Position Sizing & Risk Budget Control commands
+# ---------------------------------------------------------------------------
+_PC_V209_COMMANDS: _List[CommandSpec] = [
+    CommandSpec(name="paper-cockpit-v209-review-sizing", handler_name="cmd_paper_cockpit_v209_review_sizing",
+                help="[Research] Run paper position sizing review v2.0.9", group="paper_cockpit_v209",
+                introduced_in="2.0.9", safety_classification="RESEARCH_ONLY"),
+    CommandSpec(name="paper-cockpit-v209-evaluate-risk-budget", handler_name="cmd_paper_cockpit_v209_evaluate_risk_budget",
+                help="[Research] Evaluate risk budget utilization v2.0.9", group="paper_cockpit_v209",
+                introduced_in="2.0.9", safety_classification="RESEARCH_ONLY"),
+    CommandSpec(name="paper-cockpit-v209-calculate-position-size", handler_name="cmd_paper_cockpit_v209_calculate_position_size",
+                help="[Research] Calculate position size for a candidate v2.0.9", group="paper_cockpit_v209",
+                introduced_in="2.0.9", safety_classification="RESEARCH_ONLY"),
+    CommandSpec(name="paper-cockpit-v209-build-size-reduction-queue", handler_name="cmd_paper_cockpit_v209_build_size_reduction_queue",
+                help="[Research] Build size reduction queue v2.0.9", group="paper_cockpit_v209",
+                introduced_in="2.0.9", safety_classification="RESEARCH_ONLY"),
+    CommandSpec(name="paper-cockpit-v209-build-blocked-sizing-queue", handler_name="cmd_paper_cockpit_v209_build_blocked_sizing_queue",
+                help="[Research] Build blocked sizing queue v2.0.9", group="paper_cockpit_v209",
+                introduced_in="2.0.9", safety_classification="RESEARCH_ONLY"),
+    CommandSpec(name="paper-cockpit-v209-export-json", handler_name="cmd_paper_cockpit_v209_export_json",
+                help="[Research] Export position sizing review as JSON v2.0.9", group="paper_cockpit_v209",
+                introduced_in="2.0.9", safety_classification="RESEARCH_ONLY"),
+    CommandSpec(name="paper-cockpit-v209-export-md", handler_name="cmd_paper_cockpit_v209_export_md",
+                help="[Research] Export position sizing review as Markdown v2.0.9", group="paper_cockpit_v209",
+                introduced_in="2.0.9", safety_classification="RESEARCH_ONLY"),
+    CommandSpec(name="paper-cockpit-v209-export-csv", handler_name="cmd_paper_cockpit_v209_export_csv",
+                help="[Research] Export sizing items as CSV v2.0.9", group="paper_cockpit_v209",
+                introduced_in="2.0.9", safety_classification="RESEARCH_ONLY"),
+    CommandSpec(name="paper-cockpit-v209-health", handler_name="cmd_paper_cockpit_v209_health",
+                help="[Research] Run paper cockpit v2.0.9 health check", group="paper_cockpit_v209",
+                introduced_in="2.0.9", safety_classification="RESEARCH_ONLY"),
+    CommandSpec(name="paper-cockpit-v209-gate", handler_name="cmd_paper_cockpit_v209_gate",
+                help="[Research] Run paper cockpit v2.0.9 release gate", group="paper_cockpit_v209",
+                introduced_in="2.0.9", safety_classification="RESEARCH_ONLY"),
+]
+
 # v2.0.8 Paper Portfolio Exposure & Theme Concentration Risk Control commands
 # ---------------------------------------------------------------------------
 _PC_V208_COMMANDS: _List[CommandSpec] = [
@@ -6034,7 +6069,8 @@ _PC_V201_COMMANDS: _List[CommandSpec] = [
 ]
 
 PROVIDER_COMMANDS: _List[CommandSpec] = (
-    _PC_V208_COMMANDS
+    _PC_V209_COMMANDS
+    + _PC_V208_COMMANDS
     + _PC_V207_COMMANDS
     + _PC_V206_COMMANDS
     + _PC_V205_COMMANDS

@@ -26,6 +26,7 @@ PANEL_VERSION_V205 = "2.0.5"
 PANEL_VERSION_V206 = "2.0.6"
 PANEL_VERSION_V207 = "2.0.7"
 PANEL_VERSION_V208 = "2.0.8"
+PANEL_VERSION_V209 = "2.0.9"
 
 # v1.7.0 tabs (preserved unchanged)
 _TABS_V170 = [
@@ -440,6 +441,15 @@ _TABS_V208_EXPOSURE = [
 
 assert len(_TABS_V208_EXPOSURE) == 3, f"Expected 3 exposure v208 tabs, got {len(_TABS_V208_EXPOSURE)}"
 
+# v2.0.9 Paper Position Sizing & Risk Budget Control tabs
+_TABS_V209_SIZING = [
+    "position_sizing_v209",
+    "risk_budget_v209",
+    "size_reduction_queue_v209",
+]
+
+assert len(_TABS_V209_SIZING) == 3, f"Expected 3 sizing v209 tabs, got {len(_TABS_V209_SIZING)}"
+
 _TABS = (
     _TABS_V170
     + _TABS_V171_WATCHLIST
@@ -481,6 +491,7 @@ _TABS = (
     + _TABS_V206_LIFECYCLE
     + _TABS_V207_THEME_REGIME
     + _TABS_V208_EXPOSURE
+    + _TABS_V209_SIZING
 )
 
 assert len(_TABS_V170) == 22, f"Expected 22 v1.7.0 tabs, got {len(_TABS_V170)}"
@@ -1798,6 +1809,10 @@ def render_all_tabs() -> Dict[str, Any]:
         "portfolio_exposure_v208":          render_portfolio_exposure_v208_tab,
         "theme_concentration_v208":         render_theme_concentration_v208_tab,
         "exposure_warning_queue_v208":      render_exposure_warning_queue_v208_tab,
+        # v2.0.9 Paper Position Sizing & Risk Budget Control tabs
+        "position_sizing_v209":             render_position_sizing_v209_tab,
+        "risk_budget_v209":                 render_risk_budget_v209_tab,
+        "size_reduction_queue_v209":        render_size_reduction_queue_v209_tab,
     }
     result = {}
     for tab_name in _TABS:
@@ -4886,6 +4901,84 @@ _TAB_RENDER_MAP_V208: Dict[str, Any] = {
     "portfolio_exposure_v208": render_portfolio_exposure_v208_tab,
     "theme_concentration_v208": render_theme_concentration_v208_tab,
     "exposure_warning_queue_v208": render_exposure_warning_queue_v208_tab,
+}
+
+
+def get_v209_tab_names() -> List[str]:
+    """Return list of v2.0.9 new tab names."""
+    return list(_TABS_V209_SIZING)
+
+
+def render_position_sizing_v209_tab() -> Dict[str, Any]:
+    """Render position sizing v209 tab data (headless-safe, paper-only)."""
+    return {
+        "tab": "position_sizing_v209",
+        "version": PANEL_VERSION_V209,
+        "release_name": "Paper Position Sizing & Risk Budget Control",
+        "description": "Paper-only position sizing dashboard: stop-distance based sizing, volatility/liquidity/exposure/regime/lifecycle adjustments, size recommendation queue.",
+        "paper_only": True,
+        "research_only": True,
+        "position_sizing_recommendation_only": True,
+        "no_real_orders": True,
+        "no_broker": True,
+        "not_investment_advice": True,
+        "production_trading_blocked": True,
+        "should_auto_apply": False,
+        "auto_apply_enabled": False,
+        "sizing_actions_recommendation_only": True,
+        "schema_version": "209",
+        "empty_state": "No sizing data. Run paper-cockpit-v209-review-sizing to populate.",
+    }
+
+
+def render_risk_budget_v209_tab() -> Dict[str, Any]:
+    """Render risk budget v209 tab data (headless-safe, paper-only)."""
+    return {
+        "tab": "risk_budget_v209",
+        "version": PANEL_VERSION_V209,
+        "release_name": "Paper Position Sizing & Risk Budget Control",
+        "description": "Risk budget dashboard: total/single-trade/theme/sector/volatility/liquidity/risk-off budget utilization and remaining capacity.",
+        "paper_only": True,
+        "research_only": True,
+        "position_sizing_recommendation_only": True,
+        "no_real_orders": True,
+        "no_broker": True,
+        "not_investment_advice": True,
+        "production_trading_blocked": True,
+        "should_auto_apply": False,
+        "auto_apply_enabled": False,
+        "sizing_actions_recommendation_only": True,
+        "schema_version": "209",
+        "empty_state": "No budget data. Run paper-cockpit-v209-evaluate-risk-budget to populate.",
+    }
+
+
+def render_size_reduction_queue_v209_tab() -> Dict[str, Any]:
+    """Render size reduction queue v209 tab data (headless-safe, paper-only)."""
+    return {
+        "tab": "size_reduction_queue_v209",
+        "version": PANEL_VERSION_V209,
+        "release_name": "Paper Position Sizing & Risk Budget Control",
+        "description": "Size reduction queue: candidates with reduced/blocked/probe sizing due to risk controls — paper recommendation only, no automatic apply.",
+        "paper_only": True,
+        "research_only": True,
+        "position_sizing_recommendation_only": True,
+        "no_real_orders": True,
+        "no_broker": True,
+        "not_investment_advice": True,
+        "production_trading_blocked": True,
+        "should_auto_apply": False,
+        "auto_apply_enabled": False,
+        "sizing_actions_recommendation_only": True,
+        "schema_version": "209",
+        "empty_state": "No reduction queue. Run paper-cockpit-v209-build-size-reduction-queue to populate.",
+    }
+
+
+_TAB_RENDER_MAP_V209: Dict[str, Any] = {
+    "position_sizing_v209": render_position_sizing_v209_tab,
+    "risk_budget_v209": render_risk_budget_v209_tab,
+    "size_reduction_queue_v209": render_size_reduction_queue_v209_tab,
 }
 
 

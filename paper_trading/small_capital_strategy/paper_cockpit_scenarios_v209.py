@@ -1,0 +1,106 @@
+"""
+paper_trading/small_capital_strategy/paper_cockpit_scenarios_v209.py
+v2.0.9 Paper Position Sizing & Risk Budget Control — Scenarios
+[!] Paper Only. Research Only. Not Investment Advice.
+"""
+from __future__ import annotations
+from typing import Any, Dict, List
+
+SCHEMA_VERSION = "209"
+
+SCENARIOS: List[Dict[str, Any]] = [
+    # --- 1-10: base position sizing scenarios ---
+    {"scenario_id": "SC209-001", "schema_version": "209", "paper_only": True, "name": "標準停損6%-正常倉位", "description": "停損6%、標準倉位計算", "entry_price": 100.0, "stop_price": 94.0, "account_equity": 300000.0, "max_single_trade_risk_pct": 0.01, "expected_base_size_twd": 50000, "should_auto_apply": False},
+    {"scenario_id": "SC209-002", "schema_version": "209", "paper_only": True, "name": "停損3%-較大倉位", "description": "停損3%、單筆風險1%，倉位擴大", "entry_price": 100.0, "stop_price": 97.0, "account_equity": 300000.0, "max_single_trade_risk_pct": 0.01, "expected_base_size_twd": 100000, "should_auto_apply": False},
+    {"scenario_id": "SC209-003", "schema_version": "209", "paper_only": True, "name": "停損10%-較小倉位", "description": "停損10%、單筆風險1%，倉位縮小", "entry_price": 100.0, "stop_price": 90.0, "account_equity": 300000.0, "max_single_trade_risk_pct": 0.01, "expected_base_size_twd": 30000, "should_auto_apply": False},
+    {"scenario_id": "SC209-004", "schema_version": "209", "paper_only": True, "name": "零停損距離-阻擋部位", "description": "停損距離=0，應阻擋部位建立", "entry_price": 100.0, "stop_price": 100.0, "expected_size_action": "block_new_position", "expected_base_size": 0, "should_auto_apply": False},
+    {"scenario_id": "SC209-005", "schema_version": "209", "paper_only": True, "name": "無效進場價-阻擋部位", "description": "進場價=0，應阻擋部位建立", "entry_price": 0.0, "stop_price": 0.0, "expected_size_action": "block_new_position", "should_auto_apply": False},
+    {"scenario_id": "SC209-006", "schema_version": "209", "paper_only": True, "name": "停損價高於進場價-阻擋", "description": "停損>進場，無效設定，阻擋", "entry_price": 90.0, "stop_price": 100.0, "expected_size_action": "block_new_position", "should_auto_apply": False},
+    {"scenario_id": "SC209-007", "schema_version": "209", "paper_only": True, "name": "高優先分數-允許完整倉位", "description": "高分候選股，條件全符合，允許完整倉位", "final_priority_score": 85.0, "entry_price": 100.0, "stop_price": 94.0, "market_state": "range_bound", "lifecycle_state": "active", "expected_size_action": "allow_full_paper_size", "should_auto_apply": False},
+    {"scenario_id": "SC209-008", "schema_version": "209", "paper_only": True, "name": "低優先分數-縮減倉位", "description": "低分候選股，倉位大幅縮減", "final_priority_score": 35.0, "entry_price": 100.0, "stop_price": 94.0, "expected_size_reduction": True, "should_auto_apply": False},
+    {"scenario_id": "SC209-009", "schema_version": "209", "paper_only": True, "name": "極低分候選-觀察只模式", "description": "極低分候選股，僅觀察，不建倉", "final_priority_score": 20.0, "entry_price": 100.0, "stop_price": 94.0, "expected_size_action": "observation_only", "should_auto_apply": False},
+    {"scenario_id": "SC209-010", "schema_version": "209", "paper_only": True, "name": "所有sizing action均為建議", "description": "所有7種size_action均為紙上建議，不自動執行", "size_actions": ["allow_full_paper_size","reduce_size","minimum_probe_size","observation_only","block_new_position","require_rescore","human_review_required"], "should_auto_apply": False, "auto_apply_enabled": False},
+    # --- 11-20: volatility and liquidity adjustment scenarios ---
+    {"scenario_id": "SC209-011", "schema_version": "209", "paper_only": True, "name": "高波動-倉位75%縮減", "description": "高波動股票，倉位縮至75%", "is_high_volatility": True, "volatility_reduction_factor": 0.75, "should_auto_apply": False},
+    {"scenario_id": "SC209-012", "schema_version": "209", "paper_only": True, "name": "低流動性-倉位60%縮減", "description": "低流動性股票，倉位縮至60%", "is_low_liquidity": True, "liquidity_reduction_factor": 0.60, "should_auto_apply": False},
+    {"scenario_id": "SC209-013", "schema_version": "209", "paper_only": True, "name": "高波動+低流動-雙重縮減", "description": "同時高波動且低流動性，雙重縮減", "is_high_volatility": True, "is_low_liquidity": True, "expected_combined_reduction": True, "requires_human_review": True, "should_auto_apply": False},
+    {"scenario_id": "SC209-014", "schema_version": "209", "paper_only": True, "name": "正常波動正常流動-無縮減", "description": "正常波動流動性，不縮減", "is_high_volatility": False, "is_low_liquidity": False, "expected_volatility_factor": 1.0, "should_auto_apply": False},
+    {"scenario_id": "SC209-015", "schema_version": "209", "paper_only": True, "name": "波動調整後倉位不得為負", "description": "波動調整後最小倉位=0", "is_high_volatility": True, "base_size": 0, "expected_final_size": 0, "should_auto_apply": False},
+    # --- 16-25: market regime adjustment scenarios ---
+    {"scenario_id": "SC209-016", "schema_version": "209", "paper_only": True, "name": "強勢上漲-全額倉位", "description": "market_state=strong_uptrend，倉位100%", "market_state": "strong_uptrend", "regime_factor": 1.00, "should_auto_apply": False},
+    {"scenario_id": "SC209-017", "schema_version": "209", "paper_only": True, "name": "健康回調-90%倉位", "description": "market_state=healthy_pullback，倉位90%", "market_state": "healthy_pullback", "regime_factor": 0.90, "should_auto_apply": False},
+    {"scenario_id": "SC209-018", "schema_version": "209", "paper_only": True, "name": "震盪區間-80%倉位", "description": "market_state=range_bound，倉位80%", "market_state": "range_bound", "regime_factor": 0.80, "should_auto_apply": False},
+    {"scenario_id": "SC209-019", "schema_version": "209", "paper_only": True, "name": "弱勢反彈-70%倉位", "description": "market_state=weak_rebound，倉位70%", "market_state": "weak_rebound", "regime_factor": 0.70, "should_auto_apply": False},
+    {"scenario_id": "SC209-020", "schema_version": "209", "paper_only": True, "name": "高波動regime-60%倉位", "description": "market_state=high_volatility，倉位60%", "market_state": "high_volatility", "regime_factor": 0.60, "should_auto_apply": False},
+    {"scenario_id": "SC209-021", "schema_version": "209", "paper_only": True, "name": "下跌趨勢-50%倉位", "description": "market_state=downtrend，倉位50%，需人工審核", "market_state": "downtrend", "regime_factor": 0.50, "requires_human_review": True, "should_auto_apply": False},
+    {"scenario_id": "SC209-022", "schema_version": "209", "paper_only": True, "name": "Risk-off-部位歸零並阻擋", "description": "market_state=risk_off，部位強制歸零", "market_state": "risk_off", "expected_final_size": 0, "expected_size_action": "block_new_position", "should_auto_apply": False},
+    {"scenario_id": "SC209-023", "schema_version": "209", "paper_only": True, "name": "Risk-off整合v2.0.7", "description": "v2.0.7 market regime整合，risk_off=block", "market_state_from_v207": "risk_off", "expected_blocked": True, "should_auto_apply": False},
+    {"scenario_id": "SC209-024", "schema_version": "209", "paper_only": True, "name": "市場regime調整不自動下單", "description": "market_regime調整只產生建議，不自動調倉", "market_state": "downtrend", "auto_apply_enabled": False, "should_auto_apply": False},
+    {"scenario_id": "SC209-025", "schema_version": "209", "paper_only": True, "name": "regime=range_bound-預設倉位", "description": "range_bound是預設狀態，80%倉位", "market_state": "range_bound", "is_default_state": True, "should_auto_apply": False},
+    # --- 26-35: lifecycle adjustment scenarios ---
+    {"scenario_id": "SC209-026", "schema_version": "209", "paper_only": True, "name": "Fresh候選-全額倉位", "description": "lifecycle_state=fresh，倉位100%", "lifecycle_state": "fresh", "lifecycle_factor": 1.00, "should_auto_apply": False},
+    {"scenario_id": "SC209-027", "schema_version": "209", "paper_only": True, "name": "Active候選-全額倉位", "description": "lifecycle_state=active，倉位100%", "lifecycle_state": "active", "lifecycle_factor": 1.00, "should_auto_apply": False},
+    {"scenario_id": "SC209-028", "schema_version": "209", "paper_only": True, "name": "Aging候選-80%倉位", "description": "lifecycle_state=aging，倉位80%", "lifecycle_state": "aging", "lifecycle_factor": 0.80, "should_auto_apply": False},
+    {"scenario_id": "SC209-029", "schema_version": "209", "paper_only": True, "name": "Stale候選-50%倉位", "description": "lifecycle_state=stale，倉位50%", "lifecycle_state": "stale", "lifecycle_factor": 0.50, "should_auto_apply": False},
+    {"scenario_id": "SC209-030", "schema_version": "209", "paper_only": True, "name": "Expired候選-阻擋", "description": "lifecycle_state=expired，部位歸零並阻擋", "lifecycle_state": "expired", "expected_final_size": 0, "expected_blocked": True, "should_auto_apply": False},
+    {"scenario_id": "SC209-031", "schema_version": "209", "paper_only": True, "name": "Cooldown候選-阻擋", "description": "lifecycle_state=cooldown，部位歸零並阻擋", "lifecycle_state": "cooldown", "expected_final_size": 0, "expected_blocked": True, "should_auto_apply": False},
+    {"scenario_id": "SC209-032", "schema_version": "209", "paper_only": True, "name": "Observation候選-最小探針", "description": "lifecycle_state=observation，25%倉位", "lifecycle_state": "observation", "lifecycle_factor": 0.25, "should_auto_apply": False},
+    {"scenario_id": "SC209-033", "schema_version": "209", "paper_only": True, "name": "Lifecycle整合v2.0.6", "description": "v2.0.6 candidate lifecycle整合，stale=縮減", "lifecycle_state_from_v206": "stale", "expected_size_reduction": True, "should_auto_apply": False},
+    {"scenario_id": "SC209-034", "schema_version": "209", "paper_only": True, "name": "Lifecycle調整不自動執行", "description": "lifecycle調整只產生建議", "lifecycle_state": "stale", "auto_apply_enabled": False, "should_auto_apply": False},
+    {"scenario_id": "SC209-035", "schema_version": "209", "paper_only": True, "name": "Lifecycle=active+market=downtrend", "description": "active但市場下跌，組合調整", "lifecycle_state": "active", "market_state": "downtrend", "expected_combined_reduction": True, "should_auto_apply": False},
+    # --- 36-45: exposure and concentration adjustment scenarios ---
+    {"scenario_id": "SC209-036", "schema_version": "209", "paper_only": True, "name": "主題集中80%+-強力縮倉", "description": "主題集中度80%+，倉位縮至60%", "theme_concentration_score": 82.0, "expected_theme_factor": 0.60, "should_auto_apply": False},
+    {"scenario_id": "SC209-037", "schema_version": "209", "paper_only": True, "name": "主題集中65-80%-縮至75%", "description": "主題集中度65-80%，倉位縮至75%", "theme_concentration_score": 70.0, "expected_theme_factor": 0.75, "should_auto_apply": False},
+    {"scenario_id": "SC209-038", "schema_version": "209", "paper_only": True, "name": "主題集中50-65%-縮至90%", "description": "主題集中度50-65%，倉位縮至90%", "theme_concentration_score": 55.0, "expected_theme_factor": 0.90, "should_auto_apply": False},
+    {"scenario_id": "SC209-039", "schema_version": "209", "paper_only": True, "name": "主題集中<50%-無縮倉", "description": "主題集中度<50%，不縮倉", "theme_concentration_score": 40.0, "expected_theme_factor": 1.00, "should_auto_apply": False},
+    {"scenario_id": "SC209-040", "schema_version": "209", "paper_only": True, "name": "曝險懲罰10%-縮倉10%", "description": "v2.0.8 exposure penalty 10%，倉位縮10%", "exposure_penalty_pct": 10.0, "expected_exposure_factor": 0.90, "should_auto_apply": False},
+    {"scenario_id": "SC209-041", "schema_version": "209", "paper_only": True, "name": "曝險懲罰30%-縮倉30%", "description": "v2.0.8 exposure penalty 30%，倉位縮30%", "exposure_penalty_pct": 30.0, "expected_exposure_factor": 0.70, "should_auto_apply": False},
+    {"scenario_id": "SC209-042", "schema_version": "209", "paper_only": True, "name": "曝險懲罰100%-全阻擋", "description": "v2.0.8 exposure penalty 100%，倉位=0", "exposure_penalty_pct": 100.0, "expected_final_size": 0, "should_auto_apply": False},
+    {"scenario_id": "SC209-043", "schema_version": "209", "paper_only": True, "name": "曝險整合v2.0.8", "description": "v2.0.8 exposure control整合，高集中=縮倉", "exposure_from_v208": True, "theme_concentration_score": 78.0, "expected_size_reduction": True, "should_auto_apply": False},
+    {"scenario_id": "SC209-044", "schema_version": "209", "paper_only": True, "name": "曝險調整不自動執行", "description": "曝險調整只是建議，不自動調倉", "exposure_penalty_pct": 20.0, "auto_apply_enabled": False, "should_auto_apply": False},
+    {"scenario_id": "SC209-045", "schema_version": "209", "paper_only": True, "name": "主題集中+曝險雙重調整", "description": "同時有主題集中和曝險懲罰，疊加縮倉", "theme_concentration_score": 72.0, "exposure_penalty_pct": 15.0, "expected_combined_reduction": True, "should_auto_apply": False},
+    # --- 46-55: risk budget scenarios ---
+    {"scenario_id": "SC209-046", "schema_version": "209", "paper_only": True, "name": "總風險預算未超出", "description": "所有候選股加總風險<6%，安全", "total_risk_pct": 0.04, "max_total_risk_pct": 0.06, "expected_over_budget": False, "should_auto_apply": False},
+    {"scenario_id": "SC209-047", "schema_version": "209", "paper_only": True, "name": "總風險預算超出", "description": "所有候選股加總風險>6%，需管控", "total_risk_pct": 0.08, "max_total_risk_pct": 0.06, "expected_over_budget": True, "should_auto_apply": False},
+    {"scenario_id": "SC209-048", "schema_version": "209", "paper_only": True, "name": "單筆風險超限", "description": "單筆risk>1%，需人工審核", "single_trade_risk_pct": 0.015, "max_single_trade_risk_pct": 0.01, "requires_human_review": True, "should_auto_apply": False},
+    {"scenario_id": "SC209-049", "schema_version": "209", "paper_only": True, "name": "單一主題風險超限", "description": "單一主題風險>3%，需縮倉", "single_theme_risk_pct": 0.04, "max_single_theme_risk_pct": 0.03, "expected_reduction": True, "should_auto_apply": False},
+    {"scenario_id": "SC209-050", "schema_version": "209", "paper_only": True, "name": "高波動風險超限", "description": "高波動股票風險>2%，需縮倉", "high_volatility_risk_pct": 0.03, "max_high_volatility_risk_pct": 0.02, "expected_reduction": True, "should_auto_apply": False},
+    {"scenario_id": "SC209-051", "schema_version": "209", "paper_only": True, "name": "低流動性風險超限", "description": "低流動性風險>1%，需縮倉", "low_liquidity_risk_pct": 0.015, "max_low_liquidity_risk_pct": 0.01, "expected_reduction": True, "should_auto_apply": False},
+    {"scenario_id": "SC209-052", "schema_version": "209", "paper_only": True, "name": "Risk-off預算超限", "description": "Risk-off風險>2%，需縮倉", "risk_off_risk_pct": 0.03, "max_risk_off_budget_pct": 0.02, "expected_reduction": True, "should_auto_apply": False},
+    {"scenario_id": "SC209-053", "schema_version": "209", "paper_only": True, "name": "現金緩衝低-阻擋新部位", "description": "現金<20%下限，不得新開部位", "cash_pct": 0.15, "min_cash_buffer_pct": 0.20, "expected_blocked": True, "should_auto_apply": False},
+    {"scenario_id": "SC209-054", "schema_version": "209", "paper_only": True, "name": "風險預算評估-auto_apply=False", "description": "風險預算評估只產生建議，不自動套用", "auto_apply_enabled": False, "should_auto_apply": False},
+    {"scenario_id": "SC209-055", "schema_version": "209", "paper_only": True, "name": "風險預算剩餘計算", "description": "剩餘預算=max_total_risk_pct-已用risk_pct", "max_total_risk_pct": 0.06, "used_risk_pct": 0.02, "expected_remaining": 0.04, "should_auto_apply": False},
+    # --- 56-65: sizing review output scenarios ---
+    {"scenario_id": "SC209-056", "schema_version": "209", "paper_only": True, "name": "Sizing review完整輸出", "description": "run_sizing_review()輸出所有必要欄位", "expected_fields": ["sizing_review_id","sizing_version","review_period","risk_budget_snapshot","candidate_sizing_snapshot","position_sizing_recommendation_queue","size_reduction_queue","blocked_sizing_queue","human_review_queue","paper_only_safety_snapshot"], "should_auto_apply": False},
+    {"scenario_id": "SC209-057", "schema_version": "209", "paper_only": True, "name": "Sizing review=paper_only=True", "description": "所有sizing review結果均為paper_only", "expected_paper_only": True, "should_auto_apply": False},
+    {"scenario_id": "SC209-058", "schema_version": "209", "paper_only": True, "name": "Sizing review=all_passed=True", "description": "預設demo輸入下all_passed=True", "expected_all_passed": True, "should_auto_apply": False},
+    {"scenario_id": "SC209-059", "schema_version": "209", "paper_only": True, "name": "Sizing summary品質分級A", "description": "無阻擋、無縮減，sizing_quality_grade=A", "blocked_count": 0, "reduced_count": 0, "expected_grade": "A", "should_auto_apply": False},
+    {"scenario_id": "SC209-060", "schema_version": "209", "paper_only": True, "name": "Sizing summary品質分級D", "description": "超過50%阻擋，sizing_quality_grade=D", "blocked_ratio": 0.55, "expected_grade": "D", "should_auto_apply": False},
+    {"scenario_id": "SC209-061", "schema_version": "209", "paper_only": True, "name": "Risk budget品質分級A", "description": "未超預算且無人工審核，risk_budget_quality_grade=A", "expected_rbq_grade": "A", "should_auto_apply": False},
+    {"scenario_id": "SC209-062", "schema_version": "209", "paper_only": True, "name": "Sizing recommendation queue只含建議", "description": "recommendation queue不得含auto-apply action", "expected_auto_apply": False, "should_auto_apply": False},
+    {"scenario_id": "SC209-063", "schema_version": "209", "paper_only": True, "name": "Blocked sizing queue驗證", "description": "blocked queue中所有項目size_action=block_new_position", "expected_action": "block_new_position", "should_auto_apply": False},
+    {"scenario_id": "SC209-064", "schema_version": "209", "paper_only": True, "name": "Human review queue驗證", "description": "human_review_queue中所有項目requires_human_review=True", "expected_requires_human_review": True, "should_auto_apply": False},
+    {"scenario_id": "SC209-065", "schema_version": "209", "paper_only": True, "name": "Sizing review不修改v2.0.8輸出", "description": "v2.0.8的exposure review仍可獨立運行", "v208_backward_compat": True, "should_auto_apply": False},
+    # --- 66-75: export and integration scenarios ---
+    {"scenario_id": "SC209-066", "schema_version": "209", "paper_only": True, "name": "JSON匯出schema完整性", "description": "JSON匯出包含所有必要欄位", "export_format": "json", "expected_is_valid": True, "should_auto_apply": False},
+    {"scenario_id": "SC209-067", "schema_version": "209", "paper_only": True, "name": "Markdown匯出schema完整性", "description": "Markdown匯出包含sizing summary", "export_format": "markdown", "expected_is_valid": True, "should_auto_apply": False},
+    {"scenario_id": "SC209-068", "schema_version": "209", "paper_only": True, "name": "CSV匯出-候選股倉位", "description": "候選股倉位CSV匯出", "export_format": "csv_sizing", "expected_is_valid": True, "should_auto_apply": False},
+    {"scenario_id": "SC209-069", "schema_version": "209", "paper_only": True, "name": "CSV匯出-風險預算", "description": "風險預算CSV匯出", "export_format": "csv_risk_budget", "expected_is_valid": True, "should_auto_apply": False},
+    {"scenario_id": "SC209-070", "schema_version": "209", "paper_only": True, "name": "CSV匯出-縮倉佇列", "description": "縮倉佇列CSV匯出", "export_format": "csv_size_reduction", "expected_is_valid": True, "should_auto_apply": False},
+    {"scenario_id": "SC209-071", "schema_version": "209", "paper_only": True, "name": "Audit snapshot匯出", "description": "稽核快照包含reproducibility_hash", "export_format": "audit_snapshot", "expected_hash_present": True, "should_auto_apply": False},
+    {"scenario_id": "SC209-072", "schema_version": "209", "paper_only": True, "name": "匯出結果should_auto_apply=False", "description": "所有匯出結果均明確標示should_auto_apply=False", "expected_should_auto_apply": False, "should_auto_apply": False},
+    {"scenario_id": "SC209-073", "schema_version": "209", "paper_only": True, "name": "v2.0.5 watchlist rotation整合", "description": "v2.0.5 watchlist rotation候選股納入sizing計算", "watchlist_rotation_from_v205": True, "should_auto_apply": False},
+    {"scenario_id": "SC209-074", "schema_version": "209", "paper_only": True, "name": "v2.0.4 weekly improvement整合", "description": "v2.0.4 weekly improvement pack backward compat", "weekly_improvement_from_v204": True, "should_auto_apply": False},
+    {"scenario_id": "SC209-075", "schema_version": "209", "paper_only": True, "name": "v2.0.2 report export整合", "description": "v2.0.2 report export backward compat", "report_export_from_v202": True, "should_auto_apply": False},
+    # --- 76-80: safety and guard scenarios ---
+    {"scenario_id": "SC209-076", "schema_version": "209", "paper_only": True, "name": "安全旗標NO_REAL_ORDERS=True", "description": "NO_REAL_ORDERS全域旗標必須為True", "expected_no_real_orders": True, "should_auto_apply": False},
+    {"scenario_id": "SC209-077", "schema_version": "209", "paper_only": True, "name": "安全旗標BROKER_EXECUTION_ENABLED=False", "description": "BROKER_EXECUTION_ENABLED全域旗標必須為False", "expected_broker_disabled": True, "should_auto_apply": False},
+    {"scenario_id": "SC209-078", "schema_version": "209", "paper_only": True, "name": "安全旗標PRODUCTION_TRADING_BLOCKED=True", "description": "PRODUCTION_TRADING_BLOCKED全域旗標必須為True", "expected_production_blocked": True, "should_auto_apply": False},
+    {"scenario_id": "SC209-079", "schema_version": "209", "paper_only": True, "name": "CandidateSizingItem.should_auto_apply強制False", "description": "即使傳入True，should_auto_apply仍必須為False", "input_should_auto_apply": True, "expected_should_auto_apply": False, "should_auto_apply": False},
+    {"scenario_id": "SC209-080", "schema_version": "209", "paper_only": True, "name": "RiskBudgetPolicy.auto_apply_enabled強制False", "description": "即使傳入True，auto_apply_enabled仍必須為False", "input_auto_apply_enabled": True, "expected_auto_apply_enabled": False, "should_auto_apply": False},
+]
+
+assert len(SCENARIOS) == 80, f"Expected 80 scenarios, got {len(SCENARIOS)}"
+assert all(s["schema_version"] == "209" for s in SCENARIOS)
+assert all(s["paper_only"] is True for s in SCENARIOS)
+assert all(s["should_auto_apply"] is False for s in SCENARIOS)

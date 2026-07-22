@@ -42880,6 +42880,102 @@ def cmd_paper_cockpit_safety_audit(args=None):
 
 
 # ---------------------------------------------------------------------------
+# v2.0.9 Paper Position Sizing & Risk Budget Control handlers
+# ---------------------------------------------------------------------------
+_PAPER_COCKPIT_V209_BANNER = "[!] RESEARCH ONLY — PAPER ONLY — POSITION SIZING RECOMMENDATION ONLY — NOT INVESTMENT ADVICE — NO REAL ORDERS — should_auto_apply=False — auto_apply_enabled=False — sizing_actions_recommendation_only=True"
+
+
+def cmd_paper_cockpit_v209_review_sizing(args=None):
+    """[v2.0.9] Run paper position sizing review. Research only."""
+    print(_PAPER_COCKPIT_V209_BANNER)
+    from paper_trading.small_capital_strategy.paper_cockpit_v209 import run_sizing_review
+    result = run_sizing_review()
+    print(f"paper-cockpit-v209-review-sizing: sizing_version={result.sizing_version}  paper_only={result.paper_only}  all_passed={result.all_passed}  should_auto_apply={result.should_auto_apply}  auto_apply_enabled={result.auto_apply_enabled}  candidate_count={len(result.candidate_sizing_snapshot)}")
+    print(_PAPER_COCKPIT_V209_BANNER)
+
+
+def cmd_paper_cockpit_v209_evaluate_risk_budget(args=None):
+    """[v2.0.9] Evaluate risk budget utilization. Research only."""
+    print(_PAPER_COCKPIT_V209_BANNER)
+    from paper_trading.small_capital_strategy.paper_cockpit_v209 import evaluate_risk_budget
+    rb = evaluate_risk_budget()
+    print(f"paper-cockpit-v209-evaluate-risk-budget: total_allocated={rb['total_allocated_risk_pct']:.4%}  remaining={rb['remaining_risk_budget_pct']:.4%}  over_budget={rb['over_budget']}  paper_only=True  should_auto_apply=False")
+    print(_PAPER_COCKPIT_V209_BANNER)
+
+
+def cmd_paper_cockpit_v209_calculate_position_size(args=None):
+    """[v2.0.9] Calculate position size for a demo candidate. Research only."""
+    print(_PAPER_COCKPIT_V209_BANNER)
+    from paper_trading.small_capital_strategy.paper_cockpit_v209 import calculate_position_size
+    item = calculate_position_size("2330", "台積電", "CAND-001", "THEME-SEMI", "SECTOR-TECH", 80.0, 80.0, 900.0, 855.0)
+    print(f"paper-cockpit-v209-calculate-position-size: symbol={item.symbol}  final_recommended_size={item.final_recommended_size}  size_action={item.size_action}  should_auto_apply={item.should_auto_apply}")
+    print(_PAPER_COCKPIT_V209_BANNER)
+
+
+def cmd_paper_cockpit_v209_build_size_reduction_queue(args=None):
+    """[v2.0.9] Build size reduction queue. Research only."""
+    print(_PAPER_COCKPIT_V209_BANNER)
+    from paper_trading.small_capital_strategy.paper_cockpit_v209 import build_size_reduction_queue
+    queue = build_size_reduction_queue()
+    print(f"paper-cockpit-v209-build-size-reduction-queue: reduction_count={len(queue)}  paper_only=True  should_auto_apply=False  auto_apply_enabled=False")
+    print(_PAPER_COCKPIT_V209_BANNER)
+
+
+def cmd_paper_cockpit_v209_build_blocked_sizing_queue(args=None):
+    """[v2.0.9] Build blocked sizing queue. Research only."""
+    print(_PAPER_COCKPIT_V209_BANNER)
+    from paper_trading.small_capital_strategy.paper_cockpit_v209 import build_blocked_sizing_queue
+    queue = build_blocked_sizing_queue()
+    print(f"paper-cockpit-v209-build-blocked-sizing-queue: blocked_count={len(queue)}  paper_only=True  should_auto_apply=False  auto_apply_enabled=False")
+    print(_PAPER_COCKPIT_V209_BANNER)
+
+
+def cmd_paper_cockpit_v209_export_json(args=None):
+    """[v2.0.9] Export position sizing review as JSON. Research only."""
+    print(_PAPER_COCKPIT_V209_BANNER)
+    from paper_trading.small_capital_strategy.paper_cockpit_v209 import run_sizing_review, export_sizing_json
+    result = export_sizing_json(run_sizing_review())
+    print(f"paper-cockpit-v209-export-json: is_valid={result.is_valid}  paper_only={result.paper_only}  export_status={result.export_status}  should_auto_apply=False  auto_apply_enabled=False")
+    print(_PAPER_COCKPIT_V209_BANNER)
+
+
+def cmd_paper_cockpit_v209_export_md(args=None):
+    """[v2.0.9] Export position sizing review as Markdown. Research only."""
+    print(_PAPER_COCKPIT_V209_BANNER)
+    from paper_trading.small_capital_strategy.paper_cockpit_v209 import run_sizing_review, export_sizing_markdown
+    result = export_sizing_markdown(run_sizing_review())
+    print(f"paper-cockpit-v209-export-md: is_valid={result.is_valid}  paper_only={result.paper_only}  export_status={result.export_status}  should_auto_apply=False  auto_apply_enabled=False")
+    print(_PAPER_COCKPIT_V209_BANNER)
+
+
+def cmd_paper_cockpit_v209_export_csv(args=None):
+    """[v2.0.9] Export sizing items as CSV. Research only."""
+    print(_PAPER_COCKPIT_V209_BANNER)
+    from paper_trading.small_capital_strategy.paper_cockpit_v209 import run_sizing_review, export_candidate_sizing_csv
+    result = export_candidate_sizing_csv(run_sizing_review())
+    print(f"paper-cockpit-v209-export-csv: is_valid={result.is_valid}  paper_only={result.paper_only}  row_count={result.row_count}  should_auto_apply=False  auto_apply_enabled=False")
+    print(_PAPER_COCKPIT_V209_BANNER)
+
+
+def cmd_paper_cockpit_v209_health(args=None):
+    """[v2.0.9] Run paper cockpit v2.0.9 health check. Research only."""
+    print(_PAPER_COCKPIT_V209_BANNER)
+    from paper_trading.small_capital_strategy.paper_cockpit_health_v209 import run_health_check
+    result = run_health_check()
+    print(f"paper-cockpit-v209-health: all_passed={result['all_passed']}  passed={result['passed']}/{result['total']}  paper_only=True")
+    print(_PAPER_COCKPIT_V209_BANNER)
+
+
+def cmd_paper_cockpit_v209_gate(args=None):
+    """[v2.0.9] Run paper cockpit v2.0.9 release gate. Research only."""
+    print(_PAPER_COCKPIT_V209_BANNER)
+    from release.paper_cockpit_release_gate_v209 import run_release_gate
+    result = run_release_gate()
+    print(f"paper-cockpit-v209-gate: gate_passed={result['gate_passed']}  passed={result['passed_count']}/{result['total_count']}  paper_only=True")
+    print(_PAPER_COCKPIT_V209_BANNER)
+
+
+# ---------------------------------------------------------------------------
 # v2.0.8 Paper Portfolio Exposure & Theme Concentration Risk Control handlers
 # ---------------------------------------------------------------------------
 _PAPER_COCKPIT_V208_BANNER = "[!] RESEARCH ONLY — PAPER ONLY — EXPOSURE ANALYSIS — CONCENTRATION RISK — NOT INVESTMENT ADVICE — NO REAL ORDERS — should_auto_apply=False — auto_apply_enabled=False — exposure_actions_recommendation_only=True"
@@ -46680,6 +46776,17 @@ def main() -> None:
         "strategy-promotion-rollback-validate": cmd_strategy_promotion_rollback_validate,
         "strategy-promotion-approval-state":   cmd_strategy_promotion_approval_state,
         "strategy-promotion-safety-audit":     cmd_strategy_promotion_safety_audit,
+        # v2.0.9 paper cockpit position sizing & risk budget control commands
+        "paper-cockpit-v209-review-sizing":              cmd_paper_cockpit_v209_review_sizing,
+        "paper-cockpit-v209-evaluate-risk-budget":       cmd_paper_cockpit_v209_evaluate_risk_budget,
+        "paper-cockpit-v209-calculate-position-size":    cmd_paper_cockpit_v209_calculate_position_size,
+        "paper-cockpit-v209-build-size-reduction-queue": cmd_paper_cockpit_v209_build_size_reduction_queue,
+        "paper-cockpit-v209-build-blocked-sizing-queue": cmd_paper_cockpit_v209_build_blocked_sizing_queue,
+        "paper-cockpit-v209-export-json":                cmd_paper_cockpit_v209_export_json,
+        "paper-cockpit-v209-export-md":                  cmd_paper_cockpit_v209_export_md,
+        "paper-cockpit-v209-export-csv":                 cmd_paper_cockpit_v209_export_csv,
+        "paper-cockpit-v209-health":                     cmd_paper_cockpit_v209_health,
+        "paper-cockpit-v209-gate":                       cmd_paper_cockpit_v209_gate,
         # v2.0.8 paper cockpit portfolio exposure & theme concentration risk control commands
         "paper-cockpit-v208-review-exposure":          cmd_paper_cockpit_v208_review_exposure,
         "paper-cockpit-v208-evaluate-concentration":   cmd_paper_cockpit_v208_evaluate_concentration,
