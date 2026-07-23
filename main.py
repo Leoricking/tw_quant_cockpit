@@ -42880,6 +42880,104 @@ def cmd_paper_cockpit_safety_audit(args=None):
 
 
 # ---------------------------------------------------------------------------
+# v2.0.12 Paper Profit Taking & ETF Rebalancing Control handlers
+# ---------------------------------------------------------------------------
+_PAPER_COCKPIT_V212_BANNER = "[!] RESEARCH ONLY — PAPER ONLY — PROFIT TAKING RECOMMENDATION ONLY — NOT INVESTMENT ADVICE — NO REAL ORDERS — should_auto_apply=False — auto_apply_enabled=False — no_automatic_profit_taking_action=True — profit_actions_recommendation_only=True — etf_rebalance_actions_recommendation_only=True — require_profit_plan_before_entry=True"
+
+
+def cmd_paper_cockpit_v212_review_profit_taking(args=None):
+    """[v2.0.12] Run paper profit taking review. Research only."""
+    print(_PAPER_COCKPIT_V212_BANNER)
+    from paper_trading.small_capital_strategy.paper_cockpit_v212 import run_profit_taking_review
+    result = run_profit_taking_review()
+    print(f"paper-cockpit-v212-review-profit-taking: profit_version={result.profit_version}  paper_only={result.paper_only}  all_passed={result.all_passed}  should_auto_apply={result.should_auto_apply}  auto_apply_enabled={result.auto_apply_enabled}  position_count={len(result.profit_taking_snapshot)}")
+    print(_PAPER_COCKPIT_V212_BANNER)
+
+
+def cmd_paper_cockpit_v212_evaluate_giveback_risk(args=None):
+    """[v2.0.12] Evaluate profit giveback risk. Research only."""
+    print(_PAPER_COCKPIT_V212_BANNER)
+    from paper_trading.small_capital_strategy.paper_cockpit_v212 import evaluate_giveback_risk
+    result = evaluate_giveback_risk()
+    print(f"paper-cockpit-v212-evaluate-giveback-risk: giveback_risk={result['giveback_risk_count']}  paper_only=True  should_auto_apply=False")
+    print(_PAPER_COCKPIT_V212_BANNER)
+
+
+def cmd_paper_cockpit_v212_build_profit_warning_queue(args=None):
+    """[v2.0.12] Build profit warning queue. Research only."""
+    print(_PAPER_COCKPIT_V212_BANNER)
+    from paper_trading.small_capital_strategy.paper_cockpit_v212 import build_profit_warning_queue
+    queue = build_profit_warning_queue()
+    print(f"paper-cockpit-v212-build-profit-warning-queue: warning_count={len(queue)}  paper_only=True  should_auto_apply=False  auto_apply_enabled=False")
+    print(_PAPER_COCKPIT_V212_BANNER)
+
+
+def cmd_paper_cockpit_v212_build_giveback_review_queue(args=None):
+    """[v2.0.12] Build giveback review queue. Research only."""
+    print(_PAPER_COCKPIT_V212_BANNER)
+    from paper_trading.small_capital_strategy.paper_cockpit_v212 import build_giveback_review_queue
+    queue = build_giveback_review_queue()
+    print(f"paper-cockpit-v212-build-giveback-review-queue: giveback_count={len(queue)}  paper_only=True  should_auto_apply=False  auto_apply_enabled=False")
+    print(_PAPER_COCKPIT_V212_BANNER)
+
+
+def cmd_paper_cockpit_v212_review_etf_rebalancing(args=None):
+    """[v2.0.12] Run paper ETF rebalancing review. Research only."""
+    print(_PAPER_COCKPIT_V212_BANNER)
+    from paper_trading.small_capital_strategy.paper_cockpit_v212 import run_etf_rebalancing_review
+    items = run_etf_rebalancing_review()
+    rebalance_needed = sum(1 for e in items if e.rebalance_action != "within_band_hold")
+    leveraged_warning = sum(1 for e in items if e.leveraged_etf_warning)
+    print(f"paper-cockpit-v212-review-etf-rebalancing: total={len(items)}  rebalance_needed={rebalance_needed}  leveraged_warning={leveraged_warning}  paper_only=True  should_auto_apply=False")
+    print(_PAPER_COCKPIT_V212_BANNER)
+
+
+def cmd_paper_cockpit_v212_export_json(args=None):
+    """[v2.0.12] Export profit taking review as JSON. Research only."""
+    print(_PAPER_COCKPIT_V212_BANNER)
+    from paper_trading.small_capital_strategy.paper_cockpit_v212 import run_profit_taking_review, export_profit_taking_json
+    result = export_profit_taking_json(run_profit_taking_review())
+    print(f"paper-cockpit-v212-export-json: is_valid={result.is_valid}  paper_only={result.paper_only}  export_status={result.export_status}  should_auto_apply=False  auto_apply_enabled=False")
+    print(_PAPER_COCKPIT_V212_BANNER)
+
+
+def cmd_paper_cockpit_v212_export_md(args=None):
+    """[v2.0.12] Export profit taking review as Markdown. Research only."""
+    print(_PAPER_COCKPIT_V212_BANNER)
+    from paper_trading.small_capital_strategy.paper_cockpit_v212 import run_profit_taking_review, export_profit_taking_markdown
+    result = export_profit_taking_markdown(run_profit_taking_review())
+    print(f"paper-cockpit-v212-export-md: is_valid={result.is_valid}  paper_only={result.paper_only}  export_status={result.export_status}  should_auto_apply=False  auto_apply_enabled=False")
+    print(_PAPER_COCKPIT_V212_BANNER)
+
+
+def cmd_paper_cockpit_v212_export_csv(args=None):
+    """[v2.0.12] Export profit taking entries as CSV. Research only."""
+    print(_PAPER_COCKPIT_V212_BANNER)
+    from paper_trading.small_capital_strategy.paper_cockpit_v212 import run_profit_taking_review, export_profit_taking_csv
+    result = export_profit_taking_csv(run_profit_taking_review())
+    print(f"paper-cockpit-v212-export-csv: is_valid={result.is_valid}  paper_only={result.paper_only}  row_count={result.row_count}  should_auto_apply=False  auto_apply_enabled=False")
+    print(_PAPER_COCKPIT_V212_BANNER)
+
+
+def cmd_paper_cockpit_v212_health(args=None):
+    """[v2.0.12] Run paper cockpit v2.0.12 health check. Research only."""
+    print(_PAPER_COCKPIT_V212_BANNER)
+    from paper_trading.small_capital_strategy.paper_cockpit_health_v212 import run_health_check
+    result = run_health_check()
+    print(f"paper-cockpit-v212-health: all_passed={result['all_passed']}  passed={result['passed']}/{result['total']}  paper_only=True")
+    print(_PAPER_COCKPIT_V212_BANNER)
+
+
+def cmd_paper_cockpit_v212_gate(args=None):
+    """[v2.0.12] Run paper cockpit v2.0.12 release gate. Research only."""
+    print(_PAPER_COCKPIT_V212_BANNER)
+    from release.paper_cockpit_release_gate_v212 import run_release_gate
+    result = run_release_gate()
+    print(f"paper-cockpit-v212-gate: gate_passed={result['gate_passed']}  passed={result['passed_count']}/{result['total_count']}  paper_only=True")
+    print(_PAPER_COCKPIT_V212_BANNER)
+
+
+# ---------------------------------------------------------------------------
 # v2.0.11 Paper Trade Journal & Execution Discipline Review handlers
 # ---------------------------------------------------------------------------
 _PAPER_COCKPIT_V211_BANNER = "[!] RESEARCH ONLY — PAPER ONLY — JOURNAL REVIEW RECOMMENDATION ONLY — NOT INVESTMENT ADVICE — NO REAL ORDERS — should_auto_apply=False — auto_apply_enabled=False — require_planned_entry_before_trade=True — journal_actions_recommendation_only=True"
@@ -46967,6 +47065,17 @@ def main() -> None:
         "strategy-promotion-rollback-validate": cmd_strategy_promotion_rollback_validate,
         "strategy-promotion-approval-state":   cmd_strategy_promotion_approval_state,
         "strategy-promotion-safety-audit":     cmd_strategy_promotion_safety_audit,
+        # v2.0.12 paper cockpit profit taking & ETF rebalancing control commands
+        "paper-cockpit-v212-review-profit-taking":       cmd_paper_cockpit_v212_review_profit_taking,
+        "paper-cockpit-v212-evaluate-giveback-risk":     cmd_paper_cockpit_v212_evaluate_giveback_risk,
+        "paper-cockpit-v212-build-profit-warning-queue": cmd_paper_cockpit_v212_build_profit_warning_queue,
+        "paper-cockpit-v212-build-giveback-review-queue": cmd_paper_cockpit_v212_build_giveback_review_queue,
+        "paper-cockpit-v212-review-etf-rebalancing":    cmd_paper_cockpit_v212_review_etf_rebalancing,
+        "paper-cockpit-v212-export-json":                cmd_paper_cockpit_v212_export_json,
+        "paper-cockpit-v212-export-md":                  cmd_paper_cockpit_v212_export_md,
+        "paper-cockpit-v212-export-csv":                 cmd_paper_cockpit_v212_export_csv,
+        "paper-cockpit-v212-health":                     cmd_paper_cockpit_v212_health,
+        "paper-cockpit-v212-gate":                       cmd_paper_cockpit_v212_gate,
         # v2.0.11 paper cockpit trade journal & execution discipline review commands
         "paper-cockpit-v211-review-journal":             cmd_paper_cockpit_v211_review_journal,
         "paper-cockpit-v211-evaluate-discipline":        cmd_paper_cockpit_v211_evaluate_discipline,

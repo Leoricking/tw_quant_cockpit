@@ -29,6 +29,7 @@ PANEL_VERSION_V208 = "2.0.8"
 PANEL_VERSION_V209 = "2.0.9"
 PANEL_VERSION_V210 = "2.0.10"
 PANEL_VERSION_V211 = "2.0.11"
+PANEL_VERSION_V212 = "2.0.12"
 
 # v1.7.0 tabs (preserved unchanged)
 _TABS_V170 = [
@@ -470,6 +471,15 @@ _TABS_V211_JOURNAL = [
 
 assert len(_TABS_V211_JOURNAL) == 3, f"Expected 3 journal v211 tabs, got {len(_TABS_V211_JOURNAL)}"
 
+# v2.0.12 Paper Profit Taking & ETF Rebalancing Control tabs
+_TABS_V212_PROFIT = [
+    "profit_taking_v212",
+    "etf_rebalancing_v212",
+    "giveback_review_queue_v212",
+]
+
+assert len(_TABS_V212_PROFIT) == 3, f"Expected 3 profit v212 tabs, got {len(_TABS_V212_PROFIT)}"
+
 _TABS = (
     _TABS_V170
     + _TABS_V171_WATCHLIST
@@ -514,6 +524,7 @@ _TABS = (
     + _TABS_V209_SIZING
     + _TABS_V210_EXIT
     + _TABS_V211_JOURNAL
+    + _TABS_V212_PROFIT
 )
 
 assert len(_TABS_V170) == 22, f"Expected 22 v1.7.0 tabs, got {len(_TABS_V170)}"
@@ -1843,6 +1854,10 @@ def render_all_tabs() -> Dict[str, Any]:
         "trade_journal_v211":               render_trade_journal_v211_tab,
         "execution_discipline_v211":        render_execution_discipline_v211_tab,
         "mistake_review_queue_v211":        render_mistake_review_queue_v211_tab,
+        # v2.0.12 Paper Profit Taking & ETF Rebalancing Control tabs
+        "profit_taking_v212":               render_profit_taking_v212_tab,
+        "etf_rebalancing_v212":             render_etf_rebalancing_v212_tab,
+        "giveback_review_queue_v212":       render_giveback_review_queue_v212_tab,
     }
     result = {}
     for tab_name in _TABS:
@@ -5167,6 +5182,89 @@ _TAB_RENDER_MAP_V211: Dict[str, Any] = {
     "trade_journal_v211": render_trade_journal_v211_tab,
     "execution_discipline_v211": render_execution_discipline_v211_tab,
     "mistake_review_queue_v211": render_mistake_review_queue_v211_tab,
+}
+
+
+def get_v212_tab_names() -> List[str]:
+    """Return list of v2.0.12 new tab names."""
+    return list(_TABS_V212_PROFIT)
+
+
+def render_profit_taking_v212_tab() -> Dict[str, Any]:
+    """Render profit taking v212 tab data (headless-safe, paper-only)."""
+    return {
+        "tab": "profit_taking_v212",
+        "version": PANEL_VERSION_V212,
+        "release_name": "Paper Profit Taking & ETF Rebalancing Control",
+        "description": "Paper-only profit taking dashboard: one-third model (+20% first take, +40% second take, trailing stop runner), giveback detection, profit warning queue — recommendation only, no auto apply.",
+        "paper_only": True,
+        "research_only": True,
+        "profit_taking_recommendation_only": True,
+        "no_real_orders": True,
+        "no_broker": True,
+        "not_investment_advice": True,
+        "production_trading_blocked": True,
+        "should_auto_apply": False,
+        "auto_apply_enabled": False,
+        "no_automatic_profit_taking_action": True,
+        "profit_actions_recommendation_only": True,
+        "require_profit_plan_before_entry": True,
+        "schema_version": "212",
+        "empty_state": "No profit taking data. Run paper-cockpit-v212-review-profit-taking to populate.",
+    }
+
+
+def render_etf_rebalancing_v212_tab() -> Dict[str, Any]:
+    """Render ETF rebalancing v212 tab data (headless-safe, paper-only)."""
+    return {
+        "tab": "etf_rebalancing_v212",
+        "version": PANEL_VERSION_V212,
+        "release_name": "Paper Profit Taking & ETF Rebalancing Control",
+        "description": "ETF rebalancing dashboard: allocation band control, leveraged ETF warnings, overweight trim, underweight add-back — recommendation only, no auto apply.",
+        "paper_only": True,
+        "research_only": True,
+        "etf_rebalance_recommendation_only": True,
+        "no_real_orders": True,
+        "no_broker": True,
+        "not_investment_advice": True,
+        "production_trading_blocked": True,
+        "should_auto_apply": False,
+        "auto_apply_enabled": False,
+        "etf_rebalance_actions_recommendation_only": True,
+        "require_profit_plan_before_entry": True,
+        "schema_version": "212",
+        "empty_state": "No ETF rebalancing data. Run paper-cockpit-v212-review-etf-rebalancing to populate.",
+    }
+
+
+def render_giveback_review_queue_v212_tab() -> Dict[str, Any]:
+    """Render giveback review queue v212 tab data (headless-safe, paper-only)."""
+    return {
+        "tab": "giveback_review_queue_v212",
+        "version": PANEL_VERSION_V212,
+        "release_name": "Paper Profit Taking & ETF Rebalancing Control",
+        "description": "Giveback review queue: positions with profit giveback risk (high watermark drawdown > 15%), blowoff signals, pressure zone alerts — human review required, no automatic action.",
+        "paper_only": True,
+        "research_only": True,
+        "profit_taking_recommendation_only": True,
+        "no_real_orders": True,
+        "no_broker": True,
+        "not_investment_advice": True,
+        "production_trading_blocked": True,
+        "should_auto_apply": False,
+        "auto_apply_enabled": False,
+        "no_automatic_profit_taking_action": True,
+        "profit_actions_recommendation_only": True,
+        "require_profit_plan_before_entry": True,
+        "schema_version": "212",
+        "empty_state": "No giveback alerts. Run paper-cockpit-v212-build-giveback-review-queue to populate.",
+    }
+
+
+_TAB_RENDER_MAP_V212: Dict[str, Any] = {
+    "profit_taking_v212": render_profit_taking_v212_tab,
+    "etf_rebalancing_v212": render_etf_rebalancing_v212_tab,
+    "giveback_review_queue_v212": render_giveback_review_queue_v212_tab,
 }
 
 

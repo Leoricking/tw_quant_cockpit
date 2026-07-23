@@ -5753,6 +5753,41 @@ _SGD_V197_COMMANDS: _List[CommandSpec] = [
                 introduced_in="1.9.7", safety_classification="RESEARCH_ONLY"),
 ]
 
+# v2.0.12 Paper Profit Taking & ETF Rebalancing Control commands
+# ---------------------------------------------------------------------------
+_PC_V212_COMMANDS: _List[CommandSpec] = [
+    CommandSpec(name="paper-cockpit-v212-review-profit-taking", handler_name="cmd_paper_cockpit_v212_review_profit_taking",
+                help="[Research] Run paper profit taking review v2.0.12", group="paper_cockpit_v212",
+                introduced_in="2.0.12", safety_classification="RESEARCH_ONLY"),
+    CommandSpec(name="paper-cockpit-v212-evaluate-giveback-risk", handler_name="cmd_paper_cockpit_v212_evaluate_giveback_risk",
+                help="[Research] Evaluate profit giveback risk v2.0.12", group="paper_cockpit_v212",
+                introduced_in="2.0.12", safety_classification="RESEARCH_ONLY"),
+    CommandSpec(name="paper-cockpit-v212-build-profit-warning-queue", handler_name="cmd_paper_cockpit_v212_build_profit_warning_queue",
+                help="[Research] Build profit warning queue v2.0.12", group="paper_cockpit_v212",
+                introduced_in="2.0.12", safety_classification="RESEARCH_ONLY"),
+    CommandSpec(name="paper-cockpit-v212-build-giveback-review-queue", handler_name="cmd_paper_cockpit_v212_build_giveback_review_queue",
+                help="[Research] Build giveback review queue v2.0.12", group="paper_cockpit_v212",
+                introduced_in="2.0.12", safety_classification="RESEARCH_ONLY"),
+    CommandSpec(name="paper-cockpit-v212-review-etf-rebalancing", handler_name="cmd_paper_cockpit_v212_review_etf_rebalancing",
+                help="[Research] Run paper ETF rebalancing review v2.0.12", group="paper_cockpit_v212",
+                introduced_in="2.0.12", safety_classification="RESEARCH_ONLY"),
+    CommandSpec(name="paper-cockpit-v212-export-json", handler_name="cmd_paper_cockpit_v212_export_json",
+                help="[Research] Export profit taking review as JSON v2.0.12", group="paper_cockpit_v212",
+                introduced_in="2.0.12", safety_classification="RESEARCH_ONLY"),
+    CommandSpec(name="paper-cockpit-v212-export-md", handler_name="cmd_paper_cockpit_v212_export_md",
+                help="[Research] Export profit taking review as Markdown v2.0.12", group="paper_cockpit_v212",
+                introduced_in="2.0.12", safety_classification="RESEARCH_ONLY"),
+    CommandSpec(name="paper-cockpit-v212-export-csv", handler_name="cmd_paper_cockpit_v212_export_csv",
+                help="[Research] Export profit taking entries as CSV v2.0.12", group="paper_cockpit_v212",
+                introduced_in="2.0.12", safety_classification="RESEARCH_ONLY"),
+    CommandSpec(name="paper-cockpit-v212-health", handler_name="cmd_paper_cockpit_v212_health",
+                help="[Research] Run paper cockpit v2.0.12 health check", group="paper_cockpit_v212",
+                introduced_in="2.0.12", safety_classification="RESEARCH_ONLY"),
+    CommandSpec(name="paper-cockpit-v212-gate", handler_name="cmd_paper_cockpit_v212_gate",
+                help="[Research] Run paper cockpit v2.0.12 release gate", group="paper_cockpit_v212",
+                introduced_in="2.0.12", safety_classification="RESEARCH_ONLY"),
+]
+
 # v2.0.11 Paper Trade Journal & Execution Discipline Review commands
 # ---------------------------------------------------------------------------
 _PC_V211_COMMANDS: _List[CommandSpec] = [
@@ -6139,7 +6174,8 @@ _PC_V201_COMMANDS: _List[CommandSpec] = [
 ]
 
 PROVIDER_COMMANDS: _List[CommandSpec] = (
-    _PC_V211_COMMANDS
+    _PC_V212_COMMANDS
+    + _PC_V211_COMMANDS
     + _PC_V210_COMMANDS
     + _PC_V209_COMMANDS
     + _PC_V208_COMMANDS
