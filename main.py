@@ -42880,6 +42880,103 @@ def cmd_paper_cockpit_safety_audit(args=None):
 
 
 # ---------------------------------------------------------------------------
+# v2.0.13 Paper Market Box Range & Index Regime Control handlers
+# ---------------------------------------------------------------------------
+_PAPER_COCKPIT_V213_BANNER = "[!] RESEARCH ONLY — PAPER ONLY — MARKET BOX RECOMMENDATION ONLY — NOT INVESTMENT ADVICE — NO REAL ORDERS — should_auto_apply=False — auto_apply_enabled=False — no_automatic_market_action=True — market_box_actions_recommendation_only=True — exposure_actions_recommendation_only=True — require_box_check_before_entry=True — chase_high_always_blocked=True"
+
+
+def cmd_paper_cockpit_v213_review_market_box(args=None):
+    """[v2.0.13] Run paper market box review. Research only."""
+    print(_PAPER_COCKPIT_V213_BANNER)
+    from paper_trading.small_capital_strategy.paper_cockpit_v213 import run_market_box_review
+    result = run_market_box_review()
+    exp = result.exposure_control_snapshot
+    print(f"paper-cockpit-v213-review-market-box: market_box_version={result.market_box_version}  paper_only={result.paper_only}  zone={result.zone_classification}  exposure_action={exp.exposure_action if exp else 'N/A'}  should_auto_apply={result.should_auto_apply}  auto_apply_enabled={result.auto_apply_enabled}")
+    print(_PAPER_COCKPIT_V213_BANNER)
+
+
+def cmd_paper_cockpit_v213_classify_index_zone(args=None):
+    """[v2.0.13] Classify TWI index zone. Research only."""
+    print(_PAPER_COCKPIT_V213_BANNER)
+    from paper_trading.small_capital_strategy.paper_cockpit_v213 import classify_index_zone
+    result = classify_index_zone(43_500.0)
+    print(f"paper-cockpit-v213-classify-index-zone: zone={result['zone_name']}  box_position_pct={result['box_position_pct']}  paper_only=True  should_auto_apply=False")
+    print(_PAPER_COCKPIT_V213_BANNER)
+
+
+def cmd_paper_cockpit_v213_build_exposure_control(args=None):
+    """[v2.0.13] Build exposure control recommendation. Research only."""
+    print(_PAPER_COCKPIT_V213_BANNER)
+    from paper_trading.small_capital_strategy.paper_cockpit_v213 import build_exposure_recommendation
+    result = build_exposure_recommendation("neutral_zone")
+    print(f"paper-cockpit-v213-build-exposure-control: exposure_action={result.exposure_action}  recommended_max={result.recommended_max_exposure_pct:.0%}  cash_buffer={result.recommended_cash_buffer_pct:.0%}  paper_only=True  should_auto_apply=False")
+    print(_PAPER_COCKPIT_V213_BANNER)
+
+
+def cmd_paper_cockpit_v213_build_chase_risk_queue(args=None):
+    """[v2.0.13] Build chase-high blocker queue. Research only."""
+    print(_PAPER_COCKPIT_V213_BANNER)
+    from paper_trading.small_capital_strategy.paper_cockpit_v213 import run_market_box_review
+    result = run_market_box_review()
+    print(f"paper-cockpit-v213-build-chase-risk-queue: chase_blocked={len(result.chase_risk_snapshot)}  zone={result.zone_classification}  paper_only=True  should_auto_apply=False  auto_apply_enabled=False")
+    print(_PAPER_COCKPIT_V213_BANNER)
+
+
+def cmd_paper_cockpit_v213_build_defensive_review_queue(args=None):
+    """[v2.0.13] Build defensive review queue. Research only."""
+    print(_PAPER_COCKPIT_V213_BANNER)
+    from paper_trading.small_capital_strategy.paper_cockpit_v213 import run_market_box_review
+    result = run_market_box_review()
+    print(f"paper-cockpit-v213-build-defensive-review-queue: defensive_count={len(result.defensive_mode_snapshot)}  human_review_count={len(result.human_review_queue)}  paper_only=True  should_auto_apply=False  auto_apply_enabled=False")
+    print(_PAPER_COCKPIT_V213_BANNER)
+
+
+def cmd_paper_cockpit_v213_export_json(args=None):
+    """[v2.0.13] Export market box review as JSON. Research only."""
+    print(_PAPER_COCKPIT_V213_BANNER)
+    from paper_trading.small_capital_strategy.paper_cockpit_v213 import run_market_box_review, export_market_box_json
+    result = export_market_box_json(run_market_box_review())
+    print(f"paper-cockpit-v213-export-json: is_valid={result.is_valid}  paper_only={result.paper_only}  export_status={result.export_status}  should_auto_apply=False  auto_apply_enabled=False")
+    print(_PAPER_COCKPIT_V213_BANNER)
+
+
+def cmd_paper_cockpit_v213_export_md(args=None):
+    """[v2.0.13] Export market box review as Markdown. Research only."""
+    print(_PAPER_COCKPIT_V213_BANNER)
+    from paper_trading.small_capital_strategy.paper_cockpit_v213 import run_market_box_review, export_market_box_markdown
+    result = export_market_box_markdown(run_market_box_review())
+    print(f"paper-cockpit-v213-export-md: is_valid={result.is_valid}  paper_only={result.paper_only}  export_status={result.export_status}  should_auto_apply=False  auto_apply_enabled=False")
+    print(_PAPER_COCKPIT_V213_BANNER)
+
+
+def cmd_paper_cockpit_v213_export_csv(args=None):
+    """[v2.0.13] Export market box summary as CSV. Research only."""
+    print(_PAPER_COCKPIT_V213_BANNER)
+    from paper_trading.small_capital_strategy.paper_cockpit_v213 import run_market_box_review, export_market_box_csv
+    result = export_market_box_csv(run_market_box_review())
+    print(f"paper-cockpit-v213-export-csv: is_valid={result.is_valid}  paper_only={result.paper_only}  row_count={result.row_count}  should_auto_apply=False  auto_apply_enabled=False")
+    print(_PAPER_COCKPIT_V213_BANNER)
+
+
+def cmd_paper_cockpit_v213_health(args=None):
+    """[v2.0.13] Run paper cockpit v2.0.13 health check. Research only."""
+    print(_PAPER_COCKPIT_V213_BANNER)
+    from paper_trading.small_capital_strategy.paper_cockpit_health_v213 import run_health_check
+    result = run_health_check()
+    print(f"paper-cockpit-v213-health: all_passed={result['all_passed']}  passed={result['passed']}/{result['total']}  paper_only=True")
+    print(_PAPER_COCKPIT_V213_BANNER)
+
+
+def cmd_paper_cockpit_v213_gate(args=None):
+    """[v2.0.13] Run paper cockpit v2.0.13 release gate. Research only."""
+    print(_PAPER_COCKPIT_V213_BANNER)
+    from release.paper_cockpit_release_gate_v213 import run_release_gate
+    result = run_release_gate()
+    print(f"paper-cockpit-v213-gate: gate_passed={result['gate_passed']}  passed={result['passed_count']}/{result['total_count']}  paper_only=True")
+    print(_PAPER_COCKPIT_V213_BANNER)
+
+
+# ---------------------------------------------------------------------------
 # v2.0.12 Paper Profit Taking & ETF Rebalancing Control handlers
 # ---------------------------------------------------------------------------
 _PAPER_COCKPIT_V212_BANNER = "[!] RESEARCH ONLY — PAPER ONLY — PROFIT TAKING RECOMMENDATION ONLY — NOT INVESTMENT ADVICE — NO REAL ORDERS — should_auto_apply=False — auto_apply_enabled=False — no_automatic_profit_taking_action=True — profit_actions_recommendation_only=True — etf_rebalance_actions_recommendation_only=True — require_profit_plan_before_entry=True"
@@ -47065,6 +47162,17 @@ def main() -> None:
         "strategy-promotion-rollback-validate": cmd_strategy_promotion_rollback_validate,
         "strategy-promotion-approval-state":   cmd_strategy_promotion_approval_state,
         "strategy-promotion-safety-audit":     cmd_strategy_promotion_safety_audit,
+        # v2.0.13 paper cockpit market box range & index regime control commands
+        "paper-cockpit-v213-review-market-box":              cmd_paper_cockpit_v213_review_market_box,
+        "paper-cockpit-v213-classify-index-zone":            cmd_paper_cockpit_v213_classify_index_zone,
+        "paper-cockpit-v213-build-exposure-control":         cmd_paper_cockpit_v213_build_exposure_control,
+        "paper-cockpit-v213-build-chase-risk-queue":         cmd_paper_cockpit_v213_build_chase_risk_queue,
+        "paper-cockpit-v213-build-defensive-review-queue":   cmd_paper_cockpit_v213_build_defensive_review_queue,
+        "paper-cockpit-v213-export-json":                    cmd_paper_cockpit_v213_export_json,
+        "paper-cockpit-v213-export-md":                      cmd_paper_cockpit_v213_export_md,
+        "paper-cockpit-v213-export-csv":                     cmd_paper_cockpit_v213_export_csv,
+        "paper-cockpit-v213-health":                         cmd_paper_cockpit_v213_health,
+        "paper-cockpit-v213-gate":                           cmd_paper_cockpit_v213_gate,
         # v2.0.12 paper cockpit profit taking & ETF rebalancing control commands
         "paper-cockpit-v212-review-profit-taking":       cmd_paper_cockpit_v212_review_profit_taking,
         "paper-cockpit-v212-evaluate-giveback-risk":     cmd_paper_cockpit_v212_evaluate_giveback_risk,

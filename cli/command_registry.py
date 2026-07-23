@@ -5753,6 +5753,41 @@ _SGD_V197_COMMANDS: _List[CommandSpec] = [
                 introduced_in="1.9.7", safety_classification="RESEARCH_ONLY"),
 ]
 
+# v2.0.13 Paper Market Box Range & Index Regime Control commands
+# ---------------------------------------------------------------------------
+_PC_V213_COMMANDS: _List[CommandSpec] = [
+    CommandSpec(name="paper-cockpit-v213-review-market-box", handler_name="cmd_paper_cockpit_v213_review_market_box",
+                help="[Research] Run paper market box review v2.0.13", group="paper_cockpit_v213",
+                introduced_in="2.0.13", safety_classification="RESEARCH_ONLY"),
+    CommandSpec(name="paper-cockpit-v213-classify-index-zone", handler_name="cmd_paper_cockpit_v213_classify_index_zone",
+                help="[Research] Classify TWI index zone v2.0.13", group="paper_cockpit_v213",
+                introduced_in="2.0.13", safety_classification="RESEARCH_ONLY"),
+    CommandSpec(name="paper-cockpit-v213-build-exposure-control", handler_name="cmd_paper_cockpit_v213_build_exposure_control",
+                help="[Research] Build exposure control recommendation v2.0.13", group="paper_cockpit_v213",
+                introduced_in="2.0.13", safety_classification="RESEARCH_ONLY"),
+    CommandSpec(name="paper-cockpit-v213-build-chase-risk-queue", handler_name="cmd_paper_cockpit_v213_build_chase_risk_queue",
+                help="[Research] Build chase-high blocker queue v2.0.13", group="paper_cockpit_v213",
+                introduced_in="2.0.13", safety_classification="RESEARCH_ONLY"),
+    CommandSpec(name="paper-cockpit-v213-build-defensive-review-queue", handler_name="cmd_paper_cockpit_v213_build_defensive_review_queue",
+                help="[Research] Build defensive review queue v2.0.13", group="paper_cockpit_v213",
+                introduced_in="2.0.13", safety_classification="RESEARCH_ONLY"),
+    CommandSpec(name="paper-cockpit-v213-export-json", handler_name="cmd_paper_cockpit_v213_export_json",
+                help="[Research] Export market box review as JSON v2.0.13", group="paper_cockpit_v213",
+                introduced_in="2.0.13", safety_classification="RESEARCH_ONLY"),
+    CommandSpec(name="paper-cockpit-v213-export-md", handler_name="cmd_paper_cockpit_v213_export_md",
+                help="[Research] Export market box review as Markdown v2.0.13", group="paper_cockpit_v213",
+                introduced_in="2.0.13", safety_classification="RESEARCH_ONLY"),
+    CommandSpec(name="paper-cockpit-v213-export-csv", handler_name="cmd_paper_cockpit_v213_export_csv",
+                help="[Research] Export market box summary as CSV v2.0.13", group="paper_cockpit_v213",
+                introduced_in="2.0.13", safety_classification="RESEARCH_ONLY"),
+    CommandSpec(name="paper-cockpit-v213-health", handler_name="cmd_paper_cockpit_v213_health",
+                help="[Research] Run paper cockpit v2.0.13 health check", group="paper_cockpit_v213",
+                introduced_in="2.0.13", safety_classification="RESEARCH_ONLY"),
+    CommandSpec(name="paper-cockpit-v213-gate", handler_name="cmd_paper_cockpit_v213_gate",
+                help="[Research] Run paper cockpit v2.0.13 release gate", group="paper_cockpit_v213",
+                introduced_in="2.0.13", safety_classification="RESEARCH_ONLY"),
+]
+
 # v2.0.12 Paper Profit Taking & ETF Rebalancing Control commands
 # ---------------------------------------------------------------------------
 _PC_V212_COMMANDS: _List[CommandSpec] = [
@@ -6174,7 +6209,8 @@ _PC_V201_COMMANDS: _List[CommandSpec] = [
 ]
 
 PROVIDER_COMMANDS: _List[CommandSpec] = (
-    _PC_V212_COMMANDS
+    _PC_V213_COMMANDS
+    + _PC_V212_COMMANDS
     + _PC_V211_COMMANDS
     + _PC_V210_COMMANDS
     + _PC_V209_COMMANDS

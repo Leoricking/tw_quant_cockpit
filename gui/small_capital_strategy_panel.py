@@ -30,6 +30,7 @@ PANEL_VERSION_V209 = "2.0.9"
 PANEL_VERSION_V210 = "2.0.10"
 PANEL_VERSION_V211 = "2.0.11"
 PANEL_VERSION_V212 = "2.0.12"
+PANEL_VERSION_V213 = "2.0.13"
 
 # v1.7.0 tabs (preserved unchanged)
 _TABS_V170 = [
@@ -480,6 +481,15 @@ _TABS_V212_PROFIT = [
 
 assert len(_TABS_V212_PROFIT) == 3, f"Expected 3 profit v212 tabs, got {len(_TABS_V212_PROFIT)}"
 
+# v2.0.13 Paper Market Box Range & Index Regime Control tabs
+_TABS_V213_MARKET_BOX = [
+    "market_box_v213",
+    "exposure_control_v213",
+    "defensive_review_queue_v213",
+]
+
+assert len(_TABS_V213_MARKET_BOX) == 3, f"Expected 3 market box v213 tabs, got {len(_TABS_V213_MARKET_BOX)}"
+
 _TABS = (
     _TABS_V170
     + _TABS_V171_WATCHLIST
@@ -525,6 +535,7 @@ _TABS = (
     + _TABS_V210_EXIT
     + _TABS_V211_JOURNAL
     + _TABS_V212_PROFIT
+    + _TABS_V213_MARKET_BOX
 )
 
 assert len(_TABS_V170) == 22, f"Expected 22 v1.7.0 tabs, got {len(_TABS_V170)}"
@@ -1858,6 +1869,10 @@ def render_all_tabs() -> Dict[str, Any]:
         "profit_taking_v212":               render_profit_taking_v212_tab,
         "etf_rebalancing_v212":             render_etf_rebalancing_v212_tab,
         "giveback_review_queue_v212":       render_giveback_review_queue_v212_tab,
+        # v2.0.13 Paper Market Box Range & Index Regime Control tabs
+        "market_box_v213":                  render_market_box_v213_tab,
+        "exposure_control_v213":            render_exposure_control_v213_tab,
+        "defensive_review_queue_v213":      render_defensive_review_queue_v213_tab,
     }
     result = {}
     for tab_name in _TABS:
@@ -5265,6 +5280,78 @@ _TAB_RENDER_MAP_V212: Dict[str, Any] = {
     "profit_taking_v212": render_profit_taking_v212_tab,
     "etf_rebalancing_v212": render_etf_rebalancing_v212_tab,
     "giveback_review_queue_v212": render_giveback_review_queue_v212_tab,
+}
+
+
+def get_v213_tab_names() -> List[str]:
+    """Return v2.0.13 market box tab names."""
+    return list(_TABS_V213_MARKET_BOX)
+
+
+def render_market_box_v213_tab() -> Dict[str, Any]:
+    """Render market box v213 tab data (headless-safe, paper-only)."""
+    return {
+        "tab": "market_box_v213",
+        "version": "2.0.13",
+        "release_name": "Paper Market Box Range & Index Regime Control",
+        "paper_only": True,
+        "research_only": True,
+        "no_real_orders": True,
+        "not_investment_advice": True,
+        "market_box_recommendation_only": True,
+        "should_auto_apply": False,
+        "auto_apply_enabled": False,
+        "require_box_check_before_entry": True,
+        "no_automatic_market_action": True,
+        "market_box_actions_recommendation_only": True,
+        "core_sentence": "有現金就不怕震盪，最怕滿倉又融資。",
+        "empty_state": "No market box data. Run paper-cockpit-v213-review-market-box to populate.",
+    }
+
+
+def render_exposure_control_v213_tab() -> Dict[str, Any]:
+    """Render exposure control v213 tab data (headless-safe, paper-only)."""
+    return {
+        "tab": "exposure_control_v213",
+        "version": "2.0.13",
+        "release_name": "Paper Market Box Range & Index Regime Control",
+        "paper_only": True,
+        "research_only": True,
+        "no_real_orders": True,
+        "not_investment_advice": True,
+        "exposure_recommendation_only": True,
+        "should_auto_apply": False,
+        "auto_apply_enabled": False,
+        "chase_high_always_blocked": True,
+        "exposure_actions_recommendation_only": True,
+        "no_automatic_rebalance": True,
+        "empty_state": "No exposure control data. Run paper-cockpit-v213-build-exposure-control to populate.",
+    }
+
+
+def render_defensive_review_queue_v213_tab() -> Dict[str, Any]:
+    """Render defensive review queue v213 tab data (headless-safe, paper-only)."""
+    return {
+        "tab": "defensive_review_queue_v213",
+        "version": "2.0.13",
+        "release_name": "Paper Market Box Range & Index Regime Control",
+        "paper_only": True,
+        "research_only": True,
+        "no_real_orders": True,
+        "not_investment_advice": True,
+        "market_box_recommendation_only": True,
+        "should_auto_apply": False,
+        "auto_apply_enabled": False,
+        "no_automatic_market_action": True,
+        "core_only_filter_active": True,
+        "empty_state": "No defensive review data. Run paper-cockpit-v213-build-defensive-review-queue to populate.",
+    }
+
+
+_TAB_RENDER_MAP_V213: Dict[str, Any] = {
+    "market_box_v213": render_market_box_v213_tab,
+    "exposure_control_v213": render_exposure_control_v213_tab,
+    "defensive_review_queue_v213": render_defensive_review_queue_v213_tab,
 }
 
 
