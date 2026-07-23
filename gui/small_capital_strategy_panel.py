@@ -28,6 +28,7 @@ PANEL_VERSION_V207 = "2.0.7"
 PANEL_VERSION_V208 = "2.0.8"
 PANEL_VERSION_V209 = "2.0.9"
 PANEL_VERSION_V210 = "2.0.10"
+PANEL_VERSION_V211 = "2.0.11"
 
 # v1.7.0 tabs (preserved unchanged)
 _TABS_V170 = [
@@ -460,6 +461,15 @@ _TABS_V210_EXIT = [
 
 assert len(_TABS_V210_EXIT) == 3, f"Expected 3 exit v210 tabs, got {len(_TABS_V210_EXIT)}"
 
+# v2.0.11 Paper Trade Journal & Execution Discipline Review tabs
+_TABS_V211_JOURNAL = [
+    "trade_journal_v211",
+    "execution_discipline_v211",
+    "mistake_review_queue_v211",
+]
+
+assert len(_TABS_V211_JOURNAL) == 3, f"Expected 3 journal v211 tabs, got {len(_TABS_V211_JOURNAL)}"
+
 _TABS = (
     _TABS_V170
     + _TABS_V171_WATCHLIST
@@ -503,6 +513,7 @@ _TABS = (
     + _TABS_V208_EXPOSURE
     + _TABS_V209_SIZING
     + _TABS_V210_EXIT
+    + _TABS_V211_JOURNAL
 )
 
 assert len(_TABS_V170) == 22, f"Expected 22 v1.7.0 tabs, got {len(_TABS_V170)}"
@@ -1828,6 +1839,10 @@ def render_all_tabs() -> Dict[str, Any]:
         "exit_plan_v210":                   render_exit_plan_v210_tab,
         "stop_discipline_v210":             render_stop_discipline_v210_tab,
         "exit_warning_queue_v210":          render_exit_warning_queue_v210_tab,
+        # v2.0.11 Paper Trade Journal & Execution Discipline Review tabs
+        "trade_journal_v211":               render_trade_journal_v211_tab,
+        "execution_discipline_v211":        render_execution_discipline_v211_tab,
+        "mistake_review_queue_v211":        render_mistake_review_queue_v211_tab,
     }
     result = {}
     for tab_name in _TABS:
@@ -5073,6 +5088,85 @@ _TAB_RENDER_MAP_V210: Dict[str, Any] = {
     "exit_plan_v210": render_exit_plan_v210_tab,
     "stop_discipline_v210": render_stop_discipline_v210_tab,
     "exit_warning_queue_v210": render_exit_warning_queue_v210_tab,
+}
+
+
+def get_v211_tab_names() -> List[str]:
+    """Return list of v2.0.11 new tab names."""
+    return list(_TABS_V211_JOURNAL)
+
+
+def render_trade_journal_v211_tab() -> Dict[str, Any]:
+    """Render trade journal v211 tab data (headless-safe, paper-only)."""
+    return {
+        "tab": "trade_journal_v211",
+        "version": PANEL_VERSION_V211,
+        "release_name": "Paper Trade Journal & Execution Discipline Review",
+        "description": "Paper-only trade journal dashboard: planned vs actual entry, position size, stop, exit plan, execution discipline score — recommendation only, no auto apply.",
+        "paper_only": True,
+        "research_only": True,
+        "journal_review_recommendation_only": True,
+        "no_real_orders": True,
+        "no_broker": True,
+        "not_investment_advice": True,
+        "production_trading_blocked": True,
+        "should_auto_apply": False,
+        "auto_apply_enabled": False,
+        "journal_actions_recommendation_only": True,
+        "require_planned_entry_before_trade": True,
+        "schema_version": "211",
+        "empty_state": "No journal data. Run paper-cockpit-v211-review-journal to populate.",
+    }
+
+
+def render_execution_discipline_v211_tab() -> Dict[str, Any]:
+    """Render execution discipline v211 tab data (headless-safe, paper-only)."""
+    return {
+        "tab": "execution_discipline_v211",
+        "version": PANEL_VERSION_V211,
+        "release_name": "Paper Trade Journal & Execution Discipline Review",
+        "description": "Execution discipline dashboard: discipline score, plan adherence grade, violation counts, mistake tags, improvement suggestions — paper only.",
+        "paper_only": True,
+        "research_only": True,
+        "journal_review_recommendation_only": True,
+        "no_real_orders": True,
+        "no_broker": True,
+        "not_investment_advice": True,
+        "production_trading_blocked": True,
+        "should_auto_apply": False,
+        "auto_apply_enabled": False,
+        "require_planned_entry_before_trade": True,
+        "schema_version": "211",
+        "empty_state": "No discipline data. Run paper-cockpit-v211-evaluate-discipline to populate.",
+    }
+
+
+def render_mistake_review_queue_v211_tab() -> Dict[str, Any]:
+    """Render mistake review queue v211 tab data (headless-safe, paper-only)."""
+    return {
+        "tab": "mistake_review_queue_v211",
+        "version": PANEL_VERSION_V211,
+        "release_name": "Paper Trade Journal & Execution Discipline Review",
+        "description": "Mistake review queue: entries with violation codes, mistake tags, human review requirements — paper recommendation only, no automatic apply.",
+        "paper_only": True,
+        "research_only": True,
+        "journal_review_recommendation_only": True,
+        "no_real_orders": True,
+        "no_broker": True,
+        "not_investment_advice": True,
+        "production_trading_blocked": True,
+        "should_auto_apply": False,
+        "auto_apply_enabled": False,
+        "require_planned_entry_before_trade": True,
+        "schema_version": "211",
+        "empty_state": "No mistakes. Run paper-cockpit-v211-build-mistake-queue to populate.",
+    }
+
+
+_TAB_RENDER_MAP_V211: Dict[str, Any] = {
+    "trade_journal_v211": render_trade_journal_v211_tab,
+    "execution_discipline_v211": render_execution_discipline_v211_tab,
+    "mistake_review_queue_v211": render_mistake_review_queue_v211_tab,
 }
 
 

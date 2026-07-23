@@ -5753,7 +5753,42 @@ _SGD_V197_COMMANDS: _List[CommandSpec] = [
                 introduced_in="1.9.7", safety_classification="RESEARCH_ONLY"),
 ]
 
-# v2.0.9 Paper Position Sizing & Risk Budget Control commands
+# v2.0.11 Paper Trade Journal & Execution Discipline Review commands
+# ---------------------------------------------------------------------------
+_PC_V211_COMMANDS: _List[CommandSpec] = [
+    CommandSpec(name="paper-cockpit-v211-review-journal", handler_name="cmd_paper_cockpit_v211_review_journal",
+                help="[Research] Run paper trade journal review v2.0.11", group="paper_cockpit_v211",
+                introduced_in="2.0.11", safety_classification="RESEARCH_ONLY"),
+    CommandSpec(name="paper-cockpit-v211-evaluate-discipline", handler_name="cmd_paper_cockpit_v211_evaluate_discipline",
+                help="[Research] Evaluate execution discipline v2.0.11", group="paper_cockpit_v211",
+                introduced_in="2.0.11", safety_classification="RESEARCH_ONLY"),
+    CommandSpec(name="paper-cockpit-v211-build-mistake-queue", handler_name="cmd_paper_cockpit_v211_build_mistake_queue",
+                help="[Research] Build mistake review queue v2.0.11", group="paper_cockpit_v211",
+                introduced_in="2.0.11", safety_classification="RESEARCH_ONLY"),
+    CommandSpec(name="paper-cockpit-v211-build-violation-queue", handler_name="cmd_paper_cockpit_v211_build_violation_queue",
+                help="[Research] Build rule violation queue v2.0.11", group="paper_cockpit_v211",
+                introduced_in="2.0.11", safety_classification="RESEARCH_ONLY"),
+    CommandSpec(name="paper-cockpit-v211-build-improvement-queue", handler_name="cmd_paper_cockpit_v211_build_improvement_queue",
+                help="[Research] Build improvement suggestion queue v2.0.11", group="paper_cockpit_v211",
+                introduced_in="2.0.11", safety_classification="RESEARCH_ONLY"),
+    CommandSpec(name="paper-cockpit-v211-export-json", handler_name="cmd_paper_cockpit_v211_export_json",
+                help="[Research] Export journal review as JSON v2.0.11", group="paper_cockpit_v211",
+                introduced_in="2.0.11", safety_classification="RESEARCH_ONLY"),
+    CommandSpec(name="paper-cockpit-v211-export-md", handler_name="cmd_paper_cockpit_v211_export_md",
+                help="[Research] Export journal review as Markdown v2.0.11", group="paper_cockpit_v211",
+                introduced_in="2.0.11", safety_classification="RESEARCH_ONLY"),
+    CommandSpec(name="paper-cockpit-v211-export-csv", handler_name="cmd_paper_cockpit_v211_export_csv",
+                help="[Research] Export journal entries as CSV v2.0.11", group="paper_cockpit_v211",
+                introduced_in="2.0.11", safety_classification="RESEARCH_ONLY"),
+    CommandSpec(name="paper-cockpit-v211-health", handler_name="cmd_paper_cockpit_v211_health",
+                help="[Research] Run paper cockpit v2.0.11 health check", group="paper_cockpit_v211",
+                introduced_in="2.0.11", safety_classification="RESEARCH_ONLY"),
+    CommandSpec(name="paper-cockpit-v211-gate", handler_name="cmd_paper_cockpit_v211_gate",
+                help="[Research] Run paper cockpit v2.0.11 release gate", group="paper_cockpit_v211",
+                introduced_in="2.0.11", safety_classification="RESEARCH_ONLY"),
+]
+
+# v2.0.10 Paper Exit Plan & Stop-Loss Discipline Control commands
 # ---------------------------------------------------------------------------
 _PC_V210_COMMANDS: _List[CommandSpec] = [
     CommandSpec(name="paper-cockpit-v210-review-exit-plan", handler_name="cmd_paper_cockpit_v210_review_exit_plan",
@@ -6104,7 +6139,8 @@ _PC_V201_COMMANDS: _List[CommandSpec] = [
 ]
 
 PROVIDER_COMMANDS: _List[CommandSpec] = (
-    _PC_V210_COMMANDS
+    _PC_V211_COMMANDS
+    + _PC_V210_COMMANDS
     + _PC_V209_COMMANDS
     + _PC_V208_COMMANDS
     + _PC_V207_COMMANDS

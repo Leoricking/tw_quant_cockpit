@@ -42880,6 +42880,102 @@ def cmd_paper_cockpit_safety_audit(args=None):
 
 
 # ---------------------------------------------------------------------------
+# v2.0.11 Paper Trade Journal & Execution Discipline Review handlers
+# ---------------------------------------------------------------------------
+_PAPER_COCKPIT_V211_BANNER = "[!] RESEARCH ONLY — PAPER ONLY — JOURNAL REVIEW RECOMMENDATION ONLY — NOT INVESTMENT ADVICE — NO REAL ORDERS — should_auto_apply=False — auto_apply_enabled=False — require_planned_entry_before_trade=True — journal_actions_recommendation_only=True"
+
+
+def cmd_paper_cockpit_v211_review_journal(args=None):
+    """[v2.0.11] Run paper trade journal review. Research only."""
+    print(_PAPER_COCKPIT_V211_BANNER)
+    from paper_trading.small_capital_strategy.paper_cockpit_v211 import run_journal_review
+    result = run_journal_review()
+    print(f"paper-cockpit-v211-review-journal: journal_version={result.journal_version}  paper_only={result.paper_only}  all_passed={result.all_passed}  should_auto_apply={result.should_auto_apply}  auto_apply_enabled={result.auto_apply_enabled}  entry_count={len(result.trade_journal_snapshot)}")
+    print(_PAPER_COCKPIT_V211_BANNER)
+
+
+def cmd_paper_cockpit_v211_evaluate_discipline(args=None):
+    """[v2.0.11] Evaluate execution discipline. Research only."""
+    print(_PAPER_COCKPIT_V211_BANNER)
+    from paper_trading.small_capital_strategy.paper_cockpit_v211 import evaluate_discipline
+    d = evaluate_discipline()
+    print(f"paper-cockpit-v211-evaluate-discipline: total={d['total_entries']}  compliant={d['compliant_count']}  violations={d['total_violations']}  paper_only=True  should_auto_apply=False")
+    print(_PAPER_COCKPIT_V211_BANNER)
+
+
+def cmd_paper_cockpit_v211_build_mistake_queue(args=None):
+    """[v2.0.11] Build mistake review queue. Research only."""
+    print(_PAPER_COCKPIT_V211_BANNER)
+    from paper_trading.small_capital_strategy.paper_cockpit_v211 import build_mistake_review_queue
+    queue = build_mistake_review_queue()
+    print(f"paper-cockpit-v211-build-mistake-queue: mistake_count={len(queue)}  paper_only=True  should_auto_apply=False  auto_apply_enabled=False")
+    print(_PAPER_COCKPIT_V211_BANNER)
+
+
+def cmd_paper_cockpit_v211_build_violation_queue(args=None):
+    """[v2.0.11] Build rule violation queue. Research only."""
+    print(_PAPER_COCKPIT_V211_BANNER)
+    from paper_trading.small_capital_strategy.paper_cockpit_v211 import build_violation_queue
+    queue = build_violation_queue()
+    print(f"paper-cockpit-v211-build-violation-queue: violation_count={len(queue)}  paper_only=True  should_auto_apply=False  auto_apply_enabled=False")
+    print(_PAPER_COCKPIT_V211_BANNER)
+
+
+def cmd_paper_cockpit_v211_build_improvement_queue(args=None):
+    """[v2.0.11] Build improvement suggestion queue. Research only."""
+    print(_PAPER_COCKPIT_V211_BANNER)
+    from paper_trading.small_capital_strategy.paper_cockpit_v211 import build_improvement_queue
+    queue = build_improvement_queue()
+    print(f"paper-cockpit-v211-build-improvement-queue: suggestion_count={len(queue)}  paper_only=True  should_auto_apply=False  auto_apply_enabled=False")
+    print(_PAPER_COCKPIT_V211_BANNER)
+
+
+def cmd_paper_cockpit_v211_export_json(args=None):
+    """[v2.0.11] Export journal review as JSON. Research only."""
+    print(_PAPER_COCKPIT_V211_BANNER)
+    from paper_trading.small_capital_strategy.paper_cockpit_v211 import run_journal_review, export_journal_json
+    result = export_journal_json(run_journal_review())
+    print(f"paper-cockpit-v211-export-json: is_valid={result.is_valid}  paper_only={result.paper_only}  export_status={result.export_status}  should_auto_apply=False  auto_apply_enabled=False")
+    print(_PAPER_COCKPIT_V211_BANNER)
+
+
+def cmd_paper_cockpit_v211_export_md(args=None):
+    """[v2.0.11] Export journal review as Markdown. Research only."""
+    print(_PAPER_COCKPIT_V211_BANNER)
+    from paper_trading.small_capital_strategy.paper_cockpit_v211 import run_journal_review, export_journal_markdown
+    result = export_journal_markdown(run_journal_review())
+    print(f"paper-cockpit-v211-export-md: is_valid={result.is_valid}  paper_only={result.paper_only}  export_status={result.export_status}  should_auto_apply=False  auto_apply_enabled=False")
+    print(_PAPER_COCKPIT_V211_BANNER)
+
+
+def cmd_paper_cockpit_v211_export_csv(args=None):
+    """[v2.0.11] Export journal entries as CSV. Research only."""
+    print(_PAPER_COCKPIT_V211_BANNER)
+    from paper_trading.small_capital_strategy.paper_cockpit_v211 import run_journal_review, export_journal_csv
+    result = export_journal_csv(run_journal_review())
+    print(f"paper-cockpit-v211-export-csv: is_valid={result.is_valid}  paper_only={result.paper_only}  row_count={result.row_count}  should_auto_apply=False  auto_apply_enabled=False")
+    print(_PAPER_COCKPIT_V211_BANNER)
+
+
+def cmd_paper_cockpit_v211_health(args=None):
+    """[v2.0.11] Run paper cockpit v2.0.11 health check. Research only."""
+    print(_PAPER_COCKPIT_V211_BANNER)
+    from paper_trading.small_capital_strategy.paper_cockpit_health_v211 import run_health_check
+    result = run_health_check()
+    print(f"paper-cockpit-v211-health: all_passed={result['all_passed']}  passed={result['passed']}/{result['total']}  paper_only=True")
+    print(_PAPER_COCKPIT_V211_BANNER)
+
+
+def cmd_paper_cockpit_v211_gate(args=None):
+    """[v2.0.11] Run paper cockpit v2.0.11 release gate. Research only."""
+    print(_PAPER_COCKPIT_V211_BANNER)
+    from release.paper_cockpit_release_gate_v211 import run_release_gate
+    result = run_release_gate()
+    print(f"paper-cockpit-v211-gate: gate_passed={result['gate_passed']}  passed={result['passed_count']}/{result['total_count']}  paper_only=True")
+    print(_PAPER_COCKPIT_V211_BANNER)
+
+
+# ---------------------------------------------------------------------------
 # v2.0.10 Paper Exit Plan & Stop-Loss Discipline Control handlers
 # ---------------------------------------------------------------------------
 _PAPER_COCKPIT_V210_BANNER = "[!] RESEARCH ONLY — PAPER ONLY — EXIT PLAN RECOMMENDATION ONLY — NOT INVESTMENT ADVICE — NO REAL ORDERS — should_auto_apply=False — auto_apply_enabled=False — require_stop_loss_before_entry=True — exit_actions_recommendation_only=True"
@@ -46871,6 +46967,17 @@ def main() -> None:
         "strategy-promotion-rollback-validate": cmd_strategy_promotion_rollback_validate,
         "strategy-promotion-approval-state":   cmd_strategy_promotion_approval_state,
         "strategy-promotion-safety-audit":     cmd_strategy_promotion_safety_audit,
+        # v2.0.11 paper cockpit trade journal & execution discipline review commands
+        "paper-cockpit-v211-review-journal":             cmd_paper_cockpit_v211_review_journal,
+        "paper-cockpit-v211-evaluate-discipline":        cmd_paper_cockpit_v211_evaluate_discipline,
+        "paper-cockpit-v211-build-mistake-queue":        cmd_paper_cockpit_v211_build_mistake_queue,
+        "paper-cockpit-v211-build-violation-queue":      cmd_paper_cockpit_v211_build_violation_queue,
+        "paper-cockpit-v211-build-improvement-queue":    cmd_paper_cockpit_v211_build_improvement_queue,
+        "paper-cockpit-v211-export-json":                cmd_paper_cockpit_v211_export_json,
+        "paper-cockpit-v211-export-md":                  cmd_paper_cockpit_v211_export_md,
+        "paper-cockpit-v211-export-csv":                 cmd_paper_cockpit_v211_export_csv,
+        "paper-cockpit-v211-health":                     cmd_paper_cockpit_v211_health,
+        "paper-cockpit-v211-gate":                       cmd_paper_cockpit_v211_gate,
         # v2.0.10 paper cockpit exit plan & stop-loss discipline control commands
         "paper-cockpit-v210-review-exit-plan":           cmd_paper_cockpit_v210_review_exit_plan,
         "paper-cockpit-v210-evaluate-stop-discipline":   cmd_paper_cockpit_v210_evaluate_stop_discipline,
