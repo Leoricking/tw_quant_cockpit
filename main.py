@@ -42977,6 +42977,110 @@ def cmd_paper_cockpit_v213_gate(args=None):
 
 
 # ---------------------------------------------------------------------------
+# v2.0.14 Paper Pullback Reaction & Crash Rebound Confirmation handlers
+# ---------------------------------------------------------------------------
+_PAPER_COCKPIT_V214_BANNER = "[!] RESEARCH ONLY — PAPER ONLY — PULLBACK REACTION RECOMMENDATION ONLY — NOT INVESTMENT ADVICE — NO REAL ORDERS — should_auto_apply=False — auto_apply_enabled=False — no_automatic_pullback_action=True — no_automatic_rebound_action=True — pullback_actions_recommendation_only=True — rebound_actions_recommendation_only=True — require_reclaim_ma5_or_ma10_for_confirmation=True"
+
+
+def cmd_paper_cockpit_v214_review_pullback_reaction(args=None):
+    """[v2.0.14] Run paper pullback reaction review. Research only."""
+    print(_PAPER_COCKPIT_V214_BANNER)
+    from paper_trading.small_capital_strategy.paper_cockpit_v214 import run_pullback_reaction_review
+    result = run_pullback_reaction_review()
+    evt = result.index_snapshot
+    conf = result.rebound_confirmation_snapshot
+    print(f"paper-cockpit-v214-review-pullback-reaction: pullback_version={result.pullback_version}  paper_only={result.paper_only}  reaction_state={evt.reaction_state if evt else 'N/A'}  confirmation_score={conf.confirmation_score if conf else 0.0}  should_auto_apply={result.should_auto_apply}  auto_apply_enabled={result.auto_apply_enabled}")
+    print(_PAPER_COCKPIT_V214_BANNER)
+
+
+def cmd_paper_cockpit_v214_detect_pullback_event(args=None):
+    """[v2.0.14] Detect pullback event. Research only."""
+    print(_PAPER_COCKPIT_V214_BANNER)
+    from paper_trading.small_capital_strategy.paper_cockpit_v214 import detect_pullback_event
+    result = detect_pullback_event(43_000.0, pullback_start_level=45_000.0, pullback_low_level=42_500.0, ma5=43_200.0, ma10=43_800.0, ma60=42_800.0)
+    print(f"paper-cockpit-v214-detect-pullback-event: pullback_pct={result.pullback_pct}  near_ma60={result.near_ma60}  reclaimed_ma5={result.reclaimed_ma5}  paper_only=True  should_auto_apply=False")
+    print(_PAPER_COCKPIT_V214_BANNER)
+
+
+def cmd_paper_cockpit_v214_evaluate_rebound_confirmation(args=None):
+    """[v2.0.14] Evaluate rebound confirmation signals. Research only."""
+    print(_PAPER_COCKPIT_V214_BANNER)
+    from paper_trading.small_capital_strategy.paper_cockpit_v214 import evaluate_rebound_confirmation
+    result = evaluate_rebound_confirmation()
+    print(f"paper-cockpit-v214-evaluate-rebound-confirmation: score={result.confirmation_score}  tsmc_spot={result.tsmc_spot_confirmed}  tsmc_adr={result.tsmc_adr_confirmed}  paper_only=True  should_auto_apply=False")
+    print(_PAPER_COCKPIT_V214_BANNER)
+
+
+def cmd_paper_cockpit_v214_build_rebound_watch_queue(args=None):
+    """[v2.0.14] Build rebound watch queue. Research only."""
+    print(_PAPER_COCKPIT_V214_BANNER)
+    from paper_trading.small_capital_strategy.paper_cockpit_v214 import run_pullback_reaction_review
+    result = run_pullback_reaction_review()
+    evt = result.index_snapshot
+    from paper_trading.small_capital_strategy.paper_cockpit_v214 import build_rebound_watch_queue
+    queue = build_rebound_watch_queue(evt.reaction_state if evt else "no_pullback")
+    print(f"paper-cockpit-v214-build-rebound-watch-queue: watch_count={len(queue)}  reaction_state={evt.reaction_state if evt else 'N/A'}  paper_only=True  should_auto_apply=False  auto_apply_enabled=False")
+    print(_PAPER_COCKPIT_V214_BANNER)
+
+
+def cmd_paper_cockpit_v214_build_rebound_failure_queue(args=None):
+    """[v2.0.14] Build rebound failure queue. Research only."""
+    print(_PAPER_COCKPIT_V214_BANNER)
+    from paper_trading.small_capital_strategy.paper_cockpit_v214 import run_pullback_reaction_review
+    result = run_pullback_reaction_review()
+    evt = result.index_snapshot
+    from paper_trading.small_capital_strategy.paper_cockpit_v214 import build_rebound_failure_queue
+    queue = build_rebound_failure_queue(evt.reaction_state if evt else "no_pullback")
+    print(f"paper-cockpit-v214-build-rebound-failure-queue: failure_count={len(queue)}  reaction_state={evt.reaction_state if evt else 'N/A'}  paper_only=True  should_auto_apply=False  auto_apply_enabled=False")
+    print(_PAPER_COCKPIT_V214_BANNER)
+
+
+def cmd_paper_cockpit_v214_export_json(args=None):
+    """[v2.0.14] Export pullback reaction review as JSON. Research only."""
+    print(_PAPER_COCKPIT_V214_BANNER)
+    from paper_trading.small_capital_strategy.paper_cockpit_v214 import run_pullback_reaction_review, export_pullback_json
+    result = export_pullback_json(run_pullback_reaction_review())
+    print(f"paper-cockpit-v214-export-json: is_valid={result.is_valid}  paper_only={result.paper_only}  export_status={result.export_status}  should_auto_apply=False  auto_apply_enabled=False")
+    print(_PAPER_COCKPIT_V214_BANNER)
+
+
+def cmd_paper_cockpit_v214_export_md(args=None):
+    """[v2.0.14] Export pullback reaction review as Markdown. Research only."""
+    print(_PAPER_COCKPIT_V214_BANNER)
+    from paper_trading.small_capital_strategy.paper_cockpit_v214 import run_pullback_reaction_review, export_pullback_markdown
+    result = export_pullback_markdown(run_pullback_reaction_review())
+    print(f"paper-cockpit-v214-export-md: is_valid={result.is_valid}  paper_only={result.paper_only}  export_status={result.export_status}  should_auto_apply=False  auto_apply_enabled=False")
+    print(_PAPER_COCKPIT_V214_BANNER)
+
+
+def cmd_paper_cockpit_v214_export_csv(args=None):
+    """[v2.0.14] Export pullback summary as CSV. Research only."""
+    print(_PAPER_COCKPIT_V214_BANNER)
+    from paper_trading.small_capital_strategy.paper_cockpit_v214 import run_pullback_reaction_review, export_pullback_csv
+    result = export_pullback_csv(run_pullback_reaction_review())
+    print(f"paper-cockpit-v214-export-csv: is_valid={result.is_valid}  paper_only={result.paper_only}  row_count={result.row_count}  should_auto_apply=False  auto_apply_enabled=False")
+    print(_PAPER_COCKPIT_V214_BANNER)
+
+
+def cmd_paper_cockpit_v214_health(args=None):
+    """[v2.0.14] Run paper cockpit v2.0.14 health check. Research only."""
+    print(_PAPER_COCKPIT_V214_BANNER)
+    from paper_trading.small_capital_strategy.paper_cockpit_health_v214 import run_health_check
+    result = run_health_check()
+    print(f"paper-cockpit-v214-health: all_passed={result['all_passed']}  passed={result['passed']}/{result['total']}  paper_only=True")
+    print(_PAPER_COCKPIT_V214_BANNER)
+
+
+def cmd_paper_cockpit_v214_gate(args=None):
+    """[v2.0.14] Run paper cockpit v2.0.14 release gate. Research only."""
+    print(_PAPER_COCKPIT_V214_BANNER)
+    from release.paper_cockpit_release_gate_v214 import run_release_gate
+    result = run_release_gate()
+    print(f"paper-cockpit-v214-gate: gate_passed={result['gate_passed']}  passed={result['passed_count']}/{result['total_count']}  paper_only=True")
+    print(_PAPER_COCKPIT_V214_BANNER)
+
+
+# ---------------------------------------------------------------------------
 # v2.0.12 Paper Profit Taking & ETF Rebalancing Control handlers
 # ---------------------------------------------------------------------------
 _PAPER_COCKPIT_V212_BANNER = "[!] RESEARCH ONLY — PAPER ONLY — PROFIT TAKING RECOMMENDATION ONLY — NOT INVESTMENT ADVICE — NO REAL ORDERS — should_auto_apply=False — auto_apply_enabled=False — no_automatic_profit_taking_action=True — profit_actions_recommendation_only=True — etf_rebalance_actions_recommendation_only=True — require_profit_plan_before_entry=True"
@@ -47162,6 +47266,17 @@ def main() -> None:
         "strategy-promotion-rollback-validate": cmd_strategy_promotion_rollback_validate,
         "strategy-promotion-approval-state":   cmd_strategy_promotion_approval_state,
         "strategy-promotion-safety-audit":     cmd_strategy_promotion_safety_audit,
+        # v2.0.14 paper cockpit pullback reaction & crash rebound confirmation commands
+        "paper-cockpit-v214-review-pullback-reaction":       cmd_paper_cockpit_v214_review_pullback_reaction,
+        "paper-cockpit-v214-detect-pullback-event":          cmd_paper_cockpit_v214_detect_pullback_event,
+        "paper-cockpit-v214-evaluate-rebound-confirmation":  cmd_paper_cockpit_v214_evaluate_rebound_confirmation,
+        "paper-cockpit-v214-build-rebound-watch-queue":      cmd_paper_cockpit_v214_build_rebound_watch_queue,
+        "paper-cockpit-v214-build-rebound-failure-queue":    cmd_paper_cockpit_v214_build_rebound_failure_queue,
+        "paper-cockpit-v214-export-json":                    cmd_paper_cockpit_v214_export_json,
+        "paper-cockpit-v214-export-md":                      cmd_paper_cockpit_v214_export_md,
+        "paper-cockpit-v214-export-csv":                     cmd_paper_cockpit_v214_export_csv,
+        "paper-cockpit-v214-health":                         cmd_paper_cockpit_v214_health,
+        "paper-cockpit-v214-gate":                           cmd_paper_cockpit_v214_gate,
         # v2.0.13 paper cockpit market box range & index regime control commands
         "paper-cockpit-v213-review-market-box":              cmd_paper_cockpit_v213_review_market_box,
         "paper-cockpit-v213-classify-index-zone":            cmd_paper_cockpit_v213_classify_index_zone,

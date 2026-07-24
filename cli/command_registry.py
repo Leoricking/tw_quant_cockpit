@@ -5753,6 +5753,41 @@ _SGD_V197_COMMANDS: _List[CommandSpec] = [
                 introduced_in="1.9.7", safety_classification="RESEARCH_ONLY"),
 ]
 
+# v2.0.14 Paper Pullback Reaction & Crash Rebound Confirmation commands
+# ---------------------------------------------------------------------------
+_PC_V214_COMMANDS: _List[CommandSpec] = [
+    CommandSpec(name="paper-cockpit-v214-review-pullback-reaction", handler_name="cmd_paper_cockpit_v214_review_pullback_reaction",
+                help="[Research] Run paper pullback reaction review v2.0.14", group="paper_cockpit_v214",
+                introduced_in="2.0.14", safety_classification="RESEARCH_ONLY"),
+    CommandSpec(name="paper-cockpit-v214-detect-pullback-event", handler_name="cmd_paper_cockpit_v214_detect_pullback_event",
+                help="[Research] Detect pullback event v2.0.14", group="paper_cockpit_v214",
+                introduced_in="2.0.14", safety_classification="RESEARCH_ONLY"),
+    CommandSpec(name="paper-cockpit-v214-evaluate-rebound-confirmation", handler_name="cmd_paper_cockpit_v214_evaluate_rebound_confirmation",
+                help="[Research] Evaluate rebound confirmation signals v2.0.14", group="paper_cockpit_v214",
+                introduced_in="2.0.14", safety_classification="RESEARCH_ONLY"),
+    CommandSpec(name="paper-cockpit-v214-build-rebound-watch-queue", handler_name="cmd_paper_cockpit_v214_build_rebound_watch_queue",
+                help="[Research] Build rebound watch queue v2.0.14", group="paper_cockpit_v214",
+                introduced_in="2.0.14", safety_classification="RESEARCH_ONLY"),
+    CommandSpec(name="paper-cockpit-v214-build-rebound-failure-queue", handler_name="cmd_paper_cockpit_v214_build_rebound_failure_queue",
+                help="[Research] Build rebound failure queue v2.0.14", group="paper_cockpit_v214",
+                introduced_in="2.0.14", safety_classification="RESEARCH_ONLY"),
+    CommandSpec(name="paper-cockpit-v214-export-json", handler_name="cmd_paper_cockpit_v214_export_json",
+                help="[Research] Export pullback reaction review as JSON v2.0.14", group="paper_cockpit_v214",
+                introduced_in="2.0.14", safety_classification="RESEARCH_ONLY"),
+    CommandSpec(name="paper-cockpit-v214-export-md", handler_name="cmd_paper_cockpit_v214_export_md",
+                help="[Research] Export pullback reaction review as Markdown v2.0.14", group="paper_cockpit_v214",
+                introduced_in="2.0.14", safety_classification="RESEARCH_ONLY"),
+    CommandSpec(name="paper-cockpit-v214-export-csv", handler_name="cmd_paper_cockpit_v214_export_csv",
+                help="[Research] Export pullback summary as CSV v2.0.14", group="paper_cockpit_v214",
+                introduced_in="2.0.14", safety_classification="RESEARCH_ONLY"),
+    CommandSpec(name="paper-cockpit-v214-health", handler_name="cmd_paper_cockpit_v214_health",
+                help="[Research] Run paper cockpit v2.0.14 health check", group="paper_cockpit_v214",
+                introduced_in="2.0.14", safety_classification="RESEARCH_ONLY"),
+    CommandSpec(name="paper-cockpit-v214-gate", handler_name="cmd_paper_cockpit_v214_gate",
+                help="[Research] Run paper cockpit v2.0.14 release gate", group="paper_cockpit_v214",
+                introduced_in="2.0.14", safety_classification="RESEARCH_ONLY"),
+]
+
 # v2.0.13 Paper Market Box Range & Index Regime Control commands
 # ---------------------------------------------------------------------------
 _PC_V213_COMMANDS: _List[CommandSpec] = [
@@ -6209,7 +6244,8 @@ _PC_V201_COMMANDS: _List[CommandSpec] = [
 ]
 
 PROVIDER_COMMANDS: _List[CommandSpec] = (
-    _PC_V213_COMMANDS
+    _PC_V214_COMMANDS
+    + _PC_V213_COMMANDS
     + _PC_V212_COMMANDS
     + _PC_V211_COMMANDS
     + _PC_V210_COMMANDS

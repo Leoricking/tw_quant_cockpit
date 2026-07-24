@@ -31,6 +31,7 @@ PANEL_VERSION_V210 = "2.0.10"
 PANEL_VERSION_V211 = "2.0.11"
 PANEL_VERSION_V212 = "2.0.12"
 PANEL_VERSION_V213 = "2.0.13"
+PANEL_VERSION_V214 = "2.0.14"
 
 # v1.7.0 tabs (preserved unchanged)
 _TABS_V170 = [
@@ -490,6 +491,15 @@ _TABS_V213_MARKET_BOX = [
 
 assert len(_TABS_V213_MARKET_BOX) == 3, f"Expected 3 market box v213 tabs, got {len(_TABS_V213_MARKET_BOX)}"
 
+# v2.0.14 Paper Pullback Reaction & Crash Rebound Confirmation tabs
+_TABS_V214_PULLBACK = [
+    "pullback_reaction_v214",
+    "rebound_confirmation_v214",
+    "rebound_failure_queue_v214",
+]
+
+assert len(_TABS_V214_PULLBACK) == 3, f"Expected 3 pullback v214 tabs, got {len(_TABS_V214_PULLBACK)}"
+
 _TABS = (
     _TABS_V170
     + _TABS_V171_WATCHLIST
@@ -536,6 +546,7 @@ _TABS = (
     + _TABS_V211_JOURNAL
     + _TABS_V212_PROFIT
     + _TABS_V213_MARKET_BOX
+    + _TABS_V214_PULLBACK
 )
 
 assert len(_TABS_V170) == 22, f"Expected 22 v1.7.0 tabs, got {len(_TABS_V170)}"
@@ -1873,6 +1884,10 @@ def render_all_tabs() -> Dict[str, Any]:
         "market_box_v213":                  render_market_box_v213_tab,
         "exposure_control_v213":            render_exposure_control_v213_tab,
         "defensive_review_queue_v213":      render_defensive_review_queue_v213_tab,
+        # v2.0.14 Paper Pullback Reaction & Crash Rebound Confirmation tabs
+        "pullback_reaction_v214":           render_pullback_reaction_v214_tab,
+        "rebound_confirmation_v214":        render_rebound_confirmation_v214_tab,
+        "rebound_failure_queue_v214":       render_rebound_failure_queue_v214_tab,
     }
     result = {}
     for tab_name in _TABS:
@@ -5352,6 +5367,78 @@ _TAB_RENDER_MAP_V213: Dict[str, Any] = {
     "market_box_v213": render_market_box_v213_tab,
     "exposure_control_v213": render_exposure_control_v213_tab,
     "defensive_review_queue_v213": render_defensive_review_queue_v213_tab,
+}
+
+
+def get_v214_tab_names() -> List[str]:
+    """Return v2.0.14 pullback reaction tab names."""
+    return list(_TABS_V214_PULLBACK)
+
+
+def render_pullback_reaction_v214_tab() -> Dict[str, Any]:
+    """Render pullback reaction v214 tab data (headless-safe, paper-only)."""
+    return {
+        "tab": "pullback_reaction_v214",
+        "version": "2.0.14",
+        "release_name": "Paper Pullback Reaction & Crash Rebound Confirmation",
+        "paper_only": True,
+        "research_only": True,
+        "no_real_orders": True,
+        "not_investment_advice": True,
+        "pullback_reaction_recommendation_only": True,
+        "should_auto_apply": False,
+        "auto_apply_enabled": False,
+        "no_automatic_pullback_action": True,
+        "pullback_actions_recommendation_only": True,
+        "core_sentence": "不猜底、不追反彈、站回均線才是確認，急跌靠近季線只是觀察。",
+        "empty_state": "No pullback data. Run paper-cockpit-v214-review-pullback-reaction to populate.",
+    }
+
+
+def render_rebound_confirmation_v214_tab() -> Dict[str, Any]:
+    """Render rebound confirmation v214 tab data (headless-safe, paper-only)."""
+    return {
+        "tab": "rebound_confirmation_v214",
+        "version": "2.0.14",
+        "release_name": "Paper Pullback Reaction & Crash Rebound Confirmation",
+        "paper_only": True,
+        "research_only": True,
+        "no_real_orders": True,
+        "not_investment_advice": True,
+        "rebound_recommendation_only": True,
+        "should_auto_apply": False,
+        "auto_apply_enabled": False,
+        "require_reclaim_ma5_or_ma10_for_confirmation": True,
+        "no_automatic_rebound_action": True,
+        "rebound_actions_recommendation_only": True,
+        "no_automatic_rebalance": True,
+        "empty_state": "No rebound confirmation data. Run paper-cockpit-v214-evaluate-rebound-confirmation to populate.",
+    }
+
+
+def render_rebound_failure_queue_v214_tab() -> Dict[str, Any]:
+    """Render rebound failure queue v214 tab data (headless-safe, paper-only)."""
+    return {
+        "tab": "rebound_failure_queue_v214",
+        "version": "2.0.14",
+        "release_name": "Paper Pullback Reaction & Crash Rebound Confirmation",
+        "paper_only": True,
+        "research_only": True,
+        "no_real_orders": True,
+        "not_investment_advice": True,
+        "pullback_reaction_recommendation_only": True,
+        "should_auto_apply": False,
+        "auto_apply_enabled": False,
+        "no_automatic_pullback_action": True,
+        "failure_if_breaks_pullback_low": True,
+        "empty_state": "No rebound failure data. Run paper-cockpit-v214-build-rebound-failure-queue to populate.",
+    }
+
+
+_TAB_RENDER_MAP_V214: Dict[str, Any] = {
+    "pullback_reaction_v214": render_pullback_reaction_v214_tab,
+    "rebound_confirmation_v214": render_rebound_confirmation_v214_tab,
+    "rebound_failure_queue_v214": render_rebound_failure_queue_v214_tab,
 }
 
 
